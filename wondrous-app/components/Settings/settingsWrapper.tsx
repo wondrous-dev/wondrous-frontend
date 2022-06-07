@@ -13,7 +13,7 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { logout, useMe } from '../Auth/withAuth';
-import CreateFormModal from '../CreateEntity';
+import ChooseEntityToCreate from '../CreateEntity';
 import HeaderComponent from '../Header';
 import ExitIcon from 'components/Icons/exit';
 import CardIcon from '../Icons/card';
@@ -39,7 +39,7 @@ import {
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
-  ArchivedPodIndicatorText
+  ArchivedPodIndicatorText,
 } from './styles';
 
 const SIDEBAR_LIST_ITEMS = [
@@ -146,6 +146,13 @@ export const SettingsWrapper = (props) => {
       value: 'token-gating',
       href: `/organization/settings/${orgId}/token-gating`,
       page: [SettingsPage.Org],
+    },
+    {
+      icon: <GeneralSettingsIcon width={40} height={40} />,
+      label: 'Integrations Settings',
+      value: 'integrations',
+      href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <CardIcon width={40} height={40} />,
@@ -271,7 +278,7 @@ export const SettingsWrapper = (props) => {
       >
         <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
         <SideBarComponent />
-        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <SettingsContainer>
           <SettingsSidebar>
             <SettingsSidebarContainer>
@@ -291,7 +298,7 @@ export const SettingsWrapper = (props) => {
                 <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
                   {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                    if (!item.page.includes(activeSettingsPage.page)) return null;
+                    if (!item.page?.includes(activeSettingsPage.page)) return null;
                     const { href, icon, label } = item;
                     const pathnameSplit = pathname.split('/');
                     const hrefSplit = href.split('/');

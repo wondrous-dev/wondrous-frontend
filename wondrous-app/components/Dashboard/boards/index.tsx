@@ -94,6 +94,26 @@ const useGetUserTaskBoardTasks = ({
       console.log(error);
     });
   }, [contributorColumns, fetchMore, setHasMoreTasks]);
+
+  const fetchPerStatus = async (status, limit) => {
+    const column = contributorColumns?.find((column) => column.status === status);
+
+    fetchMore({
+      variables: {
+        offset: column?.tasks?.length,
+        statuses: [status],
+        ...(limit ? { limit } : {}),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        return {
+          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
   useEffect(() => {
     const taskBoardStatuses =
       statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUSES.includes(status)) : DEFAULT_STATUSES;
@@ -111,7 +131,7 @@ const useGetUserTaskBoardTasks = ({
     }
     setHasMoreTasks(true);
   }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses, setHasMoreTasks]);
-  return { getUserTaskBoardTasksFetchMore };
+  return { getUserTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
 const useGetUserTaskBoardProposals = ({
@@ -209,7 +229,7 @@ const useGetUserTaskBoard = ({
   setContributorColumns,
   podIds,
 }) => {
-  const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoardTasks({
+  const { getUserTaskBoardTasksFetchMore, fetchPerStatus } = useGetUserTaskBoardTasks({
     isAdmin,
     contributorColumns,
     setContributorColumns,
@@ -242,6 +262,7 @@ const useGetUserTaskBoard = ({
 
   return {
     getUserTaskBoardTasksFetchMore,
+    fetchPerStatus,
   };
 };
 
@@ -424,7 +445,7 @@ const BoardsPage = (props) => {
   });
 
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
-  const { getUserTaskBoardTasksFetchMore } = useGetUserTaskBoard({
+  const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({
     isAdmin,
     section,
     statuses,
@@ -667,6 +688,7 @@ const BoardsPage = (props) => {
         joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
         joinPodRequests: getJoinPodRequestsData?.getJoinPodRequests,
         setSection,
+        fetchPerStatus,
       }}
     >
       <BoardsActivity

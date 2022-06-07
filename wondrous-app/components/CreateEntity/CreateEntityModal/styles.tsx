@@ -3,6 +3,7 @@ import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
@@ -16,9 +17,10 @@ import React from 'react';
 import styled, { css } from 'styled-components';
 import { Red400, White } from 'theme/colors';
 import Arrow from '../../Icons/arrow.svg';
+import OpenInFullIcon from '../../Icons/openInFull.svg';
 import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
 import PrivacyPublicIcon from '../../Icons/privacyPublic.svg';
-import OpenInFullIcon from '../../Icons/openInFull.svg';
+import MilestoneSearch from './MilestoneSearch';
 
 export const scrollBarStyles = css`
   :hover {
@@ -31,7 +33,7 @@ export const scrollBarStyles = css`
     position: absolute;
     z-index: 999;
     width: 20px;
-    background: #1f1f1f;
+    background: transparent;
     border-radius: 0 4px 4px 0;
     outline: none;
   }
@@ -85,6 +87,10 @@ export const CreateEntityHeader = styled.div`
   padding: 12px 24px;
   justify-content: space-between;
 `;
+
+export const CreateEntityPodSearch = styled(PodSearch)``;
+
+export const CreateEntityMilestoneSearch = styled(MilestoneSearch)``;
 
 export const CreateEntitySelectRoot = styled.button`
   font-family: 'Space Grotesk';
@@ -820,6 +826,8 @@ export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 100;
+  overflow-y: auto;
+  ${scrollBarStyles}
 `;
 
 export const CreateEntityPaymentMethodSelect = (props) => {

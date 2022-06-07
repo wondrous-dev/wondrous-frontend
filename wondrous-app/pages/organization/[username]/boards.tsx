@@ -89,6 +89,7 @@ const useGetOrgTaskBoardTasks = ({
       console.log(error);
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
+
   useEffect(() => {
     if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId) {
       const taskBoardStatuses =
@@ -115,7 +116,26 @@ const useGetOrgTaskBoardTasks = ({
       setOrgTaskHasMore(true);
     }
   }, [getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
-  return { fetchMore: getOrgTaskBoardTasksFetchMore };
+
+  const fetchPerStatus = async (status, limit) => {
+    const columnIdx = columns?.findIndex((column) => column.status === status);
+    fetchMore({
+      variables: {
+        offset: columns[columnIdx]?.tasks?.length,
+        statuses: [status],
+        ...(limit ? { limit } : {}),
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        return {
+          getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
+  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus: fetchPerStatus };
 };
 
 const useGetTaskRelatedToUser = ({
@@ -318,10 +338,10 @@ const useGetOrgTaskBoard = ({
       filters,
     }),
   };
-  const { fetchMore } =
+  const { fetchMore, fetchPerStatus }: any =
     entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : userId ? board[userId] : board.withoutUserId;
 
-  return { fetchMore };
+  return { fetchMore, fetchPerStatus };
 };
 
 const BoardsPage = () => {
@@ -350,7 +370,7 @@ const BoardsPage = () => {
   });
   const [orgTaskHasMore, setOrgTaskHasMore] = useState(true);
 
-  const { fetchMore } = useGetOrgTaskBoard({
+  const { fetchMore, fetchPerStatus } = useGetOrgTaskBoard({
     view: activeView,
     section,
     columns,
@@ -391,6 +411,10 @@ const BoardsPage = () => {
     insertUrlParam('entity', type);
     setEntityType(type);
     setFilters({});
+    if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
+      setActiveView(ViewType.Grid);
+      insertUrlParam('view', ViewType.Grid);
+    }
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {
@@ -625,6 +649,7 @@ const BoardsPage = () => {
         setActiveView,
         user: getUserData?.getUser,
         deleteUserIdFilter,
+        fetchPerStatus,
       }}
     >
       <Boards

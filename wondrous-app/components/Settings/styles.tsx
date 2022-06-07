@@ -14,6 +14,7 @@ import styled from 'styled-components';
 import { White, Red200 } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
+import { Twitter } from '../Icons/twitter';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -362,7 +363,7 @@ export const GeneralSettingsIntegrationsBlock = styled.div`
   border-bottom: 1px solid #363636;
 `;
 
-export const GeneralSettingsIntegrationsBlockButtonIcon = styled(Discord)`
+export const GeneralSettingsDiscordIcon = styled(Discord)`
   && {
     width: 27px;
     height: 20px;
@@ -370,6 +371,16 @@ export const GeneralSettingsIntegrationsBlockButtonIcon = styled(Discord)`
     margin-right: 12px;
   }
 `;
+
+export const GeneralSettingsTwitterIcon = styled(Twitter)`
+  && {
+    width: 27px;
+    height: 20px;
+    color: #00baff;
+    margin-right: 12px;
+  }
+`;
+
 
 export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   && {

@@ -12,6 +12,8 @@ export const LoggedinUserFragment = gql`
     userInfo {
       email
       discordUsername
+      twitterUsername
+      promotionTweet
     }
     signupCompleted
     links {

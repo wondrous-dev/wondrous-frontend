@@ -4,7 +4,14 @@ import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
-import { CREATE_BOUNTY, CREATE_MILESTONE, CREATE_TASK } from 'graphql/mutations/task';
+import {
+  CREATE_BOUNTY,
+  CREATE_MILESTONE,
+  CREATE_TASK,
+  UPDATE_BOUNTY,
+  UPDATE_MILESTONE,
+  UPDATE_TASK,
+} from 'graphql/mutations/task';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
@@ -12,7 +19,23 @@ import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MIL
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import { CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import {
+  updateCompletedItem,
+  updateInProgressTask,
+  updateInReviewItem,
+  updateTaskItem,
+  updateTaskItemOnEntityType,
+} from 'utils/board';
+import {
+  CHAIN_TO_CHAIN_DIPLAY_NAME,
+  ENTITIES_TYPES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_TODO,
+} from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -37,7 +60,6 @@ import {
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
-  CreateEntityDefaultPodImage,
   CreateEntityDefaultUserImage,
   CreateEntityDescription,
   CreateEntityDescriptionWrapper,
@@ -52,6 +74,7 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
+  CreateEntityMilestoneSearch,
   CreateEntityOpenInFullIcon,
   CreateEntityOption,
   CreateEntityOptionImageWrapper,
@@ -62,6 +85,7 @@ import {
   CreateEntityPaymentMethodOptionIcon,
   CreateEntityPaymentMethodSelect,
   CreateEntityPaymentMethodSelectRender,
+  CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
   CreateEntityPrivacyMembersIcon,
@@ -171,18 +195,26 @@ const filterOrgUsers = (orgUsers) => {
   }));
 };
 
+const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefined, podId = undefined }) => {
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: orgId,
+    podId: podId,
+  });
+  return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
+};
+
 const filterOptionsWithPermission = (options, userPermissionsContext, orgId = undefined) => {
   if (!options) {
     return [];
   }
   return options
     .filter(({ id }) => {
-      const permissions = parseUserPermissionContext({
+      return hasCreateTaskPermission({
         userPermissionsContext,
         orgId: orgId ?? id,
         podId: orgId ? id : undefined,
       });
-      return permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
     })
     .map(({ profilePicture, name, id, color }) => ({
       imageUrl: profilePicture,
@@ -201,6 +233,11 @@ const getPodObject = (pods, podId) => {
   });
   return justCreatedPod;
 };
+
+const onCorrectPage = (existingTask, board) =>
+  existingTask?.orgId === board?.orgId ||
+  existingTask?.podId === board?.podId ||
+  existingTask?.userId === board?.userId;
 
 const useGetAvailableUserPods = (org) => {
   const [getAvailableUserPods, { data }] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
@@ -314,6 +351,19 @@ const useGetOrgUsers = (orgId) => {
   return data?.getOrgUsers;
 };
 
+const useGetMilestones = (orgId, podId) => {
+  const [getMilestones, { data }] = useLazyQuery(GET_MILESTONES);
+  useEffect(() => {
+    getMilestones({
+      variables: {
+        orgId,
+        podId,
+      },
+    });
+  }, [getMilestones, orgId, podId]);
+  return data?.getMilestones;
+};
+
 const useCreateTask = () => {
   const [createTask, { loading }] = useMutation(CREATE_TASK, {
     refetchQueries: () => [
@@ -324,7 +374,7 @@ const useCreateTask = () => {
       'getSubtaskCountForTask',
     ],
   });
-  const handleMutation = (input, board, pods, form, handleClose) =>
+  const handleMutation = ({ input, board, pods, form, handleClose }) =>
     createTask({
       variables: {
         input,
@@ -362,9 +412,9 @@ const useCreateTask = () => {
 
 const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
+    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
   });
-  const handleMutation = (input, board, pods, form, handleClose) => {
+  const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createMilestone({
       variables: {
         input,
@@ -396,7 +446,7 @@ const useCreateMilestone = () => {
       } else {
         board?.setEntityType(ENTITIES_TYPES.MILESTONE);
       }
-      handleClose();
+      handleClose(result);
     });
   };
   return { handleMutation, loading };
@@ -406,7 +456,7 @@ const useCreateBounty = () => {
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
     refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
   });
-  const handleMutation = (input, board, pods, form, handleClose) => {
+  const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({
       variables: {
         input,
@@ -444,6 +494,97 @@ const useCreateBounty = () => {
       .catch((error) => {
         console.error(error);
       });
+  };
+  return { handleMutation, loading };
+};
+
+const useUpdateTask = () => {
+  const [updateTask, { loading }] = useMutation(UPDATE_TASK, {
+    refetchQueries: () => [
+      'getPerStatusTaskCountForMilestone',
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+    ],
+  });
+  const handleMutation = ({ input, board, handleClose, existingTask }) => {
+    updateTask({
+      variables: {
+        taskId: existingTask?.id,
+        input,
+      },
+    }).then(({ data }) => {
+      const task = data?.updateTask;
+      if (board?.setColumns && onCorrectPage(existingTask, board)) {
+        const transformedTask = transformTaskToTaskCard(task, {});
+        let columns = [...board?.columns];
+        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+          columns = updateInReviewItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+          columns = updateInProgressTask(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_TODO) {
+          columns = updateTaskItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_DONE) {
+          columns = updateCompletedItem(transformedTask, columns);
+        }
+        board.setColumns(columns);
+      }
+      handleClose();
+    });
+  };
+  return { handleMutation, loading };
+};
+
+const useUpdateMilestone = () => {
+  const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
+  const handleMutation = ({ input, board, handleClose, existingTask }) => {
+    updateMilestone({
+      variables: {
+        milestoneId: existingTask?.id,
+        input,
+      },
+    }).then(({ data }) => {
+      const milestone = data?.updateMilestone;
+      if (board?.setColumns && onCorrectPage) {
+        const transformedTask = transformTaskToTaskCard(milestone, {});
+        let columns = [...board?.columns];
+        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+          columns = updateInReviewItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+          columns = updateInProgressTask(transformedTask, columns);
+          //if there's no entityType we assume it's the userBoard and keeping the old logic
+        } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
+          columns = updateTaskItem(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
+          columns = updateTaskItemOnEntityType(transformedTask, columns);
+        } else if (transformedTask.status === TASK_STATUS_DONE) {
+          columns = updateCompletedItem(transformedTask, columns);
+        }
+        board.setColumns(columns);
+      }
+      handleClose();
+    });
+  };
+  return { handleMutation, loading };
+};
+
+const useUpdateBounty = () => {
+  const [updateBounty, { loading }] = useMutation(UPDATE_BOUNTY, {
+    refetchQueries: () => [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+  const handleMutation = ({ input, existingTask, handleClose }) => {
+    updateBounty({
+      variables: {
+        bountyId: existingTask?.id,
+        input,
+      },
+    }).then(() => {
+      handleClose();
+    });
   };
   return { handleMutation, loading };
 };
@@ -508,7 +649,6 @@ const CreateEntityTextfieldInputPointsComponent = React.forwardRef(function Crea
   return (
     <CreateEntityTextfieldInputPoints
       {...props}
-      autoFocus={true}
       fullWidth={false}
       ref={ref}
       inputProps={{
@@ -555,7 +695,8 @@ const entityTypeData = {
       Fields.milestone,
       Fields.tags,
     ],
-    mutation: useCreateTask,
+    createMutation: useCreateTask,
+    updateMutation: useUpdateTask,
     initialValues: {
       orgId: null,
       podId: null,
@@ -564,7 +705,7 @@ const entityTypeData = {
       reviewerIds: null,
       assigneeId: null,
       dueDate: null,
-      rewards: null,
+      rewards: [],
       points: null,
       milestoneId: null,
       labelIds: null,
@@ -573,14 +714,14 @@ const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.reviewer, Fields.dueDate, Fields.points, Fields.tags],
-    mutation: useCreateMilestone,
+    fields: [Fields.dueDate, Fields.points, Fields.tags],
+    createMutation: useCreateMilestone,
+    updateMutation: useUpdateMilestone,
     initialValues: {
       orgId: null,
       podId: null,
       title: '',
       description: '',
-      reviewerIds: null,
       dueDate: null,
       points: null,
       labelIds: null,
@@ -590,7 +731,8 @@ const entityTypeData = {
   },
   [ENTITIES_TYPES.BOUNTY]: {
     fields: [Fields.reviewer, Fields.dueDate, Fields.points, Fields.tags],
-    mutation: useCreateBounty,
+    createMutation: useCreateBounty,
+    updateMutation: useUpdateBounty,
     initialValues: {
       orgId: null,
       podId: null,
@@ -608,9 +750,47 @@ const entityTypeData = {
 
 const TEXT_LIMIT = 900;
 
-export const CreateEntityModal = (props) => {
-  const { entityType, handleClose, resetEntityType, open, parentTaskId } = props;
-  const user = useMe();
+const useContextValue = (condition, callback) => {
+  useEffect(() => {
+    if (condition) {
+      callback();
+    }
+  }, [condition, callback]);
+};
+
+const initialValues = (entityType, existingTask = undefined) => {
+  const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
+  if (!existingTask) return defaultValues;
+  const defaultValuesKeys = Object.keys(defaultValues);
+  const existingTaskValues = _.pick(
+    {
+      ...existingTask,
+      mediaUploads: existingTask?.media?.map(({ name, type, slug }) => {
+        return { name, type, uploadSlug: slug };
+      }),
+      reviewerIds: _.isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
+      rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
+        return { rewardAmount, paymentMethodId };
+      }),
+      labelIds: _.isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
+    },
+    defaultValuesKeys
+  );
+  const initialValues = _.assignWith(defaultValues, existingTaskValues, (objValue, srcValue) => {
+    return _.isNull(srcValue) || _.isUndefined(srcValue) ? objValue : srcValue;
+  });
+  return initialValues;
+};
+
+interface ICreateEntityModal {
+  entityType: string;
+  handleClose: Function;
+  cancel: Function;
+  existingTask?: {};
+}
+
+export const CreateEntityModal = (props: ICreateEntityModal) => {
+  const { entityType, handleClose, cancel, existingTask } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -618,6 +798,8 @@ export const CreateEntityModal = (props) => {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const router = useRouter();
+  const { podId: routerPodId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -627,9 +809,11 @@ export const CreateEntityModal = (props) => {
     : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
-  const { handleMutation, loading } = entityTypeData[entityType]?.mutation();
+  const { handleMutation, loading } = existingTask
+    ? entityTypeData[entityType]?.updateMutation()
+    : entityTypeData[entityType]?.createMutation();
   const form = useFormik({
-    initialValues: entityTypeData[entityType]?.initialValues,
+    initialValues: initialValues(entityType, existingTask),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
@@ -638,11 +822,11 @@ export const CreateEntityModal = (props) => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = getMentionArray(values.description);
       const points = parseInt(values.points);
-      const rewards = values.rewards && [
-        { ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) },
-      ];
+      const rewards = _.isEmpty(values.rewards)
+        ? []
+        : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
       const input = { ...values, reviewerIds, points, rewards, timezone, userMentions };
-      handleMutation(input, board, pods, form, handleClose);
+      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -652,76 +836,55 @@ export const CreateEntityModal = (props) => {
   const handleCreateLabel = useCreateLabel(form.values.orgId, (newLabelId) =>
     form.setFieldValue('labelIds', [...form.values.labelIds, newLabelId])
   );
-  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
+  const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
-
   const handleOnchangePodId = useCallback(
     (podId) => {
       const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
       const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
+      const resetValues = initialValues(entityType);
       form.setValues({
         ...form.values,
-        reviewerIds: form.initialValues?.reviewerIds,
-        assigneeId: form.initialValues?.assigneeId,
-        rewards: form.initialValues?.rewards,
-        milestoneId: form.initialValues?.milestoneId,
+        reviewerIds: resetValues?.reviewerIds,
+        assigneeId: resetValues?.assigneeId,
+        rewards: resetValues?.rewards,
+        milestoneId: resetValues?.milestoneId,
         privacyLevel,
         podId,
       });
       form.setErrors({});
     },
-    [form, pods]
+    [entityType, form, pods]
   );
-
-  const router = useRouter();
-  const { podId: routerPodId } = router.query;
-  useEffect(() => {
-    if (open) {
-      if (router?.pathname.includes('/dashboard') && !form.values.orgId && filteredDaoOptions[0]?.value) {
-        form.setFieldValue('orgId', filteredDaoOptions[0]?.value);
-      }
-      if (
-        fetchedUserPermissionsContext &&
-        board?.orgId in fetchedUserPermissionsContext?.orgPermissions &&
-        !form.values.orgId
-      ) {
-        // If you're only part of one dao then just set that as default
-        // TODO: if you are part of the org and you're on that page it should be create on that org
-
-        form.setFieldValue('orgId', board?.orgId);
-      }
-
-      if (
-        form.values.orgId &&
-        pods &&
-        fetchedUserPermissionsContext &&
-        board?.podId in fetchedUserPermissionsContext?.podPermissions &&
-        !form.values.podId
-      ) {
-        // If you're only part of one dao then just set that as default
-        // TODO: if you are part of the org and you're on that page it should be create on that org
-        handleOnchangePodId(board?.podId || routerPodId);
-      }
-    }
-  }, [
-    board?.orgId,
-    fetchedUserPermissionsContext,
-    board?.podId,
-    form.values.orgId,
-    form.values.podId,
-    open,
-    routerPodId,
-    form,
-    filteredDaoOptions,
-    router,
-    handleOnchangePodId,
-    pods,
-  ]);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
   const [fullScreen, setFullScreen] = useState(false);
+  useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
+    form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
+  );
+  useContextValue(
+    !form.values.orgId &&
+      hasCreateTaskPermission({
+        userPermissionsContext: fetchedUserPermissionsContext,
+        orgId: board?.orgId,
+      }),
+    () => form.setFieldValue('orgId', board?.orgId)
+  );
+  useContextValue(
+    !form.values.podId &&
+      (board?.podId || routerPodId) &&
+      form.values.orgId &&
+      !existingTask &&
+      pods &&
+      hasCreateTaskPermission({
+        userPermissionsContext: fetchedUserPermissionsContext,
+        orgId: form.values.orgId,
+        podId: board?.podId,
+      }),
+    () => handleOnchangePodId(board?.podId || routerPodId)
+  );
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
@@ -753,12 +916,10 @@ export const CreateEntityModal = (props) => {
           {form.values.orgId !== null && (
             <>
               <CreateEntityHeaderArrowIcon />
-              <CreateEntityDropdown
-                name="podId"
+              <CreateEntityPodSearch
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
-                onChange={handleOnchangePodId}
                 value={form.values.podId}
-                DefaultImageComponent={CreateEntityDefaultPodImage}
+                onChange={handleOnchangePodId}
               />
             </>
           )}
@@ -837,7 +998,7 @@ export const CreateEntityModal = (props) => {
             {form.values?.reviewerIds?.map((reviewerId, index) => {
               const hasError = form.errors?.reviewerIds?.[index];
               return (
-                <CreateEntitySelectErrorWrapper key={reviewerId}>
+                <CreateEntitySelectErrorWrapper key={index}>
                   <CreateEntityAutocompletePopper
                     onFocus={() => form.setFieldError('reviewerIds', undefined)}
                     openOnFocus={true}
@@ -855,7 +1016,6 @@ export const CreateEntityModal = (props) => {
                             ...params.inputProps,
                             value: reviewer?.label,
                           }}
-                          autoFocus={true}
                           ref={params.InputProps.ref}
                           disableUnderline={true}
                           fullWidth={true}
@@ -923,8 +1083,8 @@ export const CreateEntityModal = (props) => {
               placement="top"
             >
               <CreateEntityLabelAddButton
-                disabled={form.values.reviewerIds?.length >= filteredEligibleReviewers.length}
                 onClick={() => {
+                  if (form.values.reviewerIds?.length >= filteredEligibleReviewers.length) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
@@ -964,7 +1124,6 @@ export const CreateEntityModal = (props) => {
                           ...params.inputProps,
                           value: assignee?.label,
                         }}
-                        autoFocus={true}
                         ref={params.InputProps.ref}
                         disableUnderline={true}
                         fullWidth={true}
@@ -1043,6 +1202,9 @@ export const CreateEntityModal = (props) => {
                 setRecurrenceValue={setRecurrenceValue}
                 hideRecurring={false}
                 handleClose={() => form.setFieldValue('dueDate', null)}
+                value={form.values.dueDate}
+                recurrenceType={recurrenceType}
+                recurrenceValue={recurrenceValue}
               />
             )}
             {form.values.dueDate === null && (
@@ -1063,11 +1225,11 @@ export const CreateEntityModal = (props) => {
             <CreateEntityLabel>Reward</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            {form.values.rewards !== null && (
+            {form.values.rewards?.length > 0 && (
               <CreateEntityRewardWrapper>
                 <CreateEntityPaymentMethodSelect
                   name="rewards-payment-method"
-                  value={form.values?.rewards?.[0].paymentMethodId}
+                  value={form.values?.rewards?.[0]?.paymentMethodId}
                   onChange={(value) => {
                     form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
                   }}
@@ -1100,29 +1262,28 @@ export const CreateEntityModal = (props) => {
                   placeholder="Enter rewards..."
                   value={form.values?.rewards?.[0]?.rewardAmount}
                   fullWidth={true}
-                  autoFocus={true}
                   InputProps={{
                     inputComponent: CreateEntityTextfieldInputRewardComponent,
                     endAdornment: (
                       <CreateEntityAutocompletePopperRenderInputAdornment
                         position="end"
                         onClick={() => {
-                          form.setFieldValue('rewards', null);
+                          form.setFieldValue('rewards', []);
                         }}
                       >
                         <CreateEntityAutocompletePopperRenderInputIcon />
                       </CreateEntityAutocompletePopperRenderInputAdornment>
                     ),
                   }}
-                  error={form.errors?.rewards?.[0].rewardAmount}
+                  error={form.errors?.rewards?.[0]?.['rewardAmount']}
                   onFocus={() => form.setFieldError('rewards', undefined)}
                 />
               </CreateEntityRewardWrapper>
             )}
-            {form.touched.rewards && form.errors.rewards && (
-              <CreateEntityError>{form.errors.rewards[0].rewardAmount}</CreateEntityError>
+            {form.touched.rewards && form.errors?.rewards?.[0]?.['rewardAmount'] && (
+              <CreateEntityError>{form.errors?.rewards?.[0]?.['rewardAmount']}</CreateEntityError>
             )}
-            {form.values.rewards === null && (
+            {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
                 onClick={() => {
                   form.setFieldValue('rewards', [{ rewardAmount: null, paymentMethodId: paymentMethods?.[0]?.id }]);
@@ -1191,76 +1352,21 @@ export const CreateEntityModal = (props) => {
 
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
-              <CreateEntitySelectErrorWrapper>
-                <CreateEntityAutocompletePopper
-                  openOnFocus={true}
-                  options={filterUserOptions(milestonesData?.getMilestones)}
-                  value={form.values.milestoneId}
-                  isOptionEqualToValue={(option, value) => {
-                    return option.id === value;
-                  }}
-                  onOpen={() =>
-                    getMilestones({
-                      variables: {
-                        orgId: form.values.orgId,
-                        podId: form.values.podId,
-                      },
-                    })
-                  }
-                  renderInput={(params) => {
-                    const milestone = filterUserOptions(milestonesData?.getMilestones).find(
-                      (milestone) => milestone.id === form.values.milestoneId
-                    );
-                    return (
-                      <CreateEntityAutocompletePopperRenderInput
-                        {...params}
-                        inputProps={{
-                          ...params.inputProps,
-                          value: milestone?.label,
-                        }}
-                        autoFocus={true}
-                        ref={params.InputProps.ref}
-                        disableUnderline={true}
-                        fullWidth={true}
-                        name="milestone"
-                        placeholder="Enter milestone..."
-                        endAdornment={
-                          <CreateEntityAutocompletePopperRenderInputAdornment
-                            position="end"
-                            onClick={() => {
-                              form.setFieldValue('milestoneId', null);
-                            }}
-                          >
-                            <CreateEntityAutocompletePopperRenderInputIcon />
-                          </CreateEntityAutocompletePopperRenderInputAdornment>
-                        }
-                      />
-                    );
-                  }}
-                  renderOption={(props, option, state) => {
-                    return (
-                      <CreateEntityAutocompleteOption
-                        {...props}
-                        onClick={() => {
-                          if (form.values.milestoneId?.id !== option.id) {
-                            form.setFieldValue('milestoneId', option.id);
-                          }
-                        }}
-                      >
-                        {option?.profilePicture ? <SafeImage src={option?.profilePicture} /> : <div />}
-                        <CreateEntityAutocompleteOptionTypography>
-                          {option?.label}
-                        </CreateEntityAutocompleteOptionTypography>
-                      </CreateEntityAutocompleteOption>
-                    );
-                  }}
-                />
-              </CreateEntitySelectErrorWrapper>
+              <CreateEntityMilestoneSearch
+                options={filterUserOptions(milestonesData)}
+                value={form.values.milestoneId}
+                onChange={(milestoneId) => {
+                  form.setFieldValue('milestoneId', milestoneId);
+                }}
+                handleClose={() => {
+                  form.setFieldValue('milestoneId', null);
+                }}
+              />
             )}
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('milestoneId', filterUserOptions(milestonesData?.getMilestones)?.[0]?.id);
+                  form.setFieldValue('milestoneId', '');
                 }}
               >
                 <CreateEntityAddButtonIcon />
@@ -1338,9 +1444,11 @@ export const CreateEntityModal = (props) => {
             <CircularProgress size={20} />
           ) : (
             <>
-              <CreateEntityCancelButton onClick={resetEntityType}>Cancel</CreateEntityCancelButton>
+              <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
               <CreateEntitySelectErrorWrapper>
-                <CreateEntityCreateTaskButton type="submit">Create {entityType}</CreateEntityCreateTaskButton>
+                <CreateEntityCreateTaskButton type="submit">
+                  {existingTask ? `Edit` : `Create`} {entityType}
+                </CreateEntityCreateTaskButton>
                 {!_.isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>
             </>

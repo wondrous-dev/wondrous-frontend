@@ -1,6 +1,12 @@
-export const SubtaskLightIcon = ({ stroke = '#C4C4C4', fill = '#353535' }) => {
+export const SubtaskLightIcon = ({
+  stroke = '#C4C4C4',
+  fill = '#353535',
+  width = '25',
+  height = '25',
+  viewBox = '0 0 25 25',
+}) => {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="none" viewBox="0 0 25 25">
+    <svg xmlns="http://www.w3.org/2000/svg" width={width} height={height} fill="none" viewBox={viewBox}>
       <path fill={fill} d="M.354 4.756a4 4 0 014-4h16a4 4 0 014 4v16a4 4 0 01-4 4h-16a4 4 0 01-4-4v-16z"></path>
       <path
         stroke={stroke}

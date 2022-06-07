@@ -97,6 +97,31 @@ const useGetPodTaskBoardTasks = ({
       console.log(error);
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
+
+  const fetchPerStatus = async (status, limit) => {
+    const column = columns?.find((column) => column.status === status);
+    const fetchMoreVariables = {
+      ...variables,
+      input: {
+        ...variables.input,
+        offset: column?.tasks?.length,
+        statuses: [status],
+        ...(limit ? { limit } : {}),
+      },
+    };
+
+    fetchMore({
+      variables: fetchMoreVariables,
+      updateQuery: (prev, { fetchMoreResult }) => {
+        return {
+          getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  };
+
   useEffect(() => {
     if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && !userId) {
       const taskBoardStatuses =
@@ -125,7 +150,7 @@ const useGetPodTaskBoardTasks = ({
       setPodTaskHasMore(true);
     }
   }, [getPodTaskBoardTasks, podId, statuses, setPodTaskHasMore, entityType, labelId, date, privacyLevel]);
-  return { fetchMore: getPodTaskBoardTasksFetchMore };
+  return { fetchMore: getPodTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
 const useGetPodTaskProposals = ({
@@ -246,8 +271,8 @@ const useGetPodTaskBoard = ({
       privacyLevel,
     }),
   };
-  const { fetchMore } = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
-  return { fetchMore };
+  const { fetchMore, fetchPerStatus }: any = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
+  return { fetchMore, fetchPerStatus };
 };
 
 const BoardsPage = () => {
@@ -279,7 +304,7 @@ const BoardsPage = () => {
 
   const { statuses, labelId, date, privacyLevel } = filters;
 
-  const { fetchMore } = useGetPodTaskBoard({
+  const { fetchMore, fetchPerStatus } = useGetPodTaskBoard({
     section,
     view: activeView,
     columns,
@@ -303,6 +328,10 @@ const BoardsPage = () => {
     insertUrlParam('entity', type);
     setEntityType(type);
     setFilters({});
+    if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
+      setActiveView(ViewType.Grid);
+      insertUrlParam('view', ViewType.Grid);
+    }
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
@@ -572,6 +601,9 @@ const BoardsPage = () => {
         setEntityType: handleEntityTypeChange,
         user: getUserData?.getUser,
         deleteUserIdFilter,
+        fetchPerStatus,
+        activeView,
+        setActiveView,
       }}
     >
       <Boards
