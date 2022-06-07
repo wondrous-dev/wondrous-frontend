@@ -24,6 +24,7 @@ import Item from './Item';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
 import { ShowMoreButton } from './styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -58,7 +59,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         }}
         open={isCreateTaskModalOpen}
       >
-        <CreateLayoutBaseModal
+        <CreateEntityModal
           entityType={ENTITIES_TYPES.TASK}
           handleClose={() => setCreateTaskModalOpen(false)}
           resetEntityType={() => {}}

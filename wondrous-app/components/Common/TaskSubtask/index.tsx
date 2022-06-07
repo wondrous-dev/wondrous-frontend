@@ -1,3 +1,4 @@
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import CreateLayoutBaseModal from '../../CreateEntity/createEntityModal';
@@ -16,7 +17,7 @@ export const TaskSubtasks = ({ taskId, permissions }) => {
   return (
     <>
       <CreateModalOverlay open={createFormModal} onClose={toggleCreateFormModal}>
-        <CreateLayoutBaseModal
+        <CreateEntityModal
           entityType={ENTITIES_TYPES.TASK}
           open={createFormModal}
           handleClose={toggleCreateFormModal}

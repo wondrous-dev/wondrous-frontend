@@ -37,6 +37,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
 
 interface ITaskColumn {
   cardsList: Array<any>;
@@ -133,7 +134,7 @@ const TaskColumn = (props: ITaskColumn) => {
         open={openTaskModal}
         onClose={() => setOpenTaskModal(false)}
       >
-        <CreateLayoutBaseModal
+        <CreateEntityModal
           entityType={ENTITIES_TYPES.TASK}
           handleClose={() => setOpenTaskModal(false)}
           resetEntityType={() => {}}
