@@ -757,7 +757,7 @@ const useContextValue = (condition, callback) => {
   }, [condition, callback]);
 };
 
-const initialValues = (entityType, existingTask) => {
+const initialValues = (entityType, existingTask = undefined) => {
   const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
@@ -841,13 +841,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     (podId) => {
       const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
       const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
-      const initialValues = _.cloneDeep(entityTypeData[entityType].initialValues);
+      const resetValues = initialValues(entityType);
       form.setValues({
         ...form.values,
-        reviewerIds: initialValues?.reviewerIds,
-        assigneeId: initialValues?.assigneeId,
-        rewards: initialValues?.rewards,
-        milestoneId: initialValues?.milestoneId,
+        reviewerIds: resetValues?.reviewerIds,
+        assigneeId: resetValues?.assigneeId,
+        rewards: resetValues?.rewards,
+        milestoneId: resetValues?.milestoneId,
         privacyLevel,
         podId,
       });
