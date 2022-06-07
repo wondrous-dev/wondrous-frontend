@@ -359,7 +359,7 @@ const useGetMilestones = (orgId, podId) => {
         podId,
       },
     });
-  }, []);
+  }, [getMilestones, orgId, podId]);
   return data?.getMilestones;
 };
 
