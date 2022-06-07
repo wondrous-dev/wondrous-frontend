@@ -102,7 +102,7 @@ export const CreateEntitySelectRoot = styled.button`
   border-radius: 4px;
   background: #1f1f1f;
   border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
-  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
+  outline: 1px solid ${({ error }) => (error ? palette.red400 : 'transparent')};
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -434,7 +434,7 @@ export const CreateEntityTextfieldInputLabel = styled(Typography)`
 export const CreateEntityAutocomplete = styled(Autocomplete)`
   background: #141414;
   border-radius: 4px;
-  outline: 1px solid ${({ error }) => (error ? Red400 : 'transparent')};
+  outline: 1px solid ${({ error }) => (error ? palette.red400 : 'transparent')};
   :focus-within {
     outline: 1px solid #7a7a7a;
   }
