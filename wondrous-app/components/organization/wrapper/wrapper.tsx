@@ -410,7 +410,7 @@ const Wrapper = (props) => {
                 </HeaderActivity>
               </TokenHeader>
               <Tabs>
-                <BoardsSubheaderWrapper>
+                <BoardsSubheaderWrapper className={search ? 'searchView' : ''}>
                   {orgBoard?.setEntityType && !search && (
                     <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
                   )}
