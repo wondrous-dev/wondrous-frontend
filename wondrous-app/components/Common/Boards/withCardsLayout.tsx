@@ -13,7 +13,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 let windowOffset = 0;
 
 export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
-  return function Wrapper({ columns = [], onLoadMore = () => {}, hasMore, setColumns, activeView }) {
+  return function Wrapper({ columns = [], onLoadMore = () => {}, hasMore, setColumns, activeView, ...rest }) {
     const router = useRouter();
     const [ref, inView] = useInView({});
     const location = useLocation();

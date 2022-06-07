@@ -148,10 +148,11 @@ export const SettingsWrapper = (props) => {
       page: [SettingsPage.Org],
     },
     {
-      icon: <WrenchIcon width={40} height={40} />,
-      label: 'Integrations',
+      icon: <GeneralSettingsIcon width={40} height={40} />,
+      label: 'Integrations Settings',
       value: 'integrations',
       href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <CardIcon width={40} height={40} />,
@@ -297,7 +298,7 @@ export const SettingsWrapper = (props) => {
                 <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
                 <SettingsSidebarTabsListContainer>
                   {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                    if (!item.page.includes(activeSettingsPage.page)) return null;
+                    if (!item.page?.includes(activeSettingsPage.page)) return null;
                     const { href, icon, label } = item;
                     const pathnameSplit = pathname.split('/');
                     const hrefSplit = href.split('/');

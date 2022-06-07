@@ -327,7 +327,9 @@ const Wrapper = (props) => {
                     )}
                     <ToggleBoardPrivacyIcon
                       isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public'}
+                      tooltipTitle={
+                        podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public'
+                      }
                     />
 
                     {permissions === null && (
@@ -386,7 +388,7 @@ const Wrapper = (props) => {
               </TokenHeader>
 
               <Tabs page="pod">
-                <BoardsSubheaderWrapper>
+                <BoardsSubheaderWrapper className={search ? 'searchView' : ''}>
                   {podBoard?.setEntityType && !search && (
                     <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
                   )}
