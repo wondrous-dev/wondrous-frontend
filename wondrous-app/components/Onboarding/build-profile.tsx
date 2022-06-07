@@ -2,8 +2,6 @@ import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxWrapper,
-  LogoDiv,
-  LogoText,
   StyledHr,
   OnboardingTitle,
   ContinueButton,
@@ -11,8 +9,14 @@ import {
   UsernameDescription,
   UsernameInput,
   ProfilePictureDiv,
+  LaterButton,
+  RemovePicture,
+  RemovePictureDiv,
+  ActionButtons,
+  BackButton,
+  RightButtons,
+  LeftButtons, RemovePictureBtn,
 } from './styles';
-import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 
 import { useRouter } from 'next/router';
@@ -23,17 +27,10 @@ import { HighlightBlue } from '../../theme/colors';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { SafeImage } from '../Common/Image';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
+import { Logo } from 'components/Onboarding/wonderLogo';
+import LeftArrowIcon from 'components/Icons/leftArrow';
 
-export const Logo = ({ divStyle }) => {
-  return (
-    <LogoDiv style={divStyle}>
-      <WonderLogo />
-      <LogoText>Wonder</LogoText>
-    </LogoDiv>
-  );
-};
-
-export const InviteWelcomeBox = ({ updateUser }) => {
+export const InviteWelcomeBox = ({ updateUser, props }) => {
   const router = useRouter();
   const [bio, setBio] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -77,12 +74,20 @@ export const InviteWelcomeBox = ({ updateUser }) => {
     right: '0',
   };
 
+  const buttonStyleLater = {
+    position: 'relative',
+    marginTop: '24px',
+    bottom: '0',
+    right: '0',
+  };
+
   useEffect(() => {
     if (user?.profilePicture) {
       setImage(user?.profilePicture);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.profilePicture]);
+  // @ts-ignore
   return (
     <InviteWelcomeBoxWrapper>
       <Logo
@@ -104,7 +109,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       <OnboardingTitle
         style={{
           textAlign: 'left',
-          marginTop: '36px',
+          marginTop: '45px',
           width: '100%',
         }}
       >
@@ -119,7 +124,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
         Set up your account so you can begin contributing.
       </InviteWelcomeBoxParagraph>
       <UsernameTitle>Enter your bio</UsernameTitle>
-      <UsernameDescription>A sentence or two about you.</UsernameDescription>
+      <UsernameDescription>Who are you, what do you do in 1 sentence.</UsernameDescription>
       <UsernameInput
         type="text"
         name="username"
@@ -134,7 +139,7 @@ export const InviteWelcomeBox = ({ updateUser }) => {
       />
       <UsernameTitle
         style={{
-          marginTop: '28px',
+          marginTop: '41px',
           display: 'flex',
         }}
       >
@@ -165,6 +170,13 @@ export const InviteWelcomeBox = ({ updateUser }) => {
             }}
           />
           <input type="file" hidden ref={inputRef} onChange={handleFile} />
+          <RemovePictureBtn
+            onClick={() => {
+              setImage('');
+            }}
+          >
+            Remove
+          </RemovePictureBtn>
         </ProfilePictureDiv>
       ) : (
         <>
@@ -184,36 +196,63 @@ export const InviteWelcomeBox = ({ updateUser }) => {
           <input type="file" hidden ref={inputRef} onChange={handleFile} />
         </>
       )}
-      <div
-        style={{
-          width: '100%',
-          justifyContent: 'end',
-          display: 'flex',
-        }}
-      >
-        <ContinueButton
-          style={buttonStyle}
-          onClick={() =>
-            updateUser({
-              variables: {
-                input: {
-                  bio,
+      <StyledHr />
+      <ActionButtons>
+        <LeftButtons>
+          <BackButton
+            style={{
+              width: '40px',
+              height: '40px',
+            }}
+            onClick={() => {
+              router.push('/onboarding/welcome', undefined, {
+                shallow: true,
+              });
+            }}
+          >
+            <LeftArrowIcon></LeftArrowIcon>
+          </BackButton>
+        </LeftButtons>
+        <RightButtons>
+          <LaterButton
+            style={buttonStyleLater}
+            onClick={() =>
+              router.push('/onboarding/welcome', undefined, {
+                shallow: true,
+              })
+            }
+            buttonInnerStyle={{
+              padding: '8px 30px',
+              background: '#232323',
+              border: '2px solid #232323',
+            }}
+          >
+            <InviteWelcomeBoxParagraph>Later</InviteWelcomeBoxParagraph>
+          </LaterButton>
+          <ContinueButton
+            style={buttonStyle}
+            onClick={() =>
+              updateUser({
+                variables: {
+                  input: {
+                    bio,
+                  },
                 },
-              },
-              onCompleted: () => {
-                router.push('/onboarding/connect-discord', undefined, {
-                  shallow: true,
-                });
-              },
-            })
-          }
-          buttonInnerStyle={{
-            padding: '8px 16px',
-          }}
-        >
-          <InviteWelcomeBoxParagraph>Continue</InviteWelcomeBoxParagraph>
-        </ContinueButton>
-      </div>
+                onCompleted: () => {
+                  router.push('/onboarding/connect-discord', undefined, {
+                    shallow: true,
+                  });
+                },
+              })
+            }
+            buttonInnerStyle={{
+              padding: '8px 38px',
+            }}
+          >
+            <InviteWelcomeBoxParagraph>Continue</InviteWelcomeBoxParagraph>
+          </ContinueButton>
+        </RightButtons>
+      </ActionButtons>
     </InviteWelcomeBoxWrapper>
   );
 };

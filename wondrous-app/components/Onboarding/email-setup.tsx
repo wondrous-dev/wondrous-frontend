@@ -3,8 +3,6 @@ import { useMutation } from '@apollo/client';
 import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxWrapper,
-  LogoDiv,
-  LogoText,
   StyledHr,
   OnboardingTitle,
   ContinueButton,
@@ -15,24 +13,15 @@ import {
   ErrorText,
   LaterButton,
 } from './styles';
-import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 
 import { useRouter } from 'next/router';
 
-import { ThirdStep } from 'components/Common/Image/OnboardingProgressBar';
+import { FourthStep, ThirdStep } from 'components/Common/Image/OnboardingProgressBar';
 import { CircularProgress } from '@material-ui/core';
 import { StyledCancelButton } from '../Common/ArchiveTaskModal/styles';
 import { validateEmail } from 'utils/constants';
 import { SET_USER_SIGNUP_COMPLETE } from 'graphql/mutations';
-
-export const Logo = ({ divStyle }) => {
-  return (
-    <LogoDiv style={divStyle}>
-      <WonderLogo />
-      <LogoText>Wonder</LogoText>
-    </LogoDiv>
-  );
-};
+import { Logo } from 'components/Onboarding/wonderLogo';
 
 export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
   const [email, setEmail] = useState('');
@@ -63,8 +52,12 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
           marginBottom: '26px',
         }}
       />
-      <StyledHr />
-      <ThirdStep
+      <StyledHr
+        style={{
+          marginBottom: '26px',
+        }}
+      />
+      <FourthStep
         style={{
           width: '100%',
           marginTop: '24px',
@@ -83,9 +76,13 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
         style={{
           textAlign: 'left',
           width: '100%',
+          // marginBottom: '35px',
+          fontSize: '15px',
+          lineHeight: '19px',
+          fontWeight: '400',
         }}
       >
-        Get updates on your tasks and payments.
+        Set up your accounts so you can begin contributing.
       </InviteWelcomeBoxParagraph>
       <UsernameTitle
         style={{
@@ -105,6 +102,24 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
         }}
         placeholder="Enter your best email"
         required
+      />
+      {/*<InviteWelcomeBoxParagraph*/}
+      {/*  style={{*/}
+      {/*    textAlign: 'left',*/}
+      {/*    width: '100%',*/}
+      {/*    marginTop: '24px',*/}
+      {/*    color: '#C4C4C4',*/}
+      {/*    fontSize: '14px',*/}
+      {/*    fontWeight: '400',*/}
+      {/*    fontHeight: '18px',*/}
+      {/*  }}*/}
+      {/*>*/}
+      {/*  Get updated on your tasks & payments.*/}
+      {/*</InviteWelcomeBoxParagraph>*/}
+      <StyledHr
+        style={{
+          marginTop: '180px',
+        }}
       />
       {error && <ErrorText>{error}</ErrorText>}
       {loading ? (
@@ -144,7 +159,7 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
               fontFamily: 'Space Grotesk',
             }}
           >
-            Skip
+            Later
           </LaterButton>
           <ContinueButton
             style={buttonStyle}
@@ -167,7 +182,7 @@ export const InviteWelcomeBox = ({ updateUser, firstOrg, firstPod }) => {
               padding: '8px 16px',
             }}
           >
-            <InviteWelcomeBoxParagraph>Finish</InviteWelcomeBoxParagraph>
+            <InviteWelcomeBoxParagraph>Continue</InviteWelcomeBoxParagraph>
           </ContinueButton>
         </div>
       )}
