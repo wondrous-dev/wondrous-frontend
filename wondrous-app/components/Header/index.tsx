@@ -1,10 +1,12 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
+
 import Box from '@mui/material/Box';
 
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
+import { useIsMobile } from 'utils/hooks';
 
 import Wallet from 'components/Common/Wallet';
 import { useMe } from '../Auth/withAuth';
@@ -13,7 +15,6 @@ import { Button } from 'components/Common/button';
 import NotificationsBoard from 'components/Notifications';
 import Tooltip from 'components/Tooltip';
 import HomeIcon from 'components/Icons/home';
-import { useIsMobile } from 'utils/hooks';
 
 import {
   Header,
