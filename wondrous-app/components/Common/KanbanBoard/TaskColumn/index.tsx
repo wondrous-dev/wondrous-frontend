@@ -35,9 +35,7 @@ import { useMe } from '../../../Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import { CreateEntity } from 'components/CreateEntity';
 
 interface ITaskColumn {
   cardsList: Array<any>;
@@ -127,21 +125,13 @@ const TaskColumn = (props: ITaskColumn) => {
         width: taskColumnWidth,
       }}
     >
-      <CreateModalOverlay
-        style={{
-          height: '95vh',
-        }}
+      <CreateEntity
+        entityType={ENTITIES_TYPES.TASK}
+        handleClose={() => setOpenTaskModal(false)}
+        cancel={() => setOpenTaskModal(false)}
         open={openTaskModal}
-        onClose={() => setOpenTaskModal(false)}
-      >
-        <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
-          handleClose={() => setOpenTaskModal(false)}
-          resetEntityType={() => {}}
-          setEntityType={() => {}}
-          cancel={() => setOpenTaskModal(false)}
-        />
-      </CreateModalOverlay>
+        handleCloseModal={() => setOpenTaskModal(false)}
+      />
 
       <TaskColumnContainerHeader>
         <HeaderIcon />

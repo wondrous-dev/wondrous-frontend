@@ -17,14 +17,12 @@ import {
 import { ChevronFilled } from 'components/Icons/sections';
 
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import Item from './Item';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
 import { ShowMoreButton } from './styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import { CreateEntity } from 'components/CreateEntity';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -52,21 +50,13 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
   const Icon = HEADER_ICONS[status];
   return (
     <>
-      <CreateModalOverlay
-        style={{
-          height: '95vh',
-        }}
+      <CreateEntity
+        entityType={ENTITIES_TYPES.TASK}
+        handleClose={() => setCreateTaskModalOpen(false)}
+        cancel={() => setCreateTaskModalOpen(false)}
         open={isCreateTaskModalOpen}
-        onClose={() => setCreateTaskModalOpen(false)}
-      >
-        <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
-          handleClose={() => setCreateTaskModalOpen(false)}
-          resetEntityType={() => {}}
-          setEntityType={() => {}}
-          cancel={() => setCreateTaskModalOpen(false)}
-        />
-      </CreateModalOverlay>
+        handleCloseModal={() => setCreateTaskModalOpen(false)}
+      />
 
       <Accordion expanded={isExpanded}>
         <ListViewItemHeader>
