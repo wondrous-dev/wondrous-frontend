@@ -41,7 +41,8 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
-  width: 129px;
+  min-width: 130px;
+  max-width: 250px;
   height: 32px;
   border-radius: 4px;
   background: #1f1f1f;
@@ -58,7 +59,6 @@ export const PodSearchButton = styled(ButtonUnstyled)`
 export const PodSearchImageLabelWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
   max-width: 100%;
   overflow: hidden;
 `;
@@ -208,13 +208,7 @@ export const PodSearchLabel = styled(Typography)`
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
-    max-width: 35ch;
-  }
-`;
-
-export const PodSearchLabelButton = styled(PodSearchLabel)`
-  && {
-    max-width: 5ch;
+    max-width: 100%;
   }
 `;
 
