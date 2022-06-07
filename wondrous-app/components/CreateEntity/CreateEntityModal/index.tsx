@@ -1273,13 +1273,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       </CreateEntityAutocompletePopperRenderInputAdornment>
                     ),
                   }}
-                  error={form.errors?.rewards?.[0]?.rewardAmount}
+                  error={form.errors?.rewards?.[0]?.['rewardAmount']}
                   onFocus={() => form.setFieldError('rewards', undefined)}
                 />
               </CreateEntityRewardWrapper>
             )}
-            {form.touched.rewards && form.errors?.rewards?.[0]?.rewardAmount && (
-              <CreateEntityError>{form.errors.rewards[0]?.rewardAmount}</CreateEntityError>
+            {form.touched.rewards && form.errors?.rewards?.[0]?.['rewardAmount'] && (
+              <CreateEntityError>{form.errors?.rewards?.[0]?.['rewardAmount']}</CreateEntityError>
             )}
             {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
