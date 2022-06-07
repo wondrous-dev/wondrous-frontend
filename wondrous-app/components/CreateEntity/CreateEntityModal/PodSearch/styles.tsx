@@ -41,7 +41,8 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
-  width: 129px;
+  min-width: 130px;
+  max-width: 250px;
   height: 32px;
   border-radius: 4px;
   background: #1f1f1f;
@@ -49,6 +50,7 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  text-align: left;
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -57,6 +59,8 @@ export const PodSearchButton = styled(ButtonUnstyled)`
 export const PodSearchImageLabelWrapper = styled.div`
   display: flex;
   align-items: center;
+  max-width: 100%;
+  overflow: hidden;
 `;
 
 export const PodSearchPopper = styled(PopperUnstyled)`
@@ -64,7 +68,6 @@ export const PodSearchPopper = styled(PopperUnstyled)`
   border-radius: 4px;
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
-  z-index: 9999;
   position: relative;
   z-index: 9999;
 `;
@@ -202,12 +205,25 @@ export const PodSearchLabel = styled(Typography)`
     font-weight: 500;
     color: ${White};
     margin-left: 6px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
   }
 `;
 
-export const PodSearchButtonArrowIcon = styled(Arrow)`
+export const PodSearchButtonArrowIcon = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
   transform: rotate(90deg);
-  path {
-    fill: #7a7a7a;
+  svg {
+    path {
+      fill: #7a7a7a;
+    }
   }
 `;

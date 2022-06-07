@@ -206,6 +206,10 @@ export const MilestoneSearchLabel = styled(Typography)`
     font-weight: 500;
     color: ${({ hasValue }) => (hasValue ? White : `#5e5e5e`)};
     margin-left: 6px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 35ch;
   }
 `;
 
@@ -252,7 +256,7 @@ export const MilestoneSearchCheckBoxEmpty = styled((props) => (
 
 export const MilestoneSearchCreateMilestoneButton = styled(ButtonUnstyled)`
   && {
-    background: transparent;
+    background: #1f1f1f;
     width: 100%;
     border: none;
     outline: none;

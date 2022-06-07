@@ -826,6 +826,8 @@ export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
   background-color: #1f1f1f;
   border: 1px solid #7a7a7a;
   z-index: 100;
+  overflow-y: auto;
+  ${scrollBarStyles}
 `;
 
 export const CreateEntityPaymentMethodSelect = (props) => {
