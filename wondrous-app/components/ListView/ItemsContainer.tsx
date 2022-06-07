@@ -24,6 +24,7 @@ import Item from './Item';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
 import { ShowMoreButton } from './styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -49,7 +50,6 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
   const itemTitle = LABELS_MAP[status] || '';
 
   const Icon = HEADER_ICONS[status];
-
   return (
     <>
       <CreateModalOverlay
@@ -57,13 +57,14 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
           height: '95vh',
         }}
         open={isCreateTaskModalOpen}
+        onClose={() => setCreateTaskModalOpen(false)}
       >
-        <CreateLayoutBaseModal
+        <CreateEntityModal
           entityType={ENTITIES_TYPES.TASK}
           handleClose={() => setCreateTaskModalOpen(false)}
           resetEntityType={() => {}}
           setEntityType={() => {}}
-          open={isCreateTaskModalOpen}
+          cancel={() => setCreateTaskModalOpen(false)}
         />
       </CreateModalOverlay>
 

@@ -15,7 +15,12 @@ import {
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
-import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
+import {
+  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
+  GET_ELIGIBLE_REVIEWERS_FOR_POD,
+  GET_MILESTONES,
+  GET_TASK_BY_ID,
+} from 'graphql/queries/task';
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -787,13 +792,17 @@ interface ICreateEntityModal {
   handleClose: Function;
   cancel: Function;
   existingTask?: {};
+  parentTaskId?: string;
+  resetEntityType?: Function;
+  setEntityType?: Function;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
-  const { entityType, handleClose, cancel, existingTask } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+  const isSubtask = parentTaskId !== undefined;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -804,6 +813,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     fetchPolicy: 'network-only',
   });
   const inputRef: any = useRef();
+  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -885,6 +895,22 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
+  useEffect(() => {
+    if (isSubtask) {
+      form.setFieldValue('parentTaskId', parentTaskId);
+      getTaskById({
+        variables: {
+          taskId: parentTaskId,
+        },
+      })
+        .then((data) => {
+          const task = data?.data?.getTaskById;
+          form.setFieldValue('orgId', task?.orgId);
+          form.setFieldValue('podId', task?.podId);
+        })
+        .catch((e) => console.error(e));
+    }
+  }, [parentTaskId, getTaskById, isSubtask]);
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
@@ -910,6 +936,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               DefaultImageComponent={CreateEntityDefaultDaoImage}
               error={form.errors.orgId}
               onFocus={() => form.setFieldError('orgId', undefined)}
+              disabled={isSubtask}
             />
             {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
           </CreateEntitySelectErrorWrapper>
