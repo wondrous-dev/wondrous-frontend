@@ -237,7 +237,7 @@ export const filterOrgUsers = (orgUsers) => {
 };
 
 const CreateLayoutBaseModal = (props) => {
-  const { entityType, handleClose, resetEntityType, open, parentTaskId } = props;
+  const { entityType, handleClose, cancel, open, parentTaskId } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState('');
@@ -968,7 +968,6 @@ const CreateLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
-  console.log('pods ->', pods);
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalHeaderWrapper>
@@ -1602,7 +1601,7 @@ const CreateLayoutBaseModal = (props) => {
       <CreateFormFooterButtons>
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={resetEntityType}>Cancel</CreateFormCancelButton>
+          <CreateFormCancelButton onClick={cancel}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton
             style={{
               ...(isPod &&

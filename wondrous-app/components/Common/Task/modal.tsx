@@ -85,7 +85,6 @@ import {
   TokenIcon,
 } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
@@ -155,6 +154,7 @@ import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { CreateEntity } from 'components/CreateEntity';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1062,36 +1062,28 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
   if (editTask) {
     return (
-      <>
-        <CreateModalOverlay
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          open={open}
-          onClose={() => {
-            setEditTask(false);
-            setFetchedTask(null);
-            handleClose();
-          }}
-        >
-          <EditLayoutBaseModal
-            open={open}
-            entityType={entityType}
-            handleClose={() => {
-              setEditTask(false);
-              setFetchedTask(null);
-              handleClose();
-            }}
-            cancelEdit={() => setEditTask(false)}
-            existingTask={
-              fetchedTask && {
-                ...fetchedTask,
-                reviewers: reviewerData?.getTaskReviewers || [],
-              }
-            }
-            isTaskProposal={isTaskProposal}
-          />
-        </CreateModalOverlay>
-      </>
+      <CreateEntity
+        open={open}
+        handleCloseModal={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        entityType={entityType}
+        handleClose={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        cancel={() => setEditTask(false)}
+        existingTask={
+          fetchedTask && {
+            ...fetchedTask,
+            reviewers: reviewerData?.getTaskReviewers || [],
+          }
+        }
+        isTaskProposal={isTaskProposal}
+      />
     );
   }
 
@@ -1345,8 +1337,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <Tooltip title="Task" placement="top">
                       <span>
                         <TaskIconWrapper>
-                        <CheckedBoxIcon />
-                      </TaskIconWrapper>
+                          <CheckedBoxIcon />
+                        </TaskIconWrapper>
                       </span>
                     </Tooltip>
                   </Link>

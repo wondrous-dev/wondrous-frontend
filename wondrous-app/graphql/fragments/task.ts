@@ -75,6 +75,7 @@ export const TaskFragment = gql`
       periodic
     }
     maxSubmissionCount
+    points
   }
   ${MediaFragment}
 `;
@@ -130,6 +131,7 @@ export const TaskCardFragment = gql`
     completedSubtaskCount
     totalSubmissionsCount
     approvedSubmissionsCount
+    points
   }
   ${MediaFragment}
 `;

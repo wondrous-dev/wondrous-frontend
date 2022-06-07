@@ -13,7 +13,7 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { logout, useMe } from '../Auth/withAuth';
-import CreateFormModal from '../CreateEntity';
+import ChooseEntityToCreate from '../CreateEntity';
 import HeaderComponent from '../Header';
 import ExitIcon from 'components/Icons/exit';
 import CardIcon from '../Icons/card';
@@ -39,7 +39,7 @@ import {
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
-  ArchivedPodIndicatorText
+  ArchivedPodIndicatorText,
 } from './styles';
 
 const SIDEBAR_LIST_ITEMS = [
@@ -278,7 +278,7 @@ export const SettingsWrapper = (props) => {
       >
         <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
         <SideBarComponent />
-        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <SettingsContainer>
           <SettingsSidebar>
             <SettingsSidebarContainer>
