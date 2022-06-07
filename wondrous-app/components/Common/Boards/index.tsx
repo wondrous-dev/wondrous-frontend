@@ -68,10 +68,11 @@ const Boards = (props: Props) => {
     }
     return view ? (
       <>
-        {view === ViewType.Grid ? (
+        {/* TEMPORARY until we come up with a list view for proposals */}
+        {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : (
-          <ListViewComponent columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
       </>
     ) : null;

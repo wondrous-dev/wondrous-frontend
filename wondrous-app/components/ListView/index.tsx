@@ -31,6 +31,7 @@ interface Props {
   columns: any[];
   onLoadMore: any;
   hasMore: boolean;
+  entityType?: string;
 }
 
 const STATUS_MAP = {

@@ -328,6 +328,10 @@ const BoardsPage = () => {
     insertUrlParam('entity', type);
     setEntityType(type);
     setFilters({});
+    if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
+      setActiveView(ViewType.Grid);
+      insertUrlParam('view', ViewType.Grid);
+    }
   };
 
   const [searchPodTaskProposals] = useLazyQuery(SEARCH_POD_TASK_BOARD_PROPOSALS, {
@@ -598,6 +602,8 @@ const BoardsPage = () => {
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,
+        activeView,
+        setActiveView,
       }}
     >
       <Boards

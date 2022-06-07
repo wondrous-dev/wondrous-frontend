@@ -13,6 +13,7 @@ import {
   TASK_STATUS_REQUESTED,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
+  ENTITIES_TYPES,
 } from 'utils/constants';
 import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -122,78 +123,80 @@ export default function TableBody({
                 />
               ) : null}
             </StyledTableCell>
-            <StyledTableCell align="center">
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                {userProfilePicture && (
-                  <AvatarList
-                    align="center"
-                    users={[
-                      {
-                        avatar: {
-                          url: userProfilePicture,
+            {(task?.type === ENTITIES_TYPES.TASK || isAdmin) && (
+              <StyledTableCell align="center">
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {userProfilePicture && (
+                    <AvatarList
+                      align="center"
+                      users={[
+                        {
+                          avatar: {
+                            url: userProfilePicture,
+                          },
+                          id: username,
+                          initials: username,
                         },
-                        id: username,
-                        initials: username,
-                      },
-                    ]}
-                  />
-                )}
-                <Link passHref={true} href={`/profile/${username}/about`}>
-                  <Initials>{username}</Initials>
-                </Link>
-              </div>
-              {!task?.assigneeId &&
-                (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
-                task?.type === 'task' && (
-                  <>
-                    <ClaimButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        updateTaskAssignee({
-                          variables: {
-                            taskId: task?.id,
-                            assigneeId: user?.id,
-                          },
-                          onCompleted: (data) => {
-                            const task = data?.updateTaskAssignee;
-                            const transformedTask = transformTaskToTaskCard(task, {});
-                            if (board?.setColumns) {
-                              let columns = [...board?.columns];
-                              if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
-                                columns = updateInReviewItem(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                                columns = updateInProgressTask(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                                columns = updateTaskItem(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
-                                columns = updateCompletedItem(transformedTask, columns);
+                      ]}
+                    />
+                  )}
+                  <Link passHref={true} href={`/profile/${username}/about`}>
+                    <Initials>{username}</Initials>
+                  </Link>
+                </div>
+                {!task?.assigneeId &&
+                  (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
+                  task?.type === 'task' && (
+                    <>
+                      <ClaimButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          updateTaskAssignee({
+                            variables: {
+                              taskId: task?.id,
+                              assigneeId: user?.id,
+                            },
+                            onCompleted: (data) => {
+                              const task = data?.updateTaskAssignee;
+                              const transformedTask = transformTaskToTaskCard(task, {});
+                              if (board?.setColumns) {
+                                let columns = [...board?.columns];
+                                if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
+                                  columns = updateInReviewItem(transformedTask, columns);
+                                } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                                  columns = updateInProgressTask(transformedTask, columns);
+                                } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                                  columns = updateTaskItem(transformedTask, columns);
+                                } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
+                                  columns = updateCompletedItem(transformedTask, columns);
+                                }
+                                board.setColumns(columns);
                               }
-                              board.setColumns(columns);
-                            }
-                          },
-                        });
-                      }}
-                    >
-                      <Claim />
-                      <span
-                        style={{
-                          marginLeft: '4px',
+                            },
+                          });
                         }}
                       >
-                        Claim
-                      </span>
-                    </ClaimButton>
-                  </>
-                )}
-            </StyledTableCell>
+                        <Claim />
+                        <span
+                          style={{
+                            marginLeft: '4px',
+                          }}
+                        >
+                          Claim
+                        </span>
+                      </ClaimButton>
+                    </>
+                  )}
+              </StyledTableCell>
+            )}
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
