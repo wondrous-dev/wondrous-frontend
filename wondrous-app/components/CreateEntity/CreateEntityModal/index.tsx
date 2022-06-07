@@ -841,18 +841,19 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     (podId) => {
       const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
       const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
+      const initialValues = _.cloneDeep(entityTypeData[entityType].initialValues);
       form.setValues({
         ...form.values,
-        reviewerIds: form.initialValues?.reviewerIds,
-        assigneeId: form.initialValues?.assigneeId,
-        rewards: form.initialValues?.rewards,
-        milestoneId: form.initialValues?.milestoneId,
+        reviewerIds: initialValues?.reviewerIds,
+        assigneeId: initialValues?.assigneeId,
+        rewards: initialValues?.rewards,
+        milestoneId: initialValues?.milestoneId,
         privacyLevel,
         podId,
       });
       form.setErrors({});
     },
-    [form, pods]
+    [entityType, form, pods]
   );
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
