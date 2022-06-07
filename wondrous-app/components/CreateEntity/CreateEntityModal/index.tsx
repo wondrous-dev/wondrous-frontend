@@ -140,6 +140,7 @@ const formValidationSchema = Yup.object().shape({
     .nullable(),
   milestoneId: Yup.string().nullable(),
   description: Yup.string().nullable(),
+  parentTaskId: Yup.string().nullable(),
 });
 
 const privacyOptions = {
@@ -367,6 +368,18 @@ const useGetMilestones = (orgId, podId) => {
     });
   }, [getMilestones, orgId, podId]);
   return data?.getMilestones;
+};
+
+const useGetTaskById = (parentTaskId) => {
+  const [getTaskById, { data }] = useLazyQuery(GET_TASK_BY_ID);
+  useEffect(() => {
+    getTaskById({
+      variables: {
+        taskId: parentTaskId,
+      },
+    });
+  }, [getTaskById, parentTaskId]);
+  return data?.getTaskById;
 };
 
 const useCreateTask = () => {
@@ -613,6 +626,7 @@ const CreateEntityDropdown = (props) => {
     DefaultImageComponent,
     error,
     onFocus,
+    disabled,
   } = props;
   const dropdownValue = value === null ? 'placeholder' : value;
   const placeholderText = { podId: 'Select Pod', orgId: 'Select Org' };
@@ -621,7 +635,7 @@ const CreateEntityDropdown = (props) => {
       name={name}
       renderValue={renderValue}
       onChange={onChange}
-      disabled={options.length == 0}
+      disabled={options.length == 0 || disabled}
       value={dropdownValue}
       error={error}
       onFocus={onFocus}
@@ -716,6 +730,7 @@ const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      parentTaskId: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -749,6 +764,7 @@ const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      parentTaskId: null,
     },
   },
 };
@@ -793,8 +809,6 @@ interface ICreateEntityModal {
   cancel: Function;
   existingTask?: {};
   parentTaskId?: string;
-  resetEntityType?: Function;
-  setEntityType?: Function;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
@@ -802,7 +816,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
-  const isSubtask = parentTaskId !== undefined;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -813,7 +826,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     fetchPolicy: 'network-only',
   });
   const inputRef: any = useRef();
-  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -857,11 +869,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ...form.values,
         reviewerIds: resetValues?.reviewerIds,
         assigneeId: resetValues?.assigneeId,
-        rewards: resetValues?.rewards,
         milestoneId: resetValues?.milestoneId,
         privacyLevel,
         podId,
       });
+      if (resetValues.rewards) {
+        form.setFieldValue('rewards', resetValues.rewards);
+      }
       form.setErrors({});
     },
     [entityType, form, pods]
@@ -871,6 +885,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
   const [fullScreen, setFullScreen] = useState(false);
+  const parentTaskData = useGetTaskById(parentTaskId);
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
@@ -895,22 +910,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
-  useEffect(() => {
-    if (isSubtask) {
-      form.setFieldValue('parentTaskId', parentTaskId);
-      getTaskById({
-        variables: {
-          taskId: parentTaskId,
-        },
-      })
-        .then((data) => {
-          const task = data?.data?.getTaskById;
-          form.setFieldValue('orgId', task?.orgId);
-          form.setFieldValue('podId', task?.podId);
-        })
-        .catch((e) => console.error(e));
-    }
-  }, [parentTaskId, getTaskById, isSubtask]);
+  useContextValue(!form.values?.parentTaskId && parentTaskId && parentTaskData, () => {
+    form.setFieldValue('parentTaskId', parentTaskData?.id);
+    form.setFieldValue('orgId', parentTaskData?.orgId);
+    form.setFieldValue('podId', parentTaskData?.podId);
+  });
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
@@ -936,7 +940,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               DefaultImageComponent={CreateEntityDefaultDaoImage}
               error={form.errors.orgId}
               onFocus={() => form.setFieldError('orgId', undefined)}
-              disabled={isSubtask}
+              disabled={parentTaskId}
             />
             {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
           </CreateEntitySelectErrorWrapper>

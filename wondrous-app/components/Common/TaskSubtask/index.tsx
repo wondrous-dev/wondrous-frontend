@@ -1,8 +1,6 @@
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import { CreateEntity } from 'components/CreateEntity';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import CreateLayoutBaseModal from '../../CreateEntity/createEntityModal';
-import { CreateModalOverlay } from '../../CreateEntity/styles';
 import { TaskSubtaskHeader } from '../TaskSubtaskHeader';
 import { TaskSubtaskList } from '../TaskSubtaskList';
 import { Subtask } from './styles';
@@ -16,14 +14,14 @@ export const TaskSubtasks = ({ taskId, permissions }) => {
 
   return (
     <>
-      <CreateModalOverlay open={createFormModal} onClose={toggleCreateFormModal}>
-        <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
-          handleClose={toggleCreateFormModal}
-          parentTaskId={taskId}
-          cancel={toggleCreateFormModal}
-        />
-      </CreateModalOverlay>
+      <CreateEntity
+        open={createFormModal}
+        handleCloseModal={toggleCreateFormModal}
+        entityType={ENTITIES_TYPES.TASK}
+        handleClose={toggleCreateFormModal}
+        parentTaskId={taskId}
+        cancel={toggleCreateFormModal}
+      />
       <Subtask>
         <TaskSubtaskHeader taskId={taskId} permissions={permissions} onClick={toggleCreateFormModal} />
         <TaskSubtaskList taskId={taskId} />

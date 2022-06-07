@@ -13,12 +13,12 @@ interface ICreateEntity {
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;
+  parentTaskId?: string;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
   const { open, entityType, handleCloseModal } = props;
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
-  console.log('open', open);
   return (
     <CreateFormModalOverlay
       open={open}
