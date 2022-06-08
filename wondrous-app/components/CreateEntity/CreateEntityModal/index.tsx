@@ -459,12 +459,7 @@ const useCreateMilestone = () => {
 
 const useCreateBounty = () => {
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
-    refetchQueries: () => [
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-      'getSubtasksForTask',
-      'getSubtaskCountForTask',
-    ],
+    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({

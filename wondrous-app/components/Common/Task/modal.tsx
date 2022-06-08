@@ -642,13 +642,15 @@ const tabsPerType = {
   proposalTabs: [tabs.discussion],
   milestoneTabs: [tabs.tasks, tabs.discussion],
   subtaskTabs: [tabs.submissions, tabs.discussion],
+  bountyTabs: [tabs.submissions, tabs.discussion],
   taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
-const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask) => {
+const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
   if (isSubtask) return tabsPerType.subtaskTabs;
+  if (isBounty) return tabsPerType.bountyTabs;
   return tabsPerType.taskTabs;
 };
 
@@ -1838,7 +1840,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </TaskSectionInfoText>
               )}
               <TaskSectionFooterTitleDiv>
-                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
+                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
                   const active = tab === activeTab;
                   return (
                     <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
