@@ -56,8 +56,6 @@ const SingleDatePicker = ({
   const [weekDaysSelected, setWeekDaysSelected] = useState<Object>(WEEK_DAYS);
   const [monthInView, setMonthInView] = useState();
 
-  console.log('hideRecurring', hideRecurring);
-
   const datePickerRef = useRef();
 
   const parseWeekDaysToPosition = (weekDays) => {

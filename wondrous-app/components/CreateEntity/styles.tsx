@@ -13,7 +13,6 @@ import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
-import SearchIcon from 'components/Icons/search';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
@@ -321,10 +320,6 @@ export const CreateFormMainDescriptionInput = styled(CreateFormMainTitleInput)({
     height: 156,
   },
 });
-
-export const TextInputDiv = styled.div`
-  height: 100px;
-`;
 
 export const CreateFormMainDescriptionInputSymbolCounter = styled(Typography)`
   && {
@@ -645,7 +640,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
     height: 30px;
 
     &::placeholder {
-      color: #C4C4C4;
+      color: #c4c4c4;
       opacity: 1;
     }
   }
@@ -776,4 +771,20 @@ export const CreateFormAddTagsSection = styled.div`
   align-items: center;
   margin: 0 auto;
   padding: 30px 40px 10px;
+`;
+
+const editorPadding = 12;
+const editorMinHeight = 100;
+export const EditorContainer = styled.div`
+  padding: ${editorPadding}px;
+  min-height: ${editorMinHeight}px;
+  border-radius: 6px;
+  background: rgb(15, 15, 15);
+  overflow: auto;
+`;
+export const EditorPlaceholder = styled.div`
+  min-height: ${editorMinHeight - editorPadding * 2}px;
+`;
+export const EditorToolbar = styled.div`
+  margin-bottom: 4px;
 `;

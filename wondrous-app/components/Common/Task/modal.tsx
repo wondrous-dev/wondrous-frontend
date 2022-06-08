@@ -131,6 +131,7 @@ import {
   updateInReviewItem,
   updateCompletedItem,
 } from 'utils/board';
+import { RichTextViewer } from 'components/RichText';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -1428,10 +1429,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
               <TaskTitleTextDiv>
                 <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
                 <TaskDescriptionText>
-                  {renderMentionString({
-                    content: fetchedTask?.description,
-                    router,
-                  })}
+                  <RichTextViewer text={fetchedTask?.description} />
                 </TaskDescriptionText>
               </TaskTitleTextDiv>
             </TaskTitleDiv>

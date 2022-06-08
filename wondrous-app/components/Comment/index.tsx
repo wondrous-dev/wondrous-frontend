@@ -59,7 +59,7 @@ export const CommentBox = (props) => {
   });
 
   const addComment = () => {
-    if (!comment || comment.length === 0) {
+    if (!comment || comment.trim().length === 0) {
       setEmptyCommentError(true);
       return;
     }
@@ -71,7 +71,7 @@ export const CommentBox = (props) => {
       ...(taskType !== TASK_STATUS_REQUESTED && {
         taskId: task?.id,
       }),
-      content: comment,
+      content: comment.trim(),
       userMentions: mentionedUsers,
       previousCommenterIds: previousCommenterIds,
     };

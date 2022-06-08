@@ -426,7 +426,7 @@ export const TaskCard = ({
                 Edit {type}
               </DropDownItem>
               <DropDownItem
-                key={'task-menu-edit-' + id}
+                key={'task-menu-archive-' + id}
                 onClick={() => {
                   setArchiveTask(true);
                 }}

@@ -12,7 +12,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import apollo from 'services/apollo';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { disableContainerOverflow, enableContainerOverflow, parseUserPermissionContext } from 'utils/helpers';
 import {
   BOARD_TYPE,
   PERMISSIONS,
@@ -254,6 +254,7 @@ const KanbanBoard = (props) => {
   useEffect(() => {
     const params = location.params;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
+      disableContainerOverflow();
       setOpenModal(true);
     }
   }, [orgBoard, podBoard, userBoard, location]);
@@ -279,6 +280,7 @@ const KanbanBoard = (props) => {
       newUrl = newUrl + `&entity=${board?.entityType}`;
     }
     location.push(newUrl);
+    enableContainerOverflow();
     setOpenModal(false);
   };
 

@@ -76,6 +76,19 @@ export const CommentText = styled(Typography)`
 export const AddCommentContainer = styled.div`
   display: flex;
   flex-direction: column;
+  text-align: left;
+`;
+const editorPadding = 12;
+const editorMinHeight = 100;
+export const EditorContainer = styled.div`
+  padding: ${editorPadding}px;
+  min-height: ${editorMinHeight}px;
+  border-radius: 6px;
+  background: rgb(15, 15, 15);
+  overflow: auto;
+`;
+export const EditorPlaceholder = styled.div`
+  min-height: ${editorMinHeight - editorPadding * 2}px;
 `;
 export const AddCommentButton = styled(CreateFormPreviewButton)`
   && {
