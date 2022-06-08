@@ -41,7 +41,10 @@ const filterGithubRepo = (repositories) => {
 export const GithubIntegrationRow = ({ githubInfo }) => {
   return (
     <RepoDiv>
-      <RepoDivTitle>{githubInfo?.repoName} connected</RepoDivTitle>
+      <RepoDivTitle>
+        {' '}
+        <span style={{ fontWeight: 'bold' }}>{githubInfo?.repoPathname}</span> connected
+      </RepoDivTitle>
       <div
         style={{
           flex: 1,
@@ -63,13 +66,16 @@ export const GithubIntegrationRow = ({ githubInfo }) => {
 
 export const GithubIntegration = ({ orgId, podId }) => {
   const router = useRouter();
-  const [getPodGithubIntegrations, { data: podGithubIntegrationData }] = useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
+  const [getPodGithubIntegrations, { data: podGithubIntegrationData, error: podGithubIntegrationError }] =
+    useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [getOrgAvailableRepos, { data: availableReposData }] = useLazyQuery(GET_ORG_AVAILABLE_REPOSITORIES, {
     fetchPolicy: 'network-only',
   });
-  const [addPodGithubRepo] = useMutation(ADD_POD_GITHUB_REPO);
+  const [addPodGithubRepo] = useMutation(ADD_POD_GITHUB_REPO, {
+    refetchQueries: [GET_POD_GITHUB_INTEGRATIONS],
+  });
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [chosenRepo, setChosenRepo] = useState(null);
   const [chosenRepoString, setChosenRepoString] = useState('');
@@ -119,8 +125,8 @@ export const GithubIntegration = ({ orgId, podId }) => {
       });
     }
   }, [podId]);
-  const githubIntegrations = podGithubIntegrationData?.getPodGithubIntegrations;
-  console.log('githubIntegrations', githubIntegrations);
+  const githubIntegrations = podGithubIntegrationData?.getPodGithubRepoIntegrations;
+  console.log('githubIntegrations', githubIntegrations, podGithubIntegrationError);
   return (
     <SettingsWrapper>
       <ImportTaskModal
@@ -284,8 +290,9 @@ export const GithubIntegration = ({ orgId, podId }) => {
             </CreateFormPreviewButton>
           </AddRepoDiv>
           {githubIntegrations?.length > 0 &&
-            githubIntegrations?.map((githubIntegration) => {
-              return <GithubIntegrationRow githubInfo={githubIntegration?.githubInfo} />;
+            githubIntegrations?.map((githubIntegration, index) => {
+              console.log('githubInte', githubIntegration);
+              return <GithubIntegrationRow key={index} githubInfo={githubIntegration?.githubInfo} />;
             })}
         </>
       ) : (

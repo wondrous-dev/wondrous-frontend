@@ -41,6 +41,9 @@ export const RepoDiv = styled.div`
   background: #1a1a1a;
   padding: 16px;
   border: 1px solid #4b4b4b;
+  display: flex;
+  border-radius: 4px;
+  margin-top: 8px;
 `;
 
 export const RepoDivTitle = styled(Typography)`
