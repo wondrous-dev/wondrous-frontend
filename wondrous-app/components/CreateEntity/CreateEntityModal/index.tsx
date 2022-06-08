@@ -735,7 +735,7 @@ const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
-    fields: [Fields.reviewer, Fields.dueDate, Fields.points, Fields.tags],
+    fields: [Fields.reviewer, Fields.dueDate, Fields.reward, Fields.points, Fields.tags],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
     initialValues: {
@@ -744,6 +744,7 @@ const entityTypeData = {
       title: '',
       description: '',
       reviewerIds: null,
+      rewards: [],
       dueDate: null,
       points: null,
       labelIds: null,
@@ -911,6 +912,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         .catch((e) => console.error(e));
     }
   }, [parentTaskId, getTaskById, isSubtask]);
+
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
