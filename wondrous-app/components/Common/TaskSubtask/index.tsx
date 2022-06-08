@@ -1,4 +1,4 @@
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import CreateLayoutBaseModal from '../../CreateEntity/createEntityModal';
