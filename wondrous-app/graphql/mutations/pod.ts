@@ -127,3 +127,11 @@ export const KICK_POD_USER = gql`
     }
   }
 `;
+
+export const ADD_POD_GITHUB_REPO = gql`
+  mutation addPodGithubRepo($podId: ID!, $repoName: String!, $repoId: String!, $importTasks: Boolean) {
+    addPodGithubRepo(podId: $podId, repoName: $repoName, repoId: $repoId, importTasks: $importTasks) {
+      success
+    }
+  }
+`;

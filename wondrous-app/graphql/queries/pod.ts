@@ -157,3 +157,16 @@ export const GET_JOIN_POD_REQUESTS = gql`
     }
   }
 `;
+
+export const GET_POD_GITHUB_INTEGRATIONS = gql`
+  query getPodGithubRepoIntegrations($podId: ID!) {
+    getPodGithubRepoIntegrations(podId: $podId) {
+      id
+      podId
+      githubInfo {
+        repoId
+        repoPathname
+      }
+    }
+  }
+`;

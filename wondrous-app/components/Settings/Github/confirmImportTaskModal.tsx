@@ -15,16 +15,15 @@ import { DELETE_MILESTONE, DELETE_TASK } from 'graphql/mutations';
 import CloseModalIcon from '../../Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 
-interface IArchiveTaskModalProps {
+interface IImportTaskModalProps {
   open: boolean;
   onClose: () => void;
   onContinue: () => void;
-  taskType: string;
-  taskId: string;
+  onImport: () => void;
 }
 
-export const ImportTaskModal = (props: IArchiveTaskModalProps) => {
-  const { open, onClose, onContinue, taskType, taskId } = props;
+export const ImportTaskModal = (props: IImportTaskModalProps) => {
+  const { open, onClose, onContinue, onImport } = props;
 
   return (
     <>
@@ -73,7 +72,7 @@ export const ImportTaskModal = (props: IArchiveTaskModalProps) => {
                 style={{
                   marginLeft: '0',
                 }}
-                onClick={() => {}}
+                onClick={onImport}
               >
                 Import tasks
               </StyledDeleteLabel>

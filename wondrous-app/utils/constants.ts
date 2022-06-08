@@ -361,6 +361,7 @@ export const GRAPHQL_ERRORS = {
   NO_WEB3_ADDRESS_FOUND: 'no_web3_address_found',
   PAYMENT_METHOD_EXIST: 'payment_method_exist',
   DISCORD_USER_ALREADY_EXISTS: 'Existing discord user exists',
+  GITHUB_REPO_ALREADY_ADDED_TO_POD: 'Repo already added!',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION

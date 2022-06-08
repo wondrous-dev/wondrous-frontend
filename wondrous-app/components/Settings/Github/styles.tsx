@@ -36,3 +36,17 @@ export const AddRepoDiv = styled.div`
   align-items: center;
   margin-top: 8px;
 `;
+
+export const RepoDiv = styled.div`
+  background: #1a1a1a;
+  padding: 16px;
+  border: 1px solid #4b4b4b;
+`;
+
+export const RepoDivTitle = styled(Typography)`
+  && {
+    color: ${White};
+    font-size: 14px;
+    font-family: Space Grotesk;
+  }
+`;

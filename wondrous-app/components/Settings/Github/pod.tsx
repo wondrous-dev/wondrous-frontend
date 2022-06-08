@@ -2,11 +2,15 @@ import { HeaderBlock } from '../headerBlock';
 import { SettingsWrapper } from '../settingsWrapper';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { Green400, White } from 'theme/colors';
-import { AddRepoDiv, GithubButton, GithubButtonDiv, PodGithubExplainerText } from './styles';
+import { AddRepoDiv, GithubButton, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_ORG_AVAILABLE_REPOSITORIES, HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
+import {
+  GET_ORG_AVAILABLE_REPOSITORIES,
+  GET_POD_GITHUB_INTEGRATIONS,
+  HAS_ORG_GITHUB_INTEGRATION,
+} from 'graphql/queries';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
 import {
@@ -18,6 +22,9 @@ import {
 import { TextField } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import { ImportTaskModal } from './confirmImportTaskModal';
+import { ADD_POD_GITHUB_REPO } from 'graphql/mutations/pod';
+import { GRAPHQL_ERRORS } from 'utils/constants';
+import { ErrorText } from 'components/Common';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
@@ -30,18 +37,45 @@ const filterGithubRepo = (repositories) => {
     id: repository?.id,
   }));
 };
+
+export const GithubIntegrationRow = ({ githubInfo }) => {
+  return (
+    <RepoDiv>
+      <RepoDivTitle>{githubInfo?.repoName} connected</RepoDivTitle>
+      <div
+        style={{
+          flex: 1,
+        }}
+      />
+      <CloseModalIcon
+        style={{
+          marginLeft: '16px',
+          cursor: 'pointer',
+        }}
+        onClick={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }}
+      />
+    </RepoDiv>
+  );
+};
+
 export const GithubIntegration = ({ orgId, podId }) => {
   const router = useRouter();
+  const [getPodGithubIntegrations, { data: podGithubIntegrationData }] = useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [getOrgAvailableRepos, { data: availableReposData }] = useLazyQuery(GET_ORG_AVAILABLE_REPOSITORIES, {
     fetchPolicy: 'network-only',
   });
+  const [addPodGithubRepo] = useMutation(ADD_POD_GITHUB_REPO);
   const [importModalOpen, setImportModalOpen] = useState(false);
   const [chosenRepo, setChosenRepo] = useState(null);
   const [chosenRepoString, setChosenRepoString] = useState('');
   const [deleteOrgGithubIntegration] = useMutation(DELETE_ORG_GITHUB);
   const [githubUrl, setGithubUrl] = useState(null);
+  const [addRepoError, setAddRepoError] = useState(null);
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const state = JSON.stringify({
@@ -76,9 +110,68 @@ export const GithubIntegration = ({ orgId, podId }) => {
     }
   }, [githubConnected]);
 
+  useEffect(() => {
+    if (podId) {
+      getPodGithubIntegrations({
+        variables: {
+          podId,
+        },
+      });
+    }
+  }, [podId]);
+  const githubIntegrations = podGithubIntegrationData?.getPodGithubIntegrations;
+  console.log('githubIntegrations', githubIntegrations);
   return (
     <SettingsWrapper>
-      <ImportTaskModal onClose={() => setImportModalOpen(false)} open={importModalOpen} />
+      <ImportTaskModal
+        onClose={() => setImportModalOpen(false)}
+        open={importModalOpen}
+        onContinue={() => {
+          addPodGithubRepo({
+            variables: {
+              importTasks: false,
+              repoName: chosenRepo?.label,
+              repoId: chosenRepo?.id,
+              podId,
+            },
+          })
+            .then(() => {
+              setImportModalOpen(false);
+            })
+            .catch((err) => {
+              setImportModalOpen(false);
+              if (
+                err?.graphQLErrors &&
+                err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.GITHUB_REPO_ALREADY_ADDED_TO_POD
+              ) {
+                setAddRepoError(GRAPHQL_ERRORS.GITHUB_REPO_ALREADY_ADDED_TO_POD);
+              }
+            });
+        }}
+        onImport={() => {
+          addPodGithubRepo({
+            variables: {
+              importTasks: true,
+              repoName: chosenRepo?.label,
+              repoId: chosenRepo?.id,
+              podId,
+            },
+          })
+            .then(() => {
+              setImportModalOpen(false);
+            })
+            .catch((err) => {
+              console.log('err', err);
+              setImportModalOpen(false);
+              if (
+                err?.graphQLErrors &&
+                err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.GITHUB_REPO_ALREADY_ADDED_TO_POD
+              ) {
+                setAddRepoError(GRAPHQL_ERRORS.GITHUB_REPO_ALREADY_ADDED_TO_POD);
+              }
+            });
+        }}
+      />
       <HeaderBlock
         icon={
           <GitHubIcon
@@ -190,6 +283,10 @@ export const GithubIntegration = ({ orgId, podId }) => {
               Add repo
             </CreateFormPreviewButton>
           </AddRepoDiv>
+          {githubIntegrations?.length > 0 &&
+            githubIntegrations?.map((githubIntegration) => {
+              return <GithubIntegrationRow githubInfo={githubIntegration?.githubInfo} />;
+            })}
         </>
       ) : (
         <GithubButtonDiv>
@@ -203,6 +300,7 @@ export const GithubIntegration = ({ orgId, podId }) => {
           </GithubButton>
         </GithubButtonDiv>
       )}
+      {addRepoError && <ErrorText>{addRepoError}</ErrorText>}
     </SettingsWrapper>
   );
 };
