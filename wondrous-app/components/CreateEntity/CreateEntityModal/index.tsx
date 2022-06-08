@@ -754,7 +754,7 @@ const entityTypeData = {
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
-    fields: [Fields.reviewer, Fields.dueDate, Fields.points, Fields.tags],
+    fields: [Fields.reviewer, Fields.dueDate, Fields.points, Fields.tags, Fields.reward],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
     initialValues: {
@@ -764,6 +764,7 @@ const entityTypeData = {
       description: '',
       reviewerIds: null,
       dueDate: null,
+      rewards: [],
       points: null,
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
