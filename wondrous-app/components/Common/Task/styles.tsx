@@ -673,7 +673,7 @@ export const ProposalCardFooter = styled.div`
 `;
 
 export const Tag = styled.div`
-  color: ${White};
+  color: ${palette.white};
   background: rgba(64, 0, 181, 0.3);
   border: 1px solid #7427ff;
   border-radius: 6px;

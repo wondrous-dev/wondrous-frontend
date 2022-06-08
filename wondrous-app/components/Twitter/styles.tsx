@@ -1,16 +1,15 @@
 import styled from 'styled-components';
 import { TextField, Typography } from '@mui/material';
-import Image from 'next/image';
-import { Grey250, Grey85, Red400, White, Background } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { SafeImage } from '../Common/Image';
+import palette from 'theme/palette';
 
 export const MainWrapper = styled.div`
   width: 100%;
   min-height: 100vh;
   height: 100%;
   background-image: url('/images/onboarding/background.png');
-  background: ${Background};
+  background: ${palette.background.default};
   display: flex;
   align-items: center;
   justify-content: center;
@@ -34,7 +33,7 @@ export const LogoText = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 24px;
-    color: ${White};
+    color: ${palette.white};
     margin-left: 12px;
   }
 `;
@@ -66,14 +65,14 @@ export const InviteWelcomeBoxTitle = styled(Typography)`
   && {
     font-size: 24px;
     font-weight: bold;
-    color: ${White};
+    color: ${palette.white};
     margin-bottom: 20px;
   }
 `;
 
 export const InviteWelcomeBoxParagraph = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-size: 16px;
     font-weight: 450;
   }
@@ -86,7 +85,7 @@ export const MetamaskButton = styled(Button)`
 `;
 
 export const StyledHr = styled.hr`
-  border: 1px solid ${Grey85};
+  border: 1px solid ${palette.grey85};
   width: 100%;
 `;
 
@@ -99,7 +98,7 @@ export const ProgressBar = styled.img`
 export const OnboardingTitle = styled(Typography)`
   && {
     font-size: 28px;
-    color: ${White};
+    color: ${palette.white};
     margin-top: 18px;
     margin-bottom: 18px;
     font-weight: 500;
@@ -147,7 +146,7 @@ export const UsernameTitle = styled(Typography)`
 
 export const UsernameDescription = styled(UsernameTitle)`
   && {
-    color: ${Grey250};
+    color: ${palette.grey250};
     margin-top: 8px;
     margin-bottom: 20px;
   }
@@ -182,7 +181,7 @@ export const ProfilePictureDiv = styled.div`
 
 export const ErrorText = styled(Typography)`
   && {
-    color: ${Red400};
+    color: ${palette.red400};
     font-size: 14px;
   }
 `;

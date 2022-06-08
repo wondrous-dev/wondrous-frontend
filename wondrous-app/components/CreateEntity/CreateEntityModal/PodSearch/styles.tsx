@@ -4,8 +4,8 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import PodIcon from 'components/Icons/podIcon';
 import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
-import { White } from 'theme/colors';
 import Arrow from '../../../Icons/arrow.svg';
+import palette from 'theme/palette';
 
 export const scrollBarStyles = css`
   :hover {
@@ -99,7 +99,7 @@ export const PodSearchInput = styled(TextField)`
       font-family: 'Space Grotesk';
       font-weight: 400;
       font-size: 14px;
-      color: ${White};
+      color: ${palette.white};
     }
   }
   .MuiOutlinedInput-notchedOutline {
@@ -116,7 +116,7 @@ export const PodSearchInputAdornment = styled(InputAdornment)`
 
 export const PodSearchInputIcon = styled(SearchIcon)`
   path {
-    stroke: ${White};
+    stroke: ${palette.white};
   }
 `;
 
@@ -126,7 +126,7 @@ export const PodSearchAutocompletePopper = styled.div`
   }
   .MuiAutocomplete-noOptions {
     font-family: 'Space Grotesk';
-    color: ${White};
+    color: ${palette.white};
     margin: 0;
     padding: 0;
     background-image: none;
@@ -149,7 +149,7 @@ export const PodSearchPaper = styled.div`
 
 export const PodSearchList = styled.ul`
   && {
-    color: ${White};
+    color: ${palette.white};
     margin: 0;
     padding: 0;
     background-image: none;
@@ -171,7 +171,7 @@ export const PodSearchListItem = styled.li`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: ${White};
+    color: ${palette.white};
     :last-of-type {
       border-radius: 0 0 4px 4px;
     }
@@ -207,7 +207,7 @@ export const PodSearchLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: ${White};
+    color: ${palette.white};
     margin-left: 6px;
     white-space: nowrap;
     text-overflow: ellipsis;
