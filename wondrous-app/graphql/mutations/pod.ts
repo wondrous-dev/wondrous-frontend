@@ -135,3 +135,11 @@ export const ADD_POD_GITHUB_REPO = gql`
     }
   }
 `;
+
+export const DELETE_POD_GITHUB_REPO_INTEGRATION = gql`
+  mutation deletePodGithubRepo($entityIntegrationId: ID!) {
+    deletePodGithubRepo(entityIntegrationId: $entityIntegrationId) {
+      success
+    }
+  }
+`;

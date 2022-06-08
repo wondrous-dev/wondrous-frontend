@@ -22,7 +22,7 @@ import {
 import { TextField } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import { ImportTaskModal } from './confirmImportTaskModal';
-import { ADD_POD_GITHUB_REPO } from 'graphql/mutations/pod';
+import { ADD_POD_GITHUB_REPO, DELETE_POD_GITHUB_REPO_INTEGRATION } from 'graphql/mutations/pod';
 import { GRAPHQL_ERRORS } from 'utils/constants';
 import { ErrorText } from 'components/Common';
 
@@ -38,7 +38,7 @@ const filterGithubRepo = (repositories) => {
   }));
 };
 
-export const GithubIntegrationRow = ({ githubInfo }) => {
+export const GithubIntegrationRow = ({ githubIntegrationId, githubInfo, deletePodGithubIntegration }) => {
   return (
     <RepoDiv>
       <RepoDivTitle>
@@ -58,6 +58,11 @@ export const GithubIntegrationRow = ({ githubInfo }) => {
         onClick={(e) => {
           e.preventDefault();
           e.stopPropagation();
+          deletePodGithubIntegration({
+            variables: {
+              entityIntegrationId: githubIntegrationId,
+            },
+          });
         }}
       />
     </RepoDiv>
@@ -68,6 +73,9 @@ export const GithubIntegration = ({ orgId, podId }) => {
   const router = useRouter();
   const [getPodGithubIntegrations, { data: podGithubIntegrationData, error: podGithubIntegrationError }] =
     useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
+  const [deletePodGithubIntegration] = useMutation(DELETE_POD_GITHUB_REPO_INTEGRATION, {
+    refetchQueries: [GET_POD_GITHUB_INTEGRATIONS],
+  });
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
   const [getOrgAvailableRepos, { data: availableReposData }] = useLazyQuery(GET_ORG_AVAILABLE_REPOSITORIES, {
@@ -126,7 +134,7 @@ export const GithubIntegration = ({ orgId, podId }) => {
     }
   }, [podId]);
   const githubIntegrations = podGithubIntegrationData?.getPodGithubRepoIntegrations;
-  console.log('githubIntegrations', githubIntegrations, podGithubIntegrationError);
+
   return (
     <SettingsWrapper>
       <ImportTaskModal
@@ -291,8 +299,14 @@ export const GithubIntegration = ({ orgId, podId }) => {
           </AddRepoDiv>
           {githubIntegrations?.length > 0 &&
             githubIntegrations?.map((githubIntegration, index) => {
-              console.log('githubInte', githubIntegration);
-              return <GithubIntegrationRow key={index} githubInfo={githubIntegration?.githubInfo} />;
+              return (
+                <GithubIntegrationRow
+                  key={index}
+                  githubIntegrationId={githubIntegration?.id}
+                  githubInfo={githubIntegration?.githubInfo}
+                  deletePodGithubIntegration={deletePodGithubIntegration}
+                />
+              );
             })}
         </>
       ) : (
