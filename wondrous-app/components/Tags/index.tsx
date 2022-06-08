@@ -1,14 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { TextField } from '@material-ui/core';
 import { createFilterOptions } from '@material-ui/lab';
-import _ from 'lodash';
-
-import { RightInputAdornment, StyledAutocomplete, StyledChipTag, LeftInputAdornment, OptionItem } from './styles';
-import { White } from '../../theme/colors';
-import SearchIcon from '../Icons/search';
-import TagsIcon from '../Icons/tagsIcon';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
+import _ from 'lodash';
+import React, { useEffect, useState } from 'react';
 import { ColorTypes } from 'utils/constants';
+import {
+  OptionItem,
+  StyledAutocomplete,
+  StyledChipTag,
+  TagAutocompletePopper,
+  TagsChipWrapper,
+  TagsTextField,
+} from './styles';
 
 export type Option = {
   id: string;
@@ -54,11 +56,12 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
   }, [options]);
 
   return (
-    <StyledAutocomplete
+    <TagAutocompletePopper
       clearOnBlur
       multiple
       filterSelectedOptions
       freeSolo
+      fullWidth={true}
       open={openTags}
       onOpen={() => setOpenTags(true)}
       onClose={() => setOpenTags(false)}
@@ -135,42 +138,28 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
           return (
             <StyledChipTag
               key={index}
-              icon={<span>&times;</span>}
+              deleteIcon={<div>&times;</div>}
               onClick={props.onDelete}
               label={option.name}
-              background={option.color}
+              // background={option.color}
               variant="outlined"
+              onDelete={props.onDelete}
             />
           );
         });
       }}
       renderInput={(params) => {
         return (
-          <>
-            <LeftInputAdornment>
-              <TagsIcon />
-            </LeftInputAdornment>
-            <TextField
-              style={{
-                color: White,
-                fontFamily: 'Space Grotesk',
-                fontSize: '14px',
-                paddingLeft: '4px',
-                paddingRight: '0',
-              }}
-              {...params}
-              variant="standard"
-              InputLabelProps={{ shrink: false }}
-              placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: null,
-              }}
-            />
-            <RightInputAdornment>
-              <SearchIcon color="white" />
-            </RightInputAdornment>
-          </>
+          <TagsTextField
+            {...params}
+            fullWidth={true}
+            placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: <TagsChipWrapper>{params.InputProps.startAdornment}</TagsChipWrapper>,
+              endAdornment: null,
+            }}
+          />
         );
       }}
     />

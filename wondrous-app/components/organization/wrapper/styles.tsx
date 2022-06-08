@@ -283,7 +283,7 @@ export const HeaderSettingsLockedButton = (props) => (
 
 export const HeaderText = styled(Typography)`
   && {
-    font-size: 15px;    
+    font-size: 15px;
     line-height: 22px;
     letter-spacing: 0.01em;
     color: #ffffff;
@@ -676,4 +676,14 @@ export const ClaimRoleLabel = styled(Typography)`
 export const RoleActionWrapper = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const BoardsSubheaderWrapper = styled.div`
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-row-gap: 20px;
+  align-items: center;
+  &.searchView {
+    grid-template-columns: 1fr;
+  }
 `;

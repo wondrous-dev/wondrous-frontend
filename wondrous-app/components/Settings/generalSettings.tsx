@@ -1,8 +1,9 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import apollo from 'services/apollo';
 import React, { useEffect, useState } from 'react';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
-import { UPDATE_POD } from '../../graphql/mutations/pod';
+import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
 import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
@@ -19,6 +20,7 @@ import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import { SettingsWrapper } from './settingsWrapper';
+import { DeleteButton } from 'components/Settings/Roles/styles';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -37,6 +39,7 @@ import {
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
   Snackbar,
+  SettingsHeaderText,
 } from './styles';
 
 const LIMIT = 200;
@@ -44,16 +47,19 @@ const LIMIT = 200;
 const SOCIALS_DATA = [
   {
     icon: <TwitterPurpleIcon />,
+    title: 'Twitter',
     link: 'https://twitter.com/',
     type: 'twitter',
   },
   {
     icon: <DiscordIcon />,
+    title: 'Discord',
     link: 'https://discord.gg/',
     type: 'discord',
   },
   {
     icon: <OpenSeaIcon />,
+    title: 'OpenSea',
     link: 'https://opensea.io/',
     type: 'opensea',
   },
@@ -90,6 +96,9 @@ const GeneralSettingsComponent = (props) => {
     setDiscordWebhookLink,
     headerImage,
     handleImageChange,
+    isArchivedPod,
+    handleArchivePodClick,
+    handleUnarchivePodClick,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -105,7 +114,17 @@ const GeneralSettingsComponent = (props) => {
     }
   });
   const isPod = typeText === 'Pod';
-  const tabsVisibilityOptions = { [PRIVACY_LEVEL.public]: 'Public', [PRIVACY_LEVEL.private]: 'Pod Members Only' };
+  const tabsVisibilityOptions = {
+    [PRIVACY_LEVEL.public]: {
+      title: 'Public',
+      tooltip: `Public means anyone can see this ${typeText.toLowerCase()}`,
+    },
+    [PRIVACY_LEVEL.private]: {
+      title: 'Pod Members Only',
+      tooltip: `Private means only those with the proper permissions can see this ${typeText.toLowerCase()}`,
+    },
+  };
+
   const tabsVisibilitySelected = isPrivate
     ? tabsVisibilityOptions[PRIVACY_LEVEL.private]
     : tabsVisibilityOptions[PRIVACY_LEVEL.public];
@@ -186,7 +205,7 @@ const GeneralSettingsComponent = (props) => {
 
               return (
                 <GeneralSettingsSocialsBlockRow key={item.type}>
-                  <LinkSquareIcon icon={item.icon} />
+                  <LinkSquareIcon icon={item.icon} title={item.title} />
                   <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
                 </GeneralSettingsSocialsBlockRow>
               );
@@ -199,14 +218,14 @@ const GeneralSettingsComponent = (props) => {
             {linkTypelinks?.length > 0 ? (
               linkTypelinks.map((link) => (
                 <GeneralSettingsSocialsBlockRow key={link.type}>
-                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <LinkSquareIcon title={link.title} icon={<LinkBigIcon />} />
                   <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
                 </GeneralSettingsSocialsBlockRow>
               ))
             ) : (
               <>
                 <GeneralSettingsSocialsBlockRow key={newLink.type}>
-                  <LinkSquareIcon icon={<LinkBigIcon />} />
+                  <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
                   <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
                 </GeneralSettingsSocialsBlockRow>
               </>
@@ -244,6 +263,44 @@ const GeneralSettingsComponent = (props) => {
             Save changes
           </GeneralSettingsSaveChangesButton>
         </GeneralSettingsButtonsBlock>
+        {isArchivedPod && isPod && (
+          <>
+            <DeleteButton
+              style={{
+                marginTop: '32px',
+              }}
+              onClick={handleUnarchivePodClick}
+            >
+              Unarchive Pod
+            </DeleteButton>
+            <SettingsHeaderText
+              style={{
+                marginTop: '10px',
+              }}
+            >
+              Unarchiving pod reenables you to create task under this pod
+            </SettingsHeaderText>
+          </>
+        )}
+        {!isArchivedPod && isPod && (
+          <>
+            <DeleteButton
+              style={{
+                marginTop: '32px',
+              }}
+              onClick={handleArchivePodClick}
+            >
+              Archive Pod
+            </DeleteButton>
+            <SettingsHeaderText
+              style={{
+                marginTop: '10px',
+              }}
+            >
+              You can still access tasks from archived pods, but no new tasks can be created{' '}
+            </SettingsHeaderText>
+          </>
+        )}
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
@@ -280,6 +337,7 @@ export const PodGeneralSettings = () => {
   const { podId } = router.query;
   const [podProfile, setPodProfile] = useState(null);
   const [isPrivate, setIsPrivate] = useState(null);
+  const [isArchivedPod, setIsArchivedPod] = useState(false);
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
@@ -300,6 +358,7 @@ export const PodGeneralSettings = () => {
     setDescriptionText(pod.description);
     setIsPrivate(pod?.privacyLevel === PRIVACY_LEVEL.private);
     setOriginalPodProfile(pod);
+    setIsArchivedPod(!!pod?.archivedAt);
   }
 
   useEffect(() => {
@@ -361,7 +420,32 @@ export const PodGeneralSettings = () => {
       },
     });
   }
-
+  const handleArchivePodClick = async () => {
+    const confirmed = confirm('Are you sure you want to archive this pod?');
+    if (!confirmed) {
+      return;
+    }
+    await apollo.mutate({
+      mutation: ARCHIVE_POD,
+      variables: {
+        podId,
+      },
+      refetchQueries: [GET_POD_BY_ID],
+    });
+  };
+  const handleUnarchivePodClick = async () => {
+    const confirmed = confirm('Are you sure you want to unarchive this pod?');
+    if (!confirmed) {
+      return;
+    }
+    await apollo.mutate({
+      mutation: UNARCHIVE_POD,
+      variables: {
+        podId,
+      },
+      refetchQueries: [GET_POD_BY_ID],
+    });
+  };
   return (
     <GeneralSettingsComponent
       toast={toast}
@@ -381,6 +465,9 @@ export const PodGeneralSettings = () => {
       setIsPrivate={setIsPrivate}
       color={color}
       setColor={setColor}
+      isArchivedPod={isArchivedPod}
+      handleArchivePodClick={handleArchivePodClick}
+      handleUnarchivePodClick={handleUnarchivePodClick}
     />
   );
 };

@@ -32,6 +32,7 @@
     "@mui/x-date-pickers": "^5.0.0-alpha.2",
     "@next/bundle-analyzer": "^12.0.8",
     "@popperjs/core": "^2.11.5",
+    "@snapshot-labs/snapshot.js": "^0.3.56",
     "@sentry/nextjs": "^6.19.7",
     "@svgr/webpack": "^6.1.2",
     "@udecode/plate-combobox": "^11.1.0",

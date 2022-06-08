@@ -6,7 +6,15 @@ import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { updateCompletedItem, updateInProgressTask, updateInReviewItem, updateTaskItem } from 'utils/board';
 import { renderMentionString } from 'utils/common';
 import * as Constants from 'utils/constants';
-import { TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO } from 'utils/constants';
+import {
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_REQUESTED,
+  TASK_STATUS_SUBMISSION_REQUEST,
+  TASK_STATUS_TODO,
+  ENTITIES_TYPES,
+} from 'utils/constants';
 import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useMe } from '../Auth/withAuth';
@@ -34,11 +42,15 @@ import {
 
 import { Red800 } from 'theme/colors';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import SmartLink from 'components/Common/SmartLink';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
+import Tooltip from 'components/Tooltip';
 
 export default function TableBody({
   tasks,
   limit,
-  openTask,
   isAdmin,
   setKudosTask,
   setKudosModalOpen,
@@ -53,13 +65,14 @@ export default function TableBody({
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const location = useLocation();
 
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
-
   const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
+  const view = location.params.view ?? ViewType.List;
 
   return (
     <StyledTableBody>
@@ -71,6 +84,14 @@ export default function TableBody({
           orgId: task?.orgId,
           podId: task?.podId,
         });
+
+        let viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
+
+        if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || task?.isProposal) {
+          viewUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
+        } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
+          viewUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
+        }
 
         const reward = (task.rewards || [])[0];
 
@@ -102,94 +123,101 @@ export default function TableBody({
                 />
               ) : null}
             </StyledTableCell>
-            <StyledTableCell align="center">
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  flexDirection: 'column',
-                }}
-              >
-                {userProfilePicture && (
-                  <AvatarList
-                    align="center"
-                    users={[
-                      {
-                        avatar: {
-                          url: userProfilePicture,
+            {(task?.type === ENTITIES_TYPES.TASK || isAdmin) && (
+              <StyledTableCell align="center">
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    flexDirection: 'column',
+                  }}
+                >
+                  {userProfilePicture && (
+                    <AvatarList
+                      align="center"
+                      users={[
+                        {
+                          avatar: {
+                            url: userProfilePicture,
+                          },
+                          id: username,
+                          initials: username,
                         },
-                        id: username,
-                        initials: username,
-                      },
-                    ]}
-                  />
-                )}
-                <Link passHref={true} href={`/profile/${username}/about`}>
-                  <Initials>{username}</Initials>
-                </Link>
-              </div>
-              {!task?.assigneeId &&
-                (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
-                task?.type === 'task' && (
-                  <>
-                    <ClaimButton
-                      onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        updateTaskAssignee({
-                          variables: {
-                            taskId: task?.id,
-                            assigneeId: user?.id,
-                          },
-                          onCompleted: (data) => {
-                            const task = data?.updateTaskAssignee;
-                            const transformedTask = transformTaskToTaskCard(task, {});
-                            if (board?.setColumns) {
-                              let columns = [...board?.columns];
-                              if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
-                                columns = updateInReviewItem(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                                columns = updateInProgressTask(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                                columns = updateTaskItem(transformedTask, columns);
-                              } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
-                                columns = updateCompletedItem(transformedTask, columns);
+                      ]}
+                    />
+                  )}
+                  <Link passHref={true} href={`/profile/${username}/about`}>
+                    <Initials>{username}</Initials>
+                  </Link>
+                </div>
+                {!task?.assigneeId &&
+                  (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
+                  task?.type === 'task' && (
+                    <>
+                      <ClaimButton
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          updateTaskAssignee({
+                            variables: {
+                              taskId: task?.id,
+                              assigneeId: user?.id,
+                            },
+                            onCompleted: (data) => {
+                              const task = data?.updateTaskAssignee;
+                              const transformedTask = transformTaskToTaskCard(task, {});
+                              if (board?.setColumns) {
+                                let columns = [...board?.columns];
+                                if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
+                                  columns = updateInReviewItem(transformedTask, columns);
+                                } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                                  columns = updateInProgressTask(transformedTask, columns);
+                                } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                                  columns = updateTaskItem(transformedTask, columns);
+                                } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
+                                  columns = updateCompletedItem(transformedTask, columns);
+                                }
+                                board.setColumns(columns);
                               }
-                              board.setColumns(columns);
-                            }
-                          },
-                        });
-                      }}
-                    >
-                      <Claim />
-                      <span
-                        style={{
-                          marginLeft: '4px',
+                            },
+                          });
                         }}
                       >
-                        Claim
-                      </span>
-                    </ClaimButton>
-                  </>
-                )}
-            </StyledTableCell>
+                        <Claim />
+                        <span
+                          style={{
+                            marginLeft: '4px',
+                          }}
+                        >
+                          Claim
+                        </span>
+                      </ClaimButton>
+                    </>
+                  )}
+              </StyledTableCell>
+            )}
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
-            <StyledTableCell className="clickable" onClick={() => openTask(task, status)}>
-              <TaskTitle>{task.title}</TaskTitle>
-              <TaskDescription
-                style={{
-                  maxWidth: '600px',
-                }}
-              >
-                {renderMentionString({
-                  content: cutString(task?.description),
-                  router,
-                })}
-              </TaskDescription>
-            </StyledTableCell>
+            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => location.replace(viewUrl)}>
+              <StyledTableCell className="clickable">
+                <TaskTitle>
+                  <a href={viewUrl}>{task.title}</a>
+                </TaskTitle>
+                <TaskDescription
+                  style={{
+                    maxWidth: '600px',
+                  }}
+                >
+                  {renderMentionString({
+                    content: cutString(task?.description),
+                    router,
+                  })}
+                </TaskDescription>
+              </StyledTableCell>
+            </SmartLink>
+
             {/*<StyledTableCell>*/}
             {/*  <DeliverableContainer>*/}
             {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
@@ -232,47 +260,51 @@ export default function TableBody({
             )}
             <StyledTableCell align="center">
               <MoreOptions disabled={!canManageTask}>
-                <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                  <DropDownItem
-                    key={'task-menu-edit-' + task.id}
-                    onClick={() => editTask(task, status)}
-                    color="#C4C4C4"
-                    fontSize="13px"
-                    fontWeight="normal"
-                    textAlign="left"
-                  >
-                    Edit {dropdownItemLabel}
-                  </DropDownItem>
-                  <DropDownItem
-                    key={'task-menu-report-' + task.id}
-                    onClick={() => {
-                      setSelectedTask(task);
-                      setArchiveModalOpen(true);
-                    }}
-                    color="#C4C4C4"
-                    fontSize="13px"
-                    fontWeight="normal"
-                    textAlign="left"
-                  >
-                    Archive {dropdownItemLabel}
-                  </DropDownItem>
-                  {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
-                    !task?.isProposal && (
+                <Tooltip title="More actions" placement="top">
+                  <div>
+                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                       <DropDownItem
-                        key={'task-menu-delete-' + task.id}
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setDeleteModalOpen(true);
-                        }}
-                        color={Red800}
+                        key={'task-menu-edit-' + task.id + index}
+                        onClick={() => editTask(task, status)}
+                        color="#C4C4C4"
                         fontSize="13px"
                         fontWeight="normal"
                         textAlign="left"
                       >
-                        Delete {dropdownItemLabel}
+                        Edit {dropdownItemLabel}
                       </DropDownItem>
-                    )}
-                </DropDown>
+                      <DropDownItem
+                        key={'task-menu-report-' + task.id}
+                        onClick={() => {
+                          setSelectedTask(task);
+                          setArchiveModalOpen(true);
+                        }}
+                        color="#C4C4C4"
+                        fontSize="13px"
+                        fontWeight="normal"
+                        textAlign="left"
+                      >
+                        Archive {dropdownItemLabel}
+                      </DropDownItem>
+                      {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
+                        !task?.isProposal && (
+                          <DropDownItem
+                            key={'task-menu-delete-' + task.id}
+                            onClick={() => {
+                              setSelectedTask(task);
+                              setDeleteModalOpen(true);
+                            }}
+                            color={Red800}
+                            fontSize="13px"
+                            fontWeight="normal"
+                            textAlign="left"
+                          >
+                            Delete {dropdownItemLabel}
+                          </DropDownItem>
+                        )}
+                    </DropDown>
+                  </div>
+                </Tooltip>
               </MoreOptions>
             </StyledTableCell>
           </StyledTableRow>

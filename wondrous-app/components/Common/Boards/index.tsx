@@ -11,6 +11,7 @@ import { Chevron } from '../../Icons/sections';
 import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 import { ListViewIcon } from '../../Icons/ViewIcons/listView';
 import { Table } from '../../Table';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import {
   BoardsContainer,
@@ -20,6 +21,7 @@ import {
   ShowAllButton,
   ShowAllSearchResults,
 } from './styles';
+import ListView from 'components/ListView';
 
 type Props = {
   columns: Array<any>;
@@ -33,10 +35,14 @@ type Props = {
   statuses?: any;
   filterSchema?: any;
   userId?: string;
+  entityType?: string;
 };
 
+const LIST_VIEW_MAP = {
+  [ENTITIES_TYPES.TASK]: ListView,
+};
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView } = props;
+  const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
   const router = useRouter();
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
@@ -55,15 +61,18 @@ const Boards = (props: Props) => {
   }, [columns]);
 
   function renderBoard() {
+    const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
+
     if (isAdmin) {
       return <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} isAdmin={isAdmin} />;
     }
     return view ? (
       <>
-        {view === ViewType.Grid ? (
+        {/* TEMPORARY until we come up with a list view for proposals */}
+        {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : (
-          <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+          <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
       </>
     ) : null;

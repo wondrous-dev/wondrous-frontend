@@ -23,7 +23,6 @@ import { KudosForm } from '../Common/KudosForm';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { TaskViewModal } from '../Common/Task/modal';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
-import EditLayoutBaseModal from '../CreateEntity/editEntityModal';
 import { CreateModalOverlay } from '../CreateEntity/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
 import { Claim } from '../Icons/claimTask';
@@ -59,6 +58,7 @@ const DELIVERABLES_ICONS = {
   video: <PlayIcon />,
 };
 import TableBody from './TableBody';
+import { CreateEntity } from 'components/CreateEntity';
 
 const createTasksFromColumns = (columns) => {
   return columns.reduce((acc, column) => {
@@ -92,7 +92,7 @@ const createTasksFromColumns = (columns) => {
 };
 
 export const Table = (props) => {
-  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin, tasks } = props;
+  const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin, tasks, entityType } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
   const [editableTask, setEditableTask] = useState(null);
@@ -208,17 +208,6 @@ export const Table = (props) => {
     );
   }
 
-  function openTask(task, status = '') {
-    const view = location.params.view ?? ViewType.List;
-    if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || task?.isProposal) {
-      location.replace(`${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`);
-    } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
-      location.replace(`${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`);
-    } else {
-      location.replace(`${delQuery(router.asPath)}?task=${task?.id}&view=${view}`);
-    }
-  }
-
   const taskType = (selectedTask) => {
     const typeName = selectedTask?.__typename;
     const taskType = {
@@ -234,15 +223,12 @@ export const Table = (props) => {
   };
 
   useEffect(() => {
-    if (
+    const viewModal =
       (location.params.task || location.params.taskProposal) &&
-      (location.params.view == ViewType.List || location.params.view == ViewType.Admin)
-    ) {
-      setPreviewModalOpen(true);
-    } else {
-      setPreviewModalOpen(false);
-    }
-  }, [location.params.task, location.params.taskProposal, location.params.view]);
+      (location.params.view == ViewType.List || location.params.view == ViewType.Admin);
+
+    setPreviewModalOpen(viewModal);
+  }, [location.params]);
 
   const tableTasks = tasks || createTasksFromColumns(columns);
 
@@ -277,25 +263,19 @@ export const Table = (props) => {
           }}
         />
       ) : null}
-      {editableTask ? (
-        <CreateModalOverlay
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          open={open}
-          onClose={() => {
+      {editableTask && (
+        <CreateEntity
+          open={Boolean(open)}
+          handleCloseModal={() => {
             setEditableTask(false);
           }}
-        >
-          <EditLayoutBaseModal
-            open={open}
-            entityType={editableTask?.isProposal ? ENTITIES_TYPES.PROPOSAL : editableTask?.type || ENTITIES_TYPES.TASK}
-            handleClose={() => setEditableTask(false)}
-            cancelEdit={() => setEditableTask(false)}
-            existingTask={editableTask}
-            isTaskProposal={editableTask.type === Constants.TASK_STATUS_REQUESTED}
-          />
-        </CreateModalOverlay>
-      ) : null}
+          entityType={editableTask?.isProposal ? ENTITIES_TYPES.PROPOSAL : editableTask?.type || ENTITIES_TYPES.TASK}
+          handleClose={() => setEditableTask(false)}
+          cancel={() => setEditableTask(false)}
+          existingTask={editableTask}
+          isTaskProposal={editableTask.type === Constants.TASK_STATUS_REQUESTED}
+        />
+      )}
       <KudosForm onClose={handleKudosFormOnClose} open={isKudosModalOpen} submission={kudosTask} />
 
       <StyledTableContainer>
@@ -305,9 +285,11 @@ export const Table = (props) => {
               <StyledTableCell align="center" width="56px">
                 DAO
               </StyledTableCell>
-              <StyledTableCell align="center" width="105px">
-                {isAdmin ? 'Created by' : 'Assigned'}
-              </StyledTableCell>
+              {entityType === ENTITIES_TYPES.TASK || isAdmin ? (
+                <StyledTableCell align="center" width="105px">
+                  {isAdmin ? 'Created by' : 'Assigned'}
+                </StyledTableCell>
+              ) : null}
               <StyledTableCell align="center" width="77px">
                 Status
               </StyledTableCell>
@@ -326,7 +308,6 @@ export const Table = (props) => {
           </StyledTableHead>
           <TableBody
             limit={limit}
-            openTask={openTask}
             isAdmin={isAdmin}
             setKudosTask={setKudosTask}
             setKudosModalOpen={setKudosModalOpen}

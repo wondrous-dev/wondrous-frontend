@@ -35,7 +35,7 @@ export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
     return BOARD_TYPE.assignee;
   }
 };
-const populateOrder = (index, tasks, field) => {
+export const populateOrder = (index, tasks, field) => {
   let aboveOrder = null,
     belowOrder = null;
   if (index > 0) {

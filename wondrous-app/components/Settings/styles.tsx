@@ -11,9 +11,10 @@ import {
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
-import { White } from '../../theme/colors';
+import { White, Red200 } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
+import { Twitter } from '../Icons/twitter';
 
 export const SettingsContainer = styled.div`
   position: relative;
@@ -168,6 +169,15 @@ export const SettingsDaoPodIndicatorText = styled(Typography)`
     color: #ffffff;
   }
 `;
+export const ArchivedPodIndicatorText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 400;
+    color: ${Red200};
+  }
+`;
+
 
 export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   display: flex;
@@ -353,7 +363,7 @@ export const GeneralSettingsIntegrationsBlock = styled.div`
   border-bottom: 1px solid #363636;
 `;
 
-export const GeneralSettingsIntegrationsBlockButtonIcon = styled(Discord)`
+export const GeneralSettingsDiscordIcon = styled(Discord)`
   && {
     width: 27px;
     height: 20px;
@@ -361,6 +371,16 @@ export const GeneralSettingsIntegrationsBlockButtonIcon = styled(Discord)`
     margin-right: 12px;
   }
 `;
+
+export const GeneralSettingsTwitterIcon = styled(Twitter)`
+  && {
+    width: 27px;
+    height: 20px;
+    color: #00baff;
+    margin-right: 12px;
+  }
+`;
+
 
 export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   && {

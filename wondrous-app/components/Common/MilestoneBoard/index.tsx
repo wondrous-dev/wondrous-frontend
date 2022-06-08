@@ -29,63 +29,63 @@ export default function Board({ tasks, handleCardClick }) {
 
   return (
     <>
-      {tasks.map((milestone) => (
-        <MilestoneCard onClick={() => handleCardClick(milestone)} key={milestone.id}>
-          <BoardsCardHeader>
-            <BoardsCardSubheader>
-              <MilestoneIcon />
-              <MilestoneCardTitle>Milestone</MilestoneCardTitle>
-              <BoardsPrivacyLabel>
-                {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-              </BoardsPrivacyLabel>
-              {milestone?.status === TASK_STATUS_DONE && <CompletedIcon />}
-            </BoardsCardSubheader>
-          </BoardsCardHeader>
-          <BoardsCardBody>
-            <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
-            <BoardsCardBodyDescription>
-              {renderMentionString({
-                content: milestone.description,
-                router,
-              })}
-            </BoardsCardBodyDescription>
-            <MilestoneProgressWrapper>
-              <MilestoneProgress milestoneId={milestone.id} />
-            </MilestoneProgressWrapper>
-            {milestone?.media?.[0] ? (
-              <BoardsCardMedia>
-                <SafeImage
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                  src={milestone?.media[0].slug}
-                />
-              </BoardsCardMedia>
-            ) : null}
-            {milestone?.podName && (
-              <PodWrapper
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  goToPod(milestone?.podId);
-                }}
-              >
-                <PodIcon
-                  color={milestone?.podColor}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    marginRight: '8px',
+      {tasks.map((milestone) => {
+        const coverMedia = milestone?.media?.find((media) => media.type === 'image');
+        return (
+          <MilestoneCard onClick={() => handleCardClick(milestone)} key={milestone.id}>
+            <BoardsCardHeader>
+              <BoardsCardSubheader>
+                <MilestoneIcon />
+                <MilestoneCardTitle>Milestone</MilestoneCardTitle>
+                <BoardsPrivacyLabel>
+                  {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
+                </BoardsPrivacyLabel>
+                {milestone?.status === TASK_STATUS_DONE && <CompletedIcon />}
+              </BoardsCardSubheader>
+            </BoardsCardHeader>
+            <BoardsCardBody>
+              <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
+              <BoardsCardBodyDescription>
+                {renderMentionString({
+                  content: milestone.description,
+                  router,
+                })}
+              </BoardsCardBodyDescription>
+              <MilestoneProgressWrapper>
+                <MilestoneProgress milestoneId={milestone.id} />
+              </MilestoneProgressWrapper>
+              {coverMedia ? (
+                <BoardsCardMedia>
+                  <SafeImage style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }} src={coverMedia.slug} />
+                </BoardsCardMedia>
+              ) : null}
+              {milestone?.podName && (
+                <PodWrapper
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToPod(milestone?.podId);
                   }}
-                />
-                <PodName>{milestone?.podName}</PodName>
-              </PodWrapper>
-            )}
-          </BoardsCardBody>
-          <BoardsCardFooter>
-            <CommentsIcon />
-            {milestone.commentCount || 0}
-          </BoardsCardFooter>
-        </MilestoneCard>
-      ))}
+                >
+                  <PodIcon
+                    color={milestone?.podColor}
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      marginRight: '8px',
+                    }}
+                  />
+                  <PodName>{milestone?.podName}</PodName>
+                </PodWrapper>
+              )}
+            </BoardsCardBody>
+            <BoardsCardFooter>
+              <CommentsIcon />
+              {milestone.commentCount || 0}
+            </BoardsCardFooter>
+          </MilestoneCard>
+        );
+      })}
     </>
   );
 }

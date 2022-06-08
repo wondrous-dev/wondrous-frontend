@@ -48,23 +48,28 @@ const HeaderComponent = (props) => {
   };
 
   const router = useRouter();
-  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities'];
+  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
   return (
     <Header>
       <HeaderContainer>
         <HeaderLeftBlock>
-          <Link passHref href="/dashboard">
-            <HeaderLogo />
-          </Link>
-          <Tooltip title="Dashboard">
-            <Link passHref href="/dashboard">
-              <HeaderHomeButton>
-                <HomeIcon />
-              </HeaderHomeButton>
-            </Link>
+          <Tooltip title="Explore page">
+            <div style={{display: 'flex'}}>
+              <Link passHref href="/dashboard">
+                <HeaderLogo />
+              </Link>
+            </div>
           </Tooltip>
-
+          <Tooltip title="Dashboard">
+            <div>
+              <Link passHref href="/dashboard">
+                <HeaderHomeButton>
+                  <HomeIcon />
+                </HeaderHomeButton>
+              </Link>
+            </div>
+          </Tooltip>
           <HeaderInput
             placeholder="Search wonder..."
             InputProps={{

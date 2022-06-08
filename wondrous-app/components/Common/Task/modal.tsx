@@ -85,7 +85,6 @@ import {
   TokenIcon,
 } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
@@ -156,6 +155,7 @@ import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { CreateEntity } from 'components/CreateEntity';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1063,36 +1063,28 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
   if (editTask) {
     return (
-      <>
-        <CreateModalOverlay
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          open={open}
-          onClose={() => {
-            setEditTask(false);
-            setFetchedTask(null);
-            handleClose();
-          }}
-        >
-          <EditLayoutBaseModal
-            open={open}
-            entityType={entityType}
-            handleClose={() => {
-              setEditTask(false);
-              setFetchedTask(null);
-              handleClose();
-            }}
-            cancelEdit={() => setEditTask(false)}
-            existingTask={
-              fetchedTask && {
-                ...fetchedTask,
-                reviewers: reviewerData?.getTaskReviewers || [],
-              }
-            }
-            isTaskProposal={isTaskProposal}
-          />
-        </CreateModalOverlay>
-      </>
+      <CreateEntity
+        open={open}
+        handleCloseModal={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        entityType={entityType}
+        handleClose={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        cancel={() => setEditTask(false)}
+        existingTask={
+          fetchedTask && {
+            ...fetchedTask,
+            reviewers: reviewerData?.getTaskReviewers || [],
+          }
+        }
+        isTaskProposal={isTaskProposal}
+      />
     );
   }
 
@@ -1343,9 +1335,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     }`}
                     passHref={true}
                   >
-                    <TaskIconWrapper>
-                      <CheckedBoxIcon />
-                    </TaskIconWrapper>
+                    <Tooltip title="Task" placement="top">
+                      <span>
+                        <TaskIconWrapper>
+                          <CheckedBoxIcon />
+                        </TaskIconWrapper>
+                      </span>
+                    </Tooltip>
                   </Link>
                 </>
               )}
@@ -1377,45 +1373,49 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   }`}
                 />
                 {canEdit && (
-                  <DropDown DropdownHandler={TaskMenuIcon}>
-                    {canEdit && (isMilestone || isBounty) && (
-                      <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
-                        Complete {taskType}
-                      </DropDownItem>
-                    )}
-                    {canEdit && (
-                      <DropDownItem
-                        key={'task-menu-edit-' + fetchedTask?.id}
-                        onClick={() => setEditTask(true)}
-                        style={dropdownItemStyle}
-                      >
-                        Edit {taskType}
-                      </DropDownItem>
-                    )}
-                    {canArchive && !isTaskProposal && (
-                      <DropDownItem
-                        key={'task-menu-archive-' + fetchedTask?.id}
-                        onClick={() => {
-                          setArchiveTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                      >
-                        Archive {taskType}
-                      </DropDownItem>
-                    )}
-                    {canDelete && (
-                      <DropDownItem
-                        key={'task-menu-delete-' + fetchedTask?.id}
-                        onClick={() => {
-                          setDeleteTask(true);
-                        }}
-                        style={dropdownItemStyle}
-                        color={Red800}
-                      >
-                        Delete {taskType}
-                      </DropDownItem>
-                    )}
-                  </DropDown>
+                  <Tooltip title="More actions" placement="top">
+                    <div>
+                      <DropDown DropdownHandler={TaskMenuIcon}>
+                        {canEdit && (isMilestone || isBounty) && (
+                          <DropDownItem style={dropdownItemStyle} onClick={() => setCompleteModal(true)}>
+                            Complete {taskType}
+                          </DropDownItem>
+                        )}
+                        {canEdit && (
+                          <DropDownItem
+                            key={'task-menu-edit-modal-' + fetchedTask?.id}
+                            onClick={() => setEditTask(true)}
+                            style={dropdownItemStyle}
+                          >
+                            Edit {taskType}
+                          </DropDownItem>
+                        )}
+                        {canArchive && !isTaskProposal && (
+                          <DropDownItem
+                            key={'task-menu-archive-' + fetchedTask?.id}
+                            onClick={() => {
+                              setArchiveTask(true);
+                            }}
+                            style={dropdownItemStyle}
+                          >
+                            Archive {taskType}
+                          </DropDownItem>
+                        )}
+                        {canDelete && (
+                          <DropDownItem
+                            key={'task-menu-delete-' + fetchedTask?.id}
+                            onClick={() => {
+                              setDeleteTask(true);
+                            }}
+                            style={dropdownItemStyle}
+                            color={Red800}
+                          >
+                            Delete {taskType}
+                          </DropDownItem>
+                        )}
+                      </DropDown>
+                    </div>
+                  </Tooltip>
                 )}
               </TaskActionMenu>
             </TaskModalHeader>

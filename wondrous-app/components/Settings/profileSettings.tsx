@@ -9,7 +9,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_USER } from 'graphql/mutations';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { getDiscordUrl } from 'utils';
-import { CHAR_LIMIT_PROFILE_BIO, USERNAME_REGEX, validateEmail } from 'utils/constants';
+import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { ErrorText } from '../Common';
 import { SafeImage } from '../Common/Image';
@@ -30,7 +30,8 @@ import {
   GeneralSettingsDAONameInput,
   GeneralSettingsInputsBlock,
   GeneralSettingsIntegrationsBlockButton,
-  GeneralSettingsIntegrationsBlockButtonIcon,
+  GeneralSettingsDiscordIcon,
+  GeneralSettingsTwitterIcon,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
   GeneralSettingsSocialsBlock,
@@ -38,6 +39,9 @@ import {
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
 } from './styles';
+import Tooltip from 'components/Tooltip';
+import { useRouter } from 'next/router';
+import { buildTwitterAuthUrl, challengeCode } from 'components/Twitter/utils';
 
 const discordUrl = getDiscordUrl();
 
@@ -111,7 +115,7 @@ const SettingsLinks = ({ links, setLinks }) => {
             const value = links?.filter((i) => i.type === item.type)[0]?.url;
             return (
               <GeneralSettingsSocialsBlockRow key={item.type}>
-                <LinkSquareIcon icon={item.icon} />
+                <LinkSquareIcon title={item.type} icon={item.icon} />
                 <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
               </GeneralSettingsSocialsBlockRow>
             );
@@ -123,7 +127,7 @@ const SettingsLinks = ({ links, setLinks }) => {
         <GeneralSettingsSocialsBlockWrapper>
           {linkTypeWebsite.map((link) => (
             <GeneralSettingsSocialsBlockRow key={link.type}>
-              <LinkSquareIcon icon={<LinkBigIcon />} />
+              <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
               <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
             </GeneralSettingsSocialsBlockRow>
           ))}
@@ -135,6 +139,8 @@ const SettingsLinks = ({ links, setLinks }) => {
 
 const ProfileSettings = (props) => {
   const { loggedInUser } = props;
+  const router = useRouter();
+  const { discordUserExists, discordError } = router.query;
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
   const [profilePictureUrl, setProfilePictureUrl] = useState(loggedInUser?.profilePicture);
@@ -212,10 +218,8 @@ const ProfileSettings = (props) => {
         if (profilePicture) {
           const file = profilePicture;
           const fileName = profilePicture.name;
-          console.log('filename', fileName)
           // get image preview
           const { fileType, filename } = getFilenameAndType(fileName);
-          console.log(fileType, filename)
 
           const imagePrefix = `tmp/${loggedInUser?.id}/`;
           const imageUrl = imagePrefix + filename;
@@ -252,6 +256,11 @@ const ProfileSettings = (props) => {
         });
       }
     }
+  };
+
+  const redirectToTwitterAuth = () => {
+    const url = buildTwitterAuthUrl(challengeCode, 'profile');
+    window.open(url);
   };
 
   return (
@@ -335,31 +344,72 @@ const ProfileSettings = (props) => {
           >
             Integrations
           </LabelBlock>
-          <GeneralSettingsIntegrationsBlockButton
-            style={{
-              maxWidth: 'none',
-              width: 'fit-content',
-              ...(loggedInUser?.userInfo?.discordUsername && {
-                borderRadius: '8px',
-              }),
-            }}
-            buttonInnerStyle={{
-              ...(loggedInUser?.userInfo?.discordUsername && {
-                borderRadius: '8px',
-              }),
-            }}
-            highlighted
-            onClick={() => {
-              if (!loggedInUser?.userInfo?.discordUsername) {
-                window.location.href = discordUrl;
-              }
-            }}
-          >
-            <GeneralSettingsIntegrationsBlockButtonIcon />
-            {loggedInUser?.userInfo?.discordUsername
-              ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
-              : 'Connect discord'}
-          </GeneralSettingsIntegrationsBlockButton>
+      
+            <GeneralSettingsIntegrationsBlockButton
+              style={{
+                maxWidth: 'none',
+                width: 'fit-content',
+                ...(loggedInUser?.userInfo?.discordUsername && {
+                  borderRadius: '8px',
+                }),
+              }}
+              buttonInnerStyle={{
+                ...(loggedInUser?.userInfo?.discordUsername && {
+                  borderRadius: '8px',
+                }),
+              }}
+              highlighted
+              onClick={() => {
+                if (!loggedInUser?.userInfo?.discordUsername) {
+                  const state = JSON.stringify({
+                    callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+                  });
+                  window.location.href = `${discordUrl}&state=${state}`;
+                }
+              }}
+            >
+              <Tooltip title="This integration enables Discord notifications" placement="top">
+                <div>
+                  <GeneralSettingsDiscordIcon />
+                  {loggedInUser?.userInfo?.discordUsername
+                    ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
+                    : 'Connect discord'}
+                </div>
+              </Tooltip>
+            </GeneralSettingsIntegrationsBlockButton>
+            {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
+            {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
+            <GeneralSettingsIntegrationsBlockButton
+              style={{
+                marginTop: '30px',
+
+                maxWidth: 'none',
+                width: 'fit-content',
+                ...(loggedInUser?.userInfo?.twitterUsername && {
+                  borderRadius: '8px',
+                }),
+              }}
+              buttonInnerStyle={{
+                ...(loggedInUser?.userInfo?.twitterUsername && {
+                  borderRadius: '8px',
+                }),
+              }}
+              highlighted
+              onClick={() => {
+                if (!loggedInUser?.userInfo?.twitterUsername) {
+                  redirectToTwitterAuth()
+                }
+              }}
+            >
+              <Tooltip title="Connect your twitter account" placement="top">
+                <div>
+                  <GeneralSettingsTwitterIcon />
+                  {loggedInUser?.userInfo?.twitterUsername
+                    ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
+                    : 'Connect twitter'}
+                </div>
+              </Tooltip>
+            </GeneralSettingsIntegrationsBlockButton>
         </GeneralSettingsInputsBlock>
 
         {/* <GeneralSettingsInputsBlock>

@@ -8,13 +8,20 @@ interface ITabsVisibilityCreateEntity {
   setIsPublic: React.Dispatch<React.SetStateAction<boolean>>;
   podPrivacyLevel: string;
   orgPrivacyLevel: string;
+  type: string;
 }
 
 export const TabsVisibilityCreateEntity = (props: ITabsVisibilityCreateEntity) => {
-  const { isPod, isPublic, setIsPublic, podPrivacyLevel, orgPrivacyLevel } = props;
+  const { isPod, isPublic, setIsPublic, podPrivacyLevel, orgPrivacyLevel, type } = props;
   const tabsVisibilityOptions = {
-    [PRIVACY_LEVEL.public]: 'Public',
-    [PRIVACY_LEVEL.private]: isPod ? 'Pod Members Only' : 'DAO Members Only',
+    [PRIVACY_LEVEL.public]: {
+      title: 'Public',
+      tooltip: `Public means anyone can see this ${type}`,
+    },
+    [PRIVACY_LEVEL.private]: {
+      title: isPod ? 'Pod Members Only' : 'DAO Members Only',
+      tooltip: `Private means only those with the proper permissions can see this ${type}`
+    },
   };
   const tabsVisibilitySelected = isPublic
     ? tabsVisibilityOptions[PRIVACY_LEVEL.public]

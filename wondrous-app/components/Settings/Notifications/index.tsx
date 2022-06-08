@@ -33,7 +33,6 @@ import {
   DiscordText,
   GeneralSettingsContainer,
   GeneralSettingsIntegrationsBlock,
-  GeneralSettingsIntegrationsBlockButtonIcon,
   LabelBlock,
   LabelBlockText,
 } from '../styles';
@@ -373,27 +372,6 @@ const Notifications = ({ orgId }) => {
         {discordNotificationConfigData?.channelId && (
           <CurrentNotificationSetting discordNotificationConfigData={discordNotificationConfigData} orgId={orgId} />
         )}
-        {/* <ConnectDiscordButton
-          style={{
-            maxWidth: 'none',
-            width: 'fit-content',
-            borderRadius: '8px',
-          }}
-          buttonInnerStyle={{
-            borderRadius: '8px',
-          }}
-          highlighted
-          onClick={() => setShowInstructionPage(!showInstructionPage)}
-        >
-          <GeneralSettingsIntegrationsBlockButtonIcon />
-          {showInstructionPage ? 'Hide' : 'See'} Discord Setup Instruction
-        </ConnectDiscordButton>
-        {showInstructionPage && (
-          <>
-            <br />
-            <DiscordNotificationSetup orgUsername={orgData?.getOrgById?.username} />
-          </>
-        )} */}
       </GeneralSettingsIntegrationsBlock>
     </SettingsWrapper>
   );

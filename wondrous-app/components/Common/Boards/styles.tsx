@@ -120,9 +120,6 @@ export const ShowAllButton = styled(Button)`
 export const BoardsCardMedia = styled.div`
   border: 1px solid transparent;
   border-radius: 4px;
-  overflow: hidden;
-  height: 100%;
-  width: 100%;
   margin-top: 12px;
 `;
 // BOARDS CARD SHARED UI COMPONENTS
@@ -217,6 +214,7 @@ export const BoardsCardBodyDescription = styled(Typography)`
 
 const CardsContainerInnerWrapper = styled.div`
   margin-top: 32px;
+  min-height: 100vh;
 `;
 
 export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {

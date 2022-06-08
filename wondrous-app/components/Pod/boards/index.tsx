@@ -2,7 +2,7 @@ import React from 'react';
 
 import Wrapper from '../wrapper';
 import Boards from '../../Common/Boards';
-import { FILTER_STATUSES } from 'services/board';
+import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
@@ -24,40 +24,39 @@ type Props = {
   onLoadMore: any;
   hasMore: any;
   searchString: string;
-  statuses: string[];
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
   entityType: string;
   loading: boolean;
   activeView: string | string[];
+  orgId?: string;
+  statuses?: string[];
 };
 
-const OrgBoards = (props: Props) => {
+const PodBoards = (props: Props) => {
   const {
     columns,
     onLoadMore,
     hasMore,
     onSearch,
     onFilterChange,
-    statuses,
     setColumns,
     userId,
     entityType,
     loading,
     activeView,
+    orgId,
+    statuses,
   } = props;
 
   const ActiveBoard = BOARDS_MAP[entityType];
 
+  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId });
+  const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
+  const filterSchema: any = entityTypeFilters;
+
   return (
-    <Wrapper>
-      <BoardsActivity
-        onSearch={onSearch}
-        filterSchema={[FILTER_STATUSES]}
-        onFilterChange={onFilterChange}
-        statuses={statuses}
-        userId={userId}
-      />
+    <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {!loading && (
           <ActiveBoard
@@ -66,6 +65,7 @@ const OrgBoards = (props: Props) => {
             onLoadMore={onLoadMore}
             hasMore={hasMore}
             setColumns={setColumns}
+            entityType={entityType}
           />
         )}
       </ColumnsContext.Provider>
@@ -73,4 +73,4 @@ const OrgBoards = (props: Props) => {
   );
 };
 
-export default OrgBoards;
+export default PodBoards;

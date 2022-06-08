@@ -238,7 +238,7 @@ export const filterOrgUsers = (orgUsers) => {
 };
 
 const CreateLayoutBaseModal = (props) => {
-  const { entityType, handleClose, resetEntityType, open, parentTaskId } = props;
+  const { entityType, handleClose, cancel, open, parentTaskId } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(plainTextToRichText(''));
@@ -411,22 +411,6 @@ const CreateLayoutBaseModal = (props) => {
   }, [parentTaskId, getTaskById, isSubtask]);
 
   useEffect(() => {
-    if (isSubtask) {
-      getTaskById({
-        variables: {
-          taskId: parentTaskId,
-        },
-      })
-        .then((data) => {
-          const task = data?.data?.getTaskById;
-          setOrg(task?.orgId);
-          setPod(task?.podId);
-        })
-        .catch((e) => console.error(e));
-    }
-  }, [parentTaskId, getTaskById, isSubtask]);
-
-  useEffect(() => {
     if (open) {
       if (fetchedUserPermissionsContext && board?.orgId in fetchedUserPermissionsContext?.orgPermissions && !org) {
         // If you're only part of one dao then just set that as default
@@ -569,7 +553,13 @@ const CreateLayoutBaseModal = (props) => {
           setErrors(newErrors);
         } else {
           if (canCreateTask) {
-            const refetchQueries = [];
+            const refetchQueries = [
+              'getPerStatusTaskCountForMilestone',
+              'getUserTaskBoardTasks',
+              'getPerStatusTaskCountForUserBoard',
+              'getSubtasksForTask',
+              'getSubtaskCountForTask',
+            ];
             if (orgBoard) {
               refetchQueries.push('getPerTypeTaskCountForOrgBoard');
             }
@@ -967,7 +957,6 @@ const CreateLayoutBaseModal = (props) => {
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
     createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
-
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalHeaderWrapper>
@@ -1570,6 +1559,7 @@ const CreateLayoutBaseModal = (props) => {
                       Who can see this {titleText.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
                     <TabsVisibilityCreateEntity
+                      type={titleText.toLowerCase()}
                       isPod={isPod}
                       isPublic={isPublicEntity}
                       setIsPublic={setIsPublicEntity}
@@ -1587,7 +1577,7 @@ const CreateLayoutBaseModal = (props) => {
       <CreateFormFooterButtons>
         {errors.general && <ErrorText>{errors.general}</ErrorText>}
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={resetEntityType}>Cancel</CreateFormCancelButton>
+          <CreateFormCancelButton onClick={cancel}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton
             style={{
               ...(isPod &&

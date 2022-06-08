@@ -8,12 +8,12 @@ import { Matic } from '../../Icons/matic';
 import { USDCoin } from '../../Icons/USDCoin';
 
 export const Compensation = (props) => {
-  const { rewards, taskIcon, style } = props;
+  const { rewards, taskIcon, style, pillStyle = {} } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
 
   return (
     <CompensationWrapper key={props.id} style={style}>
-      <CompensationPill>
+      <CompensationPill style={pillStyle}>
         {rewardAmount && (
           <>
             {icon && (
@@ -33,7 +33,7 @@ export const Compensation = (props) => {
             </CompensationAmount>
           </>
         )}
-        {taskIcon}
+        {taskIcon ? taskIcon : null}
       </CompensationPill>
     </CompensationWrapper>
   );

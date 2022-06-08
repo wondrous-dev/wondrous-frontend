@@ -107,54 +107,62 @@ const SideBarComponent = (props) => {
           <DrawerList>
             {listItems &&
               listItems.map((item) => (
-                <Tooltip key={item.id} title={`${item?.username} Board`}>
-                  <Link
-                    key={item.id}
-                    href={`/organization/[username]/boards`}
-                    as={`/organization/${item?.username}/boards`}
-                    passHref={true}
-                  >
-                    <DrawerListItem button key={item.id}>
-                      {item?.profilePicture ? (
-                        <SafeImage
-                          src={item?.thumbnailPicture || item?.profilePicture}
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '6px',
-                          }}
-                        />
-                      ) : (
-                        <NoLogoDAO>
-                          <DAOIcon />
-                        </NoLogoDAO>
-                      )}
-                    </DrawerListItem>
-                  </Link>
+                <Tooltip key={item.id} title={`${item?.name}`}>
+                  <div>
+                    <Link
+                      key={item.id}
+                      href={`/organization/[username]/boards`}
+                      as={`/organization/${item?.username}/boards`}
+                      passHref={true}
+                    >
+                      <DrawerListItem button key={item.id}>
+                        {item?.profilePicture ? (
+                          <SafeImage
+                            src={item?.thumbnailPicture || item?.profilePicture}
+                            style={{
+                              width: '36px',
+                              height: '36px',
+                              borderRadius: '6px',
+                            }}
+                          />
+                        ) : (
+                          <NoLogoDAO>
+                            <DAOIcon />
+                          </NoLogoDAO>
+                        )}
+                      </DrawerListItem>
+                    </Link>
+                  </div>
                 </Tooltip>
               ))}
             <StyledDividerDiv>
               <StyledDivider />
             </StyledDividerDiv>
-            <PodButtonDiv>
-              <PodButton
-                style={{
-                  cursor: 'pointer',
-                }}
-                onClick={() => setOpenPodModal(true)}
-              />
-            </PodButtonDiv>
+            <Tooltip title="Pods">
+              <PodButtonDiv>
+                <PodButton
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => setOpenPodModal(true)}
+                />
+              </PodButtonDiv>
+            </Tooltip>
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
-          <DrawerBottomButton onClick={generalSettings}>
-            <SettingsIcon />
-          </DrawerBottomButton>
+          <Tooltip title="Settings" placement="top">
+            <DrawerBottomButton onClick={generalSettings}>
+              <SettingsIcon />
+            </DrawerBottomButton>
+          </Tooltip>
         </DrawerBottomBlock>
       </DrawerContainer>
-      <DrawerBackButton onClick={handleMinimize} className={minimized ? 'active' : ''}>
-        <BackArrowIcon />
-      </DrawerBackButton>
+      <Tooltip title={minimized ? 'Open panel' : 'Close panel'} placement="top">
+        <DrawerBackButton onClick={handleMinimize} className={minimized ? 'active' : ''}>
+          <BackArrowIcon />
+        </DrawerBackButton>
+      </Tooltip>
     </DrawerComponent>
   );
 };

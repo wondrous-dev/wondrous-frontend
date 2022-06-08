@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useRef } from 'react';
+import { useMemo, useState, useEffect } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
 import { isEmpty } from 'lodash';
@@ -11,6 +11,7 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import IconButton from '@mui/material/IconButton';
+import ClickAwayListener from '@mui/material/ClickAwayListener';
 
 import {
   DATEPICKER_OPTIONS,
@@ -19,13 +20,14 @@ import {
   DAY_STRING_MONTH_SHORT_YEAR,
   MONTH_DAY_FULL_YEAR,
 } from 'utils/constants';
-import { useOutsideAlerter } from 'utils/hooks';
 
 import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilities';
 import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
 import styles from './SingleDatePickerStyles';
+import { Popper } from '@mui/material';
+import CloseModalIcon from 'components/Icons/closeModal';
 
 interface SingleDatePickerProps {
   sx?: object;
@@ -36,6 +38,8 @@ interface SingleDatePickerProps {
   recurrenceValue?: any;
   value?: any;
   hideRecurring?: boolean;
+  className?: string;
+  handleClose?(): void;
 }
 
 const SingleDatePicker = ({
@@ -47,16 +51,15 @@ const SingleDatePicker = ({
   recurrenceValue,
   setRecurrenceValue,
   hideRecurring,
+  className,
+  handleClose,
 }: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
-  const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
   const [repeatType, setRepeatType] = useState();
   const [repeatValue, setRepeatValue] = useState();
   const [weekDaysSelected, setWeekDaysSelected] = useState<Object>(WEEK_DAYS);
   const [monthInView, setMonthInView] = useState();
-
-  const datePickerRef = useRef();
 
   const parseWeekDaysToPosition = (weekDays) => {
     const booleanDayList = Object.keys(weekDays).map((_, idx) => Object.values(weekDays)[idx]);
@@ -71,6 +74,13 @@ const SingleDatePicker = ({
 
     return weekDays;
   };
+
+  useEffect(() => {
+    if(repeatType && !date) {
+      // if there are no day selected but repeat value set, default to today
+     setDate(moment());   
+    }
+  }, [repeatType, date]);
 
   useEffect(() => {
     value && setDate(moment(value));
@@ -163,114 +173,127 @@ const SingleDatePicker = ({
     setShowOptions(null);
   };
 
-  // useOutsideAlerter(datePickerRef, () => setFocusedInput(false));
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const handleClickAway = () => {
+    setAnchorEl(null);
+  };
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+  };
+  const open = Boolean(anchorEl);
 
   return (
-    <Box
-      mt={4}
-      display="flex"
-      flexDirection="column"
-      maxWidth={300}
-      width={focusedInput ? 300 : 'default'}
-      ref={datePickerRef}
-    >
-      <TextField
-        placeholder="Choose date"
-        InputProps={{
-          readOnly: true,
-          startAdornment: (
-            <InputAdornment position="start" sx={styles.calendarIcon}>
-              <Image src="/images/icons/calendar.svg" width={12} height={12} alt="calendar icon" />
-            </InputAdornment>
-          ),
-          endAdornment: (
-            <InputAdornment position="end">
-              <IconButton
-                onClick={(e) => {
-                  e.preventDefault();
-                  e.stopPropagation();
-                  setFocusedInput(false);
+    <>
+      <Box
+        className={className}
+        mt={4}
+        display="flex"
+        flexDirection="column"
+        maxWidth={300}
+        width={open ? 300 : 'default'}
+      >
+        <TextField
+          placeholder="Choose date"
+          InputProps={{
+            readOnly: true,
+            startAdornment: (
+              <InputAdornment position="start" sx={styles.calendarIcon}>
+                <Image src="/images/icons/calendar.svg" width={12} height={12} alt="calendar icon" />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                <IconButton
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    setAnchorEl(null);
+                    handleClose?.();
+                  }}
+                >
+                  <CloseModalIcon />
+                </IconButton>
+              </InputAdornment>
+            ),
+          }}
+          value={displayValue}
+          onClick={handleClick}
+          sx={open ? styles.mainTextfield : styles.mainTextfieldInactive}
+        />
+      </Box>
+      <ClickAwayListener onClickAway={handleClickAway} mouseEvent={'onMouseDown'}>
+        <Popper open={open} anchorEl={anchorEl} placement="bottom" disablePortal={true}>
+          <Box sx={styles.mainContainer}>
+            <Box sx={{ ...styles.root, ...sx }}>
+              <Box sx={styles.inputContainer}>
+                <TextField
+                  value={startDateString}
+                  InputProps={{
+                    readOnly: true,
+                    endAdornment: (
+                      <InputAdornment position="end">
+                        <IconButton onClick={reset}>
+                          <CloseModalIcon />
+                        </IconButton>
+                      </InputAdornment>
+                    ),
+                  }}
+                  fullWidth
+                  placeholder="Due Date"
+                  sx={styles.darkTextfield}
+                />
+              </Box>
+              <DayPickerSingleDateController
+                date={date}
+                initialDate={date}
+                id="your_unique_id"
+                onDateChange={(date) => handleDateChange(date)}
+                focusedInput={open}
+                onFocusChange={() => {}}
+                numberOfMonths={1}
+                displayFormat="MM/DD/yyyy"
+                daySize={35.9}
+                minimumNights={0}
+                enableOutsideDays
+                navPrev={<DatePickerNavButton prev />}
+                navNext={<DatePickerNavButton next />}
+                onPrevMonthClick={(month) => {
+                  setMonthInView(month);
                 }}
-              >
-                <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
-              </IconButton>
-            </InputAdornment>
-          ),
-        }}
-        value={displayValue}
-        onClick={() => setFocusedInput(true)}
-        sx={focusedInput ? styles.mainTextfield : styles.mainTextfieldInactive}
-      />
-
-      {focusedInput && (
-        <Box sx={styles.mainContainer}>
-          <Box sx={{ ...styles.root, ...sx }}>
-            <Box sx={styles.inputContainer}>
-              <TextField
-                value={startDateString}
-                InputProps={{
-                  readOnly: true,
-                  endAdornment: (
-                    <InputAdornment position="end">
-                      <IconButton onClick={reset}>
-                        <Image src="/images/icons/cancel.svg" width={9} height={9} alt="calendar icon" />
-                      </IconButton>
-                    </InputAdornment>
-                  ),
+                onNextMonthClick={(month) => {
+                  setMonthInView(month);
                 }}
-                fullWidth
-                placeholder="Start Date"
-                sx={styles.darkTextfield}
+                customArrowIcon={<></>}
+                isDayHighlighted={(day) => highlightDay(day)}
+                isDayBlocked={(day) => day.isBefore(todayMoment)}
+                renderCalendarDay={(props) => <CalendarDay {...props} />}
+                hideKeyboardShortcutsPanel
+                renderCalendarInfo={() =>
+                  !hideRecurring && (
+                    <DatePickerRecurringUtilities
+                      monthInView={monthInView}
+                      showOptions={showOptions}
+                      setShowOptions={setShowOptions}
+                      setDate={handleDateChange}
+                      setRepeatType={handleSetRepeatType}
+                      repeatType={repeatType}
+                      setRepeatValue={handleSetRepeatValue}
+                      repeatValue={repeatValue}
+                      date={date}
+                      todayMoment={todayMoment}
+                      onWeekDaysChange={handleWeekDaysChange}
+                      weekDaysSelected={weekDaysSelected}
+                    />
+                  )
+                }
               />
             </Box>
-            <DayPickerSingleDateController
-              date={date}
-              initialDate={date}
-              id="your_unique_id"
-              onDateChange={(date) => handleDateChange(date)}
-              focusedInput={focusedInput}
-              onFocusChange={() => {}}
-              numberOfMonths={1}
-              displayFormat="MM/DD/yyyy"
-              daySize={35.9}
-              minimumNights={0}
-              enableOutsideDays
-              navPrev={<DatePickerNavButton prev />}
-              navNext={<DatePickerNavButton next />}
-              onPrevMonthClick={(month) => {
-                setMonthInView(month);
-              }}
-              onNextMonthClick={(month) => {
-                setMonthInView(month);
-              }}
-              customArrowIcon={<></>}
-              isDayHighlighted={(day) => highlightDay(day)}
-              isDayBlocked={(day) => day.isBefore(todayMoment)}
-              renderCalendarDay={(props) => <CalendarDay {...props} />}
-              hideKeyboardShortcutsPanel
-              renderCalendarInfo={() =>
-                !hideRecurring && (
-                  <DatePickerRecurringUtilities
-                    monthInView={monthInView}
-                    showOptions={showOptions}
-                    setShowOptions={setShowOptions}
-                    setDate={handleDateChange}
-                    setRepeatType={handleSetRepeatType}
-                    repeatType={repeatType}
-                    setRepeatValue={handleSetRepeatValue}
-                    repeatValue={repeatValue}
-                    date={date}
-                    todayMoment={todayMoment}
-                    onWeekDaysChange={handleWeekDaysChange}
-                    weekDaysSelected={weekDaysSelected}
-                  />
-                )
-              }
-            />
           </Box>
-        </Box>
-      )}
-    </Box>
+        </Popper>
+      </ClickAwayListener>
+    </>
   );
 };
 
