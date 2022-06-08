@@ -5,7 +5,7 @@ import { TaskSubtaskHeader } from '../TaskSubtaskHeader';
 import { TaskSubtaskList } from '../TaskSubtaskList';
 import { Subtask } from './styles';
 
-export const TaskSubtasks = ({ taskId, permissions }) => {
+export const TaskSubtasks = ({ taskId, permissions, parentTask }) => {
   const [createFormModal, setCreateFormModal] = useState(false);
 
   const toggleCreateFormModal = () => {

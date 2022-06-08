@@ -1873,7 +1873,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     isBounty={isBounty}
                   />
                 )}
-                {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}
+                {activeTab === tabs.subTasks && (
+                  <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
+                )}
                 {activeTab === tabs.discussion && (
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}
