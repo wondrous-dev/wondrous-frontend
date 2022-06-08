@@ -7,7 +7,7 @@ import { TaskSubtaskHeader } from '../TaskSubtaskHeader';
 import { TaskSubtaskList } from '../TaskSubtaskList';
 import { Subtask } from './styles';
 
-export const TaskSubtasks = ({ taskId, permissions }) => {
+export const TaskSubtasks = ({ taskId, permissions, parentTask }) => {
   const [createFormModal, setCreateFormModal] = useState(false);
 
   const toggleCreateFormModal = () => {
@@ -18,7 +18,7 @@ export const TaskSubtasks = ({ taskId, permissions }) => {
     <>
       <CreateModalOverlay open={createFormModal} onClose={toggleCreateFormModal}>
         <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
+          entityType={parentTask?.type === ENTITIES_TYPES.BOUNTY ? ENTITIES_TYPES.BOUNTY : ENTITIES_TYPES.TASK}
           handleClose={toggleCreateFormModal}
           parentTaskId={taskId}
           cancel={toggleCreateFormModal}
