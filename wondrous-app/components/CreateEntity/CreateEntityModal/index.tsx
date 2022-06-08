@@ -808,6 +808,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
+
   const { podId: routerPodId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
@@ -848,10 +849,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   );
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
+
+  const getPrivacyLevel = (podId) => {
+    const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
+    const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
+    return privacyLevel;
+  };
+
   const handleOnchangePodId = useCallback(
     (podId) => {
-      const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
-      const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
       const resetValues = initialValues(entityType);
       form.setValues({
         ...form.values,
@@ -859,13 +865,14 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         assigneeId: resetValues?.assigneeId,
         rewards: resetValues?.rewards,
         milestoneId: resetValues?.milestoneId,
-        privacyLevel,
+        privacyLevel: getPrivacyLevel(podId),
         podId,
       });
       form.setErrors({});
     },
     [entityType, form, pods]
   );
+
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
@@ -895,6 +902,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
+
   useEffect(() => {
     if (isSubtask) {
       form.setFieldValue('parentTaskId', parentTaskId);
@@ -911,6 +919,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         .catch((e) => console.error(e));
     }
   }, [parentTaskId, getTaskById, isSubtask]);
+
+  const isPrivacySelectorEnabled =
+    getPrivacyLevel(form.values.podId) === privacyOptions.public.value || !form.values.podId;
+
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
@@ -1435,18 +1447,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={form.values.privacyLevel !== privacyOptions.public.value}
+            disabled={!isPrivacySelectorEnabled}
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
             renderValue={(value) => {
               return (
-                <Tooltip
-                  title={
-                    form.values.privacyLevel !== privacyOptions.public.value && 'The selected pod is for members only'
-                  }
-                  placement="top"
-                >
+                <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
                   <CreateEntityPrivacySelectRender>
                     <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
                     <CreateEntitySelectArrowIcon />
