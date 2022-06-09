@@ -87,7 +87,7 @@ export const InviteWelcomeBox = ({ updateUser, props }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [user?.profilePicture]);
-  // @ts-ignore
+
   return (
     <InviteWelcomeBoxWrapper>
       <Logo

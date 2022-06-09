@@ -11,7 +11,9 @@ import {
   ContentWrapper,
   HeaderWrapper,
   LabelWrapper,
+  Connectors,
   Label,
+  Logo,
   StyledHr,
 } from './styles';
 import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
@@ -32,8 +34,10 @@ import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DiscordIcon } from 'components/Icons/discord';
 import { CompletedIcon } from 'components/Icons/statusIcons';
+import NoLogo from 'components/Icons/noLogo';
+import OnboardingHeader from "components/Onboarding/OnboardingLayout/Header";
 
-export const Logo = () => {
+export const Logo2 = () => {
   return (
     <LogoDiv>
       <WonderLogo />
@@ -217,66 +221,75 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
   const buttonStyles = {
     marginTop: '16px',
     width: '100%',
-    maxWidth: '300px',
+    maxWidth: '330px',
   };
   return (
     <InviteWelcomeBoxWrapper>
-      <ContentWrapper>
-        <HeaderWrapper>
-          <WonderLogo />
-          <LogoText>Wonder</LogoText>
-        </HeaderWrapper>
+      <ContentWrapper style={{ textAlign: 'center' }}>
+        <OnboardingHeader />
 
         <StyledHr />
 
-        <SafeImage
-          style={{
-            width: '78px',
-            height: '78px',
-            borderRadius: '39px',
-            marginBottom: '20px',
-          }}
-          src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
-        />
+        <Logo>
+          {orgInfo?.profilePicture || podInfo?.org?.profilePicture ? (
+            <SafeImage
+              style={{
+                width: '78px',
+                height: '78px',
+                borderRadius: '39px',
+                marginBottom: '20px',
+              }}
+              src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
+            />
+          ) : (
+            <NoLogo />
+          )}
+        </Logo>
+
         <InviteWelcomeBoxTitle>{titleSentence}</InviteWelcomeBoxTitle>
         <InviteWelcomeBoxParagraph>Wonder is where DAOs manage world changing projects</InviteWelcomeBoxParagraph>
+        <StyledHr />
         <InviteWelcomeBoxParagraph
           style={{
             fontWeight: 'normal',
+            margin: '30px auto',
           }}
         >
           {contributingSentence}
         </InviteWelcomeBoxParagraph>
-        <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
-        <WalletConnectConnector text="Connect with Wallet Connect" style={buttonStyles} />
-        <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
-        <Button
-          style={buttonStyles}
-          onClick={() => {
-            const url = getDiscordUrl();
-            let type = null;
-            if (orgInfo) {
-              type = 'org';
-            } else if (podInfo) {
-              type = 'pod';
-            }
-            const state = JSON.stringify({
-              callbackType: DISCORD_CONNECT_TYPES.signup,
-              token,
-              type,
-            });
-            window.location.href = `${url}&state=${state}`;
-          }}
-        >
-          <DiscordIcon />
-          <span
-            style={{
-              marginLeft: '12px',
+        <StyledHr />
+        <Connectors>
+          <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
+          <WalletConnectConnector text="Connect with Wallet Connect" style={buttonStyles} />
+          <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
+          <Button
+            style={buttonStyles}
+            onClick={() => {
+              const url = getDiscordUrl();
+              let type = null;
+              if (orgInfo) {
+                type = 'org';
+              } else if (podInfo) {
+                type = 'pod';
+              }
+              const state = JSON.stringify({
+                callbackType: DISCORD_CONNECT_TYPES.signup,
+                token,
+                type,
+              });
+              window.location.href = `${url}&state=${state}`;
             }}
           >
-            Connect with Discord
-          </span>
-        </Button>
+            <DiscordIcon />
+            <span
+              style={{
+                marginLeft: '12px',
+              }}
+            >
+              Connect with Discord
+            </span>
+          </Button>
+        </Connectors>
 
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
