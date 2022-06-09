@@ -59,7 +59,7 @@ export const SubmissionsCount = ({ total, approved }) => {
     <BountyCardSubmissionsCountWrapper>
       {config.map((item, idx) => (
         <BountyCardSubmissionsCount key={idx}>
-          <SubmissionCount gradient={item.gradient}>{item.count}</SubmissionCount>
+          <SubmissionCount gradient={item.gradient}>{item.count || 0}</SubmissionCount>
           {item.label}
         </BountyCardSubmissionsCount>
       ))}
