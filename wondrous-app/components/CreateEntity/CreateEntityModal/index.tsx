@@ -813,7 +813,7 @@ interface ICreateEntityModal {
   parentTaskId?: string;
   resetEntityType?: Function;
   setEntityType?: Function;
-  formValues: FormikValues;
+  formValues?: FormikValues;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {

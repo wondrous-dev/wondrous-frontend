@@ -14,7 +14,7 @@ interface ICreateEntity {
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;
-  formValues: FormikValues;
+  formValues?: FormikValues;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
