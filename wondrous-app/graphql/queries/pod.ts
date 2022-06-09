@@ -170,3 +170,13 @@ export const GET_POD_GITHUB_INTEGRATIONS = gql`
     }
   }
 `;
+
+export const GET_POD_GITHUB_PULL_REQUESTS = gql`
+  query getPodGithubPullRequests($podId: ID!) {
+    getPodGithubPullRequests(podId: $podId) {
+      id
+      title
+      url
+    }
+  }
+`;

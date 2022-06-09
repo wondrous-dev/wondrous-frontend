@@ -24,7 +24,7 @@ import {
 } from 'graphql/mutations/task';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
+import { GET_POD_GITHUB_PULL_REQUESTS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
@@ -186,6 +186,16 @@ const filterOrgUsersForAutocomplete = (orgUsers) => {
   }));
 };
 
+const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
+  if (!githubPullRequests) {
+    return [];
+  }
+  return githubPullRequests.map((githubPullRequest) => ({
+    id: githubPullRequest.id,
+    label: githubPullRequest.title,
+    url: githubPullRequest.url,
+  }));
+};
 const filterPaymentMethods = (paymentMethods) => {
   if (!paymentMethods) return [];
   return paymentMethods.map((paymentMethod) => {
@@ -274,6 +284,21 @@ const useGetAvailableUserPods = (org) => {
     }
   }, [getAvailableUserPods, org]);
   return data?.getAvailableUserPods;
+};
+
+const useGetPodPullRequests = (pod) => {
+  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS);
+  useEffect(() => {
+    if (pod) {
+      getPodGithubPullRequests({
+        variables: {
+          podId: pod,
+        },
+      });
+    }
+  }, [pod]);
+
+  return filterGithubPullRequestsForAutocomplete(podGithubPullRequestsData?.getPodGithubPullRequests);
 };
 
 const useGetEligibleReviewers = (org, pod) => {
@@ -712,6 +737,7 @@ enum Fields {
   points,
   milestone,
   tags,
+  githubPullRequest,
 }
 
 const entityTypeData = {
@@ -724,6 +750,7 @@ const entityTypeData = {
       Fields.points,
       Fields.milestone,
       Fields.tags,
+      Fields.githubPullRequest,
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -741,6 +768,7 @@ const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      githubPullRequest: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -830,7 +858,12 @@ interface ICreateEntityModal {
   entityType: string;
   handleClose: Function;
   cancel: Function;
-  existingTask?: {};
+  existingTask?: {
+    githubIssue: {
+      id: string;
+      url: string;
+    };
+  };
   parentTaskId?: string;
   resetEntityType?: Function;
   setEntityType?: Function;
@@ -880,7 +913,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       const rewards = _.isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
-
+      const githubPullRequest = {
+        id: values?.githubPullRequest?.id,
+        title: values?.githubPullRequest?.label,
+        url: values?.githubPullRequest?.url,
+      };
       const input = {
         ...values,
         reviewerIds,
@@ -888,10 +925,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         rewards,
         timezone,
         userMentions,
+        githubPullRequest,
         description: JSON.stringify(values.description),
       };
-
-      handleMutation({ input, board, pods, form, handleClose, existingTask, ...{ formValues } });
+      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -917,7 +954,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     },
     [entityType, form, getPrivacyLevel]
   );
-
+  const availablePullRequests = useGetPodPullRequests(form.values.podId);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
@@ -1534,6 +1571,86 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+        {availablePullRequests.length > 0 && existingTask && !existingTask?.githubIssue && (
+          <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.githubPullRequest)}>
+            <CreateEntityLabelWrapper>
+              <CreateEntityLabel>Link Github PR</CreateEntityLabel>
+            </CreateEntityLabelWrapper>
+
+            <CreateEntitySelectWrapper>
+              {form.values.githubPullRequest !== null && (
+                <CreateEntitySelectErrorWrapper>
+                  <CreateEntityAutocompletePopper
+                    onFocus={() => form.setFieldError('githubPullRequest', undefined)}
+                    openOnFocus={true}
+                    options={availablePullRequests}
+                    value={form.values.githubPullRequest}
+                    isOptionEqualToValue={(option, value) => {
+                      return option.value?.id === value;
+                    }}
+                    renderInput={(params) => {
+                      // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
+                      return (
+                        <CreateEntityAutocompletePopperRenderInput
+                          {...params}
+                          // inputProps={{
+                          //   ...params.inputProps,
+                          //   value: githubPullRequest?.label,
+                          // }}
+                          ref={params.InputProps.ref}
+                          disableUnderline={true}
+                          fullWidth={true}
+                          placeholder="Enter PR name"
+                          endAdornment={
+                            <CreateEntityAutocompletePopperRenderInputAdornment
+                              position="end"
+                              onClick={() => {
+                                form.setFieldValue('githubPullRequest', null);
+                              }}
+                            >
+                              <CreateEntityAutocompletePopperRenderInputIcon />
+                            </CreateEntityAutocompletePopperRenderInputAdornment>
+                          }
+                        />
+                      );
+                    }}
+                    renderOption={(props, option) => {
+                      return (
+                        <CreateEntityAutocompleteOption
+                          {...props}
+                          onClick={() => {
+                            if (form.values.githubPullRequest?.id !== option.id) {
+                              form.setFieldValue('githubPullRequest', option);
+                            }
+                            form.setFieldError('githubPullRequest', undefined);
+                          }}
+                        >
+                          <CreateEntityAutocompleteOptionTypography>
+                            {option?.label}
+                          </CreateEntityAutocompleteOptionTypography>
+                        </CreateEntityAutocompleteOption>
+                      );
+                    }}
+                    error={form.errors?.githubPullRequest}
+                  />
+                  {form.errors?.githubPullRequest && (
+                    <CreateEntityError>{form.errors?.githubPullRequest}</CreateEntityError>
+                  )}
+                </CreateEntitySelectErrorWrapper>
+              )}
+              {form.values.githubPullRequest === null && (
+                <CreateEntityLabelAddButton
+                  onClick={() => {
+                    form.setFieldValue('githubPullRequest', '');
+                  }}
+                >
+                  <CreateEntityAddButtonIcon />
+                  <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+                </CreateEntityLabelAddButton>
+              )}
+            </CreateEntitySelectWrapper>
+          </CreateEntityLabelSelectWrapper>
+        )}
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
