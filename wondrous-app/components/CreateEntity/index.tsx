@@ -1,3 +1,4 @@
+import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
@@ -13,6 +14,7 @@ interface ICreateEntity {
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;
+  formValues: FormikValues;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {

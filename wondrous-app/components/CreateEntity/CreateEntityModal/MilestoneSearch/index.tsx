@@ -27,7 +27,7 @@ import {
 } from './styles';
 
 const MilestoneSearch = (props) => {
-  const { options, onChange, value, handleClose } = props;
+  const { options, onChange, value, handleClose, formValues = null } = props;
   const [createMilestone, setCreateMilestone] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -55,6 +55,7 @@ const MilestoneSearch = (props) => {
           handleClickAway();
           onChange(data?.createMilestone?.id);
         }}
+        formValues={formValues}
       />
     );
   }
