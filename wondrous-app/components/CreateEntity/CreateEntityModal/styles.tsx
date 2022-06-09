@@ -322,13 +322,15 @@ export const CreateEntityDescriptionWrapper = styled.div`
       }
       > ${CreateEntityDescription}__input {
         background: transparent;
-        font-family: 'Space Grotesk';
+        font-family: 'Space Grotesk' !important;
         border: none;
         font-weight: 400;
         line-height: 24px;
         color: #c4c4c4;
         width: 100%;
         resize: none;
+        // This to override default styling applied by react-mention
+        overflow-y: scroll !important;
         :focus {
           outline: none;
         }

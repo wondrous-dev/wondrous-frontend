@@ -1,5 +1,6 @@
 import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
 import { Autocomplete, ClickAwayListener, InputAdornment, TextField, Typography } from '@mui/material';
+import CloseModalIcon from 'components/Icons/closeModal';
 import PodIcon from 'components/Icons/podIcon';
 import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
@@ -51,6 +52,7 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   align-items: center;
   justify-content: space-between;
   text-align: left;
+  gap: 6px;
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -85,13 +87,13 @@ export const PodSearchInput = styled(TextField)`
   && {
     width: 100%;
     padding: 10px;
-    .MuiOutlinedInput-root {
+    && .MuiOutlinedInput-root {
       background: #313131;
       width: 100%;
       display: flex;
       padding: 0 8px;
     }
-    .MuiOutlinedInput-input {
+    && .MuiOutlinedInput-input {
       height: 32px;
       padding: 0;
       font-family: 'Space Grotesk';
@@ -119,7 +121,9 @@ export const PodSearchInputIcon = styled(SearchIcon)`
 `;
 
 export const PodSearchAutocompletePopper = styled.div`
-  position: relative;
+  && {
+    position: relative;
+  }
   .MuiAutocomplete-noOptions {
     font-family: 'Space Grotesk';
     color: ${White};
@@ -227,3 +231,5 @@ export const PodSearchButtonArrowIcon = styled((props) => (
     }
   }
 `;
+
+export const PodSearchButtonDeleteIcon = styled(CloseModalIcon)``;
