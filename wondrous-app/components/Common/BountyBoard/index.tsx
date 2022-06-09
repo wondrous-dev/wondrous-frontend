@@ -115,8 +115,11 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                 </BoardsCardMedia>
               ) : null}
               <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
+            </BoardsCardBody>
+            <BoardsCardFooter>
               {bounty?.podName && (
                 <PodWrapper
+                  style={{ marginTop: '0' }}
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
@@ -134,18 +137,14 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                   <PodName>{bounty?.podName}</PodName>
                 </PodWrapper>
               )}
-            </BoardsCardBody>
-            <BoardsCardFooter>
               {Number.isInteger(bounty.totalSubtaskCount) && (
                 <SubtasksWrapper>
                   <SubtaskDarkIcon height="30" width="30" fill="transparent" />
                   {bounty.totalSubtaskCount}
                 </SubtasksWrapper>
               )}
-              <>
-                <CommentsIcon />
-                {bounty.commentCount || 0}
-              </>
+              <CommentsIcon />
+              {bounty.commentCount || 0}
             </BoardsCardFooter>
           </BountyCardWrapper>
         );
