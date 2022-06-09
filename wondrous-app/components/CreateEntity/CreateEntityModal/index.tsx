@@ -1102,7 +1102,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                               position="end"
                               onClick={() => {
                                 const newReviewers = _.cloneDeep(form.values.reviewerIds).filter(
-                                  (id) => id !== reviewerId
+                                  (id, i) => i !== index
                                 );
                                 form.setFieldValue('reviewerIds', newReviewers);
                               }}
@@ -1116,16 +1116,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     renderOption={(props, option) => {
                       if (form.values.reviewerIds.includes(option.id) && option.id !== reviewerId) return null;
                       return (
-                        <CreateEntityAutocompleteOption
-                          {...props}
-                          onClick={() => {
-                            if (!form.values.reviewerIds.includes(option.id)) {
-                              const reviewerIds = _.cloneDeep(form.values.reviewerIds);
-                              reviewerIds[index] = option.id;
-                              form.setFieldValue('reviewerIds', reviewerIds);
-                            }
-                          }}
-                        >
+                        <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
                             <SafeImage src={option?.profilePicture} />
                           ) : (
@@ -1137,6 +1128,14 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         </CreateEntityAutocompleteOption>
                       );
                     }}
+                    onChange={(event, value, reason) => {
+                      if (reason === 'selectOption' && !form.values.reviewerIds.includes(value.id)) {
+                        const reviewerIds = _.cloneDeep(form.values.reviewerIds);
+                        reviewerIds[index] = value.id;
+                        form.setFieldValue('reviewerIds', reviewerIds);
+                      }
+                    }}
+                    blurOnSelect={true}
                     error={hasError}
                   />
                   {hasError && <CreateEntityError>{hasError}</CreateEntityError>}
@@ -1144,15 +1143,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               );
             })}
             <Tooltip
-              title={
-                form.values.reviewerIds?.length >= filteredEligibleReviewers.length &&
-                'You reached the maximum no. of available reviewers'
-              }
+              title={_.isEmpty(filteredEligibleReviewers) && 'You reached the maximum no. of available reviewers'}
               placement="top"
             >
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  if (form.values.reviewerIds?.length >= filteredEligibleReviewers.length) return;
+                  if (_.isEmpty(filteredEligibleReviewers)) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
@@ -1161,7 +1157,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 }}
               >
                 <CreateEntityAddButtonIcon />
-                {form.values.reviewerIds === null && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
+                {(_.isNull(form.values.reviewerIds) || _.isEmpty(form.values.reviewerIds)) && (
+                  <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+                )}
               </CreateEntityLabelAddButton>
             </Tooltip>
           </CreateEntitySelectWrapper>
@@ -1220,15 +1218,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   }}
                   renderOption={(props, option) => {
                     return (
-                      <CreateEntityAutocompleteOption
-                        {...props}
-                        onClick={() => {
-                          if (form.values.assigneeId !== option.value) {
-                            form.setFieldValue('assigneeId', option.value);
-                          }
-                          form.setFieldError('assigneeId', undefined);
-                        }}
-                      >
+                      <CreateEntityAutocompleteOption {...props}>
                         {option?.profilePicture ? (
                           <SafeImage src={option?.profilePicture} />
                         ) : (
@@ -1240,6 +1230,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       </CreateEntityAutocompleteOption>
                     );
                   }}
+                  onChange={(event, value, reason) => {
+                    if (reason === 'selectOption') {
+                      form.setFieldValue('assigneeId', value.value);
+                    }
+                  }}
+                  blurOnSelect={true}
                   error={form.errors?.assigneeId}
                 />
                 {form.errors?.assigneeId && <CreateEntityError>{form.errors?.assigneeId}</CreateEntityError>}

@@ -53,7 +53,6 @@ const PodSearch = (props) => {
               return (
                 <PodSearchInput
                   {...params}
-                  autoFocus={true}
                   ref={params.InputProps.ref}
                   disableUnderline={true}
                   fullWidth={true}
@@ -75,7 +74,7 @@ const PodSearch = (props) => {
             getOptionLabel={(option) => option.label}
             renderOption={(props, option) => {
               return (
-                <PodSearchListItem {...props} value={option.value}>
+                <PodSearchListItem {...props}>
                   <PodSearchDefaultImage color={option?.color ?? '#474747'} />
                   <PodSearchLabel>{option?.label}</PodSearchLabel>
                 </PodSearchListItem>
@@ -90,8 +89,10 @@ const PodSearch = (props) => {
             onChange={(event, value, reason) => {
               if (reason === 'selectOption') {
                 onChange(value.value);
+                handleClickAway();
               }
             }}
+            blurOnSelect={true}
           />
         </PodSearchPopper>
       </PodSearchWrapper>
