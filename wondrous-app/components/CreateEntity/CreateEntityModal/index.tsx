@@ -5,9 +5,11 @@ import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
 import {
+  ATTACH_MEDIA_TO_TASK,
   CREATE_BOUNTY,
   CREATE_MILESTONE,
   CREATE_TASK,
+  REMOVE_MEDIA_FROM_TASK,
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
@@ -46,7 +48,6 @@ import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } 
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
 import Tags, { Option as Label } from '../../Tags';
 import { MediaItem } from '../MediaItem';
@@ -764,6 +765,19 @@ const useContextValue = (condition, callback) => {
   }, [condition, callback]);
 };
 
+export const transformMediaFormat = (media) => {
+  return (
+    media &&
+    media.map((item) => {
+      return {
+        uploadSlug: item?.slug,
+        type: item?.type,
+        name: item?.name,
+      };
+    })
+  );
+};
+
 const initialValues = (entityType, existingTask = undefined) => {
   const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
@@ -771,9 +785,7 @@ const initialValues = (entityType, existingTask = undefined) => {
   const existingTaskValues = _.pick(
     {
       ...existingTask,
-      mediaUploads: existingTask?.media?.map(({ name, type, slug }) => {
-        return { name, type, uploadSlug: slug };
-      }),
+      mediaUploads: transformMediaFormat(existingTask?.media),
       reviewerIds: _.isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
         return { rewardAmount, paymentMethodId };
@@ -872,6 +884,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
   const [fullScreen, setFullScreen] = useState(false);
+  const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
+  const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
@@ -994,6 +1008,16 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   mediaUploads={form.values.mediaUploads}
                   setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
                   mediaItem={mediaItem}
+                  removeMediaItem={() => {
+                    if (existingTask) {
+                      removeMedia({
+                        variables: {
+                          taskId: existingTask?.['id'],
+                          slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                        },
+                      });
+                    }
+                  }}
                 />
               ))}
             <CreateEntityAttachment onClick={() => inputRef.current.click()}>
@@ -1006,15 +1030,30 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             type="file"
             hidden
             ref={inputRef}
-            onChange={(event) =>
-              handleAddFile({
+            onChange={async (event) => {
+              const fileToAdd = await handleAddFile({
                 event,
                 filePrefix: 'tmp/task/new/',
                 mediaUploads: form.values.mediaUploads,
                 setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
                 setFileUploadLoading,
-              })
-            }
+              });
+              if (existingTask) {
+                attachMedia({
+                  variables: {
+                    taskId: existingTask?.['id'],
+                    input: {
+                      mediaUploads: [fileToAdd],
+                    },
+                  },
+                  onCompleted: (data) => {
+                    const task = data?.attachTaskMedia;
+                    form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
+                    setFileUploadLoading(false);
+                  },
+                });
+              }
+            }}
           />
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
