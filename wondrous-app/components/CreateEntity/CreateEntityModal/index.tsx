@@ -13,9 +13,11 @@ import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
 import {
+  ATTACH_MEDIA_TO_TASK,
   CREATE_BOUNTY,
   CREATE_MILESTONE,
   CREATE_TASK,
+  REMOVE_MEDIA_FROM_TASK,
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
@@ -55,7 +57,6 @@ import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpe
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
 import Tags, { Option as Label } from '../../Tags';
 import { MediaItem } from '../MediaItem';
@@ -775,6 +776,19 @@ const useContextValue = (condition, callback) => {
   }, [condition, callback]);
 };
 
+export const transformMediaFormat = (media) => {
+  return (
+    media &&
+    media.map((item) => {
+      return {
+        uploadSlug: item?.slug,
+        type: item?.type,
+        name: item?.name,
+      };
+    })
+  );
+};
+
 const initialValues = (entityType, existingTask = undefined) => {
   const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
@@ -784,9 +798,7 @@ const initialValues = (entityType, existingTask = undefined) => {
     {
       ...existingTask,
       description,
-      mediaUploads: existingTask?.media?.map(({ name, type, slug }) => {
-        return { name, type, uploadSlug: slug };
-      }),
+      mediaUploads: transformMediaFormat(existingTask?.media),
       reviewerIds: _.isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
         return { rewardAmount, paymentMethodId };
@@ -822,6 +834,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
+
   const { podId: routerPodId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
@@ -876,10 +889,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   );
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
+
+  const getPrivacyLevel = (podId) => {
+    const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
+    const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
+    return privacyLevel;
+  };
+
   const handleOnchangePodId = useCallback(
     (podId) => {
-      const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
-      const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
       const resetValues = initialValues(entityType);
       form.setValues({
         ...form.values,
@@ -887,18 +905,21 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         assigneeId: resetValues?.assigneeId,
         rewards: resetValues?.rewards,
         milestoneId: resetValues?.milestoneId,
-        privacyLevel,
+        privacyLevel: getPrivacyLevel(podId),
         podId,
       });
       form.setErrors({});
     },
     [entityType, form, pods]
   );
+
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
   const [fullScreen, setFullScreen] = useState(false);
+  const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
+  const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
@@ -923,6 +944,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
+
   useEffect(() => {
     if (isSubtask) {
       form.setFieldValue('parentTaskId', parentTaskId);
@@ -939,6 +961,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         .catch((e) => console.error(e));
     }
   }, [parentTaskId, getTaskById, isSubtask]);
+
+  const isPrivacySelectorEnabled =
+    getPrivacyLevel(form.values.podId) === privacyOptions.public.value || !form.values.podId;
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
@@ -1039,6 +1064,16 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   mediaUploads={form.values.mediaUploads}
                   setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
                   mediaItem={mediaItem}
+                  removeMediaItem={() => {
+                    if (existingTask) {
+                      removeMedia({
+                        variables: {
+                          taskId: existingTask?.['id'],
+                          slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                        },
+                      });
+                    }
+                  }}
                 />
               ))}
             <CreateEntityAttachment onClick={() => inputRef.current.click()}>
@@ -1051,15 +1086,30 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             type="file"
             hidden
             ref={inputRef}
-            onChange={(event) =>
-              handleAddFile({
+            onChange={async (event) => {
+              const fileToAdd = await handleAddFile({
                 event,
                 filePrefix: 'tmp/task/new/',
                 mediaUploads: form.values.mediaUploads,
                 setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
                 setFileUploadLoading,
-              })
-            }
+              });
+              if (existingTask) {
+                attachMedia({
+                  variables: {
+                    taskId: existingTask?.['id'],
+                    input: {
+                      mediaUploads: [fileToAdd],
+                    },
+                  },
+                  onCompleted: (data) => {
+                    const task = data?.attachTaskMedia;
+                    form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
+                    setFileUploadLoading(false);
+                  },
+                });
+              }
+            }}
           />
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
@@ -1108,7 +1158,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                               position="end"
                               onClick={() => {
                                 const newReviewers = _.cloneDeep(form.values.reviewerIds).filter(
-                                  (id) => id !== reviewerId
+                                  (id, i) => i !== index
                                 );
                                 form.setFieldValue('reviewerIds', newReviewers);
                               }}
@@ -1122,16 +1172,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     renderOption={(props, option) => {
                       if (form.values.reviewerIds.includes(option.id) && option.id !== reviewerId) return null;
                       return (
-                        <CreateEntityAutocompleteOption
-                          {...props}
-                          onClick={() => {
-                            if (!form.values.reviewerIds.includes(option.id)) {
-                              const reviewerIds = _.cloneDeep(form.values.reviewerIds);
-                              reviewerIds[index] = option.id;
-                              form.setFieldValue('reviewerIds', reviewerIds);
-                            }
-                          }}
-                        >
+                        <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
                             <SafeImage src={option?.profilePicture} />
                           ) : (
@@ -1143,6 +1184,14 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         </CreateEntityAutocompleteOption>
                       );
                     }}
+                    onChange={(event, value, reason) => {
+                      if (reason === 'selectOption' && !form.values.reviewerIds.includes(value.id)) {
+                        const reviewerIds = _.cloneDeep(form.values.reviewerIds);
+                        reviewerIds[index] = value.id;
+                        form.setFieldValue('reviewerIds', reviewerIds);
+                      }
+                    }}
+                    blurOnSelect={true}
                     error={hasError}
                   />
                   {hasError && <CreateEntityError>{hasError}</CreateEntityError>}
@@ -1150,15 +1199,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               );
             })}
             <Tooltip
-              title={
-                form.values.reviewerIds?.length >= filteredEligibleReviewers.length &&
-                'You reached the maximum no. of available reviewers'
-              }
+              title={_.isEmpty(filteredEligibleReviewers) && 'You reached the maximum no. of available reviewers'}
               placement="top"
             >
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  if (form.values.reviewerIds?.length >= filteredEligibleReviewers.length) return;
+                  if (_.isEmpty(filteredEligibleReviewers)) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
@@ -1167,7 +1213,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 }}
               >
                 <CreateEntityAddButtonIcon />
-                {form.values.reviewerIds === null && <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>}
+                {(_.isNull(form.values.reviewerIds) || _.isEmpty(form.values.reviewerIds)) && (
+                  <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+                )}
               </CreateEntityLabelAddButton>
             </Tooltip>
           </CreateEntitySelectWrapper>
@@ -1226,15 +1274,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   }}
                   renderOption={(props, option) => {
                     return (
-                      <CreateEntityAutocompleteOption
-                        {...props}
-                        onClick={() => {
-                          if (form.values.assigneeId !== option.value) {
-                            form.setFieldValue('assigneeId', option.value);
-                          }
-                          form.setFieldError('assigneeId', undefined);
-                        }}
-                      >
+                      <CreateEntityAutocompleteOption {...props}>
                         {option?.profilePicture ? (
                           <SafeImage src={option?.profilePicture} />
                         ) : (
@@ -1246,6 +1286,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       </CreateEntityAutocompleteOption>
                     );
                   }}
+                  onChange={(event, value, reason) => {
+                    if (reason === 'selectOption') {
+                      form.setFieldValue('assigneeId', value.value);
+                    }
+                  }}
+                  blurOnSelect={true}
                   error={form.errors?.assigneeId}
                 />
                 {form.errors?.assigneeId && <CreateEntityError>{form.errors?.assigneeId}</CreateEntityError>}
@@ -1482,18 +1528,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={form.values.privacyLevel !== privacyOptions.public.value}
+            disabled={!isPrivacySelectorEnabled}
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
             renderValue={(value) => {
               return (
-                <Tooltip
-                  title={
-                    form.values.privacyLevel !== privacyOptions.public.value && 'The selected pod is for members only'
-                  }
-                  placement="top"
-                >
+                <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
                   <CreateEntityPrivacySelectRender>
                     <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
                     <CreateEntitySelectArrowIcon />
