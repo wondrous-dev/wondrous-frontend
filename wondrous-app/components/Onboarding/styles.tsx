@@ -29,15 +29,6 @@ export const LogoImg = styled.img`
   height: 30px;
 `;
 
-export const LogoText = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 24px;
-    color: ${White};
-    margin-left: 12px;
-  }
-`;
-
 export const InviteWelcomeBoxWrapper = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   border-radius: 6px;
@@ -49,7 +40,7 @@ export const InviteWelcomeBoxWrapper = styled.div`
   position: relative;
   min-height: 80vh;
   max-width: 634px;
-  
+
   @media (max-width: 640px) {
     min-width: 320px;
     padding: 20px;
@@ -76,8 +67,9 @@ export const InviteWelcomeBoxTitle = styled(Typography)`
 export const InviteWelcomeBoxParagraph = styled(Typography)`
   && {
     color: ${White};
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 500;
+    margin-bottom: 30px;
   }
 `;
 
@@ -114,51 +106,8 @@ export const ButtonDiv = styled.div`
   width: 100%;
 `;
 
-export const BackButton = styled.button`
-  width: 40px;
-  height: 40px;
-  background: #232323;
-  border: 0;
-  border-radius: 20px;
-  margin-top: 28px;
-  cursor: pointer;
-  padding: 8px;
-`;
 
-export const ContinueButton = styled(Button)`
-  min-height: 40px;
-  height: 40px;
-  
-  && {
-    margin-top: 22px;
-    min-width: 148px;
-  }
-`;
 
-export const ContinueButtonWrapper = styled.div`
-  display: flex;
-  justify-content: flex-end;
-`;
-
-export const LaterButton = styled(Button)`
-  background: none;
-  && {
-    position: relative;
-    height: 40px;
-    margin-right: 30px;
-    margin-top: 24px;
-    width: 96px;
-    background: none;
-    min-height: 40px;
-    button {
-      background: #232323;
-    }
-    
-    @media (max-width: 640px) {
-      margin-right: 0;
-    }
-  }
-`;
 
 export const ContinueText = styled(Typography)`
   && {
@@ -221,22 +170,8 @@ export const ErrorText = styled(Typography)`
   }
 `;
 
-export const HeaderWrapper = styled.div`
-  display: flex;
-  //margin-bottom: 26px;
-  //justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  
-  //width: 100%;
-  //
-  //@media (max-width: 420px) {
-  //  flex-direction: column;
-  //  align-items: flex-start;
-  //}
-`;
 
-export const LabelWrapper = styled.div`
+export const WalletConnected = styled.div`
   display: flex;
   align-items: center;
 
@@ -260,8 +195,9 @@ export const Label = styled(Typography)`
   }
 `;
 
+// TODO: REmove
 export const ContentWrapper = styled.div`
-  width: 100%;
+  //width: 100%;
 `;
 
 export const RemovePictureBtn = styled.button`
@@ -287,12 +223,13 @@ export const ActionButtons = styled.div`
   justify-content: end;
   display: flex;
   flex-direction: row;
-  
+
   @media (max-width: 640px) {
     flex-direction: column-reverse;
   }
 `;
 
+// TODO: Rename/remove
 export const LeftButtons = styled.div`
   width: 50%;
   justify-content: start;
@@ -300,9 +237,30 @@ export const LeftButtons = styled.div`
   align-items: flex-end;
 `;
 
+// TODO: Rename/remove
 export const RightButtons = styled.div`
   width: 50%;
   justify-content: end;
   display: flex;
   align-items: flex-end;
+`;
+
+export const Logo = styled.div`
+  text-align: center;
+  margin: 20px auto;
+`;
+
+export const Connectors = styled.div`
+  margin: 20px auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  svg {
+    flex: 0 0 50px;
+  }
+
+  button {
+    justify-content: unset;
+  }
 `;
