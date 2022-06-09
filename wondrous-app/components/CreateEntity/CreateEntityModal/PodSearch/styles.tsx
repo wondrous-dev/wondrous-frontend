@@ -1,5 +1,6 @@
 import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
 import { Autocomplete, ClickAwayListener, InputAdornment, TextField, Typography } from '@mui/material';
+import CloseModalIcon from 'components/Icons/closeModal';
 import PodIcon from 'components/Icons/podIcon';
 import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
@@ -51,6 +52,7 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   align-items: center;
   justify-content: space-between;
   text-align: left;
+  gap: 6px;
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
@@ -229,3 +231,5 @@ export const PodSearchButtonArrowIcon = styled((props) => (
     }
   }
 `;
+
+export const PodSearchButtonDeleteIcon = styled(CloseModalIcon)``;
