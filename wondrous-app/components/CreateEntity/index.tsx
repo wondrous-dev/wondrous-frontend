@@ -5,30 +5,56 @@ import CreateLayoutBaseModal from './createEntityModal';
 import { CreateEntityModal } from './CreateEntityModal/index';
 import { CreateFormModalOverlay } from './styles';
 
-const CreateFormModal = (props) => {
+interface ICreateEntity {
+  entityType: string;
+  handleClose: Function;
+  cancel: Function;
+  existingTask?: {};
+  open: Boolean;
+  handleCloseModal: Function;
+  isTaskProposal?: boolean;
+}
+
+export const CreateEntity = (props: ICreateEntity) => {
+  const { open, entityType, handleCloseModal } = props;
+  const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
+  console.log('open', open);
+  return (
+    <CreateFormModalOverlay
+      open={open}
+      onClose={handleCloseModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
+    >
+      {forNewModal ? <CreateEntityModal {...props} /> : <CreateLayoutBaseModal {...props} />}
+    </CreateFormModalOverlay>
+  );
+};
+
+const ChooseEntityToCreate = (props) => {
   const { open, toggleOpen } = props;
-
-  const [entityType, setEntityType] = useState('');
-
-  const ModalBody = (props): JSX.Element => {
-    if (entityType === '') {
-      return <ChooseEntityToCreateModal {...props} />;
-    }
-    if ([ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType)) {
-      return <CreateEntityModal {...props} />;
-    }
-    return <CreateLayoutBaseModal {...props} />;
-  };
-
+  const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
     if (entityType) {
-      setEntityType('');
+      setEntityType(undefined);
     }
   };
   const handleCloseModal = () => {
     resetEntityType();
     toggleOpen();
   };
+
+  if (entityType) {
+    return (
+      <CreateEntity
+        entityType={entityType}
+        handleCloseModal={handleCloseModal}
+        open={open}
+        cancel={resetEntityType}
+        handleClose={handleCloseModal}
+      />
+    );
+  }
 
   return (
     <CreateFormModalOverlay
@@ -37,15 +63,9 @@ const CreateFormModal = (props) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <ModalBody
-        entityType={entityType}
-        handleClose={handleCloseModal}
-        resetEntityType={resetEntityType}
-        setEntityType={setEntityType}
-        open={open}
-      />
+      <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
     </CreateFormModalOverlay>
   );
 };
 
-export default CreateFormModal;
+export default ChooseEntityToCreate;

@@ -85,7 +85,6 @@ import {
   TokenIcon,
 } from '../../Icons/taskModalIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import EditLayoutBaseModal from '../../CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import {
@@ -155,6 +154,7 @@ import { Share } from '../Share';
 import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { CreateEntity } from 'components/CreateEntity';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -642,13 +642,15 @@ const tabsPerType = {
   proposalTabs: [tabs.discussion],
   milestoneTabs: [tabs.tasks, tabs.discussion],
   subtaskTabs: [tabs.submissions, tabs.discussion],
+  bountyTabs: [tabs.submissions, tabs.discussion],
   taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
-const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask) => {
+const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
   if (isSubtask) return tabsPerType.subtaskTabs;
+  if (isBounty) return tabsPerType.bountyTabs;
   return tabsPerType.taskTabs;
 };
 
@@ -1062,36 +1064,28 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
   if (editTask) {
     return (
-      <>
-        <CreateModalOverlay
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-          open={open}
-          onClose={() => {
-            setEditTask(false);
-            setFetchedTask(null);
-            handleClose();
-          }}
-        >
-          <EditLayoutBaseModal
-            open={open}
-            entityType={entityType}
-            handleClose={() => {
-              setEditTask(false);
-              setFetchedTask(null);
-              handleClose();
-            }}
-            cancelEdit={() => setEditTask(false)}
-            existingTask={
-              fetchedTask && {
-                ...fetchedTask,
-                reviewers: reviewerData?.getTaskReviewers || [],
-              }
-            }
-            isTaskProposal={isTaskProposal}
-          />
-        </CreateModalOverlay>
-      </>
+      <CreateEntity
+        open={open}
+        handleCloseModal={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        entityType={entityType}
+        handleClose={() => {
+          setEditTask(false);
+          setFetchedTask(null);
+          handleClose();
+        }}
+        cancel={() => setEditTask(false)}
+        existingTask={
+          fetchedTask && {
+            ...fetchedTask,
+            reviewers: reviewerData?.getTaskReviewers || [],
+          }
+        }
+        isTaskProposal={isTaskProposal}
+      />
     );
   }
 
@@ -1345,8 +1339,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <Tooltip title="Task" placement="top">
                       <span>
                         <TaskIconWrapper>
-                        <CheckedBoxIcon />
-                      </TaskIconWrapper>
+                          <CheckedBoxIcon />
+                        </TaskIconWrapper>
                       </span>
                     </Tooltip>
                   </Link>
@@ -1846,7 +1840,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </TaskSectionInfoText>
               )}
               <TaskSectionFooterTitleDiv>
-                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask).map((tab, index) => {
+                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
                   const active = tab === activeTab;
                   return (
                     <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
@@ -1881,7 +1875,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     isBounty={isBounty}
                   />
                 )}
-                {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} />}
+                {activeTab === tabs.subTasks && (
+                  <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
+                )}
                 {activeTab === tabs.discussion && (
                   <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                 )}

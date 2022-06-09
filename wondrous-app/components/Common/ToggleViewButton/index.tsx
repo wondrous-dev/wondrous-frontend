@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { ToggleViewWrapper, ToggleViewOption } from './styles';
-import Tooltip from "components/Tooltip";
+import Tooltip from 'components/Tooltip';
 
 interface IToggleViewButtonProps {
   options: {
@@ -8,6 +8,7 @@ interface IToggleViewButtonProps {
     icon?: JSX.Element;
     active: boolean;
     action: () => void;
+    disabled?: boolean;
   }[];
   style?: React.CSSProperties;
 }
@@ -15,40 +16,26 @@ interface IToggleViewButtonProps {
 // Toggler between views (i.e. grid vs list)
 export const ToggleViewButton = (props: IToggleViewButtonProps) => {
   const { options } = props;
-  const [active, setActive] = useState(0);
-
-  const activateOption = (index) => {
-    setActive(index);
-  };
-
-  useEffect(() => {
-    // Set active based on input
-    options.some((option, index) => {
-      if (option.active) {
-        setActive(index);
-
-        return true;
-      }
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <ToggleViewWrapper {...props}>
-      {options.map((opt, key) => (
-        <Tooltip key={'toggle-option-' + opt.name} title={opt.name + ' view'} placement="top">
-          <ToggleViewOption
-            key={'toggle-option-' + opt.name}
-            className={key == active ? 'active' : ''}
-            onClick={() => {
-              activateOption(key);
-              opt.action();
-            }}
-          >
-            {opt?.icon ?? opt.name}
-          </ToggleViewOption>
-        </Tooltip>
-      ))}
+      {options.map((opt, key) => {
+        let className = opt.active && !opt?.disabled ? 'active' : '';
+        if (opt?.disabled) className = `${className} disabled`;
+        return (
+          <Tooltip key={'toggle-option-' + opt.name} title={opt.name + ' view'} placement="top">
+            <ToggleViewOption
+              key={'toggle-option-' + opt.name}
+              className={className}
+              onClick={() => {
+                opt.action();
+              }}
+            >
+              {opt?.icon ?? opt.name}
+            </ToggleViewOption>
+          </Tooltip>
+        );
+      })}
     </ToggleViewWrapper>
   );
 };

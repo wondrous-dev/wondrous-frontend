@@ -9,7 +9,7 @@ import Header from '../../Header';
 import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
 import TypeSelector from 'components/TypeSelector';
-import CreateFormModal from '../../CreateEntity';
+import ChooseEntityToCreate from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 
@@ -264,7 +264,7 @@ const Wrapper = (props) => {
         }}
       >
         <SideBarComponent />
-        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <OverviewComponent
           style={{
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,

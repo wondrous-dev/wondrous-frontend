@@ -9,7 +9,7 @@ import { SideBarContext } from 'utils/contexts';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
-import CreateFormModal from '../../CreateEntity';
+import ChooseEntityToCreate from '../../CreateEntity';
 import Header from '../../Header';
 import PodIcon from '../../Icons/podIcon';
 import Tabs from '../../organization/tabs/tabs';
@@ -267,7 +267,7 @@ const Wrapper = (props) => {
         }}
       >
         <SideBarComponent />
-        <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <OverviewComponent
           style={{
             paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,

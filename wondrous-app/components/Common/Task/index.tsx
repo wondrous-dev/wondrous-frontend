@@ -49,11 +49,10 @@ import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import { REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { getBoardType } from '../KanbanBoard/kanbanBoard';
+import { CreateEntity } from 'components/CreateEntity';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -297,28 +296,22 @@ export const Task = (props) => {
 
   return (
     <span className={className}>
-      <CreateModalOverlay
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <CreateEntity
         open={editTask}
-        onClose={() => {
+        handleCloseModal={() => {
           setEditTask(false);
         }}
-      >
-        <EditLayoutBaseModal
-          open={open}
-          entityType={task?.type}
-          handleClose={() => {
-            setEditTask(false);
-          }}
-          cancelEdit={() => setEditTask(false)}
-          existingTask={{
-            ...task,
-            reviewers: reviewerData || [],
-          }}
-          isTaskProposal={false}
-        />
-      </CreateModalOverlay>
+        entityType={task?.type}
+        handleClose={() => {
+          setEditTask(false);
+        }}
+        cancel={() => setEditTask(false)}
+        existingTask={{
+          ...task,
+          reviewers: reviewerData || [],
+        }}
+        isTaskProposal={false}
+      />
       <ArchiveTaskModal
         open={archiveTask}
         onClose={() => setArchiveTask(false)}
