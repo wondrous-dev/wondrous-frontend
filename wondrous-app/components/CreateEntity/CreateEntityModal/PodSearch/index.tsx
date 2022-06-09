@@ -4,6 +4,7 @@ import {
   PodSearchAutocompletePopper,
   PodSearchButton,
   PodSearchButtonArrowIcon,
+  PodSearchButtonDeleteIcon,
   PodSearchClickAway,
   PodSearchDefaultImage,
   PodSearchImageLabelWrapper,
@@ -33,7 +34,17 @@ const PodSearch = (props) => {
             <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
             <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
           </PodSearchImageLabelWrapper>
-          <PodSearchButtonArrowIcon />
+          {selectedValue ? (
+            <PodSearchButtonDeleteIcon
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                onChange(null);
+              }}
+            />
+          ) : (
+            <PodSearchButtonArrowIcon />
+          )}
         </PodSearchButton>
         <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal={true}>
           <PodSearchAutocomplete
