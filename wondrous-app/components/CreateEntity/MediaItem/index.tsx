@@ -2,6 +2,7 @@ import React from 'react';
 import { SafeImage } from '../../Common/Image';
 import DeleteIcon from '../../Icons/delete';
 import { Filename, MediaItemWrapper } from './styles';
+import VideoPlayer from './VideoPlayer';
 
 export const MediaItem = (props) => {
   const { mediaItem, setMediaUploads, mediaUploads, removeMediaItem, viewOnly } = props;
@@ -16,6 +17,13 @@ export const MediaItem = (props) => {
             left: '0',
             height: '40px',
           }}
+        />
+      )}
+      {mediaItem?.type === 'video' && (
+        <VideoPlayer
+          src={mediaItem?.uploadSlug || mediaItem?.slug}
+          name={mediaItem?.name}
+          style={{ width: '10%', height: '10%' }}
         />
       )}
       <Filename>{mediaItem?.name}</Filename>
