@@ -1,6 +1,14 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import {
+  countCharacters,
+  deserializeRichText,
+  extractMentions,
+  plainTextToRichText,
+  RichTextEditor,
+  useEditor,
+} from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
@@ -24,6 +32,8 @@ import {
 import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { Editor, Transforms } from 'slate';
+import { ReactEditor } from 'slate-react';
 import {
   updateCompletedItem,
   updateInProgressTask,
@@ -41,8 +51,7 @@ import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
 } from 'utils/constants';
-import { TextInputContext } from 'utils/contexts';
-import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
+import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
@@ -66,8 +75,6 @@ import {
   CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
   CreateEntityDefaultUserImage,
-  CreateEntityDescription,
-  CreateEntityDescriptionWrapper,
   CreateEntityDivider,
   CreateEntityDueDate,
   CreateEntityError,
@@ -112,6 +119,9 @@ import {
   CreateEntityTextfieldInputReward,
   CreateEntityTextfieldPoints,
   CreateEntityTitle,
+  EditorPlaceholder,
+  EditorContainer,
+  EditorToolbar,
   MediaUploadDiv,
 } from './styles';
 
@@ -139,7 +149,6 @@ const formValidationSchema = Yup.object().shape({
     .optional()
     .nullable(),
   milestoneId: Yup.string().nullable(),
-  description: Yup.string().nullable(),
 });
 
 const privacyOptions = {
@@ -379,6 +388,7 @@ const useCreateTask = () => {
       'getSubtaskCountForTask',
     ],
   });
+
   const handleMutation = ({ input, board, pods, form, handleClose }) =>
     createTask({
       variables: {
@@ -412,6 +422,7 @@ const useCreateTask = () => {
         handleClose();
       })
       .catch((e) => console.log(e));
+
   return { handleMutation, loading };
 };
 
@@ -706,7 +717,7 @@ const entityTypeData = {
       orgId: null,
       podId: null,
       title: '',
-      description: '',
+      description: plainTextToRichText(''),
       reviewerIds: null,
       assigneeId: null,
       dueDate: null,
@@ -726,7 +737,7 @@ const entityTypeData = {
       orgId: null,
       podId: null,
       title: '',
-      description: '',
+      description: plainTextToRichText(''),
       dueDate: null,
       points: null,
       labelIds: null,
@@ -742,7 +753,7 @@ const entityTypeData = {
       orgId: null,
       podId: null,
       title: '',
-      description: '',
+      description: plainTextToRichText(''),
       reviewerIds: null,
       dueDate: null,
       points: null,
@@ -767,9 +778,11 @@ const initialValues = (entityType, existingTask = undefined) => {
   const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
+  const description = deserializeRichText(existingTask.description);
   const existingTaskValues = _.pick(
     {
       ...existingTask,
+      description,
       mediaUploads: existingTask?.media?.map(({ name, type, slug }) => {
         return { name, type, uploadSlug: slug };
       }),
@@ -822,6 +835,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const { handleMutation, loading } = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
+
+  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
+  const editor = useEditor();
+
   const form = useFormik({
     initialValues: initialValues(entityType, existingTask),
     validateOnChange: false,
@@ -830,12 +847,22 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     onSubmit: (values) => {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-      const userMentions = getMentionArray(values.description);
+      const userMentions = extractMentions(values.description);
       const points = parseInt(values.points);
       const rewards = _.isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
-      const input = { ...values, reviewerIds, points, rewards, timezone, userMentions };
+
+      const input = {
+        ...values,
+        reviewerIds,
+        points,
+        rewards,
+        timezone,
+        userMentions,
+        description: JSON.stringify(values.description),
+      };
+
       handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
     },
   });
@@ -968,21 +995,39 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           onFocus={() => form.setFieldError('title', undefined)}
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
-        <TextInputContext.Provider
-          value={{
-            content: form.values.description,
-            onChange: (e) => {
-              if (e.target.value.length < TEXT_LIMIT) {
-                form.setFieldValue('description', e.target.value);
-              }
-            },
-            list: filterOrgUsersForAutocomplete(orgUsersData),
+
+        <EditorToolbar ref={setEditorToolbarNode} />
+        <EditorContainer
+          onClick={() => {
+            // since editor will collapse to 1 row on input, we need to emulate min-height somehow
+            // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
+            ReactEditor.focus(editor);
+            // also we need to move cursor to the last position in the editor
+            Transforms.select(editor, {
+              anchor: Editor.end(editor, []),
+              focus: Editor.end(editor, []),
+            });
           }}
         >
-          <CreateEntityDescriptionWrapper>
-            <CreateEntityDescription placeholder="Enter a description" minRows={4} />
-          </CreateEntityDescriptionWrapper>
-        </TextInputContext.Provider>
+          <RichTextEditor
+            editor={editor}
+            initialValue={form.values.description}
+            mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+            placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
+            toolbarNode={editorToolbarNode}
+            onChange={(value) => {
+              if (countCharacters(value) < TEXT_LIMIT) {
+                form.setFieldValue('description', value);
+              }
+            }}
+            editorContainerNode={document.querySelector('#modal-scrolling-container')}
+            onClick={(e) => {
+              // we need to stop click event propagation,
+              // since EditorContainer moves cursor to the last position in the editor on click
+              e.stopPropagation();
+            }}
+          />
+        </EditorContainer>
         <CreateEntityLabelSelectWrapper show={true}>
           <MediaUploadDiv>
             {form.values.mediaUploads?.length > 0 &&

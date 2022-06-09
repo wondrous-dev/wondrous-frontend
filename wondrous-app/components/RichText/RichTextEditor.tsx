@@ -16,6 +16,7 @@ interface Props {
   initialValue?: Descendant[];
   mentionables: { display: string; id: string; profilePicture?: string }[];
   onChange: (value: Descendant[]) => void;
+  onClick?: (e: React.MouseEvent<HTMLDivElement>) => void;
 
   /** Node to render toolbar to */
   toolbarNode?: HTMLElement;
@@ -27,7 +28,7 @@ interface Props {
    * Should be provided if Editor is rendered in a scrolling container like a modal,
    * otherwise mentions combobox will not work correctly
    */
-  editorContainerNode?: HTMLElement;
+  editorContainerNode: HTMLElement;
 
   placeholder?: React.ReactNode;
 }
@@ -53,6 +54,12 @@ const renderElement = (props: RenderElementProps) => {
   }
 };
 
+/**
+ * This text editor is based on Slate.
+ * Before making changes to low level parts like EditorHelpers
+ * it is highly recommended to read Concepts section in Slate docs.
+ * See https://docs.slatejs.org/concepts/01-interfaces
+ */
 const RichTextEditor: React.FC<Props> = ({
   editor,
   initialValue = plainTextToRichText(''),
@@ -62,6 +69,7 @@ const RichTextEditor: React.FC<Props> = ({
   toolbarNode,
   editorContainerNode,
   onChange,
+  onClick,
 }) => {
   const mentions = useMentions({ editor, mentionables });
 
@@ -94,6 +102,7 @@ const RichTextEditor: React.FC<Props> = ({
         }}
         // we use React.ReactNode placeholder, but types are not compatible, although it works fine
         placeholder={placeholder as any}
+        onClick={onClick}
       />
       <Mentions
         portalNode={portalNode}

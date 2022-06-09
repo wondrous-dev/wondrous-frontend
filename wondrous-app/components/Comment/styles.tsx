@@ -106,3 +106,7 @@ export const DeleteText = styled(Typography)`
     cursor: pointer;
   }
 `;
+
+export const TextInputDiv = styled.div`
+  height: 100px;
+`;

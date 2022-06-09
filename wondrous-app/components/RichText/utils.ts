@@ -1,6 +1,6 @@
 import { Descendant } from 'slate';
 
-import { CustomMentionElement } from './types';
+import { CustomMentionElement, FormattedText, ParagraphElement } from './types';
 
 /** Deserialize plain text to Slate state */
 export const plainTextToRichText = (text: string): Descendant[] => {
@@ -14,8 +14,33 @@ export const plainTextToRichText = (text: string): Descendant[] => {
   }
 
   return text.split('\n').map((line) => {
+    function parseMentionsInPlaintext(text: string): ParagraphElement['children'] {
+      // looking for a string like this: @[username](id)
+      const mentionStartIndex = text.search(/@\[(.*?)\]\(([0-9]+?)\)/g);
+      const mentionEndIndex = text.indexOf(')', mentionStartIndex);
+
+      if (mentionStartIndex !== -1) {
+        const mention = text.slice(mentionStartIndex, mentionEndIndex + 1);
+        const username = mention.split(/[\[\]]/)[1]; // split by [ and ], username is in 1 index
+        const id = mention.split(/[\)\(]/)[1]; // split by ( and ), id is in 1 index
+
+        return [
+          { text: text.slice(0, mentionStartIndex) },
+          {
+            type: 'mention',
+            mentionable: username,
+            id,
+            children: [{ text: '@' + username }],
+          },
+          ...parseMentionsInPlaintext(text.slice(mentionEndIndex + 1)),
+        ];
+      }
+
+      return [{ text }];
+    }
+
     return {
-      children: [{ text: line }],
+      children: parseMentionsInPlaintext(line),
       type: 'paragraph',
     };
   });

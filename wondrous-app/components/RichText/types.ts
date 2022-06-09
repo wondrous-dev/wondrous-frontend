@@ -19,7 +19,7 @@ export type CustomText = FormattedText;
 
 export type ParagraphElement = {
   type: 'paragraph';
-  children: CustomText[];
+  children: (CustomText | CustomMentionElement)[];
   text?: undefined;
 };
 

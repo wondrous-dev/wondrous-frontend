@@ -7,7 +7,6 @@ import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { White } from '../../theme/colors';
 import { TextInputContext } from 'utils/contexts';
-import { TextInputDiv } from '../CreateEntity/styles';
 import { TextInput } from '../TextInput';
 import { filterOrgUsersForAutocomplete } from '../CreateEntity/createEntityModal';
 import { useMe } from '../Auth/withAuth';
@@ -24,6 +23,7 @@ import {
   DefaultCommentProfilePicture,
   AddCommentContainer,
   DeleteText,
+  TextInputDiv,
 } from './styles';
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
 import { formatDistance } from 'date-fns';

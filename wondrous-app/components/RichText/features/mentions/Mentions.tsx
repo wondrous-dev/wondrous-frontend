@@ -11,7 +11,7 @@ import useMentions from './useMentions';
 
 const Mentions: React.FC<
   {
-    editorContainerNode?: HTMLElement;
+    editorContainerNode: HTMLElement;
     portalNode?: HTMLElement;
   } & ReturnType<typeof useMentions>['props'] &
     ReturnType<typeof useMentions>['commands']
@@ -40,7 +40,8 @@ const Mentions: React.FC<
 
   const { styles: popperStyles, attributes } = usePopperPosition({
     popperElement: mentionsContainerRef.current,
-    popperContainer: editorContainerNode ?? document.querySelectorAll('header')[1],
+    // this container node is essential to make mentions popper work in modals
+    popperContainer: editorContainerNode,
     placement: 'bottom-start',
     getBoundingClientRect,
     offset: [0, 4],

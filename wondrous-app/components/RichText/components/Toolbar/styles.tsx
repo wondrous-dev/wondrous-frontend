@@ -9,7 +9,7 @@ export const ToolbarContainer = styled.div`
   grid-auto-flow: column;
   grid-auto-columns: 28px;
   gap: 2px;
-  padding: 6px;
+  padding: 4px;
   border-radius: 4px;
   background: #313131;
 `;
@@ -25,14 +25,14 @@ export const ToolbarButton = styled(Button)`
     color: #c4c4c4;
 
     &:hover {
-      background: rgba(29, 29, 29, 0.5);
+      background: rgba(29, 29, 29, 0.35);
       color: #fff;
     }
 
     ${({ $active }) => {
       return $active
         ? `
-      background: rgba(29, 29, 29, 0.35);
+      background: rgba(29, 29, 29, 0.5);
       color: ${White};
       `
         : '';
