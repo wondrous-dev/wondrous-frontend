@@ -85,13 +85,13 @@ export const PodSearchInput = styled(TextField)`
   && {
     width: 100%;
     padding: 10px;
-    .MuiOutlinedInput-root {
+    && .MuiOutlinedInput-root {
       background: #313131;
       width: 100%;
       display: flex;
       padding: 0 8px;
     }
-    .MuiOutlinedInput-input {
+    && .MuiOutlinedInput-input {
       height: 32px;
       padding: 0;
       font-family: 'Space Grotesk';
@@ -119,7 +119,9 @@ export const PodSearchInputIcon = styled(SearchIcon)`
 `;
 
 export const PodSearchAutocompletePopper = styled.div`
-  position: relative;
+  && {
+    position: relative;
+  }
   .MuiAutocomplete-noOptions {
     font-family: 'Space Grotesk';
     color: ${White};
