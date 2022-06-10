@@ -21,10 +21,6 @@ import {
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
 import { Compensation } from '../Compensation';
-import Ethereum from 'components/Icons/ethereum';
-import { USDCoin } from 'components/Icons/USDCoin';
-import { WonderCoin } from 'components/Icons/wonderCoin';
-import { Matic } from 'components/Icons/matic';
 import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
@@ -34,13 +30,7 @@ import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
 import { TASK_ICONS } from 'components/Common/Task/index';
 import { CompletedIcon } from 'components/Icons/statusIcons';
-
-const CURRENCY_SYMBOL = {
-  eth: <Ethereum />,
-  wonder: <WonderCoin />,
-  matic: <Matic />,
-  usdc: <USDCoin />,
-};
+import { RichTextViewer } from 'components/RichText';
 
 export const SubmissionsCount = ({ total, approved }) => {
   const config = [
@@ -102,10 +92,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
             <BoardsCardBody>
               <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
               <BoardsCardBodyDescription>
-                {renderMentionString({
-                  content: bounty.description,
-                  router,
-                })}
+                <RichTextViewer text={bounty.description} />
               </BoardsCardBodyDescription>
               {bounty?.media?.[0] ? (
                 <BoardsCardMedia>

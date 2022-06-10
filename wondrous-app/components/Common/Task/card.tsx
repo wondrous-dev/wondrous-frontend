@@ -81,6 +81,7 @@ import { useLocation } from 'utils/useLocation';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
+import { RichTextViewer } from 'components/RichText';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -559,10 +560,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
         <BoardsCardBody>
           <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
           <BoardsCardBodyDescription>
-            {renderMentionString({
-              content: description,
-              router,
-            })}
+          <RichTextViewer text={description} />
           </BoardsCardBodyDescription>
           {coverMedia ? (
             <BoardsCardMedia>
