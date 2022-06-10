@@ -31,7 +31,7 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) => {
         return (
           <Link key={i} href={node.href} passHref>
             <a target="_blank" rel="noopener noreferrer">
-              {node.href}
+              {node.children[0]?.text}
             </a>
           </Link>
         );
