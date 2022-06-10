@@ -189,3 +189,12 @@ export const COMPLETE_BOUNTY = gql`
   }
   ${BountyFragment}
 `;
+
+export const CREATE_TASK_GITHUB_ISSUE = gql`
+  mutation createTaskGithubIssue($taskId: ID!, $repoPathname: String!) {
+    createTaskGithubIssue(taskId: $taskId, repoPathname: $repoPathname) {
+      id
+      url
+    }
+  }
+`;
