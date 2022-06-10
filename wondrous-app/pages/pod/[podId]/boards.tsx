@@ -604,6 +604,8 @@ const BoardsPage = () => {
         fetchPerStatus,
         activeView,
         setActiveView,
+        onLoadMore: fetchMore,
+        hasMore: podTaskHasMore,
       }}
     >
       <Boards
