@@ -8,6 +8,7 @@ import Wrapper from 'components/Dashboard/wrapper';
 import { ViewType } from 'types/common';
 import { SelectMembershipContext } from 'utils/contexts';
 import { DashboardPanelWrapper, BoardsWrapper } from 'components/Dashboard/boards/styles';
+import { UserInterestModal } from 'components/Common/UserInterestModal.tsx';
 
 const Dashboard = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
@@ -16,6 +17,7 @@ const Dashboard = () => {
   const isAdmin = router.query.view === ViewType.Admin;
   return (
     <Wrapper>
+      <UserInterestModal open={true} onClose={() => {}} />
       <SelectMembershipContext.Provider
         value={{
           selectMembershipRequests,
