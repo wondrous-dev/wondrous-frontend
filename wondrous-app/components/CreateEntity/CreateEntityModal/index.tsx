@@ -614,6 +614,7 @@ const CreateEntityDropdown = (props) => {
     DefaultImageComponent,
     error,
     onFocus,
+    disabled,
   } = props;
   const dropdownValue = value === null ? 'placeholder' : value;
   const placeholderText = { podId: 'Select Pod', orgId: 'Select Org' };
@@ -622,7 +623,7 @@ const CreateEntityDropdown = (props) => {
       name={name}
       renderValue={renderValue}
       onChange={onChange}
-      disabled={options.length == 0}
+      disabled={disabled || options.length == 0}
       value={dropdownValue}
       error={error}
       onFocus={onFocus}
@@ -963,7 +964,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               DefaultImageComponent={CreateEntityDefaultDaoImage}
               error={form.errors.orgId}
               onFocus={() => form.setFieldError('orgId', undefined)}
-              disabled={isSubtask}
+              disabled={isSubtask || existingTask}
             />
             {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
           </CreateEntitySelectErrorWrapper>
