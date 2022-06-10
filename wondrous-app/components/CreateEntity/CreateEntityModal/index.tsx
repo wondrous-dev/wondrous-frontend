@@ -291,7 +291,9 @@ const useGetEligibleReviewers = (org, pod) => {
     }
   }, [org, pod, getEligibleReviewersForOrg, getEligibleReviewersForPod]);
   const eligibleReviewers = filterUserOptions(
-    eligibleReviewersForPodData?.getEligibleReviewersForPod ?? eligibleReviewersForOrgData?.getEligibleReviewersForOrg
+    pod
+      ? eligibleReviewersForPodData?.getEligibleReviewersForPod
+      : eligibleReviewersForOrgData?.getEligibleReviewersForOrg
   );
   return eligibleReviewers;
 };
