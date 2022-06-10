@@ -2,7 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import Tooltip from 'components/Tooltip';
-import { useFormik } from 'formik';
+import { FormikValues, useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
 import {
   ATTACH_MEDIA_TO_TASK,
@@ -245,6 +245,12 @@ const onCorrectPage = (existingTask, board) =>
   existingTask?.podId === board?.podId ||
   existingTask?.userId === board?.userId;
 
+const getPrivacyLevel = (podId, pods) => {
+  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
+  const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
+  return privacyLevel;
+};
+
 const useGetAvailableUserPods = (org) => {
   const [getAvailableUserPods, { data }] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     fetchPolicy: 'network-only',
@@ -285,7 +291,9 @@ const useGetEligibleReviewers = (org, pod) => {
     }
   }, [org, pod, getEligibleReviewersForOrg, getEligibleReviewersForPod]);
   const eligibleReviewers = filterUserOptions(
-    eligibleReviewersForPodData?.getEligibleReviewersForPod ?? eligibleReviewersForOrgData?.getEligibleReviewersForOrg
+    pod
+      ? eligibleReviewersForPodData?.getEligibleReviewersForPod
+      : eligibleReviewersForOrgData?.getEligibleReviewersForOrg
   );
   return eligibleReviewers;
 };
@@ -420,12 +428,16 @@ const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
     refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
   });
-  const handleMutation = ({ input, board, pods, form, handleClose }) => {
+  const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
       variables: {
         input,
       },
     }).then((result) => {
+      if (formValues !== undefined) {
+        handleClose(result);
+        return;
+      }
       if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
         const task = result?.data?.createMilestone;
         const justCreatedPod = getPodObject(pods, task.podId);
@@ -809,10 +821,11 @@ interface ICreateEntityModal {
   parentTaskId?: string;
   resetEntityType?: Function;
   setEntityType?: Function;
+  formValues?: FormikValues;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -851,7 +864,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
       const input = { ...values, reviewerIds, points, rewards, timezone, userMentions };
-      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
+      handleMutation({
+        input,
+        board,
+        pods,
+        form,
+        handleClose,
+        existingTask,
+        ...{ formValues },
+      });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -864,27 +885,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
 
-  const getPrivacyLevel = (podId) => {
-    const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
-    const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
-    return privacyLevel;
-  };
-
   const handleOnchangePodId = useCallback(
     (podId) => {
       const resetValues = initialValues(entityType);
       form.setValues({
         ...form.values,
-        reviewerIds: resetValues?.reviewerIds,
-        assigneeId: resetValues?.assigneeId,
-        rewards: resetValues?.rewards,
         milestoneId: resetValues?.milestoneId,
-        privacyLevel: getPrivacyLevel(podId),
+        privacyLevel: getPrivacyLevel(podId, pods),
         podId,
       });
       form.setErrors({});
     },
-    [entityType, form, pods]
+    [entityType, form, getPrivacyLevel]
   );
 
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
@@ -918,6 +930,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
+  useContextValue(!form.values.orgId && !form.values.podId && formValues, () =>
+    form.setValues({ ...form.values, orgId: formValues.orgId, podId: formValues.podId })
+  );
 
   useEffect(() => {
     if (isSubtask) {
@@ -937,7 +952,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   }, [parentTaskId, getTaskById, isSubtask]);
 
   const isPrivacySelectorEnabled =
-    getPrivacyLevel(form.values.podId) === privacyOptions.public.value || !form.values.podId;
+    getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
@@ -964,7 +979,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               DefaultImageComponent={CreateEntityDefaultDaoImage}
               error={form.errors.orgId}
               onFocus={() => form.setFieldError('orgId', undefined)}
-              disabled={isSubtask || existingTask}
+              disabled={isSubtask || existingTask || formValues !== undefined}
             />
             {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
           </CreateEntitySelectErrorWrapper>
@@ -975,6 +990,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
+                disabled={formValues !== undefined}
               />
             </>
           )}
@@ -1437,6 +1453,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 handleClose={() => {
                   form.setFieldValue('milestoneId', null);
                 }}
+                formValues={form.values}
               />
             )}
             {form.values.milestoneId === null && (

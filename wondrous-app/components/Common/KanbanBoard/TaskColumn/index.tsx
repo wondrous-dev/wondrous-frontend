@@ -1,6 +1,7 @@
-import React, { useCallback, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
 import CreateBtnIcon from 'components/Icons/createBtn';
+import { useInView } from 'react-intersection-observer';
 
 import {
   PERMISSIONS,
@@ -15,7 +16,7 @@ import {
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
-
+import { LIMIT } from 'services/board';
 import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
 import { ColumnSection } from '../../ColumnSection';
 import {
@@ -28,6 +29,7 @@ import {
   TaskListContainer,
 } from './styles';
 import { Task } from '../../Task';
+import { LoadMore } from '../styles';
 
 import { DropZone } from '../../../Icons/dropZone';
 import Milestone from '../../Milestone';
@@ -74,11 +76,18 @@ const TaskColumn = (props: ITaskColumn) => {
   const podBoard = usePodBoard();
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
+  const [ref, inView] = useInView({});
 
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
   let number;
+
+  useEffect(() => {
+    if (inView && board?.hasMore && LIMIT <= cardsList.length) {
+      board?.onLoadMore();
+    }
+  }, [inView, board?.hasMore]);
 
   let taskColumnWidth = '100%';
   if (!userBoard) {
@@ -191,6 +200,7 @@ const TaskColumn = (props: ITaskColumn) => {
                 )}
               </Draggable>
             ))}
+            <LoadMore ref={ref} hasMore={board?.hasMore}></LoadMore>
             {provided.placeholder}
           </TaskListContainer>
         )}

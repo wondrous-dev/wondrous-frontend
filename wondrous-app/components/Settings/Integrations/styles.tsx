@@ -43,6 +43,7 @@ export const IntegrationsSnapshotBlock = styled.div`
   flex-direction: column;
 `;
 
+
 export const IntegrationsSnapshotSubBlock = styled.div`
   width: 100%;
   display: flex;
@@ -51,13 +52,13 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   overflow-wrap: wrap;
   justify-content: space-between;
 `
+
 export const IntegrationsSnapshotInputSubBlock = styled.div`
-  width: calc(100% - 180px);
+  width: calc(100% - 220px);
   min-width: 200px;
   display: flex;
   flex-direction: column;
-
-  @media (max-width: 1056px) {
+  @media (max-width: 1096px) {
     width: 100%;
   }
 `
@@ -75,7 +76,6 @@ export const IntegrationsSnapshotENSInput = styled(InputBase)`
     padding: 10px 15px;
   }
 `;
-
 
 export const IntegrationsSnapshotHelperText = styled(Typography)`
   && {
@@ -95,28 +95,24 @@ export const IntegrationsSnapshotButton = styled(MuiButton)`
     background: #0f0f0f;
     border: 1px solid deepskyblue;
     margin-left: 10px;
-
     //text
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
     color: #ffffff;
-
     .MuiCircularProgress-root {
       margin-right: 10px;
     }
-
-    &:disabled {
+    .Mui-disabled {
       color: #ffffff;
-      cursor: not-allowed;
     }
-
-    @media (max-width: 1056px) {
+    @media (max-width: 1096px) {
       margin-top: 10px;
       margin-left: 0;
     }
   }
 `;
+
 
 export const LabelBlock = styled(Typography)`
   && {

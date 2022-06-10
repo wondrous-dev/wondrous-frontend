@@ -301,6 +301,7 @@ export const TaskProposalFragment = gql`
       name
       color
     }
+    snapshotId
   }
   ${MediaFragment}
 `;

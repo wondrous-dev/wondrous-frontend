@@ -689,6 +689,8 @@ const BoardsPage = (props) => {
         joinPodRequests: getJoinPodRequestsData?.getJoinPodRequests,
         setSection,
         fetchPerStatus,
+        hasMore: hasMoreTasks,
+        onLoadMore: handleLoadMore,
       }}
     >
       <BoardsActivity
