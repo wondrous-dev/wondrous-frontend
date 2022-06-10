@@ -1,6 +1,7 @@
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { AbstractConnector } from '@web3-react/abstract-connector';
+import { ethers, utils } from 'ethers';
 
 /**
  * Hook to listen for events (e.g. chain changes, account changes) in the Web3 provider.
@@ -18,6 +19,8 @@ export default function useInjectedProviderListener({
   useEffect((): any => {
     const { ethereum } = window as any;
     if (ethereum && ethereum.on && !active && !error && !suppress) {
+      const provider = new ethers.providers.Web3Provider(ethereum);
+
       const handleConnect = () => {
         console.log("Handling 'connect' event");
         activate(connector);
@@ -36,19 +39,19 @@ export default function useInjectedProviderListener({
         console.log("Handling 'networkChanged' event with payload", networkId);
         activate(connector);
       };
-
-      ethereum.addListener('connect', handleConnect);
-      ethereum.addListener('chainChanged', handleChainChanged);
-      ethereum.addListener('accountsChanged', handleAccountsChanged);
-      ethereum.addListener('networkChanged', handleNetworkChanged);
+      
+      provider.addListener('connect', handleConnect);
+      provider.addListener('chainChanged', handleChainChanged);
+      provider.addListener('accountsChanged', handleAccountsChanged);
+      provider.addListener('networkChanged', handleNetworkChanged);
       setIsSubscribed(true);
 
       return () => {
         if (ethereum.removeListener) {
-          ethereum.removeListener('connect', handleConnect);
-          ethereum.removeListener('chainChanged', handleChainChanged);
-          ethereum.removeListener('accountsChanged', handleAccountsChanged);
-          ethereum.removeListener('networkChanged', handleNetworkChanged);
+          provider.removeListener('connect', handleConnect);
+          provider.removeListener('chainChanged', handleChainChanged);
+          provider.removeListener('accountsChanged', handleAccountsChanged);
+          provider.removeListener('networkChanged', handleNetworkChanged);
         }
         setIsSubscribed(false);
       };
