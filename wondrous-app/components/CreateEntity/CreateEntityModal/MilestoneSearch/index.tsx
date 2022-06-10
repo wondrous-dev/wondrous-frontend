@@ -79,7 +79,6 @@ const MilestoneSearch = (props) => {
               return (
                 <MilestoneSearchInput
                   {...params}
-                  autoFocus={true}
                   ref={params.InputProps.ref}
                   disableUnderline={true}
                   fullWidth={true}
@@ -99,7 +98,7 @@ const MilestoneSearch = (props) => {
             getOptionLabel={(option) => option.label}
             renderOption={(props, option) => {
               return (
-                <MilestoneSearchListItem {...props} key={option.id} value={option.id}>
+                <MilestoneSearchListItem {...props}>
                   {selectedValue?.id === option.id ? <MilestoneSearchCheckBox /> : <MilestoneSearchCheckBoxEmpty />}
                   <MilestoneSearchLabel hasValue={true}>{option?.label}</MilestoneSearchLabel>
                 </MilestoneSearchListItem>
@@ -131,8 +130,10 @@ const MilestoneSearch = (props) => {
             onChange={(event, value, reason) => {
               if (reason === 'selectOption') {
                 onChange(value.id);
+                handleClickAway();
               }
             }}
+            blurOnSelect={true}
           />
         </MilestoneSearchPopper>
       </MilestoneSearchWrapper>
