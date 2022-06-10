@@ -2,7 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import Tooltip from 'components/Tooltip';
-import { useFormik } from 'formik';
+import { FormikValues, useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
 import {
   ATTACH_MEDIA_TO_TASK,
@@ -420,12 +420,16 @@ const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
     refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
   });
-  const handleMutation = ({ input, board, pods, form, handleClose }) => {
+  const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
       variables: {
         input,
       },
     }).then((result) => {
+      if (formValues !== undefined) {
+        handleClose(result);
+        return;
+      }
       if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
         const task = result?.data?.createMilestone;
         const justCreatedPod = getPodObject(pods, task.podId);
@@ -809,10 +813,11 @@ interface ICreateEntityModal {
   parentTaskId?: string;
   resetEntityType?: Function;
   setEntityType?: Function;
+  formValues?: FormikValues;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -851,7 +856,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
       const input = { ...values, reviewerIds, points, rewards, timezone, userMentions };
-      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
+      handleMutation({
+        input,
+        board,
+        pods,
+        form,
+        handleClose,
+        existingTask,
+        ...{ formValues },
+      });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -884,7 +897,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       });
       form.setErrors({});
     },
-    [entityType, form, pods]
+    [entityType, form, getPrivacyLevel]
   );
 
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
@@ -917,6 +930,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         podId: board?.podId,
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
+  );
+  useContextValue(!form.values.orgId && !form.values.podId && formValues, () =>
+    form.setValues({ ...form.values, orgId: formValues.orgId, podId: formValues.podId })
   );
 
   useEffect(() => {
@@ -964,7 +980,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               DefaultImageComponent={CreateEntityDefaultDaoImage}
               error={form.errors.orgId}
               onFocus={() => form.setFieldError('orgId', undefined)}
-              disabled={isSubtask || existingTask}
+              disabled={isSubtask || existingTask || formValues !== undefined}
             />
             {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
           </CreateEntitySelectErrorWrapper>
@@ -975,6 +991,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
+                disabled={formValues !== undefined}
               />
             </>
           )}
@@ -1437,6 +1454,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 handleClose={() => {
                   form.setFieldValue('milestoneId', null);
                 }}
+                formValues={form.values}
               />
             )}
             {form.values.milestoneId === null && (

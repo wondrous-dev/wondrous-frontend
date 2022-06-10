@@ -20,7 +20,7 @@ import {
 } from './styles';
 
 const PodSearch = (props) => {
-  const { options, onChange, value } = props;
+  const { options, onChange, value, disabled } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
   const handleClickAway = () => setAnchorEl(null);
@@ -29,7 +29,7 @@ const PodSearch = (props) => {
   return (
     <PodSearchClickAway onClickAway={handleClickAway}>
       <PodSearchWrapper>
-        <PodSearchButton open={open} disabled={!options} onClick={handleClick}>
+        <PodSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
           <PodSearchImageLabelWrapper>
             <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
             <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
