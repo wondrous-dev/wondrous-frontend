@@ -171,8 +171,7 @@ export const useSnapshot = () => {
     //const web3 = wonderWeb3.web3Provider;
     const provider = new Web3Provider(wonderWeb3.web3Provider);
     const account = ethers.utils.getAddress(wonderWeb3.address);
-    const { data } = await getSnapshotSpace({ variables: { id: orgSnapshot.key } });
-
+    const { data } = await getSnapshotSpace({ variables: { id: orgSnapshot.snapshotEns } });
     // deconstruct strategies if typed
     const strategies = data.space.strategies.map((strat) => ({
       name: strat.name,
@@ -180,12 +179,17 @@ export const useSnapshot = () => {
       params: strat.params,
     }));
 
+    let numWeeks = 1;
+    let weekLater = new Date();
+    weekLater.setDate(weekLater.getDate() + numWeeks * 7);
     const proposalToValidate = {
       name: proposal.title,
       body: proposal.description,
       choices: ['For', 'Against', 'Abstain'],
       start: Math.floor(Date.now() / 1000),
-      end: Math.floor(Date.parse(proposal.dueDate) / 1000),
+      end: proposal.dueDate
+        ? Math.floor(Date.parse(proposal.dueDate) / 1000)
+        : Math.floor(Date.parse(weekLater.toDateString()) / 1000),
       snapshot: await provider.getBlockNumber(),
       type: 'single-choice',
       discussion: '',
@@ -198,12 +202,8 @@ export const useSnapshot = () => {
           : '{}',
       },
     };
-
-    let numWeeks = 1;
-    let weekLater = new Date();
-    weekLater.setDate(weekLater.getDate() + numWeeks * 7);
     const proposalToSubmit = {
-      space: orgSnapshot.snapshotENS,
+      space: orgSnapshot.snapshotEns,
       title: proposal.title,
       body: proposal.description,
       choices: ['For', 'Against', 'Abstain'],
@@ -229,6 +229,7 @@ export const useSnapshot = () => {
           : JSON.stringify(data.space.metadata)
         : '{}',
     };
+    console.log('proposalToSubmit', proposalToSubmit)
 
     const valid = validateProposal(proposalToValidate);
 
@@ -246,7 +247,7 @@ export const useSnapshot = () => {
     const account = ethers.utils.getAddress(wonderWeb3.address);
 
     return await snapshotClient.cancelProposal(provider, account, {
-      space: orgSnapshot.key,
+      space: orgSnapshot.snapshotEns,
       proposal: proposalId,
     });
   };
