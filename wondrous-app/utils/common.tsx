@@ -21,6 +21,7 @@ export const renderMentionString = (props) => {
         }
         return (
           <span
+            key={id}
             style={{
               color: HighlightBlue,
               marginRight: '4px',
