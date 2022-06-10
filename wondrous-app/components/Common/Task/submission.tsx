@@ -962,7 +962,7 @@ export const TaskSubmissionContent = (props) => {
       <TaskTabText>None at the moment. Only @{fetchedTask?.assigneeUsername} can create a submission </TaskTabText>
     );
   }
-  if (canSubmit && fetchedTaskSubmissionsLength === 0) {
+  if (canSubmit && fetchedTaskSubmissionsLength === 0 && fetchedTask?.status !== TASK_STATUS_DONE) {
     return (
       <>
         {makeSubmission ? (

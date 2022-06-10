@@ -16,3 +16,44 @@ export const VERIFY_USER_TWEET = gql`
     }
   }
 `;
+
+
+export const CONNECT_SNAPSHOT_TO_ORG = gql`
+  mutation connectSnapshotToOrg($orgId: ID, $input: SnapshotConnectInput) {
+    connectSnapshotToOrg(orgId: $orgId, input: $input) {
+      snapshotEns
+      name
+      symbol
+    }
+  }
+`;
+
+
+export const DISCONNECT_SNAPSHOT_TO_ORG = gql`
+  mutation disconnectSnapshotToOrg($orgId: ID) {
+    disconnectSnapshotToOrg(orgId: $orgId) {
+      success
+    }
+  }
+`;
+
+
+
+export const LINKE_PROPOSAL_TO_SNAPSHOT = gql`
+  mutation linkProposalToSnapshot($proposalId: ID!, $snapshotId: String) {
+    linkProposalToSnapshot(proposalId: $proposalId, snapshotId: $snapshotId) {
+      id
+    }
+  }
+`;
+
+
+export const UNLINKE_PROPOSAL_FROM_SNAPSHOT = gql`
+  mutation unlinkProposalFromSnapshot($proposalId: ID!) {
+    unlinkProposalFromSnapshot(proposalId: $proposalId) {
+      id
+    }
+  }
+`;
+
+

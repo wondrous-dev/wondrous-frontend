@@ -1,7 +1,6 @@
 import { useRouter } from 'next/router';
 import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
-import { useInView } from 'react-intersection-observer';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import { TaskViewModal } from '../Task/modal';
@@ -53,7 +52,6 @@ export const populateOrder = (index, tasks, field) => {
 const KanbanBoard = (props) => {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
-  const [ref, inView] = useInView({});
   const [openModal, setOpenModal] = useState(false);
   const [once, setOnce] = useState(false);
   const router = useRouter();
@@ -69,12 +67,6 @@ const KanbanBoard = (props) => {
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-
-  useEffect(() => {
-    if (inView && hasMore) {
-      onLoadMore();
-    }
-  }, [inView, hasMore, onLoadMore]);
 
   const checkPermissions = (task) => {
     const permissions = parseUserPermissionContext({
@@ -304,7 +296,6 @@ const KanbanBoard = (props) => {
           })}
         </DragDropContext>
       </KanbanBoardContainer>
-      <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
     </>
   );
 };

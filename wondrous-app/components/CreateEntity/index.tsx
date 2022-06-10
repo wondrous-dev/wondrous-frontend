@@ -1,8 +1,10 @@
+import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreateLayoutBaseModal from './createEntityModal';
 import { CreateEntityModal } from './CreateEntityModal/index';
+import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
 
 interface ICreateEntity {
@@ -13,10 +15,11 @@ interface ICreateEntity {
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;
+  formValues?: FormikValues;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
-  const { open, entityType, handleCloseModal } = props;
+  const { open, entityType, handleCloseModal, isTaskProposal } = props;
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
   return (
     <CreateFormModalOverlay

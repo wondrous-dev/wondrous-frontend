@@ -1427,7 +1427,7 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
-      {org ? (
+      {(org && !isProposal) ? (
         <CreateFormAddTagsSection>
           <CreateFormMainInputBlock>
             <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>

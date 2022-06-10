@@ -2,39 +2,14 @@ import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react'
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
 import { ReactEditor } from 'slate-react';
 
-import {
-  ENTITIES_TYPES,
-  MEDIA_TYPES,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_TODO,
-  PRIVACY_LEVEL,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_DONE,
-} from 'utils/constants';
-import CircleIcon from '../Icons/circleIcon';
-import CodeIcon from '../Icons/MediaTypesIcons/code';
-import AudioIcon from '../Icons/MediaTypesIcons/audio';
-import PriorityIcon from '../Icons/priority';
+import { ENTITIES_TYPES } from 'utils/constants';
 import CloseModalIcon from '../Icons/closeModal';
 import CreateDaoIcon from '../Icons/createDao';
 import CreatePodIcon from '../Icons/createPod';
-import ImageIcon from '../Icons/MediaTypesIcons/image';
-import VideoIcon from '../Icons/MediaTypesIcons/video';
 import InputForm from '../Common/InputForm/inputForm';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
-import MembersRow from './MembersRow/membersRow';
-import { CreateFormMembersList } from './MembersRow/styles';
-import HeaderImage from './HeaderImage/headerImage';
 import {
-  CreateFormAddDetailsAppearBlock,
-  CreateFormAddDetailsAppearBlockContainer,
-  CreateFormAddDetailsInputBlock,
-  CreateFormAddDetailsInputLabel,
-  CreateFormAddDetailsInputs,
-  CreateFormAddDetailsSection,
-  CreateFormAddDetailsSelects,
-  CreateFormAddDetailsTab,
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
   CreateFormBaseModalHeader,
@@ -42,31 +17,23 @@ import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
-  CreateFormLinkAttachmentBlock,
-  CreateFormLinkAttachmentLabel,
   CreateFormMainDescriptionInputSymbolCounter,
   CreateFormMainInputBlock,
   CreateFormMainSection,
   CreateFormMainSelects,
-  CreateFormMembersBlock,
-  CreateFormMembersBlockTitle,
-  CreateFormMembersSection,
   CreateFormPreviewButton,
   CreateFormMainBlockTitle,
   CreateRewardAmountDiv,
   MultiMediaUploadButton,
   MultiMediaUploadButtonText,
   MediaUploadDiv,
-  StyledAutocompletePopper,
-  OptionDiv,
-  OptionTypography,
-  StyledChip,
-  CreateFormRewardCurrency,
-  CreateFormAddDetailsLocalizationProvider,
-  CreateFormAddTagsSection,
   EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
+  CreateFormRewardCurrency,
+  SnapshotButtonBlock,
+  SnapshotButton,
+  SnapshotErrorText,
 } from './styles';
 
 import UploadImageIcon from '../Icons/uploadImage';
@@ -75,19 +42,14 @@ import { handleAddFile } from 'utils/media';
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
 import { White } from '../../theme/colors';
+import apollo from 'services/apollo';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_LABELS, GET_USER_ORGS } from 'graphql/queries';
-import { SafeImage } from '../Common/Image';
 import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from 'graphql/queries/pod';
 import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
 import { GET_ORG_USERS } from 'graphql/queries/org';
-import {
-  ATTACH_MEDIA_TO_TASK,
-  REMOVE_MEDIA_FROM_TASK,
-  UPDATE_TASK,
-  UPDATE_MILESTONE,
-  UPDATE_BOUNTY,
-} from 'graphql/mutations/task';
+import { ATTACH_MEDIA_TO_TASK, REMOVE_MEDIA_FROM_TASK } from 'graphql/mutations/task';
+import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
@@ -95,8 +57,6 @@ import {
   UPDATE_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
-import Ethereum from '../Icons/ethereum';
-import { USDCoin } from '../Icons/USDCoin';
 import { getProposalStatus, updateCompletedItem, updateInReviewItem } from 'utils/board';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
@@ -116,162 +76,7 @@ import {
   extractMentions,
   isBlankValue,
 } from 'components/RichText';
-
-const filterUserOptions = (options) => {
-  if (!options) return [];
-  return options.map((option) => {
-    return {
-      label: option?.username ?? option?.title,
-      id: option?.id,
-      profilePicture: option?.profilePicture,
-    };
-  });
-};
-
-export const MEDIA_UI_ELEMENTS = {
-  [MEDIA_TYPES.IMAGE]: {
-    icon: ImageIcon,
-    label: 'Image',
-  },
-  [MEDIA_TYPES.AUDIO]: {
-    icon: AudioIcon,
-    label: 'Audio',
-  },
-  [MEDIA_TYPES.LINK]: {
-    icon: ImageIcon,
-    label: 'Link',
-  },
-  [MEDIA_TYPES.TEXT]: {
-    icon: ImageIcon,
-    label: 'Text',
-  },
-
-  [MEDIA_TYPES.CODE]: {
-    icon: CodeIcon,
-    label: 'Code',
-  },
-
-  [MEDIA_TYPES.VIDEO]: {
-    icon: VideoIcon,
-    label: 'Video',
-  },
-};
-
-const AndroidSwitch = styled(Switch)(({ theme }) => ({
-  padding: 8,
-  '& .MuiSwitch-track': {
-    borderRadius: 22 / 2,
-    background: '#3E3E3E',
-
-    '&:before': {
-      content: '""',
-      position: 'absolute',
-      top: '50%',
-      transform: 'translateY(-50%)',
-      width: 16,
-      height: 16,
-      backgroundImage: `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="16" width="16" viewBox="0 0 24 24"><path fill="white" d="M21,7L9,19L3.5,13.5L4.91,12.09L9,16.17L19.59,5.59L21,7Z"/></svg>')`,
-      left: 12,
-      zIndex: 1000,
-      opacity: 1,
-    },
-  },
-  '& .MuiSwitch-thumb': {
-    boxShadow: 'none',
-    width: 16,
-    height: 16,
-    margin: 2,
-    background: 'white',
-  },
-
-  '& .MuiSwitch-colorSecondary.Mui-checked + .MuiSwitch-track': {
-    background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-  },
-}));
-
-const createPodMembersList = [
-  {
-    avatar: '',
-    name: '0xAndros',
-    admin: 'true',
-  },
-  {
-    avatar: '',
-    name: '0xAndraos',
-    admin: 'false',
-  },
-  {
-    avatar: '',
-    name: '0xAndos',
-    admin: 'false',
-  },
-  {
-    avatar: '',
-    name: '0xAsndros',
-    admin: 'false',
-  },
-];
-
-const SELECT_OPTIONS = [
-  {
-    label: 'Today',
-    value: 'today',
-  },
-  {
-    label: 'Tomorrow',
-    value: 'tomorrow',
-  },
-  {
-    label: 'Never',
-    value: 'never',
-  },
-];
-
-const POD_SELECT_OPTIONS = [
-  {
-    icon: <CreatePodIcon ellipseColor="#00BAFF" />,
-    label: 'Beta Launch',
-    amount: 4,
-    value: 'beta-launch',
-  },
-  {
-    icon: <CreatePodIcon ellipseColor="#00BAFF" />,
-    label: 'Alfa Launch',
-    amount: 8,
-    value: 'alfa-launch',
-  },
-];
-
-const REWARD_SELECT_OPTIONS = [
-  {
-    icon: <Ethereum />,
-    label: 'Ether',
-    value: 'ETH',
-  },
-  {
-    icon: <USDCoin />,
-    label: 'USDC',
-    value: 'USDC',
-  },
-];
-
-const PRIORITY_SELECT_OPTIONS = [
-  {
-    icon: <PriorityIcon />,
-    label: 'Priority 1',
-    value: 'priority-1',
-  },
-  {
-    icon: <PriorityIcon />,
-    label: 'Priority 2',
-    value: 'priority-2',
-  },
-  {
-    icon: <PriorityIcon />,
-    label: 'Priority 3',
-    value: 'priority-3',
-  },
-];
+import { useSnapshot } from 'services/snapshot';
 
 export const transformMediaFormat = (media) => {
   return (
@@ -293,13 +98,8 @@ const EditLayoutBaseModal = (props) => {
   const editor = useEditor();
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
 
-  const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(deserializeRichText(existingTask?.description || ''));
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
-  const [labelIds, setLabelIds] = useState(existingTask?.labels?.map((label) => label.id) || []);
-  const addDetailsHandleClick = () => {
-    setAddDetails(!addDetails);
-  };
 
   const [org, setOrg] = useState({
     id: existingTask?.orgId,
@@ -308,10 +108,6 @@ const EditLayoutBaseModal = (props) => {
   });
 
   const [milestone, setMilestone] = useState(null);
-  const [milestoneString, setMilestoneString] = useState('');
-  const [assigneeString, setAssigneeString] = useState(existingTask?.assigneeUsername);
-  const [reviewerString, setReviewerString] = useState('');
-  const [selectedReviewers, setSelectedReviewers] = useState(filterUserOptions(existingTask?.reviewers));
   const [assignee, setAssignee] = useState(
     existingTask?.assigneeId && {
       value: existingTask?.assigneeId,
@@ -319,6 +115,20 @@ const EditLayoutBaseModal = (props) => {
       label: existingTask?.assigneeUsername,
     }
   );
+  const [snapshotId, setSnapshotId] = useState(existingTask?.snapshotId);
+
+  // snapshot integration
+  const {
+    orgSnapshot,
+    getOrgSnapshotInfo,
+    snapshotConnected,
+    snapshotSpace,
+    snapshotErrorElement,
+    snapshotLoading,
+    exportTaskProposal,
+    cancelProposal,
+  } = useSnapshot();
+
   // TODO: set later
   const initialRewards = existingTask?.rewards && existingTask?.rewards[0];
   const initialCurrency = initialRewards?.paymentMethodId;
@@ -328,7 +138,6 @@ const EditLayoutBaseModal = (props) => {
   const [rewardsAmount, setRewardsAmount] = useState(initialAmount);
   // const [maxSubmissionCount, setMaxSubmissionCount] = useState(existingTask?.maxSubmissionCount);
   const [title, setTitle] = useState(existingTask?.title);
-  const [publicTask, setPublicTask] = useState(existingTask?.privacyLevel === 'public');
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -336,34 +145,15 @@ const EditLayoutBaseModal = (props) => {
   const board = orgBoard || podBoard || userBoard;
   const boardColumns = useColumns();
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const selectedOrgPrivacyLevel = userOrgs?.getUserOrgs?.filter((i) => i.id === org)[0]?.privacyLevel;
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
 
-  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const [createLabel] = useMutation(CREATE_LABEL, {
-    refetchQueries: () => ['getOrgLabels'],
-  });
-
-  const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
-    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
-
-  const [getEligibleReviewersForPod, { data: eligibleReviewersForPodData }] =
-    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_POD);
-
-  const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
-
-  const [getPodUsers, { data: podUsersData }] = useLazyQuery(GET_POD_USERS);
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
       setPods(data?.getAvailableUserPods);
     },
     fetchPolicy: 'cache-and-network',
   });
-  const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
   const [errors, setErrors] = useState({
     general: null,
     title: null,
@@ -376,52 +166,20 @@ const EditLayoutBaseModal = (props) => {
   // const getOrgReviewers = useQuery(GET_ORG_REVIEWERS)
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
-  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
-  const isPodPublic = !selectedPodPrivacyLevel || selectedPodPrivacyLevel === 'public';
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
-
-  const initialRecurrenceValue =
-    existingTask?.recurringSchema?.daily ||
-    existingTask?.recurringSchema?.weekly ||
-    existingTask?.recurringSchema?.monthly ||
-    existingTask?.recurringSchema?.periodic;
-
-  const initialRecurrenceType =
-    existingTask?.recurringSchema &&
-    Object.keys(existingTask.recurringSchema)[
-      Object?.values(existingTask?.recurringSchema).indexOf(initialRecurrenceValue)
-    ];
-
-  const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
-  const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+  const proposalRejected = existingTask?.rejectedAt 
+  const proposalChangeRequested = existingTask?.changeRequestedAt 
+  const proposalApproved = existingTask?.approvedAt 
+  const proposalOpen = !proposalRejected && !proposalChangeRequested && !proposalApproved
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
 
-  const isBounty = entityType === ENTITIES_TYPES.BOUNTY;
   const isTask = entityType === ENTITIES_TYPES.TASK;
-  const isMilestone = entityType === ENTITIES_TYPES.MILESTONE;
-  const isPod = entityType === ENTITIES_TYPES.POD;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
-  const {
-    showDeliverableRequirementsSection,
-    showBountySwitchSection,
-    showAppearSection,
-    showLinkAttachmentSection,
-    showHeaderImagePickerSection,
-    showMembersSection,
-    showPrioritySelectSection,
-    showDueDateSection,
-    showVisibility,
-  } = useMemo(() => {
+  const { showBountySwitchSection } = useMemo(() => {
     return {
-      showDeliverableRequirementsSection: isTask,
-      showBountySwitchSection: isTask || isBounty || isProposal,
-      showAppearSection: isTask || isBounty,
-      showLinkAttachmentSection: isPod,
-      showHeaderImagePickerSection: isPod,
-      showMembersSection: isPod,
-      showPrioritySelectSection: isMilestone,
-      showDueDateSection: isTask || isBounty || isMilestone,
-      showVisibility: isTask || isBounty,
+      showBountySwitchSection: isTask || isProposal,
+      showAppearSection: isTask,
+      showDueDateSection: isTask,
     };
   }, [entityType]);
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
@@ -442,23 +200,11 @@ const EditLayoutBaseModal = (props) => {
     }));
   }, []);
 
-  const filterOrgUsers = useCallback((orgUsers) => {
-    if (!orgUsers) {
-      return [];
-    }
-
-    return orgUsers.map((orgUser) => ({
-      profilePicture: orgUser?.user?.profilePicture,
-      label: orgUser?.user?.username,
-      value: orgUser?.user?.id,
-    }));
-  }, []);
-
   const onCorrectPage =
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
     existingTask?.userId === board?.userId;
-
+  console.log('existingTask', existingTask)
   useEffect(() => {
     if (existingTask?.orgId) {
       // If you're only part of one dao then just set that as default
@@ -481,25 +227,11 @@ const EditLayoutBaseModal = (props) => {
           orgId: org?.id || org,
         },
       });
-    }
-    if (!milestonesData?.getMilestones) {
-      getMilestones({
+      getOrgSnapshotInfo({
         variables: {
-          orgId: org?.id || org,
-          podId: pod?.id || pod,
+          orgId: existingTask?.orgId,
         },
-      })
-        .then((res) => {
-          const milestones = res?.data?.getMilestones;
-          const existingMilestone = milestones?.find((m) => m.id === existingTask?.milestoneId);
-          if (existingMilestone) {
-            setMilestone({
-              id: existingMilestone?.id,
-              label: existingMilestone?.title,
-            });
-          }
-        })
-        .catch((e) => console.error(e));
+      });
     }
   }, [
     userOrgs?.getUserOrgs,
@@ -508,8 +240,6 @@ const EditLayoutBaseModal = (props) => {
     getOrgUsers,
     existingTask?.orgId,
     getPaymentMethods,
-    getMilestones,
-    milestonesData,
     existingTask?.reviewers,
   ]);
 
@@ -522,45 +252,6 @@ const EditLayoutBaseModal = (props) => {
     });
     return justCreatedPod;
   }, [pods, pod]);
-
-  const [updateTask, { loading: updateTaskLoading }] = useMutation(UPDATE_TASK, {
-    refetchQueries: () => [
-      'getPerStatusTaskCountForMilestone',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-    ],
-    onCompleted: (data) => {
-      const task = data?.updateTask;
-      const justCreatedPod = getPodObject();
-      if (boardColumns?.setColumns && onCorrectPage) {
-        const transformedTask = transformTaskToTaskCard(task, {});
-        let columns = [...boardColumns?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_TODO) {
-          columns = updateTaskItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
-        }
-        boardColumns.setColumns(columns);
-      }
-      handleClose();
-    },
-  });
-
-  const [updateBounty, { loading: updateBountyLoading }] = useMutation(UPDATE_BOUNTY, {
-    refetchQueries: () => [
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-    onCompleted: () => {
-      handleClose();
-    },
-  });
 
   const [updateTaskProposal, { loading: updateTaskProposalLoading }] = useMutation(UPDATE_TASK_PROPOSAL, {
     onCompleted: (data) => {
@@ -600,94 +291,15 @@ const EditLayoutBaseModal = (props) => {
     refetchQueries: ['GetOrgTaskBoardProposals'],
   });
 
-  const [updateMilestone, { loading: updateMilestoneLoading }] = useMutation(UPDATE_MILESTONE, {
-    onCompleted: (data) => {
-      const milestone = data?.updateMilestone;
-      if (boardColumns?.setColumns && onCorrectPage) {
-        const transformedTask = transformTaskToTaskCard(milestone, {});
-        let columns = [...boardColumns?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
-          //if there's no entityType we assume it's the userBoard and keeping the old logic
-        } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
-          columns = updateTaskItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
-          columns = updateTaskItemOnEntityType(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
-        }
-        boardColumns.setColumns(columns);
-      }
-      handleClose();
-    },
-  });
-
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const description = JSON.stringify(descriptionText);
     const userMentions = extractMentions(descriptionText);
 
     switch (entityType) {
-      case ENTITIES_TYPES.TASK:
-        const taskInput = {
-          title,
-          labelIds,
-          description,
-          orgId: org?.id,
-          milestoneId: milestone?.id ?? milestone,
-          podId: pod?.id ?? pod,
-          dueDate,
-          ...(recurrenceType &&
-            recurrenceValue && {
-              recurringSchema: {
-                [recurrenceType]: recurrenceValue,
-              },
-            }),
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          // TODO: add links?,
-          assigneeId: assignee?.value,
-          ...(publicTask &&
-            isPodPublic && {
-              privacyLevel: PRIVACY_LEVEL.public,
-            }),
-          reviewerIds: selectedReviewers.map(({ id }) => id) || [],
-          userMentions,
-          mediaUploads,
-          timezone,
-        };
-        const taskPodPrivacyError = !isPodPublic ? publicTask : false;
-        if (!title || !org || taskPodPrivacyError) {
-          const newErrors = {
-            ...errors,
-            title: !title ? 'Please enter a title' : errors.title,
-            org: !org ? 'Please select an organization' : errors.org,
-            privacy: taskPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
-            general: 'Please enter the necessary information above',
-          };
-          setErrors(newErrors);
-        } else {
-          updateTask({
-            variables: {
-              taskId: existingTask?.id,
-              input: taskInput,
-            },
-          });
-        }
-        break;
       case ENTITIES_TYPES.PROPOSAL: {
         const proposalInput = {
           title,
-          labelIds,
           description,
           orgId: org?.id,
           milestoneId: milestone?.id ?? milestone,
@@ -728,89 +340,10 @@ const EditLayoutBaseModal = (props) => {
         }
         break;
       }
-      case ENTITIES_TYPES.MILESTONE: {
-        updateMilestone({
-          variables: {
-            milestoneId: existingTask?.id,
-            input: {
-              title,
-              labelIds,
-              description,
-              dueDate,
-              ...(recurrenceType &&
-                recurrenceValue && {
-                  recurringSchema: {
-                    [recurrenceType]: recurrenceValue,
-                  },
-                }),
-              orgId: org?.id,
-              podId: pod?.id,
-              userMentions,
-              mediaUploads,
-              timezone,
-            },
-          },
-        });
-        break;
-      }
-      case ENTITIES_TYPES.BOUNTY:
-        const bountyInput = {
-          title,
-          labelIds,
-          description,
-          orgId: org?.id || org,
-          milestoneId: milestone?.id,
-          parentTaskId: existingTask?.parentTaskId,
-          podId: pod?.id || pod,
-          // maxSubmissionCount: parseFloat(maxSubmissionCount),
-          dueDate,
-          ...(rewardsAmount &&
-            rewardsCurrency && {
-              rewards: [
-                {
-                  rewardAmount: parseFloat(rewardsAmount),
-                  paymentMethodId: rewardsCurrency,
-                },
-              ],
-            }),
-          ...(publicTask &&
-            isPodPublic && {
-              privacyLevel: PRIVACY_LEVEL.public,
-            }),
-          reviewerIds: selectedReviewers.map(({ id }) => id),
-          userMentions,
-          mediaUploads,
-          timezone,
-        };
-        // const isErrorMaxSubmissionCount =
-        //   bountyInput?.maxSubmissionCount <= 0 || bountyInput?.maxSubmissionCount > 10000 || !maxSubmissionCount;
-
-        const bountyPodPrivacyError = !isPodPublic ? publicTask : false;
-        const isDescriptionBlank = isBlankValue(descriptionText);
-        if (!title || isDescriptionBlank || !org || bountyPodPrivacyError) {
-          const newErrors = {
-            ...errors,
-            title: !title ? 'Please enter a title' : errors.title,
-            description: isDescriptionBlank ? 'Please enter a description' : errors.description,
-            org: !org ? 'Please select an organization' : errors.org,
-            privacy: bountyPodPrivacyError ? 'The selected pod is for members only' : errors.privacy,
-            general: 'Please enter the necessary information above',
-          };
-          setErrors(newErrors);
-        } else {
-          updateBounty({
-            variables: {
-              bountyId: existingTask?.id,
-              input: bountyInput,
-            },
-          });
-        }
-        break;
     }
   }, [
     entityType,
     title,
-    labelIds,
     descriptionText,
     org,
     milestone,
@@ -820,56 +353,43 @@ const EditLayoutBaseModal = (props) => {
     rewardsCurrency,
     isTaskProposal,
     assignee?.value,
-    publicTask,
-    selectedReviewers,
-    recurrenceType,
-    recurrenceValue,
     mediaUploads,
-    existingTask?.parentTaskId,
     existingTask?.id,
-    // maxSubmissionCount,
     errors,
-    updateTask,
     updateTaskProposal,
-    updateMilestone,
-    updateBounty,
-    getPodObject,
-    board,
-    handleClose,
-    existingTask?.assigneeId,
   ]);
 
-  useEffect(() => {
-    if (org) {
-      getOrgLabels({
+  const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
+  const updating = updateTaskProposalLoading;
+  const exportProposalToSnapshot = async () => {
+    const receipt = await exportTaskProposal(existingTask);
+    setSnapshotId(receipt.id);
+    if (receipt && receipt.id) {
+      await apollo.mutate({
+        mutation: LINKE_PROPOSAL_TO_SNAPSHOT,
         variables: {
-          orgId: org,
+          proposalId: existingTask?.id,
+          snapshotId: receipt.id,
         },
       });
-    } else {
-      setLabelIds([]);
     }
-  }, [org]);
-
-  const handleCreateLabel = async (label: Label) => {
-    const {
-      data: { createLabel: newLabel },
-    } = await createLabel({
-      variables: {
-        input: {
-          orgId: org,
-          name: label.name,
-          color: label.color,
-        },
-      },
-    });
-
-    setLabelIds([...labelIds, newLabel.id]);
+    // update proposal, and if successful, initiate transaction to export to snapshot
   };
 
-  const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
-  const updating = updateBountyLoading || updateTaskLoading || updateMilestoneLoading || updateTaskProposalLoading;
-
+  // cancel snapshot proposal
+  const cancelSnapshotProposal = async () => {
+    await cancelProposal(existingTask.snapshotId)
+      .then((receipt) => {
+        setSnapshotId(null);
+      });
+    await apollo.mutate({
+      mutation: UNLINKE_PROPOSAL_FROM_SNAPSHOT,
+      variables: {
+        proposalId: existingTask?.id,
+      },
+    });
+  };
+  console.log('snapshitId', snapshotId);
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
@@ -877,11 +397,34 @@ const EditLayoutBaseModal = (props) => {
       </CreateFormBaseModalCloseBtn>
       <CreateFormBaseModalHeader
         style={{
-          marginBottom: '0',
+          marginBottom: '10px',
         }}
       >
         <TitleIcon circle />
         <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        {snapshotConnected && isTaskProposal && proposalOpen && (
+          <SnapshotButtonBlock>
+            {!snapshotId && (
+              <SnapshotButton onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
+                {snapshotLoading ? <CircularProgress size={20} /> : null}
+                Export to Snapshot
+              </SnapshotButton>
+            )}
+            {snapshotId && (
+              <SnapshotButton onClick={cancelSnapshotProposal} disabled={snapshotLoading}>
+                {snapshotLoading ? <CircularProgress size={20} /> : null}
+                Cancel Snapshot Proposal
+              </SnapshotButton>
+            )}
+            {snapshotErrorElement && (
+              <SnapshotErrorText>
+                {snapshotErrorElement.map((elem, i) => (
+                  <ErrorText key={i}>{elem}</ErrorText>
+                ))}
+              </SnapshotErrorText>
+            )}
+          </SnapshotButtonBlock>
+        )}
       </CreateFormBaseModalHeader>
 
       <CreateFormMainSection>
@@ -903,14 +446,7 @@ const EditLayoutBaseModal = (props) => {
             labelIcon={<CreatePodIcon />}
             options={filterDAOptions(pods) || []}
             name="pod"
-            onChange={(e) => {
-              setMilestoneString('');
-              setMilestone(null);
-              setAssigneeString('');
-              setAssignee(null);
-              setReviewerString('');
-              setSelectedReviewers([]);
-            }}
+            onChange={(e) => {}}
           />
         </CreateFormMainSelects>
 
@@ -1052,9 +588,6 @@ const EditLayoutBaseModal = (props) => {
             }}
           />
         </CreateFormMainInputBlock>
-        {/*Upload header image block*/}
-        {showHeaderImagePickerSection && <HeaderImage />}
-
         {showBountySwitchSection && (
           <CreateFormMainSelects>
             <CreateRewardAmountDiv>
@@ -1068,13 +601,9 @@ const EditLayoutBaseModal = (props) => {
               />
             </CreateRewardAmountDiv>
             <CreateRewardAmountDiv>
-              <CreateFormMainBlockTitle>
-                {isBounty ? 'Minimum reward per submission' : 'Reward amount'}
-              </CreateFormMainBlockTitle>
-
               <InputForm
                 style={{
-                  marginTop: '20px',
+                  marginTop: '37px',
                 }}
                 type={'number'}
                 min="0"
@@ -1096,425 +625,9 @@ const EditLayoutBaseModal = (props) => {
                 }
               />
             </CreateRewardAmountDiv>
-            {/* {isBounty && (
-              <CreateRewardAmountDiv>
-                <CreateFormMainBlockTitle>Maximum no. of submissions</CreateFormMainBlockTitle>
-
-                <InputForm
-                  style={{
-                    marginTop: '20px',
-                  }}
-                  min="1"
-                  max="10000"
-                  placeholder="Enter the max. no. of submissions"
-                  search={false}
-                  value={maxSubmissionCount}
-                  onChange={(e) => setMaxSubmissionCount(e.target.value)}
-                  endAdornment={
-                    <CloseModalIcon
-                      style={{
-                        marginRight: '8px',
-                        cursor: 'pointer',
-                      }}
-                      onClick={() => {
-                        setMaxSubmissionCount('');
-                      }}
-                    />
-                  }
-                />
-                {errors.maxSubmissionCount && <ErrorText> {errors.maxSubmissionCount} </ErrorText>}
-              </CreateRewardAmountDiv>
-            )} */}
           </CreateFormMainSelects>
         )}
-
-        {showMembersSection && (
-          <CreateFormMembersSection>
-            <CreateFormMainBlockTitle>Members</CreateFormMainBlockTitle>
-
-            <InputForm search margin icon={<CircleIcon />} placeholder="Search reviewers" />
-
-            <CreateFormMembersBlock>
-              <CreateFormMembersBlockTitle>
-                {createPodMembersList?.length}
-                {createPodMembersList?.length > 1 ? ' members' : ' member'}
-              </CreateFormMembersBlockTitle>
-              <CreateFormMembersList>
-                {createPodMembersList.map((item) => (
-                  <MembersRow key={item.name} name={item.name} styledSwitch={<AndroidSwitch />} />
-                ))}
-              </CreateFormMembersList>
-            </CreateFormMembersBlock>
-          </CreateFormMembersSection>
-        )}
-        {showAppearSection && !isTaskProposal && (
-          <CreateFormAddDetailsInputs
-            style={{
-              marginBottom: '40px',
-            }}
-          >
-            {!isBounty && (
-              <CreateFormAddDetailsInputBlock>
-                <CreateFormAddDetailsInputLabel>Assigned to</CreateFormAddDetailsInputLabel>
-                <StyledAutocompletePopper
-                  options={filterOrgUsers(orgUsersData?.getOrgUsers)}
-                  renderInput={(params) => {
-                    const InputProps = {
-                      ...params?.InputProps,
-                      type: 'autocomplete',
-                      startAdornment:
-                        assignee && assigneeString ? (
-                          <StyledChip label={assigneeString} onDelete={() => setAssignee(null)} />
-                        ) : (
-                          ''
-                        ),
-                    };
-                    return (
-                      <TextField
-                        {...params}
-                        style={{
-                          color: White,
-                          fontFamily: 'Space Grotesk',
-                          fontSize: '14px',
-                          paddingLeft: '4px',
-                        }}
-                        placeholder="Enter username..."
-                        InputLabelProps={{ shrink: false }}
-                        InputProps={InputProps}
-                        inputProps={{
-                          ...params?.inputProps,
-                          style: {
-                            opacity: assignee ? '0' : '1',
-                          },
-                        }}
-                      />
-                    );
-                  }}
-                  value={assignee}
-                  inputValue={assigneeString}
-                  onInputChange={(event, newInputValue) => {
-                    setAssigneeString(newInputValue);
-                  }}
-                  onChange={(_, __, reason) => {
-                    if (reason === 'clear') {
-                      setAssignee(null);
-                    }
-                  }}
-                  renderOption={(props, option, state) => {
-                    return (
-                      <OptionDiv
-                        onClick={(event) => {
-                          setAssignee(option);
-                          props?.onClick(event);
-                        }}
-                      >
-                        {option?.profilePicture && (
-                          <SafeImage
-                            src={option?.profilePicture}
-                            style={{
-                              width: '30px',
-                              height: '30px',
-                              borderRadius: '15px',
-                            }}
-                          />
-                        )}
-                        <OptionTypography>{option?.label}</OptionTypography>
-                      </OptionDiv>
-                    );
-                  }}
-                />
-              </CreateFormAddDetailsInputBlock>
-            )}
-
-            <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>Reviewer</CreateFormAddDetailsInputLabel>
-              <StyledAutocompletePopper
-                options={filterUserOptions(
-                  eligibleReviewersForPodData?.getEligibleReviewersForPod ??
-                    eligibleReviewersForOrgData?.getEligibleReviewersForOrg
-                ).filter(({ id }) => !selectedReviewers.map(({ id }) => id).includes(id))}
-                multiple
-                onChange={(event, newValue, reason) => {
-                  if ('clear' === reason) {
-                    setSelectedReviewers([]);
-                  }
-                  if (event.code === 'Backspace' && reviewerString === '') {
-                    setSelectedReviewers(selectedReviewers.slice(0, -1));
-                  }
-                }}
-                onOpen={() => {
-                  if (pod) {
-                    getEligibleReviewersForPod({
-                      variables: {
-                        podId: pod,
-                        searchString: '',
-                      },
-                    });
-                  } else {
-                    getEligibleReviewersForOrg({
-                      variables: {
-                        orgId: org,
-                        searchString: '',
-                      },
-                    });
-                  }
-                }}
-                renderInput={(params) => (
-                  <TextField
-                    style={{
-                      color: White,
-                      fontFamily: 'Space Grotesk',
-                      fontSize: '14px',
-                      paddingLeft: '4px',
-                    }}
-                    placeholder="Enter username..."
-                    InputLabelProps={{ shrink: false }}
-                    onChange={(event) => {
-                      setReviewerString(event.target.value);
-                      getEligibleReviewersForOrg({
-                        variables: {
-                          orgId: org,
-                          searchString: event.target.value,
-                        },
-                      });
-                    }}
-                    {...params}
-                  />
-                )}
-                value={selectedReviewers}
-                renderTags={(value) =>
-                  value?.map((option, index) => {
-                    return (
-                      <StyledChip
-                        key={index}
-                        label={option?.label}
-                        onDelete={() => setSelectedReviewers(selectedReviewers.filter(({ id }) => id !== option?.id))}
-                      />
-                    );
-                  })
-                }
-                renderOption={(props, option, state) => {
-                  return (
-                    <OptionDiv
-                      onClick={(event) => {
-                        if (selectedReviewers.map(({ id }) => id).indexOf(option?.id === -1)) {
-                          setSelectedReviewers([...selectedReviewers, option]);
-                          setReviewerString('');
-                        }
-                        props?.onClick(event);
-                      }}
-                    >
-                      {option?.profilePicture && (
-                        <SafeImage
-                          src={option?.profilePicture}
-                          style={{
-                            width: '30px',
-                            height: '30px',
-                            borderRadius: '15px',
-                            marginRight: '8px',
-                          }}
-                        />
-                      )}
-                      <OptionTypography>{option?.label}</OptionTypography>
-                    </OptionDiv>
-                  );
-                }}
-              />
-            </CreateFormAddDetailsInputBlock>
-
-            <CreateFormAddDetailsInputBlock>
-              <CreateFormAddDetailsInputLabel>Milestone</CreateFormAddDetailsInputLabel>
-              <StyledAutocompletePopper
-                options={filterUserOptions(milestonesData?.getMilestones)}
-                onOpen={() =>
-                  getMilestones({
-                    variables: {
-                      orgId: org,
-                      podId: pod,
-                    },
-                  })
-                }
-                renderInput={(params) => (
-                  <TextField
-                    style={{
-                      color: White,
-                      fontFamily: 'Space Grotesk',
-                      fontSize: '14px',
-                      paddingLeft: '4px',
-                    }}
-                    placeholder="Enter milestone..."
-                    InputLabelProps={{ shrink: false }}
-                    {...params}
-                  />
-                )}
-                value={milestone}
-                inputValue={milestoneString}
-                onInputChange={(_, newInputValue) => {
-                  setMilestoneString(newInputValue);
-                }}
-                onChange={(_, __, reason) => {
-                  if (reason === 'clear') {
-                    setMilestone(null);
-                  }
-                }}
-                renderOption={(props, option) => {
-                  return (
-                    <OptionDiv
-                      onClick={(event) => {
-                        setMilestone(option);
-                        props?.onClick(event);
-                      }}
-                    >
-                      <OptionTypography>{option?.label}</OptionTypography>
-                    </OptionDiv>
-                  );
-                }}
-              />
-            </CreateFormAddDetailsInputBlock>
-          </CreateFormAddDetailsInputs>
-        )}
       </CreateFormMainSection>
-
-      <CreateFormAddTagsSection>
-        <CreateFormMainInputBlock>
-          <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
-
-          <Tags
-            options={orgLabelsData?.getOrgLabels || []}
-            ids={labelIds}
-            onChange={setLabelIds}
-            onCreate={handleCreateLabel}
-            limit={4}
-          />
-        </CreateFormMainInputBlock>
-      </CreateFormAddTagsSection>
-
-      {/* {showDeliverableRequirementsSection && (
-				<CreateFormTaskRequirements>
-					<CreateFormTaskRequirementsTitle>
-						Deliverables requirements
-					</CreateFormTaskRequirementsTitle>
-					<CreateFormTaskRequirementsContainer>
-						{Object.entries(MEDIA_UI_ELEMENTS).map(
-							([key, { icon: MediaIcon, label }]) => (
-								<CreateFormTaskRequirementsItem key={key}>
-									<MediaIcon />
-									<CreateFormTaskRequirementsItemText>
-										{label}
-									</CreateFormTaskRequirementsItemText>
-								</CreateFormTaskRequirementsItem>
-							)
-						)}
-					</CreateFormTaskRequirementsContainer>
-				</CreateFormTaskRequirements>
-			)} */}
-
-      <CreateFormAddDetailsSection>
-        {/* <CreateFormAddDetailsButton onClick={() => addDetailsHandleClick()}>
-          {!addDetails ? (
-            <>
-              <CreateFormAddDetailsButtonText>
-                Add more details
-              </CreateFormAddDetailsButtonText>
-              <SelectDownIcon
-                style={{
-                  width: '10',
-                  height: '5.83',
-                }}
-              ></SelectDownIcon>
-            </>
-          ) : (
-            <SelectDownIcon
-              style={{
-                transform: 'rotate(180deg)',
-                width: '10',
-                height: '5.83',
-              }}
-            ></SelectDownIcon>
-          )}
-        </CreateFormAddDetailsButton> */}
-        {addDetails && (
-          <CreateFormAddDetailsAppearBlock>
-            <CreateFormAddDetailsAppearBlockContainer>
-              {showDueDateSection && (
-                <CreateFormAddDetailsSelects>
-                  <CreateFormAddDetailsLocalizationProvider>
-                    <SingleDatePicker
-                      setValue={setDueDate}
-                      value={dueDate}
-                      setRecurrenceValue={setRecurrenceValue}
-                      recurrenceValue={recurrenceValue}
-                      setRecurrenceType={setRecurrenceType}
-                      recurrenceType={recurrenceType}
-                      hideRecurring={isBounty || isMilestone}
-                    />
-                  </CreateFormAddDetailsLocalizationProvider>
-                </CreateFormAddDetailsSelects>
-
-                // {/* <CreateFormAddDetailsSelects> */}
-                // {/* <CreateFormAddDetailsSwitch>
-                // 		<CreateFormAddDetailsInputLabel>
-                // 			Private task
-                // 		</CreateFormAddDetailsInputLabel>
-                // 		<AndroidSwitch />
-                // 	</CreateFormAddDetailsSwitch> */}
-
-                // {/*if Suggest a task opened */}
-                // {/* {showBountySwitchSection && !isTaskProposal && (
-                //     <CreateFormAddDetailsSwitch>
-                //       <CreateFormAddDetailsInputLabel>
-                //         This is a bounty
-                //       </CreateFormAddDetailsInputLabel>
-                //       <AndroidSwitch />
-                //     </CreateFormAddDetailsSwitch>
-                //   )} */}
-
-                // {/*if Create a milestone opened*/}
-                // {/* {showPrioritySelectSection && (
-                //     <DropdownSelect
-                //       title="Priority"
-                //       labelText="Choose Milestone"
-                //       options={PRIORITY_SELECT_OPTIONS}
-                //       name="priority"
-                //     />
-                //   )} */}
-                // {/* </CreateFormAddDetailsSelects> */}
-              )}
-            </CreateFormAddDetailsAppearBlockContainer>
-
-            {(showLinkAttachmentSection || showVisibility) && (
-              <CreateFormAddDetailsAppearBlockContainer>
-                {showLinkAttachmentSection && (
-                  <CreateFormLinkAttachmentBlock>
-                    <CreateFormLinkAttachmentLabel>Links</CreateFormLinkAttachmentLabel>
-                    <InputForm margin placeholder="Enter link attachment" search={false} />
-                  </CreateFormLinkAttachmentBlock>
-                )}
-                {showVisibility && (
-                  <CreateFormAddDetailsTab>
-                    <CreateFormAddDetailsInputLabel>
-                      Who can see this {titleText.toLowerCase()}?
-                    </CreateFormAddDetailsInputLabel>
-                    <TabsVisibilityCreateEntity
-                      type={titleText.toLowerCase()}
-                      isPod={isPod}
-                      isPublic={publicTask}
-                      setIsPublic={setPublicTask}
-                      orgPrivacyLevel={
-                        existingTask?.orgId == org ? existingTask?.privacyLevel : selectedOrgPrivacyLevel
-                      }
-                      podPrivacyLevel={
-                        existingTask?.podId == pod ? existingTask?.privacyLevel : selectedPodPrivacyLevel
-                      }
-                    />
-                    {errors.privacy && <ErrorText>{errors.privacy}</ErrorText>}
-                  </CreateFormAddDetailsTab>
-                )}
-              </CreateFormAddDetailsAppearBlockContainer>
-            )}
-          </CreateFormAddDetailsAppearBlock>
-        )}
-      </CreateFormAddDetailsSection>
 
       <CreateFormFooterButtons>
         {errors.general && <ErrorText> {errors.general} </ErrorText>}
