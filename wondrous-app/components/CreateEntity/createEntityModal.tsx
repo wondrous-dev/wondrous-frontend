@@ -966,7 +966,7 @@ const CreateLayoutBaseModal = (props) => {
           }}
         >
           <TitleIcon circle />
-          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+          <CreateFormBaseModalTitle>Create a {titleText?.toLowerCase()}</CreateFormBaseModalTitle>
         </CreateFormBaseModalHeader>
         <CreateFormBaseModalCloseBtn onClick={handleClose}>
           <CloseModalIcon />
@@ -1011,7 +1011,7 @@ const CreateLayoutBaseModal = (props) => {
           <InputForm
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={`Enter ${titleText.toLowerCase()} title`}
+            placeholder={`Enter ${titleText?.toLowerCase()} title`}
             search={false}
           />
           {errors.title && <ErrorText> {errors.title} </ErrorText>}
@@ -1025,7 +1025,7 @@ const CreateLayoutBaseModal = (props) => {
             <RichTextEditor
               editor={editor}
               mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
-              placeholder={<EditorPlaceholder>Enter {titleText.toLowerCase()} description</EditorPlaceholder>}
+              placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
               toolbarNode={editorToolbarNode}
               onChange={setDescriptionText}
               editorContainerNode={document.querySelector('#modal-scrolling-container')}
@@ -1556,10 +1556,10 @@ const CreateLayoutBaseModal = (props) => {
                 {showVisibility && (
                   <CreateFormAddDetailsTab>
                     <CreateFormAddDetailsInputLabel>
-                      Who can see this {titleText.toLowerCase()}?
+                      Who can see this {titleText?.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
                     <TabsVisibilityCreateEntity
-                      type={titleText.toLowerCase()}
+                      type={titleText?.toLowerCase()}
                       isPod={isPod}
                       isPublic={isPublicEntity}
                       setIsPublic={setIsPublicEntity}

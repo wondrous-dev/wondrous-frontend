@@ -15,7 +15,7 @@ const useMentions = ({
   const [mentionSearch, setMentionSearch] = useState('');
 
   const foundMentionables = mentionables
-    .filter((m) => m.display.toLowerCase().startsWith(mentionSearch.toLowerCase()))
+    .filter((m) => m.display?.toLowerCase().startsWith(mentionSearch?.toLowerCase()))
     .slice(0, 10);
 
   const onChange = () => {

@@ -401,7 +401,7 @@ const EditLayoutBaseModal = (props) => {
         }}
       >
         <TitleIcon circle />
-        <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        <CreateFormBaseModalTitle>Edit {titleText?.toLowerCase()}</CreateFormBaseModalTitle>
         {snapshotConnected && isTaskProposal && proposalOpen && (
           <SnapshotButtonBlock>
             {!snapshotId && (

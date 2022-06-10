@@ -164,7 +164,7 @@ const TokenGatingConfigForm = (props) => {
   });
 
   const searchSelectedTokenInList = (contractAddress, tokenList, chain) => {
-    contractAddress = contractAddress.toLowerCase();
+    contractAddress = contractAddress?.toLowerCase();
     for (const tokenInfo of tokenList) {
       if (contractAddress === tokenInfo.value) {
         return tokenInfo;

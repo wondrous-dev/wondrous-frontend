@@ -30,7 +30,7 @@ const Mentions: React.FC<
   const mentionsPortalNodeRef = useRef<HTMLDivElement>();
 
   const foundMentionables = mentionables
-    .filter((m) => m.display.toLowerCase().startsWith(mentionSearch.toLowerCase()))
+    .filter((m) => m.display?.toLowerCase().startsWith(mentionSearch.toLowerCase()))
     .slice(0, 10);
 
   const getBoundingClientRect = useCallback(
