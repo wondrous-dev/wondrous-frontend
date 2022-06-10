@@ -69,7 +69,7 @@ const PodSearch = (props) => {
             }}
             disableClearable={true}
             isOptionEqualToValue={(option, value) => {
-              return option.value === value.value;
+              return option.value === value?.value;
             }}
             getOptionLabel={(option) => option.label}
             renderOption={(props, option) => {
