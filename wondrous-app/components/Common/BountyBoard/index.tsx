@@ -6,6 +6,7 @@ import {
   BountyCardSubmissionsCount,
   SubmissionCount,
   SubtasksWrapper,
+  BountyCommentsIcon,
 } from './styles';
 import { renderMentionString } from 'utils/common';
 import {
@@ -137,14 +138,22 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                   <PodName>{bounty?.podName}</PodName>
                 </PodWrapper>
               )}
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+
               {Number.isInteger(bounty.totalSubtaskCount) && (
                 <SubtasksWrapper>
                   <SubtaskDarkIcon height="30" width="30" fill="transparent" />
                   {bounty.totalSubtaskCount}
                 </SubtasksWrapper>
               )}
-              <CommentsIcon />
-              {bounty.commentCount || 0}
+              <BountyCommentsIcon>
+                <CommentsIcon />
+                {bounty.commentCount || 0}
+              </BountyCommentsIcon>
             </BoardsCardFooter>
           </BountyCardWrapper>
         );
