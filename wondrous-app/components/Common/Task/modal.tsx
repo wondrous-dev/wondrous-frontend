@@ -41,6 +41,7 @@ import {
   TaskListModalContentWrapper,
   Tag,
 } from './styles';
+import { SnapshotButton } from '../../CreateEntity/styles';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { SafeImage } from '../Image';
@@ -155,6 +156,7 @@ import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { CreateEntity } from 'components/CreateEntity';
+import { useSnapshot } from 'services/snapshot';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -813,6 +815,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchPolicy: 'cache-and-network',
   });
   const user = useMe();
+  const {
+    orgSnapshot,
+    getOrgSnapshotInfo,
+    snapshotConnected,
+    snapshotSpace,
+    isTest
+  } = useSnapshot();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
@@ -1053,6 +1062,28 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       setActiveTab(tabs.submissions);
     }
   }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
+  useEffect(()=> {
+    if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
+      getOrgSnapshotInfo({
+        variables: {
+          orgId: fetchedTask?.orgId,
+        },
+      });
+    }
+  }, [fetchedTask?.snapshotId])
+
+  const openSnapshot = async () => {
+    try {
+      const space = orgSnapshot.snapshotEns;
+      const proposal = fetchedTask?.snapshotId;
+      const url = isTest
+        ? `https://demo.snapshot.org/#/${space}/proposal/${proposal}`
+        : `https://snapshot.org/#/${space}/proposal/${proposal}`;
+      window.open(url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const BackToListStyle = {
     color: White,
@@ -1223,6 +1254,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     document.body.setAttribute('style', `position: relative;`);
     handleClose();
   };
+
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -1428,7 +1460,25 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 }}
               />
               <TaskTitleTextDiv>
-                <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+                <div
+                  style={{
+                    display: 'flex',
+                    textAlign: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+                  {fetchedTask?.snapshotId && (
+                    <SnapshotButton
+                      style={{
+                        marginBottom: '10px'
+                      }}
+                      onClick={openSnapshot}
+                    >
+                      Snapshot Proposal
+                    </SnapshotButton>
+                  )}
+                </div>
                 <TaskDescriptionText>
                   {renderMentionString({
                     content: fetchedTask?.description,
