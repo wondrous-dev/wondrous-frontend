@@ -795,3 +795,7 @@ export const EditorPlaceholder = styled.div`
 export const EditorToolbar = styled.div`
   margin-bottom: 4px;
 `;
+
+export const TextInputDiv = styled.div`
+  height: 100px;
+`;
