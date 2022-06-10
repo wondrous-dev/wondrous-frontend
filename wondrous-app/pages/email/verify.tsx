@@ -53,7 +53,7 @@ const EmailVerify = () => {
   const errorVerifying = error?.graphQLErrors[0].extensions.code === 400;
 
   useEffect(() => {
-    if (token && loading) {
+    if (token && loading && userid) {
       verifyEmail({
         variables: {
           token,
@@ -61,7 +61,7 @@ const EmailVerify = () => {
         },
       });
     }
-  }, [token, verifyEmail, loading]);
+  }, [token, verifyEmail, loading, userid]);
 
   useEffect(() => {
     if (emailAddressConfirm) {

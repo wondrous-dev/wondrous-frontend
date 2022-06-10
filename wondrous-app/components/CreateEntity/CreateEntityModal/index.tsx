@@ -980,7 +980,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               DefaultImageComponent={CreateEntityDefaultDaoImage}
               error={form.errors.orgId}
               onFocus={() => form.setFieldError('orgId', undefined)}
-              disabled={isSubtask || formValues !== undefined}
+              disabled={isSubtask || existingTask || formValues !== undefined}
             />
             {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
           </CreateEntitySelectErrorWrapper>
