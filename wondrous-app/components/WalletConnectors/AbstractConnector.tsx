@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Button } from 'components/Common/button';
 import { CircularProgress } from '@material-ui/core';
 import { useWonderWeb3 } from 'services/web3';

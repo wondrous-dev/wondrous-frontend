@@ -76,32 +76,37 @@ const OnboardingWelcome = ({ updateUser, user }) => {
     </WalletConnected>
   );
 
+  const description = (
+    <div>Earn crypto while contributoring to web3 projects. <br /> Let’s get your membership set up, it’ll take 2 minutes.</div>
+  );
+
   return (
     <OnboardingLayout
       title="Welcome to Wonder"
+      description={description}
       onContinueClick={handleContinueClick}
       headerRightContent={headerRightContent}
       step={1}
     >
-      <InviteWelcomeBoxParagraph
+      <div
         style={{
           textAlign: 'left',
           width: '100%',
+          height: '100%'
         }}
       >
-        Earn crypto while contributoring to web3 projects. <br /> Let’s get your membership set up, it’ll take 2
-        minutes.
-      </InviteWelcomeBoxParagraph>
-      <UsernameTitle>Enter your username</UsernameTitle>
-      <UsernameDescription>You can do your Twitter handle, Discord, or something new</UsernameDescription>
-      <UsernameInput
-        name="username"
-        value={username}
-        onChange={(e) => setUsername(e.target.value)}
-        placeholder="Enter username"
-        required
-        error={!!error}
-      />
+        <UsernameTitle>Enter your username</UsernameTitle>
+        <UsernameDescription>You can do your Twitter handle, Discord, or something new</UsernameDescription>
+        <UsernameInput
+          name="username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          placeholder="Enter username"
+          required
+          error={!!error}
+        />
+      </div>
+
       {error && <ErrorText>{error}</ErrorText>}
     </OnboardingLayout>
   );

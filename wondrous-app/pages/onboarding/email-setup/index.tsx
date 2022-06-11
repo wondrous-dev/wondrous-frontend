@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client';
 
-import { InviteWelcomeBox } from 'components/Onboarding/email-setup';
+import { EmailSetup } from 'components/Onboarding/EmailSetup';
 import { MainWrapper } from 'components/Onboarding/styles';
 import { UPDATE_USER } from 'graphql/mutations';
 import { withAuth } from 'components/Auth/withAuth';
@@ -54,9 +54,9 @@ const ContributorBuildProfilePage = () => {
   }, [redirect]);
   return (
     <MainWrapper>
-      <InviteWelcomeBox updateUser={updateUser} firstOrg={firstOrg} firstPod={firstPod} />
+      <EmailSetup updateUser={updateUser} firstOrg={firstOrg} firstPod={firstPod} />
     </MainWrapper>
   );
 };
 
-export default withAuth(ContributorBuildProfilePage);
+export default (ContributorBuildProfilePage);

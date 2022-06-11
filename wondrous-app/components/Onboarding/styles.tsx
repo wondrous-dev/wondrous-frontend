@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 import { TextField, Typography } from '@material-ui/core';
 import Image from 'next/image';
-import { Grey250, Grey85, Red400, White, Background } from '../../theme/colors';
+import { Grey250, Grey85, Red400, White, Background, HighlightBlue } from '../../theme/colors';
 import { Button } from '../Common/button';
 import { SafeImage } from '../Common/Image';
 
@@ -34,7 +34,7 @@ export const InviteWelcomeBoxWrapper = styled.div`
   border-radius: 6px;
   padding: 40px;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
   align-items: center;
   position: relative;
@@ -68,8 +68,17 @@ export const InviteWelcomeBoxParagraph = styled(Typography)`
   && {
     color: ${White};
     font-size: 16px;
-    font-weight: 500;
+    font-weight: normal;
     margin-bottom: 30px;
+  }
+`;
+
+export const DataProtectBoxParagraph = styled(Typography)`
+  && {
+    color: ${White};
+    font-size: 14px;
+    font-weight: normal;
+    margin-top: 30px;
   }
 `;
 
@@ -105,9 +114,6 @@ export const OnboardingTitle = styled(Typography)`
 export const ButtonDiv = styled.div`
   width: 100%;
 `;
-
-
-
 
 export const ContinueText = styled(Typography)`
   && {
@@ -170,18 +176,13 @@ export const ErrorText = styled(Typography)`
   }
 `;
 
-
 export const WalletConnected = styled.div`
   display: flex;
   align-items: center;
-
+  margin-bottom: 20px;
   background-color: #12413d;
   padding: 2px 7px 2px 2px;
   border-radius: 6px;
-
-  @media (max-width: 420px) {
-    margin-top: 20px;
-  }
 `;
 
 export const Label = styled(Typography)`
@@ -201,6 +202,7 @@ export const ContentWrapper = styled.div`
 `;
 
 export const RemovePictureBtn = styled.button`
+  display: flex;
   font-size: 12px;
   font-weight: 400;
   line-height: 15px;
@@ -218,6 +220,7 @@ export const RemovePictureBtn = styled.button`
 //   width: 100%;
 // `;
 
+// @ts-ignore
 export const ActionButtons = styled.div`
   width: 100%;
   justify-content: end;
@@ -230,6 +233,7 @@ export const ActionButtons = styled.div`
 `;
 
 // TODO: Rename/remove
+// @ts-ignore
 export const LeftButtons = styled.div`
   width: 50%;
   justify-content: start;
@@ -238,6 +242,7 @@ export const LeftButtons = styled.div`
 `;
 
 // TODO: Rename/remove
+// @ts-ignore
 export const RightButtons = styled.div`
   width: 50%;
   justify-content: end;
@@ -245,11 +250,13 @@ export const RightButtons = styled.div`
   align-items: flex-end;
 `;
 
+// @ts-ignore
 export const Logo = styled.div`
   text-align: center;
   margin: 20px auto;
 `;
 
+// @ts-ignore
 export const Connectors = styled.div`
   margin: 20px auto;
   display: flex;
@@ -262,5 +269,42 @@ export const Connectors = styled.div`
 
   button {
     justify-content: unset;
+    font-weight: 500;
   }
+`;
+
+export const TwitterTitle = styled.div`
+  color: white;
+  font-size: 15px;
+  font-weight: 400;
+  margin-bottom: 93px;
+  width: 100%;
+`;
+
+export const AlignButtonTwitter = styled.div`
+  padding: 16px 21px 8px 0;
+`;
+
+export const TwitterContent = styled.div`
+  display: unset;
+  flex-direction: unset;
+  text-align: center;
+  max-width: 326px;
+  width: 100%;
+`;
+
+export const LogoText = styled.div`
+  font-size: 20px;
+`;
+
+export const DataLink = styled.a`
+  color: ${HighlightBlue};
+  text-decoration: underline;
+  font-weight: 500;
+`;
+
+export const QRCodeTwitter = styled.div`
+  width: 305px;
+  height: 328px;
+  background-color: #d9d9d9;
 `;

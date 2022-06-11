@@ -3,27 +3,18 @@ import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxTitle,
   InviteWelcomeBoxWrapper,
-  LogoDiv,
-  LogoImg,
-  LogoText,
-  MetamaskButton,
-  OrgProfilePicture,
   ContentWrapper,
-  HeaderWrapper,
-  LabelWrapper,
   Connectors,
-  Label,
   Logo,
   StyledHr,
+  DataProtectBoxParagraph,
+  DataLink
 } from './styles';
-import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 import { useWonderWeb3 } from 'services/web3';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 import { Button } from '../Common/button';
-import { PaddedParagraph } from '../Common/text';
-import { Metamask } from '../Icons/metamask';
 import { SafeImage } from '../Common/Image';
 import { ErrorText } from '../Common';
 import { SupportedChainType } from 'utils/web3Constants';
@@ -33,18 +24,9 @@ import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DiscordIcon } from 'components/Icons/discord';
-import { CompletedIcon } from 'components/Icons/statusIcons';
+import { EmailIcon } from 'components/Icons/email'
 import NoLogo from 'components/Icons/noLogo';
-import OnboardingHeader from "components/Onboarding/OnboardingLayout/Header";
-
-export const Logo2 = () => {
-  return (
-    <LogoDiv>
-      <WonderLogo />
-      <LogoText>Wonder</LogoText>
-    </LogoDiv>
-  );
-};
+import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 
 export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteLink }) => {
   const wonderWeb3 = useWonderWeb3();
@@ -206,9 +188,6 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet.chain]);
-  const buttonStyle = {
-    background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-  };
 
   const titleSentence = podInfo
     ? `The ${podInfo?.name} pod from ${podInfo?.org?.name} is requesting your help`
@@ -221,14 +200,15 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
   const buttonStyles = {
     marginTop: '16px',
     width: '100%',
-    maxWidth: '330px',
+    maxWidth: '326px',
+    maxHeight: '40px',
+    height: '40px',
+    fontWeight: '500',
   };
   return (
     <InviteWelcomeBoxWrapper>
       <ContentWrapper style={{ textAlign: 'center' }}>
-        <OnboardingHeader />
-
-        <StyledHr />
+        <OnboardingHeader login={true} />
 
         <Logo>
           {orgInfo?.profilePicture || podInfo?.org?.profilePicture ? (
@@ -248,20 +228,13 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
 
         <InviteWelcomeBoxTitle>{titleSentence}</InviteWelcomeBoxTitle>
         <InviteWelcomeBoxParagraph>Wonder is where DAOs manage world changing projects</InviteWelcomeBoxParagraph>
+
         <StyledHr />
-        <InviteWelcomeBoxParagraph
-          style={{
-            fontWeight: 'normal',
-            margin: '30px auto',
-          }}
-        >
-          {contributingSentence}
-        </InviteWelcomeBoxParagraph>
-        <StyledHr />
+
         <Connectors>
           <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
+          <CoinbaseConnector text="Connect with Coinbase" style={buttonStyles} />
           <WalletConnectConnector text="Connect with Wallet Connect" style={buttonStyles} />
-          <CoinbaseConnector text="Connect with Coinbase Wallet" style={buttonStyles} />
           <Button
             style={buttonStyles}
             onClick={() => {
@@ -284,13 +257,35 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
             <span
               style={{
                 marginLeft: '12px',
+                fontFamily: 'Space Grotesk',
+                fontWeight: '500',
               }}
             >
               Connect with Discord
             </span>
           </Button>
+          <Button
+            style={buttonStyles}
+            onClick={() => {
+              router.push('/signup-with-email', undefined, {
+                shallow: true,
+              });
+            }}
+          >
+            <EmailIcon />
+            <span
+              style={{
+                marginLeft: '12px',
+                fontFamily: 'Space Grotesk',
+                fontWeight: '500',
+              }}
+            >
+              Continue with Email
+            </span>
+          </Button>
         </Connectors>
 
+        <DataProtectBoxParagraph>Your account and <DataLink href="/data">data</DataLink> is protected.</DataProtectBoxParagraph>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
       </ContentWrapper>

@@ -1,16 +1,25 @@
 import React from 'react';
 
-import { Container, ContinueButton, LaterButton, BackButton, RightButtons } from './styles';
+import {Container, ContinueButton, BackButton, RightButtons, Later} from './styles';
 import LeftArrowIcon from 'components/Icons/leftArrow';
+import DiscordSmallLogo from '../../../../public/images/onboarding/discord-small.svg';
+import { CircularProgress } from "@material-ui/core";
 
 interface Props {
-  onContinueClick: () => unknown;
+  onConnectDiscordClick?: () => unknown;
+  onContinueClick?: () => unknown;
   onLaterClick?: () => unknown;
   onBackClick?: () => unknown;
+  loading?: unknown;
+  borderNone?: number | string;
 }
 
-const OnboardingFooter = ({ onContinueClick, onLaterClick, onBackClick }: Props) => (
-  <Container>
+const OnboardingFooter = ({ onConnectDiscordClick, onContinueClick, onLaterClick, onBackClick, loading, borderNone }: Props) => (
+  <Container
+    style={{
+      borderTop: borderNone,
+    }}
+  >
     <div>
       {onBackClick ? (
         <BackButton onClick={onBackClick}>
@@ -19,8 +28,16 @@ const OnboardingFooter = ({ onContinueClick, onLaterClick, onBackClick }: Props)
       ) : null}
     </div>
     <RightButtons>
-      {onLaterClick ? <LaterButton onClick={onLaterClick}>Later</LaterButton> : null}
-      <ContinueButton onClick={onContinueClick}>Continue</ContinueButton>
+      {onLaterClick ? <Later onClick={onLaterClick}>Later</Later> : null}
+      {onContinueClick ? <ContinueButton onClick={onContinueClick}>Continue</ContinueButton>: null}
+      {onConnectDiscordClick ? <ContinueButton onClick={onConnectDiscordClick}>
+        <DiscordSmallLogo
+          style={{
+            marginRight: '12px'
+          }} />
+        Connect Discord
+      </ContinueButton>: null}
+      {loading ? <CircularProgress />: null}
     </RightButtons>
   </Container>
 );
