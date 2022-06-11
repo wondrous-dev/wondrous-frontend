@@ -1,14 +1,14 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core';
-import { Black97, White } from '../../theme/colors';
+import { Black99, White } from '../../theme/colors';
 import { SIDEBAR_WIDTH } from 'utils/constants';
 
 export const DrawerComponent = styled(Drawer)`
   && {
     & .MuiDrawer-paperAnchorDockedLeft {
-      background-color: ${Black97};
-      z-index: 200;
+      background-color: ${Black99};
+      z-index: 199;
       margin-top: 50px;
       transition: 0.3s;
     }

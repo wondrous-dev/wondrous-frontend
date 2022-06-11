@@ -2,8 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { InputAdornment, Typography } from '@material-ui/core';
 import Wallet from 'components/Common/Wallet';
 import { useMe } from '../Auth/withAuth';
-import CreateBtnIcon from 'components/Icons/createBtn';
-import HomeIcon from 'components/Icons/home';
+import { CreateIconOutlined } from 'components/Icons/createBtn';
 import SearchIcon from 'components/Icons/search';
 import { Button } from 'components/Common/button';
 import NotificationsBoard from 'components/Notifications';
@@ -24,7 +23,10 @@ import {
   HeaderRightBlock,
   TutorialButton,
   TutorialText,
+  HeaderHomeButtonWrapper,
+  HeaderLogoWrapper,
 } from './styles';
+import HomeIcon from 'components/Icons/home';
 
 const HeaderComponent = (props) => {
   const user = useMe();
@@ -55,22 +57,24 @@ const HeaderComponent = (props) => {
       <HeaderContainer>
         <HeaderLeftBlock>
           <Tooltip title="Explore page">
-            <div style={{display: 'flex'}}>
+            <HeaderLogoWrapper>
               <Link passHref href="/dashboard">
                 <HeaderLogo />
               </Link>
-            </div>
+            </HeaderLogoWrapper>
           </Tooltip>
           <Tooltip title="Dashboard">
             <div>
               <Link passHref href="/dashboard">
-                <HeaderHomeButton>
-                  <HomeIcon />
-                </HeaderHomeButton>
+                <HeaderHomeButtonWrapper>
+                  <HeaderHomeButton>
+                    <HomeIcon />
+                  </HeaderHomeButton>
+                </HeaderHomeButtonWrapper>
               </Link>
             </div>
           </Tooltip>
-          <HeaderInput
+          {/* <HeaderInput
             placeholder="Search wonder..."
             InputProps={{
               startAdornment: (
@@ -82,10 +86,10 @@ const HeaderComponent = (props) => {
             style={{
               visibility: 'hidden',
             }}
-          />
+          /> */}
         </HeaderLeftBlock>
         <HeaderRightBlock>
-          <a
+          {/* <a
             style={{
               textDecoration: 'none',
             }}
@@ -103,14 +107,13 @@ const HeaderComponent = (props) => {
             >
               <TutorialText>Wonder Tutorials</TutorialText>
             </TutorialButton>
-          </a>
+          </a> */}
           {user && (
             <>
               <Wallet />
               <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
               <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-                <span style={{ padding: '0px 8px' }}>Create</span>
-                <CreateBtnIcon />
+                <CreateIconOutlined />
               </HeaderCreateButton>
             </>
           )}

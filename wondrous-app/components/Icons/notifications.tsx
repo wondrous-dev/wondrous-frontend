@@ -81,20 +81,91 @@ export const NotificationOutlineSettings = (props) => {
     </svg>
   );
 };
+
+{
+  /* <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.648438" y="0.791016" width="41" height="41" rx="20.5" fill="#151515" stroke="url(#paint0_linear_10643_247540)"/>
+<path d="M26.6499 17.69C26.6499 16.2581 26.0811 14.8849 25.0686 13.8724C24.0561 12.8598 22.6828 12.291 21.2509 12.291C19.819 12.291 18.4457 12.8598 17.4332 13.8724C16.4207 14.8849 15.8519 16.2581 15.8519 17.69C15.8519 23.9889 13.1523 25.7886 13.1523 25.7886H29.3494C29.3494 25.7886 26.6499 23.9889 26.6499 17.69Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M22.8088 29.3887C22.6506 29.6614 22.4235 29.8878 22.1503 30.0451C21.8771 30.2025 21.5673 30.2853 21.252 30.2853C20.9367 30.2853 20.627 30.2025 20.3538 30.0451C20.0806 29.8878 19.8535 29.6614 19.6953 29.3887" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<linearGradient id="paint0_linear_10643_247540" x1="21.1484" y1="1.29102" x2="21.1484" y2="41.291" gradientUnits="userSpaceOnUse">
+<stop stop-color="#F93701"/>
+<stop offset="1" stop-color="white"/>
+</linearGradient>
+</defs>
+</svg> */
+}
+
+{
+  /* <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
+<rect x="0.648438" y="0.791016" width="41" height="41" rx="20.5" fill="#282828" stroke="url(#paint0_linear_10643_247860)"/>
+<path d="M27.0991 17.69C27.0991 16.2581 26.5303 14.8849 25.5178 13.8724C24.5053 12.8598 23.132 12.291 21.7001 12.291C20.2682 12.291 18.8949 12.8598 17.8824 13.8724C16.8699 14.8849 16.3011 16.2581 16.3011 17.69C16.3011 23.9889 13.6016 25.7886 13.6016 25.7886H29.7987C29.7987 25.7886 27.0991 23.9889 27.0991 17.69Z" stroke="#CCBBFF" stroke-linecap="round" stroke-linejoin="round"/>
+<path d="M23.258 29.3887C23.0998 29.6614 22.8727 29.8878 22.5995 30.0451C22.3263 30.2025 22.0165 30.2853 21.7013 30.2853C21.386 30.2853 21.0762 30.2025 20.803 30.0451C20.5298 29.8878 20.3027 29.6614 20.1445 29.3887" stroke="#CCBBFF" stroke-linecap="round" stroke-linejoin="round"/>
+<defs>
+<linearGradient id="paint0_linear_10643_247860" x1="21.1484" y1="1.29102" x2="21.1484" y2="41.291" gradientUnits="userSpaceOnUse">
+<stop stop-color="#CCBBFF"/>
+<stop offset="1" stop-color="#7A7A7A"/>
+</linearGradient>
+</defs>
+</svg> */
+}
+
 export default function NotificationsIcon(props) {
-  const { width, height } = props;
   return (
-    <svg
-      width={width || '16'}
-      height={height || '18'}
-      viewBox="0 0 16 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.148438" y="0.291016" width="40" height="40" rx="20" fill="#0F0F0F" stroke="none" />
       <path
-        d="M7.55998 0C6.76545 0 6.11998 0.645467 6.11998 1.44C6.11998 2.23452 6.76545 2.87999 7.55998 2.87999C8.3545 2.87999 8.99997 2.23452 8.99997 1.44C8.99997 0.645467 8.3545 0 7.55998 0ZM5.53498 2.19374C3.88967 2.89827 2.87999 4.48452 2.87999 6.47998C2.87999 10.44 1.51171 11.4342 0.697498 12.0262C0.336093 12.2878 0 12.5311 0 12.96C0 14.4745 2.26124 15.12 7.55998 15.12C12.8587 15.12 15.12 14.4745 15.12 12.96C15.12 12.5311 14.7839 12.2878 14.4225 12.0262C13.6082 11.4342 12.24 10.44 12.24 6.47998C12.24 4.47889 11.2317 2.89687 9.58497 2.19374C9.277 3.01218 8.48388 3.59999 7.55998 3.59999C6.63607 3.59999 5.84295 3.01077 5.53498 2.19374ZM5.39998 15.7949C5.39998 15.809 5.39998 15.8259 5.39998 15.8399C5.39998 17.031 6.36889 17.9999 7.55998 17.9999C8.75107 17.9999 9.71997 17.031 9.71997 15.8399C9.71997 15.8259 9.71997 15.809 9.71997 15.7949C9.04216 15.8231 8.32216 15.8399 7.55998 15.8399C6.79779 15.8399 6.07779 15.8231 5.39998 15.7949Z"
-        fill="#707070"
+        d="M25.6499 16.69C25.6499 15.2581 25.0811 13.8849 24.0686 12.8724C23.0561 11.8598 21.6828 11.291 20.2509 11.291C18.819 11.291 17.4457 11.8598 16.4332 12.8724C15.4207 13.8849 14.8519 15.2581 14.8519 16.69C14.8519 22.9889 12.1523 24.7886 12.1523 24.7886H28.3494C28.3494 24.7886 25.6499 22.9889 25.6499 16.69Z"
+        stroke="white"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
+      <path
+        d="M21.8088 28.3887C21.6506 28.6614 21.4235 28.8878 21.1503 29.0451C20.8771 29.2025 20.5673 29.2853 20.252 29.2853C19.9367 29.2853 19.627 29.2025 19.3538 29.0451C19.0806 28.8878 18.8535 28.6614 18.6953 28.3887"
+        stroke="white"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="21.5938" cy="10.5801" r="3.5" fill="#F93701" stroke="#0F0F0F" strokeWidth="2" />
+
+      <defs>
+        <linearGradient
+          id="open-notif-gradient"
+          x1="21.1484"
+          y1="1.29102"
+          x2="21.1484"
+          y2="41.291"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#CCBBFF" />
+          <stop offset="1" stopColor="#7A7A7A" />
+        </linearGradient>
+      </defs>
+
+      <defs>
+        <linearGradient
+          id="outline-hover-color"
+          x1="21.1484"
+          y1="1.29102"
+          x2="21.1484"
+          y2="41.291"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#F93701" />
+          <stop offset="1" stopColor="white" />
+        </linearGradient>
+        <linearGradient
+          id="circle-hover"
+          x1="23.8324"
+          y1="5.83276"
+          x2="21.3324"
+          y2="14.1351"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#F93701" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 }

@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react';
 import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
-import { HeaderNotificationsButton, StyledBadge } from '../Header/styles';
-import NotificationsIcon from '../Icons/notifications';
+import { StyledBadge } from '../Header/styles';
+import NotificationsIcon from 'components/Icons/notifications';
 import Link from 'next/link';
 
 import {
@@ -106,12 +106,15 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
   return (
     <>
       <NotificationsOverlay onClick={toggleNotifications} style={{ display: display }} />
-      <div>
-        <StyledBadge color="primary" badgeContent={unreadCount} onClick={toggleNotifications}>
+      <div style={{ position: 'relative' }}>
+        <StyledBadge
+          color="primary"
+          hasUnreadNotifications={unreadCount > 0}
+          isOpen={isOpen}
+          onClick={toggleNotifications}
+        >
           <Tooltip title="Notifications">
-            <HeaderNotificationsButton>
-              <NotificationsIcon />
-            </HeaderNotificationsButton>
+            <NotificationsIcon />
           </Tooltip>
         </StyledBadge>
         <NotificationsBoardWrapper style={{ display: display }}>
