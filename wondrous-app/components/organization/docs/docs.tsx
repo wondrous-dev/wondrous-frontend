@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
@@ -19,6 +19,9 @@ import DocCategoriesDialog from 'components/DocCategoriesDialog';
 
 import Wrapper from '../wrapper/wrapper';
 import styles from './docsStyles';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { PERMISSIONS } from 'utils/constants';
 
 const useGetOrgDocs = (orgId) => {
   const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
@@ -74,9 +77,22 @@ const Docs = (props) => {
   const [menuAnchor, setMenuAnchor] = useState(null);
   const openMenu = Boolean(menuAnchor);
 
+  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId,
+  });
+  const canEdit = permissions.includes(PERMISSIONS.FULL_ACCESS);
+
   const handleItemClick = (event, doc) => {
     // Don't show menu if link is clicked
-    if (!event.target.href) {
+    if (!event.target.href && canEdit) {
       setMenuAnchor(event.currentTarget);
       setSelectedDoc(doc);
     }
@@ -99,7 +115,9 @@ const Docs = (props) => {
   };
 
   const handleOpenEditDocDialog = () => {
-    setDocShowDialog(true);
+    if (canEdit) {
+      setDocShowDialog(true);
+    }
   };
 
   const handleCloseDocDialog = () => {
@@ -131,14 +149,15 @@ const Docs = (props) => {
 
   return (
     <Wrapper orgData={orgData}>
-
-      <Tooltip title="Create new doc category" placement="top">
-        <Box sx={styles.categoryButtonContainer}>
-          <Box sx={styles.categoryButton} onClick={() => setShowCategoriesDialog(true)}>
-            <Image src="/images/icons/plus.svg" alt="plus icon" width={16} height={16} />
+      {canEdit && (
+        <Tooltip title="Create new doc category" placement="top">
+          <Box sx={styles.categoryButtonContainer}>
+            <Box sx={styles.categoryButton} onClick={() => setShowCategoriesDialog(true)}>
+              <Image src="/images/icons/plus.svg" alt="plus icon" width={16} height={16} />
+            </Box>
           </Box>
-        </Box>
-      </Tooltip>
+        </Tooltip>
+      )}
 
       {!isEmpty(pinnedDocs) && (
         <PinnedDocsSection
@@ -156,6 +175,7 @@ const Docs = (props) => {
           onOpenDocDialog={handleOpenDocDialog}
           onCategoryDialogOpen={handleOpenCategoriesDialog}
           docs={docData}
+          canEdit={canEdit}
         />
       ))}
 
