@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 // TODO: 5 step????
-import { FirstStep, SecondStep, ThirdStep, FourthStep } from 'components/Common/Image/OnboardingProgressBar';
+import {FirstStep, SecondStep, ThirdStep, FourthStep, FifthStep} from 'components/Common/Image/OnboardingProgressBar';
 
 export const Container = styled.div`
   width: 100%;
@@ -14,7 +14,7 @@ const stepsMap = {
   2: SecondStep,
   3: ThirdStep,
   4: FourthStep,
-  5: FirstStep, // TODO: Add image
+  5: FifthStep,
 };
 
 type Props = {

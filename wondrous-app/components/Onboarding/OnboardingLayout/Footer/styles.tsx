@@ -7,7 +7,7 @@ const buttonStyle = css`
   button {
     padding: 2px 30px;
     font-family: Space Grotesk;
-    font-size: 15px;
+    font-size: 16px;
     font-weight: 600;
   }
 `;
@@ -36,6 +36,19 @@ export const LaterButton = styled(Button)`
   margin-right: 20px;
 
   ${buttonStyle}
+`;
+
+export const Later = styled.button`
+  min-height: 40px;
+  margin-right: 20px;
+  padding: 2px 30px;
+  border-radius: 98px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #232323;
+  color: white;
+  cursor: pointer;
 `;
 
 export const RightButtons = styled.div`
