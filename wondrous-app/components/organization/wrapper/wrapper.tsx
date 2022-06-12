@@ -258,7 +258,7 @@ const Wrapper = (props) => {
       <Header openCreateFormModal={toggleCreateFormModal} />
 
       <SideBarComponent />
-      <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
       <OverviewComponent
         style={{
           paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,

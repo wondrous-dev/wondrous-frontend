@@ -7,7 +7,6 @@ import { toggleHtmlOverflow } from 'utils/helpers';
 import ChooseEntityToCreate from '../../CreateEntity';
 import HeaderComponent from '../../Header';
 import SideBarComponent from '../../SideBar';
-import CreateFormModal from '../../CreateEntity';
 import { Banner, Content, ContentContainer, OverviewComponent } from './styles';
 
 const Wrapper = (props) => {
@@ -26,7 +25,7 @@ const Wrapper = (props) => {
       <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
 
       <SideBarComponent />
-      <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
       <OverviewComponent
         style={{
           paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,

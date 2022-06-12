@@ -33,7 +33,7 @@ const useGetUserProfile = (id, username) => {
       });
     }
 
-    if (getUserFromUsernameData?.getUserFromUsername.id) {
+    if (getUserFromUsernameData?.getUserFromUsername?.id) {
       getUserInterests({
         variables: {
           userId: getUserFromUsernameData?.getUserFromUsername.id,

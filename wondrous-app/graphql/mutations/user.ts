@@ -85,3 +85,11 @@ export const USER_DISOCRD_SIGNUP_LOGIN = gql`
   }
   ${LoggedinUserFragment}
 `;
+
+export const CREATE_USER_INTEREST = gql`
+  mutation createUserInterests($interests: [String]) {
+    createUserInterests(interests: $interests) {
+      success
+    }
+  }
+`;

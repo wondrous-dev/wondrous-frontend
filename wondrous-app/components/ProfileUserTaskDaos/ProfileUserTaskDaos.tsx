@@ -10,49 +10,23 @@ import TaskCompletedCard from 'components/TaskCompletedCard';
 
 import styles from './styles';
 import WorkingOnCard from 'components/WorkingOnCard';
+import TaskCard from 'components/Common/Task/card';
 
 const ProfileUserTaskDaos = ({ userProfile }) => {
-  const [testOrgs, setTestOrgs] = useState([]);
-  const { id, additionalInfo } = userProfile;
+  const { id: userId } = userProfile;
 
-  const { userData, workingTasksData } = useGetUserAboutPage(id);
-
-  useEffect(() => {
-    if (userData?.orgs) {
-      const test = [
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-        ...userData?.orgs,
-      ];
-      setTestOrgs(test);
-    }
-  }, [userData?.orgs]);
+  const { workingTasksData, userOrgs, completedTaskCount, completedTasksData } = useGetUserAboutPage(userId);
 
   return (
     <>
       <Box sx={styles.sectionContainer}>
-        <Typography sx={styles.title}>{additionalInfo?.orgCount} DAOS</Typography>
-        <ProfileContentGrid data={testOrgs} Component={OrgCard} />
+        <Typography sx={styles.title}>{userOrgs?.length} DAOS</Typography>
+        <ProfileContentGrid data={userOrgs} Component={OrgCard} />
       </Box>
 
       <Box sx={styles.sectionContainer}>
-        <Typography sx={styles.title}>{userData?.tasksCompletedCount} tasks completed</Typography>
-        <ProfileContentGrid data={userData?.tasksCompleted} Component={TaskCompletedCard} />
+        <Typography sx={styles.title}>{completedTaskCount} tasks completed</Typography>
+        <ProfileContentGrid  data={completedTasksData} Component={TaskCompletedCard} />
       </Box>
 
       <Box sx={styles.sectionContainer}>
