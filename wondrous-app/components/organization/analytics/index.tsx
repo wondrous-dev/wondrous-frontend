@@ -34,20 +34,14 @@ import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@material-ui/core';
-import {
-  OptionDiv,
-  OptionTypography,
-  StyledAutocompletePopper,
-  StyledChip,
-} from 'components/CreateEntity/styles';
+import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
 import { White } from 'theme/colors';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import { PayoutModal } from './PayoutModal';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 
-
 export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime, isPod = false }) => {
-  let  headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
+  let headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
 
   const rows = [[headers]];
   if (!contributorTaskData) {
@@ -123,7 +117,6 @@ const UserRow = ({ contributorTask }) => {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
-
   return (
     <ContributorDiv>
       <TaskViewModal
@@ -202,7 +195,7 @@ const UserRow = ({ contributorTask }) => {
                   marginLeft: '4px',
                 }}
               >
-                {calculatePoints(contributorTask?.tasks) ? 'point' : 'points'}
+                {calculatePoints(contributorTask?.tasks) === 1 ? 'point' : 'points'}
               </span>
             </TaskCountText>
           </TaskCountWrapper>

@@ -7,7 +7,7 @@ import DocumentListItem from 'components/DocumentListItem';
 import ListLayout from 'components/ListLayout';
 import { SectionTitleTypography, DocsButton } from './DocCategoriesSectionStyles';
 
-const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, onCategoryDialogOpen }) => {
+const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, onCategoryDialogOpen, canEdit }) => {
   const router = useRouter();
 
   const docsByCategory = docs?.filter((doc) => doc.documentCategory?.id === category.id);
@@ -24,19 +24,23 @@ const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, on
         </SectionTitleTypography>
         <Box mr={1} />
         <Box flex="1" />
-        <DocsButton color="secondary" onClick={() => onCategoryDialogOpen(category)}>
-          <Box mr={1}>
-            <Image src="/images/icons/editFolder.png" alt="folder icon" width={18} height={14} />
-          </Box>
-          Edit Category
-        </DocsButton>
-        <Box mr={2} />
-        <DocsButton color="secondary" onClick={() => onOpenDocDialog(category)}>
-          <Box mr={1}>
-            <Image src="/images/icons/addDoc.png" alt="folder icon" width={11} height={14} />
-          </Box>
-          Add Doc
-        </DocsButton>
+        {canEdit && (
+          <>
+            <DocsButton color="secondary" onClick={() => onCategoryDialogOpen(category)}>
+              <Box mr={1}>
+                <Image src="/images/icons/editFolder.png" alt="folder icon" width={18} height={14} />
+              </Box>
+              Edit Category
+            </DocsButton>
+            <Box mr={2} />
+            <DocsButton color="secondary" onClick={() => onOpenDocDialog(category)}>
+              <Box mr={1}>
+                <Image src="/images/icons/addDoc.png" alt="folder icon" width={11} height={14} />
+              </Box>
+              Add Doc
+            </DocsButton>
+          </>
+        )}
       </Box>
 
       <ListLayout>

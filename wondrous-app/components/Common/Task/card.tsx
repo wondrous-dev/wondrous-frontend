@@ -81,6 +81,7 @@ import { useLocation } from 'utils/useLocation';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
+import { RichTextViewer } from 'components/RichText';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -281,9 +282,7 @@ export const TaskCard = ({
                 )}
               </>
             )}
-            {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
-              <ActionButton onClick={openModal}>Review</ActionButton>
-            )}
+
             {displayPayButton && (
               <ActionButton
                 onClick={(e) => {
@@ -559,10 +558,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
         <BoardsCardBody>
           <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
           <BoardsCardBodyDescription>
-            {renderMentionString({
-              content: description,
-              router,
-            })}
+          <RichTextViewer text={description} />
           </BoardsCardBodyDescription>
           {coverMedia ? (
             <BoardsCardMedia>

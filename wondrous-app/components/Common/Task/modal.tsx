@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import Box from '@mui/material/Box';
-
+import PointsIcon from 'components/Icons/pointsIconFilled';
 import {
   PodNameTypography,
   TaskActionMenu,
@@ -131,6 +131,7 @@ import {
   updateInReviewItem,
   updateCompletedItem,
 } from 'utils/board';
+import { RichTextViewer } from 'components/RichText';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -815,13 +816,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchPolicy: 'cache-and-network',
   });
   const user = useMe();
-  const {
-    orgSnapshot,
-    getOrgSnapshotInfo,
-    snapshotConnected,
-    snapshotSpace,
-    isTest
-  } = useSnapshot();
+  const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
@@ -1062,7 +1057,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       setActiveTab(tabs.submissions);
     }
   }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
-  useEffect(()=> {
+  useEffect(() => {
     if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
       getOrgSnapshotInfo({
         variables: {
@@ -1070,7 +1065,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
         },
       });
     }
-  }, [fetchedTask?.snapshotId])
+  }, [fetchedTask?.snapshotId]);
 
   const openSnapshot = async () => {
     try {
@@ -1254,7 +1249,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     document.body.setAttribute('style', `position: relative;`);
     handleClose();
   };
-
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -1463,27 +1457,29 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 <div
                   style={{
                     display: 'flex',
-                    textAlign: 'center',
-                    justifyContent: 'space-between',
                   }}
                 >
                   <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
                   {fetchedTask?.snapshotId && (
-                    <SnapshotButton
-                      style={{
-                        marginBottom: '10px'
-                      }}
-                      onClick={openSnapshot}
-                    >
-                      Snapshot Proposal
-                    </SnapshotButton>
+                    <>
+                      <div
+                        style={{
+                          flex: 1,
+                        }}
+                      />
+                      <SnapshotButton
+                        style={{
+                          marginBottom: '10px',
+                        }}
+                        onClick={openSnapshot}
+                      >
+                        Snapshot Proposal
+                      </SnapshotButton>
+                    </>
                   )}
                 </div>
                 <TaskDescriptionText>
-                  {renderMentionString({
-                    content: fetchedTask?.description,
-                    router,
-                  })}
+                  <RichTextViewer text={fetchedTask?.description} />
                 </TaskDescriptionText>
               </TaskTitleTextDiv>
             </TaskTitleDiv>
@@ -1793,6 +1789,22 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     );
                   })}
                 </div>
+              </TaskSectionDisplayDiv>
+            )}
+            {fetchedTask?.points && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <PointsIcon />
+                  <TaskSectionDisplayText>Points</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <TaskSectionInfoText
+                  style={{
+                    marginTop: '8px',
+                    marginLeft: '32px',
+                  }}
+                >
+                  {fetchedTask?.points} pts
+                </TaskSectionInfoText>
               </TaskSectionDisplayDiv>
             )}
             {fetchedTask?.milestoneId && (

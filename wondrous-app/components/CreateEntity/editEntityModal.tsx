@@ -1,5 +1,6 @@
 import React, { useCallback, useMemo, useRef, useState, useEffect } from 'react';
 import { CircularProgress, styled, Switch, TextField } from '@material-ui/core';
+import { ReactEditor } from 'slate-react';
 
 import { ENTITIES_TYPES } from 'utils/constants';
 import CloseModalIcon from '../Icons/closeModal';
@@ -26,7 +27,9 @@ import {
   MultiMediaUploadButton,
   MultiMediaUploadButtonText,
   MediaUploadDiv,
-  TextInputDiv,
+  EditorContainer,
+  EditorPlaceholder,
+  EditorToolbar,
   CreateFormRewardCurrency,
   SnapshotButtonBlock,
   SnapshotButton,
@@ -38,14 +41,12 @@ import { handleAddFile } from 'utils/media';
 
 import { MediaItem } from './MediaItem';
 import { AddFileUpload } from '../Icons/addFileUpload';
-import { TextInput } from '../TextInput';
 import { White } from '../../theme/colors';
-import { TextInputContext } from 'utils/contexts';
 import apollo from 'services/apollo';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_LABELS, GET_USER_ORGS } from 'graphql/queries';
 import { GET_USER_AVAILABLE_PODS, GET_POD_USERS } from 'graphql/queries/pod';
-import { getMentionArray, transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
+import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
 import { GET_ORG_USERS } from 'graphql/queries/org';
 import { ATTACH_MEDIA_TO_TASK, REMOVE_MEDIA_FROM_TASK } from 'graphql/mutations/task';
 import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
@@ -57,11 +58,24 @@ import {
 } from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
 import { getProposalStatus, updateCompletedItem, updateInReviewItem } from 'utils/board';
-import { GET_ORG_TASK_BOARD_PROPOSALS } from 'graphql/queries/taskBoard';
 import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
+import { updateInProgressTask, updateTaskItem, updateTaskItemOnEntityType } from 'utils/board';
+import { GET_MILESTONES, GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD } from 'graphql/queries/task';
+import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
+import Tags, { Option as Label } from '../Tags';
+import { CREATE_LABEL } from 'graphql/mutations/org';
+import SingleDatePicker from 'components/SingleDatePicker';
+import {
+  RichTextEditor,
+  useEditor,
+  countCharacters,
+  deserializeRichText,
+  extractMentions,
+  isBlankValue,
+} from 'components/RichText';
 import { useSnapshot } from 'services/snapshot';
 
 export const transformMediaFormat = (media) => {
@@ -81,7 +95,10 @@ const EditLayoutBaseModal = (props) => {
   const { entityType, handleClose, cancelEdit, existingTask, isTaskProposal, open } = props;
   const user = useMe();
 
-  const [descriptionText, setDescriptionText] = useState(existingTask?.description || '');
+  const editor = useEditor();
+  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
+
+  const [descriptionText, setDescriptionText] = useState(deserializeRichText(existingTask?.description || ''));
   const [mediaUploads, setMediaUploads] = useState(transformMediaFormat(existingTask?.media) || []);
 
   const [org, setOrg] = useState({
@@ -130,10 +147,6 @@ const EditLayoutBaseModal = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
 
   const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS);
-
-  const descriptionTextCounter = (e) => {
-    setDescriptionText(e.target.value);
-  };
 
   const [getUserAvailablePods] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     onCompleted: (data) => {
@@ -280,11 +293,14 @@ const EditLayoutBaseModal = (props) => {
 
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const description = JSON.stringify(descriptionText);
+    const userMentions = extractMentions(descriptionText);
+
     switch (entityType) {
       case ENTITIES_TYPES.PROPOSAL: {
         const proposalInput = {
           title,
-          description: descriptionText,
+          description,
           orgId: org?.id,
           milestoneId: milestone?.id ?? milestone,
           podId: pod?.id ?? pod,
@@ -302,7 +318,7 @@ const EditLayoutBaseModal = (props) => {
           ...(isTaskProposal && {
             proposedAssigneeId: assignee?.value,
           }),
-          userMentions: getMentionArray(descriptionText),
+          userMentions,
           mediaUploads,
           timezone,
         };
@@ -385,7 +401,7 @@ const EditLayoutBaseModal = (props) => {
         }}
       >
         <TitleIcon circle />
-        <CreateFormBaseModalTitle>Edit {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+        <CreateFormBaseModalTitle>Edit {titleText?.toLowerCase()}</CreateFormBaseModalTitle>
         {snapshotConnected && isTaskProposal && proposalOpen && (
           <SnapshotButtonBlock>
             {!snapshotId && (
@@ -448,34 +464,27 @@ const EditLayoutBaseModal = (props) => {
 
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>Task description</CreateFormMainBlockTitle>
-          <TextInputDiv>
-            <TextInputContext.Provider
-              value={{
-                content: descriptionText,
-                onChange: descriptionTextCounter,
-                list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
-              }}
-            >
-              <TextInput
-                placeholder="Enter task description"
-                // rows={5}
-                // maxRows={5}
-                style={{
-                  input: {
-                    overflow: 'auto',
-                    color: White,
-                    height: '100px',
-                    marginBottom: '16px',
-                    borderRadius: '6px',
-                    padding: '8px',
-                  },
-                }}
-              />
-            </TextInputContext.Provider>
-          </TextInputDiv>
+          <EditorToolbar ref={setEditorToolbarNode} />
+          <EditorContainer
+            onClick={() => {
+              if (!ReactEditor.isFocused(editor)) {
+                ReactEditor.focus(editor);
+              }
+            }}
+          >
+            <RichTextEditor
+              editor={editor}
+              initialValue={descriptionText}
+              mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
+              placeholder={<EditorPlaceholder>Enter task description</EditorPlaceholder>}
+              toolbarNode={editorToolbarNode}
+              onChange={setDescriptionText}
+              editorContainerNode={document.querySelector('#modal-scrolling-container')}
+            />
+          </EditorContainer>
 
           <CreateFormMainDescriptionInputSymbolCounter>
-            {descriptionText?.length}/900 characters
+            {countCharacters(descriptionText)}/900 characters
           </CreateFormMainDescriptionInputSymbolCounter>
           {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>

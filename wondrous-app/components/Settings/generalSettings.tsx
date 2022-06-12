@@ -117,11 +117,11 @@ const GeneralSettingsComponent = (props) => {
   const tabsVisibilityOptions = {
     [PRIVACY_LEVEL.public]: {
       title: 'Public',
-      tooltip: `Public means anyone can see this ${typeText.toLowerCase()}`,
+      tooltip: `Public means anyone can see this ${typeText?.toLowerCase()}`,
     },
     [PRIVACY_LEVEL.private]: {
       title: 'Pod Members Only',
-      tooltip: `Private means only those with the proper permissions can see this ${typeText.toLowerCase()}`,
+      tooltip: `Private means only those with the proper permissions can see this ${typeText?.toLowerCase()}`,
     },
   };
 

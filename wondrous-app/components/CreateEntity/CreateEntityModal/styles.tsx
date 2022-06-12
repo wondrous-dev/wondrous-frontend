@@ -68,6 +68,7 @@ export const CreateEntityForm = styled.form`
   border-radius: 6px;
   overflow-y: auto;
   background: #1d1d1d;
+  color: #fff;
   &::-webkit-scrollbar {
     display: none;
   }
@@ -279,73 +280,6 @@ export const CreateEntityTitle = styled(TextareaAutosize)`
     outline: none;
   }
   ${scrollBarStyles}
-`;
-
-export const CreateEntityDescription = styled((props) => {
-  return <TextInput className={props.className} placeholder="Description" overrideStyle={true} />;
-})``;
-
-export const CreateEntityDescriptionWrapper = styled.div`
-  // This to override the default style of TextInput
-  // This is a temporary solution until a standard design is created
-  ${UserSuggestionWrapper} {
-    background-color: #1f1f1f;
-    box-shadow: none;
-    display: flex;
-    align-items: center;
-    padding: 0;
-    border-radius: 0 !important;
-    top: 0;
-  }
-  ${UserSuggestionTypography} {
-    margin: 0;
-    color: ${White};
-    font-family: 'Space Grotesk';
-    background-color: #1f1f1f;
-    font-size: 13px;
-    font-weight: 500;
-    height: 34px;
-    width: 100%;
-    padding: 6px;
-    :hover {
-      cursor: pointer;
-      background-color: #474747;
-    }
-  }
-  ${CreateEntityDescription} {
-    > ${CreateEntityDescription}__control {
-      min-height: 50px;
-      max-height: 100px;
-      overflow: auto;
-      ::-webkit-scrollbar {
-        display: none;
-      }
-      > ${CreateEntityDescription}__input {
-        background: transparent;
-        font-family: 'Space Grotesk' !important;
-        border: none;
-        font-weight: 400;
-        line-height: 24px;
-        color: #c4c4c4;
-        width: 100%;
-        resize: none;
-        // This to override default styling applied by react-mention
-        overflow-y: scroll !important;
-        :focus {
-          outline: none;
-        }
-      }
-    }
-    > ${CreateEntityDescription}__suggestions {
-      background-color: #1f1f1f;
-      border-radius: 4px;
-      > ${CreateEntityDescription}__suggestions__list {
-        border-radius: 4px;
-        background-color: #1f1f1f;
-        border: 1px solid #7a7a7a;
-      }
-    }
-  }
 `;
 
 export const CreateEntityLabelWrapper = styled.div`
@@ -1011,4 +945,19 @@ export const CreateEntityDefaultUserImage = styled(DefaultUserImage)`
     height: 24px;
     margin: 0;
   }
+`;
+
+const editorPadding = 0;
+const editorMinHeight = 100;
+export const EditorToolbar = styled.div`
+  margin: 6px 0 18px;
+`;
+export const EditorContainer = styled.div`
+  padding: ${editorPadding}px;
+  min-height: ${editorMinHeight}px;
+  overflow: auto;
+  cursor: text;
+`;
+export const EditorPlaceholder = styled.div`
+  min-height: ${editorMinHeight - editorPadding * 2}px;
 `;
