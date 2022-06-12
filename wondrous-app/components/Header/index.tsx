@@ -58,7 +58,7 @@ const HeaderComponent = (props) => {
         <HeaderLeftBlock>
           <Tooltip title="Explore page">
             <HeaderLogoWrapper>
-              <Link passHref href="/dashboard">
+              <Link passHref href="/explore">
                 <HeaderLogo />
               </Link>
             </HeaderLogoWrapper>
@@ -89,25 +89,6 @@ const HeaderComponent = (props) => {
           /> */}
         </HeaderLeftBlock>
         <HeaderRightBlock>
-          {/* <a
-            style={{
-              textDecoration: 'none',
-            }}
-            href="https://linktr.ee/wonderverse"
-            target="_blank"
-            rel="noreferrer"
-          >
-            <TutorialButton
-              style={{
-                borderRadius: '8px',
-              }}
-              buttonInnerStyle={{
-                borderRadius: '7px',
-              }}
-            >
-              <TutorialText>Wonder Tutorials</TutorialText>
-            </TutorialButton>
-          </a> */}
           {user && (
             <>
               <Wallet />

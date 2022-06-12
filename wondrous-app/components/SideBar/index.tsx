@@ -13,12 +13,14 @@ import {
   DrawerTopBlock,
   DrawerTopBlockItem,
   NoLogoDAO,
-  PodButtonDiv,
   StyledDivider,
   StyledDividerDiv,
+  StyledSettingsIcon,
+  StyledTutorialsIcon,
+  StyledExplorePageIcon,
+  StyledPodsIcon,
 } from './styles';
-
-import SettingsIcon from '../Icons/settings';
+import { JoinDaoIcon } from 'components/Icons/sidebar';
 import BackArrowIcon from '../Icons/backArrow';
 import { useMe, withAuth } from '../Auth/withAuth';
 import { useSideBar } from 'utils/hooks';
@@ -29,30 +31,6 @@ import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
-
-const PodButton = (props) => {
-  return (
-    <svg width="39" height="39" viewBox="0 0 39 39" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
-      <circle cx="19.0977" cy="19.7314" r="18.5" stroke="url(#paint0_linear_4944_60020)" />
-      <ellipse cx="19.0974" cy="25.4193" rx="8.79659" ry="1.48668" stroke="white" strokeLinecap="round" />
-      <ellipse cx="19.0974" cy="19.7298" rx="8.79659" ry="1.48668" stroke="white" strokeLinecap="round" />
-      <ellipse cx="19.0974" cy="14.0423" rx="8.79659" ry="1.48668" stroke="white" strokeLinecap="round" />
-      <defs>
-        <linearGradient
-          id="paint0_linear_4944_60020"
-          x1="41.2799"
-          y1="19.7314"
-          x2="-0.0273436"
-          y2="19.7314"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#7427FF" />
-          <stop offset="1" stopColor="#00BAFF" />
-        </linearGradient>
-      </defs>
-    </svg>
-  );
-};
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -68,28 +46,61 @@ const SideBarComponent = (props) => {
     }
   };
 
-  const generalSettings = () => {
-    router.push('/profile/settings', undefined, {
-      shallow: true,
-    });
-  };
+  const TOP_LINKS_CONFIG = [
+    {
+      key: 'explore',
+      icon: StyledExplorePageIcon,
+      url: '/explore',
+      tooltipLabel: 'Explore',
+    },
+    {
+      key: 'pods',
+      icon: StyledPodsIcon,
+      tooltipLabel: 'Pods',
+      action: () => setOpenPodModal(true),
+    },
+  ];
+
+  const BOTTOM_LINKS_CONFIG = [
+    {
+      key: 'tutorials',
+      icon: StyledTutorialsIcon,
+      url: 'https://linktr.ee/wonderverse',
+      tooltipLabel: 'Wonder tutorials',
+    },
+    {
+      key: 'settings',
+      icon: StyledSettingsIcon,
+      url: '/profile/settings',
+      tooltipLabel: 'Settings',
+    },
+  ];
 
   const listItems = userOrgs?.getUserOrgs;
 
   const profilePictureStyle = {
     display: 'flex',
-    margin: '0 auto',
-    width: '48px',
-    height: '48px',
+    width: '32px',
+    height: '32px',
     borderRadius: '24px',
-    marginBottom: '12px',
   };
+
+  const toolTipStyle = {
+    fontFamily: 'Space Grotesk',
+    fontStyle: 'normal',
+    fontWeight: 500,
+    fontSize: '12px',
+    lineHeight: '20px',
+    letterSpacing: '0.01em',
+    color: '#C4C4C4',
+  };
+
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
-          <Tooltip title="Profile">
+          <Tooltip title="Profile" style={toolTipStyle}>
             <DrawerTopBlockItem
               onClick={() => {
                 router.push(`/profile/${user.username}/about`, undefined, {
@@ -104,61 +115,101 @@ const SideBarComponent = (props) => {
               )}
             </DrawerTopBlockItem>
           </Tooltip>
+
+          {TOP_LINKS_CONFIG.map((link, idx) => {
+            const Icon = link?.icon;
+            const isExternal = link?.url?.includes('https://');
+            const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
+            return (
+              <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
+                <DrawerBottomButton type="button">
+                  {!!link?.url && (
+                    <Link href={link.url} passHref>
+                      <a href={link.url} {...externalProps}>
+                        <Icon />
+                      </a>
+                    </Link>
+                  )}
+                  {link?.action && <Icon onClick={link?.action} />}
+                </DrawerBottomButton>
+              </Tooltip>
+            );
+          })}
+
+          <StyledDividerDiv>
+            <StyledDivider />
+          </StyledDividerDiv>
+
           <DrawerList>
             {listItems &&
-              listItems.map((item) => (
-                <Tooltip key={item.id} title={`${item?.name}`}>
-                  <div>
-                    <Link
-                      key={item.id}
-                      href={`/organization/[username]/boards`}
-                      as={`/organization/${item?.username}/boards`}
-                      passHref={true}
-                    >
-                      <DrawerListItem button key={item.id}>
-                        {item?.profilePicture ? (
-                          <SafeImage
-                            src={item?.thumbnailPicture || item?.profilePicture}
-                            style={{
-                              width: '36px',
-                              height: '36px',
-                              borderRadius: '6px',
-                            }}
-                          />
-                        ) : (
-                          <NoLogoDAO>
-                            <DAOIcon />
-                          </NoLogoDAO>
-                        )}
-                      </DrawerListItem>
-                    </Link>
-                  </div>
-                </Tooltip>
-              ))}
-            <StyledDividerDiv>
-              <StyledDivider />
-            </StyledDividerDiv>
-            <Tooltip title="Pods">
-              <PodButtonDiv>
-                <PodButton
-                  style={{
-                    cursor: 'pointer',
-                  }}
-                  onClick={() => setOpenPodModal(true)}
-                />
-              </PodButtonDiv>
-            </Tooltip>
+              listItems.map((item) => {
+                const isActive =
+                  router.pathname === '/organization/[username]/boards' && router.query?.username === item.username;
+                return (
+                  <Tooltip key={item.id} title={`${item?.name}`} style={toolTipStyle}>
+                    <div>
+                      <Link
+                        key={item.id}
+                        href={`/organization/[username]/boards`}
+                        as={`/organization/${item?.username}/boards`}
+                        passHref={true}
+                      >
+                        <DrawerListItem button key={item.id} isActive={isActive}>
+                          {item?.profilePicture ? (
+                            <SafeImage
+                              src={item?.thumbnailPicture || item?.profilePicture}
+                              style={{
+                                width: '36px',
+                                height: '36px',
+                                borderRadius: '6px',
+                              }}
+                            />
+                          ) : (
+                            <NoLogoDAO>
+                              <DAOIcon />
+                            </NoLogoDAO>
+                          )}
+                        </DrawerListItem>
+                      </Link>
+                    </div>
+                  </Tooltip>
+                );
+              })}
+            {listItems && !listItems?.length && (
+              <Tooltip title={'Explore'} placement="right" style={toolTipStyle}>
+                <DrawerBottomButton type="button">
+                  <Link href="/explore" passHref>
+                    <a>
+                      <JoinDaoIcon />
+                    </a>
+                  </Link>
+                </DrawerBottomButton>
+              </Tooltip>
+            )}
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
-          <Tooltip title="Settings" placement="top">
-            <DrawerBottomButton onClick={generalSettings}>
-              <SettingsIcon />
-            </DrawerBottomButton>
-          </Tooltip>
+          {BOTTOM_LINKS_CONFIG.map((link, idx) => {
+            const Icon = link?.icon;
+            const isExternal = link?.url?.includes('https://');
+            const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
+            return (
+              <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
+                <DrawerBottomButton type="button">
+                  {!!link?.url && (
+                    <Link href={link.url} passHref>
+                      <a href={link.url} {...externalProps}>
+                        <Icon />
+                      </a>
+                    </Link>
+                  )}
+                </DrawerBottomButton>
+              </Tooltip>
+            );
+          })}
         </DrawerBottomBlock>
       </DrawerContainer>
-      <Tooltip title={minimized ? 'Open panel' : 'Close panel'} placement="top">
+      <Tooltip style={toolTipStyle} title={minimized ? 'Open panel' : 'Close panel'} placement="top">
         <DrawerBackButton onClick={handleMinimize} className={minimized ? 'active' : ''}>
           <BackArrowIcon />
         </DrawerBackButton>

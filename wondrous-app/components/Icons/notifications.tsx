@@ -82,34 +82,6 @@ export const NotificationOutlineSettings = (props) => {
   );
 };
 
-{
-  /* <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="0.648438" y="0.791016" width="41" height="41" rx="20.5" fill="#151515" stroke="url(#paint0_linear_10643_247540)"/>
-<path d="M26.6499 17.69C26.6499 16.2581 26.0811 14.8849 25.0686 13.8724C24.0561 12.8598 22.6828 12.291 21.2509 12.291C19.819 12.291 18.4457 12.8598 17.4332 13.8724C16.4207 14.8849 15.8519 16.2581 15.8519 17.69C15.8519 23.9889 13.1523 25.7886 13.1523 25.7886H29.3494C29.3494 25.7886 26.6499 23.9889 26.6499 17.69Z" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M22.8088 29.3887C22.6506 29.6614 22.4235 29.8878 22.1503 30.0451C21.8771 30.2025 21.5673 30.2853 21.252 30.2853C20.9367 30.2853 20.627 30.2025 20.3538 30.0451C20.0806 29.8878 19.8535 29.6614 19.6953 29.3887" stroke="white" stroke-linecap="round" stroke-linejoin="round"/>
-<defs>
-<linearGradient id="paint0_linear_10643_247540" x1="21.1484" y1="1.29102" x2="21.1484" y2="41.291" gradientUnits="userSpaceOnUse">
-<stop stop-color="#F93701"/>
-<stop offset="1" stop-color="white"/>
-</linearGradient>
-</defs>
-</svg> */
-}
-
-{
-  /* <svg width="43" height="43" viewBox="0 0 43 43" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="0.648438" y="0.791016" width="41" height="41" rx="20.5" fill="#282828" stroke="url(#paint0_linear_10643_247860)"/>
-<path d="M27.0991 17.69C27.0991 16.2581 26.5303 14.8849 25.5178 13.8724C24.5053 12.8598 23.132 12.291 21.7001 12.291C20.2682 12.291 18.8949 12.8598 17.8824 13.8724C16.8699 14.8849 16.3011 16.2581 16.3011 17.69C16.3011 23.9889 13.6016 25.7886 13.6016 25.7886H29.7987C29.7987 25.7886 27.0991 23.9889 27.0991 17.69Z" stroke="#CCBBFF" stroke-linecap="round" stroke-linejoin="round"/>
-<path d="M23.258 29.3887C23.0998 29.6614 22.8727 29.8878 22.5995 30.0451C22.3263 30.2025 22.0165 30.2853 21.7013 30.2853C21.386 30.2853 21.0762 30.2025 20.803 30.0451C20.5298 29.8878 20.3027 29.6614 20.1445 29.3887" stroke="#CCBBFF" stroke-linecap="round" stroke-linejoin="round"/>
-<defs>
-<linearGradient id="paint0_linear_10643_247860" x1="21.1484" y1="1.29102" x2="21.1484" y2="41.291" gradientUnits="userSpaceOnUse">
-<stop stop-color="#CCBBFF"/>
-<stop offset="1" stop-color="#7A7A7A"/>
-</linearGradient>
-</defs>
-</svg> */
-}
-
 export default function NotificationsIcon(props) {
   return (
     <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">

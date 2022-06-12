@@ -9,23 +9,26 @@ type Props = {
   title?: string;
   description?: string;
   placement?: TooltipProps['placement'];
+  style?: object;
 };
 
-const Tooltip = ({ title, description, children, placement }: Props) => {
+const Tooltip = ({ title, description, children, placement, style }: Props) => {
   if (!title) {
     return children;
   }
 
   const tooltipTitle = description ? (
     <>
-      <Typography variant="body2" style={{ fontWeight: 600, fontStyle: 'italic' }}>
+      <Typography variant="body2" style={{ fontWeight: 600, fontStyle: 'italic', ...style }}>
         {title}
       </Typography>
       <Divider />
-      <Typography variant="body2" style={{ fontStyle: 'italic' }}>{description}</Typography>
+      <Typography variant="body2" style={{ fontStyle: 'italic', ...style }}>
+        {description}
+      </Typography>
     </>
   ) : (
-    <Typography variant="body2" style={{ fontStyle: 'italic' }}>
+    <Typography variant="body2" style={{ fontStyle: 'italic', ...style }}>
       {title}
     </Typography>
   );
