@@ -3,7 +3,7 @@ import { WalletConnected, Label } from '../styles';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import TwitterBlue from '../../../public/images/twitterBlue.svg';
 import { CompletedIcon } from 'components/Icons/statusIcons';
-import { ContinueButton, ConnectLater } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { ContinueButton, LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { AlignButtonTwitter, TwitterContent } from '../styles';
 
 export const ConnectTwitter = () => {
@@ -29,14 +29,14 @@ export const ConnectTwitter = () => {
           </AlignButtonTwitter>
           <div>Continue to Twitter</div>
         </ContinueButton>
-        <ConnectLater
+        <LaterButton
           style={{
             margin: 0,
             width: '100%'
           }}
         >
           I&apos;ll connect it later
-        </ConnectLater>
+        </LaterButton>
       </TwitterContent>
     </OnboardingLayout>
   );

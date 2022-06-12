@@ -5,6 +5,7 @@ import {
   UsernameInput,
   ProfilePictureDiv,
   RemovePictureBtn,
+  ErrorText,
 } from '../styles';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 
@@ -23,6 +24,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
   const [bio, setBio] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const user = useMe();
+
   const [image, setImage] = useState('');
   const inputRef: any = useRef();
   const [error, setError] = useState('');
@@ -57,10 +59,10 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
   );
 
   const handleContinueClick = () => {
+    const nextStep = user.userInfo.email ? '/onboarding/connect-discord' : '/onboarding/connect-metamask';
+
     if (bio && user?.bio === bio) {
-      router.push('/onboarding/build-profile', undefined, {
-        shallow: true,
-      });
+      router.push(nextStep, undefined, { shallow: true });
     } else {
       if (USERNAME_REGEX.test(bio)) {
         updateUser({
@@ -68,6 +70,9 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
             input: {
               bio,
             },
+          },
+          onCompleted: () => {
+            router.push(nextStep, undefined, { shallow: true });
           },
           onError: (e) => {
             setError(e.message);
@@ -190,8 +195,9 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
             <input type="file" hidden ref={inputRef} onChange={handleFile} />
           </>
         )}
+
+        {error && <ErrorText>{error}</ErrorText>}
       </div>
     </OnboardingLayout>
   );
 };
-
