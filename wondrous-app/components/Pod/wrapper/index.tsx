@@ -65,9 +65,10 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Grey58 } from 'theme/colors';
-import BoardsActivity from 'components/Common/BoardsActivity';
 
-const Wrapper = ({ children, onSearch, filterSchema, onFilterChange, statuses, userId }) => {
+const Wrapper = (props) => {
+  const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
+
   const router = useRouter();
   const loggedInUser = useMe();
   const wonderWeb3 = useWonderWeb3();
@@ -261,7 +262,7 @@ const Wrapper = ({ children, onSearch, filterSchema, onFilterChange, statuses, u
       <Header openCreateFormModal={toggleCreateFormModal} />
 
       <SideBarComponent />
-      <CreateFormModal open={createFormModal} toggleOpen={toggleCreateFormModal} />
+      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
       <OverviewComponent
         style={{
           paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,

@@ -7,12 +7,14 @@ import { Box, Button } from '@mui/material';
 import { PROFILE_CARD_WIDTH, PROFILE_CARD_HEIGHT } from 'utils/constants';
 
 import styles from './styles';
+import TaskCard from 'components/Common/Task/card';
 
 const GRID_ELEMENTS = 4;
 const PADDING = 18;
 const SCROLL_BAR_OFFSET = 40;
 
 const ProfileContentGrid = ({ data, Component }) => {
+
   const [showVirtualized, setShowVirtualized] = useState(false);
 
   const Cell = ({ columnIndex, rowIndex, style, data }) => {
@@ -20,7 +22,6 @@ const ProfileContentGrid = ({ data, Component }) => {
     const item = data[positionIndex];
 
     if (!item) return <></>;
-
     return (
       <div style={style}>
         <Component item={item} />
