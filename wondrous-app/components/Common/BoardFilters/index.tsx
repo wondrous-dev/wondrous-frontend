@@ -34,7 +34,8 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
   const applyFilter = (filters) => {
     setAppliedFilters(filters);
     const newFilters: any = Object.keys(filters).reduce((acc, next) => {
-      let value = Array.isArray(filters[next]) ? filters[next].map((item) => item.id) : filters[next]?.id;
+      let value = Array.isArray(filters[next]) ? filters[next].map((item) => item.id) : [filters[next]?.id];
+
       acc[next] = value;
       return acc;
     }, {});
