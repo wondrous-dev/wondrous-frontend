@@ -1,14 +1,16 @@
 import React from 'react';
 import styled from 'styled-components';
 import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@material-ui/core';
-import { Black97, White } from '../../theme/colors';
+import { Black99, White } from '../../theme/colors';
 import { SIDEBAR_WIDTH } from 'utils/constants';
+import SettingsIcon from 'components/Icons/settings';
+import { TutorialsIcon, PodsIcon, ExplorePageIcon } from 'components/Icons/sidebar';
 
 export const DrawerComponent = styled(Drawer)`
   && {
     & .MuiDrawer-paperAnchorDockedLeft {
-      background-color: ${Black97};
-      z-index: 200;
+      background-color: ${Black99};
+      z-index: 199;
       margin-top: 50px;
       transition: 0.3s;
     }
@@ -48,8 +50,24 @@ export const DrawerTopBlockItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
+  position: relative;
   cursor: pointer;
+  margin: 0px auto 12px;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 180px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+  }
+  &:hover {
+    &::before {
+      background: linear-gradient(180deg, #ccbbff 0%, #7427ff 47.4%, #00baff 100%);
+    }
+  }
 `;
 
 export const DrawerList = styled(List)`
@@ -62,17 +80,24 @@ export const DrawerList = styled(List)`
     justify-content: flex-start;
     padding: 0;
     margin: 1em auto;
+    gap: 14px;
   }
 `;
 export const DrawerListItem = styled(ListItem)`
-  & {
+  &&.MuiListItem-root {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     min-height: 36px;
-    padding: 0.5em auto;
-    margin: 0.5em auto;
+    padding: 6px;
+    border-radius: 10px;
+    ${({ isActive }) => {
+      return isActive && `border: 1px solid white;`;
+    }};
+    &:hover {
+      border: 1px solid rgba(54, 54, 54, 1);
+    }
   }
 `;
 
@@ -95,7 +120,7 @@ export const DrawerBottomButton = styled(IconButton)`
     display: flex;
     align-items: center;
     justify-content: center;
-
+    padding: 0;
     &.active {
       background: linear-gradient(283.63deg, rgba(75, 75, 75, 0.6) 11.03%, rgba(35, 35, 35, 0.6) 92.07%);
     }
@@ -145,8 +170,8 @@ export const StyledDivider = styled(Divider)`
 export const StyledDividerDiv = styled.div`
   display: flex;
   justify-content: center;
-  margin-top: 32px;
-  margin-bottom: 32px;
+  margin-top: 20px;
+  margin-bottom: 20px;
 `;
 
 export const PodButtonDiv = styled.div`
@@ -171,5 +196,49 @@ export const PodModalFooterInfoWrapperText = styled(Typography)`
   && {
     color: ${White};
     font-size: 13px;
+  }
+`;
+
+export const StyledSettingsIcon = styled(SettingsIcon)`
+  &:hover {
+    path {
+      stroke: url(#settings-gradient);
+    }
+    rect {
+      fill: #0f0f0f;
+    }
+  }
+`;
+
+export const StyledTutorialsIcon = styled(TutorialsIcon)`
+  &:hover {
+    path {
+      fill: url(#tutorials-icon-gradient);
+    }
+    rect {
+      fill: #0f0f0f;
+    }
+  }
+`;
+
+export const StyledExplorePageIcon = styled(ExplorePageIcon)`
+  &:hover {
+    path {
+      stroke: url(#explore-page-gradient);
+    }
+    rect {
+      fill: #0f0f0f;
+    }
+  }
+`;
+
+export const StyledPodsIcon = styled(PodsIcon)`
+  &:hover {
+    path {
+      fill: url(#pods-icon-gradient);
+    }
+    rect {
+      fill: #0f0f0f;
+    }
   }
 `;

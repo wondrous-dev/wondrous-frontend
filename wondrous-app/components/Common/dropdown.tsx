@@ -11,17 +11,17 @@ const DropDownWrapper = styled.div`
     margin-left: -145px;
     margin-top: 9px;
     width: fit-content;
-    border-radius: 5px;
-    background: black;
-
-    ${GradientMidnightDiagonalOposite}
-
+    background: #1D1D1D;
+    border: 1px solid #4B4B4B;
+    border-radius: 6px;
     transition: 0.2s display;
     z-index: 100;
-
     display: flex;
     flex-direction: column;
-    justify-content; space-evenly;
+    justify-content; center;
+    gap: 6px
+    padding-top: 20px;
+    padding-bottom: 10px;
 `;
 
 const DropDownArrow = styled.div`
@@ -56,8 +56,8 @@ export const DropDownItem = styled.div`
   cursor: pointer;
 
   :hover {
-    ${GradientMidnightVertical}
-    border-radius: 5px;
+    background: #121212;
+    border-radius: 4px;
   }
 `;
 
@@ -90,11 +90,11 @@ export const DropDown = (props) => {
     <>
       <DropdownOverlay onClick={toggleDropDown} style={{ display: display }} />
       <div onClick={toggleDropDown} style={divStyle}>
-        <DropdownHandler {...props} />
+        <DropdownHandler {...props} isOpen={isOpen} />
         <DropDownWrapper ref={DropdownWrapperRef} style={{ display: display }}>
           {children}
         </DropDownWrapper>
-        <DropDownArrow style={{ display: display }} />
+        {/* <DropDownArrow style={{ display: display }} /> */}
       </div>
     </>
   );
