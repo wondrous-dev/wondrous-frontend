@@ -9,6 +9,8 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
+import { IntegrationsInputsBlock } from '../Integrations/styles';
+import { LabelBlock } from '../styles';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
@@ -43,23 +45,14 @@ export const GithubIntegration = ({ orgId }) => {
   }, [orgId]);
 
   return (
-    <SettingsWrapper>
-      <HeaderBlock
-        icon={
-          <GitHubIcon
-            width="32"
-            height="32"
-            style={{
-              color: White,
-              marginTop: '-34px',
-            }}
-          />
-        }
-        title="Github Integration"
-        description="Manage Github Integration"
-      />
+    <IntegrationsInputsBlock>
+      <LabelBlock>Github settings</LabelBlock>
       {githubConnected ? (
-        <GithubButtonDiv>
+        <GithubButtonDiv
+          style={{
+            marginLeft: '0',
+          }}
+        >
           <GithubButton
             style={{
               backgroundColor: Green400,
@@ -92,7 +85,11 @@ export const GithubIntegration = ({ orgId }) => {
           </GithubButton>
         </GithubButtonDiv>
       ) : (
-        <GithubButtonDiv>
+        <GithubButtonDiv
+          style={{
+            marginLeft: '0',
+          }}
+        >
           <GithubButton href={githubUrl}>
             <GitHubIcon
               style={{
@@ -103,6 +100,6 @@ export const GithubIntegration = ({ orgId }) => {
           </GithubButton>
         </GithubButtonDiv>
       )}
-    </SettingsWrapper>
+    </IntegrationsInputsBlock>
   );
 };
