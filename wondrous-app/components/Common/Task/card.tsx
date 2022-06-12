@@ -282,9 +282,7 @@ export const TaskCard = ({
                 )}
               </>
             )}
-            {!isBounty && !isMilestone && task?.status === Constants.TASK_STATUS_IN_REVIEW && (
-              <ActionButton onClick={openModal}>Review</ActionButton>
-            )}
+
             {displayPayButton && (
               <ActionButton
                 onClick={(e) => {

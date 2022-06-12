@@ -4,7 +4,7 @@ import { DefaultElement, Editable, RenderElementProps, Slate } from 'slate-react
 import EditorHelpers from './helpers';
 import { Leaf, LinkElement, MentionElement } from './elements';
 import { CustomEditor, CustomElement } from './types';
-import { BulletedList, NumberedList } from './styles';
+import { BulletedList, NumberedList, StyledEditable } from './styles';
 import { plainTextToRichText } from './utils';
 import Toolbar from './components/Toolbar';
 import Portal from './components/Portal';
@@ -90,7 +90,7 @@ const RichTextEditor: React.FC<Props> = ({
         <Toolbar />
       </Portal>
 
-      <Editable
+      <StyledEditable
         renderElement={renderElement}
         renderLeaf={renderLeaf}
         onKeyDown={(event) => {

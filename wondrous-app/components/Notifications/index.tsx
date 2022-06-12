@@ -1,10 +1,11 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { SmallAvatar } from '../Common/AvatarList';
 import { StyledBadge } from '../Header/styles';
 import NotificationsIcon from 'components/Icons/notifications';
 import Link from 'next/link';
-
+import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import { useInView } from 'react-intersection-observer';
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -31,20 +32,20 @@ import calculateTimeLapse from 'utils/calculateTimeLapse';
 import SmartLink from 'components/Common/SmartLink';
 import Tooltip from 'components/Tooltip';
 
-const NotificationsBoard = ({ notifications, setNofications }) => {
+const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifications }) => {
   const unreadCount = useMemo(() => {
-    return notifications?.getNotifications?.filter((n) => !n.viewedAt).length;
+    return notifications?.filter((n) => !n.viewedAt).length;
   }, [notifications]);
 
   const [isOpen, setIsOpen] = useState(false);
-
+  const [ref, inView] = useInView({});
   const toggleNotifications = () => {
     setIsOpen(!isOpen);
   };
 
   const handleMarkAllRead = async () => {
     // Mark all read (empty arg)
-    setNofications();
+    setNotifications();
   };
 
   const handleNotificationsSettings = () => {
@@ -60,6 +61,21 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
     return <SmallAvatar initials={initials} avatar={avatar} />;
   };
   const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
+  const hasMore = useEffect(() => {
+    if (inView && fetchMoreNotifications) {
+      fetchMoreNotifications({
+        variables: {
+          offset: notifications?.length,
+          limit: 10,
+        },
+      }).then((result) => {
+        const newNotifs = result?.data?.getNotifications;
+        if (newNotifs && newNotifs?.length > 0) {
+          setNotifications([...notifications, newNotifs]);
+        }
+      });
+    }
+  }, [inView, fetchMoreNotifications]);
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
@@ -124,8 +140,8 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
               <span onClick={handleMarkAllRead}>Mark all as read</span>
             </NotificationsMarkRead>
           </NotificationsBoardHeader>
-          {notifications?.getNotifications?.length ? (
-            notifications.getNotifications?.map((notification) => {
+          {notifications?.length ? (
+            notifications?.map((notification) => {
               const isNotificationViewed = notification?.viewedAt;
               return (
                 <SmartLink
@@ -161,6 +177,13 @@ const NotificationsBoard = ({ notifications, setNofications }) => {
               <NotificationItemBody emptyNotifications={true}>No notifications</NotificationItemBody>
             </NotificationsItem>
           )}
+          <LoadMore
+            style={{
+              height: '20px',
+            }}
+            hasMore={true}
+            ref={ref}
+          />
         </NotificationsBoardWrapper>
         <NotificationsBoardArrow style={{ display: display }} />
         <NotificationsBoardOverArrow style={{ display: display }} />

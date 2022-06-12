@@ -31,7 +31,7 @@ import HomeIcon from 'components/Icons/home';
 const HeaderComponent = (props) => {
   const user = useMe();
   // Grab Notifications from Backend
-  const { data: notifications, refetch } = useQuery(GET_NOTIFICATIONS);
+  const { data: notifications, refetch, fetchMore: fetchMoreNotifications } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
   const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
   const { openCreateFormModal } = props;
@@ -92,7 +92,11 @@ const HeaderComponent = (props) => {
           {user && (
             <>
               <Wallet />
-              <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
+              <NotificationsBoard
+                fetchMoreNotifications={fetchMoreNotifications}
+                notifications={notifications?.getNotifications || []}
+                setNotifications={setNotifications}
+              />
               <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
                 <CreateIconOutlined />
               </HeaderCreateButton>

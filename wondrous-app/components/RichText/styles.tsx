@@ -1,3 +1,4 @@
+import { Editable } from 'slate-react';
 import styled from 'styled-components';
 
 export const BulletedList = styled.ul`
@@ -40,4 +41,18 @@ export const RichTextStyled = styled.div`
 
 export const Strikethrough = styled.span`
   text-decoration: line-through;
+`;
+
+export const StyledEditable = styled(Editable)`
+  && {
+    overflow-x: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
 `;
