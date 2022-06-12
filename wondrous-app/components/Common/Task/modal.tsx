@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { useRouter } from 'next/router';
 
 import Box from '@mui/material/Box';
-
+import PointsIcon from 'components/Icons/pointsIconFilled';
 import {
   PodNameTypography,
   TaskActionMenu,
@@ -1789,6 +1789,22 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     );
                   })}
                 </div>
+              </TaskSectionDisplayDiv>
+            )}
+            {fetchedTask?.points && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <PointsIcon />
+                  <TaskSectionDisplayText>Points</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <TaskSectionInfoText
+                  style={{
+                    marginTop: '8px',
+                    marginLeft: '32px',
+                  }}
+                >
+                  {fetchedTask?.points} pts
+                </TaskSectionInfoText>
               </TaskSectionDisplayDiv>
             )}
             {fetchedTask?.milestoneId && (
