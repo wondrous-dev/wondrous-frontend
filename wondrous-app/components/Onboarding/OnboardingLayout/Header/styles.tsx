@@ -1,22 +1,22 @@
 import styled from 'styled-components';
 import { Typography } from '@material-ui/core';
 
-import { Grey85, White } from '../../../../theme/colors';
+import { White } from '../../../../theme/colors';
 
 export const Header = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-bottom: 5px;
   width: 100%;
-  border-bottom: 1px solid ${Grey85};
+  border-bottom: 1px dashed #2B2B2B;
   flex-wrap: wrap;
+  margin-bottom: 25px;
+  padding-bottom: 25px;
 `;
 
 export const Wonder = styled.div`
   display: flex;
   align-items: center;
-  margin: 0 20px 20px 0;
 `;
 
 export const LogoText = styled(Typography)`

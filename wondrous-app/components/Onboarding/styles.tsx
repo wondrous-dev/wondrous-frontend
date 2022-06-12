@@ -69,7 +69,6 @@ export const InviteWelcomeBoxParagraph = styled(Typography)`
     color: ${White};
     font-size: 16px;
     font-weight: normal;
-    margin-bottom: 30px;
   }
 `;
 
@@ -250,21 +249,21 @@ export const RightButtons = styled.div`
   align-items: flex-end;
 `;
 
-// @ts-ignore
 export const Logo = styled.div`
   text-align: center;
   margin: 20px auto;
 `;
 
-// @ts-ignore
 export const Connectors = styled.div`
   margin: 20px auto;
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-top: 1px dashed #2B2B2B;
+  padding-top: 10px;
 
   svg {
-    flex: 0 0 50px;
+    flex: 0 0 40px;
   }
 
   button {

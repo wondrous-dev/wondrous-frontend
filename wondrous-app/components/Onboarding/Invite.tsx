@@ -8,7 +8,7 @@ import {
   Logo,
   StyledHr,
   DataProtectBoxParagraph,
-  DataLink
+  DataLink,
 } from './styles';
 import { useWonderWeb3 } from 'services/web3';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
@@ -24,11 +24,11 @@ import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DiscordIcon } from 'components/Icons/discord';
-import { EmailIcon } from 'components/Icons/email'
+import { EmailIcon } from 'components/Icons/email';
 import NoLogo from 'components/Icons/noLogo';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 
-export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteLink }) => {
+export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteLink, children, title }) => {
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
   const [noChainError, setNoChainError] = useState('');
@@ -189,9 +189,14 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet.chain]);
 
-  const titleSentence = podInfo
+  let titleSentence = podInfo
     ? `The ${podInfo?.name} pod from ${podInfo?.org?.name} is requesting your help`
     : `${orgInfo?.name} is requesting your help.`;
+
+  if (title) {
+    titleSentence = title;
+  }
+
   const contributingSentence = podInfo
     ? `${podInfo?.contributorCount} ${podInfo?.contributorCount === 1 ? 'is' : 'are'} already contributing to the ${
         podInfo?.name
@@ -205,36 +210,39 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
     height: '40px',
     fontWeight: '500',
   };
+
   return (
     <InviteWelcomeBoxWrapper>
       <ContentWrapper style={{ textAlign: 'center' }}>
         <OnboardingHeader login={true} />
 
-        <Logo>
-          {orgInfo?.profilePicture || podInfo?.org?.profilePicture ? (
-            <SafeImage
-              style={{
-                width: '78px',
-                height: '78px',
-                borderRadius: '39px',
-                marginBottom: '20px',
-              }}
-              src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
-            />
-          ) : (
-            <NoLogo />
-          )}
-        </Logo>
+        {orgInfo || podInfo ? (
+          <Logo>
+            {orgInfo?.profilePicture || podInfo?.org?.profilePicture ? (
+              <SafeImage
+                style={{
+                  width: '78px',
+                  height: '78px',
+                  borderRadius: '39px',
+                  marginBottom: '20px',
+                }}
+                src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
+              />
+            ) : (
+              <NoLogo />
+            )}
+          </Logo>
+        ) : null}
 
         <InviteWelcomeBoxTitle>{titleSentence}</InviteWelcomeBoxTitle>
         <InviteWelcomeBoxParagraph>Wonder is where DAOs manage world changing projects</InviteWelcomeBoxParagraph>
 
-        <StyledHr />
+        {children}
 
         <Connectors>
-          <MetaMaskConnector text="Connect with MetaMask" style={buttonStyles} />
-          <CoinbaseConnector text="Connect with Coinbase" style={buttonStyles} />
-          <WalletConnectConnector text="Connect with Wallet Connect" style={buttonStyles} />
+          <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
+          <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
+          <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
           <Button
             style={buttonStyles}
             onClick={() => {
@@ -261,7 +269,7 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
                 fontWeight: '500',
               }}
             >
-              Connect with Discord
+              Continue with Discord
             </span>
           </Button>
           <Button
@@ -285,7 +293,9 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
           </Button>
         </Connectors>
 
-        <DataProtectBoxParagraph>Your account and <DataLink href="/data">data</DataLink> is protected.</DataProtectBoxParagraph>
+        <DataProtectBoxParagraph>
+          Your account and <DataLink href="/data">data</DataLink> is protected.
+        </DataProtectBoxParagraph>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
       </ContentWrapper>
