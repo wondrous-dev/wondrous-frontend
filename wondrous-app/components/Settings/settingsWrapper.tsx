@@ -152,7 +152,7 @@ export const SettingsWrapper = (props) => {
       label: 'Integrations Settings',
       value: 'integrations',
       href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
+      page: [SettingsPage.Org],
     },
     {
       icon: <CardIcon width={40} height={40} />,
@@ -333,9 +333,7 @@ export const SettingsWrapper = (props) => {
                   <PodIcon />
                 </SettingsDaoPodIndicatorIconWrapper>
                 <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-                {podIsArchived && (
-                  <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>
-                )}
+                {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
               </SettingsDaoPodIndicator>
             ) : null}
             {children}
