@@ -29,7 +29,7 @@ import {
 const HeaderComponent = (props) => {
   const user = useMe();
   // Grab Notifications from Backend
-  const { data: notifications, refetch } = useQuery(GET_NOTIFICATIONS);
+  const { data: notifications, refetch, fetchMore: fetchMoreNotifications } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
   const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
   const { openCreateFormModal } = props;
@@ -55,7 +55,7 @@ const HeaderComponent = (props) => {
       <HeaderContainer>
         <HeaderLeftBlock>
           <Tooltip title="Explore page">
-            <div style={{display: 'flex'}}>
+            <div style={{ display: 'flex' }}>
               <Link passHref href="/dashboard">
                 <HeaderLogo />
               </Link>
@@ -107,7 +107,11 @@ const HeaderComponent = (props) => {
           {user && (
             <>
               <Wallet />
-              <NotificationsBoard notifications={notifications || []} setNofications={setNotifications} />
+              <NotificationsBoard
+                fetchMoreNotifications={fetchMoreNotifications}
+                notifications={notifications?.getNotifications || []}
+                setNotifications={setNotifications}
+              />
               <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
                 <span style={{ padding: '0px 8px' }}>Create</span>
                 <CreateBtnIcon />
