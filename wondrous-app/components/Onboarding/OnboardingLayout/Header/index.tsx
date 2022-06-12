@@ -1,8 +1,9 @@
 import React from 'react';
+import Link from 'next/link';
 
 import { Header, LogoText, Wonder } from './styles';
 import WonderLogo from '../../../../public/images/onboarding/wonder-logo.svg';
-import { StyledLink } from "components/Common/text";
+import { Button } from 'components/Button';
 
 type Props = {
   children?: any;
@@ -11,12 +12,18 @@ type Props = {
 };
 
 const OnboardingHeader = ({ children, login, borderNone }: Props) => (
-  <Header style={{borderBottom: borderNone}}>
+  <Header style={{ borderBottom: borderNone }}>
     <Wonder>
       <WonderLogo />
       <LogoText>wonder</LogoText>
     </Wonder>
-    {login ? <StyledLink href="/login" style={{fontWeight: 500, marginBottom: '20px'}}>Login</StyledLink> : children}
+    {login ? (
+      <Link href={`/login`} passHref>
+        <Button>Login</Button>
+      </Link>
+    ) : (
+      children
+    )}
   </Header>
 );
 
