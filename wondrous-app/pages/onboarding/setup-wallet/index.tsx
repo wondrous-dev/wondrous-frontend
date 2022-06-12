@@ -5,10 +5,10 @@ import {useMutation, useQuery} from '@apollo/client';
 import { MainWrapper } from 'components/Onboarding/styles';
 import { UPDATE_USER } from 'graphql/mutations';
 import { useMe, withAuth } from 'components/Auth/withAuth';
-import { OnboardingWallet } from 'components/Onboarding/ConnectMetaMask';
+import { SetupWallet } from 'components/Onboarding/SetupWallet';
 import {GET_USER_ORGS, GET_USER_PODS} from "graphql/queries";
 
-const OnboardingConnectPage = () => {
+const SetupWalletPage = () => {
   const router = useRouter();
   const user = useMe();
   const { data: getOrgData } = useQuery(GET_USER_ORGS);
@@ -24,9 +24,9 @@ const OnboardingConnectPage = () => {
 
   return (
       <MainWrapper>
-        <OnboardingWallet updateUser={updateUser}/>
+        <SetupWallet updateUser={updateUser}/>
       </MainWrapper>
   );
 };
 
-export default (OnboardingConnectPage);
+export default withAuth(SetupWalletPage);

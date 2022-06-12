@@ -39,7 +39,7 @@ export const ConnectDiscord = ({ updateUser }) => {
   }
 
   const handleLaterClick = () => {
-    router.push('/onboarding/set-up-wallet', undefined, {
+    router.push('/onboarding/setup-wallet', undefined, {
       shallow: true,
     })
   }
