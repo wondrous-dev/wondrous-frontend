@@ -26,22 +26,16 @@ export const ConnectDiscord = ({ updateUser }) => {
   const user = useMe();
   const { discordUserExists, discordError, success } = router.query;
 
-  const handleContinueClick = () => {
-    router.push('/onboarding/set-up-wallet', undefined, {
-      shallow: true,
-    })
-  }
+  const goToNextStep = () => {
+    const nextStep = user.activeEthAddress ? '/onboarding/connect-twitter' : '/onboarding/setup-wallet';
+
+    router.push(nextStep, undefined, { shallow: true });
+  };
 
   const handleBackClick = () => {
     router.push('/onboarding/build-profile', undefined, {
       shallow: true,
     });
-  }
-
-  const handleLaterClick = () => {
-    router.push('/onboarding/setup-wallet', undefined, {
-      shallow: true,
-    })
   }
 
   const handleConnectDiscordClick = () => {
@@ -72,7 +66,7 @@ export const ConnectDiscord = ({ updateUser }) => {
           title={Text.TitleSuccess}
           description={Text.DescriptionSuccess}
           onBackClick={handleBackClick}
-          onContinueClick={handleContinueClick}
+          onContinueClick={goToNextStep}
           step={3}
         >
           <DiscordSuccessLogo style={DiscordLogoStyle} />
@@ -83,7 +77,7 @@ export const ConnectDiscord = ({ updateUser }) => {
           title={Text.TitleStandard}
           description={Text.DescriptionStandard}
           onBackClick={handleBackClick}
-          onLaterClick={handleLaterClick}
+          onLaterClick={goToNextStep}
           onConnectDiscordClick={handleConnectDiscordClick}
           step={3}
         >

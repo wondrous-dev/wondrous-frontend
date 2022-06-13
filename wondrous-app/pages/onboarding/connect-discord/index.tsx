@@ -6,7 +6,7 @@ import { ConnectDiscord } from 'components/Onboarding/ConnectDiscord';
 import { MainWrapper } from 'components/Onboarding/styles';
 import { UPDATE_USER } from 'graphql/mutations';
 import { GET_PRESIGNED_IMAGE_URL } from 'graphql/queries/media';
-import { useMe } from 'components/Auth/withAuth';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
 const ConnectDiscordPage = () => {
   const router = useRouter();
@@ -18,6 +18,7 @@ const ConnectDiscordPage = () => {
       });
     },
   });
+
   useEffect(() => {
     if (user?.userInfo?.discordUsername) {
       router.push('/onboarding/email-setup', undefined, {
@@ -25,6 +26,7 @@ const ConnectDiscordPage = () => {
       });
     }
   }, [user?.userInfo?.discordUsername]);
+
   return (
     <MainWrapper>
       <ConnectDiscord updateUser={updateUser} />
@@ -32,4 +34,4 @@ const ConnectDiscordPage = () => {
   );
 };
 
-export default (ConnectDiscordPage);
+export default withAuth(ConnectDiscordPage);
