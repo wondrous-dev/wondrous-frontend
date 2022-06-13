@@ -409,11 +409,11 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
     },
   });
   useEffect(() => {
-    if (isAdmin) {
-      setFilterSchema([FILTER_STATUSES_ADMIN]);
+    if (isAdmin && loggedInUser?.id) {
+      return setFilterSchema([FILTER_STATUSES_ADMIN]);
     }
-    if (!isAdmin) {
-      getUserPods({
+    if (!isAdmin && loggedInUser?.id) {
+      return getUserPods({
         variables: {
           userId: loggedInUser?.id,
         },
@@ -445,6 +445,7 @@ const BoardsPage = (props) => {
   });
 
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
+
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({
     isAdmin,
     section,
