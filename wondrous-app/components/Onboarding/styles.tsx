@@ -14,14 +14,16 @@ export const MainWrapper = styled.div`
   align-items: center;
   justify-content: center;
   background-size: cover;
+  padding: 0 20px;
+
+  @media (min-width: 641px) {
+    padding: 0;
+  }
 `;
 
 export const LogoDiv = styled.div`
   display: flex;
   align-items: center;
-  //position: absolute;
-  //left: 40px;
-  //top: 30px;
 `;
 
 export const LogoImg = styled.img`

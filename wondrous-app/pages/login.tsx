@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
-import { Button } from 'components/Common/button';
 import AuthLayout from 'components/Common/Layout/Auth';
 import { LineWithText, Line } from 'components/Common/lines';
 import { Form } from 'components/Common/form';
@@ -27,6 +26,7 @@ import OnboardingHeader from "components/Onboarding/OnboardingLayout/Header";
 import { Layout, OnboardingTitle } from "components/Onboarding/OnboardingLayout/styles";
 import { ContinueButton } from "components/Onboarding/OnboardingLayout/Footer/styles";
 import { MainWrapper } from "components/Onboarding/styles";
+import { Button } from "components/Button";
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -158,6 +158,7 @@ const Login = ({ csrfToken }) => {
               placeholder="Enter email address"
               icon={EmailIcon}
               required
+              rightIcon
             />
             <Field
               type="password"
@@ -167,8 +168,9 @@ const Login = ({ csrfToken }) => {
               placeholder="Enter password"
               icon={LockIcon}
               required
+              rightIcon
             />
-            <ContinueButton
+            <Button
               type="submit"
               style={{
                 marginTop: '37px',
@@ -177,7 +179,7 @@ const Login = ({ csrfToken }) => {
               }}
             >
               Log me in
-            </ContinueButton>
+            </Button>
           </Form>
           <LineWithText>
             <PaddedParagraph padding="0 10px" color={White} style={{fontWeight: 500}}>
