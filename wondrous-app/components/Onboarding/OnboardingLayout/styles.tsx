@@ -9,6 +9,7 @@ export const Layout = styled.div`
   min-height: 80vh;
   max-width: 634px;
   min-width: 578px;
+  width: 100%;
 
   display: grid;
   grid-template-columns: 1fr;
@@ -25,7 +26,7 @@ export const Layout = styled.div`
 export const OnboardingTitle = styled(Typography)`
   && {
     font-size: 28px;
-    line-height: auto;
+    line-height: 32px;
     color: ${White};
     margin-bottom: 18px;
     font-weight: 500;

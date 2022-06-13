@@ -90,8 +90,6 @@ export const Invite = ({
             }
           }
           if (user) {
-            //
-
             if (orgInfo) {
               redeemOrgInviteLink({
                 variables: {
@@ -222,8 +220,8 @@ export const Invite = ({
 
   return (
     <InviteWelcomeBoxWrapper>
-      <ContentWrapper style={{ textAlign: 'center' }}>
-        <OnboardingHeader login={true} />
+      <div style={{ textAlign: 'center', width: '100%' }}>
+        <OnboardingHeader withLoginButton />
 
         {orgInfo || podInfo ? (
           <Logo>
@@ -305,7 +303,7 @@ export const Invite = ({
         </DataProtectBoxParagraph>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
-      </ContentWrapper>
+      </div>
     </InviteWelcomeBoxWrapper>
   );
 };

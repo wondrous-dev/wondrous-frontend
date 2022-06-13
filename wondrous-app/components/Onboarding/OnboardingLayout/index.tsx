@@ -15,7 +15,7 @@ type Props = {
   step: number;
   title: string;
   description?: any;
-  login?: boolean;
+  withLoginButton?: boolean;
   borderNone?: number | string;
   loading?: unknown;
   displayFooter?: boolean;
@@ -33,12 +33,12 @@ const OnboardingLayout = ({
   title,
   description,
   displayFooter = true,
-  login,
+  withLoginButton = false,
 }: Props) => {
   return (
     <Layout>
       <div>
-        <OnboardingHeader borderNone={borderNone} login={login}>
+        <OnboardingHeader withLoginButton={withLoginButton}>
           {headerRightContent}
         </OnboardingHeader>
         <ProgressBar step={step} />

@@ -42,6 +42,7 @@ export const InviteWelcomeBoxWrapper = styled.div`
   position: relative;
   min-height: 80vh;
   max-width: 634px;
+  width: 100%;
 
   @media (max-width: 640px) {
     min-width: 320px;
@@ -197,11 +198,6 @@ export const Label = styled(Typography)`
   }
 `;
 
-// TODO: REmove
-export const ContentWrapper = styled.div`
-  //width: 100%;
-`;
-
 export const RemovePictureBtn = styled.button`
   display: flex;
   font-size: 12px;
@@ -217,11 +213,6 @@ export const RemovePictureBtn = styled.button`
   width: 100%;
 `;
 
-// export const RemovePictureDiv = styled.div`
-//   width: 100%;
-// `;
-
-// @ts-ignore
 export const ActionButtons = styled.div`
   width: 100%;
   justify-content: end;
@@ -231,24 +222,6 @@ export const ActionButtons = styled.div`
   @media (max-width: 640px) {
     flex-direction: column-reverse;
   }
-`;
-
-// TODO: Rename/remove
-// @ts-ignore
-export const LeftButtons = styled.div`
-  width: 50%;
-  justify-content: start;
-  display: flex;
-  align-items: flex-end;
-`;
-
-// TODO: Rename/remove
-// @ts-ignore
-export const RightButtons = styled.div`
-  width: 50%;
-  justify-content: end;
-  display: flex;
-  align-items: flex-end;
 `;
 
 export const Logo = styled.div`
