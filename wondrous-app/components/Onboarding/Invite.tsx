@@ -3,7 +3,6 @@ import {
   InviteWelcomeBoxParagraph,
   InviteWelcomeBoxTitle,
   InviteWelcomeBoxWrapper,
-  ContentWrapper,
   Connectors,
   Logo,
   DataProtectBoxParagraph,
@@ -80,7 +79,13 @@ export const Invite = ({
             ) {
               try {
                 user = await walletSignin(wonderWeb3.address, signedMessage);
-                onAuthenticated(user);
+                if (user?.signupCompleted) {
+                  router.push('/dashboard', undefined, {
+                    shallow: true,
+                  });
+                } else {
+                  onAuthenticated(user);
+                }
               } catch (err) {
                 setErrorMessage('Unable to log in existing user - please contact support in discord');
               }
@@ -299,7 +304,7 @@ export const Invite = ({
         </Connectors>
 
         <DataProtectBoxParagraph>
-          Your account and <DataLink href="/data">data</DataLink> is protected.
+          Your account and <DataLink href="https://www.wonderverse.xyz/privacy-policy" target="_blank">data</DataLink> is protected.
         </DataProtectBoxParagraph>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}
