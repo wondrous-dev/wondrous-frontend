@@ -1,14 +1,23 @@
-import { WHITE_TYPOGRAPHY_STYLES } from '../../utils/constants';
-const styles = {
-  sectionContainer: {
-    mt: 3,
-    borderBottom: '0.5px dashed #4B4B4B',
-  },
-  title: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    color: '#CCBBFF',
-    mb: 2.5,
-  },
-};
+import { Box, Typography } from '@mui/material';
+import styled from 'styled-components';
 
-export default styles;
+export const ProfileUserTaskDaosWrapper = styled(Box)`
+  margin-top: 32px;
+`;
+
+export const ProfileUserTaskDaosContainer = styled(Box)`
+  margin-top: 3px;
+  border-bottom: 0.5px dashed #4b4b4b;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+`;
+
+export const ProfileUserTaskDaosTitle = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-weight: 500;
+    font-size: 16;
+    color: #ccbbff;
+  }
+`;

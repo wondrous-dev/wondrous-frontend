@@ -1,16 +1,11 @@
-import { useEffect, useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-
 import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
 
 import OrgCard from 'components/OrgCard';
 import ProfileContentGrid from 'components/ProfileContentGrid';
 import TaskCompletedCard from 'components/TaskCompletedCard';
 
-import styles from './styles';
+import { ProfileUserTaskDaosContainer, ProfileUserTaskDaosTitle, ProfileUserTaskDaosWrapper } from './styles';
 import WorkingOnCard from 'components/WorkingOnCard';
-import TaskCard from 'components/Common/Task/card';
 
 const ProfileUserTaskDaos = ({ userProfile }) => {
   const { id: userId } = userProfile;
@@ -18,22 +13,22 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
   const { workingTasksData, userOrgs, completedTaskCount, completedTasksData } = useGetUserAboutPage(userId);
 
   return (
-    <>
-      <Box sx={styles.sectionContainer}>
-        <Typography sx={styles.title}>{userOrgs?.length} DAOS</Typography>
+    <ProfileUserTaskDaosWrapper>
+      <ProfileUserTaskDaosContainer>
+        <ProfileUserTaskDaosTitle>{userOrgs?.length} DAOS</ProfileUserTaskDaosTitle>
         <ProfileContentGrid data={userOrgs} Component={OrgCard} />
-      </Box>
+      </ProfileUserTaskDaosContainer>
 
-      <Box sx={styles.sectionContainer}>
-        <Typography sx={styles.title}>{completedTaskCount} tasks completed</Typography>
-        <ProfileContentGrid  data={completedTasksData} Component={TaskCompletedCard} />
-      </Box>
+      <ProfileUserTaskDaosContainer>
+        <ProfileUserTaskDaosTitle>{completedTaskCount} tasks completed</ProfileUserTaskDaosTitle>
+        <ProfileContentGrid data={completedTasksData} Component={TaskCompletedCard} />
+      </ProfileUserTaskDaosContainer>
 
-      <Box sx={styles.sectionContainer}>
-        <Typography sx={styles.title}>{workingTasksData?.length} Currently working on</Typography>
+      <ProfileUserTaskDaosContainer>
+        <ProfileUserTaskDaosTitle>{workingTasksData?.length} Currently working on</ProfileUserTaskDaosTitle>
         <ProfileContentGrid data={workingTasksData} Component={WorkingOnCard} />
-      </Box>
-    </>
+      </ProfileUserTaskDaosContainer>
+    </ProfileUserTaskDaosWrapper>
   );
 };
 
