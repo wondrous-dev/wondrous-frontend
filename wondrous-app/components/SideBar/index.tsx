@@ -52,6 +52,7 @@ const SideBarComponent = (props) => {
       icon: StyledExplorePageIcon,
       url: '/explore',
       tooltipLabel: 'Explore',
+      id: 'tour-sidebar-explore-top',
     },
     {
       key: 'pods',
@@ -102,6 +103,7 @@ const SideBarComponent = (props) => {
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
             <DrawerTopBlockItem
+              id="tour-user-profile"
               onClick={() => {
                 router.push(`/profile/${user.username}/about`, undefined, {
                   shallow: true,
@@ -120,17 +122,18 @@ const SideBarComponent = (props) => {
             const Icon = link?.icon;
             const isExternal = link?.url?.includes('https://');
             const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
+            const actionProps = link?.action ? { onClick: link?.action } : {};
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
-                <DrawerBottomButton type="button">
+                <DrawerBottomButton type="button" {...actionProps}>
                   {!!link?.url && (
                     <Link href={link.url} passHref>
                       <a href={link.url} {...externalProps}>
-                        <Icon />
+                        <Icon id={link?.id} />
                       </a>
                     </Link>
                   )}
-                  {link?.action && <Icon onClick={link?.action} />}
+                  {link?.action && <Icon />}
                 </DrawerBottomButton>
               </Tooltip>
             );
@@ -140,7 +143,7 @@ const SideBarComponent = (props) => {
             <StyledDivider />
           </StyledDividerDiv>
 
-          <DrawerList>
+          <DrawerList id={!!listItems && listItems?.length && 'tour-sidebar-daos'}>
             {listItems &&
               listItems.map((item) => {
                 const isActive =
@@ -180,7 +183,7 @@ const SideBarComponent = (props) => {
                 <DrawerBottomButton type="button">
                   <Link href="/explore" passHref>
                     <a>
-                      <JoinDaoIcon />
+                      <JoinDaoIcon id="tour-sidebar-daos" />
                     </a>
                   </Link>
                 </DrawerBottomButton>

@@ -16,6 +16,7 @@ export const LoggedinUserFragment = gql`
       promotionTweet
     }
     signupCompleted
+    lastCompletedGuide
     links {
       url
       displayName
