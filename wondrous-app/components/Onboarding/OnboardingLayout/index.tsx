@@ -38,7 +38,7 @@ const OnboardingLayout = ({
   return (
     <Layout>
       <div>
-        <OnboardingHeader borderNone={borderNone} login={login}>
+        <OnboardingHeader login={login}>
           {headerRightContent}
         </OnboardingHeader>
         <ProgressBar step={step} />
