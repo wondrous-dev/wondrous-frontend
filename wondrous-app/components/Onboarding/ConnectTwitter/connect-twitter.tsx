@@ -5,6 +5,7 @@ import TwitterBlue from '../../../public/images/twitterBlue.svg';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { ContinueButton, LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { AlignButtonTwitter, TwitterContent } from '../styles';
+import { buildTwitterAuthUrl, challengeCode } from 'components/Twitter/utils';
 
 export const ConnectTwitter = () => {
   // const headerRightContent = (
@@ -14,6 +15,11 @@ export const ConnectTwitter = () => {
   //   </WalletConnected>
   // );
 
+  const redirectToTwitterAuth = () => {
+    const url = buildTwitterAuthUrl(challengeCode, 'onboarding');
+    window.open(url);
+  };
+
   return (
     <OnboardingLayout
       title="Connect to Twitter"
@@ -22,7 +28,7 @@ export const ConnectTwitter = () => {
       step={5}
     >
       <TwitterContent style={{ alignSelf: 'center', justifySelf: 'center' }}>
-        <ContinueButton style={{ marginBottom: '24px' }}>
+        <ContinueButton style={{ marginBottom: '24px' }} onClick={redirectToTwitterAuth}>
           <AlignButtonTwitter>
             <TwitterBlue />
           </AlignButtonTwitter>

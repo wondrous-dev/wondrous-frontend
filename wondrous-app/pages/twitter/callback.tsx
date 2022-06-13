@@ -27,8 +27,7 @@ const Callback = () => {
         console.log('state', state)
         if (state === 'onboarding') {      
           router.replace({
-            pathname: '/onboarding/twitter', 
-            query: { successfulAuth: 'true' } // unecessary for now
+            pathname: '/dashboard',
           });
         }
         if (state === 'profile') {      
