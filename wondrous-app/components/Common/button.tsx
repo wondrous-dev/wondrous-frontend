@@ -23,7 +23,7 @@ const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
   min-height: 50px;
-  padding: 2px;
+  padding: 1px;
   margin-top: ${(props) => props.marginTop || 0};
 
   background: #515151;
