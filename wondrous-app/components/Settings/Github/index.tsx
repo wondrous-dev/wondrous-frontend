@@ -36,7 +36,7 @@ export const GithubIntegration = ({ orgId }) => {
         orgId,
       });
       const redirectUrl = getGithubCallbackUrl()
-      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}?redirect_uri=${redirectUrl}`);
+      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}&redirect_uri=${redirectUrl}`);
     }
   }, []);
 
