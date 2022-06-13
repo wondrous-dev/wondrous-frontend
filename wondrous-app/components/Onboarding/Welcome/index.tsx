@@ -39,7 +39,6 @@ const OnboardingWelcome = ({ updateUser, user }) => {
       if (!addressTag.startsWith('0x')) {
         const splitUsernameArr = wonderWeb3?.wallet?.addressTag.split('.');
         if (splitUsernameArr && splitUsernameArr[0]) {
-          debugger;
           setUsername(splitUsernameArr[0].replace(/\./g, '_'));
         }
       }
