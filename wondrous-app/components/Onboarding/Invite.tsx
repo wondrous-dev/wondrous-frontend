@@ -28,7 +28,15 @@ import { EmailIcon } from 'components/Icons/email';
 import NoLogo from 'components/Icons/noLogo';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 
-export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteLink, children, title }) => {
+export const Invite = ({
+  orgInfo,
+  redeemOrgInviteLink,
+  podInfo,
+  redeemPodInviteLink,
+  children,
+  title,
+  onAuthenticated = () => null,
+}) => {
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
   const [noChainError, setNoChainError] = useState('');
@@ -65,6 +73,7 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
           let user;
           try {
             user = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+            onAuthenticated(user);
           } catch (err) {
             if (
               err?.graphQLErrors &&
@@ -72,6 +81,7 @@ export const Invite = ({ orgInfo, redeemOrgInviteLink, podInfo, redeemPodInviteL
             ) {
               try {
                 user = await walletSignin(wonderWeb3.address, signedMessage);
+                onAuthenticated(user);
               } catch (err) {
                 setErrorMessage('Unable to log in existing user - please contact support in discord');
               }

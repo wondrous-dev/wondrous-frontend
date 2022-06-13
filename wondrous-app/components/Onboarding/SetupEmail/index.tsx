@@ -8,19 +8,31 @@ import {
   ErrorText,
 } from '../styles';
 import { validateEmail } from 'utils/constants';
-import { SET_USER_SIGNUP_COMPLETE } from 'graphql/mutations';
+import {SET_USER_SIGNUP_COMPLETE, UPDATE_USER} from 'graphql/mutations';
 import OnboardingLayout from "components/Onboarding/OnboardingLayout";
+import {useMe} from "components/Auth/withAuth";
 
-export const EmailSetup = ({ updateUser, firstOrg, firstPod }) => {
+export const SetupEmail = ({ firstOrg, firstPod }) => {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
+  const user = useMe();
   const router = useRouter();
   const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
 
   useEffect(() => {
     setUserSignupComplete();
   }, []);
+
+  const goToNextStep = () => {
+    const nextStep = user.activeEthAddress ? '/onboarding/connect-discord' : '/connect-twitter';
+
+    router.push(nextStep, undefined, { shallow: true });
+  };
+
+  const [updateUser] = useMutation(UPDATE_USER, {
+    onCompleted: () => goToNextStep(),
+  });
 
   const handleContinueClick = () => {
     setLoading(true);
@@ -35,25 +47,6 @@ export const EmailSetup = ({ updateUser, firstOrg, firstPod }) => {
     } else {
       setLoading(false);
       setError('Please enter a valid email');
-    }
-  }
-
-  const handleonLaterClick = () => {
-    if (!firstOrg && !firstPod) {
-      // Should go to explore but let's go to dashboard for now
-      router.push('/dashboard', undefined, {
-        shallow: true,
-      });
-    } else {
-      if (firstPod) {
-        router.push(`/pod/${firstPod?.id}/boards`, undefined, {
-          shallow: true,
-        });
-      } else if (firstOrg) {
-        router.push(`/organization/${firstOrg?.username}/boards`, undefined, {
-          shallow: true,
-        });
-      }
     }
   }
 
@@ -96,7 +89,7 @@ export const EmailSetup = ({ updateUser, firstOrg, firstPod }) => {
           title="Set up your email"
           description="Set up your accounts so you can begin contributing."
           onContinueClick={handleContinueClick}
-          onLaterClick={handleonLaterClick}
+          onLaterClick={goToNextStep}
           step={4}
         >
           <div>

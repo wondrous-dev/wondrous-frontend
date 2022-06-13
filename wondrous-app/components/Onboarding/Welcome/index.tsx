@@ -15,12 +15,14 @@ import {
   Label,
   WalletConnected,
 } from '../styles';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
 const OnboardingWelcome = ({ updateUser, user }) => {
   const wonderWeb3 = useWonderWeb3();
   const router = useRouter();
   const [username, setUsername] = useState(user?.username);
   const [error, setError] = useState('');
+
   useEffect(() => {
     if (user?.username) {
       setUsername(user?.username);
@@ -68,16 +70,17 @@ const OnboardingWelcome = ({ updateUser, user }) => {
     }
   };
 
-  // TODO: Check if wallet is connected
-  const headerRightContent = (
+  const headerRightContent = user?.activeEthAddress ? (
     <WalletConnected>
       <CompletedIcon fill="none" stroke="none" style={{ width: '26px', height: '26px' }} />{' '}
       <Label>Success! Wallet connected.</Label>
     </WalletConnected>
-  );
+  ) : null;
 
   const description = (
-    <div>Earn crypto while contributoring to web3 projects. <br /> Let’s get your membership set up, it’ll take 2 minutes.</div>
+    <div>
+      Earn crypto while contributoring to web3 projects. <br /> Let’s get your membership set up, it’ll take 2 minutes.
+    </div>
   );
 
   return (
@@ -92,7 +95,7 @@ const OnboardingWelcome = ({ updateUser, user }) => {
         style={{
           textAlign: 'left',
           width: '100%',
-          height: '100%'
+          height: '100%',
         }}
       >
         <UsernameTitle>Enter your username</UsernameTitle>
@@ -112,4 +115,4 @@ const OnboardingWelcome = ({ updateUser, user }) => {
   );
 };
 
-export default OnboardingWelcome;
+export default withAuth(OnboardingWelcome);

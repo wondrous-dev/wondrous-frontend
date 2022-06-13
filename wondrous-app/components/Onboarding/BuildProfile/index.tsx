@@ -58,45 +58,32 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
     [updateUser, user?.id]
   );
 
-  const handleContinueClick = () => {
-    const nextStep = user.userInfo.email ? '/onboarding/connect-discord' : '/onboarding/connect-metamask';
+  const goToNextStep = () => {
+    const nextStep = user.userInfo.email ? '/onboarding/connect-discord' : '/onboarding/setup-email';
 
-    if (bio && user?.bio === bio) {
-      router.push(nextStep, undefined, { shallow: true });
-    } else {
-      if (USERNAME_REGEX.test(bio)) {
-        updateUser({
-          variables: {
-            input: {
-              bio,
-            },
-          },
-          onCompleted: () => {
-            router.push(nextStep, undefined, { shallow: true });
-          },
-          onError: (e) => {
-            setError(e.message);
-          },
-        });
-      } else {
-        setError("Please enter a valid bio with 3-15 alphanumeric characters with no '.'");
-      }
-    }
+    router.push(nextStep, undefined, { shallow: true });
   };
 
-  const onLaterClick = () => {
-    updateUser({
-      variables: {
-        input: {
-          bio,
+  const handleContinueClick = () => {
+    const nextStep = user.userInfo.email ? '/onboarding/connect-discord' : '/onboarding/setup-wallet';
+
+    if (bio && user?.bio === bio) {
+      goToNextStep();
+    } else {
+      updateUser({
+        variables: {
+          input: {
+            bio,
+          },
         },
-      },
-      onCompleted: () => {
-        router.push('/onboarding/connect-discord', undefined, {
-          shallow: true,
-        });
-      },
-    });
+        onCompleted: () => {
+          goToNextStep();
+        },
+        onError: (e) => {
+          setError(e.message);
+        },
+      });
+    }
   };
 
   const onBackClick = () => {
@@ -118,7 +105,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
       description="Set up your account so you can begin contributing."
       onContinueClick={handleContinueClick}
       onBackClick={onBackClick}
-      onLaterClick={onLaterClick}
+      onLaterClick={goToNextStep}
       step={2}
     >
       <div>
