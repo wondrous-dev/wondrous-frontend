@@ -8,14 +8,36 @@ import { Button } from 'components/Button';
 type Props = {
   children?: any;
   login?: boolean;
-  borderNone?: number | string;
+  secondVersionLogo?: boolean;
 };
 
-const OnboardingHeader = ({ children, login, borderNone }: Props) => (
-  <Header style={{ borderBottom: borderNone }}>
-    <Wonder>
+const styleSecondVersionLogoWrapper = {
+  display: 'flex',
+  flexDirection: 'column',
+  alignItems: 'center'
+}
+
+const styleSecondVersionLogo = {
+  margin: '8px 0 0',
+}
+
+const styleSecondVersionHeader = {
+  display: 'inline-block',
+}
+
+const OnboardingHeader = ({ children, login, secondVersionLogo }: Props) => (
+  <Header
+    style={ secondVersionLogo ? styleSecondVersionHeader : null}
+  >
+    <Wonder
+    style={secondVersionLogo ? styleSecondVersionLogoWrapper : null}
+    >
       <WonderLogo />
-      <LogoText>wonder</LogoText>
+      <LogoText
+        style={secondVersionLogo ? styleSecondVersionLogo : null}
+      >
+        wonder
+      </LogoText>
     </Wonder>
     {login ? (
       <Link href={`/login`} passHref>
