@@ -18,7 +18,7 @@ export const getGithubCallbackUrl = () => {
   if (process.env.NEXT_PUBLIC_PRODUCTION) {
     return 'https%3A%2F%2Fapp.wonderverse.xyz%2Fgithub%2Fcallback';
   } else if (process.env.NEXT_PUBLIC_STAGING) {
-    return 'https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fgithub%2Fcallback';
+    return 'https://wondrous-app-git-staging-wonderverse.vercel.app/github/callback';
   }
   return 'http%3A%2F%2Flocalhost%3A3000%2Fgithub%2Fcallback';
 };
