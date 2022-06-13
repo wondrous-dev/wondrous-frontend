@@ -24,10 +24,16 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
   const [bio, setBio] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const user = useMe();
-
   const [image, setImage] = useState('');
   const inputRef: any = useRef();
   const [error, setError] = useState('');
+
+  useEffect(() => {
+    if (user?.bio) {
+      setBio(user?.bio);
+    }
+  }, [user?.bio]);
+
   const handleFile = useCallback(
     async (event) => {
       const file = event.target.files[0];

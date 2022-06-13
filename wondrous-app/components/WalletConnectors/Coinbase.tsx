@@ -13,7 +13,7 @@ export default function CoinbaseConnector({
     <WonderAbstractConnector
       connectorName="walletLink"
       icon={<Coinbase/>}
-      buttonContent={<PaddedParagraph padding="0 10px">{text}</PaddedParagraph>}
+      buttonContent={<PaddedParagraph>{text}</PaddedParagraph>}
       style={style}
     />
   );

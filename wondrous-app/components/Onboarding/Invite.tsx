@@ -6,7 +6,6 @@ import {
   ContentWrapper,
   Connectors,
   Logo,
-  StyledHr,
   DataProtectBoxParagraph,
   DataLink,
 } from './styles';
@@ -215,8 +214,8 @@ export const Invite = ({
   const buttonStyles = {
     marginTop: '16px',
     width: '100%',
-    maxWidth: '326px',
-    maxHeight: '40px',
+    maxWidth: '278px',
+    minHeight: '40px',
     height: '40px',
     fontWeight: '500',
   };
@@ -274,7 +273,6 @@ export const Invite = ({
             <DiscordIcon />
             <span
               style={{
-                marginLeft: '12px',
                 fontFamily: 'Space Grotesk',
                 fontWeight: '500',
               }}
@@ -293,7 +291,6 @@ export const Invite = ({
             <EmailIcon />
             <span
               style={{
-                marginLeft: '12px',
                 fontFamily: 'Space Grotesk',
                 fontWeight: '500',
               }}
