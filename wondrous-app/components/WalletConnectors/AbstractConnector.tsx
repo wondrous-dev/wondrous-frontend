@@ -16,6 +16,7 @@ export default function WonderAbstractConnector({
   buttonContent,
   icon = null,
   style,
+  showText,
 }: WonderAbstractConnectorProps) {
   const { connector, activateAndStore, error, isActivating, notSupportedChain, connecting } = useWonderWeb3();
 
@@ -33,8 +34,8 @@ export default function WonderAbstractConnector({
     if (connecting && connector === currentConnector)
       return (
         <>
-          <CircularProgress size={14} />
-          <PaddedParagraph padding="0 10px">Continue on your wallet</PaddedParagraph>
+          <CircularProgress style={{ borderRadius: '50%' }} />
+          {showText ? <PaddedParagraph padding="0 10px">Continue on your wallet</PaddedParagraph> : null}
         </>
       );
     return (
@@ -47,7 +48,7 @@ export default function WonderAbstractConnector({
 
   return (
     <Button style={style} onClick={() => activateAndStore(connectorName)}>
-      {isActivating ? <CircularProgress /> : <>{content()}</>}
+      {isActivating ? <CircularProgress style={{ borderRadius: '50%' }} /> : <>{content()}</>}
     </Button>
   );
 }

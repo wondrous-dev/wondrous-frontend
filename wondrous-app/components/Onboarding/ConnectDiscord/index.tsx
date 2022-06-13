@@ -67,6 +67,7 @@ export const ConnectDiscord = ({ updateUser }) => {
           description={Text.DescriptionSuccess}
           onBackClick={handleBackClick}
           onContinueClick={goToNextStep}
+          onBackClick={() => router.back()}
           step={3}
         >
           <DiscordSuccessLogo style={DiscordLogoStyle} />

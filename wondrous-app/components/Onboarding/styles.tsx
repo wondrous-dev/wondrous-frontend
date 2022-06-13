@@ -238,7 +238,7 @@ export const Connectors = styled.div`
   padding-top: 10px;
 
   svg {
-    flex: 0 0 40px;
+    flex: 0 0 37px;
   }
 
   button {
@@ -270,18 +270,6 @@ export const TwitterTitle = styled.div`
   font-size: 15px;
   font-weight: 400;
   margin-bottom: 93px;
-  width: 100%;
-`;
-
-export const AlignButtonTwitter = styled.div`
-  padding: 16px 21px 8px 0;
-`;
-
-export const TwitterContent = styled.div`
-  display: unset;
-  flex-direction: unset;
-  text-align: center;
-  max-width: 326px;
   width: 100%;
 `;
 

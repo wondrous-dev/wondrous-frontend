@@ -10,11 +10,11 @@ import { Field } from 'components/Common/field';
 import { PaddedParagraph, StyledLink } from 'components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
-import {Grey50, White} from '../theme/colors';
+import { Grey50, White } from '../theme/colors';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { DiscordIcon } from 'components/Icons/discord';
 import { useWonderWeb3 } from 'services/web3';
-import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
+import { emailSignin, getUserSigningMessage, walletSignin, walletSignup } from 'components/Auth/withAuth';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
@@ -22,11 +22,12 @@ import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
-import OnboardingHeader from "components/Onboarding/OnboardingLayout/Header";
-import { Layout, OnboardingTitle } from "components/Onboarding/OnboardingLayout/styles";
-import { ContinueButton } from "components/Onboarding/OnboardingLayout/Footer/styles";
-import { MainWrapper } from "components/Onboarding/styles";
-import { Button } from "components/Button";
+import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
+import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
+import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { Connectors, MainWrapper } from 'components/Onboarding/styles';
+import { Button } from 'components/Button';
+import { SupportedChainType } from 'utils/web3Constants';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -71,11 +72,13 @@ const Login = ({ csrfToken }) => {
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
+
         if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           setLoading(true);
           try {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
+
             if (user) {
               if (user?.username) {
                 router.push('/dashboard', undefined, {
@@ -87,11 +90,15 @@ const Login = ({ csrfToken }) => {
                 });
               }
             } else {
-              setErrorMessage('no user found'); // this feels like it will never happen?
+              // setErrorMessage('no user found'); // this feels like it will never happen?
             }
           } catch (err) {
             if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
-              setErrorMessage('No account found, check if connected to the correct address');
+              await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+
+              router.push('/onboarding/welcome', undefined, {
+                shallow: true,
+              });
             } else {
               setErrorMessage(err?.message || err);
             }
@@ -127,29 +134,33 @@ const Login = ({ csrfToken }) => {
     setNotSupported(wonderWeb3.notSupportedChain);
   }, [wonderWeb3.notSupportedChain]);
 
+  const buttonStyles = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '300px',
+    margin: '0 6px',
+  };
+
   return (
     <MainWrapper>
       <Layout
         style={{
-          minHeight: 'unset'
+          minHeight: 'unset',
         }}
       >
-        <OnboardingHeader
-          secondVersionLogo={true}
-        />
+        <OnboardingHeader secondVersionLogo={true} />
         <OnboardingTitle
           style={{
-            textAlign: 'center'
+            textAlign: 'center',
           }}
         >
           Log in with email
         </OnboardingTitle>
 
-        <div style={{width: '100%'}}>
+        <div style={{ width: '100%' }}>
           {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-          <Form onSubmit={handleSubmit} style={{marginBottom: '37px'}}>
+          <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-            {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
             <Field
               type="email"
               name="email"
@@ -181,11 +192,47 @@ const Login = ({ csrfToken }) => {
               Log me in
             </Button>
           </Form>
-          <LineWithText>
-            <PaddedParagraph padding="0 10px" color={White} style={{fontWeight: 500}}>
+          <LineWithText width="45%" borderBottom="1px dashed #4b4b4b">
+            <PaddedParagraph padding="0 10px" color={White} style={{ fontWeight: 500 }}>
               or
             </PaddedParagraph>
           </LineWithText>
+          <Connectors
+            style={{
+              flexDirection: 'unset',
+              borderTop: 0,
+              justifyContent: 'center',
+            }}
+          >
+            <MetaMaskConnector text="" style={buttonStyles} />
+            <CoinbaseConnector text="" style={buttonStyles} />
+            <WalletConnectConnector text="" style={buttonStyles} />
+            <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
+              <DiscordIcon />
+            </Button>
+            <Button
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '300px',
+                margin: '0 6px',
+                background: '#474747',
+              }}
+              onClick={() => {
+                router.push('/signup', undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              <EmailIcon
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  filter: 'grayscale(1)',
+                }}
+              />
+            </Button>
+          </Connectors>
         </div>
       </Layout>
     </MainWrapper>

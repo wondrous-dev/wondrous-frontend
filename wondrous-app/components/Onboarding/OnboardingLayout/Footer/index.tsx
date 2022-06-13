@@ -1,9 +1,9 @@
 import React from 'react';
 
-import {Container, ContinueButton, BackButton, RightButtons, Later} from './styles';
+import { Container, ContinueButton, BackButton, RightButtons, Later } from './styles';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import DiscordSmallLogo from '../../../../public/images/onboarding/discord-small.svg';
-import { CircularProgress } from "@material-ui/core";
+import { CircularProgress } from '@material-ui/core';
 
 interface Props {
   onConnectDiscordClick?: () => unknown;
@@ -11,15 +11,10 @@ interface Props {
   onLaterClick?: () => unknown;
   onBackClick?: () => unknown;
   loading?: unknown;
-  borderNone?: number | string;
 }
 
-const OnboardingFooter = ({ onConnectDiscordClick, onContinueClick, onLaterClick, onBackClick, loading, borderNone }: Props) => (
-  <Container
-    style={{
-      borderTop: borderNone,
-    }}
-  >
+const OnboardingFooter = ({ onConnectDiscordClick, onContinueClick, onLaterClick, onBackClick, loading }: Props) => (
+  <Container>
     <div>
       {onBackClick ? (
         <BackButton onClick={onBackClick}>
@@ -29,15 +24,18 @@ const OnboardingFooter = ({ onConnectDiscordClick, onContinueClick, onLaterClick
     </div>
     <RightButtons>
       {onLaterClick ? <Later onClick={onLaterClick}>Later</Later> : null}
-      {onContinueClick ? <ContinueButton onClick={onContinueClick}>Continue</ContinueButton>: null}
-      {onConnectDiscordClick ? <ContinueButton onClick={onConnectDiscordClick}>
-        <DiscordSmallLogo
-          style={{
-            marginRight: '12px'
-          }} />
-        Connect Discord
-      </ContinueButton>: null}
-      {loading ? <CircularProgress />: null}
+      {onContinueClick ? <ContinueButton onClick={onContinueClick}>Continue</ContinueButton> : null}
+      {onConnectDiscordClick ? (
+        <ContinueButton onClick={onConnectDiscordClick}>
+          <DiscordSmallLogo
+            style={{
+              marginRight: '12px',
+            }}
+          />
+          Connect Discord
+        </ContinueButton>
+      ) : null}
+      {loading ? <CircularProgress /> : null}
     </RightButtons>
   </Container>
 );

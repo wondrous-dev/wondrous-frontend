@@ -40,7 +40,13 @@ export const SetupWallet = ({ updateUser }) => {
   );
 
   return (
-    <OnboardingLayout title="Set up your wallet" displayFooter={false} description={description} step={4}>
+    <OnboardingLayout
+      title="Set up your wallet"
+      displayFooter={false}
+      description={description}
+      onBackClick={() => router.back()}
+      step={4}
+    >
       <MetaMaskWallet
         style={{
           alignSelf: 'center',

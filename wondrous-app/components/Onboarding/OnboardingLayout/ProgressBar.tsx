@@ -6,7 +6,7 @@ import {FirstStep, SecondStep, ThirdStep, FourthStep, FifthStep} from 'component
 
 export const Container = styled.div`
   width: 100%;
-  margin-top: 24px;
+  margin: 24px 0;
 `;
 
 const stepsMap = {

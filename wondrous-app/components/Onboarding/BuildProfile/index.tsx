@@ -112,6 +112,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
       onContinueClick={handleContinueClick}
       onBackClick={onBackClick}
       onLaterClick={goToNextStep}
+      onBackClick={() => router.back()}
       step={2}
     >
       <div>

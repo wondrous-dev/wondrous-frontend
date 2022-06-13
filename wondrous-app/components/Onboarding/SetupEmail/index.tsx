@@ -2,15 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-import {
-  UsernameTitle,
-  UsernameInput,
-  ErrorText,
-} from '../styles';
+import { UsernameTitle, UsernameInput, ErrorText } from '../styles';
 import { validateEmail } from 'utils/constants';
-import {SET_USER_SIGNUP_COMPLETE, UPDATE_USER} from 'graphql/mutations';
-import OnboardingLayout from "components/Onboarding/OnboardingLayout";
-import {useMe} from "components/Auth/withAuth";
+import { SET_USER_SIGNUP_COMPLETE, UPDATE_USER } from 'graphql/mutations';
+import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
+import { useMe } from 'components/Auth/withAuth';
 
 export const SetupEmail = ({ firstOrg, firstPod }) => {
   const [email, setEmail] = useState('');
@@ -48,76 +44,40 @@ export const SetupEmail = ({ firstOrg, firstPod }) => {
       setLoading(false);
       setError('Please enter a valid email');
     }
-  }
+  };
 
   return (
-    <div>
-      {loading ? (
-        <OnboardingLayout
-        title="Set up your email"
-        description="Set up your accounts so you can begin contributing."
-        loading={loading}
-        step={4}
-      >
-        <div>
-          <UsernameTitle
-            style={{
-              marginBottom: '14px',
-            }}
-          >
-            Enter your email
-          </UsernameTitle>
-          <UsernameInput
-            type="email"
-            name="email"
-            value={email}
-            error={error}
-            onChange={(e) => {
-              setEmail(e.target.value);
-              setError(null);
-            }}
-            placeholder="Enter your best email"
-            required
-          />
-        </div>
-        <div>
-          {error && <ErrorText>{error}</ErrorText>}
-        </div>
-      </OnboardingLayout>
-        ) : (
-        <OnboardingLayout
-          title="Set up your email"
-          description="Set up your accounts so you can begin contributing."
-          onContinueClick={handleContinueClick}
-          onLaterClick={goToNextStep}
-          step={4}
+    <OnboardingLayout
+      title="Set up your email"
+      description="Set up your accounts so you can begin contributing."
+      onBackClick={() => router.back()}
+      onContinueClick={handleContinueClick}
+      onLaterClick={goToNextStep}
+      loading={loading}
+      step={4}
+    >
+      <div>
+        <UsernameTitle
+          style={{
+            marginBottom: '14px',
+          }}
         >
-          <div>
-            <UsernameTitle
-              style={{
-                marginBottom: '14px',
-              }}
-            >
-              Enter your email
-            </UsernameTitle>
-            <UsernameInput
-              type="email"
-              name="email"
-              value={email}
-              error={error}
-              onChange={(e) => {
-                setEmail(e.target.value);
-                setError(null);
-              }}
-              placeholder="Enter your best email"
-              required
-            />
-          </div>
-          <div>
-            {error && <ErrorText>{error}</ErrorText>}
-          </div>
-        </OnboardingLayout>
-        )}
-  </div>
+          Enter your email
+        </UsernameTitle>
+        <UsernameInput
+          type="email"
+          name="email"
+          value={email}
+          error={error}
+          onChange={(e) => {
+            setEmail(e.target.value);
+            setError(null);
+          }}
+          placeholder="Enter your best email"
+          required
+        />
+      </div>
+      <div>{error && <ErrorText>{error}</ErrorText>}</div>
+    </OnboardingLayout>
   );
 };
