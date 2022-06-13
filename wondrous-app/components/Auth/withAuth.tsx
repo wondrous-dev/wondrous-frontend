@@ -19,6 +19,7 @@ const EXCLUDED_PATHS = [
   '/login',
   '/discord/callback',
   '/onboarding/welcome',
+  '/explore',
 ];
 
 export const useMe = () => {

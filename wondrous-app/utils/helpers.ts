@@ -23,6 +23,16 @@ export const shrinkNumber = (number = 0) => {
   }
 };
 
+export const enableContainerOverflow = () => {
+  document.querySelector('html').style.overflow = '';
+  document.body.style.overflow = '';
+};
+
+export const disableContainerOverflow = () => {
+  document.querySelector('html').style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+};
+
 export const toggleHtmlOverflow = () => {
   const htmlTagElements = document.getElementsByTagName('html');
   const { style } = htmlTagElements.item(0);

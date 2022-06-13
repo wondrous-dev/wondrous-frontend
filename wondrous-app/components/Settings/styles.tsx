@@ -178,7 +178,6 @@ export const ArchivedPodIndicatorText = styled(Typography)`
   }
 `;
 
-
 export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -220,7 +219,7 @@ export const SettingsHeaderText = styled(Typography)`
   && {
     width: 100%;
     font-size: 15px;
-    line-height: 19px;
+    line-height: 23px;
     letter-spacing: 0.01em;
     color: #ffffff;
     display: flex;

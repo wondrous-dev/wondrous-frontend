@@ -1,24 +1,49 @@
+import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreateLayoutBaseModal from './createEntityModal';
 import { CreateEntityModal } from './CreateEntityModal/index';
+import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
 
 interface ICreateEntity {
   entityType: string;
   handleClose: Function;
   cancel: Function;
-  existingTask?: {};
+  existingTask?: {
+    id: string;
+    githubIssue: {
+      id: string;
+      url: string;
+    };
+    githubPullRequest: {
+      id: string;
+      url: string;
+      title: string;
+    };
+  };
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;
+  formValues?: FormikValues;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
-  const { open, entityType, handleCloseModal } = props;
+  const { open, entityType, handleCloseModal, isTaskProposal } = props;
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
-  console.log('open', open);
+  if (isTaskProposal) {
+    return (
+      <CreateFormModalOverlay
+        open={open}
+        onClose={handleCloseModal}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <EditLayoutBaseModal {...props} />
+      </CreateFormModalOverlay>
+    );
+  }
   return (
     <CreateFormModalOverlay
       open={open}

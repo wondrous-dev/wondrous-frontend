@@ -18,6 +18,8 @@ import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
 import { CompletedIcon } from 'components/Icons/statusIcons';
+import { RichTextViewer } from 'components/RichText';
+
 export default function Board({ tasks, handleCardClick }) {
   const router = useRouter();
 
@@ -46,10 +48,7 @@ export default function Board({ tasks, handleCardClick }) {
             <BoardsCardBody>
               <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
               <BoardsCardBodyDescription>
-                {renderMentionString({
-                  content: milestone.description,
-                  router,
-                })}
+              <RichTextViewer text={milestone.description} />
               </BoardsCardBodyDescription>
               <MilestoneProgressWrapper>
                 <MilestoneProgress milestoneId={milestone.id} />

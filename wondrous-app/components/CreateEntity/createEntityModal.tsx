@@ -1,9 +1,10 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { TabsVisibilityCreateEntity } from 'components/Common/TabsVisibilityCreateEntity';
 import { CircularProgress, styled, Switch, TextField } from '@mui/material';
-
+import { ReactEditor } from 'slate-react';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+
 import { CREATE_POD } from 'graphql/mutations/pod';
 import { CREATE_MILESTONE, CREATE_TASK, CREATE_BOUNTY } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
@@ -29,10 +30,8 @@ import {
   PERMISSIONS,
   PRIVACY_LEVEL,
 } from 'utils/constants';
-import { TextInputContext } from 'utils/contexts';
 
 import {
-  getMentionArray,
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
@@ -55,13 +54,13 @@ import CodeIcon from '../Icons/MediaTypesIcons/code';
 import ImageIcon from '../Icons/MediaTypesIcons/image';
 import VideoIcon from '../Icons/MediaTypesIcons/video';
 import UploadImageIcon from '../Icons/uploadImage';
-import { TextInput } from '../TextInput';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
 import HeaderImage from './HeaderImage/headerImage';
 import { MediaItem } from './MediaItem';
 import Tags, { Option as Label } from '../Tags';
 import MembersRow from './MembersRow/membersRow';
 import SingleDatePicker from 'components/SingleDatePicker';
+import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
 
 import { CreateFormMembersList } from './MembersRow/styles';
 import {
@@ -102,8 +101,10 @@ import {
   StyledAutocompletePopper,
   CreateFormAddTagsSection,
   StyledChip,
-  TextInputDiv,
   CreateFormBaseModalHeaderWrapper,
+  EditorContainer,
+  EditorPlaceholder,
+  EditorToolbar,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -201,7 +202,7 @@ const createPodMembersList = [
   },
 ];
 
-export const filterOrgUsersForAutocomplete = (orgUsers) => {
+export const filterOrgUsersForAutocomplete = (orgUsers): { display: string; id: string }[] => {
   if (!orgUsers) {
     return [];
   }
@@ -240,11 +241,14 @@ const CreateLayoutBaseModal = (props) => {
   const { entityType, handleClose, cancel, open, parentTaskId } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
-  const [descriptionText, setDescriptionText] = useState('');
+  const [descriptionText, setDescriptionText] = useState(plainTextToRichText(''));
   const [mediaUploads, setMediaUploads] = useState([]);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
   };
+
+  const editor = useEditor();
+  const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
 
   const [errors, setErrors] = useState({
     general: null,
@@ -496,11 +500,12 @@ const CreateLayoutBaseModal = (props) => {
 
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const description = JSON.stringify(descriptionText);
 
     const taskInput = {
       title,
       labelIds,
-      description: descriptionText,
+      description,
       orgId: org,
       milestoneId: milestone?.id,
       parentTaskId,
@@ -530,7 +535,7 @@ const CreateLayoutBaseModal = (props) => {
           privacyLevel: PRIVACY_LEVEL.public,
         }),
       reviewerIds: selectedReviewers.map(({ id }) => id),
-      userMentions: getMentionArray(descriptionText),
+      userMentions: extractMentions(descriptionText),
       mediaUploads,
       timezone,
     };
@@ -693,7 +698,7 @@ const CreateLayoutBaseModal = (props) => {
           const podInput = {
             name: title,
             username: title?.toLowerCase().split(' ').join('_'),
-            description: descriptionText,
+            description,
             orgId: org,
             privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
@@ -728,7 +733,7 @@ const CreateLayoutBaseModal = (props) => {
         const milestoneInput = {
           title,
           labelIds,
-          description: descriptionText,
+          description,
           orgId: org,
           podId: pod,
           mediaUploads,
@@ -784,7 +789,7 @@ const CreateLayoutBaseModal = (props) => {
         const bountyInput = {
           title,
           labelIds,
-          description: descriptionText,
+          description,
           orgId: org,
           milestoneId: milestone?.id,
           parentTaskId,
@@ -812,7 +817,7 @@ const CreateLayoutBaseModal = (props) => {
               privacyLevel: PRIVACY_LEVEL.public,
             }),
           reviewerIds: selectedReviewers.map(({ id }) => id),
-          userMentions: getMentionArray(descriptionText),
+          userMentions: extractMentions(descriptionText),
           mediaUploads,
           timezone,
         };
@@ -961,7 +966,7 @@ const CreateLayoutBaseModal = (props) => {
           }}
         >
           <TitleIcon circle />
-          <CreateFormBaseModalTitle>Create a {titleText.toLowerCase()}</CreateFormBaseModalTitle>
+          <CreateFormBaseModalTitle>Create a {titleText?.toLowerCase()}</CreateFormBaseModalTitle>
         </CreateFormBaseModalHeader>
         <CreateFormBaseModalCloseBtn onClick={handleClose}>
           <CloseModalIcon />
@@ -1006,7 +1011,7 @@ const CreateLayoutBaseModal = (props) => {
           <InputForm
             value={title}
             onChange={(e) => setTitle(e.target.value)}
-            placeholder={`Enter ${titleText.toLowerCase()} title`}
+            placeholder={`Enter ${titleText?.toLowerCase()} title`}
             search={false}
           />
           {errors.title && <ErrorText> {errors.title} </ErrorText>}
@@ -1014,34 +1019,21 @@ const CreateLayoutBaseModal = (props) => {
 
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>{titleText} description</CreateFormMainBlockTitle>
-          <TextInputDiv>
-            <TextInputContext.Provider
-              value={{
-                content: descriptionText,
-                onChange: descriptionTextCounter,
-                list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
-              }}
-            >
-              <TextInput
-                placeholder={`Enter ${titleText.toLowerCase()} description`}
-                // rows={5}
-                // maxRows={5}
-                style={{
-                  input: {
-                    overflow: 'auto',
-                    color: White,
-                    height: '100px',
-                    marginBottom: '16px',
-                    borderRadius: '6px',
-                    padding: '8px',
-                  },
-                }}
-              />
-            </TextInputContext.Provider>
-          </TextInputDiv>
+
+          <EditorToolbar ref={setEditorToolbarNode} />
+          <EditorContainer onClick={() => ReactEditor.focus(editor)}>
+            <RichTextEditor
+              editor={editor}
+              mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
+              placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
+              toolbarNode={editorToolbarNode}
+              onChange={setDescriptionText}
+              editorContainerNode={document.querySelector('#modal-scrolling-container')}
+            />
+          </EditorContainer>
 
           <CreateFormMainDescriptionInputSymbolCounter>
-            {descriptionText.length}/{textLimit} characters
+            {countCharacters(descriptionText)}/{textLimit} characters
           </CreateFormMainDescriptionInputSymbolCounter>
           {errors.description && <ErrorText> {errors.description} </ErrorText>}
         </CreateFormMainInputBlock>
@@ -1435,7 +1427,7 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
-      {org ? (
+      {(org && !isProposal) ? (
         <CreateFormAddTagsSection>
           <CreateFormMainInputBlock>
             <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
@@ -1564,10 +1556,10 @@ const CreateLayoutBaseModal = (props) => {
                 {showVisibility && (
                   <CreateFormAddDetailsTab>
                     <CreateFormAddDetailsInputLabel>
-                      Who can see this {titleText.toLowerCase()}?
+                      Who can see this {titleText?.toLowerCase()}?
                     </CreateFormAddDetailsInputLabel>
                     <TabsVisibilityCreateEntity
-                      type={titleText.toLowerCase()}
+                      type={titleText?.toLowerCase()}
                       isPod={isPod}
                       isPublic={isPublicEntity}
                       setIsPublic={setIsPublicEntity}

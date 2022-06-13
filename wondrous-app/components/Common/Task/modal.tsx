@@ -5,9 +5,10 @@ import { useInView } from 'react-intersection-observer';
 import { isEmpty } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 import Box from '@mui/material/Box';
-
+import PointsIcon from 'components/Icons/pointsIconFilled';
 import {
   PodNameTypography,
   TaskActionMenu,
@@ -40,7 +41,9 @@ import {
   MakeSubmissionDiv,
   TaskListModalContentWrapper,
   Tag,
+  GithubBlock,
 } from './styles';
+import { SnapshotButton } from '../../CreateEntity/styles';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { SafeImage } from '../Image';
@@ -130,6 +133,7 @@ import {
   updateInReviewItem,
   updateCompletedItem,
 } from 'utils/board';
+import { RichTextViewer } from 'components/RichText';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { TaskListCard } from '.';
@@ -155,6 +159,8 @@ import { CompleteModal } from '../CompleteModal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { CreateEntity } from 'components/CreateEntity';
+import { useSnapshot } from 'services/snapshot';
+import { GithubButton } from 'components/Settings/Github/styles';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -813,6 +819,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchPolicy: 'cache-and-network',
   });
   const user = useMe();
+  const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
 
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
@@ -1053,6 +1060,28 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       setActiveTab(tabs.submissions);
     }
   }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
+  useEffect(() => {
+    if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
+      getOrgSnapshotInfo({
+        variables: {
+          orgId: fetchedTask?.orgId,
+        },
+      });
+    }
+  }, [fetchedTask?.snapshotId]);
+
+  const openSnapshot = async () => {
+    try {
+      const space = orgSnapshot.snapshotEns;
+      const proposal = fetchedTask?.snapshotId;
+      const url = isTest
+        ? `https://demo.snapshot.org/#/${space}/proposal/${proposal}`
+        : `https://snapshot.org/#/${space}/proposal/${proposal}`;
+      window.open(url);
+    } catch (error) {
+      console.error(error);
+    }
+  };
 
   const BackToListStyle = {
     color: White,
@@ -1428,12 +1457,32 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 }}
               />
               <TaskTitleTextDiv>
-                <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+                <div
+                  style={{
+                    display: 'flex',
+                  }}
+                >
+                  <TaskTitleText>{fetchedTask?.title}</TaskTitleText>
+                  {fetchedTask?.snapshotId && (
+                    <>
+                      <div
+                        style={{
+                          flex: 1,
+                        }}
+                      />
+                      <SnapshotButton
+                        style={{
+                          marginBottom: '10px',
+                        }}
+                        onClick={openSnapshot}
+                      >
+                        Snapshot Proposal
+                      </SnapshotButton>
+                    </>
+                  )}
+                </div>
                 <TaskDescriptionText>
-                  {renderMentionString({
-                    content: fetchedTask?.description,
-                    router,
-                  })}
+                  <RichTextViewer text={fetchedTask?.description} />
                 </TaskDescriptionText>
               </TaskTitleTextDiv>
             </TaskTitleDiv>
@@ -1745,6 +1794,22 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </div>
               </TaskSectionDisplayDiv>
             )}
+            {fetchedTask?.points && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <PointsIcon />
+                  <TaskSectionDisplayText>Points</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <TaskSectionInfoText
+                  style={{
+                    marginTop: '8px',
+                    marginLeft: '32px',
+                  }}
+                >
+                  {fetchedTask?.points} pts
+                </TaskSectionInfoText>
+              </TaskSectionDisplayDiv>
+            )}
             {fetchedTask?.milestoneId && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
@@ -1819,6 +1884,42 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 marginTop: '0',
               }}
             >
+              <GithubBlock>
+                {fetchedTask?.githubIssue && (
+                  <GithubButton
+                    style={{
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                    }}
+                    href={fetchedTask?.githubIssue?.url}
+                    target="_blank"
+                  >
+                    <GitHubIcon
+                      style={{
+                        marginRight: '8px',
+                      }}
+                    />
+                    <span>Connected Github issue</span>
+                  </GithubButton>
+                )}
+                {fetchedTask?.githubPullRequest && (
+                  <GithubButton
+                    style={{
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                    }}
+                    href={fetchedTask?.githubPullRequest?.url}
+                    target="_blank"
+                  >
+                    <GitHubIcon
+                      style={{
+                        marginRight: '8px',
+                      }}
+                    />
+                    <span>{fetchedTask?.githubPullRequest?.title}</span>
+                  </GithubButton>
+                )}
+              </GithubBlock>
               <CreatorBlock
                 profilePicture={fetchedTask?.creatorProfilePicture}
                 username={fetchedTask?.creatorUsername}

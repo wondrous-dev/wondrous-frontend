@@ -17,7 +17,7 @@ export const ImageUpload = (props) => {
   const imageInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
 
-  const imageInputId = `upload-${imageName.toLowerCase()}-image`;
+  const imageInputId = `upload-${imageName?.toLowerCase()}-image`;
 
   const imageWidthCondition = imageWidth < 560 ? `${imageWidth}px` : '100%';
   const imageHeightCondition = imageWidth < 560 ? `${imageHeight}px` : '90px';
@@ -77,7 +77,7 @@ export const ImageUpload = (props) => {
             onChange={handleNewFileUpload}
           />
           <ImageUploadBlockInputLabel for={imageInputId}>
-            {image ? `${image.name} uploaded` : `Upload new ${imageName.toLowerCase()}`}
+            {image ? `${image.name} uploaded` : `Upload new ${imageName?.toLowerCase()}`}
           </ImageUploadBlockInputLabel>
         </ImageUploadBlockInputWrapper>
 

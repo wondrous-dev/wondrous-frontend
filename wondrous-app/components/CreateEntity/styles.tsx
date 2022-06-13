@@ -13,7 +13,6 @@ import CreatePodIcon from '../Icons/createPod.svg';
 import CreateProposalIcon from '../Icons/createProposal.svg';
 import CreateTaskIcon from '../Icons/createTask.svg';
 import WonderTokenIcon from '../Icons/wonderToken';
-import SearchIcon from 'components/Icons/search';
 
 export const MediaUploadGrid = styled(Grid)`
   && {
@@ -328,10 +327,6 @@ export const CreateFormMainDescriptionInput = styled(CreateFormMainTitleInput)({
     height: 156,
   },
 });
-
-export const TextInputDiv = styled.div`
-  height: 100px;
-`;
 
 export const CreateFormMainDescriptionInputSymbolCounter = styled(Typography)`
   && {
@@ -784,3 +779,52 @@ export const CreateFormAddTagsSection = styled.div`
   margin: 0 auto;
   padding: 30px 40px 10px;
 `;
+
+const editorPadding = 12;
+const editorMinHeight = 100;
+export const EditorContainer = styled.div`
+  padding: ${editorPadding}px;
+  min-height: ${editorMinHeight}px;
+  border-radius: 6px;
+  background: rgb(15, 15, 15);
+  overflow: auto;
+`;
+export const EditorPlaceholder = styled.div`
+  min-height: ${editorMinHeight - editorPadding * 2}px;
+`;
+export const EditorToolbar = styled.div`
+  margin-bottom: 4px;
+`;
+
+export const TextInputDiv = styled.div`
+  height: 100px;
+`;
+
+export const SnapshotButtonBlock = styled(CreateFormButtonsBlock)`
+  && {
+  height: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-left: auto;
+  }
+`;
+
+export const SnapshotErrorText = styled.div`
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 10px;
+`
+
+export const SnapshotButton = styled(CreateFormPreviewButton)`
+  && {
+    border: 1px solid gold;
+    .MuiCircularProgress-svg {
+      width: 100%;
+      height: 100%;
+    }
+  }
+`

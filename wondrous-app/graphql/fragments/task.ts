@@ -76,6 +76,15 @@ export const TaskFragment = gql`
     }
     maxSubmissionCount
     points
+    githubIssue {
+      id
+      url
+    }
+    githubPullRequest {
+      id
+      url
+      title
+    }
   }
   ${MediaFragment}
 `;
@@ -301,6 +310,7 @@ export const TaskProposalFragment = gql`
       name
       color
     }
+    snapshotId
   }
   ${MediaFragment}
 `;

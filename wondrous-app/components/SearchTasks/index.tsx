@@ -3,7 +3,7 @@ import { InputAdornment } from '@material-ui/core';
 import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { Autocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
+import { Autocomplete as DefaultAutocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
 import TaskIcon from '../Icons/TaskTypes/task';
 import MilestoneIcon from '../Icons/TaskTypes/milestone';
 import BountyIcon from '../Icons/TaskTypes/bounty';
@@ -28,11 +28,12 @@ const TaskTypeIcons = {
 type Props = {
   onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
   isExpandable?: boolean;
+  autocompleteComponent?: React.Component;
 };
 
 let timeout;
 
-export default function SearchTasks({ onSearch, isExpandable }: Props) {
+export default function SearchTasks({ onSearch, isExpandable, autocompleteComponent }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
@@ -95,6 +96,7 @@ export default function SearchTasks({ onSearch, isExpandable }: Props) {
     });
   }
 
+  const Autocomplete = autocompleteComponent || DefaultAutocomplete;
   const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '17%') : '100%';
 
   const handleBlur = (e) => setIsExpanded(false);
@@ -132,6 +134,7 @@ export default function SearchTasks({ onSearch, isExpandable }: Props) {
         getOptionLabel={(takOrUser) => takOrUser.username || takOrUser.title || inputValue}
         noOptionsText="no results found"
         options={options}
+        isLoading={isLoading}
         filterOptions={(x) => x}
         renderOption={(props, taskOrUser) => {
           let content = [];

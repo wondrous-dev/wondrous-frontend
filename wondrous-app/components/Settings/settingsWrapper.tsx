@@ -1,5 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import LeftArrowIcon from 'components/Icons/leftArrow';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import PodIcon from 'components/Icons/podIcon';
 import RolesIcon from 'components/Icons/roles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -41,6 +42,7 @@ import {
   SettingsSidebarTabsSectionLabel,
   ArchivedPodIndicatorText,
 } from './styles';
+import { Grey800, White } from 'theme/colors';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -152,7 +154,7 @@ export const SettingsWrapper = (props) => {
       label: 'Integrations Settings',
       value: 'integrations',
       href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
+      page: [SettingsPage.Org],
     },
     {
       icon: <CardIcon width={40} height={40} />,
@@ -195,6 +197,19 @@ export const SettingsWrapper = (props) => {
       value: 'notifications',
       href: `/profile/notifications`,
       page: [SettingsPage.Profile],
+    },
+    {
+      icon: (
+        <GitHubIcon
+          style={{
+            color: '#525252',
+          }}
+        />
+      ),
+      label: 'Github',
+      value: 'github',
+      href: orgId ? `/organization/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
+      page: [SettingsPage.Pod],
     },
   ];
 
@@ -333,9 +348,7 @@ export const SettingsWrapper = (props) => {
                   <PodIcon />
                 </SettingsDaoPodIndicatorIconWrapper>
                 <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-                {podIsArchived && (
-                  <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>
-                )}
+                {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
               </SettingsDaoPodIndicator>
             ) : null}
             {children}

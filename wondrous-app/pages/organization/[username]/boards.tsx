@@ -126,6 +126,7 @@ const useGetOrgTaskBoardTasks = ({
         ...(limit ? { limit } : {}),
       },
       updateQuery: (prev, { fetchMoreResult }) => {
+        setOrgTaskHasMore(fetchMoreResult?.getOrgTaskBoardTasks.length >= LIMIT);
         return {
           getOrgTaskBoardTasks: [...prev.getOrgTaskBoardTasks, ...fetchMoreResult.getOrgTaskBoardTasks],
         };
@@ -650,6 +651,8 @@ const BoardsPage = () => {
         user: getUserData?.getUser,
         deleteUserIdFilter,
         fetchPerStatus,
+        onLoadMore: fetchMore,
+        hasMore: orgTaskHasMore,
       }}
     >
       <Boards

@@ -1,7 +1,9 @@
 import styled from 'styled-components';
 import { createSpacingUnit } from 'utils';
 
-export const BaseCardWrapper = styled.header`
+export const BaseCardWrapper = styled.header.attrs({
+  id: 'modal-scrolling-container', // this is needed for the modal to be able to attach floating elements inside it
+})`
   display: flex;
   flex-direction: column;
 
