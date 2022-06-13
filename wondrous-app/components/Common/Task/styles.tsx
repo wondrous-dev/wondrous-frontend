@@ -692,3 +692,9 @@ export const DueDateText = styled(Typography)`
     margin-right: 4px;
   }
 `;
+
+export const GithubBlock = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+`;

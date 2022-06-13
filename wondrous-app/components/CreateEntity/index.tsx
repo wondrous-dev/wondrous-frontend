@@ -11,7 +11,18 @@ interface ICreateEntity {
   entityType: string;
   handleClose: Function;
   cancel: Function;
-  existingTask?: {};
+  existingTask?: {
+    id: string;
+    githubIssue: {
+      id: string;
+      url: string;
+    };
+    githubPullRequest: {
+      id: string;
+      url: string;
+      title: string;
+    };
+  };
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;

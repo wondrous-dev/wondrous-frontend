@@ -12,19 +12,25 @@ import {
 import Tooltip from 'components/Tooltip';
 import { FormikValues, useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_BOUNTY,
   CREATE_MILESTONE,
   CREATE_TASK,
   REMOVE_MEDIA_FROM_TASK,
+  CREATE_TASK_GITHUB_ISSUE,
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
 } from 'graphql/mutations/task';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
+import {
+  GET_POD_GITHUB_INTEGRATIONS,
+  GET_POD_GITHUB_PULL_REQUESTS,
+  GET_USER_AVAILABLE_PODS,
+} from 'graphql/queries/pod';
 import {
   GET_ELIGIBLE_REVIEWERS_FOR_ORG,
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
@@ -125,6 +131,7 @@ import {
   EditorToolbar,
   MediaUploadDiv,
 } from './styles';
+import { GithubButton } from 'components/Settings/Github/styles';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -186,6 +193,16 @@ const filterOrgUsersForAutocomplete = (orgUsers) => {
   }));
 };
 
+const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
+  if (!githubPullRequests) {
+    return [];
+  }
+  return githubPullRequests.map((githubPullRequest) => ({
+    id: githubPullRequest.id,
+    label: githubPullRequest.title,
+    url: githubPullRequest.url,
+  }));
+};
 const filterPaymentMethods = (paymentMethods) => {
   if (!paymentMethods) return [];
   return paymentMethods.map((paymentMethod) => {
@@ -276,6 +293,47 @@ const useGetAvailableUserPods = (org) => {
   return data?.getAvailableUserPods;
 };
 
+const filterGithubReposForAutocomplete = (githubPullRepos) => {
+  if (!githubPullRepos) {
+    return [];
+  }
+
+  return githubPullRepos.map((githubPullRepo) => ({
+    id: githubPullRepo.githubInfo?.repoId,
+    label: githubPullRepo.githubInfo?.repoPathname,
+  }));
+};
+
+const useGetPodGithubIntegrations = (pod) => {
+  const [getPodGithubIntegrations, { data: podGithubIntegrationData, error: podGithubIntegrationError }] =
+    useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
+  useEffect(() => {
+    if (pod) {
+      getPodGithubIntegrations({
+        variables: {
+          podId: pod,
+        },
+      });
+    }
+  }, [pod]);
+  return filterGithubReposForAutocomplete(podGithubIntegrationData?.getPodGithubRepoIntegrations);
+};
+
+const useGetPodPullRequests = (pod) => {
+  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS);
+  useEffect(() => {
+    if (pod) {
+      getPodGithubPullRequests({
+        variables: {
+          podId: pod,
+        },
+      });
+    }
+  }, [pod]);
+
+  return filterGithubPullRequestsForAutocomplete(podGithubPullRequestsData?.getPodGithubPullRequests);
+};
+
 const useGetEligibleReviewers = (org, pod) => {
   const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
     useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
@@ -323,6 +381,22 @@ const useGetOrgLabels = (orgId) => {
   }, [orgId, getOrgLabels]);
 
   return data?.getOrgLabels;
+};
+
+const useCreateGithubIssueFromTask = (taskId, callback) => {
+  const [createGithubIssue] = useMutation(CREATE_TASK_GITHUB_ISSUE);
+  const handleCreateGithubIssue = async (repoPathname) => {
+    const {
+      data: { createGithubIssue: newGithubIssue },
+    } = await createGithubIssue({
+      variables: {
+        taskId,
+        repoPathname,
+      },
+    });
+    callback(newGithubIssue);
+  };
+  return handleCreateGithubIssue;
 };
 
 const useCreateLabel = (orgId, callback) => {
@@ -712,6 +786,7 @@ enum Fields {
   points,
   milestone,
   tags,
+  githubPullRequest,
 }
 
 const entityTypeData = {
@@ -724,6 +799,7 @@ const entityTypeData = {
       Fields.points,
       Fields.milestone,
       Fields.tags,
+      Fields.githubPullRequest,
     ],
     createMutation: useCreateTask,
     updateMutation: useUpdateTask,
@@ -741,6 +817,11 @@ const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      githubPullRequest: null,
+      githubIssue: null,
+      githubRepo: null,
+      chooseGithubPullRequest: false,
+      chooseGithubIssue: false,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -830,7 +911,18 @@ interface ICreateEntityModal {
   entityType: string;
   handleClose: Function;
   cancel: Function;
-  existingTask?: {};
+  existingTask?: {
+    id: string;
+    githubIssue: {
+      id: string;
+      url: string;
+    };
+    githubPullRequest: {
+      id: string;
+      url: string;
+      title: string;
+    };
+  };
   parentTaskId?: string;
   resetEntityType?: Function;
   setEntityType?: Function;
@@ -880,18 +972,26 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       const rewards = _.isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
+      const githubPullRequest = {
+        id: values?.githubPullRequest?.id,
+        title: values?.githubPullRequest?.label,
+        url: values?.githubPullRequest?.url,
+      };
+      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, ...finalValues } = values;
 
       const input = {
-        ...values,
+        ...finalValues,
         reviewerIds,
         points,
         rewards,
         timezone,
         userMentions,
         description: JSON.stringify(values.description),
+        ...(values?.githubPullRequest?.id && {
+          githubPullRequest,
+        }),
       };
-
-      handleMutation({ input, board, pods, form, handleClose, existingTask, ...{ formValues } });
+      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -901,6 +1001,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const handleCreateLabel = useCreateLabel(form.values.orgId, (newLabelId) =>
     form.setFieldValue('labelIds', [...form.values.labelIds, newLabelId])
   );
+
+  const [createGithubIssue, { data: createGithubIssueData, loading: createGithubIssueLoading }] =
+    useMutation(CREATE_TASK_GITHUB_ISSUE);
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
 
@@ -917,7 +1020,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     },
     [entityType, form, getPrivacyLevel]
   );
-
+  const availablePullRequests = useGetPodPullRequests(form.values.podId);
+  const availableRepos = useGetPodGithubIntegrations(form.values.podId);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
@@ -973,6 +1077,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const isPrivacySelectorEnabled =
     getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
 
+  const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
+  console.log('availableRepos', availableRepos);
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
@@ -1534,6 +1640,240 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+        {noGithubTies &&
+          availablePullRequests.length > 0 &&
+          existingTask &&
+          !form.values?.chooseGithubPullRequest &&
+          !form?.values?.chooseGithubIssue && (
+            <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.githubPullRequest)}>
+              <>
+                <CreateEntityLabel
+                  style={{
+                    marginRight: '8px',
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => form.setFieldValue('chooseGithubPullRequest', true)}
+                >
+                  Link Github PR
+                </CreateEntityLabel>
+                <span
+                  style={{
+                    color: '#ccbbff',
+                    marginRight: '8px',
+                    paddingTop: '4px',
+                    fontWeight: 'bolder',
+                  }}
+                >
+                  or
+                </span>
+                <CreateEntityLabel
+                  style={{
+                    cursor: 'pointer',
+                  }}
+                  onClick={() => form.setFieldValue('chooseGithubIssue', true)}
+                >
+                  Create Github issue
+                </CreateEntityLabel>
+              </>
+            </CreateEntityLabelSelectWrapper>
+          )}
+        {(existingTask?.githubIssue ||
+          form.values?.chooseGithubIssue ||
+          (availablePullRequests.length === 0 && availableRepos)) &&
+          !existingTask?.githubPullRequest && (
+            <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.githubPullRequest)}>
+              <CreateEntityLabelWrapper>
+                <CreateEntityLabel> Github issue </CreateEntityLabel>
+              </CreateEntityLabelWrapper>
+              {form.values.githubIssue ? (
+                <CreateEntitySelectWrapper>
+                  <GithubButton
+                    style={{
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                    }}
+                    href={form.values.githubIssue?.url}
+                    target="_blank"
+                  >
+                    Connected Github issue
+                  </GithubButton>
+                </CreateEntitySelectWrapper>
+              ) : (
+                <CreateEntitySelectWrapper>
+                  <CreateEntitySelectErrorWrapper>
+                    <CreateEntityAutocompletePopper
+                      onFocus={() => form.setFieldError('githubRepo', undefined)}
+                      openOnFocus={true}
+                      options={availableRepos}
+                      value={form.values.githubRepo}
+                      isOptionEqualToValue={(option, value) => {
+                        return option.value?.id === value;
+                      }}
+                      getOptionLabel={(option) => option?.label || option.title || ''}
+                      renderInput={(params) => {
+                        // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
+                        return (
+                          <CreateEntityAutocompletePopperRenderInput
+                            {...params}
+                            // inputProps={{
+                            //   ...params.inputProps,
+                            //   value: githubPullRequest?.label,
+                            // }}
+                            ref={params.InputProps.ref}
+                            disableUnderline={true}
+                            fullWidth={true}
+                            placeholder="Choose Repo"
+                            endAdornment={
+                              <CreateEntityAutocompletePopperRenderInputAdornment
+                                position="end"
+                                onClick={() => {
+                                  form.setFieldValue('githubRepo', null);
+                                }}
+                              >
+                                <CreateEntityAutocompletePopperRenderInputIcon />
+                              </CreateEntityAutocompletePopperRenderInputAdornment>
+                            }
+                          />
+                        );
+                      }}
+                      renderOption={(props, option) => {
+                        return (
+                          <CreateEntityAutocompleteOption
+                            {...props}
+                            onClick={() => {
+                              if (form.values.githubPullRequest?.id !== option.id) {
+                                form.setFieldValue('githubRepo', option);
+                              }
+                              form.setFieldError('githuRepo', undefined);
+                            }}
+                          >
+                            <CreateEntityAutocompleteOptionTypography>
+                              {option?.label}
+                            </CreateEntityAutocompleteOptionTypography>
+                          </CreateEntityAutocompleteOption>
+                        );
+                      }}
+                      error={form.errors?.githubRepo}
+                    />
+                    {form.errors?.githubRepo && <CreateEntityError>{form.errors?.githubRepo}</CreateEntityError>}
+                  </CreateEntitySelectErrorWrapper>
+                  {createGithubIssueLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <GithubButton
+                      style={{
+                        paddingTop: '4px',
+                        paddingBottom: '4px',
+                      }}
+                      onClick={() => {
+                        createGithubIssue({
+                          variables: {
+                            repoPathname: form.values.githubRepo?.label,
+                            taskId: existingTask?.id,
+                          },
+                        }).then((result) => {
+                          if (result?.data?.createTaskGithubIssue) {
+                            form.setFieldValue('githubIssue', result?.data?.createTaskGithubIssue);
+                          }
+                        });
+                      }}
+                    >
+                      <GitHubIcon
+                        style={{
+                          marginRight: '8px',
+                        }}
+                      />
+                      <span>Create</span>
+                    </GithubButton>
+                  )}
+                </CreateEntitySelectWrapper>
+              )}
+            </CreateEntityLabelSelectWrapper>
+          )}
+        {availablePullRequests.length > 0 &&
+          (existingTask?.githubPullRequest || form.values?.chooseGithubPullRequest) &&
+          existingTask &&
+          !existingTask?.githubIssue && (
+            <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.githubPullRequest)}>
+              <CreateEntityLabelWrapper>
+                <CreateEntityLabel>Link Github PR</CreateEntityLabel>
+              </CreateEntityLabelWrapper>
+
+              <CreateEntitySelectWrapper>
+                {form.values.githubPullRequest !== null && (
+                  <CreateEntitySelectErrorWrapper>
+                    <CreateEntityAutocompletePopper
+                      onFocus={() => form.setFieldError('githubPullRequest', undefined)}
+                      openOnFocus={true}
+                      options={availablePullRequests}
+                      value={form.values.githubPullRequest}
+                      isOptionEqualToValue={(option, value) => {
+                        return option.value?.id === value;
+                      }}
+                      getOptionLabel={(option) => option?.label || option.title || ''}
+                      renderInput={(params) => {
+                        // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
+                        return (
+                          <CreateEntityAutocompletePopperRenderInput
+                            {...params}
+                            // inputProps={{
+                            //   ...params.inputProps,
+                            //   value: githubPullRequest?.label,
+                            // }}
+                            ref={params.InputProps.ref}
+                            disableUnderline={true}
+                            fullWidth={true}
+                            placeholder="Enter PR name"
+                            endAdornment={
+                              <CreateEntityAutocompletePopperRenderInputAdornment
+                                position="end"
+                                onClick={() => {
+                                  form.setFieldValue('githubPullRequest', null);
+                                }}
+                              >
+                                <CreateEntityAutocompletePopperRenderInputIcon />
+                              </CreateEntityAutocompletePopperRenderInputAdornment>
+                            }
+                          />
+                        );
+                      }}
+                      renderOption={(props, option) => {
+                        return (
+                          <CreateEntityAutocompleteOption
+                            {...props}
+                            onClick={() => {
+                              if (form.values.githubPullRequest?.id !== option.id) {
+                                form.setFieldValue('githubPullRequest', option);
+                              }
+                              form.setFieldError('githubPullRequest', undefined);
+                            }}
+                          >
+                            <CreateEntityAutocompleteOptionTypography>
+                              {option?.label}
+                            </CreateEntityAutocompleteOptionTypography>
+                          </CreateEntityAutocompleteOption>
+                        );
+                      }}
+                      error={form.errors?.githubPullRequest}
+                    />
+                    {form.errors?.githubPullRequest && (
+                      <CreateEntityError>{form.errors?.githubPullRequest}</CreateEntityError>
+                    )}
+                  </CreateEntitySelectErrorWrapper>
+                )}
+                {form.values.githubPullRequest === null && (
+                  <CreateEntityLabelAddButton
+                    onClick={() => {
+                      form.setFieldValue('githubPullRequest', '');
+                    }}
+                  >
+                    <CreateEntityAddButtonIcon />
+                    <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+                  </CreateEntityLabelAddButton>
+                )}
+              </CreateEntitySelectWrapper>
+            </CreateEntityLabelSelectWrapper>
+          )}
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
