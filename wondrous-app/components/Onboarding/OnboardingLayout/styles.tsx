@@ -10,6 +10,7 @@ export const Layout = styled.div`
   max-width: 634px;
   min-width: 578px;
   width: 100%;
+  border: 1px solid #484848;
 
   display: grid;
   grid-template-columns: 1fr;

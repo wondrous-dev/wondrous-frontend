@@ -7,6 +7,7 @@ export default function MetaMaskConnector({ text = 'Log in with MetaMask', style
     <WonderAbstractConnector
       connectorName="injected"
       icon={<Metamask height="18" width="17" />}
+      showText={!!text}
       buttonContent={<PaddedParagraph>{text}</PaddedParagraph>}
       style={style}
     />

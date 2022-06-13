@@ -1,20 +1,16 @@
 import React from 'react';
 
-import {
-  InviteWelcomeBoxParagraph,
-  QRCodeTwitter,
-} from '../styles';
-import {Layout, OnboardingTitle} from "components/Onboarding/OnboardingLayout/styles";
-import {ConnectLater, ContinueButton, LaterButton} from "components/Onboarding/OnboardingLayout/Footer/styles";
+import { InviteWelcomeBoxParagraph, QRCodeTwitter } from '../styles';
+import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
+import { ConnectLater, ContinueButton, LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 
 const OnboardingVerifyTwitter = () => {
-
   return (
     <Layout
       style={{
         paddingTop: '55px',
         paddingBottom: '55px',
-        minHeight: 'unset'
+        minHeight: 'unset',
       }}
     >
       <OnboardingTitle
@@ -39,17 +35,16 @@ const OnboardingVerifyTwitter = () => {
         style={{
           display: 'flex',
           flexDirection: 'column',
-          alignItems: 'center'
+          alignItems: 'center',
         }}
       >
         <QRCodeTwitter />
         <div
           style={{
             width: '100%',
-            maxWidth: '326px'
+            maxWidth: '326px',
           }}
         >
-
           <ContinueButton
             type="submit"
             style={{

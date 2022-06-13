@@ -1078,7 +1078,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
 
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
-  console.log('availableRepos', availableRepos);
+
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <CreateEntityHeader>
@@ -1679,7 +1679,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           )}
         {(existingTask?.githubIssue ||
           form.values?.chooseGithubIssue ||
-          (availablePullRequests.length === 0 && availableRepos)) &&
+          (availablePullRequests.length === 0 && availableRepos?.length > 0)) &&
           !existingTask?.githubPullRequest && (
             <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.githubPullRequest)}>
               <CreateEntityLabelWrapper>
@@ -1783,7 +1783,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           marginRight: '8px',
                         }}
                       />
-                      <span>Create</span>
+                      <span>Add</span>
                     </GithubButton>
                   )}
                 </CreateEntitySelectWrapper>

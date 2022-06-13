@@ -5,23 +5,21 @@ import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
-import MetaMaskWallet from '../../../public/images/onboarding/union.svg';
+import WalletIcon from '../../../public/images/onboarding/union.svg';
 
 import { LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { Connectors } from 'components/Onboarding/styles';
+import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 
 export const SetupWallet = ({ updateUser }) => {
   const router = useRouter();
 
   const handleLaterClick = () => {
-    router.push('/onboarding/email-setup', undefined, {
+    router.push('/onboarding/twitter', undefined, {
       shallow: true,
     });
   };
-  const buttonStyle = {
-    marginBottom: '20px',
-  };
 
-  // TODO: need url for 'click here', color && underline - temporary variant
   const description = (
     <div>
       Get paid in USDC, Eth, $WONDER, and your DAOs native social token. <br />
@@ -39,30 +37,36 @@ export const SetupWallet = ({ updateUser }) => {
     </div>
   );
 
+  const buttonStyles = {
+    marginTop: '16px',
+    width: '100%',
+    maxWidth: '278px',
+    minHeight: '40px',
+    height: '40px',
+    fontWeight: '500',
+  };
+
   return (
-    <OnboardingLayout title="Set up your wallet" displayFooter={false} description={description} step={4}>
-      <MetaMaskWallet
-        style={{
-          alignSelf: 'center',
-          justifySelf: 'center',
-        }}
-      />
-      <div
-        style={{
-          maxWidth: '326px',
-          width: '100%',
-          justifySelf: 'center',
-          alignSelf: 'center',
-          marginBottom: '-55px',
-        }}
-      >
-        <MetaMaskConnector text="Continue with MetaMask" style={buttonStyle} />
-        <CoinbaseConnector text="Continue with Coinbase" style={buttonStyle} />
-        <WalletConnectConnector text="Continue with WalletConnect" style={buttonStyle} />
-        <LaterButton onClick={handleLaterClick} style={{ width: '100%', height: '50px' }}>
+    <OnboardingLayout
+      title="Set up your wallet"
+      displayFooter={false}
+      description={description}
+      onBackClick={() => router.back()}
+      footer={() => null}
+      step={4}
+    >
+      <Wallet>
+        <WalletIcon />
+      </Wallet>
+
+      <Connectors>
+        <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
+        <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
+        <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
+        <LaterButton onClick={handleLaterClick} style={{ width: '278px', margin: '16px auto', background: '#454545' }}>
           I&apos;ll connect it later
         </LaterButton>
-      </div>
+      </Connectors>
     </OnboardingLayout>
   );
 };

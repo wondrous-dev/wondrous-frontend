@@ -26,7 +26,8 @@ export const ContinueButton = styled(Button)`
   height: 40px;
   background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
   align-self: end;
-
+  justify-content: center;
+  
   ${buttonStyle}
 `;
 
@@ -35,7 +36,17 @@ export const LaterButton = styled(Button)`
   height: 40px;
   margin-right: 20px;
 
-  ${buttonStyle}
+  && {
+    button {
+      padding: 2px 30px;
+      font-family: Space Grotesk;
+      font-size: 16px;
+      font-weight: 600;
+      background: #454545;
+      border: none;
+      justify-content: center;
+    }
+  }
 `;
 
 export const Later = styled.button`

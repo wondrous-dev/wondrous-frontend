@@ -22,11 +22,10 @@ const ButtonInner = styled.button`
 const ButtonWrapper = styled.div`
   display: flex;
   flex-direction: row;
-  min-height: 50px;
+  min-height: 40px;
   padding: 1px;
   margin-top: ${(props) => props.marginTop || 0};
-
-  background: #515151;
+  
   ${(props) => props.highlighted && GradientHighlightHorizontal}
 
   border-radius: 98px;

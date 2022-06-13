@@ -214,6 +214,7 @@ export const Invite = ({
         podInfo?.name
       } pod`
     : `${orgInfo?.contributorCount} members are already contributing to ${orgInfo?.name}`;
+
   const buttonStyles = {
     marginTop: '16px',
     width: '100%',

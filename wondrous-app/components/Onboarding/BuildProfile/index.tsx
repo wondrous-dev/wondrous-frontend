@@ -16,7 +16,6 @@ import { HighlightBlue } from '../../../theme/colors';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { SafeImage } from '../../Common/Image';
 import ProfilePictureAdd from '../../../public/images/onboarding/profile-picture-add.svg';
-import { USERNAME_REGEX } from 'utils/constants';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 
 export const OnboardingBuildProfile = ({ updateUser }) => {
@@ -65,14 +64,12 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
   );
 
   const goToNextStep = () => {
-    const nextStep = user.userInfo.email ? '/onboarding/connect-discord' : '/onboarding/setup-email';
+    const nextStep = user.userInfo.email ? '/onboarding/discord' : '/onboarding/email';
 
     router.push(nextStep, undefined, { shallow: true });
   };
 
   const handleContinueClick = () => {
-    const nextStep = user.userInfo.email ? '/onboarding/connect-discord' : '/onboarding/setup-wallet';
-
     if (bio && user?.bio === bio) {
       goToNextStep();
     } else {
@@ -92,12 +89,6 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
     }
   };
 
-  const onBackClick = () => {
-    router.push('/onboarding/welcome', undefined, {
-      shallow: true,
-    });
-  };
-
   useEffect(() => {
     if (user?.profilePicture) {
       setImage(user?.profilePicture);
@@ -110,8 +101,8 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
       title="Welcome to Wonder"
       description="Set up your account so you can begin contributing."
       onContinueClick={handleContinueClick}
-      onBackClick={onBackClick}
       onLaterClick={goToNextStep}
+      onBackClick={() => router.back()}
       step={2}
     >
       <div>

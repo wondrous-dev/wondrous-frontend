@@ -87,6 +87,7 @@ const OnboardingWelcome = ({ updateUser, user }) => {
       title="Welcome to Wonder"
       description={description}
       onContinueClick={handleContinueClick}
+      onBackClick={() => router.back()}
       headerRightContent={headerRightContent}
       step={1}
     >

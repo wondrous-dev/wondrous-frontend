@@ -16,13 +16,12 @@ type Props = {
   title: string;
   description?: any;
   withLoginButton?: boolean;
-  borderNone?: number | string;
   loading?: unknown;
   displayFooter?: boolean;
+  footer?: React.ReactNode;
 };
 
 const OnboardingLayout = ({
-  borderNone,
   children,
   headerRightContent,
   onBackClick,
@@ -32,15 +31,13 @@ const OnboardingLayout = ({
   step,
   title,
   description,
-  displayFooter = true,
+  footer,
   withLoginButton = false,
 }: Props) => {
   return (
     <Layout>
       <div>
-        <OnboardingHeader withLoginButton={withLoginButton}>
-          {headerRightContent}
-        </OnboardingHeader>
+        <OnboardingHeader withLoginButton={withLoginButton}>{headerRightContent}</OnboardingHeader>
         <ProgressBar step={step} />
         <OnboardingTitle>{title}</OnboardingTitle>
         <OnboardingDescription>{description}</OnboardingDescription>
@@ -48,17 +45,18 @@ const OnboardingLayout = ({
 
       {children}
 
-      {displayFooter ? (
+      {footer ? (
+        footer
+      ) : (
         <div>
           <OnboardingFooter
             onContinueClick={onContinueClick}
             onBackClick={onBackClick}
             onLaterClick={onLaterClick}
             onConnectDiscordClick={onConnectDiscordClick}
-            borderNone={borderNone}
           />
         </div>
-      ) : null}
+      )}
     </Layout>
   );
 };
