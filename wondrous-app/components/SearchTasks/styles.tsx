@@ -28,7 +28,6 @@ export const Autocomplete = styled(AutocompleteComp)`
       mask-composite: exclude;
       padding: 1px;
     }
-
     &:hover {
       &::after {
         background: linear-gradient(264.14deg, #7427ff 3.71%, #363636 92.81%);

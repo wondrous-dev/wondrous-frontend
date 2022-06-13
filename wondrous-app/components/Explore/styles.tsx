@@ -4,12 +4,10 @@ import { SIDEBAR_WIDTH } from '../../utils/constants';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 
 export const Background = styled.div`
-  background-image: url('/images/explore/universe.svg');
   width: 80%;
   max-width: 1038px;
   background-repeat: no-repeat;
   background-position: center;
-  height: 500px;
   padding-top: 30px;
   margin-top: 60px;
   border-radius: 12px;

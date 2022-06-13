@@ -92,3 +92,19 @@ export const CREATE_LABEL = gql`
   }
   ${LabelFragment}
 `;
+
+export const CONNECT_ORG_GITHUB = gql`
+  mutation connectOrgGithub($orgId: ID!, $githubAuthCode: String!, $installationId: String!) {
+    connectOrgGithub(orgId: $orgId, githubAuthCode: $githubAuthCode, installationId: $installationId) {
+      success
+    }
+  }
+`;
+
+export const DELETE_ORG_GITHUB = gql`
+  mutation deleteOrgGithubIntegration($orgId: ID!) {
+    deleteOrgGithubIntegration(orgId: $orgId) {
+      success
+    }
+  }
+`;

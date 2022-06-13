@@ -5,6 +5,7 @@ import { useInView } from 'react-intersection-observer';
 import { isEmpty } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
+import GitHubIcon from '@mui/icons-material/GitHub';
 
 import Box from '@mui/material/Box';
 import PointsIcon from 'components/Icons/pointsIconFilled';
@@ -40,6 +41,7 @@ import {
   MakeSubmissionDiv,
   TaskListModalContentWrapper,
   Tag,
+  GithubBlock,
 } from './styles';
 import { SnapshotButton } from '../../CreateEntity/styles';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -158,6 +160,7 @@ import { GET_ORG_LABELS } from 'graphql/queries';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { CreateEntity } from 'components/CreateEntity';
 import { useSnapshot } from 'services/snapshot';
+import { GithubButton } from 'components/Settings/Github/styles';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1881,6 +1884,42 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 marginTop: '0',
               }}
             >
+              <GithubBlock>
+                {fetchedTask?.githubIssue && (
+                  <GithubButton
+                    style={{
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                    }}
+                    href={fetchedTask?.githubIssue?.url}
+                    target="_blank"
+                  >
+                    <GitHubIcon
+                      style={{
+                        marginRight: '8px',
+                      }}
+                    />
+                    <span>Connected Github issue</span>
+                  </GithubButton>
+                )}
+                {fetchedTask?.githubPullRequest && (
+                  <GithubButton
+                    style={{
+                      paddingTop: '4px',
+                      paddingBottom: '4px',
+                    }}
+                    href={fetchedTask?.githubPullRequest?.url}
+                    target="_blank"
+                  >
+                    <GitHubIcon
+                      style={{
+                        marginRight: '8px',
+                      }}
+                    />
+                    <span>{fetchedTask?.githubPullRequest?.title}</span>
+                  </GithubButton>
+                )}
+              </GithubBlock>
               <CreatorBlock
                 profilePicture={fetchedTask?.creatorProfilePicture}
                 username={fetchedTask?.creatorUsername}

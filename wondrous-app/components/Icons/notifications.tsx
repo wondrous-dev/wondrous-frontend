@@ -81,20 +81,63 @@ export const NotificationOutlineSettings = (props) => {
     </svg>
   );
 };
+
 export default function NotificationsIcon(props) {
-  const { width, height } = props;
   return (
-    <svg
-      width={width || '16'}
-      height={height || '18'}
-      viewBox="0 0 16 18"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-    >
+    <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="0.148438" y="0.291016" width="40" height="40" rx="20" fill="#0F0F0F" stroke="none" />
       <path
-        d="M7.55998 0C6.76545 0 6.11998 0.645467 6.11998 1.44C6.11998 2.23452 6.76545 2.87999 7.55998 2.87999C8.3545 2.87999 8.99997 2.23452 8.99997 1.44C8.99997 0.645467 8.3545 0 7.55998 0ZM5.53498 2.19374C3.88967 2.89827 2.87999 4.48452 2.87999 6.47998C2.87999 10.44 1.51171 11.4342 0.697498 12.0262C0.336093 12.2878 0 12.5311 0 12.96C0 14.4745 2.26124 15.12 7.55998 15.12C12.8587 15.12 15.12 14.4745 15.12 12.96C15.12 12.5311 14.7839 12.2878 14.4225 12.0262C13.6082 11.4342 12.24 10.44 12.24 6.47998C12.24 4.47889 11.2317 2.89687 9.58497 2.19374C9.277 3.01218 8.48388 3.59999 7.55998 3.59999C6.63607 3.59999 5.84295 3.01077 5.53498 2.19374ZM5.39998 15.7949C5.39998 15.809 5.39998 15.8259 5.39998 15.8399C5.39998 17.031 6.36889 17.9999 7.55998 17.9999C8.75107 17.9999 9.71997 17.031 9.71997 15.8399C9.71997 15.8259 9.71997 15.809 9.71997 15.7949C9.04216 15.8231 8.32216 15.8399 7.55998 15.8399C6.79779 15.8399 6.07779 15.8231 5.39998 15.7949Z"
-        fill="#707070"
+        d="M25.6499 16.69C25.6499 15.2581 25.0811 13.8849 24.0686 12.8724C23.0561 11.8598 21.6828 11.291 20.2509 11.291C18.819 11.291 17.4457 11.8598 16.4332 12.8724C15.4207 13.8849 14.8519 15.2581 14.8519 16.69C14.8519 22.9889 12.1523 24.7886 12.1523 24.7886H28.3494C28.3494 24.7886 25.6499 22.9889 25.6499 16.69Z"
+        stroke="white"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
+      <path
+        d="M21.8088 28.3887C21.6506 28.6614 21.4235 28.8878 21.1503 29.0451C20.8771 29.2025 20.5673 29.2853 20.252 29.2853C19.9367 29.2853 19.627 29.2025 19.3538 29.0451C19.0806 28.8878 18.8535 28.6614 18.6953 28.3887"
+        stroke="white"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+      <circle cx="21.5938" cy="10.5801" r="3.5" fill="#F93701" stroke="#0F0F0F" strokeWidth="2" />
+
+      <defs>
+        <linearGradient
+          id="open-notif-gradient"
+          x1="21.1484"
+          y1="1.29102"
+          x2="21.1484"
+          y2="41.291"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#CCBBFF" />
+          <stop offset="1" stopColor="#7A7A7A" />
+        </linearGradient>
+      </defs>
+
+      <defs>
+        <linearGradient
+          id="outline-hover-color"
+          x1="21.1484"
+          y1="1.29102"
+          x2="21.1484"
+          y2="41.291"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="#F93701" />
+          <stop offset="1" stopColor="white" />
+        </linearGradient>
+        <linearGradient
+          id="circle-hover"
+          x1="23.8324"
+          y1="5.83276"
+          x2="21.3324"
+          y2="14.1351"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#F93701" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 }

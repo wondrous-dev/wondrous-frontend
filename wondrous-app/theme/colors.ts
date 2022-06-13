@@ -80,6 +80,7 @@ export const Black92 = '#232323';
 export const Black95 = '#1E1E1E';
 export const Black97 = '#141414';
 export const Black98 = '#121212';
+export const Black99 = '#151515';
 export const Black100 = '#010114';
 
 export const HighlightBlue = '#00BAFF';
