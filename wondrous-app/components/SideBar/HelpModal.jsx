@@ -1,7 +1,4 @@
 import React, { useEffect } from 'react';
-import { IconButton } from '@material-ui/core';
-import Script from 'next/script';
-import { Helmet } from 'react-helmet';
 import {
   CreateFormPreviewButton,
   CreateLayoutsModalHeader,
