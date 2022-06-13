@@ -16,14 +16,12 @@ type Props = {
   title: string;
   description?: any;
   withLoginButton?: boolean;
-  borderNone?: number | string;
   loading?: unknown;
   displayFooter?: boolean;
   footer?: React.ReactNode;
 };
 
 const OnboardingLayout = ({
-  borderNone,
   children,
   headerRightContent,
   onBackClick,
@@ -56,7 +54,6 @@ const OnboardingLayout = ({
             onBackClick={onBackClick}
             onLaterClick={onLaterClick}
             onConnectDiscordClick={onConnectDiscordClick}
-            borderNone={borderNone}
           />
         </div>
       )}

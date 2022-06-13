@@ -139,7 +139,7 @@ const Callback = () => {
               // Only place to change this is in settings
               window.location.href = `/profile/settings`;
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
-              router.push('/onboarding/connect-discord?success', undefined, {
+              router.push('/onboarding/discord?success', undefined, {
                 shallow: true,
               });
             }
@@ -160,7 +160,7 @@ const Callback = () => {
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
               router.push(
                 {
-                  pathname: '/onboarding/connect-discord',
+                  pathname: '/onboarding/discord',
                   query: {
                     discordError: 1,
                     discordUserExists: Number(alreadyExists),
