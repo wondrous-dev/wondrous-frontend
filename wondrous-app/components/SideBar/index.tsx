@@ -31,6 +31,7 @@ import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
+import HelpModal from './HelpModal.jsx';
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -40,6 +41,7 @@ const SideBarComponent = (props) => {
   const router = useRouter();
   const user = useMe();
   const [openPodModal, setOpenPodModal] = useState(false);
+  const [openHelpModal, setOpenHelpModal] = useState(false);
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -67,7 +69,7 @@ const SideBarComponent = (props) => {
       key: 'tutorials',
       icon: StyledTutorialsIcon,
       url: 'https://linktr.ee/wonderverse',
-      tooltipLabel: 'Wonder tutorials',
+      tooltipLabel: 'Wonder help desk',
     },
     {
       key: 'settings',
@@ -99,6 +101,7 @@ const SideBarComponent = (props) => {
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
+      <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
@@ -196,6 +199,20 @@ const SideBarComponent = (props) => {
             const Icon = link?.icon;
             const isExternal = link?.url?.includes('https://');
             const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
+            if (link.key === 'tutorials') {
+              // Open up modal instead
+              return (
+                <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
+                  <DrawerBottomButton type="button">
+                    {!!link?.url && (
+                      <div onClick={() => setOpenHelpModal(true)}>
+                        <Icon />
+                      </div>
+                    )}
+                  </DrawerBottomButton>
+                </Tooltip>
+              );
+            }
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                 <DrawerBottomButton type="button">

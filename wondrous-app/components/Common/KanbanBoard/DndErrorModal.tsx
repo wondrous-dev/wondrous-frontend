@@ -3,18 +3,9 @@ import { IconButton } from '@material-ui/core';
 
 import {
   CreateFormPreviewButton,
-  CreateLayoutDaoIcon,
-  CreateLayoutMilestoneIcon,
-  CreateLayoutPodsIcon,
-  CreateLayoutsModal,
-  CreateLayoutsModalCloseButton,
   CreateLayoutsModalHeader,
-  CreateLayoutsModalItem,
   CreateLayoutsModalItemContainer,
   CreateLayoutsModalItemTitle,
-  CreateLayoutsModalItemTitleBlock,
-  CreateLayoutsModalTitle,
-  CreateLayoutTaskIcon,
   CreateModalOverlay,
 } from '../../CreateEntity/styles';
 import CloseModalIcon from '../../Icons/closeModal';
@@ -24,7 +15,7 @@ const DndErrorModal = (props) => {
   const { handleClose, setEntityType, open } = props;
 
   return (
-    <CreateModalOverlay open={open} handleClose={handleClose}>
+    <CreateModalOverlay open={open} onClose={handleClose}>
       <ModalBody>
         <CreateLayoutsModalHeader></CreateLayoutsModalHeader>
         <CreateLayoutsModalItemContainer>
