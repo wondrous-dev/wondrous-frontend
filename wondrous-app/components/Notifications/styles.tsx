@@ -8,9 +8,9 @@ export const NotificationsBoardWrapper = styled.div`
   overflow-y: scroll;
   max-height: 60vh;
   padding: 0px;
-  margin-left: -143px;
+  margin-left: -200px;
   margin-top: 20px;
-
+  top: 100%;
   border-radius: 5px;
   background: ${Black92};
   transition: 0.2s display;
@@ -27,7 +27,8 @@ export const NotificationsBoardArrow = styled.div`
   position: absolute;
   height: 40px;
   width: 40px;
-
+  top: 100%;
+  left: 13%;
   /* drop shadow */
   box-shadow: 0px 34px 84px rgba(0, 0, 0, 0.55);
   background: ${Black92};
@@ -120,7 +121,7 @@ export const NotificationsBoardHeader = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: space-between;
-
+  top: 100%;
   width: 100%;
   padding: 15px;
 
@@ -169,12 +170,12 @@ export const NotificationsOverlay = styled.div`
 export const NotificationsLink = styled.span`
   color: ${HighlightBlue};
   font-weight: 700;
-  
+
   a {
     color: ${HighlightBlue};
     font-weight: 700;
-    text-decoration: none; 
-    
+    text-decoration: none;
+
     &:hover {
       text-decoration: underline;
     }

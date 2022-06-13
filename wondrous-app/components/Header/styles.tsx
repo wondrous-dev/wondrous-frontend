@@ -2,11 +2,10 @@ import { AppBar, Badge, IconButton, TextField } from '@material-ui/core';
 import styled from 'styled-components';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
-
 export const Header = styled(AppBar)`
   && {
     height: 70px;
-    background: #141414;
+    background: #1d1d1d;
     display: flex;
     align-items: center;
     //padding: 15px 20px;
@@ -14,7 +13,6 @@ export const Header = styled(AppBar)`
     //justify-content: space-between;
     //align-items: center;
     z-index: 200;
-    border-bottom: 2px solid rgba(75, 75, 75, 0.5);
   }
 `;
 
@@ -33,25 +31,90 @@ export const HeaderLeftBlock = styled.div`
   max-width: 440px;
   width: 100%;
   display: flex;
-  justify-content: space-between;
   align-items: center;
+  justify-content: flex-start;
+  gap: 45px;
 `;
 
+export const HeaderLogoWrapper = styled.button`
+  position: relative;
+  display: flex;
+  border: 0;
+  background: transparent;
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    background: none;
+    filter: blur(20px);
+    border-radius: 100%;
+    left: 0;
+    top: 0;
+  }
+
+  &:hover {
+    cursor: pointer;
+    &::before {
+      background: linear-gradient(180deg, #ccbbff 0%, #7427ff 47.4%, #00baff 100%);
+    }
+  }
+`;
 export const HeaderLogo = styled(Logo)`
   width: 41px;
   height: 31px;
+  path {
+    fill: white;
+  }
   :hover {
     cursor: pointer;
+    #path-a {
+      fill: url(#a);
+    }
+    #path-b {
+      fill: url(#b);
+    }
+    #path-c {
+      fill: url(#c);
+    }
   }
 `;
 
 export const HeaderHomeButton = styled(IconButton)`
   && {
-    background: #363636;
+    background: #0f0f0f;
     border-radius: 4px;
     width: 40px;
     height: 40px;
-    border: 1px solid deepskyblue;
+    z-index: 100;
+
+    &:hover {
+      svg {
+        path {
+          stroke: url(#paint0_linear_11401_251635);
+        }
+      }
+      background: #0f0f0f;
+    }
+  }
+`;
+
+export const HeaderHomeButtonWrapper = styled.div`
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    background: none;
+    filter: blur(8px);
+  }
+  &:hover {
+    &::before {
+      background: linear-gradient(46.92deg, #b820ff 8.72%, #ffffff 115.55%);
+    }
   }
 `;
 
@@ -85,46 +148,71 @@ export const HeaderRightBlock = styled.div`
   justify-content: flex-end;
 `;
 
-export const HeaderNotificationsButton = styled(IconButton)`
-  && {
-    width: 40px;
-    height: 40px;
-    background: #1e1e1e;
-    border-radius: 4px;
+export const StyledBadge = styled.button`
+  background: transparent;
+  border: 0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  z-index: 100;
+  svg {
+    circle {
+      display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
+      ${({ isOpen }) => {
+        return isOpen ? `fill: url(#open-notif-gradient);` : ``;
+      }};
+    }
+    rect {
+      ${({ isOpen }) => (isOpen ? `stroke: url(#open-notif-gradient); fill: transparent;` : ``)}
+    }
+  }
+  &:hover {
+    svg {
+      circle {
+        fill: url(#outline-hover-color);
+      }
+      rect {
+        stroke: url(#outline-hover-color);
+        fill: black;
+      }
+    }
   }
 `;
 
-export const StyledBadge = styled(Badge)({
-  '& .MuiBadge-badge': {
-    minWidth: 16,
-    fontWeight: 500,
-    fontSize: 8,
-    lineHeight: 10,
-    color: '#FFFFFF',
-  },
-  '& .MuiBadge-anchorOriginTopRightRectangle': {
-    top: 5,
-    right: 5,
-    height: 16,
-    width: 16,
-    backgroundColor: '#FF5C00',
-  },
-  marginRight: '20px',
-});
-
-export const HeaderCreateButton = styled(Button)`
-  && {
-    visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
-    min-height: 40px;
-    height: 40px;
-    margin-right: 20px;
-    line-height: 40px;
-
-    button {
-      padding-right: 2px;
+export const HeaderCreateButton = styled.button`
+  visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
+  display: flex;
+  justify-content: flex-end;
+  margin-right: 20px;
+  background: transparent;
+  border: 0;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    height: 100%;
+    width: 100%;
+    z-index: -1;
+    background: none;
+    filter: blur(8px);
+    border-radius: 100%;
+    left: 0;
+    top: 0;
+  }
+  &:hover {
+    cursor: pointer;
+    &::before {
+      background: linear-gradient(
+        212.53deg,
+        #ff6dd7 -79.63%,
+        #b820ff -41.63%,
+        #f93701 -9.97%,
+        #ffd653 22.6%,
+        #00baff 56.07%,
+        #06ffa5 85.93%
+      );
     }
   }
 `;
