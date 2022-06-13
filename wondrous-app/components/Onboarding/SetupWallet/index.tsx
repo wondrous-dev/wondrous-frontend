@@ -63,7 +63,7 @@ export const SetupWallet = ({ updateUser }) => {
         <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
         <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
         <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
-        <LaterButton onClick={handleLaterClick} style={{ width: '278px', margin: '16px auto' }}>
+        <LaterButton onClick={handleLaterClick} style={{ width: '278px', margin: '16px auto', background: '#454545' }}>
           I&apos;ll connect it later
         </LaterButton>
       </Connectors>

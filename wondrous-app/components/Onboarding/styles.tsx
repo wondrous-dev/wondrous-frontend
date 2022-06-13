@@ -245,6 +245,8 @@ export const Connectors = styled.div`
     justify-content: unset;
     font-weight: 500;
   }
+  
+  // TODO: Write class names
   div:first-child {
     background: linear-gradient(270deg, #7427FF,  #F5841F);
   }
@@ -254,12 +256,12 @@ export const Connectors = styled.div`
   div:nth-child(3) {
     background: linear-gradient(270deg, #7427FF,  #3B99FC);
   }
-  //div:nth-child(4) {
-  //  background: linear-gradient(270deg, #7427FF,  #7E89FF);
-  //}
-  //div:nth-child(5) {
-  //  background: linear-gradient(270deg, #7427FF,  #06FFA5);
-  //}
+  div:nth-child(4) {
+    background: linear-gradient(270deg, #7427FF,  #7E89FF);
+  }
+  div:nth-child(5) {
+    background: linear-gradient(270deg, #7427FF,  #06FFA5);
+  }
   div > button {
     padding: 8px 0;
   }

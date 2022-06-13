@@ -36,14 +36,16 @@ export const LaterButton = styled(Button)`
   height: 40px;
   margin-right: 20px;
 
-  button {
-    padding: 2px 30px;
-    font-family: Space Grotesk;
-    font-size: 16px;
-    font-weight: 600;
-    background: #454545;
-    border: none;
-    justify-content: center;  
+  && {
+    button {
+      padding: 2px 30px;
+      font-family: Space Grotesk;
+      font-size: 16px;
+      font-weight: 600;
+      background: #454545;
+      border: none;
+      justify-content: center;
+    }
   }
 `;
 
