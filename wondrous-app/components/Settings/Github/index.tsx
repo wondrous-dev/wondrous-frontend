@@ -14,6 +14,15 @@ import { LabelBlock } from '../styles';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
+export const getGithubCallbackUrl = () => {
+  if (process.env.NEXT_PUBLIC_PRODUCTION) {
+    return 'https%3A%2F%2Fapp.wonderverse.xyz%2Fgithub%2Fcallback';
+  } else if (process.env.NEXT_PUBLIC_STAGING) {
+    return 'https://wondrous-app-git-staging-wonderverse.vercel.app/github/callback';
+  }
+  return 'http%3A%2F%2Flocalhost%3A3000%2Fgithub%2Fcallback';
+};
+
 export const GithubIntegration = ({ orgId }) => {
   const router = useRouter();
   const [githubConnected, setGithubConnected] = useState(false);
@@ -26,7 +35,8 @@ export const GithubIntegration = ({ orgId }) => {
         redirectUrl: encodeURIComponent(window.location.href),
         orgId,
       });
-      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}`);
+      const redirectUrl = getGithubCallbackUrl()
+      setGithubUrl(`${GITHUB_BASE_URL}?state=${state}&redirect_uri=${redirectUrl}`);
     }
   }, []);
 
