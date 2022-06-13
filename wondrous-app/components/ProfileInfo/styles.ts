@@ -59,9 +59,6 @@ const styles = {
     fontWize: 15,
     lineHeight: '18px',
   },
-  interestText: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-  },
   fullName: {
     ...WHITE_TYPOGRAPHY_STYLES,
     fontSize: 26,
@@ -133,6 +130,15 @@ export const ProfileInfoBioText = styled(WhiteTypographyStyles)`
     color: #c4c4c4;
     font-weight: 400;
     font-size: 15px;
+  }
+`;
+
+export const ProfileInterestText = styled(WhiteTypographyStyles)`
+  && {
+    fontfamily: 'Space Grotesk';
+    font-weight: 500;
+    font-size: 16;
+    line-height: 16px;
   }
 `;
 

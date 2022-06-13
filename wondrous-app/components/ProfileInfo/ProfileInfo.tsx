@@ -32,6 +32,7 @@ import styles, {
   ProfileInfoLink,
   ProfileInfoMainLink,
   ProfileInfoLinkIcon,
+  ProfileInterestText
 } from './styles';
 
 const SOCIAL_ICONS = {
@@ -92,7 +93,7 @@ const ProfileInfo = ({ userProfile }) => {
         <Box sx={styles.earningInterestsContainer}>
           {/* TODO: Earnings */}
           <Box sx={styles.interestsContainer}>
-            <Typography sx={styles.interestText}>Interests</Typography>
+            <ProfileInterestText>Interests</ProfileInterestText>
             <Box ml={3} />
             {interests.map((interest) => {
               return <Chip key={interest} label={getInterestDisplay(interest)} sx={styles.interestChip} />;
