@@ -29,9 +29,8 @@ export const OnboardingTitle = styled(Typography)`
     margin-bottom: 18px;
     font-weight: 500;
     text-align: left;
-    margin-top: 30px;
     width: 100%;
-    background: linear-gradient(90deg, rgba(204,187,255,1) 0%, rgba(0,186,255,1) 100%);
+    background: linear-gradient(89.17deg, #CCBBFF 37.43%, #00BAFF 105.62%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
