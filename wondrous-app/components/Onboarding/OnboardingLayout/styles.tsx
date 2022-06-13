@@ -25,6 +25,7 @@ export const Layout = styled.div`
 export const OnboardingTitle = styled(Typography)`
   && {
     font-size: 28px;
+    line-height: auto;
     color: ${White};
     margin-bottom: 18px;
     font-weight: 500;

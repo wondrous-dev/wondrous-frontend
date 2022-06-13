@@ -28,13 +28,13 @@ import NoLogo from 'components/Icons/noLogo';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 
 export const Invite = ({
-  orgInfo,
-  redeemOrgInviteLink,
-  podInfo,
-  redeemPodInviteLink,
-  children,
-  title,
-  onAuthenticated = () => null,
+  orgInfo = null,
+  redeemOrgInviteLink = (data: any) => null,
+  podInfo = null,
+  redeemPodInviteLink = (data: any) => null,
+  children = null,
+  title = null,
+  onAuthenticated = (user) => null,
 }) => {
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
@@ -283,7 +283,7 @@ export const Invite = ({
           <Button
             style={buttonStyles}
             onClick={() => {
-              router.push('/signup-with-email', undefined, {
+              router.push('/signup/email', undefined, {
                 shallow: true,
               });
             }}
