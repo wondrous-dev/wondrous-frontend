@@ -553,12 +553,12 @@ export const FILTER_STATUSES_ADMIN = {
   label: 'Status',
   items: [
     {
-      id: TASK_STATUS_REQUESTED,
+      id: [TASK_STATUS_REQUESTED],
       name: 'Proposals',
       icon: <Proposal />,
     },
     {
-      id: TASK_STATUS_IN_REVIEW,
+      id: [TASK_STATUS_IN_REVIEW],
       name: 'In-review',
       icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
     },
