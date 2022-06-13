@@ -39,6 +39,7 @@ import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { Red800 } from 'theme/colors';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
+import { CreateEntity } from 'components/CreateEntity';
 
 export default function ListViewItem({ task, entityType }) {
   let windowOffset = 0;
@@ -153,6 +154,10 @@ export default function ListViewItem({ task, entityType }) {
     });
   };
 
+  useEffect(() => {
+    setData(task);
+  }, [task]);
+
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -174,21 +179,6 @@ export default function ListViewItem({ task, entityType }) {
   if (entityType) {
     viewUrl = viewUrl + `&entity=${entityType}`;
   }
-
-  const handleEditTask = () => {
-    setEditTask(false);
-    setData(task);
-  };
-
-  const handleArchiveTask = () => {
-    setArchiveTask(false);
-    setData(null);
-  };
-
-  const handleDeleteTask = () => {
-    setDeleteTask(false);
-    setData(null);
-  };
 
   const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
     refetchQueries: [
@@ -240,38 +230,37 @@ export default function ListViewItem({ task, entityType }) {
   if (!data) return null;
   return (
     <>
-      <CreateModalOverlay
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
+      <CreateEntity
         open={editTask}
-        onClose={handleEditTask}
-      >
-        <EditLayoutBaseModal
-          open={open}
-          entityType={type}
-          handleClose={handleEditTask}
-          cancelEdit={() => setEditTask(false)}
-          existingTask={{
-            ...data,
-          }}
-          isTaskProposal={false}
-        />
-      </CreateModalOverlay>
+        handleCloseModal={() => setEditTask(false)}
+        entityType={task?.type}
+        handleClose={() => {
+          setEditTask(false);
+        }}
+        cancel={() => setEditTask(false)}
+        existingTask={{
+          ...task,
+        }}
+        isTaskProposal={false}
+      />
       <ArchiveTaskModal
         open={archiveTask}
-        onClose={handleArchiveTask}
+        onClose={() => setArchiveTask(false)}
         onArchive={handleOnArchive}
         taskType={type}
         taskId={task?.id}
       />
       <DeleteTaskModal
         open={deleteTask}
-        onClose={handleDeleteTask}
-        taskType={task?.type}
+        onClose={() => {
+          setDeleteTask(false);
+        }}
+        taskType={type}
         taskId={task?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage(`Deleted successfully!`);
+          setData(null);
         }}
       />
 
