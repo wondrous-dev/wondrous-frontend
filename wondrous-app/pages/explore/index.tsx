@@ -1,3 +1,4 @@
+import { withAuth } from 'components/Auth/withAuth';
 import React, { useState } from 'react';
 import ExploreComponent from '../../components/Explore';
 
@@ -9,4 +10,4 @@ const Explore = () => {
   );
 };
 
-export default Explore;
+export default withAuth(Explore);
