@@ -234,8 +234,8 @@ export const Connectors = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-top: 1px dashed #2B2B2B;
   padding-top: 10px;
+  width: 100%;
 
   svg {
     flex: 0 0 37px;
@@ -254,12 +254,12 @@ export const Connectors = styled.div`
   div:nth-child(3) {
     background: linear-gradient(270deg, #7427FF,  #3B99FC);
   }
-  div:nth-child(4) {
-    background: linear-gradient(270deg, #7427FF,  #7E89FF);
-  }
-  div:nth-child(5) {
-    background: linear-gradient(270deg, #7427FF,  #06FFA5);
-  }
+  //div:nth-child(4) {
+  //  background: linear-gradient(270deg, #7427FF,  #7E89FF);
+  //}
+  //div:nth-child(5) {
+  //  background: linear-gradient(270deg, #7427FF,  #06FFA5);
+  //}
   div > button {
     padding: 8px 0;
   }

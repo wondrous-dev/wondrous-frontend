@@ -219,7 +219,7 @@ const Login = ({ csrfToken }) => {
                 background: '#474747',
               }}
               onClick={() => {
-                router.push('/signup', undefined, {
+                router.push('/signup/email', undefined, {
                   shallow: true,
                 });
               }}

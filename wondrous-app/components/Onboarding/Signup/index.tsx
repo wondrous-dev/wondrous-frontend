@@ -158,7 +158,7 @@ const Signup = () => {
             />
           </Button>
         </Connectors>
-        <Link href="/signup">
+        <Link href="/signup" passHref>
           <StyledNextLink> Back to options</StyledNextLink>
         </Link>
       </div>
