@@ -11,7 +11,7 @@ import { Field } from 'components/Common/field';
 import { PaddedParagraph, StyledLink } from 'components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
-import { Grey50 } from '../theme/colors';
+import {Grey50, White} from '../theme/colors';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { DiscordIcon } from 'components/Icons/discord';
 import { useWonderWeb3 } from 'services/web3';
@@ -23,6 +23,10 @@ import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
+import OnboardingHeader from "components/Onboarding/OnboardingLayout/Header";
+import { Layout, OnboardingTitle } from "components/Onboarding/OnboardingLayout/styles";
+import { ContinueButton } from "components/Onboarding/OnboardingLayout/Footer/styles";
+import { MainWrapper } from "components/Onboarding/styles";
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -124,98 +128,65 @@ const Login = ({ csrfToken }) => {
   }, [wonderWeb3.notSupportedChain]);
 
   return (
-    <AuthLayout>
-      <LoginWrapper>
-        <Image
-          alt="Background"
-          className="auth-background"
-          src="/images/login/background.png"
-          layout="fill"
-          objectFit="cover"
-          quality={80}
+    <MainWrapper>
+      <Layout
+        style={{
+          minHeight: 'unset'
+        }}
+      >
+        <OnboardingHeader
+          secondVersionLogo={true}
         />
-        <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
-        <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
-        <Card>
-          <CardBody>
-            <SmallLogo />
-            {!prod && (
-              <>
-                <h1>Login</h1>
-                <Form onSubmit={handleSubmit}>
-                  <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-                  {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-                  <Field
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email address"
-                    icon={EmailIcon}
-                    required
-                  />
-                  <Field
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password"
-                    icon={LockIcon}
-                    required
-                  />
-                  <Button highlighted type="submit" marginTop="25px">
-                    Log me in
-                  </Button>
-                </Form>
-                <LineWithText>
-                  <PaddedParagraph padding="0 10px" color={Grey50}>
-                    or
-                  </PaddedParagraph>
-                </LineWithText>
-              </>
-            )}
-            <WalletLoginContainer
+        <OnboardingTitle
+          style={{
+            textAlign: 'center'
+          }}
+        >
+          Log in with email
+        </OnboardingTitle>
+
+        <div style={{width: '100%'}}>
+          {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
+          <Form onSubmit={handleSubmit} style={{marginBottom: '37px'}}>
+            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+            {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
+            <Field
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email address"
+              icon={EmailIcon}
+              required
+            />
+            <Field
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              icon={LockIcon}
+              required
+            />
+            <ContinueButton
+              type="submit"
               style={{
-                marginTop: '24px',
+                marginTop: '37px',
+                minHeight: '50px',
+                width: '100%',
               }}
             >
-              <MetaMaskConnector />
-            </WalletLoginContainer>
-            <WalletLoginContainer>
-              <WalletConnectConnector />
-            </WalletLoginContainer>
-            <WalletLoginContainer>
-              <CoinbaseConnector />
-            </WalletLoginContainer>
-            <WalletLoginContainer>
-              <Button onClick={() => (window.location.href = discordUrl)}>
-                <DiscordIcon />
-                <PaddedParagraph
-                  style={{
-                    marginLeft: '12px',
-                  }}
-                >
-                  Log in with Discord
-                </PaddedParagraph>
-              </Button>
-            </WalletLoginContainer>
-          </CardBody>
-          {/* <CardFooter>
-            <Line size="80%" />
-            <CenteredFlexRow marginTop="16px">
-              Don&apos;t have an account yet?&nbsp;
-              <StyledLink href="/signup">Sign up for the beta.</StyledLink>
-            </CenteredFlexRow>
-            <CenteredFlexRow>
-              Forgot &nbsp;
-              <StyledLink href="/forgot-password">password</StyledLink>
-              &nbsp; or &nbsp;
-              <StyledLink href="/forgot-email">email</StyledLink>?
-            </CenteredFlexRow>
-          </CardFooter> */}
-        </Card>
-      </LoginWrapper>
-    </AuthLayout>
+              Log me in
+            </ContinueButton>
+          </Form>
+          <LineWithText>
+            <PaddedParagraph padding="0 10px" color={White} style={{fontWeight: 500}}>
+              or
+            </PaddedParagraph>
+          </LineWithText>
+        </div>
+      </Layout>
+    </MainWrapper>
   );
 };
 

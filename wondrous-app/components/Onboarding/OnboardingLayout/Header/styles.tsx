@@ -8,7 +8,7 @@ export const Header = styled.div`
   justify-content: space-between;
   align-items: center;
   width: 100%;
-  border-bottom: 1px dashed #2B2B2B;
+  border-bottom: 1px dashed #4B4B4B;
   flex-wrap: wrap;
   margin-bottom: 25px;
   padding-bottom: 25px;

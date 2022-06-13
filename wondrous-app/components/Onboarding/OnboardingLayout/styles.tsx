@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import {Grey85, White} from "../../../theme/colors";
+import { White } from "../../../theme/colors";
 import {Typography} from "@material-ui/core";
 
 export const Layout = styled.div`
@@ -31,6 +31,9 @@ export const OnboardingTitle = styled(Typography)`
     text-align: left;
     margin-top: 30px;
     width: 100%;
+    background: linear-gradient(90deg, rgba(204,187,255,1) 0%, rgba(0,186,255,1) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
   }
 `;
 
