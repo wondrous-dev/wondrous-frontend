@@ -14,7 +14,6 @@ const PADDING = 18;
 const SCROLL_BAR_OFFSET = 40;
 
 const ProfileContentGrid = ({ data, Component }) => {
-
   const [showVirtualized, setShowVirtualized] = useState(false);
 
   const Cell = ({ columnIndex, rowIndex, style, data }) => {
@@ -60,7 +59,7 @@ const ProfileContentGrid = ({ data, Component }) => {
         </Box>
       ) : (
         <Box>
-          <Box display="flex" alignItems="flex-start">
+          <Box display="flex" alignItems="flex-start" gap="18px">
             {data?.slice(0, columnCount)?.map((item) => (
               <>
                 <Component key={item.id} item={item} />

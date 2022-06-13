@@ -1,67 +1,89 @@
-import { WHITE_TYPOGRAPHY_STYLES } from 'utils/constants';
-import { PROFILE_CARD_WIDTH } from 'utils/constants';
+import { Box, Typography } from '@mui/material';
+import { SafeImage } from 'components/Common/Image';
+import styled from 'styled-components';
 
-const styles = {
-  root: {
-    background: '#1B1B1B',
-    borderRadius: '3px',
-    p: 1.5,
-    mb: 2,
-    width: PROFILE_CARD_WIDTH,
-    mr: 2.25,
-    ':last-child': {
-      mr: 0,
-    },
-  },
-  title: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    ml: 1,
-  },
-  orgImageWrapper: {
-    minWidth: 32,
-    minHeight: 32,
-    borderRadius: '5px',
-  },
-  orgImage: {
-    width: 32,
-    height: 32,
-  },
-  titleContainer: {
-    display: 'flex',
-    alignItems: 'center',
-  },
-  borderContainer: {
-    borderBottom: '0.5px dashed #4B4B4B',
-    mb: 1,
-  },
-  description: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    color: '#c4c4c4',
-    fontWeight: 400,
-  },
-  purpleText: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    color: '#ccbbff',
-    fontSize: 13,
-  },
-  cardSection: {
-    display: 'flex',
-    alignItems: 'center',
-    mb: 1,
-  },
-  privacyChip: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    background: '#7427FF',
-    border: '1px solid #CCBBFF',
-    borderRadius: '3px',
-    ml: 1,
-    p: 0.4,
-  },
-  whiteText: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    ml: 1,
-    fontSize: 13,
-  },
-};
+export const WhiteTypographyStyles = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-weight: 500;
+    font-size: 16px;
+    color: #ffffff;
+  }
+`;
 
-export default styles;
+export const OrgCardWrapper = styled(Box)`
+  background: #1b1b1b;
+  padding: 18px;
+  border-radius: 3px;
+  width: 310px;
+  margin-bottom: 20px;
+`;
+
+export const OrgCardBorderContainer = styled(Box)`
+  border-bottom: 0.5px dashed #4b4b4b;
+`;
+
+export const OrgCardTitleContainer = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const OrgCardImageWrapper = styled(Box)`
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: 5px;
+`;
+
+export const OrgCardImage = styled(SafeImage)`
+  width: 32px;
+  height: 32px;
+`;
+
+export const OrgCardTitle = styled(WhiteTypographyStyles)``;
+
+export const OrgCardDescription = styled(WhiteTypographyStyles)`
+  && {
+    color: #c4c4c4;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    padding: 20px 0 14px 0;
+  }
+`;
+
+export const OrgCardInfo = styled(Box)`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+`;
+
+export const OrgCardSection = styled(Box)`
+  display: flex;
+  align-items: center;
+  gap: 11px;
+`;
+
+export const OrgCardSectionPurpleText = styled(WhiteTypographyStyles)`
+  && {
+    color: #ccbbff;
+    font-size: 13px;
+  }
+`;
+
+export const OrgCardSectionChip = styled(WhiteTypographyStyles)`
+  && {
+    background: #7427ff;
+    border: 1px solid #ccbbff;
+    border-radius: 3px;
+    font-size: 13px;
+    padding: 0 3px;
+  }
+`;
+
+export const OrgCardSectionWhiteText = styled(WhiteTypographyStyles)`
+  && {
+    font-size: 13px;
+  }
+`;

@@ -1,52 +1,60 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import { SafeImage } from 'components/Common/Image';
 import { DAOIcon } from 'components/Icons/dao';
 import { NoLogoDAO } from 'components/SideBar/styles';
 import { format } from 'date-fns';
 
-import styles from './styles';
+import {
+  OrgCardWrapper,
+  OrgCardBorderContainer,
+  OrgCardTitleContainer,
+  OrgCardImageWrapper,
+  OrgCardImage,
+  OrgCardTitle,
+  OrgCardDescription,
+  OrgCardInfo,
+  OrgCardSection,
+  OrgCardSectionPurpleText,
+  OrgCardSectionChip,
+  OrgCardSectionWhiteText,
+} from './styles';
 
 const OrgCard = ({ item }) => {
   const userOrg = item;
   const org = item?.org;
   const role = item?.role;
   return (
-    <Box sx={styles.root}>
-      <Box sx={styles.borderContainer}>
-        <Box sx={styles.titleContainer}>
-          <Box sx={styles.orgImageWrapper}>
+    <OrgCardWrapper>
+      <OrgCardBorderContainer>
+        <OrgCardTitleContainer>
+          <OrgCardImageWrapper>
             {org?.profilePicture ? (
-              <SafeImage src={org?.profilePicture} style={styles.orgImage} />
+              <OrgCardImage src={org?.profilePicture} />
             ) : (
               <NoLogoDAO>
                 <DAOIcon />
               </NoLogoDAO>
             )}
-          </Box>
+          </OrgCardImageWrapper>
 
-          <Typography sx={styles.title}>{org.name}</Typography>
-        </Box>
+          <OrgCardTitle>{org.name}</OrgCardTitle>
+        </OrgCardTitleContainer>
 
-        <Box my={2}>
-          <Typography sx={styles.description}>{org.description}</Typography>
-        </Box>
-      </Box>
-      <Box>
-        <Box sx={styles.cardSection}>
-          <Typography sx={styles.purpleText}>Roles:</Typography>
-          <Box sx={styles.privacyChip}>{role.name}</Box>
-        </Box>
+        <OrgCardDescription>{org.description}</OrgCardDescription>
+      </OrgCardBorderContainer>
+      <OrgCardInfo>
+        <OrgCardSection>
+          <OrgCardSectionPurpleText>Roles:</OrgCardSectionPurpleText>
+          <OrgCardSectionChip>{role.name}</OrgCardSectionChip>
+        </OrgCardSection>
         {/* <Box sx={styles.cardSection}>
           <Typography sx={styles.purpleText}>Tasks completed: </Typography>
           <Typography sx={styles.whiteText}>{0}</Typography>
         </Box> */}
-        <Box sx={styles.cardSection}>
-          <Typography sx={styles.purpleText}>Member Since: </Typography>
-          <Typography sx={styles.whiteText}>{format(new Date(userOrg.joinedAt), 'MMM d yyyy')}</Typography>
-        </Box>
-      </Box>
-    </Box>
+        <OrgCardSection>
+          <OrgCardSectionPurpleText>Member Since:</OrgCardSectionPurpleText>
+          <OrgCardSectionWhiteText>{format(new Date(userOrg.joinedAt), 'MMM d yyyy')}</OrgCardSectionWhiteText>
+        </OrgCardSection>
+      </OrgCardInfo>
+    </OrgCardWrapper>
   );
 };
 export default OrgCard;
