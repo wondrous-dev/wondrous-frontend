@@ -8,11 +8,27 @@ import { TutorialsIcon, PodsIcon, ExplorePageIcon } from 'components/Icons/sideb
 
 export const DrawerComponent = styled(Drawer)`
   && {
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
     & .MuiDrawer-paperAnchorDockedLeft {
       background-color: ${Black99};
       z-index: 199;
       margin-top: 50px;
       transition: 0.3s;
+      &::-webkit-scrollbar {
+        display: none;
+        width: 0;
+        height: 0;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      -ms-overflow-style: none; /* IE and Edge */
+      scrollbar-width: none; /* Firefox */
     }
 
     &.active .MuiDrawer-paperAnchorDockedLeft {
