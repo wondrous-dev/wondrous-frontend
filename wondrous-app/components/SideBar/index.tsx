@@ -126,6 +126,20 @@ const SideBarComponent = (props) => {
             const isExternal = link?.url?.includes('https://');
             const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
             const actionProps = link?.action ? { onClick: link?.action } : {};
+            if (link.key === 'explore') {
+              return (
+                <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
+                  <DrawerBottomButton type="button" {...actionProps}>
+                    {!!link?.url && (
+                      <div onClick={() => (window.location.href = '/explore')}>
+                        <Icon id={link?.id} />
+                      </div>
+                    )}
+                    {link?.action && <Icon />}
+                  </DrawerBottomButton>
+                </Tooltip>
+              );
+            }
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                 <DrawerBottomButton type="button" {...actionProps}>
