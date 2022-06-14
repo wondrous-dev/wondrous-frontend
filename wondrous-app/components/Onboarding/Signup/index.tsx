@@ -22,6 +22,8 @@ import { DISCORD_CONNECT_TYPES } from 'utils/constants';
 import { DiscordIcon } from 'components/Icons/discord';
 import { Connectors } from 'components/Onboarding/styles';
 import { GRAPHQL_ERRORS } from 'utils/constants';
+import { useMutation } from '@apollo/client';
+import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from 'graphql/mutations';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({
@@ -31,36 +33,116 @@ const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 const checkPasswordStrength = (password) => {
   if (!password) {
-    return false
+    return false;
   }
   if (password.length < 8) {
-    return false
-  } 
-  return true
-}
+    return false;
+  }
+  return true;
+};
 const Signup = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-
+  const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
+  const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
   const router = useRouter();
-  
+  const { type, inviteToken } = router?.query;
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!checkPasswordStrength(password)) {
       setErrorMessage('Password is too weak! Please enter more than 8 characters');
-      return
+      return;
     }
     if (password !== confirmPassword) {
       setErrorMessage('Confirmation password does not match!');
       return;
     }
     const result = await emailSignup(email, password);
-    if (result === true) {
-      router.push('/onboarding/welcome', undefined, {
-        shallow: true,
-      });
+    if (result?.success === true) {
+      const user = result?.user;
+      if (inviteToken) {
+        if (type === 'pod') {
+          redeemPodInviteLink({
+            variables: {
+              token: inviteToken,
+            },
+            onCompleted: (data) => {
+              if (data?.redeemPodInviteLink?.success) {
+                if (user?.username) {
+                  router.push('/dashboard', undefined, {
+                    shallow: true,
+                  });
+                } else {
+                  router.push(`/onboarding/welcome`, undefined, {
+                    shallow: true,
+                  });
+                }
+              }
+            },
+            onError: (err) => {
+              if (
+                err?.graphQLErrors &&
+                (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
+                  err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
+              ) {
+                if (user?.username) {
+                  router.push('/dashboard', undefined, {
+                    shallow: true,
+                  });
+                } else {
+                  router.push(`/onboarding/welcome`, undefined, {
+                    shallow: true,
+                  });
+                }
+              }
+              setErrorMessage('Invite already redeemed');
+            },
+          });
+        } else {
+          redeemOrgInviteLink({
+            variables: {
+              token: inviteToken,
+            },
+            onCompleted: (data) => {
+              if (data?.redeemOrgInviteLink?.success) {
+                if (user?.username) {
+                  router.push('/dashboard', undefined, {
+                    shallow: true,
+                  });
+                } else {
+                  router.push(`/onboarding/welcome`, undefined, {
+                    shallow: true,
+                  });
+                }
+              }
+            },
+            onError: (err) => {
+              if (
+                err?.graphQLErrors &&
+                (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
+                  err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
+              ) {
+                if (user?.username) {
+                  router.push('/dashboard', undefined, {
+                    shallow: true,
+                  });
+                } else {
+                  router.push(`/onboarding/welcome`, undefined, {
+                    shallow: true,
+                  });
+                }
+              }
+              setErrorMessage('Invite already redeemed');
+            },
+          });
+        }
+      } else {
+        router.push('/onboarding/welcome', undefined, {
+          shallow: true,
+        });
+      }
     } else if (result === GRAPHQL_ERRORS.EMAIL_ALREADY_EXIST) {
       setErrorMessage('This email is already registered. Please log in');
     } else if (result === GRAPHQL_ERRORS.INVALID_EMAIL) {

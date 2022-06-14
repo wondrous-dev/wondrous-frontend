@@ -58,7 +58,7 @@ export const Invite = ({
   //     setErrorMessage('Unsupported chain - please use Eth mainnet');
   //   }
   // };
-  // 
+  //
   const signupWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
@@ -129,7 +129,7 @@ export const Invite = ({
                 },
               });
             } else {
-              console.log('here', user)
+              console.log('here', user);
               handleUserOnboardingRedirect(user, router);
             }
           }
@@ -243,9 +243,21 @@ export const Invite = ({
           <Button
             style={buttonStyles}
             onClick={() => {
-              router.push('/signup/email', undefined, {
-                shallow: true,
-              });
+              if (token) {
+                if (orgInfo) {
+                  router.push(`/signup/email?inviteToken=${token}`, undefined, {
+                    shallow: true,
+                  });
+                } else if (podInfo) {
+                  router.push(`/signup/email?inviteToken=${token}&type=pod`, undefined, {
+                    shallow: true,
+                  });
+                }
+              } else {
+                router.push('/signup/email', undefined, {
+                  shallow: true,
+                });
+              }
             }}
           >
             <EmailIcon />
