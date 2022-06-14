@@ -181,17 +181,6 @@ const SideBarComponent = (props) => {
                   </Tooltip>
                 );
               })}
-            {listItems && !listItems?.length && (
-              <Tooltip title={'Explore'} placement="right" style={toolTipStyle}>
-                <DrawerBottomButton type="button">
-                  <Link href="/explore" passHref>
-                    <a>
-                      <JoinDaoIcon id="tour-sidebar-daos" />
-                    </a>
-                  </Link>
-                </DrawerBottomButton>
-              </Tooltip>
-            )}
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
