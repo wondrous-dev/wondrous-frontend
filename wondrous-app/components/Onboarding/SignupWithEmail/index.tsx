@@ -14,6 +14,7 @@ import { ContinueButton } from "components/Onboarding/OnboardingLayout/Footer/st
 import { emailSignup } from "components/Auth/withAuth";
 
 const Signup = () => {
+  // looks like this is not used?
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');

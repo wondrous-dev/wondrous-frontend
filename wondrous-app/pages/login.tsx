@@ -39,7 +39,25 @@ const state = JSON.stringify({
   callbackType: DISCORD_CONNECT_TYPES.login,
 });
 const discordUrl = `${discordUrlWithoutState}&state=${state}`;
-
+const handleUserOnboardingRedirect = (user, router) => {
+  if (user?.signupCompleted) {
+    router.push('/dashboard', undefined, {
+      shallow: true,
+    });
+  } else if (user?.profilePictureUrl) {
+    router.push('/dashboard', undefined, {
+      shallow: true,
+    });
+  } else if (user?.username) {
+    router.push('/onboarding/BuildProfile', undefined, {
+      shallow: true,
+    });
+  } else if (user?.id) {
+    router.push('/onboarding/welcome', undefined, {
+      shallow: true,
+    });
+  }
+};
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
   const [email, setEmail] = useState('');
@@ -52,13 +70,10 @@ const Login = ({ csrfToken }) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const result = await emailSignin(email, password);
-    if (result === true) {
-      router.push('/dashboard', undefined, {
-        shallow: true,
-      });
-    } else {
-      setErrorMessage(result);
+    const userOrErrorMessage = await emailSignin(email, password);
+    handleUserOnboardingRedirect(userOrErrorMessage, router);
+    if (userOrErrorMessage === 'Incorrect Email and Password combination') {
+      setErrorMessage('Incorrect Email and Password combination');
     }
   };
 
@@ -210,7 +225,7 @@ const Login = ({ csrfToken }) => {
             <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
               <DiscordIcon />
             </Button>
-            <Button
+            {/* <Button
               style={{
                 width: '40px',
                 height: '40px',
@@ -231,7 +246,7 @@ const Login = ({ csrfToken }) => {
                   filter: 'grayscale(1)',
                 }}
               />
-            </Button>
+            </Button> */}
           </Connectors>
         </div>
       </Layout>
