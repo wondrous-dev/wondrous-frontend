@@ -60,7 +60,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
         shallow: true,
       });
     } else if (firstOrg) {
-      router.push(`/organization/${firstOrg.id}/boards`, undefined, {
+      router.push(`/organization/${firstOrg.username}/boards`, undefined, {
         shallow: true,
       });
     } else {
