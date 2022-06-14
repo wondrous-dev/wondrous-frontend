@@ -6,8 +6,6 @@ import { CreateFormPreviewButton } from '../CreateEntity/styles';
 export const Background = styled.div`
   width: 80%;
   max-width: 1038px;
-  background-repeat: no-repeat;
-  background-position: center;
   padding-top: 30px;
   margin-top: 60px;
   border-radius: 12px;
@@ -41,6 +39,15 @@ export const StyledGridContainer = styled(Grid)`
     margin-left: ${SIDEBAR_WIDTH};
     display: flex;
     justify-content: center;
+    overflow: scroll;
+    &::-webkit-scrollbar {
+      display: none;
+      width: 0;
+      height: 0;
+    }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
   }
 `;
 
