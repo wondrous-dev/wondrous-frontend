@@ -71,6 +71,13 @@ const FeaturedList = [
     name: 'Prime DAO',
   },
   {
+    username: 'talentDAO',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1492177780791861253/aK138-gB_400x400.jpg',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/1468727203219193859/1651863023/1500x500',
+    bio: 'Unlock talent | Decentralize knowledge | #DeSci DAO Building the Journal of Decentralized Work',
+    name: 'Talent DAO',
+  },
+  {
     username: 'MetricsDAO',
     imageUrl: 'https://pbs.twimg.com/profile_images/1453392380250443782/UC8erEKz_400x400.png',
     bio: 'Uniting the best analytical minds in the space to build the future of crypto analytics.',
