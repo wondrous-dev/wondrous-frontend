@@ -105,6 +105,7 @@ import {
   UNARCHIVE_TASK,
   COMPLETE_MILESTONE,
   COMPLETE_BOUNTY,
+  REMOVE_TASK_ASSIGNEE,
 } from 'graphql/mutations/task';
 import { UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations/taskProposal';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
@@ -780,6 +781,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     },
   });
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
+  const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -1150,6 +1152,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id ||
     (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
+
   const canReview = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.REVIEW_TASK);
   if (!process.env.NEXT_PUBLIC_PRODUCTION) {
     // console.log('permission context in task modal', userPermissionsContext);
@@ -1566,6 +1569,43 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       >
                         {fetchedTask?.assigneeUsername}
                       </TaskSectionInfoText>
+                      {canEdit && (
+                        <div
+                          style={{
+                            marginLeft: '12px',
+                            cursor: 'pointer',
+                          }}
+                          onClick={(e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            removeTaskAssignee({
+                              variables: {
+                                taskId: fetchedTask?.id,
+                              },
+                              onCompleted: (data) => {
+                                const task = data?.removeTaskAssignee;
+                                const transformedTask = transformTaskToTaskCard(task, {});
+                                setFetchedTask(transformedTask);
+                                if (boardColumns?.setColumns && onCorrectPage) {
+                                  let columns = [...boardColumns?.columns];
+                                  if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                                    columns = updateInReviewItem(transformedTask, columns);
+                                  } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                    columns = updateInProgressTask(transformedTask, columns);
+                                  } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                    columns = updateTaskItem(transformedTask, columns);
+                                  } else if (transformedTask.status === TASK_STATUS_DONE) {
+                                    columns = updateCompletedItem(transformedTask, columns);
+                                  }
+                                  boardColumns.setColumns(columns);
+                                }
+                              },
+                            });
+                          }}
+                        >
+                          <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
+                        </div>
+                      )}
                     </TaskUserDiv>
                   ) : (
                     <>
