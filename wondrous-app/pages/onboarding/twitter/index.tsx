@@ -1,20 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
+import React from 'react';
 
-import { InviteWelcomeBox } from 'components/Onboarding/connect-twitter';
 import { MainWrapper } from 'components/Onboarding/styles';
+import { ConnectTwitter } from 'components/Onboarding/ConnectTwitter/connect-twitter';
 import { withAuth } from 'components/Auth/withAuth';
 
-
-
-const TwitterConnectPage = () => {
-  const router = useRouter();
-
+const ConnectTwitterPage = () => {
   return (
     <MainWrapper>
-      <InviteWelcomeBox />
+      <ConnectTwitter />
     </MainWrapper>
   );
 };
 
-export default withAuth(TwitterConnectPage);
+export default withAuth(ConnectTwitterPage);

@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORG_INVITE_ORG_INFO } from 'graphql/queries/org';
 
-import { InviteWelcomeBox, Logo } from 'components/Onboarding/signup';
+import { Invite } from 'components/Onboarding/Invite';
 import { MainWrapper } from 'components/Onboarding/styles';
 import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from 'graphql/mutations';
 import { withAuth, useMe } from 'components/Auth/withAuth';
@@ -78,8 +78,7 @@ const ContributorOnboardingPage = () => {
   }, [user, orgInfo, token, router, type, podInfo]);
   return (
     <MainWrapper>
-      <Logo />
-      <InviteWelcomeBox
+      <Invite
         orgInfo={orgInfo}
         podInfo={podInfo}
         redeemOrgInviteLink={redeemOrgInviteLink}

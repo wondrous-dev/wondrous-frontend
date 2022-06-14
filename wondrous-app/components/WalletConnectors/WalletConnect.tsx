@@ -7,7 +7,7 @@ export default function WalletConnectConnector({ text = 'Log in with WalletConne
     <WonderAbstractConnector
       connectorName="walletConnect"
       icon={<WalletConnect height="18" width="17" />}
-      buttonContent={<PaddedParagraph padding="0 10px">{text}</PaddedParagraph>}
+      buttonContent={<PaddedParagraph>{text}</PaddedParagraph>}
       style={style}
     />
   );

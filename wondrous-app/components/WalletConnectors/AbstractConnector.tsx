@@ -1,4 +1,3 @@
-import { useEffect, useState } from 'react';
 import { Button } from 'components/Common/button';
 import { CircularProgress } from '@material-ui/core';
 import { useWonderWeb3 } from 'services/web3';
@@ -10,6 +9,7 @@ export interface WonderAbstractConnectorProps {
   buttonContent: React.ReactNode;
   icon?: React.ReactNode;
   style?: any;
+  showText?: any;
 }
 
 export default function WonderAbstractConnector({
@@ -17,6 +17,7 @@ export default function WonderAbstractConnector({
   buttonContent,
   icon = null,
   style,
+  showText,
 }: WonderAbstractConnectorProps) {
   const { connector, activateAndStore, error, isActivating, notSupportedChain, connecting } = useWonderWeb3();
 
@@ -34,8 +35,8 @@ export default function WonderAbstractConnector({
     if (connecting && connector === currentConnector)
       return (
         <>
-          <CircularProgress size={14} />
-          <PaddedParagraph padding="0 10px">Continue on your wallet</PaddedParagraph>
+          <CircularProgress style={{ borderRadius: '50%' }} />
+          {showText ? <PaddedParagraph padding="0 10px">Continue on your wallet</PaddedParagraph> : null}
         </>
       );
     return (
@@ -48,7 +49,7 @@ export default function WonderAbstractConnector({
 
   return (
     <Button style={style} onClick={() => activateAndStore(connectorName)}>
-      {isActivating ? <CircularProgress /> : <>{content()}</>}
+      {isActivating ? <CircularProgress style={{ borderRadius: '50%' }} /> : <>{content()}</>}
     </Button>
   );
 }

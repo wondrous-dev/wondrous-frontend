@@ -139,27 +139,38 @@ const Callback = () => {
               // Only place to change this is in settings
               window.location.href = `/profile/settings`;
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
-              router.push('/onboarding/email-setup', undefined, {
+              router.push('/onboarding/discord?success', undefined, {
                 shallow: true,
               });
             }
           })
           .catch((err) => {
             console.log('Error updating discord', err?.graphQLErrors[0]?.extensions.errorCode);
+            const alreadyExists =
+              err?.graphQLErrors &&
+              err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_USER_ALREADY_EXISTS;
+
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
               // Only place to change this is in settings
-              if (
-                err?.graphQLErrors &&
-                err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_USER_ALREADY_EXISTS
-              ) {
+              if (alreadyExists) {
                 window.location.href = `/profile/settings?discordUserExists=true`;
               } else {
                 window.location.href = `/profile/settings?discordError=true`;
               }
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
-              router.push('/onboarding/email-setup', undefined, {
-                shallow: true,
-              });
+              router.push(
+                {
+                  pathname: '/onboarding/discord',
+                  query: {
+                    discordError: 1,
+                    discordUserExists: Number(alreadyExists),
+                  },
+                },
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
             }
           });
       } else if (
