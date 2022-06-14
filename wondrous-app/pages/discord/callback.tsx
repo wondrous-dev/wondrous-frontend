@@ -210,7 +210,7 @@ const Callback = () => {
                     shallow: true,
                   });
                 } else {
-                  router.push('/onboarding/build-profile', undefined, {
+                  router.push('/dashboard', undefined, {
                     shallow: true,
                   });
                 }
