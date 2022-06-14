@@ -60,6 +60,7 @@ export const Later = styled.button`
   background-color: #232323;
   color: white;
   cursor: pointer;
+  font-family: Space Grotesk;
 `;
 
 export const SecretCodeContainer = styled.div`
