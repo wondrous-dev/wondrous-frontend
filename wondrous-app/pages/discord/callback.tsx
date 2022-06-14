@@ -13,7 +13,6 @@ import {
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
 
 const Callback = () => {
-  const user = useMe();
   const router = useRouter();
   const { code } = router.query;
   const state = router?.query?.state as string;
@@ -236,4 +235,4 @@ const Callback = () => {
   );
 };
 
-export default withAuth(Callback);
+export default Callback;
