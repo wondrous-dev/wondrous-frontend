@@ -4,11 +4,9 @@ import { useRouter } from 'next/router';
 
 import Box from '@mui/material/Box';
 
-import { delQuery } from 'utils';
 import { Grey57 } from 'theme/colors';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { ENTITIES_TYPES, PRIVACY_LEVEL } from 'utils/constants';
-import { useLocation } from 'utils/useLocation';
 
 import { SafeImage } from 'components/Common/Image';
 import PodIcon from 'components/Icons/podIcon';
@@ -55,7 +53,6 @@ const TaskCompletedCard = ({ item }) => {
     createdBy,
     commentCount,
   } = task;
-  const location = useLocation();
   const [userList, setUserList] = useState([]);
 
   let TaskIcon = TASK_ICONS[status];
@@ -146,7 +143,7 @@ const TaskCompletedCard = ({ item }) => {
         )}
       </TaskHeader>
       <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-
+      <Box mt={1} />
       <TaskContent>
         <TaskTitle>{task.title}</TaskTitle>
 
@@ -157,8 +154,9 @@ const TaskCompletedCard = ({ item }) => {
               src={coverMedia.slug}
             />
           </BoardsCardMedia>
-        ) : null}
+        ) : <></>}
       </TaskContent>
+      <Box flex={1} />
       <BoardsCardFooter style={{ paddingBottom: '0' }}>
         {task?.podName && (
           <PodWrapper

@@ -15,7 +15,13 @@ const styles = {
   },
   title: {
     ...WHITE_TYPOGRAPHY_STYLES,
-    marginLeft: 8,
+    lineHeight: '23px',
+  },
+  description: {
+    ...WHITE_TYPOGRAPHY_STYLES,
+    color: '#c4c4c4',
+    fontWeight: 400,
+    lineHeight: '20px',
   },
   orgImageWrapper: {
     width: 32,
@@ -25,11 +31,6 @@ const styles = {
   rowContainer: {
     display: 'flex',
     alignItems: 'center',
-  },
-  description: {
-    ...WHITE_TYPOGRAPHY_STYLES,
-    color: '#c4c4c4',
-    fontWeight: 400,
   },
   purpleText: {
     ...WHITE_TYPOGRAPHY_STYLES,

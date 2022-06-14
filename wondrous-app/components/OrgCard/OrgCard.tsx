@@ -8,9 +8,9 @@ import { format } from 'date-fns';
 import styles from './styles';
 
 const OrgCard = ({ item }) => {
-  const userOrg = item;
   const org = item?.org;
   const role = item?.role;
+
   return (
     <Box sx={styles.root}>
       <Box sx={styles.borderContainer}>
@@ -37,13 +37,9 @@ const OrgCard = ({ item }) => {
           <Typography style={styles.purpleText}>Roles:</Typography>
           <Box sx={styles.privacyChip}>{role.name}</Box>
         </Box>
-        {/* <Box sx={styles.cardSection}>
-          <Typography style={styles.purpleText}>Tasks completed: </Typography>
-          <Typography style={styles.whiteText}>{0}</Typography>
-        </Box> */}
         <Box sx={styles.cardSection}>
           <Typography style={styles.purpleText}>Member Since: </Typography>
-          <Typography style={styles.whiteText}>{format(new Date(userOrg.joinedAt), 'MMM d yyyy')}</Typography>
+          <Typography style={styles.whiteText}>{format(new Date(item?.joinedAt), 'MMM d yyyy')}</Typography>
         </Box>
       </Box>
     </Box>

@@ -15,8 +15,6 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
 
   const { workingTasksData, userOrgs, completedTaskCount, completedTasksData } = useGetUserAboutPage(userId);
 
-  console.log('workingTasksData', workingTasksData);
-
   return (
     <>
       <Box sx={styles.sectionContainer}>

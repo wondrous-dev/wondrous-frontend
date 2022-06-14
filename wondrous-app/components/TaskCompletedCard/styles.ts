@@ -3,11 +3,14 @@ import { PROFILE_CARD_WIDTH } from 'utils/constants';
 
 const styles = {
   root: {
+    display: 'flex',
+    flexDirection: 'column',
     background: '#1B1B1B',
     borderRadius: '3px',
     p: 1.5,
     mb: 2,
     width: PROFILE_CARD_WIDTH,
+    minHeight: 140,
     mr: 2.25,
     ':last-child': {
       mr: 0,

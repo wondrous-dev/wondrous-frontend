@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 
 interface SafeImageArgs {
@@ -8,8 +8,7 @@ interface SafeImageArgs {
   defaultImage?: string;
   setImage?(url: string): void;
 }
-export const SafeImage = (safeImageArgs: SafeImageArgs) => {
-  const { src, style, defaultImage, setImage } = safeImageArgs;
+export const SafeImage = ({ src, style, defaultImage, setImage }: SafeImageArgs) => {
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
   });

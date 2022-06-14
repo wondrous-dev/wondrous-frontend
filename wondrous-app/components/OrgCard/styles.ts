@@ -38,6 +38,7 @@ const styles = {
     ...WHITE_TYPOGRAPHY_STYLES,
     color: '#c4c4c4',
     fontWeight: 400,
+    lineHeight: '20px'
   },
   purpleText: {
     ...WHITE_TYPOGRAPHY_STYLES,

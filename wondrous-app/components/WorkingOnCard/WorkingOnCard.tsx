@@ -17,6 +17,7 @@ const WorkingOnCard = ({ item }) => {
     <Box sx={styles.root}>
       <Box sx={styles.rowContainer}>
         <SafeImage src={item?.orgProfilePicture} style={styles.orgImageWrapper} />
+        <Box ml={1} />
         <SafeImage src={item?.assigneeProfilePicture} style={styles.orgImageWrapper} />
 
         <Chip label={item?.privacyLevel} sx={styles.privacyChip} />
