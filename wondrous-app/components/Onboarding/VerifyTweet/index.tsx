@@ -122,7 +122,7 @@ const VerifyTweet = () => {
               }}
               onClick={verifyUserTweet}
             >
-              Veryify
+              Verify
             </LaterButton>
             <Later
               style={{
