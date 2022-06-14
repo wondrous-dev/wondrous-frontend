@@ -12,28 +12,37 @@ import { GRAPHQL_ERRORS } from 'utils/constants';
 
 const Callback = () => {
   const router = useRouter();
-  const [successfullyVerified, setSuccessfullyVerified] = useState(false)
-  const { code, state } = router.query;
+  const [successfullyVerified, setSuccessfullyVerified] = useState(false);
+  const { code, state, error: twitterError } = router.query;
   const [verifyTwitter] = useMutation(VERIFY_TWITTER, {
-    onError: ()=> {
-      console.error('error verifying twitter')
-    }
+    onError: () => {
+      console.error('error verifying twitter');
+    },
   });
+
+  useEffect(() => {
+    if (twitterError === 'access_denied') {
+      router.replace({
+        pathname: '/onboarding/twitter',
+      });
+    }
+  }, [twitterError]);
+
   useEffect(() => {
     if (code) {
       verifyTwitter({
         variables: { code },
-      }).then(()=> {
-        console.log('state', state)
-        if (state === 'onboarding') {      
+      }).then(() => {
+        console.log('state', state);
+        if (state === 'onboarding') {
           router.replace({
             pathname: '/twitter/verify-tweet',
           });
         }
-        if (state === 'profile') {      
+        if (state === 'profile') {
           router.replace({
-            pathname: '/profile/settings', 
-            query: { successfulAuth: 'true' } // unecessary for now
+            pathname: '/profile/settings',
+            query: { successfulAuth: 'true' }, // unecessary for now
           });
         }
       });
