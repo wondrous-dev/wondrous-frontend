@@ -182,7 +182,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                 height: '50px',
               }}
             >
-              Congrats! your NFT will be aidropped to you shortly
+              Congrats! your NFT will be aidropped to you at the end of the week
             </SecretCodeContainer>
             <ContinueButton
               style={{
