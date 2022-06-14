@@ -25,6 +25,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
+
       if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/twitter/verify-tweet`, undefined, {
           shallow: true,
