@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import DiscordLogo from '../../../public/images/onboarding/discord.svg';
@@ -7,7 +7,8 @@ import { useMe } from '../../Auth/withAuth';
 import { getDiscordUrl } from 'utils/index';
 import { DISCORD_CONNECT_TYPES } from 'utils/constants';
 import { ErrorText } from 'components/Common';
-import OnboardingLayout from "components/Onboarding/OnboardingLayout";
+import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
+import { useIsMobile } from 'utils/hooks';
 
 enum Text {
   TitleSuccess = 'Success!',
@@ -25,7 +26,7 @@ export const ConnectDiscord = ({ updateUser }) => {
   const [bio, setBio] = useState('');
   const user = useMe();
   const { discordUserExists, discordError, success } = router.query;
-
+  const isMobile = useIsMobile();
   const goToNextStep = () => {
     const nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
 
@@ -37,22 +38,25 @@ export const ConnectDiscord = ({ updateUser }) => {
       callbackType: DISCORD_CONNECT_TYPES.connectOnboarding,
     });
     window.location.href = `${DISCORD_OAUTH_URL}&state=${state}`;
-  }
+  };
 
   const errorBlock = (
     <div>
       {+discordUserExists && <ErrorText>{Text.UserConnected}</ErrorText>}
-      {+discordError && !+discordUserExists && (
-        <ErrorText>{Text.ErrorConnecting}</ErrorText>
-      )}
+      {+discordError && !+discordUserExists && <ErrorText>{Text.ErrorConnecting}</ErrorText>}
     </div>
   );
 
   const DiscordLogoStyle = {
     alignSelf: 'center',
     justifySelf: 'center',
-  }
+  };
 
+  useEffect(() => {
+    if (isMobile) {
+      goToNextStep();
+    }
+  }, [isMobile]);
   return (
     <>
       {success ? (
