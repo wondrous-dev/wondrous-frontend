@@ -29,7 +29,7 @@ export default function WonderAbstractConnector({
       return (
         <>
           {icon}
-          <PaddedParagraph padding="0 10px">Change the Network to Mainnet or Polygon</PaddedParagraph>
+          <PaddedParagraph padding="0 10px">Change to Mainnet or Supported Newtork</PaddedParagraph>
         </>
       );
     if (connecting && connector === currentConnector)

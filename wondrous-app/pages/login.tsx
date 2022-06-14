@@ -28,6 +28,7 @@ import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/st
 import { Connectors, MainWrapper } from 'components/Onboarding/styles';
 import { Button } from 'components/Button';
 import { SupportedChainType } from 'utils/web3Constants';
+import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -39,25 +40,7 @@ const state = JSON.stringify({
   callbackType: DISCORD_CONNECT_TYPES.login,
 });
 const discordUrl = `${discordUrlWithoutState}&state=${state}`;
-const handleUserOnboardingRedirect = (user, router) => {
-  if (user?.signupCompleted) {
-    router.push('/dashboard', undefined, {
-      shallow: true,
-    });
-  } else if (user?.profilePictureUrl) {
-    router.push('/dashboard', undefined, {
-      shallow: true,
-    });
-  } else if (user?.username) {
-    router.push('/onboarding/BuildProfile', undefined, {
-      shallow: true,
-    });
-  } else if (user?.id) {
-    router.push('/onboarding/welcome', undefined, {
-      shallow: true,
-    });
-  }
-};
+
 const Login = ({ csrfToken }) => {
   const wonderWeb3 = useWonderWeb3();
   const [email, setEmail] = useState('');
@@ -93,7 +76,6 @@ const Login = ({ csrfToken }) => {
           setLoading(true);
           try {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
-
             if (user) {
               if (user?.username) {
                 router.push('/dashboard', undefined, {
@@ -104,16 +86,11 @@ const Login = ({ csrfToken }) => {
                   shallow: true,
                 });
               }
-            } else {
-              // setErrorMessage('no user found'); // this feels like it will never happen?
-            }
+            } 
           } catch (err) {
+            console.log('err?.graphQLErrors', err?.graphQLErrors)
             if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
-              await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-
-              router.push('/onboarding/welcome', undefined, {
-                shallow: true,
-              });
+              setErrorMessage('Address not found, check you are connected to the correct address');
             } else {
               setErrorMessage(err?.message || err);
             }

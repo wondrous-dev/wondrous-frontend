@@ -25,6 +25,7 @@ import { DiscordIcon } from 'components/Icons/discord';
 import { EmailIcon } from 'components/Icons/email';
 import NoLogo from 'components/Icons/noLogo';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
+import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
 export const Invite = ({
   orgInfo = null,
@@ -44,17 +45,17 @@ export const Invite = ({
   const { token, type, discordConnectError } = router.query;
   // Two stage process as wallet connection takes
   // time.
-  const connectWallet = async (event) => {
-    // Connect Wallet first
-    setErrorMessage('');
-    await wonderWeb3.onConnect();
-    if (!wonderWeb3.chain) {
-      setNoChainError('No chain detected - please connect to wallet');
-    }
-    if (unsuportedChain) {
-      setErrorMessage('Unsupported chain - please use Eth mainnet');
-    }
-  };
+  // const connectWallet = async (event) => {
+  //   // Connect Wallet first
+  //   setErrorMessage('');
+  //   await wonderWeb3.onConnect();
+  //   if (!wonderWeb3.chain) {
+  //     setNoChainError('No chain detected - please connect to wallet');
+  //   }
+  //   if (unsuportedChain) {
+  //     setErrorMessage('Unsupported chain - please use Eth mainnet');
+  //   }
+  // };
 
   const signupWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
@@ -79,13 +80,9 @@ export const Invite = ({
             ) {
               try {
                 user = await walletSignin(wonderWeb3.address, signedMessage);
-                if (user?.signupCompleted) {
-                  router.push('/dashboard', undefined, {
-                    shallow: true,
-                  });
-                } else {
-                  onAuthenticated(user);
-                }
+                if (user) {
+                  handleUserOnboardingRedirect(user, router)
+                } 
               } catch (err) {
                 setErrorMessage('Unable to log in existing user - please contact support in discord');
               }
@@ -209,11 +206,6 @@ export const Invite = ({
     titleSentence = title;
   }
 
-  const contributingSentence = podInfo
-    ? `${podInfo?.contributorCount} ${podInfo?.contributorCount === 1 ? 'is' : 'are'} already contributing to the ${
-        podInfo?.name
-      } pod`
-    : `${orgInfo?.contributorCount} members are already contributing to ${orgInfo?.name}`;
 
   const buttonStyles = {
     marginTop: '16px',
