@@ -23,9 +23,9 @@ const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 // set to configure which snapshot API to use
 // true = testnet
 // false = hub
-const isTestSnapshot = true;
+const isTestSnapshot = process.env.NEXT_PUBLIC_PRODUCTION ? false : true;
 
-const hub = isTestSnapshot ? 'https://testnet.snapshot.org' : 'https://hub.snapshot.org';
+const hub = process.env.NEXT_PUBLIC_PRODUCTION ? 'https://hub.snapshot.org' : 'https://testnet.snapshot.org';
 const snapshotClient = new Snapshot.Client712(hub);
 
 // snapshot graphql API
@@ -38,7 +38,7 @@ const snapshotClientGQL = new ApolloClient({
 });
 
 export const getSnapshotUrl = (id: string): string =>
-  `https://${isTestSnapshot ? `testnet` : `hub`}.snapshot.org/api/spaces/${id}/`;
+  `https://${process.env.NEXT_PUBLIC_PRODUCTION ? `hub` : `testnet`}.snapshot.org/api/spaces/${id}/`;
 
 /**
  * useSnapshot -- state hooks to interact with Snapshot & Wonder's snapshot-related APIs
@@ -51,7 +51,7 @@ export const useSnapshot = () => {
     network: '',
     symbol: '',
     strategies: [],
-    admins: []
+    admins: [],
   };
 
   const isTest = isTestSnapshot;
@@ -100,7 +100,9 @@ export const useSnapshot = () => {
           setIsSnapshotAdmin(true);
         } else {
           setIsSnapshotAdmin(false);
-          setGetSnapshotSpaceError(`User is not an admin of '${data.space.id}' Please update ENS text record or enter administered Snapshot`);
+          setGetSnapshotSpaceError(
+            `User is not an admin of '${data.space.id}' Please update ENS text record or enter administered Snapshot`
+          );
         }
       } else {
         setIsSnapshotAdmin(false);
@@ -113,17 +115,16 @@ export const useSnapshot = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-
   // checks for Snapshot stored in Wonder Org via Wonder API & updates state to reflect db
   const [getOrgSnapshotInfo, { loading: getOrgSnapshotInfoLoading }] = useLazyQuery(GET_ORG_SNAPSHOT_INFO, {
     onCompleted: (data) => {
-      console.log('dataa', data)
+      console.log('dataa', data);
       if (data?.getOrgSnapshotInfo) {
         const { snapshotEns, name, symbol, network, url } = data?.getOrgSnapshotInfo;
         // sets local state of integrations field from 'org' table, or null if nonexistent
         setOrgSnapshot({ snapshotEns, name, symbol, network, url });
         // updates snapshot connection state
-        setSnapshotConnected(snapshotEns ? true : false);  
+        setSnapshotConnected(snapshotEns ? true : false);
       }
     },
     onError: (error) => {
@@ -136,7 +137,7 @@ export const useSnapshot = () => {
   const [connectSnapshotToOrg, { loading: connectSnapshotSpaceLoading }] = useMutation(CONNECT_SNAPSHOT_TO_ORG, {
     onCompleted: (data) => {
       const { snapshotEns, name, symbol, url, network } = data.connectSnapshotToOrg;
-      setOrgSnapshot({ snapshotEns, name, symbol, url, network});
+      setOrgSnapshot({ snapshotEns, name, symbol, url, network });
       setSnapshotConnected(true);
     },
     onError: (error) => {
@@ -144,11 +145,10 @@ export const useSnapshot = () => {
     },
   });
 
-
   const [disconnectSnapshotToOrg] = useMutation(DISCONNECT_SNAPSHOT_TO_ORG, {
     onCompleted: (data) => {
-      if(data?.disconnectSnapshotToOrg?.success) {
-        setOrgSnapshot(null)
+      if (data?.disconnectSnapshotToOrg?.success) {
+        setOrgSnapshot(null);
         setSnapshotConnected(false);
         setIsSnapshotAdmin(null);
       }
@@ -229,7 +229,7 @@ export const useSnapshot = () => {
           : JSON.stringify(data.space.metadata)
         : '{}',
     };
-    console.log('proposalToSubmit', proposalToSubmit)
+    console.log('proposalToSubmit', proposalToSubmit);
 
     const valid = validateProposal(proposalToValidate);
 
