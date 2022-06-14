@@ -64,7 +64,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
   );
 
   const goToNextStep = () => {
-    const nextStep = user.userInfo.email ? '/onboarding/discord' : '/onboarding/email';
+    const nextStep = user?.userInfo?.email ? '/onboarding/discord' : '/onboarding/email';
 
     router.push(nextStep, undefined, { shallow: true });
   };
