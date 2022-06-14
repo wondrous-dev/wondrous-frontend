@@ -241,7 +241,6 @@ const ExploreComponent = () => {
             justifyContent: 'center',
             alignItems: 'center',
             flexDirection: 'column',
-            overflow: 'scroll',
             padding: '40px',
           }}
         >
