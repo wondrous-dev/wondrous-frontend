@@ -9,6 +9,7 @@ import {
   DataLink,
 } from './styles';
 import { useWonderWeb3 } from 'services/web3';
+import { useIsMobile } from 'utils/hooks';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
@@ -39,6 +40,7 @@ export const Invite = ({
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
   const [noChainError, setNoChainError] = useState('');
+  const isMobile = useIsMobile();
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
@@ -245,7 +247,7 @@ export const Invite = ({
         {children}
 
         <Connectors>
-          <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
+          {!isMobile && <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />}
           <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
           <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
           <Button

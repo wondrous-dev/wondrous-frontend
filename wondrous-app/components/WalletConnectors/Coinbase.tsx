@@ -15,6 +15,7 @@ export default function CoinbaseConnector({
       icon={<Coinbase/>}
       buttonContent={<PaddedParagraph>{text}</PaddedParagraph>}
       style={style}
+      showText={!!text}
     />
   );
 }

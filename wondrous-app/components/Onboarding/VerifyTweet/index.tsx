@@ -7,7 +7,12 @@ import { WalletConnected, Label } from '../styles';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import TwitterBlue from '../../../public/images/twitterBlue.svg';
 import { CompletedIcon } from 'components/Icons/statusIcons';
-import { ContinueButton, LaterButton, Later, SecretCodeContainer } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import {
+  ContinueButton,
+  LaterButton,
+  Later,
+  SecretCodeContainer,
+} from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { InviteWelcomeBoxParagraph, QRCodeTwitter } from '../styles';
 import TwitterLogo from '../../../public/images/twitter.svg';
 import CheckMarkIcon from 'components/Icons/checkMark';
@@ -21,13 +26,12 @@ import Image from 'next/image';
 //   alignItems: 'center',
 // };
 
-const VerifyTweet = () => {
+const VerifyTweet = ({ firstOrg, firstPod }) => {
   const router = useRouter();
   const [tweetVerified, setTweetVerified] = useState(false);
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      console.log('data', data);
       if (data?.getLoggedinUser?.userInfo && !userData?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/onboarding/twitter`, undefined, {
           shallow: true,
@@ -51,9 +55,19 @@ const VerifyTweet = () => {
 
   const hanldeLaterClick = () => {
     // if user is part of a org maybe redirect to org
-    router.push('/dashboard', undefined, {
-      shallow: true,
-    });
+    if (firstPod) {
+      router.push(`/pod/${firstPod.id}/boards`, undefined, {
+        shallow: true,
+      });
+    } else if (firstOrg) {
+      router.push(`/organization/${firstOrg.id}/boards`, undefined, {
+        shallow: true,
+      });
+    } else {
+      router.push('/explore', undefined, {
+        shallow: true,
+      });
+    }
   };
 
   return (
@@ -89,7 +103,7 @@ const VerifyTweet = () => {
           alignItems: 'center',
         }}
       >
-          <Image alt="Background" src="/images/poap/launch-poap.png" quality={100} width={300} height={300} />
+        <Image alt="Background" src="/images/poap/launch-poap.png" quality={100} width={300} height={300} />
         {!tweetVerified && (
           <div
             style={{
