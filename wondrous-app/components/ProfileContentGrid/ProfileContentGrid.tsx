@@ -1,13 +1,18 @@
 import { useState } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
 import AutoSizer from 'react-virtualized-auto-sizer';
+import { FixedSizeGrid as Grid } from 'react-window';
 
-import { Box, Button } from '@mui/material';
+import { PROFILE_CARD_HEIGHT, PROFILE_CARD_WIDTH } from 'utils/constants';
 
-import { PROFILE_CARD_WIDTH, PROFILE_CARD_HEIGHT } from 'utils/constants';
-
-import styles from './styles';
-import TaskCard from 'components/Common/Task/card';
+import {
+  ProfileContentGridAutosizer,
+  ProfileContentGridButton,
+  ProfileContentGridButtonContainer,
+  ProfileContentGridContainer,
+  ProfileContentGridContent,
+  ProfileContentGridContentWrapper,
+  ProfileContentGridWrapper,
+} from './styles';
 
 const GRID_ELEMENTS = 4;
 const PADDING = 18;
@@ -31,10 +36,10 @@ const ProfileContentGrid = ({ data, Component }) => {
   const columnCount = data?.length >= GRID_ELEMENTS ? GRID_ELEMENTS : data?.length;
 
   return (
-    <Box sx={{ ...styles.root }}>
+    <ProfileContentGridWrapper>
       {showVirtualized ? (
-        <Box sx={styles.virtualizationContainer}>
-          <Box sx={{ height: 630 }}>
+        <ProfileContentGridContainer>
+          <ProfileContentGridAutosizer>
             <AutoSizer>
               {({ height, width }) => (
                 <Grid
@@ -50,35 +55,29 @@ const ProfileContentGrid = ({ data, Component }) => {
                 </Grid>
               )}
             </AutoSizer>
-          </Box>
-          <Box sx={styles.buttonContainer}>
-            <Button sx={styles.button} onClick={() => setShowVirtualized(false)}>
-              Show Less
-            </Button>
-          </Box>
-        </Box>
+          </ProfileContentGridAutosizer>
+          <ProfileContentGridButtonContainer>
+            <ProfileContentGridButton onClick={() => setShowVirtualized(false)}>Show Less</ProfileContentGridButton>
+          </ProfileContentGridButtonContainer>
+        </ProfileContentGridContainer>
       ) : (
-        <Box>
-          <Box display="flex" alignItems="flex-start" gap="18px">
+        <ProfileContentGridContentWrapper>
+          <ProfileContentGridContent>
             {data?.slice(0, columnCount)?.map((item) => (
               <>
                 <Component key={item.id} item={item} />
               </>
             ))}
-          </Box>
+          </ProfileContentGridContent>
 
-          <Box sx={styles.buttonContainer}>
-            <Button
-              sx={styles.button}
-              onClick={() => setShowVirtualized(true)}
-              disabled={data?.length <= GRID_ELEMENTS}
-            >
+          <ProfileContentGridButtonContainer>
+            <ProfileContentGridButton onClick={() => setShowVirtualized(true)} disabled={data?.length <= GRID_ELEMENTS}>
               Show more
-            </Button>
-          </Box>
-        </Box>
+            </ProfileContentGridButton>
+          </ProfileContentGridButtonContainer>
+        </ProfileContentGridContentWrapper>
       )}
-    </Box>
+    </ProfileContentGridWrapper>
   );
 };
 
