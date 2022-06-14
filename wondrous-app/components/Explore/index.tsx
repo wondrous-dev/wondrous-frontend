@@ -6,6 +6,7 @@ import ReadyPlayerDAOSvg from './readyplayerdao.svg';
 import Header from '../Header';
 import SideBarComponent from '../SideBar';
 import { OverviewComponent } from '../Wrapper/styles';
+import { Button } from 'components/Button';
 import {
   Background,
   BackgroundText,
@@ -20,6 +21,7 @@ import { SafeImage } from '../Common/Image';
 import { Grid } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { useIsMobile } from 'utils/hooks';
+import { White } from 'theme/colors';
 
 const FeaturedList = [
   {
@@ -261,6 +263,32 @@ const ExploreComponent = () => {
             {FeaturedList.map((org, index) => (
               <OrgItem key={index} org={org} />
             ))}
+            <OrgName
+              style={{
+                marginTop: '24px',
+              }}
+            >
+              Want to use Wonder for your organization?
+            </OrgName>
+            <Button
+              style={{
+                marginLeft: '24px',
+                textDecoration: 'none',
+                color: White,
+              }}
+            >
+              <a
+                style={{
+                  textDecoration: 'none',
+                  color: White,
+                }}
+                href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
+                target="_blank"
+                rel="noreferrer"
+              >
+                Sign up here!
+              </a>
+            </Button>
           </StyledGridContainer>
         </OverviewComponent>
       </SideBarContext.Provider>
