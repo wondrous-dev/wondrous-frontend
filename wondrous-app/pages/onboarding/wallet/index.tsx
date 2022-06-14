@@ -11,20 +11,10 @@ import {GET_USER_ORGS, GET_USER_PODS} from "graphql/queries";
 const SetupWalletPage = () => {
   const router = useRouter();
   const user = useMe();
-  const { data: getOrgData } = useQuery(GET_USER_ORGS);
-  const { data: getPodData } = useQuery(GET_USER_PODS);
-
-  const [updateUser] = useMutation(UPDATE_USER, {
-    onCompleted: () => {
-      router.push('/onboarding/email-setup', undefined, {
-        shallow: true,
-      });
-    },
-  });
 
   return (
       <MainWrapper>
-        <SetupWallet updateUser={updateUser}/>
+        <SetupWallet />
       </MainWrapper>
   );
 };

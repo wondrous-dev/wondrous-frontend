@@ -11,13 +11,14 @@ import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import { ErrorText } from 'components/Common';
 
-import { LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { LaterButton, BackButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { Connectors } from 'components/Onboarding/styles';
 import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
 import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
+import LeftArrowIcon from 'components/Icons/leftArrow';
 
-export const SetupWallet = ({ updateUser }) => {
+export const SetupWallet = () => {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
@@ -69,9 +70,9 @@ export const SetupWallet = ({ updateUser }) => {
 
   const description = (
     <div>
-      Get paid in USDC, Eth, $WONDER, and your DAOs native social token. <br />
+      Get paid in USDC, ETH, $WONDER, and your DAOs native social token. <br />
       Don’t have a digital wallet?{' '}
-      <span
+      <a href="https://metamask.io/download/" target="blank"><span
         style={{
           textDecoration: 'underline',
           color: '#0EA2D9',
@@ -80,6 +81,7 @@ export const SetupWallet = ({ updateUser }) => {
         {' '}
         Click here
       </span>{' '}
+      </a>
       and we’ll help you set one up.
     </div>
   );
@@ -115,6 +117,12 @@ export const SetupWallet = ({ updateUser }) => {
           I&apos;ll connect it later
         </LaterButton>
       </Connectors>
+      <div>
+          <BackButton onClick={() => router.back()}>
+            <LeftArrowIcon />
+          </BackButton>
+        </div>
+
     </OnboardingLayout>
   );
 };
