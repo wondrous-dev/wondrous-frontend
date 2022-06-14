@@ -11,11 +11,12 @@ import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import { ErrorText } from 'components/Common';
 
-import { LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { LaterButton, BackButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { Connectors } from 'components/Onboarding/styles';
 import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
 import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
+import LeftArrowIcon from 'components/Icons/leftArrow';
 
 export const SetupWallet = () => {
   const router = useRouter();
@@ -115,6 +116,12 @@ export const SetupWallet = () => {
           I&apos;ll connect it later
         </LaterButton>
       </Connectors>
+      <div>
+          <BackButton onClick={() => router.back()}>
+            <LeftArrowIcon />
+          </BackButton>
+        </div>
+
     </OnboardingLayout>
   );
 };
