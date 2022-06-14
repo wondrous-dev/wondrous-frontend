@@ -31,6 +31,7 @@ import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
+import HelpModal from './HelpModal.jsx';
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
@@ -40,6 +41,7 @@ const SideBarComponent = (props) => {
   const router = useRouter();
   const user = useMe();
   const [openPodModal, setOpenPodModal] = useState(false);
+  const [openHelpModal, setOpenHelpModal] = useState(false);
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -52,6 +54,7 @@ const SideBarComponent = (props) => {
       icon: StyledExplorePageIcon,
       url: '/explore',
       tooltipLabel: 'Explore',
+      id: 'tour-sidebar-explore-top',
     },
     {
       key: 'pods',
@@ -66,7 +69,7 @@ const SideBarComponent = (props) => {
       key: 'tutorials',
       icon: StyledTutorialsIcon,
       url: 'https://linktr.ee/wonderverse',
-      tooltipLabel: 'Wonder tutorials',
+      tooltipLabel: 'Wonder help desk',
     },
     {
       key: 'settings',
@@ -98,10 +101,12 @@ const SideBarComponent = (props) => {
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
+      <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
             <DrawerTopBlockItem
+              id="tour-user-profile"
               onClick={() => {
                 router.push(`/profile/${user.username}/about`, undefined, {
                   shallow: true,
@@ -120,17 +125,18 @@ const SideBarComponent = (props) => {
             const Icon = link?.icon;
             const isExternal = link?.url?.includes('https://');
             const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
+            const actionProps = link?.action ? { onClick: link?.action } : {};
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
-                <DrawerBottomButton type="button">
+                <DrawerBottomButton type="button" {...actionProps}>
                   {!!link?.url && (
                     <Link href={link.url} passHref>
                       <a href={link.url} {...externalProps}>
-                        <Icon />
+                        <Icon id={link?.id} />
                       </a>
                     </Link>
                   )}
-                  {link?.action && <Icon onClick={link?.action} />}
+                  {link?.action && <Icon />}
                 </DrawerBottomButton>
               </Tooltip>
             );
@@ -140,7 +146,7 @@ const SideBarComponent = (props) => {
             <StyledDivider />
           </StyledDividerDiv>
 
-          <DrawerList>
+          <DrawerList id={!!listItems && listItems?.length && 'tour-sidebar-daos'}>
             {listItems &&
               listItems.map((item) => {
                 const isActive =
@@ -180,7 +186,7 @@ const SideBarComponent = (props) => {
                 <DrawerBottomButton type="button">
                   <Link href="/explore" passHref>
                     <a>
-                      <JoinDaoIcon />
+                      <JoinDaoIcon id="tour-sidebar-daos" />
                     </a>
                   </Link>
                 </DrawerBottomButton>
@@ -193,6 +199,20 @@ const SideBarComponent = (props) => {
             const Icon = link?.icon;
             const isExternal = link?.url?.includes('https://');
             const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
+            if (link.key === 'tutorials') {
+              // Open up modal instead
+              return (
+                <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
+                  <DrawerBottomButton type="button">
+                    {!!link?.url && (
+                      <div onClick={() => setOpenHelpModal(true)}>
+                        <Icon />
+                      </div>
+                    )}
+                  </DrawerBottomButton>
+                </Tooltip>
+              );
+            }
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                 <DrawerBottomButton type="button">

@@ -50,7 +50,7 @@ const HeaderComponent = (props) => {
   };
 
   const router = useRouter();
-  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
+  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics', '/explore'];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
   return (
     <Header>
@@ -68,7 +68,7 @@ const HeaderComponent = (props) => {
               <Link passHref href="/dashboard">
                 <HeaderHomeButtonWrapper>
                   <HeaderHomeButton>
-                    <HomeIcon />
+                    <HomeIcon id="tour-header-dashboard-icon" />
                   </HeaderHomeButton>
                 </HeaderHomeButtonWrapper>
               </Link>
@@ -98,7 +98,7 @@ const HeaderComponent = (props) => {
                 setNotifications={setNotifications}
               />
               <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-                <CreateIconOutlined />
+                <CreateIconOutlined id="tour-header-create-btn" />
               </HeaderCreateButton>
             </>
           )}
