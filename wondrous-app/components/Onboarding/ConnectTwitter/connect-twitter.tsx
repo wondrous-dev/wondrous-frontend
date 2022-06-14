@@ -23,7 +23,6 @@ export const ConnectTwitter = () => {
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-      console.log(userData?.getLoggedinUser)
       if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/twitter/verify-tweet`, undefined, {
           shallow: true,
@@ -54,7 +53,7 @@ export const ConnectTwitter = () => {
         <RightButtons>
           <Later
             onClick={() =>
-              router.push('/dashboard', undefined, {
+              router.push('/dashboard?fromAuth=true', undefined, {
                 shallow: true,
               })
             }

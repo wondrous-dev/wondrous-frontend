@@ -51,7 +51,7 @@ const VerifyTweet = () => {
 
   const hanldeLaterClick = () => {
     // if user is part of a org maybe redirect to org
-    router.push('/dashboard', undefined, {
+    router.push('/dashboard?fromAuth=true', undefined, {
       shallow: true,
     });
   };
