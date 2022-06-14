@@ -1,4 +1,4 @@
-import React, { useEffect, useState , useCallback} from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
@@ -31,11 +31,11 @@ export const SetupWallet = () => {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
           const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-          console.log(result)
+          console.log(result);
           if (result === true) {
             router.push('/onboarding/twitter', undefined, {
               shallow: true,
-            });        
+            });
           }
           if (result === false) {
             setErrorMessage('Error linking wallet, please contact support');
@@ -53,14 +53,12 @@ export const SetupWallet = () => {
     }
   }, [wonderWeb3]);
 
-
   useEffect(() => {
     if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
       linkUserWithWallet();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.wallet, wonderWeb3.active, wonderWeb3.web3Provider]);
-
 
   const handleLaterClick = () => {
     router.push('/onboarding/twitter', undefined, {
@@ -72,15 +70,16 @@ export const SetupWallet = () => {
     <div>
       Get paid in USDC, ETH, $WONDER, and your DAOs native social token. <br />
       Don’t have a digital wallet?{' '}
-      <a href="https://metamask.io/download/" target="blank"><span
-        style={{
-          textDecoration: 'underline',
-          color: '#0EA2D9',
-        }}
-      >
-        {' '}
-        Click here
-      </span>{' '}
+      <a href="https://metamask.io/download/" target="blank">
+        <span
+          style={{
+            textDecoration: 'underline',
+            color: '#0EA2D9',
+          }}
+        >
+          {' '}
+          Click here
+        </span>{' '}
       </a>
       and we’ll help you set one up.
     </div>
@@ -89,7 +88,7 @@ export const SetupWallet = () => {
   const buttonStyles = {
     marginTop: '16px',
     width: '100%',
-    maxWidth: '278px',
+    maxWidth: '310px',
     minHeight: '40px',
     height: '40px',
     fontWeight: '500',
@@ -109,20 +108,19 @@ export const SetupWallet = () => {
       </Wallet>
 
       <Connectors>
-      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+        {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
         <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
         <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
-        <LaterButton onClick={handleLaterClick} style={{ width: '278px', margin: '16px auto', background: '#454545' }}>
+        <LaterButton onClick={handleLaterClick} style={{ ...buttonStyles, background: '#454545', marginRight: 0 }}>
           I&apos;ll connect it later
         </LaterButton>
       </Connectors>
       <div>
-          <BackButton onClick={() => router.back()}>
-            <LeftArrowIcon />
-          </BackButton>
-        </div>
-
+        <BackButton onClick={() => router.back()}>
+          <LeftArrowIcon />
+        </BackButton>
+      </div>
     </OnboardingLayout>
   );
 };
