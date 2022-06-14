@@ -70,9 +70,9 @@ export const SetupWallet = () => {
 
   const description = (
     <div>
-      Get paid in USDC, Eth, $WONDER, and your DAOs native social token. <br />
+      Get paid in USDC, ETH, $WONDER, and your DAOs native social token. <br />
       Don’t have a digital wallet?{' '}
-      <span
+      <a href="https://metamask.io/download/" target="blank"><span
         style={{
           textDecoration: 'underline',
           color: '#0EA2D9',
@@ -81,6 +81,7 @@ export const SetupWallet = () => {
         {' '}
         Click here
       </span>{' '}
+      </a>
       and we’ll help you set one up.
     </div>
   );
