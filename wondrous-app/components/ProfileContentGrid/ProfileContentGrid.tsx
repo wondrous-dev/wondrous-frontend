@@ -64,9 +64,7 @@ const ProfileContentGrid = ({ data, Component }) => {
         <ProfileContentGridContentWrapper>
           <ProfileContentGridContent>
             {data?.slice(0, columnCount)?.map((item) => (
-              <>
-                <Component key={item.id} item={item} />
-              </>
+              <Component key={item.id} item={item} />
             ))}
           </ProfileContentGridContent>
 

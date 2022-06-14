@@ -45,4 +45,7 @@ export const ProfileContentGridContent = styled(Box)`
   align-items: flex-start;
   gap: 18px;
   margin-bottom: 20px;
+  > * {
+    width: 312px;
+  }
 `;
