@@ -112,7 +112,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
   return (
     <OnboardingLayout
       title="Connect to Twitter"
-      description="Want our launch POAP? You have to tweet here."
+      description="Want our launch NFT? You have to connect your twitter"
       headerRightContent={router.query.wallet ? headerRightContent : null}
       onBackClick={() => router.back()}
       displayFooter={false}
