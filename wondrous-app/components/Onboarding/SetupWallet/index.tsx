@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState , useCallback} from 'react';
 import { useRouter } from 'next/router';
 
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
@@ -6,13 +6,60 @@ import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import WalletIcon from '../../../public/images/onboarding/union.svg';
+import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
+import { SupportedChainType } from 'utils/web3Constants';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
+import { ErrorText } from 'components/Common';
 
 import { LaterButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { Connectors } from 'components/Onboarding/styles';
 import { Wallet } from 'components/Onboarding/SetupWallet/styles';
+import { useWonderWeb3 } from 'services/web3';
+import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 
 export const SetupWallet = ({ updateUser }) => {
   const router = useRouter();
+  const wonderWeb3 = useWonderWeb3();
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const linkUserWithWallet = useCallback(async () => {
+    if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
+      const messageToSign = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH);
+
+      if (messageToSign) {
+        const signedMessage = await wonderWeb3.signMessage(messageToSign);
+        if (signedMessageIsString(signedMessage)) {
+          const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+          console.log(result)
+          if (result === true) {
+            router.push('/onboarding/twitter', undefined, {
+              shallow: true,
+            });        
+          }
+          if (result === false) {
+            setErrorMessage('Error linking wallet, please contact support');
+            wonderWeb3.disconnect();
+          }
+          if (result === GRAPHQL_ERRORS.WEB3_ADDRESS_ALREADY_EXISTS) {
+            setErrorMessage('Address already taken');
+            wonderWeb3.disconnect();
+          }
+        } else if (signedMessage === false) {
+          setErrorMessage('Signature rejected. Try again.');
+          wonderWeb3.disconnect();
+        }
+      }
+    }
+  }, [wonderWeb3]);
+
+
+  useEffect(() => {
+    if (wonderWeb3.address && wonderWeb3.active && wonderWeb3.web3Provider) {
+      linkUserWithWallet();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wonderWeb3.wallet, wonderWeb3.active, wonderWeb3.web3Provider]);
+
 
   const handleLaterClick = () => {
     router.push('/onboarding/twitter', undefined, {
@@ -60,6 +107,7 @@ export const SetupWallet = ({ updateUser }) => {
       </Wallet>
 
       <Connectors>
+      {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
         <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
         <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
