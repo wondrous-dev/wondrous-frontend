@@ -52,7 +52,7 @@ const OnboardingWelcome = ({ updateUser, user }) => {
         shallow: true,
       });
     } else {
-      if (USERNAME_REGEX.test(username)) {
+      if (username && USERNAME_REGEX.test(username)) {
         updateUser({
           variables: {
             input: {
