@@ -27,15 +27,16 @@ import {
   HeaderLogoWrapper,
 } from './styles';
 import HomeIcon from 'components/Icons/home';
-
+import { useIsMobile } from 'utils/hooks';
 const HeaderComponent = (props) => {
   const user = useMe();
+  const isMobile = useIsMobile();
+
   // Grab Notifications from Backend
   const { data: notifications, refetch, fetchMore: fetchMoreNotifications } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
   const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
   const { openCreateFormModal } = props;
-
   const setNotifications = async (newNotifications = null) => {
     if (newNotifications) {
       // Mark as read specific notifications
@@ -91,7 +92,7 @@ const HeaderComponent = (props) => {
         <HeaderRightBlock>
           {user && (
             <>
-              <Wallet />
+              {!isMobile && <Wallet />}
               <NotificationsBoard
                 fetchMoreNotifications={fetchMoreNotifications}
                 notifications={notifications?.getNotifications || []}

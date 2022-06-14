@@ -19,6 +19,7 @@ import {
 import { SafeImage } from '../Common/Image';
 import { Grid } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { useIsMobile } from 'utils/hooks';
 
 const FeaturedList = [
   {
@@ -177,6 +178,12 @@ const FeaturedList = [
   },
 ];
 
+const gridMobileStyles = {
+  width: '100%',
+  maxWidth: '100vw',
+  marginLeft: '0',
+};
+
 const OrgItem = ({ org }) => {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
   const router = useRouter();
@@ -225,6 +232,8 @@ const OrgItem = ({ org }) => {
 };
 const ExploreComponent = () => {
   const [minimized, setMinimized] = useState(false);
+  const isMobile = useIsMobile();
+
   return (
     <>
       <Header />
@@ -249,13 +258,13 @@ const ExploreComponent = () => {
             },
           }}
         >
-          <Background>
+          <Background style={isMobile ? gridMobileStyles : {}}>
             <BackgroundText>
               Where world-changing DAOs <br />
               are being built.
             </BackgroundText>
           </Background>
-          <StyledGridContainer container spacing={2}>
+          <StyledGridContainer container spacing={2} style={isMobile ? gridMobileStyles : {}}>
             {FeaturedList.map((org, index) => (
               <OrgItem key={index} org={org} />
             ))}
