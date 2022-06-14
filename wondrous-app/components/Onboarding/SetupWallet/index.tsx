@@ -17,7 +17,7 @@ import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
 import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 
-export const SetupWallet = ({ updateUser }) => {
+export const SetupWallet = () => {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
