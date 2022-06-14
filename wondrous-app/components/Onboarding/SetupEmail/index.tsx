@@ -21,7 +21,7 @@ export const SetupEmail = ({ firstOrg, firstPod }) => {
   }, []);
 
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress ? '/onboarding/discord' : '/twitter';
+    const nextStep = user.activeEthAddress ? '/onboarding/discord' : '/onboarding/twitter';
 
     router.push(nextStep, undefined, { shallow: true });
   };
