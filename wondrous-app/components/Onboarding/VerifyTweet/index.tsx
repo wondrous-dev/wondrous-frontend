@@ -13,6 +13,7 @@ import TwitterLogo from '../../../public/images/twitter.svg';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import { Button } from 'components/Common/button';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
+import Image from 'next/image';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -88,7 +89,7 @@ const VerifyTweet = () => {
           alignItems: 'center',
         }}
       >
-        <QRCodeTwitter />
+          <Image alt="Background" src="/images/poap/launch-poap.png" quality={100} width={300} height={300} />
         {!tweetVerified && (
           <div
             style={{
