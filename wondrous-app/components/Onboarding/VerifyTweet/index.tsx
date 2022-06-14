@@ -206,7 +206,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                 >
                   Step 2:
                 </div>
-                {checkTweetLoading && <>Cheking...</>}
+                {checkTweetLoading && <>Checking...</>}
                 {!checkTweetLoading && <>Verify</>}
               </div>
             </LaterButton>
