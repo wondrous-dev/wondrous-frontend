@@ -67,7 +67,7 @@ const MobileComingSoonModal = () => {
               marginBottom: 0,
             }}
           >
-            We can email you a link so you can check use us on desktop.
+            Please check us out on desktop
           </UsernameDescription>
         </div>
       </ModalContent>
