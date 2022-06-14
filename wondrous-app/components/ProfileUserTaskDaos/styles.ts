@@ -7,7 +7,7 @@ const styles = {
   title: {
     ...WHITE_TYPOGRAPHY_STYLES,
     color: '#CCBBFF',
-    mb: 2.5,
+    marginBottom: 20,
   },
 };
 

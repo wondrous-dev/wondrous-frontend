@@ -7,21 +7,20 @@ import { Box, Button } from '@mui/material';
 import { PROFILE_CARD_WIDTH, PROFILE_CARD_HEIGHT } from 'utils/constants';
 
 import styles from './styles';
-import TaskCard from 'components/Common/Task/card';
 
-const GRID_ELEMENTS = 4;
-const PADDING = 18;
+const GRID_ROW_AMOUNT = 4;
+const PADDING_PX = 18;
 const SCROLL_BAR_OFFSET = 40;
 
 const ProfileContentGrid = ({ data, Component }) => {
-
   const [showVirtualized, setShowVirtualized] = useState(false);
 
-  const Cell = ({ columnIndex, rowIndex, style, data }) => {
-    const positionIndex = rowIndex * GRID_ELEMENTS + columnIndex;
-    const item = data[positionIndex];
+  const Cell = ({ columnIndex, rowIndex, style, data: itemData }) => {
+    const positionIndex = rowIndex * GRID_ROW_AMOUNT + columnIndex;
+    const item = itemData[positionIndex];
 
     if (!item) return <></>;
+
     return (
       <div style={style}>
         <Component item={item} />
@@ -29,7 +28,7 @@ const ProfileContentGrid = ({ data, Component }) => {
     );
   };
 
-  const columnCount = data?.length >= GRID_ELEMENTS ? GRID_ELEMENTS : data?.length;
+  const columnCount = data?.length >= GRID_ROW_AMOUNT ? GRID_ROW_AMOUNT : data?.length;
 
   return (
     <Box sx={{ ...styles.root }}>
@@ -40,10 +39,10 @@ const ProfileContentGrid = ({ data, Component }) => {
               {({ height, width }) => (
                 <Grid
                   columnCount={columnCount}
-                  columnWidth={PROFILE_CARD_WIDTH + PADDING}
+                  columnWidth={PROFILE_CARD_WIDTH + PADDING_PX}
                   height={height}
-                  rowCount={Math.ceil(data.length / GRID_ELEMENTS)}
-                  rowHeight={PROFILE_CARD_HEIGHT + PADDING}
+                  rowCount={Math.ceil(data.length / GRID_ROW_AMOUNT)}
+                  rowHeight={PROFILE_CARD_HEIGHT + PADDING_PX}
                   width={width + SCROLL_BAR_OFFSET}
                   itemData={data}
                 >
@@ -72,7 +71,7 @@ const ProfileContentGrid = ({ data, Component }) => {
             <Button
               sx={styles.button}
               onClick={() => setShowVirtualized(true)}
-              disabled={data?.length <= GRID_ELEMENTS}
+              disabled={data?.length <= GRID_ROW_AMOUNT}
             >
               Show more
             </Button>

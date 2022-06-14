@@ -15,7 +15,7 @@ const styles = {
   },
   title: {
     ...WHITE_TYPOGRAPHY_STYLES,
-    ml: 1,
+    marginLeft: 8,
   },
   orgImageWrapper: {
     minWidth: 32,
@@ -59,7 +59,7 @@ const styles = {
   },
   whiteText: {
     ...WHITE_TYPOGRAPHY_STYLES,
-    ml: 1,
+    marginLeft: 8,
     fontSize: 13,
   },
 };

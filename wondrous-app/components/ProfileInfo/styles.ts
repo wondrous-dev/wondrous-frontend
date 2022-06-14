@@ -27,7 +27,7 @@ const styles = {
     color: '#ccbbff',
     textDecorationLine: 'underline',
     fontFamily: 'Space Grotesk',
-    mr: 1.5,
+    marginRight: 12,
   },
   socialIcon: {
     width: 20,
