@@ -43,7 +43,10 @@ export const emailSignup = async (email: string, password: string) => {
     if (user) {
       // Set Apollo with Session
       await storeAuthHeader(token, user);
-      return true;
+      return {
+        success: true,
+        user,
+      };
     }
     return 'This email is already registered. Please log in';
   } catch (err) {
