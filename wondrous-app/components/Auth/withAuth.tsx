@@ -47,9 +47,8 @@ export const emailSignup = async (email: string, password: string) => {
     }
     return 'This email is already registered. Please log in';
   } catch (err) {
-    if (err?.graphQLErrors &&
-        err?.graphQLErrors[0]?.extensions.errorCode) {
-      return err?.graphQLErrors[0]?.extensions.errorCode
+    if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode) {
+      return err?.graphQLErrors[0]?.extensions.errorCode;
     }
     return 'Error Signing up';
   }
@@ -182,7 +181,10 @@ export const linkWallet = async (web3Address: string, signedMessage: string, blo
 
     return false;
   } catch (err) {
-    console.log('Error linking wallet: ', err);
+    console.log('Error linking wallet: ', err?.graphQLErrors);
+    if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.code) {
+      return err?.graphQLErrors[0]?.extensions.errorCode;
+    }
     return false;
   }
 };
