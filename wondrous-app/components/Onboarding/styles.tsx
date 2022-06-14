@@ -246,8 +246,7 @@ export const Connectors = styled.div`
     font-weight: 500;
   }
   
-  // TODO: Write class names
-  div:first-child {
+  div:nth-child(1) {
     background: linear-gradient(270deg, #7427FF,  #F5841F);
   }
   div:nth-child(2) {
@@ -262,6 +261,7 @@ export const Connectors = styled.div`
   div:nth-child(5) {
     background: linear-gradient(270deg, #7427FF,  #06FFA5);
   }
+  
   div > button {
     padding: 8px 0;
   }
