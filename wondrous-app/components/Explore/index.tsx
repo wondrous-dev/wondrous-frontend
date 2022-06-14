@@ -242,6 +242,11 @@ const ExploreComponent = () => {
             alignItems: 'center',
             flexDirection: 'column',
             padding: '40px',
+            overflowY: 'scroll',
+            scrollbarWidth: 'none',
+            '&::-webkit-scrollbar': {
+              display: 'none',
+            },
           }}
         >
           <Background>
