@@ -17,7 +17,7 @@ import { IsMobileContext, SideBarContext } from 'utils/contexts';
 import { initHotjar } from 'utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
-
+import OnboardingTour from 'components/Guide';
 declare global {
   interface Window {
     gtag: any;
@@ -85,13 +85,15 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
                         setMinimized,
                       }}
                     >
-                      <Component
-                        {...pageProps}
-                        query={context?.query}
-                        user={user}
-                        isAuthenticated={isAuthenticated}
-                        key={router.asPath}
-                      />
+                      <OnboardingTour>
+                        <Component
+                          {...pageProps}
+                          query={context?.query}
+                          user={user}
+                          isAuthenticated={isAuthenticated}
+                          key={router.asPath}
+                        />
+                      </OnboardingTour>
                     </SideBarContext.Provider>
                   </WonderWeb3Provider>
                 </Web3ReactProvider>

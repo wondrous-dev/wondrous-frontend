@@ -3,26 +3,33 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
-import { Button } from 'components/Common/button';
 import AuthLayout from 'components/Common/Layout/Auth';
+import { useIsMobile } from 'utils/hooks';
 import { LineWithText, Line } from 'components/Common/lines';
 import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
 import { PaddedParagraph, StyledLink } from 'components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
 import { useState } from 'react';
-import { Grey50 } from '../theme/colors';
+import { Grey50, White } from '../theme/colors';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { DiscordIcon } from 'components/Icons/discord';
 import { useWonderWeb3 } from 'services/web3';
-import { emailSignin, getUserSigningMessage, walletSignin } from 'components/Auth/withAuth';
+import { emailSignin, getUserSigningMessage, walletSignin, walletSignup } from 'components/Auth/withAuth';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
-import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS , SUPPORTED_CHAINS} from 'utils/constants';
+import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
+import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
+import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { Connectors, MainWrapper } from 'components/Onboarding/styles';
+import { Button } from 'components/Button';
+import { SupportedChainType } from 'utils/web3Constants';
+import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
 const prod = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -40,20 +47,18 @@ const Login = ({ csrfToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [notSupported, setNotSupported] = useState(false);
+  const [notSupportedChain, setNotSupportedChain] = useState(false);
   const [loading, setLoading] = useState(null);
+  const isMobile = useIsMobile();
   const router = useRouter();
   const { discordConnectError } = router.query;
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const result = await emailSignin(email, password);
-    if (result === true) {
-      router.push('/dashboard', undefined, {
-        shallow: true,
-      });
-    } else {
-      setErrorMessage(result);
+    const userOrErrorMessage = await emailSignin(email, password);
+    handleUserOnboardingRedirect(userOrErrorMessage, router);
+    if (userOrErrorMessage === 'Incorrect Email and Password combination') {
+      setErrorMessage('Incorrect Email and Password combination');
     }
   };
 
@@ -67,6 +72,7 @@ const Login = ({ csrfToken }) => {
 
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
+
         if (signedMessageIsString(signedMessage)) {
           // Sign with Wallet
           setLoading(true);
@@ -82,12 +88,11 @@ const Login = ({ csrfToken }) => {
                   shallow: true,
                 });
               }
-            } else {
-              setErrorMessage('no user found'); // this feels like it will never happen?
-            }
+            } 
           } catch (err) {
+            console.log('err?.graphQLErrors', err?.graphQLErrors)
             if (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.NO_WEB3_ADDRESS_FOUND) {
-              setErrorMessage('No account found, check if connected to the correct address');
+              setErrorMessage('Address not found, check you are connected to the correct address');
             } else {
               setErrorMessage(err?.message || err);
             }
@@ -120,102 +125,116 @@ const Login = ({ csrfToken }) => {
   }, [wonderWeb3.wallet, wonderWeb3.isActivating]);
 
   useEffect(() => {
-    setNotSupported(wonderWeb3.notSupportedChain);
-  }, [wonderWeb3.notSupportedChain]);
+    if (wonderWeb3.wallet.chain) {
+      setNotSupportedChain(!SUPPORTED_CHAINS[wonderWeb3.chain]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wonderWeb3.wallet.chain]);
+
+
+  const buttonStyles = {
+    width: '40px',
+    height: '40px',
+    borderRadius: '300px',
+    margin: '0 6px',
+  };
 
   return (
-    <AuthLayout>
-      <LoginWrapper>
-        <Image
-          alt="Background"
-          className="auth-background"
-          src="/images/login/background.png"
-          layout="fill"
-          objectFit="cover"
-          quality={80}
-        />
-        <Image alt="Background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
-        <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
-        <Card>
-          <CardBody>
-            <SmallLogo />
-            {!prod && (
-              <>
-                <h1>Login</h1>
-                <Form onSubmit={handleSubmit}>
-                  <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
-                  {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-                  <Field
-                    type="email"
-                    name="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email address"
-                    icon={EmailIcon}
-                    required
-                  />
-                  <Field
-                    type="password"
-                    name="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="Enter password"
-                    icon={LockIcon}
-                    required
-                  />
-                  <Button highlighted type="submit" marginTop="25px">
-                    Log me in
-                  </Button>
-                </Form>
-                <LineWithText>
-                  <PaddedParagraph padding="0 10px" color={Grey50}>
-                    or
-                  </PaddedParagraph>
-                </LineWithText>
-              </>
-            )}
-            <WalletLoginContainer
+    <MainWrapper>
+      <Layout
+        style={{
+          minHeight: 'unset',
+        }}
+      >
+        <OnboardingHeader withSignupButton />
+        <OnboardingTitle
+          style={{
+            textAlign: 'center',
+          }}
+        >
+          Log in with email
+        </OnboardingTitle>
+
+        <div style={{ width: '100%' }}>
+          {(!notSupportedChain&& errorMessage )? <LoginError>{errorMessage}</LoginError> : ''}
+          {notSupportedChain && <LoginError>{'Unsupported network, changed to mainnet or a supported network'}</LoginError> }
+          <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
+            <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
+            <Field
+              type="email"
+              name="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email address"
+              icon={EmailIcon}
+              required
+              rightIcon
+            />
+            <Field
+              type="password"
+              name="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="Enter password"
+              icon={LockIcon}
+              required
+              rightIcon
+            />
+            <Button
+              type="submit"
               style={{
-                marginTop: '24px',
+                marginTop: '37px',
+                minHeight: '50px',
+                width: '100%',
               }}
             >
-              <MetaMaskConnector />
-            </WalletLoginContainer>
-            <WalletLoginContainer>
-              <WalletConnectConnector />
-            </WalletLoginContainer>
-            <WalletLoginContainer>
-              <CoinbaseConnector />
-            </WalletLoginContainer>
-            <WalletLoginContainer>
-              <Button onClick={() => (window.location.href = discordUrl)}>
-                <DiscordIcon />
-                <PaddedParagraph
-                  style={{
-                    marginLeft: '12px',
-                  }}
-                >
-                  Log in with Discord
-                </PaddedParagraph>
-              </Button>
-            </WalletLoginContainer>
-          </CardBody>
-          {/* <CardFooter>
-            <Line size="80%" />
-            <CenteredFlexRow marginTop="16px">
-              Don&apos;t have an account yet?&nbsp;
-              <StyledLink href="/signup">Sign up for the beta.</StyledLink>
-            </CenteredFlexRow>
-            <CenteredFlexRow>
-              Forgot &nbsp;
-              <StyledLink href="/forgot-password">password</StyledLink>
-              &nbsp; or &nbsp;
-              <StyledLink href="/forgot-email">email</StyledLink>?
-            </CenteredFlexRow>
-          </CardFooter> */}
-        </Card>
-      </LoginWrapper>
-    </AuthLayout>
+              Log me in
+            </Button>
+          </Form>
+          <LineWithText width="45%" borderBottom="1px dashed #4b4b4b">
+            <PaddedParagraph padding="0 10px" color={White} style={{ fontWeight: 500 }}>
+              or
+            </PaddedParagraph>
+          </LineWithText>
+          <Connectors
+            style={{
+              flexDirection: 'unset',
+              borderTop: 0,
+              justifyContent: 'center',
+            }}
+          >
+            {!isMobile && <MetaMaskConnector text="" style={buttonStyles} />}
+            <WalletConnectConnector text="" style={buttonStyles} />
+            <CoinbaseConnector text="" style={buttonStyles} />
+            <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
+              <DiscordIcon />
+            </Button>
+            {/* <Button
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '300px',
+                margin: '0 6px',
+                background: '#474747',
+              }}
+              onClick={() => {
+                router.push('/signup/email', undefined, {
+                  shallow: true,
+                });
+              }}
+            >
+              <EmailIcon
+                style={{
+                  width: '18px',
+                  height: '18px',
+                  filter: 'grayscale(1)',
+                }}
+              />
+            </Button> */}
+          </Connectors>
+        </div>
+      </Layout>
+    </MainWrapper>
   );
 };
 

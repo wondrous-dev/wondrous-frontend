@@ -76,6 +76,15 @@ export const TaskFragment = gql`
     }
     maxSubmissionCount
     points
+    githubIssue {
+      id
+      url
+    }
+    githubPullRequest {
+      id
+      url
+      title
+    }
   }
   ${MediaFragment}
 `;

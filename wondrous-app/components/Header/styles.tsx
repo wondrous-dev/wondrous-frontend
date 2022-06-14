@@ -33,7 +33,7 @@ export const HeaderLeftBlock = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  gap: 45px;
+  gap: 5%;
 `;
 
 export const HeaderLogoWrapper = styled.button`

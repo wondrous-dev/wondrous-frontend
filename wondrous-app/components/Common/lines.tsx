@@ -5,18 +5,18 @@ import { Grey85 } from '../../theme/colors'
 export const Line = styled.h2`
 	&& {
 		text-align: center;
-		border-bottom: 1px solid ${Grey85};
+		border-bottom: ${(props) => props.borderBottom};
 		line-height: 0.1rem;
 		width: ${(props) => props.width || '100%'};
 	}
 `
 
-export const LineWithText = ({ children }) => {
+export const LineWithText = ({ children, width = "25%", borderBottom=`1px solid ${Grey85}` }) => {
 	return (
 		<CenteredFlexRow>
-			<Line width="25%" />
+			<Line width={width} borderBottom={borderBottom} />
 			{children}
-			<Line width="25%" />
+			<Line width={width} borderBottom={borderBottom} />
 		</CenteredFlexRow>
 	)
 }

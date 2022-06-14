@@ -16,7 +16,6 @@ const WorkingOnCard = ({ item }) => {
 
   return (
     <Box sx={styles.root}>
-
     </Box>
   );
 };

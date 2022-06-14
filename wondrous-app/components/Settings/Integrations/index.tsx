@@ -10,30 +10,26 @@ import { IntegrationsContainer } from './styles';
 import { ethers } from 'ethers';
 import snapshot from '@snapshot-labs/snapshot.js';
 import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
+import { GithubIntegration } from '../Github';
 
 // config to use proper snapshot hub address
 const isTestSnapshot = true;
-const hub = isTestSnapshot
-  ? 'https://testnet.snapshot.org'
-  : 'https://hub.snapshot.org'
+const hub = isTestSnapshot ? 'https://testnet.snapshot.org' : 'https://hub.snapshot.org';
 const client = new snapshot.Client712(hub);
 
 // snapshot graphql API
-const snapshotAPI = isTestSnapshot
-  ? 'https://testnet.snapshot.org/graphql'
-  : 'https://hub.snapshot.org/graphql'
+const snapshotAPI = isTestSnapshot ? 'https://testnet.snapshot.org/graphql' : 'https://hub.snapshot.org/graphql';
 
 const cache = new InMemoryCache();
 const snapshotClient = new ApolloClient({
   cache: cache,
-  uri: snapshotAPI
+  uri: snapshotAPI,
 });
 
-
 const useSnapshot = () => {
-  const [snapshotChecked, setSnapshotChecked] = useState(false)
-  const [snapshotConnected, setSnapshotConnected] = useState(false)
-  const [snapshotSpace, setSnapshotSpace] = useState({ name: '' })
+  const [snapshotChecked, setSnapshotChecked] = useState(false);
+  const [snapshotConnected, setSnapshotConnected] = useState(false);
+  const [snapshotSpace, setSnapshotSpace] = useState({ name: '' });
 
   return {
     snapshotChecked,
@@ -41,10 +37,9 @@ const useSnapshot = () => {
     snapshotConnected,
     setSnapshotConnected,
     snapshotSpace,
-    setSnapshotSpace
-  }
-}
-
+    setSnapshotSpace,
+  };
+};
 
 const Integrations = (props) => {
   const router = useRouter();
@@ -58,7 +53,8 @@ const Integrations = (props) => {
           title="Integrations Settings"
           description="Set up Wonder integrations with external applications"
         />
-        <SnapshotConfigSection orgId={orgId} podId={podId}/>
+        <SnapshotConfigSection orgId={orgId} podId={podId} />
+        <GithubIntegration orgId={orgId} />
       </IntegrationsContainer>
     </SettingsWrapper>
   );

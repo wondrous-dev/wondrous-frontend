@@ -92,6 +92,7 @@ const Wrapper = (props) => {
 
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
+
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
@@ -114,7 +115,7 @@ const Wrapper = (props) => {
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
-  const { search } = router.query;
+  const { search, entity } = router.query;
   const handleJoinOrgButtonClick = async () => {
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
       setOpenJoinRequestModal(true);
@@ -179,6 +180,18 @@ const Wrapper = (props) => {
     setTokenGatedRoles(roles);
     setOpenGatedRoleModal(true);
   };
+
+  useEffect(() => {
+    if (!entity && !search) {
+      const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
+      const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
+      if (taskCount === 0 && bountyCount > taskCount) {
+        router.push(`/organization/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+          shallow: true,
+        });
+      }
+    }
+  }, [tasksPerTypeData, entity]);
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 
 interface SafeImageArgs {

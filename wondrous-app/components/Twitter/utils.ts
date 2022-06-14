@@ -1,5 +1,5 @@
 
-const TWITTER_CLIENT_ID = process.env.NEXT_PUBLIC_TWITTER_CLIENT_ID;
+const TWITTER_CLIENT_ID = 'alotNFdURk5Qd0FoRGpKeUpHMDE6MTpjaQ';
 const DEFAULT_TWITTER_SCOPE = 'users.read%20tweet.read%20offline.access';
 
 export const challengeCode = '0ioze5m20493ny2'; // not that important but should fetch from server
@@ -8,7 +8,7 @@ export const getTwitterCallbackUrl = () => {
     if (process.env.NEXT_PUBLIC_PRODUCTION) {
       return 'https%3A%2F%2Fapp.wonderverse.xyz%2Ftwitter%2Fcallback';
     } else if (process.env.NEXT_PUBLIC_STAGING) {
-      return 'https%3A%2F%2Fapp.wonderverse.xyz%2Ftwitter%2Fcallback';
+      return 'https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Ftwitter%2Fcallback';
     }
     return 'http%3A%2F%2Flocalhost%3A3000%2Ftwitter%2Fcallback';
   };

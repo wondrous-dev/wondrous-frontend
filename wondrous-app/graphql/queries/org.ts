@@ -215,3 +215,20 @@ export const GET_ORG_LABELS = gql`
     }
   }
 `;
+
+export const HAS_ORG_GITHUB_INTEGRATION = gql`
+  query hasGithubOrgIntegration($orgId: ID!) {
+    hasGithubOrgIntegration(orgId: $orgId) {
+      exist
+    }
+  }
+`;
+
+export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
+  query getOrgAvailableRepositories($orgId: ID!) {
+    getOrgAvailableRepositories(orgId: $orgId) {
+      id
+      fullName
+    }
+  }
+`;

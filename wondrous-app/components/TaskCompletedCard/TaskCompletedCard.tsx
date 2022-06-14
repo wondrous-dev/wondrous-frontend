@@ -161,7 +161,6 @@ const TaskCompletedCard = ({ item }) => {
         )}
       </TaskHeader>
       <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
-
       <TaskContent>
         <TaskTitle>{task.title}</TaskTitle>
 

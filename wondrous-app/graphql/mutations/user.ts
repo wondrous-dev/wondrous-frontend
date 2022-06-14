@@ -86,6 +86,14 @@ export const USER_DISOCRD_SIGNUP_LOGIN = gql`
   ${LoggedinUserFragment}
 `;
 
+export const SET_USER_COMPLETED_GUIDE = gql`
+  mutation setUserCompletedGuide($guideId: String!) {
+    setUserCompletedGuide(guideId: $guideId) {
+      success
+    }
+  }
+`;
+
 export const CREATE_USER_INTEREST = gql`
   mutation createUserInterests($interests: [String]) {
     createUserInterests(interests: $interests) {

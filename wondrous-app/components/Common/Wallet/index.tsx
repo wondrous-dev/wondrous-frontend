@@ -250,7 +250,7 @@ const Wallet = () => {
             )}
           </DropDown>
           <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
-          {differentAccountError && (
+          {/* {differentAccountError && (
             <ErrorText
               style={{
                 width: '120px',
@@ -259,7 +259,7 @@ const Wallet = () => {
             >
               Not linked wallet
             </ErrorText>
-          )}
+          )} */}
         </WalletDisplay>
       </WalletWrapper>
     );
