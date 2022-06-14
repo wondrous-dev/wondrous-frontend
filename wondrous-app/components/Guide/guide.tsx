@@ -4,19 +4,19 @@ export const guideConfig = {
   '/explore': {
     id: 'explore_guide',
     steps: [
-      {
-        selector: '#tour-header-create-btn',
-        position: 'bottom',
-        content: () => (
-          <div>
-            <StepTitle gradient="linear-gradient(180deg, #ffffff 0%, #06ffa5 100%)">Create tasks</StepTitle>
-            <StepBody>You can create tasks, proposals, pods, and milestones by clicking this button.</StepBody>
-          </div>
-        ),
-        nextButtonTitle: 'Sounds good',
-        prevButtonTitle: 'Skip training',
-        prevAction: 'skip',
-      },
+      // {
+      //   selector: '#tour-header-create-btn',
+      //   position: 'bottom',
+      //   content: () => (
+      //     <div>
+      //       <StepTitle gradient="linear-gradient(180deg, #ffffff 0%, #06ffa5 100%)">Create tasks</StepTitle>
+      //       <StepBody>You can create tasks, proposals, pods, and milestones by clicking this button.</StepBody>
+      //     </div>
+      //   ),
+      //   nextButtonTitle: 'Sounds good',
+      //   prevButtonTitle: 'Skip training',
+      //   prevAction: 'skip',
+      // },
       {
         selector: '#tour-header-dashboard-icon',
         position: 'bottom',
