@@ -1,35 +1,50 @@
-import styled from 'styled-components'
-import { Background, Grey50 } from '../../theme/colors'
+import styled from 'styled-components';
+import { Background, Grey50 } from '../../theme/colors';
 
 export const FieldWrapper = styled.div`
-	position: relative;
+  position: relative;
 
-	& > svg {
-		position: absolute;
-		height: 20px;
-		width: 20px;
-		top: 18px;
-		left: 15px;
-	}
-`
+  & > svg {
+    position: absolute;
+    height: 20px;
+    width: 20px;
+    top: 18px;
+    left: 15px;
+
+    ${(props) =>
+      props.rightIcon
+        ? {
+            right: '15px',
+            left: 'auto',
+          }
+        : null}
+  }
+`;
 
 export const FieldInput = styled.input`
-	&& {
-		padding: 15px 0 15px 50px;
-		margin: 5px 0;
-		border-radius: 8px;
-		border: 0px;
-		color: ${Grey50};
-		outline: none;
-		font-size: 14px;
-		background: ${Background};
-		width: 100%;
-	}
-`
+  && {
+    padding: 15px 0 15px 50px;
+    margin: 5px 0;
+    border-radius: 8px;
+    border: 0px;
+    color: ${Grey50};
+    outline: none;
+    font-size: 14px;
+    background: ${Background};
+    width: 100%;
+
+    ${(props) =>
+      props.rightIcon
+        ? {
+            padding: '15px 50px 15px 15px',
+          }
+        : null}
+  }
+`;
 
 export const Field = ({ ...props }) => (
-	<FieldWrapper>
-		{props.icon && props.icon()}
-		<FieldInput {...props} />
-	</FieldWrapper>
-)
+  <FieldWrapper {...props}>
+    {props.icon && props.icon()}
+    <FieldInput {...props} />
+  </FieldWrapper>
+);

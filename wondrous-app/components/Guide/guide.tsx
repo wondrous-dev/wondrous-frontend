@@ -24,7 +24,7 @@ export const guideConfig = {
           <div>
             <StepTitle gradient="linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)">Your Dashboard</StepTitle>
             <StepBody>
-              All of your most important work across projects lives ere. Check this every day to see what you need to do
+              All of your most important work across projects live here. Check this every day to see what you need to do
               next.
             </StepBody>
           </div>

@@ -10,7 +10,7 @@ import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import styled from 'styled-components';
 
 // import specific Web3Provider snapshot is using
-import { Web3Provider } from '@snapshot-labs/snapshot.js/node_modules/@ethersproject/providers';
+import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { useWonderWeb3 } from '../web3';
 

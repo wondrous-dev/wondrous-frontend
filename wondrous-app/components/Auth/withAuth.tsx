@@ -43,11 +43,17 @@ export const emailSignup = async (email: string, password: string) => {
     if (user) {
       // Set Apollo with Session
       await storeAuthHeader(token, user);
-      return true;
+      return {
+        success: true,
+        user,
+      };
     }
-    return 'This email is already registered. Try recovering password.';
+    return 'This email is already registered. Please log in';
   } catch (err) {
-    return 'This email is already registered. Try recovering password.';
+    if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode) {
+      return err?.graphQLErrors[0]?.extensions.errorCode;
+    }
+    return 'Error Signing up';
   }
 };
 
@@ -92,7 +98,7 @@ export const emailSignin = async (email: string, password: string) => {
     if (user) {
       // Set Apollo with Session
       await storeAuthHeader(token, user);
-      return true;
+      return user;
     }
     return 'Incorrect Email and Password combination';
   } catch (err) {
@@ -178,7 +184,10 @@ export const linkWallet = async (web3Address: string, signedMessage: string, blo
 
     return false;
   } catch (err) {
-    console.log('Error linking wallet: ', err);
+    console.log('Error linking wallet: ', err?.graphQLErrors);
+    if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.code) {
+      return err?.graphQLErrors[0]?.extensions.errorCode;
+    }
     return false;
   }
 };

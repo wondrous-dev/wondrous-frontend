@@ -32,9 +32,12 @@ import { useRouter } from 'next/router';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
 import HelpModal from './HelpModal.jsx';
+import { useIsMobile } from 'utils/hooks';
 
 const SideBarComponent = (props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
+  const isMobile = useIsMobile();
+
   const sidebar = useSideBar();
   const minimized = sidebar?.minimized;
   const setMinimized = sidebar?.setMinimized;
@@ -98,6 +101,7 @@ const SideBarComponent = (props) => {
     color: '#C4C4C4',
   };
 
+  if (isMobile) return null;
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
@@ -126,6 +130,20 @@ const SideBarComponent = (props) => {
             const isExternal = link?.url?.includes('https://');
             const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
             const actionProps = link?.action ? { onClick: link?.action } : {};
+            if (link.key === 'explore') {
+              return (
+                <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
+                  <DrawerBottomButton type="button" {...actionProps}>
+                    {!!link?.url && (
+                      <div onClick={() => (window.location.href = '/explore')}>
+                        <Icon id={link?.id} />
+                      </div>
+                    )}
+                    {link?.action && <Icon />}
+                  </DrawerBottomButton>
+                </Tooltip>
+              );
+            }
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                 <DrawerBottomButton type="button" {...actionProps}>
@@ -181,17 +199,6 @@ const SideBarComponent = (props) => {
                   </Tooltip>
                 );
               })}
-            {listItems && !listItems?.length && (
-              <Tooltip title={'Explore'} placement="right" style={toolTipStyle}>
-                <DrawerBottomButton type="button">
-                  <Link href="/explore" passHref>
-                    <a>
-                      <JoinDaoIcon id="tour-sidebar-daos" />
-                    </a>
-                  </Link>
-                </DrawerBottomButton>
-              </Tooltip>
-            )}
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
