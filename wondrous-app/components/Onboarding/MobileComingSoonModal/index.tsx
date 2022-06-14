@@ -56,7 +56,7 @@ const MobileComingSoonModal = () => {
               marginTop: '24px',
             }}
           >
-            Mobile is coming (very) soon.
+            Mobile is coming (very) Soon™.
           </UsernameTitle>
           <UsernameDescription
             style={{
