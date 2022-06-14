@@ -136,7 +136,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
             fontWeight: '400',
           }}
         >
-          if you haven&apos;t connected your wallet, please add your ENS to the tweet
+          If you haven&apos;t connected your wallet, please add your ENS to the tweet
         </InviteWelcomeBoxParagraph>
       )}
       <div
@@ -163,8 +163,25 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                   width: '100%',
                 }}
               >
-                <TwitterLogo style={{ marginRight: '10px' }} />
-                Tweet
+                <div
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div
+                    style={{
+                      marginRight: '10px',
+                    }}
+                  >
+                    Step 1:
+                  </div>
+                  <>
+                    Tweet
+                    <TwitterLogo style={{ marginLeft: '10px' }} />
+                  </>
+                </div>
               </ContinueButton>
             </a>
             <LaterButton
@@ -175,8 +192,23 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
               }}
               onClick={verifyUserTweet}
             >
-              {checkTweetLoading && <>Cheking...</>}
-              {!checkTweetLoading && <>Verify</>}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'space-between',
+                }}
+              >
+                <div
+                  style={{
+                    marginRight: '10px',
+                  }}
+                >
+                  Step 2:
+                </div>
+                {checkTweetLoading && <>Cheking...</>}
+                {!checkTweetLoading && <>Verify</>}
+              </div>
             </LaterButton>
             <Later
               style={{
@@ -203,7 +235,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                 height: '50px',
               }}
             >
-              Congrats! your NFT will be aidropped to you at the end of the week
+              Congrats! your NFT will be airdropped to you at the end of the week
             </SecretCodeContainer>
             <ContinueButton
               style={{
