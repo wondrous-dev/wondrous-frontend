@@ -1,17 +1,17 @@
 import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 
-import { PaddedParagraph, StyledLink } from "components/Common/text";
-import OnboardingHeader from "components/Onboarding/OnboardingLayout/Header";
-import { Layout, OnboardingTitle } from "components/Onboarding/OnboardingLayout/styles";
-import { Form } from "components/Common/form";
-import { LoginError } from "components/Pages/login";
-import { Field } from "components/Common/field";
-import { EmailIcon, LockIcon } from "components/Icons/userpass";
-import { LineWithText } from "components/Common/lines";
-import { White } from "../../../theme/colors";
-import { ContinueButton } from "components/Onboarding/OnboardingLayout/Footer/styles";
-import { emailSignup } from "components/Auth/withAuth";
+import { PaddedParagraph, StyledLink } from 'components/Common/text';
+import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
+import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
+import { Form } from 'components/Common/form';
+import { LoginError } from 'components/Pages/login';
+import { Field } from 'components/Common/field';
+import { EmailIcon, LockIcon } from 'components/Icons/userpass';
+import { LineWithText } from 'components/Common/lines';
+import { White } from '../../../theme/colors';
+import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
+import { emailSignup } from 'components/Auth/withAuth';
 
 const Signup = () => {
   // looks like this is not used?
@@ -25,7 +25,8 @@ const Signup = () => {
     event.preventDefault();
 
     const result = await emailSignup(email, password);
-    if (result === true) {
+    if (result?.success === true) {
+      // Check for token
       router.push('/dashboard', undefined, {
         shallow: true,
       });
@@ -37,23 +38,21 @@ const Signup = () => {
   return (
     <Layout
       style={{
-        minHeight: 'unset'
+        minHeight: 'unset',
       }}
     >
-      <OnboardingHeader
-        secondVersionLogo={true}
-      />
+      <OnboardingHeader secondVersionLogo={true} />
       <OnboardingTitle
         style={{
-          textAlign: 'center'
+          textAlign: 'center',
         }}
       >
         Sign-up with email
       </OnboardingTitle>
 
-      <div style={{width: '100%'}}>
+      <div style={{ width: '100%' }}>
         {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-        <Form onSubmit={handleSubmit} style={{marginBottom: '37px'}}>
+        <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
           <Field
             type="email"
             name="email"
@@ -84,7 +83,7 @@ const Signup = () => {
           </ContinueButton>
         </Form>
         <LineWithText>
-          <PaddedParagraph padding="0 10px" color={White} style={{fontWeight: 500}}>
+          <PaddedParagraph padding="0 10px" color={White} style={{ fontWeight: 500 }}>
             or
           </PaddedParagraph>
         </LineWithText>
@@ -95,7 +94,7 @@ const Signup = () => {
             textAlign: 'center',
             fontWeight: 500,
             marginTop: '18px',
-            textDecoration: 'none'
+            textDecoration: 'none',
           }}
         >
           Back to options

@@ -5,10 +5,16 @@ import { guideConfig } from './guide';
 import { useRouter } from 'next/router';
 import { NextButton, PrevButton, NavigationWrapper } from './styles';
 import { toggleHtmlOverflow } from 'utils/helpers';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
+
 export default function OnboardingGuide({ children }) {
-  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE);
+  const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
+    refetchQueries: [{ query: GET_LOGGED_IN_USER }],
+  });
+
   const router = useRouter();
-  const guide = guideConfig[router?.pathname] || { steps: [], id: null };
+
+  const guide: any = guideConfig[router.pathname];
   const steps = guide?.steps;
   const disableBody = () => {
     toggleHtmlOverflow();
@@ -42,6 +48,7 @@ export default function OnboardingGuide({ children }) {
     },
   };
 
+  if (!guide?.id) return <>{children}</>;
   return (
     <TourProvider
       afterOpen={disableBody}

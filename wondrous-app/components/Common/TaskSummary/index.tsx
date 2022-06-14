@@ -50,6 +50,7 @@ import PodIcon from '../../Icons/podIcon';
 import { ViewType } from 'types/common';
 import { useLocation } from 'utils/useLocation';
 import { skipForCommandKey } from 'utils/links';
+import { RichTextViewer } from 'components/RichText';
 
 let windowOffset;
 
@@ -235,12 +236,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
             <TaskTitle>
               <Link href={viewUrl}>{title}</Link>
             </TaskTitle>
-            <TaskCardDescriptionText>
-              {renderMentionString({
-                content: task?.description,
-                router,
-              })}
-            </TaskCardDescriptionText>
+            <RichTextViewer text={task?.description} />
             {task?.podName && (
               <div
                 style={{

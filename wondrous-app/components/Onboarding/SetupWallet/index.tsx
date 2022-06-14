@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
-
+import { useIsMobile } from 'utils/hooks';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
@@ -20,6 +20,8 @@ import LeftArrowIcon from 'components/Icons/leftArrow';
 
 export const SetupWallet = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
+
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -109,9 +111,9 @@ export const SetupWallet = () => {
 
       <Connectors>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
-        <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
-        <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
+        {!isMobile && <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />}
         <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
+        <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
         <LaterButton onClick={handleLaterClick} style={{ ...buttonStyles, background: '#454545', marginRight: 0 }}>
           I&apos;ll connect it later
         </LaterButton>

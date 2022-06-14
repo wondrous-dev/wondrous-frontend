@@ -9,6 +9,7 @@ import {
   DataLink,
 } from './styles';
 import { useWonderWeb3 } from 'services/web3';
+import { useIsMobile } from 'utils/hooks';
 import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
@@ -39,6 +40,7 @@ export const Invite = ({
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
   const [noChainError, setNoChainError] = useState('');
+  const isMobile = useIsMobile();
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
@@ -56,7 +58,7 @@ export const Invite = ({
   //     setErrorMessage('Unsupported chain - please use Eth mainnet');
   //   }
   // };
-
+  //
   const signupWithWallet = async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       // Retrieve Signed Message
@@ -72,7 +74,6 @@ export const Invite = ({
           let user;
           try {
             user = await walletSignup(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
-            onAuthenticated(user);
           } catch (err) {
             if (
               err?.graphQLErrors &&
@@ -80,13 +81,10 @@ export const Invite = ({
             ) {
               try {
                 user = await walletSignin(wonderWeb3.address, signedMessage);
-                if (user) {
-                  handleUserOnboardingRedirect(user, router)
-                } 
               } catch (err) {
                 setErrorMessage('Unable to log in existing user - please contact support in discord');
               }
-              setErrorMessage('Account already exists');
+              // setErrorMessage('Account already exists');
             } else {
               setErrorMessage('Unable to join org - please contact support in discord.');
             }
@@ -98,17 +96,7 @@ export const Invite = ({
                   token,
                 },
                 onCompleted: (data) => {
-                  if (data?.redeemOrgInviteLink?.success) {
-                    if (user?.username) {
-                      router.push('/dashboard', undefined, {
-                        shallow: true,
-                      });
-                    } else {
-                      router.push(`/onboarding/welcome`, undefined, {
-                        shallow: true,
-                      });
-                    }
-                  }
+                  handleUserOnboardingRedirect(user, router);
                 },
                 onError: (err) => {
                   if (
@@ -116,15 +104,7 @@ export const Invite = ({
                     (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
                       err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
                   ) {
-                    if (user?.username) {
-                      router.push('/dashboard', undefined, {
-                        shallow: true,
-                      });
-                    } else {
-                      router.push(`/onboarding/welcome`, undefined, {
-                        shallow: true,
-                      });
-                    }
+                    handleUserOnboardingRedirect(user, router);
                   }
                   setErrorMessage('Invite already redeemed');
                 },
@@ -135,17 +115,7 @@ export const Invite = ({
                   token,
                 },
                 onCompleted: (data) => {
-                  if (data?.redeemPodInviteLink?.success) {
-                    if (user?.username) {
-                      router.push('/dashboard', undefined, {
-                        shallow: true,
-                      });
-                    } else {
-                      router.push(`/onboarding/welcome`, undefined, {
-                        shallow: true,
-                      });
-                    }
-                  }
+                  handleUserOnboardingRedirect(user, router);
                 },
                 onError: (err) => {
                   if (
@@ -153,19 +123,14 @@ export const Invite = ({
                     (err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.ORG_INVITE_ALREADY_EXISTS ||
                       err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
                   ) {
-                    if (user?.username) {
-                      router.push('/dashboard', undefined, {
-                        shallow: true,
-                      });
-                    } else {
-                      router.push(`/onboarding/welcome`, undefined, {
-                        shallow: true,
-                      });
-                    }
+                    handleUserOnboardingRedirect(user, router);
                   }
                   setErrorMessage('Invite already redeemed');
                 },
               });
+            } else {
+              console.log('here', user);
+              handleUserOnboardingRedirect(user, router);
             }
           }
         } else if (signedMessage === false) {
@@ -206,7 +171,6 @@ export const Invite = ({
     titleSentence = title;
   }
 
-
   const buttonStyles = {
     marginTop: '16px',
     width: '100%',
@@ -245,7 +209,7 @@ export const Invite = ({
         {children}
 
         <Connectors>
-          <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />
+          {!isMobile && <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />}
           <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
           <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
           <Button
@@ -279,9 +243,21 @@ export const Invite = ({
           <Button
             style={buttonStyles}
             onClick={() => {
-              router.push('/signup/email', undefined, {
-                shallow: true,
-              });
+              if (token) {
+                if (orgInfo) {
+                  router.push(`/signup/email?inviteToken=${token}`, undefined, {
+                    shallow: true,
+                  });
+                } else if (podInfo) {
+                  router.push(`/signup/email?inviteToken=${token}&type=pod`, undefined, {
+                    shallow: true,
+                  });
+                }
+              } else {
+                router.push('/signup/email', undefined, {
+                  shallow: true,
+                });
+              }
             }}
           >
             <EmailIcon />
@@ -297,7 +273,11 @@ export const Invite = ({
         </Connectors>
 
         <DataProtectBoxParagraph>
-          Your account and <DataLink href="https://www.wonderverse.xyz/privacy-policy" target="_blank">data</DataLink> is protected.
+          Your account and{' '}
+          <DataLink href="https://www.wonderverse.xyz/privacy-policy" target="_blank">
+            data
+          </DataLink>{' '}
+          is protected.
         </DataProtectBoxParagraph>
         {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
         {!wonderWeb3.chain && noChainError && <ErrorText>{noChainError}</ErrorText>}

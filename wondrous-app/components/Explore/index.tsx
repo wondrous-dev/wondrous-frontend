@@ -19,6 +19,7 @@ import {
 import { SafeImage } from '../Common/Image';
 import { Grid } from '@material-ui/core';
 import { useRouter } from 'next/router';
+import { useIsMobile } from 'utils/hooks';
 
 const FeaturedList = [
   {
@@ -168,14 +169,13 @@ const FeaturedList = [
     imageUrl: 'https://pbs.twimg.com/profile_images/1501218472973504512/xWitV8PR_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1483865970724589568/1645050021/1500x500',
   },
-  {
-    username: 'clubrareNFT',
-    name: 'ClubRare',
-    bio: 'Buy, sell, and trade IRL collectibles on the premiere NFT marketplace for physical goods. Gear Up for the metaverse, the mall, and beyond. $MPWR 🚀',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1532032190904680451/rG_Dodiu_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1420196888330981377/1653600728/1500x500',
-  },
 ];
+
+const gridMobileStyles = {
+  width: '100%',
+  maxWidth: '100vw',
+  marginLeft: '0',
+};
 
 const OrgItem = ({ org }) => {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
@@ -225,6 +225,8 @@ const OrgItem = ({ org }) => {
 };
 const ExploreComponent = () => {
   const [minimized, setMinimized] = useState(false);
+  const isMobile = useIsMobile();
+
   return (
     <>
       <Header />
@@ -249,13 +251,13 @@ const ExploreComponent = () => {
             },
           }}
         >
-          <Background>
+          <Background style={isMobile ? gridMobileStyles : {}}>
             <BackgroundText>
               Where world-changing DAOs <br />
               are being built.
             </BackgroundText>
           </Background>
-          <StyledGridContainer container spacing={2}>
+          <StyledGridContainer container spacing={2} style={isMobile ? gridMobileStyles : {}}>
             {FeaturedList.map((org, index) => (
               <OrgItem key={index} org={org} />
             ))}

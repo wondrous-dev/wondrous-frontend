@@ -4,6 +4,7 @@ import Image from 'next/image';
 
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
 import AuthLayout from 'components/Common/Layout/Auth';
+import { useIsMobile } from 'utils/hooks';
 import { LineWithText, Line } from 'components/Common/lines';
 import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
@@ -21,7 +22,7 @@ import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import styled from 'styled-components';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import { getDiscordUrl } from 'utils';
-import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS , SUPPORTED_CHAINS} from 'utils/constants';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
@@ -46,8 +47,9 @@ const Login = ({ csrfToken }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const [notSupported, setNotSupported] = useState(false);
+  const [notSupportedChain, setNotSupportedChain] = useState(false);
   const [loading, setLoading] = useState(null);
+  const isMobile = useIsMobile();
   const router = useRouter();
   const { discordConnectError } = router.query;
   const handleSubmit = async (event) => {
@@ -123,8 +125,12 @@ const Login = ({ csrfToken }) => {
   }, [wonderWeb3.wallet, wonderWeb3.isActivating]);
 
   useEffect(() => {
-    setNotSupported(wonderWeb3.notSupportedChain);
-  }, [wonderWeb3.notSupportedChain]);
+    if (wonderWeb3.wallet.chain) {
+      setNotSupportedChain(!SUPPORTED_CHAINS[wonderWeb3.chain]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wonderWeb3.wallet.chain]);
+
 
   const buttonStyles = {
     width: '40px',
@@ -150,7 +156,8 @@ const Login = ({ csrfToken }) => {
         </OnboardingTitle>
 
         <div style={{ width: '100%' }}>
-          {errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
+          {(!notSupportedChain&& errorMessage )? <LoginError>{errorMessage}</LoginError> : ''}
+          {notSupportedChain && <LoginError>{'Unsupported network, changed to mainnet or a supported network'}</LoginError> }
           <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Field
@@ -196,9 +203,9 @@ const Login = ({ csrfToken }) => {
               justifyContent: 'center',
             }}
           >
-            <MetaMaskConnector text="" style={buttonStyles} />
-            <CoinbaseConnector text="" style={buttonStyles} />
+            {!isMobile && <MetaMaskConnector text="" style={buttonStyles} />}
             <WalletConnectConnector text="" style={buttonStyles} />
+            <CoinbaseConnector text="" style={buttonStyles} />
             <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
               <DiscordIcon />
             </Button>
