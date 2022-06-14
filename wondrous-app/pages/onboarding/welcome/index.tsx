@@ -1,15 +1,19 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { MainWrapper } from 'components/Onboarding/styles';
 import { UPDATE_USER } from 'graphql/mutations';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import OnboardingWelcome from 'components/Onboarding/Welcome';
 
 const OnboardingWelcomePage = () => {
   const router = useRouter();
   const user = useMe();
+  const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
+    fetchPolicy: 'network-only',
+  });
 
   const [updateUser] = useMutation(UPDATE_USER, {
     onCompleted: () => {
@@ -21,7 +25,7 @@ const OnboardingWelcomePage = () => {
 
   return (
     <MainWrapper>
-      <OnboardingWelcome updateUser={updateUser} user={user} />
+      <OnboardingWelcome updateUser={updateUser} user={userData?.getLoggedinUser} />
     </MainWrapper>
   );
 };
