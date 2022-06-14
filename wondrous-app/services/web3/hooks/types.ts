@@ -53,6 +53,11 @@ export interface WonderWeb3 {
   assets: WonderWeb3AssetMap;
 
   /**
+   * The ensName
+   */
+  ensName: String;
+
+  /**
    * The connected chain id
    */
   chain: number;

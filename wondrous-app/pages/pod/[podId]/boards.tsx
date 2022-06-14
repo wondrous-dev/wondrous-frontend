@@ -41,6 +41,8 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import _ from 'lodash';
 import { insertUrlParam } from 'utils';
+import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
+import { useIsMobile } from 'utils/hooks';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -277,6 +279,7 @@ const useGetPodTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -608,6 +611,7 @@ const BoardsPage = () => {
         hasMore: podTaskHasMore,
       }}
     >
+      {isMobile ? <MobileComingSoonModal /> : null}
       <Boards
         columns={columns}
         onLoadMore={fetchMore}
