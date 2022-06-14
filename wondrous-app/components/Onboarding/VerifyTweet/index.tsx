@@ -116,7 +116,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
             fontWeight: '400',
           }}
         >
-        if you haven't connected your wallet, please add your ENS to the tweet
+        if you haven&apos;t connected your wallet, please add your ENS to the tweet
         </InviteWelcomeBoxParagraph>
       )}
       <div
