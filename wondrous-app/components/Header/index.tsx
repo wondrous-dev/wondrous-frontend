@@ -58,9 +58,15 @@ const HeaderComponent = (props) => {
         <HeaderLeftBlock>
           <Tooltip title="Explore page">
             <HeaderLogoWrapper>
-              <Link passHref href="/explore">
+              <div
+                onClick={() =>
+                  router.push(`/explore`, undefined, {
+                    shallow: true,
+                  })
+                }
+              >
                 <HeaderLogo />
-              </Link>
+              </div>
             </HeaderLogoWrapper>
           </Tooltip>
           <Tooltip title="Dashboard">
