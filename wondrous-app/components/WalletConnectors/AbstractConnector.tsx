@@ -9,6 +9,7 @@ export interface WonderAbstractConnectorProps {
   buttonContent: React.ReactNode;
   icon?: React.ReactNode;
   style?: any;
+  showText?: any;
 }
 
 export default function WonderAbstractConnector({
