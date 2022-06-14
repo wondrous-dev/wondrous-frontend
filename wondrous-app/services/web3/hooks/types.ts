@@ -58,11 +58,6 @@ export interface WonderWeb3 {
   ensName: String;
 
   /**
-   * function to load ens name
-   */
-  getENSName: () => Promise<string | boolean>;
-
-  /**
    * The connected chain id
    */
   chain: number;

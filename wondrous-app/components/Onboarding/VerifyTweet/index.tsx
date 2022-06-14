@@ -21,7 +21,7 @@ import { Button } from 'components/Common/button';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
-import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
+import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -51,25 +51,19 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
     },
   });
 
+  useEagerConnectConditional(user?.activeEthAddress);
+
   const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.promotionTweet;
 
   const connectWeb3 = async () => {
-    console.log('connecting')
     await wonderWeb3.onConnect();
   };
+
   useEffect(() => {
     if (user?.activeEthAddress) {
       connectWeb3();
     }
   }, [user?.activeEthAddress]);
-
-  useEffect(() => {
-    console.log('wonderWeb3.address', wonderWeb3.chain);
-    console.log('wonderWeb3.ensName', wonderWeb3.ensName);
-    if (wonderWeb3.address) {
-      wonderWeb3.getENSName();
-    }
-  }, [wonderWeb3.address, wonderWeb3.connecting]);
 
   useEffect(() => {
     if (userAlreadyTweeted) {
@@ -96,6 +90,10 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
 
   const generateTweetInfo = () => {
     if (user?.activeEthAddress) {
+      if (wonderWeb3.ensName) {
+        // && wonderWeb3.address === user?.activeEthAddress ?
+        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to`;
+      }
       return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to`;
     } else {
       return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to`;
