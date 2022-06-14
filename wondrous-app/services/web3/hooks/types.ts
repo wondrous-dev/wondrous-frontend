@@ -53,6 +53,16 @@ export interface WonderWeb3 {
   assets: WonderWeb3AssetMap;
 
   /**
+   * The ensName
+   */
+  ensName: String;
+
+  /**
+   * function to load ens name
+   */
+  getENSName: () => Promise<string | boolean>;
+
+  /**
    * The connected chain id
    */
   chain: number;

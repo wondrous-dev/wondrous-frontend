@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
@@ -21,6 +21,7 @@ import { Button } from 'components/Common/button';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
+import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -31,7 +32,8 @@ import { useWonderWeb3 } from 'services/web3';
 const VerifyTweet = ({ firstOrg, firstPod }) => {
   const router = useRouter();
   const user = useMe();
-  // const wonderWeb3 = useWonderWeb3()
+  const wonderWeb3 = useWonderWeb3();
+
   const [tweetVerified, setTweetVerified] = useState(false);
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
@@ -50,6 +52,24 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
   });
 
   const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.promotionTweet;
+
+  const connectWeb3 = async () => {
+    console.log('connecting')
+    await wonderWeb3.onConnect();
+  };
+  useEffect(() => {
+    if (user?.activeEthAddress) {
+      connectWeb3();
+    }
+  }, [user?.activeEthAddress]);
+
+  useEffect(() => {
+    console.log('wonderWeb3.address', wonderWeb3.chain);
+    console.log('wonderWeb3.ensName', wonderWeb3.ensName);
+    if (wonderWeb3.address) {
+      wonderWeb3.getENSName();
+    }
+  }, [wonderWeb3.address, wonderWeb3.connecting]);
 
   useEffect(() => {
     if (userAlreadyTweeted) {
