@@ -10,6 +10,7 @@ type Props = {
   login?: boolean;
   secondVersionLogo?: boolean;
   withLoginButton?: boolean;
+  withSignupButton?: boolean;
 };
 
 const styleSecondVersionLogoWrapper = {
@@ -26,15 +27,20 @@ const styleSecondVersionHeader = {
   display: 'inline-block',
 };
 
-const OnboardingHeader = ({ children, withLoginButton = false, secondVersionLogo }: Props) => (
+const OnboardingHeader = ({
+  children,
+  withLoginButton = false,
+  withSignupButton = false,
+  secondVersionLogo,
+}: Props) => (
   <Header style={secondVersionLogo ? styleSecondVersionHeader : null}>
     <Wonder style={secondVersionLogo ? styleSecondVersionLogoWrapper : null}>
       <WonderLogo />
       <LogoText style={secondVersionLogo ? styleSecondVersionLogo : null}>wonder</LogoText>
     </Wonder>
-    {withLoginButton ? (
-      <Link href={`/login`} passHref>
-        <Button>Login</Button>
+    {withLoginButton || withSignupButton ? (
+      <Link href={withSignupButton ? '/signup' : `/login`} passHref>
+        <Button>{withSignupButton ? 'Sign up' : 'Login'}</Button>
       </Link>
     ) : (
       children

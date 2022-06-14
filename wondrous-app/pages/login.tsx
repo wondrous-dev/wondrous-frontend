@@ -140,7 +140,7 @@ const Login = ({ csrfToken }) => {
           minHeight: 'unset',
         }}
       >
-        <OnboardingHeader secondVersionLogo={true} />
+        <OnboardingHeader withSignupButton />
         <OnboardingTitle
           style={{
             textAlign: 'center',

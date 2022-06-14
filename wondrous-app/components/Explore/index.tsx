@@ -246,7 +246,7 @@ const ExploreComponent = () => {
         >
           <Background>
             <BackgroundText>
-              Where world changing DAOs <br />
+              Where world-changing DAOs <br />
               are being built.
             </BackgroundText>
           </Background>
