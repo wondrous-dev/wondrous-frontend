@@ -164,7 +164,7 @@ const SideBarComponent = (props) => {
             <StyledDivider />
           </StyledDividerDiv>
 
-          <DrawerList id={!!listItems && listItems?.length && 'tour-sidebar-daos'}>
+          <DrawerList id={'tour-sidebar-daos'}>
             {listItems &&
               listItems.map((item) => {
                 const isActive =
