@@ -182,7 +182,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                 height: '50px',
               }}
             >
-              Code: VonderWerse
+              Congrats! your NFT will be aidropped to you at the end of the week
             </SecretCodeContainer>
             <ContinueButton
               style={{
