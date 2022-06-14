@@ -169,13 +169,6 @@ const FeaturedList = [
     imageUrl: 'https://pbs.twimg.com/profile_images/1501218472973504512/xWitV8PR_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1483865970724589568/1645050021/1500x500',
   },
-  {
-    username: 'clubrareNFT',
-    name: 'ClubRare',
-    bio: 'Buy, sell, and trade IRL collectibles on the premiere NFT marketplace for physical goods. Gear Up for the metaverse, the mall, and beyond. $MPWR 🚀',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1532032190904680451/rG_Dodiu_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1420196888330981377/1653600728/1500x500',
-  },
 ];
 
 const gridMobileStyles = {
