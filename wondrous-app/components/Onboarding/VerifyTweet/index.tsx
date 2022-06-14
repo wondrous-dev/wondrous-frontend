@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
 import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
@@ -21,6 +21,7 @@ import { Button } from 'components/Common/button';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
+import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -31,7 +32,8 @@ import { useWonderWeb3 } from 'services/web3';
 const VerifyTweet = ({ firstOrg, firstPod }) => {
   const router = useRouter();
   const user = useMe();
-  // const wonderWeb3 = useWonderWeb3()
+  const wonderWeb3 = useWonderWeb3();
+
   const [tweetVerified, setTweetVerified] = useState(false);
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
@@ -49,7 +51,19 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
     },
   });
 
+  useEagerConnectConditional(user?.activeEthAddress);
+
   const userAlreadyTweeted = !!userData?.getLoggedinUser?.userInfo?.promotionTweet;
+
+  const connectWeb3 = async () => {
+    await wonderWeb3.onConnect();
+  };
+
+  useEffect(() => {
+    if (user?.activeEthAddress) {
+      connectWeb3();
+    }
+  }, [user?.activeEthAddress]);
 
   useEffect(() => {
     if (userAlreadyTweeted) {
@@ -76,6 +90,10 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
 
   const generateTweetInfo = () => {
     if (user?.activeEthAddress) {
+      if (wonderWeb3.ensName) {
+        // && wonderWeb3.address === user?.activeEthAddress ?
+        return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to`;
+      }
       return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to`;
     } else {
       return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to`;
@@ -182,7 +200,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                 height: '50px',
               }}
             >
-              Code: VonderWerse
+              Congrats! your NFT will be aidropped to you at the end of the week
             </SecretCodeContainer>
             <ContinueButton
               style={{

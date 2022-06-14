@@ -41,6 +41,8 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { insertUrlParam } from 'utils';
+import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
+import { useIsMobile } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -347,6 +349,7 @@ const useGetOrgTaskBoard = ({
 
 const BoardsPage = () => {
   const router = useRouter();
+  const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
@@ -655,6 +658,8 @@ const BoardsPage = () => {
         hasMore: orgTaskHasMore,
       }}
     >
+      {isMobile ? <MobileComingSoonModal /> : null}
+
       <Boards
         columns={columns}
         searchString={searchString}

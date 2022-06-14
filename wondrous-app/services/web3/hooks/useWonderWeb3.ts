@@ -232,6 +232,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     wallet,
     address,
     assets,
+    ensName,
     chain,
     chainName,
     subscribed: isSubscribed,
