@@ -151,8 +151,8 @@ const Signup = () => {
           }}
         >
           <MetaMaskConnector text="" style={buttonStyles} />
-          <CoinbaseConnector text="" style={buttonStyles} />
           <WalletConnectConnector text="" style={buttonStyles} />
+          <CoinbaseConnector text="" style={buttonStyles} />
           <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
             <DiscordIcon />
           </Button>
