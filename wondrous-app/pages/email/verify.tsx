@@ -77,16 +77,20 @@ const EmailVerify = () => {
           <CircularProgress />
         ) : (
           <>
-            <JoinWaitlistHeader variant="h3">Thanks for confirming your email!</JoinWaitlistHeader>
-            <CreateFormPreviewButton
-              onClick={() => {
-                router.push('/dashboard', undefined, {
-                  shallow: true,
-                });
-              }}
-            >
-              Take me home
-            </CreateFormPreviewButton>
+            {emailAddressConfirm && (
+              <>
+                <JoinWaitlistHeader variant="h3">Thanks for confirming your email!</JoinWaitlistHeader>
+                <CreateFormPreviewButton
+                  onClick={() => {
+                    router.push('/login', undefined, {
+                      shallow: true,
+                    });
+                  }}
+                >
+                  Log In
+                </CreateFormPreviewButton>
+              </>
+            )}
           </>
         )}
         {verificationError && <ErrorText>Problem verifying your email please sign in and try again</ErrorText>}
