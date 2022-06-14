@@ -1,18 +1,11 @@
-import { ToDo } from '../../Icons';
-import { WonderCoin } from '../../Icons/wonderCoin';
 import { SafeImage } from '../Image';
-import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
-import { shrinkNumber } from 'utils/helpers';
-import Ethereum from '../../Icons/ethereum';
-import { Matic } from '../../Icons/matic';
-import { USDCoin } from '../../Icons/USDCoin';
+import { CompensationWrapper, IconContainer, CompensationPill } from './styles';
 
-export const Compensation = (props) => {
-  const { rewards, taskIcon, style, pillStyle = {} } = props;
+const ProfileCompensation = ({ rewards, taskIcon, style, pillStyle = {} }) => {
   const { icon, rewardAmount, symbol } = rewards[0] || {};
 
   return (
-    <CompensationWrapper key={props.id} style={style}>
+    <CompensationWrapper style={style}>
       <CompensationPill style={pillStyle}>
         {rewardAmount && (
           <>
@@ -22,13 +15,13 @@ export const Compensation = (props) => {
                 <SafeImage
                   src={icon}
                   style={{
-                    width: '24px',
-                    height: '24px',
+                    width: 24,
+                    height: 24
                   }}
                 />
               </IconContainer>
             )}
-            <p>
+            <p style={{ color: 'white' }}>
               {rewardAmount} {icon ? null : symbol}
             </p>
           </>
@@ -38,3 +31,5 @@ export const Compensation = (props) => {
     </CompensationWrapper>
   );
 };
+
+export default ProfileCompensation;

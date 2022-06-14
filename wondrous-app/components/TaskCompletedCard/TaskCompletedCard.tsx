@@ -1,45 +1,34 @@
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
-import head from 'lodash/head';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+
 import Box from '@mui/material/Box';
 
 import { delQuery } from 'utils';
+import { Grey57 } from 'theme/colors';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { ENTITIES_TYPES, PRIVACY_LEVEL } from 'utils/constants';
+import { useLocation } from 'utils/useLocation';
 
 import { SafeImage } from 'components/Common/Image';
 import PodIcon from 'components/Icons/podIcon';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { SubtaskDarkIcon } from 'components/Icons/subtask';
-import { Compensation } from 'components/Common/Compensation/Compensation2';
+import ProfileCompensation from 'components/Common/ProfileCompensation';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
-import { format } from 'date-fns';
 import { TaskCreatedBy } from 'components/Common/TaskCreatedBy';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
 import Tooltip from 'components/Tooltip';
 import MilestoneIcon from 'components/Icons/milestoneField.svg';
-
-import styles from './styles';
 import { TASK_ICONS } from 'components/Common/Task/card';
-import { ProposalCardWrapper } from 'components/Common/Task/styles';
-import * as Constants from 'utils/constants';
-import { PRIVACY_LEVEL } from 'utils/constants';
-import { Red300, Green800, Grey57 } from 'theme/colors';
 import { AvatarList } from 'components/Common/AvatarList';
-
-import { parseUserPermissionContext } from 'utils/helpers';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import SmartLink from 'components/Common/SmartLink';
-import { useLocation } from 'utils/useLocation';
 import { BoardsCardMedia, BoardsCardFooter } from 'components/Common/Boards/styles';
 
+import styles from './styles';
+
 import {
-  TaskInner,
   TaskHeader,
   TaskContent,
   TaskTitle,
-  TaskSeparator,
-  TaskFooter,
   TaskAction,
   TaskActionAmount,
   PodWrapper,
@@ -47,7 +36,6 @@ import {
   TaskHeaderIconWrapper,
   SubtaskCountWrapper,
   SubtaskCount,
-  DueDateText,
 } from 'components/Common/Task/styles';
 
 const TaskCompletedCard = ({ item }) => {
@@ -108,12 +96,10 @@ const TaskCompletedCard = ({ item }) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  let windowOffset = 0;
 
-  const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
+  const isMilestone = type === ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const taskType = task?.isProposal ? 'taskProposal' : 'task';
-  let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
 
   return (
     <Box sx={styles.root}>
@@ -122,10 +108,10 @@ const TaskCompletedCard = ({ item }) => {
           <SafeImage
             src={task?.orgProfilePicture}
             style={{
-              width: '29px',
-              height: '28px',
-              borderRadius: '4px',
-              marginRight: '8px',
+              width: 29,
+              height: 28,
+              borderRadius: 4,
+              marginRight: 8,
             }}
           />
           {isMilestone && <MilestoneIcon />}
@@ -134,8 +120,8 @@ const TaskCompletedCard = ({ item }) => {
         {task?.privacyLevel === PRIVACY_LEVEL.public && (
           <ToggleBoardPrivacyIcon
             style={{
-              width: task?.assigneeId ? '40px' : 'auto',
-              marginRight: '0',
+              width: task?.assigneeId ? 40 : 'auto',
+              marginRight: 0
             }}
             isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
             tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
@@ -147,9 +133,8 @@ const TaskCompletedCard = ({ item }) => {
             flex: 1,
           }}
         />
-        {/* {task?.dueDate && <DueDateText>{format(new Date(task?.dueDate), 'MMM d')}</DueDateText>} */}
         {rewards && rewards?.length > 0 && (
-          <Compensation
+          <ProfileCompensation
             style={{
               flexGrow: '0',
               marginLeft: '8px',
