@@ -92,7 +92,7 @@ export const transformMediaFormat = (media) => {
 };
 
 const EditLayoutBaseModal = (props) => {
-  const { entityType, handleClose, cancelEdit, existingTask, isTaskProposal, open } = props;
+  const { entityType, handleClose, cancel, existingTask, isTaskProposal, open } = props;
   const user = useMe();
 
   const editor = useEditor();
@@ -632,7 +632,7 @@ const EditLayoutBaseModal = (props) => {
       <CreateFormFooterButtons>
         {errors.general && <ErrorText> {errors.general} </ErrorText>}
         <CreateFormButtonsBlock>
-          <CreateFormCancelButton onClick={cancelEdit}>Cancel</CreateFormCancelButton>
+          <CreateFormCancelButton onClick={cancel}>Cancel</CreateFormCancelButton>
           <CreateFormPreviewButton onClick={submitMutation} disabled={updating}>
             {updating ? <CircularProgress size={20} /> : null}
             Update {isTaskProposal ? 'proposal' : titleText}
