@@ -27,7 +27,7 @@ export const ContinueButton = styled(Button)`
   background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
   align-self: end;
   justify-content: center;
-  
+
   ${buttonStyle}
 `;
 
@@ -60,6 +60,20 @@ export const Later = styled.button`
   background-color: #232323;
   color: white;
   cursor: pointer;
+`;
+
+export const SecretCodeContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+  margin-right: 20px;
+  border-radius: 98px;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  background-color: #232323;
+  color: white;
 `;
 
 export const RightButtons = styled.div`

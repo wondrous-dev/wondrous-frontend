@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import Image from 'next/image';
-
+import { useQuery } from '@apollo/client';
 import { WalletConnected, Label } from '../styles';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import {
@@ -19,6 +20,17 @@ import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg
 
 export const ConnectTwitter = () => {
   const router = useRouter();
+  const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
+    fetchPolicy: 'network-only',
+    onCompleted: (data) => {
+      console.log(userData?.getLoggedinUser)
+      if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
+        router.push(`/twitter/verify-tweet`, undefined, {
+          shallow: true,
+        });
+      }
+    },
+  });
   const headerRightContent = (
     <WalletConnected>
       <CompletedIcon fill="none" stroke="none" style={{ width: '26px', height: '26px' }} />{' '}
