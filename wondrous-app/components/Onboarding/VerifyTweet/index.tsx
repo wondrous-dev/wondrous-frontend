@@ -45,9 +45,11 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
       }
     },
   });
-  const [verifyUserTweet] = useMutation(VERIFY_USER_TWEET, {
+  const [verifyUserTweet, { loading: checkTweetLoading }] = useMutation(VERIFY_USER_TWEET, {
     onCompleted: (data) => {
-      setTweetVerified(true);
+      if (data?.verifyUserTweet?.success) {
+        setTweetVerified(true);
+      }
     },
   });
 
@@ -134,7 +136,7 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
             fontWeight: '400',
           }}
         >
-        if you haven&apos;t connected your wallet, please add your ENS to the tweet
+          if you haven&apos;t connected your wallet, please add your ENS to the tweet
         </InviteWelcomeBoxParagraph>
       )}
       <div
@@ -173,7 +175,8 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
               }}
               onClick={verifyUserTweet}
             >
-              Verify
+              {checkTweetLoading && <>Cheking...</>}
+              {!checkTweetLoading && <>Verify</>}
             </LaterButton>
             <Later
               style={{
