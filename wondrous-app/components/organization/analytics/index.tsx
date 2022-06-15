@@ -6,6 +6,7 @@ import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
 import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
 import Wrapper from '../wrapper/wrapper';
+import palette from 'theme/palette';
 import {
   ContributorRow,
   ContributorDiv,

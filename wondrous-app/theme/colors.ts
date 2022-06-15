@@ -112,5 +112,6 @@ export const blackColors = {
   black95: '#1E1E1E',
   black97: '#141414',
   black98: '#121212',
+  black99: '#151515',
   black100: '#010114',
 };
