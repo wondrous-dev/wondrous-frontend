@@ -47,6 +47,7 @@ import { ViewType } from 'types/common';
 import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
 import Tooltip from 'components/Tooltip';
+import { RichTextViewer } from 'components/RichText';
 
 export default function TableBody({
   tasks,
@@ -205,16 +206,7 @@ export default function TableBody({
                 <TaskTitle>
                   <a href={viewUrl}>{task.title}</a>
                 </TaskTitle>
-                <TaskDescription
-                  style={{
-                    maxWidth: '600px',
-                  }}
-                >
-                  {renderMentionString({
-                    content: cutString(task?.description),
-                    router,
-                  })}
-                </TaskDescription>
+                <RichTextViewer text={task?.description} />
               </StyledTableCell>
             </SmartLink>
 
