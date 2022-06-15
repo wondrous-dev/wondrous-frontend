@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { White } from "../../../theme/colors";
-import {Typography} from "@mui/material";
+import palette from 'theme/palette';
+import { Typography } from '@mui/material';
 
 export const Layout = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
@@ -28,12 +28,12 @@ export const OnboardingTitle = styled(Typography)`
   && {
     font-size: 28px;
     line-height: 32px;
-    color: ${White};
+    color: ${palette.white};
     margin-bottom: 18px;
     font-weight: 500;
     text-align: left;
     width: 100%;
-    background: linear-gradient(89.17deg, #CCBBFF 37.43%, #00BAFF 105.62%);
+    background: linear-gradient(89.17deg, #ccbbff 37.43%, #00baff 105.62%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -42,7 +42,7 @@ export const OnboardingTitle = styled(Typography)`
 export const OnboardingDescription = styled(Typography)`
   && {
     font-size: 15px;
-    color: ${White};
+    color: ${palette.white};
     font-weight: 400;
     text-align: left;
     margin-top: 20px;

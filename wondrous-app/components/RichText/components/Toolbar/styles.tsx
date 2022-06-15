@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Button, Typography, TextField } from '@mui/material';
 
 import { BaseCard } from 'components/Common/card';
-import { Background, White } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const ToolbarContainer = styled.div`
   display: grid;
@@ -33,7 +33,7 @@ export const ToolbarButton = styled(Button)`
       return $active
         ? `
       background: rgba(29, 29, 29, 0.5);
-      color: ${White};
+      color: ${palette.white};
       `
         : '';
     }}
@@ -50,7 +50,7 @@ export const LinkModal = styled(BaseCard)`
 
 export const LinkModalTitle = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-style: normal;
     font-weight: bold;
     font-size: 22px;
@@ -62,13 +62,13 @@ export const LinkModalTitle = styled(Typography)`
 export const LinkModalInput = styled(TextField)`
   && .MuiInputBase-root {
     padding: 6px 12px;
-    color: ${White};
-    background: ${Background};
+    color: ${palette.white};
+    background: ${palette.background.default};
     border-radius: 6px;
   }
 
   && .MuiInputBase-input.Mui-disabled {
-    color: ${White};
+    color: ${palette.white};
     -webkit-text-fill-color: rgba(255, 255, 255, 0.5);
   }
 `;

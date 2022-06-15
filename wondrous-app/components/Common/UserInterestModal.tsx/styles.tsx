@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { DialogContent, Typography } from '@mui/material';
 import { White } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const CancelButton = styled(Button)`
   && {
@@ -54,7 +55,7 @@ export const CategoryHeader = styled(Typography)`
 
 export const InterestButton = styled(Button)`
   && {
-    color: ${White};
+    color: ${palette.white};
     background: #232323;
     border-radius: 4px;
     width: fit-content;
