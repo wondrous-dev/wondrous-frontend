@@ -39,7 +39,7 @@ import {
   PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
-import _ from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
@@ -191,7 +191,7 @@ const useGetPodTaskProposals = ({
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardProposals.length >= LIMIT);
-        const getPodTaskBoardProposals = _.uniqBy(
+        const getPodTaskBoardProposals = uniqBy(
           [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
           'id'
         );

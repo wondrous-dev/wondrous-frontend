@@ -1,5 +1,4 @@
 import { useLazyQuery } from '@apollo/client';
-import * as _ from 'lodash';
 import { useEffect } from 'react';
 import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from 'graphql/queries';
 import * as Constants from 'utils/constants';

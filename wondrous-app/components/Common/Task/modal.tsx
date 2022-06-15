@@ -2,7 +2,7 @@ import React, { useContext, useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import GitHubIcon from '@mui/icons-material/GitHub';

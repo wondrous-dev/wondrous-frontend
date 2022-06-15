@@ -1,6 +1,6 @@
 import { createFilterOptions } from '@material-ui/lab';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import _ from 'lodash';
+import shuffle from 'lodash/shuffle';
 import React, { useEffect, useState } from 'react';
 import { ColorTypes } from 'utils/constants';
 import {
@@ -38,7 +38,7 @@ const filter = createFilterOptions({
 });
 
 const colors = Object.values(ColorTypes);
-const randomColors = _.shuffle(colors);
+const randomColors = shuffle(colors);
 
 function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
   const [openTags, setOpenTags] = useState(false);
@@ -48,7 +48,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
     return options.length < colors.length
       ? // pick random color that doesn't exist in the option
         colors.find((color) => !options.some((option) => option.color === color))
-      : _.shuffle(colors)[0];
+      : shuffle(colors)[0];
   };
 
   useEffect(() => {

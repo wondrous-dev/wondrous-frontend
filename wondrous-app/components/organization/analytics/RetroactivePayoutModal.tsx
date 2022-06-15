@@ -41,7 +41,7 @@ import { BatchRetroactivePayment } from './BatchRetroactivePayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 enum ViewType {
   Paid = 'paid',
