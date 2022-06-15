@@ -40,7 +40,7 @@ import {
   TaskTitle,
 } from './styles';
 
-import { Red800 } from 'theme/colors';
+import { Red800, White } from 'theme/colors';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 import SmartLink from 'components/Common/SmartLink';
 import { ViewType } from 'types/common';
@@ -206,7 +206,13 @@ export default function TableBody({
                 <TaskTitle>
                   <a href={viewUrl}>{task.title}</a>
                 </TaskTitle>
-                <RichTextViewer text={task?.description} />
+                <span
+                  style={{
+                    color: White,
+                  }}
+                >
+                  <RichTextViewer text={task?.description} />
+                </span>
               </StyledTableCell>
             </SmartLink>
 
