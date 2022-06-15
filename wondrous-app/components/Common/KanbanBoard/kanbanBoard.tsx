@@ -20,11 +20,15 @@ import {
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
   STATUS_OPEN,
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
+import ConfirmModal from 'components/Common/ConfirmModal';
+
 export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
   if (orgBoard) {
     return BOARD_TYPE.org;
@@ -59,6 +63,7 @@ const KanbanBoard = (props) => {
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [taskToConfirm, setTaskToConfirm] = useState<any>(null);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -243,6 +248,42 @@ const KanbanBoard = (props) => {
   };
 
   const location = useLocation();
+
+  const confirmCardMove = (moveAction) => (id, status, index, source) => {
+    const sourceColumn = columns.findIndex((column) => column.status === source.droppableId);
+    const taskToUpdate = columns[sourceColumn]?.tasks.find((task) => task?.id === id);
+    const taskType = taskToUpdate?.isProposal ? 'taskProposal' : 'task';
+    let viewUrl = `${delQuery(router.asPath)}?${taskType}=${taskToUpdate?.id}&view=${router.query.view || 'grid'}`;
+    if (board?.entityType) {
+      viewUrl = viewUrl + `&entity=${board?.entityType}`;
+    }
+    const shouldConfirmInReviewTask =
+      status === TASK_STATUS_DONE &&
+      source.droppableId === TASK_STATUS_IN_REVIEW &&
+      taskToUpdate.approvedSubmissionsCount !== taskToUpdate.totalSubmissionsCount;
+    if (shouldConfirmInReviewTask) {
+      setTaskToConfirm({
+        task: {
+          id: taskToUpdate?.id,
+          approvedSubmissionsCount: taskToUpdate?.approvedSubmissionsCount,
+          totalSubmissionsCount: taskToUpdate?.totalSubmissionsCount,
+          title: taskToUpdate?.title,
+        },
+        confirmTitle: `Task ${taskToUpdate?.title} has submissions you need to review`,
+        confirmAction: () => {
+          setTaskToConfirm(null);
+          moveAction(id, status, index, source);
+        },
+        closeAction: () => {
+          setTaskToConfirm(null);
+          location.push(viewUrl);
+        },
+      });
+      return;
+    }
+    return moveAction(id, status, index, source);
+  };
+
   useEffect(() => {
     const params = location.params;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
@@ -252,7 +293,7 @@ const KanbanBoard = (props) => {
   }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
-    const moveAction = isProposalEntity ? moveProposal : moveCard;
+    const moveAction = isProposalEntity ? moveProposal : confirmCardMove(moveCard);
     try {
       moveAction(result.draggableId, result.destination.droppableId, result.destination.index, result.source);
     } catch {
@@ -276,16 +317,32 @@ const KanbanBoard = (props) => {
     setOpenModal(false);
   };
 
+  const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
   return (
     <>
       <KanbanBoardContainer>
         <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
+        <ConfirmModal
+          open={!!taskToConfirm}
+          onClose={() => {
+            setTaskToConfirm(null);
+          }}
+          onSubmit={taskToConfirm?.closeAction}
+          title={taskToConfirm?.confirmTitle}
+          submitLabel="Review"
+          cancelLabel="Move anyway"
+          rejectAction={taskToConfirm?.confirmAction}
+          reverseButtons
+        >
+          {null}
+        </ConfirmModal>
+
         <TaskViewModal
           disableEnforceFocus
           open={openModal}
           shouldFocusAfterRender={false}
           handleClose={handleClose}
-          taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
+          taskId={taskId}
           isTaskProposal={!!location?.params?.taskProposal}
         />
         <DragDropContext onDragEnd={onDragEnd}>
