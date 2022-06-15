@@ -1,8 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { PERMISSIONS, SIDEBAR_WIDTH } from '../../utils/constants';
 import { SideBarContext } from '../../utils/contexts';
 import WonderverseSvg from './wonderverse.svg';
-import ReadyPlayerDAOSvg from './readyplayerdao.svg';
 import Header from '../Header';
 import SideBarComponent from '../SideBar';
 import { OverviewComponent } from '../Wrapper/styles';
@@ -18,7 +16,6 @@ import {
   StyledGridItemContainer,
 } from './styles';
 import { SafeImage } from '../Common/Image';
-import { Grid } from '@material-ui/core';
 import { useRouter } from 'next/router';
 import { useIsMobile } from 'utils/hooks';
 import { White } from 'theme/colors';
