@@ -255,7 +255,7 @@ const ExploreComponent = () => {
         >
           <Background style={isMobile ? gridMobileStyles : {}}>
             <BackgroundText>
-              Where world-changing DAOs <br />
+              Where world-changing web3 communities <br />
               are being built.
             </BackgroundText>
           </Background>
