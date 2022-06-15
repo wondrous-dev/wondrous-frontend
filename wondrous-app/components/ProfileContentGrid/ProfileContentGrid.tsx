@@ -7,11 +7,20 @@ import {
   ProfileContentGridWrapper,
 } from './styles';
 
+const LIMIT = 4;
+const FETCH_MORE_LIMIT = 8;
+
 const ProfileContentGrid = ({ data, Component, fetchMore, buttonIsDisabled }) => {
+  const [NoOfItems, setNoOfItems] = useState(LIMIT);
+  const handleOnClick = () => {
+    const updatedNoOfItems = NoOfItems + FETCH_MORE_LIMIT;
+    if (data.length < updatedNoOfItems) fetchMore();
+    setNoOfItems(updatedNoOfItems);
+  };
   return (
     <ProfileContentGridWrapper>
       <ProfileContentGridContent>
-        {data?.map((item) => (
+        {data?.slice(0, NoOfItems).map((item) => (
           <Component key={item.id} item={item} />
         ))}
       </ProfileContentGridContent>
@@ -19,7 +28,7 @@ const ProfileContentGrid = ({ data, Component, fetchMore, buttonIsDisabled }) =>
         {buttonIsDisabled ? (
           <ProfileContentGridEndMessage>This is end of the list.</ProfileContentGridEndMessage>
         ) : (
-          <ProfileContentGridButton onClick={fetchMore} disabled={buttonIsDisabled}>
+          <ProfileContentGridButton onClick={handleOnClick} disabled={buttonIsDisabled}>
             Show more
           </ProfileContentGridButton>
         )}

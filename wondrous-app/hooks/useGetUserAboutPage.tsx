@@ -35,7 +35,7 @@ const useGetUserAboutPage = (userId) => {
   const handleFetchMoreInProgressTasks = () => {
     inProgressFetchMore({
       variables: {
-        offset: inProgressData?.length,
+        offset: _.max(_.values(_.countBy(_.map(inProgressData, (i) => i.status)))),
         limit: FETCH_MORE_LIMIT,
       },
     })
