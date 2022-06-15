@@ -26,6 +26,7 @@ export const MembershipRequestModal = (props) => {
   const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, notLinkedWalletError, linkedWallet } = props;
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
+  const [error, setError] = useState(null);
   return (
     <>
       <StyledDialog
@@ -41,13 +42,15 @@ export const MembershipRequestModal = (props) => {
             padding: '20px',
           }}
         >
-         {notLinkedWalletError && <StyledWarningMessage
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0,7)}...`}
-          </StyledWarningMessage>}
+          {notLinkedWalletError && (
+            <StyledWarningMessage
+              style={{
+                marginLeft: 0,
+              }}
+            >
+              {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
+            </StyledWarningMessage>
+          )}
           <StyledCloseButton onClick={onClose}>
             <CloseModalIcon />
           </StyledCloseButton>
@@ -56,7 +59,7 @@ export const MembershipRequestModal = (props) => {
               marginLeft: 0,
             }}
           >
-            {orgId ? 'DAO' : 'Pod'} membership request{' '}
+            {orgId ? 'DAO' : 'Pod'} membership request message{' '}
           </StyledHeader>
           <StyledBody
             style={{
@@ -67,13 +70,14 @@ export const MembershipRequestModal = (props) => {
               multiline
               rows={3}
               value={requestMessage}
-              placeholder="Send message to admin (optional)"
+              placeholder="Send message to admin: Explain your skills, who you are, etc"
               onChange={(e) => {
                 if (e.target.value?.length < CHAR_LIMIT_PROFILE_BIO) {
                   setRequestMessage(e.target.value);
                 }
               }}
             />
+            {}
           </StyledBody>
           <StyledDivider
             style={{
@@ -91,27 +95,31 @@ export const MembershipRequestModal = (props) => {
               <ArchivedIcon />
               <StyledArchivedLabel
                 onClick={() => {
-                  if (orgId) {
-                    sendRequest({
-                      variables: {
-                        orgId,
-                        ...(requestMessage && {
-                          message: requestMessage,
-                        }),
-                      },
-                    });
-                  } else if (podId) {
-                    sendRequest({
-                      variables: {
-                        podId,
-                        ...(requestMessage && {
-                          message: requestMessage,
-                        }),
-                      },
-                    });
+                  if (!requestMessage) {
+                    setError('Please enter a request message');
+                  } else {
+                    if (orgId) {
+                      sendRequest({
+                        variables: {
+                          orgId,
+                          ...(requestMessage && {
+                            message: requestMessage,
+                          }),
+                        },
+                      });
+                    } else if (podId) {
+                      sendRequest({
+                        variables: {
+                          podId,
+                          ...(requestMessage && {
+                            message: requestMessage,
+                          }),
+                        },
+                      });
+                    }
+                    setJoinRequestSent(true);
+                    onClose();
                   }
-                  setJoinRequestSent(true);
-                  onClose();
                 }}
               >
                 Send request

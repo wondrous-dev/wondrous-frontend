@@ -24,6 +24,8 @@ interface DocModalProps {
   titleIcon?: unknown;
   onSubmit: () => unknown;
   onClose: () => unknown;
+  rejectAction?: () => unknown;
+  reverseButtons?: boolean;
 }
 
 const ConfirmModal = ({
@@ -37,7 +39,10 @@ const ConfirmModal = ({
   highlightedText,
   submitButtonStyle = SubmitButtonStyle.Default, // or you can pass 'delete'
   cancelLabel = 'Cancel',
+  rejectAction,
+  reverseButtons = false,
 }: DocModalProps) => {
+  const cancelButtonAction = rejectAction || onClose;
   return (
     <Dialog
       open={open}
@@ -62,7 +67,7 @@ const ConfirmModal = ({
       </DialogContent>
 
       <DialogActions sx={styles.dialogActions}>
-        <CancelButton onClick={onClose}>{cancelLabel}</CancelButton>
+        <CancelButton onClick={cancelButtonAction}>{cancelLabel}</CancelButton>
 
         {submitButtonStyle === SubmitButtonStyle.Default ? (
           <SubmitButtonWrap>
