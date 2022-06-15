@@ -259,10 +259,12 @@ const ExploreComponent = () => {
               are being built.
             </BackgroundText>
           </Background>
-          <StyledGridContainer container spacing={2} style={isMobile ? gridMobileStyles : {}}>
-            {FeaturedList.map((org, index) => (
-              <OrgItem key={index} org={org} />
-            ))}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
             <OrgName
               style={{
                 marginTop: '24px',
@@ -272,7 +274,7 @@ const ExploreComponent = () => {
             </OrgName>
             <Button
               style={{
-                marginLeft: '24px',
+                marginLeft: '16px',
                 textDecoration: 'none',
                 color: White,
               }}
@@ -289,6 +291,11 @@ const ExploreComponent = () => {
                 Sign up here!
               </a>
             </Button>
+          </div>
+          <StyledGridContainer container spacing={2} style={isMobile ? gridMobileStyles : {}}>
+            {FeaturedList.map((org, index) => (
+              <OrgItem key={index} org={org} />
+            ))}
           </StyledGridContainer>
         </OverviewComponent>
       </SideBarContext.Provider>
