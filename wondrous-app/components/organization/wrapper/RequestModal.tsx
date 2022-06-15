@@ -21,6 +21,7 @@ import {
   StyledWarningMessage,
 } from '../../Common/ArchiveTaskModal/styles';
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
+import { ErrorText } from 'components/Common';
 
 export const MembershipRequestModal = (props) => {
   const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, notLinkedWalletError, linkedWallet } = props;
@@ -77,7 +78,7 @@ export const MembershipRequestModal = (props) => {
                 }
               }}
             />
-            {}
+            {error && <ErrorText>{error}</ErrorText>}
           </StyledBody>
           <StyledDivider
             style={{
