@@ -1,38 +1,56 @@
-import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
-
+import { Task } from 'components/Common/Task';
 import OrgCard from 'components/OrgCard';
 import ProfileContentGrid from 'components/ProfileContentGrid';
-import TaskCompletedCard from 'components/TaskCompletedCard';
+import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
 
 import { ProfileUserTaskDaosContainer, ProfileUserTaskDaosTitle, ProfileUserTaskDaosWrapper } from './styles';
-import WorkingOnCard from 'components/WorkingOnCard';
-import { Task } from 'components/Common/Task';
 
 const ProfileUserTaskCard = (props) => {
   const { item } = props;
-  return <Task task={item} />;
+  return <Task {...props} task={item} />;
 };
 
 const ProfileUserTaskDaos = ({ userProfile }) => {
   const { id: userId } = userProfile;
 
-  const { workingTasksData, userOrgs, completedTaskCount, completedTasksData } = useGetUserAboutPage(userId);
+  const {
+    inProgressData,
+    userOrgs,
+    userTaskCountData,
+    completedTasksData,
+    handleFetchMoreCompletedTasks,
+    handleFetchMoreInProgressTasks,
+    completedTaskButton,
+    inProgressButton,
+  } = useGetUserAboutPage(userId);
+
+  const inProgressCount = userTaskCountData?.created + userTaskCountData?.inProgress + userTaskCountData?.inReview;
 
   return (
     <ProfileUserTaskDaosWrapper>
       <ProfileUserTaskDaosContainer>
         <ProfileUserTaskDaosTitle>{userOrgs?.length} DAOS</ProfileUserTaskDaosTitle>
-        <ProfileContentGrid data={userOrgs} Component={OrgCard} />
+        <ProfileContentGrid data={userOrgs} Component={OrgCard} fetchMore={() => {}} buttonIsDisabled={true} />
       </ProfileUserTaskDaosContainer>
 
       <ProfileUserTaskDaosContainer>
-        <ProfileUserTaskDaosTitle>{completedTaskCount} tasks completed</ProfileUserTaskDaosTitle>
-        <ProfileContentGrid data={completedTasksData} Component={ProfileUserTaskCard} />
+        <ProfileUserTaskDaosTitle>{userTaskCountData?.completed} tasks completed</ProfileUserTaskDaosTitle>
+        <ProfileContentGrid
+          data={completedTasksData}
+          Component={ProfileUserTaskCard}
+          fetchMore={handleFetchMoreCompletedTasks}
+          buttonIsDisabled={completedTaskButton}
+        />
       </ProfileUserTaskDaosContainer>
 
       <ProfileUserTaskDaosContainer>
-        <ProfileUserTaskDaosTitle>{workingTasksData?.length} Currently working on</ProfileUserTaskDaosTitle>
-        <ProfileContentGrid data={workingTasksData} Component={ProfileUserTaskCard} />
+        <ProfileUserTaskDaosTitle>{inProgressCount} Currently working on</ProfileUserTaskDaosTitle>
+        <ProfileContentGrid
+          data={inProgressData}
+          Component={ProfileUserTaskCard}
+          fetchMore={handleFetchMoreInProgressTasks}
+          buttonIsDisabled={inProgressButton}
+        />
       </ProfileUserTaskDaosContainer>
     </ProfileUserTaskDaosWrapper>
   );

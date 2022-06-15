@@ -16,7 +16,7 @@ import {
   SelectMembershipContext,
   EditTokenGatingConditionContext,
 } from './contexts';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 
 export const useIsMobile = () => useContext(IsMobileContext);
@@ -177,4 +177,20 @@ export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
     }
   }, [query, variables, shouldFetch]);
   return { isLoading, data };
+};
+
+export const useGetPerStatusTaskCountForUserBoard = (userId) => {
+  const [getPerStatusTaskCountForUserBoard, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+
+  useEffect(() => {
+    if (userId) {
+      getPerStatusTaskCountForUserBoard({
+        variables: {
+          userId: userId,
+        },
+      });
+    }
+  }, [userId, getPerStatusTaskCountForUserBoard]);
+
+  return { data };
 };
