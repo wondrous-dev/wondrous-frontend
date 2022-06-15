@@ -61,6 +61,7 @@ import { Compensation } from '../Common/Compensation';
 import { Matic } from '../Icons/matic';
 import { renderMentionString } from 'utils/common';
 import TaskStatus from '../Icons/TaskStatus';
+import SmartLink from 'components/Common/SmartLink';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -182,7 +183,7 @@ export const MembershipRequestTable = (props) => {
                   ) : null}
                 </StyledTableCell>
                 <StyledTableCell align="center">
-                  <Link passHref={true} href={`/profile/${request?.userUsername}/about`}>
+                  <SmartLink href={`/profile/${request?.userUsername}/about`} asLink>
                     <div
                       style={{
                         display: 'flex',
@@ -203,7 +204,7 @@ export const MembershipRequestTable = (props) => {
 
                       <Initials>{request?.userUsername}</Initials>
                     </div>
-                  </Link>
+                  </SmartLink>
                 </StyledTableCell>
                 <StyledTableCell className="clickable">
                   <TaskDescription
