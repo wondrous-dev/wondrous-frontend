@@ -1,8 +1,6 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { PERMISSIONS, SIDEBAR_WIDTH } from '../../utils/constants';
+import React, { useState } from 'react';
 import { SideBarContext } from '../../utils/contexts';
 import WonderverseSvg from './wonderverse.svg';
-import ReadyPlayerDAOSvg from './readyplayerdao.svg';
 import Header from '../Header';
 import SideBarComponent from '../SideBar';
 import { OverviewComponent } from '../Wrapper/styles';
@@ -18,10 +16,9 @@ import {
   StyledGridItemContainer,
 } from './styles';
 import { SafeImage } from '../Common/Image';
-import { Grid } from '@mui/material';
 import { useRouter } from 'next/router';
 import { useIsMobile } from 'utils/hooks';
-import { White } from 'theme/colors';
+import palette from 'theme/palette';
 
 const FeaturedList = [
   {
@@ -276,13 +273,13 @@ const ExploreComponent = () => {
               style={{
                 marginLeft: '16px',
                 textDecoration: 'none',
-                color: White,
+                color: palette.white,
               }}
             >
               <a
                 style={{
                   textDecoration: 'none',
-                  color: White,
+                  color: palette.white,
                 }}
                 href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
                 target="_blank"

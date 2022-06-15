@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import palette from 'theme/palette';
 import { Typography } from '@mui/material';
+import palette from 'theme/palette';
 
 export const Layout = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
