@@ -924,6 +924,7 @@ interface ICreateEntityModal {
       url: string;
       title: string;
     };
+    type?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1265,23 +1266,27 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               }
             }}
           />
-          <div
-            style={{
-              flex: 1,
-            }}
-          />
-          <CreateEntityAttachment
-            style={{
-              marginTop: '8px',
-              marginLeft: '16px',
-              alignSelf: 'flex-start',
-            }}
-            onClick={() => {
-              setTurnTaskToBountyModal(true);
-            }}
-          >
-            Turn into bounty
-          </CreateEntityAttachment>
+          {existingTask && existingTask?.type === ENTITIES_TYPES.TASK && (
+            <>
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+              <CreateEntityAttachment
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '16px',
+                  alignSelf: 'flex-start',
+                }}
+                onClick={() => {
+                  setTurnTaskToBountyModal(true);
+                }}
+              >
+                Turn into bounty
+              </CreateEntityAttachment>
+            </>
+          )}
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
