@@ -1,5 +1,4 @@
 import { BigNumber, ethers } from 'ethers';
-import ENS, { getEnsAddress } from '@ensdomains/ensjs';
 import useStoredConnector from './useStoredConnector';
 import connectors, { ConnectorName } from '../connectors';
 
@@ -180,14 +179,15 @@ export default function useWonderWeb3(): WonderWeb3 {
   // If the wallet has an ENS Name, represent it
   // instead of the address.
   const getENSName = async () => {
-    const ens = new ENS({
-      provider,
-      ensAddress: getEnsAddress(CHAIN_IDS.ETH),
-    });
+    // const ens = new ENS({
+    //   provider,
+    //   ensAddress: getEnsAddress(CHAIN_IDS.ETH),
+    // });
     // If chain supports ENS...
     try {
-      let name = await ens.getName(address);
-      setENSName(name.name);
+      const prov = new ethers.providers.Web3Provider(provider);
+      let name = await prov.lookupAddress(address);
+      setENSName(name);
     } catch (err) {
       // Chain not supported. No problem
       setENSName(null);
