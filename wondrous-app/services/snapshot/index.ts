@@ -3,7 +3,6 @@ import { useLazyQuery, useMutation, gql, ApolloClient, InMemoryCache } from '@ap
 import { GET_SPACE } from './gql';
 import { CONNECT_SNAPSHOT_TO_ORG, DISCONNECT_SNAPSHOT_TO_ORG } from 'graphql/mutations';
 import { GET_ORG_SNAPSHOT_INFO } from 'graphql/queries';
-import { isValidSpace } from './helpers';
 import Snapshot from '@snapshot-labs/snapshot.js';
 
 // import specific Web3Provider snapshot is using
