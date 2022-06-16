@@ -1,3 +1,4 @@
+import { Masonry } from '@mui/lab';
 import { useState } from 'react';
 import {
   ProfileContentGridButton,
@@ -17,13 +18,14 @@ const ProfileContentGrid = ({ data, Component, fetchMore, buttonIsDisabled }) =>
     if (data.length < updatedNoOfItems) fetchMore();
     setNoOfItems(updatedNoOfItems);
   };
+  const dataComponent = data?.slice(0, NoOfItems).map((item) => <Component key={item.id} item={item} />);
   return (
     <ProfileContentGridWrapper>
-      <ProfileContentGridContent>
-        {data?.slice(0, NoOfItems).map((item) => (
-          <Component key={item.id} item={item} />
-        ))}
-      </ProfileContentGridContent>
+      {NoOfItems > LIMIT && data.length > LIMIT ? (
+        <Masonry columns={LIMIT}>{dataComponent}</Masonry>
+      ) : (
+        <ProfileContentGridContent>{dataComponent}</ProfileContentGridContent>
+      )}
       <ProfileContentGridButtonContainer>
         {buttonIsDisabled ? (
           <ProfileContentGridEndMessage>This is end of the list.</ProfileContentGridEndMessage>
