@@ -23,6 +23,7 @@ import {
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
+  TURN_TASK_TO_BOUNTY,
 } from 'graphql/mutations/task';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
@@ -132,6 +133,7 @@ import {
   MediaUploadDiv,
 } from './styles';
 import { GithubButton } from 'components/Settings/Github/styles';
+import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -940,7 +942,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
-
+  const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
@@ -955,6 +957,14 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const { handleMutation, loading } = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
+  const [turnTaskToBounty] = useMutation(TURN_TASK_TO_BOUNTY, {
+    refetchQueries: () => [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
@@ -1081,6 +1091,35 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
+      <ConvertTaskToBountyModal
+        open={turnTaskToBountyModal}
+        onClose={() => setTurnTaskToBountyModal(false)}
+        onConvert={() => {
+          turnTaskToBounty({
+            variables: {
+              taskId: existingTask?.id,
+            },
+          }).then(() => {
+            if (board?.org || board?.orgData) {
+              if (board?.org) {
+                window.location.href = `/organization/${board?.org?.username}/boards?entity=bounty`;
+              } else if (board?.orgData) {
+                window.location.href = `/organization/${board?.orgData?.username}/boards?entity=bounty`;
+              }
+            } else if (board?.pod || board?.podData) {
+              if (board?.org) {
+                window.location.href = `/pod/${board?.pod?.id}/boards?entity=bounty`;
+              } else if (board?.orgData) {
+                window.location.href = `/pod/${board?.podData?.id}/boards?entity=bounty`;
+              }
+            } else {
+              if (handleClose) {
+                handleClose();
+              }
+            }
+          });
+        }}
+      />
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntitySelectErrorWrapper>
@@ -1226,6 +1265,23 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               }
             }}
           />
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
+          <CreateEntityAttachment
+            style={{
+              marginTop: '8px',
+              marginLeft: '16px',
+              alignSelf: 'flex-start',
+            }}
+            onClick={() => {
+              setTurnTaskToBountyModal(true);
+            }}
+          >
+            Turn into bounty
+          </CreateEntityAttachment>
         </CreateEntityLabelSelectWrapper>
         <CreateEntityDivider />
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
