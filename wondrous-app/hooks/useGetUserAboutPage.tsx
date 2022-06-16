@@ -14,9 +14,14 @@ const useGetUserAboutPage = (userId) => {
   const [inProgressData, setInProgressData] = useState([]);
   const [inProgressButton, setInProgressButton] = useState(false);
   const [getUserOrgRoles, { data: userOrgRolesData }] = useLazyQuery(GET_USER_ORG_ROLES);
+  const [orgRolesButton, setOrgRolesButton] = useState(false);
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(userId);
   const [getUserInProgressTasks, { fetchMore: inProgressFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
   const [getUserCompletedTasks, { fetchMore: completedTaskFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
+
+  const handleFetchMoreOrgRoles = () => {
+    setOrgRolesButton(true);
+  };
   const handleFetchMoreCompletedTasks = () => {
     completedTaskFetchMore({
       variables: {
@@ -102,14 +107,16 @@ const useGetUserAboutPage = (userId) => {
 
   return userOrgRolesData
     ? {
-        inProgressData,
+        completedTaskButton,
         completedTasksData,
-        userOrgs: userOrgRolesData?.getUserOrgRoles,
-        userTaskCountData: userTaskCountData?.getPerStatusTaskCountForUserBoard,
         handleFetchMoreCompletedTasks,
         handleFetchMoreInProgressTasks,
-        completedTaskButton,
+        handleFetchMoreOrgRoles,
         inProgressButton,
+        inProgressData,
+        orgRolesButton,
+        userOrgs: userOrgRolesData?.getUserOrgRoles,
+        userTaskCountData: userTaskCountData?.getPerStatusTaskCountForUserBoard,
       }
     : {};
 };
