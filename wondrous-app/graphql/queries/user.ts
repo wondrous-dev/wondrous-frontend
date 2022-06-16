@@ -58,26 +58,6 @@ export const GET_USER_PROFILE = gql`
   ${ProfileUserFragment}
 `;
 
-export const GET_USER_ABOUT_PAGE_DATA = gql`
-  query getUserAboutPageData($userId: ID!) {
-    getUserAboutPageData(userId: $userId) {
-      userId
-      orgs {
-        ...OrgFragment
-      }
-      pods {
-        ...PodFragment
-      }
-      tasksCompletedCount
-      tasksCompleted {
-        ...TaskCardFragment
-      }
-    }
-  }
-  ${OrgFragment}
-  ${PodFragment}
-  ${TaskCardFragment}
-`;
 
 export const GET_USER_FROM_USERNAME = gql`
   query getUserFromUsername($username: String!) {
