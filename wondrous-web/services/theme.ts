@@ -1,28 +1,28 @@
 import { createTheme } from '@material-ui/core/styles'
-import * as Colors from './colors'
+import palette from 'theme/palette'
 
 const theme = createTheme({
 	palette: {
 		primary: {
-			main: Colors.Purple,
-			contrastText: Colors.White,
+			main: palette.purple,
+			contrastText: palette.white,
 		},
 		secondary: {
-			main: Colors.palette.blue400,
-			contrastText: Colors.White,
+			main: palette.blue400,
+			contrastText: palette.white,
 		},
 		success: {
-			main: Colors.palette.green400,
-			contrastText: Colors.White,
+			main: palette.green400,
+			contrastText: palette.white,
 		},
 		background: {
-			default: Colors.White,
+			default: palette.white,
 		},
 	},
 	overrides: {
 		MuiTextField: {
 			root: {
-				color: Colors.palette.grey700,
+				color: palette.grey700,
 			},
 		},
 		MuiDialog: {
@@ -37,16 +37,16 @@ const theme = createTheme({
 		},
 		MuiInputLabel: {
 			shrink: {
-				color: `${Colors.palette.blue400} !important`,
+				color: `${palette.blue400} !important`,
 			},
 		},
 		MuiInput: {},
 		MuiStepIcon: {
 			completed: {
-				color: `${Colors.palette.blue400} !important`,
+				color: `${palette.blue400} !important`,
 			},
 			active: {
-				color: `${Colors.palette.blue400} !important`,
+				color: `${palette.blue400} !important`,
 			},
 		},
 		MuiDrawer: {
@@ -56,10 +56,10 @@ const theme = createTheme({
 		},
 		MuiTypography: {
 			colorTextPrimary: {
-				color: Colors.White,
+				color: palette.White,
 			},
 			colorTextSecondary: {
-				color: Colors.Grey100,
+				color: palette.grey100,
 			},
 		},
 	},
@@ -76,32 +76,32 @@ const theme = createTheme({
 			fontWeight: 'bold',
 			fontSize: '52px',
 			lineHeight: '60px',
-			color: Colors.White,
+			color: palette.white,
 		},
 		// Main page title
 		h2: {
 			fontWeight: 'bolder',
 			fontSize: '40px',
 			lineHeight: '48px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 		},
 		h3: {
 			fontWeight: 'bolder',
 			fontSize: '32px',
 			lineHeight: '40px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 		},
 		// Subheading
 		h4: {
 			fontWeight: 'bolder',
 			fontSize: '24px',
 			lineHeight: '32px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 		},
 		h5: {
 			fontSize: '20px',
 			lineHeight: '28px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 			letterSpacing: '0.25%',
 			paragraphSpacing: '16px',
 		},
@@ -109,24 +109,24 @@ const theme = createTheme({
 			fontSize: '20px',
 			lineHeight: '28px',
 			letterSpacing: '0.15%',
-			color: Colors.Grey100,
+			color: Colors.palette.grey100,
 		},
 		subtitle2: {
 			fontSize: '18px',
 			lineHeight: '26px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 			letterSpacing: '0.75%',
 		},
 		body1: {
 			fontSize: '16px',
 			lineHeight: '28px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 			letterSpacing: '0.5%',
 		},
 		body2: {
 			fontSize: '14px',
 			lineHeight: '24px',
-			color: Colors.Grey100,
+			color: palette.grey100,
 			letterSpacing: '0.25%',
 		},
 		fontFamily: 'Faktum, sans-serif',

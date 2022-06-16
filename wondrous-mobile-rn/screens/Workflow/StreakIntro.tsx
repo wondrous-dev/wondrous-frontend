@@ -1,16 +1,14 @@
-import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
+import React from 'react'
+import { SafeAreaView, View, StyleSheet } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
-import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { palette.grey400, White, palette.black, palette.grey500, palette.blue500, palette.blue400, palette.green400 } from '../../constants/Colors'
-import { spacingUnit, getLocale } from '../../utils/common'
-import { SvgImage } from '../../storybook/stories/Image'
+import palette from 'theme/palette'
+import { spacingUnit } from '../../utils/common'
 import Celebration from '../../assets/images/celebrations/signupConfetti'
 const streakIntroStyles = StyleSheet.create({
   image: {
@@ -28,7 +26,7 @@ function StreakIntro({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header />
       <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
@@ -63,7 +61,7 @@ function StreakIntro({
             screen: 'UserProfile'
           }
         })}>
-          <Paragraph color={White} style={{
+          <Paragraph color={palette.white} style={{
             fontFamily: 'Rubik SemiBold'
           }}>
             Finish

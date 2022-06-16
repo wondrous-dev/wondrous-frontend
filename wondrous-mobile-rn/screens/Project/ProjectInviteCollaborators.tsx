@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
-import { SafeAreaView, FlatList, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
-import { palette.blue500, White } from '../../constants/Colors'
+import { SafeAreaView, View, StyleSheet } from 'react-native'
+import palette from 'theme/palette'
 import { Header } from '../../components/Header'
-import { Subheading, RegularText, ButtonText, ErrorText, Paragraph } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import { InviteCollaboratorList } from '../Profile/InviteCollaboratorModal'
 import { ContactsList } from '../Profile/ContactsModal'
@@ -32,7 +31,7 @@ const ProjectInviteCollaborators = ({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header title='Invite Collaborators' rightButton={{
         color: palette.blue500,

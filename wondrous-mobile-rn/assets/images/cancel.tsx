@@ -1,7 +1,7 @@
 import React from 'react'
 import { Pressable } from 'react-native'
 import Svg, { Path } from 'react-native-svg'
-import { palette.black } from '../../constants/Colors'
+import palette from 'theme/palette'
 
 const Cancel = ({ style, color=palette.black, onPress }) => (
   <Pressable onPress={onPress} style={style}>

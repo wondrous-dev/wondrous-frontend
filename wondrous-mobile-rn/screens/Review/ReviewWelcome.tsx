@@ -4,7 +4,7 @@ import { SafeAreaView, View, StyleSheet } from 'react-native'
 import { getDay, differenceInDays } from 'date-fns'
 
 import { Header } from '../../components/Header'
-import { White, palette.black, palette.red400, palette.green400 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { GET_LATEST_USER_REVIEW, GET_REVIEW_STATS } from '../../graphql/queries/review'
 import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
@@ -115,7 +115,7 @@ const ReviewWelcome = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header />
       {
@@ -165,7 +165,7 @@ const ReviewWelcome = ({ navigation, route }) => {
                 })
               }}
             >
-              <ButtonText color={White}> Continue </ButtonText>
+              <ButtonText color={palette.white}> Continue </ButtonText>
             </PrimaryButton>
           </>
         }

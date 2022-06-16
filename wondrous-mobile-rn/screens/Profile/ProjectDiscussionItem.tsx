@@ -9,8 +9,8 @@ import { Header } from '../../components/Header'
 import { ProjectDiscussionItem } from '../../components/ProjectDiscussion'
 import { WriteComment } from '../../components/Comment'
 import { spacingUnit } from '../../utils/common'
-import { White } from '../../constants/Colors'
-import { GET_PROJECT_DISCUSSION, GET_PROJECT_DISCUSSION_COMMENTS } from '../../graphql/queries'
+import palette from 'theme/palette'
+import { GET_PROJECT_DISCUSSION_COMMENTS } from '../../graphql/queries'
 import { CREATE_PROJECT_DISCUSSION_COMMENT } from '../../graphql/mutations'
 import { CommentContext } from '../../utils/contexts'
 
@@ -65,7 +65,7 @@ function ProjectDiscussionItemScreen({
   return (
     <>
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header />

@@ -1,21 +1,17 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
-import ProgressCircle from 'react-native-progress-circle'
+import { View, SafeAreaView, Pressable, TextInput } from 'react-native'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { RootStackParamList } from '../../types'
 import BackCaret from '../../assets/images/back-caret'
-import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { palette.black, White, palette.blue500, palette.red400, Grey100, Grey200, palette.grey300, GreyPlaceHolder, palette.orange, palette.grey800 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
-import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation } from '@apollo/client'
 import { EMAIL_SIGNIN } from '../../graphql/mutations'
-import { useMe, withAuth } from '../../components/withAuth'
 import { styles } from '../HomeScreen'
 import { useAuth } from '../../session'
 import { navigateUserOnLogin } from '../../utils/common'
@@ -75,7 +71,7 @@ function EmailSigninScreen({
         }} onPress={() => {
           navigation.goBack()
         }}>
-          <BackCaret color={White} />
+          <BackCaret color={palette.white} />
         </Pressable>
 
         <Title style={{
@@ -110,7 +106,7 @@ function EmailSigninScreen({
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: White
+                backgroundColor: palette.white
               }}
               placeholder='Email'
               placeholderTextColor={GreyPlaceHolder}
@@ -134,7 +130,7 @@ function EmailSigninScreen({
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: White
+                backgroundColor: palette.white
               }}
               placeholder='Password'
               placeholderTextColor={GreyPlaceHolder}
@@ -146,7 +142,7 @@ function EmailSigninScreen({
              <RegularText color={palette.red400}>{errors.password}</RegularText>
            ) : null}
             <PrimaryButton
-              textStyle={{ color: White }}
+              textStyle={{ color: palette.white }}
               style={{
                 width: spacingUnit * 43,
                 alignSelf: 'center',
@@ -154,7 +150,7 @@ function EmailSigninScreen({
               }}
               onPress={handleSubmit}
             >
-              <ButtonText color={White}> Login </ButtonText>
+              <ButtonText color={palette.white}> Login </ButtonText>
             </PrimaryButton>
 
           </View>

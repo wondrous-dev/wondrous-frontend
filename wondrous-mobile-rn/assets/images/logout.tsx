@@ -2,7 +2,7 @@
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-import { palette.red400 } from '../../constants/Colors'
+import palette from 'theme/palette'
 
 const Logout = ({ color=palette.red400, style }) => {
   return (

@@ -1,12 +1,10 @@
-import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
-import React, { useRef, useEffect, useState } from 'react'
-import { SafeAreaView, View, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native'
+import { useMutation, useQuery } from '@apollo/client'
+import React, { useRef, useState } from 'react'
+import { SafeAreaView, View, Pressable, FlatList } from 'react-native'
 import { Header } from '../../components/Header'
-import { White, palette.black, palette.red400, palette.green400, palette.grey400, palette.grey500, palette.blue500, palette.blue400 } from '../../constants/Colors'
-import { GET_REVIEW_STATS } from '../../graphql/queries/review'
-import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
+import palette from 'theme/palette'
+import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
-import { PrimaryButton } from '../../storybook/stories/Button'
 import { withAuth, useMe } from '../../components/withAuth'
 import { GET_USER_ACTIONS } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
@@ -15,7 +13,6 @@ import { COMPLETE_GOAL, COMPLETE_TASK, CREATE_GOAL, CREATE_TASK, UPDATE_GOAL, UP
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
-import { SvgImage } from '../../storybook/stories/Image'
 
 const HouseKeeping = ({ route, navigation }) => {
   const user = useMe()
@@ -101,7 +98,7 @@ const HouseKeeping = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModal}  goalMutation={createGoal} />
       <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModal} taskMutation={createTask} />

@@ -1,17 +1,15 @@
 import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, FlatList } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
-import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { palette.grey400, White, palette.black, palette.grey500, palette.blue500 } from '../../constants/Colors'
-import { spacingUnit, getLocale } from '../../utils/common'
+import palette from 'theme/palette'
+import { spacingUnit } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button'
-import { SvgImage } from '../../storybook/stories/Image'
 import AskIcon from '../../assets/images/ask/standalone'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { CREATE_ASK } from '../../graphql/mutations'
@@ -68,7 +66,7 @@ function SetupAskScreen({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header skip='Root' skipParams={{
         screen: 'Profile',

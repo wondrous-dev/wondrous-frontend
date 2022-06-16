@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
-import { Pressable, Text, Linking } from 'react-native'
+import { Text } from 'react-native'
 import * as Localization from 'expo-localization'
 import * as WebBrowser from 'expo-web-browser'
 import regexifyString from 'regexify-string'
 import { StackActions } from '@react-navigation/native'
 
-import { palette.blue400 } from '../constants/Colors'
+import palette from 'theme/palette'
 import { MENTION_REGEX } from '../constants'
 
 export const spacingUnit = 8

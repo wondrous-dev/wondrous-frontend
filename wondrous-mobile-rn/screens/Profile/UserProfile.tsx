@@ -24,7 +24,7 @@ import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPL
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
-import { palette.black, palette.grey300, White, palette.blue400, palette.grey800, palette.grey700, palette.orange } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { ProfileContext, UserCongratsContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
@@ -506,7 +506,7 @@ const UserProfile = React.memo(({
           position: 'absolute',
           zIndex: 1000,
           elevation: 1000,
-          backgroundColor: White,
+          backgroundColor: palette.white,
           left: profilePictureDimensions.x + profilePictureDimensions.width,
           top: profilePictureDimensions.y + profilePictureDimensions.height,
           borderRadius: spacingUnit,
@@ -558,7 +558,7 @@ const UserProfile = React.memo(({
             borderWidth={8}
             color={palette.orange}
             shadowColor={palette.grey300}
-            bgColor={White}
+            bgColor={palette.white}
           >
           {
             profilePicture ?
@@ -648,7 +648,7 @@ const UserProfile = React.memo(({
             paddingLeft: spacingUnit,
             paddingRight: spacingUnit
           }}>
-            <RegularText color={White}>
+            <RegularText color={palette.white}>
               Follows you
             </RegularText>
           </View>
@@ -695,7 +695,7 @@ const UserProfile = React.memo(({
               setFollowing(true)
               followUser()
             }} style={profileStyles.followButton}>
-              <Paragraph color={White}>
+              <Paragraph color={palette.white}>
                 Follow
               </Paragraph>
             </Pressable>
@@ -759,7 +759,7 @@ const UserProfile = React.memo(({
           paddingTop: 0,
           paddingBottom: 0,
         }} onPress={() => setContactsModal(true)}>
-          <Paragraph color={White} >
+          <Paragraph color={palette.white} >
             Invite friends
           </Paragraph>
         </PrimaryButton>
@@ -835,7 +835,7 @@ const UserProfile = React.memo(({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header noGoingBack={noGoingBack} options={{
@@ -1033,7 +1033,7 @@ const Content = (props: ContentProps) => {
 
   if (!hookProps.finalUserId) {
     return (<SafeAreaView style={{ 
-      backgroundColor: White, 
+      backgroundColor: palette.white, 
       justifyContent: 'center',
       alignItems: 'center',
       flex: 1}}>    

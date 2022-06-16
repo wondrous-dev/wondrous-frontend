@@ -9,7 +9,7 @@ import { Header } from '../components/Header'
 import { FeedItem } from '../components/Feed'
 import { WriteComment } from '../components/Comment'
 import { spacingUnit } from '../utils/common'
-import { White } from '../constants/Colors'
+import palette from 'theme/palette'
 import { GET_FEED_COMMENTS } from '../graphql/queries'
 import { CREATE_FEED_COMMENT } from '../graphql/mutations/feed'
 import { CommentContext } from '../utils/contexts'
@@ -74,7 +74,7 @@ function FeedItemScreen({
   return (
     <>
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header />

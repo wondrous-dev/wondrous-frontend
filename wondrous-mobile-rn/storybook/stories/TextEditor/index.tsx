@@ -28,7 +28,7 @@ import { SvgImage } from '../Image'
 import Placeholder from '../../../assets/images/placeholder'
 import DefaultProfilePicture from '../../../assets/images/default-profile-picture.jpg'
 import CoolProfilePic from '../../../assets/images/default-profile.png'
-import { palette.black, palette.blue500, Grey100, Grey200, palette.grey300, palette.grey400, White } from '../../../constants/Colors'
+import palette from 'theme/palette'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS, GET_PROJECTS_AUTOCOMPLETE } from '../../../graphql/queries'
 import { spacingUnit } from '../../../utils/common'
@@ -73,7 +73,7 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
         padding: 10,
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: Grey100,
+        borderBottomColor: palette.grey100,
         
       }}>
         {
@@ -96,7 +96,7 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
           <Text style={{color: palette.black, marginBottom: 4, fontWeight: 'bold'}}>
             {user?.firstName || ''} {user?.lastName || ''}
           </Text>
-          <Text style={{ color: Grey200, fontSize: 14 }}>
+          <Text style={{ color: palette.grey200, fontSize: 14 }}>
             @{user?.username}
           </Text>
         </View>
@@ -111,7 +111,7 @@ const AutocompleteList = ({ users, autocompleteLoading, autocompleteFill}) => {
     <SafeAreaView style={{
       flex: 1,
       width: '100%',
-      backgroundColor: White,
+      backgroundColor: palette.white,
       borderWidth: 1,
       borderColor: palette.grey300,
       marginTop: margin,
@@ -290,7 +290,7 @@ export class RichTextEditor extends React.Component {
   createContentStyle = (theme) => {
     // Can be selected for more situations (cssText or contentCSSText).
     const contentStyle = {
-        backgroundColor: White,
+        backgroundColor: palette.white,
         color: palette.black,
         placeholderColor: 'gray',
         // cssText: '#editor {background-color: #f3f3f3}', // initial valid
@@ -310,7 +310,7 @@ export class RichTextEditor extends React.Component {
         return {
           height: 80,
           placeholder: 'Add description...',
-          backgroundColor: White,
+          backgroundColor: palette.white,
           style: {
             position: 'absolute',
             bottom: 0,
@@ -321,7 +321,7 @@ export class RichTextEditor extends React.Component {
         return {
           height: 30,
           placeholder: 'Add comment...',
-          backgroundColor: White,
+          backgroundColor: palette.white,
           paddingLeft: 0,
           style: {
             width: '100%',
@@ -423,8 +423,8 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef, 
             width: '200%',
             alignItems: 'center',
             borderBottomWidth: 1,
-            borderBottomColor: Grey100,
-            backgroundColor: White
+            borderBottomColor: palette.grey100,
+            backgroundColor: palette.white
           }}>
             {
               element.profilePicture && element.profilePicture !== 'None' ?
@@ -465,7 +465,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef, 
               </Text>
               {
                 element?.username &&
-                  <Text style={{ color: Grey200, fontSize: 14 }}>
+                  <Text style={{ color: palette.grey200, fontSize: 14 }}>
                   @{element?.username}
                 </Text>
               }
@@ -553,7 +553,7 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
           paddingBottom: 12,
           paddingLeft: 12,
           paddingRight: 12,
-          backgroundColor: White,
+          backgroundColor: palette.white,
           borderRadius: spacingUnit * 3,
           borderWidth: 1,
           borderColor: palette.grey300,

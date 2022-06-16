@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { palette.blue500, palette.grey400, palette.grey300, palette.black, palette.blue400, White } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { spacingUnit } from '../../utils/common'
 
 const followingButtonStyle = {
@@ -62,7 +62,7 @@ export const profileStyles = StyleSheet.create({
   },
   editButton: {
     width: spacingUnit * 13,
-    backgroundColor: White,
+    backgroundColor: palette.white,
     borderColor: palette.black,
     borderWidth: 1,
     paddingTop: 0,

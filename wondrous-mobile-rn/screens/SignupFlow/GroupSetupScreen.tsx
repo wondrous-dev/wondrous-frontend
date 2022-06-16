@@ -1,11 +1,9 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
-import { StackScreenProps } from '@react-navigation/stack'
+import React, { useState } from 'react'
 import { StyleSheet, View, ScrollView, Pressable, Text, Image, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
-import { Formik } from 'formik'
 
 import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
-import { White, palette.yellow300, palette.grey300, palette.grey500, palette.black, palette.orange } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Header } from '../../components/Header'
 import { usernameSetupStyles } from './UsernameSetupScreen'
 import Smile from '../../assets/images/emoji/smile'
@@ -57,7 +55,7 @@ const Pill = ({ text, selected }) => {
         borderWidth: 0
       })
     }}>
-      <Paragraph color={selected ? White : palette.black} style={groupStyles.pillText}>
+      <Paragraph color={selected ? palette.white : palette.black} style={groupStyles.pillText}>
         {text}
       </Paragraph>
     </View>
@@ -69,7 +67,7 @@ const GroupSetupScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1,
     }}>
       <Header noGoingBack={true} />
@@ -80,7 +78,7 @@ const GroupSetupScreen = ({ navigation }) => {
           borderWidth={10}
           color={palette.yellow300}
           shadowColor={palette.grey300}
-          bgColor={White}
+          bgColor={palette.white}
         >
           <Smile />
         </ProgressCircle>
@@ -109,7 +107,7 @@ const GroupSetupScreen = ({ navigation }) => {
         <View style={groupStyles.navigationButtonContainer}>
           <PrimaryButton
             style={{
-              backgroundColor: White,
+              backgroundColor: palette.white,
               borderWidth: 1,
               borderColor: palette.black,
               flex: 1,
@@ -121,7 +119,7 @@ const GroupSetupScreen = ({ navigation }) => {
             </ButtonText>
           </PrimaryButton> 
           <PrimaryButton
-              textStyle={{ color: White }}
+              textStyle={{ color: palette.white }}
               style={{
                 flex: 1
               }}
@@ -129,7 +127,7 @@ const GroupSetupScreen = ({ navigation }) => {
                 // navigation.push('')
               }}
             >
-              <ButtonText color={White}> Continue </ButtonText>
+              <ButtonText color={palette.white}> Continue </ButtonText>
             </PrimaryButton>
         </View>
         </ScrollView>

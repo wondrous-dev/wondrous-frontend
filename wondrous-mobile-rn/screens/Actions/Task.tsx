@@ -6,11 +6,11 @@ import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { palette.grey800, Purple, palette.red400, White, palette.black, palette.blue400, Grey450, palette.green400, palette.grey300, palette.yellow300 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { COMPLETE_TASK, UPDATE_TASK, NUDGE_TASK } from '../../graphql/mutations'
-import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { ErrorText, Paragraph, RegularText } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, renderMentionString, spacingUnit, getRingActions } from '../../utils/common'
 import { Tag } from '../../components/Tag'
@@ -166,7 +166,7 @@ const TaskPage = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <FullScreenTaskModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} task={task} taskMutation={updateTask} completeTaskMutation={completeTask} />
       <Header title='Task' rightButton={ownedByUser && !onboarding && {
@@ -236,7 +236,7 @@ const TaskPage = ({ navigation, route }) => {
               marginRight: spacingUnit,
               marginTop: spacingUnit
             }}>
-              <RegularText color={White}>
+              <RegularText color={palette.white}>
                 Completed
               </RegularText>
             </Tag>
@@ -284,22 +284,22 @@ const TaskPage = ({ navigation, route }) => {
                 backgroundColor: sortPriority(task.priority),
                 marginTop: spacingUnit
               }]}>
-              <PriorityFlame color={White} style={{
+              <PriorityFlame color={palette.white} style={{
                 // marginLeft: spacingUnit,
                 marginRight: spacingUnit
               }} />
-              <RegularText color={White}>
+              <RegularText color={palette.white}>
                 {capitalizeFirstLetter(task.priority)} Priority
               </RegularText>
               </View>
             }
             {
               task.project &&
-              <Tag color={Purple} style={{
+              <Tag color={palette.purple} style={{
                 marginRight: spacingUnit,
                 marginTop: spacingUnit  
               }}>
-                <RegularText color={White}>
+                <RegularText color={palette.white}>
                   {task.project && task.project.name}
                 </RegularText>
               </Tag>
@@ -308,7 +308,7 @@ const TaskPage = ({ navigation, route }) => {
             <View style={{
               marginTop: spacingUnit
             }}>
-                <RegularText color={redDate(task.dueDate) ? palette.red400 : Grey450}>
+                <RegularText color={redDate(task.dueDate) ? palette.red400 : palette.grey450}>
                 Due {formatDueDate(new Date(task.dueDate))}
               </RegularText>
               </View>

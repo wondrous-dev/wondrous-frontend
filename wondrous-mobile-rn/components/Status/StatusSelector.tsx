@@ -4,7 +4,7 @@
 import React, { useState } from 'react'
 import { Pressable, View } from 'react-native'
 
-import { palette.black } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { RegularText } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import DownCaret from '../../assets/images/down-caret'

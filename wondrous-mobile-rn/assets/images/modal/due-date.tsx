@@ -1,7 +1,7 @@
 
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
-import { palette.grey800 } from '../../../constants/Colors'
+import palette from 'theme/palette'
 
 const DueDate = ({ style, color=palette.grey800 }) => {
   return (

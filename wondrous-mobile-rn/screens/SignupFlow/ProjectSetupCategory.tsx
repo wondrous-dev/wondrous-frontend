@@ -19,7 +19,7 @@ import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import { palette.black, palette.blue500, Blue600, palette.yellow300, palette.grey300, palette.grey500, White, palette.orange } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
@@ -119,8 +119,8 @@ const CategoryItem = ({ category }) => {
   let categoryColors = null
   if (category.title.toLowerCase() === projectCategory) {
     categoryColors = {
-      iconColor: White,
-      backgroundColor: Blue600
+      iconColor: palette.white,
+      backgroundColor: palette.blue600
     }
   }
 
@@ -135,7 +135,7 @@ const CategoryItem = ({ category }) => {
           alignItems: 'center'
         }}>
           <CategoryImage backgroundColor={(categoryColors && categoryColors?.backgroundColor) || '#F0F4FE'} iconColor={category && categoryColors?.iconColor} />
-          <RegularText color={Blue600} style={{
+          <RegularText color={palette.blue600} style={{
             marginTop: spacingUnit
           }} > {category.title} </RegularText>
         </Pressable>
@@ -227,7 +227,7 @@ function ProjectSetupCategoryScreen({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <ScrollView style={{
@@ -328,7 +328,7 @@ function ProjectSetupCategoryScreen({
               borderWidth={10}
               color={palette.yellow300}
               shadowColor={palette.grey300}
-              bgColor={White}
+              bgColor={palette.white}
           >
               <BigMouthSmile />
           </ProgressCircle>

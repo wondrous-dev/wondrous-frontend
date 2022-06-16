@@ -1,11 +1,9 @@
 import React from 'react'
 import { View, Pressable } from 'react-native'
-import { useNavigation } from '@react-navigation/native'
 
 import { Paragraph } from '../../storybook/stories/Text'
 import { FlexRowContentModal } from '.'
-import { palette.grey800, palette.red400 } from '../../constants/Colors'
-import Logout from '../../assets/images/logout'
+import palette from 'theme/palette'
 import { spacingUnit } from '../../utils/common'
 
 export const OtherUserProfileModal = ({ isVisible, setModalVisible, headerText, blockUser }) => {

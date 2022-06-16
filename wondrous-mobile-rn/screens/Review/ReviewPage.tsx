@@ -5,10 +5,9 @@ import { SafeAreaView, StyleSheet, View, KeyboardAvoidingView, ScrollView, Press
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
-import { WriteComment } from '../../components/Comment'
 import { Header } from '../../components/Header'
 import { useMe, withAuth } from '../../components/withAuth'
-import { White, palette.black, palette.grey400, Grey200 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { CREATE_REVIEW_COMMENT } from '../../graphql/mutations'
 import { GET_REVIEW_BY_ID, GET_REVIEW_COMMENTS } from '../../graphql/queries/review'
 import { Paragraph, Subheading, RegularText } from '../../storybook/stories/Text'
@@ -90,7 +89,7 @@ const ReviewPage = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header />
       {
@@ -171,7 +170,7 @@ const ReviewPage = ({ navigation, route }) => {
                           }
                         })}         
                         >{item.commenterFirstName} {item.commenterLastName}{` `}</Paragraph>
-                        <RegularText  color={Grey200}>{timeAgo.format(new Date(item.createdAt))}</RegularText>     
+                        <RegularText  color={palette.grey200}>{timeAgo.format(new Date(item.createdAt))}</RegularText>     
 
                         </View>
                     </View>

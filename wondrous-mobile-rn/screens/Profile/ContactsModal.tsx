@@ -8,12 +8,11 @@ import { modalStyles } from '../../components/Modal/common'
 import { spacingUnit } from '../../utils/common'
 import { SearchBar } from '../../components/Header'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { listStyles, profileStyles } from './style'
-import { White, palette.black, palette.blue400 } from '../../constants/Colors'
+import { listStyles } from './style'
+import palette from 'theme/palette'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import * as SMS from 'expo-sms'
-import { TESTFLIGHT_BETA_LINK } from '../../constants/index'
 import { useMe } from '../../components/withAuth'
 import { useNavigation } from '@react-navigation/core'
 import { useMutation } from '@apollo/client'
@@ -103,7 +102,7 @@ const ContactItem = ({ item }) => {
           setInvited(true)
           inviteCollaborator()
         }} style={listStyles.followButton}>
-          <Paragraph color={White}>
+          <Paragraph color={palette.white}>
             Invite
           </Paragraph>
         </Pressable>
@@ -205,7 +204,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
                 setModalVisible(false)
               }}>
-                <RegularText color={White} style={{
+                <RegularText color={palette.white} style={{
                   fontSize: 16
                 }}>
                   Done

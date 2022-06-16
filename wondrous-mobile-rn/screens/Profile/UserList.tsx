@@ -1,15 +1,14 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity, FlatList } from 'react-native'
-import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useMutation } from '@apollo/client'
 import * as Analytics from 'expo-firebase-analytics'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
-import { palette.black, White, palette.grey800, palette.blue400, palette.grey300 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { wait, spacingUnit, cutString } from '../../utils/common'
-import { ProfilePlaceholder } from './common'
 import { SafeImage } from '../../storybook/stories/Image'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { Header } from '../../components/Header'
@@ -139,7 +138,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
           }
           followUser()
         }} style={listStyles.followButton}>
-          <Paragraph color={White}>
+          <Paragraph color={palette.white}>
             Follow
           </Paragraph>
         </Pressable>
@@ -311,7 +310,7 @@ const UserList = ({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       {
         userOwned &&
@@ -339,7 +338,7 @@ const UserList = ({
                 backgroundColor: palette.blue400
               })
             }}>
-              <RegularText color={seeProject ? palette.grey800 : White}>
+              <RegularText color={seeProject ? palette.grey800 : palette.white}>
                 Users
               </RegularText>
             </Pressable>
@@ -352,7 +351,7 @@ const UserList = ({
                 backgroundColor: palette.blue400
               })
             }}>
-              <RegularText color={seeProject ? White : palette.grey800}>
+              <RegularText color={seeProject ? palette.white : palette.grey800}>
                 Projects
               </RegularText>
             </Pressable>
@@ -386,7 +385,7 @@ const UserList = ({
                   marginTop: spacingUnit * 2,
                   alignSelf: 'center'
                 }} onPress={() => setContactsModal(true)}>
-                  <Paragraph color={White} >
+                  <Paragraph color={palette.white} >
                     Invite friends
                   </Paragraph>
               </PrimaryButton>

@@ -4,18 +4,17 @@ import Modal from 'react-native-modal'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import * as Analytics from 'expo-firebase-analytics'
 
-import { palette.black, White, palette.blue400, palette.grey400, palette.grey800, palette.grey750, palette.blue500, palette.red400, palette.yellow300, palette.grey300 } from '../../constants/Colors'
-import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { capitalizeFirstLetter, cutString, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
+import palette from 'theme/palette'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { cutString, spacingUnit } from '../../utils/common'
 import { modalStyles } from '../../components/Modal/common'
 import { SafeImage } from '../../storybook/stories/Image'
 import { useMe } from '../../components/withAuth'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { ProfilePlaceholder } from './common'
-import { listStyles, profileStyles } from './style'
+import { listStyles } from './style'
 import { SearchBar } from '../../components/Header'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { GET_PROJECT_INVITES, GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../../graphql/queries'
+import { GET_PROJECT_INVITES, GET_USER_FOLLOWING } from '../../graphql/queries'
 import { INVITE_COLLABORATOR } from '../../graphql/mutations'
 import { LogEvents } from '../../utils/analytics'
 
@@ -135,7 +134,7 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
           }
           inviteCollaborator()
         }} style={listStyles.followButton}>
-          <Paragraph color={White}>
+          <Paragraph color={palette.white}>
             Invite
           </Paragraph>
         </Pressable>
@@ -260,7 +259,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
                 setModalVisible(false)
               }}>
-                <RegularText color={White} style={{
+                <RegularText color={palette.white} style={{
                   fontSize: 16
                 }}>
                   Done

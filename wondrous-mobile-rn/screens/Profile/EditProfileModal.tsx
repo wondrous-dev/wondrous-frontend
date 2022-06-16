@@ -1,12 +1,10 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, View, Alert, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import { SafeAreaView, View, Alert, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
-import { useQuery } from '@apollo/client'
-import { toDate } from 'date-fns'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { palette.black, White, palette.blue400, palette.grey400, palette.grey800, palette.grey750, palette.blue500, palette.red400, palette.yellow300, palette.grey300 } from '../../constants/Colors'
-import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import palette from 'theme/palette'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { capitalizeFirstLetter, extractFirstAndLastName, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { modalStyles, ModalDropdown, privacyDropdown } from '../../components/Modal/common'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
@@ -222,7 +220,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                 })
                 setModalVisible(false)
               }}>
-                <RegularText color={White} style={{
+                <RegularText color={palette.white} style={{
                   fontSize: 16
                 }}>
                   Update

@@ -6,7 +6,7 @@ import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { HomeFeed } from '../../components/Feed'
-import { White } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { checkAndUpdateNotificationToken, registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
 
 function Feed({
@@ -23,7 +23,7 @@ function Feed({
   return (
     <>
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header streak={true} />

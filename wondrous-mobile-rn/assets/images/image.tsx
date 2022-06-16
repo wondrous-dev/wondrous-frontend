@@ -1,5 +1,5 @@
 import React from 'react'
-import { palette.blue500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import Svg, { Path } from 'react-native-svg'
 import { Pressable } from 'react-native'
 

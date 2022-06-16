@@ -3,7 +3,7 @@ import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 import { useNavigation } from '@react-navigation/native'
 
-import { palette.grey500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 
 const BackCaret = ({ color=palette.grey500, style }) => {
   const navigation = useNavigation()

@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, Pressable } from 'react-native'
+import { StyleSheet, View } from 'react-native'
 
 import { RootStackParamList } from '../../types'
-import { palette.orange, palette.black, White, palette.grey500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { styles } from '../HomeScreen'
 import {  Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
@@ -11,7 +11,6 @@ import { Header } from '../../components/Header'
 import { withAuth, useMe } from '../../components/withAuth'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { spacingUnit } from '../../utils/common'
-import { SvgImage } from '../../storybook/stories/Image'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Superhero from '../../assets/images/superhero'
 
@@ -64,7 +63,7 @@ function WelcomeScreen({
 
   return (
     <SafeAreaView style={[styles.container, {
-      backgroundColor: White
+      backgroundColor: palette.white
     }]}>
       <Header />
       <View style={loginStyles.welcomeBody}>
@@ -79,11 +78,11 @@ function WelcomeScreen({
         </Paragraph>
         {/* <SvgImage width="80" height="80" srcElement={Celebration} style={loginStyles.image} /> */}
           <PrimaryButton textStyle={{
-            color: White
+            color: palette.white
           }} style={loginStyles.button} onPress={() => {
             navigation.push('UsernameSetup')
           }}>
-            <ButtonText color={White}>
+            <ButtonText color={palette.white}>
               I'm ready!
             </ButtonText>
           </PrimaryButton>

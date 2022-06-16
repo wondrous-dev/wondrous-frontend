@@ -27,16 +27,7 @@ import {
 	InviteButtonDiv,
 	ProfileCenteredDiv,
 } from '../../components/Waitlist/styles'
-import { palette.blue500, palette.grey800 } from '../../services/colors'
-import {
-	HomeNavLink,
-	HomeNavLinkTypography,
-	LinkContainer,
-	ManifestoLink,
-} from '../../components/Navbar/styles'
-import { NewCanvas } from '../../components/Common'
-import { useIsMobile, useWindowSize } from '../../utils/hooks'
-import { FunkyButton } from '../../components/Button'
+import { useIsMobile } from '../../utils/hooks'
 import HomeNavbar from '../../components/Navbar/Home'
 import { TokenText } from '../../components/Home/styles'
 import { DiscordShare } from '../../components/Icons/discord'

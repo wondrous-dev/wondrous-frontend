@@ -11,7 +11,7 @@ import {
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated from "react-native-reanimated"
 
-import { palette.grey400, palette.blue400, palette.green400, White, Grey450, Purple, palette.red400, palette.yellow300, palette.grey300, palette.grey800 } from '../../../constants/Colors'
+import palette from 'theme/palette'
 import CompleteSvg from '../../../assets/images/complete'
 import ArchiveSvg from '../../../assets/images/archive'
 import { RegularText, TinyText, Paragraph } from '../Text'
@@ -53,7 +53,7 @@ export const ReviewCard = ({ review, tab }) => {
         }
       }
     })}>
-    <View style={[styles.row, { backgroundColor: White, justifyContent: 'space-between' }]}>
+    <View style={[styles.row, { backgroundColor: palette.white, justifyContent: 'space-between' }]}>
         <View style={{
           flexDirection: 'row',
           alignItems: 'center'
@@ -119,7 +119,7 @@ class Card extends React.Component {
       ]}
     >
       <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={[styles.text, { color: White, marginRight: 4 }]}>Done</Text>
+        <Text style={[styles.text, { color: palette.white, marginRight: 4 }]}>Done</Text>
         <CompleteSvg style={{
           width: 20,
           height: 20
@@ -225,7 +225,7 @@ class Card extends React.Component {
           navigation.push(redirect, redirectParams)
         }
       }}>
-      <View style={[styles.row, { backgroundColor: White }]}>
+      <View style={[styles.row, { backgroundColor: palette.white }]}>
             <PlatformTouchable
               onLongPress={item.drag}
               style={[{ width: 5, alignItems: "flex-start" }]}
@@ -303,17 +303,17 @@ class Card extends React.Component {
               }
               {
                 projectName &&
-                <Tag color={Purple} style={{
+                <Tag color={palette.purple} style={{
                   marginRight: spacingUnit,
                   marginBottom: spacingUnit
                 }}>
-                  <RegularText color={White}>
+                  <RegularText color={palette.white}>
                     {projectName}
                   </RegularText>
                 </Tag>
               }
               {dueDate && !completedAt &&  
-                  <RegularText color={isRedDate ? palette.red400 : Grey450} style={styles.dueText}>
+                  <RegularText color={isRedDate ? palette.red400 : palette.grey450} style={styles.dueText}>
                   Due {formatDueDate(new Date(dueDate))}
                 </RegularText>
               }
@@ -323,7 +323,7 @@ class Card extends React.Component {
                 item.item && item.item.status === 'completed' &&
                 <Tag color={palette.green400} style={{
                 }}>
-                  <RegularText color={White}>
+                  <RegularText color={palette.white}>
                     Completed {formatDueDate(new Date(completedAt))}
                   </RegularText>
                 </Tag>

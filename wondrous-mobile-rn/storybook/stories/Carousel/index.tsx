@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 import Swiper from 'react-native-web-swiper'
-import { White, palette.orange, palette.grey800, palette.black } from '../../../constants/Colors'
+import palette from 'theme/palette'
 import { spacingUnit } from '../../../utils/common'
-import { ModalImage, SafeImage } from '../Image'
+import { ModalImage } from '../Image'
 import { Video } from 'expo-av'
 
-import { Title, Subheading, Paragraph } from '../Text'
+import { Subheading } from '../Text'
 import { MUX_URL_ENDING, MUX_URL_PREFIX } from '../../../constants'
 
 const styles = StyleSheet.create({
@@ -115,7 +115,7 @@ export class MyCarousel extends React.Component {
                 }
                 return (
                   <View key={item.subheading} style={{flex: 1, padding: spacingUnit * 2}}>
-                  <Subheading color={White} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
+                  <Subheading color={palette.white} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
                   {/* <Paragraph color={palette.black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
                 </View>
                 )

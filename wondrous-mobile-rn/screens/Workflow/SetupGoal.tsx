@@ -4,21 +4,17 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
-import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { palette.grey400, White, palette.black, palette.grey500, palette.blue500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { spacingUnit } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button'
-import { SvgImage } from '../../storybook/stories/Image'
 import GoalIcon from '../../assets/images/goal/standalone'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { CREATE_GOAL } from '../../graphql/mutations'
 import { GET_GOALS_FROM_PROJECT, GET_USER_STREAK } from '../../graphql/queries'
-import { CardList } from '../../storybook/stories/CardList'
 import { Card } from '../../storybook/stories/Card'
-import { WHOAMI } from '../../graphql/queries'
 import { updateUsageProgress } from '../../utils/apollo'
 
 const setupGoalStyles = StyleSheet.create({
@@ -75,7 +71,7 @@ function SetupGoalScreen({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header rightButton={goalArray && goalArray.length > 0 && {
         color: palette.blue500,

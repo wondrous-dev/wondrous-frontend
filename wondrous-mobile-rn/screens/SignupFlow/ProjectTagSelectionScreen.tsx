@@ -7,7 +7,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { palette.black, White, palette.blue500, Blue600, palette.red400, palette.orange, palette.grey500, palette.green400, Grey900, palette.grey300, GreyPlaceHolder } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { CREATE_PROJECT_TAGS } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -81,8 +81,8 @@ const projectTagStyles = StyleSheet.create({
 })
 
 const SingleTag = ({ tagName, selected, tagLength }) => {
-    const textColor = selected ? White : palette.blue500
-    const backgroundColor = selected ? palette.blue500 : White
+    const textColor = selected ? palette.white : palette.blue500
+    const backgroundColor = selected ? palette.blue500 : palette.white
     const {
         projectTags,
         setProjectTags
@@ -194,7 +194,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                 {tagRows.map((tagRow, index) => (<TagsRow key={index} tags={tagRow} />))}
             </View>
             <PrimaryButton
-                textStyle={{ color: White }}
+                textStyle={{ color: palette.white }}
                 style={{
                     alignSelf: 'center',
                     marginTop: spacingUnit * 5,
@@ -308,7 +308,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                     }
                 }}
             >
-                <ButtonText color={White}> {edit ? 'Update' : 'Continue'}  </ButtonText>
+                <ButtonText color={palette.white}> {edit ? 'Update' : 'Continue'}  </ButtonText>
             </PrimaryButton>
 
         </View>
@@ -330,7 +330,7 @@ function ProjectTagSelectionScreen({
     const [error, setError] = useState(null)
     return (
         <SafeAreaView style={{
-            backgroundColor: White,
+            backgroundColor: palette.white,
             flex: 1,
         }}>
             {
@@ -364,7 +364,7 @@ function ProjectTagSelectionScreen({
                         borderWidth={10}
                         color={finished ? palette.green400 : palette.orange}
                         shadowColor={palette.grey300}
-                        bgColor={White}
+                        bgColor={palette.white}
                     >
                         {finished ? 
                             <HeartEyes />

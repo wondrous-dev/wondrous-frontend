@@ -8,12 +8,12 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { GET_USER_RING_GOALS, GET_USER_RING_TASKS, GET_USER_RING_ACTION_COUNT, GET_USER_STREAK } from '../../graphql/queries'
 import { getRingActions, spacingUnit } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { UploadImage, SafeImage } from '../../storybook/stories/Image'
-import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { palette.black, palette.grey300, White, palette.blue400, palette.grey800, palette.grey700, palette.orange, palette.green400, palette.red400 } from '../../constants/Colors'
+import { SafeImage } from '../../storybook/stories/Image'
+import { Paragraph } from '../../storybook/stories/Text'
+import palette from 'theme/palette'
 import {
   onSwipe,
-  ProfilePlaceholder, renderCard
+  renderCard
 } from './common'
 import Neutral from '../../assets/images/emoji/neutral'
 import HeartEyes from '../../assets/images/emoji/heartEyes'
@@ -319,7 +319,7 @@ const RingActions = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
         <Header title={`@${fetchedUser?.username}'s weekly ring`} />
         <UserCongratsContext.Provider value={{
@@ -336,7 +336,7 @@ const RingActions = ({ navigation, route }) => {
               borderWidth={8}
               color={palette.orange}
               shadowColor={palette.grey300}
-              bgColor={White}
+              bgColor={palette.white}
             >
               <SafeImage style={{
                 width: spacingUnit * 10,

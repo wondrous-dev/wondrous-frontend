@@ -3,11 +3,10 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, ScrollView, FlatList, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
-import SearchIcon from '../../assets/images/bottomNav/search'
 import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { White, Grey100, palette.grey800, palette.grey300,Grey200, palette.black, Grey550, palette.grey500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { capitalizeFirstLetter, spacingUnit, wait } from '../../utils/common'
 import { useMutation, useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
@@ -119,7 +118,7 @@ const SearchResult = ({ result, project, user }) => {
       paddingBottom: spacingUnit * 1.5
     }}>
       {
-          profilePicture && profilePicture !== 'None' ?
+        profilePicture && profilePicture !== 'None' ?
           <SafeImage
           src={profilePicture} style={{
             width: 30,
@@ -144,7 +143,7 @@ const SearchResult = ({ result, project, user }) => {
         </Paragraph>
         {
           user &&
-          <RegularText color={Grey200} style={{ fontSize: 14 }}>
+          <RegularText color={palette.grey200} style={{ fontSize: 14 }}>
             @{username}
           </RegularText>
         }
@@ -319,7 +318,7 @@ function DefaultSearch({
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header search={true} searchString={searchString} setSearchString={setSearchString} setFocus={setFocus} />

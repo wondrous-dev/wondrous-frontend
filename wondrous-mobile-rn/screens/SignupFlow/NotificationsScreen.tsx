@@ -9,7 +9,7 @@ import * as Permissions from 'expo-permissions'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { palette.black, White, palette.blue500, palette.red400, palette.grey500, palette.grey300, palette.orange } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -92,7 +92,7 @@ const NotificationPrompt = ({ navigation }) => {
       </Paragraph>
       <View>
         <PrimaryButton
-          textStyle={{ color: White }}
+          textStyle={{ color: palette.white }}
           style={{
             backgroundColor: palette.orange,
             width: spacingUnit * 43,
@@ -105,12 +105,12 @@ const NotificationPrompt = ({ navigation }) => {
             navigation.push('UserInterestCategory')
           }}
         >
-          <ButtonText color={White}> Turn on notifications </ButtonText>
+          <ButtonText color={palette.white}> Turn on notifications </ButtonText>
         </PrimaryButton>
         <PrimaryButton
-          textStyle={{ color: White }}
+          textStyle={{ color: palette.white }}
           style={{
-            backgroundColor: White,
+            backgroundColor: palette.white,
             borderColor: palette.orange,
             borderWidth: 1,
             width: spacingUnit * 43,
@@ -135,7 +135,7 @@ function NotificationSetupScreen({
 }: StackScreenProps<RootStackParamList, 'NotificationPrompt'>) {
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1,
     }}>
     <KeyboardAvoidingView
@@ -149,7 +149,7 @@ function NotificationSetupScreen({
           borderWidth={10}
           color={palette.red400}
           shadowColor={palette.grey300}
-          bgColor={White}
+          bgColor={palette.white}
         >
           <BigMouthSmile />
         </ProgressCircle>

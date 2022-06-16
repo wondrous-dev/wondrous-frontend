@@ -10,7 +10,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit, getLocale } from '../../utils/common'
-import { palette.black, Grey900, White, palette.blue400, palette.blue500, palette.yellow300, palette.grey300, palette.grey500, GreyPlaceHolder } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Smile from '../../assets/images/emoji/smile'
@@ -221,7 +221,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 padding: 8
                             }}
                             placeholder='Name'
-                            placeholderTextColor={GreyPlaceHolder}
+                            placeholderTextColor={palette.grey35}
                             onChangeText={(val) => {
                                 if (val.length <= 40) {
                                     setName(val)
@@ -245,7 +245,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 justifyContent: "flex-start"
                             }}
                             placeholder='Description - e.g. A platform where brands can reward users for ideas and feedback related to their products.'
-                            placeholderTextColor={GreyPlaceHolder}
+                            placeholderTextColor={palette.grey35}
                             multiline={true}
                             numberOfLines={4}
                             onChangeText={(val) => {
@@ -267,7 +267,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                     <Paragraph color={palette.black}>
                                     Make private
                                     </Paragraph>
-                                    {/* <Checkmark color={White} style={{
+                                    {/* <Checkmark color={palette.white} style={{
                                     width: 20,
                                     height: 20
                                     }}/> */}
@@ -277,7 +277,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                     ...firstProjectSetupStyles.privacyButton,
                                     backgroundColor: palette.black
                                 }} onPress={() => setPrivacy('public')}>
-                                    <Paragraph color={White}>
+                                    <Paragraph color={palette.white}>
                                     Make public
                                     </Paragraph>
                                 </Pressable>
@@ -288,7 +288,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             </View>
                         }
                         <PrimaryButton
-                            textStyle={{ color: White }}
+                            textStyle={{ color: palette.white }}
                             style={{
                                 width: spacingUnit * 43,
                                 alignSelf: 'center',
@@ -297,7 +297,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             disabled={myIsSubmitting}
                             onPress={handleSubmit}
                         >
-                            <ButtonText color={White}> Create Project  </ButtonText>
+                            <ButtonText color={palette.white}> Create Project  </ButtonText>
                         </PrimaryButton>
 
                     </View>
@@ -327,7 +327,7 @@ function FirstProjectSetupScreen({
 
     return (
         <SafeAreaView style={{
-            backgroundColor: White,
+            backgroundColor: palette.white,
             flex: 1
         }}>
             <Header />
@@ -343,7 +343,7 @@ function FirstProjectSetupScreen({
                             borderWidth={10}
                             color={palette.yellow300}
                             shadowColor={palette.grey300}
-                            bgColor={White}
+                            bgColor={palette.white}
                         >
                             <Smile />
                         </ProgressCircle>

@@ -11,7 +11,7 @@ import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import { Bar } from 'react-native-progress'
 import Toast from 'react-native-toast-message'
 
-import { palette.orange, palette.blue400, palette.green400, White, palette.grey400, Grey450, Purple, palette.red400, palette.yellow300, palette.grey300, Grey350, palette.grey800, palette.blue500, palette.black, Grey200, Grey100 } from '../../../constants/Colors'
+import palette from 'theme/palette'
 import AddIcon from '../../../assets/images/add-dark-button'
 import { RegularText, TinyText, Paragraph } from '../Text'
 import { formatDueDate, redDate, sortByDueDate } from '../../../utils/date'
@@ -164,7 +164,7 @@ export const GoalCard = ({
           borderRadius: spacingUnit,
           flexDirection: 'column',
           alignItems: 'flex-start',
-          backgroundColor: clicked ? palette.orange : White,
+          backgroundColor: clicked ? palette.orange : palette.white,
           justifyContent: 'space-between',
           ...(clicked && {
             borderBottomLeftRadius: 0,
@@ -203,7 +203,7 @@ export const GoalCard = ({
               <Text style={[styles.text, {
                 marginLeft: spacingUnit,
                 paddingRight: 4,
-                color: clicked ? White : palette.black
+                color: clicked ? palette.white : palette.black
               }]}>{renderMentionString({ content: name, textStyle: styles.text, navigation, tab: route && route.params && route.params.tab })}</Text>
               </View>
               {
@@ -230,12 +230,12 @@ export const GoalCard = ({
                 marginBottom: spacingUnit,
                 flex: 1
               }}>
-                <Paragraph color={clicked ? White : palette.grey800} style={{
+                <Paragraph color={clicked ? palette.white : palette.grey800} style={{
                   fontSize: 16
                 }}>
                   {renderMentionString({ content: description, textStyle: {
                     fontSize: 16,
-                    color: clicked ? White : palette.grey800
+                    color: clicked ? palette.white : palette.grey800
                   }, navigation, tab: route && route.params && route.params.tab })}
                 </Paragraph>
               </View>
@@ -260,17 +260,17 @@ export const GoalCard = ({
                 }
                 {
                   projectName &&
-                  <Tag color={Purple} style={{
+                  <Tag color={palette.purple} style={{
                     marginRight: spacingUnit,
                     marginBottom: spacingUnit
                   }}>
-                    <RegularText color={White}>
+                    <RegularText color={palette.white}>
                       {projectName}
                     </RegularText>
                   </Tag>
                 }
                 {dueDate && !completedAt &&  
-                    <RegularText color={isRedDate ? palette.red400 : (clicked ? White : Grey450)} style={styles.dueText}>
+                    <RegularText color={isRedDate ? palette.red400 : (clicked ? palette.white : palette.grey450)} style={styles.dueText}>
                     Due {formatDueDate(new Date(dueDate))}
                   </RegularText>
                 }
@@ -280,7 +280,7 @@ export const GoalCard = ({
                   item?.status === 'completed' &&
                   <Tag color={palette.green400} style={{
                   }}>
-                    <RegularText color={White}>
+                    <RegularText color={palette.white}>
                       Completed {formatDueDate(new Date(completedAt))}
                     </RegularText>
                   </Tag>
@@ -305,9 +305,9 @@ export const GoalCard = ({
                 alignItems: 'center'
               }}>
               <View>
-                <Bar width={Dimensions.get('window').width - (32 * 4) - (spacingUnit * 2)} progress={progress} color={palette.blue500} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
+                <Bar width={Dimensions.get('window').width - (32 * 4) - (spacingUnit * 2)} progress={progress} color={palette.blue500} height={spacingUnit * 1.25} unfilledColor={palette.grey350} borderWidth={0} />
               </View>
-              <RegularText color={clicked ? White : palette.grey800} style={{
+              <RegularText color={clicked ? palette.white : palette.grey800} style={{
                   marginLeft: spacingUnit
                 }}>
                   {completedTaskCount || 0}/{taskCount || 0}
@@ -334,7 +334,7 @@ export const GoalCard = ({
                 alignContent: 'center',
                 alignSelf: 'center'
               }} onPress={showTasks}>
-                <Paragraph color={clicked ? White : palette.grey800} style={{
+                <Paragraph color={clicked ? palette.white : palette.grey800} style={{
                   alignSelf: 'center'
                 }}>
                   {
@@ -358,7 +358,7 @@ export const GoalCard = ({
           marginTop: -spacingUnit * 2,
           borderRadius: spacingUnit,
           marginBottom: spacingUnit * 2,
-          backgroundColor: Grey100,
+          backgroundColor: palette.grey100,
           borderTopLeftRadius: 0,
           borderTopRightRadius: 0,
           paddingBottom: spacingUnit

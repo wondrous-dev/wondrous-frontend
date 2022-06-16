@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 
-import { palette.grey300 } from '../../../constants/Colors'
+import palette from 'theme/palette'
 
 export default StyleSheet.create({
   descriptionContainer: {

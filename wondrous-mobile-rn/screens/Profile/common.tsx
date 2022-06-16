@@ -2,13 +2,12 @@
 
 
 import React from 'react'
-import { Dimensions, Pressable, View, Image } from 'react-native'
+import { Pressable, View, Image } from 'react-native'
 import { Bar } from 'react-native-progress'
 import { useNavigation } from '@react-navigation/native'
-import { useMutation } from '@apollo/client'
 import { isBefore } from 'date-fns'
 
-import { palette.black, palette.blue400, palette.blue500, palette.green400, Grey200, palette.grey500, Grey350, palette.grey800, palette.orange, palette.red400, White, palette.yellow300 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
 import AddIcon from '../../assets/images/add-dark-button'
@@ -127,10 +126,10 @@ export const ProjectInfoText = ({ count, type, style }) => {
     }}>
       <RegularText style={{
         fontFamily: 'Rubik SemiBold',
-      }} color={Grey200}>
+      }} color={palette.grey200}>
         {count}
       </RegularText>
-      <RegularText color={Grey200}>
+      <RegularText color={palette.grey200}>
         {type}
       </RegularText>
     </View>
@@ -260,7 +259,7 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
       <View style={{
         flex: 1
       }}>
-      <Bar width={null} progress={progress} color={color} height={spacingUnit * 1.25} unfilledColor={Grey350} borderWidth={0} />
+      <Bar width={null} progress={progress} color={color} height={spacingUnit * 1.25} unfilledColor={palette.grey350} borderWidth={0} />
       </View>
       </View>
       <View style={{
@@ -284,7 +283,7 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
         }} onPress={() => {
           navigation.push(navigationUrl, navigationParams)
         }}>
-          <Paragraph color={White}>
+          <Paragraph color={palette.white}>
             {setupButtonText}
           </Paragraph>
         </FlexibleButton>
@@ -305,7 +304,7 @@ export const StatusItem = ({ statusValue, setStatus, statusTrue, statusLabel }) 
         backgroundColor: palette.blue500
       })
     }} onPress={() => setStatus(statusValue)}>
-      <RegularText color={statusTrue ? White : palette.grey800}>
+      <RegularText color={statusTrue ? palette.white : palette.grey800}>
         {statusLabel}
       </RegularText>
     </Pressable>
@@ -443,7 +442,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
                 })
               }
             }}>
-              <Paragraph color={White}>
+              <Paragraph color={palette.white}>
                 Create asks
               </Paragraph>
             </PrimaryButton>

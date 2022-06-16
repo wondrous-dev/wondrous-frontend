@@ -1,10 +1,9 @@
-import { useMutation, useQuery } from '@apollo/client'
-import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
+import { useMutation } from '@apollo/client'
+import React, { useState } from 'react'
 import { SafeAreaView, View, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Dimensions, ScrollView } from 'react-native'
 import { Header } from '../../components/Header'
-import { White, palette.black, palette.red400, palette.green400, palette.grey400, palette.blue400 } from '../../constants/Colors'
-import { GET_REVIEW_STATS } from '../../graphql/queries/review'
-import { ButtonText, ErrorText, Paragraph, Subheading } from '../../storybook/stories/Text'
+import palette from 'theme/palette'
+import { ButtonText, ErrorText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, getLocale } from '../../utils/common'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { withAuth } from '../../components/withAuth'
@@ -64,7 +63,7 @@ const CreateReview = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header />
       <TouchableWithoutFeedback 
@@ -169,7 +168,7 @@ const CreateReview = ({ navigation, route }) => {
                 }
               }}
             >
-              <ButtonText color={White}> Continue </ButtonText>
+              <ButtonText color={palette.white}> Continue </ButtonText>
             </PrimaryButton>
             {
               !!(error) &&

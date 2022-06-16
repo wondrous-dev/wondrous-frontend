@@ -10,7 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { White, palette.grey300, palette.black, palette.grey800, Blue100 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST, GET_PROJECT_DISCUSSION, GET_PROJECT_DISCUSSION_FROM_COMMENT } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST, MARK_ALL_NOTIFICATIONS_AS_VIEWED } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
@@ -1099,7 +1099,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
   return (
     <Pressable onPress={() => getNotificationPressFunction({ notificationInfo, navigation, tab, notifications })} style={{
       ...notificationStyles.notificationItemContainer,
-      backgroundColor: viewedAt ? White: Blue100
+      backgroundColor: viewedAt ? palette.white: palette.blue100
     }}>
       {
           profilePicture && profilePicture !== 'None' ?
@@ -1154,7 +1154,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
               })
             }
           }} style={listStyles.followButton}>
-            <RegularText color={White}>
+            <RegularText color={palette.white}>
               Accept
             </RegularText>
           </Pressable>
@@ -1202,7 +1202,7 @@ export const NotificationFeed = ({ route }) => {
   if (loading) {
     return (
       <View style={{
-        backgroundColor: White,
+        backgroundColor: palette.white,
         paddingTop: 16
       }}>
         <ActivityIndicator />
@@ -1282,7 +1282,7 @@ function NotificationScreen({
   })
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header noGoingBack={true} rightButton={{

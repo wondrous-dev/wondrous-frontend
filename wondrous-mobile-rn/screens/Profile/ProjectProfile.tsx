@@ -11,7 +11,7 @@ import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { palette.black, palette.blue500, palette.grey300, White, palette.blue400, palette.grey800, Purple, palette.grey700 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries/project'
 import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
@@ -66,7 +66,7 @@ const TagView = ({ tag }) => {
 
   return (
     <View style={{
-      backgroundColor: Purple,
+      backgroundColor: palette.purple,
       paddingLeft: spacingUnit,
       paddingRight: spacingUnit,
       paddingTop: 2,
@@ -75,7 +75,7 @@ const TagView = ({ tag }) => {
       marginRight: spacingUnit * 2,
       marginTop: spacingUnit
     }}>
-      <RegularText color={White}>
+      <RegularText color={palette.white}>
         {capitalizeFirstLetter(tag)}
       </RegularText>
     </View>
@@ -574,7 +574,7 @@ function ProjectProfile({
                 paddingTop: 0,
                 paddingBottom: 0
               }} onPress={() => setInviteCollaboratorModal(true)}>
-                <RegularText color={White} >
+                <RegularText color={palette.white} >
                   Invite Collaborators
                 </RegularText>
               </PrimaryButton>
@@ -610,7 +610,7 @@ function ProjectProfile({
               }
               followProject()
             }} style={profileStyles.followButton}>
-              <Paragraph color={White}>
+              <Paragraph color={palette.white}>
                 Follow
               </Paragraph>
             </Pressable>
@@ -720,7 +720,7 @@ function ProjectProfile({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}
     >

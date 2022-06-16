@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Button } from '@material-ui/core'
-import { palette.blue400 } from '../../services/colors'
+import palette from 'theme/palette'
 import { createSpacingUnit } from '../../utils'
 
 export const PrimaryButton = styled(Button)`

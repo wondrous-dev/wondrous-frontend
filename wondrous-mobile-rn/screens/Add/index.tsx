@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/client'
 import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { palette.black, palette.grey300, White } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -129,7 +129,7 @@ function AddScreen({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <ScrollView>

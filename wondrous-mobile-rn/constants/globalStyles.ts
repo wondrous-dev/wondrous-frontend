@@ -1,7 +1,7 @@
 // /constants/globalStyles.js
 import { StyleSheet } from 'react-native'
 
-import { palette.blue400 } from './Colors'
+import palette from 'theme/palette'
 
 export const styles = StyleSheet.create({
   container: {

@@ -4,9 +4,9 @@ import { Image, Pressable, SafeAreaView, RefreshControl, FlatList, View, Touchab
 import { useLazyQuery } from '@apollo/client'
 
 import { GET_USER_PROJECTS } from '../../graphql/queries'
-import { withAuth, useMe } from '../../components/withAuth'
-import { palette.black, White, palette.grey800 } from '../../constants/Colors'
-import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { withAuth } from '../../components/withAuth'
+import palette from 'theme/palette'
+import { RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, cutString, wait } from '../../utils/common'
 import { ProfilePlaceholder } from './common'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -119,7 +119,7 @@ const ProjectList = ({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header title={user && user.username} />
       <View>

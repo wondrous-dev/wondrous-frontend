@@ -2,7 +2,7 @@
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-import { palette.grey500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 
 const Settings = ({ color=palette.grey500, style }) => {
   return (

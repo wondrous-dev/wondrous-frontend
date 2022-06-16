@@ -1,15 +1,7 @@
-import { Typography, Button } from '@material-ui/core'
-import Link from 'next/link'
+import { Typography } from '@material-ui/core'
 import styled from 'styled-components'
-import {
-	palette.black100,
-	palette.orange,
-	palette.orange100,
-	White,
-	Yellow400,
-} from '../../services/colors'
+import palette from 'theme/palette'
 import { createSpacingUnit } from '../../utils'
-import { device } from '../../utils/device'
 
 export const FooterContainer = styled.div`
 	&& {
@@ -55,6 +47,6 @@ export const FooterEmailText = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
 		margin-bottom: ${createSpacingUnit(3)}px;
-		color: ${White};
+		color: ${palette.white};
 	}
 `

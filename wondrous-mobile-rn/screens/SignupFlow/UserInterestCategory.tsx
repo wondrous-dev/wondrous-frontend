@@ -8,9 +8,8 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { categories, projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
-import { palette.black, Blue600, palette.yellow300, palette.grey300, White, palette.orange, palette.grey500 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
-import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation, useQuery } from '@apollo/client'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
@@ -28,8 +27,8 @@ const CategoryItem = ({ category }) => {
   const title = category.title.toLowerCase()
   if (interests.includes(title)) {
     categoryColors = {
-      iconColor: White,
-      backgroundColor: Blue600
+      iconColor: theme.white,
+      backgroundColor: palette.blue600
     }
   }
 
@@ -55,7 +54,7 @@ const CategoryItem = ({ category }) => {
           alignItems: 'center'
         }}>
           <CategoryImage backgroundColor={(categoryColors && categoryColors?.backgroundColor) || '#F0F4FE'} iconColor={category && categoryColors?.iconColor} />
-          <RegularText color={Blue600} style={{
+          <RegularText color={palette.blue600} style={{
             marginTop: spacingUnit
           }} > {category.title} </RegularText>
         </Pressable>
@@ -140,7 +139,7 @@ function UserInterestCategoryScreen({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: theme.white,
       flex: 1
     }}>
       <ScrollView>
@@ -187,7 +186,7 @@ function UserInterestCategoryScreen({
               borderWidth={10}
               color={palette.yellow300}
               shadowColor={palette.grey300}
-              bgColor={White}
+              bgColor={theme.white}
           >
               <BigMouthSmile />
           </ProgressCircle>

@@ -3,7 +3,7 @@ import { View, FlatList, Text, SafeAreaView} from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import * as Analytics from 'expo-firebase-analytics'
 
-import { White, palette.black, palette.orange, palette.grey300, palette.grey800, palette.green400 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { Header } from '../../components/Header'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
@@ -44,7 +44,7 @@ const FollowRecommendation = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
     <Header rightButton={{

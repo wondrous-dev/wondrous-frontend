@@ -2,14 +2,13 @@ import { useQuery, useMutation } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 
-import { palette.black, palette.blue400, palette.red400, palette.yellow300, palette.green400, palette.grey800, palette.grey300 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { spacingUnit } from '../../utils/common'
 import { GET_ASK_FEED, GET_GOAL_FEED, GET_REVIEW_FEED, GET_TASK_FEED } from '../../graphql/queries'
 import { REACT_FEED_ITEM } from '../../graphql/mutations'
-import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
-import { Paragraph, RegularText } from '../../storybook/stories/Text'
+import { Paragraph } from '../../storybook/stories/Text'
 import { useNavigation } from '@react-navigation/native'
-import { ShareModal, renderItem } from '../../components/Feed'
+import { renderItem } from '../../components/Feed'
 
 export const pageStyles = StyleSheet.create({
   container: {

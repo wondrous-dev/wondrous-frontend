@@ -4,7 +4,7 @@ import { ActivityIndicator } from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { Header } from '../../components/Header'
 import { View } from '../../components/Themed'
-import { White } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { GET_PROJECT_BY_ID, GET_USER } from '../../graphql/queries'
 import { ErrorText } from '../../storybook/stories/Text'
 
@@ -56,7 +56,7 @@ const IdChecker = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header />
       <View>

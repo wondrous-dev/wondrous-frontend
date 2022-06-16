@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, Platform, Text, Image, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
+import { StyleSheet, View, Platform, Text, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik'
 import * as Sentry from 'sentry-expo'
@@ -8,8 +8,8 @@ import * as Analytics from 'expo-firebase-analytics'
 
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { spacingUnit, extractFirstAndLastName, capitalizeFirstLetter } from '../../utils/common'
-import { palette.black, White, palette.blue500, palette.red400, palette.grey500, Grey200, palette.grey300, GreyPlaceHolder, palette.orange } from '../../constants/Colors'
+import { spacingUnit, extractFirstAndLastName } from '../../utils/common'
+import palette from 'theme/palette'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
@@ -210,7 +210,7 @@ const UsernameInput = ({ navigation }) => {
               marginBottom: 16
             }}
             placeholder='Full name'
-            placeholderTextColor={GreyPlaceHolder}
+            placeholderTextColor={theme.grey35}
             onChangeText={handleChange('fullName')}
             onBlur={handleBlur('fullName')}
             value={values?.fullName}
@@ -228,13 +228,13 @@ const UsernameInput = ({ navigation }) => {
                 padding: 8,
               }}
               placeholder='Username'
-              placeholderTextColor={GreyPlaceHolder}
+              placeholderTextColor={theme.grey35}
               onChangeText={handleChange('username')}
               onBlur={handleBlur('username')}
               value={values.username}
             />
             <PrimaryButton
-              textStyle={{ color: White }}
+              textStyle={{ color: palette.white }}
               style={{
                 backgroundColor: palette.orange,
                 width: spacingUnit * 43,
@@ -243,7 +243,7 @@ const UsernameInput = ({ navigation }) => {
               }}
               onPress={handleSubmit}
             >
-              <ButtonText color={White}> Continue </ButtonText>
+              <ButtonText color={palette.white}> Continue </ButtonText>
             </PrimaryButton>
 
           </View>
@@ -260,7 +260,7 @@ function UsernameSetupScreen({
   const [error, setError] = useState(null)
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1,
     }}>
     <KeyboardAvoidingView
@@ -274,7 +274,7 @@ function UsernameSetupScreen({
           borderWidth={10}
           color={palette.red400}
           shadowColor={palette.grey300}
-          bgColor={White}
+          bgColor={palette.white}
         >
           <Neutral />
         </ProgressCircle>

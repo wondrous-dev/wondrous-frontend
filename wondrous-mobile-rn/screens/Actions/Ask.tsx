@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { palette.grey800, Purple, palette.red400, White, palette.black, palette.blue400, Grey450, palette.green400, palette.grey300 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { pageStyles, ReactionFeed } from './common'
 import { UPDATE_ASK } from '../../graphql/mutations'
@@ -101,7 +101,7 @@ const AskPage = ({ navigation, route }) => {
   const muxPlaybackId = ask.muxPlaybackId
   const goal = askGoal && askGoal.getGoalById
   const task = askTask && askTask.getTaskById
-  let statusColor = palette.red400, statusTextColor=White, statusText='Open'
+  let statusColor = palette.red400, statusTextColor=palette.white, statusText='Open'
   const completed = status === 'completed'
   const archived = status === 'archived'
 
@@ -110,14 +110,14 @@ const AskPage = ({ navigation, route }) => {
     statusText = 'Completed'
   } else if (archived) {
     statusColor= palette.grey300
-    statusTextColor = White
+    statusTextColor = palette.white
     statusText = 'Archived'
   }
 
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <FullScreenAskModal setModalVisible={setModalVisible} isVisible={modalVisible} ask={ask} askMutation={updateAsk} />
       <Header title='Ask' rightButton={ownedByUser && {

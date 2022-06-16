@@ -1,14 +1,11 @@
 
-import React, { useState, useCallback, useEffect } from 'react'
-import { Pressable, SafeAreaView, View, Linking, StyleSheet } from 'react-native'
-import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
+import React from 'react'
+import { Pressable, SafeAreaView, View, StyleSheet } from 'react-native'
 
-import { withAuth, useMe } from '../../components/withAuth'
-import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { palette.black, palette.blue500, palette.grey300, White, palette.blue400, palette.grey800 } from '../../constants/Colors'
-import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { TwitterShare, CopyLink, LinkedinShare, InstagramShare, GithubShare } from '../../assets/images/share'
+import palette from 'theme/palette'
+import { Paragraph } from '../../storybook/stories/Text'
+import { TwitterShare, LinkedinShare, InstagramShare, GithubShare } from '../../assets/images/share'
 import { openLink, spacingUnit } from '../../utils/common'
 
 import Link from '../../assets/images/link'
@@ -86,7 +83,7 @@ const Links = ({ route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: White
+      backgroundColor: palette.white
     }}>
       <Header title='Personal links' />
       <View style={linkStyles.container}>

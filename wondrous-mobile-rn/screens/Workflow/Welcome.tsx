@@ -3,12 +3,11 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, StyleSheet, View } from 'react-native'
 
 import { Header } from '../../components/Header'
-import { Subheading, Paragraph, RegularText } from '../../storybook/stories/Text'
+import { Subheading, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
-import { palette.grey500, White, palette.black } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { spacingUnit } from '../../utils/common'
-import WelcomeImage from '../../assets/images/workflow/welcome'
 import WelcomePicture from '../../assets/images/workflow/welcome'
 import { withAuth, useMe } from '../../components/withAuth'
 const welcomeStyles = StyleSheet.create({
@@ -31,7 +30,7 @@ function WorkflowWelcomeScreen({
   const user = useMe()
   return (
     <SafeAreaView style={{
-      backgroundColor: White,
+      backgroundColor: palette.white,
       flex: 1
     }}>
       <Header />
@@ -105,7 +104,7 @@ function WorkflowWelcomeScreen({
           })
         }
       }}>
-        <Paragraph color={White}>
+        <Paragraph color={palette.white}>
           Got it
         </Paragraph>
       </PrimaryButton>

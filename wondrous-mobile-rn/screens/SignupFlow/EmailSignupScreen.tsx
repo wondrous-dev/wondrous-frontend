@@ -1,15 +1,13 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
-import ProgressCircle from 'react-native-progress-circle'
+import { View, SafeAreaView, Pressable, TextInput } from 'react-native'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { RootStackParamList } from '../../types'
 import BackCaret from '../../assets/images/back-caret'
-import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { palette.black, White, palette.blue500, palette.red400, Grey100, Grey200, palette.grey300, GreyPlaceHolder, palette.orange, palette.grey800 } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation } from '@apollo/client'
@@ -72,12 +70,12 @@ function EmailSignupScreen({
         }} onPress={() => {
           navigation.goBack()
         }}>
-          <BackCaret color={White} />
+          <BackCaret color={palette.white} />
         </Pressable>
 
         <Title style={{
           flex: 1,
-          color: White
+          color: palette.white
         }}>
           Wonder
         </Title>
@@ -107,10 +105,10 @@ function EmailSignupScreen({
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: White
+                backgroundColor: palette.white
               }}
               placeholder='Email'
-              placeholderTextColor={GreyPlaceHolder}
+              placeholderTextColor={palette.grey35}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               value={values.email}
@@ -131,10 +129,10 @@ function EmailSignupScreen({
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: White
+                backgroundColor: palette.white
               }}
               placeholder='Password'
-              placeholderTextColor={GreyPlaceHolder}
+              placeholderTextColor={palette.grey35}
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
@@ -143,7 +141,7 @@ function EmailSignupScreen({
              <RegularText color={palette.red400}>{errors.password}</RegularText>
            ) : null}
             <PrimaryButton
-              textStyle={{ color: White }}
+              textStyle={{ color: palette.white }}
               style={{
                 width: spacingUnit * 43,
                 alignSelf: 'center',
@@ -151,7 +149,7 @@ function EmailSignupScreen({
               }}
               onPress={handleSubmit}
             >
-              <ButtonText color={White}> Sign up </ButtonText>
+              <ButtonText color={palette.white}> Sign up </ButtonText>
             </PrimaryButton>
 
           </View>
@@ -174,9 +172,9 @@ function EmailSignupScreen({
               lineHeight: 19,
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} color={White}>Or log in with your email</Subheading>
+            }} color={palette.white}>Or log in with your email</Subheading>
             </Pressable>
-            <RegularText color={White} style={{
+            <RegularText color={palette.white} style={{
               textAlign: 'center',
               position: 'absolute',
               bottom: spacingUnit * 5
@@ -185,7 +183,7 @@ function EmailSignupScreen({
               <Pressable onPress={() => openLink('https://wonderapp.co/eula-policy')}>
                 <RegularText style={{
                   textDecorationLine: 'underline',
-                }} color={White}>
+                }} color={palette.white}>
                   terms and conditions
                 </RegularText>
               </Pressable>
