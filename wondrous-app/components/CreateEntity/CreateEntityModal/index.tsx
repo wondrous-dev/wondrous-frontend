@@ -924,7 +924,7 @@ interface ICreateEntityModal {
       url: string;
       title: string;
     };
-    type: string;
+    type?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
