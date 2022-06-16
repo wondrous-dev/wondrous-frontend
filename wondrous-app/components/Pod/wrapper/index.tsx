@@ -65,6 +65,7 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Grey58 } from 'theme/colors';
+import BoardsActivity from 'components/Common/BoardsActivity';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -385,9 +386,18 @@ const Wrapper = (props) => {
             </TokenHeader>
 
             <Tabs page="pod">
-              {!search && !!podBoard?.setEntityType && (
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
-              )}
+              <BoardsSubheaderWrapper>
+                {podBoard?.setEntityType && !search && (
+                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                )}
+                <BoardsActivity
+                  onSearch={onSearch}
+                  filterSchema={filterSchema}
+                  onFilterChange={onFilterChange}
+                  statuses={statuses}
+                  userId={userId}
+                />
+              </BoardsSubheaderWrapper>
               {children}
             </Tabs>
           </ContentContainer>
