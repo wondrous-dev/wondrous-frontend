@@ -416,9 +416,21 @@ const Wrapper = (props) => {
               </HeaderActivity>
             </TokenHeader>
             <Tabs>
-              {orgBoard?.setEntityType && !search && (
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
-              )}
+              <BoardsSubheaderWrapper>
+                {orgBoard?.setEntityType && !search && (
+                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+                )}
+                {!!filterSchema && (
+                  <BoardsActivity
+                    onSearch={onSearch}
+                    filterSchema={filterSchema}
+                    onFilterChange={onFilterChange}
+                    statuses={statuses}
+                    podIds={podIds}
+                    userId={userId}
+                  />
+                )}
+              </BoardsSubheaderWrapper>
               {children}
             </Tabs>
           </ContentContainer>

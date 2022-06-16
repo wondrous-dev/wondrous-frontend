@@ -17,6 +17,7 @@ export const Autocomplete = styled(AutocompleteComp)`
   && .MuiAutocomplete-inputRoot {
     position: relative;
     padding: 0;
+    font-family: Space Grotesk;
     &::after {
       content: '';
       position: absolute;
