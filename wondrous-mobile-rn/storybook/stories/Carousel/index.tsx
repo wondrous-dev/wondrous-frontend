@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native'
 import Swiper from 'react-native-web-swiper'
-import { White, Orange, Grey800, Black } from '../../../constants/Colors'
+import { White, palette.orange, palette.grey800, palette.black } from '../../../constants/Colors'
 import { spacingUnit } from '../../../utils/common'
 import { ModalImage, SafeImage } from '../Image'
 import { Video } from 'expo-av'
@@ -91,7 +91,7 @@ export class MyCarousel extends React.Component {
                 badgeStyle: {
                   backgroundColor: passiveDotColor || 'rgba(255,255,255, 0.3)',
                   ...(!images && {
-                    borderColor: Orange,
+                    borderColor: palette.orange,
                     borderWidth: 1
                   })
                 }
@@ -116,7 +116,7 @@ export class MyCarousel extends React.Component {
                 return (
                   <View key={item.subheading} style={{flex: 1, padding: spacingUnit * 2}}>
                   <Subheading color={White} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
-                  {/* <Paragraph color={Black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
+                  {/* <Paragraph color={palette.black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
                 </View>
                 )
               })

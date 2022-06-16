@@ -10,7 +10,7 @@ import { createStackNavigator } from '@react-navigation/stack'
 import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { White, Grey300, Black, Grey800, Blue100 } from '../../constants/Colors'
+import { White, palette.grey300, palette.black, palette.grey800, Blue100 } from '../../constants/Colors'
 import { GET_NOTIFICATIONS, GET_FEED_ITEM_FOR_FEED_COMMENT, GET_FEED_ITEM, GET_POST_ITEM, GET_UNREAD_NOTIFICATION_COUNT, GET_PROJECT_INVITE_FROM_NOTIFICATION, GET_PROJECT_FOLLOW_REQUEST, GET_PROJECT_DISCUSSION, GET_PROJECT_DISCUSSION_FROM_COMMENT } from '../../graphql/queries'
 import { MARK_NOTIFICATION_AS_VIEWED, ACCEPT_PROJECT_INVITE, APPROVE_FOLLOW_REQUEST, MARK_ALL_NOTIFICATIONS_AS_VIEWED } from '../../graphql/mutations'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
@@ -567,7 +567,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
   switch (notificationInfo.type) {
     case 'welcome':
       displayMessage =(
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           Welcome to Wonder! We're here to help your dream projects succeed.
         </RegularText>
       )
@@ -586,7 +586,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
       break
     case 'review_reminder':
       displayMessage = (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           Enter your weekly update! This will help reflect on your progress and keep your followers up to date.
         </RegularText>
       )
@@ -606,7 +606,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
         followingString = 'you'
       }
       displayMessage = (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           <RegularText style={{
             fontFamily: 'Rubik SemiBold'
           }}>
@@ -626,21 +626,21 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
       break
     case 'expiring_action_reminder':
       displayMessage = (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           {notificationInfo.additionalData && notificationInfo.additionalData.message}
         </RegularText>
       )
       break
     case 'expired_action_reminder':
       displayMessage = (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           {notificationInfo.additionalData && notificationInfo.additionalData.message}
         </RegularText>
       )
       break
     case 'streak_reminder':
       displayMessage = (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           Keep your <RegularText style={{
             fontFamily: 'Rubik SemiBold'
           }}>{notificationInfo.additionalData && notificationInfo.additionalData.currentStreakCount} day streak</RegularText> by taking action!
@@ -650,7 +650,7 @@ const formatNotificationMessage = ({ notificationInfo, tab, projectInvite, proje
     case 'project_discussion_creation':
       const contentPreview = notificationInfo?.additionalData?.contentPreview
       displayMessage = (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           <RegularText style={{
             fontFamily: 'Rubik SemiBold'
           }}>
@@ -683,7 +683,7 @@ const formatNudgeMessage = (notificationInfo) => {
     additionalData
   } = notificationInfo
   return (
-    <RegularText color={Black}>
+    <RegularText color={palette.black}>
     <RegularText style={{
       fontFamily: 'Rubik SemiBold'
     }}>
@@ -703,7 +703,7 @@ const formatProjectFollowRequest = (notificationInfo) => {
   } = notificationInfo
   if (notificationInfo) {
     return (
-      <RegularText color={Black}>
+      <RegularText color={palette.black}>
       <RegularText style={{
         fontFamily: 'Rubik SemiBold'
       }}>
@@ -726,7 +726,7 @@ const formatProjectInviteAccept = (notificationInfo) => {
     } = notificationInfo
     return (
       <>
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
             <RegularText style={{
               fontFamily: 'Rubik SemiBold'
             }}>
@@ -750,7 +750,7 @@ const formatProjectInvite = (notificationInfo) => {
     } = notificationInfo
     return (
       <>
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
             <RegularText style={{
               fontFamily: 'Rubik SemiBold'
             }}>
@@ -770,7 +770,7 @@ const formatProjectInvite = (notificationInfo) => {
 const formatNotificationConversationCommentMessage = (notificationInfo) => {
   const contentPreview = notificationInfo?.additionalData?.contentPreview
   return (
-    <RegularText color={Black}>
+    <RegularText color={palette.black}>
     <RegularText style={{
       fontFamily: 'Rubik SemiBold'
     }}>
@@ -795,7 +795,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
   switch (notificationInfo.objectType) {
     case 'goal':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
           <RegularText style={{
             fontFamily: 'Rubik SemiBold'
           }}>
@@ -814,7 +814,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
       )
     case 'task':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -833,7 +833,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
       )
     case 'ask':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -852,7 +852,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
       )
     case 'post':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -871,7 +871,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
       )
     case 'feed_comment':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -890,7 +890,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
       )
     case 'project_discussion_comment':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -909,7 +909,7 @@ const formatNotificationMentionMessage = (notificationInfo) => {
       )
     case 'review_comment':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -937,7 +937,7 @@ const formatNotificationReactionMessage = (notificationInfo) => {
   switch (notificationInfo.objectType) {
     case 'feed_item':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -956,7 +956,7 @@ const formatNotificationReactionMessage = (notificationInfo) => {
       )
     case 'feed_comment':
       return (
-        <RegularText color={Black}>
+        <RegularText color={palette.black}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -993,7 +993,7 @@ const formatNotificationCommentMessage = (notificationInfo) => {
     string = 'activity'
   }
   return (
-    <RegularText color={Black}>
+    <RegularText color={palette.black}>
     <RegularText style={{
       fontFamily: 'Rubik SemiBold'
     }}>
@@ -1116,7 +1116,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
       {displayMessage}
       {
         type !== 'welcome' &&
-        <RegularText color={Grey800} style={{
+        <RegularText color={palette.grey800} style={{
           fontSize: 13,
           lineHeight: 18,
           marginTop: spacingUnit * 0.5
@@ -1131,7 +1131,7 @@ export const NotificationDisplay = ({ notificationInfo, tab, notifications }) =>
           {
             ((type === 'project_invite' && acceptInvite) || (type === 'follow_request' && acceptProjectFollowRequest)) ?
             <Pressable style={listStyles.followingButton}>
-            <RegularText color={Black}>
+            <RegularText color={palette.black}>
               Accepted
             </RegularText>
           </Pressable>
@@ -1240,7 +1240,7 @@ export const NotificationFeed = ({ route }) => {
         ItemSeparatorComponent={() => (
           <View
             style={{
-              borderBottomColor: Grey300,
+              borderBottomColor: palette.grey300,
               borderBottomWidth: 1,
             }}
           />
@@ -1288,9 +1288,9 @@ function NotificationScreen({
       <Header noGoingBack={true} rightButton={{
         style: {
           borderWidth: 1,
-          borderColor: Grey800
+          borderColor: palette.grey800
         },
-        textColor: Grey800,
+        textColor: palette.grey800,
         text: 'Mark all as viewed',
         onPress: () => {
           clearAllNotifications()

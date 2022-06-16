@@ -8,7 +8,7 @@ import en from 'javascript-time-ago/locale/en'
 import { WriteComment } from '../../components/Comment'
 import { Header } from '../../components/Header'
 import { useMe, withAuth } from '../../components/withAuth'
-import { White, Black, Grey400, Grey200 } from '../../constants/Colors'
+import { White, palette.black, palette.grey400, Grey200 } from '../../constants/Colors'
 import { CREATE_REVIEW_COMMENT } from '../../graphql/mutations'
 import { GET_REVIEW_BY_ID, GET_REVIEW_COMMENTS } from '../../graphql/queries/review'
 import { Paragraph, Subheading, RegularText } from '../../storybook/stories/Text'
@@ -105,7 +105,7 @@ const ReviewPage = ({ navigation, route }) => {
       }}
       ref={scrollViewRef}>
         <View style={{flexDirection: 'row'}}>
-        <Subheading color={Black}>
+        <Subheading color={palette.black}>
           Review on {format(new Date(review.createdAt), 'dd/MM/yy')}:
         </Subheading>
         <GetReviewIcon review={review}  style={{
@@ -126,7 +126,7 @@ const ReviewPage = ({ navigation, route }) => {
         {
           reviewCommentData && reviewCommentData.getReviewComments && reviewCommentData.getReviewComments.length > 0 &&
           <View style={{
-            borderTopColor: Grey400,
+            borderTopColor: palette.grey400,
             borderTopWidth: 1,
             marginTop: spacingUnit * 3,
           }}>
@@ -136,7 +136,7 @@ const ReviewPage = ({ navigation, route }) => {
                   <View style={{
                     padding: spacingUnit * 2,
                     ...(index !== reviewCommentData.getReviewComments.length -1 && {
-                      borderBottomColor: Grey400,
+                      borderBottomColor: palette.grey400,
                       borderBottomWidth: 1
                     })
                   }}>
@@ -160,7 +160,7 @@ const ReviewPage = ({ navigation, route }) => {
                         }} style={{
                           fontFamily: 'Rubik SemiBold',
                           marginRight: spacingUnit * 0.5
-                        }} color={Black}
+                        }} color={palette.black}
                         onPress={() => navigation.navigate('Root', {
                           screen: route && route.params && route.params.tab || 'Profile',
                           params: {
@@ -176,7 +176,7 @@ const ReviewPage = ({ navigation, route }) => {
                         </View>
                     </View>
                     <View style={reviewStyles.content}>
-                    <Paragraph color={Black} style={reviewStyles.commentText}>
+                    <Paragraph color={palette.black} style={reviewStyles.commentText}>
                       {renderMentionString({ content: item.content, navigation, tab })}
                       </Paragraph>
                     </View>

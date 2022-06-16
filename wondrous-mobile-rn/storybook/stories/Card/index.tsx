@@ -11,7 +11,7 @@ import {
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated from "react-native-reanimated"
 
-import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
+import { palette.grey400, palette.blue400, palette.green400, White, Grey450, Purple, palette.red400, palette.yellow300, palette.grey300, palette.grey800 } from '../../../constants/Colors'
 import CompleteSvg from '../../../assets/images/complete'
 import ArchiveSvg from '../../../assets/images/archive'
 import { RegularText, TinyText, Paragraph } from '../Text'
@@ -114,7 +114,7 @@ class Card extends React.Component {
         {
           // transform: [{ translateX: multiply(sub(1, percentOpen), -100) }], // Translate from left on open,
           borderWidth: 0,
-          backgroundColor: this.props.isActive ? Grey400 : Green400
+          backgroundColor: this.props.isActive ? palette.grey400 : palette.green400
         }
       ]}
     >
@@ -208,11 +208,11 @@ class Card extends React.Component {
     const sortPriority = () => {
       switch(priority) {
         case 'high':
-          return Red400
+          return palette.red400
         case 'medium':
-          return Yellow300
+          return palette.yellow300
         case 'low':
-          return Blue400
+          return palette.blue400
       }
     }
     const Icon = icon
@@ -278,7 +278,7 @@ class Card extends React.Component {
                     position: 'bottom',
                   })
                 }}>
-                  <Nudge color={Yellow300} />
+                  <Nudge color={palette.yellow300} />
                 </TouchableOpacity>
                 </>
               }
@@ -313,7 +313,7 @@ class Card extends React.Component {
                 </Tag>
               }
               {dueDate && !completedAt &&  
-                  <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
+                  <RegularText color={isRedDate ? palette.red400 : Grey450} style={styles.dueText}>
                   Due {formatDueDate(new Date(dueDate))}
                 </RegularText>
               }
@@ -321,7 +321,7 @@ class Card extends React.Component {
             <View>
               {
                 item.item && item.item.status === 'completed' &&
-                <Tag color={Green400} style={{
+                <Tag color={palette.green400} style={{
                 }}>
                   <RegularText color={White}>
                     Completed {formatDueDate(new Date(completedAt))}
@@ -330,8 +330,8 @@ class Card extends React.Component {
               }
               {
                 item.item && item.item.status === 'archived' &&
-                <Tag color={Grey300}>
-                  <RegularText color={Grey800}>
+                <Tag color={palette.grey300}>
+                  <RegularText color={palette.grey800}>
                     Archived
                   </RegularText>
                 </Tag>

@@ -5,8 +5,6 @@ export const background = '#0F0F0F';
 export const white = '#FFFFFF';
 export const black = '#000000';
 
-// TODO: rename colors to match color intensity
-
 export const greyColors = {
   grey10: '#F4F4F4',
   grey20: '#E0E0E0',

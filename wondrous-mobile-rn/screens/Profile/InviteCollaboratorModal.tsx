@@ -4,7 +4,7 @@ import Modal from 'react-native-modal'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import * as Analytics from 'expo-firebase-analytics'
 
-import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
+import { palette.black, White, palette.blue400, palette.grey400, palette.grey800, palette.grey750, palette.blue500, palette.red400, palette.yellow300, palette.grey300 } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { capitalizeFirstLetter, cutString, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { modalStyles } from '../../components/Modal/common'
@@ -101,13 +101,13 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={Black}>{(item?.firstName || '') + ' ' +  (item?.lastName || '')}</Subheading>
+        }} color={palette.black}>{(item?.firstName || '') + ' ' +  (item?.lastName || '')}</Subheading>
         {item?.username &&
-        <RegularText color={Grey800}>
+        <RegularText color={palette.grey800}>
           @{item?.username}
         </RegularText>}
         {item?.bio &&
-          <RegularText color={Black} style={{
+          <RegularText color={palette.black} style={{
             marginTop: spacingUnit * 0.5
           }}>
           {cutString(item?.bio)}
@@ -118,7 +118,7 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
         invited
         ?
         <Pressable style={listStyles.followingButton}>
-          <Paragraph color={Black}>
+          <Paragraph color={palette.black}>
             Invited
           </Paragraph>
         </Pressable>
@@ -199,7 +199,7 @@ export const InviteCollaboratorList = ({ isVisible, project, setModalVisible }) 
             screen: 'Default'
           }
         })}>
-          You can only invite users you follow. Go to our <Paragraph color={Blue400}>
+          You can only invite users you follow. Go to our <Paragraph color={palette.blue400}>
             search page
           </Paragraph> to find some cool projects or users to follow!
         </Paragraph>
@@ -239,7 +239,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={Blue400} style={{
+              <RegularText color={palette.blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -248,7 +248,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               <View style={{
                 flex: 2
               }}>
-                <Subheading color={Black} style={{
+                <Subheading color={palette.black} style={{
                   fontSize: 20
                 }}>
                   Invite collaborators

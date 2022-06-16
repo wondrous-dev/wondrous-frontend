@@ -9,7 +9,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit, extractFirstAndLastName, capitalizeFirstLetter } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey500, Grey200, Grey300, GreyPlaceHolder, Orange } from '../../constants/Colors'
+import { palette.black, White, palette.blue500, palette.red400, palette.grey500, Grey200, palette.grey300, GreyPlaceHolder, palette.orange } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Neutral from '../../assets/images/emoji/neutral'
@@ -40,7 +40,7 @@ export const usernameSetupStyles = StyleSheet.create({
   },
   stepCount: {
     fontSize: 16,
-    color: Blue500,
+    color: palette.blue500,
     fontFamily: 'Rubik',
     fontStyle: 'normal',
     fontWeight: '500',
@@ -120,7 +120,7 @@ const UsernameInput = ({ navigation }) => {
 
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
-      <Subheading color={Black} style={{
+      <Subheading color={palette.black} style={{
         fontSize: 32
       }}>
         Let's get you set up
@@ -128,7 +128,7 @@ const UsernameInput = ({ navigation }) => {
       <Paragraph style={{
         marginBottom: spacingUnit * 3,
         marginTop: spacingUnit
-      }} color={Grey500}>
+      }} color={palette.grey500}>
         {
           user?.firstName ?
           'What do you want your username to be?'
@@ -202,7 +202,7 @@ const UsernameInput = ({ navigation }) => {
             style={{
               width: spacingUnit * 43,
               height: spacingUnit * 4.5,
-              borderColor: Grey300,
+              borderColor: palette.grey300,
               borderWidth: 1,
               borderRadius: 4,
               fontSize: 16,
@@ -221,7 +221,7 @@ const UsernameInput = ({ navigation }) => {
               style={{
                 width: spacingUnit * 43,
                 height: spacingUnit * 4.5,
-                borderColor: Grey300,
+                borderColor: palette.grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 16,
@@ -236,7 +236,7 @@ const UsernameInput = ({ navigation }) => {
             <PrimaryButton
               textStyle={{ color: White }}
               style={{
-                backgroundColor: Orange,
+                backgroundColor: palette.orange,
                 width: spacingUnit * 43,
                 alignSelf: 'center',
                 marginTop: spacingUnit * 3.6 // this is not consistent with the next page on figma
@@ -272,8 +272,8 @@ function UsernameSetupScreen({
           percent={33}
           radius={50}
           borderWidth={10}
-          color={Red400}
-          shadowColor={Grey300}
+          color={palette.red400}
+          shadowColor={palette.grey300}
           bgColor={White}
         >
           <Neutral />

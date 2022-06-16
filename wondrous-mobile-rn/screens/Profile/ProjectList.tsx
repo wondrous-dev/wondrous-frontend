@@ -5,7 +5,7 @@ import { useLazyQuery } from '@apollo/client'
 
 import { GET_USER_PROJECTS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
-import { Black, White, Grey800 } from '../../constants/Colors'
+import { palette.black, White, palette.grey800 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, cutString, wait } from '../../utils/common'
 import { ProfilePlaceholder } from './common'
@@ -59,9 +59,9 @@ export const ProjectItem = ({
         }}>
           <Subheading style={{
             fontSize: 18
-          }} color={Black}>{itemName}</Subheading>
+          }} color={palette.black}>{itemName}</Subheading>
           {itemDescription && accessible &&
-            <RegularText color={Grey800} style={{
+            <RegularText color={palette.grey800} style={{
               marginTop: spacingUnit * 0.5
             }}>
             {cutString(itemDescription)}
@@ -71,7 +71,7 @@ export const ProjectItem = ({
         {
           buttonText &&
           <Pressable onPress={buttonOnPress}>
-            <RegularText color={Black}>
+            <RegularText color={palette.black}>
               {buttonText}
             </RegularText>
           </Pressable>

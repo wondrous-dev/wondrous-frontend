@@ -6,7 +6,7 @@ import { useMutation } from '@apollo/client'
 import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Grey300, White } from '../../constants/Colors'
+import { palette.black, palette.grey300, White } from '../../constants/Colors'
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import GoalIcon from '../../assets/images/actions/goal'
@@ -44,7 +44,7 @@ const addStyles = StyleSheet.create({
   },
   choiceBox: {
     flex: 1,
-    borderColor: Grey300,
+    borderColor: palette.grey300,
     borderRadius: 8,
     borderWidth: 1,
     padding: spacingUnit * 5,
@@ -140,10 +140,10 @@ function AddScreen({
         <FullScreenPostModal setModalVisible={setPostModalVisible} isVisible={postModalVisible} postMutation={createPost} />
         <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
         <View style={addStyles.container}>
-        <Subheading color={Black}>
+        <Subheading color={palette.black}>
           Launch Pad
         </Subheading>
-        <Paragraph color={Black} style={addStyles.paragraph}>
+        <Paragraph color={palette.black} style={addStyles.paragraph}>
           What do you want to create?
         </Paragraph>
         <View style={addStyles.choiceContainer}>
@@ -154,7 +154,7 @@ function AddScreen({
           <ProjectIcon
             style={addStyles.choiceImage}
           />
-          <Paragraph color={Black} style={{
+          <Paragraph color={palette.black} style={{
             ...addStyles.choiceText
           }}>
             Project
@@ -162,7 +162,7 @@ function AddScreen({
           </Pressable>
           <Pressable style={addStyles.choiceBox} onPress={() => setGoalModalVisible(true)}>
           <GoalIcon style={addStyles.choiceImage} />
-          <Paragraph color={Black} style={addStyles.choiceText}>
+          <Paragraph color={palette.black} style={addStyles.choiceText}>
             Goal
           </Paragraph>
           </Pressable>
@@ -174,7 +174,7 @@ function AddScreen({
               width: spacingUnit * 6,
               height: spacingUnit * 6
             }} />
-          <Paragraph color={Black} style={{
+          <Paragraph color={palette.black} style={{
             ...addStyles.choiceText,
             marginTop: spacingUnit * 1.5
           }}>
@@ -183,7 +183,7 @@ function AddScreen({
           </Pressable>
           <Pressable style={addStyles.choiceBox} onPress={() => setAskModalVisible(true)}>
             <AskIcon style={addStyles.choiceImage} />
-          <Paragraph color={Black} style={{
+          <Paragraph color={palette.black} style={{
             ...addStyles.choiceText,
             marginTop: spacingUnit * 1.5
           }}>
@@ -194,13 +194,13 @@ function AddScreen({
         <View style={addStyles.choiceContainer}>
           <Pressable style={addStyles.choiceBox} onPress={() => setPostModalVisible(true)}>
             <PostIcon style={addStyles.choiceImage} />
-            <Paragraph color={Black} style={addStyles.choiceText}>
+            <Paragraph color={palette.black} style={addStyles.choiceText}>
               Post
             </Paragraph>
           </Pressable>
           <Pressable style={addStyles.choiceBox} onPress={() => setContactsModal(true)}>
           <AddFriendIcon style={addStyles.choiceImage} />
-            <Paragraph color={Black} style={addStyles.choiceText}>
+            <Paragraph color={palette.black} style={addStyles.choiceText}>
               Add friends
             </Paragraph>
           </Pressable>

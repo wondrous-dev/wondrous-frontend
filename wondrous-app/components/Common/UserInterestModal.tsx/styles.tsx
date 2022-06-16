@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Button from '@mui/material/Button';
 import { DialogContent, Typography } from '@mui/material';
-import { White } from 'theme/colors';
 import palette from 'theme/palette';
 
 export const CancelButton = styled(Button)`

@@ -34,7 +34,7 @@ export const ERC20abi = [
 	{
 		constant: false,
 		inputs: [{ name: '_account', type: 'address' }],
-		name: 'unBlacklist',
+		name: 'unpalette.blacklist',
 		outputs: [],
 		payable: false,
 		stateMutability: 'nonpayable',
@@ -244,8 +244,8 @@ export const ERC20abi = [
 	},
 	{
 		constant: false,
-		inputs: [{ name: '_newBlacklister', type: 'address' }],
-		name: 'updateBlacklister',
+		inputs: [{ name: '_newpalette.blacklister', type: 'address' }],
+		name: 'updatepalette.blacklister',
 		outputs: [],
 		payable: false,
 		stateMutability: 'nonpayable',
@@ -302,7 +302,7 @@ export const ERC20abi = [
 	{
 		constant: true,
 		inputs: [{ name: '_account', type: 'address' }],
-		name: 'isBlacklisted',
+		name: 'ispalette.blacklisted',
 		outputs: [{ name: '', type: 'bool' }],
 		payable: false,
 		stateMutability: 'view',
@@ -351,19 +351,19 @@ export const ERC20abi = [
 	{
 		anonymous: false,
 		inputs: [{ indexed: true, name: '_account', type: 'address' }],
-		name: 'Blacklisted',
+		name: 'palette.blacklisted',
 		type: 'event',
 	},
 	{
 		anonymous: false,
 		inputs: [{ indexed: true, name: '_account', type: 'address' }],
-		name: 'UnBlacklisted',
+		name: 'Unpalette.blacklisted',
 		type: 'event',
 	},
 	{
 		anonymous: false,
-		inputs: [{ indexed: true, name: 'newBlacklister', type: 'address' }],
-		name: 'BlacklisterChanged',
+		inputs: [{ indexed: true, name: 'newpalette.blacklister', type: 'address' }],
+		name: 'palette.blacklisterChanged',
 		type: 'event',
 	},
 	{ anonymous: false, inputs: [], name: 'Pause', type: 'event' },

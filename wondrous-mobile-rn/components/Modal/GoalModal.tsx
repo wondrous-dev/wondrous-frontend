@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useState, useRef } from 'react'
-import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Image, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
+import React, { useCallback, useState } from 'react'
+import { SafeAreaView, ScrollView, View, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
 import { useQuery } from '@apollo/client'
 import { toDate } from 'date-fns'
@@ -7,7 +7,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
-import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Green400} from '../../constants/Colors'
+import palette from 'theme/palette'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, getLocale } from '../../utils/common'
 import { endOfWeekFromNow } from '../../utils/date'
@@ -18,11 +18,9 @@ import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, moda
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
-import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
 import VideoIcon from '../../assets/images/video'
-import { VideoDisplay } from '../../storybook/stories/Carousel'
 import Checkmark from '../../assets/images/checkmark'
 
 const FILE_PREFIX = 'tmp/goal/new/'
@@ -133,7 +131,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={Blue400} style={{
+              <RegularText color={palette.blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -142,7 +140,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
               <View style={{
                 flex: 1
               }}>
-                <Subheading color={Black} style={{
+                <Subheading color={palette.black} style={{
                   fontSize: 24
                 }}>
                   {goal ? 'Edit' : 'New'} goal
@@ -153,7 +151,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
               }}>
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
-                backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
+                backgroundColor: (imageUploading || videoUploading) ? palette.grey800 : palette.blue500
               }} onPress={async () => {
                 if (!project) {
                   setErrors({
@@ -217,7 +215,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   }
                 }
               }}>
-                <RegularText color={White} style={{
+                <RegularText color={theme.palette} style={{
                   fontSize: 16
                 }}>
                   {goal ? 'Update': 'Create' }
@@ -263,12 +261,12 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     completed
                     ?
                     <Pressable style={modalStyles.completedButton}>
-                      <Paragraph color={White} style={{
+                      <Paragraph color={theme.palette} style={{
                         marginRight: spacingUnit * 0.4
                       }}>
                         Task Completed
                       </Paragraph>
-                      <Checkmark color={White} style={{
+                      <Checkmark color={theme.palette} style={{
                         width: 20,
                         height: 20
                       }}/>
@@ -279,7 +277,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                         setCompleted(true)
                       }
                     }}>
-                      <Paragraph color={Green400}>
+                      <Paragraph color={palette.green400}>
                         Mark as complete
                       </Paragraph>
                     </Pressable>
@@ -291,7 +289,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                       archived 
                       ?
                       <Pressable style={modalStyles.archivedButton} onPress={() => setArchived(false)}>
-                        <Paragraph color={White}>
+                        <Paragraph color={theme.palette}>
                           Archived
                         </Paragraph>
                       </Pressable>
@@ -301,7 +299,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                           setArchived(true)
                         }
                       }}>
-                        <Paragraph color={Grey800}>
+                        <Paragraph color={palette.grey800}>
                           Mark as archived
                         </Paragraph>
                       </Pressable>
@@ -318,7 +316,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     }
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                         Project
                       </RegularText>
                     </View>
@@ -331,7 +329,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     }
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                         Privacy
                       </RegularText>
                     </View>
@@ -339,7 +337,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   </View> */}
                   <View style={modalStyles.editRowContainer}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                         Priority
                       </RegularText>
                     </View>
@@ -347,7 +345,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                   </View>
                   <View style={modalStyles.editRowContainer}>
                         <View style={modalStyles.editRowTextContainer}>
-                          <RegularText color={Grey800} style={modalStyles.editRowText}>
+                          <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                             Due
                           </RegularText>
                         </View>
@@ -368,7 +366,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     </TextEditorContext.Provider>
                   </View>
                   <View style={modalStyles.attachmentRow}>
-                    <LinkIcon color={Grey800} style={{
+                    <LinkIcon color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => setAddLink(true)} />
                     <CameraIcon onPress={() => {
@@ -377,10 +375,10 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                         mediaError: null
                       })
                       setCameraOpen(true)
-                    }} color={Grey800} style={{
+                    }} color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} onPress={() => {
+                    <ImageIcon color={palette.grey800} onPress={() => {
                       setErrors({
                         ...errors,
                         mediaError: null
@@ -389,7 +387,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                     }} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <VideoIcon color={Grey800} onPress={() => {
+                    <VideoIcon color={palette.grey800} onPress={() => {
                       setErrors({
                         ...errors,
                         mediaError: null
@@ -425,7 +423,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                             marginTop: spacingUnit * 2
                           }}>
                              <ActivityIndicator />
-                             <RegularText color={Grey800} style={{
+                             <RegularText color={palette.grey800} style={{
                                textAlign: 'center'
                              }}>
                                Video uploading...
@@ -438,7 +436,7 @@ export const FullScreenGoalModal = ({ goal, setup, isVisible, setModalVisible, p
                         marginTop: spacingUnit * 2
                       }}>
                          <ActivityIndicator />
-                         <RegularText color={Grey800} style={{
+                         <RegularText color={palette.grey800} style={{
                            textAlign: 'center'
                          }}>
                            Image uploading...

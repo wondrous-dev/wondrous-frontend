@@ -8,7 +8,7 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { categories, projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue600, Yellow300, Grey300, White, Orange, Grey500 } from '../../constants/Colors'
+import { palette.black, Blue600, palette.yellow300, palette.grey300, White, palette.orange, palette.grey500 } from '../../constants/Colors'
 import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation, useQuery } from '@apollo/client'
@@ -87,14 +87,14 @@ const CategoryDisplay = ({ categories }) => {
           marginBottom: spacingUnit,
           fontSize: 32,
           marginTop: spacingUnit,
-        }} color={Black}>
+        }} color={palette.black}>
           Pick 3 areas of interests
       </Subheading>
       <Paragraph style={{
         textAlign: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
-      }} color={Grey500}>
+      }} color={palette.grey500}>
         So we can recommend the right people for you to follow!
       </Paragraph>
       {
@@ -151,7 +151,7 @@ function UserInterestCategoryScreen({
         setError
       }}>
         <Header rightButton={{
-        color: Orange,
+        color: palette.orange,
         text: 'Continue',
         onPress: async () => {
           if (interests.length === 0) {
@@ -185,8 +185,8 @@ function UserInterestCategoryScreen({
               percent={70}
               radius={50}
               borderWidth={10}
-              color={Yellow300}
-              shadowColor={Grey300}
+              color={palette.yellow300}
+              shadowColor={palette.grey300}
               bgColor={White}
           >
               <BigMouthSmile />

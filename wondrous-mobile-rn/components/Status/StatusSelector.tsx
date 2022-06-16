@@ -4,7 +4,7 @@
 import React, { useState } from 'react'
 import { Pressable, View } from 'react-native'
 
-import { Black } from '../../constants/Colors'
+import { palette.black } from '../../constants/Colors'
 import { RegularText } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import DownCaret from '../../assets/images/down-caret'
@@ -53,14 +53,14 @@ export const StatusSelector = ({ setStatus, status, section, style, includeArchi
         }]}>
         <Pressable onPress={() => setModalVisible(true)} style={{
           borderWidth: 1,
-          borderColor: Black,
+          borderColor: palette.black,
           padding: spacingUnit,
           paddingLeft: spacingUnit * 2,
           paddingRight: spacingUnit,
           borderRadius: spacingUnit * 2,
           flexDirection: 'row'
         }}>
-          <RegularText color={Black}>
+          <RegularText color={palette.black}>
             {statusMap[status]} {text}
           </RegularText>
           <DownCaret />

@@ -7,7 +7,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, White, Blue500, Blue600, Red400, Orange, Grey500, Green400, Grey900, Grey300, GreyPlaceHolder } from '../../constants/Colors'
+import { palette.black, White, palette.blue500, Blue600, palette.red400, palette.orange, palette.grey500, palette.green400, Grey900, palette.grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { CREATE_PROJECT_TAGS } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -60,14 +60,14 @@ const projectTagStyles = StyleSheet.create({
     },
     stepCount: {
         fontSize: 16,
-        color: Blue500,
+        color: palette.blue500,
         fontFamily: 'Rubik',
         fontStyle: 'normal',
         fontWeight: '500',
     },
     paragraph: {
         marginTop: spacingUnit,
-        color: Grey500,
+        color: palette.grey500,
         textAlign: 'center',
         maxWidth: spacingUnit * 43,
         alignSelf: 'center',
@@ -81,8 +81,8 @@ const projectTagStyles = StyleSheet.create({
 })
 
 const SingleTag = ({ tagName, selected, tagLength }) => {
-    const textColor = selected ? White : Blue500
-    const backgroundColor = selected ? Blue500 : White
+    const textColor = selected ? White : palette.blue500
+    const backgroundColor = selected ? palette.blue500 : White
     const {
         projectTags,
         setProjectTags
@@ -91,7 +91,7 @@ const SingleTag = ({ tagName, selected, tagLength }) => {
     return (
 
         <View style={{
-            borderColor: Blue500,
+            borderColor: palette.blue500,
             borderStyle: 'solid',
             borderWidth: 2,
             borderRadius: 8,
@@ -180,7 +180,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
     return (
         <View style={projectTagStyles.projectTagInputContainer}>
             <Subheading style={{
-            }} color={Black}>
+            }} color={palette.black}>
                 Pick up to 3 industry specific tags
         </Subheading>
             <Paragraph style={projectTagStyles.paragraph}>
@@ -198,7 +198,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                 style={{
                     alignSelf: 'center',
                     marginTop: spacingUnit * 5,
-                    backgroundColor: Orange
+                    backgroundColor: palette.orange
                 }}
                 onPress={async () => {
                     if (Object.keys(selectedTags).length === 0) {
@@ -362,8 +362,8 @@ function ProjectTagSelectionScreen({
                         percent={finished ? 100 :80}
                         radius={50}
                         borderWidth={10}
-                        color={finished ? Green400 : Orange}
-                        shadowColor={Grey300}
+                        color={finished ? palette.green400 : palette.orange}
+                        shadowColor={palette.grey300}
                         bgColor={White}
                     >
                         {finished ? 

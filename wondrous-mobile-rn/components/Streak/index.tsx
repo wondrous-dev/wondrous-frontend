@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { SafeAreaView, View, Pressable, TextInput, StyleSheet } from 'react-native'
-import { useRoute, useNavigation } from '@react-navigation/native'
+import { View, Pressable, StyleSheet } from 'react-native'
 import Modal from 'react-native-modal'
 
-import { Black, White } from '../../constants/Colors'
-import { Title, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
+import palette from 'theme/palette'
+import { Subheading, Paragraph } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 
 import Neutral from '../../assets/images/emoji/neutral'
@@ -60,7 +59,7 @@ const StreakModal = ({ isVisible, streak, setStreakModal, viewing }) => {
       <View style={{
         alignSelf: 'center',
         padding: spacingUnit * 4,
-        backgroundColor: White,
+        backgroundColor: palette.white,
         borderRadius: spacingUnit
       }}>
         <View style={{
@@ -75,7 +74,7 @@ const StreakModal = ({ isVisible, streak, setStreakModal, viewing }) => {
             marginRight: spacingUnit
           }} />
           <View>
-        <Subheading color={Black} style={{
+        <Subheading color={palette.black} style={{
           fontFamily: 'Rubik SemiBold',
           fontSize: 22
         }}>
@@ -83,7 +82,7 @@ const StreakModal = ({ isVisible, streak, setStreakModal, viewing }) => {
         </Subheading>
         </View>
         </View>
-        <Paragraph color={Black} style={{
+        <Paragraph color={palette.black} style={{
           textAlign: 'center'
         }}>
           {
@@ -113,7 +112,7 @@ export const Streak = ({ streakContainerStyle, streak, viewing }) => {
         ...streakContainerStyle
       }}>
       <StreakIcon streak={streak} />
-      <Paragraph color={Black} style={{
+      <Paragraph color={palette.black} style={{
         fontFamily: 'Rubik SemiBold',
         marginLeft: spacingUnit * 0.75
       }}>

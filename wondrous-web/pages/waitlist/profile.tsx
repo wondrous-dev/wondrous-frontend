@@ -27,7 +27,7 @@ import {
 	InviteButtonDiv,
 	ProfileCenteredDiv,
 } from '../../components/Waitlist/styles'
-import { Blue500, Grey800 } from '../../services/colors'
+import { palette.blue500, palette.grey800 } from '../../services/colors'
 import {
 	HomeNavLink,
 	HomeNavLinkTypography,

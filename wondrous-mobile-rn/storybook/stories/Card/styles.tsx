@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
+import { palette.grey400, palette.blue400, palette.green400, White, Grey450, Purple, palette.red400, palette.yellow300, palette.grey300, palette.grey800 } from '../../../constants/Colors'
 import { spacingUnit, renderMentionString } from '../../../utils/common'
 
 export const styles = StyleSheet.create({
@@ -27,10 +27,10 @@ export const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 2,
     borderWidth: 2,
-    borderColor: Grey400,
+    borderColor: palette.grey400,
     elevation: 7,
     shadowOpacity: 0.25,
-    shadowColor: Grey400,
+    shadowColor: palette.grey400,
     shadowRadius: 2,
     shadowOffset: { width: 2, height: 2 }
   },
@@ -42,12 +42,12 @@ export const styles = StyleSheet.create({
   underlayRight: {
     // flex: 1,
     justifyContent: "flex-start",
-    backgroundColor: Green400,
+    backgroundColor: palette.green400,
     color: White
   },
   underlayLeft: {
     // flex: 1,
-    backgroundColor: Grey400,
+    backgroundColor: palette.grey400,
     justifyContent: "flex-end"
   },
   bottomInfoContainer: {

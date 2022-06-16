@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Text } from 'react-native'
 import baseStyle from './style'
-import { White, Red400, Black } from '../../../constants/Colors'
+import { White, palette.red400, palette.black } from '../../../constants/Colors'
 
 export const Title = ({ style, children }) => (
   <Text style={{
@@ -21,7 +21,7 @@ export const Subheading = ({ style, children, color=White }) => (
   }}>{children}</Text>
 )
 
-export const Paragraph = ({ style, children, color=Black, ...props }) => (
+export const Paragraph = ({ style, children, color=palette.black, ...props }) => (
   <Text {...props} style={{
     ...baseStyle.paragraph,
     ...style,
@@ -60,7 +60,7 @@ export const TinyText = ({ style, children, color }) => (
   }}>{children}</Text>
 )
 
-export const ErrorText = ({ style, children, color=Red400 }) => (
+export const ErrorText = ({ style, children, color=palette.red400 }) => (
   <Text style={{
     ...baseStyle.errorText,
     ...style,

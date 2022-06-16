@@ -9,7 +9,7 @@ import { RootStackParamList } from '../../types'
 import BackCaret from '../../assets/images/back-caret'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder, Orange, Grey800 } from '../../constants/Colors'
+import { palette.black, White, palette.blue500, palette.red400, Grey100, Grey200, palette.grey300, GreyPlaceHolder, palette.orange, palette.grey800 } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation } from '@apollo/client'
@@ -102,7 +102,7 @@ function EmailSignupScreen({
                 marginTop: spacingUnit*2,
                 width: spacingUnit * 43,
                 height: spacingUnit * 5.5,
-                borderColor: Grey300,
+                borderColor: palette.grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 18,
@@ -116,7 +116,7 @@ function EmailSignupScreen({
               value={values.email}
             />
             {errors.email && touched.email ? (
-             <RegularText color={Red400}>{errors.email}</RegularText>
+             <RegularText color={palette.red400}>{errors.email}</RegularText>
            ) : null}
             <TextInput
               autoCorrect={false}
@@ -126,7 +126,7 @@ function EmailSignupScreen({
                 marginTop: spacingUnit*2,
                 width: spacingUnit * 43,
                 height: spacingUnit * 5.5,
-                borderColor: Grey300,
+                borderColor: palette.grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 18,
@@ -140,7 +140,7 @@ function EmailSignupScreen({
               value={values.password}
             />
             {errors.password && touched.password ? (
-             <RegularText color={Red400}>{errors.password}</RegularText>
+             <RegularText color={palette.red400}>{errors.password}</RegularText>
            ) : null}
             <PrimaryButton
               textStyle={{ color: White }}

@@ -1,9 +1,9 @@
 import React from 'react'
-import { Blue500 } from '../../constants/Colors'
+import { palette.blue500 } from '../../constants/Colors'
 import Svg, { Path } from 'react-native-svg'
 import { Pressable } from 'react-native'
 
-const Camera = ({ color=Blue500, style, onPress }) => (
+const Camera = ({ color=palette.blue500, style, onPress }) => (
   <Pressable onPress={onPress}>
   <Svg width={(style && style.width) || '24'} height={(style && style.height) || '24'} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
     <Path d="M12 15.5C12.8284 15.5 13.5 14.8284 13.5 14C13.5 13.1716 12.8284 12.5 12 12.5C11.1716 12.5 10.5 13.1716 10.5 14C10.5 14.8284 11.1716 15.5 12 15.5Z" fill={color} />

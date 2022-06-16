@@ -3,7 +3,7 @@ import { View, FlatList, Text, SafeAreaView} from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import * as Analytics from 'expo-firebase-analytics'
 
-import { White, Black, Orange, Grey300, Grey800, Green400 } from '../../constants/Colors'
+import { White, palette.black, palette.orange, palette.grey300, palette.grey800, palette.green400 } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { Header } from '../../components/Header'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
@@ -48,7 +48,7 @@ const FollowRecommendation = ({ navigation }) => {
       flex: 1
     }}>
     <Header rightButton={{
-        color: Orange,
+        color: palette.orange,
         text: 'Finish',
         onPress: () => {
           setFinished(true)
@@ -73,8 +73,8 @@ const FollowRecommendation = ({ navigation }) => {
                 fill={finished ? 100 : 85}
                 size={100}
                 width={10}
-                backgroundColor={Grey300}
-                tintColor={finished ? Green400: Orange}
+                backgroundColor={palette.grey300}
+                tintColor={finished ? palette.green400: palette.orange}
                 style={{
                   position: 'absolute',
                   top: -spacingUnit
@@ -98,7 +98,7 @@ const FollowRecommendation = ({ navigation }) => {
                     </View>
                 </View>
     
-    <Subheading color={Black} style={{
+    <Subheading color={palette.black} style={{
         fontSize: 36,
         textAlign: 'center',
         marginTop: spacingUnit
@@ -110,7 +110,7 @@ const FollowRecommendation = ({ navigation }) => {
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2,
         textAlign: 'center'
-      }} color={Grey800}>
+      }} color={palette.grey800}>
         The magic of Wonder is working with our community, so come follow our top users!
       </Paragraph>
       <FlatList

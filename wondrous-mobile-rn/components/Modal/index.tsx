@@ -3,11 +3,9 @@ import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFe
 import Modal from 'react-native-modal'
 import Clipboard from 'expo-clipboard'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
-import ProgressCircle from 'react-native-progress-circle'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
-import * as Progress from 'react-native-progress'
 
-import { Grey300, Black, Grey150, White, Grey800, Blue500, Blue400, Orange } from '../../constants/Colors'
+import palette from 'theme/palette'
 import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -25,12 +23,11 @@ import ImageIcon from '../../assets/images/image'
 import { modalStyles as commonModalStyles, ImageDisplay, submit } from './common'
 import { useNavigation, useRoute } from '@react-navigation/core'
 import ImageBrowser from './ImageBrowser'
-import { renderProfileItem } from '../../screens/Profile/common'
 import { useUserCongrats } from '../../utils/hooks'
 
 export const modalStyles = StyleSheet.create({
   fixedContainer: {
-    backgroundColor: White,
+    backgroundColor: palette.white,
     position: 'absolute',
     bottom: 0,
     width: Dimensions.get("window").width,
@@ -43,7 +40,7 @@ export const modalStyles = StyleSheet.create({
     alignSelf: 'center'
   },
   buttons: {
-    backgroundColor: Grey150,
+    backgroundColor: palette.grey150,
     alignSelf: 'center',
     maxWidth: Dimensions.get('window').width - (spacingUnit * 6),
     marginBottom: spacingUnit * 2,
@@ -115,7 +112,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
         <TouchableWithoutFeedback 
         onPress={() => Keyboard.dismiss()}>
         <View style={{
-          backgroundColor: White,
+          backgroundColor: palette.white,
           borderRadius: spacingUnit
         }}>
             {cameraOpen &&
@@ -148,8 +145,8 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                   fill={increased ? increasedPercentage : percentage}
                   size={80}
                   width={8}
-                  backgroundColor={Grey300}
-                  tintColor={Orange}
+                  backgroundColor={palette.grey300}
+                  tintColor={palette.orange}
                   style={{
                     position: 'absolute',
                     top: -spacingUnit
@@ -178,8 +175,8 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             fontFamily: 'Rubik SemiBold',
             textAlign: 'center'
   
-          }} color={Black}>
-            {message} <Subheading color={Blue400}>
+          }} color={palette.black}>
+            {message} <Subheading color={palette.blue400}>
               
               { renderMentionString({ content: name, navigation, tab: route?.params?.tab })}!
             </Subheading>
@@ -204,11 +201,11 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             marginBottom: spacingUnit,
             justifyContent: 'flex-start',
           }]}>
-              <CameraIcon onPress={() => setCameraOpen(true)} color={Grey800} style={{
+              <CameraIcon onPress={() => setCameraOpen(true)} color={palette.grey800} style={{
                 marginRight: spacingUnit * 2,
                 ...modalStyles.icon
               }} />
-              <ImageIcon color={Grey800} onPress={() => setGalleryOpen(true)} style={modalStyles.icon} />
+              <ImageIcon color={palette.grey800} onPress={() => setGalleryOpen(true)} style={modalStyles.icon} />
               <View style={{
                 flex: 1
               }} />
@@ -267,7 +264,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                         marginTop: spacingUnit * 2
                       }}>
                          <ActivityIndicator />
-                         <RegularText color={Grey800} style={{
+                         <RegularText color={palette.grey800} style={{
                            textAlign: 'center'
                          }}>
                            Image uploading...
@@ -287,7 +284,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                     }
                     </View>
                   </ScrollView>
-          {/* <Paragraph color={Black} style={{
+          {/* <Paragraph color={palette.black} style={{
             fontSize: 20
           }}>
             Share your accomplishment!
@@ -297,7 +294,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
             alignItems: 'center',
             marginTop: spacingUnit * 2
           }}>
-            <Paragraph color={Black} style={{
+            <Paragraph color={palette.black} style={{
               fontFamily: 'Rubik SemiBold'
             }}>
               Share:
@@ -307,7 +304,7 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
           <PrimaryButton style={{
             ...modalStyles.buttons,
             ...{
-              backgroundColor: imageUploading ? Grey800: Blue500,
+              backgroundColor: imageUploading ? palette.grey800: palette.blue500,
               marginTop: spacingUnit * 4,
             }
             }} onPress={() => {
@@ -332,14 +329,14 @@ export const CompleteCongratsModal = ({ shareContent, shareUrl,  message, isVisi
                 setModalVisible(false)
               }
             }}>
-            <RegularText color={White} style={{
+            <RegularText color={palette.white} style={{
                 fontFamily: 'Rubik SemiBold'
               }}>
                 {onboarding ? 'Done' : 'Post'}
             </RegularText>
           </PrimaryButton>
           {/* <SecondaryButton style={modalStyles.buttons} onPress={() => setModalVisible(false)}>
-              <RegularText color={Black} style={{
+              <RegularText color={palette.black} style={{
                 fontFamily: 'Rubik SemiBold'
               }}>
               Cancel
@@ -396,7 +393,7 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
   return (
     <Modal isVisible={isVisible} onBackdropPress={() => setModalVisible(false)} {...props}>
       <View style={modalStyles.fixedContainer}>
-        <Subheading color={Black} style={{
+        <Subheading color={palette.black} style={{
           padding: spacingUnit * 2,
           paddingLeft: spacingUnit * 3
         }}>
@@ -404,7 +401,7 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
         </Subheading>
         <View
           style={{
-            borderBottomColor: Grey300,
+            borderBottomColor: palette.grey300,
             borderBottomWidth: 1,
             marginBottom: spacingUnit
           }}
@@ -418,14 +415,14 @@ export const FlexRowContentModal = ({ isVisible, headerText, children, setModalV
           { children }
         </View>
         <SecondaryButton style={{
-            backgroundColor: Grey150,
+            backgroundColor: palette.grey150,
             marginTop: spacingUnit * 2,
             alignSelf: 'center',
             maxWidth: Dimensions.get('window').width - (spacingUnit * 6),
             marginBottom: spacingUnit * 3,
             ...cancelButtonStyle
           }} onPress={() => setModalVisible(false)}>
-            <RegularText color={Black} style={{
+            <RegularText color={palette.black} style={{
               fontFamily: 'Rubik SemiBold'
             }}>
             Cancel

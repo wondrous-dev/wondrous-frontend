@@ -3,7 +3,7 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, TouchableOpacity, Text, Image, Pressable } from 'react-native'
 
 import { RootStackParamList } from '../../types'
-import { Orange, Black, White, Grey500 } from '../../constants/Colors'
+import { palette.orange, palette.black, White, palette.grey500 } from '../../constants/Colors'
 import { styles } from '../HomeScreen'
 import {  Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
@@ -26,12 +26,12 @@ const loginStyles = StyleSheet.create({
     width: '100%',
   },
   subheading: {
-    color: Black,
+    color: palette.black,
     textAlign: 'center',
     marginBottom: spacingUnit * 2,
   },
   paragraph: {
-    color: Grey500,
+    color: palette.grey500,
     textAlign: 'center',
     maxWidth: spacingUnit * 43,
     alignSelf: 'center',
@@ -68,7 +68,7 @@ function WelcomeScreen({
     }]}>
       <Header />
       <View style={loginStyles.welcomeBody}>
-      <Subheading color={Black} style={loginStyles.subheading}>
+      <Subheading color={palette.black} style={loginStyles.subheading}>
           Welcome to Wonder!
         </Subheading>
         <Superhero style={{

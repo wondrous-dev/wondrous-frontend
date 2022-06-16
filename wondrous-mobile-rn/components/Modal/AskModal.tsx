@@ -1,30 +1,24 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, ScrollView, View, StyleSheet, Dimensions, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
+import { useNavigation, useRoute } from '@react-navigation/native'
+import { SafeAreaView, ScrollView, View, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
 import { useLazyQuery } from '@apollo/client'
-import DropDownPicker from 'react-native-dropdown-picker'
-import DateTimePicker from '@react-native-community/datetimepicker'
-import { toDate } from 'date-fns'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import { TextEditor } from '../../storybook/stories/TextEditor'
+import palette from 'theme/palette'
 import { TextEditorContext } from '../../utils/contexts'
-import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300 } from '../../constants/Colors'
-import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { TextEditor } from '../../storybook/stories/TextEditor'
+import { ErrorText, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, renderMentionString, usePrevious } from '../../utils/common'
-import { endOfWeekFromNow } from '../../utils/date'
 import { useMe } from '../../components/withAuth'
 import { GET_USER_PROJECTS, GET_GOALS_FROM_PROJECT, GET_GOALS_FROM_USER, GET_TASKS_FROM_USER, GET_TASKS_FROM_PROJECT } from '../../graphql/queries'
 import Camera from '../../components/Camera'
-import { privacyDropdown, submit, PriorityList, ModalDropdown, DateDisplay, modalStyles, ImageDisplay, pickVideo, VideoThumbnail } from './common'
+import { submit, ModalDropdown, modalStyles, ImageDisplay, pickVideo, VideoThumbnail } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
 import LinkIcon from '../../assets/images/link'
-import { SafeImage } from '../../storybook/stories/Image'
 import ImageBrowser from './ImageBrowser'
-import { useNavigation, useRoute } from '@react-navigation/native'
 import VideoIcon from '../../assets/images/video'
-import { VideoDisplay } from '../../storybook/stories/Carousel'
 import { ACTION_QUERY_LIMIT } from '../../constants'
 
 const FILE_PREFIX = 'tmp/ask/new/'
@@ -254,7 +248,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={Blue400} style={{
+              <RegularText color={palette.blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -263,7 +257,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
               <View style={{
                 flex: 1
               }}>
-                <Subheading color={Black} style={{
+                <Subheading color={palette.black} style={{
                   fontSize: 24
                 }}>
                   {ask ? 'Edit' : 'New'} ask
@@ -274,7 +268,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
               }}>
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
-                backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
+                backgroundColor: (imageUploading || videoUploading) ? palette.grey800 : palette.blue500
               }} onPress={() => {
                 if (videoUploading) {
                   setErrors({
@@ -318,7 +312,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                   }
                 }
               }}>
-                <RegularText color={White} style={{
+                <RegularText color={palette.white} style={{
                   fontSize: 16
                 }}>
                   {ask ? 'Update': 'Create' }
@@ -356,7 +350,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                     }
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                         Project
                       </RegularText>
                     </View>
@@ -370,7 +364,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                     }
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                         Goal
                       </RegularText>
                     </View>
@@ -383,14 +377,14 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                     }
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={Grey800} style={modalStyles.editRowText}>
+                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
                         Task
                       </RegularText>
                     </View>
                     <ModalDropdown value={task} setValue={setTask} items={userTasksDropdown} placeholder='Select a task' />
                   </View>
                   <View style={modalStyles.attachmentRow}>
-                    <LinkIcon color={Grey800} style={{
+                    <LinkIcon color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => setAddLink(true)} />
                     <CameraIcon onPress={() => {
@@ -399,10 +393,10 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                         mediaError: null
                       })
                       setCameraOpen(true)}
-                    } color={Grey800} style={{
+                    } color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} style={{
+                    <ImageIcon color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => {
                       setErrors({
@@ -411,7 +405,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                       })
                       setGalleryOpen(true)
                       }} />
-                    <VideoIcon color={Grey800} onPress={() => {
+                    <VideoIcon color={palette.grey800} onPress={() => {
                       setErrors({
                         ...errors,
                         mediaError: null
@@ -444,7 +438,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                             marginTop: spacingUnit * 2
                           }}>
                              <ActivityIndicator />
-                             <RegularText color={Grey800} style={{
+                             <RegularText color={palette.grey800} style={{
                                textAlign: 'center'
                              }}>
                                Video uploading...
@@ -457,7 +451,7 @@ export const FullScreenAskModal = ({ ask, isVisible, setModalVisible, projectId,
                         marginTop: spacingUnit * 2
                       }}>
                          <ActivityIndicator />
-                         <RegularText color={Grey800} style={{
+                         <RegularText color={palette.grey800} style={{
                            textAlign: 'center'
                          }}>
                            Image uploading...

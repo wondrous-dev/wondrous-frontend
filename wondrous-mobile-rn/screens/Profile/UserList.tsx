@@ -6,7 +6,7 @@ import * as Analytics from 'expo-firebase-analytics'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
-import { Black, White, Grey800, Blue400, Grey300 } from '../../constants/Colors'
+import { palette.black, White, palette.grey800, palette.blue400, palette.grey300 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { wait, spacingUnit, cutString } from '../../utils/common'
 import { ProfilePlaceholder } from './common'
@@ -69,7 +69,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
     <TouchableOpacity style={{
       marginBottom: spacingUnit * 2,
       borderBottomWidth: 1,
-      borderBottomColor: Grey300,
+      borderBottomColor: palette.grey300,
       paddingBottom: spacingUnit
     }} onPress={itemPressed}>
     <>
@@ -97,13 +97,13 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={Black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
+        }} color={palette.black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
         {item.username &&
-        <RegularText color={Grey800}>
+        <RegularText color={palette.grey800}>
           @{item.username}
         </RegularText>}
         {item.bio &&
-          <RegularText color={Black} style={{
+          <RegularText color={palette.black} style={{
             marginTop: spacingUnit * 0.5
           }}>
           {cutString(item.bio)}
@@ -120,7 +120,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
           setFollowing(false)
           unfollowUser()
         }}>
-          <Paragraph color={Black}>
+          <Paragraph color={palette.black}>
             Following
           </Paragraph>
         </Pressable>
@@ -149,7 +149,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
     </View>
     {
       item.groupName &&
-      <RegularText color={Black} style={{
+      <RegularText color={palette.black} style={{
         marginLeft: spacingUnit * 2,
         marginTop: spacingUnit
       }}>
@@ -336,10 +336,10 @@ const UserList = ({
               alignItems: 'center',
               borderRadius: 4,
               ...(!seeProject && {
-                backgroundColor: Blue400
+                backgroundColor: palette.blue400
               })
             }}>
-              <RegularText color={seeProject ? Grey800 : White}>
+              <RegularText color={seeProject ? palette.grey800 : White}>
                 Users
               </RegularText>
             </Pressable>
@@ -349,10 +349,10 @@ const UserList = ({
               alignItems: 'center',
               borderRadius: 4,
               ...(seeProject && {
-                backgroundColor: Blue400
+                backgroundColor: palette.blue400
               })
             }}>
-              <RegularText color={seeProject ? White : Grey800}>
+              <RegularText color={seeProject ? White : palette.grey800}>
                 Projects
               </RegularText>
             </Pressable>
@@ -374,7 +374,7 @@ const UserList = ({
                 screen: 'Default'
               }
             })}>
-              Time to explore! Go to our <Paragraph color={Blue400}>
+              Time to explore! Go to our <Paragraph color={palette.blue400}>
                 search page
               </Paragraph> to find some cool projects or users! Or you can invite some friends :)
             </Paragraph>

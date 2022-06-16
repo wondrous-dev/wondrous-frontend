@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { TouchableHighlight, Pressable } from 'react-native'
 
-import { Blue400, Blue500, White, Grey100, Black } from '../../../constants/Colors'
+import { palette.blue400, palette.blue500, White, Grey100, palette.black } from '../../../constants/Colors'
 import baseStyle from './style'
 import { ButtonText } from '../Text'
 
@@ -36,7 +36,7 @@ const BaseButton = ({
 
 export function PrimaryButton ({ onPress, children, style, ...props }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.primary} buttonPressStyle={{
-    backgroundColor: Blue500,
+    backgroundColor: palette.blue500,
     ...baseStyle.primary,
     ...style
   }} {...props}>
@@ -48,7 +48,7 @@ export function PrimaryButton ({ onPress, children, style, ...props }) {
 export function SecondaryButton ({ onPress, children, style, ...props }) {
   return <BaseButton onPress={onPress} style={style} baseStyle={baseStyle.secondary} buttonPressStyle={{
     backgroundColor: Grey100,
-    color: Black,
+    color: palette.black,
   ...baseStyle.secondary,
   ...style,
 }}

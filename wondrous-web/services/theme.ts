@@ -8,11 +8,11 @@ const theme = createTheme({
 			contrastText: Colors.White,
 		},
 		secondary: {
-			main: Colors.Blue400,
+			main: Colors.palette.blue400,
 			contrastText: Colors.White,
 		},
 		success: {
-			main: Colors.Green400,
+			main: Colors.palette.green400,
 			contrastText: Colors.White,
 		},
 		background: {
@@ -22,7 +22,7 @@ const theme = createTheme({
 	overrides: {
 		MuiTextField: {
 			root: {
-				color: Colors.Grey700,
+				color: Colors.palette.grey700,
 			},
 		},
 		MuiDialog: {
@@ -37,16 +37,16 @@ const theme = createTheme({
 		},
 		MuiInputLabel: {
 			shrink: {
-				color: `${Colors.Blue400} !important`,
+				color: `${Colors.palette.blue400} !important`,
 			},
 		},
 		MuiInput: {},
 		MuiStepIcon: {
 			completed: {
-				color: `${Colors.Blue400} !important`,
+				color: `${Colors.palette.blue400} !important`,
 			},
 			active: {
-				color: `${Colors.Blue400} !important`,
+				color: `${Colors.palette.blue400} !important`,
 			},
 		},
 		MuiDrawer: {

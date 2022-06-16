@@ -1,30 +1,24 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import { useQuery, useMutation } from '@apollo/client'
-import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions, Linking, Alert } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { useMutation } from '@apollo/client'
+import { View, Pressable } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
-import Clipboard from 'expo-clipboard'
 
-import { Grey300, Black, Grey150, Grey200, Grey600, Grey700, Red400, Green400,  Blue400, Grey800, White } from '../../constants/Colors'
-import { GET_HOME_FEED, GET_PUBLIC_FEED, WHOAMI } from '../../graphql/queries'
+import palette from 'theme/palette'
 import { CLOSE_PROJECT_DISCUSSION, UPDATE_PROJECT_DISCUSSION } from '../../graphql/mutations'
-import { SafeImage, SvgImage } from '../../storybook/stories/Image'
-import { TinyText, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
+import { SafeImage } from '../../storybook/stories/Image'
+import { RegularText, Paragraph } from '../../storybook/stories/Text'
 import { FullScreenDiscussionModal } from '../../components/Modal/ProjectDiscussionModal'
-import { SecondaryButton } from '../../storybook/stories/Button'
-import { spacingUnit, capitalizeFirstLetter, renderMentionString, wait, usePrevious } from '../../utils/common'
+import { spacingUnit, renderMentionString } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { TwitterShare, FacebookShare, CopyLink, LinkedinShare } from '../../assets/images/share'
 import CommentIcon from '../../assets/images/reactions/comment'
 import ShareIcon from '../../assets/images/share/feed'
 import { useMe } from '../withAuth'
-import { feedStyles, ShareModal, EditCommentModal } from '../Feed'
+import { feedStyles, ShareModal } from '../Feed'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
-import Link from '../../assets/images/link'
 import Options from '../../assets/images/options'
 import { FlexRowContentModal } from '../Modal'
-import { modalStyles } from '../Modal/common'
 
 TimeAgo.locale(en)
 const timeAgo = new TimeAgo('en-US')
@@ -146,7 +140,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
             flex: 1,
             flexWrap: 'wrap',
             paddingRight: spacingUnit * 2
-          }} color={Black}
+          }} color={palette.black}
           onPress={() => {
             if (standAlone || comment) {
               navigation.navigate('Root', {
@@ -180,15 +174,12 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
           <RegularText style={{
             lineHeight: 18,
             marginTop: spacingUnit * 0.5
-          }} color={Grey200}>{timeAgo.format(new Date(item.createdAt))}</RegularText>     
+          }} color={palette.grey200}>{timeAgo.format(new Date(item.createdAt))}</RegularText>     
           </View>
           </View>
         </View>
       </View>
       <View style={feedStyles.feedItemContent}>
-        {/* <SvgImage width="24" height="24" srcElement={getCorrectSrc(item.objectType)} style={{
-          marginRight: spacingUnit
-        }}/> */}
         {
           <Paragraph style={feedStyles.feedText}>
           {renderMentionString({ content: item.title || item.content || item.itemContent, textStyle: feedStyles.feedText,  navigation, tab: route && route.params && route.params.tab })}
@@ -205,7 +196,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
                     video: item.playbackId
                   },
                   ...item.images
-                ] : item.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
+                ] : item.images} images={true} passiveDotColor={palette.grey800} activeDotColor={palette.blue400} />
               }
             </>
       </View>
@@ -226,15 +217,15 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
           }}>
           </Pressable>
           <Pressable onPress={pressComment}>
-          <CommentIcon color={Grey700} style={{
+          <CommentIcon color={palette.grey700} style={{
             marginRight: item.commentCount ? spacingUnit : 0
           }}/>
           </Pressable>
-          <RegularText color={Grey600} style={{
+          <RegularText color={palette.grey600} style={{
             marginRight: spacingUnit * 3
           }}>{item.commentCount}</RegularText>
           <Pressable onPress={() => setModalVisible(true)}>
-            <ShareIcon color={Grey700} />
+            <ShareIcon color={palette.grey700} />
           </Pressable> 
           {
             (item.createdBy === user.id) &&
@@ -245,7 +236,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
                 setEditVisible(true)
               }
             }}>
-            <Options color={Grey700} />
+            <Options color={palette.grey700} />
           </Pressable>
           }
           {
@@ -260,7 +251,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
               closed
               ?
               <Pressable style={{
-                backgroundColor: Green400,
+                backgroundColor: palette.green400,
                 padding: spacingUnit * 0.5,
                 paddingLeft: spacingUnit,
                 paddingRight: spacingUnit,
@@ -268,7 +259,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
                 flexDirection: 'row',
                 alignItems: 'center'
               }}>
-              <RegularText color={White} style={{
+              <RegularText color={palette.white} style={{
                 marginRight: spacingUnit * 0.4
               }}>
                 Closed
@@ -276,7 +267,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
             </Pressable>
             :
             <Pressable style={{
-              borderColor: Green400,
+              borderColor: palette.green400,
               borderRadius: spacingUnit,
               borderWidth: 1,
               padding: spacingUnit * 0.5,
@@ -286,7 +277,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
               setClosed(true)
               closeDiscussion()
             }}>
-              <RegularText color={Green400}>
+              <RegularText color={palette.green400}>
                 Close discussion
               </RegularText>
             </Pressable>
@@ -298,7 +289,7 @@ export const ProjectDiscussionItem = ({ item: initialItem, userOwned, standAlone
           standAlone &&
           <View
           style={{
-            borderBottomColor: Grey300,
+            borderBottomColor: palette.grey300,
             borderBottomWidth: 1,
             marginTop: spacingUnit * 2
           }}

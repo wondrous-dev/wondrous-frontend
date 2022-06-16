@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import { SafeAreaView, FlatList, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
-import { Blue500, White } from '../../constants/Colors'
+import { palette.blue500, White } from '../../constants/Colors'
 import { Header } from '../../components/Header'
 import { Subheading, RegularText, ButtonText, ErrorText, Paragraph } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
@@ -35,7 +35,7 @@ const ProjectInviteCollaborators = ({
       backgroundColor: White
     }}>
       <Header title='Invite Collaborators' rightButton={{
-        color: Blue500,
+        color: palette.blue500,
         text: 'Finish',
         onPress: async() => {
           if (!user?.usageProgress?.signupCompleted) {

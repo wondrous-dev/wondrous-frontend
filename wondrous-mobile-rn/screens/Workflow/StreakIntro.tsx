@@ -8,7 +8,7 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey400, White, Black, Grey500, Blue500, Blue400, Green400 } from '../../constants/Colors'
+import { palette.grey400, White, palette.black, palette.grey500, palette.blue500, palette.blue400, palette.green400 } from '../../constants/Colors'
 import { spacingUnit, getLocale } from '../../utils/common'
 import { SvgImage } from '../../storybook/stories/Image'
 import Celebration from '../../assets/images/celebrations/signupConfetti'
@@ -41,12 +41,12 @@ function StreakIntro({
           height: 80,
           ...streakIntroStyles.image
         }} />
-        <Subheading color={Blue400} style={{
+        <Subheading color={palette.blue400} style={{
           marginTop: spacingUnit * 3,
         }}>
           1 day Streak!
         </Subheading>
-        <Paragraph color={Black} style={{
+        <Paragraph color={palette.black} style={{
           textAlign: 'center',
           paddingLeft: spacingUnit * 2,
           paddingRight: spacingUnit * 2,
@@ -56,7 +56,7 @@ function StreakIntro({
           Every day you create or complete a goal/task/ask, your streak increases.
         </Paragraph>
         <PrimaryButton style={{
-          backgroundColor: Green400
+          backgroundColor: palette.green400
         }} onPress={() => navigation.navigate('Root', {
           screen: 'Profile',
           params: {

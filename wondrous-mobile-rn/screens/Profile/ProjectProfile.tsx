@@ -11,7 +11,7 @@ import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple, Grey700 } from '../../constants/Colors'
+import { palette.black, palette.blue500, palette.grey300, White, palette.blue400, palette.grey800, Purple, palette.grey700 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries/project'
 import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
@@ -486,7 +486,7 @@ function ProjectProfile({
             paddingRight: spacingUnit * 2,
             marginTop: spacingUnit * -1,
             marginBottom: spacingUnit,
-            color: Grey800
+            color: palette.grey800
           }}>
             Your project will only appear on our search page if there is a profile picture!  
           </RegularText>
@@ -554,7 +554,7 @@ function ProjectProfile({
           <View style={profileStyles.profileHeader}>
           <Subheading style={{
             fontSize: 18
-          }} color={Black}>
+          }} color={palette.black}>
             {project.name}
           </Subheading>
           </View>
@@ -565,7 +565,7 @@ function ProjectProfile({
                 ...profileStyles.editButton,
                 marginRight: spacingUnit
               }} onPress={() => setEditProfileModal(true)}>
-                <RegularText color={Black}>
+                <RegularText color={palette.black}>
                   Edit Project
                 </RegularText>
               </SecondaryButton>
@@ -591,7 +591,7 @@ function ProjectProfile({
               setFollowing(false)
               unfollowProject()
             }}>
-              <Paragraph color={Black}>
+              <Paragraph color={palette.black}>
                {
                  following
                  ?
@@ -623,7 +623,7 @@ function ProjectProfile({
             <View style={[profileStyles.profileInfoContainer, {
               marginTop: spacingUnit,
             }]}>
-              <Paragraph color={Black} style={{
+              <Paragraph color={palette.black} style={{
                 flexWrap: 'wrap',
                 textAlign: 'left'
               }}>
@@ -649,12 +649,12 @@ function ProjectProfile({
               }
             })
           }}>
-            <Link color={Grey800} style={{
+            <Link color={palette.grey800} style={{
               marginRight: spacingUnit * 0.5,
               width: spacingUnit * 2.5,
               height: spacingUnit * 2.5
             }} />
-            <Paragraph color={Blue400}>
+            <Paragraph color={palette.blue400}>
               Project links
             </Paragraph>
           </Pressable>
@@ -770,7 +770,7 @@ function ProjectProfile({
         ItemSeparatorComponent={() => (
           <View
           style={[(feedSelected || discussionSelected) && {
-            borderBottomColor: Grey300,
+            borderBottomColor: palette.grey300,
             borderBottomWidth: 1,
           }]}
           />
@@ -784,17 +784,17 @@ function ProjectProfile({
                 alignItems: 'center',
                 marginTop: spacingUnit * 10
               }}>
-                <Lock color={Grey800} style={{
+                <Lock color={palette.grey800} style={{
                   alignSelf: 'center',
                   width: spacingUnit * 6,
                   height: spacingUnit * 6
                 }} />
-                <Subheading color={Grey800} style={{
+                <Subheading color={palette.grey800} style={{
                   marginTop: spacingUnit * 2
                 }}>
                   This is a private project
                 </Subheading>
-                <Paragraph color={Grey700} style={{
+                <Paragraph color={palette.grey700} style={{
                   marginTop: spacingUnit
                 }}>
                   Follow this project to see their activity
@@ -826,17 +826,17 @@ function ProjectProfile({
                 alignItems: 'center',
                 marginTop: spacingUnit * 10
               }}>
-                <Lock color={Grey800} style={{
+                <Lock color={palette.grey800} style={{
                   alignSelf: 'center',
                   width: spacingUnit * 6,
                   height: spacingUnit * 6
                 }} />
-                <Subheading color={Grey800} style={{
+                <Subheading color={palette.grey800} style={{
                   marginTop: spacingUnit * 2
                 }}>
                   This is a private project
                 </Subheading>
-                <Paragraph color={Grey700} style={{
+                <Paragraph color={palette.grey700} style={{
                   marginTop: spacingUnit
                 }}>
                   Follow this project to see their activity

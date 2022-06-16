@@ -1,5 +1,5 @@
 import { scale, moderateScale, verticalScale } from '../../../utils/scale'
-import { White, Blue400, Blue500, Black, Grey800 } from '../../../constants/Colors'
+import { White, palette.blue400, palette.blue500, palette.black, palette.grey800 } from '../../../constants/Colors'
 
 const baseStyle = {
   maxWidth: moderateScale(344),
@@ -12,7 +12,7 @@ const baseStyle = {
 export default {
   primary: {
     ...baseStyle,
-    backgroundColor: Blue500,
+    backgroundColor: palette.blue500,
     color: White,
   },
   secondary: {

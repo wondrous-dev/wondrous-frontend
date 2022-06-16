@@ -9,7 +9,7 @@ import { useMutation, useQuery } from '@apollo/client'
 // } from '@react-native-community/google-signin'
 
 import { RootStackParamList } from '../types'
-import { Red400, White } from '../constants/Colors'
+import { palette.red400, White } from '../constants/Colors'
 import { Title, ErrorText, RegularText, Subheading } from '../storybook/stories/Text'
 import { SvgImage } from '../storybook/stories/Image'
 import { GoogleLogin, FacebookLogin, EmailLogin } from '../storybook/stories/Button'
@@ -78,7 +78,7 @@ function SignupScreen({
               loginError &&
               <ErrorText style={{
                 marginTop: 8
-              }} color={Red400}>
+              }} color={palette.red400}>
                 {loginError}
               </ErrorText>
             }

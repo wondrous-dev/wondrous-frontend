@@ -9,7 +9,7 @@ import * as Permissions from 'expo-permissions'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import { Black, White, Blue500, Red400, Grey500, Grey300, Orange } from '../../constants/Colors'
+import { palette.black, White, palette.blue500, palette.red400, palette.grey500, palette.grey300, palette.orange } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -34,7 +34,7 @@ export const usernameSetupStyles = StyleSheet.create({
   },
   stepCount: {
     fontSize: 16,
-    color: Blue500,
+    color: palette.blue500,
     fontFamily: 'Rubik',
     fontStyle: 'normal',
     fontWeight: '500',
@@ -76,7 +76,7 @@ const NotificationPrompt = ({ navigation }) => {
 
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
-      <Subheading color={Black} style={{
+      <Subheading color={palette.black} style={{
         fontSize: 32
       }}>
         Notifications
@@ -87,14 +87,14 @@ const NotificationPrompt = ({ navigation }) => {
         textAlign: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
-      }} color={Grey500}>
+      }} color={palette.grey500}>
         So you know when your community interacts with you and for us to keep you accountable!
       </Paragraph>
       <View>
         <PrimaryButton
           textStyle={{ color: White }}
           style={{
-            backgroundColor: Orange,
+            backgroundColor: palette.orange,
             width: spacingUnit * 43,
             alignSelf: 'center',
             marginTop: spacingUnit // this is not consistent with the next page on figma
@@ -111,7 +111,7 @@ const NotificationPrompt = ({ navigation }) => {
           textStyle={{ color: White }}
           style={{
             backgroundColor: White,
-            borderColor: Orange,
+            borderColor: palette.orange,
             borderWidth: 1,
             width: spacingUnit * 43,
             alignSelf: 'center',
@@ -121,7 +121,7 @@ const NotificationPrompt = ({ navigation }) => {
             navigation.push('UserInterestCategory')
           }}
         >
-          <ButtonText color={Orange}> Continue </ButtonText>
+          <ButtonText color={palette.orange}> Continue </ButtonText>
         </PrimaryButton>
 
           </View>
@@ -147,8 +147,8 @@ function NotificationSetupScreen({
           percent={50}
           radius={50}
           borderWidth={10}
-          color={Red400}
-          shadowColor={Grey300}
+          color={palette.red400}
+          shadowColor={palette.grey300}
           bgColor={White}
         >
           <BigMouthSmile />

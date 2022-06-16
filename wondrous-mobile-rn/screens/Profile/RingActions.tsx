@@ -10,7 +10,7 @@ import { getRingActions, spacingUnit } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { UploadImage, SafeImage } from '../../storybook/stories/Image'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { Black, Grey300, White, Blue400, Grey800, Grey700, Orange, Green400, Red400 } from '../../constants/Colors'
+import { palette.black, palette.grey300, White, palette.blue400, palette.grey800, palette.grey700, palette.orange, palette.green400, palette.red400 } from '../../constants/Colors'
 import {
   onSwipe,
   ProfilePlaceholder, renderCard
@@ -242,7 +242,7 @@ const GoalView = ({ goals, totalGoals, completedGoals, user }) => {
         <GoalCongratsModal user={user} isVisible={goalCompleteModal} setModalVisible={setGoalCompleteModal} />
       }
       <View style={styles.actionHeaderContainer}>
-      <Paragraph style={styles.actionHeaderText} color={Black}>
+      <Paragraph style={styles.actionHeaderText} color={palette.black}>
         Goals
       </Paragraph>
       </View>
@@ -334,8 +334,8 @@ const RingActions = ({ navigation, route }) => {
               percent={percentage}
               radius={48}
               borderWidth={8}
-              color={Orange}
-              shadowColor={Grey300}
+              color={palette.orange}
+              shadowColor={palette.grey300}
               bgColor={White}
             >
               <SafeImage style={{
@@ -346,7 +346,7 @@ const RingActions = ({ navigation, route }) => {
             </ProgressCircle>
             <View style={styles.percentageTextContainer}>
               <Emoji percentage={percentage} />
-              <Paragraph style={styles.percentageText} color={percentage > 50 ? Green400 : Red400}>
+              <Paragraph style={styles.percentageText} color={percentage > 50 ? palette.green400 : palette.red400}>
                 {Math.round(percentage)}% complete
               </Paragraph>
             </View>

@@ -5,7 +5,7 @@ import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik'
 
 import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
-import { White, Yellow300, Grey300, Grey500, Black, Orange } from '../../constants/Colors'
+import { White, palette.yellow300, palette.grey300, palette.grey500, palette.black, palette.orange } from '../../constants/Colors'
 import { Header } from '../../components/Header'
 import { usernameSetupStyles } from './UsernameSetupScreen'
 import Smile from '../../assets/images/emoji/smile'
@@ -23,7 +23,7 @@ const groupStyles = StyleSheet.create({
   pill: {
     width: spacingUnit * 28,
     borderWidth: 1,
-    borderColor: Black,
+    borderColor: palette.black,
     marginTop: spacingUnit * 2,
     borderRadius: spacingUnit * 3.5,
     alignItems: 'center',
@@ -53,11 +53,11 @@ const Pill = ({ text, selected }) => {
     <View style={{
       ...groupStyles.pill,
       ...(selected && {
-        backgroundColor: Orange,
+        backgroundColor: palette.orange,
         borderWidth: 0
       })
     }}>
-      <Paragraph color={selected ? White : Black} style={groupStyles.pillText}>
+      <Paragraph color={selected ? White : palette.black} style={groupStyles.pillText}>
         {text}
       </Paragraph>
     </View>
@@ -78,8 +78,8 @@ const GroupSetupScreen = ({ navigation }) => {
           percent={66}
           radius={50}
           borderWidth={10}
-          color={Yellow300}
-          shadowColor={Grey300}
+          color={palette.yellow300}
+          shadowColor={palette.grey300}
           bgColor={White}
         >
           <Smile />
@@ -89,10 +89,10 @@ const GroupSetupScreen = ({ navigation }) => {
         </View>
       </View>
       <ScrollView contentContainerStyle={groupStyles.groupContainer}>
-        <Subheading style={groupStyles.heading} color={Black}>
+        <Subheading style={groupStyles.heading} color={palette.black}>
           What's your group?
         </Subheading>
-        <Paragraph color={Grey500} style={{
+        <Paragraph color={palette.grey500} style={{
           textAlign: 'center',
           marginTop: spacingUnit
         }}>
@@ -111,7 +111,7 @@ const GroupSetupScreen = ({ navigation }) => {
             style={{
               backgroundColor: White,
               borderWidth: 1,
-              borderColor: Black,
+              borderColor: palette.black,
               flex: 1,
               marginRight: spacingUnit * 3
             }}

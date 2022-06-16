@@ -8,7 +8,7 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
+import { palette.grey400, White, palette.black, palette.grey500, palette.blue500 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button'
 import { SvgImage } from '../../storybook/stories/Image'
@@ -78,7 +78,7 @@ function SetupGoalScreen({
       backgroundColor: White
     }}>
       <Header rightButton={goalArray && goalArray.length > 0 && {
-        color: Blue500,
+        color: palette.blue500,
         text: 'Continue',
         onPress: () => {
           navigation.navigate('Root', {
@@ -105,12 +105,12 @@ function SetupGoalScreen({
                   width: spacingUnit * 8,
                   height: spacingUnit * 8
                 }} />
-                <Subheading color={Black} style={{
+                <Subheading color={palette.black} style={{
                   marginTop: spacingUnit * 2
                 }}>
                   Add goals
                 </Subheading>
-                <Paragraph color={Grey500} style={{
+                <Paragraph color={palette.grey500} style={{
                   textAlign: 'center',
                   paddingLeft: spacingUnit * 1.25,
                   paddingRight: spacingUnit * 1.25,

@@ -10,7 +10,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit, getLocale } from '../../utils/common'
-import { Black, Grey900, White, Blue400, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
+import { palette.black, Grey900, White, palette.blue400, palette.blue500, palette.yellow300, palette.grey300, palette.grey500, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Smile from '../../assets/images/emoji/smile'
@@ -42,20 +42,20 @@ const firstProjectSetupStyles = StyleSheet.create({
     },
     stepCount: {
         fontSize: 16,
-        color: Blue500,
+        color: palette.blue500,
         fontFamily: 'Rubik',
         fontStyle: 'normal',
         fontWeight: '500',
     },
     privacyButton: {
-        borderColor: Black,
+        borderColor: palette.black,
         borderRadius: spacingUnit,
         borderWidth: 1,
         padding: spacingUnit,
     },
     paragraph: {
         marginTop: spacingUnit,
-        color: Grey500,
+        color: palette.grey500,
         textAlign: 'center',
         maxWidth: spacingUnit * 43,
         alignSelf: 'center',
@@ -131,12 +131,12 @@ const CreateProjectInput = ({ navigation, setup }) => {
         <View style={firstProjectSetupStyles.createProjectInputContainer}>
             <ProjectFAQModal isVisible={projectFAQ} setModalVisible={setProjectFAQ} />
             <Subheading style={{
-            }} color={Black}>
+            }} color={palette.black}>
                 Make a project!
         </Subheading>
             <Paragraph style={firstProjectSetupStyles.paragraph}>
             Describe your project in one sentence.{"\n"}
-            <Paragraph color={Blue400} onPress={() => setProjectFAQ(true)}>
+            <Paragraph color={palette.blue400} onPress={() => setProjectFAQ(true)}>
                 What is a project?
             </Paragraph>
         </Paragraph>
@@ -214,7 +214,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             style={{
                                 width: spacingUnit * 43,
                                 height: spacingUnit * 4.5,
-                                borderColor: Grey300,
+                                borderColor: palette.grey300,
                                 borderWidth: 1,
                                 borderRadius: 4,
                                 fontSize: 16,
@@ -236,7 +236,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             style={{
                                 marginTop: spacingUnit * 1.5,
                                 width: spacingUnit * 43,
-                                borderColor: Grey300,
+                                borderColor: palette.grey300,
                                 borderWidth: 1,
                                 borderRadius: 4,
                                 fontSize: 16,
@@ -264,7 +264,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 privacy === 'public'
                                 ?
                                 <Pressable style={firstProjectSetupStyles.privacyButton} onPress={() => setPrivacy('private')}>
-                                    <Paragraph color={Black}>
+                                    <Paragraph color={palette.black}>
                                     Make private
                                     </Paragraph>
                                     {/* <Checkmark color={White} style={{
@@ -275,7 +275,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 :
                                 <Pressable style={{
                                     ...firstProjectSetupStyles.privacyButton,
-                                    backgroundColor: Black
+                                    backgroundColor: palette.black
                                 }} onPress={() => setPrivacy('public')}>
                                     <Paragraph color={White}>
                                     Make public
@@ -341,8 +341,8 @@ function FirstProjectSetupScreen({
                             percent={50}
                             radius={50}
                             borderWidth={10}
-                            color={Yellow300}
-                            shadowColor={Grey300}
+                            color={palette.yellow300}
+                            shadowColor={palette.grey300}
                             bgColor={White}
                         >
                             <Smile />
@@ -377,7 +377,7 @@ function FirstProjectSetupScreen({
                               }
                             })
                           }}>
-                            <ButtonText color={Grey500} style={firstProjectSetupStyles.goToHome}>
+                            <ButtonText color={palette.grey500} style={firstProjectSetupStyles.goToHome}>
                               Skip and start exploring
                             </ButtonText>
                           </TouchableOpacity>

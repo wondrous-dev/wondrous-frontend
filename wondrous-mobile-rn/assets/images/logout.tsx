@@ -2,9 +2,9 @@
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-import { Red400 } from '../../constants/Colors'
+import { palette.red400 } from '../../constants/Colors'
 
-const Logout = ({ color=Red400, style }) => {
+const Logout = ({ color=palette.red400, style }) => {
   return (
   <Svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
     <Path d="M12 13C12.2652 13 12.5196 12.8946 12.7071 12.7071C12.8946 12.5196 13 12.2652 13 12V2C13 1.73478 12.8946 1.48043 12.7071 1.29289C12.5196 1.10536 12.2652 1 12 1C11.7348 1 11.4804 1.10536 11.2929 1.29289C11.1054 1.48043 11 1.73478 11 2V12C11 12.2652 11.1054 12.5196 11.2929 12.7071C11.4804 12.8946 11.7348 13 12 13Z" fill={color} />

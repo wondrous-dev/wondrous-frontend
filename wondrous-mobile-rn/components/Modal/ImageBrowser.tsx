@@ -1,11 +1,8 @@
-import React, { Component, useState } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Pressable, Dimensions, SafeAreaView } from 'react-native';
 import * as ImageManipulator from 'expo-image-manipulator'
-import { useNavigation } from '@react-navigation/native'
 import { ImageBrowser } from 'expo-image-picker-multiple'
 
-import BackCaret from '../../assets/images/back-caret'
-import { Grey300, Black, Blue400, White } from '../../constants/Colors'
 import { Paragraph, RegularText } from '../../storybook/stories/Text';
 import { getFilenameAndType, uploadMedia } from '../../utils/image';
 
@@ -84,7 +81,7 @@ export default class ImageBrowserScreen extends Component {
       <Text style={{
         // marginRight: 25,
         // marginLeft: -25
-        color: count ? Blue400 : White
+        color: count ? palette.blue400 : palette.white
       }}>Done</Text>
     </TouchableOpacity>
   }
@@ -116,12 +113,12 @@ export default class ImageBrowserScreen extends Component {
           flexDirection: 'row',
           height: 64,
           borderBottomWidth: 1,
-          borderBottomColor: Grey300,
-          backgroundColor: White,
+          borderBottomColor: palette.grey300,
+          backgroundColor: palette.white,
         }}>
           <Pressable onPress={() => setImageBrowser(false)}>
-            <RegularText color={Blue400} style={{
-              color: Blue400,
+            <RegularText color={palette.blue400} style={{
+              color: palette.blue400,
               marginLeft: 25,
               marginRight: -25
             }}>
@@ -129,7 +126,7 @@ export default class ImageBrowserScreen extends Component {
             </RegularText>
           </Pressable>
           <View>
-            <Paragraph color={Black}>
+            <Paragraph color={palette.black}>
               Select {count} files
             </Paragraph>
           </View>

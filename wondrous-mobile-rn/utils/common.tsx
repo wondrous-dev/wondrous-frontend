@@ -5,7 +5,7 @@ import * as WebBrowser from 'expo-web-browser'
 import regexifyString from 'regexify-string'
 import { StackActions } from '@react-navigation/native'
 
-import { Blue400 } from '../constants/Colors'
+import { palette.blue400 } from '../constants/Colors'
 import { MENTION_REGEX } from '../constants'
 
 export const spacingUnit = 8
@@ -201,7 +201,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
         }
         return (
             <Text style={{
-              color: Blue400,
+              color: palette.blue400,
               ...textStyle
             }}
             onPress={() => {
@@ -222,7 +222,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
       } else if (httpMatch) {
         return (
           <Text style={{
-            color: Blue400,
+            color: palette.blue400,
             ...textStyle
           }} onPress={() => {
             openLink(match)
@@ -233,7 +233,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
       } else if (urlMatch) {
         return (
           <Text style={{
-            color: Blue400,
+            color: palette.blue400,
             ...textStyle
           }} onPress={() => {
             openLink(match)

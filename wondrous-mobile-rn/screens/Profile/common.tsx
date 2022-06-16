@@ -8,7 +8,7 @@ import { useNavigation } from '@react-navigation/native'
 import { useMutation } from '@apollo/client'
 import { isBefore } from 'date-fns'
 
-import { Black, Blue400, Blue500, Green400, Grey200, Grey500, Grey350, Grey800, Orange, Red400, White, Yellow300 } from '../../constants/Colors'
+import { palette.black, palette.blue400, palette.blue500, palette.green400, Grey200, palette.grey500, Grey350, palette.grey800, palette.orange, palette.red400, White, palette.yellow300 } from '../../constants/Colors'
 import Plus from '../../assets/images/plus'
 import { profileStyles } from './style'
 import AddIcon from '../../assets/images/add-dark-button'
@@ -150,14 +150,14 @@ export const SectionsHeader = () => {
       <Pressable onPress={() => setSection('feed')}>
         <View style={{
           ...(feedSelected && {
-            borderBottomColor: Blue400,
+            borderBottomColor: palette.blue400,
             borderBottomWidth: 1
           }),
           paddingBottom: spacingUnit,
           width: moderateScale(spacingUnit * 10.5),
           alignItems: 'center'
         }}>
-          <Paragraph color={feedSelected ? Blue400 : Black }>
+          <Paragraph color={feedSelected ? palette.blue400 : palette.black }>
             Feed
           </Paragraph>
         </View>
@@ -165,14 +165,14 @@ export const SectionsHeader = () => {
       <Pressable onPress={() => setSection('action')}>
         <View style={{
           ...(actionSelected && {
-            borderBottomColor: Blue400,
+            borderBottomColor: palette.blue400,
             borderBottomWidth: 1
           }),
           paddingBottom: spacingUnit,
           width: moderateScale(spacingUnit * 10.5),
           alignItems: 'center'
         }}>
-          <Paragraph color={actionSelected ? Blue400 : Black }>
+          <Paragraph color={actionSelected ? palette.blue400 : palette.black }>
             Action
           </Paragraph>
         </View>
@@ -180,14 +180,14 @@ export const SectionsHeader = () => {
       <Pressable onPress={() => setSection('asks')}>
         <View style={{
           ...(asksSelected && {
-            borderBottomColor: Blue400,
+            borderBottomColor: palette.blue400,
             borderBottomWidth: 1,
           }),
           paddingBottom: spacingUnit,
           alignItems: 'center',
           width: moderateScale(spacingUnit * 10.5)
         }}>
-          <Paragraph color={asksSelected ? Blue400 : Black }>
+          <Paragraph color={asksSelected ? palette.blue400 : palette.black }>
             Asks
           </Paragraph>
         </View>
@@ -197,14 +197,14 @@ export const SectionsHeader = () => {
         <Pressable onPress={() => setSection('reviews')}>
         <View style={{
           ...(reviewSelected && {
-            borderBottomColor: Blue400,
+            borderBottomColor: palette.blue400,
             borderBottomWidth: 1,
           }),
           paddingBottom: spacingUnit,
           alignItems: 'center',
           width: moderateScale(spacingUnit * 10.5)
         }}>
-          <Paragraph color={reviewSelected ? Blue400 : Black }>
+          <Paragraph color={reviewSelected ? palette.blue400 : palette.black }>
             Reviews
           </Paragraph>
         </View>
@@ -215,14 +215,14 @@ export const SectionsHeader = () => {
         <Pressable onPress={() => setSection('discussion')}>
         <View style={{
           ...(discussionSelected && {
-            borderBottomColor: Blue400,
+            borderBottomColor: palette.blue400,
             borderBottomWidth: 1,
           }),
           paddingBottom: spacingUnit,
           alignItems: 'center',
           width: moderateScale(spacingUnit * 11.5),
         }}>
-          <Paragraph color={discussionSelected ? Blue400 : Black } style={{
+          <Paragraph color={discussionSelected ? palette.blue400 : palette.black } style={{
             paddingRight: spacingUnit
           }}>
             Feedback
@@ -272,7 +272,7 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
       }}>
         <Pressable onPress={() => navigation.push(navigationUrl, navigationParams)}>
           <Paragraph>
-            Next step: <Paragraph color={Blue400}>{setupText}</Paragraph>
+            Next step: <Paragraph color={palette.blue400}>{setupText}</Paragraph>
           </Paragraph>
         </Pressable>
         <FlexibleButton style={{
@@ -280,7 +280,7 @@ export const SetUpFlowProgress = ({ progress, navigationUrl,navigationParams, se
           paddingRight: spacingUnit * 1.5,
           paddingTop: 2,
           paddingBottom: 2,
-          backgroundColor: Blue500
+          backgroundColor: palette.blue500
         }} onPress={() => {
           navigation.push(navigationUrl, navigationParams)
         }}>
@@ -302,10 +302,10 @@ export const StatusItem = ({ statusValue, setStatus, statusTrue, statusLabel }) 
       textAlign: 'center',
       borderRadius: 4,
       ...(statusTrue && {
-        backgroundColor: Blue500
+        backgroundColor: palette.blue500
       })
     }} onPress={() => setStatus(statusValue)}>
-      <RegularText color={statusTrue ? White : Grey800}>
+      <RegularText color={statusTrue ? White : palette.grey800}>
         {statusLabel}
       </RegularText>
     </Pressable>
@@ -329,7 +329,7 @@ export const DetermineUserProgress = ({ user, projectId }) => {
           }
 
         }
-      }} setupText={setupText} setupButtonText={setupButtonText} color={Yellow300} />
+      }} setupText={setupText} setupButtonText={setupButtonText} color={palette.yellow300} />
     } else if (usageProgress.goalCreated && !usageProgress.taskCreated) {
       const setupText = 'Tasks'
       const setupButtonText = 'Create tasks'
@@ -342,7 +342,7 @@ export const DetermineUserProgress = ({ user, projectId }) => {
           }
         }
       }}
-        setupButtonText={setupButtonText} setupText={setupText} color={Orange}
+        setupButtonText={setupButtonText} setupText={setupText} color={palette.orange}
       />
     } else if (usageProgress.goalCreated && usageProgress.taskCreated && !usageProgress.askCreated) {
       const setupText = 'Asks'
@@ -356,7 +356,7 @@ export const DetermineUserProgress = ({ user, projectId }) => {
           }
         }
       }}
-        setupButtonText={setupButtonText} setupText={setupText} color={Green400}
+        setupButtonText={setupButtonText} setupText={setupText} color={palette.green400}
       />
     }
     return null
@@ -402,7 +402,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         }}>
           <Paragraph style={{
             marginBottom: spacingUnit * 2
-          }} color={Grey800}>
+          }} color={palette.grey800}>
             No goals or tasks here.
           </Paragraph>
         </View>
@@ -421,7 +421,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         }}>
           <Paragraph style={{
             marginBottom: spacingUnit * 2
-          }} color={Grey800}>
+          }} color={palette.grey800}>
             No asks here.
           </Paragraph>
           {
@@ -462,7 +462,7 @@ export const renderProfileItem = ({ item, section, user, userOwned, navigation, 
         }}>
           <Paragraph style={{
             marginBottom: spacingUnit * 2
-          }} color={Grey800}>
+          }} color={palette.grey800}>
             No reviews yet
           </Paragraph>
         </View>
@@ -666,7 +666,7 @@ export const DiscussionSelector = ({ setDiscussionState, discussionState, setDis
             textAlign: 'center',
             marginTop: -spacingUnit,
             paddingRight: spacingUnit
-          }} color={Grey800}>
+          }} color={palette.grey800}>
             Add feedback/comments for the project
           </Paragraph>
           </View>

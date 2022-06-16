@@ -9,7 +9,7 @@ import { spacingUnit } from '../../utils/common'
 import { SearchBar } from '../../components/Header'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { listStyles, profileStyles } from './style'
-import { White, Black, Blue400 } from '../../constants/Colors'
+import { White, palette.black, palette.blue400 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import * as SMS from 'expo-sms'
@@ -88,13 +88,13 @@ const ContactItem = ({ item }) => {
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={Black}>{item.name}</Subheading>
+        }} color={palette.black}>{item.name}</Subheading>
       </View>
 {/* {
         invited
         ?
         <Pressable style={listStyles.followingButton}>
-          <Paragraph color={Black}>
+          <Paragraph color={palette.black}>
             Invited
           </Paragraph>
         </Pressable>
@@ -183,7 +183,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={Blue400} style={{
+              <RegularText color={palette.blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -193,7 +193,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
                 flex: 2
               }}>
                
-                <Subheading color={Black} style={{
+                <Subheading color={palette.black} style={{
                   fontSize: 20
                 }}>
                   Invite friends

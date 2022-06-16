@@ -2,9 +2,9 @@ import { Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import styled from 'styled-components'
 import {
-	Black100,
-	Orange,
-	Orange100,
+	palette.black100,
+	palette.orange,
+	palette.orange100,
 	White,
 	Yellow400,
 } from '../../services/colors'
@@ -14,7 +14,7 @@ import { device } from '../../utils/device'
 export const FooterContainer = styled.div`
 	&& {
 		width: 100%;
-		background: ${Black100};
+		background: ${palette.black100};
 		padding: ${createSpacingUnit(5)}px;
 		display: flex;
 		align-items: center;

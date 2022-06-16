@@ -6,7 +6,7 @@ import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400, Grey300, Yellow300 } from '../../constants/Colors'
+import { palette.grey800, Purple, palette.red400, White, palette.black, palette.blue400, Grey450, palette.green400, palette.grey300, palette.yellow300 } from '../../constants/Colors'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { COMPLETE_TASK, UPDATE_TASK, NUDGE_TASK } from '../../graphql/mutations'
@@ -172,9 +172,9 @@ const TaskPage = ({ navigation, route }) => {
       <Header title='Task' rightButton={ownedByUser && !onboarding && {
         style: {
           borderWidth: 1,
-          borderColor: Grey800
+          borderColor: palette.grey800
         },
-        textColor: Grey800,
+        textColor: palette.grey800,
         text: 'Edit Task',
         onPress: () => {
           setModalVisible(true)
@@ -215,7 +215,7 @@ const TaskPage = ({ navigation, route }) => {
                     taskId: task?.id
                   }
                 })}>
-                  <Nudge color={Yellow300} />
+                  <Nudge color={palette.yellow300} />
                 </TouchableOpacity>
                 </>
           }
@@ -232,7 +232,7 @@ const TaskPage = ({ navigation, route }) => {
           {
             completed
             ?
-            <Tag color={Green400} style={{
+            <Tag color={palette.green400} style={{
               marginRight: spacingUnit,
               marginTop: spacingUnit
             }}>
@@ -244,11 +244,11 @@ const TaskPage = ({ navigation, route }) => {
             (
               archived
               ?
-              <Tag color={Grey300} style={{
+              <Tag color={palette.grey300} style={{
                 marginRight: spacingUnit,
                 marginTop: spacingUnit
               }}>
-                <RegularText color={Grey800}>
+                <RegularText color={palette.grey800}>
                   Archived
                 </RegularText>
               </Tag>
@@ -270,7 +270,7 @@ const TaskPage = ({ navigation, route }) => {
                   })
     
                 }} style={pageStyles.markAsComplete}>
-                  <RegularText color={Green400}>
+                  <RegularText color={palette.green400}>
                     Mark as complete
                   </RegularText>
                 </Pressable>
@@ -308,7 +308,7 @@ const TaskPage = ({ navigation, route }) => {
             <View style={{
               marginTop: spacingUnit
             }}>
-                <RegularText color={redDate(task.dueDate) ? Red400 : Grey450}>
+                <RegularText color={redDate(task.dueDate) ? palette.red400 : Grey450}>
                 Due {formatDueDate(new Date(task.dueDate))}
               </RegularText>
               </View>
@@ -319,7 +319,7 @@ const TaskPage = ({ navigation, route }) => {
           <View style={{
             marginTop: spacingUnit
           }}>
-            <RegularText color={Black}>
+            <RegularText color={palette.black}>
               From{` `}
                 <RegularText onPress={() => navigation.navigate('Root', {
                 screen: tab || 'Profile',
@@ -329,7 +329,7 @@ const TaskPage = ({ navigation, route }) => {
                     goal
                   }
                 }
-              })} color={Blue400} style={{
+              })} color={palette.blue400} style={{
                   marginLeft: spacingUnit * 0.5
                 }}>
                   {goal.name}
@@ -340,10 +340,10 @@ const TaskPage = ({ navigation, route }) => {
         {
           task.additionalData && task.additionalData.link &&
           <View style={pageStyles.linkContainer}>
-            <LinkIcon color={Grey800} style={{
+            <LinkIcon color={palette.grey800} style={{
               marginRight: spacingUnit
             }} />
-            <Paragraph color={Blue400} style={pageStyles.link}>
+            <Paragraph color={palette.blue400} style={pageStyles.link}>
               {task.additionalData.link}
             </Paragraph>
           </View>
@@ -359,7 +359,7 @@ const TaskPage = ({ navigation, route }) => {
               video: muxPlaybackId
             },
             ...images
-          ] : images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
+          ] : images} images={true} passiveDotColor={palette.grey800} activeDotColor={palette.blue400} />
         }
         </View>
         <View style={[pageStyles.subContainer]}>
@@ -379,9 +379,9 @@ const TaskPage = ({ navigation, route }) => {
           })} style={{
             marginRight: spacingUnit
           }}>
-          <Paragraph color={Black} style={pageStyles.additionalInfoText}>
+          <Paragraph color={palette.black} style={pageStyles.additionalInfoText}>
             {asks.length}
-            <Paragraph color={Black} style={{
+            <Paragraph color={palette.black} style={{
             // textDecorationLine: 'underline'
           }}>
             {asks.length === 1 ? ' ask' : ' asks'}

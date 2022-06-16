@@ -337,7 +337,7 @@ export const snakeToCamel = (str) =>
 export const POD_COLOR = {
   '#B8255F': 'Ruby Red',
   '#DB4035': 'Jasper Red',
-  '#FF9933': 'Sunstone Orange',
+  '#FF9933': 'Sunstone palette.orange',
   '#FAD000': 'Citrine Yellow',
   '#B4C424': 'Peridot Green',
   '#7ECC49': 'Lime Green',
@@ -428,7 +428,7 @@ export const WHITE_TYPOGRAPHY_STYLES = {
 export enum ColorTypes {
   RubyRed = '#B8255F',
   JasperRed = '#DB4035',
-  SunstoneOrange = '#FF9933',
+  Sunstonepalette.orange = '#FF9933',
   CitrineYellow = '#FAD000',
   PeridotGreen = '#B4C424',
   LimeGreen = '#7ECC49',

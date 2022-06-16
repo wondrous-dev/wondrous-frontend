@@ -1,9 +1,7 @@
-import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import { Green400, White } from 'theme/colors';
-import { GithubButton, GithubButtonDiv } from './styles';
 import { useRouter } from 'next/router';
+import GitHubIcon from '@mui/icons-material/GitHub';
+import palette from 'theme/palette';
+import { GithubButton, GithubButtonDiv } from './styles';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
@@ -65,13 +63,13 @@ export const GithubIntegration = ({ orgId }) => {
         >
           <GithubButton
             style={{
-              backgroundColor: Green400,
+              backgroundColor: palette.green400,
               cursor: 'auto',
             }}
           >
             <span
               style={{
-                color: White,
+                color: palette.white,
               }}
             >
               Github organization connected

@@ -2,7 +2,7 @@ import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
 import React, { useRef, useEffect, useState } from 'react'
 import { SafeAreaView, View, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native'
 import { Header } from '../../components/Header'
-import { White, Black, Red400, Green400, Grey400, Grey500, Blue500, Blue400 } from '../../constants/Colors'
+import { White, palette.black, palette.red400, palette.green400, palette.grey400, palette.grey500, palette.blue500, palette.blue400 } from '../../constants/Colors'
 import { GET_REVIEW_STATS } from '../../graphql/queries/review'
 import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
@@ -108,7 +108,7 @@ const HouseKeeping = ({ route, navigation }) => {
         <GoalCongratsModal user={user} isVisible={goalCompleteModal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
       <Header rightButton={{
-        color: Blue500,
+        color: palette.blue500,
         text: 'Finish',
         onPress: () => {
           navigation.navigate('Root', {
@@ -127,12 +127,12 @@ const HouseKeeping = ({ route, navigation }) => {
           alignItems: 'center',
           padding: spacingUnit * 2
         }}>
-          <Subheading color={Black} style={{
+          <Subheading color={palette.black} style={{
             marginBottom: spacingUnit
           }}>
             House keeping
           </Subheading>
-          <Paragraph color={Grey500} style={{
+          <Paragraph color={palette.grey500} style={{
             textAlign: 'center',
             paddingLeft: spacingUnit * 3,
             paddingRight: spacingUnit * 3
@@ -150,12 +150,12 @@ const HouseKeeping = ({ route, navigation }) => {
             alignItems: 'center',
             marginRight: spacingUnit * 4
           }}>
-            <Paragraph color={Blue400} style={{
+            <Paragraph color={palette.blue400} style={{
               fontSize: 22,
             }}>
               +{` `}
             </Paragraph>
-              <Paragraph color={Blue400}>
+              <Paragraph color={palette.blue400}>
                 Add goal
               </Paragraph>
               </Pressable>
@@ -163,12 +163,12 @@ const HouseKeeping = ({ route, navigation }) => {
             flexDirection: 'row',
             alignItems: 'center'
           }}>
-            <Paragraph color={Blue400} style={{
+            <Paragraph color={palette.blue400} style={{
               fontSize: 22,
             }}>
               +{` `}
             </Paragraph>
-              <Paragraph color={Blue400}>
+              <Paragraph color={palette.blue400}>
                 Add task
               </Paragraph>
           </Pressable>

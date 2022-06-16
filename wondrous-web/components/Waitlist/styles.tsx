@@ -1,19 +1,19 @@
 import { Typography, Button } from '@material-ui/core'
 import styled from 'styled-components'
 import {
-	Black,
+	palette.black,
 	Green200,
-	Grey150,
-	Grey50,
+	palette.grey150,
+	palette.grey50,
 	Grey55,
-	Grey700,
-	Grey800,
+	palette.grey700,
+	palette.grey800,
 	Purple,
 	Purple200,
 	Purple300,
 	Purple400,
 	Purple500,
-	Red400,
+	palette.red400,
 	White,
 	Yellow400,
 } from '../../services/colors'
@@ -117,7 +117,7 @@ export const JoinWaitListButton = styled(Button)`
 `
 
 export const ErrorDiv = styled.div`
-	color: ${Red400};
+	color: ${palette.red400};
 	margin-top: ${createSpacingUnit()}px;
 	margin-bottom: -${createSpacingUnit()}px;
 `
@@ -231,7 +231,7 @@ export const MetaTag = styled.span`
 	overflow-wrap: break-word;
 	word-break: break-all;
 	background: ${Grey55};
-	color: ${Grey700};
+	color: ${palette.grey700};
 	font-size: 16px;
 	line-height: ${createSpacingUnit(2.5)}px;
 	border-radius: ${createSpacingUnit(1)}px;
@@ -447,7 +447,7 @@ export const ReferredText = styled(Typography)`
 
 // export const ReferredText = styled(FunkyText)`
 // 	&& {
-// 		color: ${Grey800};
+// 		color: ${palette.grey800};
 // 		font-size: 18px;
 // 		line-height: 28px;
 // 		text-align: center;

@@ -10,7 +10,7 @@ import { GET_PREVIEW_IMAGE } from '../../../graphql/queries'
 import { FlexRowContentModal } from '../../../components/Modal'
 import CameraIcon from '../../../assets/images/camera'
 import PictureIcon from '../../../assets/images/image'
-import { Blue500 } from '../../../constants/Colors'
+import { palette.blue500 } from '../../../constants/Colors'
 import { RegularText } from '../Text'
 import { spacingUnit, setDeepVariable } from '../../../utils/common'
 import Camera from '../../../components/Camera'
@@ -132,13 +132,13 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
               alignItems: 'center',
               marginRight: spacingUnit * 8
             }}>
-              <CameraIcon color={Blue500} style={{
+              <CameraIcon color={palette.blue500} style={{
                 width: spacingUnit * 4,
                 height: spacingUnit * 4
               }} onPress={() => {
                 setCameraOpen(true)
               }}/>
-              <RegularText color={Blue500}>
+              <RegularText color={palette.blue500}>
                 Take photo
               </RegularText>
             </View>
@@ -148,11 +148,11 @@ export const UploadImage = ({ isVisible, setModalVisible, image, setImage, saveI
               justifyContent: 'center',
               alignItems: 'center'
             }}>
-              <PictureIcon color={Blue500} style={{
+              <PictureIcon color={palette.blue500} style={{
                 width: spacingUnit * 4,
                 height: spacingUnit * 4
               }} onPress={pickImage}/>
-              <RegularText color={Blue500}>
+              <RegularText color={palette.blue500}>
                 Camera roll
               </RegularText>
             </View>

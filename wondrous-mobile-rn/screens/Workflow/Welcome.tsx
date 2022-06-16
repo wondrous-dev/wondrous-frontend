@@ -6,7 +6,7 @@ import { Header } from '../../components/Header'
 import { Subheading, Paragraph, RegularText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
-import { Grey500, White, Black } from '../../constants/Colors'
+import { palette.grey500, White, palette.black } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import WelcomeImage from '../../assets/images/workflow/welcome'
 import WelcomePicture from '../../assets/images/workflow/welcome'
@@ -37,7 +37,7 @@ function WorkflowWelcomeScreen({
       <Header />
       <View style={welcomeStyles.welcomeContainer}>
 
-      <Subheading color={Black} style={{
+      <Subheading color={palette.black} style={{
         marginBottom: spacingUnit * 2
       }}>
         The Wonder workflow
@@ -45,7 +45,7 @@ function WorkflowWelcomeScreen({
       <View style={{
         alignSelf: 'flex-start',
       }}>
-      <Paragraph color={Grey500} style={{
+      <Paragraph color={palette.grey500} style={{
         textAlign: 'left',
         padding: spacingUnit
       }}>
@@ -56,7 +56,7 @@ function WorkflowWelcomeScreen({
           fontFamily: 'Rubik SemiBold'
         }}> Tasks </Paragraph>act as progress markers that you can share with your followers.
       </Paragraph>
-      <Paragraph color={Grey500} style={{
+      <Paragraph color={palette.grey500} style={{
         textAlign: 'left',
         marginBottom: spacingUnit * 4,
         marginLeft: spacingUnit

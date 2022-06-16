@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { SideBarContext } from '../../utils/contexts';
+import { SideBarContext } from 'utils/contexts';
 import WonderverseSvg from './wonderverse.svg';
 import Header from '../Header';
 import SideBarComponent from '../SideBar';

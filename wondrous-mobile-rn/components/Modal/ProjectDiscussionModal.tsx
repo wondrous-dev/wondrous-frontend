@@ -1,26 +1,20 @@
 import React, { useCallback, useState } from 'react'
-import { SafeAreaView, ScrollView, View, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
+import { SafeAreaView, ScrollView, View, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
-import { useQuery } from '@apollo/client'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
+import palette from 'theme/palette'
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
-import { Black, White, Blue400, Blue500, Grey800 } from '../../constants/Colors'
-import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { ErrorText, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
-import { GET_USER_PROJECTS } from '../../graphql/queries/project'
-import { UPDATE_PROJECT_DISCUSSION, CREATE_PROJECT_DISCUSSION } from '../../graphql/mutations/projectDiscussion'
 import Camera from '../../components/Camera'
-import { submit, modalStyles, ImageDisplay, ModalDropdown, pickVideo, VideoThumbnail } from './common'
+import { submit, modalStyles, ImageDisplay, pickVideo, VideoThumbnail } from './common'
 import CameraIcon from '../../assets/images/camera'
 import ImageIcon from '../../assets/images/image'
-import LinkIcon from '../../assets/images/link'
 import ImageBrowser from './ImageBrowser'
 import { useNavigation } from '@react-navigation/native'
-import { useMe } from '../../components/withAuth'
 import VideoIcon from '../../assets/images/video'
-import { VideoDisplay } from '../../storybook/stories/Carousel'
 
 const FILE_PREFIX = 'tmp/projectDiscussion/new/'
 
@@ -28,14 +22,12 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
   const initialMedia = (projectDiscussion && projectDiscussion.additionalData && projectDiscussion.additionalData.images) || []
   const initialLink = projectDiscussion && projectDiscussion.additionalData && projectDiscussion.additionalData.link
   const initialContent = (projectDiscussion && projectDiscussion.content) || ''
-  const initialProject = projectDiscussion && projectDiscussion.projectId
   const [link, setLink] = useState(initialLink)
   const [addLink, setAddLink] = useState(!!(link))
   const [media, setMedia] = useState(initialMedia)
   const [cameraOpen, setCameraOpen] = useState(false)
   const [content, setContent] = useState(initialContent)
   const [galleryOpen, setGalleryOpen] = useState(false)
-  const user = useMe()
   const [errors, setErrors] = useState({})
   const [video, setVideo] = useState(projectDiscussion && projectDiscussion.muxPlaybackId || null)
   const [videoUploading, setVideoUploading] = useState(null)
@@ -105,7 +97,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={Blue400} style={{
+              <RegularText color={palette.blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -114,7 +106,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
               <View style={{
                 flex: 2
               }}>
-                <Subheading color={Black} style={{
+                <Subheading color={palette.black} style={{
                   fontSize: 20
                 }}>
                   {projectDiscussion ? 'Edit' : 'New'} discussion
@@ -125,7 +117,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
               }}>
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
-                backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
+                backgroundColor: (imageUploading || videoUploading) ? palette.grey800 : palette.blue500
               }} onPress={() => {
                 if (videoUploading) {
                   setErrors({
@@ -159,7 +151,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                   }
                 }
               }}>
-                <RegularText color={White} style={{
+                <RegularText color={palette.white} style={{
                   fontSize: 16
                 }}>
                   {projectDiscussion ? 'Update': 'Create' }
@@ -209,10 +201,10 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                         mediaError: null
                       })
                        setCameraOpen(true)
-                      }} color={Grey800} style={{
+                      }} color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={Grey800} style={{
+                    <ImageIcon color={palette.grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => {
                       setErrors({
@@ -221,7 +213,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                       })  
                       setGalleryOpen(true)                    
                       }} />
-                    <VideoIcon color={Grey800} onPress={() => {
+                    <VideoIcon color={palette.grey800} onPress={() => {
                       setErrors({
                         ...errors,
                         mediaError: null
@@ -243,7 +235,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                             marginTop: spacingUnit * 2
                           }}>
                              <ActivityIndicator />
-                             <RegularText color={Grey800} style={{
+                             <RegularText color={palette.grey800} style={{
                                textAlign: 'center'
                              }}>
                                Video uploading...
@@ -256,7 +248,7 @@ export const FullScreenDiscussionModal = ({ projectDiscussion, isVisible, setMod
                         marginTop: spacingUnit * 2
                       }}>
                          <ActivityIndicator />
-                         <RegularText color={Grey800} style={{
+                         <RegularText color={palette.grey800} style={{
                            textAlign: 'center'
                          }}>
                            Image uploading...

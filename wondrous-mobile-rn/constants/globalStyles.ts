@@ -1,7 +1,7 @@
 // /constants/globalStyles.js
 import { StyleSheet } from 'react-native'
 
-import { Blue400 } from './Colors'
+import { palette.blue400 } from './Colors'
 
 export const styles = StyleSheet.create({
   container: {
@@ -26,7 +26,7 @@ export const styles = StyleSheet.create({
   },
   Button: {
     borderRadius: 4,
-    backgroundColor: Blue400,
+    backgroundColor: palette.blue400,
     width: '80%',
     padding: 12
   },

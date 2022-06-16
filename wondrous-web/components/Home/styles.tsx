@@ -2,8 +2,8 @@ import { Button, Typography, Grid } from '@material-ui/core'
 import styled from 'styled-components'
 import {
 	Green200,
-	Orange,
-	Orange100,
+	palette.orange,
+	palette.orange100,
 	Purple,
 	Purple100,
 	White,

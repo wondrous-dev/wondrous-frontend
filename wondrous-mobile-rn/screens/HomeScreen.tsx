@@ -7,7 +7,7 @@ import * as Sentry from 'sentry-expo'
 
 import Branch from '../services/branch'
 import { RootStackParamList } from '../types'
-import { Orange, Black, White, Green400, Grey800 } from '../constants/Colors'
+import { palette.orange, palette.black, White, palette.green400, palette.grey800 } from '../constants/Colors'
 import { Title, Subheading, Paragraph, ButtonText } from '../storybook/stories/Text'
 import { MyCarousel } from '../storybook/stories/Carousel'
 import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
@@ -127,7 +127,7 @@ function HomeScreen({
       }}>
         Welcome to Wonder
       </Title>
-      <MyCarousel data={homeScreens} activeDotColor={White} passiveDotColor={Grey800} containerStyle={{
+      <MyCarousel data={homeScreens} activeDotColor={White} passiveDotColor={palette.grey800} containerStyle={{
         marginTop: 0
       }} />
       <PrimaryButton onPress={() => navigation.push('Signup')} textStyle={{
@@ -153,7 +153,7 @@ function HomeScreen({
       }}>
         <ButtonText style={{
             fontSize: 16
-          }} color={Grey800}>
+          }} color={palette.grey800}>
           Log in
         </ButtonText>
       </SecondaryButton>
@@ -182,7 +182,7 @@ export default withAuth(HomeScreen)
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: Orange,
+    backgroundColor: palette.orange,
     alignItems: 'center',
     paddingTop: 8
   },

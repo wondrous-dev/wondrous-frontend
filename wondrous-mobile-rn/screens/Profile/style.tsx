@@ -1,5 +1,5 @@
 import { StyleSheet } from 'react-native'
-import { Blue500, Grey400, Grey300, Black, Blue400, White } from '../../constants/Colors'
+import { palette.blue500, palette.grey400, palette.grey300, palette.black, palette.blue400, White } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 
 const followingButtonStyle = {
@@ -9,7 +9,7 @@ const followingButtonStyle = {
   paddingRight: spacingUnit * 2.5,
   borderWidth: 1,
   borderRadius: 4,
-  borderColor: Black
+  borderColor: palette.black
 }
 
 const followButtonStyle = {
@@ -17,7 +17,7 @@ const followButtonStyle = {
   paddingBottom: 2,
   paddingLeft: spacingUnit * 2.5,
   paddingRight: spacingUnit * 2.5,
-  backgroundColor: Blue400,
+  backgroundColor: palette.blue400,
   borderRadius: 4
 }
 export const profileStyles = StyleSheet.create({
@@ -38,7 +38,7 @@ export const profileStyles = StyleSheet.create({
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: Blue500,
+    borderColor: palette.blue500,
     borderWidth: 2
   },
   profilePlaceholderImage: {
@@ -63,7 +63,7 @@ export const profileStyles = StyleSheet.create({
   editButton: {
     width: spacingUnit * 13,
     backgroundColor: White,
-    borderColor: Black,
+    borderColor: palette.black,
     borderWidth: 1,
     paddingTop: 0,
     paddingBottom: 0
@@ -73,7 +73,7 @@ export const profileStyles = StyleSheet.create({
     justifyContent: 'space-between',
     marginTop: spacingUnit * 3,
     borderBottomWidth: 1,
-    borderBottomColor: Grey400
+    borderBottomColor: palette.grey400
   },
   changeRowContainer: {
     flexDirection: 'row',
@@ -89,13 +89,13 @@ export const profileStyles = StyleSheet.create({
     fontSize: 16,
     borderBottomWidth: 1,
     marginTop: -2,
-    borderBottomColor: Grey300,
+    borderBottomColor: palette.grey300,
     paddingBottom: spacingUnit,
     flex: 1,
     lineHeight: 22
   },
   editRowContainer: {
-    borderBottomColor: Grey300,
+    borderBottomColor: palette.grey300,
     borderBottomWidth: 1,
     flexDirection: 'row',
     flex: 1,

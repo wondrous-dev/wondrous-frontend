@@ -19,7 +19,7 @@ import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import { Black, Blue500, Blue600, Yellow300, Grey300, Grey500, White, Orange } from '../../constants/Colors'
+import { palette.black, palette.blue500, Blue600, palette.yellow300, palette.grey300, palette.grey500, White, palette.orange } from '../../constants/Colors'
 import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
@@ -52,7 +52,7 @@ export const projectSetupStyles = StyleSheet.create({
   },
   stepCount: {
     fontSize: 16,
-    color: Blue500,
+    color: palette.blue500,
     fontFamily: 'Rubik',
     fontStyle: 'normal',
     fontWeight: '500',
@@ -166,14 +166,14 @@ const CategoryDisplay = ({ categories }) => {
       <Subheading style={{
           marginBottom: spacingUnit,
           marginTop: spacingUnit * 3
-        }} color={Black}>
+        }} color={palette.black}>
           What type of project is this?
       </Subheading>
       <Paragraph style={{
         textAlign: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
-      }} color={Grey500}>
+      }} color={palette.grey500}>
         You only need to pick one!
       </Paragraph>
       {
@@ -240,7 +240,7 @@ function ProjectSetupCategoryScreen({
         setError
       }}>
         <Header  rightButton={{
-        color: Orange,
+        color: palette.orange,
         text: 'Continue',
         onPress: async () => {
           if (!projectCategory) {
@@ -326,8 +326,8 @@ function ProjectSetupCategoryScreen({
               percent={60}
               radius={50}
               borderWidth={10}
-              color={Yellow300}
-              shadowColor={Grey300}
+              color={palette.yellow300}
+              shadowColor={palette.grey300}
               bgColor={White}
           >
               <BigMouthSmile />
