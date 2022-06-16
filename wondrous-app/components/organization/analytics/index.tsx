@@ -421,16 +421,7 @@ const Analytics = (props) => {
               ? filterUsers(autocompleteData?.getAutocompleteUsers)
               : filterOrgUsers(orgUsersData?.getOrgUsers)
           }
-          onOpen={() => {
-            // if (pod) {
-            //   getPodUsers({
-            //     variables: {
-            //       podId: pod?.id || pod,
-            //       limit: 100, // TODO: fix autocomplete
-            //     },
-            //   });
-            // }
-          }}
+          onOpen={() => {}}
           renderInput={(params) => {
             const InputProps = {
               ...params?.InputProps,

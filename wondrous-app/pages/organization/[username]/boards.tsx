@@ -443,7 +443,7 @@ const BoardsPage = () => {
       orgId: orgId || orgData?.id,
       statuses: [STATUS_OPEN],
       offset: 0,
-      limit: 100,
+      limit: 1000,
       searchString: search,
     },
   };
@@ -507,7 +507,7 @@ const BoardsPage = () => {
             variables: {
               podIds: filters?.podIds,
               orgId: id,
-              limit: 100,
+              limit: 1000,
               offset: 0,
               // Needed to exclude proposals
               statuses: STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT,
@@ -591,7 +591,7 @@ const BoardsPage = () => {
         variables: {
           podIds: filtersToApply?.podIds,
           orgId: id,
-          limit: 100,
+          limit: 1000,
           labelId: filtersToApply?.labelId,
           offset: 0,
           // Needed to exclude proposals

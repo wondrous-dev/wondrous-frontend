@@ -167,10 +167,10 @@ const EditLayoutBaseModal = (props) => {
   const [pods, setPods] = useState([]);
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
-  const proposalRejected = existingTask?.rejectedAt 
-  const proposalChangeRequested = existingTask?.changeRequestedAt 
-  const proposalApproved = existingTask?.approvedAt 
-  const proposalOpen = !proposalRejected && !proposalChangeRequested && !proposalApproved
+  const proposalRejected = existingTask?.rejectedAt;
+  const proposalChangeRequested = existingTask?.changeRequestedAt;
+  const proposalApproved = existingTask?.approvedAt;
+  const proposalOpen = !proposalRejected && !proposalChangeRequested && !proposalApproved;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
 
   const isTask = entityType === ENTITIES_TYPES.TASK;
@@ -204,7 +204,7 @@ const EditLayoutBaseModal = (props) => {
     existingTask?.orgId === board?.orgId ||
     existingTask?.podId === board?.podId ||
     existingTask?.userId === board?.userId;
-  console.log('existingTask', existingTask)
+
   useEffect(() => {
     if (existingTask?.orgId) {
       // If you're only part of one dao then just set that as default
@@ -219,7 +219,7 @@ const EditLayoutBaseModal = (props) => {
       getOrgUsers({
         variables: {
           orgId: org?.id || org,
-          limit: 100, // TODO: fix autocomplete
+          limit: 1000, // TODO: fix autocomplete
         },
       });
       getPaymentMethods({
@@ -378,10 +378,9 @@ const EditLayoutBaseModal = (props) => {
 
   // cancel snapshot proposal
   const cancelSnapshotProposal = async () => {
-    await cancelProposal(existingTask.snapshotId)
-      .then((receipt) => {
-        setSnapshotId(null);
-      });
+    await cancelProposal(existingTask.snapshotId).then((receipt) => {
+      setSnapshotId(null);
+    });
     await apollo.mutate({
       mutation: UNLINKE_PROPOSAL_FROM_SNAPSHOT,
       variables: {
