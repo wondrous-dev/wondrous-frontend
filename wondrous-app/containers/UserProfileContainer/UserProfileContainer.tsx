@@ -14,6 +14,7 @@ import ProfileInfo from 'components/ProfileInfo';
 import ProfileUserTaskDaos from 'components/ProfileUserTaskDaos';
 
 import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfileContainerContent } from './styles';
+import { UserProfileContext } from 'utils/contexts';
 
 const UserProfileContainer = ({}) => {
   const router = useRouter();
@@ -23,7 +24,7 @@ const UserProfileContainer = ({}) => {
   const { minimized } = useSideBar();
 
   return (
-    <>
+    <UserProfileContext.Provider value={{}}>
       <Header />
       <SideBar />
       <UserProfileContainerWrapper minimized={minimized}>
@@ -35,7 +36,7 @@ const UserProfileContainer = ({}) => {
           <ProfileUserTaskDaos userProfile={userProfileData} />
         </UserProfileContainerContent>
       </UserProfileContainerWrapper>
-    </>
+    </UserProfileContext.Provider>
   );
 };
 

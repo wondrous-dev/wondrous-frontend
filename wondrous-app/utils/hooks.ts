@@ -15,6 +15,7 @@ import {
   PaymentModalContext,
   SelectMembershipContext,
   EditTokenGatingConditionContext,
+  UserProfileContext,
 } from './contexts';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
@@ -72,6 +73,14 @@ export const useBoard = () => {
   const podBoard = usePodBoard();
 
   return orgBoard || userBoard || podBoard;
+};
+
+export const useUserProfile = () => {
+  const context = useContext(UserProfileContext);
+  if (!context) {
+    console.log('useUserProfile must be used within a UserProfileContext Provider');
+  }
+  return context;
 };
 
 export const useSettings = () => useContext(SettingsBoardContext);

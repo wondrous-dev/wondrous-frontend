@@ -32,7 +32,7 @@ import styles, {
   ProfileInfoLink,
   ProfileInfoMainLink,
   ProfileInfoLinkIcon,
-  ProfileInterestText
+  ProfileInterestText,
 } from './styles';
 
 const SOCIAL_ICONS = {

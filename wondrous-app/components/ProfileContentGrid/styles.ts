@@ -48,7 +48,7 @@ export const ProfileContentGridContent = styled(Box)`
   width: fit-content;
   display: flex;
   align-items: flex-start;
-  flex-wrap: wrap;
+  flex-flow: row wrap;
   gap: 12px;
   > * {
     width: 312px;
