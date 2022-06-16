@@ -7,10 +7,6 @@ import {
   Vote
 } from './types'
 
-
-import ENS, { getEnsAddress } from '@ensdomains/ensjs'
-import { ethers, Transaction } from 'ethers'
-
 export const isValidSpace = (space: Space): any => (
   snapshot.utils.validateSchema(
     snapshot.schemas.space,
