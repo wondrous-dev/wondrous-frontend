@@ -18,7 +18,7 @@ import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInterestModal.tsx';
 
-import styles, {
+import {
   ProfileInfoWrapper,
   ProfileInfoContainer,
   ProfileInfoUserImage,
@@ -33,6 +33,10 @@ import styles, {
   ProfileInfoMainLink,
   ProfileInfoLinkIcon,
   ProfileInterestText,
+  ProfileInfoInterestsContainer,
+  ProfileInfoInterestsChip,
+  ProfileInfoInterestsChipWrapper,
+  ProfileInfoEarningsInterestWrapper,
 } from './styles';
 
 const SOCIAL_ICONS = {
@@ -89,26 +93,28 @@ const ProfileInfo = ({ userProfile }) => {
         })}
       </ProfileLinkContainer>
 
-      {!isEmpty(interests) && (
-        <Box sx={styles.earningInterestsContainer}>
+      {(!isEmpty(interests) || viewingSelf) && (
+        <ProfileInfoEarningsInterestWrapper>
           {/* TODO: Earnings */}
-          <Box sx={styles.interestsContainer}>
+          <ProfileInfoInterestsContainer>
             <ProfileInterestText>Interests</ProfileInterestText>
-            <Box ml={3} />
-            {interests.map((interest) => {
-              return <Chip key={interest} label={getInterestDisplay(interest)} sx={styles.interestChip} />;
-            })}
-            {viewingSelf && (
-              <div
-                onClick={() => {
-                  setOpenInterestModal(true);
-                }}
-              >
-                <Chip key={'add-interest'} label={'+ Edit interest'} sx={styles.interestChip} />
-              </div>
-            )}
-          </Box>
-        </Box>
+            <ProfileInfoInterestsChipWrapper>
+              {interests?.map((interest) => {
+                return <ProfileInfoInterestsChip key={interest} label={getInterestDisplay(interest)} />;
+              })}
+
+              {viewingSelf && (
+                <div
+                  onClick={() => {
+                    setOpenInterestModal(true);
+                  }}
+                >
+                  <ProfileInfoInterestsChip key={'add-interest'} label={'+ Edit interest'} />
+                </div>
+              )}
+            </ProfileInfoInterestsChipWrapper>
+          </ProfileInfoInterestsContainer>
+        </ProfileInfoEarningsInterestWrapper>
       )}
     </ProfileInfoWrapper>
   );
