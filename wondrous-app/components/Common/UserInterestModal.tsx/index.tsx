@@ -28,12 +28,12 @@ const designCategories = [
     value: 'ui_ux_designer',
   },
   {
-    display: '✍️ Writer',
-    value: 'writer',
-  },
-  {
     display: '🔨 Product',
     value: 'product',
+  },
+  {
+    display: '🍭 3D Design',
+    value: '3d_design',
   },
 ];
 
@@ -99,6 +99,14 @@ const artCategories = [
   {
     display: '📸 Photography',
     value: 'photography',
+  },
+  {
+    display: '✍️ Writer',
+    value: 'writer',
+  },
+  {
+    display: '🖼️ Illustration',
+    value: 'illustration',
   },
 ];
 
