@@ -1,22 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, gql, ApolloClient, InMemoryCache } from '@apollo/client';
-import { Categories, Filters, Onboarding, ProposalType, Proposal, Space, Strategy, Validation, Vote } from './types';
 import { GET_SPACE } from './gql';
 import { CONNECT_SNAPSHOT_TO_ORG, DISCONNECT_SNAPSHOT_TO_ORG } from 'graphql/mutations';
 import { GET_ORG_SNAPSHOT_INFO } from 'graphql/queries';
-import { isValidSpace } from './helpers';
 import Snapshot from '@snapshot-labs/snapshot.js';
-import ENS, { getEnsAddress } from '@ensdomains/ensjs';
-import styled from 'styled-components';
 
 // import specific Web3Provider snapshot is using
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { useWonderWeb3 } from '../web3';
 
-import { SupportedChainType } from '../../utils/web3Constants';
-import { getUserSigningMessage } from '../../components/Auth/withAuth';
-import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 
 const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 
