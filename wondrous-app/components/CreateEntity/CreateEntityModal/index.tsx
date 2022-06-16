@@ -924,6 +924,7 @@ interface ICreateEntityModal {
       url: string;
       title: string;
     };
+    type: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1265,7 +1266,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               }
             }}
           />
-          {existingTask && (
+          {existingTask && existingTask?.type === ENTITIES_TYPES.TASK && (
             <>
               <div
                 style={{
