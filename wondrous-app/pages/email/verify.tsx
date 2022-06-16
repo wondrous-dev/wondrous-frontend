@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Confetti from 'react-confetti';
 
 import { useMe, withAuth, withWaitlistAuth } from 'components/Auth/withAuth';
 import {
