@@ -23,7 +23,7 @@ import {
 import { JoinDaoIcon } from 'components/Icons/sidebar';
 import BackArrowIcon from '../Icons/backArrow';
 import { useMe, withAuth } from '../Auth/withAuth';
-import { useSideBar } from 'utils/hooks';
+import useSideBar from 'hooks/useSideBar';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries';
 import { SafeImage } from '../Common/Image';

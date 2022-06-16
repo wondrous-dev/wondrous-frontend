@@ -1,9 +1,8 @@
 import Header from '../../../Header';
 import { Main, Footer, Container } from './styles';
 import SideBarComponent from '../../../SideBar';
-import { useState } from 'react';
-import { SideBarContext } from 'utils/contexts';
 import { SIDEBAR_WIDTH } from 'utils/constants';
+import useSideBar from 'hooks/useSideBar';
 
 const SIDEBAR_LIST_ITEMS = [
   {
@@ -24,26 +23,20 @@ const SIDEBAR_LIST_ITEMS = [
 ];
 
 const AppLayout = ({ banner, children, ...props }) => {
-  const [minimized, setMinimized] = useState(false);
+  const { minimized } = useSideBar();
+
   return (
     <>
       <Header />
-      <SideBarContext.Provider
-        value={{
-          minimized,
-          setMinimized,
+      <SideBarComponent />
+      <Main
+        style={{
+          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <SideBarComponent />
-        <Main
-          style={{
-            paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-          }}
-        >
-          {banner}
-          <Container style={props?.containerStyle}>{children}</Container>
-        </Main>
-      </SideBarContext.Provider>
+        {banner}
+        <Container style={props?.containerStyle}>{children}</Container>
+      </Main>
       <Footer />
     </>
   );

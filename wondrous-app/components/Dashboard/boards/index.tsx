@@ -32,7 +32,7 @@ import {
   TASK_STATUS_SUBMISSION_REQUEST,
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
-import { useRouterQuery, useSelectMembership } from 'utils/hooks';
+import { useGetPerStatusTaskCountForUserBoard, useRouterQuery, useSelectMembership } from 'utils/hooks';
 import { useMe } from '../../Auth/withAuth';
 import Boards from '../../Common/Boards';
 import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
@@ -266,22 +266,6 @@ const useGetUserTaskBoard = ({
   };
 };
 
-const useGetPerStatusTaskCountForUserBoard = (loggedInUser) => {
-  const [getPerStatusTaskCountForUserBoard, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
-
-  useEffect(() => {
-    if (loggedInUser) {
-      getPerStatusTaskCountForUserBoard({
-        variables: {
-          userId: loggedInUser?.id,
-        },
-      });
-    }
-  }, [loggedInUser, getPerStatusTaskCountForUserBoard]);
-
-  return { data };
-};
-
 const useAdminColumns = ({ isAdmin, selectedStatus, statuses, setSelectedStatus, setStatuses, podIds }) => {
   const [adminColumns, setAdminColumns] = useState([]);
   const [getProposalsUserCanReview] = useLazyQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
@@ -434,7 +418,7 @@ const BoardsPage = (props) => {
   const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
-  const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser);
+  const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
   const { adminColumns } = useAdminColumns({
     isAdmin,
     selectedStatus,

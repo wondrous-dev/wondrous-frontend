@@ -90,7 +90,7 @@ const communityCategories = [
 const artCategories = [
   {
     display: '🖼️ NFTs',
-    value: 'nfts',
+    value: 'nft',
   },
   {
     display: '🎶 Music NFT',
@@ -115,12 +115,20 @@ const web3Categories = [
     display: '🏛️ Governance',
     value: 'governance',
   },
+  {
+    display: 'DEFI',
+    value: 'defi',
+  },
+  {
+    display: 'GAMING',
+    value: 'gaming',
+  },
 ];
 
 const engineeringCategories = [
   {
     display: '💻 Devops',
-    value: 'dev_ops',
+    value: 'devops',
   },
   {
     display: '💻 Frontend',
@@ -131,16 +139,37 @@ const engineeringCategories = [
     value: 'backend',
   },
   {
-    display: '🌐 Blockchain',
-    value: 'blockhain',
+    display: 'Smart Contracts',
+    value: 'smart_contract',
+  },
+  {
+    display: 'Distributed Systems',
+    value: 'distributed_system',
   },
   {
     display: '📊 Data Science',
     value: 'data_science',
   },
 ];
-export const UserInterestModal = ({ open, onClose }) => {
+
+const ALL_INTERESTS = [
+  ...engineeringCategories,
+  ...web3Categories,
+  ...artCategories,
+  ...communityCategories,
+  ...growthCategories,
+  ...designCategories,
+];
+export const getInterestDisplay = (interest) => {
+  for (let i = 0; i < ALL_INTERESTS.length; i++) {
+    if (ALL_INTERESTS[i].value === interest) {
+      return ALL_INTERESTS[i].display;
+    }
+  }
+};
+export const UserInterestModal = ({ open, onClose, createUserInterest }) => {
   const [interests, setInterests] = useState({});
+  console.log('interests', interests);
   const saveUnsaveInterest = (interest) => {
     if (interest in interests) {
       delete interests[interest];
@@ -151,6 +180,15 @@ export const UserInterestModal = ({ open, onClose }) => {
       const newObj = { ...interests };
       setInterests(newObj);
     }
+  };
+  const handlSaveUserInterestClick = () => {
+    createUserInterest({
+      variables: {
+        interests: Object.keys(interests),
+      },
+    }).then(()=> {
+      onClose()
+    });
   };
   return (
     <Dialog
@@ -257,7 +295,7 @@ export const UserInterestModal = ({ open, onClose }) => {
       </StyledDialogContent>
       <DialogActions>
         <CreateFormCancelButton>Cancel</CreateFormCancelButton>
-        <CreateFormPreviewButton>Save</CreateFormPreviewButton>
+        <CreateFormPreviewButton onClick={handlSaveUserInterestClick}>Save</CreateFormPreviewButton>
       </DialogActions>
     </Dialog>
   );

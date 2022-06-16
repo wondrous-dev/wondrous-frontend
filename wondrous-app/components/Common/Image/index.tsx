@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import React, { useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 
 interface SafeImageArgs {
@@ -7,9 +7,10 @@ interface SafeImageArgs {
   style?: object;
   defaultImage?: string;
   setImage?(url: string): void;
+  className?: string;
 }
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
-  const { src, style, defaultImage, setImage } = safeImageArgs;
+  const { src, style, defaultImage, setImage, className } = safeImageArgs;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
   });
@@ -33,16 +34,16 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
 
   if (!src && defaultImage) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img style={style} src={defaultImage} alt="" />;
+    return <img style={style} className={className} src={defaultImage} alt="" />;
   }
 
   if (src?.startsWith('https') || src?.startsWith('file://')) {
     // eslint-disable-next-line @next/next/no-img-element
-    return <img style={style} key={src} src={src} alt="" />;
+    return <img style={style} className={className} key={src} src={src} alt="" />;
   } else if (imgUrl) {
     return (
       // eslint-disable-next-line @next/next/no-img-element
-      <img style={style} key={src} src={imgUrl} alt="" />
+      <img style={style} className={className} key={src} src={imgUrl} alt="" />
     );
   }
   return null;
