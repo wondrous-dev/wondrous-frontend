@@ -116,7 +116,7 @@ export const MoreInfoModal = (props) => {
         getOrgUsers({
           variables: {
             orgId,
-            limit: 100, // TODO: paginate
+            limit: 1000, // TODO: paginate
           },
         });
       }
@@ -125,7 +125,7 @@ export const MoreInfoModal = (props) => {
         getPodUsers({
           variables: {
             podId,
-            limit: 100, // TODO: paginate
+            limit: 1000, // TODO: paginate
           },
         });
       }

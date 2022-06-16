@@ -384,7 +384,7 @@ const BoardsPage = () => {
         podId,
         statuses: [STATUS_OPEN],
         offset: 0,
-        limit: 100,
+        limit: 1000,
         searchString: search,
         labelId,
       },
@@ -424,7 +424,7 @@ const BoardsPage = () => {
             variables: {
               input: {
                 podId,
-                limit: 100,
+                limit: 1000,
                 offset: 0,
                 labelId,
                 date,
@@ -546,7 +546,7 @@ const BoardsPage = () => {
             podId,
             statuses: [STATUS_OPEN],
             offset: 0,
-            limit: 100,
+            limit: 1000,
             searchString: search,
           },
         },
@@ -556,7 +556,7 @@ const BoardsPage = () => {
         variables: {
           input: {
             podId,
-            limit: 100,
+            limit: 1000,
             offset: 0,
             // Needed to exclude proposals
             statuses: taskStatuses,

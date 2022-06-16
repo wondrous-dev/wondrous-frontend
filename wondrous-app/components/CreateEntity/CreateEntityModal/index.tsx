@@ -443,7 +443,7 @@ const useGetOrgUsers = (orgId) => {
     getOrgUsers({
       variables: {
         orgId,
-        limit: 100, // TODO: fix autocomplete
+        limit: 1000, // TODO: fix autocomplete
       },
     });
   }, [orgId, getOrgUsers]);

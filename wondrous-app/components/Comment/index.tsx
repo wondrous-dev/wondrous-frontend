@@ -47,7 +47,7 @@ export const CommentBox = (props) => {
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
       orgId,
-      limit: 100, // TODO: fix autocomplete
+      limit: 1000, // TODO: fix autocomplete
     },
   });
   const [createTaskComment, { data: taskCommentData }] = useMutation(CREATE_TASK_COMMENT, {
