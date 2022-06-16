@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import { SideBarContext } from 'utils/contexts';
+import useSideBar from 'hooks/useSideBar';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
@@ -65,14 +65,14 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Grey58 } from 'theme/colors';
-import BoardsActivity from 'components/Common/BoardsActivity';
 
 const Wrapper = (props) => {
+  const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
+
   const router = useRouter();
   const loggedInUser = useMe();
   const wonderWeb3 = useWonderWeb3();
-  const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
-  const [minimized, setMinimized] = useState(false);
+  const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const [open, setOpen] = useState(false);
@@ -260,153 +260,139 @@ const Wrapper = (props) => {
         podId={podProfile?.id}
       />
       <Header openCreateFormModal={toggleCreateFormModal} />
-      <SideBarContext.Provider
-        value={{
-          minimized,
-          setMinimized,
+
+      <SideBarComponent />
+      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
+      <OverviewComponent
+        style={{
+          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <SideBarComponent />
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
-        <OverviewComponent
-          style={{
-            paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-          }}
-        >
-          <HeaderImageWrapper>
-            <HeaderImageDefault />
-          </HeaderImageWrapper>
-          <Content>
-            <ContentContainer>
-              <TokenHeader>
-                <HeaderMainBlock>
-                  {!isTokenGatingInfoLoading && (
-                    <LogoWrapper>
-                      <OrgLogoWrapper
-                        onClick={() => {
-                          router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
-                        }}
-                      >
-                        {orgData?.getOrgById?.profilePicture ? (
-                          <SafeImage
-                            src={orgData?.getOrgById?.profilePicture}
-                            style={{
-                              width: '60px',
-                              height: '60px',
-                              borderRadius: '6px',
-                            }}
-                          />
-                        ) : (
-                          <TokenEmptyLogo>
-                            <DAOEmptyIcon />
-                          </TokenEmptyLogo>
-                        )}
-                      </OrgLogoWrapper>
+        <HeaderImageWrapper>
+          <HeaderImageDefault />
+        </HeaderImageWrapper>
+        <Content>
+          <ContentContainer>
+            <TokenHeader>
+              <HeaderMainBlock>
+                {!isTokenGatingInfoLoading && (
+                  <LogoWrapper>
+                    <OrgLogoWrapper
+                      onClick={() => {
+                        router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                      }}
+                    >
+                      {orgData?.getOrgById?.profilePicture ? (
+                        <SafeImage
+                          src={orgData?.getOrgById?.profilePicture}
+                          style={{
+                            width: '60px',
+                            height: '60px',
+                            borderRadius: '6px',
+                          }}
+                        />
+                      ) : (
+                        <TokenEmptyLogo>
+                          <DAOEmptyIcon />
+                        </TokenEmptyLogo>
+                      )}
+                    </OrgLogoWrapper>
 
-                      <ArrowForwardIosIcon style={{ color: Grey58, marginLeft: '5px' }} />
-                      <PodIcon
-                        color={podProfile?.color}
-                        style={{
-                          width: '60px',
-                          height: '60px',
-                          borderRadius: '50px',
-                        }}
-                      />
-                    </LogoWrapper>
-                  )}
-
-                  <HeaderTitleIcon>
-                    <HeaderTitle>{podProfile?.name}</HeaderTitle>
-                  </HeaderTitleIcon>
-                  <HeaderButtons>
-                    {!isTokenGatingInfoLoading && (
-                      <TokenGatedBoard
-                        isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                        tooltipTitle={'Token gating'}
-                      />
-                    )}
-                    <ToggleBoardPrivacyIcon
-                      isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
-                      tooltipTitle={
-                        podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private organization' : 'Public'
-                      }
+                    <ArrowForwardIosIcon style={{ color: Grey58, marginLeft: '5px' }} />
+                    <PodIcon
+                      color={podProfile?.color}
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '50px',
+                      }}
                     />
+                  </LogoWrapper>
+                )}
 
-                    {permissions === null && (
-                      <>
-                        {joinRequestSent || userJoinRequest?.id ? (
-                          <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
-                        ) : (
-                          <HeaderButton reversed onClick={handleJoinPodButtonClick}>
-                            Join pod
-                          </HeaderButton>
-                        )}
-                      </>
-                    )}
-                    {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                      <>
-                        <HeaderButton reversed onClick={() => setOpenInvite(true)}>
-                          Invite{' '}
-                        </HeaderButton>
-                        <HeaderButton
-                          onClick={() =>
-                            router.push(`/pod/settings/${podBoard?.podId}/general`, undefined, {
-                              shallow: true,
-                            })
-                          }
-                        >
-                          Settings
-                        </HeaderButton>
-                      </>
-                    )}
-                  </HeaderButtons>
-                </HeaderMainBlock>
-                <HeaderText>{podProfile?.description}</HeaderText>
-                <HeaderActivity>
-                  {links?.map((link) => (
-                    <>
-                      {link?.url ? (
-                        <HeaderActivityLink href={link?.url} key={link}>
-                          {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
-                          {link?.name || link?.url}
-                        </HeaderActivityLink>
-                      ) : null}
-                    </>
-                  ))}
-                  <HeaderContributors
-                    onClick={() => {
-                      setOpen(true);
-                      setShowUsers(true);
-                    }}
-                  >
-                    <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
-                    <HeaderContributorsText>
-                      {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
-                    </HeaderContributorsText>
-                  </HeaderContributors>
-                </HeaderActivity>
-              </TokenHeader>
-
-              <Tabs page="pod">
-                <BoardsSubheaderWrapper className={search ? 'searchView' : ''}>
-                  {podBoard?.setEntityType && !search && (
-                    <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                <HeaderTitleIcon>
+                  <HeaderTitle>{podProfile?.name}</HeaderTitle>
+                </HeaderTitleIcon>
+                <HeaderButtons>
+                  {!isTokenGatingInfoLoading && (
+                    <TokenGatedBoard
+                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                      tooltipTitle={'Token gating'}
+                    />
                   )}
-                  <BoardsActivity
-                    onSearch={onSearch}
-                    filterSchema={filterSchema}
-                    onFilterChange={onFilterChange}
-                    statuses={statuses}
-                    userId={userId}
+                  <ToggleBoardPrivacyIcon
+                    isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
+                    tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
                   />
-                </BoardsSubheaderWrapper>
 
-                {children}
-              </Tabs>
-            </ContentContainer>
-          </Content>
-        </OverviewComponent>
-      </SideBarContext.Provider>
+                  {permissions === null && (
+                    <>
+                      {joinRequestSent || userJoinRequest?.id ? (
+                        <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
+                      ) : (
+                        <HeaderButton reversed onClick={handleJoinPodButtonClick}>
+                          Join pod
+                        </HeaderButton>
+                      )}
+                    </>
+                  )}
+                  {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                    <>
+                      <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                        Invite{' '}
+                      </HeaderButton>
+                      <HeaderButton
+                        onClick={() =>
+                          router.push(`/pod/settings/${podBoard?.podId}/general`, undefined, {
+                            shallow: true,
+                          })
+                        }
+                      >
+                        Settings
+                      </HeaderButton>
+                    </>
+                  )}
+                </HeaderButtons>
+              </HeaderMainBlock>
+              <HeaderText>{podProfile?.description}</HeaderText>
+              <HeaderActivity>
+                {links?.map((link) => (
+                  <>
+                    {link?.url ? (
+                      <HeaderActivityLink href={link?.url} key={link}>
+                        {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
+                        {link?.name || link?.url}
+                      </HeaderActivityLink>
+                    ) : null}
+                  </>
+                ))}
+                <HeaderContributors
+                  onClick={() => {
+                    setOpen(true);
+                    setShowUsers(true);
+                  }}
+                >
+                  <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
+                  <HeaderContributorsText>
+                    {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
+                  </HeaderContributorsText>
+                </HeaderContributors>
+                {/* <HeaderPods>
+                    <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>
+                    <HeaderPodsText>Pods</HeaderPodsText>
+                  </HeaderPods> */}
+              </HeaderActivity>
+            </TokenHeader>
+
+            <Tabs page="pod">
+              {!search && !!podBoard?.setEntityType && (
+                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+              )}
+              {children}
+            </Tabs>
+          </ContentContainer>
+        </Content>
+      </OverviewComponent>
     </>
   );
 };

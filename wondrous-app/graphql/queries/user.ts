@@ -114,3 +114,36 @@ export const GET_USER = gql`
   }
   ${ProfileUserFragment}
 `;
+
+export const GET_USER_INTERESTS = gql`
+  query getUserInterests($userId: ID!) {
+    getUserInterests(userId: $userId) {
+      interests
+    }
+  }
+`;
+
+export const GET_USER_TASKS_COMPLETED_COUNT = gql`
+  query getUserTasksCompletedCount($userId: ID!) {
+    getUserTasksCompletedCount(userId: $userId) 
+  }
+`;
+
+export const GET_USER_ORG_ROLES = gql`
+  query getUserOrgRoles($userId: String) {
+    getUserOrgRoles(userId: $userId) {
+      org {
+        name
+        username
+        description
+        headerPicture
+        profilePicture
+        thumbnailPicture
+      }
+      role {
+        name
+      }
+      joinedAt
+    }
+  }
+`;

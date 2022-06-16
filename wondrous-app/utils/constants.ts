@@ -199,6 +199,11 @@ export const SUPPORTED_CURRENCIES = [
 ];
 
 export const SIDEBAR_WIDTH = '80px';
+export const HEADER_HEIGHT = '68px';
+
+export const PROFILE_CARD_WIDTH = 310;
+export const PROFILE_CARD_HEIGHT = 194;
+
 export const ENTITIES_TYPES = {
   USER: 'user',
   TASK: 'task',
@@ -394,6 +399,14 @@ export const WEEK_DAYS = {
   friday: false,
   saturday: false,
   sunday: false,
+};
+
+export const WHITE_TYPOGRAPHY_STYLES = {
+  fontFamily: 'Space Grotesk',
+  fontWeight: 500,
+  fontWize: 16,
+  lineHeight: '16px',
+  color: '#FFFFFF',
 };
 
 // Taken from back-end src/constants/colors.py

@@ -15,8 +15,9 @@ import {
   PaymentModalContext,
   SelectMembershipContext,
   EditTokenGatingConditionContext,
+  UserProfileContext,
 } from './contexts';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
+import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 
 export const useIsMobile = () => useContext(IsMobileContext);
@@ -72,6 +73,14 @@ export const useBoard = () => {
   const podBoard = usePodBoard();
 
   return orgBoard || userBoard || podBoard;
+};
+
+export const useUserProfile = () => {
+  const context = useContext(UserProfileContext);
+  if (!context) {
+    console.log('useUserProfile must be used within a UserProfileContext Provider');
+  }
+  return context;
 };
 
 export const useSettings = () => useContext(SettingsBoardContext);
@@ -177,4 +186,20 @@ export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
     }
   }, [query, variables, shouldFetch]);
   return { isLoading, data };
+};
+
+export const useGetPerStatusTaskCountForUserBoard = (userId) => {
+  const [getPerStatusTaskCountForUserBoard, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+
+  useEffect(() => {
+    if (userId) {
+      getPerStatusTaskCountForUserBoard({
+        variables: {
+          userId: userId,
+        },
+      });
+    }
+  }, [userId, getPerStatusTaskCountForUserBoard]);
+
+  return { data };
 };

@@ -93,3 +93,11 @@ export const SET_USER_COMPLETED_GUIDE = gql`
     }
   }
 `;
+
+export const CREATE_USER_INTEREST = gql`
+  mutation createUserInterests($interests: [String]) {
+    createUserInterests(interests: $interests) {
+      success
+    }
+  }
+`;
