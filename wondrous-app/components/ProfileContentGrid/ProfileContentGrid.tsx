@@ -1,84 +1,41 @@
+import { Masonry } from '@mui/lab';
 import { useState } from 'react';
-import { FixedSizeGrid as Grid } from 'react-window';
-import AutoSizer from 'react-virtualized-auto-sizer';
+import {
+  ProfileContentGridButton,
+  ProfileContentGridButtonContainer,
+  ProfileContentGridContent,
+  ProfileContentGridEndMessage,
+  ProfileContentGridWrapper,
+} from './styles';
 
-import { Box, Button } from '@mui/material';
+const LIMIT = 4;
+const FETCH_MORE_LIMIT = 8;
 
-import { PROFILE_CARD_WIDTH, PROFILE_CARD_HEIGHT } from 'utils/constants';
-
-import styles from './styles';
-
-const GRID_ROW_AMOUNT = 4;
-const PADDING_PX = 18;
-const SCROLL_BAR_OFFSET = 40;
-
-const ProfileContentGrid = ({ data, Component }) => {
-  const [showVirtualized, setShowVirtualized] = useState(false);
-
-  const Cell = ({ columnIndex, rowIndex, style, data: itemData }) => {
-    const positionIndex = rowIndex * GRID_ROW_AMOUNT + columnIndex;
-    const item = itemData[positionIndex];
-
-    if (!item) return <></>;
-
-    return (
-      <div style={style}>
-        <Component item={item} />
-      </div>
-    );
+const ProfileContentGrid = ({ data, Component, fetchMore, buttonIsDisabled }) => {
+  const [NoOfItems, setNoOfItems] = useState(LIMIT);
+  const handleOnClick = () => {
+    const updatedNoOfItems = NoOfItems + FETCH_MORE_LIMIT;
+    if (data.length < updatedNoOfItems) fetchMore();
+    setNoOfItems(updatedNoOfItems);
   };
-
-  const columnCount = data?.length >= GRID_ROW_AMOUNT ? GRID_ROW_AMOUNT : data?.length;
-
+  const dataComponent = data?.slice(0, NoOfItems).map((item) => <Component key={item.id} item={item} />);
   return (
-    <Box sx={{ ...styles.root }}>
-      {showVirtualized ? (
-        <Box sx={styles.virtualizationContainer}>
-          <Box sx={{ height: 630 }}>
-            <AutoSizer>
-              {({ height, width }) => (
-                <Grid
-                  columnCount={columnCount}
-                  columnWidth={PROFILE_CARD_WIDTH + PADDING_PX}
-                  height={height}
-                  rowCount={Math.ceil(data.length / GRID_ROW_AMOUNT)}
-                  rowHeight={PROFILE_CARD_HEIGHT + PADDING_PX}
-                  width={width + SCROLL_BAR_OFFSET}
-                  itemData={data}
-                >
-                  {Cell}
-                </Grid>
-              )}
-            </AutoSizer>
-          </Box>
-          <Box sx={styles.buttonContainer}>
-            <Button sx={styles.button} onClick={() => setShowVirtualized(false)}>
-              Show Less
-            </Button>
-          </Box>
-        </Box>
+    <ProfileContentGridWrapper>
+      {NoOfItems > LIMIT && data.length > LIMIT ? (
+        <Masonry columns={LIMIT}>{dataComponent}</Masonry>
       ) : (
-        <Box>
-          <Box display="flex" alignItems="flex-start">
-            {data?.slice(0, columnCount)?.map((item) => (
-              <>
-                <Component key={item.id} item={item} />
-              </>
-            ))}
-          </Box>
-
-          <Box sx={styles.buttonContainer}>
-            <Button
-              sx={styles.button}
-              onClick={() => setShowVirtualized(true)}
-              disabled={data?.length <= GRID_ROW_AMOUNT}
-            >
-              Show more
-            </Button>
-          </Box>
-        </Box>
+        <ProfileContentGridContent>{dataComponent}</ProfileContentGridContent>
       )}
-    </Box>
+      <ProfileContentGridButtonContainer>
+        {buttonIsDisabled ? (
+          <ProfileContentGridEndMessage>This is end of the list.</ProfileContentGridEndMessage>
+        ) : (
+          <ProfileContentGridButton onClick={handleOnClick} disabled={buttonIsDisabled}>
+            Show more
+          </ProfileContentGridButton>
+        )}
+      </ProfileContentGridButtonContainer>
+    </ProfileContentGridWrapper>
   );
 };
 

@@ -3,7 +3,6 @@ import isEmpty from 'lodash/isEmpty';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
-import Link from '@mui/material/Link';
 import Chip from '@mui/material/Chip';
 
 import { parseLinks } from 'utils/common';
@@ -14,15 +13,31 @@ import { GET_USER_INTERESTS } from 'graphql/queries/user';
 import { useMutation } from '@apollo/client';
 import { useMe } from '../Auth/withAuth';
 
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { SafeImage } from 'components/Common/Image';
-import { LinkIcon } from 'components/Icons/linkIcon';
 import { DiscordIcon } from 'components/Icons/discord';
 import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInterestModal.tsx';
 
-import styles from './styles';
+import {
+  ProfileInfoWrapper,
+  ProfileInfoContainer,
+  ProfileInfoUserImage,
+  ProfileInfoDefaultImage,
+  ProfileInfoFullName,
+  ProfileInfoUsername,
+  ProfileInfoBioWrapper,
+  ProfileInfoBioText,
+  ProfileLinkContainer,
+  ProfileInfoIcon,
+  ProfileInfoLink,
+  ProfileInfoMainLink,
+  ProfileInfoLinkIcon,
+  ProfileInterestText,
+  ProfileInfoInterestsContainer,
+  ProfileInfoInterestsChip,
+  ProfileInfoInterestsChipWrapper,
+  ProfileInfoEarningsInterestWrapper,
+} from './styles';
 
 const SOCIAL_ICONS = {
   [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
@@ -33,77 +48,75 @@ const SOCIAL_ICONS = {
 const ProfileInfo = ({ userProfile }) => {
   const user = useMe();
   const [openInterestModal, setOpenInterestModal] = useState(false);
-  const { links, firstName, lastName, username, bio, profilePicture, interests } = userProfile;
+  const { id, links, firstName, lastName, username, bio, profilePicture, interests } = userProfile;
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : username;
   const { mainLink, social, websites } = parseLinks(links);
   const [createUserInterest] = useMutation(CREATE_USER_INTEREST, { refetchQueries: [GET_USER_INTERESTS] });
   const viewingSelf = user?.username === username;
   return (
-    <Box sx={styles.root}>
+    <ProfileInfoWrapper>
       <UserInterestModal
         open={openInterestModal}
         onClose={() => setOpenInterestModal(false)}
         createUserInterest={createUserInterest}
       />
 
-      <Box style={styles.infoContainer}>
-        {profilePicture ? (
-          <SafeImage src={profilePicture} style={styles.userImage} />
-        ) : (
-          <DefaultUserImage style={styles.userImage} />
-        )}
-        <Box ml={1.25} />
-        <Typography style={styles.fullName}>{fullName ? fullName : username}</Typography>
-        <Box ml={1.25} />
-        <Typography style={styles.userName}>@{username}</Typography>
-      </Box>
-      <Box my={2}>
-        <Typography style={styles.bio}>{bio}</Typography>
-      </Box>
-      <Box sx={styles.socialContainer}>
+      <ProfileInfoContainer>
+        {profilePicture ? <ProfileInfoUserImage src={profilePicture} /> : <ProfileInfoDefaultImage />}
+        <ProfileInfoFullName>{fullName ? fullName : username}</ProfileInfoFullName>
+        <ProfileInfoUsername>@{username}</ProfileInfoUsername>
+      </ProfileInfoContainer>
+      <ProfileInfoBioWrapper>
+        <ProfileInfoBioText>{bio}</ProfileInfoBioText>
+      </ProfileInfoBioWrapper>
+      <ProfileLinkContainer>
         {mainLink?.url && (
-          <Link style={styles.mainLink} href={mainLink.url} target="_blank">
-            <Box sx={styles.linkIcon}>
-              <LinkIcon />
-            </Box>
-            {formatLinkDisplay(mainLink)}
-          </Link>
+          <ProfileInfoLink href={mainLink.url} target="_blank">
+            <ProfileInfoMainLink>
+              <ProfileInfoIcon>
+                <ProfileInfoLinkIcon />
+              </ProfileInfoIcon>
+              <ProfileInfoIcon>{formatLinkDisplay(mainLink)}</ProfileInfoIcon>
+            </ProfileInfoMainLink>
+          </ProfileInfoLink>
         )}
         {social.map(({ url, type }) => {
           if (!url) return null;
           const SocialIcon = SOCIAL_ICONS[type];
           return (
-            <Link style={styles.mainLink} key={url} href={url} target="_blank">
-              <Box sx={styles.socialIcon}>
+            <ProfileInfoLink key={url} href={url} target="_blank">
+              <ProfileInfoIcon>
                 <SocialIcon />
-              </Box>
-            </Link>
+              </ProfileInfoIcon>
+            </ProfileInfoLink>
           );
         })}
-      </Box>
+      </ProfileLinkContainer>
 
-      {!isEmpty(interests) && (
-        <Box sx={styles.earningInterestsContainer}>
+      {(!isEmpty(interests) || viewingSelf) && (
+        <ProfileInfoEarningsInterestWrapper>
           {/* TODO: Earnings */}
-          <Box sx={styles.interestsContainer}>
-            <Typography style={styles.interestText}>Interests</Typography>
-            <Box ml={3} />
-            {interests.map((interest) => (
-              <Chip key={interest} label={getInterestDisplay(interest)} sx={styles.interestChip} />
-            ))}
-            {viewingSelf && (
-              <Box
-                onClick={() => {
-                  setOpenInterestModal(true);
-                }}
-              >
-                <Chip key={'add-interest'} label={'+ Edit interest'} sx={styles.interestChip} />
-              </Box>
-            )}
-          </Box>
-        </Box>
+          <ProfileInfoInterestsContainer>
+            <ProfileInterestText>Interests</ProfileInterestText>
+            <ProfileInfoInterestsChipWrapper>
+              {interests?.map((interest) => {
+                return <ProfileInfoInterestsChip key={interest} label={getInterestDisplay(interest)} />;
+              })}
+
+              {viewingSelf && (
+                <div
+                  onClick={() => {
+                    setOpenInterestModal(true);
+                  }}
+                >
+                  <ProfileInfoInterestsChip key={'add-interest'} label={'+ Edit interest'} />
+                </div>
+              )}
+            </ProfileInfoInterestsChipWrapper>
+          </ProfileInfoInterestsContainer>
+        </ProfileInfoEarningsInterestWrapper>
       )}
-    </Box>
+    </ProfileInfoWrapper>
   );
 };
 

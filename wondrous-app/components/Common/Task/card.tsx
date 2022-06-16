@@ -56,7 +56,7 @@ import {
 } from '../../Icons';
 import { Archived } from '../../Icons/sections';
 import { TaskMedia } from '../MediaPlayer';
-import { useColumns } from 'utils/hooks';
+import { useColumns, useUserProfile } from 'utils/hooks';
 import {
   BoardsCardSubheader,
   BoardsCardBody,
@@ -82,6 +82,7 @@ import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
+import { DAOIcon } from 'components/Icons/dao';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -134,6 +135,7 @@ export const TaskCard = ({
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
   const coverMedia = task?.media?.find((media) => media.type === 'image');
+  const userProfile = useUserProfile();
 
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -218,17 +220,20 @@ export const TaskCard = ({
         ) : null}
         <TaskHeader>
           <TaskHeaderIconWrapper>
-            {isUser && (
-              <SafeImage
-                src={task?.orgProfilePicture}
-                style={{
-                  width: '29px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  marginRight: '8px',
-                }}
-              />
-            )}
+            {(isUser || userProfile) &&
+              (task?.orgProfilePicture ? (
+                <SafeImage
+                  src={task?.orgProfilePicture}
+                  style={{
+                    width: '29px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    marginRight: '8px',
+                  }}
+                />
+              ) : (
+                <DAOIcon />
+              ))}
             {!assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE && (
               <>
                 {claimed ? (
@@ -283,7 +288,7 @@ export const TaskCard = ({
               </>
             )}
 
-            {displayPayButton && (
+            {displayPayButton && !userProfile && (
               <ActionButton
                 onClick={(e) => {
                   e.stopPropagation();
@@ -294,7 +299,7 @@ export const TaskCard = ({
               </ActionButton>
             )}
             {isMilestone && <MilestoneIcon />}
-            <AvatarList users={userList} id={'task-' + task?.id} />
+            {!userProfile && <AvatarList users={userList} id={'task-' + task?.id} />}
           </TaskHeaderIconWrapper>
           {task?.privacyLevel === PRIVACY_LEVEL.public && (
             <ToggleBoardPrivacyIcon
@@ -558,7 +563,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
         <BoardsCardBody>
           <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
           <BoardsCardBodyDescription>
-          <RichTextViewer text={description} />
+            <RichTextViewer text={description} />
           </BoardsCardBodyDescription>
           {coverMedia ? (
             <BoardsCardMedia>

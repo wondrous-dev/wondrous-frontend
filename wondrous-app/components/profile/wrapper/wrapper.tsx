@@ -70,9 +70,6 @@ const Wrapper = (props: IWrapperProps) => {
     border: '10px solid #0f0f0f',
   };
 
-  console.log('loggedInUser', loggedInUser);
-  console.log('userProfileData', userProfileData);
-
   const profileImageComponent = profilePicture ? (
     <SafeImage src={profilePicture} style={style} />
   ) : (

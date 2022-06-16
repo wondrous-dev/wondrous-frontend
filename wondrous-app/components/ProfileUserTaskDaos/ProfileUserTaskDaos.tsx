@@ -1,37 +1,65 @@
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-
-import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
-
+import { Task } from 'components/Common/Task';
 import OrgCard from 'components/OrgCard';
 import ProfileContentGrid from 'components/ProfileContentGrid';
-import TaskCompletedCard from 'components/TaskCompletedCard';
-import WorkingOnCard from 'components/WorkingOnCard';
+import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
 
-import styles from './styles';
+import { ProfileUserTaskDaosContainer, ProfileUserTaskDaosTitle, ProfileUserTaskDaosWrapper } from './styles';
+
+const ProfileUserTaskCard = (props) => {
+  const { item } = props;
+  return <Task {...props} task={item} />;
+};
 
 const ProfileUserTaskDaos = ({ userProfile }) => {
   const { id: userId } = userProfile;
 
-  const { workingTasksData, userOrgs, completedTaskCount, completedTasksData } = useGetUserAboutPage(userId);
+  const {
+    completedTaskButton,
+    completedTasksData,
+    handleFetchMoreCompletedTasks,
+    handleFetchMoreInProgressTasks,
+    handleFetchMoreOrgRoles,
+    inProgressButton,
+    inProgressData,
+    orgRolesButton,
+    userOrgs,
+    userTaskCountData,
+  } = useGetUserAboutPage(userId);
+
+  const inProgressCount = userTaskCountData?.created + userTaskCountData?.inProgress + userTaskCountData?.inReview;
 
   return (
-    <>
-      <Box sx={styles.sectionContainer}>
-        <Typography style={styles.title}>{userOrgs?.length} DAOS</Typography>
-        <ProfileContentGrid data={userOrgs} Component={OrgCard} />
-      </Box>
+    <ProfileUserTaskDaosWrapper>
+      <ProfileUserTaskDaosContainer>
+        <ProfileUserTaskDaosTitle>{userOrgs?.length} DAOS</ProfileUserTaskDaosTitle>
+        <ProfileContentGrid
+          data={userOrgs}
+          Component={OrgCard}
+          fetchMore={handleFetchMoreOrgRoles}
+          buttonIsDisabled={orgRolesButton}
+        />
+      </ProfileUserTaskDaosContainer>
 
-      <Box sx={styles.sectionContainer}>
-        <Typography style={styles.title}>{completedTaskCount} tasks completed</Typography>
-        <ProfileContentGrid data={completedTasksData} Component={TaskCompletedCard} />
-      </Box>
+      <ProfileUserTaskDaosContainer>
+        <ProfileUserTaskDaosTitle>{userTaskCountData?.completed} tasks completed</ProfileUserTaskDaosTitle>
+        <ProfileContentGrid
+          data={completedTasksData}
+          Component={ProfileUserTaskCard}
+          fetchMore={handleFetchMoreCompletedTasks}
+          buttonIsDisabled={completedTaskButton}
+        />
+      </ProfileUserTaskDaosContainer>
 
-      <Box sx={styles.sectionContainer}>
-        <Typography style={styles.title}>{workingTasksData?.length} Currently working on</Typography>
-        <ProfileContentGrid data={workingTasksData} Component={WorkingOnCard} />
-      </Box>
-    </>
+      <ProfileUserTaskDaosContainer>
+        <ProfileUserTaskDaosTitle>{inProgressCount} Currently working on</ProfileUserTaskDaosTitle>
+        <ProfileContentGrid
+          data={inProgressData}
+          Component={ProfileUserTaskCard}
+          fetchMore={handleFetchMoreInProgressTasks}
+          buttonIsDisabled={inProgressButton}
+        />
+      </ProfileUserTaskDaosContainer>
+    </ProfileUserTaskDaosWrapper>
   );
 };
 
