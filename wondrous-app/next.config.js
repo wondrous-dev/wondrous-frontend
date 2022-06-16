@@ -16,7 +16,7 @@ module.exports = withBundleAnalyzer({
 
     return config;
   },
-  swcMinify: true,
+  swcMinify: false,
   experimental: {
     // ssr and displayName are configured by default
     styledComponents: true,
@@ -30,7 +30,7 @@ module.exports = withBundleAnalyzer({
         headers: [
           {
             key: 'Cache-Control',
-            value: `max-age=${60*60*24*365}, public`,
+            value: `max-age=${60 * 60 * 24 * 365}, public`,
           },
         ],
       },
@@ -41,7 +41,7 @@ module.exports = withBundleAnalyzer({
         headers: [
           {
             key: 'Cache-Control',
-            value: `max-age=${60*60*24*7}, must-revalidate`,
+            value: `max-age=${60 * 60 * 24 * 7}, must-revalidate`,
           },
         ],
       },
