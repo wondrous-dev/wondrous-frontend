@@ -207,3 +207,12 @@ export const CREATE_TASK_GITHUB_ISSUE = gql`
     }
   }
 `;
+
+export const TURN_TASK_TO_BOUNTY = gql`
+  mutation turnTaskToBounty($taskId: ID!) {
+    turnTaskToBounty(taskId: $taskId) {
+      ...BountyFragment
+    }
+  }
+  ${BountyFragment}
+`;
