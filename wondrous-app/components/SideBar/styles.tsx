@@ -16,7 +16,7 @@ export const DrawerComponent = styled(Drawer)`
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
     & .MuiDrawer-paperAnchorDockedLeft {
-      background-color: ${palette.black90};
+      background-color: ${palette.black99};
       z-index: 199;
       margin-top: 50px;
       transition: 0.3s;
