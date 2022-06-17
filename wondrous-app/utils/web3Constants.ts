@@ -9,7 +9,8 @@ export const CHAIN_ID_TO_CHAIN_NAME = {
   1666600000: 'harmony',
   42161: 'arbitrum',
   56: 'bsc',
-  288: 'boba'
+  288: 'boba',
+  10: 'optimism'
 };
 
 
@@ -18,7 +19,8 @@ export const CHAIN_TO_GNOSIS_URL_ABBR = {
   rinkeby: 'rin',
   polygon: 'matic',
   bsc: 'bnb',
-  arbitrum: 'arb1'
+  arbitrum: 'arb1',
+  optimism: 'opt'
 };
 
 export enum SupportedETHChainId {
