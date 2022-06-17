@@ -1,5 +1,6 @@
 import { CenteredFlexRow } from './index';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const Line = styled.h2`
   && {
@@ -10,7 +11,7 @@ export const Line = styled.h2`
   }
 `;
 
-export const LineWithText = ({ children, width = '25%', borderBottom = `1px solid ${greyColors.grey85}` }) => {
+export const LineWithText = ({ children, width = '25%', borderBottom = `1px solid ${palette.grey85}` }) => {
   return (
     <CenteredFlexRow>
       <Line width={width} borderBottom={borderBottom} />

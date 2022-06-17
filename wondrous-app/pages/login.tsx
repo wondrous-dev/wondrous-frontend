@@ -24,7 +24,6 @@ import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/
 import { Connectors, MainWrapper } from 'components/Onboarding/styles';
 import { Button } from 'components/Button';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
-import palette from 'theme/palette';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({

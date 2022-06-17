@@ -22,7 +22,7 @@ export const StyledNextLink = styled.span`
   font-weight: 500;
   margin-top: 18px;
   text-decoration: none;
-  color: ${highlightBlue};
+  color: ${palette.highlightBlue};
 
   &:hover {
     text-decoration: underline;

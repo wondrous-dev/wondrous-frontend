@@ -12,6 +12,7 @@ import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
+import palette from 'theme/palette';
 
 export const BoardsActivityInlineView = ({
   onSearch,

@@ -1441,7 +1441,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                               setDeleteTask(true);
                             }}
                             style={dropdownItemStyle}
-                            color={Red800}
+                            color={palette.red800}
                           >
                             Delete {taskType}
                           </DropDownItem>
