@@ -1054,15 +1054,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   ]);
 
   useEffect(() => {
-    if (isMilestone) {
-      setActiveTab(tabs.tasks);
-    } else if (isTaskProposal || router?.query?.taskCommentId) {
-      setActiveTab(tabs.discussion);
-    } else {
-      setActiveTab(tabs.submissions);
-    }
-  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
-  useEffect(() => {
     if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
       getOrgSnapshotInfo({
         variables: {
@@ -1071,6 +1062,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       });
     }
   }, [fetchedTask?.snapshotId]);
+
+  useEffect(() => {
+    if (isMilestone) {
+      setActiveTab(tabs.tasks);
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
+      setActiveTab(tabs.discussion);
+    } else {
+      setActiveTab(tabs.submissions);
+    }
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   const openSnapshot = async () => {
     try {
