@@ -8,19 +8,23 @@ const FETCH_MORE_LIMIT = 8;
 
 const LIMIT = 4;
 
+const hasNoMoreData = (result, limit) => {
+  return _.isNull(result) || _.isEmpty(result) || result.length < limit;
+};
+
 const useGetUserAboutPage = (userId) => {
   const [completedTasksData, setCompletedTasksData] = useState([]);
-  const [completedTaskButton, setCompletedTaskButton] = useState(false);
-  const [inProgressData, setInProgressData] = useState([]);
-  const [inProgressButton, setInProgressButton] = useState(false);
-  const [getUserOrgRoles, { data: userOrgRolesData }] = useLazyQuery(GET_USER_ORG_ROLES);
-  const [orgRolesButton, setOrgRolesButton] = useState(false);
-  const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(userId);
-  const [getUserInProgressTasks, { fetchMore: inProgressFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
+  const [disableCompletedTaskButton, setDisableCompletedTaskButton] = useState(false);
+  const [disableInProgressButton, setDisableInProgressButton] = useState(false);
+  const [disableOrgRolesButton, setDisableOrgRolesButton] = useState(false);
   const [getUserCompletedTasks, { fetchMore: completedTaskFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
+  const [getUserInProgressTasks, { fetchMore: inProgressFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
+  const [getUserOrgRoles, { data: userOrgRolesData }] = useLazyQuery(GET_USER_ORG_ROLES);
+  const [inProgressData, setInProgressData] = useState([]);
+  const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(userId);
 
   const handleFetchMoreOrgRoles = () => {
-    setOrgRolesButton(true);
+    setDisableOrgRolesButton(true);
   };
   const handleFetchMoreCompletedTasks = () => {
     completedTaskFetchMore({
@@ -30,8 +34,9 @@ const useGetUserAboutPage = (userId) => {
       },
     })
       .then(({ data }) => {
-        if (_.isEmpty(data.getUserTaskBoardTasks)) setCompletedTaskButton(true);
-        setCompletedTasksData([...completedTasksData, ...data.getUserTaskBoardTasks]);
+        const result = data?.getUserTaskBoardTasks;
+        setDisableCompletedTaskButton(hasNoMoreData(result, FETCH_MORE_LIMIT));
+        setCompletedTasksData([...completedTasksData, ...result]);
       })
       .catch((e) => {
         console.log(e);
@@ -45,8 +50,9 @@ const useGetUserAboutPage = (userId) => {
       },
     })
       .then(({ data }) => {
-        if (_.isEmpty(data.getUserTaskBoardTasks)) setInProgressButton(true);
-        setInProgressData([...inProgressData, ...data.getUserTaskBoardTasks]);
+        const result = data?.getUserTaskBoardTasks;
+        setDisableInProgressButton(hasNoMoreData(result, FETCH_MORE_LIMIT));
+        setInProgressData([...inProgressData, ...result]);
       })
       .catch((e) => {
         console.log(e);
@@ -59,7 +65,14 @@ const useGetUserAboutPage = (userId) => {
         variables: {
           userId: userId,
         },
-      });
+      })
+        .then(({ data }) => {
+          const result = data.getUserOrgRoles;
+          setDisableOrgRolesButton(hasNoMoreData(result, LIMIT));
+        })
+        .catch((e) => {
+          console.log(e);
+        });
     }
     if (_.isEmpty(inProgressData) && userId) {
       getUserInProgressTasks({
@@ -71,8 +84,9 @@ const useGetUserAboutPage = (userId) => {
         },
       })
         .then(({ data }) => {
-          if (_.isNull(data.getUserTaskBoardTasks)) return;
-          setInProgressData(data.getUserTaskBoardTasks);
+          const result = data.getUserTaskBoardTasks;
+          setDisableInProgressButton(hasNoMoreData(result, LIMIT));
+          setInProgressData(result);
         })
         .catch((e) => {
           console.log(e);
@@ -88,8 +102,9 @@ const useGetUserAboutPage = (userId) => {
         },
       })
         .then(({ data }) => {
-          if (_.isNull(data.getUserTaskBoardTasks)) return;
-          setCompletedTasksData(data?.getUserTaskBoardTasks);
+          const result = data.getUserTaskBoardTasks;
+          setDisableCompletedTaskButton(hasNoMoreData(result, LIMIT));
+          setCompletedTasksData(result);
         })
         .catch((e) => {
           console.log(e);
@@ -107,14 +122,14 @@ const useGetUserAboutPage = (userId) => {
 
   return userOrgRolesData
     ? {
-        completedTaskButton,
         completedTasksData,
+        disableCompletedTaskButton,
+        disableInProgressButton,
+        disableOrgRolesButton,
         handleFetchMoreCompletedTasks,
         handleFetchMoreInProgressTasks,
         handleFetchMoreOrgRoles,
-        inProgressButton,
         inProgressData,
-        orgRolesButton,
         userOrgs: userOrgRolesData?.getUserOrgRoles,
         userTaskCountData: userTaskCountData?.getPerStatusTaskCountForUserBoard,
       }
