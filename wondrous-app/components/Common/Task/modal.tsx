@@ -1145,6 +1145,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask?.createdBy === user?.id;
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.EDIT_TASK) ||
     fetchedTask?.createdBy === user?.id ||
     (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
   const canMoveProgress =
