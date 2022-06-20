@@ -30,6 +30,8 @@ import {
   PERMISSIONS,
   PRIVACY_LEVEL,
 } from 'utils/constants';
+import { TextInputContext } from 'utils/contexts';
+import { TextInput } from '../TextInput';
 
 import {
   parseUserPermissionContext,
@@ -105,6 +107,7 @@ import {
   EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
+  TextInputDiv,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -242,6 +245,7 @@ const CreateLayoutBaseModal = (props) => {
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(plainTextToRichText(''));
+  const [podDescriptionText, setPodDescriptionText] = useState('');
   const [mediaUploads, setMediaUploads] = useState([]);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
@@ -320,9 +324,9 @@ const CreateLayoutBaseModal = (props) => {
 
   const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
-  const descriptionTextCounter = (e) => {
+  const podDescriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
-      setDescriptionText(e.target.value);
+      setPodDescriptionText(e.target.value);
     }
   };
 
@@ -697,7 +701,7 @@ const CreateLayoutBaseModal = (props) => {
           const podInput = {
             name: title,
             username: title?.toLowerCase().split(' ').join('_'),
-            description,
+            description: podDescriptionText,
             orgId: org,
             privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
@@ -1018,19 +1022,51 @@ const CreateLayoutBaseModal = (props) => {
 
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>{titleText} description</CreateFormMainBlockTitle>
-
-          <EditorToolbar ref={setEditorToolbarNode} />
-          <EditorContainer onClick={() => ReactEditor.focus(editor)}>
-            <RichTextEditor
-              editor={editor}
-              initialValue={descriptionText}
-              mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
-              placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
-              toolbarNode={editorToolbarNode}
-              onChange={setDescriptionText}
-              editorContainerNode={document.querySelector('#modal-scrolling-container')}
-            />
-          </EditorContainer>
+          {!isPod && (
+            <>
+              <EditorToolbar ref={setEditorToolbarNode} />
+              <EditorContainer onClick={() => ReactEditor.focus(editor)}>
+                <RichTextEditor
+                  editor={editor}
+                  initialValue={descriptionText}
+                  mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
+                  placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
+                  toolbarNode={editorToolbarNode}
+                  onChange={setDescriptionText}
+                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
+                />
+              </EditorContainer>
+            </>
+          )}
+          {isPod && (
+            <TextInputDiv>
+              <TextInputContext.Provider
+                value={{
+                  content: podDescriptionText,
+                  onChange: podDescriptionTextCounter,
+                  list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
+                }}
+              >
+                <TextInput
+                  placeholder={`Enter ${titleText.toLowerCase()} description`}
+                  // rows={5}
+                  // maxRows={5}
+                  // value={descriptionText}
+                  // onChange={descriptionTextCounter}
+                  style={{
+                    input: {
+                      overflow: 'auto',
+                      color: White,
+                      height: '100px',
+                      marginBottom: '16px',
+                      borderRadius: '6px',
+                      padding: '8px',
+                    },
+                  }}
+                />
+              </TextInputContext.Provider>
+            </TextInputDiv>
+          )}
 
           <CreateFormMainDescriptionInputSymbolCounter>
             {countCharacters(descriptionText)}/{textLimit} characters
