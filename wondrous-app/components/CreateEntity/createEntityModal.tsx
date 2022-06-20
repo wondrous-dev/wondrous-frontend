@@ -460,7 +460,7 @@ const CreateLayoutBaseModal = (props) => {
     podId: pod,
   });
   const canCreateTask = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
-  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_POD);
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;
@@ -501,7 +501,6 @@ const CreateLayoutBaseModal = (props) => {
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const description = JSON.stringify(descriptionText);
-
     const taskInput = {
       title,
       labelIds,
@@ -725,7 +724,7 @@ const CreateLayoutBaseModal = (props) => {
         } else {
           setErrors({
             ...errors,
-            general: 'You need full access permissions to create a pod',
+            general: 'You need the right permissions to create a pod',
           });
         }
         break;
@@ -1024,6 +1023,7 @@ const CreateLayoutBaseModal = (props) => {
           <EditorContainer onClick={() => ReactEditor.focus(editor)}>
             <RichTextEditor
               editor={editor}
+              initialValue={descriptionText}
               mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
               placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
               toolbarNode={editorToolbarNode}
@@ -1427,7 +1427,7 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
-      {(org && !isProposal) ? (
+      {org && !isProposal ? (
         <CreateFormAddTagsSection>
           <CreateFormMainInputBlock>
             <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
