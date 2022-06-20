@@ -168,18 +168,17 @@ const ContributorTaskRowElement = (props) => {
               options={paymentMethods}
               labelStyle={{
                 paddingTop: '0',
-                marginTop: '-4px',
               }}
               name="reward-currency"
               setValue={setSelectedPaymentMethodId}
               value={selectedPaymentMethodId}
               hideLabel={true}
               innerStyle={{
-                marginTop: '15px',
+                marginTop: 12,
                 background: '#171717',
               }}
               formSelectStyle={{
-                marginRight: '12px',
+                marginRight: 12,
               }}
             />
 
