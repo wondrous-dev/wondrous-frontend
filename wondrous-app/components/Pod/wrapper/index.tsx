@@ -66,6 +66,7 @@ import { LogoWrapper, OrgLogoWrapper } from './styles';
 import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
 import { Grey58 } from 'theme/colors';
 import BoardsActivity from 'components/Common/BoardsActivity';
+import { RichTextViewer } from 'components/RichText';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -355,7 +356,9 @@ const Wrapper = (props) => {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>{podProfile?.description}</HeaderText>
+              <HeaderText>
+                <RichTextViewer text={podProfile?.description} />
+              </HeaderText>
               <HeaderActivity>
                 {links?.map((link) => (
                   <>
