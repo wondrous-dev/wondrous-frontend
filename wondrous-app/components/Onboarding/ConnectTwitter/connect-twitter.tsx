@@ -27,7 +27,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
     onCompleted: (data) => {
 
       if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
-        router.push(`/twitter/verify-tweet`, undefined, {
+        router.push(`/explore`, undefined, {
           shallow: true,
         });
       }
@@ -112,7 +112,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
   return (
     <OnboardingLayout
       title="Connect to Twitter"
-      description="Want our launch NFT? You have to connect your twitter"
+      description="Connect your twitter!"
       headerRightContent={router.query.wallet ? headerRightContent : null}
       onBackClick={() => router.back()}
       displayFooter={false}

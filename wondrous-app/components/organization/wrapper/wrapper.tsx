@@ -71,6 +71,7 @@ import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoa
 import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
+import { RichTextViewer } from 'components/RichText';
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
@@ -116,6 +117,13 @@ const Wrapper = (props) => {
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity } = router.query;
+  const asPath: any = router.asPath;
+  let finalPath = '';
+  if (asPath) {
+    const finalPathArr = asPath.split('/');
+    finalPath = finalPathArr[finalPathArr.length - 1];
+  }
+
   const handleJoinOrgButtonClick = async () => {
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
       setOpenJoinRequestModal(true);
@@ -185,13 +193,13 @@ const Wrapper = (props) => {
     if (!entity && !search) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
       const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
-      if (taskCount === 0 && bountyCount > taskCount) {
+      if (taskCount === 0 && bountyCount > taskCount && finalPath === 'boards') {
         router.push(`/organization/${orgProfile?.username}/boards?entity=bounty`, undefined, {
           shallow: true,
         });
       }
     }
-  }, [tasksPerTypeData, entity]);
+  }, [tasksPerTypeData, entity, finalPath]);
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
@@ -344,7 +352,9 @@ const Wrapper = (props) => {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>{orgProfile?.description}</HeaderText>
+              <HeaderText>
+                <RichTextViewer text={orgProfile?.description} />
+              </HeaderText>
               <HeaderActivity>
                 <HeaderContributors
                   onClick={() => {
