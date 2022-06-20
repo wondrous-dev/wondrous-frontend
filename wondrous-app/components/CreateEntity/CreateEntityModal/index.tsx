@@ -134,6 +134,7 @@ import {
 } from './styles';
 import { GithubButton } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
+import { ErrorText } from 'components/Common';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -1198,9 +1199,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
             toolbarNode={editorToolbarNode}
             onChange={(value) => {
-              if (countCharacters(value) < TEXT_LIMIT) {
-                form.setFieldValue('description', value);
-              }
+              form.setFieldValue('description', value);
             }}
             editorContainerNode={document.querySelector('#modal-scrolling-container')}
             onClick={(e) => {
@@ -1210,6 +1209,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             }}
           />
         </EditorContainer>
+        {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={true}>
           <MediaUploadDiv>
             {form.values.mediaUploads?.length > 0 &&
