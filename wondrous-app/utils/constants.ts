@@ -381,6 +381,7 @@ export const GRAPHQL_ERRORS = {
   GITHUB_REPO_ALREADY_ADDED_TO_POD: 'Repo already added!',
   EMAIL_ALREADY_EXIST: 'email_already_exist',
   INVALID_EMAIL: 'invalid_email',
+  POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist'
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION

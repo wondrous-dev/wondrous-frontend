@@ -26,6 +26,7 @@ import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   DEFAULT_SINGLE_DATEPICKER_VALUE,
   ENTITIES_TYPES,
+  GRAPHQL_ERRORS,
   MEDIA_TYPES,
   PERMISSIONS,
   PRIVACY_LEVEL,
@@ -490,7 +491,7 @@ const CreateLayoutBaseModal = (props) => {
 
   const [createTaskProposal, { loading: createTaskProposalLoading }] = useMutation(CREATE_TASK_PROPOSAL);
 
-  const [createPod, { loading: createPodLoading }] = useMutation(CREATE_POD, {
+  const [createPod, { loading: createPodLoading, error: createPodError }] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
       const pod = data?.createPod;
       handleClose();
@@ -726,6 +727,16 @@ const CreateLayoutBaseModal = (props) => {
               variables: {
                 input: podInput,
               },
+            }).catch((err) => {
+              if (
+                err?.graphQLErrors &&
+                err?.graphQLErrors[0]?.extensions?.message === GRAPHQL_ERRORS.POD_WITH_SAME_NEXT_EXISTS
+              ) {
+                setErrors({
+                  ...errors,
+                  general: 'Pod with that name already exists',
+                });
+              }
             });
           }
         } else {
@@ -962,7 +973,11 @@ const CreateLayoutBaseModal = (props) => {
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
-    createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
+    createTaskLoading ||
+    createTaskProposalLoading ||
+    createMilestoneLoading ||
+    createBountyLoading ||
+    (createPodLoading && !createPodError);
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalHeaderWrapper>

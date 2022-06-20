@@ -13,6 +13,7 @@ import { DefaultProfilePicture, PodWrapper, Title, UserProfilePicture, UserWrapp
 import { useRouter } from 'next/router';
 import { CommentText, CommentTopFlexDiv } from '../../Comment/styles';
 import { cutString } from 'utils/helpers';
+import { RichTextViewer } from 'components/RichText';
 
 const PodItem = (props) => {
   const router = useRouter();
@@ -32,7 +33,9 @@ const PodItem = (props) => {
       >
         {pod?.name}
       </TabContainerText>
-      <PodExplainerText>{cutString(pod?.description)}</PodExplainerText>
+      <PodExplainerText>
+        <RichTextViewer text={cutString(pod?.description)} />
+      </PodExplainerText>
     </PodWrapper>
   );
 };
