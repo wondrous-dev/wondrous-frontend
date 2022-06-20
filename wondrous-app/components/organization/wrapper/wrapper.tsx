@@ -71,6 +71,7 @@ import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoa
 import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
+import { RichTextViewer } from 'components/RichText';
 
 const MOCK_ORGANIZATION_DATA = {
   amount: 1234567,
@@ -351,7 +352,9 @@ const Wrapper = (props) => {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>{orgProfile?.description}</HeaderText>
+              <HeaderText>
+                <RichTextViewer text={orgProfile?.description} />
+              </HeaderText>
               <HeaderActivity>
                 <HeaderContributors
                   onClick={() => {
