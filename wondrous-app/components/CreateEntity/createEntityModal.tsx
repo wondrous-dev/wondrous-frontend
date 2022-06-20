@@ -107,6 +107,7 @@ import {
   EditorToolbar,
 } from './styles';
 
+const EMPTY_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';
 const filterUserOptions = (options) => {
   if (!options) return [];
   return options.map((option) => {
@@ -697,7 +698,9 @@ const CreateLayoutBaseModal = (props) => {
           const podInput = {
             name: title,
             username: title?.toLowerCase().split(' ').join('_'),
-            description,
+            ...(description !== EMPTY_STRING && {
+              description,
+            }),
             orgId: org,
             privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
@@ -1027,7 +1030,7 @@ const CreateLayoutBaseModal = (props) => {
               mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
               placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
               toolbarNode={editorToolbarNode}
-              onChange={setDescriptionText}
+              onChange={(value) => setDescriptionText(value)}
               editorContainerNode={document.querySelector('#modal-scrolling-container')}
             />
           </EditorContainer>
