@@ -17,7 +17,7 @@ import {
   PaymentMethodFormWrapper,
   PaymentMethodSubHeader,
   PaymentMethodNameHeader,
-  PaymentMethodDescription
+  PaymentMethodDescription,
 } from './styles';
 import { USDCoin } from '../../Icons/USDCoin';
 import DaiIcon from '../../Icons/dai';
@@ -25,6 +25,7 @@ import Arbitrum from '../../Icons/arbitrum';
 import Harmony from '../../Icons/harmony';
 import Binance from '../../Icons/binace';
 import Boba from '../../Icons/Boba';
+import Optimism from '../../Icons/Optimism';
 import PlusIcon from '../../Icons/plus';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
@@ -53,7 +54,7 @@ const chainOptions = [
     label: 'Arbitrum One',
     icon: <Arbitrum />,
     value: 'arbitrum',
-  },  
+  },
   {
     label: 'BSC',
     icon: <Binance />,
@@ -63,6 +64,11 @@ const chainOptions = [
     label: 'Boba',
     icon: <Boba />,
     value: 'boba',
+  },
+  {
+    label: 'Optimism',
+    icon: <Optimism />,
+    value: 'optimism',
   },
 ];
 
@@ -133,6 +139,28 @@ const BscPresetTokens = [
   },
 ];
 
+const OptimismPresetTokens = [
+  {
+    label: 'USDC',
+    icon: <USDCoin />,
+    value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
+  },
+  {
+    label: 'Op',
+    icon: <Optimism />,
+    value: 'OP',
+  },
+  {
+    label: 'Add Custom',
+    icon: <PlusIcon />,
+    value: 'custom',
+  },
+];
 
 const PresetTokenPerChain = {
   ethereum: PresetTokens,
@@ -141,14 +169,16 @@ const PresetTokenPerChain = {
   boba: BobaPresetTokens,
   harmony: HarmonyPresetTokens,
   bsc: BscPresetTokens,
-}
+  optimism: OptimismPresetTokens,
+};
 const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
   polygon: '0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174',
   harmony: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
   arbitrum: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
   bsc: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-  boba: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc'
+  boba: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
+  optimism: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
 };
 
 const CHAIN_TO_DAI_ADDR = {
@@ -157,7 +187,8 @@ const CHAIN_TO_DAI_ADDR = {
   harmony: '0xEf977d2f931C1978Db5F6747666fa1eACB0d0339',
   arbitrum: '0xDA10009cBd5D07dd0CeCc66161FC93D7c9000da1',
   bsc: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
-  boba: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35'
+  boba: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35',
+  optimism: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
 };
 
 const ConfigPaymentMethodModal = (props) => {
@@ -205,13 +236,12 @@ const ConfigPaymentMethodModal = (props) => {
   }, [customTokenAddress, chain]);
 
   const clearSelection = () => {
-    setCustomTokenAddress(null)
-    setCustomToken(null)
-    setSelectedToken(PresetTokens[0].value)
-    setCreateError(null)
-    setTokenNotFoundError(null)
-  }
-
+    setCustomTokenAddress(null);
+    setCustomToken(null);
+    setSelectedToken(PresetTokens[0].value);
+    setCreateError(null);
+    setTokenNotFoundError(null);
+  };
 
   const handleAddPaymentMethodClick = async () => {
     let tokenAddress, tokenName, symbol, icon, decimals;
@@ -227,17 +257,21 @@ const ConfigPaymentMethodModal = (props) => {
       tokenAddress = '0x0000000000000000000000000000000000000000';
       tokenName = 'One';
       symbol = 'ONE';
-     }else if (selectedToken === 'BOBA') {
+    } else if (selectedToken === 'OP') {
+      tokenAddress = '0x0000000000000000000000000000000000000000';
+      tokenName = 'OP';
+      symbol = 'ONE';
+    } else if (selectedToken === 'BOBA') {
       tokenAddress = '0xa18bF3994C0Cc6E3b63ac420308E5383f53120D7';
       tokenName = 'Boba Token';
       symbol = 'BOBA';
-    }  else if (selectedToken === 'custom') {
+    } else if (selectedToken === 'custom') {
       tokenAddress = customToken?.contractAddress;
       tokenName = customToken?.name;
       symbol = customToken?.symbol;
     } else {
-      setCreateError('invalid selection')
-      return
+      setCreateError('invalid selection');
+      return;
     }
     try {
       await apollo.mutate({
@@ -251,25 +285,28 @@ const ConfigPaymentMethodModal = (props) => {
             symbol,
           },
         },
-        refetchQueries:[GET_PAYMENT_METHODS_FOR_ORG]
+        refetchQueries: [GET_PAYMENT_METHODS_FOR_ORG],
       });
     } catch (error) {
-      if (error?.graphQLErrors && error?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.PAYMENT_METHOD_EXIST) {
-        setCreateError('Payment method of this type already exist')
-        return
+      if (
+        error?.graphQLErrors &&
+        error?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.PAYMENT_METHOD_EXIST
+      ) {
+        setCreateError('Payment method of this type already exist');
+        return;
       }
-      setCreateError('Error creating payment method')
-      return
+      setCreateError('Error creating payment method');
+      return;
     }
-    clearSelection()
-    setShowConfigModal(false)
+    clearSelection();
+    setShowConfigModal(false);
   };
   return (
     <Modal
       open={open}
       onClose={() => {
         setShowConfigModal(false);
-        clearSelection()
+        clearSelection();
       }}
     >
       <PaymentConfigModal>
@@ -291,7 +328,9 @@ const ConfigPaymentMethodModal = (props) => {
             options={chainOptions}
             name="chain"
           />
-          <PaymentMethodDescription>for BNB and Boba chain please contact support@wonderverse.xyz</PaymentMethodDescription>
+          <PaymentMethodDescription>
+            for BNB and Boba chain please contact support@wonderverse.xyz
+          </PaymentMethodDescription>
           <PaymentMethodSubHeader>Token </PaymentMethodSubHeader>
           <DropdownSelect
             value={selectedToken}
@@ -313,7 +352,11 @@ const ConfigPaymentMethodModal = (props) => {
                 onChange={(e) => setCustomTokenAddress(e.target.value)}
               />
               {tokenNotFoundError && <ErrorText>Custom token not found, check if the chain is correct</ErrorText>}
-              {tokenNotFoundError && <PaymentMethodDescription>Please contact support@wonderverse.xyz to add your token</PaymentMethodDescription>}
+              {tokenNotFoundError && (
+                <PaymentMethodDescription>
+                  Please contact support@wonderverse.xyz to add your token
+                </PaymentMethodDescription>
+              )}
               {customToken && (
                 <>
                   <TokenLogoDisplay src={customToken?.icon} />
