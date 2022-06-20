@@ -1,8 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-// TODO: 5 step????
-import {FirstStep, SecondStep, ThirdStep, FourthStep, FifthStep} from 'components/Common/Image/OnboardingProgressBar';
+import { FirstStep, SecondStep, ThirdStep, FourthStep, FifthStep } from 'components/Common/Image/OnboardingProgressBar';
 
 export const Container = styled.div`
   width: 100%;
