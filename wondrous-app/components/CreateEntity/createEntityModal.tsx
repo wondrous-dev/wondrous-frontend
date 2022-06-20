@@ -30,6 +30,8 @@ import {
   PERMISSIONS,
   PRIVACY_LEVEL,
 } from 'utils/constants';
+import { TextInputContext } from 'utils/contexts';
+import { TextInput } from '../TextInput';
 
 import {
   parseUserPermissionContext,
@@ -105,6 +107,7 @@ import {
   EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
+  TextInputDiv,
 } from './styles';
 
 const EMPTY_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';
@@ -243,6 +246,7 @@ const CreateLayoutBaseModal = (props) => {
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(plainTextToRichText(''));
+  const [podDescriptionText, setPodDescriptionText] = useState('');
   const [mediaUploads, setMediaUploads] = useState([]);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
@@ -321,9 +325,9 @@ const CreateLayoutBaseModal = (props) => {
 
   const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
-  const descriptionTextCounter = (e) => {
+  const podDescriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
-      setDescriptionText(e.target.value);
+      setPodDescriptionText(e.target.value);
     }
   };
 
