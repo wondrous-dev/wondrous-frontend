@@ -44,7 +44,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import palette from 'theme/palette';
-import { TaskViewModal } from './modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { useMe } from '../../Auth/withAuth';
 import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';

@@ -613,16 +613,6 @@ export const MakeSubmissionPaymentButton = styled(Button)`
   }
 `;
 
-export const TakeTaskButton = styled(CreateFormPreviewButton)`
-  && {
-    height: auto;
-    margin-left: 0px;
-    font-size: 14px;
-    padding: 8px 12px;
-    margin-top: 8px;
-  }
-`;
-
 export const StyledAutocomplete = styled(Autocomplete).attrs((props) => ({
   className: 'MuiAutocomplete-root',
 }))`
@@ -803,12 +793,12 @@ export const TextInputDiv = styled.div`
 
 export const SnapshotButtonBlock = styled(CreateFormButtonsBlock)`
   && {
-  height: 40px;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  margin-left: auto;
+    height: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
   }
 `;
 
@@ -818,7 +808,7 @@ export const SnapshotErrorText = styled.div`
   flex-direction: column;
   margin: 0;
   line-height: 10px;
-`
+`;
 
 export const SnapshotButton = styled(CreateFormPreviewButton)`
   && {
@@ -828,4 +818,4 @@ export const SnapshotButton = styled(CreateFormPreviewButton)`
       height: 100%;
     }
   }
-`
+`;

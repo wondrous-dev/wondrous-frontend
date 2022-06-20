@@ -1,12 +1,21 @@
-import styled from 'styled-components';
-import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import palette from 'theme/palette';
-import { Typography } from '@mui/material';
-import { BaseCard } from '../card';
-import RightArrowIcon from '../../Icons/rightArrow';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { ButtonUnstyled } from '@mui/base';
+import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import Arrow from 'components/Icons/arrow.svg';
+import CalendarIcon from 'components/Icons/calendar';
+import MilestoneIcon from 'components/Icons/milestoneField.svg';
+import PodIcon from 'components/Icons/podIcon';
+import PointsIcon from 'components/Icons/pointsIcon.svg';
 import ProposalIcon from 'components/Icons/proposalIcon';
-import { getContrastYIQ } from 'utils/colors';
+import styled from 'styled-components';
+import { GetStatusIcon } from 'utils/common';
+import { CreateFormPreviewButton, SnapshotButton } from '../../CreateEntity/styles';
+import { BaseCard } from '../card';
+import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
+import { SafeImage } from '../Image';
+import { MilestoneTaskBreakdown } from '../MilestoneTaskBreakdown';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { Share } from '../Share';
+
 export const TaskInner = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -69,7 +78,7 @@ export const TaskContent = styled.div`
   width: 100%;
   font-size: 16px;
   font-weight: 400;
-  color: ${palette.white};
+  color: ${({ theme }) => theme.palette.white};
   white-space: pre-line;
   cursor: pointer;
   overflow-x: hidden;
@@ -77,7 +86,7 @@ export const TaskContent = styled.div`
 
 export const TaskSeparator = styled.div`
   display: flex;
-  border-bottom: 1px solid ${palette.grey80};
+  border-bottom: 1px solid ${({ theme }) => theme.palette.grey80};
   margin-top: 5px;
 `;
 
@@ -160,7 +169,7 @@ export const TaskActionAmount = styled.div`
   flex-grow: 1;
   justify-content: flex-start;
   padding-left: 10px;
-  color: ${palette.grey250};
+  color: ${({ theme }) => theme.palette.grey250};
 `;
 
 export const TaskContentFooter = styled.div`
@@ -180,7 +189,7 @@ export const PodName = styled(Typography)`
   && {
     background: #363636;
     font-size: 13px;
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
     padding: 1px 8px;
     border-radius: 190px;
   }
@@ -196,14 +205,33 @@ export const SubtaskCountWrapper = styled.div`
 
 export const SubtaskCount = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
     font-size: 13px;
     font-style: normal;
     color: #ffffff;
   }
 `;
 
-export const TaskModal = styled(BaseCard)`
+export const TaskModal = styled(Modal)`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TaskModalCard = styled.div`
+  width: 682px;
+  margin: 0 auto;
+  height: 95vh;
+  overflow-y: scroll;
+  background: #1d1d1d;
+  outline: 1px solid #424242;
+  border-radius: 6px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+`;
+
+export const TaskModalBaseCard = styled(BaseCard)`
   width: 680px;
   position: absolute;
   left: 50%;
@@ -244,29 +272,99 @@ export const TaskModal = styled(BaseCard)`
 export const TaskModalHeader = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 24px !important;
+  background: #171717;
+  height: 56px;
+  padding: 12px;
+  justify-content: space-between;
 `;
 
-export const RightArrowWrapper = styled.div`
-  margin-left: 12px;
+export const TaskModalHeaderWrapper = styled.div`
+  display: flex;
+  gap: 12px;
+  align-items: center;
 `;
 
-export const RightArrow = styled(RightArrowIcon)``;
+export const TaskModalHeaderWrapperRight = styled(TaskModalHeaderWrapper)`
+  justify-content: flex-end;
+`;
 
-export const PodNameTypography = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 17px;
-    color: ${palette.white};
+export const TaskModalHeaderPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
+  background: #2d2d2d;
+  border-radius: 6px;
+  width: 20px;
+  height: 20px;
+  svg {
+    width: 12px;
+    path {
+      stroke: ${({ theme }) => theme.palette.white};
+    }
   }
 `;
 
-export const TaskIconWrapper = styled.div`
+export const TaskModalHeaderArrow = styled((props) => {
+  return (
+    <div {...props}>
+      <Arrow />
+    </div>
+  );
+})`
+  && {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const TaskModalHeaderTypography = styled(Typography)`
+  && {
+    ${({ theme }) =>
+      `
+    font-weight: ${theme.typography.fontWeightMedium};
+    font-size: 13px;
+    color: ${theme.palette.white};
+  `}
+  }
+`;
+
+export const TaskModalHeaderBackToList = styled(TaskModalHeaderTypography)`
+  && {
+    text-decoration: underline;
+    cursor: pointer;
+  }
+`;
+
+export const TaskModalHeaderIconWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 12px;
+  gap: 8px;
   cursor: pointer;
+`;
+
+export const TaskModalIconTypeWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const TaskCardOrgPhoto = styled(SafeImage)`
+  width: 20px;
+  height: 20px;
+  border-radius: 4px;
+`;
+
+export const TaskCardOrgNoLogo = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+`;
+
+export const TaskCardPodIcon = styled(PodIcon)`
+  width: 20px;
+  height: 20px;
 `;
 
 export const TaskIconLabel = styled(Typography)`
@@ -277,94 +375,449 @@ export const TaskIconLabel = styled(Typography)`
   }
 `;
 
-export const SubtaskIconWrapper = styled(TaskIconWrapper)`
+export const SubtaskIconWrapper = styled(TaskModalHeaderIconWrapper)`
   cursor: auto;
 `;
 
 export const SubtaskIconLabel = styled(TaskIconLabel)``;
 
-export const TaskTitleDiv = styled.div`
-  display: flex;
-  align-items: flex-start;
+export const TaskModalHeaderShare = styled(Share)`
+  && {
+    width: 32px;
+    height: 32px;
+  }
 `;
 
-export const TaskTitleTextDiv = styled.div``;
-
-export const TaskTitleText = styled(Typography)`
+export const TaskModalHeaderMenuButton = styled(ButtonUnstyled)`
   && {
-    color: ${palette.white};
-    font-style: normal;
-    font-weight: bold;
+    align-items: center;
+    background: #3131314d;
+    border-radius: 6px;
+    border: none;
+    display: flex;
+    height: 32px;
+    justify-content: center;
+    outline: ${({ open }) => open && `1px solid #424242`};
+    width: 32px;
+    :hover,
+    :active {
+      cursor: pointer;
+      background: ${({ theme }) => theme.palette.black98};
+    }
+    svg {
+      circle {
+        fill: transparent;
+      }
+    }
+  }
+`;
+
+export const TaskModalHeaderMenu = styled(Menu)`
+  && {
+    .MuiMenu-paper {
+      background: transparent;
+      outline: 1px solid #424242;
+    }
+    .MuiMenu-list {
+      min-width: fit-content;
+      width: 150px;
+      background: #1d1d1d;
+      display: flex;
+      padding: 0;
+      flex-direction: column;
+    }
+  }
+`;
+
+export const TaskModalHeaderMenuItem = styled(MenuItem)`
+  && {
+    display: flex;
+    justify-content: flex-start;
+    color: ${({ theme }) => theme.palette.white};
+    height: 32px;
+    font-size: 13px;
+    padding: 12px;
+    :hover {
+      background: ${({ theme }) => theme.palette.black98};
+    }
+  }
+`;
+
+export const TaskModalHeaderMenuItemRed = styled(TaskModalHeaderMenuItem)`
+  && {
+    color: ${({ theme }) => theme.palette.red800};
+  }
+`;
+
+export const TaskModalTaskData = styled.div`
+  padding: 24px;
+`;
+
+export const TaskModalTitle = styled(Typography)`
+  && {
     font-size: 24px;
-    line-height: 32px;
-    margin-bottom: 8px;
+    ${({ theme }) => `
+    color: ${theme.palette.white};
+    font-weight: ${theme.typography.fontWeightBold};
+  `}
+  }
+`;
+
+export const TaskModalStatusSnapshotWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 12px;
+`;
+
+export const TaskModalStatus = styled.div`
+  background-color: #141414;
+  max-width: fit-content;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  padding: 8px 6px;
+  gap: 8px;
+  height: 35px;
+`;
+
+export const TaskModalStatusIcon = styled((props) => (
+  <GetStatusIcon style={{ width: '18px', height: '18px' }} {...props} />
+))``;
+
+export const TaskModalStatusLabel = styled(Typography)`
+  && {
+    font-size: 14px;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightRegular};
+    color: ${theme.palette.white};
+  `}
+  }
+`;
+
+export const TaskModalSnapshot = styled(SnapshotButton)`
+  && {
+    margin: 0;
+    height: 35px;
+    font-weight: ${({ theme }) => theme.typography.fontWeightRegular};
+    font-size: 14px;
   }
 `;
 
 export const TaskDescriptionText = styled(Typography)`
   && {
-    color: #828282;
-    font-weight: 500;
     font-size: 15px;
-    line-height: 19px;
-    white-space: pre-line;
-    max-width: 600px;
-    overflow-x: scroll;
-    &::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
+    line-height: 24px;
+    margin-top: 12px;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+    ${(props) => {
+      const { isExpanded, initialHeight, theme } = props;
+      return `
+      font-weight: ${theme.typography.fontWeightRegular};
+      height: ${isExpanded ? 'fit-content' : `${initialHeight}px`};
+      color: #828282;
+    ${
+      !isExpanded &&
+      `
+      :after {
+      background-image: linear-gradient(to bottom, rgba(29, 29, 29, 0.3), rgba(29, 29, 29, 1) 90%);
+      bottom: 0;
+      content: '';
+      height: 50%;
+      left: 0;
+      pointer-events: none;
+      position: absolute;
+      width: 100%;
+      z-index: 1;
     }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+      `
+    }
+  `;
+    }}
   }
+`;
+
+export const TaskDescriptionTextShowAll = styled(Button)`
+  && {
+    border-radius: 6px;
+    max-width: fit-content;
+    display: flex;
+    gap: 12px;
+    height: 35px;
+    margin-top: 8px;
+    ${({ theme }) => `
+    background: #282828;
+    :hover {
+      background: #474747;
+    }
+`}
+  }
+`;
+
+export const TaskDescriptionTextShowAllText = styled(Typography)`
+  && {
+    font-size: 14px;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.palette.white};
+`};
+  }
+`;
+
+export const TaskDescriptionTextShowAllArrow = styled((props) => {
+  return (
+    <div {...props}>
+      <Arrow />
+    </div>
+  );
+})`
+  && {
+    display: flex;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+    transform: ${({ isExpanded }) => (isExpanded ? `rotate(-90deg)` : `rotate(90deg)`)};
+    svg {
+      path {
+        fill: ${({ theme }) => theme.palette.white};
+      }
+    }
+  }
+`;
+
+export const TaskSectionDisplayDivWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 18px;
 `;
 
 export const TaskSectionDisplayDiv = styled.div`
   display: flex;
   align-items: center;
-  margin-bottom: 12px;
-  & > *:not:first-child {
-    margin-top: -8px;
-  }
 `;
 
 export const TaskSectionDisplayLabel = styled.div`
-  background: #0f0f0f;
-  border-radius: 4px;
   display: flex;
   align-items: center;
-  padding: 4px 12px;
-  margin-top: 8px;
+  min-width: 120px;
+`;
+
+export const TaskSectionDisplayContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  row-gap: 12px;
+  column-gap: 36px;
+  flex-flow: row wrap;
+`;
+
+export const TaskSectionDisplayLabelText = styled(Typography)`
+  && {
+    background: #282828;
+    padding: 4px 8px;
+    font-size: 14px;
+    height: 26px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.palette.blue20};
+ `}
+  }
+`;
+
+export const TaskSectionImageContentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const TaskSectionImageContentSafeImage = styled(SafeImage)``;
+
+export const TaskSectionImageContentImage = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  > * {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+  }
 `;
 
 export const TaskSectionDisplayText = styled(Typography)`
   && {
-    font-family: Space Grotesk;
-    font-style: normal;
-    font-weight: 500;
     font-size: 14px;
-    line-height: 22px;
-    color: #ccbbff;
-    margin-left: 8px;
+    border-radius: 4px;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.palette.blue20};
+ `}
   }
 `;
 
 export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
   && {
-    color: #c4c4c4;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    ${({ theme }) => `
+    color: ${theme.palette.white};
+ `}
   }
 `;
 
-export const TaskSectionInfoDiv = styled.div`
-  margin-right: 12px;
-  margin-left: 12px;
+export const TaskSectionInfoTextUnderlined = styled(TaskSectionDisplayText)`
+  && {
+    text-decoration: underline;
+    cursor: pointer;
+    ${({ theme }) => `
+    color: ${theme.palette.white};
+ `}
+  }
+`;
+
+export const TaskSectionInfoClose = styled.div`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
+export const TaskSectionInfoTextError = styled(TaskSectionDisplayText)`
+  && {
+    font-size: 13px;
+    margin-top: 12px;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightRegular};
+    color: ${theme.palette.red400};
+ `}
+  }
+`;
+
+export const TaskSectionInfoTakeTask = styled(Button)`
+  && {
+    font-size: 14px;
+    height: 26px;
+    padding: 8px 12px;
+    ${({ theme }) => `
+      background: ${theme.palette.background};
+      border: 1px solid deepskyblue;
+      color: ${theme.palette.white};
+      font-weight: ${theme.typography.fontWeightMedium};
+    `}
+    &:disabled {
+      color: #7a7a7a;
+      border-color: #7a7a7a;
+      cursor: not-allowed;
+    }
+  }
+`;
+
+export const TaskSectionInfoRecurringIcon = styled.div`
   display: flex;
   align-items: center;
-  text-align: left;
-  margin-top: 8px;
+  justify-content: center;
+`;
+
+export const TaskSectionInfoCalendar = styled(({ className }) => (
+  <div className={className}>
+    <CalendarIcon />
+  </div>
+))`
+  background-color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+`;
+
+export const TaskSectionInfoPointsIcon = styled(({ className }) => (
+  <div className={className}>
+    <PointsIcon />
+  </div>
+))`
+  background-color: #282828;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 12px;
+    height: 12px;
+  }
+`;
+
+export const TaskSectionInfoPoints = styled(TaskSectionInfoText)`
+  && {
+    background: -webkit-linear-gradient(#ffffff, #ffd653);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+`;
+
+export const TaskSectionInfoMilestoneIcon = styled(({ className }) => (
+  <div className={className}>
+    <MilestoneIcon />
+  </div>
+))`
+  background-color: #b8255f;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage)`
+  && {
+    width: 26px;
+    height: 26px;
+    img[style] {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  }
+`;
+
+export const TaskSectionInfoPaymentMethodChain = styled(TaskSectionInfoText)`
+  && {
+    text-transform: capitalize;
+    ${({ theme }) => `
+      color: ${theme.palette.grey250};
+    `}
+  }
+`;
+
+export const TaskSectionMilestoneTaskBreakdown = styled(MilestoneTaskBreakdown)`
+  margin-top: 12px;
+`;
+
+export const TaskSectionInfoTextCreator = styled(Typography)`
+  && {
+    font-size: 12px;
+    ${({ theme }) => `
+    color: ${theme.palette.white};
+    font-weight: ${theme.typography.fontWeightBold};
+ `}
+  }
+`;
+
+export const TaskSectionInfoCreatorTask = styled.span`
+  color: ${({ theme }) => theme.palette.grey250};
+`;
+
+export const TaskSectionInfoCreatorDaysAgo = styled.span`
+  color: #848484;
+  font-weight: 300;
+`;
+
+export const TaskSectionInfoDiv = styled.div`
+  display: flex;
+  align-items: center;
 `;
 
 export const TaskModalFooter = styled.div`
@@ -397,7 +850,7 @@ export const TaskTabText = styled(Typography)`
     font-weight: ${(props) => (props.isActive ? '500' : '400')};
     font-size: 16px;
     line-height: 24px;
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
   }
 `;
 
@@ -444,7 +897,7 @@ export const TaskSubmissionHeaderTextDiv = styled.div``;
 
 export const TaskSubmissionHeaderCreatorText = styled(Typography)`
   && {
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
     font-size: 13px;
     line-height: 20px;
     font-weight: bold;
@@ -505,7 +958,7 @@ export const TaskListModalHeader = styled(Typography)`
     font-size: 18px;
     line-height: 26px;
     margin-bottom: 20px;
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
   }
 `;
 
@@ -560,7 +1013,7 @@ export const TaskUserDiv = styled.div`
 export const ProposalCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  color: ${palette.white};
+  color: ${({ theme }) => theme.palette.white};
   padding: 14px;
   margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 3px;
@@ -586,8 +1039,7 @@ export const ProposalCardWrapper = styled.div`
 `;
 
 export const ProposalCardType = styled.div`
-  color: ${palette.blue20};
-  font-family: 'Space Grotesk';
+  color: ${({ theme }) => theme.palette.blue20};
   font-style: normal;
   font-weight: 700;
   font-size: 13px;
@@ -595,14 +1047,14 @@ export const ProposalCardType = styled.div`
 `;
 
 export const ProposalIconBackground = styled.div`
-  background: ${palette.background.default};
+  background: ${({ theme }) => theme.palette.background.default};
   padding: 5px;
   border-radius: 180px;
 `;
 
 export const CheckedIconWrapper = styled.div`
   display: flex;
-  background: ${palette.grey85};
+  background: ${({ theme }) => theme.palette.grey85};
   border-radius: 6px;
 `;
 const IconWrapper = styled.div`
@@ -622,7 +1074,6 @@ export const ProposalCardIcon = () => (
 );
 
 export const ProposalFooterButton = styled.div`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -642,7 +1093,7 @@ export const ProposalFooterButton = styled.div`
       `;
     } else {
       return `border: 1px solid ${borderColor || 'transparent'};
-    color: ${color || palette.white};
+    color: ${({ theme }) => color || theme.palette.white};
      ${
        !borderColor &&
        `&::before {
@@ -668,20 +1119,23 @@ export const ProposalCardFooter = styled.div`
   gap: 10px;
   width: 100%;
   padding-top: 10px;
-  border-top: 1px solid ${palette.grey85};
+  border-top: 1px solid ${({ theme }) => theme.palette.grey85};
   padding-bottom: 15px;
 `;
 
 export const Tag = styled.div`
-  color: ${palette.white};
   background: rgba(64, 0, 181, 0.3);
-  border: 1px solid #7427ff;
   border-radius: 6px;
   padding: 1px 6px;
-  margin: 5px 0;
-  &:not(:last-child) {
-    margin-right: 10px;
-  }
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  ${({ theme }) => `
+    color: ${theme.palette.white};
+    border: 1px solid ${theme.palette.highlightPurple};
+    font-weight: ${theme.typography.fontWeightMedium};
+  `}
 `;
 
 export const DueDateText = styled(Typography)`

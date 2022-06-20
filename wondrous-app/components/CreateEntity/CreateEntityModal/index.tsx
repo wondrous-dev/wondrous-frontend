@@ -132,9 +132,10 @@ import {
   EditorToolbar,
   MediaUploadDiv,
 } from './styles';
-import { GithubButton } from 'components/Settings/Github/styles';
+import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import { ErrorText } from 'components/Common';
+import { transformMediaFormat } from 'utils/helpers';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -873,19 +874,6 @@ const useContextValue = (condition, callback) => {
       callback();
     }
   }, [condition, callback]);
-};
-
-export const transformMediaFormat = (media) => {
-  return (
-    media &&
-    media.map((item) => {
-      return {
-        uploadSlug: item?.slug,
-        type: item?.type,
-        name: item?.name,
-      };
-    })
-  );
 };
 
 const initialValues = (entityType, existingTask = undefined) => {
@@ -1750,7 +1738,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               </CreateEntityLabelWrapper>
               {form.values.githubIssue ? (
                 <CreateEntitySelectWrapper>
-                  <GithubButton
+                  <GithubLink
                     style={{
                       paddingTop: '4px',
                       paddingBottom: '4px',
@@ -1759,7 +1747,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     target="_blank"
                   >
                     Connected Github issue
-                  </GithubButton>
+                  </GithubLink>
                 </CreateEntitySelectWrapper>
               ) : (
                 <CreateEntitySelectWrapper>
@@ -1823,7 +1811,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   {createGithubIssueLoading ? (
                     <CircularProgress />
                   ) : (
-                    <GithubButton
+                    <GithubLink
                       style={{
                         paddingTop: '4px',
                         paddingBottom: '4px',
@@ -1847,7 +1835,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         }}
                       />
                       <span>Add</span>
-                    </GithubButton>
+                    </GithubLink>
                   )}
                 </CreateEntitySelectWrapper>
               )}

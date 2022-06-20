@@ -140,3 +140,16 @@ export const cutString = (string, length = 240, afterText = '...') => {
   }
   return string;
 };
+
+export const transformMediaFormat = (media) => {
+  return (
+    media &&
+    media.map((item) => {
+      return {
+        uploadSlug: item?.slug,
+        type: item?.type,
+        name: item?.name,
+      };
+    })
+  );
+};

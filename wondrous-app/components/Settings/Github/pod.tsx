@@ -2,7 +2,7 @@ import { HeaderBlock } from '../headerBlock';
 import { SettingsWrapper } from '../settingsWrapper';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
-import { AddRepoDiv, GithubButton, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
+import { AddRepoDiv, GithubLink, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -311,14 +311,14 @@ export const GithubIntegration = ({ orgId, podId }) => {
         </>
       ) : (
         <GithubButtonDiv>
-          <GithubButton href={githubUrl}>
+          <GithubLink href={githubUrl}>
             <GitHubIcon
               style={{
                 marginRight: '8px',
               }}
             />
             <span>Connect Github Organization</span>
-          </GithubButton>
+          </GithubLink>
         </GithubButtonDiv>
       )}
       {addRepoError && <ErrorText>{addRepoError}</ErrorText>}

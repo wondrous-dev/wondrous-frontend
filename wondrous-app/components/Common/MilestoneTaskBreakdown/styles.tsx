@@ -8,6 +8,7 @@ export const StyledBoxWrapper = styled(Box)`
   flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
+  gap: 8px;
 `;
 
 export const StyledBox = styled(Box)`
@@ -15,14 +16,10 @@ export const StyledBox = styled(Box)`
   border-radius: 6px;
   display: flex;
   align-items: center;
-  width: 32%;
+  width: calc(33% - 4px);
   color: #ccbbff;
   font-size: 14px;
   font-weight: 500;
   padding: 6px;
-  margin-bottom: 8px;
-
-  svg {
-    margin-right: 10px;
-  }
+  gap: 10px;
 `;

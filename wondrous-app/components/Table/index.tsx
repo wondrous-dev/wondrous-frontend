@@ -21,7 +21,7 @@ import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { KudosForm } from '../Common/KudosForm';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
-import { TaskViewModal } from '../Common/Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { CreateModalOverlay } from '../CreateEntity/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
