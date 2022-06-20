@@ -110,6 +110,7 @@ import {
   TextInputDiv,
 } from './styles';
 
+const EMPTY_STRING = '[{"children":[{"text":""}],"type":"paragraph"}]';
 const filterUserOptions = (options) => {
   if (!options) return [];
   return options.map((option) => {
@@ -701,7 +702,9 @@ const CreateLayoutBaseModal = (props) => {
           const podInput = {
             name: title,
             username: title?.toLowerCase().split(' ').join('_'),
-            description: podDescriptionText,
+            ...(description !== EMPTY_STRING && {
+              description,
+            }),
             orgId: org,
             privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
@@ -1022,51 +1025,19 @@ const CreateLayoutBaseModal = (props) => {
 
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>{titleText} description</CreateFormMainBlockTitle>
-          {!isPod && (
-            <>
-              <EditorToolbar ref={setEditorToolbarNode} />
-              <EditorContainer onClick={() => ReactEditor.focus(editor)}>
-                <RichTextEditor
-                  editor={editor}
-                  initialValue={descriptionText}
-                  mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
-                  placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
-                  toolbarNode={editorToolbarNode}
-                  onChange={setDescriptionText}
-                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
-                />
-              </EditorContainer>
-            </>
-          )}
-          {isPod && (
-            <TextInputDiv>
-              <TextInputContext.Provider
-                value={{
-                  content: podDescriptionText,
-                  onChange: podDescriptionTextCounter,
-                  list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
-                }}
-              >
-                <TextInput
-                  placeholder={`Enter ${titleText.toLowerCase()} description`}
-                  // rows={5}
-                  // maxRows={5}
-                  // value={descriptionText}
-                  // onChange={descriptionTextCounter}
-                  style={{
-                    input: {
-                      overflow: 'auto',
-                      color: White,
-                      height: '100px',
-                      marginBottom: '16px',
-                      borderRadius: '6px',
-                      padding: '8px',
-                    },
-                  }}
-                />
-              </TextInputContext.Provider>
-            </TextInputDiv>
-          )}
+
+          <EditorToolbar ref={setEditorToolbarNode} />
+          <EditorContainer onClick={() => ReactEditor.focus(editor)}>
+            <RichTextEditor
+              editor={editor}
+              initialValue={descriptionText}
+              mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
+              placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
+              toolbarNode={editorToolbarNode}
+              onChange={(value) => setDescriptionText(value)}
+              editorContainerNode={document.querySelector('#modal-scrolling-container')}
+            />
+          </EditorContainer>
 
           <CreateFormMainDescriptionInputSymbolCounter>
             {countCharacters(descriptionText)}/{textLimit} characters
