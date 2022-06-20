@@ -459,7 +459,7 @@ const TokenGatingModalElement = (props) => {
           mutation: APPLY_TOKEN_GATING_TO_POD_ROLE,
           variables: {
             tokenGatingConditionId: tokenGatingCondition?.id,
-            orgRoleId: selectedRoleForTokenGate?.id,
+            podRoleId: selectedRoleForTokenGate?.id,
           },
         });
         getPodRolesWithTokenGate();
