@@ -11,12 +11,12 @@ import {
   FormControl,
   FormControlLabel,
   InputLabel,
-} from '@material-ui/core';
+} from '@mui/material';
 import styled from 'styled-components';
 import { ModalCloseButton } from '../ModalCloseButton';
 import { Button as ButtonComponent } from '../button';
 import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
-import { White } from '../../../theme/colors';
+import palette from 'theme/palette';
 
 export const StyledModal = styled(Modal)``;
 

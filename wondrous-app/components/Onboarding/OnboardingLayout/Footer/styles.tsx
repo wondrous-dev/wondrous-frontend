@@ -1,6 +1,6 @@
 import styled, { css } from 'styled-components';
 
-import { Grey85 } from '../../../../theme/colors';
+import palette from 'theme/palette';
 import { Button } from 'components/Common/button';
 
 const buttonStyle = css`
@@ -13,7 +13,7 @@ const buttonStyle = css`
 `;
 
 export const Container = styled.div`
-  border-top: 1px solid ${Grey85};
+  border-top: 1px solid ${palette.grey85};
   width: 100%;
   display: flex;
   padding-top: 30px;

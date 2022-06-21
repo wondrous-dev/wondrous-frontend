@@ -33,7 +33,7 @@ import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
-import { TextField } from '@material-ui/core';
+import { TextField } from '@mui/material';
 import {
   CreateModalOverlay,
   OptionDiv,
@@ -41,7 +41,7 @@ import {
   StyledAutocompletePopper,
   StyledChip,
 } from 'components/CreateEntity/styles';
-import { White } from 'theme/colors';
+import palette from 'theme/palette';
 import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
 import { exportContributorTaskCSV } from 'components/organization/analytics';
@@ -373,7 +373,7 @@ const Analytics = (props) => {
               <TextField
                 {...params}
                 style={{
-                  color: White,
+                  color: palette.white,
                   fontFamily: 'Space Grotesk',
                   fontSize: '16px',
                   paddingLeft: '4px',

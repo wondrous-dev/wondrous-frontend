@@ -12,7 +12,7 @@ import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { useRouter } from 'next/router';
 
 import { useMe } from '../../Auth/withAuth';
-import { HighlightBlue } from '../../../theme/colors';
+import palette from 'theme/palette'
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { SafeImage } from '../../Common/Image';
 import ProfilePictureAdd from '../../../public/images/onboarding/profile-picture-add.svg';
@@ -165,7 +165,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
           <>
             <UsernameDescription
               style={{
-                color: HighlightBlue,
+                color: palette.highlightBlue,
                 textDecoration: 'underline',
                 cursor: 'pointer',
                 marginTop: '0',

@@ -1,4 +1,4 @@
-import { createFilterOptions } from '@material-ui/lab';
+import { createFilterOptions } from '@mui/material/Autocomplete';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import _ from 'lodash';
 import React, { useEffect, useState } from 'react';

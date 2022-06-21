@@ -1,7 +1,7 @@
 import { HeaderBlock } from '../headerBlock';
 import { SettingsWrapper } from '../settingsWrapper';
 import GitHubIcon from '@mui/icons-material/GitHub';
-import { Green400, White } from 'theme/colors';
+import palette from 'theme/palette';
 import { AddRepoDiv, GithubButton, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -192,7 +192,7 @@ export const GithubIntegration = ({ orgId, podId }) => {
             width="32"
             height="32"
             style={{
-              color: White,
+              color: palette.white,
               marginTop: '-34px',
             }}
           />
@@ -231,7 +231,7 @@ export const GithubIntegration = ({ orgId, podId }) => {
                   <TextField
                     {...params}
                     style={{
-                      color: White,
+                      color: palette.white,
                       fontFamily: 'Space Grotesk',
                       fontSize: '1px',
                       paddingLeft: '4px',

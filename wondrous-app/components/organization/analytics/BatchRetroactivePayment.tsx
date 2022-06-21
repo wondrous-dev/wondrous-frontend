@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations/payment';
@@ -47,13 +47,11 @@ interface Props {
   orgId: any;
   podId: any;
   chain: any;
-  wallets: any
+  wallets: any;
 }
 
-
 export const BatchRetroactivePayment = (props: Props) => {
-  const { podId, orgId, payoutData, wallets, chain } =
-    props;
+  const { podId, orgId, payoutData, wallets, chain } = props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
   const [selectedWalletId, setSelectedWalletId] = useState(null);
@@ -127,7 +125,6 @@ export const BatchRetroactivePayment = (props: Props) => {
     }
   }, [selectedWalletId, selectedWallet?.chain, selectedWallet?.address, currentChainId]);
 
-
   useEffect(() => {
     const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
     setGnosisSafeTxRedirectLink(url);
@@ -139,7 +136,7 @@ export const BatchRetroactivePayment = (props: Props) => {
     let iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
     payoutData?.map((paymentData) => {
-      console.log(paymentData)
+      console.log(paymentData);
       // let transactionData: MetaTransactionData;
       // if (paymentData?.isEthTransfer) {
       //   transactionData = {
@@ -157,7 +154,7 @@ export const BatchRetroactivePayment = (props: Props) => {
       // }
       // transactions.push(transactionData);
     });
-    return
+    return;
     // includes the pending nonce, better than keeping it empty which would ignore pending txs
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;

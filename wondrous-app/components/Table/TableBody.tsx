@@ -1,10 +1,9 @@
 import { useMutation } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useState } from 'react';
+import React from 'react';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { updateCompletedItem, updateInProgressTask, updateInReviewItem, updateTaskItem } from 'utils/board';
-import { renderMentionString } from 'utils/common';
 import * as Constants from 'utils/constants';
 import {
   TASK_STATUS_IN_PROGRESS,
@@ -15,7 +14,7 @@ import {
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
 } from 'utils/constants';
-import { cutString, parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
+import { parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useMe } from '../Auth/withAuth';
 import { AvatarList } from '../Common/AvatarList';
@@ -26,6 +25,14 @@ import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
 import { Claim } from '../Icons/claimTask';
 import { TaskMenuIcon } from '../Icons/taskMenu';
 import TaskStatus from '../Icons/TaskStatus';
+
+import palette from 'theme/palette';
+import SmartLink from 'components/Common/SmartLink';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
+import Tooltip from 'components/Tooltip';
+import { RichTextViewer } from 'components/RichText';
 import {
   Box,
   Initials,
@@ -36,18 +43,8 @@ import {
   StyledTableBody,
   StyledTableCell,
   StyledTableRow,
-  TaskDescription,
   TaskTitle,
 } from './styles';
-
-import { Red800, White } from 'theme/colors';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
-import SmartLink from 'components/Common/SmartLink';
-import { ViewType } from 'types/common';
-import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
-import Tooltip from 'components/Tooltip';
-import { RichTextViewer } from 'components/RichText';
 
 export default function TableBody({
   tasks,
@@ -208,7 +205,7 @@ export default function TableBody({
                 </TaskTitle>
                 <span
                   style={{
-                    color: White,
+                    color: palette.white,
                   }}
                 >
                   <RichTextViewer text={task?.description} />
@@ -292,7 +289,7 @@ export default function TableBody({
                               setSelectedTask(task);
                               setDeleteModalOpen(true);
                             }}
-                            color={Red800}
+                            color={palette.red800}
                             fontSize="13px"
                             fontWeight="normal"
                             textAlign="left"

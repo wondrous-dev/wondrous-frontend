@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, TextareaAutosize, Typography, Divider } from '@material-ui/core';
+import { Box, Button, Dialog, TextareaAutosize, Typography, Divider } from '@mui/material';
 import styled from 'styled-components';
 import { Button as SubmitButton } from '../button';
 import { ModalCloseButton } from '../ModalCloseButton';

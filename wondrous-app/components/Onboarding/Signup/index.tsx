@@ -10,7 +10,7 @@ import { LoginError } from 'components/Pages/login';
 import { Field } from 'components/Common/field';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { LineWithText } from 'components/Common/lines';
-import { White, HighlightBlue } from '../../../theme/colors';
+import palette from 'theme/palette';
 import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { emailSignup } from 'components/Auth/withAuth';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
@@ -221,7 +221,7 @@ const Signup = () => {
           </ContinueButton>
         </Form>
         <LineWithText width="45%" borderBottom="1px dashed #4b4b4b">
-          <PaddedParagraph padding="0 10px" color={White} style={{ fontWeight: 500 }}>
+          <PaddedParagraph padding="0 10px" color={palette.white} style={{ fontWeight: 500 }}>
             or
           </PaddedParagraph>
         </LineWithText>

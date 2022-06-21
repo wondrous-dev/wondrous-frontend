@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';

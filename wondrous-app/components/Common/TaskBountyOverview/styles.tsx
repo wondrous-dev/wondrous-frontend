@@ -1,4 +1,4 @@
-import { LinearProgress, Typography } from '@material-ui/core';
+import { LinearProgress, Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const TaskContentBountyWrapper = styled.div`

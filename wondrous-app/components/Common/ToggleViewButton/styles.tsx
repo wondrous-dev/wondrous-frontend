@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Grey250, White } from '../../../theme/colors';
+import palette from 'theme/palette';
 
 export const ToggleViewWrapper = styled.div`
   display: flex;
@@ -17,7 +17,7 @@ export const ToggleViewWrapper = styled.div`
 export const ToggleViewOption = styled.div`
   height: 100%;
   display: flex;
-  color: ${White};
+  color: ${palette.white};
   justify-content: center;
   align-items: center;
   &.active {

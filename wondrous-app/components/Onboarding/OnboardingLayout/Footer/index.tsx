@@ -3,7 +3,7 @@ import React from 'react';
 import { Container, ContinueButton, BackButton, RightButtons, Later } from './styles';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import DiscordSmallLogo from '../../../../public/images/onboarding/discord-small.svg';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 interface Props {
   onConnectDiscordClick?: () => unknown;

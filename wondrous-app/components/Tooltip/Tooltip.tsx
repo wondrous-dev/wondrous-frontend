@@ -1,8 +1,8 @@
 import React from 'react';
 
-import Divider from '@material-ui/core/Divider';
-import MuiTooltip, { TooltipProps } from '@material-ui/core/Tooltip';
-import Typography from '@material-ui/core/Typography';
+import Divider from '@mui/material/Divider';
+import MuiTooltip, { TooltipProps } from '@mui/material/Tooltip';
+import Typography from '@mui/material/Typography';
 
 type Props = {
   children?: any;

@@ -1,6 +1,6 @@
-import { Grid, Typography } from '@material-ui/core';
+import { Grid, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { SIDEBAR_WIDTH } from '../../utils/constants';
+import { SIDEBAR_WIDTH } from 'utils/constants';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 
 export const Background = styled.div`

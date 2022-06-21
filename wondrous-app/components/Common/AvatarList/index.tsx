@@ -1,5 +1,4 @@
 import React from 'react';
-import * as Colors from '../../../theme/colors';
 import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import Tooltip from 'components/Tooltip';
@@ -10,7 +9,6 @@ export const SmallAvatar = (props) => {
   const { avatar = {}, id, username, goTo, initials = '', style = {} } = props;
 
   //TODO: create this as a service
-  const colorValues = Object.values(Colors);
   const randomColor = '#363636';
 
   return (

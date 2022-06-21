@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Chip, OutlinedInput } from '@material-ui/core';
+import { Box, Chip, OutlinedInput } from '@mui/material';
 
 import FilterIcon from '../../Icons/filter';
 import ArrowDropDownIcon from '../../Icons/arrowDropDown';

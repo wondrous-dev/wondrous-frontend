@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 import { BigNumber } from 'bignumber.js';
 import {
   PodNameTypography,
@@ -35,14 +35,14 @@ import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import Link from 'next/link';
-import { White, Blue20 } from '../../../theme/colors';
+import palette from 'theme/palette';
 import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
 import InputForm from '../InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { ErrorText } from 'components/Onboarding/styles';
 
 const GoBackStyle = {
-  color: White,
+  color: palette.white,
   width: '100%',
   textAlign: 'right',
   marginRight: '8px',
@@ -210,7 +210,7 @@ export const MakePaymentModal = (props) => {
             <PaymentTitleTextDiv>
               <PaymentTitleText>
                 Payout
-                <span style={{ color: Blue20 }}>
+                <span style={{ color: palette.blue20 }}>
                   {' '}
                   {rewardAmount} {tokenName?.toUpperCase()}{' '}
                 </span>

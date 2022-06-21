@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { HighlightBlue, HighlightPurple, White } from 'theme/colors';
+import palette from 'theme/palette';
 export const Wrapper = styled.div`
   display: flex;
 `;
@@ -47,7 +47,7 @@ export const IconWrapper = styled.div`
   align-items: center;
   padding: 0px;
   margin-right: 6px;
-  background: ${({ isActive }) => (isActive ? HighlightBlue : HighlightPurple)};
+  background: ${({ isActive }) => (isActive ? palette.highlightBlue : palette.highlightPurple)};
 `;
 
 export const StatTitle = styled.span`
@@ -56,5 +56,5 @@ export const StatTitle = styled.span`
 `;
 
 export const StatValue = styled.span`
-  color: ${White};
+  color: ${palette.white};
 `;

@@ -25,7 +25,6 @@ import {
   InviteButtonDiv,
   ProfileCenteredDiv,
 } from 'components/profile/email/styles';
-import { Blue500, Grey800 } from '../../theme/colors';
 
 import { ErrorText, NewCanvas } from 'components/Common';
 import { useIsMobile, useWindowSize } from 'utils/hooks';
@@ -34,7 +33,7 @@ import { useRouter } from 'next/router';
 import { useMutation } from '@apollo/client';
 import { CONFIRM_EMAIL_ADDRESS } from 'graphql/mutations';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 const EmailVerify = () => {
   const router = useRouter();

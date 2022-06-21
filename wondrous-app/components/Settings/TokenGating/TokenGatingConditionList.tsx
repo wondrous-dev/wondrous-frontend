@@ -3,7 +3,7 @@ import { useQuery, useMutation } from '@apollo/client';
 
 import { HeaderBlock } from '../headerBlock';
 
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
@@ -17,7 +17,7 @@ interface TokenGatingCondition {
   booleanLogic?: string;
   name?: string;
   orgId?: string;
-  accessCondition: [AccessCondition]
+  accessCondition: [AccessCondition];
 }
 
 interface AccessCondition {
@@ -28,7 +28,6 @@ interface AccessCondition {
   tokenIds?: string;
   type: string;
 }
-
 
 const TokenGatingConditionList = (props) => {
   const router = useRouter();
@@ -58,7 +57,9 @@ const TokenGatingConditionList = (props) => {
   return (
     <div>
       {tokenGatingConditions.map((tokenGatingCondition) => {
-        return <TokenGatingConditionDisplay key={tokenGatingCondition.id} tokenGatingCondition={tokenGatingCondition}/>
+        return (
+          <TokenGatingConditionDisplay key={tokenGatingCondition.id} tokenGatingCondition={tokenGatingCondition} />
+        );
       })}
     </div>
   );

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 import {
   PodNameTypography,
   PaymentModal,
@@ -61,7 +61,9 @@ export const RetroactivePayoutModal = (props) => {
   const [wallets, setWallets] = useState([]);
 
   const { contributorTaskData, userToPaymentMethod, userToRewardAmount } = paymentsData;
-  const contributorData = contributorTaskData?.filter((contributor) => !!contributor?.assigneeId && contributor?.assigneeWallet);
+  const contributorData = contributorTaskData?.filter(
+    (contributor) => !!contributor?.assigneeId && contributor?.assigneeWallet
+  );
   const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
       setWallets(data?.getOrgWallet);
@@ -133,7 +135,7 @@ export const RetroactivePayoutModal = (props) => {
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-              <StyledTableCell align="center" width={'33%'}>
+                <StyledTableCell align="center" width={'33%'}>
                   Receipient
                 </StyledTableCell>
                 <StyledTableCell align="center" width={'33%'}>
@@ -150,8 +152,8 @@ export const RetroactivePayoutModal = (props) => {
                   const contributor = contributorData[key];
                   const assigneeId = contributor?.assigneeId;
                   const paymentMethod = userToPaymentMethod[assigneeId];
-                  const paymentAmount = userToRewardAmount[assigneeId] || 0;     
-       
+                  const paymentAmount = userToRewardAmount[assigneeId] || 0;
+
                   return (
                     <StyledTableRow
                       style={{

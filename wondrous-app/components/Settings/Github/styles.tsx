@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { White } from 'theme/colors';
+import palette from 'theme/palette';
 
 export const GithubButtonDiv = styled.div`
   margin-top: 32px;
@@ -27,7 +27,7 @@ export const PodGithubExplainerText = styled(Typography)`
     font-size: 14px;
     line-height: 24px;
     margin-top: -16px;
-    color: ${White};
+    color: ${palette.white};
   }
 `;
 
@@ -48,7 +48,7 @@ export const RepoDiv = styled.div`
 
 export const RepoDivTitle = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-size: 14px;
     font-family: Space Grotesk;
   }

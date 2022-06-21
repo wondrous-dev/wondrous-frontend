@@ -1,13 +1,13 @@
 import React from 'react';
 import styled from 'styled-components';
 import { space } from 'styled-system';
-import { InputBase, Switch, Typography } from '@material-ui/core';
+import { InputBase, Switch, Typography } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
 
 import { Button } from '../../Common/button';
 import { BaseCard } from '../../Common/card';
-import { Red800, White } from '../../../theme/colors';
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
+import palette from 'theme/palette';
 
 export const RolesContainer = styled.div`
   width: 100%;
@@ -140,7 +140,7 @@ export const Snackbar = styled(SnackbarComp)`
 `;
 
 export const Error = styled.h3`
-  color: ${Red800};
+  color: ${palette.red800};
   margin: 30px 0;
 `;
 
@@ -156,7 +156,7 @@ export const TokenGatingButtonText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 15px;
     font-weight: 600;
-    color: ${White};
+    color: ${palette.white};
   }
 `;
 

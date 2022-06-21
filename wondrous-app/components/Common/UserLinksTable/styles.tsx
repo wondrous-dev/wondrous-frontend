@@ -1,4 +1,4 @@
-import { IconButton, Typography } from '@material-ui/core';
+import { IconButton, Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const UserLinksTableWrapper = styled.div`

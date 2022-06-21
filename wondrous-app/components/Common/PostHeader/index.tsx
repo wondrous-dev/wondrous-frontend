@@ -1,4 +1,4 @@
-import { ClickAwayListener } from '@material-ui/core';
+import { ClickAwayListener } from '@mui/material';
 import { delQuery } from 'utils';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
