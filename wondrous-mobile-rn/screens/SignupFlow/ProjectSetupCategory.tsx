@@ -19,7 +19,7 @@ import WritingIcon from '../../assets/images/categories/writing'
 import FitnessIcon from '../../assets/images/categories/fitness'
 import OtherIcon from '../../assets/images/categories/other'
 import { spacingUnit } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, Blue500, Blue600, Yellow300, Grey300, Grey500, White, Orange } from '../../constants/Colors'
 import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
 import { moderateScale } from '../../utils/scale'
 import { useMutation } from '@apollo/client'
@@ -52,7 +52,7 @@ export const projectSetupStyles = StyleSheet.create({
   },
   stepCount: {
     fontSize: 16,
-    color: palette.blue500,
+    color: Blue500,
     fontFamily: 'Rubik',
     fontStyle: 'normal',
     fontWeight: '500',
@@ -119,8 +119,8 @@ const CategoryItem = ({ category }) => {
   let categoryColors = null
   if (category.title.toLowerCase() === projectCategory) {
     categoryColors = {
-      iconColor: palette.white,
-      backgroundColor: palette.blue600
+      iconColor: White,
+      backgroundColor: Blue600
     }
   }
 
@@ -135,7 +135,7 @@ const CategoryItem = ({ category }) => {
           alignItems: 'center'
         }}>
           <CategoryImage backgroundColor={(categoryColors && categoryColors?.backgroundColor) || '#F0F4FE'} iconColor={category && categoryColors?.iconColor} />
-          <RegularText color={palette.blue600} style={{
+          <RegularText color={Blue600} style={{
             marginTop: spacingUnit
           }} > {category.title} </RegularText>
         </Pressable>
@@ -166,14 +166,14 @@ const CategoryDisplay = ({ categories }) => {
       <Subheading style={{
           marginBottom: spacingUnit,
           marginTop: spacingUnit * 3
-        }} color={palette.black}>
+        }} color={Black}>
           What type of project is this?
       </Subheading>
       <Paragraph style={{
         textAlign: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
-      }} color={palette.grey500}>
+      }} color={Grey500}>
         You only need to pick one!
       </Paragraph>
       {
@@ -227,7 +227,7 @@ function ProjectSetupCategoryScreen({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1
     }}>
       <ScrollView style={{
@@ -240,7 +240,7 @@ function ProjectSetupCategoryScreen({
         setError
       }}>
         <Header  rightButton={{
-        color: palette.orange,
+        color: Orange,
         text: 'Continue',
         onPress: async () => {
           if (!projectCategory) {
@@ -326,9 +326,9 @@ function ProjectSetupCategoryScreen({
               percent={60}
               radius={50}
               borderWidth={10}
-              color={palette.yellow300}
-              shadowColor={palette.grey300}
-              bgColor={palette.white}
+              color={Yellow300}
+              shadowColor={Grey300}
+              bgColor={White}
           >
               <BigMouthSmile />
           </ProgressCircle>

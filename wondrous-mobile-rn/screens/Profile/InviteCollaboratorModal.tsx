@@ -4,17 +4,18 @@ import Modal from 'react-native-modal'
 import { useMutation, useQuery, useLazyQuery } from '@apollo/client'
 import * as Analytics from 'expo-firebase-analytics'
 
-import palette from 'theme/palette'
-import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
-import { cutString, spacingUnit } from '../../utils/common'
+import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
+import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { capitalizeFirstLetter, cutString, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { modalStyles } from '../../components/Modal/common'
 import { SafeImage } from '../../storybook/stories/Image'
 import { useMe } from '../../components/withAuth'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { listStyles } from './style'
+import { ProfilePlaceholder } from './common'
+import { listStyles, profileStyles } from './style'
 import { SearchBar } from '../../components/Header'
 import { useNavigation, useRoute } from '@react-navigation/native'
-import { GET_PROJECT_INVITES, GET_USER_FOLLOWING } from '../../graphql/queries'
+import { GET_PROJECT_INVITES, GET_USER_FOLLOWERS, GET_USER_FOLLOWING } from '../../graphql/queries'
 import { INVITE_COLLABORATOR } from '../../graphql/mutations'
 import { LogEvents } from '../../utils/analytics'
 
@@ -100,13 +101,13 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={palette.black}>{(item?.firstName || '') + ' ' +  (item?.lastName || '')}</Subheading>
+        }} color={Black}>{(item?.firstName || '') + ' ' +  (item?.lastName || '')}</Subheading>
         {item?.username &&
-        <RegularText color={palette.grey800}>
+        <RegularText color={Grey800}>
           @{item?.username}
         </RegularText>}
         {item?.bio &&
-          <RegularText color={palette.black} style={{
+          <RegularText color={Black} style={{
             marginTop: spacingUnit * 0.5
           }}>
           {cutString(item?.bio)}
@@ -117,7 +118,7 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
         invited
         ?
         <Pressable style={listStyles.followingButton}>
-          <Paragraph color={palette.black}>
+          <Paragraph color={Black}>
             Invited
           </Paragraph>
         </Pressable>
@@ -134,7 +135,7 @@ export const CollaboratorItem = ({ item, project, initialInvited, projectInvites
           }
           inviteCollaborator()
         }} style={listStyles.followButton}>
-          <Paragraph color={palette.white}>
+          <Paragraph color={White}>
             Invite
           </Paragraph>
         </Pressable>
@@ -198,7 +199,7 @@ export const InviteCollaboratorList = ({ isVisible, project, setModalVisible }) 
             screen: 'Default'
           }
         })}>
-          You can only invite users you follow. Go to our <Paragraph color={palette.blue400}>
+          You can only invite users you follow. Go to our <Paragraph color={Blue400}>
             search page
           </Paragraph> to find some cool projects or users to follow!
         </Paragraph>
@@ -238,7 +239,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={palette.blue400} style={{
+              <RegularText color={Blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -247,7 +248,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               <View style={{
                 flex: 2
               }}>
-                <Subheading color={palette.black} style={{
+                <Subheading color={Black} style={{
                   fontSize: 20
                 }}>
                   Invite collaborators
@@ -259,7 +260,7 @@ export const InviteCollaboratorModal = ({ project, inviteMutation, isVisible, se
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
                 setModalVisible(false)
               }}>
-                <RegularText color={palette.white} style={{
+                <RegularText color={White} style={{
                   fontSize: 16
                 }}>
                   Done

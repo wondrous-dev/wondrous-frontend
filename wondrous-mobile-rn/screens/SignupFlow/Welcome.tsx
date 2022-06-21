@@ -1,9 +1,9 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, View } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Image, Pressable } from 'react-native'
 
 import { RootStackParamList } from '../../types'
-import palette from 'theme/palette'
+import { Orange, Black, White, Grey500 } from '../../constants/Colors'
 import { styles } from '../HomeScreen'
 import {  Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { registerForPushNotificationsAsync } from '../../components/Notifications/RegisterNotification'
@@ -11,6 +11,7 @@ import { Header } from '../../components/Header'
 import { withAuth, useMe } from '../../components/withAuth'
 import { SafeAreaView } from 'react-native-safe-area-context'
 import { spacingUnit } from '../../utils/common'
+import { SvgImage } from '../../storybook/stories/Image'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Superhero from '../../assets/images/superhero'
 
@@ -25,12 +26,12 @@ const loginStyles = StyleSheet.create({
     width: '100%',
   },
   subheading: {
-    color: palette.black,
+    color: Black,
     textAlign: 'center',
     marginBottom: spacingUnit * 2,
   },
   paragraph: {
-    color: palette.grey500,
+    color: Grey500,
     textAlign: 'center',
     maxWidth: spacingUnit * 43,
     alignSelf: 'center',
@@ -63,11 +64,11 @@ function WelcomeScreen({
 
   return (
     <SafeAreaView style={[styles.container, {
-      backgroundColor: palette.white
+      backgroundColor: White
     }]}>
       <Header />
       <View style={loginStyles.welcomeBody}>
-      <Subheading color={palette.black} style={loginStyles.subheading}>
+      <Subheading color={Black} style={loginStyles.subheading}>
           Welcome to Wonder!
         </Subheading>
         <Superhero style={{
@@ -78,11 +79,11 @@ function WelcomeScreen({
         </Paragraph>
         {/* <SvgImage width="80" height="80" srcElement={Celebration} style={loginStyles.image} /> */}
           <PrimaryButton textStyle={{
-            color: palette.white
+            color: White
           }} style={loginStyles.button} onPress={() => {
             navigation.push('UsernameSetup')
           }}>
-            <ButtonText color={palette.white}>
+            <ButtonText color={White}>
               I'm ready!
             </ButtonText>
           </PrimaryButton>

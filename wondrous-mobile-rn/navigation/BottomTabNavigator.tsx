@@ -4,7 +4,7 @@ import { NavigationState } from '@react-navigation/native'
 import { View, Pressable, StyleSheet } from 'react-native'
 import IconBadge from 'react-native-icon-badge'
 
-import palette from 'theme/palette'
+import { Blue400, Grey50, White, Grey400, Red400 } from '../constants/Colors'
 import Dashboard from '../screens/Dashboard'
 import Search from '../screens/Search'
 import Add from '../screens/Add'
@@ -37,9 +37,9 @@ const bottomTabStyles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    backgroundColor: palette.white,
+    backgroundColor: White,
     borderTopWidth: 1,
-    borderTopColor: palette.grey400,
+    borderTopColor: Grey400,
     padding: spacingUnit * 2,
     paddingLeft: spacingUnit,
     paddingRight: spacingUnit,
@@ -50,9 +50,9 @@ const bottomTabStyles = StyleSheet.create({
 
 const TabBarIcon = ({ route, focused }) => {
   if (route.name === 'Dashboard') {
-    return <DashboardIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+    return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
   } else if (route.name === 'Search') {
-    return <SearchIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+    return <SearchIcon iconColor={focused ? Blue400 : Grey50} />
    } else if (route.name === 'Add') {
     return (
       <AddIcon
@@ -64,9 +64,9 @@ const TabBarIcon = ({ route, focused }) => {
       />
     )
    } else if (route.name === 'Notifications') {
-     return <NotificationIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+     return <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
    } else if (route.name === 'Profile') {
-     return <ProfileIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+     return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
    }
 }
 
@@ -136,7 +136,7 @@ const TabBar = ({ state, descriptors, navigation, params, getUnreadNotificationC
                     <RegularText style={{
                       fontSize: 12,
                       lineHeight: 16
-                    }} color={palette.white}>{unreadNotifCount}</RegularText>
+                    }} color={White}>{unreadNotifCount}</RegularText>
                   }
                   IconBadgeStyle={
                     {
@@ -145,7 +145,7 @@ const TabBar = ({ state, descriptors, navigation, params, getUnreadNotificationC
                     top: -32,
                     right: -16,
                     position: 'absolute',
-                    backgroundColor: palette.red400,
+                    backgroundColor: Red400,
                     alignItems: 'center',
                     justifyContent: 'center'
                   }
@@ -180,9 +180,9 @@ export default function BottomTabNavigator() {
       tabBarIcon: ({ focused, color, size }) => {
         let iconName
         if (route.name === 'Dashboard') {
-          return <DashboardIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+          return <DashboardIcon iconColor={focused ? Blue400 : Grey50} />
         } else if (route.name === 'Search') {
-          return <SearchIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+          return <SearchIcon iconColor={focused ? Blue400 : Grey50} />
           } else if (route.name === 'Add') {
           return ( <AddIcon
             style={{
@@ -193,10 +193,10 @@ export default function BottomTabNavigator() {
           />)
           } else if (route.name === 'Notifications') {
             return (
-                <NotificationIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+                <NotificationIcon iconColor={focused ? Blue400 : Grey50} />
             )
           } else if (route.name === 'Profile') {
-            return <ProfileIcon iconColor={focused ? palette.blue400 : palette.grey50} />
+            return <ProfileIcon iconColor={focused ? Blue400 : Grey50} />
           }
       }
     })}

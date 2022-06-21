@@ -3,7 +3,7 @@ import { View, FlatList, Text, SafeAreaView} from 'react-native'
 import { AnimatedCircularProgress } from 'react-native-circular-progress'
 import * as Analytics from 'expo-firebase-analytics'
 
-import palette from 'theme/palette'
+import { White, Black, Orange, Grey300, Grey800, Green400 } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText, ErrorText } from '../../storybook/stories/Text'
 import { Header } from '../../components/Header'
 import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
@@ -44,11 +44,11 @@ const FollowRecommendation = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1
     }}>
     <Header rightButton={{
-        color: palette.orange,
+        color: Orange,
         text: 'Finish',
         onPress: () => {
           setFinished(true)
@@ -73,8 +73,8 @@ const FollowRecommendation = ({ navigation }) => {
                 fill={finished ? 100 : 85}
                 size={100}
                 width={10}
-                backgroundColor={palette.grey300}
-                tintColor={finished ? palette.green400: palette.orange}
+                backgroundColor={Grey300}
+                tintColor={finished ? Green400: Orange}
                 style={{
                   position: 'absolute',
                   top: -spacingUnit
@@ -98,7 +98,7 @@ const FollowRecommendation = ({ navigation }) => {
                     </View>
                 </View>
     
-    <Subheading color={palette.black} style={{
+    <Subheading color={Black} style={{
         fontSize: 36,
         textAlign: 'center',
         marginTop: spacingUnit
@@ -110,7 +110,7 @@ const FollowRecommendation = ({ navigation }) => {
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2,
         textAlign: 'center'
-      }} color={palette.grey800}>
+      }} color={Grey800}>
         The magic of Wonder is working with our community, so come follow our top users!
       </Paragraph>
       <FlatList

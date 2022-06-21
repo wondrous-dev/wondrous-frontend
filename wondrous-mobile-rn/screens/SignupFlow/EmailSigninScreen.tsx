@@ -1,17 +1,21 @@
-import React, { useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { View, SafeAreaView, Pressable, TextInput } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { RootStackParamList } from '../../types'
 import BackCaret from '../../assets/images/back-caret'
+import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder, Orange, Grey800 } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
+import Neutral from '../../assets/images/emoji/neutral'
 import { useMutation } from '@apollo/client'
 import { EMAIL_SIGNIN } from '../../graphql/mutations'
+import { useMe, withAuth } from '../../components/withAuth'
 import { styles } from '../HomeScreen'
 import { useAuth } from '../../session'
 import { navigateUserOnLogin } from '../../utils/common'
@@ -71,12 +75,12 @@ function EmailSigninScreen({
         }} onPress={() => {
           navigation.goBack()
         }}>
-          <BackCaret color={palette.white} />
+          <BackCaret color={White} />
         </Pressable>
 
         <Title style={{
           flex: 1,
-          color: palette.orange
+          color: Orange
         }}>
           Wonder
         </Title>
@@ -101,12 +105,12 @@ function EmailSigninScreen({
                 marginTop: spacingUnit*2,
                 width: spacingUnit * 43,
                 height: spacingUnit * 5.5,
-                borderColor: palette.grey300,
+                borderColor: Grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: palette.white
+                backgroundColor: White
               }}
               placeholder='Email'
               placeholderTextColor={GreyPlaceHolder}
@@ -115,7 +119,7 @@ function EmailSigninScreen({
               value={values.email}
             />
             {errors.email && touched.email ? (
-             <RegularText color={palette.red400}>{errors.email}</RegularText>
+             <RegularText color={Red400}>{errors.email}</RegularText>
            ) : null}
             <TextInput
               secureTextEntry={true}
@@ -125,12 +129,12 @@ function EmailSigninScreen({
                 marginTop: spacingUnit*2,
                 width: spacingUnit * 43,
                 height: spacingUnit * 5.5,
-                borderColor: palette.grey300,
+                borderColor: Grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: palette.white
+                backgroundColor: White
               }}
               placeholder='Password'
               placeholderTextColor={GreyPlaceHolder}
@@ -139,10 +143,10 @@ function EmailSigninScreen({
               value={values.password}
             />
             {errors.password && touched.password ? (
-             <RegularText color={palette.red400}>{errors.password}</RegularText>
+             <RegularText color={Red400}>{errors.password}</RegularText>
            ) : null}
             <PrimaryButton
-              textStyle={{ color: palette.white }}
+              textStyle={{ color: White }}
               style={{
                 width: spacingUnit * 43,
                 alignSelf: 'center',
@@ -150,7 +154,7 @@ function EmailSigninScreen({
               }}
               onPress={handleSubmit}
             >
-              <ButtonText color={palette.white}> Login </ButtonText>
+              <ButtonText color={White}> Login </ButtonText>
             </PrimaryButton>
 
           </View>
@@ -174,7 +178,7 @@ function EmailSigninScreen({
               lineHeight: 19,
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} color={palette.grey800}>Or create an account with email</Subheading>
+            }} color={Grey800}>Or create an account with email</Subheading>
             </Pressable>
     </SafeAreaView>
   )

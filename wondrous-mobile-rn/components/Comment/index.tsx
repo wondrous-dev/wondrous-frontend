@@ -1,5 +1,6 @@
 import React, { useState, useCallback } from 'react'
 import { View, StyleSheet, TouchableWithoutFeedback, Keyboard, Dimensions } from 'react-native'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { useComment } from '../../utils/hooks'
@@ -10,7 +11,7 @@ import { PrimaryButton } from '../../storybook/stories/Button'
 import { ButtonText } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import palette from 'theme/palette';
+import { Grey300, White } from '../../constants/Colors'
 
 const commentStyles = StyleSheet.create({
   commentContainer: {
@@ -24,10 +25,10 @@ const commentStyles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'center',
-    backgroundColor: palette.white,
+    backgroundColor: White,
     padding: spacingUnit * 2,
     borderTopWidth: 1,
-    borderTopColor: palette.grey300
+    borderTopColor: Grey300
   }
 })
 
@@ -135,7 +136,7 @@ const WriteComment = () => {
           width: spacingUnit * 8,
           marginLeft: spacingUnit
         }}>
-          <ButtonText color={palette.white}>
+          <ButtonText color={White}>
             Reply
           </ButtonText>
         </PrimaryButton>

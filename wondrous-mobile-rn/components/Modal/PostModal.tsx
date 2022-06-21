@@ -6,7 +6,7 @@ import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view
 
 import { TextEditor } from '../../storybook/stories/TextEditor'
 import { TextEditorContext } from '../../utils/contexts'
-import palette from 'theme/palette'
+import { Black, White, Blue400, Blue500, Grey800 } from '../../constants/Colors'
 import { ErrorText, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import { GET_USER_PROJECTS } from '../../graphql/queries/project'
@@ -121,7 +121,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={palette.blue400} style={{
+              <RegularText color={Blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -130,7 +130,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
               <View style={{
                 flex: 1
               }}>
-                <Subheading color={palette.black} style={{
+                <Subheading color={Black} style={{
                   fontSize: 24
                 }}>
                   {post ? 'Edit' : 'New'} post
@@ -141,7 +141,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
               }}>
               <Pressable style={{
                 ...modalStyles.createUpdateButton,
-                backgroundColor: (imageUploading || videoUploading) ? palette.grey800 : palette.blue500
+                backgroundColor: (imageUploading || videoUploading) ? Grey800 : Blue500
               }} onPress={() => {
                 if (videoUploading) {
                   setErrors({
@@ -174,7 +174,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                   }
                 }
               }}>
-                <RegularText color={palette.white} style={{
+                <RegularText color={White} style={{
                   fontSize: 16
                 }}>
                   {post ? 'Update': 'Create' }
@@ -208,14 +208,14 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                     }
                   ]}>
                     <View style={modalStyles.editRowTextContainer}>
-                      <RegularText color={palette.grey800} style={modalStyles.editRowText}>
+                      <RegularText color={Grey800} style={modalStyles.editRowText}>
                         Project
                       </RegularText>
                     </View>
                     <ModalDropdown value={project} setValue={setProject} items={projectDropdowns} placeholder='Select a project' zIndex={5000} />
                   </View>
             <View style={modalStyles.attachmentRow}>
-                    <LinkIcon color={palette.grey800} style={{
+                    <LinkIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => setAddLink(true)} />
                     <CameraIcon onPress={() =>{
@@ -224,10 +224,10 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                         mediaError: null
                       })
                        setCameraOpen(true)
-                      }} color={palette.grey800} style={{
+                      }} color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} />
-                    <ImageIcon color={palette.grey800} style={{
+                    <ImageIcon color={Grey800} style={{
                       marginRight: spacingUnit * 2
                     }} onPress={() => {
                       setErrors({
@@ -236,7 +236,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                       })  
                       setGalleryOpen(true)                    
                       }} />
-                    <VideoIcon color={palette.grey800} onPress={() => {
+                    <VideoIcon color={Grey800} onPress={() => {
                       setErrors({
                         ...errors,
                         mediaError: null
@@ -268,7 +268,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                             marginTop: spacingUnit * 2
                           }}>
                              <ActivityIndicator />
-                             <RegularText color={palette.grey800} style={{
+                             <RegularText color={Grey800} style={{
                                textAlign: 'center'
                              }}>
                                Video uploading...
@@ -281,7 +281,7 @@ export const FullScreenPostModal = ({ post, isVisible, setModalVisible, postMuta
                         marginTop: spacingUnit * 2
                       }}>
                          <ActivityIndicator />
-                         <RegularText color={palette.grey800} style={{
+                         <RegularText color={Grey800} style={{
                            textAlign: 'center'
                          }}>
                            Image uploading...

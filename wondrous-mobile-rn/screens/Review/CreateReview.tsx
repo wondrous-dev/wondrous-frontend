@@ -1,9 +1,10 @@
-import { useMutation } from '@apollo/client'
-import React, { useState } from 'react'
+import { useMutation, useQuery } from '@apollo/client'
+import React, { createContext, useCallback, useContext, useEffect, useState } from 'react'
 import { SafeAreaView, View, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard, Dimensions, ScrollView } from 'react-native'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
-import { ButtonText, ErrorText, Subheading } from '../../storybook/stories/Text'
+import { White, Black, Red400, Green400, Grey400, Blue400 } from '../../constants/Colors'
+import { GET_REVIEW_STATS } from '../../graphql/queries/review'
+import { ButtonText, ErrorText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, getLocale } from '../../utils/common'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { withAuth } from '../../components/withAuth'
@@ -40,10 +41,10 @@ const createReviewStyles = StyleSheet.create({
   descriptionBox: {
     fontSize: 16,
     borderWidth: 1,
-    borderColor: palette.grey400,
+    borderColor: Grey400,
     minHeight: spacingUnit * 11,
     padding: spacingUnit * 2,
-    color: palette.black,
+    color: Black,
     borderRadius: 4,
     width: Dimensions.get('window').width - (4 * spacingUnit)
   },
@@ -63,7 +64,7 @@ const CreateReview = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header />
       <TouchableWithoutFeedback 
@@ -78,7 +79,7 @@ const CreateReview = ({ navigation, route }) => {
           padding: spacingUnit * 2,
           alignItems: 'center',
         }}>
-        <Subheading color={palette.black} style={{
+        <Subheading color={Black} style={{
           textAlign: 'center',
           marginBottom: spacingUnit * 3
         }}>
@@ -91,7 +92,7 @@ const CreateReview = ({ navigation, route }) => {
               marginLeft: 0,
             },
             ...(reviewScore === 1 && {
-              backgroundColor: palette.blue400
+              backgroundColor: Blue400
             })
           }} onPress={() => setReviewScore(1)}>
             <Sad style={createReviewStyles.emoji} />
@@ -99,7 +100,7 @@ const CreateReview = ({ navigation, route }) => {
           <Pressable style={{
             ...createReviewStyles.emojiPressable,
             ...(reviewScore === 2 && {
-              backgroundColor: palette.blue400
+              backgroundColor: Blue400
             })
             }} onPress={() => setReviewScore(2)}>
             <SlightFrown style={createReviewStyles.emoji} />
@@ -107,7 +108,7 @@ const CreateReview = ({ navigation, route }) => {
           <Pressable style={{
             ...createReviewStyles.emojiPressable,
             ...(reviewScore === 3 && {
-              backgroundColor: palette.blue400
+              backgroundColor: Blue400
             })
             }} onPress={() => setReviewScore(3)}>
             <Neutral style={createReviewStyles.emoji} />
@@ -115,7 +116,7 @@ const CreateReview = ({ navigation, route }) => {
           <Pressable style={{
             ...createReviewStyles.emojiPressable,
             ...(reviewScore === 4 && {
-              backgroundColor: palette.blue400
+              backgroundColor: Blue400
             })
             }} onPress={() => setReviewScore(4)} >
             <Smile style={createReviewStyles.emoji} />
@@ -123,7 +124,7 @@ const CreateReview = ({ navigation, route }) => {
           <Pressable style={{
             ...createReviewStyles.emojiPressable,
             ...(reviewScore === 5 && {
-              backgroundColor: palette.blue400
+              backgroundColor: Blue400
             })
             }} onPress={() => setReviewScore(5)}>
             <StarEyes style={createReviewStyles.emoji} />
@@ -168,7 +169,7 @@ const CreateReview = ({ navigation, route }) => {
                 }
               }}
             >
-              <ButtonText color={palette.white}> Continue </ButtonText>
+              <ButtonText color={White}> Continue </ButtonText>
             </PrimaryButton>
             {
               !!(error) &&

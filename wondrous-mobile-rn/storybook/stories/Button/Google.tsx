@@ -4,9 +4,10 @@ import * as Google from 'expo-google-app-auth'
 
 import { ButtonText } from '../Text'
 import { SecondaryButton } from './Buttons'
+import { SvgImage } from '../Image'
 import GoogleSvg from '../../../assets/images/social-auth/google'
 import baseStyle from './style'
-import palette from 'theme/palette'
+import { Grey200 } from '../../../constants/Colors'
 import { useAuth } from '../../../session'
 import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 import * as Application from 'expo-application'
@@ -80,7 +81,7 @@ export const GoogleLogin = ({ style, callToAction, setLoginStatus, setLoginError
           width: spacingUnit * 3,
           height: spacingUnit * 3
         }} />
-        <ButtonText style={buttonStyle.googleButtonText} color={palette.grey200}>
+        <ButtonText style={buttonStyle.googleButtonText} color={Grey200}>
           Continue with Google{`     `}
         </ButtonText>
       </View>

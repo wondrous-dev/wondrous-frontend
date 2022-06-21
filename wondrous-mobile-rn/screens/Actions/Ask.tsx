@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
+import { Grey800, Purple, Red400, White, Black, Blue400, Grey450, Green400, Grey300 } from '../../constants/Colors'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { pageStyles, ReactionFeed } from './common'
 import { UPDATE_ASK } from '../../graphql/mutations'
@@ -101,31 +101,31 @@ const AskPage = ({ navigation, route }) => {
   const muxPlaybackId = ask.muxPlaybackId
   const goal = askGoal && askGoal.getGoalById
   const task = askTask && askTask.getTaskById
-  let statusColor = palette.red400, statusTextColor=palette.white, statusText='Open'
+  let statusColor = Red400, statusTextColor=White, statusText='Open'
   const completed = status === 'completed'
   const archived = status === 'archived'
 
   if (completed) {
-    statusColor = palette.green400
+    statusColor = Green400
     statusText = 'Completed'
   } else if (archived) {
-    statusColor= palette.grey300
-    statusTextColor = palette.white
+    statusColor= Grey300
+    statusTextColor = White
     statusText = 'Archived'
   }
 
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <FullScreenAskModal setModalVisible={setModalVisible} isVisible={modalVisible} ask={ask} askMutation={updateAsk} />
       <Header title='Ask' rightButton={ownedByUser && {
         style: {
           borderWidth: 1,
-          borderColor: palette.grey800
+          borderColor: Grey800
         },
-        textColor: palette.grey800,
+        textColor: Grey800,
         text: 'Edit Ask',
         onPress: () => {
           setModalVisible(true)
@@ -166,7 +166,7 @@ const AskPage = ({ navigation, route }) => {
                 })
   
               }} style={pageStyles.markAsComplete}>
-                <RegularText color={palette.green400}>
+                <RegularText color={Green400}>
                   Mark as complete
                 </RegularText>
               </Pressable>
@@ -180,7 +180,7 @@ const AskPage = ({ navigation, route }) => {
             marginTop: spacingUnit,
             flexDirection: 'row'
           }}>
-            <RegularText color={palette.black}>
+            <RegularText color={Black}>
               From{` `}
                 <RegularText onPress={() => navigation.navigate('Root', {
                 screen: tab ||'Profile',
@@ -190,16 +190,16 @@ const AskPage = ({ navigation, route }) => {
                     goal
                   }
                 }
-              })} color={palette.blue400} style={{
+              })} color={Blue400} style={{
                   marginLeft: spacingUnit * 0.5
                 }}>
                   {goal.name} {` `} {
                     task &&
                     <>
-                    <RegularText color={palette.black}>
+                    <RegularText color={Black}>
                       ->
                     </RegularText>
-                    <RegularText color={palette.blue400} onPress={() => navigation.navigate('Root', {
+                    <RegularText color={Blue400} onPress={() => navigation.navigate('Root', {
                       screen: tab || 'Profile',
                       params: {
                         screen: 'TaskPage',
@@ -221,7 +221,7 @@ const AskPage = ({ navigation, route }) => {
           <View style={{
             marginTop: spacingUnit
           }}>
-            <RegularText color={palette.black}>
+            <RegularText color={Black}>
               From{` `}
                 <RegularText onPress={() => navigation.navigate('Root', {
                 screen: tab || 'Profile',
@@ -231,7 +231,7 @@ const AskPage = ({ navigation, route }) => {
                     task
                   }
                 }
-              })} color={palette.blue400} style={{
+              })} color={Blue400} style={{
                   marginLeft: spacingUnit * 0.5
                 }}>
                   {task.name}
@@ -242,10 +242,10 @@ const AskPage = ({ navigation, route }) => {
         {
           ask.additionalData && ask.additionalData.link &&
           <View style={pageStyles.linkContainer}>
-            <LinkIcon color={palette.grey800} style={{
+            <LinkIcon color={Grey800} style={{
               marginRight: spacingUnit
             }} />
-            <Paragraph color={palette.blue400} style={pageStyles.link}>
+            <Paragraph color={Blue400} style={pageStyles.link}>
               {ask.additionalData.link}
             </Paragraph>
           </View>
@@ -261,7 +261,7 @@ const AskPage = ({ navigation, route }) => {
               video: muxPlaybackId
             },
             ...images
-          ] : images} images={true} passiveDotColor={palette.grey800} activeDotColor={palette.blue400} />
+          ] : images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
         }
         </View>
         <ReactionFeed type={'ask'} objId={ask.id} user={user} tab={tab} />

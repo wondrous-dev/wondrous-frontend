@@ -1,8 +1,8 @@
-import React from 'react'
-import { SafeAreaView, Dimensions } from 'react-native'
+import React, { useCallback, useEffect, useState } from 'react'
+import { SafeAreaView, ScrollView, View, Image, StyleSheet, Dimensions, Platform, TextInput, TouchableOpacity, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
 import Cancel from '../../assets/images/cancel'
-import palette from 'theme/palette'
+import { White } from '../../constants/Colors'
 
 import { SafeImage } from '../../storybook/stories/Image'
 import { spacingUnit } from '../../utils/common'
@@ -20,7 +20,7 @@ const PictureModal = ({ picture, isVisible, setModalVisible }) => {
         justifyContent: 'center',
         alignItems: 'center'
       }}>
-        <Cancel color={palette.white} style={{
+        <Cancel color={White} style={{
           marginBottom: spacingUnit,
           width: spacingUnit * 4,
           height: spacingUnit * 4,

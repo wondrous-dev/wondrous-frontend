@@ -1,10 +1,12 @@
-import { useMutation, useQuery } from '@apollo/client'
-import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, Pressable, FlatList } from 'react-native'
+import { useMutation, useLazyQuery, useQuery } from '@apollo/client'
+import React, { useRef, useEffect, useState } from 'react'
+import { SafeAreaView, View, ScrollView, StyleSheet, Pressable, FlatList } from 'react-native'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
-import { Paragraph, Subheading } from '../../storybook/stories/Text'
+import { White, Black, Red400, Green400, Grey400, Grey500, Blue500, Blue400 } from '../../constants/Colors'
+import { GET_REVIEW_STATS } from '../../graphql/queries/review'
+import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
+import { PrimaryButton } from '../../storybook/stories/Button'
 import { withAuth, useMe } from '../../components/withAuth'
 import { GET_USER_ACTIONS } from '../../graphql/queries'
 import { sortByDueDate } from '../../utils/date'
@@ -13,6 +15,7 @@ import { COMPLETE_GOAL, COMPLETE_TASK, CREATE_GOAL, CREATE_TASK, UPDATE_GOAL, UP
 import { GoalCongratsModal, TaskCongratsModal } from '../../components/Modal'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { FullScreenTaskModal } from '../../components/Modal/TaskModal'
+import { SvgImage } from '../../storybook/stories/Image'
 
 const HouseKeeping = ({ route, navigation }) => {
   const user = useMe()
@@ -98,14 +101,14 @@ const HouseKeeping = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <FullScreenGoalModal setModalVisible={setGoalModalVisible} isVisible={goalModal}  goalMutation={createGoal} />
       <FullScreenTaskModal setModalVisible={setTaskModalVisible} isVisible={taskModal} taskMutation={createTask} />
         <GoalCongratsModal user={user} isVisible={goalCompleteModal} setModalVisible={setGoalCompleteModal} />
         <TaskCongratsModal user={user} isVisible={taskCompleteModal} setModalVisible={setTaskCompleteModal} />
       <Header rightButton={{
-        color: palette.blue500,
+        color: Blue500,
         text: 'Finish',
         onPress: () => {
           navigation.navigate('Root', {
@@ -124,12 +127,12 @@ const HouseKeeping = ({ route, navigation }) => {
           alignItems: 'center',
           padding: spacingUnit * 2
         }}>
-          <Subheading color={palette.black} style={{
+          <Subheading color={Black} style={{
             marginBottom: spacingUnit
           }}>
             House keeping
           </Subheading>
-          <Paragraph color={palette.grey500} style={{
+          <Paragraph color={Grey500} style={{
             textAlign: 'center',
             paddingLeft: spacingUnit * 3,
             paddingRight: spacingUnit * 3
@@ -147,12 +150,12 @@ const HouseKeeping = ({ route, navigation }) => {
             alignItems: 'center',
             marginRight: spacingUnit * 4
           }}>
-            <Paragraph color={palette.blue400} style={{
+            <Paragraph color={Blue400} style={{
               fontSize: 22,
             }}>
               +{` `}
             </Paragraph>
-              <Paragraph color={palette.blue400}>
+              <Paragraph color={Blue400}>
                 Add goal
               </Paragraph>
               </Pressable>
@@ -160,12 +163,12 @@ const HouseKeeping = ({ route, navigation }) => {
             flexDirection: 'row',
             alignItems: 'center'
           }}>
-            <Paragraph color={palette.blue400} style={{
+            <Paragraph color={Blue400} style={{
               fontSize: 22,
             }}>
               +{` `}
             </Paragraph>
-              <Paragraph color={palette.blue400}>
+              <Paragraph color={Blue400}>
                 Add task
               </Paragraph>
           </Pressable>

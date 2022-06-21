@@ -11,7 +11,7 @@ import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { withAuth, useMe } from '../../components/withAuth'
 import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
+import { Black, Blue500, Grey300, White, Blue400, Grey800, Purple, Grey700 } from '../../constants/Colors'
 import { profileStyles } from './style'
 import { GET_PROJECT_BY_ID, GET_PROJECT_FEED, GET_PROJECT_ACTIONS, GET_PROJECT_FOLLOW_REQUEST } from '../../graphql/queries/project'
 import { UPDATE_PROJECT, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPLETE_TASK, FOLLOW_PROJECT, UNFOLLOW_PROJECT, REMOVE_FOLLOW_REQUEST, CREATE_GOAL, CREATE_ASK } from '../../graphql/mutations'
@@ -66,7 +66,7 @@ const TagView = ({ tag }) => {
 
   return (
     <View style={{
-      backgroundColor: palette.purple,
+      backgroundColor: Purple,
       paddingLeft: spacingUnit,
       paddingRight: spacingUnit,
       paddingTop: 2,
@@ -75,7 +75,7 @@ const TagView = ({ tag }) => {
       marginRight: spacingUnit * 2,
       marginTop: spacingUnit
     }}>
-      <RegularText color={palette.white}>
+      <RegularText color={White}>
         {capitalizeFirstLetter(tag)}
       </RegularText>
     </View>
@@ -486,7 +486,7 @@ function ProjectProfile({
             paddingRight: spacingUnit * 2,
             marginTop: spacingUnit * -1,
             marginBottom: spacingUnit,
-            color: palette.grey800
+            color: Grey800
           }}>
             Your project will only appear on our search page if there is a profile picture!  
           </RegularText>
@@ -554,7 +554,7 @@ function ProjectProfile({
           <View style={profileStyles.profileHeader}>
           <Subheading style={{
             fontSize: 18
-          }} color={palette.black}>
+          }} color={Black}>
             {project.name}
           </Subheading>
           </View>
@@ -565,7 +565,7 @@ function ProjectProfile({
                 ...profileStyles.editButton,
                 marginRight: spacingUnit
               }} onPress={() => setEditProfileModal(true)}>
-                <RegularText color={palette.black}>
+                <RegularText color={Black}>
                   Edit Project
                 </RegularText>
               </SecondaryButton>
@@ -574,7 +574,7 @@ function ProjectProfile({
                 paddingTop: 0,
                 paddingBottom: 0
               }} onPress={() => setInviteCollaboratorModal(true)}>
-                <RegularText color={palette.white} >
+                <RegularText color={White} >
                   Invite Collaborators
                 </RegularText>
               </PrimaryButton>
@@ -591,7 +591,7 @@ function ProjectProfile({
               setFollowing(false)
               unfollowProject()
             }}>
-              <Paragraph color={palette.black}>
+              <Paragraph color={Black}>
                {
                  following
                  ?
@@ -610,7 +610,7 @@ function ProjectProfile({
               }
               followProject()
             }} style={profileStyles.followButton}>
-              <Paragraph color={palette.white}>
+              <Paragraph color={White}>
                 Follow
               </Paragraph>
             </Pressable>
@@ -623,7 +623,7 @@ function ProjectProfile({
             <View style={[profileStyles.profileInfoContainer, {
               marginTop: spacingUnit,
             }]}>
-              <Paragraph color={palette.black} style={{
+              <Paragraph color={Black} style={{
                 flexWrap: 'wrap',
                 textAlign: 'left'
               }}>
@@ -649,12 +649,12 @@ function ProjectProfile({
               }
             })
           }}>
-            <Link color={palette.grey800} style={{
+            <Link color={Grey800} style={{
               marginRight: spacingUnit * 0.5,
               width: spacingUnit * 2.5,
               height: spacingUnit * 2.5
             }} />
-            <Paragraph color={palette.blue400}>
+            <Paragraph color={Blue400}>
               Project links
             </Paragraph>
           </Pressable>
@@ -720,7 +720,7 @@ function ProjectProfile({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1
     }}
     >
@@ -770,7 +770,7 @@ function ProjectProfile({
         ItemSeparatorComponent={() => (
           <View
           style={[(feedSelected || discussionSelected) && {
-            borderBottomColor: palette.grey300,
+            borderBottomColor: Grey300,
             borderBottomWidth: 1,
           }]}
           />
@@ -784,17 +784,17 @@ function ProjectProfile({
                 alignItems: 'center',
                 marginTop: spacingUnit * 10
               }}>
-                <Lock color={palette.grey800} style={{
+                <Lock color={Grey800} style={{
                   alignSelf: 'center',
                   width: spacingUnit * 6,
                   height: spacingUnit * 6
                 }} />
-                <Subheading color={palette.grey800} style={{
+                <Subheading color={Grey800} style={{
                   marginTop: spacingUnit * 2
                 }}>
                   This is a private project
                 </Subheading>
-                <Paragraph color={palette.grey700} style={{
+                <Paragraph color={Grey700} style={{
                   marginTop: spacingUnit
                 }}>
                   Follow this project to see their activity
@@ -826,17 +826,17 @@ function ProjectProfile({
                 alignItems: 'center',
                 marginTop: spacingUnit * 10
               }}>
-                <Lock color={palette.grey800} style={{
+                <Lock color={Grey800} style={{
                   alignSelf: 'center',
                   width: spacingUnit * 6,
                   height: spacingUnit * 6
                 }} />
-                <Subheading color={palette.grey800} style={{
+                <Subheading color={Grey800} style={{
                   marginTop: spacingUnit * 2
                 }}>
                   This is a private project
                 </Subheading>
-                <Paragraph color={palette.grey700} style={{
+                <Paragraph color={Grey700} style={{
                   marginTop: spacingUnit
                 }}>
                   Follow this project to see their activity

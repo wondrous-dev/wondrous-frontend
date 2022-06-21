@@ -9,7 +9,7 @@ import * as Permissions from 'expo-permissions'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, White, Blue500, Red400, Grey500, Grey300, Orange } from '../../constants/Colors'
 import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -34,7 +34,7 @@ export const usernameSetupStyles = StyleSheet.create({
   },
   stepCount: {
     fontSize: 16,
-    color: palette.blue500,
+    color: Blue500,
     fontFamily: 'Rubik',
     fontStyle: 'normal',
     fontWeight: '500',
@@ -76,7 +76,7 @@ const NotificationPrompt = ({ navigation }) => {
 
   return (
     <View style={usernameSetupStyles.usernameInputContainer}>
-      <Subheading color={palette.black} style={{
+      <Subheading color={Black} style={{
         fontSize: 32
       }}>
         Notifications
@@ -87,14 +87,14 @@ const NotificationPrompt = ({ navigation }) => {
         textAlign: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
-      }} color={palette.grey500}>
+      }} color={Grey500}>
         So you know when your community interacts with you and for us to keep you accountable!
       </Paragraph>
       <View>
         <PrimaryButton
-          textStyle={{ color: palette.white }}
+          textStyle={{ color: White }}
           style={{
-            backgroundColor: palette.orange,
+            backgroundColor: Orange,
             width: spacingUnit * 43,
             alignSelf: 'center',
             marginTop: spacingUnit // this is not consistent with the next page on figma
@@ -105,13 +105,13 @@ const NotificationPrompt = ({ navigation }) => {
             navigation.push('UserInterestCategory')
           }}
         >
-          <ButtonText color={palette.white}> Turn on notifications </ButtonText>
+          <ButtonText color={White}> Turn on notifications </ButtonText>
         </PrimaryButton>
         <PrimaryButton
-          textStyle={{ color: palette.white }}
+          textStyle={{ color: White }}
           style={{
-            backgroundColor: palette.white,
-            borderColor: palette.orange,
+            backgroundColor: White,
+            borderColor: Orange,
             borderWidth: 1,
             width: spacingUnit * 43,
             alignSelf: 'center',
@@ -121,7 +121,7 @@ const NotificationPrompt = ({ navigation }) => {
             navigation.push('UserInterestCategory')
           }}
         >
-          <ButtonText color={palette.orange}> Continue </ButtonText>
+          <ButtonText color={Orange}> Continue </ButtonText>
         </PrimaryButton>
 
           </View>
@@ -135,7 +135,7 @@ function NotificationSetupScreen({
 }: StackScreenProps<RootStackParamList, 'NotificationPrompt'>) {
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1,
     }}>
     <KeyboardAvoidingView
@@ -147,9 +147,9 @@ function NotificationSetupScreen({
           percent={50}
           radius={50}
           borderWidth={10}
-          color={palette.red400}
-          shadowColor={palette.grey300}
-          bgColor={palette.white}
+          color={Red400}
+          shadowColor={Grey300}
+          bgColor={White}
         >
           <BigMouthSmile />
         </ProgressCircle>

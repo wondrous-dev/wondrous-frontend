@@ -28,7 +28,7 @@ import { SvgImage } from '../Image'
 import Placeholder from '../../../assets/images/placeholder'
 import DefaultProfilePicture from '../../../assets/images/default-profile-picture.jpg'
 import CoolProfilePic from '../../../assets/images/default-profile.png'
-import palette from 'theme/palette'
+import { Black, Blue500, Grey100, Grey200, Grey300, Grey400, White } from '../../../constants/Colors'
 import apollo from '../../../services/apollo'
 import { GET_AUTOCOMPLETE_USERS, GET_PROJECTS_AUTOCOMPLETE } from '../../../graphql/queries'
 import { spacingUnit } from '../../../utils/common'
@@ -73,7 +73,7 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
         padding: 10,
         alignItems: 'center',
         borderBottomWidth: 1,
-        borderBottomColor: palette.grey100,
+        borderBottomColor: Grey100,
         
       }}>
         {
@@ -93,10 +93,10 @@ const AutocompleteListItem = ({ user, autocompleteFill }) => {
           }} />
         }
         <View>
-          <Text style={{color: palette.black, marginBottom: 4, fontWeight: 'bold'}}>
+          <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
             {user?.firstName || ''} {user?.lastName || ''}
           </Text>
-          <Text style={{ color: palette.grey200, fontSize: 14 }}>
+          <Text style={{ color: Grey200, fontSize: 14 }}>
             @{user?.username}
           </Text>
         </View>
@@ -111,9 +111,9 @@ const AutocompleteList = ({ users, autocompleteLoading, autocompleteFill}) => {
     <SafeAreaView style={{
       flex: 1,
       width: '100%',
-      backgroundColor: palette.white,
+      backgroundColor: White,
       borderWidth: 1,
-      borderColor: palette.grey300,
+      borderColor: Grey300,
       marginTop: margin,
       zIndex: 10,
       position: 'absolute',
@@ -290,15 +290,15 @@ export class RichTextEditor extends React.Component {
   createContentStyle = (theme) => {
     // Can be selected for more situations (cssText or contentCSSText).
     const contentStyle = {
-        backgroundColor: palette.white,
-        color: palette.black,
+        backgroundColor: White,
+        color: Black,
         placeholderColor: 'gray',
         // cssText: '#editor {background-color: #f3f3f3}', // initial valid
         contentCSSText: 'font-size: 16px; height: 80px', // initial valid
     };
     if (theme === 'light') {
         contentStyle.backgroundColor = '#fff';
-        contentStyle.color = palette.black;
+        contentStyle.color = Black;
         contentStyle.placeholderColor = '#a9a9a9';
     }
     return contentStyle;
@@ -310,7 +310,7 @@ export class RichTextEditor extends React.Component {
         return {
           height: 80,
           placeholder: 'Add description...',
-          backgroundColor: palette.white,
+          backgroundColor: White,
           style: {
             position: 'absolute',
             bottom: 0,
@@ -321,7 +321,7 @@ export class RichTextEditor extends React.Component {
         return {
           height: 30,
           placeholder: 'Add comment...',
-          backgroundColor: palette.white,
+          backgroundColor: White,
           paddingLeft: 0,
           style: {
             width: '100%',
@@ -332,7 +332,7 @@ export class RichTextEditor extends React.Component {
         return {
           height: 30,
           placeholder: 'Add comment...',
-          backgroundColor: palette.grey400,
+          backgroundColor: Grey400,
           style: {
             width: '100%',
             height: 30
@@ -370,7 +370,7 @@ export class RichTextEditor extends React.Component {
               editorStyle={{
                 maxHeight: typeParams?.height,
                 borderWidth: 1,
-                borderColor: palette.grey300,
+                borderColor: Grey300,
                 fontFamily: 'Rubik Light',
                 backgroundColor: typeParams?.backgroundColor
               }}
@@ -423,8 +423,8 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef, 
             width: '200%',
             alignItems: 'center',
             borderBottomWidth: 1,
-            borderBottomColor: palette.grey100,
-            backgroundColor: palette.white
+            borderBottomColor: Grey100,
+            backgroundColor: White
           }}>
             {
               element.profilePicture && element.profilePicture !== 'None' ?
@@ -455,7 +455,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef, 
               )
             }
             <View>
-              <Text style={{color: palette.black, marginBottom: 4, fontWeight: 'bold'}}>
+              <Text style={{color: Black, marginBottom: 4, fontWeight: 'bold'}}>
                 {
                   (element?.firstName || element?.lastName) ?
                     `${element?.firstName || ''} ${element?.lastName || ''}`
@@ -465,7 +465,7 @@ const renderSuggestions: (suggestions: Suggestion[], renderStyle, textInputRef, 
               </Text>
               {
                 element?.username &&
-                  <Text style={{ color: palette.grey200, fontSize: 14 }}>
+                  <Text style={{ color: Grey200, fontSize: 14 }}>
                   @{element?.username}
                 </Text>
               }
@@ -536,13 +536,13 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
           {
             trigger: '@',
             renderSuggestions: renderSuggestions(userArray || [], renderSuggestionStyle, textInputRef, setName),
-            textStyle: {fontWeight: 'bold', color: palette.blue500},
+            textStyle: {fontWeight: 'bold', color: Blue500},
             isBottomMentionSuggestionsRender: renderBottom
           },
           {
             trigger: '#',
             renderSuggestions: renderSuggestions(projectArray || [], renderSuggestionStyle, textInputRef, setName),
-            textStyle: {fontWeight: 'bold', color: palette.blue500},
+            textStyle: {fontWeight: 'bold', color: Blue500},
             isBottomMentionSuggestionsRender: renderBottom
           },
         ]}
@@ -553,10 +553,10 @@ export const TextEditor = ({ style, renderSuggestionStyle, renderBottom=true, ..
           paddingBottom: 12,
           paddingLeft: 12,
           paddingRight: 12,
-          backgroundColor: palette.white,
+          backgroundColor: White,
           borderRadius: spacingUnit * 3,
           borderWidth: 1,
-          borderColor: palette.grey300,
+          borderColor: Grey300,
           alignItems: 'center',
           justifyContent: 'center',
           fontSize: 16,

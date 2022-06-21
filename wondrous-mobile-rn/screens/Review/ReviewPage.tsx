@@ -5,9 +5,10 @@ import { SafeAreaView, StyleSheet, View, KeyboardAvoidingView, ScrollView, Press
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 
+import { WriteComment } from '../../components/Comment'
 import { Header } from '../../components/Header'
 import { useMe, withAuth } from '../../components/withAuth'
-import palette from 'theme/palette'
+import { White, Black, Grey400, Grey200 } from '../../constants/Colors'
 import { CREATE_REVIEW_COMMENT } from '../../graphql/mutations'
 import { GET_REVIEW_BY_ID, GET_REVIEW_COMMENTS } from '../../graphql/queries/review'
 import { Paragraph, Subheading, RegularText } from '../../storybook/stories/Text'
@@ -89,7 +90,7 @@ const ReviewPage = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header />
       {
@@ -104,7 +105,7 @@ const ReviewPage = ({ navigation, route }) => {
       }}
       ref={scrollViewRef}>
         <View style={{flexDirection: 'row'}}>
-        <Subheading color={palette.black}>
+        <Subheading color={Black}>
           Review on {format(new Date(review.createdAt), 'dd/MM/yy')}:
         </Subheading>
         <GetReviewIcon review={review}  style={{
@@ -125,7 +126,7 @@ const ReviewPage = ({ navigation, route }) => {
         {
           reviewCommentData && reviewCommentData.getReviewComments && reviewCommentData.getReviewComments.length > 0 &&
           <View style={{
-            borderTopColor: palette.grey400,
+            borderTopColor: Grey400,
             borderTopWidth: 1,
             marginTop: spacingUnit * 3,
           }}>
@@ -135,7 +136,7 @@ const ReviewPage = ({ navigation, route }) => {
                   <View style={{
                     padding: spacingUnit * 2,
                     ...(index !== reviewCommentData.getReviewComments.length -1 && {
-                      borderBottomColor: palette.grey400,
+                      borderBottomColor: Grey400,
                       borderBottomWidth: 1
                     })
                   }}>
@@ -159,7 +160,7 @@ const ReviewPage = ({ navigation, route }) => {
                         }} style={{
                           fontFamily: 'Rubik SemiBold',
                           marginRight: spacingUnit * 0.5
-                        }} color={palette.black}
+                        }} color={Black}
                         onPress={() => navigation.navigate('Root', {
                           screen: route && route.params && route.params.tab || 'Profile',
                           params: {
@@ -170,12 +171,12 @@ const ReviewPage = ({ navigation, route }) => {
                           }
                         })}         
                         >{item.commenterFirstName} {item.commenterLastName}{` `}</Paragraph>
-                        <RegularText  color={palette.grey200}>{timeAgo.format(new Date(item.createdAt))}</RegularText>     
+                        <RegularText  color={Grey200}>{timeAgo.format(new Date(item.createdAt))}</RegularText>     
 
                         </View>
                     </View>
                     <View style={reviewStyles.content}>
-                    <Paragraph color={palette.black} style={reviewStyles.commentText}>
+                    <Paragraph color={Black} style={reviewStyles.commentText}>
                       {renderMentionString({ content: item.content, navigation, tab })}
                       </Paragraph>
                     </View>

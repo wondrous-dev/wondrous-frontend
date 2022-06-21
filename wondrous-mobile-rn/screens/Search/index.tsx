@@ -3,10 +3,11 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, ScrollView, FlatList, View, TouchableWithoutFeedback, Keyboard, Image, Pressable, StyleSheet, RefreshControl } from 'react-native'
 import { createStackNavigator } from '@react-navigation/stack'
 
+import SearchIcon from '../../assets/images/bottomNav/search'
 import { useMe, withAuth } from '../../components/withAuth'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
+import { White, Grey100, Grey800, Grey300,Grey200, Black, Grey550, Grey500 } from '../../constants/Colors'
 import { capitalizeFirstLetter, spacingUnit, wait } from '../../utils/common'
 import { useMutation, useQuery } from '@apollo/client'
 import { GET_USERS_AND_PROJECTS } from '../../graphql/queries/search'
@@ -44,7 +45,7 @@ const Stack = createStackNavigator()
 const searchStyles = StyleSheet.create({
   tags: {
     borderWidth: 1,
-    borderColor: palette.grey300,
+    borderColor: Grey300,
     padding: spacingUnit * 0.5,
     paddingLeft: spacingUnit,
     paddingRight: spacingUnit,
@@ -110,7 +111,7 @@ const SearchResult = ({ result, project, user }) => {
       }
     }} style={{
       flexDirection: 'row',
-      borderBottomColor: palette.grey300,
+      borderBottomColor: Grey300,
       borderBottomWidth: 1,
       paddingLeft: spacingUnit * 2,
       paddingRight: spacingUnit * 2,
@@ -118,7 +119,7 @@ const SearchResult = ({ result, project, user }) => {
       paddingBottom: spacingUnit * 1.5
     }}>
       {
-        profilePicture && profilePicture !== 'None' ?
+          profilePicture && profilePicture !== 'None' ?
           <SafeImage
           src={profilePicture} style={{
             width: 30,
@@ -138,18 +139,18 @@ const SearchResult = ({ result, project, user }) => {
       <View style={{
         flex: 1
       }}>
-        <Paragraph style={{color: palette.black, fontWeight: 'bold', fontFamily: 'Rubik SemiBold'}}>
+        <Paragraph style={{color: Black, fontWeight: 'bold', fontFamily: 'Rubik SemiBold'}}>
           {user ? `${firstName || ''} ${lastName || ''}` : name}
         </Paragraph>
         {
           user &&
-          <RegularText color={palette.grey200} style={{ fontSize: 14 }}>
+          <RegularText color={Grey200} style={{ fontSize: 14 }}>
             @{username}
           </RegularText>
         }
         {
           project &&
-          <RegularText color={palette.black}>
+          <RegularText color={Black}>
             {description}
           </RegularText>
         }
@@ -198,7 +199,7 @@ const ProjectDisplay = ({ item }) => {
       <View style={{
         flex: 1
       }}>
-        <Paragraph color={palette.black} style={{
+        <Paragraph color={Black} style={{
 
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -218,7 +219,7 @@ const ProjectDisplay = ({ item }) => {
             {creator?.username}
           </Paragraph>
         </Paragraph>
-        <Paragraph color={palette.black}>
+        <Paragraph color={Black}>
           {description}
         </Paragraph>
       </View>
@@ -228,7 +229,7 @@ const ProjectDisplay = ({ item }) => {
       marginTop: spacingUnit,
     }}>
       {/* <View style={searchStyles.tags}>
-        <RegularText color={palette.grey500}>
+        <RegularText color={Grey500}>
           <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>
@@ -238,14 +239,14 @@ const ProjectDisplay = ({ item }) => {
         </RegularText>
       </View>
       <View style={searchStyles.tags}>
-        <RegularText color={palette.grey500}>
+        <RegularText color={Grey500}>
         <RegularText style={{
           fontFamily: 'Rubik SemiBold'
         }}>{followCount} </RegularText> {followCount === 1 ? 'follower' : 'followers'}
         </RegularText>
       </View> */}
       <View style={searchStyles.tags}>
-        <RegularText color={palette.grey500} style={{
+        <RegularText color={Grey500} style={{
           fontFamily: 'Rubik SemiBold'
         }}>
         {capitalizeFirstLetter(category)}
@@ -254,7 +255,7 @@ const ProjectDisplay = ({ item }) => {
       {
         tags && tags.map(tag => (
           <View style={searchStyles.tags}>
-          <RegularText color={palette.grey500} style={{
+          <RegularText color={Grey500} style={{
             fontFamily: 'Rubik SemiBold'
           }}>
           {capitalizeFirstLetter(projectTagHash[tag])}
@@ -318,7 +319,7 @@ function DefaultSearch({
   return (
     <TouchableWithoutFeedback onPress={() => Keyboard.dismiss()}>
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1
     }}>
       <Header search={true} searchString={searchString} setSearchString={setSearchString} setFocus={setFocus} />
@@ -334,7 +335,7 @@ function DefaultSearch({
           }}>
             {
               filteredUsers.length > 0 && 
-              <Paragraph color={palette.grey800} style={{
+              <Paragraph color={Grey800} style={{
                 paddingLeft: spacingUnit * 2,
                 paddingRight: spacingUnit * 2,
                 marginBottom: spacingUnit
@@ -349,7 +350,7 @@ function DefaultSearch({
             })}
             {
               searchData.projects.length > 0 &&
-              <Paragraph color={palette.grey800} style={{
+              <Paragraph color={Grey800} style={{
                 paddingLeft: spacingUnit * 2,
                 paddingRight: spacingUnit * 2,
                 marginBottom: spacingUnit,
@@ -368,7 +369,7 @@ function DefaultSearch({
           </ScrollView>
           </Pressable>
           :
-          <Paragraph color={palette.grey800} style={{
+          <Paragraph color={Grey800} style={{
             paddingLeft: spacingUnit * 2,
             marginTop: spacingUnit * 2
           }}>
@@ -386,7 +387,7 @@ function DefaultSearch({
           <View style={{
             marginTop: spacingUnit * 2
           }}>
-            <Subheading color={palette.grey800} style={{
+            <Subheading color={Grey800} style={{
               paddingLeft: spacingUnit * 2,
               marginBottom: spacingUnit * 3
             }}>

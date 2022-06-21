@@ -1,8 +1,9 @@
-import React from 'react'
-import { SafeAreaView } from 'react-native'
+import React, { useCallback, useState } from 'react'
+import { SafeAreaView, ScrollView, View, TextInput, TouchableWithoutFeedback, Keyboard, Pressable, ActivityIndicator } from 'react-native'
 import Modal from 'react-native-modal'
-import palette from 'theme/palette'
+import { Black, White } from '../../constants/Colors'
 import { PrimaryButton } from '../../storybook/stories/Button'
+import { SvgImage } from '../../storybook/stories/Image'
 import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
 import { modalStyles } from './common'
@@ -24,7 +25,7 @@ export const ProjectFAQModal = ({ isVisible, setModalVisible }) => {
           marginTop: spacingUnit * 10,
           marginBottom: spacingUnit * 4
         }} />
-        <Subheading color={palette.black} style={{
+        <Subheading color={Black} style={{
           fontSize: 18,
           lineHeight: 28,
           paddingLeft: spacingUnit * 2,
@@ -48,7 +49,7 @@ export const ProjectFAQModal = ({ isVisible, setModalVisible }) => {
         </Paragraph>
 
         <PrimaryButton onPress={() => setModalVisible(false)}>
-          <ButtonText color={palette.white}>
+          <ButtonText color={White}>
             Got it
           </ButtonText>
         </PrimaryButton>

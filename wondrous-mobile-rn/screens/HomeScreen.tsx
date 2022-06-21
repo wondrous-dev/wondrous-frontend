@@ -1,18 +1,21 @@
 import * as React from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { StyleSheet, SafeAreaView, Image, Dimensions } from 'react-native'
+import { StyleSheet, View, SafeAreaView, Platform, Image, Dimensions } from 'react-native'
 import * as Notifications from 'expo-notifications'
+import * as Analytics from 'expo-firebase-analytics'
 import * as Sentry from 'sentry-expo'
 
 import Branch from '../services/branch'
 import { RootStackParamList } from '../types'
-import palette from 'theme/palette'
-import { Title, Paragraph, ButtonText } from '../storybook/stories/Text'
+import { Orange, Black, White, Green400, Grey800 } from '../constants/Colors'
+import { Title, Subheading, Paragraph, ButtonText } from '../storybook/stories/Text'
 import { MyCarousel } from '../storybook/stories/Carousel'
 import { PrimaryButton, SecondaryButton } from '../storybook/stories/Button'
-import { moderateScale } from '../utils/scale'
-import { snakeToCamelObj, spacingUnit } from '../utils/common'
-import { withAuth } from '../components/withAuth'
+import { scale, moderateScale, verticalScale } from '../utils/scale'
+import { navigateUserOnLogin, snakeToCamelObj, spacingUnit, usePrevious } from '../utils/common'
+import { useMe, withAuth } from '../components/withAuth'
+import { useQuery } from '@apollo/client'
+import { GET_LOGGED_IN_USER, WHOAMI } from '../graphql/queries'
 import apollo from '../services/apollo'
 import { getNotificationPressFunction } from './Notifications'
 import ExampleApp from '../assets/images/homepage-icon.png'
@@ -117,27 +120,27 @@ function HomeScreen({
   return (
     <SafeAreaView style={styles.container}>
       <Title style={{
-        color: palette.white,
+        color: White,
         marginTop: spacingUnit * 10,
         fontFamily: 'Rubik SemiBold',
         fontSize: 35
       }}>
         Welcome to Wonder
       </Title>
-      <MyCarousel data={homeScreens} activeDotColor={palette.white} passiveDotColor={palette.grey800} containerStyle={{
+      <MyCarousel data={homeScreens} activeDotColor={White} passiveDotColor={Grey800} containerStyle={{
         marginTop: 0
       }} />
       <PrimaryButton onPress={() => navigation.push('Signup')} textStyle={{
-        color: palette.white
+        color: White
       }} textPressStyle = {{
-        color: palette.white
+        color: White
       }} style={{
         marginTop: spacingUnit,
         zIndex: 10
       }}>
           <ButtonText style={{
             fontSize: 16
-          }} color={palette.white}>
+          }} color={White}>
           Get started
           </ButtonText>
       </PrimaryButton>
@@ -150,7 +153,7 @@ function HomeScreen({
       }}>
         <ButtonText style={{
             fontSize: 16
-          }} color={palette.grey800}>
+          }} color={Grey800}>
           Log in
         </ButtonText>
       </SecondaryButton>
@@ -179,7 +182,7 @@ export default withAuth(HomeScreen)
 export const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: palette.orange,
+    backgroundColor: Orange,
     alignItems: 'center',
     paddingTop: 8
   },

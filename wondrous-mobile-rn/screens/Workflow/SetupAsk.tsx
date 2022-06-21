@@ -1,15 +1,17 @@
 import React, { useRef, useState } from 'react'
-import { SafeAreaView, View, StyleSheet, Pressable, FlatList } from 'react-native'
+import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import { useQuery, useMutation } from '@apollo/client'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
+import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
-import { spacingUnit } from '../../utils/common'
+import { Grey400, White, Black, Grey500, Blue500 } from '../../constants/Colors'
+import { spacingUnit, getLocale } from '../../utils/common'
 import AddIcon from '../../assets/images/add-dark-button'
+import { SvgImage } from '../../storybook/stories/Image'
 import AskIcon from '../../assets/images/ask/standalone'
 import { FullScreenAskModal } from '../../components/Modal/AskModal'
 import { CREATE_ASK } from '../../graphql/mutations'
@@ -66,7 +68,7 @@ function SetupAskScreen({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header skip='Root' skipParams={{
         screen: 'Profile',
@@ -77,7 +79,7 @@ function SetupAskScreen({
           }
         }
       }} rightButton={askArray && askArray.length > 0 && {
-        color: palette.blue500,
+        color: Blue500,
         text: 'Continue',
         onPress: () => {
           navigation.navigate('Root', {
@@ -108,12 +110,12 @@ function SetupAskScreen({
                 width: spacingUnit * 6,
                 height: spacingUnit * 6
               }} />
-              <Subheading color={palette.black} style={{
+              <Subheading color={Black} style={{
                 marginTop: spacingUnit * 2
               }}>
                 Add asks
               </Subheading>
-              <Paragraph color={palette.grey500} style={{
+              <Paragraph color={Grey500} style={{
                 textAlign: 'center',
                 paddingLeft: spacingUnit * 1.25,
                 paddingRight: spacingUnit * 1.25,

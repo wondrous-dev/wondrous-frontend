@@ -8,11 +8,12 @@ import { modalStyles } from '../../components/Modal/common'
 import { spacingUnit } from '../../utils/common'
 import { SearchBar } from '../../components/Header'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { listStyles } from './style'
-import palette from 'theme/palette'
+import { listStyles, profileStyles } from './style'
+import { White, Black, Blue400 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import * as SMS from 'expo-sms'
+import { TESTFLIGHT_BETA_LINK } from '../../constants/index'
 import { useMe } from '../../components/withAuth'
 import { useNavigation } from '@react-navigation/core'
 import { useMutation } from '@apollo/client'
@@ -87,13 +88,13 @@ const ContactItem = ({ item }) => {
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={palette.black}>{item.name}</Subheading>
+        }} color={Black}>{item.name}</Subheading>
       </View>
 {/* {
         invited
         ?
         <Pressable style={listStyles.followingButton}>
-          <Paragraph color={palette.black}>
+          <Paragraph color={Black}>
             Invited
           </Paragraph>
         </Pressable>
@@ -102,7 +103,7 @@ const ContactItem = ({ item }) => {
           setInvited(true)
           inviteCollaborator()
         }} style={listStyles.followButton}>
-          <Paragraph color={palette.white}>
+          <Paragraph color={White}>
             Invite
           </Paragraph>
         </Pressable>
@@ -182,7 +183,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={palette.blue400} style={{
+              <RegularText color={Blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -192,7 +193,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
                 flex: 2
               }}>
                
-                <Subheading color={palette.black} style={{
+                <Subheading color={Black} style={{
                   fontSize: 20
                 }}>
                   Invite friends
@@ -204,7 +205,7 @@ export const ContactsModal = ({ isVisible, setModalVisible }) => {
               <Pressable style={modalStyles.createUpdateButton} onPress={() => {
                 setModalVisible(false)
               }}>
-                <RegularText color={palette.white} style={{
+                <RegularText color={White} style={{
                   fontSize: 16
                 }}>
                   Done

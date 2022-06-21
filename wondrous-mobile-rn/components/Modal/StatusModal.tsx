@@ -1,10 +1,12 @@
-import React from 'react'
-import { View, Pressable } from 'react-native'
+import React, { useState, useCallback } from 'react'
+import { ScrollView, View, Dimensions, StyleSheet, Pressable, TouchableWithoutFeedback, Keyboard } from 'react-native'
 import Modal from 'react-native-modal'
+import Clipboard from 'expo-clipboard'
+import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import palette from 'theme/palette'
-import { spacingUnit } from '../../utils/common'
-import { Paragraph } from '../../storybook/stories/Text'
+import { spacingUnit, renderMentionString } from '../../utils/common'
+import { Grey300, Black, Grey150, White, Grey800, Blue500, Blue400 } from '../../constants/Colors'
+import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import Checkmark from '../../assets/images/checkmark'
 import { modalStyles } from './index'
 
@@ -32,7 +34,7 @@ export const StatusModal = ({ isVisible, setModalVisible, statusArr, setStatus, 
               marginTop: spacingUnit,
               marginBottom: spacingUnit
             }}>
-              <Paragraph color={palette.black} style={{
+              <Paragraph color={Black} style={{
                 ...(statusElement.value === status && {
                   fontFamily: 'Rubik SemiBold'
                 })
@@ -45,7 +47,7 @@ export const StatusModal = ({ isVisible, setModalVisible, statusArr, setStatus, 
                 <View style={{
                   flex: 1
                 }} />
-                <Checkmark color={palette.blue400} />
+                <Checkmark color={Blue400} />
                 </>
               }
             </Pressable>

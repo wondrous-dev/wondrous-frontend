@@ -7,7 +7,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, White, Blue500, Blue600, Red400, Orange, Grey500, Green400, Grey900, Grey300, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { CREATE_PROJECT_TAGS } from '../../graphql/mutations/project'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
@@ -60,14 +60,14 @@ const projectTagStyles = StyleSheet.create({
     },
     stepCount: {
         fontSize: 16,
-        color: palette.blue500,
+        color: Blue500,
         fontFamily: 'Rubik',
         fontStyle: 'normal',
         fontWeight: '500',
     },
     paragraph: {
         marginTop: spacingUnit,
-        color: palette.grey500,
+        color: Grey500,
         textAlign: 'center',
         maxWidth: spacingUnit * 43,
         alignSelf: 'center',
@@ -81,8 +81,8 @@ const projectTagStyles = StyleSheet.create({
 })
 
 const SingleTag = ({ tagName, selected, tagLength }) => {
-    const textColor = selected ? palette.white : palette.blue500
-    const backgroundColor = selected ? palette.blue500 : palette.white
+    const textColor = selected ? White : Blue500
+    const backgroundColor = selected ? Blue500 : White
     const {
         projectTags,
         setProjectTags
@@ -91,7 +91,7 @@ const SingleTag = ({ tagName, selected, tagLength }) => {
     return (
 
         <View style={{
-            borderColor: palette.blue500,
+            borderColor: Blue500,
             borderStyle: 'solid',
             borderWidth: 2,
             borderRadius: 8,
@@ -180,7 +180,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
     return (
         <View style={projectTagStyles.projectTagInputContainer}>
             <Subheading style={{
-            }} color={palette.black}>
+            }} color={Black}>
                 Pick up to 3 industry specific tags
         </Subheading>
             <Paragraph style={projectTagStyles.paragraph}>
@@ -194,11 +194,11 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                 {tagRows.map((tagRow, index) => (<TagsRow key={index} tags={tagRow} />))}
             </View>
             <PrimaryButton
-                textStyle={{ color: palette.white }}
+                textStyle={{ color: White }}
                 style={{
                     alignSelf: 'center',
                     marginTop: spacingUnit * 5,
-                    backgroundColor: palette.orange
+                    backgroundColor: Orange
                 }}
                 onPress={async () => {
                     if (Object.keys(selectedTags).length === 0) {
@@ -308,7 +308,7 @@ const ProjectTagInput = ({ navigation, projectId }) => {
                     }
                 }}
             >
-                <ButtonText color={palette.white}> {edit ? 'Update' : 'Continue'}  </ButtonText>
+                <ButtonText color={White}> {edit ? 'Update' : 'Continue'}  </ButtonText>
             </PrimaryButton>
 
         </View>
@@ -330,7 +330,7 @@ function ProjectTagSelectionScreen({
     const [error, setError] = useState(null)
     return (
         <SafeAreaView style={{
-            backgroundColor: palette.white,
+            backgroundColor: White,
             flex: 1,
         }}>
             {
@@ -362,9 +362,9 @@ function ProjectTagSelectionScreen({
                         percent={finished ? 100 :80}
                         radius={50}
                         borderWidth={10}
-                        color={finished ? palette.green400 : palette.orange}
-                        shadowColor={palette.grey300}
-                        bgColor={palette.white}
+                        color={finished ? Green400 : Orange}
+                        shadowColor={Grey300}
+                        bgColor={White}
                     >
                         {finished ? 
                             <HeartEyes />

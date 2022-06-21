@@ -4,7 +4,7 @@ import { SafeAreaView, View, StyleSheet } from 'react-native'
 import { getDay, differenceInDays } from 'date-fns'
 
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
+import { White, Black, Red400, Green400 } from '../../constants/Colors'
 import { GET_LATEST_USER_REVIEW, GET_REVIEW_STATS } from '../../graphql/queries/review'
 import { ButtonText, Paragraph, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit } from '../../utils/common'
@@ -33,13 +33,13 @@ const getCorrectStats = (reviewStats) => {
     return (
       <View style={reviewStyles.statRow}>
       <View>
-        <Paragraph color={palette.black} style={{
+        <Paragraph color={Black} style={{
           fontFamily: 'Rubik SemiBold'
         }}>
           +0{` `}
         </Paragraph>
       </View>
-      <Paragraph color={palette.black}>
+      <Paragraph color={Black}>
         same as weekly average
       </Paragraph>
       </View>
@@ -48,13 +48,13 @@ const getCorrectStats = (reviewStats) => {
     return (
       <View style={reviewStyles.statRow}>
       <View>
-        <Paragraph color={palette.red400} style={{
+        <Paragraph color={Red400} style={{
           fontFamily: 'Rubik SemiBold'
         }}>
           {differenceInAverageComplete}{` `}
         </Paragraph>
       </View>
-      <Paragraph color={palette.red400}>
+      <Paragraph color={Red400}>
         less than weekly average
       </Paragraph>
       </View>
@@ -63,13 +63,13 @@ const getCorrectStats = (reviewStats) => {
     return (
       <View style={reviewStyles.statRow}>
       <View>
-        <Paragraph color={palette.green400} style={{
+        <Paragraph color={Green400} style={{
           fontFamily: 'Rubik SemiBold',
         }}>
           +{differenceInAverageComplete}{` `}
         </Paragraph>
       </View>
-      <Paragraph color={palette.green400}>
+      <Paragraph color={Green400}>
         more than weekly average!
       </Paragraph>
       </View>
@@ -115,7 +115,7 @@ const ReviewWelcome = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header />
       {
@@ -124,7 +124,7 @@ const ReviewWelcome = ({ navigation, route }) => {
         alignItems: 'center',
         marginTop: spacingUnit * 5
       }}>
-        <Subheading color={palette.black}>
+        <Subheading color={Black}>
           Your week in review
         </Subheading>
         {
@@ -132,7 +132,7 @@ const ReviewWelcome = ({ navigation, route }) => {
           <>
             <View style={reviewStyles.statRow}>
               <TaskIcon style={reviewStyles.statImage} />
-              <Paragraph color={palette.black}>
+              <Paragraph color={Black}>
                 <Paragraph style={{
                   fontFamily: 'Rubik SemiBold'
                 }}>
@@ -142,7 +142,7 @@ const ReviewWelcome = ({ navigation, route }) => {
             </View>
             <View style={reviewStyles.statRow}>
               <GoalIcon style={reviewStyles.statImage} />
-              <Paragraph color={palette.black}>
+              <Paragraph color={Black}>
               <Paragraph style={{
                   fontFamily: 'Rubik SemiBold'
                 }}>
@@ -165,7 +165,7 @@ const ReviewWelcome = ({ navigation, route }) => {
                 })
               }}
             >
-              <ButtonText color={palette.white}> Continue </ButtonText>
+              <ButtonText color={White}> Continue </ButtonText>
             </PrimaryButton>
           </>
         }

@@ -1,15 +1,16 @@
-import palette from 'theme/palette'
+import { scale, moderateScale, verticalScale } from '../../../utils/scale'
+import { White, Red400 } from '../../../constants/Colors'
 
 export default {
   title: {
     fontFamily: 'Pacifico',
     fontSize: 34,
-    color: palette.white
+    color: White
   },
   subheading: {
     fontFamily: 'Rubik SemiBold',
     fontSize: 20,
-    color: palette.white,
+    color: White,
     fontWeight: 'bold'
   },
   paragraph: {
@@ -36,6 +37,6 @@ export default {
     fontFamily: 'Rubik',
     fontSize: 14,
     lineHeight: 20,
-    color: palette.red400
+    color: Red400
   }
 }

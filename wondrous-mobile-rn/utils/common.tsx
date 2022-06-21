@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from 'react'
-import { Text } from 'react-native'
+import { Pressable, Text, Linking } from 'react-native'
 import * as Localization from 'expo-localization'
 import * as WebBrowser from 'expo-web-browser'
 import regexifyString from 'regexify-string'
 import { StackActions } from '@react-navigation/native'
 
-import palette from 'theme/palette'
+import { Blue400 } from '../constants/Colors'
 import { MENTION_REGEX } from '../constants'
 
 export const spacingUnit = 8
@@ -201,7 +201,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
         }
         return (
             <Text style={{
-              color: palette.blue400,
+              color: Blue400,
               ...textStyle
             }}
             onPress={() => {
@@ -222,7 +222,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
       } else if (httpMatch) {
         return (
           <Text style={{
-            color: palette.blue400,
+            color: Blue400,
             ...textStyle
           }} onPress={() => {
             openLink(match)
@@ -233,7 +233,7 @@ export const renderMentionString = ({ content, textStyle, navigation, simple, ta
       } else if (urlMatch) {
         return (
           <Text style={{
-            color: palette.blue400,
+            color: Blue400,
             ...textStyle
           }} onPress={() => {
             openLink(match)

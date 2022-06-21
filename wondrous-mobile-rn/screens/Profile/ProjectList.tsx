@@ -4,9 +4,9 @@ import { Image, Pressable, SafeAreaView, RefreshControl, FlatList, View, Touchab
 import { useLazyQuery } from '@apollo/client'
 
 import { GET_USER_PROJECTS } from '../../graphql/queries'
-import { withAuth } from '../../components/withAuth'
-import palette from 'theme/palette'
-import { RegularText, Subheading } from '../../storybook/stories/Text'
+import { withAuth, useMe } from '../../components/withAuth'
+import { Black, White, Grey800 } from '../../constants/Colors'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { spacingUnit, cutString, wait } from '../../utils/common'
 import { ProfilePlaceholder } from './common'
 import { SafeImage } from '../../storybook/stories/Image'
@@ -59,9 +59,9 @@ export const ProjectItem = ({
         }}>
           <Subheading style={{
             fontSize: 18
-          }} color={palette.black}>{itemName}</Subheading>
+          }} color={Black}>{itemName}</Subheading>
           {itemDescription && accessible &&
-            <RegularText color={palette.grey800} style={{
+            <RegularText color={Grey800} style={{
               marginTop: spacingUnit * 0.5
             }}>
             {cutString(itemDescription)}
@@ -71,7 +71,7 @@ export const ProjectItem = ({
         {
           buttonText &&
           <Pressable onPress={buttonOnPress}>
-            <RegularText color={palette.black}>
+            <RegularText color={Black}>
               {buttonText}
             </RegularText>
           </Pressable>
@@ -119,7 +119,7 @@ const ProjectList = ({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header title={user && user.username} />
       <View>

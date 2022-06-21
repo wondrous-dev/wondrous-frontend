@@ -2,9 +2,9 @@
 import React from 'react'
 import Svg, { Path } from 'react-native-svg'
 
-import palette from 'theme/palette'
+import { Grey500 } from '../../constants/Colors'
 
-const Superhero = ({ color=palette.grey500, style }) => {
+const Superhero = ({ color=Grey500, style }) => {
   return (
 <Svg width="197" height="220" viewBox="0 0 197 220" fill="none" xmlns="http://www.w3.org/2000/svg" style={style}>
 <Path d="M109.059 119.046V99.5066C109.059 78.3388 97.8924 73.4539 89.5197 73.4539H86.2632L83.0066 76.7105C71.6086 76.7105 69.9803 93.9639 69.9803 99.5066V119.046H109.059Z" fill="#424242"/>

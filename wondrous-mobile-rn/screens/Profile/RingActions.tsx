@@ -8,12 +8,12 @@ import { withAuth, useMe } from '../../components/withAuth'
 import { GET_USER_RING_GOALS, GET_USER_RING_TASKS, GET_USER_RING_ACTION_COUNT, GET_USER_STREAK } from '../../graphql/queries'
 import { getRingActions, spacingUnit } from '../../utils/common'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
-import { SafeImage } from '../../storybook/stories/Image'
-import { Paragraph } from '../../storybook/stories/Text'
-import palette from 'theme/palette'
+import { UploadImage, SafeImage } from '../../storybook/stories/Image'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { Black, Grey300, White, Blue400, Grey800, Grey700, Orange, Green400, Red400 } from '../../constants/Colors'
 import {
   onSwipe,
-  renderCard
+  ProfilePlaceholder, renderCard
 } from './common'
 import Neutral from '../../assets/images/emoji/neutral'
 import HeartEyes from '../../assets/images/emoji/heartEyes'
@@ -242,7 +242,7 @@ const GoalView = ({ goals, totalGoals, completedGoals, user }) => {
         <GoalCongratsModal user={user} isVisible={goalCompleteModal} setModalVisible={setGoalCompleteModal} />
       }
       <View style={styles.actionHeaderContainer}>
-      <Paragraph style={styles.actionHeaderText} color={palette.black}>
+      <Paragraph style={styles.actionHeaderText} color={Black}>
         Goals
       </Paragraph>
       </View>
@@ -319,7 +319,7 @@ const RingActions = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
         <Header title={`@${fetchedUser?.username}'s weekly ring`} />
         <UserCongratsContext.Provider value={{
@@ -334,9 +334,9 @@ const RingActions = ({ navigation, route }) => {
               percent={percentage}
               radius={48}
               borderWidth={8}
-              color={palette.orange}
-              shadowColor={palette.grey300}
-              bgColor={palette.white}
+              color={Orange}
+              shadowColor={Grey300}
+              bgColor={White}
             >
               <SafeImage style={{
                 width: spacingUnit * 10,
@@ -346,7 +346,7 @@ const RingActions = ({ navigation, route }) => {
             </ProgressCircle>
             <View style={styles.percentageTextContainer}>
               <Emoji percentage={percentage} />
-              <Paragraph style={styles.percentageText} color={percentage > 50 ? palette.green400 : palette.red400}>
+              <Paragraph style={styles.percentageText} color={percentage > 50 ? Green400 : Red400}>
                 {Math.round(percentage)}% complete
               </Paragraph>
             </View>

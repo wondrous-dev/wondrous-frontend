@@ -1,10 +1,13 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Pressable, Dimensions, SafeAreaView } from 'react-native';
 import * as ImageManipulator from 'expo-image-manipulator'
+import { useNavigation } from '@react-navigation/native'
 import { MediaType } from 'expo-media-library'
 
-import palette from 'theme/palette'
+import BackCaret from '../../assets/images/back-caret'
+import { Grey300, Black, Blue400, White } from '../../constants/Colors'
 import { ErrorText, Paragraph, RegularText } from '../../storybook/stories/Text';
+import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { MAX_VIDEO_LENGTH } from '../../constants';
 
 export default class ImageBrowserScreen extends Component {
@@ -108,7 +111,7 @@ export default class ImageBrowserScreen extends Component {
       <Text style={{
         // marginRight: 25,
         // marginLeft: -25
-        color: count ? palette.blue400 : palette.white
+        color: count ? Blue400 : White
       }}>Done</Text>
     </TouchableOpacity>
   }
@@ -134,12 +137,12 @@ export default class ImageBrowserScreen extends Component {
           flexDirection: 'row',
           height: 64,
           borderBottomWidth: 1,
-          borderBottomColor: palette.grey300,
-          backgroundColor: palette.white,
+          borderBottomColor: Grey300,
+          backgroundColor: White,
         }}>
           <Pressable onPress={() => setImageBrowser(false)}>
-            <RegularText color={palette.blue400} style={{
-              color: palette.blue400,
+            <RegularText color={Blue400} style={{
+              color: Blue400,
               marginLeft: 25,
               marginRight: -25
             }}>
@@ -147,7 +150,7 @@ export default class ImageBrowserScreen extends Component {
             </RegularText>
           </Pressable>
           <View>
-            <Paragraph color={palette.black}>
+            <Paragraph color={Black}>
               Select {count} files
             </Paragraph>
             {

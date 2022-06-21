@@ -1,13 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { useQuery, useMutation } from '@apollo/client'
-import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions, Linking, Alert } from 'react-native'
+import { Text, View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable, Dimensions, Linking, Alert } from 'react-native'
 import { useNavigation, useRoute } from '@react-navigation/native'
 import TimeAgo from 'javascript-time-ago'
 import en from 'javascript-time-ago/locale/en'
 import Clipboard from 'expo-clipboard'
 import Toast from 'react-native-toast-message'
 
-import palette from 'theme/palette'
+import { Grey300, Black, Grey200, Grey600, Grey700, Red400, White, Blue400, Grey800 } from '../../constants/Colors'
 import { GET_HOME_FEED, GET_PUBLIC_FEED } from '../../graphql/queries'
 import { DELETE_FEED_COMMENT, PIN_PROJECT_FEED_ITEM, PIN_USER_FEED_ITEM, REACT_FEED_COMMENT, REACT_FEED_ITEM, UNPIN_FEED_ITEM } from '../../graphql/mutations'
 import { SafeImage} from '../../storybook/stories/Image'
@@ -29,7 +29,10 @@ import { FlexRowContentModal } from '../../components/Modal'
 import { MyCarousel, VideoDisplay } from '../../storybook/stories/Carousel'
 import Link from '../../assets/images/link'
 import Celebration from '../../assets/images/celebrations/signupConfetti'
-import { FilledPin, } from '../../assets/images/pin'
+import {
+  FilledPin,
+  UnfilledPin
+} from '../../assets/images/pin'
 import Options from '../../assets/images/options'
 import { StatusItem } from '../../screens/Profile/common'
 import { GetReviewIcon } from '../../screens/Review/utils'
@@ -141,7 +144,7 @@ const FeedString = ({ item, standAlone }) => {
                 projectId: item.projectId
               }
             }
-          })} color={palette.blue400} style={{
+          })} color={Blue400} style={{
             ...feedStyles.feedText,
             fontSize: 18
           }}>{item.projectName} </Paragraph>
@@ -175,7 +178,7 @@ const FeedString = ({ item, standAlone }) => {
     ...feedStyles.confetti
   }} />
 }
-       <Paragraph color={palette.black} style={{
+       <Paragraph color={Black} style={{
          ...feedStyles.feedText,
         fontSize: 18,
         }} onPress={() => {
@@ -225,7 +228,7 @@ const FeedString = ({ item, standAlone }) => {
       <View style={{
         paddingRight: spacingUnit * 3,
       }}>
-       <Paragraph color={palette.black} style={{
+       <Paragraph color={Black} style={{
          ...feedStyles.feedText,
          fontSize: 18,
           }} onPress={() => {
@@ -273,7 +276,7 @@ const FeedString = ({ item, standAlone }) => {
           height: 24,
           marginRight: spacingUnit
         }}/>
-        <Paragraph numberOfLines={4} color={palette.black} style={{
+        <Paragraph numberOfLines={4} color={Black} style={{
          ...feedStyles.feedText,
          fontSize: 18,
         flex: 1
@@ -326,7 +329,7 @@ const getProjectString = (item) => {
   const route = useRoute()
   if (item.projectName) {
     return (
-      <Paragraph color={palette.grey200} style={{
+      <Paragraph color={Grey200} style={{
         fontSize: 16,
         fontFamily: 'Rubik SemiBold',
         textDecorationLine: 'underline'
@@ -411,7 +414,9 @@ export const EditCommentModal = ({ isVisible, setModalVisible, deleteMutation, s
         deleteMutation()
         setModalVisible(false)
       }}>
-        <Paragraph color={palette.red400}>
+        <Paragraph color={Red400} style={{
+
+        }}>
           Delete comment
         </Paragraph>
       </Pressable>
@@ -529,7 +534,7 @@ const getFlagContentModalBody = ({ flagMutation, setModalVisible, reportClicked,
     }}>
       <Paragraph style={{
         fontFamily: 'Rubik SemiBold'
-      }} color={palette.red400}>
+      }} color={Red400}>
         Report
       </Paragraph>
     </Pressable>
@@ -902,7 +907,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
         }} />
         <Paragraph style={{
           fontFamily: 'Rubik SemiBold'
-        }} color={palette.grey700}>
+        }} color={Grey700}>
           Pinned
         </Paragraph>
         </View>
@@ -935,7 +940,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
             flex: 1,
             flexWrap: 'wrap',
             paddingRight: spacingUnit * 2
-          }} color={palette.black}
+          }} color={Black}
           onPress={() => {
             if (standAlone || comment) {
               navigation.navigate('Root', {
@@ -964,7 +969,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           }}         
           >{item.actorFirstName} {item.actorLastName}{` `}
                     {!comment && !(item.objectType === 'post') &&
-            <Paragraph color={palette.grey200}>
+            <Paragraph color={Grey200}>
               {getActionString(item)} {
                 item.objectType !== 'project' &&
                 <>
@@ -977,7 +982,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           <RegularText style={{
             lineHeight: 18,
             marginTop: spacingUnit * 0.5
-          }} color={palette.grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
+          }} color={Grey200}>{timeAgo.format(new Date(item.timestamp))}</RegularText>     
           </View>
           </View>
         </View>
@@ -1010,12 +1015,12 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
             flexDirection: 'row',
             alignItems: 'center'
           }}>
-          <Link color={palette.grey800} style={{
+          <Link color={Grey800} style={{
             marginRight: spacingUnit * 0.5,
             width: spacingUnit * 2.5,
             height: spacingUnit * 2.5
           }} />
-          <Paragraph color={palette.blue400} style={{
+          <Paragraph color={Blue400} style={{
             fontSize: 18,
           }} onPress={() => Linking.openURL(item.media.link)}>
             {item.media.link}
@@ -1035,7 +1040,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
                     video: item.media.playbackId
                   },
                   ...item.media.images
-                ] : item.media.images} images={true} passiveDotColor={palette.grey800} activeDotColor={palette.blue400} />
+                ] : item.media.images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
               }
             </>
           }
@@ -1047,11 +1052,11 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
           <Pressable onPress={() => likeFeedItem(liked, reactionCount)} > 
           {
             liked || commentLiked ?
-            <LikeFilled color={palette.red400} style={{
+            <LikeFilled color={Red400} style={{
               marginRight: spacingUnit
             }} />
             :
-            <LikeOutline color={palette.grey700} style={{
+            <LikeOutline color={Grey700} style={{
               marginRight: spacingUnit
             }} />
           }
@@ -1069,20 +1074,20 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
               })
             }
           }}>
-          <RegularText color={palette.grey600} style={{
+          <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3,
           }}>{reactionCount}</RegularText>
           </Pressable>
           <Pressable onPress={pressComment}>
-          <CommentIcon color={palette.grey700} style={{
+          <CommentIcon color={Grey700} style={{
             marginRight: item.commentCount ? spacingUnit : 0
           }}/>
           </Pressable>
-          <RegularText color={palette.grey600} style={{
+          <RegularText color={Grey600} style={{
             marginRight: spacingUnit * 3
           }}>{item.commentCount}</RegularText>
           <Pressable onPress={() => setModalVisible(true)}>
-            <ShareIcon color={palette.grey700} />
+            <ShareIcon color={Grey700} />
           </Pressable> 
           <Pressable style={{
               marginLeft: spacingUnit * 3
@@ -1097,7 +1102,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
                 setReportVisible(true)
               }
             }}>
-            <Options color={palette.grey700} />
+            <Options color={Grey700} />
           </Pressable>
         </View>
 
@@ -1106,7 +1111,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
       <>
         <View
           style={{
-            borderBottomColor: palette.grey300,
+            borderBottomColor: Grey300,
             borderBottomWidth: 1,
           }}
         />
@@ -1127,7 +1132,7 @@ export const FeedItem = ({ item, standAlone, comment, onCommentPress, projectId,
               </RegularText>
               <View
                 style={{
-                  borderBottomColor: palette.grey300,
+                  borderBottomColor: Grey300,
                   borderBottomWidth: 1,
                 }}
               />
@@ -1183,7 +1188,7 @@ export const ProjectFeed = () => {
       ItemSeparatorComponent={() => (
         <View
           style={{
-            borderBottomColor: palette.grey300,
+            borderBottomColor: Grey300,
             borderBottomWidth: 1,
           }}
         />
@@ -1247,7 +1252,7 @@ export const HomeFeed = () => {
   if (loading) {
     return (
       <View style={{
-        backgroundColor: palette.white,
+        backgroundColor: White,
         paddingTop: spacingUnit * 2
       }}>
         <ActivityIndicator />
@@ -1285,7 +1290,7 @@ export const HomeFeed = () => {
         }} onPress={() => navigation.navigate('Root', {
           screen: 'Search'
         })}>
-          No results - go to our <Paragraph color={palette.blue400}>
+          No results - go to our <Paragraph color={Blue400}>
             search page
           </Paragraph> to find some cool projects or users to follow!
         </Paragraph>
@@ -1310,7 +1315,7 @@ export const HomeFeed = () => {
       ItemSeparatorComponent={() => (
         <View
           style={{
-            borderBottomColor: palette.grey300,
+            borderBottomColor: Grey300,
             borderBottomWidth: 1,
           }}
         />

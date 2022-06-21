@@ -4,10 +4,11 @@ import * as Facebook from 'expo-facebook'
 
 import { ButtonText } from '../Text'
 import { PrimaryButton } from './Buttons'
+import { SvgImage } from '../Image'
 import FacebookIcon from '../../../assets/images/social-auth/facebook.tsx'
 import baseStyle from './style'
 import { useAuth } from '../../../session'
-import palette from 'theme/palette'
+import { White } from '../../../constants/Colors'
 import { navigateUserOnLogin, spacingUnit } from '../../../utils/common'
 
 const buttonStyle = StyleSheet.create({
@@ -16,7 +17,7 @@ const buttonStyle = StyleSheet.create({
     fontWeight: '500',
     marginLeft: 8,
     fontSize: 18,
-    color: palette.white
+    color: White
   }
 })
 
@@ -81,7 +82,7 @@ export const FacebookLogin = ({ style, callToAction, loginStatus, setLoginStatus
           height: spacingUnit * 3,
           marginTop: -5
         }}/>
-        <ButtonText style={buttonStyle.facebookButtonText} color={palette.white}>
+        <ButtonText style={buttonStyle.facebookButtonText} color={White}>
           Continue with Facebook
         </ButtonText>
       </View>

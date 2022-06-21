@@ -1,12 +1,12 @@
 import * as React from 'react'
-import { View, StyleSheet } from 'react-native'
+import { View, Text, TouchableOpacity, StyleSheet, Button } from 'react-native'
 import Swiper from 'react-native-web-swiper'
-import palette from 'theme/palette'
+import { White, Orange, Grey800, Black } from '../../../constants/Colors'
 import { spacingUnit } from '../../../utils/common'
-import { ModalImage } from '../Image'
+import { ModalImage, SafeImage } from '../Image'
 import { Video } from 'expo-av'
 
-import { Subheading } from '../Text'
+import { Title, Subheading, Paragraph } from '../Text'
 import { MUX_URL_ENDING, MUX_URL_PREFIX } from '../../../constants'
 
 const styles = StyleSheet.create({
@@ -91,7 +91,7 @@ export class MyCarousel extends React.Component {
                 badgeStyle: {
                   backgroundColor: passiveDotColor || 'rgba(255,255,255, 0.3)',
                   ...(!images && {
-                    borderColor: palette.orange,
+                    borderColor: Orange,
                     borderWidth: 1
                   })
                 }
@@ -115,8 +115,8 @@ export class MyCarousel extends React.Component {
                 }
                 return (
                   <View key={item.subheading} style={{flex: 1, padding: spacingUnit * 2}}>
-                  <Subheading color={palette.white} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
-                  {/* <Paragraph color={palette.black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
+                  <Subheading color={White} style={{textAlign: 'center', lineHeight: 30}}>{item.subheading}</Subheading>
+                  {/* <Paragraph color={Black} style={{textAlign: 'center', marginTop: 8}}>{item.paragraph}</Paragraph> */}
                 </View>
                 )
               })

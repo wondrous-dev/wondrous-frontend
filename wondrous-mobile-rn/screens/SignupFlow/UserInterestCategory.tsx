@@ -8,8 +8,9 @@ import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { categories, projectSetupStyles } from './ProjectSetupCategory'
 import { spacingUnit } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, Blue600, Yellow300, Grey300, White, Orange, Grey500 } from '../../constants/Colors'
 import { Subheading, RegularText, Paragraph, ErrorText } from '../../storybook/stories/Text'
+import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation, useQuery } from '@apollo/client'
 import BigMouthSmile from '../../assets/images/emoji/openMouthSmile'
 import { withAuth, useMe } from '../../components/withAuth'
@@ -27,8 +28,8 @@ const CategoryItem = ({ category }) => {
   const title = category.title.toLowerCase()
   if (interests.includes(title)) {
     categoryColors = {
-      iconColor: theme.white,
-      backgroundColor: palette.blue600
+      iconColor: White,
+      backgroundColor: Blue600
     }
   }
 
@@ -54,7 +55,7 @@ const CategoryItem = ({ category }) => {
           alignItems: 'center'
         }}>
           <CategoryImage backgroundColor={(categoryColors && categoryColors?.backgroundColor) || '#F0F4FE'} iconColor={category && categoryColors?.iconColor} />
-          <RegularText color={palette.blue600} style={{
+          <RegularText color={Blue600} style={{
             marginTop: spacingUnit
           }} > {category.title} </RegularText>
         </Pressable>
@@ -86,14 +87,14 @@ const CategoryDisplay = ({ categories }) => {
           marginBottom: spacingUnit,
           fontSize: 32,
           marginTop: spacingUnit,
-        }} color={palette.black}>
+        }} color={Black}>
           Pick 3 areas of interests
       </Subheading>
       <Paragraph style={{
         textAlign: 'center',
         paddingLeft: spacingUnit * 2,
         paddingRight: spacingUnit * 2
-      }} color={palette.grey500}>
+      }} color={Grey500}>
         So we can recommend the right people for you to follow!
       </Paragraph>
       {
@@ -139,7 +140,7 @@ function UserInterestCategoryScreen({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: theme.white,
+      backgroundColor: White,
       flex: 1
     }}>
       <ScrollView>
@@ -150,7 +151,7 @@ function UserInterestCategoryScreen({
         setError
       }}>
         <Header rightButton={{
-        color: palette.orange,
+        color: Orange,
         text: 'Continue',
         onPress: async () => {
           if (interests.length === 0) {
@@ -184,9 +185,9 @@ function UserInterestCategoryScreen({
               percent={70}
               radius={50}
               borderWidth={10}
-              color={palette.yellow300}
-              shadowColor={palette.grey300}
-              bgColor={theme.white}
+              color={Yellow300}
+              shadowColor={Grey300}
+              bgColor={White}
           >
               <BigMouthSmile />
           </ProgressCircle>

@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { View, Pressable, StyleSheet, Dimensions, Platform, SafeAreaView, Image } from 'react-native'
 import DropDownPicker from 'react-native-dropdown-picker'
 import DateTimePicker from '@react-native-community/datetimepicker'
+import { mentionRegEx } from 'react-native-controlled-mentions'
 import Modal from 'react-native-modal'
 import * as ImagePicker from 'expo-image-picker'
 import * as VideoThumbnails from 'expo-video-thumbnails'
 import { Video } from 'expo-av'
 
-import palette from 'theme/palette'
-import { Paragraph, Subheading } from '../../storybook/stories/Text'
+import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Green400 } from '../../constants/Colors'
+import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { SafeImage } from '../../storybook/stories/Image'
 import { getMentionArray, spacingUnit } from '../../utils/common'
 import PriorityFlame from '../../assets/images/modal/priority'
@@ -59,7 +60,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
           marginBottom: spacingUnit * 3,
           alignSelf: 'center',
         }}>
-        <Subheading color={palette.blue400}>
+        <Subheading color={Blue400}>
           Replace video
         </Subheading>
         </Pressable>
@@ -69,7 +70,7 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
           setVideo(null)
           setModalVisible(false)
         }}>
-        <Subheading color={palette.red400}>
+        <Subheading color={Red400}>
           Delete video
         </Subheading>
         </Pressable>
@@ -105,12 +106,12 @@ export const VideoThumbnail = ({ source, width, height, setVideo, video, errors,
       }
             <View style={{
           position: 'absolute',
-          backgroundColor: palette.grey800,
+          backgroundColor: Grey800,
           borderRadius: 12,
           right: 12,
           top: 12
         }}>
-          <CancelIcon color={palette.white} onPress={() => setModalVisible(true)} />
+          <CancelIcon color={White} onPress={() => setModalVisible(true)} />
         </View>
       </View>
   )
@@ -160,7 +161,7 @@ export const privacyDropdown = PRIVACY_LEVELS.map(privacy => ({
 const mediaItemWidth = (Dimensions.get('window').width - (spacingUnit * 6)) / 2
 export const modalStyles = StyleSheet.create({
   fullScreenContainer: {
-    backgroundColor: palette.white,
+    backgroundColor: White,
     width: Dimensions.get('window').width,
     height: (Dimensions.get('window').height),
     alignSelf: 'center',
@@ -187,7 +188,7 @@ export const modalStyles = StyleSheet.create({
     })
   },
   completedButton: {
-    backgroundColor: palette.green400,
+    backgroundColor: Green400,
     padding: spacingUnit,
     borderRadius: spacingUnit,
     marginBottom: spacingUnit * 2,
@@ -195,14 +196,14 @@ export const modalStyles = StyleSheet.create({
     alignItems: 'center'
   },
   markAsCompleteButton: {
-    borderColor: palette.green400,
+    borderColor: Green400,
     borderRadius: spacingUnit,
     borderWidth: 1,
     padding: spacingUnit,
     marginBottom: spacingUnit * 2
   },
   archivedButton: {
-    backgroundColor: palette.grey800,
+    backgroundColor: Grey800,
     padding: spacingUnit,
     borderRadius: spacingUnit,
     flexDirection: 'row',
@@ -211,7 +212,7 @@ export const modalStyles = StyleSheet.create({
     marginBottom: spacingUnit * 2
   },
   markAsArchivedButton: {
-    borderColor: palette.grey800,
+    borderColor: Grey800,
     borderRadius: spacingUnit,
     borderWidth: 1,
     padding: spacingUnit,
@@ -226,7 +227,7 @@ export const modalStyles = StyleSheet.create({
     width: spacingUnit * 10,
     paddingTop: 4,
     paddingBottom: 4,
-    backgroundColor: palette.blue500,
+    backgroundColor: Blue500,
     borderRadius: spacingUnit,
     alignItems: 'center'
   },
@@ -234,7 +235,7 @@ export const modalStyles = StyleSheet.create({
     fontSize: 18
   },
   editContainer: {
-    borderTopColor: palette.grey400,
+    borderTopColor: Grey400,
     borderTopWidth: 1,
     marginTop: spacingUnit * 2,
     paddingTop: spacingUnit * 2
@@ -253,7 +254,7 @@ export const modalStyles = StyleSheet.create({
     marginRight: spacingUnit * 2
   },
   editRowText: {
-    color: palette.grey800,
+    color: Grey800,
     fontSize: 16,
     width: spacingUnit * 7.5
   },
@@ -272,10 +273,10 @@ export const modalStyles = StyleSheet.create({
   descriptionBox: {
     fontSize: 16,
     borderWidth: 1,
-    borderColor: palette.grey400,
+    borderColor: Grey400,
     minHeight: spacingUnit * 9,
     padding: spacingUnit,
-    color: palette.black,
+    color: Black,
     borderRadius: 4,
     alignSelf: 'stretch',
     flex: 1,
@@ -292,7 +293,7 @@ export const modalStyles = StyleSheet.create({
   link: {
     fontFamily: 'Rubik Light',
     fontSize: 16,
-    color: palette.blue400
+    color: Blue400
   },
   addLinkButton: {
     padding: spacingUnit
@@ -355,7 +356,7 @@ export const ModalDropdown = ({ items, value, setValue, placeholder }) => {
       <DropDownPicker
       defaultValue={value}
       style={{
-        backgroundColor: palette.grey750,
+        backgroundColor: Grey750,
         // borderColor: 'rgba(47,46,65, 0.54)'
       }}
       placeholder={placeholder}
@@ -364,7 +365,7 @@ export const ModalDropdown = ({ items, value, setValue, placeholder }) => {
         height: 40
       }}
       labelStyle={{
-        color: palette.black,
+        color: Black,
         fontSize: 16,
         fontFamily: 'Rubik Light'
       }}
@@ -390,39 +391,39 @@ export const PriorityList = ({ priority, setPriority }) => {
       <Pressable onPress={() => setPriority('high')} style={{
         ...modalStyles.priorityRowItem,
         ...(priorityHigh && {
-          backgroundColor: palette.red400
+          backgroundColor: Red400
         })
       }}>
-        <PriorityFlame color={priorityHigh ? palette.white : palette.red400} style={{
+        <PriorityFlame color={priorityHigh ? White : Red400} style={{
           marginRight: 0.5 * spacingUnit
         }} />
-        <Paragraph color={priorityHigh ? palette.white : palette.grey800}>
+        <Paragraph color={priorityHigh ? White : Grey800}>
           High
         </Paragraph>
       </Pressable>
       <Pressable onPress={() => setPriority('medium')} style={{
         ...modalStyles.priorityRowItem,
         ...(priorityMedium && {
-          backgroundColor: palette.yellow300
+          backgroundColor: Yellow300
         })
       }}>
-        <PriorityFlame color={priorityMedium ? palette.white: palette.yellow300} style={{
+        <PriorityFlame color={priorityMedium ? White: Yellow300} style={{
           marginRight: 0.5 * spacingUnit
         }} />
-        <Paragraph color={priorityMedium ? palette.white : palette.grey800}>
+        <Paragraph color={priorityMedium ? White : Grey800}>
           Medium
         </Paragraph>
       </Pressable>
       <Pressable onPress={() => setPriority('low')} style={{
         ...modalStyles.priorityRowItem,
         ...(priorityLow && {
-          backgroundColor: palette.blue400
+          backgroundColor: Blue400
         })
       }}>
-        <PriorityFlame color={priorityLow ? palette.white : palette.blue400} style={{
+        <PriorityFlame color={priorityLow ? White : Blue400} style={{
           marginRight: 0.5 * spacingUnit
         }}/>
-        <Paragraph color={priorityLow ? palette.white : palette.grey800}>
+        <Paragraph color={priorityLow ? White : Grey800}>
           Low
         </Paragraph>
       </Pressable>
@@ -436,7 +437,7 @@ export const VideoDisplay = async({ setVideo, video }) => {
   const navigation = useNavigation()
   return (
     <View>
-      <FlexRowContentModal 
+              <FlexRowContentModal 
         isVisible={isVisible}
         setModalVisible={setModalVisible}
         headerText='Edit picture'
@@ -452,7 +453,7 @@ export const VideoDisplay = async({ setVideo, video }) => {
           marginBottom: spacingUnit * 3,
           alignSelf: 'center',
         }}>
-        <Subheading color={palette.blue400}>
+        <Subheading color={Blue400}>
           Replace photo
         </Subheading>
         </Pressable>
@@ -463,7 +464,7 @@ export const VideoDisplay = async({ setVideo, video }) => {
           setMedia(newArr)
           setModalVisible(false)
         }}>
-        <Subheading color={palette.red400}>
+        <Subheading color={Red400}>
           Delete photo
         </Subheading>
         </Pressable>
@@ -505,7 +506,7 @@ export const ImageDisplay = ({ setMedia, image, imagePrefix, media, width, heigh
           marginBottom: spacingUnit * 3,
           alignSelf: 'center',
         }}>
-        <Subheading color={palette.blue400}>
+        <Subheading color={Blue400}>
           Replace photo
         </Subheading>
         </Pressable>
@@ -516,7 +517,7 @@ export const ImageDisplay = ({ setMedia, image, imagePrefix, media, width, heigh
           setMedia(newArr)
           setModalVisible(false)
         }}>
-        <Subheading color={palette.red400}>
+        <Subheading color={Red400}>
           Delete photo
         </Subheading>
         </Pressable>
@@ -531,12 +532,12 @@ export const ImageDisplay = ({ setMedia, image, imagePrefix, media, width, heigh
       }} />
       <View style={{
         position: 'absolute',
-        backgroundColor: palette.grey800,
+        backgroundColor: Grey800,
         borderRadius: 12,
         right: 12,
         top: 12
       }}>
-        <CancelIcon color={palette.white} onPress={() => setModalVisible(true)} />
+        <CancelIcon color={White} onPress={() => setModalVisible(true)} />
       </View>
       </View>
   )

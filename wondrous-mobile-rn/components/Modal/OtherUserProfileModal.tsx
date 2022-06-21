@@ -1,9 +1,11 @@
 import React from 'react'
 import { View, Pressable } from 'react-native'
+import { useNavigation } from '@react-navigation/native'
 
 import { Paragraph } from '../../storybook/stories/Text'
 import { FlexRowContentModal } from '.'
-import palette from 'theme/palette'
+import { Grey800, Red400 } from '../../constants/Colors'
+import Logout from '../../assets/images/logout'
 import { spacingUnit } from '../../utils/common'
 
 export const OtherUserProfileModal = ({ isVisible, setModalVisible, headerText, blockUser }) => {
@@ -25,7 +27,7 @@ export const OtherUserProfileModal = ({ isVisible, setModalVisible, headerText, 
       }}>
         <Paragraph style={{
           marginTop: spacingUnit * 0.5
-        }} color={palette.red400}>
+        }} color={Red400}>
           Block user
         </Paragraph>
       </View>

@@ -11,7 +11,7 @@ import {
 import { TouchableOpacity, TouchableWithoutFeedback } from "react-native-gesture-handler"
 import Animated from "react-native-reanimated"
 
-import palette from 'theme/palette'
+import { Grey400, Blue400, Green400, White, Grey450, Purple, Red400, Yellow300, Grey300, Grey800 } from '../../../constants/Colors'
 import CompleteSvg from '../../../assets/images/complete'
 import ArchiveSvg from '../../../assets/images/archive'
 import { RegularText, TinyText, Paragraph } from '../Text'
@@ -53,7 +53,7 @@ export const ReviewCard = ({ review, tab }) => {
         }
       }
     })}>
-    <View style={[styles.row, { backgroundColor: palette.white, justifyContent: 'space-between' }]}>
+    <View style={[styles.row, { backgroundColor: White, justifyContent: 'space-between' }]}>
         <View style={{
           flexDirection: 'row',
           alignItems: 'center'
@@ -114,12 +114,12 @@ class Card extends React.Component {
         {
           // transform: [{ translateX: multiply(sub(1, percentOpen), -100) }], // Translate from left on open,
           borderWidth: 0,
-          backgroundColor: this.props.isActive ? palette.grey400 : palette.green400
+          backgroundColor: this.props.isActive ? Grey400 : Green400
         }
       ]}
     >
       <PlatformTouchable style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={[styles.text, { color: palette.white, marginRight: 4 }]}>Done</Text>
+        <Text style={[styles.text, { color: White, marginRight: 4 }]}>Done</Text>
         <CompleteSvg style={{
           width: 20,
           height: 20
@@ -208,11 +208,11 @@ class Card extends React.Component {
     const sortPriority = () => {
       switch(priority) {
         case 'high':
-          return palette.red400
+          return Red400
         case 'medium':
-          return palette.yellow300
+          return Yellow300
         case 'low':
-          return palette.blue400
+          return Blue400
       }
     }
     const Icon = icon
@@ -225,7 +225,7 @@ class Card extends React.Component {
           navigation.push(redirect, redirectParams)
         }
       }}>
-      <View style={[styles.row, { backgroundColor: palette.white }]}>
+      <View style={[styles.row, { backgroundColor: White }]}>
             <PlatformTouchable
               onLongPress={item.drag}
               style={[{ width: 5, alignItems: "flex-start" }]}
@@ -278,7 +278,7 @@ class Card extends React.Component {
                     position: 'bottom',
                   })
                 }}>
-                  <Nudge color={palette.yellow300} />
+                  <Nudge color={Yellow300} />
                 </TouchableOpacity>
                 </>
               }
@@ -303,17 +303,17 @@ class Card extends React.Component {
               }
               {
                 projectName &&
-                <Tag color={palette.purple} style={{
+                <Tag color={Purple} style={{
                   marginRight: spacingUnit,
                   marginBottom: spacingUnit
                 }}>
-                  <RegularText color={palette.white}>
+                  <RegularText color={White}>
                     {projectName}
                   </RegularText>
                 </Tag>
               }
               {dueDate && !completedAt &&  
-                  <RegularText color={isRedDate ? palette.red400 : palette.grey450} style={styles.dueText}>
+                  <RegularText color={isRedDate ? Red400 : Grey450} style={styles.dueText}>
                   Due {formatDueDate(new Date(dueDate))}
                 </RegularText>
               }
@@ -321,17 +321,17 @@ class Card extends React.Component {
             <View>
               {
                 item.item && item.item.status === 'completed' &&
-                <Tag color={palette.green400} style={{
+                <Tag color={Green400} style={{
                 }}>
-                  <RegularText color={palette.white}>
+                  <RegularText color={White}>
                     Completed {formatDueDate(new Date(completedAt))}
                   </RegularText>
                 </Tag>
               }
               {
                 item.item && item.item.status === 'archived' &&
-                <Tag color={palette.grey300}>
-                  <RegularText color={palette.grey800}>
+                <Tag color={Grey300}>
+                  <RegularText color={Grey800}>
                     Archived
                   </RegularText>
                 </Tag>

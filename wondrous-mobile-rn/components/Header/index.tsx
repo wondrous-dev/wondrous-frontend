@@ -2,10 +2,11 @@ import React, { useState } from 'react'
 import { SafeAreaView, View, Pressable, TextInput, StyleSheet, Keyboard } from 'react-native'
 import { useRoute, useNavigation } from '@react-navigation/native'
 
-import palette from 'theme/palette'
-import { Title, RegularText, Subheading } from '../../storybook/stories/Text'
+import { Orange, Grey300, Grey250, Grey100, White, Black, Grey800, Grey700 } from '../../constants/Colors'
+import { Title, RegularText, Subheading, Paragraph } from '../../storybook/stories/Text'
 import BackCaret from '../../assets/images/back-caret'
 import { spacingUnit } from '../../utils/common'
+import { ShareModal } from '../Feed'
 import SearchIcon from '../../assets/images/bottomNav/search'
 import AddFriend from '../../assets/images/add-friend'
 import Cancel from '../../assets/images/cancel'
@@ -38,7 +39,7 @@ export const SearchBar = ({ searchString, setSearchString, setFocus, placeholder
     <View style={{
       flexDirection: 'row',
       alignItems: 'center',
-      backgroundColor: palette.grey100,
+      backgroundColor: Grey100,
       marginLeft: spacingUnit * 2,
       marginRight: spacingUnit * 2,
       borderRadius: spacingUnit * 2,
@@ -49,7 +50,7 @@ export const SearchBar = ({ searchString, setSearchString, setFocus, placeholder
       marginBottom: spacingUnit * 0.5,
       flex: 1
     }}>
-      <SearchIcon iconColor={palette.grey800} />
+      <SearchIcon iconColor={Grey800} />
       <TextInput
           value={searchString}
           onChangeText={setSearchString}
@@ -65,7 +66,7 @@ export const SearchBar = ({ searchString, setSearchString, setFocus, placeholder
             }
           }}
       />
-      <Cancel color={palette.grey800} onPress={() => {
+      <Cancel color={Grey800} onPress={() => {
         if (!searchString) {
           Keyboard.dismiss()
         }
@@ -111,7 +112,7 @@ export const Header = ({
       flexDirection: 'row',
       height: 64,
       borderBottomWidth: 1,
-      borderBottomColor: palette.grey300,
+      borderBottomColor: Grey300,
     }}>
       <ContactsModal isVisible={contactsModal} setModalVisible={setContactsModal} />
       <Pressable onPress={() => {
@@ -136,7 +137,7 @@ export const Header = ({
       }
       {
         title ?
-        <Subheading color={palette.black}>
+        <Subheading color={Black}>
           {title}
         </Subheading>
         :
@@ -145,7 +146,7 @@ export const Header = ({
         <SearchBar searchString={searchString} setSearchString={setSearchString} setFocus={setFocus} />
       :
       <Title style={{
-        color: palette.orange,
+        color: Orange,
         // flex: 2
       }}>
         W
@@ -160,7 +161,7 @@ export const Header = ({
           marginRight: spacingUnit * 2,
           marginLeft: -spacingUnit * 2
         }}>
-          <RegularText color={palette.grey250}>
+          <RegularText color={Grey250}>
             Skip
           </RegularText>
         </Pressable>
@@ -174,7 +175,7 @@ export const Header = ({
           const optionPress = options.setModalVisible
           optionPress(true)
         }}>
-              <Options color={palette.grey700} />
+              <Options color={Grey700} />
           </Pressable>
       }
       {
@@ -193,7 +194,7 @@ export const Header = ({
             ...rightButton.style
           })
         }}>
-          <RegularText color={rightButton.textColor || palette.white}>
+          <RegularText color={rightButton.textColor || White}>
             {rightButton.text}
           </RegularText>
         </Pressable>

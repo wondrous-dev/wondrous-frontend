@@ -1,30 +1,44 @@
 import React, { useState } from 'react'
-import { View, SafeAreaView, ActivityIndicator, Pressable } from 'react-native'
-import { useMutation } from '@apollo/client'
+import { StackScreenProps } from '@react-navigation/stack'
+import { StyleSheet, View, SafeAreaView, ActivityIndicator, Dimensions, Pressable } from 'react-native'
+import { useMutation, useQuery } from '@apollo/client'
+// import {
+//   GoogleSignin,
+//   GoogleSigninButton,
+//   statusCodes,
+// } from '@react-native-community/google-signin'
 
-import palette from 'theme/palette'
+import { RootStackParamList } from '../types'
+import { Red400, White } from '../constants/Colors'
 import { Title, ErrorText, RegularText, Subheading } from '../storybook/stories/Text'
-import { GoogleLogin } from '../storybook/stories/Button'
+import { SvgImage } from '../storybook/stories/Image'
+import { GoogleLogin, FacebookLogin, EmailLogin } from '../storybook/stories/Button'
 import { styles } from './HomeScreen'
 import { SIGNUP } from '../graphql/mutations'
-import { withAuth } from '../components/withAuth'
+import { withAuth, useMe } from '../components/withAuth'
 import { AppleLogin } from '../storybook/stories/Button/Apple'
 import { spacingUnit, openLink } from '../utils/common'
 
+const loginStyles = StyleSheet.create({
+  container: styles.container
+})
 
 function SignupScreen({
   navigation,
   route
 }) {
+  const user = useMe()
   const [loginStatus, setLoginStatus] = useState(null)
   const [loginError, setLoginError] = useState(null)
   const [signup] = useMutation(SIGNUP)
   const login = route && route.params && route.params.login
- 
+  // if (user) {
+  //   navigation.push('Welcome')
+  // }
   return (
     <SafeAreaView style={styles.container}>
       <Title style={{
-        color: palette.white
+        color: White
       }}>
         Wonder
       </Title>
@@ -38,6 +52,9 @@ function SignupScreen({
             <GoogleLogin style={{
               marginTop: 48
             }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
+            {/* <FacebookLogin style={{
+              marginTop: 16
+            }} callToAction={signup} loginStatus={loginStatus} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} /> */}
             <AppleLogin style={{
             marginTop: spacingUnit * 2
           }} callToAction={signup} setLoginStatus={setLoginStatus} navigation={navigation} setLoginError={setLoginError} />
@@ -55,17 +72,17 @@ function SignupScreen({
               lineHeight: 19,
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} color={palette.white}>Or continue with email</Subheading>
+            }} color={White}>Or continue with email</Subheading>
             </Pressable>
             {
               loginError &&
               <ErrorText style={{
                 marginTop: 8
-              }} color={palette.red400}>
+              }} color={Red400}>
                 {loginError}
               </ErrorText>
             }
-            <RegularText color={palette.white} style={{
+            <RegularText color={White} style={{
               textAlign: 'center',
               position: 'absolute',
               bottom: spacingUnit * 5
@@ -74,7 +91,7 @@ function SignupScreen({
               <Pressable onPress={() => openLink('https://wonderapp.co/eula-policy')}>
                 <RegularText style={{
                   textDecorationLine: 'underline',
-                }} color={palette.white}>
+                }} color={White}>
                   terms and conditions
                 </RegularText>
               </Pressable>

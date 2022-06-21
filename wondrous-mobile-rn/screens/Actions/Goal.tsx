@@ -6,12 +6,12 @@ import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
+import { Grey800, Purple, Red400, White, Yellow300, Grey300, Blue400, Grey450, Black, Green400 } from '../../constants/Colors'
 import { FullScreenGoalModal } from '../../components/Modal/GoalModal'
 import { GoalCongratsModal } from '../../components/Modal'
 import { pageStyles, sortPriority, ReactionFeed } from './common'
 import { UPDATE_GOAL, COMPLETE_GOAL, NUDGE_GOAL } from '../../graphql/mutations'
-import { ErrorText, Paragraph, RegularText } from '../../storybook/stories/Text'
+import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import PriorityFlame from '../../assets/images/modal/priority'
 import { capitalizeFirstLetter, getRingActions, renderMentionString, spacingUnit, getLocale } from '../../utils/common'
 import { Tag } from '../../components/Tag'
@@ -159,15 +159,15 @@ const GoalPage = ({ navigation, route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <FullScreenGoalModal setModalVisible={setModalVisible} isVisible={modalVisible} setup={true} goal={goal} goalMutation={updateGoal} completeGoalMutation={completeGoal} />
       <Header title='Goal' rightButton={ownedByUser && {
         style: {
           borderWidth: 1,
-          borderColor: palette.grey800
+          borderColor: Grey800
         },
-        textColor: palette.grey800,
+        textColor: Grey800,
         text: 'Edit Goal',
         onPress: () => {
           setModalVisible(true)
@@ -208,7 +208,7 @@ const GoalPage = ({ navigation, route }) => {
                     goalId: goal?.id
                   }
                 })}>
-                  <Nudge color={palette.yellow300} />
+                  <Nudge color={Yellow300} />
                 </TouchableOpacity>
                 </>
           }
@@ -225,11 +225,11 @@ const GoalPage = ({ navigation, route }) => {
           {
             completed
             ?
-            <Tag color={palette.green400} style={{
+            <Tag color={Green400} style={{
               marginRight: spacingUnit,
               marginTop: spacingUnit
             }}>
-              <RegularText color={palette.white}>
+              <RegularText color={White}>
                 Completed
               </RegularText>
             </Tag>
@@ -237,11 +237,11 @@ const GoalPage = ({ navigation, route }) => {
             (
               archived
               ?
-              <Tag color={palette.grey300} style={{
+              <Tag color={Grey300} style={{
                 marginRight: spacingUnit,
                 marginTop: spacingUnit
               }}>
-                  <RegularText color={palette.grey800}>
+                  <RegularText color={Grey800}>
                     Archived
                   </RegularText>
               </Tag>
@@ -264,7 +264,7 @@ const GoalPage = ({ navigation, route }) => {
                   })
     
                 }} style={pageStyles.markAsComplete}>
-                  <RegularText color={palette.green400}>
+                  <RegularText color={Green400}>
                     Mark as complete
                   </RegularText>
                 </Pressable>
@@ -279,22 +279,22 @@ const GoalPage = ({ navigation, route }) => {
                 backgroundColor: sortPriority(goal.priority),
                 marginTop: spacingUnit
               }]}>
-              <PriorityFlame color={palette.white} style={{
+              <PriorityFlame color={White} style={{
                 // marginLeft: spacingUnit,
                 marginRight: spacingUnit
               }} />
-              <RegularText color={palette.white}>
+              <RegularText color={White}>
                 {capitalizeFirstLetter(goal.priority)} Priority
               </RegularText>
               </View>
             }
             {
               goal.project &&
-              <Tag color={palette.purple} style={{
+              <Tag color={Purple} style={{
                 marginRight: spacingUnit ,
                 marginTop: spacingUnit 
               }}>
-                <RegularText color={palette.white}>
+                <RegularText color={White}>
                   {goal.project && goal.project.name}
                 </RegularText>
               </Tag>
@@ -303,7 +303,7 @@ const GoalPage = ({ navigation, route }) => {
             <View style={{
               marginTop: spacingUnit
             }}>
-                <RegularText color={redDate(goal.dueDate) ? palette.red400 : palette.grey450}>
+                <RegularText color={redDate(goal.dueDate) ? Red400 : Grey450}>
                 Due {formatDueDate(new Date(goal.dueDate))}
               </RegularText>
               </View>
@@ -312,10 +312,10 @@ const GoalPage = ({ navigation, route }) => {
         {
           goal.additionalData && goal.additionalData.link &&
           <View style={pageStyles.linkContainer}>
-            <LinkIcon color={palette.grey800} style={{
+            <LinkIcon color={Grey800} style={{
               // marginRight: spacingUnit
             }} />
-            <Paragraph color={palette.blue400} style={pageStyles.link}>
+            <Paragraph color={Blue400} style={pageStyles.link}>
               {goal.additionalData.link}
             </Paragraph>
           </View>
@@ -331,7 +331,7 @@ const GoalPage = ({ navigation, route }) => {
               video: muxPlaybackId
             },
             ...images
-          ] : images} images={true} passiveDotColor={palette.grey800} activeDotColor={palette.blue400} />
+          ] : images} images={true} passiveDotColor={Grey800} activeDotColor={Blue400} />
         }
         </View>
         <View style={[pageStyles.subContainer]}>
@@ -351,9 +351,9 @@ const GoalPage = ({ navigation, route }) => {
           })} style={{
             marginRight: spacingUnit
           }}>
-          <Paragraph color={palette.black} style={pageStyles.additionalInfoText}>
+          <Paragraph color={Black} style={pageStyles.additionalInfoText}>
             {asks.length}
-            <Paragraph color={palette.black} style={{
+            <Paragraph color={Black} style={{
             // textDecorationLine: 'underline'
           }}>
             {asks.length === 1 ? ' ask' : ' asks'}
@@ -374,9 +374,9 @@ const GoalPage = ({ navigation, route }) => {
               }
             }
           })}>
-            <Paragraph color={palette.black} style={pageStyles.additionalInfoText}>
+            <Paragraph color={Black} style={pageStyles.additionalInfoText}>
               {tasks}
-              <Paragraph color={palette.black}>
+              <Paragraph color={Black}>
                 {Number(tasks)=== 1 ? ' task' : ' tasks'}
               </Paragraph>
             </Paragraph>

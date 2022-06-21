@@ -3,11 +3,12 @@ import { StackScreenProps } from '@react-navigation/stack'
 import { SafeAreaView, StyleSheet, View } from 'react-native'
 
 import { Header } from '../../components/Header'
-import { Subheading, Paragraph } from '../../storybook/stories/Text'
+import { Subheading, Paragraph, RegularText } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
-import palette from 'theme/palette'
+import { Grey500, White, Black } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
+import WelcomeImage from '../../assets/images/workflow/welcome'
 import WelcomePicture from '../../assets/images/workflow/welcome'
 import { withAuth, useMe } from '../../components/withAuth'
 const welcomeStyles = StyleSheet.create({
@@ -30,13 +31,13 @@ function WorkflowWelcomeScreen({
   const user = useMe()
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1
     }}>
       <Header />
       <View style={welcomeStyles.welcomeContainer}>
 
-      <Subheading color={palette.black} style={{
+      <Subheading color={Black} style={{
         marginBottom: spacingUnit * 2
       }}>
         The Wonder workflow
@@ -44,7 +45,7 @@ function WorkflowWelcomeScreen({
       <View style={{
         alignSelf: 'flex-start',
       }}>
-      <Paragraph color={palette.grey500} style={{
+      <Paragraph color={Grey500} style={{
         textAlign: 'left',
         padding: spacingUnit
       }}>
@@ -55,7 +56,7 @@ function WorkflowWelcomeScreen({
           fontFamily: 'Rubik SemiBold'
         }}> Tasks </Paragraph>act as progress markers that you can share with your followers.
       </Paragraph>
-      <Paragraph color={palette.grey500} style={{
+      <Paragraph color={Grey500} style={{
         textAlign: 'left',
         marginBottom: spacingUnit * 4,
         marginLeft: spacingUnit
@@ -104,7 +105,7 @@ function WorkflowWelcomeScreen({
           })
         }
       }}>
-        <Paragraph color={palette.white}>
+        <Paragraph color={White}>
           Got it
         </Paragraph>
       </PrimaryButton>

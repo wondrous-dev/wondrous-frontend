@@ -5,7 +5,7 @@ import { SafeAreaView, View} from 'react-native'
 import { Card } from '../../storybook/stories/Card'
 import { GET_TASKS_FROM_GOAL, GET_ASK_BY_ID } from '../../graphql/queries'
 
-import palette from 'theme/palette'
+import { White } from '../../constants/Colors'
 import { Header } from '../../components/Header'
 import { FlatList } from 'react-native'
 import { renderCard } from '../Profile/common'
@@ -65,7 +65,7 @@ const ActionList = ({ route, navigation }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header title={routeLabel} />
       <View style={{

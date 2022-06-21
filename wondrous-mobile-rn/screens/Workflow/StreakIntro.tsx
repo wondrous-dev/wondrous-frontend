@@ -1,14 +1,16 @@
-import React from 'react'
-import { SafeAreaView, View, StyleSheet } from 'react-native'
+import React, { useRef, useState } from 'react'
+import { SafeAreaView, View, StyleSheet, Pressable, Dimensions, FlatList } from 'react-native'
 import { StackScreenProps } from '@react-navigation/stack'
 import ConfettiCannon from 'react-native-confetti-cannon'
 
 import { Paragraph, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { ProfileTabParamList } from '../../types'
+import { withAuth, useMe } from '../../components/withAuth'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
-import { spacingUnit } from '../../utils/common'
+import { Grey400, White, Black, Grey500, Blue500, Blue400, Green400 } from '../../constants/Colors'
+import { spacingUnit, getLocale } from '../../utils/common'
+import { SvgImage } from '../../storybook/stories/Image'
 import Celebration from '../../assets/images/celebrations/signupConfetti'
 const streakIntroStyles = StyleSheet.create({
   image: {
@@ -26,7 +28,7 @@ function StreakIntro({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header />
       <ConfettiCannon count={200} origin={{x: -10, y: 0}} />
@@ -39,12 +41,12 @@ function StreakIntro({
           height: 80,
           ...streakIntroStyles.image
         }} />
-        <Subheading color={palette.blue400} style={{
+        <Subheading color={Blue400} style={{
           marginTop: spacingUnit * 3,
         }}>
           1 day Streak!
         </Subheading>
-        <Paragraph color={palette.black} style={{
+        <Paragraph color={Black} style={{
           textAlign: 'center',
           paddingLeft: spacingUnit * 2,
           paddingRight: spacingUnit * 2,
@@ -54,14 +56,14 @@ function StreakIntro({
           Every day you create or complete a goal/task/ask, your streak increases.
         </Paragraph>
         <PrimaryButton style={{
-          backgroundColor: palette.green400
+          backgroundColor: Green400
         }} onPress={() => navigation.navigate('Root', {
           screen: 'Profile',
           params: {
             screen: 'UserProfile'
           }
         })}>
-          <Paragraph color={palette.white} style={{
+          <Paragraph color={White} style={{
             fontFamily: 'Rubik SemiBold'
           }}>
             Finish

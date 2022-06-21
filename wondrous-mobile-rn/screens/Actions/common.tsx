@@ -2,13 +2,14 @@ import { useQuery, useMutation } from '@apollo/client'
 import React, { useEffect, useState } from 'react'
 import { StyleSheet, View, FlatList } from 'react-native'
 
-import palette from 'theme/palette'
+import { Black, Blue400, Red400, Yellow300, Green400, Grey800, Grey300 } from '../../constants/Colors'
 import { spacingUnit } from '../../utils/common'
 import { GET_ASK_FEED, GET_GOAL_FEED, GET_REVIEW_FEED, GET_TASK_FEED } from '../../graphql/queries'
 import { REACT_FEED_ITEM } from '../../graphql/mutations'
-import { Paragraph } from '../../storybook/stories/Text'
+import { LikeOutline, LikeFilled } from '../../assets/images/reactions/like'
+import { Paragraph, RegularText } from '../../storybook/stories/Text'
 import { useNavigation } from '@react-navigation/native'
-import { renderItem } from '../../components/Feed'
+import { ShareModal, renderItem } from '../../components/Feed'
 
 export const pageStyles = StyleSheet.create({
   container: {
@@ -30,7 +31,7 @@ export const pageStyles = StyleSheet.create({
     borderRadius: 8
   },
   markAsComplete: {
-    borderColor: palette.green400,
+    borderColor: Green400,
     borderWidth: 1,
     marginRight: spacingUnit,
     paddingLeft: spacingUnit,
@@ -41,7 +42,7 @@ export const pageStyles = StyleSheet.create({
     fontFamily: 'Rubik SemiBold',
     fontSize: 18,
     lineHeight: 24,
-    color: palette.black,
+    color: Black,
     marginBottom: spacingUnit
   },
   paragraph: {
@@ -57,7 +58,7 @@ export const pageStyles = StyleSheet.create({
   link: {
     fontFamily: 'Rubik Light',
     fontSize: 16,
-    color: palette.blue400,
+    color: Blue400,
     marginLeft: spacingUnit
   },
   subContainer: {
@@ -74,11 +75,11 @@ export const pageStyles = StyleSheet.create({
 export const sortPriority = (priority) => {
   switch(priority) {
     case 'high':
-      return palette.red400
+      return Red400
     case 'medium':
-      return palette.yellow300
+      return Yellow300
     case 'low':
-      return palette.blue400
+      return Blue400
   }
 }
 
@@ -173,7 +174,7 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
 
   return (
     <>
-    <Paragraph color={palette.grey800} style={{
+    <Paragraph color={Grey800} style={{
       marginTop: spacingUnit * 2
     }}>
       Activity
@@ -181,7 +182,7 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
     <FlatList 
       contentContainerStyle={{
         paddingBottom: spacingUnit * 10,
-        borderTopColor: palette.grey300,
+        borderTopColor: Grey300,
         borderTopWidth: 1,
         marginTop: spacingUnit
       }}
@@ -199,7 +200,7 @@ export const ReactionFeed = ({ type, objId, user, tab }) => {
       ItemSeparatorComponent={() => (
         <View
           style={{
-            borderBottomColor: palette.grey300,
+            borderBottomColor: Grey300,
             borderBottomWidth: 1,
           }}
         />

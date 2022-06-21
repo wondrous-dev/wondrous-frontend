@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react'
-import { SafeAreaView, View, Alert, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
+import { SafeAreaView, ScrollView, View, Alert, Platform, TextInput, TouchableWithoutFeedback, Keyboard, Pressable } from 'react-native'
 import Modal from 'react-native-modal'
+import { useQuery } from '@apollo/client'
+import { toDate } from 'date-fns'
 import { KeyboardAwareScrollView } from 'react-native-keyboard-aware-scroll-view'
 
-import palette from 'theme/palette'
-import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { Black, White, Blue400, Grey400, Grey800, Grey750, Blue500, Red400, Yellow300, Grey300 } from '../../constants/Colors'
+import { ErrorText, Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { capitalizeFirstLetter, extractFirstAndLastName, getNonWhiteSpaceLength, spacingUnit } from '../../utils/common'
 import { modalStyles, ModalDropdown, privacyDropdown } from '../../components/Modal/common'
 import { SafeImage, UploadImage } from '../../storybook/stories/Image'
@@ -139,7 +141,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
               }} style={{
                 flex: 1
               }}>
-              <RegularText color={palette.blue400} style={{
+              <RegularText color={Blue400} style={{
                 fontSize: 16
               }}>
                 Cancel
@@ -148,7 +150,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
               <View style={{
                 flex: 1
               }}>
-                <Subheading color={palette.black} style={{
+                <Subheading color={Black} style={{
                   fontSize: 20
                 }}>
                   Edit profile
@@ -220,7 +222,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                 })
                 setModalVisible(false)
               }}>
-                <RegularText color={palette.white} style={{
+                <RegularText color={White} style={{
                   fontSize: 16
                 }}>
                   Update
@@ -244,7 +246,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                   borderRadius: spacingUnit * 6,
                 }} src={profilePicture} />
                 <Pressable onPress={() => setChangePhoto(true)}>
-                  <Paragraph color={palette.blue400} style={{
+                  <Paragraph color={Blue400} style={{
                     marginTop: spacingUnit
                   }}>
                     Change profile photo
@@ -261,7 +263,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                   height: spacingUnit * 12,
                   borderRadius: spacingUnit * 6
                 }} projectOwnedByUser={true} onPress={() => setChangePhoto(true)}/>
-                  <Paragraph color={palette.blue400} style={{
+                  <Paragraph color={Blue400} style={{
                     marginTop: spacingUnit
                   }}>
                     Add photo
@@ -276,7 +278,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                   {
                     user &&
                     <View style={profileStyles.changeRowContainer}>
-                      <Paragraph color={palette.black} style={profileStyles.changeRowParagraphText}>
+                      <Paragraph color={Black} style={profileStyles.changeRowParagraphText}>
                         Full Name
                       </Paragraph>
                       <TextInput
@@ -289,7 +291,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                     </View>
                   }
                     <View style={profileStyles.changeRowContainer}>
-                      <Paragraph color={palette.black} style={{
+                      <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -308,7 +310,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                       />
                       </View>
                       <View style={profileStyles.changeRowContainer}>
-                        <Paragraph color={palette.black} style={{
+                        <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -341,7 +343,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                             }
                           )
                         }}>
-                          <Paragraph color={palette.black} style={{
+                          <Paragraph color={Black} style={{
                           ...profileStyles.changeRowParagraphText,
                           ...(!user &&
                             {
@@ -354,7 +356,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                           <ModalDropdown value={privacy} items={privacyDropdown} setValue={setProjectPrivacy} placeholder='Select privacy level' />
                         </View>
                           <View style={profileStyles.changeRowContainer}>
-                            <Paragraph color={palette.black} style={{
+                            <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -365,7 +367,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                               Category
                             </Paragraph>
                             <View style={profileStyles.editRowContainer}>
-                            <Paragraph color={palette.black}>
+                            <Paragraph color={Black}>
                               {capitalizeFirstLetter(project.category)}
                             </Paragraph>
                             <Pressable style={{
@@ -384,7 +386,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                               })
                               setModalVisible(false)
                             }}>
-                              <Paragraph color={palette.blue400}>
+                              <Paragraph color={Blue400}>
                                 Edit
                               </Paragraph>
                             </Pressable>
@@ -393,7 +395,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                           {
                               (project.category === 'tech' || project.category === 'business') &&
                               <View style={profileStyles.changeRowContainer}>
-                              <Paragraph color={palette.black} style={{
+                              <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -404,7 +406,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                                 Tags
                               </Paragraph>
                               <View style={profileStyles.editRowContainer}>
-                              <Paragraph color={project.tags ? palette.black : palette.grey800}>
+                              <Paragraph color={project.tags ? Black : Grey800}>
                                 {cleanedTags ?
                                 capitalizeFirstLetter(cleanedTags.join(', '))
                                 :
@@ -426,7 +428,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                                 })
                                 setModalVisible(false)
                               }}>
-                                <Paragraph color={palette.blue400}>
+                                <Paragraph color={Blue400}>
                                   Edit
                                 </Paragraph>
                               </Pressable>
@@ -436,7 +438,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                         </>
                       }
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={palette.black} style={{
+                          <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -458,7 +460,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={palette.black} style={{
+                          <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -480,7 +482,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={palette.black} style={{
+                          <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -502,7 +504,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={palette.black} style={{
+                          <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {
@@ -524,7 +526,7 @@ export const EditProfileModal = ({ user, project, setParentImage, saveMutation, 
                           />
                         </View>
                         <View style={profileStyles.changeRowContainer}>
-                          <Paragraph color={palette.black} style={{
+                          <Paragraph color={Black} style={{
                         ...profileStyles.changeRowParagraphText,
                         ...(!user &&
                           {

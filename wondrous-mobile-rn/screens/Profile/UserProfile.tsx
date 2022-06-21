@@ -24,7 +24,7 @@ import { UPDATE_USER, UPDATE_ASK, UPDATE_TASK, UPDATE_GOAL, COMPLETE_GOAL, COMPL
 import { GET_USER, GET_USER_ADDITIONAL_INFO, GET_USER_FEED, GET_USER_ACTIONS, GET_ASKS_FROM_USER, WHOAMI, GET_USER_STREAK, CHECK_USER_FOLLOWS_BACK, GET_USER_RING_ACTION_COUNT } from '../../graphql/queries'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { PrimaryButton, SecondaryButton } from '../../storybook/stories/Button'
-import palette from 'theme/palette'
+import { Black, Grey300, White, Blue400, Grey800, Grey700, Orange } from '../../constants/Colors'
 import { ProfileContext, UserCongratsContext } from '../../utils/contexts'
 import {
   ProfilePlaceholder,
@@ -506,12 +506,12 @@ const UserProfile = React.memo(({
           position: 'absolute',
           zIndex: 1000,
           elevation: 1000,
-          backgroundColor: palette.white,
+          backgroundColor: White,
           left: profilePictureDimensions.x + profilePictureDimensions.width,
           top: profilePictureDimensions.y + profilePictureDimensions.height,
           borderRadius: spacingUnit,
           borderWidth: 1,
-          borderColor: palette.grey300,
+          borderColor: Grey300,
           padding: spacingUnit * 2
         }}>
             <Pressable onPress={() => {
@@ -556,9 +556,9 @@ const UserProfile = React.memo(({
             percent={percentage}
             radius={48}
             borderWidth={8}
-            color={palette.orange}
-            shadowColor={palette.grey300}
-            bgColor={palette.white}
+            color={Orange}
+            shadowColor={Grey300}
+            bgColor={White}
           >
           {
             profilePicture ?
@@ -642,13 +642,13 @@ const UserProfile = React.memo(({
             marginTop: spacingUnit
           }}>
             <View style={{
-            backgroundColor: palette.grey700,
+            backgroundColor: Grey700,
             borderRadius: spacingUnit,
             padding: 2,
             paddingLeft: spacingUnit,
             paddingRight: spacingUnit
           }}>
-            <RegularText color={palette.white}>
+            <RegularText color={White}>
               Follows you
             </RegularText>
           </View>
@@ -661,18 +661,18 @@ const UserProfile = React.memo(({
           <View style={profileStyles.profileHeader}>
           <Subheading style={{
             fontSize: 18
-          }} color={palette.black}>
+          }} color={Black}>
             {user?.firstName || ''} {user?.lastName || ''}
           </Subheading>
           {user?.username &&
-          <Paragraph color={palette.grey800}>@{user?.username}</Paragraph>
+          <Paragraph color={Grey800}>@{user?.username}</Paragraph>
           }
           </View>
           {
             userOwned ?
             <>
               <SecondaryButton style={profileStyles.editButton} onPress={() => setModalVisible(true)}>
-                <RegularText color={palette.black}>
+                <RegularText color={Black}>
                   Edit Profile
                 </RegularText>
               </SecondaryButton>
@@ -686,7 +686,7 @@ const UserProfile = React.memo(({
               setFollowing(false)
               unfollowUser()
             }}>
-              <Paragraph color={palette.black}>
+              <Paragraph color={Black}>
                 Following
               </Paragraph>
             </Pressable>
@@ -695,7 +695,7 @@ const UserProfile = React.memo(({
               setFollowing(true)
               followUser()
             }} style={profileStyles.followButton}>
-              <Paragraph color={palette.white}>
+              <Paragraph color={White}>
                 Follow
               </Paragraph>
             </Pressable>
@@ -709,7 +709,7 @@ const UserProfile = React.memo(({
         {
           user.bio &&
           <View style={profileStyles.profileInfoContainer}>
-            <Paragraph color={palette.black} style={{
+            <Paragraph color={Black} style={{
               flexWrap: 'wrap',
               textAlign: 'left'
             }}>
@@ -740,12 +740,12 @@ const UserProfile = React.memo(({
             }
           })
         }}>
-          <Link color={palette.grey800} style={{
+          <Link color={Grey800} style={{
             marginRight: spacingUnit * 0.5,
             width: spacingUnit * 2.5,
             height: spacingUnit * 2.5
           }} />
-          <Paragraph color={palette.blue400}>
+          <Paragraph color={Blue400}>
             Personal links
           </Paragraph>
         </Pressable>
@@ -759,7 +759,7 @@ const UserProfile = React.memo(({
           paddingTop: 0,
           paddingBottom: 0,
         }} onPress={() => setContactsModal(true)}>
-          <Paragraph color={palette.white} >
+          <Paragraph color={White} >
             Invite friends
           </Paragraph>
         </PrimaryButton>
@@ -835,7 +835,7 @@ const UserProfile = React.memo(({
 
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1
     }}>
       <Header noGoingBack={noGoingBack} options={{
@@ -897,7 +897,7 @@ const UserProfile = React.memo(({
           ItemSeparatorComponent={() => (
             <View
               style={[feedSelected && {
-                borderBottomColor: palette.grey300,
+                borderBottomColor: Grey300,
                 borderBottomWidth: 1,
               }]}
             />
@@ -914,7 +914,7 @@ const UserProfile = React.memo(({
               return renderProfileItem({ item, section, user, userOwned, navigation, itemRefs, onSwipeLeft, onSwipeRight, tab, loggedInUser })
             } else {
               return (
-                <Paragraph color={palette.black} style={{
+                <Paragraph color={Black} style={{
                   alignSelf: 'center',
                   marginTop: spacingUnit * 3
                 }}>
@@ -1033,7 +1033,7 @@ const Content = (props: ContentProps) => {
 
   if (!hookProps.finalUserId) {
     return (<SafeAreaView style={{ 
-      backgroundColor: palette.white, 
+      backgroundColor: White, 
       justifyContent: 'center',
       alignItems: 'center',
       flex: 1}}>    

@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
 import { StackScreenProps } from '@react-navigation/stack'
-import { View, SafeAreaView, Pressable, TextInput } from 'react-native'
+import { StyleSheet, View, TouchableOpacity, Text, Image, SafeAreaView, Dimensions, Pressable, TextInput } from 'react-native'
+import ProgressCircle from 'react-native-progress-circle'
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 
 import { RootStackParamList } from '../../types'
 import BackCaret from '../../assets/images/back-caret'
+import { Header } from '../../components/Header'
 import { spacingUnit } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, White, Blue500, Red400, Grey100, Grey200, Grey300, GreyPlaceHolder, Orange, Grey800 } from '../../constants/Colors'
 import { Subheading, RegularText, ButtonText, ErrorText, Title, } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import { useMutation } from '@apollo/client'
@@ -70,12 +72,12 @@ function EmailSignupScreen({
         }} onPress={() => {
           navigation.goBack()
         }}>
-          <BackCaret color={palette.white} />
+          <BackCaret color={White} />
         </Pressable>
 
         <Title style={{
           flex: 1,
-          color: palette.white
+          color: White
         }}>
           Wonder
         </Title>
@@ -100,21 +102,21 @@ function EmailSignupScreen({
                 marginTop: spacingUnit*2,
                 width: spacingUnit * 43,
                 height: spacingUnit * 5.5,
-                borderColor: palette.grey300,
+                borderColor: Grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: palette.white
+                backgroundColor: White
               }}
               placeholder='Email'
-              placeholderTextColor={palette.grey35}
+              placeholderTextColor={GreyPlaceHolder}
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               value={values.email}
             />
             {errors.email && touched.email ? (
-             <RegularText color={palette.red400}>{errors.email}</RegularText>
+             <RegularText color={Red400}>{errors.email}</RegularText>
            ) : null}
             <TextInput
               autoCorrect={false}
@@ -124,24 +126,24 @@ function EmailSignupScreen({
                 marginTop: spacingUnit*2,
                 width: spacingUnit * 43,
                 height: spacingUnit * 5.5,
-                borderColor: palette.grey300,
+                borderColor: Grey300,
                 borderWidth: 1,
                 borderRadius: 4,
                 fontSize: 18,
                 padding: 8,
-                backgroundColor: palette.white
+                backgroundColor: White
               }}
               placeholder='Password'
-              placeholderTextColor={palette.grey35}
+              placeholderTextColor={GreyPlaceHolder}
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
             />
             {errors.password && touched.password ? (
-             <RegularText color={palette.red400}>{errors.password}</RegularText>
+             <RegularText color={Red400}>{errors.password}</RegularText>
            ) : null}
             <PrimaryButton
-              textStyle={{ color: palette.white }}
+              textStyle={{ color: White }}
               style={{
                 width: spacingUnit * 43,
                 alignSelf: 'center',
@@ -149,7 +151,7 @@ function EmailSignupScreen({
               }}
               onPress={handleSubmit}
             >
-              <ButtonText color={palette.white}> Sign up </ButtonText>
+              <ButtonText color={White}> Sign up </ButtonText>
             </PrimaryButton>
 
           </View>
@@ -172,9 +174,9 @@ function EmailSignupScreen({
               lineHeight: 19,
               textAlign: 'center',
               textDecorationLine: 'underline'
-            }} color={palette.white}>Or log in with your email</Subheading>
+            }} color={White}>Or log in with your email</Subheading>
             </Pressable>
-            <RegularText color={palette.white} style={{
+            <RegularText color={White} style={{
               textAlign: 'center',
               position: 'absolute',
               bottom: spacingUnit * 5
@@ -183,7 +185,7 @@ function EmailSignupScreen({
               <Pressable onPress={() => openLink('https://wonderapp.co/eula-policy')}>
                 <RegularText style={{
                   textDecorationLine: 'underline',
-                }} color={palette.white}>
+                }} color={White}>
                   terms and conditions
                 </RegularText>
               </Pressable>

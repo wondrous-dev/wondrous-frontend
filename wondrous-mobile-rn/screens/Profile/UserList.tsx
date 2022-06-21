@@ -1,14 +1,15 @@
 
 import React, { useState, useCallback, useEffect } from 'react'
 import { Image, Pressable, SafeAreaView, RefreshControl, View, TouchableOpacity, FlatList } from 'react-native'
-import { useLazyQuery, useMutation } from '@apollo/client'
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client'
 import * as Analytics from 'expo-firebase-analytics'
 
 import { GET_USER_FOLLOWERS, GET_USER_FOLLOWING, GET_PROJECT_FOLLOWERS, GET_FEED_REACTED_USERS, GET_FEED_COMMENT_REACTED_USERS } from '../../graphql/queries'
 import { withAuth, useMe } from '../../components/withAuth'
-import palette from 'theme/palette'
+import { Black, White, Grey800, Blue400, Grey300 } from '../../constants/Colors'
 import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
 import { wait, spacingUnit, cutString } from '../../utils/common'
+import { ProfilePlaceholder } from './common'
 import { SafeImage } from '../../storybook/stories/Image'
 import DefaultProfilePicture from '../../assets/images/default-profile-picture.jpg'
 import { Header } from '../../components/Header'
@@ -68,7 +69,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
     <TouchableOpacity style={{
       marginBottom: spacingUnit * 2,
       borderBottomWidth: 1,
-      borderBottomColor: palette.grey300,
+      borderBottomColor: Grey300,
       paddingBottom: spacingUnit
     }} onPress={itemPressed}>
     <>
@@ -96,13 +97,13 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
       }}>
         <Subheading style={{
           fontSize: 16
-        }} color={palette.black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
+        }} color={Black}>{(item.firstName || '') + ' ' +  (item.lastName || '')}</Subheading>
         {item.username &&
-        <RegularText color={palette.grey800}>
+        <RegularText color={Grey800}>
           @{item.username}
         </RegularText>}
         {item.bio &&
-          <RegularText color={palette.black} style={{
+          <RegularText color={Black} style={{
             marginTop: spacingUnit * 0.5
           }}>
           {cutString(item.bio)}
@@ -119,7 +120,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
           setFollowing(false)
           unfollowUser()
         }}>
-          <Paragraph color={palette.black}>
+          <Paragraph color={Black}>
             Following
           </Paragraph>
         </Pressable>
@@ -138,7 +139,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
           }
           followUser()
         }} style={listStyles.followButton}>
-          <Paragraph color={palette.white}>
+          <Paragraph color={White}>
             Follow
           </Paragraph>
         </Pressable>
@@ -148,7 +149,7 @@ export const UserItem = ({ item, itemPressed, initialFollowing, existingUserFoll
     </View>
     {
       item.groupName &&
-      <RegularText color={palette.black} style={{
+      <RegularText color={Black} style={{
         marginLeft: spacingUnit * 2,
         marginTop: spacingUnit
       }}>
@@ -310,7 +311,7 @@ const UserList = ({
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       {
         userOwned &&
@@ -335,10 +336,10 @@ const UserList = ({
               alignItems: 'center',
               borderRadius: 4,
               ...(!seeProject && {
-                backgroundColor: palette.blue400
+                backgroundColor: Blue400
               })
             }}>
-              <RegularText color={seeProject ? palette.grey800 : palette.white}>
+              <RegularText color={seeProject ? Grey800 : White}>
                 Users
               </RegularText>
             </Pressable>
@@ -348,10 +349,10 @@ const UserList = ({
               alignItems: 'center',
               borderRadius: 4,
               ...(seeProject && {
-                backgroundColor: palette.blue400
+                backgroundColor: Blue400
               })
             }}>
-              <RegularText color={seeProject ? palette.white : palette.grey800}>
+              <RegularText color={seeProject ? White : Grey800}>
                 Projects
               </RegularText>
             </Pressable>
@@ -373,7 +374,7 @@ const UserList = ({
                 screen: 'Default'
               }
             })}>
-              Time to explore! Go to our <Paragraph color={palette.blue400}>
+              Time to explore! Go to our <Paragraph color={Blue400}>
                 search page
               </Paragraph> to find some cool projects or users! Or you can invite some friends :)
             </Paragraph>
@@ -385,7 +386,7 @@ const UserList = ({
                   marginTop: spacingUnit * 2,
                   alignSelf: 'center'
                 }} onPress={() => setContactsModal(true)}>
-                  <Paragraph color={palette.white} >
+                  <Paragraph color={White} >
                     Invite friends
                   </Paragraph>
               </PrimaryButton>

@@ -1,11 +1,14 @@
 
-import React from 'react'
-import { Pressable, SafeAreaView, View, StyleSheet } from 'react-native'
+import React, { useState, useCallback, useEffect } from 'react'
+import { Pressable, SafeAreaView, View, Linking, StyleSheet } from 'react-native'
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client'
 
+import { withAuth, useMe } from '../../components/withAuth'
+import { ProfileTabParamList } from '../../types'
 import { Header } from '../../components/Header'
-import palette from 'theme/palette'
-import { Paragraph } from '../../storybook/stories/Text'
-import { TwitterShare, LinkedinShare, InstagramShare, GithubShare } from '../../assets/images/share'
+import { Black, Blue500, Grey300, White, Blue400, Grey800 } from '../../constants/Colors'
+import { Paragraph, RegularText, Subheading } from '../../storybook/stories/Text'
+import { TwitterShare, CopyLink, LinkedinShare, InstagramShare, GithubShare } from '../../assets/images/share'
 import { openLink, spacingUnit } from '../../utils/common'
 
 import Link from '../../assets/images/link'
@@ -83,15 +86,15 @@ const Links = ({ route }) => {
   return (
     <SafeAreaView style={{
       flex: 1,
-      backgroundColor: palette.white
+      backgroundColor: White
     }}>
       <Header title='Personal links' />
       <View style={linkStyles.container}>
         {
           links.website && 
           <Pressable style={linkStyles.linkItem} onPress={() => openLink(links.website)}>
-            <Link color={palette.grey800} style={linkStyles.linkImage} />
-              <Paragraph color={palette.grey800} style={linkStyles.linkText}>
+            <Link color={Grey800} style={linkStyles.linkImage} />
+              <Paragraph color={Grey800} style={linkStyles.linkText}>
                 {links.website}
               </Paragraph>
           </Pressable>
@@ -100,7 +103,7 @@ const Links = ({ route }) => {
           links.twitter &&
           <Pressable style={linkStyles.linkItem} onPress={() => openSocialLink(Socials.twitter,links.twitter)}>
           <TwitterShare style={linkStyles.linkImage} />
-            <Paragraph color={palette.grey800} style={linkStyles.linkText}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.twitter}
             </Paragraph>
           </Pressable>
@@ -109,7 +112,7 @@ const Links = ({ route }) => {
           links.instagram &&
           <Pressable style={linkStyles.linkItem} onPress={() => openSocialLink(Socials.instagram, links.instagram)}>
           <InstagramShare style={linkStyles.linkImage} />
-            <Paragraph color={palette.grey800} style={linkStyles.linkText}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.instagram}
             </Paragraph>
           </Pressable>
@@ -118,7 +121,7 @@ const Links = ({ route }) => {
           links.linkedin &&
           <Pressable style={linkStyles.linkItem} onPress={() => openSocialLink(Socials.linkedin, links.linkedin)}>
           <LinkedinShare style={linkStyles.linkImage} />
-            <Paragraph color={palette.grey800} style={linkStyles.linkText}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.linkedin}
             </Paragraph>
           </Pressable>
@@ -127,7 +130,7 @@ const Links = ({ route }) => {
           links.github &&
           <Pressable style={linkStyles.linkItem} onPress={() => openSocialLink(Socials.github, links.github)}>
           <GithubShare style={linkStyles.linkImage} />
-            <Paragraph color={palette.grey800} style={linkStyles.linkText}>
+            <Paragraph color={Grey800} style={linkStyles.linkText}>
               {links.github}
             </Paragraph>
           </Pressable>

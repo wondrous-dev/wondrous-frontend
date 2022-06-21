@@ -1,5 +1,5 @@
-import { moderateScale } from '../../../utils/scale'
-import palette from 'theme/palette'
+import { scale, moderateScale, verticalScale } from '../../../utils/scale'
+import { White, Blue400, Blue500, Black, Grey800 } from '../../../constants/Colors'
 
 const baseStyle = {
   maxWidth: moderateScale(344),
@@ -12,12 +12,12 @@ const baseStyle = {
 export default {
   primary: {
     ...baseStyle,
-    backgroundColor: palette.blue500,
-    color: palette.white,
+    backgroundColor: Blue500,
+    color: White,
   },
   secondary: {
     ...baseStyle,
-    backgroundColor: palette.white
+    backgroundColor: White
   },
   google: {
     height: 50,

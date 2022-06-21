@@ -10,7 +10,7 @@ import * as Analytics from 'expo-firebase-analytics'
 import { RootStackParamList } from '../../types'
 import { Header } from '../../components/Header'
 import { spacingUnit, getLocale } from '../../utils/common'
-import palette from 'theme/palette'
+import { Black, Grey900, White, Blue400, Blue500, Yellow300, Grey300, Grey500, GreyPlaceHolder } from '../../constants/Colors'
 import { Subheading, ErrorText, ButtonText, Paragraph } from '../../storybook/stories/Text'
 import { PrimaryButton } from '../../storybook/stories/Button'
 import Smile from '../../assets/images/emoji/smile'
@@ -42,20 +42,20 @@ const firstProjectSetupStyles = StyleSheet.create({
     },
     stepCount: {
         fontSize: 16,
-        color: palette.blue500,
+        color: Blue500,
         fontFamily: 'Rubik',
         fontStyle: 'normal',
         fontWeight: '500',
     },
     privacyButton: {
-        borderColor: palette.black,
+        borderColor: Black,
         borderRadius: spacingUnit,
         borderWidth: 1,
         padding: spacingUnit,
     },
     paragraph: {
         marginTop: spacingUnit,
-        color: palette.grey500,
+        color: Grey500,
         textAlign: 'center',
         maxWidth: spacingUnit * 43,
         alignSelf: 'center',
@@ -131,12 +131,12 @@ const CreateProjectInput = ({ navigation, setup }) => {
         <View style={firstProjectSetupStyles.createProjectInputContainer}>
             <ProjectFAQModal isVisible={projectFAQ} setModalVisible={setProjectFAQ} />
             <Subheading style={{
-            }} color={palette.black}>
+            }} color={Black}>
                 Make a project!
         </Subheading>
             <Paragraph style={firstProjectSetupStyles.paragraph}>
             Describe your project in one sentence.{"\n"}
-            <Paragraph color={palette.blue400} onPress={() => setProjectFAQ(true)}>
+            <Paragraph color={Blue400} onPress={() => setProjectFAQ(true)}>
                 What is a project?
             </Paragraph>
         </Paragraph>
@@ -214,14 +214,14 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             style={{
                                 width: spacingUnit * 43,
                                 height: spacingUnit * 4.5,
-                                borderColor: palette.grey300,
+                                borderColor: Grey300,
                                 borderWidth: 1,
                                 borderRadius: 4,
                                 fontSize: 16,
                                 padding: 8
                             }}
                             placeholder='Name'
-                            placeholderTextColor={palette.grey35}
+                            placeholderTextColor={GreyPlaceHolder}
                             onChangeText={(val) => {
                                 if (val.length <= 40) {
                                     setName(val)
@@ -236,7 +236,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             style={{
                                 marginTop: spacingUnit * 1.5,
                                 width: spacingUnit * 43,
-                                borderColor: palette.grey300,
+                                borderColor: Grey300,
                                 borderWidth: 1,
                                 borderRadius: 4,
                                 fontSize: 16,
@@ -245,7 +245,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 justifyContent: "flex-start"
                             }}
                             placeholder='Description - e.g. A platform where brands can reward users for ideas and feedback related to their products.'
-                            placeholderTextColor={palette.grey35}
+                            placeholderTextColor={GreyPlaceHolder}
                             multiline={true}
                             numberOfLines={4}
                             onChangeText={(val) => {
@@ -264,10 +264,10 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 privacy === 'public'
                                 ?
                                 <Pressable style={firstProjectSetupStyles.privacyButton} onPress={() => setPrivacy('private')}>
-                                    <Paragraph color={palette.black}>
+                                    <Paragraph color={Black}>
                                     Make private
                                     </Paragraph>
-                                    {/* <Checkmark color={palette.white} style={{
+                                    {/* <Checkmark color={White} style={{
                                     width: 20,
                                     height: 20
                                     }}/> */}
@@ -275,9 +275,9 @@ const CreateProjectInput = ({ navigation, setup }) => {
                                 :
                                 <Pressable style={{
                                     ...firstProjectSetupStyles.privacyButton,
-                                    backgroundColor: palette.black
+                                    backgroundColor: Black
                                 }} onPress={() => setPrivacy('public')}>
-                                    <Paragraph color={palette.white}>
+                                    <Paragraph color={White}>
                                     Make public
                                     </Paragraph>
                                 </Pressable>
@@ -288,7 +288,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             </View>
                         }
                         <PrimaryButton
-                            textStyle={{ color: palette.white }}
+                            textStyle={{ color: White }}
                             style={{
                                 width: spacingUnit * 43,
                                 alignSelf: 'center',
@@ -297,7 +297,7 @@ const CreateProjectInput = ({ navigation, setup }) => {
                             disabled={myIsSubmitting}
                             onPress={handleSubmit}
                         >
-                            <ButtonText color={palette.white}> Create Project  </ButtonText>
+                            <ButtonText color={White}> Create Project  </ButtonText>
                         </PrimaryButton>
 
                     </View>
@@ -327,7 +327,7 @@ function FirstProjectSetupScreen({
 
     return (
         <SafeAreaView style={{
-            backgroundColor: palette.white,
+            backgroundColor: White,
             flex: 1
         }}>
             <Header />
@@ -341,9 +341,9 @@ function FirstProjectSetupScreen({
                             percent={50}
                             radius={50}
                             borderWidth={10}
-                            color={palette.yellow300}
-                            shadowColor={palette.grey300}
-                            bgColor={palette.white}
+                            color={Yellow300}
+                            shadowColor={Grey300}
+                            bgColor={White}
                         >
                             <Smile />
                         </ProgressCircle>
@@ -377,7 +377,7 @@ function FirstProjectSetupScreen({
                               }
                             })
                           }}>
-                            <ButtonText color={palette.grey500} style={firstProjectSetupStyles.goToHome}>
+                            <ButtonText color={Grey500} style={firstProjectSetupStyles.goToHome}>
                               Skip and start exploring
                             </ButtonText>
                           </TouchableOpacity>

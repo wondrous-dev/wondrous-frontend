@@ -1,7 +1,12 @@
-import React from 'react';
-import { View, Pressable } from 'react-native';
+import React, { Component, useState } from 'react';
+import { StyleSheet, View, Text, TouchableOpacity, ActivityIndicator, Pressable, Dimensions, SafeAreaView } from 'react-native';
+import * as ImageManipulator from 'expo-image-manipulator'
+import { useNavigation } from '@react-navigation/native'
 
-import { Paragraph } from '../../storybook/stories/Text';
+import BackCaret from '../../assets/images/back-caret'
+import { Grey300, Black, Blue400, White } from '../../constants/Colors'
+import { Paragraph, RegularText } from '../../storybook/stories/Text';
+import { getFilenameAndType, uploadMedia } from '../../utils/image';
 import { FlexRowContentModal } from '.';
 import Logout from '../../assets/images/logout';
 import { spacingUnit } from '../../utils/common';
@@ -13,9 +18,9 @@ export const SettingsModal = ({ isVisible, setModalVisible }) => {
 
   return (
     <FlexRowContentModal
-      headerText='Settings'
-      setModalVisible={setModalVisible}
-      isVisible={isVisible}
+    headerText='Settings'
+    setModalVisible={setModalVisible}
+    isVisible={isVisible}
     >
       <View />
       <Pressable onPress={() => {

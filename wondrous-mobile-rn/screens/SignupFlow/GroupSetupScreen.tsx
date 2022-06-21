@@ -1,9 +1,11 @@
-import React, { useState } from 'react'
+import React, { createContext, useContext, useEffect, useState } from 'react'
+import { StackScreenProps } from '@react-navigation/stack'
 import { StyleSheet, View, ScrollView, Pressable, Text, Image, SafeAreaView, KeyboardAvoidingView, TextInput } from 'react-native'
 import ProgressCircle from 'react-native-progress-circle'
+import { Formik } from 'formik'
 
 import { Subheading, Paragraph, ButtonText } from '../../storybook/stories/Text'
-import palette from 'theme/palette'
+import { White, Yellow300, Grey300, Grey500, Black, Orange } from '../../constants/Colors'
 import { Header } from '../../components/Header'
 import { usernameSetupStyles } from './UsernameSetupScreen'
 import Smile from '../../assets/images/emoji/smile'
@@ -21,7 +23,7 @@ const groupStyles = StyleSheet.create({
   pill: {
     width: spacingUnit * 28,
     borderWidth: 1,
-    borderColor: palette.black,
+    borderColor: Black,
     marginTop: spacingUnit * 2,
     borderRadius: spacingUnit * 3.5,
     alignItems: 'center',
@@ -51,11 +53,11 @@ const Pill = ({ text, selected }) => {
     <View style={{
       ...groupStyles.pill,
       ...(selected && {
-        backgroundColor: palette.orange,
+        backgroundColor: Orange,
         borderWidth: 0
       })
     }}>
-      <Paragraph color={selected ? palette.white : palette.black} style={groupStyles.pillText}>
+      <Paragraph color={selected ? White : Black} style={groupStyles.pillText}>
         {text}
       </Paragraph>
     </View>
@@ -67,7 +69,7 @@ const GroupSetupScreen = ({ navigation }) => {
 
   return (
     <SafeAreaView style={{
-      backgroundColor: palette.white,
+      backgroundColor: White,
       flex: 1,
     }}>
       <Header noGoingBack={true} />
@@ -76,9 +78,9 @@ const GroupSetupScreen = ({ navigation }) => {
           percent={66}
           radius={50}
           borderWidth={10}
-          color={palette.yellow300}
-          shadowColor={palette.grey300}
-          bgColor={palette.white}
+          color={Yellow300}
+          shadowColor={Grey300}
+          bgColor={White}
         >
           <Smile />
         </ProgressCircle>
@@ -87,10 +89,10 @@ const GroupSetupScreen = ({ navigation }) => {
         </View>
       </View>
       <ScrollView contentContainerStyle={groupStyles.groupContainer}>
-        <Subheading style={groupStyles.heading} color={palette.black}>
+        <Subheading style={groupStyles.heading} color={Black}>
           What's your group?
         </Subheading>
-        <Paragraph color={palette.grey500} style={{
+        <Paragraph color={Grey500} style={{
           textAlign: 'center',
           marginTop: spacingUnit
         }}>
@@ -107,9 +109,9 @@ const GroupSetupScreen = ({ navigation }) => {
         <View style={groupStyles.navigationButtonContainer}>
           <PrimaryButton
             style={{
-              backgroundColor: palette.white,
+              backgroundColor: White,
               borderWidth: 1,
-              borderColor: palette.black,
+              borderColor: Black,
               flex: 1,
               marginRight: spacingUnit * 3
             }}
@@ -119,7 +121,7 @@ const GroupSetupScreen = ({ navigation }) => {
             </ButtonText>
           </PrimaryButton> 
           <PrimaryButton
-              textStyle={{ color: palette.white }}
+              textStyle={{ color: White }}
               style={{
                 flex: 1
               }}
@@ -127,7 +129,7 @@ const GroupSetupScreen = ({ navigation }) => {
                 // navigation.push('')
               }}
             >
-              <ButtonText color={palette.white}> Continue </ButtonText>
+              <ButtonText color={White}> Continue </ButtonText>
             </PrimaryButton>
         </View>
         </ScrollView>
