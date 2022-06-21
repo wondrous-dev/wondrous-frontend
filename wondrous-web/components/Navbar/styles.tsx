@@ -1,9 +1,10 @@
-import { Typography } from '@material-ui/core'
+import { Typography, Button } from '@material-ui/core'
 import Link from 'next/link'
 import styled from 'styled-components'
-import palette from 'theme/palette'
+import { Green200, White, Yellow400 } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
+import SmartLink from '../SmartLink'
 
 export const NavContainer = styled.div`
 	&& {
@@ -46,7 +47,7 @@ export const FlexDiv = styled.div`
 
 export const HomeNavLink = styled.a`
 	&& {
-		color: ${palette.white};
+		color: ${White};
 		text-decoration: none;
 		font-family: Faktum Bold;
 	}
@@ -56,7 +57,7 @@ export const HomeNavLinkTypography = styled(Typography)`
 	&& {
 		display: inline;
 		font-weight: bolder;
-		color: ${palette.white};
+		color: ${White};
 		@media ${device.mobileL} {
 			font-size: 14px;
 			line-height: 22px;
@@ -88,7 +89,7 @@ export const ManifestoLink = styled(HomeNavLinkTypography)`
 
 export const JoinDiscordButton = styled(HomeNavLink)`
 	&& {
-		border: 2px solid ${palette.green200};
+		border: 2px solid ${Green200};
 		border-radius: 9px;
 		padding: ${createSpacingUnit(2)}px;
 	}

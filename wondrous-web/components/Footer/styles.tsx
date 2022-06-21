@@ -1,12 +1,20 @@
-import { Typography } from '@material-ui/core'
+import { Typography, Button } from '@material-ui/core'
+import Link from 'next/link'
 import styled from 'styled-components'
-import palette from 'theme/palette'
+import {
+	Black100,
+	Orange,
+	Orange100,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
+import { device } from '../../utils/device'
 
 export const FooterContainer = styled.div`
 	&& {
 		width: 100%;
-		background: ${palette.black100};
+		background: ${Black100};
 		padding: ${createSpacingUnit(5)}px;
 		display: flex;
 		align-items: center;
@@ -47,6 +55,6 @@ export const FooterEmailText = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
 		margin-bottom: ${createSpacingUnit(3)}px;
-		color: ${palette.white};
+		color: ${White};
 	}
 `

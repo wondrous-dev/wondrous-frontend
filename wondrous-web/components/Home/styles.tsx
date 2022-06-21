@@ -1,11 +1,20 @@
 import { Button, Typography, Grid } from '@material-ui/core'
 import styled from 'styled-components'
-import palette from 'theme/palette'
+import {
+	Green200,
+	Orange,
+	Orange100,
+	Purple,
+	Purple100,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
+import { FunkyButton } from '../Button'
 
 export const BackgroundContainer = styled.div`
-	background-color: ${palette.purple};
+	background-color: ${Purple};
 	margin: 0;
 	height: 100%;
 `
@@ -17,7 +26,7 @@ export const HeaderContainer = styled.div`
 		min-height: 125vh;
 		display: flex;
 		align-items: center;
-		background-color: ${palette.purple};
+		background-color: ${Purple};
 		background-image: url('/images/homepage/homepage-header-graphic.png');
 		background-position: 0 0 center; /* Center the image */
 		background-repeat: no-repeat; /* Do not repeat the image */
@@ -123,7 +132,7 @@ export const EmphasisSpan = styled.span`
 export const Subtext = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
-		color: ${palette.white};
+		color: ${White};
 		font-size: 16px;
 		font-family: Faktum;
 		line-height: 27.5px;
@@ -171,7 +180,7 @@ export const FunkyText = styled(Subtext)`
 		}
 		display: inline;
 		font-weight: bold;
-		color: ${palette.yellow400};
+		color: ${Yellow400};
 	}
 `
 
@@ -179,8 +188,8 @@ export const HomeButton = styled(Button)`
 	&& {
 		margin-top: ${createSpacingUnit(4)}px;
 		padding: ${createSpacingUnit(2)}px;
-		border: 1px solid ${palette.green200};
-		box-shadow: 0 0 10px ${palette.green200};
+		border: 1px solid ${Green200};
+		box-shadow: 0 0 10px ${Green200};
 		border-radius: 9px;
 		margin-left: ${createSpacingUnit(12)}px;
 		max-width: ${createSpacingUnit(30)}px;
@@ -196,7 +205,7 @@ export const HomeButton = styled(Button)`
 export const HomeButtonText = styled(Typography)`
 	&& {
 		font-size: 15px;
-		color: ${palette.white};
+		color: ${White};
 		font-weight: bold;
 		font-family: Carmen Sans Bold;
 	}
@@ -259,7 +268,7 @@ export const Blob2 = styled(Blob)`
 `
 
 export const Block2Container = styled.div`
-	background: ${palette.purple};
+	background: ${Purple};
 	padding: ${createSpacingUnit(2)}px;
 	background-image: url('/images/homepage/background-full@1x.png');
 	background-repeat: no-repeat;
@@ -332,7 +341,7 @@ export const FeatureHeader = styled(Typography)`
 		size: 18px;
 		line-height: 26px;
 		text-align: center;
-		color: ${palette.white};
+		color: ${White};
 		margin-bottom: ${createSpacingUnit(2)}px;
 	}
 `
@@ -343,7 +352,7 @@ export const FeatureText = styled(Typography)`
 		font-size: 16px;
 		line-height: 24px;
 		text-align: center;
-		color: ${palette.white};
+		color: ${White};
 	}
 `
 
@@ -390,7 +399,7 @@ export const Block3LeftSideGraphic = styled.img`
 
 export const Block3Container = styled(Block2Container)`
 	&& {
-		background-color: ${palette.purple};
+		background-color: ${Purple};
 		background-image: url('/images/homepage/impact-background.png');
 		background-repeat: no-repeat;
 		background-position: 50 0 center; /* Center the image */
@@ -419,7 +428,7 @@ export const Block3Header = styled(Block2Header)`
 `
 
 export const Block4Container = styled(Block2Container)`
-	background-color: ${palette.purple100};
+	background-color: ${Purple100};
 	background-image: url('/images/homepage/discordbackground-nosonicwave.jpg');
 	background-repeat: no-repeat;
 	background-position: center; /* Center the image */
@@ -459,14 +468,14 @@ export const GetFreeTokensHeader = styled(Typography)`
 		font-size: 24px;
 		line-height: 34px;
 		font-family: Carmen Sans SemiBold;
-		color: ${palette.white};
+		color: ${White};
 		margin-bottom: ${createSpacingUnit(4)}px;
 	}
 `
 
 export const TokenText = styled.span`
 	&& {
-		color: ${palette.green200};
+		color: ${Green200};
 		font-family: Carmen Sans SemiBold;
 	}
 `
@@ -480,7 +489,7 @@ export const FreeTokenButton = styled(Button)`
 	&& {
 		margin-top: ${createSpacingUnit(4)}px;
 		padding: ${createSpacingUnit(2)}px;
-		border: 1px solid ${palette.green200};
+		border: 1px solid ${Green200};
 		border-radius: 9px;
 		max-width: ${createSpacingUnit(30)}px;
 	}
@@ -504,7 +513,7 @@ export const JoinDiscordText = styled(Typography)`
 	&& {
 		font-size: 22px;
 		line-height: 27.5px;
-		color: ${palette.white};
+		color: ${White};
 		margin-top: ${createSpacingUnit(3)}px;
 		margin-bottom: ${createSpacingUnit(2)}px;
 		font-family: Carmen Sans Bold;

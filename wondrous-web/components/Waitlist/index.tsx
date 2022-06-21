@@ -8,6 +8,7 @@ import PhoneVerification from './verifyPhoneNumber'
 import {
 	JoinWaitListButton,
 	HomeButtonText,
+	CloseModalButton,
 	JoinWaitlistHeader,
 	CenteredDiv,
 	ErrorDiv,
@@ -16,7 +17,7 @@ import {
 } from './styles'
 import { useIsMobile } from '../../utils/hooks'
 import styled from 'styled-components'
-import { useMutation } from '@apollo/client'
+import { useQuery, useMutation } from '@apollo/client'
 import {
 	CREATE_WAITLIST_USER,
 	VERIFY_WAITLIST_USER,
@@ -24,6 +25,7 @@ import {
 import Grid from '@material-ui/core/Grid'
 import { device } from '../../utils/device'
 import { createSpacingUnit } from '../../utils'
+import { White } from '../../services/colors'
 import Snackbar from '@material-ui/core/Snackbar'
 import MuiAlert from '@material-ui/lab/Alert'
 import { storeAuthWaitlistHeader } from '../Auth/withAuth'

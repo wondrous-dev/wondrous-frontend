@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import { Button } from '@material-ui/core'
-import palette from 'theme/palette'
+import { Blue400 } from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 
 export const PrimaryButton = styled(Button)`
 	&& {
-		background-color: ${palette.blue400};
+		background-color: ${Blue400};
 		border-radius: ${createSpacingUnit()}px;
 	}
 `

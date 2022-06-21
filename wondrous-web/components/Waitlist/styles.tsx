@@ -1,8 +1,25 @@
 import { Typography, Button } from '@material-ui/core'
 import styled from 'styled-components'
-import palette from 'theme/palette'
+import {
+	Black,
+	Green200,
+	Grey150,
+	Grey50,
+	Grey55,
+	Grey700,
+	Grey800,
+	Purple,
+	Purple200,
+	Purple300,
+	Purple400,
+	Purple500,
+	Red400,
+	White,
+	Yellow400,
+} from '../../services/colors'
 import { createSpacingUnit } from '../../utils'
 import { device } from '../../utils/device'
+import { FunkyButton } from '../Button'
 import ClearIcon from '@material-ui/icons/Clear'
 import { CenteredFlexRow } from '../Common'
 import { BlurredDiv } from '../Home/styles'
@@ -21,9 +38,9 @@ export const ModalWrapper = styled.div`
 		background-size: cover;
 		flex-direction: column;
 		padding: ${createSpacingUnit(3)}px;
-		background-color: ${palette.purple};
+		background-color: ${Purple};
 		& .MuiSvgIcon-root {
-			fill: ${palette.white};
+			fill: ${White};
 		}
 	}
 `
@@ -31,7 +48,7 @@ export const ModalWrapper = styled.div`
 export const ProfileWrapper = styled(ModalWrapper)`
 	&& {
 		background-image: url('/images/waitlist/waitlist-profile-background.png');
-		background-color: ${palette.purple};
+		background-color: ${Purple};
 	}
 `
 
@@ -43,7 +60,7 @@ export const LogoNoTextImg = styled.img`
 export const Subtext = styled(Typography)`
 	&& {
 		margin-top: ${createSpacingUnit(3)}px;
-		color: ${palette.white};
+		color: ${White};
 		font-size: 20px;
 		text-align: center;
 		line-height: 32px;
@@ -92,7 +109,7 @@ export const CloseModalButton = styled(ClearIcon)`
 export const JoinWaitListButton = styled(Button)`
 	&& {
 		padding: ${createSpacingUnit(2)}px;
-		border: 1px solid ${palette.green200};
+		border: 1px solid ${Green200};
 		border-radius: 9px;
 		padding: ${createSpacingUnit(1.5)}px ${createSpacingUnit(3)}px;
 		margin-top: ${createSpacingUnit(3)}px;
@@ -100,14 +117,14 @@ export const JoinWaitListButton = styled(Button)`
 `
 
 export const ErrorDiv = styled.div`
-	color: ${palette.red400};
+	color: ${Red400};
 	margin-top: ${createSpacingUnit()}px;
 	margin-bottom: -${createSpacingUnit()}px;
 `
 
 export const JoinWaitlistHeader = styled(Typography)`
 	&& {
-		color: ${palette.white};
+		color: White;
 		text-align: center;
 		margin-bottom: ${createSpacingUnit(2)}px;
 		@media ${device.mobileL} {
@@ -121,7 +138,7 @@ export const JoinWaitlistHeader = styled(Typography)`
 
 export const ExplanationText = styled(Typography)`
 	&& {
-		color: ${palette.white};
+		color: ${White};
 		margin-top: ${createSpacingUnit()}px;
 		max-width: ${createSpacingUnit(80)}px;
 		font-size: 18px;
@@ -141,7 +158,7 @@ export const ProfileText = styled(Typography)`
 	&& {
 		font-size: 16px;
 		line-height: 27.5px;
-		color: ${palette.white};
+		color: ${White};
 	}
 `
 
@@ -149,7 +166,7 @@ export const TokenEarnedDiv = styled.div`
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	background: ${palette.purple200};
+	background: ${Purple200};
 	border-radius: 289.08px;
 	padding-left: ${createSpacingUnit(3)}px;
 	padding-top: ${createSpacingUnit(0.5)}px;
@@ -168,7 +185,7 @@ export const TokenEarnedInnerDiv = styled(TokenEarnedDiv)`
 `
 
 export const InviteDiv = styled.div`
-	background-color: ${palette.purple};
+	background-color: ${Purple};
 	padding: ${createSpacingUnit(4)}px;
 	@media ${device.tablet} {
 		padding: ${createSpacingUnit()}px;
@@ -190,7 +207,7 @@ export const YouHaveText = styled(Typography)`
 	&& {
 		font-size: 23px;
 		line-height: 36px;
-		color: ${palette.white};
+		color: ${White};
 		font-family: Carmen Sans SemiBold;
 		margin-right: ${createSpacingUnit(2)}px;
 		@media ${device.mobileL} {
@@ -202,7 +219,7 @@ export const YouHaveText = styled(Typography)`
 
 export const TokenText = styled(YouHaveText)`
 	&& {
-		color: ${palette.green200};
+		color: ${Green200};
 		margin-right: 0;
 		font-family: Carmen Sans Bold;
 	}
@@ -213,8 +230,8 @@ export const MetaTag = styled.span`
 	overflow: hidden;
 	overflow-wrap: break-word;
 	word-break: break-all;
-	background: ${palette.grey55};
-	color: ${palette.grey700};
+	background: ${Grey55};
+	color: ${Grey700};
 	font-size: 16px;
 	line-height: ${createSpacingUnit(2.5)}px;
 	border-radius: ${createSpacingUnit(1)}px;
@@ -223,7 +240,7 @@ export const MetaTag = styled.span`
 
 export const LinkBox = styled.div`
 	&& {
-		background: ${palette.purple500};
+		background: ${Purple500};
 		border-radius: ${createSpacingUnit()}px;
 		padding: ${createSpacingUnit(2)}px;
 
@@ -241,7 +258,7 @@ export const LinkBox = styled.div`
 export const LinkText = styled(Typography)`
 	&& {
 		font-size: ${createSpacingUnit(2)}px;
-		color: ${palette.white};
+		color: ${White};
 		@media ${device.mobileL} {
 			font-size: 14px;
 			width: 200px;
@@ -256,7 +273,7 @@ export const CopyText = styled(Typography)`
 		font-size: ${createSpacingUnit(2)}px;
 		cursor: pointer;
 		margin-left: ${createSpacingUnit(2)}px;
-		color: ${palette.green200};
+		color: ${Green200};
 		@media ${device.mobileL} {
 			font-size: 14px;
 		}
@@ -266,7 +283,7 @@ export const CopyText = styled(Typography)`
 export const HomeButtonText = styled(Typography)`
 	&& {
 		font-size: 16px;
-		color: ${palette.white};
+		color: ${White};
 		font-weight: bold;
 		font-family: Carmen Sans SemiBold;
 		@media ${device.mobileS} {
@@ -277,7 +294,7 @@ export const HomeButtonText = styled(Typography)`
 
 export const ResendLink = styled(Typography)`
 	&& {
-		color: ${palette.white};
+		color: ${White};
 		font-size: 16px;
 		font-weight: bold;
 		text-decoration: underline;
@@ -382,7 +399,7 @@ export const FunkyTextYellow = styled(Typography)`
 		line-height: 28px;
 		display: inline;
 		font-weight: bolder;
-		color: ${palette.yellow400};
+		color: ${Yellow400};
 		margin-top: ${createSpacingUnit(3)}px;
 		@media ${device.mobileL} {
 			font-size: 16px;
@@ -400,12 +417,12 @@ export const InviteButton = styled(Button)`
 	&& {
 		padding: ${createSpacingUnit(2)}px;
 		margin-top: ${createSpacingUnit(3)}px;
-		background: ${palette.purple400};
+		background: ${Purple400};
 		border-radius: ${createSpacingUnit()}px;
 		display: flex;
 		align-items: center;
 		&:hover {
-			background: ${palette.purple300};
+			background: ${Purple300};
 		}
 		@media ${device.mobileL} {
 			margin-top: ${createSpacingUnit()}px;
@@ -415,7 +432,7 @@ export const InviteButton = styled(Button)`
 
 export const InviteButtonText = styled(Typography)`
 	&& {
-		color: ${palette.green200};
+		color: ${Green200};
 		font-weight: bolder;
 		font-size: 15px;
 	}
@@ -423,14 +440,14 @@ export const InviteButtonText = styled(Typography)`
 
 export const ReferredText = styled(Typography)`
 	&& {
-		color: ${palette.white};
+		color: ${White};
 		margin-top: ${createSpacingUnit(3)}px;
 	}
 `
 
 // export const ReferredText = styled(FunkyText)`
 // 	&& {
-// 		color: ${palette.grey800};
+// 		color: ${Grey800};
 // 		font-size: 18px;
 // 		line-height: 28px;
 // 		text-align: center;
