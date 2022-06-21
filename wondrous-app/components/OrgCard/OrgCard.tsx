@@ -2,7 +2,6 @@ import SmartLink from 'components/Common/SmartLink';
 import { DAOIcon } from 'components/Icons/dao';
 import { NoLogoDAO } from 'components/SideBar/styles';
 import { format } from 'date-fns';
-import { useRouter } from 'next/router';
 import { LINK } from 'utils/constants';
 
 import {
@@ -24,7 +23,6 @@ const OrgCard = ({ item }) => {
   const userOrg = item;
   const org = item?.org;
   const role = item?.role;
-  const router = useRouter();
   const taskViewUrl = `${LINK}/organization/${org?.username}/boards`;
   return (
     <SmartLink href={taskViewUrl} asLink>
