@@ -702,7 +702,7 @@ const CreateLayoutBaseModal = (props) => {
           const podInput = {
             name: title,
             username: title?.toLowerCase().split(' ').join('_'),
-            description: podDescriptionText
+            description: podDescriptionText,
             orgId: org,
             privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
