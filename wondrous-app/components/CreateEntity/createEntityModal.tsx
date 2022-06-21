@@ -1068,7 +1068,7 @@ const CreateLayoutBaseModal = (props) => {
                   style={{
                     input: {
                       overflow: 'auto',
-                      color: White,
+                      color: palette.white,
                       height: '100px',
                       marginBottom: '16px',
                       borderRadius: '6px',
