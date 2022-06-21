@@ -16,6 +16,7 @@ export const OrgCardWrapper = styled(Box)`
   padding: 18px;
   border-radius: 3px;
   width: 310px;
+  cursor: pointer;
 `;
 
 export const OrgCardBorderContainer = styled(Box)`

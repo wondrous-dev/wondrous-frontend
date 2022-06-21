@@ -205,7 +205,7 @@ export const SUPPORTED_CURRENCIES = [
       42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
       56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
       288: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
-      10: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607'
+      10: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
     },
   },
 ];
@@ -381,12 +381,14 @@ export const GRAPHQL_ERRORS = {
   GITHUB_REPO_ALREADY_ADDED_TO_POD: 'Repo already added!',
   EMAIL_ALREADY_EXIST: 'email_already_exist',
   INVALID_EMAIL: 'invalid_email',
-  POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist'
+  POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
   ? `https://app.wonderverse.xyz`
-  : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
+  : process.env.NEXT_PUBLIC_STAGING
+  ? 'https://wondrous-app-git-staging-wonderverse.vercel.app'
+  : 'http://localhost:3000';
 
 export const DATEPICKER_OPTIONS = {
   DAILY: 'daily',
