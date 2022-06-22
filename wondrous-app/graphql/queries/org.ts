@@ -76,7 +76,7 @@ export const GET_ORG_ROLES = gql`
   }
 `;
 
-export const GET_ORG_ROLES_WITH_TOKEN_GATE = gql`
+export const GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
   query getOrgRolesWithTokenGate($orgId: ID) {
     getOrgRoles(orgId: $orgId) {
       id
@@ -97,6 +97,10 @@ export const GET_ORG_ROLES_WITH_TOKEN_GATE = gql`
           minValue
           tokenIds
         }
+      }
+      discordRolesInfo {
+        id
+        name
       }
     }
   }
