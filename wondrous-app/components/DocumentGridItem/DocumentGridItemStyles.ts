@@ -1,4 +1,4 @@
-import { Blue800 } from 'theme/colors';
+import palette from 'theme/palette';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 
@@ -26,7 +26,7 @@ export const DescriptionTypography = styled(Typography)`
 const styles = {
   gridItem: {
     padding: 1.5,
-    backgroundColor: Blue800,
+    backgroundColor: palette.blue800,
     borderRadius: '3px',
     height: '100%',
     display: 'flex',
@@ -71,7 +71,7 @@ const styles = {
       width: '1em',
       height: '1em',
       marginTop: '0.2em',
-      background: Blue800,
+      background: palette.blue800,
     },
   },
 };

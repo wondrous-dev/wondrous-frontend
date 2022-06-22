@@ -2,11 +2,9 @@ import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import Image from 'next/image';
 
-import Box from '@mui/material/Box';
-
-import { SIDEBAR_WIDTH } from 'utils/constants';
-import useGetUserProfile from 'hooks/useGetUserProfile';
 import useSideBar from 'hooks/useSideBar';
+import { UserProfileContext } from 'utils/contexts';
+import useGetUserProfile from 'hooks/useGetUserProfile';
 
 import Header from 'components/Header';
 import SideBar from 'components/SideBar';
@@ -14,7 +12,6 @@ import ProfileInfo from 'components/ProfileInfo';
 import ProfileUserTaskDaos from 'components/ProfileUserTaskDaos';
 
 import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfileContainerContent } from './styles';
-import { UserProfileContext } from 'utils/contexts';
 import { TaskViewModal } from 'components/Common/Task/modal';
 import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils/index';

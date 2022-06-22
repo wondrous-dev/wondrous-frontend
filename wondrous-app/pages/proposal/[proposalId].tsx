@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect } from 'react';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import AppLayout from 'components/Common/Layout/App';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 const TaskRedirect = () => {
   const router = useRouter();
   const { proposalId } = router.query;

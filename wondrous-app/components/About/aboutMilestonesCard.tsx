@@ -1,42 +1,42 @@
-import { IconButton } from '@material-ui/core'
-import RightArrowIcon from '../Icons/rightArrow'
+import { IconButton } from '@mui/material';
+import RightArrowIcon from '../Icons/rightArrow';
 import {
-	Card,
-	CardContent,
-	CardHeader,
-	CardHeaderName,
-	MilestonesCardAuthor,
-	MilestonesCardAuthorAvatar,
-	MilestonesCardAuthorPosition,
-	MilestonesCardHeaderWonderIcon,
-} from './styles'
+  Card,
+  CardContent,
+  CardHeader,
+  CardHeaderName,
+  MilestonesCardAuthor,
+  MilestonesCardAuthorAvatar,
+  MilestonesCardAuthorPosition,
+  MilestonesCardHeaderWonderIcon,
+} from './styles';
 
 const ICONS = {
-	wonder: MilestonesCardHeaderWonderIcon,
-}
+  wonder: MilestonesCardHeaderWonderIcon,
+};
 
 const AboutMilestonesCard = (props) => {
-	const { icon, title, description, position, avatar } = props
+  const { icon, title, description, position, avatar } = props;
 
-	const Icon = ICONS[icon]
+  const Icon = ICONS[icon];
 
-	return (
-		<Card>
-			<CardHeader>
-				<Icon />
+  return (
+    <Card>
+      <CardHeader>
+        <Icon />
 
-				<CardHeaderName>{title}</CardHeaderName>
-				<IconButton>
-					<RightArrowIcon />
-				</IconButton>
-			</CardHeader>
-			<CardContent>{description}</CardContent>
-			<MilestonesCardAuthor>
-				<MilestonesCardAuthorAvatar src={avatar} />
-				<MilestonesCardAuthorPosition>{position}</MilestonesCardAuthorPosition>
-			</MilestonesCardAuthor>
-		</Card>
-	)
-}
+        <CardHeaderName>{title}</CardHeaderName>
+        <IconButton>
+          <RightArrowIcon />
+        </IconButton>
+      </CardHeader>
+      <CardContent>{description}</CardContent>
+      <MilestonesCardAuthor>
+        <MilestonesCardAuthorAvatar src={avatar} />
+        <MilestonesCardAuthorPosition>{position}</MilestonesCardAuthorPosition>
+      </MilestonesCardAuthor>
+    </Card>
+  );
+};
 
-export default AboutMilestonesCard
+export default AboutMilestonesCard;

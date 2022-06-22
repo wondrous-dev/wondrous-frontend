@@ -2,14 +2,14 @@ import styled from 'styled-components';
 import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import MuiAccordion from '@mui/material/Accordion';
-import { White } from 'theme/colors';
 import Typography from '@mui/material/Typography';
+import palette from 'theme/palette';
 
 export const Accordion = styled(MuiAccordion)`
   && {
     margin-top: 0;
     background: transparent;
-    color: ${White};
+    color: ${palette.white};
     width: 100%;
     box-shadow: none;
   }
@@ -59,7 +59,7 @@ export const ListViewItemStatus = styled.div`
   font-weight: 700;
   font-size: 14px;
   line-height: 18px;
-  color: ${White};
+  color: ${palette.white};
   width: fit-content;
   .accordion-expansion-icon {
     transition: transform 0.2s ease-out;

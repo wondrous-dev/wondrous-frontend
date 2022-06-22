@@ -15,7 +15,7 @@ import { TableValueText, WalletAddressInput } from './styles';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';

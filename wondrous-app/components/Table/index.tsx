@@ -48,7 +48,6 @@ import {
   TaskDescription,
   TaskTitle,
 } from './styles';
-import { Red800 } from 'theme/colors';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 
 const DELIVERABLES_ICONS = {

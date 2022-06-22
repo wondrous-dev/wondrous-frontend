@@ -5,7 +5,6 @@ import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from 'graphql/mutations/task
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
-import { White } from '../../theme/colors';
 import { TextInputContext } from 'utils/contexts';
 import { TextInput } from '../TextInput';
 import { filterOrgUsersForAutocomplete } from '../CreateEntity/createEntityModal';

@@ -1,6 +1,5 @@
-import React from 'react';
 import styled, { css } from 'styled-components';
-import { FormControl, InputLabel, MenuItem, Select, Typography } from '@material-ui/core';
+import { FormControl, InputLabel, MenuItem, Select, Typography } from '@mui/material';
 import SelectDownIcon from '../../Icons/selectDownIcon';
 
 export const CreateFormSelectBlock = styled.div`
@@ -82,7 +81,6 @@ export const CreateFormSelect = styled(Select)`
       align-items: center;
     }
 
-
     & svg {
       position: absolute;
       right: 10px;
@@ -98,6 +96,7 @@ export const CreateFormSelect = styled(Select)`
 
     & .Mui-disabled {
       color: white !important;
+      -webkit-text-fill-color: #c4c4c4;
     }
 
     & svg.Mui-disabled {
@@ -117,7 +116,7 @@ export const CreateFormMenuItem = styled(MenuItem)`
     font-size: 14px;
     line-height: 19px;
     letter-spacing: 0.01em;
-    color: #C4C4C4;
+    color: #c4c4c4;
     display: flex;
     align-items: center;
     border-radius: 4px;
@@ -126,12 +125,12 @@ export const CreateFormMenuItem = styled(MenuItem)`
 
     &.Mui-selected {
       background: #000000;
-      border: 1px solid #7427FF;
+      border: 1px solid #7427ff;
     }
-    
+
     &.Mui-selected {
       background: #000000;
-      border: 1px solid #7427FF;
+      border: 1px solid #7427ff;
     }
 
     &:hover {

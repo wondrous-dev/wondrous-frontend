@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { White, Midnight, HighlightPurple, HighlightBlue, Background } from '../../../../theme/colors';
+import palette from 'theme/palette';
 import { createSpacingUnit } from 'utils';
 import { Discord } from '../../../Icons/discord';
 import { Twitter } from '../../../Icons/twitter';
@@ -20,8 +20,8 @@ export const MainWrapper = styled.main`
     min-height: calc(100vh - 160px);
   }
 
-  color: ${White};
-  background: ${Background};
+  color: ${palette.white};
+  background: ${palette.background.default};
 
   overflow-x: hidden;
   overflow-y: auto;
@@ -50,13 +50,13 @@ const FooterWrapper = styled.footer`
   height: 160px;
   width: 100%;
 
-  background: ${Midnight};
+  background: ${palette.midnight};
 `;
 
 const FooterContactEmail = styled.a`
-  color: ${HighlightBlue};
+  color: ${palette.highlightBlue};
   text-decoration: underline;
-  margin-bottom: ${createSpacingUnit(1)}px;
+  margin-bottom: ${createSpacingUnit(1)};
 `;
 
 const socialLinkAttrs = (props) => ({
@@ -65,10 +65,10 @@ const socialLinkAttrs = (props) => ({
 });
 
 const FooterSocialLink = styled.a.attrs(socialLinkAttrs)`
-  color: ${HighlightPurple};
+  color: ${palette.highlightPurple};
 
   & > svg {
-    height: ${createSpacingUnit(4)}px;
+    height: ${createSpacingUnit(4)};
   }
 `;
 
@@ -80,7 +80,7 @@ const FooterSocialLinks = styled.div`
 
   & > ${FooterSocialLink} {
     &:not(:last-child) {
-      margin-right: ${createSpacingUnit(2)}px;
+      margin-right: ${createSpacingUnit(2)};
     }
   }
 `;
@@ -89,7 +89,7 @@ const FooterCopy = styled.p`
   color: #c4c4c4;
 
   margin: 0;
-  margin-top: ${createSpacingUnit(2)}px;
+  margin-top: ${createSpacingUnit(2)};
 `;
 
 export const Footer = () => {

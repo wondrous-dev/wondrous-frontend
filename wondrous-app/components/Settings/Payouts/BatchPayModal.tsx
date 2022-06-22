@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
-import { Tab } from '@material-ui/core';
+import { Tab } from '@mui/material';
 import {
   PodNameTypography,
   PaymentModal,
@@ -26,7 +26,7 @@ import {
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { StyledCheckbox, TableCellText } from './styles';
-import { White, Grey800 } from '../../../theme/colors';
+import palette from 'theme/palette';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
@@ -230,7 +230,7 @@ export const BatchPayModal = (props) => {
                             target="_blank"
                             rel="noreferrer"
                             style={{
-                              color: White,
+                              color: palette.white,
                             }}
                           >
                             {cutString(submission?.taskTitle, 30)}

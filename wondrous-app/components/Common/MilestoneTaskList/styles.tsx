@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { TableContainer, TableHead, TableBody, TableRow, TableCell, Typography } from '@material-ui/core';
+import { TableContainer, TableHead, TableBody, TableRow, TableCell, Typography } from '@mui/material';
 
 export const StyledMilestoneEmpty = styled(Typography)`
   && {

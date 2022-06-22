@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import Harmony from 'components/Icons/harmony';
+import Optimism from 'components/Icons/Optimism';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
@@ -48,11 +49,20 @@ const chainOptions = [
     icon: <Ethereum />,
     value: 'ethereum',
   },
-
+  {
+    label: 'Polygon',
+    icon: <PolygonIcon />,
+    value: 'polygon',
+  },
   {
     label: 'Harmony',
     icon: <Harmony />,
     value: 'harmony',
+  },
+  {
+    label: 'Optimism',
+    icon: <Optimism />,
+    value: 'optimism',
   },
 ];
 

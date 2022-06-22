@@ -4,7 +4,7 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
-import { White } from 'theme/colors';
+import palette from 'theme/palette';
 import CheckBox from '../../../Icons/checkBox.svg';
 import CheckBoxEmpty from '../../../Icons/checkBoxEmpty.svg';
 import MilestoneCreateIcon from '../../../Icons/milestoneNew.svg';
@@ -99,7 +99,7 @@ export const MilestoneSearchInput = styled(TextField)`
       font-family: 'Space Grotesk';
       font-weight: 400;
       font-size: 14px;
-      color: ${White};
+      color: ${palette.white};
     }
   }
   .MuiOutlinedInput-notchedOutline {
@@ -116,7 +116,7 @@ export const MilestoneSearchInputAdornment = styled(InputAdornment)`
 
 export const MilestoneSearchInputIcon = styled(SearchIcon)`
   path {
-    stroke: ${White};
+    stroke: ${palette.white};
   }
 `;
 
@@ -126,7 +126,7 @@ export const MilestoneSearchAutocompletePopper = styled.div`
   }
   .MuiAutocomplete-noOptions {
     font-family: 'Space Grotesk';
-    color: ${White};
+    color: ${palette.white};
     margin: 0;
     padding: 0;
     background-image: none;
@@ -149,7 +149,7 @@ export const MilestoneSearchPaper = styled.div`
 
 export const MilestoneSearchList = styled.ul`
   && {
-    color: ${White};
+    color: ${palette.white};
     margin: 0;
     padding: 0;
     background-image: none;
@@ -172,7 +172,7 @@ export const MilestoneSearchListItem = styled.li`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: ${White};
+    color: ${palette.white};
     :last-of-type {
       border-radius: 0 0 4px 4px;
     }
@@ -206,7 +206,7 @@ export const MilestoneSearchLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 500;
-    color: ${({ hasValue }) => (hasValue ? White : `#5e5e5e`)};
+    color: ${({ hasValue }) => (hasValue ? palette.white : `#5e5e5e`)};
     margin-left: 6px;
     white-space: nowrap;
     text-overflow: ellipsis;

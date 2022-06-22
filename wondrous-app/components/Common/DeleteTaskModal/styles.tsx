@@ -1,7 +1,7 @@
-import { Box, Button, Dialog, Divider, Typography } from '@material-ui/core';
+import { Box, Button, Dialog, Divider, Typography } from '@mui/material';
 import styled from 'styled-components';
 import { Button as ButtonComponent } from '../button';
-import { Red400 } from '../../../theme/colors';
+import palette from 'theme/palette';
 
 export const StyledDialog = styled(Dialog)`
   border-radius: 6px;
@@ -82,7 +82,7 @@ export const StyledWarningMessage = styled(Typography)`
     font-weight: normal;
     font-size: 14px;
     letter-spacing: 0.01em;
-    color: ${Red400};
+    color: ${palette.red400};
     margin-left: 24px;
     margin-top: 14px;
   }

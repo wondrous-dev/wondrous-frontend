@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Grey250, Grey85 } from '../../../theme/colors';
+import palette from 'theme/palette';
 
 export const CompensationWrapper = styled.div`
   display: flex;
@@ -20,7 +20,7 @@ export const CompensationPill = styled.div`
   min-width: 63px;
   flex-direction: row;
   justify-content: center;
-  background: ${Grey85};
+  background: ${palette.grey85};
   border-radius: 25px;
   line-height: 28px;
   padding: 1px 1px 1px 8px;
@@ -44,7 +44,7 @@ export const IconContainer = styled.div`
 
 export const CompensationAmount = styled(Typography)`
   && {
-    color: ${Grey250};
+    color: ${palette.grey250};
     font-weight: 600;
     font-size: 13px;
     display: flex;

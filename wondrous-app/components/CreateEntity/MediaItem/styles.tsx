@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { White } from '../../../theme/colors';
+import palette from 'theme/palette';
 import ReactPlayer from 'react-player/lazy';
 
 export const MediaItemWrapper = styled.div`
@@ -18,7 +18,7 @@ export const MediaItemWrapper = styled.div`
 export const Filename = styled(Typography)`
   && {
     font-size: 14px;
-    color: ${White};
+    color: ${palette.white};
     margin-right: 8px;
     margin-left: 8px;
   }

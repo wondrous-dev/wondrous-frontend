@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import Autocomplete from '@mui/material/Autocomplete';
 import Chip from '@mui/material/Chip';
 
-import { White } from '../../theme/colors';
+import palette from 'theme/palette';
 import { InputAdornment, TextField } from '@mui/material';
 
 export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
@@ -14,7 +14,7 @@ export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
   background: #141414;
   border-radius: 6px;
   min-height: 32px;
-  color: ${White};
+  color: ${palette.white};
 `;
 
 export const TagAutocompletePopper = styled(({ className, ...props }) => {
@@ -28,7 +28,7 @@ export const TagAutocompletePopper = styled(({ className, ...props }) => {
     background: #1f1f1f !important;
     font-family: 'Space Grotesk';
     font-size: 14px;
-    color: ${White};
+    color: ${palette.white};
     font-weight: 500;
     border-color: #7a7a7a;
   }
@@ -96,7 +96,7 @@ export const TagsTextField = styled(TextField)`
   && {
     .MuiOutlinedInput-root {
       padding: 6px;
-      color: White;
+      color: ${palette.white};
       font-family: 'Space Grotesk';
       font-size: 13px;
       font-weight: 500;

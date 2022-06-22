@@ -9,7 +9,7 @@ import {
   CreateFormSelectBlockTitle,
 } from './styles';
 import { SafeImage } from '../Image';
-import { FormControl } from '@material-ui/core';
+import { FormControl } from '@mui/material';
 
 const DefaultMenuProps = {
   PaperProps: {

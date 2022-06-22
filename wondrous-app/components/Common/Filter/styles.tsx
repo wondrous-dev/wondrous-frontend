@@ -1,24 +1,11 @@
-import { Button, Portal, Popper } from '@mui/material';
 import styled from 'styled-components';
 import { color } from 'styled-system';
-import {
-  Black70,
-  Black80,
-  Black95,
-  Black97,
-  Black98,
-  Grey250,
-  Grey57,
-  Grey65,
-  Grey75,
-  HighlightBlue,
-  HighlightPurple,
-  White,
-} from '../../../theme/colors';
-import Checkbox from '@material-ui/core/Checkbox';
-import CircleChecked from '@material-ui/icons/CheckCircleOutline';
-import CircleCheckedFilled from '@material-ui/icons/CheckCircle';
-import CircleUnchecked from '@material-ui/icons/RadioButtonUnchecked';
+
+import { Button, Checkbox, Portal } from '@mui/material';
+import CircleChecked from '@mui/icons-material/CheckCircleOutline';
+import CircleUnchecked from '@mui/icons-material/RadioButtonUnchecked';
+
+import palette from 'theme/palette';
 
 export const FilterHandle = styled.div`
   display: flex;
@@ -109,8 +96,7 @@ export const FilterBoxInner = styled.div`
   width: 321px;
   height: fit-content;
   overflow: hidden;
-
-  background: ${Black95};
+  background: ${palette.black95};
 `;
 
 export const FilterStatus = styled.div`
@@ -135,7 +121,7 @@ export const FilterCount = styled.div`
   justify-content: flex-start;
 
   font-size: 13px;
-  color: ${Grey57};
+  color: ${palette.grey57};
 
   padding-left: 10px;
 `;
@@ -143,8 +129,8 @@ export const FilterCount = styled.div`
 export const FilterClear = styled(Button)`
   && {
     display: flex;
-    background: ${Black70};
-    color: ${White};
+    background: ${palette.black70};
+    color: ${palette.white};
     border-radius: 4px;
 
     font-size: 13px;
@@ -172,7 +158,7 @@ export const FilterItemList = styled.div`
   max-height: 286px;
 
   overflow-y: auto;
-  scrollbar-color: ${HighlightPurple};
+  scrollbar-color: ${palette.highlightPurple};
 `;
 
 export const FilterItem = styled.div`
@@ -184,7 +170,7 @@ export const FilterItem = styled.div`
   width: 100%;
   height: 40px;
 
-  background: ${Black98};
+  background: ${palette.black98};
   border-radius: 4px;
   margin: 4px 0;
   padding: 8px;
@@ -242,7 +228,7 @@ export const FilterItemName = styled.div`
   align-items: center;
   justify-content: flex-start;
 
-  color: ${({ isSelected }) => (isSelected ? White : '#C4C4C4')};
+  color: ${({ isSelected }) => (isSelected ? palette.white : '#C4C4C4')};
 
   font-family: 'Space Grotesk';
   font-style: normal;
@@ -260,7 +246,7 @@ export const FilterItemCount = styled.div`
   min-width: 30px;
 
   font-size: 14px;
-  color: ${Grey65};
+  color: ${palette.grey65};
 `;
 
 export const FilterItemListShade = styled.div`
@@ -273,7 +259,7 @@ export const FilterItemListShade = styled.div`
   width: 290px;
   height: 55px;
 
-  background: linear-gradient(0deg, ${Black97} 0%, rgba(20, 20, 20, 0) 80.07%);
+  background: linear-gradient(0deg, ${palette.black97} 0%, rgba(20, 20, 20, 0) 80.07%);
 `;
 
 export const InlineText = styled.span`
@@ -299,10 +285,10 @@ export const FilterButton = styled.button`
   align-items: center;
   padding: 10px;
   width: max-content;
-  background: ${({ bgColor }) => bgColor || HighlightPurple};
-  border: 1px solid ${({ bgColor }) => bgColor || HighlightPurple};
+  background: ${({ bgColor }) => bgColor || palette.highlightPurple};
+  border: 1px solid ${({ bgColor }) => bgColor || palette.highlightPurple};
   cursor: pointer;
-  color: ${({ color }) => color || White};
+  color: ${({ color }) => color || palette.white};
   font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 500;

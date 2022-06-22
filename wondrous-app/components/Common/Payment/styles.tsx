@@ -1,10 +1,10 @@
 import styled from 'styled-components';
 import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import { Grey80, Grey250, White } from '../../../theme/colors';
-import { Button, Typography } from '@material-ui/core';
+import palette from 'theme/palette';
+import { Button, Typography } from '@mui/material';
 import { BaseCard } from '../card';
 import React from 'react';
-import { Tabs, InputBase } from '@material-ui/core';
+import { Tabs, InputBase } from '@mui/material';
 import { CreateFormCancelButton, CreateFormMainSelects, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 
 export const PodWrapper = styled.div`
@@ -19,7 +19,7 @@ export const PodWrapper = styled.div`
 export const PodName = styled(Typography)`
   && {
     font-size: 13px;
-    color: ${White};
+    color: ${palette.white};
   }
 `;
 
@@ -58,7 +58,7 @@ export const PodNameTypography = styled(Typography)`
     font-weight: 500;
     font-size: 13px;
     line-height: 17px;
-    color: ${White};
+    color: ${palette.white};
   }
 `;
 
@@ -71,7 +71,7 @@ export const PaymentTitleTextDiv = styled.div``;
 
 export const PaymentTitleText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-style: normal;
     font-weight: bold;
     font-size: 24px;
@@ -177,7 +177,7 @@ export const ChangePaymentButton = styled(Button)`
   && {
     border: 1px solid #4b4b4b;
     border-radius: 4px;
-    color: ${White};
+    color: ${palette.white};
     margin-top: 12px;
     font-size: 14px;
   }

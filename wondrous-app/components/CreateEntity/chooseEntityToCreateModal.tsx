@@ -1,5 +1,5 @@
 import React from 'react';
-import { IconButton } from '@material-ui/core';
+import { IconButton } from '@mui/material';
 
 import CloseModalIcon from '../Icons/closeModal';
 import RightArrowIcon from '../Icons/rightArrow';
