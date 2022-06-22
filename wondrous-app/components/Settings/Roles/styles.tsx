@@ -72,7 +72,6 @@ export const Permission = styled.div`
 `;
 
 export const RoleTokenGatingWrapper = styled.div`
-  color: white;
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -84,6 +83,7 @@ export const RoleTokenGatingWrapper = styled.div`
 `;
 
 export const PermissionTitle = styled.h5`
+  color: ${palette.white};
   font-size: 16px;
   margin-bottom: 7px;
   margin-top: 14px;
@@ -151,6 +151,13 @@ export const TokenGatingButton = styled(Button)`
   min-height: 40px;
 `;
 
+export const ImportDiscordRoleButton = styled(Button)`
+  && {
+    max-width: 400px;
+    margin-top: 10px;
+  }
+`;
+
 export const TokenGatingButtonText = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
@@ -193,6 +200,31 @@ export const TokenGatedRoleModal = styled(BaseCard)`
   scrollbar-width: none; /* Firefox */
 `;
 
+export const DiscordRoleModal = styled(BaseCard)`
+  width: 680px;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  height: 50%;
+  transform: translate(-50%, -50%);
+  overflow-y: scroll;
+  z-index: 2100;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: rgb(20, 20, 20) !important;
+  padding-bottom: 32px;
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
 export const TokenGatedRoleModalTitle = styled(Typography)`
   && {
     font-weight: 500;
@@ -200,5 +232,18 @@ export const TokenGatedRoleModalTitle = styled(Typography)`
     line-height: 18px;
     letter-spacing: 0.01em;
     color: #ccbbff;
+  }
+`;
+
+export const DiscordElementWrapper = styled(Box)`
+  && {
+    background: ${palette.black90};
+    border-radius: 6px;
+    padding: 24px;
+    margin-top: 10px;
+    :hover {
+      background: #474747 !important;
+      cursor: pointer;
+    }
   }
 `;

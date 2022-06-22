@@ -7,10 +7,6 @@ import IconButton from '@mui/material/IconButton';
 
 import CloseModalIcon from 'components/Icons/closeModal';
 import styles, {
-  DeleteButton,
-  CancelButton,
-  SubmitButton,
-  SubmitButtonWrap,
   CategoryHeader,
   CategoryRow,
   InterestButton,

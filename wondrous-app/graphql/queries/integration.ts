@@ -17,3 +17,24 @@ export const GET_ORG_SNAPSHOT_INFO = gql`
     }
   }
 `;
+
+export const GET_ORG_DISCORD_ROLES = gql`
+  query getOrgDiscordRoles($orgId: ID!) {
+    getOrgDiscordRoles(orgId: $orgId) {
+      id
+      name
+      color
+      permissions
+    }
+  }
+`;
+
+export const GET_ORG_ROLES_CLAIMABLE_BY_DISCORD = gql`
+  query getOrgRolesClaimableByDiscord($orgId: ID!) {
+    getOrgRolesClaimableByDiscord(orgId: $orgId) {
+      id
+      name
+      permissions
+    }
+  }
+`;

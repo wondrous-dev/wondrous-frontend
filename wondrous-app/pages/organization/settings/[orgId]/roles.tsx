@@ -3,7 +3,8 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 
 import Roles from 'components/Settings/Roles';
-import { GET_ORG_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_ORG_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
+import { GET_ORG_DISCORD_ROLES } from 'graphql/queries/integration';
 import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from 'graphql/mutations/org';
 import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
@@ -15,14 +16,33 @@ const RolesPage = () => {
   // Get organization roles
   const router = useRouter();
   const { orgId } = router.query;
-  const [getOrgRolesWithTokenGate, { data: getOrgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE, {
+  const [getOrgDiscordRoles, { data: getOrgDiscordRolesData }] = useLazyQuery(GET_ORG_DISCORD_ROLES, {
     variables: {
       orgId,
     },
-    onCompleted: (data) => {
-      setRoles(JSON.parse(JSON.stringify(data?.getOrgRoles)) || []);
-    },
   });
+
+  const [getOrgDiscordNotificationConfig, { data: getOrgDiscordConfigData }] = useLazyQuery(
+    GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
+    {
+      variables: {
+        orgId,
+      },
+    }
+  );
+
+  const [getOrgRolesWithTokenGate, { data: getOrgRolesData }] = useLazyQuery(
+    GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
+    {
+      variables: {
+        orgId,
+      },
+      onCompleted: (data) => {
+        console.log('hmmm', data?.getOrgRoles);
+        setRoles(JSON.parse(JSON.stringify(data?.getOrgRoles)) || []);
+      },
+    }
+  );
 
   // Mutation to create organization role
   const [createOrgRole] = useMutation(CREATE_ORG_ROLE, {
@@ -49,8 +69,15 @@ const RolesPage = () => {
   useEffect(() => {
     if (orgId) {
       getOrgRolesWithTokenGate();
+      getOrgDiscordNotificationConfig();
     }
-  }, [orgId, getOrgRolesWithTokenGate]);
+  }, [orgId, getOrgRolesWithTokenGate, getOrgDiscordNotificationConfig]);
+
+  // useEffect(() => {
+  //   if (getOrgDiscordConfigData?.getOrgDiscordNotificationConfig?.guildId) {
+  //     getOrgDiscordRoles();
+  //   }
+  // }, [getOrgDiscordConfigData]);
 
   function deleteRole(role: Role) {
     const index = roles.indexOf(role);
@@ -85,6 +112,9 @@ const RolesPage = () => {
       roles={roles}
       orgId={orgId}
       permissons={permissons}
+      allDiscordRolesData={getOrgDiscordRolesData?.getOrgDiscordRoles}
+      orgDiscordConfigData={getOrgDiscordConfigData?.getOrgDiscordNotificationConfig}
+      getOrgDiscordRoles={getOrgDiscordRoles}
       onCreateNewRole={(name: string, permissions: string[]) => {
         createOrgRole({
           variables: {
@@ -100,7 +130,6 @@ const RolesPage = () => {
       onDeleteRole={deleteRole}
       toast={toast}
       onToastClose={() => setToast({ ...toast, show: false })}
-      getOrgRolesWithTokenGate={getOrgRolesWithTokenGate}
     />
   );
 };

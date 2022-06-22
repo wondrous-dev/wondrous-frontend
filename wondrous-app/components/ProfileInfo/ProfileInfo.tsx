@@ -16,7 +16,7 @@ import { useMe } from '../Auth/withAuth';
 import { DiscordIcon } from 'components/Icons/discord';
 import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
-import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInterestModal.tsx';
+import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInterestModal';
 
 import {
   ProfileInfoWrapper,
