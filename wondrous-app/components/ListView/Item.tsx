@@ -10,13 +10,12 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
-import { Grey57 } from 'theme/colors';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { Compensation } from 'components/Common/Compensation';
 import { format } from 'date-fns';
 import { DueDateText, ActionButton, ArchivedTaskUndo } from 'components/Common/Task/styles';
 import Tooltip from 'components/Tooltip';
-
+import palette from 'theme/palette';
 import { Claim } from 'components/Icons/claimTask';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -36,7 +35,6 @@ import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
-import { Red800 } from 'theme/colors';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
 import { CreateEntity } from 'components/CreateEntity';
@@ -311,7 +309,7 @@ export default function ListViewItem({ task, entityType }) {
             {title}
             {!!totalSubtaskCount && (
               <ListViewItemIconsWrapper>
-                <SubtaskLightIcon fill="none" stroke={Grey57} height="30" width="30" viewBox="0 3 20 20" />
+                <SubtaskLightIcon fill="none" stroke={palette.grey57} height="30" width="30" viewBox="0 3 20 20" />
                 {totalSubtaskCount}
               </ListViewItemIconsWrapper>
             )}
@@ -404,7 +402,7 @@ export default function ListViewItem({ task, entityType }) {
                           onClick={() => {
                             setDeleteTask(true);
                           }}
-                          color={Red800}
+                          color={palette.red800}
                           fontSize="13px"
                           fontWeight="normal"
                           textAlign="left"

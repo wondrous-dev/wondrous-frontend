@@ -44,7 +44,7 @@ import {
 } from 'components/Settings/TokenGating/styles';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
-import { White } from 'theme/colors';
+import palette from 'theme/palette';
 
 import { Role } from 'types/common';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
@@ -388,7 +388,14 @@ const TokenGateRoleConfigModal = (props) => {
 const TokenGatingModalElement = (props) => {
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
-  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId, getOrgRolesWithTokenGate, getPodRolesWithTokenGate } = props;
+  const {
+    tokenGatingCondition,
+    selectedRoleForTokenGate,
+    handleClose,
+    orgId,
+    getOrgRolesWithTokenGate,
+    getPodRolesWithTokenGate,
+  } = props;
   const router = useRouter();
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
@@ -412,7 +419,7 @@ const TokenGatingModalElement = (props) => {
   const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
   const dropdownItemStyle = {
     marginRight: '12px',
-    color: White,
+    color: palette.white,
   };
 
   useEffect(() => {
@@ -459,7 +466,7 @@ const TokenGatingModalElement = (props) => {
           mutation: APPLY_TOKEN_GATING_TO_POD_ROLE,
           variables: {
             tokenGatingConditionId: tokenGatingCondition?.id,
-            orgRoleId: selectedRoleForTokenGate?.id,
+            podRoleId: selectedRoleForTokenGate?.id,
           },
         });
         getPodRolesWithTokenGate();

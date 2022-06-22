@@ -14,14 +14,14 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
   const { id: userId } = userProfile;
 
   const {
-    completedTaskButton,
     completedTasksData,
+    disableCompletedTaskButton,
+    disableInProgressButton,
+    disableOrgRolesButton,
     handleFetchMoreCompletedTasks,
     handleFetchMoreInProgressTasks,
     handleFetchMoreOrgRoles,
-    inProgressButton,
     inProgressData,
-    orgRolesButton,
     userOrgs,
     userTaskCountData,
   } = useGetUserAboutPage(userId);
@@ -36,7 +36,7 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
           data={userOrgs}
           Component={OrgCard}
           fetchMore={handleFetchMoreOrgRoles}
-          buttonIsDisabled={orgRolesButton}
+          buttonIsDisabled={disableOrgRolesButton}
         />
       </ProfileUserTaskDaosContainer>
 
@@ -46,7 +46,7 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
           data={completedTasksData}
           Component={ProfileUserTaskCard}
           fetchMore={handleFetchMoreCompletedTasks}
-          buttonIsDisabled={completedTaskButton}
+          buttonIsDisabled={disableCompletedTaskButton}
         />
       </ProfileUserTaskDaosContainer>
 
@@ -56,7 +56,7 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
           data={inProgressData}
           Component={ProfileUserTaskCard}
           fetchMore={handleFetchMoreInProgressTasks}
-          buttonIsDisabled={inProgressButton}
+          buttonIsDisabled={disableInProgressButton}
         />
       </ProfileUserTaskDaosContainer>
     </ProfileUserTaskDaosWrapper>

@@ -1,6 +1,6 @@
-import { Typography } from '@material-ui/core';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Grey250, White } from '../../theme/colors';
+import palette from 'theme/palette';
 import { SafeImage } from '../Common/Image';
 import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
@@ -22,7 +22,7 @@ export const CommentItemContainer = styled.div`
     `
     @keyframes highlightComment {
     from {
-      background: ${Grey250};
+      background: ${palette.grey250};
    }
     to {
       background: transparent;
@@ -67,7 +67,7 @@ export const CommentText = styled(Typography)`
   && {
     font-size: 13px;
     line-height: 20px;
-    color: ${White};
+    color: ${palette.white};
     text-align: left;
     white-space: pre-line;
   }

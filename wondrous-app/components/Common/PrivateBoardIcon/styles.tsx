@@ -1,9 +1,10 @@
 import { Box, Popper, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Black90, Black97 } from '../../../theme/colors';
+import palette from 'theme/palette';
+import { LockIconOutline } from '../../Icons/userpass';
 
 export const PrivateBoardIconBackground = styled.div`
-  background: linear-gradient(196.76deg, ${Black90} -48.71%, ${Black97} 90.48%);
+  background: linear-gradient(196.76deg, ${palette.black90} -48.71%, ${palette.black97} 90.48%);
   border-radius: 100%;
   display: flex;
   justify-content: center;

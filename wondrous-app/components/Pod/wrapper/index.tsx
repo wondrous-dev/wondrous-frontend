@@ -1,12 +1,14 @@
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
-import Image from 'next/image';
-import React, { useEffect, useState } from 'react';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import useSideBar from 'hooks/useSideBar';
-import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
+import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import ChooseEntityToCreate from '../../CreateEntity';
@@ -24,19 +26,12 @@ import {
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderFollowButton,
-  HeaderFollowButtonIcon,
-  HeaderFollowButtonText,
   HeaderImageDefault,
   HeaderMainBlock,
-  HeaderManageSettingsButton,
-  HeaderSettingsLockedButton,
   HeaderText,
   HeaderTitle,
   OverviewComponent,
   TokenHeader,
-  HeaderInviteButton,
-  PlusIconWrapper,
   HeaderTitleIcon,
   HeaderImageWrapper,
   TokenEmptyLogo,
@@ -45,9 +40,7 @@ import {
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
 import SideBarComponent from '../../SideBar';
-import PlusIcon from '../../Icons/plus';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { useLazyQuery, useMutation } from '@apollo/client';
 import {
   GET_USER_JOIN_POD_REQUEST,
   GET_TOKEN_GATED_ROLES_FOR_POD,
@@ -63,9 +56,8 @@ import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
-import ArrowForwardIosIcon from '@material-ui/icons/ArrowForwardIos';
-import { Grey58 } from 'theme/colors';
 import BoardsActivity from 'components/Common/BoardsActivity';
+import { RichTextViewer } from 'components/RichText';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -75,6 +67,7 @@ const Wrapper = (props) => {
   const wonderWeb3 = useWonderWeb3();
   const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
+  const [podRole, setPodRole] = useState(null);
   const [showPods, setShowPods] = useState(false);
   const [open, setOpen] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
@@ -191,6 +184,8 @@ const Wrapper = (props) => {
       podId: podBoard?.podId,
       orgId: podBoard?.orgId,
     });
+    const role = userPermissionsContext?.podRoles[podBoard?.podId];
+    setPodRole(role);
 
     if (
       podPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
@@ -299,13 +294,13 @@ const Wrapper = (props) => {
                       )}
                     </OrgLogoWrapper>
 
-                    <ArrowForwardIosIcon style={{ color: Grey58, marginLeft: '5px' }} />
+                    <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
                     <PodIcon
                       color={podProfile?.color}
                       style={{
-                        width: '60px',
-                        height: '60px',
-                        borderRadius: '50px',
+                        width: 60,
+                        height: 60,
+                        borderRadius: 50,
                       }}
                     />
                   </LogoWrapper>
@@ -315,6 +310,8 @@ const Wrapper = (props) => {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
+                  {permissions && podRole && <HeaderButton>your role: {podRole}</HeaderButton>}
+
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard
                       isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
@@ -355,7 +352,9 @@ const Wrapper = (props) => {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>{podProfile?.description}</HeaderText>
+              <HeaderText>
+                <RichTextViewer text={podProfile?.description} />
+              </HeaderText>
               <HeaderActivity>
                 {links?.map((link) => (
                   <>

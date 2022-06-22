@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { White } from '../../../theme/colors';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@material-ui/core';
+import palette from 'theme/palette';
+import { Button as MuiButton, InputBase, ListItemIcon, Typography } from '@mui/material';
 
 export const WalletsContainer = styled.div`
   height: 100vh;
@@ -10,7 +10,7 @@ export const WalletsContainer = styled.div`
 
 export const TableValueText = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-size: 14px;
     font-height: 22px;
   }
@@ -26,7 +26,7 @@ export const WalletAddressInput = styled(InputBase)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    color: ${White};
+    color: ${palette.white};
     padding: 10px 15px;
   }
 `;

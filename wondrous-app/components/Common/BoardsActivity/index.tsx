@@ -1,6 +1,6 @@
+import { useState } from 'react';
 import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
-import Filter from 'components/Common/Filter';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
@@ -10,10 +10,10 @@ import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
 import { ListViewIcon } from 'components/Icons/ViewIcons/listView';
 import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilters';
-import { useState } from 'react';
-import { Blue20 } from 'theme/colors';
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
+import palette from 'theme/palette';
+
 export const BoardsActivityInlineView = ({
   onSearch,
   filterSchema,
@@ -54,7 +54,7 @@ export default function BoardsActivity(props) {
   const listViewOptions = [
     {
       name: 'List',
-      icon: <ListViewIcon color={view === ViewType.List ? Blue20 : 'white'} />,
+      icon: <ListViewIcon color={view === ViewType.List ? palette.blue20 : 'white'} />,
       active: view === ViewType.List,
       disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL,
       action: () => {
@@ -70,7 +70,7 @@ export default function BoardsActivity(props) {
     },
     {
       name: 'Grid',
-      icon: <GridViewIcon color={view === ViewType.Grid ? Blue20 : 'white'} />,
+      icon: <GridViewIcon color={view === ViewType.Grid ? palette.blue20 : 'white'} />,
       active: view === ViewType.Grid,
       action: () => {
         if (setActiveView) {

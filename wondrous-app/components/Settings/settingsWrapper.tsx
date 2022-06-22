@@ -42,59 +42,6 @@ import {
   SettingsSidebarTabsSectionLabel,
   ArchivedPodIndicatorText,
 } from './styles';
-import { Grey800, White } from 'theme/colors';
-
-const SIDEBAR_LIST_ITEMS = [
-  {
-    id: 1,
-    icon: '/images/sidebar/first.png',
-    path: '/',
-  },
-  {
-    id: 2,
-    icon: '/images/sidebar/second.png',
-    path: '/',
-  },
-  {
-    id: 3,
-    icon: '/images/sidebar/third.png',
-    path: '/',
-  },
-];
-
-// Full list
-//  const SETTINGS_SIDEBAR_LIST_ITEMS = [
-// 	{
-// 		icon: <GeneralSettingsIcon width={40} height={40} />,
-// 		label: 'General settings',
-// 		value: 'general',
-// 		href: `/organization/settings/general`,
-// 	},
-// 	// {
-// 	// 	icon: <ConfigurePaymentsIcon width={40} height={40} />,
-// 	// 	label: 'Configure payments',
-// 	// 	value: 'payments',
-// 	// 	href: `/organization/settings/payments`,
-// 	// },
-// 	{
-// 		icon: <CreatePodIcon width={35} height={35} />,
-// 		label: 'Pod management',
-// 		value: 'management',
-// 		href: `/organization/settings/pod`,
-// 	},
-// 	{
-// 		icon: <MembersIcon width={40} height={40} />,
-// 		label: 'Members',
-// 		value: 'members',
-// 		href: `/organization/settings/members`,
-// 	},
-// 	{
-// 		icon: <MembersIcon width={40} height={40} />,
-// 		label: 'Roles',
-// 		value: 'roles',
-// 		href: `/organization/settings/roles`,
-// 	},
-// ]
 
 export const SettingsWrapper = (props) => {
   const { children, showPodIcon = true } = props;

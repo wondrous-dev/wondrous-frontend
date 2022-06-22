@@ -1,33 +1,33 @@
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
-import { InputAdornment, Typography } from '@material-ui/core';
+
+import Box from '@mui/material/Box';
+
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
+import { useIsMobile } from 'utils/hooks';
+
 import Wallet from 'components/Common/Wallet';
 import { useMe } from '../Auth/withAuth';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
-import SearchIcon from 'components/Icons/search';
 import { Button } from 'components/Common/button';
 import NotificationsBoard from 'components/Notifications';
 import Tooltip from 'components/Tooltip';
-import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
-import { GET_NOTIFICATIONS } from 'graphql/queries';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React from 'react';
+import HomeIcon from 'components/Icons/home';
+
 import {
   Header,
   HeaderContainer,
   HeaderCreateButton,
   HeaderHomeButton,
-  HeaderInput,
   HeaderLeftBlock,
   HeaderLogo,
   HeaderRightBlock,
-  TutorialButton,
-  TutorialText,
   HeaderHomeButtonWrapper,
   HeaderLogoWrapper,
 } from './styles';
-import HomeIcon from 'components/Icons/home';
-import { useIsMobile } from 'utils/hooks';
+
 const HeaderComponent = (props) => {
   const user = useMe();
   const isMobile = useIsMobile();
@@ -65,7 +65,7 @@ const HeaderComponent = (props) => {
             </HeaderLogoWrapper>
           </Tooltip>
           <Tooltip title="Dashboard">
-            <div>
+            <Box>
               <Link passHref href="/dashboard">
                 <HeaderHomeButtonWrapper>
                   <HeaderHomeButton>
@@ -73,21 +73,8 @@ const HeaderComponent = (props) => {
                   </HeaderHomeButton>
                 </HeaderHomeButtonWrapper>
               </Link>
-            </div>
+            </Box>
           </Tooltip>
-          {/* <HeaderInput
-            placeholder="Search wonder..."
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIcon />
-                </InputAdornment>
-              ),
-            }}
-            style={{
-              visibility: 'hidden',
-            }}
-          /> */}
         </HeaderLeftBlock>
         <HeaderRightBlock>
           {user && (

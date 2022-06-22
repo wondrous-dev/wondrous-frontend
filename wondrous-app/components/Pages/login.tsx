@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Logotype } from '../Common/ci';
-import { Red300, Red800, White } from '../../theme/colors';
+import palette from 'theme/palette';
 
 export const SmallLogo = styled(Logotype)`
   && {
@@ -52,11 +52,12 @@ export const LoginError = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: center;
-  padding: 8px;
+
+  height: 40px;
   margin: 1em 0;
 
-  background: ${Red800};
-  background: linear-gradient(196.76deg, ${White} -48.71%, ${Red300} 90.48%);
+  background: ${palette.red800};
+  background: linear-gradient(196.76deg, ${palette.white} -48.71%, ${palette.red300} 90.48%);
 
   border-radius: 6px;
 `;

@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Button, MenuItem, TextField } from '@material-ui/core';
-import { Black92, White, Grey85 } from '../../../theme/colors';
-import { Typography } from '@material-ui/core';
-import { Masonry } from '@mui/lab';
+import { Button, MenuItem, TextField, Typography } from '@mui/material';
+import palette from 'theme/palette';
+
+import Masonry from '@mui/lab/Masonry';
+
 export const BoardsContainer = styled.div`
   width: 100%;
   height: 100%;
@@ -48,7 +49,7 @@ export const ResultsCount = styled.div`
   display: flex;
   justify-content: space-between;
   padding: 20px 0;
-  border-bottom: 1px solid ${Black92};
+  border-bottom: 1px solid ${palette.black92};
 
   span {
     color: white;
@@ -169,7 +170,7 @@ export const BoardsPrivacyLabel = styled.div`
   align-items: center;
   background: #363636;
   border-radius: 4px;
-  color: ${White};
+  color: ${palette.white};
 `;
 
 export const BoardsCardFooter = styled.div`
@@ -183,7 +184,7 @@ export const BoardsCardFooter = styled.div`
 
 export const BoardsCardBodyTitle = styled(Typography)`
   && {
-    color: ${White};
+    color: ${palette.white};
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 700;

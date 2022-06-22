@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTextInput } from 'utils/hooks';
 import { UserSuggestionTypography, UserSuggestionWrapper } from './styles';
 import { SafeImage } from '../Common/Image';
-import { Blue400, White } from '../../theme/colors';
+import palette from 'theme/palette';
 
 export const TextInput = (props) => {
   const { overrideStyle, ...rest } = props;
@@ -55,7 +55,7 @@ export const TextInput = (props) => {
     ...{
       input: {
         overflow: 'auto',
-        color: White,
+        color: palette.white,
         height: '100px',
         marginBottom: '16px',
         borderRadius: '6px',

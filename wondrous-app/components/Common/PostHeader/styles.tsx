@@ -1,5 +1,5 @@
-import { MenuItem, Popper, Typography } from '@material-ui/core';
-import { MoreVert } from '@material-ui/icons';
+import { MenuItem, Popper, Typography } from '@mui/material';
+import MoreVert from '@mui/icons-material/MoreVert';
 import styled from 'styled-components';
 import { SafeImage } from '../Image';
 import DefaultUserImage from '../Image/DefaultUserImage';

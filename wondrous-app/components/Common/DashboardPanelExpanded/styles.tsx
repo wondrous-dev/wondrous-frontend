@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { Box, Typography } from '@material-ui/core';
+import { Box, Typography } from '@mui/material';
 
 export const StyledBorder = styled(Box)`
   background: linear-gradient(176.18deg, rgba(75, 75, 75, 0.6) 13.53%, rgba(35, 35, 35, 0.6) 63.82%);

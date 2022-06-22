@@ -22,13 +22,13 @@ const BaseCardInner = styled.div`
   min-width: 100%;
 
   color: #ffffff;
-  padding: ${createSpacingUnit(4)}px;
+  padding: ${createSpacingUnit(4)};
   background: rgb(20, 20, 20);
   background: linear-gradient(0deg, rgba(20, 20, 20, 1) 0%, rgba(30, 30, 30, 1) 100%);
   border-radius: 6px;
 
   & > *:not(:last-child) {
-    margin-bottom: ${createSpacingUnit(2)}px;
+    margin-bottom: ${createSpacingUnit(2)};
   }
 `;
 

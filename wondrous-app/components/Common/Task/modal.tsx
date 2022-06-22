@@ -73,7 +73,7 @@ import {
 } from 'utils/constants';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { Red400, Red800, White } from '../../../theme/colors';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 
@@ -126,12 +126,9 @@ import {
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import {
   addTaskItem,
-  removeProposalItem,
   updateInProgressTask,
   updateProposalItem,
   updateTaskItem,
-  getProposalStatus,
-  updateInReviewItem,
   updateCompletedItem,
 } from 'utils/board';
 import { RichTextViewer } from 'components/RichText';
@@ -162,6 +159,7 @@ import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import { CreateEntity } from 'components/CreateEntity';
 import { useSnapshot } from 'services/snapshot';
 import { GithubButton } from 'components/Settings/Github/styles';
+import { getProposalStatus, updateInReviewItem } from 'utils/board';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -715,7 +713,7 @@ const CreatorBlock = ({ profilePicture, username, createdAt, isTaskProposal, han
           <TaskSectionInfoText
             style={{
               fontSize: '14px',
-              color: White,
+              color: palette.white,
               fontWeight: 'regular',
             }}
           >
@@ -1054,15 +1052,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   ]);
 
   useEffect(() => {
-    if (isMilestone) {
-      setActiveTab(tabs.tasks);
-    } else if (isTaskProposal || router?.query?.taskCommentId) {
-      setActiveTab(tabs.discussion);
-    } else {
-      setActiveTab(tabs.submissions);
-    }
-  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
-  useEffect(() => {
     if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
       getOrgSnapshotInfo({
         variables: {
@@ -1071,6 +1060,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       });
     }
   }, [fetchedTask?.snapshotId]);
+
+  useEffect(() => {
+    if (isMilestone) {
+      setActiveTab(tabs.tasks);
+    } else if (isTaskProposal || router?.query?.taskCommentId) {
+      setActiveTab(tabs.discussion);
+    } else {
+      setActiveTab(tabs.submissions);
+    }
+  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   const openSnapshot = async () => {
     try {
@@ -1086,7 +1085,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
 
   const BackToListStyle = {
-    color: White,
+    color: palette.white,
     width: '100%',
     textAlign: 'right',
     marginRight: '8px',
@@ -1145,6 +1144,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask?.createdBy === user?.id;
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.EDIT_TASK) ||
     fetchedTask?.createdBy === user?.id ||
     (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
   const canMoveProgress =
@@ -1441,7 +1441,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                               setDeleteTask(true);
                             }}
                             style={dropdownItemStyle}
-                            color={Red800}
+                            color={palette.red800}
                           >
                             Delete {taskType}
                           </DropDownItem>
@@ -1973,7 +1973,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   style={{
                     marginTop: '-8px',
                     marginBottom: '16px',
-                    color: Red400,
+                    color: palette.red400,
                   }}
                 >
                   Your wallet is not connected. Please link your wallet to receive payment for completing tasks and

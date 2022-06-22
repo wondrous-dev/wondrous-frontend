@@ -81,6 +81,7 @@ const SUPPORTED_CHAINS = {
   42161: 'ARBITRUM',
   56: 'BSC',
   288: 'BOBA',
+  10: 'OPTIMISM',
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -91,6 +92,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   42161: 'AETH',
   56: 'BNB',
   288: 'ETH',
+  10: 'OP',
 };
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -105,6 +107,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
   42161: process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM,
   56: process.env.NEXT_PUBLIC_RPC_URL_BSC,
   288: process.env.NEXT_PUBLIC_RPC_URL_BOBA,
+  10: process.env.NEXT_PUBLIC_RPC_URL_OPTIMISM,
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
@@ -115,6 +118,7 @@ export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
   bsc: 'https://safe-transaction.bsc.gnosis.io',
   boba: 'https://safe-transaction.mainnet.boba.network',
+  optimism: 'https://safe-transaction.optimism.gnosis.io',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
@@ -139,6 +143,7 @@ export const CHAIN_IDS = {
   ARBITRUM: 42161,
   BSC: 56,
   BOBA: 288,
+  OPTIMISM: 10,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -149,6 +154,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   arbitrum: 'Arbitrum One',
   bsc: 'BNB smart chain',
   boba: 'Boba Mainnet',
+  optimism: 'Optimism Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -173,8 +179,12 @@ export const SUPPORTED_CURRENCIES = [
     chains: [56],
   },
   {
+    symbol: 'OP',
+    chains: [10],
+  },
+  {
     symbol: 'WONDER',
-    chains: [1, 137, 1666600000, 42161, 56, 288],
+    chains: [1, 137, 1666600000, 42161, 56, 288, 10],
     contracts: {
       1: '',
       137: '',
@@ -182,11 +192,12 @@ export const SUPPORTED_CURRENCIES = [
       42161: '',
       56: '',
       288: '',
+      10: '',
     },
   },
   {
     symbol: 'USDC',
-    chains: [1, 137, 1666600000, 42161],
+    chains: [1, 137, 1666600000, 42161, 288, 10],
     contracts: {
       1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
       137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
@@ -194,6 +205,7 @@ export const SUPPORTED_CURRENCIES = [
       42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
       56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
       288: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
+      10: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
     },
   },
 ];
@@ -369,11 +381,14 @@ export const GRAPHQL_ERRORS = {
   GITHUB_REPO_ALREADY_ADDED_TO_POD: 'Repo already added!',
   EMAIL_ALREADY_EXIST: 'email_already_exist',
   INVALID_EMAIL: 'invalid_email',
+  POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
   ? `https://app.wonderverse.xyz`
-  : 'https://wondrous-app-git-staging-wonderverse.vercel.app';
+  : process.env.NEXT_PUBLIC_STAGING
+  ? 'https://wondrous-app-git-staging-wonderverse.vercel.app'
+  : 'http://localhost:3000';
 
 export const DATEPICKER_OPTIONS = {
   DAILY: 'daily',

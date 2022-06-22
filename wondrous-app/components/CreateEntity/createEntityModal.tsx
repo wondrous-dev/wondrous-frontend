@@ -20,16 +20,19 @@ import { GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_POD_USERS, GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
 import { GET_ELIGIBLE_REVIEWERS_FOR_ORG, GET_ELIGIBLE_REVIEWERS_FOR_POD, GET_MILESTONES } from 'graphql/queries/task';
-import { Grey700, White } from '../../theme/colors';
+import palette from 'theme/palette';
 import { addProposalItem } from 'utils/board';
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   DEFAULT_SINGLE_DATEPICKER_VALUE,
   ENTITIES_TYPES,
+  GRAPHQL_ERRORS,
   MEDIA_TYPES,
   PERMISSIONS,
   PRIVACY_LEVEL,
 } from 'utils/constants';
+import { TextInputContext } from 'utils/contexts';
+import { TextInput } from '../TextInput';
 
 import {
   parseUserPermissionContext,
@@ -105,6 +108,7 @@ import {
   EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
+  TextInputDiv,
 } from './styles';
 
 const filterUserOptions = (options) => {
@@ -242,6 +246,7 @@ const CreateLayoutBaseModal = (props) => {
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
   const [descriptionText, setDescriptionText] = useState(plainTextToRichText(''));
+  const [podDescriptionText, setPodDescriptionText] = useState('');
   const [mediaUploads, setMediaUploads] = useState([]);
   const addDetailsHandleClick = () => {
     setAddDetails(!addDetails);
@@ -320,9 +325,9 @@ const CreateLayoutBaseModal = (props) => {
 
   const [getMilestones, { data: milestonesData }] = useLazyQuery(GET_MILESTONES);
 
-  const descriptionTextCounter = (e) => {
+  const podDescriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
-      setDescriptionText(e.target.value);
+      setPodDescriptionText(e.target.value);
     }
   };
 
@@ -460,7 +465,7 @@ const CreateLayoutBaseModal = (props) => {
     podId: pod,
   });
   const canCreateTask = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
-  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const canCreatePod = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_POD);
 
   const getPodObject = useCallback(() => {
     let justCreatedPod = null;
@@ -485,7 +490,7 @@ const CreateLayoutBaseModal = (props) => {
 
   const [createTaskProposal, { loading: createTaskProposalLoading }] = useMutation(CREATE_TASK_PROPOSAL);
 
-  const [createPod, { loading: createPodLoading }] = useMutation(CREATE_POD, {
+  const [createPod, { loading: createPodLoading, error: createPodError }] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
       const pod = data?.createPod;
       handleClose();
@@ -501,7 +506,6 @@ const CreateLayoutBaseModal = (props) => {
   const submitMutation = useCallback(() => {
     const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
     const description = JSON.stringify(descriptionText);
-
     const taskInput = {
       title,
       labelIds,
@@ -698,7 +702,7 @@ const CreateLayoutBaseModal = (props) => {
           const podInput = {
             name: title,
             username: title?.toLowerCase().split(' ').join('_'),
-            description,
+            description: podDescriptionText,
             orgId: org,
             privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
             links: [
@@ -720,12 +724,22 @@ const CreateLayoutBaseModal = (props) => {
               variables: {
                 input: podInput,
               },
+            }).catch((err) => {
+              if (
+                err?.graphQLErrors &&
+                err?.graphQLErrors[0]?.extensions?.message === GRAPHQL_ERRORS.POD_WITH_SAME_NEXT_EXISTS
+              ) {
+                setErrors({
+                  ...errors,
+                  general: 'Pod with that name already exists',
+                });
+              }
             });
           }
         } else {
           setErrors({
             ...errors,
-            general: 'You need full access permissions to create a pod',
+            general: 'You need the right permissions to create a pod',
           });
         }
         break;
@@ -956,7 +970,11 @@ const CreateLayoutBaseModal = (props) => {
 
   const paymentMethods = filterPaymentMethods(paymentMethodData?.getPaymentMethodsForOrg);
   const creating =
-    createTaskLoading || createTaskProposalLoading || createMilestoneLoading || createBountyLoading || createPodLoading;
+    createTaskLoading ||
+    createTaskProposalLoading ||
+    createMilestoneLoading ||
+    createBountyLoading ||
+    (createPodLoading && !createPodError);
   return (
     <CreateFormBaseModal isPod={isPod}>
       <CreateFormBaseModalHeaderWrapper>
@@ -1020,17 +1038,47 @@ const CreateLayoutBaseModal = (props) => {
         <CreateFormMainInputBlock>
           <CreateFormMainBlockTitle>{titleText} description</CreateFormMainBlockTitle>
 
-          <EditorToolbar ref={setEditorToolbarNode} />
-          <EditorContainer onClick={() => ReactEditor.focus(editor)}>
-            <RichTextEditor
-              editor={editor}
-              mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
-              placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
-              toolbarNode={editorToolbarNode}
-              onChange={setDescriptionText}
-              editorContainerNode={document.querySelector('#modal-scrolling-container')}
-            />
-          </EditorContainer>
+          {!isPod && (
+            <>
+              <EditorToolbar ref={setEditorToolbarNode} />
+              <EditorContainer onClick={() => ReactEditor.focus(editor)}>
+                <RichTextEditor
+                  editor={editor}
+                  initialValue={descriptionText}
+                  mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
+                  placeholder={<EditorPlaceholder>Enter {titleText?.toLowerCase()} description</EditorPlaceholder>}
+                  toolbarNode={editorToolbarNode}
+                  onChange={setDescriptionText}
+                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
+                />
+              </EditorContainer>
+            </>
+          )}
+          {isPod && (
+            <TextInputDiv>
+              <TextInputContext.Provider
+                value={{
+                  content: podDescriptionText,
+                  onChange: podDescriptionTextCounter,
+                  list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
+                }}
+              >
+                <TextInput
+                  placeholder={`Enter ${titleText.toLowerCase()} description`}
+                  style={{
+                    input: {
+                      overflow: 'auto',
+                      color: palette.white,
+                      height: '100px',
+                      marginBottom: '16px',
+                      borderRadius: '6px',
+                      padding: '8px',
+                    },
+                  }}
+                />
+              </TextInputContext.Provider>
+            </TextInputDiv>
+          )}
 
           <CreateFormMainDescriptionInputSymbolCounter>
             {countCharacters(descriptionText)}/{textLimit} characters
@@ -1225,7 +1273,7 @@ const CreateLayoutBaseModal = (props) => {
                       <TextField
                         {...params}
                         style={{
-                          color: White,
+                          color: palette.white,
                           fontFamily: 'Space Grotesk',
                           fontSize: '1px',
                           paddingLeft: '4px',
@@ -1314,7 +1362,7 @@ const CreateLayoutBaseModal = (props) => {
                 renderInput={(params) => (
                   <TextField
                     style={{
-                      color: White,
+                      color: palette.white,
                       fontFamily: 'Space Grotesk',
                       fontSize: '14px',
                       paddingLeft: '4px',
@@ -1389,7 +1437,7 @@ const CreateLayoutBaseModal = (props) => {
                 renderInput={(params) => (
                   <TextField
                     style={{
-                      color: White,
+                      color: palette.white,
                       fontFamily: 'Space Grotesk',
                       fontSize: '14px',
                       paddingLeft: '4px',
@@ -1427,7 +1475,7 @@ const CreateLayoutBaseModal = (props) => {
         )}
       </CreateFormMainSection>
 
-      {(org && !isProposal) ? (
+      {org && !isProposal ? (
         <CreateFormAddTagsSection>
           <CreateFormMainInputBlock>
             <CreateFormMainBlockTitle>Add tags</CreateFormMainBlockTitle>
@@ -1582,8 +1630,8 @@ const CreateLayoutBaseModal = (props) => {
             style={{
               ...(isPod &&
                 !canCreatePod && {
-                  background: Grey700,
-                  border: `1px solid ${Grey700}`,
+                  background: palette.grey700,
+                  border: `1px solid ${palette.grey700}`,
                   cursor: 'default',
                 }),
             }}

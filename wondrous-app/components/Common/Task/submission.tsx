@@ -48,7 +48,7 @@ import {
   TASK_TYPE,
   TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
-import { White } from '../../../theme/colors';
+import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
 import { GetStatusIcon, renderMentionString } from 'utils/common';
 import { ImageIcon, LinkIcon, NotesIcon } from '../../Icons/taskModalIcons';
@@ -64,7 +64,7 @@ import {
   TextInputDiv,
 } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 import {
   APPROVE_SUBMISSION,
   ATTACH_SUBMISSION_MEDIA,
@@ -752,7 +752,7 @@ const TaskSubmissionForm = (props) => {
               style={{
                 input: {
                   overflow: 'auto',
-                  color: White,
+                  color: palette.white,
                   height: '100px',
                   marginBottom: '16px',
                   borderRadius: '6px',

@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { CircularProgress } from '@material-ui/core';
+import { CircularProgress } from '@mui/material';
 
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
@@ -13,6 +13,7 @@ import { DefaultProfilePicture, PodWrapper, Title, UserProfilePicture, UserWrapp
 import { useRouter } from 'next/router';
 import { CommentText, CommentTopFlexDiv } from '../../Comment/styles';
 import { cutString } from 'utils/helpers';
+import { RichTextViewer } from 'components/RichText';
 
 const PodItem = (props) => {
   const router = useRouter();
