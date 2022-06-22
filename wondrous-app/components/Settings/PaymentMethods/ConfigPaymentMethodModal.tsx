@@ -260,7 +260,7 @@ const ConfigPaymentMethodModal = (props) => {
     } else if (selectedToken === 'OP') {
       tokenAddress = '0x0000000000000000000000000000000000000000';
       tokenName = 'OP';
-      symbol = 'ONE';
+      symbol = 'OP';
     } else if (selectedToken === 'BOBA') {
       tokenAddress = '0xa18bF3994C0Cc6E3b63ac420308E5383f53120D7';
       tokenName = 'Boba Token';
