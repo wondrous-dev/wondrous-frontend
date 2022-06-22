@@ -46,9 +46,19 @@ const chainOptions = [
     value: 'polygon',
   },
   {
+    label: 'Optimism',
+    icon: <Optimism />,
+    value: 'optimism',
+  },
+  {
     label: 'Harmony',
     icon: <Harmony />,
     value: 'harmony',
+  },
+  {
+    label: 'Boba',
+    icon: <Boba />,
+    value: 'boba',
   },
   {
     label: 'Arbitrum One',
@@ -59,16 +69,6 @@ const chainOptions = [
     label: 'BSC',
     icon: <Binance />,
     value: 'bsc',
-  },
-  {
-    label: 'Boba',
-    icon: <Boba />,
-    value: 'boba',
-  },
-  {
-    label: 'Optimism',
-    icon: <Optimism />,
-    value: 'optimism',
   },
 ];
 
