@@ -18,7 +18,7 @@ import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInterestModal';
 
-import {
+import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
   ProfileInfoUserImage,
@@ -109,7 +109,7 @@ const ProfileInfo = ({ userProfile }) => {
                     setOpenInterestModal(true);
                   }}
                 >
-                  <ProfileInfoInterestsChip key={'add-interest'} label={'+ Edit interest'} />
+                  <ProfileInfoInterestsChip sx={styles.editInterest} key={'add-interest'} label={'+ Edit interest'} />
                 </div>
               )}
             </ProfileInfoInterestsChipWrapper>
