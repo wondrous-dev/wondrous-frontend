@@ -11,6 +11,7 @@ import TypeSelector from 'components/TypeSelector';
 import ChooseEntityToCreate from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
+import Tooltip from 'components/Tooltip';
 
 import {
   Content,
@@ -73,10 +74,6 @@ import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
 import { RichTextViewer } from 'components/RichText';
 
-const MOCK_ORGANIZATION_DATA = {
-  amount: 1234567,
-};
-
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
@@ -95,12 +92,11 @@ const Wrapper = (props) => {
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
   const userPermissionsContext = orgBoard?.userPermissionsContext;
+  const [orgRole, setOrgRole] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
-  const [data, setData] = useState(MOCK_ORGANIZATION_DATA);
   const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
-  const { amount } = data;
   const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
@@ -141,6 +137,7 @@ const Wrapper = (props) => {
       setOpenJoinRequestModal(true);
       return;
     }
+
     const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
     if (!roles || roles?.length === 0) {
       setOpenJoinRequestModal(true);
@@ -206,7 +203,8 @@ const Wrapper = (props) => {
       userPermissionsContext,
       orgId: orgBoard?.orgId,
     });
-
+    const role = userPermissionsContext?.orgRoles[orgBoard?.orgId];
+    setOrgRole(role);
     if (
       orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
       orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -313,6 +311,9 @@ const Wrapper = (props) => {
                   <HeaderTag>@{orgProfile?.username}</HeaderTag>
                 </HeaderTitleIcon>
                 <HeaderButtons>
+                  {/* <Tooltip title="your permissions are:" > */}
+                  {permissions && orgRole && <HeaderButton>your role: {orgRole}</HeaderButton>}
+                  {/* </Tooltip> */}
                   {!isLoading && (
                     <TokenGatedBoard
                       isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}

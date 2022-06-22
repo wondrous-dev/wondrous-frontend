@@ -67,6 +67,7 @@ const Wrapper = (props) => {
   const wonderWeb3 = useWonderWeb3();
   const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
+  const [podRole, setPodRole] = useState(null);
   const [showPods, setShowPods] = useState(false);
   const [open, setOpen] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
@@ -183,6 +184,8 @@ const Wrapper = (props) => {
       podId: podBoard?.podId,
       orgId: podBoard?.orgId,
     });
+    const role = userPermissionsContext?.podRoles[podBoard?.podId];
+    setPodRole(role);
 
     if (
       podPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
@@ -307,6 +310,8 @@ const Wrapper = (props) => {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
+                  {permissions && podRole && <HeaderButton>your role: {podRole}</HeaderButton>}
+
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard
                       isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
