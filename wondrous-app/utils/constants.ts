@@ -449,3 +449,29 @@ export enum ColorTypes {
 }
 
 export const PRIVATE_TASK_TITLE = '_private_task';
+
+export const APPLICATION_POLICY = {
+  ALL_MEMBERS: {
+    title: 'All members need to apply',
+    value: 'all_members',
+  },
+  ONLY_ORG_MEMBERS_CAN_CLAIM: {
+    title: 'Everyone needs to apply except DAO members',
+    value: 'only_org_members_can_claim',
+  },
+  ONLY_ORG_MEMBERS_CAN_APPLY: {
+    title: 'Only DAO members can apply',
+    value: 'only_org_members_can_apply',
+  },
+  HAS_ROLES: {
+    title: 'Everyone needs to apply except members with role',
+    value: 'has_roles',
+  },
+};
+
+export const APPLICATION_POLICY_LABELS_MAP = {
+  all_members: APPLICATION_POLICY.ALL_MEMBERS,
+  only_org_members_can_claim: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_CLAIM,
+  only_org_members_can_apply: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_APPLY,
+  has_roles: APPLICATION_POLICY.HAS_ROLES,
+};
