@@ -192,7 +192,13 @@ const TokenGatedRoleDisplay = (props) => {
             alignItems: 'center',
           }}
         >
-          <TokenGatedRoleDescription>Min. amount to hold:</TokenGatedRoleDescription>
+          <TokenGatedRoleDescription
+            style={{
+              marginRight: '5px',
+            }}
+          >
+            Min. amount to hold:
+          </TokenGatedRoleDescription>
           <TokenGatedRoleDescription>
             {role?.tokenGatingCondition?.accessCondition[0].minValue}
           </TokenGatedRoleDescription>
@@ -208,7 +214,7 @@ const TokenGatedRoleDisplay = (props) => {
           />
         ) : canClaimRole ? (
           <div>
-            <div
+            {/* <div
               style={{
                 display: 'flex',
                 justifyContent: 'flex-end',
@@ -221,7 +227,7 @@ const TokenGatedRoleDisplay = (props) => {
                 }}
               />
             </div>
-
+ */}
             {canClaimRole && (
               <ClaimRoleButton onClick={handleClaimRoleClick}>
                 <ClaimRoleLabel>Claim Role</ClaimRoleLabel>
