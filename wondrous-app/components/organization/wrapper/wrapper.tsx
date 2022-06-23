@@ -146,7 +146,7 @@ const Wrapper = (props) => {
     }
 
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
-      if (!claimableDiscordRoleFound) {
+      if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
       }
     }
@@ -160,7 +160,7 @@ const Wrapper = (props) => {
       });
     } catch (e) {
       console.error(e);
-      if (!claimableDiscordRoleFound) {
+      if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
       }
       return;
@@ -168,7 +168,7 @@ const Wrapper = (props) => {
 
     const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
     if (!roles || roles?.length === 0) {
-      if (!claimableDiscordRoleFound) {
+      if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
       }
       return;
@@ -178,7 +178,7 @@ const Wrapper = (props) => {
       loggedInUser?.activeEthAddress &&
       wonderWeb3.toChecksumAddress(wonderWeb3.address) != wonderWeb3.toChecksumAddress(loggedInUser?.activeEthAddress)
     ) {
-      if (!claimableDiscordRoleFound) {
+      if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
       }
       setNotLinkedWalletError(true);
@@ -191,7 +191,7 @@ const Wrapper = (props) => {
       });
     } catch (e) {
       console.error(e);
-      if (!claimableDiscordRoleFound) {
+      if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
       }
       return;

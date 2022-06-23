@@ -76,20 +76,20 @@ export const useBoard = () => {
 };
 
 export const useUserProfile = () => {
-  const context = useContext(UserProfileContext);
-  if (!context) {
-    console.log('useUserProfile must be used within a UserProfileContext Provider');
-  }
-  return context;
+  return useContext(UserProfileContext);
+  // if (!context) {
+  //   console.log('useUserProfile must be used within a UserProfileContext Provider');
+  // }
+  // return context;
 };
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
 export const useColumns = () => {
   const context = useContext(ColumnsContext);
-  if (!context) {
-    console.log('useColumns must be used within a ColumnsContext Provider');
-  }
+  // if (!context) {
+  //   console.log('useColumns must be used within a ColumnsContext Provider');
+  // }
   return context;
 };
 
