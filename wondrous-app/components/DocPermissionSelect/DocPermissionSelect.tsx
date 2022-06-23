@@ -19,7 +19,7 @@ const SAMPLE_PERMISSIONS = [
 const StyledTextField = styled(TextField)(inputStyles);
 const StyledMenuItem = styled(MenuItem)(menuItemStyles);
 
-const DocPermissionSelect = ({ register, errors }) => (
+const DocPermissionSelect = ({ register, errors, defaultValue }) => (
   <StyledTextField
     select
     {...register}
@@ -27,6 +27,7 @@ const DocPermissionSelect = ({ register, errors }) => (
     helperText={errors.visibility?.message}
     error={errors.visibility}
     SelectProps={{ MenuProps: { MenuListProps: { sx: { ...styles.menuList } } } }}
+    defaultValue={defaultValue}
   >
     {SAMPLE_PERMISSIONS.map((option) => (
       <StyledMenuItem key={option.value} value={option.value}>
