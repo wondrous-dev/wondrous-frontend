@@ -69,9 +69,13 @@ import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { GET_TOKEN_GATED_ROLES_FOR_ORG, LIT_SIGNATURE_EXIST } from 'graphql/queries';
+import {
+  GET_TOKEN_GATED_ROLES_FOR_ORG,
+  LIT_SIGNATURE_EXIST,
+  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
+} from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
+import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import { RichTextViewer } from 'components/RichText';
 
 const Wrapper = (props) => {
@@ -92,7 +96,8 @@ const Wrapper = (props) => {
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
   const userPermissionsContext = orgBoard?.userPermissionsContext;
-  const [orgRole, setOrgRole] = useState(null);
+  const [orgRoleName, setOrgRoleName] = useState(null);
+  const [claimableDiscordRole, setClaimableDiscordRole] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
   const [createFormModal, setCreateFormModal] = useState(false);
   const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
@@ -100,7 +105,7 @@ const Wrapper = (props) => {
   const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
-  const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
+  const [claimableRoleModalOpen, setClaimableRoleModalOpen] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
 
@@ -121,8 +126,29 @@ const Wrapper = (props) => {
   }
 
   const handleJoinOrgButtonClick = async () => {
+    let claimableDiscordRoleFound = false;
+    try {
+      const { data: claimableDiscorRoles } = await apollo.query({
+        query: GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
+        variables: {
+          orgId: orgBoard?.orgId,
+        },
+      });
+      setClaimableDiscordRole(claimableDiscorRoles?.getOrgRolesClaimableByDiscord);
+      if (
+        claimableDiscorRoles?.getOrgRolesClaimableByDiscord &&
+        claimableDiscorRoles?.getOrgRolesClaimableByDiscord.length > 0
+      ) {
+        claimableDiscordRoleFound = true;
+      }
+    } catch (e) {
+      console.error('error getting cliamble discord roles', e);
+    }
+
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
-      setOpenJoinRequestModal(true);
+      if (!claimableDiscordRoleFound) {
+        setOpenJoinRequestModal(true);
+      }
     }
     let apolloResult;
     try {
@@ -134,13 +160,17 @@ const Wrapper = (props) => {
       });
     } catch (e) {
       console.error(e);
-      setOpenJoinRequestModal(true);
+      if (!claimableDiscordRoleFound) {
+        setOpenJoinRequestModal(true);
+      }
       return;
     }
 
     const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
     if (!roles || roles?.length === 0) {
-      setOpenJoinRequestModal(true);
+      if (!claimableDiscordRoleFound) {
+        setOpenJoinRequestModal(true);
+      }
       return;
     }
     if (
@@ -148,7 +178,9 @@ const Wrapper = (props) => {
       loggedInUser?.activeEthAddress &&
       wonderWeb3.toChecksumAddress(wonderWeb3.address) != wonderWeb3.toChecksumAddress(loggedInUser?.activeEthAddress)
     ) {
-      setOpenJoinRequestModal(true);
+      if (!claimableDiscordRoleFound) {
+        setOpenJoinRequestModal(true);
+      }
       setNotLinkedWalletError(true);
       return;
     }
@@ -159,7 +191,9 @@ const Wrapper = (props) => {
       });
     } catch (e) {
       console.error(e);
-      setOpenJoinRequestModal(true);
+      if (!claimableDiscordRoleFound) {
+        setOpenJoinRequestModal(true);
+      }
       return;
     }
     const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
@@ -178,12 +212,14 @@ const Wrapper = (props) => {
         });
       } catch (e) {
         console.error(e);
-        setOpenJoinRequestModal(true);
+        if (!claimableDiscordRoleFound) {
+          setOpenJoinRequestModal(true);
+        }
         return;
       }
     }
     setTokenGatedRoles(roles);
-    setOpenGatedRoleModal(true);
+    setClaimableRoleModalOpen(true);
   };
 
   useEffect(() => {
@@ -204,7 +240,7 @@ const Wrapper = (props) => {
       orgId: orgBoard?.orgId,
     });
     const role = userPermissionsContext?.orgRoles[orgBoard?.orgId];
-    setOrgRole(role);
+    setOrgRoleName(role);
     if (
       orgPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
       orgPermissions?.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -255,11 +291,13 @@ const Wrapper = (props) => {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
       />
-      <TokenGatedRoleModal
-        open={openGatedRoleModal}
-        onClose={() => setOpenGatedRoleModal(false)}
+      <TokenGatedAndClaimableRoleModal
+        open={claimableRoleModalOpen}
+        onClose={() => setClaimableRoleModalOpen(false)}
         tokenGatedRoles={tokenGatedRoles}
+        claimableDiscordRole={claimableDiscordRole}
         setOpenJoinRequestModal={setOpenJoinRequestModal}
+        orgRoleName={orgRoleName}
       />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
@@ -312,7 +350,7 @@ const Wrapper = (props) => {
                 </HeaderTitleIcon>
                 <HeaderButtons>
                   {/* <Tooltip title="your permissions are:" > */}
-                  {permissions && orgRole && <HeaderButton>your role: {orgRole}</HeaderButton>}
+                  {permissions && orgRoleName && <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>}
                   {/* </Tooltip> */}
                   {!isLoading && (
                     <TokenGatedBoard

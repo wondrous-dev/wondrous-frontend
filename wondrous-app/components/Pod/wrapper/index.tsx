@@ -51,7 +51,7 @@ import {
 import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedRoleModal } from 'components/organization/wrapper/TokenGatedRoleModal';
+import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import { DAOEmptyIcon } from '../../Icons/dao';
@@ -238,7 +238,7 @@ const Wrapper = (props) => {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
       />
-      <TokenGatedRoleModal
+      <TokenGatedAndClaimableRoleModal
         open={openGatedRoleModal}
         onClose={() => setOpenGatedRoleModal(false)}
         tokenGatedRoles={tokenGatedRoles}

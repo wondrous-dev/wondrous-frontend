@@ -109,7 +109,7 @@ const ProfileInfo = ({ userProfile }) => {
                     setOpenInterestModal(true);
                   }}
                 >
-                  <ProfileInfoInterestsChip sx={styles.editInterest} key={'add-interest'} label={'+ Edit interest'} />
+                <ProfileInfoInterestsChip sx={styles.editInterest} key={'add-interest'} label={'+ Edit interest'} />
                 </div>
               )}
             </ProfileInfoInterestsChipWrapper>
