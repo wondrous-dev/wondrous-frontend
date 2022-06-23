@@ -1166,7 +1166,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
   const canDelete =
-    canArchive && (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE);
+    canArchive &&
+    (fetchedTask?.type === ENTITIES_TYPES.TASK ||
+      fetchedTask?.type === ENTITIES_TYPES.MILESTONE ||
+      isTaskProposal);
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
