@@ -51,16 +51,10 @@ import * as Constants from 'utils/constants';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { OrgBoardContext } from 'utils/contexts';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
 import { useMe } from '../Auth/withAuth';
-import { USDCoin } from '../Icons/USDCoin';
-import Ethereum from '../Icons/ethereum';
-import { Compensation } from '../Common/Compensation';
-import { Matic } from '../Icons/matic';
-import { renderMentionString } from 'utils/common';
-import TaskStatus from '../Icons/TaskStatus';
 import SmartLink from 'components/Common/SmartLink';
 
 const DELIVERABLES_ICONS = {

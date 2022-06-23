@@ -138,3 +138,11 @@ export const ProfileInfoInterestsChip = styled(Chip)`
     font-size: 12px;
   }
 `;
+
+const styles = {
+  editInterest: {
+    cursor: 'pointer',
+  }
+  
+};
+export default styles

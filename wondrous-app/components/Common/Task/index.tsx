@@ -41,7 +41,7 @@ import { useRouter } from 'next/router';
 import { Typography } from '@mui/material';
 import { SafeImage } from '../Image';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import palette from 'theme/palette';
 import { TaskViewModal } from './modal';

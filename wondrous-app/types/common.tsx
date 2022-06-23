@@ -4,6 +4,7 @@ export type Role = {
   default: boolean;
   permissions: string[];
   tokenGatingCondition: any;
+  discordRolesInfo: any[];
 };
 
 export enum ViewType {

@@ -21,6 +21,14 @@ export const UPDATE_TASK_PROPOSAL = gql`
   ${TaskProposalFragment}
 `;
 
+export const DELETE_TASK_PROPOSAL = gql`
+  mutation deleteTaskProposal($proposalId: ID!) {
+    deleteTaskProposal(proposalId: $proposalId) {
+      success
+    }
+  }
+`;
+
 export const UPDATE_TASK_PROPOSAL_ASSIGNEE = gql`
   mutation updateTaskAssignee($proposalId: ID!, $assigneeId: ID!) {
     updateTaskProposalAssignee(proposalId: $proposalId, assigneeId: $assigneeId) {

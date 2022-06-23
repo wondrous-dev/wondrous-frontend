@@ -3,45 +3,6 @@ import Button from '@mui/material/Button';
 import { DialogContent, Typography } from '@mui/material';
 import palette from 'theme/palette';
 
-export const CancelButton = styled(Button)`
-  && {
-    background-color: #232323;
-    color: white;
-    text-transform: initial;
-    border-radius: 35px;
-    padding: 8px 24px;
-  }
-`;
-
-export const SubmitButtonWrap = styled.div`
-  background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-  padding: 1px 1px;
-  border-radius: 35px;
-  margin-left: 24px;
-`;
-
-export const SubmitButton = styled(Button)`
-  && {
-    background: #0f0f0f;
-    color: white;
-    font-size: 15px;
-    font-weight: 500;
-    padding: 6px 24px;
-    border-radius: 35px;
-    text-transform: initial;
-  }
-`;
-
-export const DeleteButton = styled(Button)`
-  && {
-    color: white;
-    border: 1px solid #cb3340;
-    padding: 6px 24px;
-    border-radius: 35px;
-    margin-left: 24px;
-    text-transform: initial;
-  }
-`;
 
 export const CategoryHeader = styled(Typography)`
   && {
