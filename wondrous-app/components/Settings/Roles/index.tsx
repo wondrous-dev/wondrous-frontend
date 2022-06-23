@@ -116,6 +116,8 @@ const Roles = ({
   allDiscordRolesData,
   getOrgDiscordRoles,
 }: Props) => {
+  const router = useRouter();
+
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
@@ -251,7 +253,9 @@ const Roles = ({
           </Permissions>
         </Accordion>
         {!podId && !orgDiscordConfigData?.guildId && (
-          <ImportDiscordRoleButton>Connect your Discord server to import roles</ImportDiscordRoleButton>
+          <ImportDiscordRoleButton onClick={()=> {
+            router.push(`/organization/settings/${orgId}/notifications`);
+          }}>Connect your Discord server to import roles</ImportDiscordRoleButton>
         )}
         {!podId && orgDiscordConfigData?.guildId && (
           <ImportDiscordRoleButton
