@@ -31,8 +31,7 @@ export const StyledTableContainer = styled(TableContainer)`
   && {
     width: 100%;
     overflow-x: visible;
-    background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
-    border-radius: 4px;
+    border-radius: 3px;
   }
 `;
 
@@ -40,13 +39,20 @@ export const StyledTableHead = styled(TableHead)`
   & .MuiTableCell-head {
     color: #ccbbff;
     border: none;
-    font-family: 'Space Grotesk';
+    font-family: 'Space Grotesk', serif;
     font-size: 14px;
     font-style: normal;
     font-weight: 700;
     letter-spacing: 0em;
     border-radius: 4px;
     border: 1px solid #363636;
+  }
+`;
+export const StyledTableHeaderCell = styled(TableCell)`
+  && {
+    padding: 16px;
+    height: auto;
+    border: none;
   }
 `;
 
@@ -61,6 +67,14 @@ export const StyledTableRow = styled(TableRow)`
   // & .MuiTableCell-root {
   // 	vertical-align: top;
   // }
+`;
+
+export const MembersStyledTableRow = styled(TableRow)`
+  & .MuiTableCell-body {
+    border: 1px solid #363636;
+    padding: 20px 18px;
+    vertical-align: top;
+  }
 `;
 
 export const StyledTableCell = styled(TableCell)`
@@ -191,4 +205,44 @@ export const MoreOptions = styled(Button)`
   svg {
     height: 24px;
   }
+`;
+
+export const TasksCount = styled.div`
+  font-weight: 600;
+  font-size: 13px;
+  text-align: center;
+  display: inline-block;
+  border-radius: 20px;
+  background-color: #1f1f1f;
+  color: white;
+  padding: 2px 17px;
+`;
+
+export const ApprovedUserSnackBar = styled.div`
+  width: 100%;
+  height: 40px;
+  background: #0c3428;
+  color: #00c78b;
+  border-radius: 3px;
+  font-size: 15px;
+  line-height: 19px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const PodName = styled.span`
+  cursor: pointer;
+  text-transform: capitalize;
+  text-decoration: underline;
+  color: #0ea2d9;
+`;
+
+export const RequestMessage = styled.span`
+  color: #c4c4c4;
+  font-weight: 400;
+  font-size: 13px;
+  letter-spacing: 0.01em;
+  margin-top: 10px;
 `;

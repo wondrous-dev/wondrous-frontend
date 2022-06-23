@@ -48,6 +48,9 @@ export const ProfileUserFragment = gql`
     activeEthAddress
     profilePicture
     thumbnailPicture
+    userInfo {
+      discordUsername
+    }
     links {
       url
       displayName
