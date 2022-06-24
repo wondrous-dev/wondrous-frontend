@@ -424,6 +424,17 @@ export const WHITE_TYPOGRAPHY_STYLES = {
   color: '#FFFFFF',
 };
 
+export const DOCS_PERMISSIONS = [
+  {
+    label: 'Public',
+    value: 'public',
+  },
+  {
+    label: 'Members',
+    value: 'members',
+  },
+];
+
 // Taken from back-end src/constants/colors.py
 export enum ColorTypes {
   RubyRed = '#B8255F',
