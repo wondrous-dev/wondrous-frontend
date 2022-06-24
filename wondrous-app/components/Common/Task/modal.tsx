@@ -160,6 +160,7 @@ import { CreateEntity } from 'components/CreateEntity';
 import { useSnapshot } from 'services/snapshot';
 import { GithubButton } from 'components/Settings/Github/styles';
 import { getProposalStatus, updateInReviewItem } from 'utils/board';
+import { TaskApplicationButton } from 'components/Common/TaskApplication';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -1256,6 +1257,15 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     handleClose();
   };
 
+  const canClaim =
+    fetchedTask?.canClaim &&
+    ((fetchedTask?.orgId &&
+      userPermissionsContext?.orgPermissions &&
+      fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
+      fetchedTask?.privacyLevel === PRIVACY_LEVEL.public);
+
+  const canApply = !canClaim && fetchedTask?.canApply;
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1609,10 +1619,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     </TaskUserDiv>
                   ) : (
                     <>
-                      {(fetchedTask?.orgId &&
-                        userPermissionsContext?.orgPermissions &&
-                        fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
-                      fetchedTask?.privacyLevel === PRIVACY_LEVEL.public ? (
+                      {canClaim ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
@@ -1673,14 +1680,20 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           </TakeTaskButton>
                         </>
                       ) : (
-                        <TaskSectionInfoText
-                          style={{
-                            marginLeft: '4px',
-                            marginTop: '8px',
-                          }}
-                        >
-                          None
-                        </TaskSectionInfoText>
+                        <>
+                          {canApply ? (
+                            <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to this task" />
+                          ) : (
+                            <TaskSectionInfoText
+                              style={{
+                                marginLeft: '4px',
+                                marginTop: '8px',
+                              }}
+                            >
+                              None
+                            </TaskSectionInfoText>
+                          )}
+                        </>
                       )}
                     </>
                   )}

@@ -148,6 +148,7 @@ const formValidationSchema = Yup.object().shape({
   reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
   assigneeId: Yup.string().nullable(),
   claimPolicy: Yup.string().nullable(),
+  claimPolicyRoles: Yup.array().of(Yup.string()).optional().nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
     .integer('Points must be whole number')
@@ -947,6 +948,7 @@ interface ICreateEntityModal {
   existingTask?: {
     id: string;
     claimPolicyRoles: [string] | null;
+    claimPolicy: string | null;
     githubIssue: {
       id: string;
       url: string;
