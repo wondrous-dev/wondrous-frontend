@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
-import Link from 'next/link';
 import { useLazyQuery, useMutation } from '@apollo/client';
 
 import { AvatarList } from '../Common/AvatarList';
+import SmartLink from 'components/Common/SmartLink';
 import {
   StyledTableCell,
   MembersStyledTableRow as StyledTableRow,
   TasksCount,
-  PodName,
   RequestMessage,
+  PodOrgName,
 } from './styles';
 import { DAOIcon } from '../Icons/dao';
 import { SafeImage } from '../Common/Image';
@@ -21,6 +21,8 @@ import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST, UPDATE_USER_POD_ROLE
 import { LinearProgress } from '@mui/material';
 import Box from '@mui/material/Box';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST, UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
+import LinkBigIcon from 'components/Icons/link';
+import { LinkSquareIcon } from 'components/Settings/linkSquareIcon';
 
 export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
   const [role, setRole] = useState(null);
@@ -101,26 +103,28 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
   return (
     <StyledTableRow ref={ref}>
       <StyledTableCell align="center">
-        {request.orgProfilePicture ? (
-          <div
-            style={{
-              alignItems: 'center',
-              display: 'flex',
-              justifyContent: 'center',
-            }}
-          >
-            <SafeImage
-              src={request.orgProfilePicture}
+        <SmartLink href={`/organization/${request?.orgUsername}/boards`} asLink>
+          {request.orgProfilePicture ? (
+            <div
               style={{
-                width: '36px',
-                height: '36px',
-                borderRadius: '6px',
+                alignItems: 'center',
+                display: 'flex',
+                justifyContent: 'center',
               }}
-            />
-          </div>
-        ) : (
-          <DAOIcon />
-        )}
+            >
+              <SafeImage
+                src={request.orgProfilePicture}
+                style={{
+                  width: '36px',
+                  height: '36px',
+                  borderRadius: '6px',
+                }}
+              />
+            </div>
+          ) : (
+            <DAOIcon />
+          )}
+        </SmartLink>
       </StyledTableCell>
 
       <StyledTableCell
@@ -145,11 +149,11 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
             ]}
           />
         )}
-        <Link passHref={true} href={`/profile/${request.userUsername}/about`}>
-          <Text color="#C4C4C4" fontSize={12} lineHeight="19px">
+        <SmartLink href={`/profile/${request.userUsername}/about`} asLink>
+          <Text color="#C4C4C4" fontSize={12} lineHeight="19px" marginTop="5px">
             @{request.userUsername}
           </Text>
-        </Link>
+        </SmartLink>
       </StyledTableCell>
 
       <StyledTableCell
@@ -164,16 +168,16 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
 
         {request.podId ? (
           <>
-            <Link href={`/pod/${request.podId}/boards`} passHref={true}>
-              <PodName>{request.podName}</PodName>
-            </Link>
+            <SmartLink href={`/pod/${request.podId}/boards`} asLink>
+              <PodOrgName>{request.podName}</PodOrgName>
+            </SmartLink>
             <span> pod</span>
           </>
         ) : (
           <>
-            <Link href={`/organization/${request.orgId}/boards`} passHref={true}>
-              <PodName>{request.orgName}</PodName>
-            </Link>
+            <SmartLink href={`/organization/${request.orgId}/boards`} asLink>
+              <PodOrgName>{request.orgName}</PodOrgName>
+            </SmartLink>
             <span> org</span>
           </>
         )}
@@ -181,18 +185,20 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
         <div style={{ marginTop: '10px' }}>
           <RequestMessage>&quot;{request.message}&quot;</RequestMessage>
         </div>
+
+        {getUserProfileData?.getUser.links ? (
+          <Box sx={{ width: '30px', textAlign: 'center', marginTop: '15px' }}>
+            <LinkSquareIcon title="Links" icon={<LinkBigIcon />} style={{ width: '30px', height: '30px' }} />
+            <Text color="#7a7a7a" fontSize="12px" marginTop="3px">
+              {getUserProfileData?.getUser.links.length}
+            </Text>
+          </Box>
+        ) : null}
       </StyledTableCell>
 
       <StyledTableCell align="center">
         {getUserProfileData ? (
-          <Text
-            style={{
-              color: 'white',
-              fontWeight: '700',
-              fontSize: '15px',
-              lineHeight: '19px',
-            }}
-          >
+          <Text color="white" fontWeight="700" fontSize="15px">
             {getUserProfileData?.getUser?.userInfo?.discordUsername ? 'Yes' : 'No'}
           </Text>
         ) : (

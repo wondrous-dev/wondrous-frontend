@@ -232,7 +232,7 @@ export const ApprovedUserSnackBar = styled.div`
   justify-content: center;
 `;
 
-export const PodName = styled.span`
+export const PodOrgName = styled.span`
   cursor: pointer;
   text-transform: capitalize;
   text-decoration: underline;
