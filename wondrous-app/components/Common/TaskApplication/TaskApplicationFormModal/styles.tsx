@@ -1,4 +1,4 @@
-import { Box, Button, Dialog, TextareaAutosize, Typography, Divider } from '@mui/material';
+import { Box, Button, Dialog, TextareaAutosize, Typography, Input } from '@mui/material';
 import styled from 'styled-components';
 import { Button as SubmitButton } from 'components/Common/button';
 import { ModalCloseButton } from 'components/Common/ModalCloseButton';
@@ -19,6 +19,9 @@ export const TaskApplicationFormBorder = styled(Box)`
 export const TaskApplicationFormBackground = styled(Box)`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
   border-radius: inherit;
 `;
 
@@ -46,7 +49,6 @@ export const TaskApplicationFormHeader = styled.div`
   justify-content: space-between;
   border-bottom: 0.5px dashed #4b4b4b;
   padding-bottom: 18px;
-  margin-bottom: 18px;
 `;
 
 export const TaskApplicationFormHeaderText = styled(Typography)`
@@ -71,4 +73,47 @@ export const TaskApplicationTextAreaCount = styled.span`
   letter-spacing: 0.01em;
 
   color: #828282;
+`;
+
+export const LinksWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+`;
+
+export const LinkContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+`;
+
+export const LinkTitleInput = styled(Input)`
+  height: 40px;
+  background: #0f0f0f;
+  border-radius: 4px;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  color: #828282;
+  padding: 14px;
+`;
+
+export const LinkUrlInput = styled(Input)`
+  height: 40px;
+  background: #0f0f0f;
+  border-radius: 4px;
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 19px;
+  letter-spacing: 0.01em;
+  color: #828282;
+  padding: 14px;
 `;

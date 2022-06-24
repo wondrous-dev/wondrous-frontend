@@ -12,10 +12,15 @@ import {
   TaskApplicationFormHeaderText,
   TaskApplicationFormHeaderCloseButton,
   TaskApplicationTextAreaCount,
+  LinksWrapper,
+  LinkContainer,
+  LinkTitleInput,
+  LinkUrlInput,
 } from './styles';
 
 const TEXT_AREA_LIMIT = 380;
 
+const EMPTY_LINK_FIELD = { '': '' };
 const config = [
   {
     type: 'textarea',
@@ -29,17 +34,70 @@ const config = [
     type: 'links',
     value: null,
     key: 'links',
+    defaultValue: [EMPTY_LINK_FIELD],
   },
 ];
 
-const LinksComponent = () => <div>null</div>;
+const LinksComponent = (props) => {
+  const { value, defaultValue, onChange } = props;
+  const fields = props.value || props.defaultValue;
+
+  const addField = (idx) => {
+    return onChange([...fields, EMPTY_LINK_FIELD]);
+  };
+
+  const removeField = (idx) => {
+    const newFields = fields.filter((field, i) => i === idx);
+    onChange(newFields);
+  };
+
+  const onTitleChange = (value, idx) => {
+    if (props.value && props.value[idx]) {
+      const newFields = [...props.value];
+      const existingValue = Object.values(newFields[idx])[0];
+      newFields[idx] = { [value]: existingValue };
+      return onChange(newFields);
+    }
+    const newFields = [{ [value]: '' }];
+    return onChange(newFields);
+  };
+
+  const onUrlChange = (value, idx) => {
+    if (props.value && props.value[idx]) {
+      const newFields = [...props.value];
+      const existingTitle = Object.keys(newFields[idx])[0];
+      newFields[idx] = { [existingTitle]: value };
+      return onChange(newFields);
+    }
+    const newFields = [{ '': value }];
+    return onChange(newFields);
+  };
+
+  const handleField = (e, idx) => {
+    e.preventDefault();
+    const action = fields[idx] && fields[idx] !== fields[fields.length - 1] ? removeField : addField;
+    action(idx);
+  };
+  return (
+    <LinksWrapper>
+      {fields.map((field, idx) => (
+        <LinkContainer key={idx}>
+          <LinkTitleInput placeholder={'Title of link'} onChange={(e) => onTitleChange(e.target.value, idx)} />
+          <LinkUrlInput placeholder={'URL link'} onChange={(e) => onUrlChange(e.target.value, idx)} />
+          <button type="button" onClick={(e) => handleField(e, idx)}>
+            {fields[idx] && fields[idx] !== fields[fields.length - 1] ? 'remove' : 'add'}
+          </button>
+        </LinkContainer>
+      ))}
+    </LinksWrapper>
+  );
+};
 
 const TextArea = (props) => {
-  console.log(props);
-  const { value } = props;
+  const { value, onChange } = props;
   return (
     <>
-      <TaskApplicationFormTextarea {...props} />
+      <TaskApplicationFormTextarea {...props} onChange={(e) => onChange(e.target.value)} />
       <TaskApplicationTextAreaCount>
         {value?.length || 0}/{TEXT_AREA_LIMIT} characters
       </TaskApplicationTextAreaCount>
@@ -80,14 +138,16 @@ export default function TaskApplicationModal(props) {
               const Component = COMPONENTS_MAP[field.type];
               const value = form.values[field.key];
               return (
-                <Component
-                  {...field}
-                  value={value}
-                  key={idx}
-                  onChange={(e) => {
-                    onChange(field.key, e.target.value);
-                  }}
-                />
+                <div>
+                  <Component
+                    {...field}
+                    value={value}
+                    key={idx}
+                    onChange={(value) => {
+                      onChange(field.key, value);
+                    }}
+                  />
+                </div>
               );
             })}
           </TaskApplicationFormBackground>
