@@ -23,6 +23,20 @@ import Box from '@mui/material/Box';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST, UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
 import LinkBigIcon from 'components/Icons/link';
 import { LinkSquareIcon } from 'components/Settings/linkSquareIcon';
+import {
+  SOCIAL_MEDIA_DISCORD,
+  SOCIAL_MEDIA_FACEBOOK,
+  SOCIAL_MEDIA_GITHUB,
+  SOCIAL_MEDIA_LINKEDIN,
+  SOCIAL_MEDIA_TWITTER,
+  SOCIAL_OPENSEA,
+} from 'utils/constants';
+import FacebookIcon from 'components/Icons/facebook';
+import TwitterPurpleIcon from 'components/Icons/twitterPurple';
+import LinkedInIcon from 'components/Icons/linkedIn';
+import { DiscordIcon } from 'components/Icons/discord';
+import githubIcon from 'components/Icons/githubIcon';
+import OpenSeaIcon from 'components/Icons/openSea';
 
 export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
   const [role, setRole] = useState(null);
@@ -51,14 +65,13 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
     refetchQueries: ['getJoinOrgRequests', 'getWorkFlowBoardReviewableItemsCount'],
   });
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST, {
-    refetchQueries: ['getJoinOrgRequests', 'getWorkFlowBoardReviewableItemsCount'],
+    refetchQueries: ['getJoinPodRequests', 'getWorkFlowBoardReviewableItemsCount'],
   });
   const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST, {
-    refetchQueries: ['getJoinOrgRequests', 'getWorkFlowBoardReviewableItemsCount'],
+    refetchQueries: ['getJoinPodRequests', 'getWorkFlowBoardReviewableItemsCount'],
   });
   const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
   const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
-
   const { ref, inView } = useInView();
   const roles = podRoleData?.getPodRoles || orgRoleData?.getOrgRoles || [];
 
@@ -99,6 +112,78 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
       }
     }
   }, [inView]);
+
+  const SOCIAL_MEDIA_ICONS = {
+    [SOCIAL_MEDIA_FACEBOOK]: FacebookIcon,
+    [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
+    [SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
+    [SOCIAL_MEDIA_DISCORD]: DiscordIcon,
+    [SOCIAL_MEDIA_GITHUB]: githubIcon,
+    // [SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
+    // [SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
+    [SOCIAL_OPENSEA]: OpenSeaIcon,
+  };
+
+  const handleApprove = async () => {
+    if (request.podId) {
+      await approveJoinPodRequest({
+        variables: {
+          podId: request.podId,
+          userId: request.userId,
+        },
+      });
+
+      updateUserPodRole({
+        variables: {
+          input: {
+            userId: request.userId,
+            podId: request.podId,
+            roleId: role.id,
+          },
+        },
+      });
+    } else {
+      await approveJoinOrgRequest({
+        variables: {
+          orgId: request.orgId,
+          userId: request.userId,
+        },
+      });
+
+      updateUserOrgRole({
+        variables: {
+          input: {
+            userId: request.userId,
+            orgId: request.orgId,
+            roleId: role.id,
+          },
+        },
+      });
+    }
+
+    onApproved({
+      ...request,
+      role,
+    });
+  };
+
+  const handleReject = async () => {
+    if (request.podId) {
+      rejectJoinPodRequest({
+        variables: {
+          podId: request.podId,
+          userId: request.userId,
+        },
+      });
+    } else {
+      rejectJoinOrgRequest({
+        variables: {
+          orgId: request.orgId,
+          userId: request.userId,
+        },
+      });
+    }
+  };
 
   return (
     <StyledTableRow ref={ref}>
@@ -186,14 +271,21 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
           <RequestMessage>&quot;{request.message}&quot;</RequestMessage>
         </div>
 
-        {getUserProfileData?.getUser.links ? (
-          <Box sx={{ width: '30px', textAlign: 'center', marginTop: '15px' }}>
-            <LinkSquareIcon title="Links" icon={<LinkBigIcon />} style={{ width: '30px', height: '30px' }} />
-            <Text color="#7a7a7a" fontSize="12px" marginTop="3px">
-              {getUserProfileData?.getUser.links.length}
-            </Text>
-          </Box>
-        ) : null}
+        {getUserProfileData?.getUser?.links?.map(({ url, type }) => {
+          const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type] || LinkBigIcon;
+
+          return (
+            <Box key={url} style={{ display: 'inline-block', marginTop: '15px' }}>
+              <a href={url} target="_blank" rel="noreferrer">
+                <LinkSquareIcon
+                  title={type}
+                  icon={<SocialMediaIcon />}
+                  style={{ width: '30px', height: '30px', marginRight: '10px' }}
+                />
+              </a>
+            </Box>
+          );
+        })}
       </StyledTableCell>
 
       <StyledTableCell align="center">
@@ -218,73 +310,10 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
         <StyledTableCell>
           <MembershipRoleDropdown role={role} roles={roles} onChange={setRole} />
           <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: '20px' }}>
-            <Button
-              style={{ marginRight: '5px' }}
-              onClick={async () => {
-                if (request.podId) {
-                  await approveJoinPodRequest({
-                    variables: {
-                      podId: request.podId,
-                      userId: request.userId,
-                    },
-                  });
-
-                  updateUserPodRole({
-                    variables: {
-                      input: {
-                        userId: request.userId,
-                        podId: request.podId,
-                        roleId: role.id,
-                      },
-                    },
-                  });
-                } else {
-                  await approveJoinOrgRequest({
-                    variables: {
-                      orgId: request.orgId,
-                      userId: request.userId,
-                    },
-                  });
-
-                  updateUserOrgRole({
-                    variables: {
-                      input: {
-                        userId: request.userId,
-                        orgId: request.orgId,
-                        roleId: role.id,
-                      },
-                    },
-                  });
-                }
-
-                onApproved({
-                  ...request,
-                  role,
-                });
-              }}
-            >
+            <Button style={{ marginRight: '5px' }} onClick={handleApprove}>
               Approve
             </Button>
-            <GreyButton
-              style={{ marginLeft: '5px' }}
-              onClick={() => {
-                if (request.podId) {
-                  rejectJoinPodRequest({
-                    variables: {
-                      podId: request.podId,
-                      userId: request.userId,
-                    },
-                  });
-                } else {
-                  rejectJoinOrgRequest({
-                    variables: {
-                      orgId: request.orgId,
-                      userId: request.userId,
-                    },
-                  });
-                }
-              }}
-            >
+            <GreyButton style={{ marginLeft: '5px' }} onClick={handleReject}>
               Decline
             </GreyButton>
           </Box>
