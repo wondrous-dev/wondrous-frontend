@@ -553,6 +553,11 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       border-radius: 180px;
     }
   }
+  &.Mui-disabled {
+    &::before {
+      background: transparent;
+    }
+  }
 `;
 
 export const TaskUserDiv = styled.div`

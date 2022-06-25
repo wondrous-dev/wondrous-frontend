@@ -1,7 +1,6 @@
-import { useState, useContext } from 'react';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { useEffect, useState } from 'react';
 import * as yup from 'yup';
-import { FormikValues, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import {
   TaskApplicationForm,
   TaskApplicationFormModal,
@@ -17,10 +16,17 @@ import {
   LinkTitleInput,
   LinkUrlInput,
 } from './styles';
+import isUrl from 'is-url';
 
 const TEXT_AREA_LIMIT = 380;
 
-const EMPTY_LINK_FIELD = { '': '' };
+const LINK_KEYS = {
+  URL: 'url',
+  DISPLAY_NAME: 'displayName',
+};
+
+const EMPTY_LINK_FIELD = { [LINK_KEYS.URL]: '', [LINK_KEYS.DISPLAY_NAME]: '' };
+
 const config = [
   {
     type: 'textarea',
@@ -40,36 +46,29 @@ const config = [
 
 const LinksComponent = (props) => {
   const { value, defaultValue, onChange } = props;
-  const fields = props.value || props.defaultValue;
+  const fields = value || props.defaultValue;
+  const [errors, setErrors] = useState([]);
 
   const addField = (idx) => {
     return onChange([...fields, EMPTY_LINK_FIELD]);
   };
 
   const removeField = (idx) => {
-    const newFields = fields.filter((field, i) => i === idx);
+    const newFields = fields.filter((field, i) => i !== idx);
     onChange(newFields);
   };
 
-  const onTitleChange = (value, idx) => {
+  const handleInputChange = (value, idx, type) => {
     if (props.value && props.value[idx]) {
-      const newFields = [...props.value];
-      const existingValue = Object.values(newFields[idx])[0];
-      newFields[idx] = { [value]: existingValue };
+      const newFields = props.value.map((item, index) => {
+        if (index === idx) {
+          return { ...item, [type]: value };
+        }
+        return item;
+      });
       return onChange(newFields);
     }
-    const newFields = [{ [value]: '' }];
-    return onChange(newFields);
-  };
-
-  const onUrlChange = (value, idx) => {
-    if (props.value && props.value[idx]) {
-      const newFields = [...props.value];
-      const existingTitle = Object.keys(newFields[idx])[0];
-      newFields[idx] = { [existingTitle]: value };
-      return onChange(newFields);
-    }
-    const newFields = [{ '': value }];
+    const newFields = [{ [type]: value }];
     return onChange(newFields);
   };
 
@@ -78,17 +77,55 @@ const LinksComponent = (props) => {
     const action = fields[idx] && fields[idx] !== fields[fields.length - 1] ? removeField : addField;
     action(idx);
   };
+
+  const validateUrl = (e, idx) => {
+    const value = e.target.value;
+    const isValidUrl = isUrl(value);
+    const errorExists = !!errors[idx];
+    const newErrors = [...errors];
+
+    if (!isValidUrl && !errorExists) {
+      newErrors[idx] = 'Please enter valid URL';
+      return setErrors(newErrors);
+    }
+    if (isValidUrl && errorExists) {
+      const newErrors = [...errors];
+      newErrors[idx] = null;
+      return setErrors(newErrors);
+    }
+  };
+
   return (
     <LinksWrapper>
-      {fields.map((field, idx) => (
-        <LinkContainer key={idx}>
-          <LinkTitleInput placeholder={'Title of link'} onChange={(e) => onTitleChange(e.target.value, idx)} />
-          <LinkUrlInput placeholder={'URL link'} onChange={(e) => onUrlChange(e.target.value, idx)} />
-          <button type="button" onClick={(e) => handleField(e, idx)}>
-            {fields[idx] && fields[idx] !== fields[fields.length - 1] ? 'remove' : 'add'}
-          </button>
-        </LinkContainer>
-      ))}
+      {fields.map((field, idx) => {
+        return (
+          <LinkContainer key={idx}>
+            <div>
+              <LinkTitleInput
+                placeholder={'Title of link'}
+                value={field[LINK_KEYS.DISPLAY_NAME]}
+                onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)}
+                required
+              />
+              <span />
+            </div>
+            <div>
+              <LinkUrlInput
+                placeholder={'URL link'}
+                value={field[LINK_KEYS.URL]}
+                onBlur={(e) => validateUrl(e, idx)}
+                onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.URL)}
+                error={!!errors[idx]}
+                required
+                type="url"
+              />
+            </div>
+            <button type="button" onClick={(e) => handleField(e, idx)}>
+              {fields[idx] && fields[idx] !== fields[fields.length - 1] ? 'remove' : 'add'}
+            </button>
+          </LinkContainer>
+        );
+      })}
     </LinksWrapper>
   );
 };
@@ -111,19 +148,22 @@ const COMPONENTS_MAP = {
 };
 
 export default function TaskApplicationModal(props) {
-  const { open, onClose, handleSubmit } = props;
-  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const { open, onClose, handleSubmit, taskId } = props;
 
   const initialValues = { message: null, links: null };
 
   const form = useFormik({
     initialValues,
     onSubmit: (values) => {
-      console.log(values, 'values in form modal');
+      console.log(values);
+      handleSubmit(values);
     },
   });
 
-  const onChange = (key, value) => form.setFieldValue(key, value);
+  const onChange = (key, value) => {
+    form.setFieldValue(key, value);
+  };
+
   return (
     <TaskApplicationFormModal open={open}>
       <TaskApplicationForm onSubmit={form.handleSubmit}>
@@ -150,6 +190,14 @@ export default function TaskApplicationModal(props) {
                 </div>
               );
             })}
+            <button
+              type="submit"
+              onClick={() => {
+                console.log('here');
+              }}
+            >
+              submit
+            </button>
           </TaskApplicationFormBackground>
         </TaskApplicationFormBorder>
       </TaskApplicationForm>
