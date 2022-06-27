@@ -119,8 +119,6 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
     [SOCIAL_MEDIA_LINKEDIN]: LinkedInIcon,
     [SOCIAL_MEDIA_DISCORD]: DiscordIcon,
     [SOCIAL_MEDIA_GITHUB]: githubIcon,
-    // [SOCIAL_MEDIA_SPOTIFY]: LinkedInIcon,
-    // [SOCIAL_MEDIA_INSTAGRAM]: LinkedInIcon,
     [SOCIAL_OPENSEA]: OpenSeaIcon,
   };
 
