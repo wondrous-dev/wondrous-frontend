@@ -44,7 +44,7 @@ export const MembershipRequestTable = (props) => {
   requests = requests.sort((a, b) => b.createdAt - a.createdAt);
 
   return (
-    <StyledTableContainer>
+    <StyledTableContainer style={{ background: 'none' }}>
       {approvedUser ? (
         <ApprovedUserSnackBar>
           <div style={{ display: 'flex' }}>
@@ -59,7 +59,7 @@ export const MembershipRequestTable = (props) => {
         </ApprovedUserSnackBar>
       ) : null}
 
-      <StyledTable>
+      <StyledTable style={{ borderCollapse: 'collapse' }}>
         <StyledTableHead>
           <StyledTableRow>
             <StyledTableHeaderCell width="56px">DAO</StyledTableHeaderCell>

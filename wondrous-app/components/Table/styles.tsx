@@ -31,7 +31,8 @@ export const StyledTableContainer = styled(TableContainer)`
   && {
     width: 100%;
     overflow-x: visible;
-    border-radius: 3px;
+    background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+    border-radius: 4px;
   }
 `;
 

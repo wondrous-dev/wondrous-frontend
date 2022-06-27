@@ -32,6 +32,7 @@ const MembershipRoleDropdown = (props) => {
       innerStyle={{
         marginTop: 0,
         padding: 0,
+        background: '#1b1b1b',
       }}
       labelStyle={{
         marginTop: '-15px',
