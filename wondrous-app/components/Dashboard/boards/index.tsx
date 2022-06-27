@@ -577,17 +577,10 @@ const BoardsPage = (props) => {
     }
   }, [
     hasMoreTasks,
-    // contributorColumns,
     getUserTaskBoardTasksFetchMore,
     selectMembershipHook,
-    fetchMoreJoinPodRequests,
-    fetchMoreJoinOrgRequests,
     getJoinPodRequestsData,
     getJoinOrgRequestsData,
-    // getJoinOrgRequestsData,
-    // getJoinOrgRequests,
-    // getJoinPodRequestsData,
-    // getJoinPodRequests,
   ]);
 
   function handleSearch(searchString: string) {
