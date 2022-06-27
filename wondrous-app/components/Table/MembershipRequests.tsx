@@ -18,16 +18,18 @@ import { Text } from 'components/styled';
 import { MembershipRequest } from 'components/Table/MembershipRequest';
 
 export const MembershipRequestTable = (props) => {
-  const { onLoadMore, hasMore, isAdmin } = props;
+  const { isAdmin } = props;
   const [approvedUser, setApprovedUser] = useState(null);
   const [ref, inView] = useInView({});
   const userBoard = useUserBoard();
 
   useEffect(() => {
-    if (inView && hasMore) {
-      onLoadMore();
+    const requestsCount = userBoard?.joinPodRequests?.length + userBoard?.joinOrgRequests?.length;
+
+    if (inView && userBoard.hasMore && requestsCount) {
+      userBoard.onLoadMore();
     }
-  }, [inView, hasMore, onLoadMore]);
+  }, [inView, userBoard.hasMore, userBoard.onLoadMore]);
 
   let requests = [];
 
@@ -83,7 +85,7 @@ export const MembershipRequestTable = (props) => {
         </StyledTableBody>
       </StyledTable>
 
-      <LoadMore ref={ref} hasMore={hasMore} />
+      <LoadMore ref={ref} hasMore={userBoard.hasMore} />
     </StyledTableContainer>
   );
 };

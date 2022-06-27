@@ -498,8 +498,18 @@ const BoardsPage = (props) => {
       return;
     }
     if (selectMembershipHook?.selectMembershipRequests) {
-      getJoinOrgRequests();
-      getJoinPodRequests();
+      getJoinOrgRequests({
+        variables: {
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
+      getJoinPodRequests({
+        variables: {
+          offset: 0,
+          limit: LIMIT,
+        },
+      });
     } else {
       if (search) {
         const searchTaskProposalsArgs = {
@@ -539,34 +549,46 @@ const BoardsPage = (props) => {
             offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
             limit: LIMIT,
           },
-          updateQuery: (prev, { fetchMoreResult }) => ({
-            getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
-          }),
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getJoinOrgRequests;
-          if (results && results?.length === 0) {
-            setHasMoreTasks(false);
-          }
+          updateQuery: (prev, { fetchMoreResult }) => {
+            setHasMoreTasks(fetchMoreResult?.getJoinOrgRequests?.length >= LIMIT);
+
+            return {
+              getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
+            };
+          },
         });
+
         fetchMoreJoinPodRequests({
           variables: {
             offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
             limit: LIMIT,
           },
-          updateQuery: (prev, { fetchMoreResult }) => ({
-            getJoinPodRequestsData: [...prev.getJoinPodRequests, ...fetchMoreResult.getJoinPodRequests],
-          }),
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getJoinPodRequests;
-          if (results && results?.length === 0) {
-            setHasMoreTasks(false);
-          }
+          updateQuery: (prev, { fetchMoreResult }) => {
+            setHasMoreTasks(fetchMoreResult?.getJoinPodRequests?.length >= LIMIT);
+
+            return {
+              getJoinPodRequests: [...prev.getJoinPodRequests, ...fetchMoreResult.getJoinPodRequests],
+            };
+          },
         });
       } else {
         !isAdmin && getUserTaskBoardTasksFetchMore();
       }
     }
-  }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore]);
+  }, [
+    hasMoreTasks,
+    // contributorColumns,
+    getUserTaskBoardTasksFetchMore,
+    selectMembershipHook,
+    fetchMoreJoinPodRequests,
+    fetchMoreJoinOrgRequests,
+    getJoinPodRequestsData,
+    getJoinOrgRequestsData,
+    // getJoinOrgRequestsData,
+    // getJoinOrgRequests,
+    // getJoinPodRequestsData,
+    // getJoinPodRequests,
+  ]);
 
   function handleSearch(searchString: string) {
     const searchTaskProposalsArgs = {

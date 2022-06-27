@@ -275,7 +275,7 @@ export const MembershipRequest = ({ request, isAdmin, onApproved }) => {
           const SocialMediaIcon = SOCIAL_MEDIA_ICONS[type] || LinkBigIcon;
 
           return (
-            <Box key={url} style={{ display: 'inline-block', marginTop: '15px' }}>
+            <Box key={request.orgId + request.podId + url + type} style={{ display: 'inline-block', marginTop: '15px' }}>
               <a href={url} target="_blank" rel="noreferrer">
                 <LinkSquareIcon
                   title={type}
