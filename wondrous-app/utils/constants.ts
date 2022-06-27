@@ -475,3 +475,15 @@ export const APPLICATION_POLICY_LABELS_MAP = {
   only_org_members_can_apply: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_APPLY,
   has_roles: APPLICATION_POLICY.HAS_ROLES,
 };
+
+export const TASK_APPLICATION_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+};
+
+export const TASK_APPLICATION_STATUS_LABELS = {
+  [TASK_APPLICATION_STATUS.PENDING]: 'Pending...',
+  [TASK_APPLICATION_STATUS.APPROVED]: 'Approved',
+  [TASK_APPLICATION_STATUS.REJECTED]: 'Rejected',
+};

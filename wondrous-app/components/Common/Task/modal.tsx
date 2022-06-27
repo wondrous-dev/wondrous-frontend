@@ -160,7 +160,7 @@ import { CreateEntity } from 'components/CreateEntity';
 import { useSnapshot } from 'services/snapshot';
 import { GithubButton } from 'components/Settings/Github/styles';
 import { getProposalStatus, updateInReviewItem } from 'utils/board';
-import { TaskApplicationButton } from 'components/Common/TaskApplication';
+import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -191,7 +191,6 @@ const TASK_LIST_VIEW_LIMIT = 5;
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
-
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -642,6 +641,7 @@ const tabs = {
   subTasks: 'Subtasks',
   discussion: 'Discussion',
   tasks: 'Tasks',
+  applications: 'Applications',
 };
 
 const tabsPerType = {
@@ -652,11 +652,12 @@ const tabsPerType = {
   taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
-const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
+const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty, isTask, canViewApplications) => {
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
   if (isSubtask) return tabsPerType.subtaskTabs;
   if (isBounty) return tabsPerType.bountyTabs;
+  if (canViewApplications && isTask) return [tabs.applications, ...tabsPerType.taskTabs];
   return tabsPerType.taskTabs;
 };
 
@@ -751,6 +752,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
+  const isTask = fetchedTask?.type === TASK_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
@@ -765,6 +767,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     return orgBoard || podBoard || userBoard;
   }, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
+  const {
+    loading: taskApplicationCountLoading,
+    error: taskApplicationCountError,
+    data: taskApplicationCount,
+  } = useTaskApplicationCount(fetchedTask?.id);
 
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
@@ -1148,6 +1155,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
     fetchedTask?.createdBy === user?.id ||
     (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
+
+  const canViewApplications =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.EDIT_TASK) ||
+    fetchedTask?.createdBy === user?.id;
+
   const canMoveProgress =
     (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -1994,16 +2007,24 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </TaskSectionInfoText>
               )}
               <TaskSectionFooterTitleDiv>
-                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
-                  const active = tab === activeTab;
-                  return (
-                    <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-                      <TaskTabText isActive={active}>{tab}</TaskTabText>
-                    </TaskSubmissionTab>
-                  );
-                })}
+                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty, isTask, canViewApplications).map(
+                  (tab, index) => {
+                    const active = tab === activeTab;
+                    return (
+                      <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
+                        <TaskTabText isActive={active}>{tab}</TaskTabText>
+                      </TaskSubmissionTab>
+                    );
+                  }
+                )}
               </TaskSectionFooterTitleDiv>
               <TaskSectionContent>
+                {activeTab === tabs.applications && fetchedTask?.id && (
+                  <TaskApplicationList
+                    count={taskApplicationCount?.getTaskApplicationsCount?.total}
+                    task={fetchedTask}
+                  />
+                )}
                 {activeTab === tabs.submissions && (
                   <TaskSubmissionContent
                     taskId={fetchedTask?.id}

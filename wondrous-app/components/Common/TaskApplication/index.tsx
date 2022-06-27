@@ -1,3 +1,4 @@
 import TaskApplicationButton from './TaskApplicationButton';
-
-export { TaskApplicationButton };
+import TaskApplicationList from './ApplicationList';
+import useTaskApplicationCount from './ApplicationList/useTaskApplicationCount';
+export { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount };

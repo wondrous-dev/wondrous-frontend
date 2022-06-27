@@ -17,8 +17,7 @@ export const TaskApplicationFormBorder = styled(Box)`
 `;
 
 export const TaskApplicationFormBackground = styled(Box)`
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
-  padding: 24px;
+  background: #1d1d1d;
   display: flex;
   flex-direction: column;
   gap: 18px;
@@ -48,7 +47,7 @@ export const TaskApplicationFormHeader = styled.div`
   display: flex;
   justify-content: space-between;
   border-bottom: 0.5px dashed #4b4b4b;
-  padding-bottom: 18px;
+  padding: 24px;
 `;
 
 export const TaskApplicationFormHeaderText = styled(Typography)`
@@ -116,4 +115,11 @@ export const LinkUrlInput = styled(Input)`
   letter-spacing: 0.01em;
   color: #828282;
   padding: 14px;
+`;
+
+export const TaskApplicationFormModalBody = styled.div`
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 `;

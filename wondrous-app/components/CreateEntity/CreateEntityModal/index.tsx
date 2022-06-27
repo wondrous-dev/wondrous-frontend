@@ -1572,7 +1572,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       )
                     }
                     renderValue={() => {
-                      console.log(form.values);
                       return (
                         <CreateEntityApplicationsSelectRender>
                           <>

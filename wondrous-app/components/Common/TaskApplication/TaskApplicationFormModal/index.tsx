@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
 import {
@@ -15,9 +15,12 @@ import {
   LinkContainer,
   LinkTitleInput,
   LinkUrlInput,
+  TaskApplicationFormModalBody,
 } from './styles';
 import isUrl from 'is-url';
-
+import { RejectButton } from '../ApplicationList/styles';
+import { ActionButton } from 'components/Common/Task/styles';
+import { ConfirmationModalFooter } from '../styles';
 const TEXT_AREA_LIMIT = 380;
 
 const LINK_KEYS = {
@@ -152,12 +155,19 @@ export default function TaskApplicationModal(props) {
 
   const initialValues = { message: null, links: null };
 
+  const formValidationSchema = yup.object().shape({
+    message: yup.string().required('Sending a message is required'),
+    links: yup
+      .array()
+      .of(yup.object({ displayName: yup.string().required(), url: yup.string().url().required() }))
+      .optional(),
+  });
   const form = useFormik({
     initialValues,
     onSubmit: (values) => {
-      console.log(values);
       handleSubmit(values);
     },
+    validationSchema: formValidationSchema,
   });
 
   const onChange = (key, value) => {
@@ -173,31 +183,37 @@ export default function TaskApplicationModal(props) {
               <TaskApplicationFormHeaderText>Apply to this task</TaskApplicationFormHeaderText>
               <TaskApplicationFormHeaderCloseButton onClick={onClose} />
             </TaskApplicationFormHeader>
+            <TaskApplicationFormModalBody>
+              {config.map((field, idx) => {
+                const Component = COMPONENTS_MAP[field.type];
+                const value = form.values[field.key];
+                return (
+                  <div>
+                    <Component
+                      {...field}
+                      value={value}
+                      key={idx}
+                      onChange={(value) => {
+                        onChange(field.key, value);
+                      }}
+                    />
+                  </div>
+                );
+              })}
+            </TaskApplicationFormModalBody>
 
-            {config.map((field, idx) => {
-              const Component = COMPONENTS_MAP[field.type];
-              const value = form.values[field.key];
-              return (
-                <div>
-                  <Component
-                    {...field}
-                    value={value}
-                    key={idx}
-                    onChange={(value) => {
-                      onChange(field.key, value);
-                    }}
-                  />
-                </div>
-              );
-            })}
-            <button
-              type="submit"
-              onClick={() => {
-                console.log('here');
-              }}
-            >
-              submit
-            </button>
+            <ConfirmationModalFooter>
+              <RejectButton
+                type="button"
+                onClick={(e) => {
+                  e.preventDefault();
+                  onClose();
+                }}
+              >
+                Cancel
+              </RejectButton>
+              <ActionButton type="submit">Apply</ActionButton>
+            </ConfirmationModalFooter>
           </TaskApplicationFormBackground>
         </TaskApplicationFormBorder>
       </TaskApplicationForm>

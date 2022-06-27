@@ -62,7 +62,7 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
       {isConfirmationModalOpen && (
         <TaskApplicationModal open={isConfirmationModalOpen} onClose={handleClose} handleSubmit={handleSubmit} />
       )}
-      <ActionButton onClick={handleButtonClick}>
+      <ActionButton onClick={handleButtonClick} disabled={task?.hasUserApplied}>
         <Claim />
         <span>{btnTitle}</span>
       </ActionButton>
