@@ -18,7 +18,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';

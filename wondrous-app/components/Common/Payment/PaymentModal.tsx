@@ -26,7 +26,7 @@ import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SafeImage } from '../Image';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { BOUNTY_TYPE, PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';

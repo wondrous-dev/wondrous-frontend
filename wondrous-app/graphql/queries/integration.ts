@@ -35,6 +35,10 @@ export const GET_ORG_ROLES_CLAIMABLE_BY_DISCORD = gql`
       id
       name
       permissions
+      discordRolesInfo {
+        id
+        name
+      }
     }
   }
 `;

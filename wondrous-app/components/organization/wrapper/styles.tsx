@@ -591,8 +591,8 @@ export const TokenGatedRoleWrapper = styled(Box)`
   && {
     background: #0f0f0f;
     border-radius: 6px;
-    padding: 24px;
-    margin-top: 24px;
+    padding: 16px;
+    margin-top: 10px;
     display: flex;
     justify-content: space-between;
   }
