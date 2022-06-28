@@ -88,32 +88,36 @@ export const LinkContainer = styled.div`
 `;
 
 export const LinkTitleInput = styled(Input)`
-  height: 40px;
-  background: #0f0f0f;
-  border-radius: 4px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 19px;
-  letter-spacing: 0.01em;
-  color: #828282;
-  padding: 14px;
+  && {
+    height: 40px;
+    background: #0f0f0f;
+    border-radius: 4px;
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: rgb(196, 196, 196);
+    padding: 14px;
+  }
 `;
 
 export const LinkUrlInput = styled(Input)`
-  height: 40px;
-  background: #0f0f0f;
-  border-radius: 4px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 19px;
-  letter-spacing: 0.01em;
-  color: #828282;
-  padding: 14px;
-  width: 100%;
+  && {
+    height: 40px;
+    background: #0f0f0f;
+    border-radius: 4px;
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 19px;
+    letter-spacing: 0.01em;
+    color: rgb(196, 196, 196);
+    padding: 14px;
+    width: 100%;
+  }
 `;
 
 export const TaskApplicationFormModalBody = styled.div`

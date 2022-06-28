@@ -47,13 +47,11 @@ const config = [
     type: 'links',
     value: null,
     key: 'links',
-    defaultValue: [EMPTY_LINK_FIELD],
   },
 ];
 
 const LinksComponent = (props) => {
-  const { value, defaultValue, onChange } = props;
-  const fields = value || props.defaultValue;
+  const { value: fields, onChange } = props;
   const [errors, setErrors] = useState([]);
 
   const addField = (idx) => {
@@ -112,7 +110,6 @@ const LinksComponent = (props) => {
                 placeholder={'Title of link'}
                 value={field[LINK_KEYS.DISPLAY_NAME]}
                 onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)}
-                required
               />
               <span />
             </div>
@@ -123,7 +120,6 @@ const LinksComponent = (props) => {
                 onBlur={(e) => validateUrl(e, idx)}
                 onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.URL)}
                 error={!!errors[idx]}
-                required
                 type="url"
               />
             </div>
@@ -157,13 +153,13 @@ const COMPONENTS_MAP = {
 export default function TaskApplicationModal(props) {
   const { open, onClose, handleSubmit, taskId } = props;
 
-  const initialValues = { message: null, links: null };
+  const initialValues = { message: null, links: [EMPTY_LINK_FIELD] };
 
   const formValidationSchema = yup.object().shape({
     message: yup.string().required('Sending a message is required'),
     links: yup
       .array()
-      .of(yup.object({ displayName: yup.string().required(), url: yup.string().url().required() }))
+      .of(yup.object({ displayName: yup.string(), url: yup.string() }))
       .optional(),
   });
   const form = useFormik({
@@ -180,7 +176,7 @@ export default function TaskApplicationModal(props) {
 
   return (
     <TaskApplicationFormModal open={open}>
-      <TaskApplicationForm onSubmit={form.handleSubmit}>
+      <TaskApplicationForm>
         <TaskApplicationFormBorder>
           <TaskApplicationFormBackground>
             <TaskApplicationFormHeader>
@@ -216,7 +212,9 @@ export default function TaskApplicationModal(props) {
               >
                 Cancel
               </RejectButton>
-              <ActionButton type="submit">Apply</ActionButton>
+              <ActionButton type="button" onClick={form.handleSubmit}>
+                Apply
+              </ActionButton>
             </ConfirmationModalFooter>
           </TaskApplicationFormBackground>
         </TaskApplicationFormBorder>

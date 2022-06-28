@@ -59,7 +59,7 @@ const getEmptyStateContent = (task, canApply, count) => {
     return <EmptyStateText>Please await admin response.</EmptyStateText>;
   }
   if (canApply) {
-    <TaskApplicationButton task={task} canApply={canApply} title="Apply to task" />;
+    return <TaskApplicationButton task={task} canApply={canApply} title="Apply to task" />;
   }
   return <EmptyStateText>You cannot apply to this task</EmptyStateText>;
 };

@@ -33,7 +33,13 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage('Something went wrong');
     },
-    refetchQueries: ['getOrgTaskBoardTasks', 'getPodTaskBoardTasks', 'getTaskApplications'],
+    refetchQueries: [
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getTaskApplications',
+      'getTaskApplicationsCount',
+      'getTaskById',
+    ],
   });
 
   const handleButtonClick = (e) => {
