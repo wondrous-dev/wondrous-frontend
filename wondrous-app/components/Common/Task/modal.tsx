@@ -649,15 +649,14 @@ const tabsPerType = {
   milestoneTabs: [tabs.tasks, tabs.discussion],
   subtaskTabs: [tabs.submissions, tabs.discussion],
   bountyTabs: [tabs.submissions, tabs.discussion],
-  taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
+  taskTabs: [tabs.applications, tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
-const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty, isTask, canViewApplications) => {
+const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
   if (isSubtask) return tabsPerType.subtaskTabs;
   if (isBounty) return tabsPerType.bountyTabs;
-  if (canViewApplications && isTask) return [tabs.applications, ...tabsPerType.taskTabs];
   return tabsPerType.taskTabs;
 };
 
@@ -1695,7 +1694,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       ) : (
                         <>
                           {canApply ? (
-                            <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to this task" />
+                            <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />
                           ) : (
                             <TaskSectionInfoText
                               style={{
@@ -2007,22 +2006,22 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </TaskSectionInfoText>
               )}
               <TaskSectionFooterTitleDiv>
-                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty, isTask, canViewApplications).map(
-                  (tab, index) => {
-                    const active = tab === activeTab;
-                    return (
-                      <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-                        <TaskTabText isActive={active}>{tab}</TaskTabText>
-                      </TaskSubmissionTab>
-                    );
-                  }
-                )}
+                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
+                  const active = tab === activeTab;
+                  return (
+                    <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
+                      <TaskTabText isActive={active}>{tab}</TaskTabText>
+                    </TaskSubmissionTab>
+                  );
+                })}
               </TaskSectionFooterTitleDiv>
               <TaskSectionContent>
                 {activeTab === tabs.applications && fetchedTask?.id && (
                   <TaskApplicationList
                     count={taskApplicationCount?.getTaskApplicationsCount?.total}
                     task={fetchedTask}
+                    canApply={canApply}
+                    canViewApplications={canViewApplications}
                   />
                 )}
                 {activeTab === tabs.submissions && (

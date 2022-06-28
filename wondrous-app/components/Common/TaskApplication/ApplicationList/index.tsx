@@ -5,17 +5,19 @@ import { GET_TASK_APPLICATIONS } from 'graphql/queries/taskApplication';
 import { APPROVE_TASK_APPLICATION, DECLINE_TASK_APPLICATION } from 'graphql/mutations/taskApplication';
 import { TASK_APPLICATION_STATUS } from 'utils/constants';
 import ApplicationCard from './ApplicationCard';
-import { LoadMore, FiltersWrapper, SectionWrapper, ItemsWrapper } from './styles';
+import { LoadMore, FiltersWrapper, SectionWrapper, ItemsWrapper, EmptyStateWrapper, EmptyStateText } from './styles';
 import { CircularProgress } from '@mui/material';
 import ConfirmationModal from '../ConfirmationModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import BoardFilters from 'components/Common/BoardFilters';
 import { Approved, Rejected, PendingApplication } from 'components/Icons';
 import { StatusDefaultIcon } from 'components/Icons/statusIcons';
-
+import TaskApplicationButton from '../TaskApplicationButton';
 interface Props {
   task: any;
   count: number;
+  canViewApplications: boolean;
+  canApply: boolean;
 }
 
 const MODAL_TYPES = {
@@ -23,7 +25,7 @@ const MODAL_TYPES = {
   APPROVE: 'approve',
 };
 
-const LIMIT = 3;
+const LIMIT = 5;
 
 const FILTER_SCHEMA = {
   name: 'status',
@@ -51,7 +53,19 @@ const FILTER_SCHEMA = {
   ],
 };
 
-export default function ApplicationList({ task, count }: Props) {
+const ApplicationsEmptyState = ({ task, canApply }) => {
+  return (
+    <EmptyStateWrapper>
+      {task?.hasUserApplied ? (
+        <EmptyStateText>Please await admin response.</EmptyStateText>
+      ) : (
+        <TaskApplicationButton task={task} canApply={canApply} title="Apply to task" />
+      )}
+    </EmptyStateWrapper>
+  );
+};
+
+export default function ApplicationList({ task, count, canViewApplications = true, canApply }: Props) {
   const [activeApplication, setActiveApplication] = useState(null);
   const [status, setStatus] = useState(null);
   const [ref, inView] = useInView({});
@@ -118,7 +132,7 @@ export default function ApplicationList({ task, count }: Props) {
   }, [inView, hasMore, getProposalsFetchMore]);
 
   useEffect(() => {
-    if (count) {
+    if (count && canViewApplications) {
       getTaskApplications({
         variables: {
           input: {
@@ -130,7 +144,7 @@ export default function ApplicationList({ task, count }: Props) {
         },
       });
     }
-  }, [count, status]);
+  }, [count, status, canViewApplications]);
 
   if (count === 0) {
     return <span>No applications yet!</span>;
@@ -174,40 +188,46 @@ export default function ApplicationList({ task, count }: Props) {
 
   return (
     <SectionWrapper>
-      <FiltersWrapper>
-        <BoardFilters onChange={handleFilterChange} filterSchema={[FILTER_SCHEMA]} />
-      </FiltersWrapper>
-      {!!activeApplication && (
-        <ConfirmationModal
-          onClose={handleApplicationModalClose}
-          bodyText={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].BODY_TEXT}
-          headerText={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].HEADER_TEXT}
-          confirmationButtonText={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].CONFIRM_BUTTON_LABEL}
-          onConfirm={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].action}
-        />
-      )}
-      <ItemsWrapper>
-        {data?.getTaskApplications?.map((application, idx) => {
-          const { creator, createdAt, links, message, status } = application;
-          const showActions = application?.status === TASK_APPLICATION_STATUS.PENDING;
-          return (
-            <ApplicationCard
-              key={idx}
-              avatar={creator.profilePicture}
-              username={creator.username}
-              timestamp={createdAt}
-              status={status}
-              links={links}
-              onApprove={() => handleApplicationModal(application, MODAL_TYPES.APPROVE)}
-              showActions={showActions}
-              onReject={() => handleApplicationModal(application, MODAL_TYPES.REJECT)}
-              message={message}
+      {canViewApplications ? (
+        <>
+          <FiltersWrapper>
+            <BoardFilters onChange={handleFilterChange} filterSchema={[FILTER_SCHEMA]} />
+          </FiltersWrapper>
+          {!!activeApplication && (
+            <ConfirmationModal
+              onClose={handleApplicationModalClose}
+              bodyText={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].BODY_TEXT}
+              headerText={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].HEADER_TEXT}
+              confirmationButtonText={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].CONFIRM_BUTTON_LABEL}
+              onConfirm={CONFIRMATION_MODAL_CONTENT[activeApplication?.modalType].action}
             />
-          );
-        })}
-        {loading && <CircularProgress />}
-        {!!data?.getTaskApplications && hasMore && <LoadMore ref={ref} hasMore={hasMore} />}
-      </ItemsWrapper>
+          )}
+          <ItemsWrapper>
+            {data?.getTaskApplications?.map((application, idx) => {
+              const { creator, createdAt, links, message, status } = application;
+              const showActions = application?.status === TASK_APPLICATION_STATUS.PENDING;
+              return (
+                <ApplicationCard
+                  key={idx}
+                  avatar={creator.profilePicture}
+                  username={creator.username}
+                  timestamp={createdAt}
+                  status={status}
+                  links={links}
+                  onApprove={() => handleApplicationModal(application, MODAL_TYPES.APPROVE)}
+                  showActions={showActions}
+                  onReject={() => handleApplicationModal(application, MODAL_TYPES.REJECT)}
+                  message={message}
+                />
+              );
+            })}
+            {loading && <CircularProgress />}
+            {!!data?.getTaskApplications && hasMore && <LoadMore ref={ref} hasMore={hasMore} />}
+          </ItemsWrapper>
+        </>
+      ) : (
+        <ApplicationsEmptyState task={task} canApply={canApply} />
+      )}
     </SectionWrapper>
   );
 }

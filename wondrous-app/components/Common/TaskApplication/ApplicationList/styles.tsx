@@ -165,8 +165,46 @@ export const SectionWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
+  background: #0f0f0f;
+  padding: 12px 24px 12px 24px;
+  border-radius: 8px;
 `;
 
 export const ItemsWrapper = styled.div`
   width: 100%;
+`;
+
+export const EmptyStateWrapper = styled.div`
+  padding: 14px;
+  height: 68px;
+  border-radius: 6px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 66px;
+    background: linear-gradient(94.19deg, #7427ff 10.13%, #232323 131.81%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+  }
+`;
+
+export const EmptyStateText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 24px;
+    letter-spacing: 0.01em;
+
+    color: #c4c4c4;
+  }
 `;

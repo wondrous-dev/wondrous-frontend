@@ -16,11 +16,15 @@ import {
   LinkTitleInput,
   LinkUrlInput,
   TaskApplicationFormModalBody,
+  IconWrapper,
 } from './styles';
 import isUrl from 'is-url';
 import { RejectButton } from '../ApplicationList/styles';
 import { ActionButton } from 'components/Common/Task/styles';
 import { ConfirmationModalFooter } from '../styles';
+import PlusIcon from 'components/Icons/plus';
+import RedXIcon from 'components/Icons/redx';
+
 const TEXT_AREA_LIMIT = 380;
 
 const LINK_KEYS = {
@@ -77,7 +81,7 @@ const LinksComponent = (props) => {
 
   const handleField = (e, idx) => {
     e.preventDefault();
-    const action = fields[idx] && fields[idx] !== fields[fields.length - 1] ? removeField : addField;
+    const action = idx !== fields?.length - 1 ? removeField : addField;
     action(idx);
   };
 
@@ -103,7 +107,7 @@ const LinksComponent = (props) => {
       {fields.map((field, idx) => {
         return (
           <LinkContainer key={idx}>
-            <div>
+            <div style={{ width: '20%' }}>
               <LinkTitleInput
                 placeholder={'Title of link'}
                 value={field[LINK_KEYS.DISPLAY_NAME]}
@@ -112,7 +116,7 @@ const LinksComponent = (props) => {
               />
               <span />
             </div>
-            <div>
+            <div style={{ flex: 1 }}>
               <LinkUrlInput
                 placeholder={'URL link'}
                 value={field[LINK_KEYS.URL]}
@@ -123,9 +127,9 @@ const LinksComponent = (props) => {
                 type="url"
               />
             </div>
-            <button type="button" onClick={(e) => handleField(e, idx)}>
-              {fields[idx] && fields[idx] !== fields[fields.length - 1] ? 'remove' : 'add'}
-            </button>
+            <IconWrapper type="button" onClick={(e) => handleField(e, idx)}>
+              {idx !== fields.length - 1 ? <RedXIcon strokeWidth={1} stroke={'#7A7A7A'} /> : <PlusIcon />}
+            </IconWrapper>
           </LinkContainer>
         );
       })}

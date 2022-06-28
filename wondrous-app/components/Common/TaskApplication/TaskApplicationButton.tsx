@@ -15,7 +15,6 @@ interface Props {
 
 export default function TaskApplicationButton({ task, title = 'Apply', setIsApplicationModalOpen }: Props) {
   const [isConfirmationModalOpen, setIsConfirmationModalOpen] = useState(false);
-
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
 
   const handleClose = () => {
@@ -34,7 +33,7 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage('Something went wrong');
     },
-    refetchQueries: ['getOrgTaskBoardTasks', 'getPodTaskBoardTasks'],
+    refetchQueries: ['getOrgTaskBoardTasks', 'getPodTaskBoardTasks', 'getTaskApplications'],
   });
 
   const handleButtonClick = (e) => {

@@ -181,11 +181,9 @@ export const TaskCard = ({
   };
   const isUser = boardType === Constants.BOARD_TYPE.assignee;
   const isPod = boardType === Constants.BOARD_TYPE.pod;
-  const isOrg = boardType === Constants.BOARD_TYPE.org;
 
   const canClaim =
     task?.canClaim && !assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE;
-
   const canApply = !canClaim && task?.canApply;
 
   const onNavigate = (e) => {

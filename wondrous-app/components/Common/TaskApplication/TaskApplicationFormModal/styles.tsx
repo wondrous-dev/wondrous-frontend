@@ -1,8 +1,6 @@
 import { Box, Button, Dialog, TextareaAutosize, Typography, Input } from '@mui/material';
 import styled from 'styled-components';
-import { Button as SubmitButton } from 'components/Common/button';
 import { ModalCloseButton } from 'components/Common/ModalCloseButton';
-
 export const TaskApplicationFormModal = styled(Dialog)`
   .MuiPaper-root {
     background: transparent;
@@ -115,6 +113,7 @@ export const LinkUrlInput = styled(Input)`
   letter-spacing: 0.01em;
   color: #828282;
   padding: 14px;
+  width: 100%;
 `;
 
 export const TaskApplicationFormModalBody = styled.div`
@@ -122,4 +121,20 @@ export const TaskApplicationFormModalBody = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
+`;
+
+export const IconWrapper = styled.button`
+  background: #282828;
+  border-radius: 4px;
+  border: 0px;
+  cursor: pointer;
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  &:disabled {
+    pointer-events: none;
+    opacity: 0.7;
+  }
 `;
