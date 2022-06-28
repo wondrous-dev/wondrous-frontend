@@ -18,6 +18,7 @@ interface Props {
   count: number;
   canViewApplications: boolean;
   canApply: boolean;
+  canClaim: boolean;
 }
 
 const MODAL_TYPES = {
@@ -53,19 +54,22 @@ const FILTER_SCHEMA = {
   ],
 };
 
-const ApplicationsEmptyState = ({ task, canApply }) => {
-  return (
-    <EmptyStateWrapper>
-      {task?.hasUserApplied ? (
-        <EmptyStateText>Please await admin response.</EmptyStateText>
-      ) : (
-        <TaskApplicationButton task={task} canApply={canApply} title="Apply to task" />
-      )}
-    </EmptyStateWrapper>
-  );
+const getEmptyStateContent = (task, canApply, count) => {
+  if (task?.hasUserApplied && count > 0) {
+    return <EmptyStateText>Please await admin response.</EmptyStateText>;
+  }
+  if (canApply) {
+    <TaskApplicationButton task={task} canApply={canApply} title="Apply to task" />;
+  }
+  return <EmptyStateText>You cannot apply to this task</EmptyStateText>;
 };
 
-export default function ApplicationList({ task, count, canViewApplications = true, canApply }: Props) {
+const ApplicationsEmptyState = ({ task, canApply, count, canClaim }) => {
+  if (canClaim) return null;
+  return <EmptyStateWrapper>{getEmptyStateContent(task, canApply, count)}</EmptyStateWrapper>;
+};
+
+export default function ApplicationList({ task, count, canViewApplications = true, canApply, canClaim }: Props) {
   const [activeApplication, setActiveApplication] = useState(null);
   const [status, setStatus] = useState(null);
   const [ref, inView] = useInView({});
@@ -146,10 +150,6 @@ export default function ApplicationList({ task, count, canViewApplications = tru
     }
   }, [count, status, canViewApplications]);
 
-  if (count === 0) {
-    return <span>No applications yet!</span>;
-  }
-
   const handleApplicationModal = (application, modalType) => setActiveApplication({ application, modalType });
 
   const handleApplicationModalClose = () => setActiveApplication(null);
@@ -188,7 +188,7 @@ export default function ApplicationList({ task, count, canViewApplications = tru
 
   return (
     <SectionWrapper>
-      {canViewApplications ? (
+      {canViewApplications && count > 0 ? (
         <>
           <FiltersWrapper>
             <BoardFilters onChange={handleFilterChange} filterSchema={[FILTER_SCHEMA]} />
@@ -226,7 +226,7 @@ export default function ApplicationList({ task, count, canViewApplications = tru
           </ItemsWrapper>
         </>
       ) : (
-        <ApplicationsEmptyState task={task} canApply={canApply} />
+        <ApplicationsEmptyState canClaim={canClaim} count={count} task={task} canApply={canApply} />
       )}
     </SectionWrapper>
   );

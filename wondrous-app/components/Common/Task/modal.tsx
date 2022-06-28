@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
+import React, { useContext, useCallback, useEffect, useState, useRef } from 'react';
 import Modal from '@mui/material/Modal';
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
@@ -6,7 +6,6 @@ import { isEmpty } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import GitHubIcon from '@mui/icons-material/GitHub';
-
 import Box from '@mui/material/Box';
 import PointsIcon from 'components/Icons/pointsIconFilled';
 import {
@@ -122,7 +121,7 @@ import {
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries/taskBoard';
-
+import { ActionButton } from './styles';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import {
   addTaskItem,
@@ -825,6 +824,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
     fetchPolicy: 'cache-and-network',
   });
+  const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
 
@@ -1158,7 +1158,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const canViewApplications =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    fetchedTask?.createdBy === user?.id;
+    (fetchedTask?.createdBy === user?.id && fetchedTask?.type === TASK_TYPE);
 
   const canMoveProgress =
     (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
@@ -1277,6 +1277,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       fetchedTask?.privacyLevel === PRIVACY_LEVEL.public);
 
   const canApply = !canClaim && fetchedTask?.canApply;
+
+  const handleReviewButton = () => {
+    if (activeTab !== tabs.applications) {
+      setActiveTab(tabs.applications);
+    }
+    sectionRef?.current?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <ApprovedSubmissionContext.Provider
@@ -1712,6 +1719,27 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </TaskSectionInfoDiv>
               </TaskSectionDisplayDiv>
             )}
+
+            {canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0 && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <AssigneeIcon />
+                  <TaskSectionDisplayText>Applications</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <Box display="flex" alignItems="center">
+                  <TaskSectionInfoText
+                    style={{
+                      marginTop: '8px',
+                      marginLeft: '16px',
+                    }}
+                  >
+                    <ActionButton type="button" onClick={handleReviewButton}>
+                      Review {taskApplicationCount?.getTaskApplicationsCount?.total} applications
+                    </ActionButton>
+                  </TaskSectionInfoText>
+                </Box>
+              </TaskSectionDisplayDiv>
+            )}
             {Array.isArray(fetchedTask?.media) && fetchedTask?.media.length > 0 && (
               <TaskSectionDisplayDiv>
                 <TaskSectionDisplayLabel>
@@ -2015,12 +2043,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   );
                 })}
               </TaskSectionFooterTitleDiv>
-              <TaskSectionContent>
+              <TaskSectionContent ref={sectionRef}>
                 {activeTab === tabs.applications && fetchedTask?.id && (
                   <TaskApplicationList
                     count={taskApplicationCount?.getTaskApplicationsCount?.total}
                     task={fetchedTask}
                     canApply={canApply}
+                    canClaim={canClaim}
                     canViewApplications={canViewApplications}
                   />
                 )}
