@@ -1,10 +1,6 @@
 import React, { useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
 
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import Chip from '@mui/material/Chip';
-
 import { parseLinks } from 'utils/common';
 import { formatLinkDisplay } from 'utils/links';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
@@ -109,7 +105,7 @@ const ProfileInfo = ({ userProfile }) => {
                     setOpenInterestModal(true);
                   }}
                 >
-                <ProfileInfoInterestsChip sx={styles.editInterest} key={'add-interest'} label={'+ Edit interest'} />
+                  <ProfileInfoInterestsChip sx={styles.editInterest} key={'add-interest'} label={'+ Edit interest'} />
                 </div>
               )}
             </ProfileInfoInterestsChipWrapper>

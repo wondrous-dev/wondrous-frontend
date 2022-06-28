@@ -8,6 +8,7 @@ import MuiDrawer from './MuiDrawer';
 import MuiInputBase from './MuiInputBase';
 import MuiOutlinedInput from './MuiOutlinedInput';
 import MuiInputLabel from './MuiInputLabel';
+import MuiSwitch from './MuiSwitch';
 import MuiTextField from './MuiTextField';
 import MuiTooltip from './MuiTooltip';
 
@@ -22,6 +23,7 @@ const components = {
   MuiInputBase,
   MuiOutlinedInput,
   MuiInputLabel,
+  MuiSwitch,
   MuiTextField,
   MuiTooltip,
 };
