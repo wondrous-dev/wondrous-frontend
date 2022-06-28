@@ -147,6 +147,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
               required: 'visibility is required',
             })}
             errors={errors}
+            defaultValue={document.visibility}
           />
         </Box>
       </form>

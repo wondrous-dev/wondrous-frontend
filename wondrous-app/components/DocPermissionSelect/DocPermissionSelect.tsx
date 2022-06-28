@@ -4,22 +4,12 @@ import TextField from '@mui/material/TextField';
 import MenuItem from '@mui/material/MenuItem';
 
 import styles, { inputStyles, menuItemStyles } from './DocPermissionSelectStyles';
-
-const SAMPLE_PERMISSIONS = [
-  {
-    label: 'Public',
-    value: 'public',
-  },
-  {
-    label: 'Members',
-    value: 'members',
-  },
-];
+import { DOCS_PERMISSIONS } from 'utils/constants';
 
 const StyledTextField = styled(TextField)(inputStyles);
 const StyledMenuItem = styled(MenuItem)(menuItemStyles);
 
-const DocPermissionSelect = ({ register, errors }) => (
+const DocPermissionSelect = ({ register, errors, defaultValue }) => (
   <StyledTextField
     select
     {...register}
@@ -27,8 +17,9 @@ const DocPermissionSelect = ({ register, errors }) => (
     helperText={errors.visibility?.message}
     error={errors.visibility}
     SelectProps={{ MenuProps: { MenuListProps: { sx: { ...styles.menuList } } } }}
+    defaultValue={defaultValue}
   >
-    {SAMPLE_PERMISSIONS.map((option) => (
+    {DOCS_PERMISSIONS.map((option) => (
       <StyledMenuItem key={option.value} value={option.value}>
         {option.label}
       </StyledMenuItem>
