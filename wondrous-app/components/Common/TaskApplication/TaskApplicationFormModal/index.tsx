@@ -192,7 +192,7 @@ export default function TaskApplicationModal(props) {
                 const Component = COMPONENTS_MAP[field.type];
                 const value = form.values[field.key];
                 return (
-                  <div>
+                  <div key={idx}>
                     <Component
                       {...field}
                       value={value}
