@@ -18,7 +18,7 @@ const DocumentGridItem = ({ title, description, media, url, icon, permission, on
     fetchPolicy: 'network-only',
   });
 
-  const imgUrl = data?.getPreviewFile?.url;
+  const imgUrl = media ? data?.getPreviewFile?.url : null;
 
   useEffect(() => {
     if (media) {
@@ -42,14 +42,7 @@ const DocumentGridItem = ({ title, description, media, url, icon, permission, on
           <TextLink href={url} label={null} />
         </Box>
         <Box sx={styles.imageContainer}>
-          {imgUrl && (
-            <Image
-              src={imgUrl}
-              alt={`media for ${title}`}
-              layout="fill"
-              objectFit="cover"
-            />
-          )}
+          {imgUrl && <Image src={imgUrl} alt={`media for ${title}`} layout="fill" objectFit="cover" />}
         </Box>
         <Box mt={1.75} />
         <PermissionTag>{permission}</PermissionTag>
