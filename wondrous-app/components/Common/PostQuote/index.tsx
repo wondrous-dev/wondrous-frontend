@@ -14,6 +14,7 @@ import {
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils/index';
 import { useRouter } from 'next/router';
+import { RichTextViewer } from 'components/RichText';
 
 export const PostQuote = (props) => {
   const { post } = props;
@@ -40,7 +41,9 @@ export const PostQuote = (props) => {
                 <a href={taskViewUrl}>{referencedObject?.title}</a>
               </SmartLink>
             </ReferenceTitle>
-            <ReferenceDescription>{referencedObject?.content}</ReferenceDescription>
+            <ReferenceDescription>
+              <RichTextViewer text={referencedObject?.content} />
+            </ReferenceDescription>
             <ReferenceMediaWrapper>
               {referencedObject?.media &&
                 referencedObject?.media

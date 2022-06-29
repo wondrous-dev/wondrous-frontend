@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import head from 'lodash/head';
 import { useMutation } from '@apollo/client';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -14,6 +15,7 @@ import {
   DELETE_ORG_DOCUMENT_CATEGORY,
   UPDATE_ORG_DOCUMENT_CATEGORY,
 } from 'graphql/mutations/documents';
+import { DOCS_PERMISSIONS } from 'utils/constants';
 
 import DocPermissionSelect from 'components/DocPermissionSelect';
 import DocModal from 'components/DocModal';
@@ -127,6 +129,7 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
             register={register('visibility', {
               required: 'visibility is required',
             })}
+            defaultValue={head(DOCS_PERMISSIONS).value}
             errors={errors}
           />
         </Box>

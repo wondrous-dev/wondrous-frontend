@@ -21,6 +21,7 @@ export const NotificationsBoardWrapper = styled.div`
   justify-content: space-evenly;
 
   font-size: 13px;
+  overscroll-behavior: contain;
 `;
 
 export const NotificationsBoardArrow = styled.div`
