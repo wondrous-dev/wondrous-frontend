@@ -32,6 +32,7 @@ import {
   HeaderTitle,
   OverviewComponent,
   TokenHeader,
+  HeaderImage,
   HeaderTitleIcon,
   HeaderImageWrapper,
   TokenEmptyLogo,
@@ -265,7 +266,7 @@ const Wrapper = (props) => {
         }}
       >
         <HeaderImageWrapper>
-          <HeaderImageDefault />
+          {podProfile?.headerPicture ? <HeaderImage src={podProfile?.headerPicture} /> : <HeaderImageDefault />}
         </HeaderImageWrapper>
         <Content>
           <ContentContainer>
