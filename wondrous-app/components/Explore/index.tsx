@@ -60,7 +60,7 @@ const FeaturedList = [
     username: 'Gitcoin',
     imageUrl: 'https://pbs.twimg.com/profile_images/1461700151383400450/3Kwlnvl__400x400.png',
     bio: "Gitcoin is where the world's leading web3 projects are born, validated & funded.",
-    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1654125991/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1656360691/1500x500',
     name: 'Gitcoin',
   },
   {
