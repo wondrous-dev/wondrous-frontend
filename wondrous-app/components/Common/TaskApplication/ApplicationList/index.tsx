@@ -47,7 +47,7 @@ const FILTER_SCHEMA = {
     },
     {
       id: TASK_APPLICATION_STATUS.REJECTED,
-      name: 'Rejected proposals',
+      name: 'Rejected applications',
       icon: <Rejected />,
       pillIcon: Rejected,
     },
@@ -86,7 +86,7 @@ export default function ApplicationList({ task, count, canViewApplications = tru
 
   const hasMore = data?.getTaskApplications?.length < count && data?.getTaskApplications?.length >= LIMIT;
 
-  const getProposalsFetchMore = useCallback(() => {
+  const getTaskApplicationsFetchMore = useCallback(() => {
     fetchMore({
       variables: {
         input: {
@@ -131,9 +131,9 @@ export default function ApplicationList({ task, count, canViewApplications = tru
 
   useEffect(() => {
     if (inView && hasMore) {
-      getProposalsFetchMore();
+      getTaskApplicationsFetchMore();
     }
-  }, [inView, hasMore, getProposalsFetchMore]);
+  }, [inView, hasMore, getTaskApplicationsFetchMore]);
 
   useEffect(() => {
     if (count && canViewApplications) {
