@@ -253,9 +253,13 @@ const Roles = ({
           </Permissions>
         </Accordion>
         {!podId && !orgDiscordConfigData?.guildId && (
-          <ImportDiscordRoleButton onClick={()=> {
-            router.push(`/organization/settings/${orgId}/notifications`);
-          }}>Connect your Discord server to import roles</ImportDiscordRoleButton>
+          <ImportDiscordRoleButton
+            onClick={() => {
+              router.push(`/organization/settings/${orgId}/notifications`);
+            }}
+          >
+            Connect your Discord server to import roles
+          </ImportDiscordRoleButton>
         )}
         {!podId && orgDiscordConfigData?.guildId && (
           <ImportDiscordRoleButton
@@ -781,7 +785,7 @@ export const DiscordRoleSelectModal = (props) => {
   };
   const handleClose = () => {
     setImportRoleError(null);
-    setSelectedDiscordRoles({})
+    setSelectedDiscordRoles({});
     onClose();
   };
 
