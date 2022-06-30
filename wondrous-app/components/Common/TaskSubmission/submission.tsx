@@ -87,11 +87,8 @@ const TaskSubmissionsTaskToDo = ({ handleTaskProgressStatus, canSubmit, canMoveP
 
 const TaskSubmissionsTaskInProgress = ({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) => {
   if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
-    if (fetchedTaskSubmissions.length > 0) {
-      if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
-      return null;
-    }
-    return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
+    if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
+    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
   }
   return null;
 };
