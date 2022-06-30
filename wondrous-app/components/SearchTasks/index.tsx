@@ -185,6 +185,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
         renderInput={(params) => {
           return (
             <Input
+              sx={{ height: '40px' }}
               {...params}
               placeholder={`${isExpanded || !isExpandable ? 'Search tasks or people...' : 'Search'}`}
               InputProps={{
