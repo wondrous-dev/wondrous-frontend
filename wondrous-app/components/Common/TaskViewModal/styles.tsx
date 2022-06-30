@@ -14,6 +14,7 @@ import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled from 'styled-components';
 import { GetStatusIcon } from 'utils/common';
 import { GradientHighlightHorizontal } from '../gradients';
+import TaskMedia from '../TaskMedia';
 
 export const TaskModal = styled(Modal)`
   height: 100vh;
@@ -312,16 +313,6 @@ export const TaskDescriptionText = styled(Typography)`
   }
 `;
 
-export const TaskDescriptionTextShowAll = styled(Button)`
-  && {
-    border-radius: 6px;
-    max-width: fit-content;
-    display: flex;
-    height: 35px;
-    margin-top: 8px;
-  }
-`;
-
 export const TaskDescriptionTextShowAllText = styled(Typography)`
   && {
     font-size: 14px;
@@ -333,25 +324,8 @@ export const TaskDescriptionTextShowAllText = styled(Typography)`
   }
 `;
 
-export const TaskDescriptionTextShowAllArrow = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
-  && {
-    display: flex;
-    height: 32px;
-    align-items: center;
-    justify-content: center;
-    transform: ${({ isExpanded }) => (isExpanded ? `rotate(-90deg)` : `rotate(90deg)`)};
-    svg {
-      path {
-        fill: ${({ theme }) => theme.palette.white};
-      }
-    }
-  }
+export const TaskMediaWrapper = styled(TaskMedia)`
+  margin-top: 18px;
 `;
 
 export const TaskSectionDisplayDivWrapper = styled.div`
@@ -618,6 +592,13 @@ export const TaskSectionInfoPaymentMethodChain = styled(TaskSectionInfoText)`
       color: ${theme.palette.grey250};
     `}
   }
+`;
+
+export const TaskSectionInfoPaymentWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
 `;
 
 export const TaskSectionInfoPaymentAmount = styled(TaskSectionInfoText)`

@@ -101,6 +101,7 @@ import {
   TaskCardPodIcon,
   TaskDescriptionText,
   TaskDescriptionTextShowAllText,
+  TaskMediaWrapper,
   TaskModal,
   TaskModalCard,
   TaskModalFooter,
@@ -145,6 +146,7 @@ import {
   TaskSectionInfoPaymentAmount,
   TaskSectionInfoPaymentMethodChain,
   TaskSectionInfoPaymentMethodIcon,
+  TaskSectionInfoPaymentWrapper,
   TaskSectionInfoPoints,
   TaskSectionInfoPointsIcon,
   TaskSectionInfoRecurringIcon,
@@ -302,12 +304,12 @@ const TaskSectionImageContent = ({
 const GithubButtons = ({ fetchedTask }) => {
   const githubIssue = fetchedTask?.githubIssue;
   const githubPullRequest = fetchedTask?.githubPullRequest;
-  if (githubIssue || githubPullRequest) {
+  if (true) {
     return (
       <TaskSectionDisplayDiv>
         <TaskSectionLabel>Github</TaskSectionLabel>
         <GithubBlock>
-          {githubIssue && (
+          {true && (
             <GithubLink href={githubIssue?.url} target="_blank">
               <GitHubIcon />
               <GithubLinkText>Github issue</GithubLinkText>
@@ -330,14 +332,14 @@ const ConnectToWallet = ({ user }) => {
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   if (user?.activeEthAddress) return null;
   return (
-    <>
+    <TaskSectionInfoPaymentWrapper>
       <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       <WalletError>
         <ErrorIcon />
         <WalletErrorText>Wallet not connected</WalletErrorText>
       </WalletError>
       <ConnectToWalletButton onClick={() => setWalletModalOpen(true)}>Connect</ConnectToWalletButton>
-    </>
+    </TaskSectionInfoPaymentWrapper>
   );
 };
 
@@ -353,15 +355,15 @@ const Rewards = ({ fetchedTask, user }) => {
           <TaskSectionImageContent
             key={index}
             hasContent={reward}
-            DefaultImageComponent={() => <TaskSectionInfoPaymentMethodIcon src={icon} />}
             ContentComponent={() => (
-              <>
+              <TaskSectionInfoPaymentWrapper>
+                <TaskSectionInfoPaymentMethodIcon src={icon} />
                 <TaskSectionInfoPaymentAmount>
                   {rewardAmount} {symbol}
                 </TaskSectionInfoPaymentAmount>
                 <TaskSectionInfoPaymentMethodChain>paid on {chain}</TaskSectionInfoPaymentMethodChain>
                 <ConnectToWallet user={user} />
-              </>
+              </TaskSectionInfoPaymentWrapper>
             )}
           />
         );
@@ -1026,7 +1028,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 </TaskModalStatus>
               </TaskModalStatusSnapshotWrapper>
               <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
-              <TaskMedia media={fetchedTask?.media} />
+              <TaskMediaWrapper media={fetchedTask?.media} />
               <TaskBorder />
               <TaskSectionDisplayDivWrapper>
                 {!isTaskProposal && !isMilestone && (
