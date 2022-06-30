@@ -2,10 +2,17 @@ import { useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { delQuery } from 'utils';
-import { ENTITIES_TYPES, TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO } from 'utils/constants';
+import {
+  ENTITIES_TYPES,
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_TODO,
+} from 'utils/constants';
 import { transformTaskSubmissionToTaskSubmissionCard, transformTaskToTaskCard } from 'utils/helpers';
 import {
   SubmissionButtonCreate,
@@ -62,35 +69,44 @@ const TaskSubmissionsLoading = ({ loading }) => {
   return <CircularProgress />;
 };
 
-const TaskSubmissionsMoveToProgress = ({
-  handleTaskProgressStatus,
-  canSubmit,
-  canMoveProgress,
-  taskStatus,
-  isBounty,
-}) => {
-  if ((canSubmit || canMoveProgress) && taskStatus === TASK_STATUS_TODO && !isBounty)
+const TaskSubmissionsTaskToDo = ({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) => {
+  if (taskStatus === TASK_STATUS_TODO) {
+    if (canSubmit || canMoveProgress) {
+      return (
+        <SubmissionButtonWrapper
+          onClick={handleTaskProgressStatus}
+          buttonText="Set Status to In-Progress"
+          helperText="In order to submit, set this task to In-Progress."
+        />
+      );
+    }
+    return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
+  }
+  return null;
+};
+
+const TaskSubmissionsTaskInProgress = ({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) => {
+  if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
+    if (fetchedTaskSubmissions.length > 0) {
+      if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
+      return null;
+    }
+    return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
+  }
+  return null;
+};
+
+const TaskSubmissionMakePayment = ({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) => {
+  if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK) {
+    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText={`No submissions`} />;
     return (
-      <SubmissionButtonWrapper
-        onClick={handleTaskProgressStatus}
-        buttonText="Set Status to In-Progress"
-        helperText="In order to submit, set this task to In-Progress."
+      <SubmissionPayment
+        fetchedTask={fetchedTask}
+        setShowPaymentModal={setShowPaymentModal}
+        taskSubmissions={fetchedTaskSubmissions}
       />
     );
-  return null;
-};
-
-const TaskSubmissionsNotAssigned = ({ canSubmit, fetchedTaskSubmissionsLength, taskStatus }) => {
-  if (!canSubmit && fetchedTaskSubmissionsLength === 0 && taskStatus === TASK_STATUS_IN_PROGRESS)
-    return (
-      <SubmissionButtonWrapper helperText={`No submissions yet. Only the assignee can make the first submission.`} />
-    );
-  return null;
-};
-
-const TaskSubmissionsMakeSubmissions = ({ canSubmit, taskStatus, setMakeSubmission, isBounty }) => {
-  if (canSubmit && (isBounty || taskStatus === TASK_STATUS_IN_PROGRESS))
-    return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
+  }
   return null;
 };
 
@@ -153,18 +169,6 @@ const TaskSubmissionList = ({
   );
 };
 
-const TaskSubmissionMakePayment = ({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) => {
-  if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK)
-    return (
-      <SubmissionPayment
-        fetchedTask={fetchedTask}
-        setShowPaymentModal={setShowPaymentModal}
-        taskSubmissions={fetchedTaskSubmissions}
-      />
-    );
-  return null;
-};
-
 const TaskSubmissionsFormInactive = ({ makeSubmission, submissionToEdit, children }) => {
   if (makeSubmission || submissionToEdit) return null;
   return children;
@@ -193,7 +197,6 @@ export const TaskSubmissions = (props) => {
   const [makeSubmission, setMakeSubmission] = useState(false);
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const taskStatus = fetchedTask?.status;
-  const fetchedTaskSubmissionsLength = fetchedTaskSubmissions?.length;
   const loggedInUser = useMe();
 
   const handleTaskProgressStatus = () => {
@@ -228,30 +231,29 @@ export const TaskSubmissions = (props) => {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
-        <TaskSubmissionsMoveToProgress
-          handleTaskProgressStatus={handleTaskProgressStatus}
-          canSubmit={canSubmit}
-          canMoveProgress={canMoveProgress}
-          taskStatus={taskStatus}
-          isBounty={isBounty}
-        />
-        <TaskSubmissionsNotAssigned
-          canSubmit={canSubmit}
-          taskStatus={taskStatus}
-          fetchedTaskSubmissionsLength={fetchedTaskSubmissionsLength}
-        />
-        <TaskSubmissionsMakeSubmissions
-          canSubmit={canSubmit}
-          taskStatus={taskStatus}
-          setMakeSubmission={setMakeSubmission}
-          isBounty={isBounty}
-        />
-        <TaskSubmissionMakePayment
-          taskStatus={taskStatus}
-          fetchedTask={fetchedTask}
-          setShowPaymentModal={setShowPaymentModal}
-          fetchedTaskSubmissions={fetchedTaskSubmissions}
-        />
+        {isBounty && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
+        {!isBounty && (
+          <>
+            <TaskSubmissionsTaskToDo
+              canMoveProgress={canMoveProgress}
+              canSubmit={canSubmit}
+              handleTaskProgressStatus={handleTaskProgressStatus}
+              taskStatus={taskStatus}
+            />
+            <TaskSubmissionsTaskInProgress
+              canSubmit={canSubmit}
+              fetchedTaskSubmissions={fetchedTaskSubmissions}
+              setMakeSubmission={setMakeSubmission}
+              taskStatus={taskStatus}
+            />
+            <TaskSubmissionMakePayment
+              fetchedTask={fetchedTask}
+              fetchedTaskSubmissions={fetchedTaskSubmissions}
+              setShowPaymentModal={setShowPaymentModal}
+              taskStatus={taskStatus}
+            />
+          </>
+        )}
         <TaskSubmissionList
           fetchedTaskSubmissions={fetchedTaskSubmissions}
           setSubmissionToEdit={setSubmissionToEdit}

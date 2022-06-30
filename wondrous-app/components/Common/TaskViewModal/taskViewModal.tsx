@@ -13,7 +13,6 @@ import {
   REMOVE_TASK_ASSIGNEE,
   UNARCHIVE_TASK,
   UPDATE_TASK_ASSIGNEE,
-  UPDATE_TASK_STATUS,
 } from 'graphql/mutations/task';
 import {
   APPROVE_TASK_PROPOSAL,
@@ -63,6 +62,9 @@ import {
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
 import TaskSubmission from 'components/Common/TaskSubmission';
+import { Claim } from 'components/Icons/claimTask';
+import ErrorIcon from 'components/Icons/errorIcon.svg';
+import RecurringIcon from '../../../public/images/icons/recurring.svg';
 import { useMe } from '../../Auth/withAuth';
 import { CommentList } from '../../Comment';
 import {
@@ -86,8 +88,10 @@ import { SnackbarAlertContext } from '../SnackbarAlert';
 import TaskMedia from '../TaskMedia';
 import { TaskSubtasks } from '../TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+import WalletModal from '../Wallet/WalletModal';
 import {
   ArchivedTaskUndo,
+  ConnectToWalletButton,
   GithubBlock,
   SubtaskIconWrapper,
   Tag,
@@ -96,8 +100,6 @@ import {
   TaskCardOrgPhoto,
   TaskCardPodIcon,
   TaskDescriptionText,
-  TaskDescriptionTextShowAll,
-  TaskDescriptionTextShowAllArrow,
   TaskDescriptionTextShowAllText,
   TaskModal,
   TaskModalCard,
@@ -140,6 +142,7 @@ import {
   TaskSectionInfoCreatorTask,
   TaskSectionInfoDiv,
   TaskSectionInfoMilestoneIcon,
+  TaskSectionInfoPaymentAmount,
   TaskSectionInfoPaymentMethodChain,
   TaskSectionInfoPaymentMethodIcon,
   TaskSectionInfoPoints,
@@ -149,19 +152,15 @@ import {
   TaskSectionInfoTakeTaskText,
   TaskSectionInfoText,
   TaskSectionInfoTextCreator,
-  WalletError,
   TaskSectionInfoTextUnderlined,
   TaskSectionMilestoneTaskBreakdown,
   TaskSectionTagWrapper,
   TaskStatusHeaderText,
   TaskSubmissionTab,
   TaskTabText,
+  WalletError,
   WalletErrorText,
-  TaskSectionInfoPaymentAmount,
 } from './styles';
-import { Claim } from 'components/Icons/claimTask';
-import RecurringIcon from '../../../public/images/icons/recurring.svg';
-import ErrorIcon from 'components/Icons/errorIcon.svg';
 
 const tabs = {
   submissions: 'Submissions',
@@ -327,16 +326,19 @@ const GithubButtons = ({ fetchedTask }) => {
   return null;
 };
 
-const WalletNotConnected = ({ user }) => {
-  if (!user?.activeEthAddress) {
-    return (
+const ConnectToWallet = ({ user }) => {
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  if (user?.activeEthAddress) return null;
+  return (
+    <>
+      <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       <WalletError>
         <ErrorIcon />
         <WalletErrorText>Wallet not connected</WalletErrorText>
       </WalletError>
-    );
-  }
-  return null;
+      <ConnectToWalletButton onClick={() => setWalletModalOpen(true)}>Connect</ConnectToWalletButton>
+    </>
+  );
 };
 
 const Rewards = ({ fetchedTask, user }) => {
@@ -358,8 +360,7 @@ const Rewards = ({ fetchedTask, user }) => {
                   {rewardAmount} {symbol}
                 </TaskSectionInfoPaymentAmount>
                 <TaskSectionInfoPaymentMethodChain>paid on {chain}</TaskSectionInfoPaymentMethodChain>
-                <WalletNotConnected user={user} />
-                {/* TODO: Add a connect button */}
+                <ConnectToWallet user={user} />
               </>
             )}
           />

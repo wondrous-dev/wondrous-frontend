@@ -1,5 +1,6 @@
 import { ButtonUnstyled } from '@mui/base';
 import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { MilestoneTaskBreakdown } from 'components/Common/MilestoneTaskBreakdown';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
@@ -12,7 +13,6 @@ import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled from 'styled-components';
 import { GetStatusIcon } from 'utils/common';
-import { Button as GradientButton } from 'components/Common/button';
 import { GradientHighlightHorizontal } from '../gradients';
 
 export const TaskModal = styled(Modal)`
@@ -556,6 +556,28 @@ export const TaskSectionInfoPointsIcon = styled(({ className }) => (
   svg {
     width: 12px;
     height: 12px;
+  }
+`;
+
+export const ConnectToWalletButton = styled(GradientButton)`
+  && {
+    ${GradientHighlightHorizontal}
+    min-height: 0;
+    height: 26px;
+    line-height: 0;
+    button {
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      font-family: 'Space Grotesk';
+      font-size: 14px;
+      font-weight: 500;
+      line-height: 0;
+      ${({ theme }) => `
+        color: ${theme.palette.highlightBlue};
+        background: #1d1d1d;
+      `}
+    }
   }
 `;
 
