@@ -25,8 +25,8 @@ export const TaskSubtasks = ({ taskId, permissions, parentTask }) => {
         />
       </CreateModalOverlay>
       <Subtask>
-        <TaskSubtaskHeader taskId={taskId} permissions={permissions} onClick={toggleCreateFormModal} />
-        <TaskSubtaskList taskId={taskId} />
+        {taskId && <TaskSubtaskHeader taskId={taskId} permissions={permissions} onClick={toggleCreateFormModal} />}
+        {taskId && <TaskSubtaskList taskId={taskId} />}
       </Subtask>
     </>
   );

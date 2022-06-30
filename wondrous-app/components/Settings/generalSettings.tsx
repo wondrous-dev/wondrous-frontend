@@ -165,25 +165,25 @@ const GeneralSettingsComponent = (props) => {
         {newProfile?.profilePicture && !logoImage ? (
           <GeneralSettingsDAOProfileImage src={newProfile?.profilePicture} />
         ) : null}
-        {!isPod && (
-          <ImageUpload
-            image={logoImage}
-            imageWidth={52}
-            imageHeight={52}
-            imageName="Logo"
-            updateFilesCb={(file) => handleImageChange(file, 'profile')}
-          />
-        )}
+
+        <ImageUpload
+          image={logoImage}
+          imageWidth={52}
+          imageHeight={52}
+          imageName="Logo"
+          updateFilesCb={(file) => handleImageChange(file, 'profile')}
+        />
+
         {newProfile?.headerPicture && !headerImage && <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />}
-        {!isPod && (
-          <ImageUpload
-            image={headerImage}
-            imageWidth="1350"
-            imageHeight="200"
-            imageName="Header"
-            updateFilesCb={(file) => handleImageChange(file, 'header')}
-          />
-        )}
+
+        <ImageUpload
+          image={headerImage}
+          imageWidth="1350"
+          imageHeight="200"
+          imageName="Header"
+          updateFilesCb={(file) => handleImageChange(file, 'header')}
+        />
+
         {isPod && (
           <GeneralSettingsInputsBlock>
             <GeneralSettingsDAONameBlock>
@@ -345,6 +345,7 @@ export const PodGeneralSettings = () => {
     onCompleted: ({ getPodById }) => setPod(getPodById),
     fetchPolicy: 'cache-and-network',
   });
+  const [headerImage, setHeaderImage] = useState('');
   const [podLinks, setPodLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
@@ -352,6 +353,7 @@ export const PodGeneralSettings = () => {
   function setPod(pod) {
     setPodProfile(pod);
     setLogoImage('');
+    setHeaderImage('');
     const links = reduceLinks(pod.links);
     setColor(pod?.color);
     setPodLinks(links);
@@ -387,6 +389,36 @@ export const PodGeneralSettings = () => {
 
       setPodProfile({ ...podProfile, profilePicture });
     }
+  }
+
+  function handleImageFile(file) {
+    if (!file) return { filename: null, fileType: null, file: null };
+    const fileName = file?.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+    const imageFile = `tmp/${podId}/` + filename;
+    return { filename: imageFile, fileType, file };
+  }
+
+  async function handleImageChange(file, imageType) {
+    const type = {
+      header: {
+        setState: (file) => setHeaderImage(file),
+        podProfileKey: 'headerPicture',
+      },
+      profile: {
+        setState: (file) => setLogoImage(file),
+        podProfileKey: 'profilePicture',
+      },
+    };
+    const { setState, podProfileKey } = type[imageType];
+    setState(file);
+    const imageFile = handleImageFile(file);
+    setPodProfile({
+      ...podProfile,
+      [podProfileKey]: imageFile.filename ?? podProfile[podProfileKey],
+    });
+    imageFile.filename && (await uploadMedia(imageFile));
   }
 
   function handleDescriptionChange(e) {
@@ -455,6 +487,8 @@ export const PodGeneralSettings = () => {
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...podLinks }, setPodLinks)}
       links={podLinks}
       handleLogoChange={handleLogoChange}
+      headerImage={headerImage}
+      handleImageChange={handleImageChange}
       logoImage={logoImage}
       newProfile={podProfile}
       resetChanges={resetChanges}

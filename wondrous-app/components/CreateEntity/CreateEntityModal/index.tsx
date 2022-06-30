@@ -483,27 +483,29 @@ const useCreateTask = () => {
     })
       .then((result) => {
         //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
-        if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
-          const task = result?.data?.createTask;
-          const justCreatedPod = getPodObject(pods, task.podId);
-          if (
-            board?.setColumns &&
-            ((task?.orgId === board?.orgId && !board?.podId) ||
-              task?.podId === board?.podId ||
-              form.values.podId === board?.podId)
-          ) {
-            const transformedTask = transformTaskToTaskCard(task, {
-              orgName: board?.org?.name,
-              orgProfilePicture: board?.org?.profilePicture,
-              podName: justCreatedPod?.name,
-            });
+        if (!result?.data?.createTask?.parentTaskId) {
+          if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
+            const task = result?.data?.createTask;
+            const justCreatedPod = getPodObject(pods, task.podId);
+            if (
+              board?.setColumns &&
+              ((task?.orgId === board?.orgId && !board?.podId) ||
+                task?.podId === board?.podId ||
+                form.values.podId === board?.podId)
+            ) {
+              const transformedTask = transformTaskToTaskCard(task, {
+                orgName: board?.org?.name,
+                orgProfilePicture: board?.org?.profilePicture,
+                podName: justCreatedPod?.name,
+              });
 
-            const columns = [...board?.columns];
-            columns[0].tasks = [transformedTask, ...columns[0].tasks];
-            board.setColumns(columns);
+              const columns = [...board?.columns];
+              columns[0].tasks = [transformedTask, ...columns[0].tasks];
+              board.setColumns(columns);
+            }
+          } else {
+            board?.setEntityType(ENTITIES_TYPES.TASK);
           }
-        } else {
-          board?.setEntityType(ENTITIES_TYPES.TASK);
         }
         handleClose();
       })
