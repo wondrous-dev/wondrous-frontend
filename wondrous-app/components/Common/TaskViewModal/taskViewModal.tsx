@@ -304,12 +304,12 @@ const TaskSectionImageContent = ({
 const GithubButtons = ({ fetchedTask }) => {
   const githubIssue = fetchedTask?.githubIssue;
   const githubPullRequest = fetchedTask?.githubPullRequest;
-  if (true) {
+  if (githubIssue || githubPullRequest) {
     return (
       <TaskSectionDisplayDiv>
         <TaskSectionLabel>Github</TaskSectionLabel>
         <GithubBlock>
-          {true && (
+          {githubIssue && (
             <GithubLink href={githubIssue?.url} target="_blank">
               <GitHubIcon />
               <GithubLinkText>Github issue</GithubLinkText>
