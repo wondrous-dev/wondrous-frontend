@@ -25,7 +25,7 @@ import {
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import { isEmpty } from 'lodash';
+import { isEmpty, keys } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -112,7 +112,6 @@ import {
   TaskModalHeaderMenu,
   TaskModalHeaderMenuButton,
   TaskModalHeaderMenuItem,
-  TaskModalHeaderMenuItemRed,
   TaskModalHeaderPrivacyIcon,
   TaskModalHeaderShare,
   TaskModalHeaderTypography,
@@ -368,6 +367,60 @@ const Rewards = ({ fetchedTask, user }) => {
         );
       })}
     </TaskSectionDisplayDiv>
+  );
+};
+
+const Menu = ({
+  canArchive,
+  canDelete,
+  canEdit,
+  isBounty,
+  isMilestone,
+  isTaskProposal,
+  setArchiveTask,
+  setCompleteModal,
+  setDeleteTask,
+  setEditTask,
+  taskType,
+}) => {
+  const menuItems = {
+    Complete: {
+      condition: canEdit && (isMilestone || isBounty),
+      onClick: setCompleteModal,
+    },
+    Edit: {
+      condition: canEdit,
+      onClick: setEditTask,
+    },
+    Archive: {
+      condition: canArchive && !isTaskProposal,
+      onClick: setArchiveTask,
+    },
+    Delete: {
+      condition: canDelete,
+      onClick: setDeleteTask,
+      warning: true,
+    },
+  };
+  return (
+    <>
+      {canEdit && (
+        <TaskHeaderMenu>
+          {keys(menuItems).map((item) => {
+            const { condition, onClick, ...props } = menuItems[item];
+            return (
+              <>
+                {condition && (
+                  <TaskModalHeaderMenuItem key={item} onClick={() => onClick(true)} {...props}>
+                    {item} {taskType}
+                  </TaskModalHeaderMenuItem>
+                )}
+              </>
+            );
+          })}
+        </TaskHeaderMenu>
+      )}
+    </>
   );
 };
 
@@ -973,43 +1026,19 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     isSubtask ? fetchedTask?.parentTaskId : taskId
                   }`}
                 />
-                {canEdit && (
-                  <TaskHeaderMenu>
-                    {canEdit && (isMilestone || isBounty) && (
-                      <TaskModalHeaderMenuItem onClick={() => setCompleteModal(true)}>
-                        Complete {taskType}
-                      </TaskModalHeaderMenuItem>
-                    )}
-                    {canEdit && (
-                      <TaskModalHeaderMenuItem
-                        key={'task-menu-edit-modal-' + fetchedTask?.id}
-                        onClick={() => setEditTask(true)}
-                      >
-                        Edit {taskType}
-                      </TaskModalHeaderMenuItem>
-                    )}
-                    {canArchive && !isTaskProposal && (
-                      <TaskModalHeaderMenuItem
-                        key={'task-menu-archive-' + fetchedTask?.id}
-                        onClick={() => {
-                          setArchiveTask(true);
-                        }}
-                      >
-                        Archive {taskType}
-                      </TaskModalHeaderMenuItem>
-                    )}
-                    {canDelete && (
-                      <TaskModalHeaderMenuItemRed
-                        key={'task-menu-delete-' + fetchedTask?.id}
-                        onClick={() => {
-                          setDeleteTask(true);
-                        }}
-                      >
-                        Delete {taskType}
-                      </TaskModalHeaderMenuItemRed>
-                    )}
-                  </TaskHeaderMenu>
-                )}
+                <Menu
+                  canArchive={canArchive}
+                  canDelete={canDelete}
+                  canEdit={canEdit}
+                  isBounty={isBounty}
+                  isMilestone={isMilestone}
+                  isTaskProposal={isTaskProposal}
+                  setArchiveTask={setArchiveTask}
+                  setCompleteModal={setCompleteModal}
+                  setDeleteTask={setDeleteTask}
+                  setEditTask={setEditTask}
+                  taskType={taskType}
+                />
               </TaskModalHeaderWrapperRight>
             </TaskModalHeader>
             <TaskModalTaskData>

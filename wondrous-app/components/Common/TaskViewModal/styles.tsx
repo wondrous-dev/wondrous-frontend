@@ -187,7 +187,7 @@ export const TaskModalHeaderMenuItem = styled(MenuItem)`
   && {
     display: flex;
     justify-content: flex-start;
-    color: ${({ theme }) => theme.palette.white};
+    color: ${({ theme, warning }) => (warning ? theme.palette.red800 : theme.palette.white)};
     height: 32px;
     font-size: 13px;
     padding: 12px;
@@ -197,7 +197,7 @@ export const TaskModalHeaderMenuItem = styled(MenuItem)`
   }
 `;
 
-export const TaskModalHeaderMenuItemRed = styled(TaskModalHeaderMenuItem)`
+export const TaskModalHeaderMenuItemRed = styled(Typography)`
   && {
     color: ${({ theme }) => theme.palette.red800};
   }
