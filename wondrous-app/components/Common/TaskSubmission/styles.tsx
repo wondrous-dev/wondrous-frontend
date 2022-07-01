@@ -1,16 +1,18 @@
-import { ButtonBase, InputAdornment, InputBase, Typography } from '@mui/material';
+import { ButtonBase, InputAdornment, InputBase, Popper, Typography } from '@mui/material';
+import { Button } from 'components/Common/button';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { GradientHighlightHorizontal } from 'components/Common/gradients';
+import { SafeImage } from 'components/Common/Image';
+import TaskMedia from 'components/Common/TaskMedia';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { MediaItemWrapper } from 'components/CreateEntity/MediaItem/styles';
+import Arrow from 'components/Icons/arrow.svg';
+import ChangesRequestedIcon from 'components/Icons/changesRequestedIcon.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
+import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import LinkIcon from 'components/Icons/linkSubmissionIcon.svg';
 import styled from 'styled-components';
-import { Button } from '../button';
-import { FileLoading } from '../FileUpload/FileUpload';
-import { GradientHighlightHorizontal } from '../gradients';
-import { SafeImage } from '../Image';
-import TaskMedia from '../TaskMedia';
-import ChangesRequestedIcon from 'components/Icons/changesRequestedIcon.svg';
 
 export const SubmissionButtonWrapperGradient = styled.div`
   background: linear-gradient(94.19deg, #7427ff 10.13%, #232323 131.81%);
@@ -101,6 +103,86 @@ export const SubmissionButtonApprove = styled(ButtonBase)`
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightMedium};
   `}
+`;
+
+export const SubmissionFilterSelectButton = styled(ButtonBase)`
+  background: #1b1b1b;
+  min-width: 245px;
+  max-width: fit-content;
+  height: 40px;
+  color: white;
+  font-family: 'Space Grotesk';
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px;
+  gap: 8px;
+  border-radius: 6px;
+  border: 1px solid ${({ open }) => (open ? `#424242` : '#1b1b1b')};
+`;
+
+export const SubmissionFilterSelectPopper = styled(Popper)`
+  z-index: 100;
+  width: 100%;
+  background: #1b1b1b;
+  max-width: fit-content;
+  border-radius: 6px;
+`;
+
+export const SubmissionFilterButtonIcon = styled((props) => {
+  return (
+    <div {...props}>
+      <Arrow />
+    </div>
+  );
+})`
+  && {
+    transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
+    display: flex;
+    height: 32px;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const SubmissionFilterSelectMenu = styled.ul`
+  background: #1b1b1b;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #424242;
+  border-radius: 6px;
+`;
+
+export const SubmissionFilterSelectItem = styled.li`
+  list-style: none;
+  background: #1b1b1b;
+  color: white;
+  font-family: 'Space Grotesk';
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  :hover {
+    background: ${({ theme }) => theme.palette.black98};
+  }
+`;
+
+export const SubmissionFilterSelectRender = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+export const SubmissionFilterStatusIcon = styled(FilterStatusIcon)``;
+
+export const TaskSubmissionsFormInactiveWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 `;
 
 export const SubmissionFormWrapper = styled.div`

@@ -1,25 +1,35 @@
 import { useMutation } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, ClickAwayListener } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_STATUS } from 'graphql/mutations';
-import { isEmpty } from 'lodash';
+import { isEmpty, values } from 'lodash';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { delQuery } from 'utils';
 import {
   ENTITIES_TYPES,
+  PAYMENT_STATUS,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
 } from 'utils/constants';
 import { transformTaskSubmissionToTaskSubmissionCard, transformTaskToTaskCard } from 'utils/helpers';
+
 import {
   SubmissionButtonCreate,
   SubmissionButtonTextHelper,
   SubmissionButtonWrapperBackground,
   SubmissionButtonWrapperGradient,
+  SubmissionFilterButtonIcon,
+  SubmissionFilterSelectButton,
+  SubmissionFilterSelectItem,
+  SubmissionFilterSelectMenu,
+  SubmissionFilterSelectPopper,
+  SubmissionFilterSelectRender,
+  SubmissionFilterStatusIcon,
   TaskSubmissionItemsWrapper,
+  TaskSubmissionsFormInactiveWrapper,
 } from './styles';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
@@ -166,9 +176,75 @@ const TaskSubmissionList = ({
   );
 };
 
+const TaskSubmissionsItemEmpty = () => {};
+
+const TaskSubmissionsFilterSelected = ({ value }) => {
+  const text = isEmpty(value) ? 'Status' : value;
+  return (
+    <SubmissionFilterSelectRender>
+      <SubmissionFilterStatusIcon /> {text}
+    </SubmissionFilterSelectRender>
+  );
+};
+
+const filterOptions = {
+  awaitingReview: 'Awaiting Review',
+  changesRequested: 'Changes Requested',
+  approved: 'Approved',
+  approvedAndProcessingPayment: 'Approved And Processing Payment',
+  approvedAndPaid: 'Approved and Paid',
+};
+
+const isSubmissionStatus = ({ submission, value }) => {
+  const { awaitingReview, changesRequested, approved, approvedAndProcessingPayment, approvedAndPaid } = filterOptions;
+  const conditions = {
+    [awaitingReview]: !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt,
+    [changesRequested]: submission?.changeRequestedAt || submission?.rejectedAt,
+    [approved]: submission?.approvedAt,
+    [approvedAndProcessingPayment]: submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PROCESSING,
+    [approvedAndPaid]: submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PAID,
+  };
+  return conditions[value];
+};
+
+const TaskSubmissionsFilter = ({ fetchedTaskSubmissions, setFilteredSubmissions }) => {
+  const [selected, setSelected] = useState('');
+  const [anchorEl, setAnchorEl] = useState(null);
+  const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
+  const handleClosePopper = () => setAnchorEl(null);
+  const open = Boolean(anchorEl);
+  const handleOnClick = (e) => {
+    const value = e.target.getAttribute('value');
+    setSelected(value);
+    const handleFilterStatus = (submission) => isSubmissionStatus({ submission, value });
+    setFilteredSubmissions(fetchedTaskSubmissions.filter(handleFilterStatus));
+    handleClosePopper();
+  };
+  if (isEmpty(fetchedTaskSubmissions)) return null;
+  return (
+    <ClickAwayListener onClickAway={handleClosePopper}>
+      <div>
+        <SubmissionFilterSelectButton onClick={handleClick} open={open}>
+          <TaskSubmissionsFilterSelected value={selected} />
+          <SubmissionFilterButtonIcon open={open} />
+        </SubmissionFilterSelectButton>
+        <SubmissionFilterSelectPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal={true}>
+          <SubmissionFilterSelectMenu>
+            {values(filterOptions).map((i) => (
+              <SubmissionFilterSelectItem key={i} value={i} onClick={handleOnClick}>
+                <SubmissionFilterStatusIcon /> {i}
+              </SubmissionFilterSelectItem>
+            ))}
+          </SubmissionFilterSelectMenu>
+        </SubmissionFilterSelectPopper>
+      </div>
+    </ClickAwayListener>
+  );
+};
+
 const TaskSubmissionsFormInactive = ({ makeSubmission, submissionToEdit, children }) => {
   if (makeSubmission || submissionToEdit) return null;
-  return children;
+  return <TaskSubmissionsFormInactiveWrapper>{children}</TaskSubmissionsFormInactiveWrapper>;
 };
 
 export const TaskSubmissions = (props) => {
@@ -193,9 +269,10 @@ export const TaskSubmissions = (props) => {
   });
   const [makeSubmission, setMakeSubmission] = useState(false);
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
+  const [filteredSubmissions, setFilteredSubmissions] = useState();
+  const listSubmissions = filteredSubmissions ?? fetchedTaskSubmissions;
   const taskStatus = fetchedTask?.status;
   const loggedInUser = useMe();
-
   const handleTaskProgressStatus = () => {
     router.push(`${delQuery(router.asPath)}`, undefined, {
       shallow: true,
@@ -228,6 +305,10 @@ export const TaskSubmissions = (props) => {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
+        <TaskSubmissionsFilter
+          fetchedTaskSubmissions={fetchedTaskSubmissions}
+          setFilteredSubmissions={setFilteredSubmissions}
+        />
         {isBounty && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
         {!isBounty && (
           <>
@@ -252,7 +333,7 @@ export const TaskSubmissions = (props) => {
           </>
         )}
         <TaskSubmissionList
-          fetchedTaskSubmissions={fetchedTaskSubmissions}
+          fetchedTaskSubmissions={listSubmissions}
           setSubmissionToEdit={setSubmissionToEdit}
           canReview={canReview}
           fetchedTask={fetchedTask}

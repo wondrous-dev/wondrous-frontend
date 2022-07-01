@@ -6,7 +6,6 @@ import {
   APPROVE_SUBMISSION,
   REQUEST_CHANGE_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
-import { GET_TASK_BY_ID } from 'graphql/queries';
 import { isEmpty } from 'lodash';
 import { useState } from 'react';
 import { BOUNTY_TYPE, PAYMENT_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/constants';
@@ -156,6 +155,7 @@ const useRequestChangeTaskSubmission = ({ submission, handleBountyTypeCompletion
   });
   return requestChangeTaskSubmission;
 };
+
 
 const SubmissionItemStatus = (props) => {
   const { submission } = props;
