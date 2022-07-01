@@ -217,7 +217,7 @@ export const TaskModalTitle = styled(Typography)`
   }
 `;
 
-export const TaskModalStatusSnapshotWrapper = styled.div`
+export const TaskModalTaskStatusMoreInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
@@ -233,7 +233,7 @@ export const TaskModalStatus = styled.div`
   justify-content: center;
   padding: 0 6px;
   gap: 8px;
-  height: 35px;
+  height: 26px;
   && {
     svg {
       width: 18px;

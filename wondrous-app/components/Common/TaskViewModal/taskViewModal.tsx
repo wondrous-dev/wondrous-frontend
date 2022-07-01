@@ -1,6 +1,9 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import TaskSubmission from 'components/Common/TaskSubmission';
 import { CreateEntity } from 'components/CreateEntity';
+import { Claim } from 'components/Icons/claimTask';
+import ErrorIcon from 'components/Icons/errorIcon.svg';
 import MoreIcon from 'components/Icons/more';
 import { RichTextViewer } from 'components/RichText';
 import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';
@@ -61,9 +64,6 @@ import {
 } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
-import TaskSubmission from 'components/Common/TaskSubmission';
-import { Claim } from 'components/Icons/claimTask';
-import ErrorIcon from 'components/Icons/errorIcon.svg';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';
 import { useMe } from '../../Auth/withAuth';
 import { CommentList } from '../../Comment';
@@ -82,10 +82,10 @@ import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { CompleteModal } from '../CompleteModal';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import DefaultUserImage from '../Image/DefaultUserImage';
+import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
-import TaskMedia from '../TaskMedia';
 import { TaskSubtasks } from '../TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import WalletModal from '../Wallet/WalletModal';
@@ -124,8 +124,8 @@ import {
   TaskModalStatus,
   TaskModalStatusIcon,
   TaskModalStatusLabel,
-  TaskModalStatusSnapshotWrapper,
   TaskModalTaskData,
+  TaskModalTaskStatusMoreInfo,
   TaskModalTitle,
   TaskSectionContent,
   TaskSectionDisplayContentWrapper,
@@ -155,7 +155,6 @@ import {
   TaskSectionInfoText,
   TaskSectionInfoTextCreator,
   TaskSectionInfoTextUnderlined,
-  TaskSectionMilestoneTaskBreakdown,
   TaskSectionTagWrapper,
   TaskStatusHeaderText,
   TaskSubmissionTab,
@@ -1015,7 +1014,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
             </TaskModalHeader>
             <TaskModalTaskData>
               <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
-              <TaskModalStatusSnapshotWrapper>
+              <TaskModalTaskStatusMoreInfo>
                 {fetchedTask?.snapshotId && (
                   <TaskModalSnapshot onClick={openSnapshot}>
                     <TaskModalSnapshotLogo />
@@ -1026,7 +1025,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   <TaskModalStatusIcon status={fetchedTask?.status} />
                   <TaskModalStatusLabel>{taskStatusLabel[fetchedTask?.status]}</TaskModalStatusLabel>
                 </TaskModalStatus>
-              </TaskModalStatusSnapshotWrapper>
+                <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+              </TaskModalTaskStatusMoreInfo>
               <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
               <TaskMediaWrapper media={fetchedTask?.media} />
               <TaskBorder />
@@ -1299,7 +1299,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     )}
                   </TaskSectionTagWrapper>
                 </TaskSectionDisplayDiv>
-                {isMilestone && <TaskSectionMilestoneTaskBreakdown milestoneId={fetchedTask?.id} open={open} />}
                 {isTaskProposal && (
                   <CreateFormFooterButtons>
                     {fetchedTask?.changeRequestedAt && (
