@@ -7,6 +7,7 @@ import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import { Share } from 'components/Common/Share';
 import Arrow from 'components/Icons/arrow.svg';
 import CalendarIcon from 'components/Icons/calendar';
+import CloseModalIcon from 'components/Icons/closeModal';
 import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import OpenInFullIcon from 'components/Icons/openInFull.svg';
 import PodIcon from 'components/Icons/podIcon';
@@ -50,7 +51,7 @@ export const TaskModalCard = styled.div`
 export const TaskModalHeader = styled.div`
   display: flex;
   align-items: center;
-  background: #171717;
+  background: #2d2d2d;
   height: 56px;
   padding: 12px;
   justify-content: space-between;
@@ -119,12 +120,33 @@ export const TaskModalHeaderOpenInFullIcon = styled((props) => (
 ))`
   width: 32px;
   height: 32px;
-  background: rgba(49, 49, 49, 0.3);
+  background: #171717;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  svg {
+    transform: scale(88%);
+  }
+`;
+
+export const TaskModalHeaderCloseModal = styled((props) => (
+  <div {...props}>
+    <CloseModalIcon />
+  </div>
+))`
+  width: 32px;
+  height: 32px;
+  background: #171717;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  svg {
+    transform: scale(88%);
+  }
 `;
 
 export const TaskModalHeaderIconWrapper = styled.div`
@@ -158,17 +180,33 @@ export const SubtaskIconWrapper = styled(TaskModalHeaderIconWrapper)`
   cursor: auto;
 `;
 
-export const TaskModalHeaderShare = styled(Share)`
+export const TaskModalHeaderShare = styled((props) => (
+  <div {...props}>
+    <Share {...props} />
+  </div>
+))`
   && {
     width: 32px;
     height: 32px;
+    background: #171717;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    svg {
+      width: 13px;
+      path {
+        stroke: ${({ theme }) => theme.palette.white};
+      }
+    }
   }
 `;
 
 export const TaskModalHeaderMenuButton = styled(ButtonUnstyled)`
   && {
     align-items: center;
-    background: #3131314d;
+    background: #171717;
     border-radius: 6px;
     border: none;
     display: flex;
@@ -179,11 +217,14 @@ export const TaskModalHeaderMenuButton = styled(ButtonUnstyled)`
     :hover,
     :active {
       cursor: pointer;
-      background: ${({ theme }) => theme.palette.black98};
+      background: #171717;
     }
     svg {
       circle {
-        fill: transparent;
+        display: none;
+      }
+      path {
+        stroke: #ffffff;
       }
     }
   }

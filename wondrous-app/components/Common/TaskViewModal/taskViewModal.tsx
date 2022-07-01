@@ -108,6 +108,7 @@ import {
   TaskModalHeader,
   TaskModalHeaderArrow,
   TaskModalHeaderBackToList,
+  TaskModalHeaderCloseModal,
   TaskModalHeaderIconWrapper,
   TaskModalHeaderMenu,
   TaskModalHeaderMenuButton,
@@ -205,7 +206,7 @@ interface ITaskListModalProps {
   shouldFocusAfterRender?: boolean;
 }
 
-const TaskHeaderMenu = ({ children }) => {
+const TaskHeaderMenu = ({ canEdit, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => {
@@ -214,6 +215,7 @@ const TaskHeaderMenu = ({ children }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
+  if (!canEdit) return null;
   return (
     <>
       <Tooltip title="More actions" placement="top">
@@ -405,24 +407,20 @@ const Menu = ({
     },
   };
   return (
-    <>
-      {canEdit && (
-        <TaskHeaderMenu>
-          {keys(menuItems).map((item) => {
-            const { condition, onClick, ...props } = menuItems[item];
-            return (
-              <>
-                {condition && (
-                  <TaskModalHeaderMenuItem key={item} onClick={() => onClick(true)} {...props}>
-                    {item} {taskType}
-                  </TaskModalHeaderMenuItem>
-                )}
-              </>
-            );
-          })}
-        </TaskHeaderMenu>
-      )}
-    </>
+    <TaskHeaderMenu canEdit={canEdit}>
+      {keys(menuItems).map((item) => {
+        const { condition, onClick, ...props } = menuItems[item];
+        return (
+          <>
+            {condition && (
+              <TaskModalHeaderMenuItem key={item} onClick={() => onClick(true)} {...props}>
+                {item} {taskType}
+              </TaskModalHeaderMenuItem>
+            )}
+          </>
+        );
+      })}
+    </TaskHeaderMenu>
   );
 };
 
@@ -1028,9 +1026,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     isSubtask ? fetchedTask?.parentTaskId : taskId
                   }`}
                 />
-                <TaskModalHeaderOpenInFullIcon onClick={() => setFullScreen(!fullScreen)}>
-                  full screen
-                </TaskModalHeaderOpenInFullIcon>
+                <TaskModalHeaderOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
                 <Menu
                   canArchive={canArchive}
                   canDelete={canDelete}
@@ -1044,6 +1040,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   setEditTask={setEditTask}
                   taskType={taskType}
                 />
+                <TaskModalHeaderCloseModal onClick={() => handleClose()} />
               </TaskModalHeaderWrapperRight>
             </TaskModalHeader>
             <TaskModalTaskData fullScreen={fullScreen}>
