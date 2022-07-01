@@ -23,6 +23,7 @@ import {
   StyledMilestoneEmpty,
 } from './styles';
 import SmartLink from 'components/Common/SmartLink';
+import { RichTextViewer } from 'components/RichText';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -112,7 +113,7 @@ export const MilestoneTaskList = (props) => {
                       <TaskTitle>
                         <Link href={viewUrl}>{task.title}</Link>
                       </TaskTitle>
-                      <TaskDescription>{task.description}</TaskDescription>
+                      <TaskDescription><RichTextViewer text={task.description}/></TaskDescription>
                     </StyledTableCell>
                   </StyledTableRow>
                 </SmartLink>
