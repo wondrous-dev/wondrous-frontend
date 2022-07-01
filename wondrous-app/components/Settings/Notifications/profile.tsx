@@ -19,6 +19,7 @@ import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validate
 import { ErrorText } from '../../Common';
 import Switch from '../../Common/Switch';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import Checkbox from 'components/Checkbox';
 import { getDiscordUrl } from 'utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import {
@@ -31,7 +32,6 @@ import {
   UserDiscordNotificationSettingsText,
   LoggedInDiscordUserText,
   ExplanationText,
-  StyledCheckbox,
   NotificationSettingsCategoryLabel,
   NotificationSettingLabel,
   NotificationSettingListItem,
@@ -351,7 +351,7 @@ const ProfileSettings = (props) => {
                   {category.settings.map((setting) =>
                     typeof discordNotificationSettings[setting.id] === 'undefined' ? null : (
                       <NotificationSettingListItem key={setting?.id}>
-                        <StyledCheckbox
+                        <Checkbox
                           checked={discordNotificationSettings[setting.id]}
                           onChange={() => handleNotificationSettingsChange(setting.id)}
                           inputProps={{ 'aria-label': 'controlled' }}
