@@ -13,7 +13,7 @@ import OpenInFullIcon from 'components/Icons/openInFull.svg';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { GetStatusIcon } from 'utils/common';
 
 import { GradientHighlightHorizontal } from '../gradients';
@@ -27,7 +27,7 @@ export const TaskModal = styled(Modal)`
 `;
 
 export const TaskModalCard = styled.div`
-  max-width: 682px;
+  width: 682px;
   margin: 0 auto;
   height: 95vh;
   overflow-y: scroll;
@@ -43,7 +43,7 @@ export const TaskModalCard = styled.div`
   ${({ fullScreen }) =>
     fullScreen &&
     `
-    max-width: 1195px;
+    width: 1195px;
     gap: 0;
   `}
 `;
@@ -267,20 +267,22 @@ export const TaskModalHeaderMenuItemRed = styled(Typography)`
   }
 `;
 
-export const TaskModalTaskData = styled.div`
-  flex-grow: 1;
-  ${({ fullScreen }) =>
-    fullScreen
-      ? `
+const TaskModalTaskDataFullScreen = css`
   display: grid;
   grid-template-columns: 6fr 4fr;
+  grid-template-rows: auto 1fr;
   row-gap: 36px;
-  `
-      : `
+`;
+
+const TaskModalTaskDataMinimized = css`
   display: flex;
   flex-direction: column;
   gap: 18px;
-  `};
+`;
+
+export const TaskModalTaskData = styled.div`
+  flex-grow: 1;
+  ${({ fullScreen }) => (fullScreen ? TaskModalTaskDataFullScreen : TaskModalTaskDataMinimized)};
 `;
 
 export const TaskModalTitleDescriptionMedia = styled.div`
