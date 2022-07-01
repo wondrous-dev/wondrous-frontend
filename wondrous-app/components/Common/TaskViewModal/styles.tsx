@@ -8,11 +8,13 @@ import { Share } from 'components/Common/Share';
 import Arrow from 'components/Icons/arrow.svg';
 import CalendarIcon from 'components/Icons/calendar';
 import MilestoneIcon from 'components/Icons/milestoneField.svg';
+import OpenInFullIcon from 'components/Icons/openInFull.svg';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled from 'styled-components';
 import { GetStatusIcon } from 'utils/common';
+
 import { GradientHighlightHorizontal } from '../gradients';
 import TaskMedia from '../TaskMedia';
 
@@ -24,7 +26,7 @@ export const TaskModal = styled(Modal)`
 `;
 
 export const TaskModalCard = styled.div`
-  width: 682px;
+  max-width: 682px;
   margin: 0 auto;
   height: 95vh;
   overflow-y: scroll;
@@ -37,6 +39,12 @@ export const TaskModalCard = styled.div`
   &::-webkit-scrollbar {
     display: none;
   }
+  ${({ fullScreen }) =>
+    fullScreen &&
+    `
+    max-width: 1195px;
+    gap: 0;
+  `}
 `;
 
 export const TaskModalHeader = styled.div`
@@ -102,6 +110,21 @@ export const TaskModalHeaderBackToList = styled(TaskModalHeaderTypography)`
     text-decoration: underline;
     cursor: pointer;
   }
+`;
+
+export const TaskModalHeaderOpenInFullIcon = styled((props) => (
+  <div {...props}>
+    <OpenInFullIcon />
+  </div>
+))`
+  width: 32px;
+  height: 32px;
+  background: rgba(49, 49, 49, 0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `;
 
 export const TaskModalHeaderIconWrapper = styled.div`
@@ -204,7 +227,28 @@ export const TaskModalHeaderMenuItemRed = styled(Typography)`
 `;
 
 export const TaskModalTaskData = styled.div`
+  flex-grow: 1;
+  ${({ fullScreen }) =>
+    fullScreen
+      ? `
+  display: grid;
+  grid-template-columns: 6fr 4fr;
+  row-gap: 36px;
+  `
+      : `
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  `};
+`;
+
+export const TaskModalTitleDescriptionMedia = styled.div`
   padding: 0 24px;
+  ${({ fullScreen }) =>
+    fullScreen &&
+    `
+    padding-top: 24px;
+  `}
 `;
 
 export const TaskModalTitle = styled(Typography)`
@@ -329,10 +373,19 @@ export const TaskMediaWrapper = styled(TaskMedia)`
 `;
 
 export const TaskSectionDisplayDivWrapper = styled.div`
+  padding: 0 24px;
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 18px;
+  ${({ fullScreen }) =>
+    fullScreen &&
+    `
+    background: #171717;
+    grid-column-start: 2;
+    grid-row-start: 1;
+    grid-row-end: 3;
+    padding-top: 24px;
+  `}
 `;
 
 export const TaskSectionDisplayDiv = styled.div`

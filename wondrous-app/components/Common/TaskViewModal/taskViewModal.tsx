@@ -112,6 +112,7 @@ import {
   TaskModalHeaderMenu,
   TaskModalHeaderMenuButton,
   TaskModalHeaderMenuItem,
+  TaskModalHeaderOpenInFullIcon,
   TaskModalHeaderPrivacyIcon,
   TaskModalHeaderShare,
   TaskModalHeaderTypography,
@@ -126,6 +127,7 @@ import {
   TaskModalTaskData,
   TaskModalTaskStatusMoreInfo,
   TaskModalTitle,
+  TaskModalTitleDescriptionMedia,
   TaskSectionContent,
   TaskSectionDisplayContentWrapper,
   TaskSectionDisplayDiv,
@@ -473,7 +475,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-
+  const [fullScreen, setFullScreen] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
   const [archiveTask, setArchiveTask] = useState(false);
   const [deleteTask, setDeleteTask] = useState(false);
@@ -946,7 +948,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
             handleClose();
           }}
         >
-          <TaskModalCard>
+          <TaskModalCard fullScreen={fullScreen}>
             <TaskModalHeader>
               <TaskModalHeaderWrapper>
                 <TaskModalHeaderIconWrapper
@@ -1026,6 +1028,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     isSubtask ? fetchedTask?.parentTaskId : taskId
                   }`}
                 />
+                <TaskModalHeaderOpenInFullIcon onClick={() => setFullScreen(!fullScreen)}>
+                  full screen
+                </TaskModalHeaderOpenInFullIcon>
                 <Menu
                   canArchive={canArchive}
                   canDelete={canDelete}
@@ -1041,25 +1046,27 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 />
               </TaskModalHeaderWrapperRight>
             </TaskModalHeader>
-            <TaskModalTaskData>
-              <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
-              <TaskModalTaskStatusMoreInfo>
-                {fetchedTask?.snapshotId && (
-                  <TaskModalSnapshot onClick={openSnapshot}>
-                    <TaskModalSnapshotLogo />
-                    <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
-                  </TaskModalSnapshot>
-                )}
-                <TaskModalStatus>
-                  <TaskModalStatusIcon status={fetchedTask?.status} />
-                  <TaskModalStatusLabel>{taskStatusLabel[fetchedTask?.status]}</TaskModalStatusLabel>
-                </TaskModalStatus>
-                <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
-              </TaskModalTaskStatusMoreInfo>
-              <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
-              <TaskMediaWrapper media={fetchedTask?.media} />
-              <TaskBorder />
-              <TaskSectionDisplayDivWrapper>
+            <TaskModalTaskData fullScreen={fullScreen}>
+              <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
+                <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
+                <TaskModalTaskStatusMoreInfo>
+                  {fetchedTask?.snapshotId && (
+                    <TaskModalSnapshot onClick={openSnapshot}>
+                      <TaskModalSnapshotLogo />
+                      <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
+                    </TaskModalSnapshot>
+                  )}
+                  <TaskModalStatus>
+                    <TaskModalStatusIcon status={fetchedTask?.status} />
+                    <TaskModalStatusLabel>{taskStatusLabel[fetchedTask?.status]}</TaskModalStatusLabel>
+                  </TaskModalStatus>
+                  <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                </TaskModalTaskStatusMoreInfo>
+                <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
+                <TaskMediaWrapper media={fetchedTask?.media} />
+                {!fullScreen && <TaskBorder />}
+              </TaskModalTitleDescriptionMedia>
+              <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                 {!isTaskProposal && !isMilestone && (
                   <TaskSectionDisplayDiv>
                     <TaskSectionLabel>Reviewer</TaskSectionLabel>
@@ -1395,51 +1402,52 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   />
                 )}
               </TaskSectionDisplayDivWrapper>
+
+              <TaskModalFooter>
+                <TaskSectionFooterTitleDiv>
+                  {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
+                    const active = tab === activeTab;
+                    return (
+                      <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
+                        <TaskTabText isActive={active}>{tab}</TaskTabText>
+                      </TaskSubmissionTab>
+                    );
+                  })}
+                </TaskSectionFooterTitleDiv>
+                <TaskSectionContent>
+                  {activeTab === tabs.submissions && (
+                    <TaskSubmission
+                      assigneeProfilePicture={fetchedTask?.profilePicture}
+                      assigneeUsername={fetchedTask?.assigneeUsername}
+                      board={board}
+                      boardColumns={boardColumns}
+                      canMoveProgress={canMoveProgress}
+                      canReview={canReview}
+                      canSubmit={canSubmit}
+                      fetchedTask={fetchedTask}
+                      fetchedTaskSubmissions={taskSubmissionsForTask?.getTaskSubmissionsForTask}
+                      getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                      handleClose={handleClose}
+                      isBounty={isBounty}
+                      orgId={fetchedTask?.orgId}
+                      setFetchedTask={setFetchedTask}
+                      setShowPaymentModal={setShowPaymentModal}
+                      taskId={fetchedTask?.id}
+                      taskSubmissionLoading={taskSubmissionsForTaskLoading}
+                    />
+                  )}
+                  {activeTab === tabs.subTasks && (
+                    <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
+                  )}
+                  {activeTab === tabs.discussion && (
+                    <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
+                  )}
+                  {activeTab === tabs.tasks && (
+                    <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
+                  )}
+                </TaskSectionContent>
+              </TaskModalFooter>
             </TaskModalTaskData>
-            <TaskModalFooter>
-              <TaskSectionFooterTitleDiv>
-                {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
-                  const active = tab === activeTab;
-                  return (
-                    <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-                      <TaskTabText isActive={active}>{tab}</TaskTabText>
-                    </TaskSubmissionTab>
-                  );
-                })}
-              </TaskSectionFooterTitleDiv>
-              <TaskSectionContent>
-                {activeTab === tabs.submissions && (
-                  <TaskSubmission
-                    assigneeProfilePicture={fetchedTask?.profilePicture}
-                    assigneeUsername={fetchedTask?.assigneeUsername}
-                    board={board}
-                    boardColumns={boardColumns}
-                    canMoveProgress={canMoveProgress}
-                    canReview={canReview}
-                    canSubmit={canSubmit}
-                    fetchedTask={fetchedTask}
-                    fetchedTaskSubmissions={taskSubmissionsForTask?.getTaskSubmissionsForTask}
-                    getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-                    handleClose={handleClose}
-                    isBounty={isBounty}
-                    orgId={fetchedTask?.orgId}
-                    setFetchedTask={setFetchedTask}
-                    setShowPaymentModal={setShowPaymentModal}
-                    taskId={fetchedTask?.id}
-                    taskSubmissionLoading={taskSubmissionsForTaskLoading}
-                  />
-                )}
-                {activeTab === tabs.subTasks && (
-                  <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
-                )}
-                {activeTab === tabs.discussion && (
-                  <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
-                )}
-                {activeTab === tabs.tasks && (
-                  <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
-                )}
-              </TaskSectionContent>
-            </TaskModalFooter>
           </TaskModalCard>
         </TaskModal>
       </>
