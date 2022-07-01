@@ -176,8 +176,6 @@ const TaskSubmissionList = ({
   );
 };
 
-const TaskSubmissionsItemEmpty = () => {};
-
 const TaskSubmissionsFilterSelected = ({ value }) => {
   const text = isEmpty(value) ? 'Status' : value;
   return (
