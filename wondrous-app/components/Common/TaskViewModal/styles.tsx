@@ -732,6 +732,8 @@ export const TaskSectionInfoDiv = styled.div`
 
 export const TaskModalFooter = styled.div`
   flex-grow: 1;
+  display: flex;
+  flex-direction: column;
 `;
 
 export const TaskSectionFooterTitleDiv = styled.div`
@@ -739,7 +741,6 @@ export const TaskSectionFooterTitleDiv = styled.div`
   align-items: center;
   padding: 0 24px;
   gap: 24px;
-  flex-grow: 1;
 `;
 
 export const TaskSubmissionTab = styled.div`
@@ -777,10 +778,9 @@ export const TaskTabText = styled(Typography)`
 `;
 
 export const TaskSectionContent = styled.div`
-  /* text-align: center; */
   padding: 20px 24px;
   background-color: #141414;
-  height: 100%;
+  flex-grow: 1;
 `;
 
 export const TaskStatusHeaderText = styled(Typography)`
