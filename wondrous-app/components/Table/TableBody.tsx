@@ -1,7 +1,7 @@
+import React from 'react';
 import { useMutation } from '@apollo/client';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React from 'react';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { updateCompletedItem, updateInProgressTask, updateInReviewItem, updateTaskItem } from 'utils/board';
 import * as Constants from 'utils/constants';
@@ -75,6 +75,7 @@ export default function TableBody({
     <StyledTableBody>
       {tasksToLimit?.map((task, index) => {
         const status = task?.status;
+        console.log('task', task)
         const dropdownItemLabel = status ? task.type : 'task proposal';
         const permissions = parseUserPermissionContext({
           userPermissionsContext,
@@ -212,18 +213,6 @@ export default function TableBody({
               </StyledTableCell>
             </SmartLink>
 
-            {/*<StyledTableCell>*/}
-            {/*  <DeliverableContainer>*/}
-            {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
-            {/*      return (*/}
-            {/*        <DeliverableItem key={index}>*/}
-            {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
-            {/*          {value?.length}*/}
-            {/*        </DeliverableItem>*/}
-            {/*      );*/}
-            {/*    })}*/}
-            {/*  </DeliverableContainer>*/}
-            {/*</StyledTableCell>*/}
             <StyledTableCell>
               <RewardContainer>
                 {reward ? (
