@@ -1180,9 +1180,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask?.createdBy === user?.id;
   const canDelete =
     canArchive &&
-    (fetchedTask?.type === ENTITIES_TYPES.TASK ||
-      fetchedTask?.type === ENTITIES_TYPES.MILESTONE ||
-      isTaskProposal);
+    (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -1273,13 +1271,13 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   };
 
   const canClaim =
-    fetchedTask?.canClaim &&
+    fetchedTask?.taskApplicationPermissions?.canClaim &&
     ((fetchedTask?.orgId &&
       userPermissionsContext?.orgPermissions &&
       fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
       fetchedTask?.privacyLevel === PRIVACY_LEVEL.public);
 
-  const canApply = !canClaim && fetchedTask?.canApply;
+  const canApply = !canClaim && fetchedTask?.taskApplicationPermissions?.canApply;
 
   const handleReviewButton = () => {
     if (activeTab !== tabs.applications) {

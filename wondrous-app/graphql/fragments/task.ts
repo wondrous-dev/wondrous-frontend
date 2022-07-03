@@ -85,9 +85,11 @@ export const TaskFragment = gql`
       url
       title
     }
-    canClaim
-    canApply
-    hasUserApplied
+    taskApplicationPermissions {
+      canClaim
+      canApply
+      hasUserApplied
+    }
     claimPolicy
     claimPolicyRoles
   }
@@ -147,9 +149,11 @@ export const TaskCardFragment = gql`
     totalSubmissionsCount
     approvedSubmissionsCount
     points
-    canClaim
-    canApply
-    hasUserApplied
+    taskApplicationPermissions {
+      canClaim
+      canApply
+      hasUserApplied
+    }
   }
   ${MediaFragment}
 `;

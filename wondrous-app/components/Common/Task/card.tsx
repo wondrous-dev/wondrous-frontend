@@ -183,8 +183,12 @@ export const TaskCard = ({
   const isPod = boardType === Constants.BOARD_TYPE.pod;
 
   const canClaim =
-    task?.canClaim && !assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE;
-  const canApply = !canClaim && task?.canApply;
+    task?.taskApplicationPermissions?.canClaim &&
+    !assigneeId &&
+    !isBounty &&
+    !isMilestone &&
+    task?.status !== Constants.TASK_STATUS_DONE;
+  const canApply = !canClaim && task?.taskApplicationPermissions?.canApply;
 
   const onNavigate = (e) => {
     //TODO refactor this

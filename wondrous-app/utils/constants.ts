@@ -474,9 +474,9 @@ export const APPLICATION_POLICY = {
     title: 'Only DAO members can apply',
     value: 'only_org_members_can_apply',
   },
-  HAS_ROLES: {
+  ROLES_CAN_CAN_CLAIM: {
     title: 'Everyone needs to apply except members with role',
-    value: 'has_roles',
+    value: 'roles_can_can_claim',
   },
 };
 
@@ -484,7 +484,7 @@ export const APPLICATION_POLICY_LABELS_MAP = {
   all_members: APPLICATION_POLICY.ALL_MEMBERS,
   only_org_members_can_claim: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_CLAIM,
   only_org_members_can_apply: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_APPLY,
-  has_roles: APPLICATION_POLICY.HAS_ROLES,
+  roles_can_can_claim: APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM,
 };
 
 export const TASK_APPLICATION_STATUS = {

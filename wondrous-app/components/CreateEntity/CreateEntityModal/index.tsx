@@ -1535,11 +1535,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   style={{ width: '100%' }}
                   onChange={(value) => {
                     form.setFieldValue('claimPolicy', value);
-                    if (value === APPLICATION_POLICY.HAS_ROLES.value)
+                    if (value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value)
                       form.setFieldValue('claimPolicyRoles', [roles[0]?.id]);
                   }}
                   renderValue={() => {
-                    const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.HAS_ROLES.value;
+                    const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value;
                     return (
                       <CreateEntityApplicationsSelectRender>
                         <span>
@@ -1560,7 +1560,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   })}
                 </CreateEntitySelect>
 
-                {form.values.claimPolicy === APPLICATION_POLICY.HAS_ROLES.value && (
+                {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
                   <CreateEntitySelect
                     name="task-applications-claim-roles"
                     value={form.values.claimPolicyRoles}

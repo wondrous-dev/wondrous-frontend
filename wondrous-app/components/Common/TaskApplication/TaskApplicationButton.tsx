@@ -60,14 +60,14 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
     });
   };
 
-  const btnTitle = task?.hasUserApplied ? 'Applied' : title;
+  const btnTitle = task?.taskApplicationPermissions?.hasUserApplied ? 'Applied' : title;
 
   return (
     <>
       {isConfirmationModalOpen && (
         <TaskApplicationModal open={isConfirmationModalOpen} onClose={handleClose} handleSubmit={handleSubmit} />
       )}
-      <ActionButton onClick={handleButtonClick} disabled={task?.hasUserApplied}>
+      <ActionButton onClick={handleButtonClick} disabled={task?.taskApplicationPermissions?.hasUserApplied}>
         <Claim />
         <span>{btnTitle}</span>
       </ActionButton>

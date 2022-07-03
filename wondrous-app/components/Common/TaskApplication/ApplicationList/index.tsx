@@ -55,7 +55,7 @@ const FILTER_SCHEMA = {
 };
 
 const getEmptyStateContent = (task, canApply, count) => {
-  if (task?.hasUserApplied && count > 0) {
+  if (task?.taskApplicationPermissions?.hasUserApplied && count > 0) {
     return <EmptyStateText>Please await admin response.</EmptyStateText>;
   }
   if (canApply) {
