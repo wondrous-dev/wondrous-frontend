@@ -122,9 +122,6 @@ import {
   TaskModalSnapshot,
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
-  TaskModalStatus,
-  TaskModalStatusIcon,
-  TaskModalStatusLabel,
   TaskModalTaskData,
   TaskModalTaskStatusMoreInfo,
   TaskModalTitle,
@@ -164,6 +161,7 @@ import {
   WalletError,
   WalletErrorText,
 } from './styles';
+import { TaskMenuStatus } from './taskDropdownStatus';
 
 const tabs = {
   submissions: 'Submissions',
@@ -186,14 +184,6 @@ const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => 
   if (isSubtask) return tabsPerType.subtaskTabs;
   if (isBounty) return tabsPerType.bountyTabs;
   return tabsPerType.taskTabs;
-};
-
-export const taskStatusLabel = {
-  created: 'To-do',
-  in_progress: 'In-Progress',
-  in_review: 'In-Review',
-  completed: 'Completed',
-  archived: 'Archived',
 };
 
 interface ITaskListModalProps {
@@ -1053,10 +1043,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                     </TaskModalSnapshot>
                   )}
-                  <TaskModalStatus>
-                    <TaskModalStatusIcon status={fetchedTask?.status} />
-                    <TaskModalStatusLabel>{taskStatusLabel[fetchedTask?.status]}</TaskModalStatusLabel>
-                  </TaskModalStatus>
+                  <TaskMenuStatus
+                    task={fetchedTask}
+                    entityType={entityType}
+                    archiveTaskMutation={archiveTaskMutation}
+                    canArchive={canArchive}
+                    canApproveProposal={canApproveProposal}
+                    isTaskProposal={isTaskProposal}
+                  />
                   <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                 </TaskModalTaskStatusMoreInfo>
                 <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />

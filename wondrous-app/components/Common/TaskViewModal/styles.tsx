@@ -1,5 +1,5 @@
 import { ButtonUnstyled } from '@mui/base';
-import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, ButtonBase, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { MilestoneTaskBreakdown } from 'components/Common/MilestoneTaskBreakdown';
@@ -309,6 +309,74 @@ export const TaskModalTaskStatusMoreInfo = styled.div`
   align-items: center;
   gap: 8px;
   margin-top: 12px;
+`;
+
+export const TaskStatusMenuButton = styled(ButtonBase)`
+  outline: ${({ open }) => open && `1px solid #424242`};
+  background-color: #141414;
+  max-width: fit-content;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  gap: 8px;
+  height: 26px;
+  && {
+    > svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+`;
+
+export const TaskStatusMenuButtonArrow = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 9px;
+    transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
+    svg {
+      path {
+        fill: white;
+      }
+    }
+  }
+`;
+
+export const TaskStatusMenuWrapper = styled(Menu)`
+  && {
+    .MuiMenu-list,
+    .MuiMenu-paper {
+      padding: 0;
+      background-color: #141414;
+      min-width: 150px;
+      outline: 1px solid #424242;
+    }
+  }
+`;
+
+export const TaskStatusMenuItem = styled(MenuItem)`
+  background-color: #141414;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  gap: 8px;
+  height: 28px;
+  && {
+    > svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+  :hover {
+    background: #040404;
+  }
 `;
 
 export const TaskModalStatus = styled.div`
