@@ -1,4 +1,4 @@
-import React, { useContext, useCallback, useEffect, useState } from 'react';
+import React, { useContext, useCallback, useEffect, useState, useRef } from 'react';
 import Modal from '@mui/material/Modal';
 import { format, formatDistance } from 'date-fns';
 import { useInView } from 'react-intersection-observer';
@@ -6,7 +6,6 @@ import { isEmpty } from 'lodash';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import GitHubIcon from '@mui/icons-material/GitHub';
-
 import Box from '@mui/material/Box';
 import PointsIcon from 'components/Icons/pointsIconFilled';
 import {
@@ -122,7 +121,7 @@ import {
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries/taskBoard';
-
+import { ActionButton } from './styles';
 import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import {
   addTaskItem,
@@ -160,6 +159,7 @@ import { CreateEntity } from 'components/CreateEntity';
 import { useSnapshot } from 'services/snapshot';
 import { GithubButton } from 'components/Settings/Github/styles';
 import { getProposalStatus, updateInReviewItem } from 'utils/board';
+import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
 
 export const MediaLink = (props) => {
   const { media, style } = props;
@@ -190,7 +190,6 @@ const TASK_LIST_VIEW_LIMIT = 5;
 export const TaskListViewModal = (props) => {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
-
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const [getOrgTaskProposals, { refetch: refetchOrgProposals, fetchMore: fetchMoreOrgProposals }] = useLazyQuery(
@@ -641,6 +640,7 @@ const tabs = {
   subTasks: 'Subtasks',
   discussion: 'Discussion',
   tasks: 'Tasks',
+  applications: 'Applications',
 };
 
 const tabsPerType = {
@@ -648,7 +648,7 @@ const tabsPerType = {
   milestoneTabs: [tabs.tasks, tabs.discussion],
   subtaskTabs: [tabs.submissions, tabs.discussion],
   bountyTabs: [tabs.submissions, tabs.discussion],
-  taskTabs: [tabs.submissions, tabs.subTasks, tabs.discussion],
+  taskTabs: [tabs.applications, tabs.submissions, tabs.subTasks, tabs.discussion],
 };
 
 const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
@@ -750,6 +750,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [taskSubmissionLoading, setTaskSubmissionLoading] = useState(!isTaskProposal);
   const [makeSubmission, setMakeSubmission] = useState(false);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
+  const isTask = fetchedTask?.type === TASK_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
@@ -764,6 +765,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     return orgBoard || podBoard || userBoard;
   }, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
+  const {
+    loading: taskApplicationCountLoading,
+    error: taskApplicationCountError,
+    data: taskApplicationCount,
+  } = useTaskApplicationCount(fetchedTask?.id);
 
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
@@ -818,6 +824,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
     fetchPolicy: 'cache-and-network',
   });
+  const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
 
@@ -1147,6 +1154,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
     fetchedTask?.createdBy === user?.id ||
     (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
+
+  const canViewApplications =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.EDIT_TASK) ||
+    (fetchedTask?.createdBy === user?.id && fetchedTask?.type === TASK_TYPE);
+
   const canMoveProgress =
     (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -1167,9 +1180,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     fetchedTask?.createdBy === user?.id;
   const canDelete =
     canArchive &&
-    (fetchedTask?.type === ENTITIES_TYPES.TASK ||
-      fetchedTask?.type === ENTITIES_TYPES.MILESTONE ||
-      isTaskProposal);
+    (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
   const displayDivProfileImageStyle = {
     width: '26px',
     height: '26px',
@@ -1257,6 +1268,22 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     });
     document.body.setAttribute('style', `position: relative;`);
     handleClose();
+  };
+
+  const canClaim =
+    fetchedTask?.taskApplicationPermissions?.canClaim &&
+    ((fetchedTask?.orgId &&
+      userPermissionsContext?.orgPermissions &&
+      fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
+      fetchedTask?.privacyLevel === PRIVACY_LEVEL.public);
+
+  const canApply = !canClaim && fetchedTask?.taskApplicationPermissions?.canApply;
+
+  const handleReviewButton = () => {
+    if (activeTab !== tabs.applications) {
+      setActiveTab(tabs.applications);
+    }
+    sectionRef?.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
   return (
@@ -1612,10 +1639,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     </TaskUserDiv>
                   ) : (
                     <>
-                      {(fetchedTask?.orgId &&
-                        userPermissionsContext?.orgPermissions &&
-                        fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
-                      fetchedTask?.privacyLevel === PRIVACY_LEVEL.public ? (
+                      {canClaim ? (
                         <>
                           <TakeTaskButton
                             onClick={() => {
@@ -1676,18 +1700,45 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           </TakeTaskButton>
                         </>
                       ) : (
-                        <TaskSectionInfoText
-                          style={{
-                            marginLeft: '4px',
-                            marginTop: '8px',
-                          }}
-                        >
-                          None
-                        </TaskSectionInfoText>
+                        <>
+                          {canApply ? (
+                            <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />
+                          ) : (
+                            <TaskSectionInfoText
+                              style={{
+                                marginLeft: '4px',
+                                marginTop: '8px',
+                              }}
+                            >
+                              None
+                            </TaskSectionInfoText>
+                          )}
+                        </>
                       )}
                     </>
                   )}
                 </TaskSectionInfoDiv>
+              </TaskSectionDisplayDiv>
+            )}
+
+            {canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0 && (
+              <TaskSectionDisplayDiv>
+                <TaskSectionDisplayLabel>
+                  <AssigneeIcon />
+                  <TaskSectionDisplayText>Applications</TaskSectionDisplayText>
+                </TaskSectionDisplayLabel>
+                <Box display="flex" alignItems="center">
+                  <TaskSectionInfoText
+                    style={{
+                      marginTop: '8px',
+                      marginLeft: '16px',
+                    }}
+                  >
+                    <ActionButton type="button" onClick={handleReviewButton}>
+                      Review {taskApplicationCount?.getTaskApplicationsCount?.total} applications
+                    </ActionButton>
+                  </TaskSectionInfoText>
+                </Box>
               </TaskSectionDisplayDiv>
             )}
             {Array.isArray(fetchedTask?.media) && fetchedTask?.media.length > 0 && (
@@ -1993,7 +2044,16 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   );
                 })}
               </TaskSectionFooterTitleDiv>
-              <TaskSectionContent>
+              <TaskSectionContent ref={sectionRef}>
+                {activeTab === tabs.applications && fetchedTask?.id && (
+                  <TaskApplicationList
+                    count={taskApplicationCount?.getTaskApplicationsCount?.total}
+                    task={fetchedTask}
+                    canApply={canApply}
+                    canClaim={canClaim}
+                    canViewApplications={canViewApplications}
+                  />
+                )}
                 {activeTab === tabs.submissions && (
                   <TaskSubmissionContent
                     taskId={fetchedTask?.id}

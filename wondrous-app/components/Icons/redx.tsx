@@ -8,13 +8,15 @@ export default function RedXIcon(props) {
         stroke="red"
         strokeWidth="4"
         strokeLinecap="round"
+        {...props}
       />
       <path
         d="M4.42822 4.80713L8.58248 8.96138L12.7367 13.1156"
         stroke="red"
         strokeWidth="4"
         strokeLinecap="round"
+        {...props}
       />
     </svg>
-  )
+  );
 }

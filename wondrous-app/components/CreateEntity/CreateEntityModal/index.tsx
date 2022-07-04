@@ -27,6 +27,7 @@ import {
 } from 'graphql/mutations/task';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
   GET_POD_GITHUB_INTEGRATIONS,
   GET_POD_GITHUB_PULL_REQUESTS,
@@ -59,6 +60,8 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
+  APPLICATION_POLICY,
+  APPLICATION_POLICY_LABELS_MAP,
 } from 'utils/constants';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -66,6 +69,7 @@ import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { SafeImage } from '../../Common/Image';
 import Tags, { Option as Label } from '../../Tags';
+import { StyledChipTag } from 'components/Tags/styles';
 import { MediaItem } from '../MediaItem';
 import {
   CreateEntityAddButtonIcon,
@@ -114,7 +118,7 @@ import {
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
   CreateEntityPrivacySelectRenderLabel,
-  CreateEntityRewardWrapper,
+  CreateEntityWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
@@ -131,6 +135,7 @@ import {
   EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
+  CreateEntityApplicationsSelectRender,
 } from './styles';
 import { GithubButton } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
@@ -142,6 +147,8 @@ const formValidationSchema = Yup.object().shape({
   title: Yup.string().required('Title is required'),
   reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
   assigneeId: Yup.string().nullable(),
+  claimPolicy: Yup.string().nullable(),
+  claimPolicyRoles: Yup.array().of(Yup.string()).optional().nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
     .integer('Points must be whole number')
@@ -280,6 +287,22 @@ const getPrivacyLevel = (podId, pods) => {
   return privacyLevel;
 };
 
+const useGetOrgRoles = (org) => {
+  const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
+    fetchPolicy: 'network-only',
+  });
+  useEffect(() => {
+    if (org) {
+      getOrgRoles({
+        variables: {
+          orgId: org,
+        },
+      });
+    }
+  }, [getOrgRoles, org]);
+  return data?.getOrgRoles;
+};
+
 const useGetAvailableUserPods = (org) => {
   const [getAvailableUserPods, { data }] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
     fetchPolicy: 'network-only',
@@ -351,7 +374,7 @@ const useGetEligibleReviewers = (org, pod) => {
           searchString: '',
         },
       });
-    } else {
+    } else if (org) {
       getEligibleReviewersForOrg({
         variables: {
           orgId: org,
@@ -441,12 +464,13 @@ const useGetPaymentMethods = (orgId) => {
 const useGetOrgUsers = (orgId) => {
   const [getOrgUsers, { data }] = useLazyQuery(GET_ORG_USERS);
   useEffect(() => {
-    getOrgUsers({
-      variables: {
-        orgId,
-        limit: 1000, // TODO: fix autocomplete
-      },
-    });
+    if (orgId)
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: 1000, // TODO: fix autocomplete
+        },
+      });
   }, [orgId, getOrgUsers]);
   return data?.getOrgUsers;
 };
@@ -454,12 +478,13 @@ const useGetOrgUsers = (orgId) => {
 const useGetMilestones = (orgId, podId) => {
   const [getMilestones, { data }] = useLazyQuery(GET_MILESTONES);
   useEffect(() => {
-    getMilestones({
-      variables: {
-        orgId,
-        podId,
-      },
-    });
+    if (orgId)
+      getMilestones({
+        variables: {
+          orgId,
+          podId,
+        },
+      });
   }, [getMilestones, orgId, podId]);
   return data?.getMilestones;
 };
@@ -786,6 +811,8 @@ const CreateEntityTextfieldInputRewardComponent = React.forwardRef(function Crea
 enum Fields {
   reviewer,
   assignee,
+  claimPolicy,
+  claimPolicyRoles,
   dueDate,
   reward,
   points,
@@ -799,6 +826,8 @@ const entityTypeData = {
     fields: [
       Fields.reviewer,
       Fields.assignee,
+      Fields.claimPolicy,
+      Fields.claimPolicyRoles,
       Fields.dueDate,
       Fields.reward,
       Fields.points,
@@ -811,6 +840,8 @@ const entityTypeData = {
     initialValues: {
       orgId: null,
       podId: null,
+      claimPolicy: null,
+      claimPolicyRoles: null,
       title: '',
       description: plainTextToRichText(''),
       reviewerIds: null,
@@ -918,6 +949,8 @@ interface ICreateEntityModal {
   cancel: Function;
   existingTask?: {
     id: string;
+    claimPolicyRoles: [string] | null;
+    claimPolicy: string | null;
     githubIssue: {
       id: string;
       url: string;
@@ -1020,6 +1053,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     useMutation(CREATE_TASK_GITHUB_ISSUE);
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
   const pods = useGetAvailableUserPods(form.values.orgId);
+  const roles = useGetOrgRoles(form.values.orgId);
 
   const handleOnchangePodId = useCallback(
     (podId) => {
@@ -1092,6 +1126,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
 
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
+
+  const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
@@ -1488,6 +1524,123 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.claimPolicy)}>
+          <CreateEntityLabelWrapper>
+            <CreateEntityLabel>Applications</CreateEntityLabel>
+          </CreateEntityLabelWrapper>
+          <CreateEntitySelectWrapper style={{ alignItems: 'center', flexWrap: 'nowrap' }}>
+            {form.values.claimPolicy !== null && (
+              <CreateEntityWrapper>
+                <CreateEntitySelect
+                  name="task-applications"
+                  value={form.values.claimPolicy}
+                  style={{ width: '100%' }}
+                  onChange={(value) => {
+                    form.setFieldValue('claimPolicy', value);
+                    if (value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value)
+                      form.setFieldValue('claimPolicyRoles', [roles[0]?.id]);
+                  }}
+                  renderValue={() => {
+                    const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value;
+                    return (
+                      <CreateEntityApplicationsSelectRender>
+                        <span>
+                          {isRolesSelected ? 'Role: ' : APPLICATION_POLICY_LABELS_MAP[form.values?.claimPolicy]?.title}
+                        </span>
+                        <CreateEntitySelectArrowIcon />
+                      </CreateEntityApplicationsSelectRender>
+                    );
+                  }}
+                >
+                  {Object.keys(APPLICATION_POLICY).map((policy, idx) => {
+                    const appPolicy = APPLICATION_POLICY[policy];
+                    return (
+                      <CreateEntityOption key={idx} value={appPolicy?.value}>
+                        <CreateEntityOptionLabel>{appPolicy?.title}</CreateEntityOptionLabel>
+                      </CreateEntityOption>
+                    );
+                  })}
+                </CreateEntitySelect>
+
+                {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
+                  <CreateEntitySelect
+                    name="task-applications-claim-roles"
+                    value={form.values.claimPolicyRoles}
+                    style={{ width: '100%', height: 'fit-content' }}
+                    onChange={(value) =>
+                      form.setFieldValue(
+                        'claimPolicyRoles',
+                        form.values.claimPolicyRoles ? [...form.values.claimPolicyRoles, value] : [value]
+                      )
+                    }
+                    renderValue={() => {
+                      return (
+                        <CreateEntityApplicationsSelectRender>
+                          <>
+                            {form.values?.claimPolicyRoles?.map((role) => {
+                              const roleData = getRoleDataById(role);
+                              return (
+                                <StyledChipTag
+                                  key={role}
+                                  style={{ margin: '2px' }}
+                                  deleteIcon={<div>&times;</div>}
+                                  onClick={() =>
+                                    form.setFieldValue(
+                                      'claimPolicyRoles',
+                                      form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
+                                    )
+                                  }
+                                  label={roleData?.name}
+                                  // background={option.color}
+                                  variant="outlined"
+                                />
+                              );
+                            })}
+                          </>
+                          <CreateEntitySelectArrowIcon />
+                        </CreateEntityApplicationsSelectRender>
+                      );
+                    }}
+                  >
+                    {roles?.map((role, roleIdx) => {
+                      if (form.values.claimPolicyRoles?.includes(role.id)) return null;
+                      return (
+                        <CreateEntityOption key={roleIdx} value={role.id}>
+                          <CreateEntityOptionLabel>{role?.name}</CreateEntityOptionLabel>
+                        </CreateEntityOption>
+                      );
+                    })}
+                  </CreateEntitySelect>
+                )}
+              </CreateEntityWrapper>
+            )}
+
+            {form.values.claimPolicy !== null && (
+              <CreateEntityAutocompletePopperRenderInputAdornment
+                position="end"
+                onClick={() => {
+                  form.setFieldValue('claimPolicy', null);
+                  form.setFieldValue('claimPolicyRoles', null);
+                }}
+              >
+                <CreateEntityAutocompletePopperRenderInputIcon />
+              </CreateEntityAutocompletePopperRenderInputAdornment>
+            )}
+            {form.touched.claimPolicy && <CreateEntityError>{form.touched.claimPolicy}</CreateEntityError>}
+            {form.values.claimPolicy === null && (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  console.log(APPLICATION_POLICY.ALL_MEMBERS.value);
+                  form.setFieldValue('claimPolicy', APPLICATION_POLICY.ALL_MEMBERS.value);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            )}
+          </CreateEntitySelectWrapper>
+        </CreateEntityLabelSelectWrapper>
+
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.dueDate)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Due Date</CreateEntityLabel>
@@ -1524,7 +1677,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
             {form.values.rewards?.length > 0 && (
-              <CreateEntityRewardWrapper>
+              <CreateEntityWrapper>
                 <CreateEntityPaymentMethodSelect
                   name="rewards-payment-method"
                   value={form.values?.rewards?.[0]?.paymentMethodId}
@@ -1576,7 +1729,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   error={form.errors?.rewards?.[0]?.['rewardAmount']}
                   onFocus={() => form.setFieldError('rewards', undefined)}
                 />
-              </CreateEntityRewardWrapper>
+              </CreateEntityWrapper>
             )}
             {form.touched.rewards && form.errors?.rewards?.[0]?.['rewardAmount'] && (
               <CreateEntityError>{form.errors?.rewards?.[0]?.['rewardAmount']}</CreateEntityError>
