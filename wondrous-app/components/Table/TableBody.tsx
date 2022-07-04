@@ -71,10 +71,9 @@ export default function TableBody({
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const tasksToLimit = limit && tasks?.length >= limit ? tasks.slice(0, limit) : tasks;
   const view = location.params.view ?? ViewType.List;
-
   return (
     <StyledTableBody>
-      {tasksToLimit.map((task, index) => {
+      {tasksToLimit?.map((task, index) => {
         const status = task?.status;
         const dropdownItemLabel = status ? task.type : 'task proposal';
         const permissions = parseUserPermissionContext({
