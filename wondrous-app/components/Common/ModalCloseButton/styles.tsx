@@ -7,10 +7,11 @@ export const StyledCloseButton = styled(Button)`
     align-items: center;
     justify-content: center;
     min-width: 0px;
-    width: 34.9px;
-    height: 34.9px;
     background: rgba(0, 0, 0, 1);
-
+    border-radius: 6px;
+    padding: 10px 9px;
+    max-height: 32px;
+    max-width: 32px;
     :hover {
       background: rgba(0, 0, 0, 0.4);
     }

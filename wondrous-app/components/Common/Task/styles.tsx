@@ -532,6 +532,9 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     padding: 4px 16px;
     margin-left: 0;
     margin-right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
     height: auto;
     z-index: 10;
     border: 1px solid transparent;
@@ -548,6 +551,11 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       mask-composite: exclude;
       padding: 1px;
       border-radius: 180px;
+    }
+  }
+  &.Mui-disabled {
+    &::before {
+      background: transparent;
     }
   }
 `;
