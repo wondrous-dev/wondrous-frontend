@@ -49,7 +49,6 @@ const ProfileInfo = ({ userProfile }) => {
   const { mainLink, social, websites } = parseLinks(links);
   const [createUserInterest] = useMutation(CREATE_USER_INTEREST, { refetchQueries: [GET_USER_INTERESTS] });
   const viewingSelf = user?.username === username;
-  console.log('mainLink', mainLink, links);
   return (
     <ProfileInfoWrapper>
       <UserInterestModal
