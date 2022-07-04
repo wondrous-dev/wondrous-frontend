@@ -4,6 +4,7 @@ import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import { Share } from 'components/Common/Share';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import Arrow from 'components/Icons/arrow.svg';
 import CalendarIcon from 'components/Icons/calendar';
 import CloseModalIcon from 'components/Icons/closeModal';
@@ -875,4 +876,37 @@ export const Tag = styled.div`
 export const GithubBlock = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const ActionButton = styled(CreateFormPreviewButton)`
+  && {
+    padding: 4px 16px;
+    margin-left: 0;
+    margin-right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
+    height: auto;
+    z-index: 10;
+    border: 1px solid transparent;
+    :hover {
+      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    }
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+      border-radius: 180px;
+    }
+  }
+  &.Mui-disabled {
+    &::before {
+      background: transparent;
+    }
+  }
 `;
