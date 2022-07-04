@@ -1470,8 +1470,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       canViewApplications={canViewApplications}
                     />
                   )}
-                </TaskSectionContent>
-                <TaskSectionContent>
                   {activeTab === tabs.submissions && (
                     <TaskSubmission
                       assigneeProfilePicture={fetchedTask?.profilePicture}
