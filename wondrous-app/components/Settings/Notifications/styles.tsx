@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
+import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
 import { Button } from '../../Common/button';
@@ -105,16 +105,6 @@ export const ExplanationText = styled(Typography)`
     line-height: 20px;
     margin-top: 8px;
   }
-`;
-
-export const StyledCheckbox = styled((props) => (
-  <Checkbox
-    style={{ color: palette.highlightPurple, background: props.checked ? palette.white : 'transparent' }}
-    {...props}
-  />
-))`
-  height: 16px;
-  width: 16px;
 `;
 
 export const UserDiscordNotificationSettingsContainer = styled.div`
