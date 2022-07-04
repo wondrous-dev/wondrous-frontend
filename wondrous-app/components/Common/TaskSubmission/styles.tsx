@@ -453,16 +453,6 @@ export const SubmissionFormSubmit = styled(Button)`
   }
 `;
 
-export const TaskDescription = styled.p`
-  color: #c4c4c4;
-`;
-
-export const TaskSectionDisplayLabel = styled.div`
-  display: flex;
-  align-items: center;
-  min-width: 120px;
-`;
-
 export const SubmissionFormField = styled.div`
   display: flex;
   flex-direction: column;
@@ -511,51 +501,11 @@ export const TaskSectionInfoText = styled(SubmissionDisplayText)`
   }
 `;
 
-export const SubmissionSection = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export const TaskModalFooter = styled.div`
-  margin-top: 16px;
-`;
-
-export const TaskSectionFooterTitleDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
-
-export const TaskSubmissionTab = styled.div`
-  flex: 1;
-  margin-right: 16px;
-  text-align: center;
-  padding-bottom: 8px;
-  cursor: pointer;
-  &:last-child {
-    margin-right: 0;
-  }
-  border-bottom: ${(props) => `2px solid ${props.isActive ? '#7427FF' : '#4B4B4B'}`};
-`;
-
 export const TaskSubmissionItemsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
   margin-top: 18px;
-`;
-
-export const TaskSectionContent = styled.div`
-  text-align: center;
-  padding-top: 16px;
-  padding-bottom: 20px;
-  max-width: 630px;
-`;
-export const MakeSubmissionDiv = styled.div`
-  background: #0f0f0f;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
 `;
 
 export const SubmissionItemSection = styled.div`
@@ -706,13 +656,6 @@ export const TaskSubmissionLink = styled.a`
 `;
 
 export const TaskSubmissionLinkIcon = styled(LinkIcon)``;
-
-export const TaskMediaContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-  margin-left: 28px;
-`;
 
 export const SubmissionDescription = styled.div`
   && {

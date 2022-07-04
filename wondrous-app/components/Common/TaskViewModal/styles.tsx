@@ -2,7 +2,6 @@ import { ButtonUnstyled } from '@mui/base';
 import { Button, ButtonBase, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
-import { MilestoneTaskBreakdown } from 'components/Common/MilestoneTaskBreakdown';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import { Share } from 'components/Common/Share';
 import Arrow from 'components/Icons/arrow.svg';
@@ -14,7 +13,6 @@ import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
-import { GetStatusIcon } from 'utils/common';
 
 import { GradientHighlightHorizontal } from '../gradients';
 import TaskMedia from '../TaskMedia';
@@ -261,12 +259,6 @@ export const TaskModalHeaderMenuItem = styled(MenuItem)`
   }
 `;
 
-export const TaskModalHeaderMenuItemRed = styled(Typography)`
-  && {
-    color: ${({ theme }) => theme.palette.red800};
-  }
-`;
-
 const TaskModalTaskDataFullScreen = css`
   display: grid;
   grid-template-columns: 6fr 4fr;
@@ -378,26 +370,6 @@ export const TaskStatusMenuItem = styled(MenuItem)`
     background: #040404;
   }
 `;
-
-export const TaskModalStatus = styled.div`
-  background-color: #141414;
-  max-width: fit-content;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  gap: 8px;
-  height: 26px;
-  && {
-    svg {
-      width: 18px;
-      height: 18px;
-    }
-  }
-`;
-
-export const TaskModalStatusIcon = styled((props) => <GetStatusIcon {...props} />)``;
 
 export const TaskModalStatusLabel = styled(Typography)`
   && {
@@ -561,7 +533,7 @@ export const TaskSectionImageContentImage = styled.div`
   }
 `;
 
-export const TaskSectionDisplayText = styled(Typography)`
+const TaskSectionDisplayText = styled(Typography)`
   && {
     font-size: 14px;
     border-radius: 4px;
@@ -775,8 +747,6 @@ export const TaskSectionInfoPaymentAmount = styled(TaskSectionInfoText)`
   }
 `;
 
-export const TaskSectionMilestoneTaskBreakdown = styled(MilestoneTaskBreakdown)``;
-
 export const TaskSectionInfoTextCreator = styled(Typography)`
   && {
     font-size: 12px;
@@ -858,17 +828,6 @@ export const TaskStatusHeaderText = styled(Typography)`
   && {
     color: #c4c4c4;
     font-size: 14px;
-  }
-`;
-
-export const TaskMediaContainer = styled.div`
-  display: flex;
-  align-items: flex-start;
-  flex-wrap: wrap;
-  gap: 8px;
-  margin-top: 18px;
-  > a > div {
-    margin: 0;
   }
 `;
 
