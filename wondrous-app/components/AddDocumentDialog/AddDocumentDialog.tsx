@@ -9,7 +9,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 
-import { CREATE_ORG_DOCUMENT, UPDATE_ORG_DOCUMENT } from 'graphql/mutations/documents';
+import { CREATE_ORG_DOCUMENT, CREATE_POD_DOCUMENT, UPDATE_DOCUMENT } from 'graphql/mutations/documents';
 import { URL_REGEX } from 'utils/constants';
 
 import DocModal from 'components/DocModal';
@@ -21,7 +21,7 @@ import styles, { labelStyles, inputStyles } from './AddDocumentDialogStyles';
 const LabelTypography = styled(Typography)(labelStyles);
 const StyledTextField = styled(TextField)(inputStyles);
 
-const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pinned }) => {
+const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, document, pinned }) => {
   const {
     register,
     handleSubmit,
@@ -41,8 +41,12 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
     refetchQueries: ['getOrgDocs'],
   });
 
-  const [updateDocument] = useMutation(UPDATE_ORG_DOCUMENT, {
-    refetchQueries: ['getOrgDocs'],
+  const [createPodDocument] = useMutation(CREATE_POD_DOCUMENT, {
+    refetchQueries: ['getPodDocs'],
+  });
+
+  const [updateDocument] = useMutation(UPDATE_DOCUMENT, {
+    refetchQueries: ['getOrgDocs', 'getPodDocs'],
   });
 
   const onSubmitForm = (data) => {
@@ -63,17 +67,30 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, category, document, pi
       handleClose();
       return;
     }
-
-    createOrgDocument({
-      variables: {
-        input: {
-          ...data,
-          orgId: orgId,
-          ...(category?.id && { categoryId: category.id }),
-          ...(pinned && { pinned: pinned }),
+    if (podId) {
+      createPodDocument({
+        variables: {
+          input: {
+            ...data,
+            orgId: orgId,
+            podId,
+            ...(category?.id && { categoryId: category.id }),
+            ...(pinned && { pinned: pinned }),
+          },
         },
-      },
-    });
+      });
+    } else {
+      createOrgDocument({
+        variables: {
+          input: {
+            ...data,
+            orgId: orgId,
+            ...(category?.id && { categoryId: category.id }),
+            ...(pinned && { pinned: pinned }),
+          },
+        },
+      });
+    }
     handleClose();
   };
 
