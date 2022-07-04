@@ -75,7 +75,6 @@ export default function TableBody({
     <StyledTableBody>
       {tasksToLimit?.map((task, index) => {
         const status = task?.status;
-        console.log('task', task)
         const dropdownItemLabel = status ? task.type : 'task proposal';
         const permissions = parseUserPermissionContext({
           userPermissionsContext,

@@ -1,25 +1,11 @@
-import { useMutation } from '@apollo/client';
-import { useContext, useEffect, useState } from 'react';
-import { CREATE_POST, UPDATE_POST } from 'graphql/mutations/post';
-import { ObjectType, PostType, PostVerbType } from 'types/post';
-import { SnackbarAlertContext } from '../SnackbarAlert';
+import { ModalBody } from './styles';
 import {
-  KudosFormBackground,
-  KudosFormBorder,
-  KudosFormButtonWrapper,
-  KudosFormCancelButton,
-  KudosFormDivider,
-  KudosFormError,
-  KudosFormHeader,
-  KudosFormHeaderCloseButton,
-  KudosFormHeaderText,
-  KudosFormModal,
-  KudosFormSubmitButton,
-  KudosFormTextarea,
-  KudosFormTextareaCharacterCount,
-  KudosFormTextareaWrapper,
-  KudosFormSubmitButtonText,
-} from './styles';
+  CreateFormPreviewButton,
+  CreateLayoutsModalHeader,
+  CreateLayoutsModalItemContainer,
+  CreateLayoutsModalItemTitle,
+  CreateModalOverlay,
+} from 'components/CreateEntity/styles';
 
 export const ErrorModal = (props) => {
   const { open, onClose, text, buttonText, buttonAction } = props;
@@ -28,21 +14,38 @@ export const ErrorModal = (props) => {
   };
 
   return (
-    <KudosFormModal open={open} fullWidth={true} maxWidth={'sm'} onClose={handleOnClose}>
-      <KudosFormBorder>
-        <KudosFormBackground>
-          <KudosFormHeader>
-            <KudosFormHeaderText>{text}</KudosFormHeaderText>
-            <KudosFormHeaderCloseButton onClick={handleOnClose} />
-          </KudosFormHeader>
-          <KudosFormDivider />
-          <KudosFormButtonWrapper>
-            <KudosFormSubmitButton onClick={buttonAction}>
-              <KudosFormSubmitButtonText>{buttonText}</KudosFormSubmitButtonText>
-            </KudosFormSubmitButton>
-          </KudosFormButtonWrapper>
-        </KudosFormBackground>
-      </KudosFormBorder>
-    </KudosFormModal>
+    <CreateModalOverlay open={open} onClose={handleOnClose}>
+      <ModalBody>
+        <CreateLayoutsModalHeader></CreateLayoutsModalHeader>
+        <CreateLayoutsModalItemContainer>
+          <CreateLayoutsModalItemTitle>{text}</CreateLayoutsModalItemTitle>
+          <CreateFormPreviewButton
+            onClick={buttonAction}
+            style={{
+              marginTop: '24px',
+            }}
+          >
+            {buttonText}
+          </CreateFormPreviewButton>
+        </CreateLayoutsModalItemContainer>
+      </ModalBody>
+    </CreateModalOverlay>
   );
 };
+
+// <KudosFormModal open={open} fullWidth={true} maxWidth={'sm'} onClose={handleOnClose}>
+//   <KudosFormBorder>
+//     <KudosFormBackground>
+//       <KudosFormHeader>
+//         <KudosFormHeaderText>{text}</KudosFormHeaderText>
+//         <KudosFormHeaderCloseButton onClick={handleOnClose} />
+//       </KudosFormHeader>
+//       <KudosFormDivider />
+//       <KudosFormButtonWrapper>
+//         <KudosFormSubmitButton onClick={buttonAction}>
+//           <KudosFormSubmitButtonText>{buttonText}</KudosFormSubmitButtonText>
+//         </KudosFormSubmitButton>
+//       </KudosFormButtonWrapper>
+//     </KudosFormBackground>
+//   </KudosFormBorder>
+// </KudosFormModal>
