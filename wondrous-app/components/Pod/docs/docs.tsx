@@ -62,7 +62,7 @@ const useGetPodDocs = (podId) => {
 
 const Docs = (props) => {
   const { podData = {} } = props;
-  const { id: podId, orgId } = podData;
+  const { id: podId } = podData;
   const router = useRouter();
 
   const { docData, categoriesData } = useGetPodDocs(podId);
@@ -84,7 +84,7 @@ const Docs = (props) => {
     : null;
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId,
+    orgId: podData?.orgId,
     podId,
   });
   const canEdit = permissions.includes(PERMISSIONS.FULL_ACCESS);
@@ -189,7 +189,7 @@ const Docs = (props) => {
         open={showDocDialog}
         onClose={handleCloseDocDialog}
         title={docCategory?.name}
-        orgId={orgId}
+        orgId={podData?.orgId}
         podId={podId}
         category={docCategory}
         document={selectedDoc}
@@ -199,7 +199,7 @@ const Docs = (props) => {
         open={showCategoriesDialog}
         onClose={handleCloseCategoriesDialog}
         orgName={router.query.username}
-        orgId={orgId}
+        orgId={podData?.orgId}
         podId={podId}
         category={docCategory}
       />

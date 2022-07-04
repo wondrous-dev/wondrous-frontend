@@ -37,16 +37,18 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
     onClose();
   };
 
+  const docRefetchQueries = ['getOrgDocs', 'getPodDocs'];
+
   const [createOrgDocument] = useMutation(CREATE_ORG_DOCUMENT, {
-    refetchQueries: ['getOrgDocs'],
+    refetchQueries: [docRefetchQueries[0]],
   });
 
   const [createPodDocument] = useMutation(CREATE_POD_DOCUMENT, {
-    refetchQueries: ['getPodDocs'],
+    refetchQueries: [docRefetchQueries[1]],
   });
 
   const [updateDocument] = useMutation(UPDATE_DOCUMENT, {
-    refetchQueries: ['getOrgDocs', 'getPodDocs'],
+    refetchQueries: docRefetchQueries,
   });
 
   const onSubmitForm = (data) => {
