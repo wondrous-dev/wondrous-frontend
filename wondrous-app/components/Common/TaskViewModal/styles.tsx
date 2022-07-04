@@ -321,7 +321,7 @@ export const TaskStatusMenuButton = styled(ButtonBase)`
   justify-content: center;
   padding: 0 6px;
   gap: 8px;
-  height: 26px;
+  height: 28px;
   && {
     > svg {
       width: 18px !important;
@@ -402,6 +402,7 @@ export const TaskModalStatusIcon = styled((props) => <GetStatusIcon {...props} /
 export const TaskModalStatusLabel = styled(Typography)`
   && {
     font-size: 14px;
+    line-height: 0;
     ${({ theme }) => `
     font-weight: ${theme.typography.fontWeightRegular};
     color: ${theme.palette.white};
