@@ -161,7 +161,7 @@ import {
   WalletError,
   WalletErrorText,
 } from './styles';
-import { TaskMenuStatus } from './taskDropdownStatus';
+import { TaskMenuStatus } from './taskMenuStatus';
 
 const tabs = {
   submissions: 'Submissions',
