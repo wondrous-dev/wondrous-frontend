@@ -18,3 +18,21 @@ export const GET_ORG_DOCS_CATEGORIES = gql`
   }
   ${DocCategoryFragment}
 `;
+
+export const GET_POD_DOCS = gql`
+  query getPodDocs($podId: ID!) {
+    getPodDocuments(podId: $podId) {
+      ...DocFragment
+    }
+  }
+  ${DocFragment}
+`;
+
+export const GET_POD_DOCS_CATEGORIES = gql`
+  query getOrgDocumentCategories($podId: ID!) {
+    getPodDocumentCategories(podId: $podId) {
+      ...DocCategoryFragment
+    }
+  }
+  ${DocCategoryFragment}
+`;

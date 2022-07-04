@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
+import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
 import { isEmpty } from 'lodash';
@@ -17,24 +17,24 @@ import PinnedDocsSection from 'components/PinnedDocsSection';
 import DocCategoriesSection from 'components/DocCategoriesSection';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 
-import Wrapper from '../wrapper/wrapper';
-import styles from './docsStyles';
+import Wrapper from '../wrapper';
+import styles from 'components/organization/docs/docsStyles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
 
-const useGetOrgDocs = (orgId) => {
-  const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
+const useGetPodDocs = (podId) => {
+  const [getPodDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_POD_DOCS, {
     variables: {
-      orgId,
+      podId,
     },
   });
 
-  const [getOrgDocsCategories, { data: categoriesData, loading: loadingCategories }] = useLazyQuery(
-    GET_ORG_DOCS_CATEGORIES,
+  const [getPodDocsCategories, { data: categoriesData, loading: loadingCategories }] = useLazyQuery(
+    GET_POD_DOCS_CATEGORIES,
     {
       variables: {
-        orgId,
+        podId,
       },
     }
   );
@@ -42,38 +42,36 @@ const useGetOrgDocs = (orgId) => {
   const loading = loadingDocs || loadingCategories;
 
   useEffect(() => {
-    if (!docData && orgId) {
-      getOrgDocs();
+    if (!docData && podId) {
+      getPodDocs();
     }
-  }, [loadingDocs, orgId, getOrgDocs, docData]);
+  }, [loadingDocs, podId, getPodDocs, docData]);
 
   useEffect(() => {
-    if (!categoriesData && orgId) {
-      getOrgDocsCategories();
+    if (!categoriesData && podId) {
+      getPodDocsCategories();
     }
-  }, [loadingCategories, orgId, getOrgDocsCategories, categoriesData]);
+  }, [loadingCategories, podId, getPodDocsCategories, categoriesData]);
 
   return {
-    docData: docData?.getOrgDocuments,
-    categoriesData: categoriesData?.getOrgDocumentCategories,
+    docData: docData?.getPodDocuments,
+    categoriesData: categoriesData?.getPodDocumentCategories,
     loading,
   };
 };
 
 const Docs = (props) => {
-  const { orgData = {} } = props;
-  const { id: orgId } = orgData;
+  const { podData = {} } = props;
+  const { id: podId } = podData;
   const router = useRouter();
 
-  const { docData, categoriesData } = useGetOrgDocs(orgId);
-
+  const { docData, categoriesData } = useGetPodDocs(podId);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
   const [docCategory, setDocCategory] = useState(null);
   const [selectedDoc, setSelectedDoc] = useState({});
   const [pinned, setPinned] = useState(false);
-
   const [menuAnchor, setMenuAnchor] = useState(null);
   const openMenu = Boolean(menuAnchor);
 
@@ -86,7 +84,8 @@ const Docs = (props) => {
     : null;
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId,
+    orgId: podData?.orgId,
+    podId,
   });
   const canEdit = permissions.includes(PERMISSIONS.FULL_ACCESS);
 
@@ -148,7 +147,7 @@ const Docs = (props) => {
   const pinnedDocs = docData?.filter((doc) => doc.pinned);
 
   return (
-    <Wrapper orgData={orgData}>
+    <Wrapper>
       {canEdit && (
         <Tooltip title="Create new doc category" placement="top">
           <Box sx={styles.categoryButtonContainer}>
@@ -190,8 +189,8 @@ const Docs = (props) => {
         open={showDocDialog}
         onClose={handleCloseDocDialog}
         title={docCategory?.name}
-        orgId={orgId}
-        podId={null}
+        orgId={podData?.orgId}
+        podId={podId}
         category={docCategory}
         document={selectedDoc}
         pinned={pinned}
@@ -200,8 +199,8 @@ const Docs = (props) => {
         open={showCategoriesDialog}
         onClose={handleCloseCategoriesDialog}
         orgName={router.query.username}
-        orgId={orgId}
-        podId={null}
+        orgId={podData?.orgId}
+        podId={podId}
         category={docCategory}
       />
       <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />

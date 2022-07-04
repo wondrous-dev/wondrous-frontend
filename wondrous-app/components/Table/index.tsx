@@ -24,7 +24,6 @@ import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { CreateModalOverlay } from '../CreateEntity/styles';
-import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
 import { Claim } from '../Icons/claimTask';
 import ImageIcon from '../Icons/image';
 import AudioIcon from '../Icons/MediaTypesIcons/audio';

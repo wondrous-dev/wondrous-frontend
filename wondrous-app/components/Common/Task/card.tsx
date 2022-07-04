@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { format } from 'date-fns';
 
 import { TaskCommentIcon } from '../../Icons/taskComment';
@@ -72,6 +72,7 @@ import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
+import { TaskApplicationButton } from 'components/Common/TaskApplication';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -115,9 +116,10 @@ export const TaskCard = ({
 }) => {
   const location = useLocation();
   let TaskIcon = TASK_ICONS[task.status];
-
+  const ref = useRef(null);
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
+  const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
   const [displayActions, setDisplayActions] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
@@ -179,24 +181,30 @@ export const TaskCard = ({
   };
   const isUser = boardType === Constants.BOARD_TYPE.assignee;
   const isPod = boardType === Constants.BOARD_TYPE.pod;
-  const isOrg = boardType === Constants.BOARD_TYPE.org;
 
+  const canClaim =
+    task?.taskApplicationPermissions?.canClaim &&
+    !assigneeId &&
+    !isBounty &&
+    !isMilestone &&
+    task?.status !== Constants.TASK_STATUS_DONE;
+  const canApply = !canClaim && task?.taskApplicationPermissions?.canApply;
+
+  const onNavigate = (e) => {
+    //TODO refactor this
+    if (!showPaymentModal && !isApplicationModalOpen) {
+      location.push(viewUrl);
+      windowOffset = window.scrollY;
+      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    }
+  };
   return (
     <ProposalCardWrapper
       onMouseEnter={() => canArchive && setDisplayActions(true)}
       onMouseLeave={() => canArchive && setDisplayActions(false)}
+      ref={ref}
     >
-      <SmartLink
-        href={viewUrl}
-        preventLinkNavigation
-        onNavigate={() => {
-          if (!showPaymentModal) {
-            location.push(viewUrl);
-            windowOffset = window.scrollY;
-            document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-          }
-        }}
-      >
+      <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
@@ -223,7 +231,7 @@ export const TaskCard = ({
               ) : (
                 <DAOIcon />
               ))}
-            {!assigneeId && !isBounty && !isMilestone && task?.status !== Constants.TASK_STATUS_DONE && (
+            {canClaim ? (
               <>
                 {claimed ? (
                   <ActionButton
@@ -273,6 +281,16 @@ export const TaskCard = ({
                       Claim
                     </span>
                   </ActionButton>
+                )}
+              </>
+            ) : (
+              <>
+                {canApply && (
+                  <TaskApplicationButton
+                    setIsApplicationModalOpen={setIsApplicationModalOpen}
+                    task={task}
+                    canApply={canApply}
+                  />
                 )}
               </>
             )}

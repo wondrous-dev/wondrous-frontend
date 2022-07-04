@@ -1,3 +1,4 @@
+import react, { useState } from 'react';
 import { useMutation } from '@apollo/client';
 import {
   APPROVE_SUBMISSION,
@@ -17,6 +18,7 @@ import {
 } from 'utils/constants';
 import { ApproveAndPayIcon, ApproveOnlyIcon, RejectIcon, SendIntoRevisionIcon } from '../../Icons/decisionIcons';
 import { StyledList, StyledListItem, StyledListItemIcon, StyledListItemText, StyledPopper } from './styles';
+import { ErrorModal } from 'components/Common/ErrorModal';
 
 const DECISIONS = [
   [DECISION_SEND_INTO_REVISION, SendIntoRevisionIcon],
@@ -33,7 +35,7 @@ export const DropDownPopper = (props) => {
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
   const [rejectTaskSubmission] = useMutation(REJECT_SUBMISSION);
-
+  const [submissionApprovalError, setSubmissionApprovalError] = useState(null);
   const handleTaskProposalDecision = (id, decision) => {
     const refetchQueries = () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'];
     if (decision === DECISION_SEND_INTO_REVISION) {
@@ -88,9 +90,23 @@ export const DropDownPopper = (props) => {
           submissionId: id,
         },
         refetchQueries: refetchQueries(),
-      });
-      openKudos(true);
-      setKudosTask(task);
+      })
+        .then(() => {
+          openKudos(true);
+          setKudosTask(task);
+        })
+        .catch((err) => {
+          if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode) {
+            const errorCode = err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode;
+            if (errorCode === 'task_already_completed') {
+              setSubmissionApprovalError('Associated task is already completed, please reject the submission');
+            }
+            if (errorCode === 'task_already_archived') {
+              setSubmissionApprovalError('Associated task is already archived, please reject the submission');
+            }
+          }
+          console.error(err);
+        });
     }
   };
 
@@ -105,17 +121,31 @@ export const DropDownPopper = (props) => {
   };
 
   return (
-    <StyledPopper {...props}>
-      <StyledList>
-        {DECISIONS.map(([decision, Icon], i) => (
-          <StyledListItem key={i} onClick={() => handleOnClick(task.id, decision, status)}>
-            <StyledListItemIcon alignItems="center">
-              <Icon />
-            </StyledListItemIcon>
-            <StyledListItemText primary={decision} />
-          </StyledListItem>
-        ))}
-      </StyledList>
-    </StyledPopper>
+    <>
+      {submissionApprovalError && (
+        <ErrorModal
+          open={submissionApprovalError}
+          onClose={() => setSubmissionApprovalError(null)}
+          text={submissionApprovalError}
+          buttonText={'Reject Submission'}
+          buttonAction={() => {
+            handleTaskSubmissionDecision(task.id, DECISION_REJECT);
+            setSubmissionApprovalError(null);
+          }}
+        />
+      )}
+      <StyledPopper {...props}>
+        <StyledList>
+          {DECISIONS.map(([decision, Icon], i) => (
+            <StyledListItem key={i} onClick={() => handleOnClick(task.id, decision, status)}>
+              <StyledListItemIcon alignItems="center">
+                <Icon />
+              </StyledListItemIcon>
+              <StyledListItemText primary={decision} />
+            </StyledListItem>
+          ))}
+        </StyledList>
+      </StyledPopper>
+    </>
   );
 };

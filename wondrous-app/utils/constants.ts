@@ -460,3 +460,41 @@ export enum ColorTypes {
 }
 
 export const PRIVATE_TASK_TITLE = '_private_task';
+
+export const APPLICATION_POLICY = {
+  ALL_MEMBERS: {
+    title: 'All members need to apply',
+    value: 'all_members',
+  },
+  ONLY_ORG_MEMBERS_CAN_CLAIM: {
+    title: 'Everyone needs to apply except DAO members',
+    value: 'only_org_members_can_claim',
+  },
+  ONLY_ORG_MEMBERS_CAN_APPLY: {
+    title: 'Only DAO members can apply',
+    value: 'only_org_members_can_apply',
+  },
+  ROLES_CAN_CAN_CLAIM: {
+    title: 'Everyone needs to apply except members with role',
+    value: 'roles_can_can_claim',
+  },
+};
+
+export const APPLICATION_POLICY_LABELS_MAP = {
+  all_members: APPLICATION_POLICY.ALL_MEMBERS,
+  only_org_members_can_claim: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_CLAIM,
+  only_org_members_can_apply: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_APPLY,
+  roles_can_can_claim: APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM,
+};
+
+export const TASK_APPLICATION_STATUS = {
+  PENDING: 'pending',
+  APPROVED: 'approved',
+  REJECTED: 'rejected',
+};
+
+export const TASK_APPLICATION_STATUS_LABELS = {
+  [TASK_APPLICATION_STATUS.PENDING]: 'Pending...',
+  [TASK_APPLICATION_STATUS.APPROVED]: 'Approved',
+  [TASK_APPLICATION_STATUS.REJECTED]: 'Rejected',
+};

@@ -12,8 +12,9 @@ import TextField from '@mui/material/TextField';
 
 import {
   CREATE_ORG_DOCUMENT_CATEGORY,
-  DELETE_ORG_DOCUMENT_CATEGORY,
-  UPDATE_ORG_DOCUMENT_CATEGORY,
+  CREATE_POD_DOCUMENT_CATEGORY,
+  DELETE_DOCUMENT_CATEGORY,
+  UPDATE_DOCUMENT_CATEGORY,
 } from 'graphql/mutations/documents';
 import { DOCS_PERMISSIONS } from 'utils/constants';
 
@@ -25,7 +26,7 @@ import { labelStyles, inputStyles } from './DocCategoriesDialogStyles';
 const LabelTypography = styled(Typography)(labelStyles);
 const StyledTextField = styled(TextField)(inputStyles);
 
-const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
+const DocCategoriesDialog = ({ open, onClose, orgName, orgId, podId, category }) => {
   const {
     register,
     handleSubmit,
@@ -42,12 +43,16 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
     refetchQueries: ['getOrgDocumentCategories'],
   });
 
-  const [deleteDocumentCategory] = useMutation(DELETE_ORG_DOCUMENT_CATEGORY, {
-    refetchQueries: ['getOrgDocumentCategories'],
+  const [createPodDocumentCategory] = useMutation(CREATE_POD_DOCUMENT_CATEGORY, {
+    refetchQueries: ['getPodDocumentCategories'],
   });
 
-  const [updateDocumentCategory] = useMutation(UPDATE_ORG_DOCUMENT_CATEGORY, {
-    refetchQueries: ['getOrgDocumentCategories'],
+  const [deleteDocumentCategory] = useMutation(DELETE_DOCUMENT_CATEGORY, {
+    refetchQueries: ['getOrgDocumentCategories', 'getPodDocumentCategories'],
+  });
+
+  const [updateDocumentCategory] = useMutation(UPDATE_DOCUMENT_CATEGORY, {
+    refetchQueries: ['getOrgDocumentCategories', 'getPodDocumentCategories'],
   });
 
   const handleDelete = () => {
@@ -72,15 +77,26 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, category }) => {
       handleClose();
       return;
     }
-
-    createOrgDocumentCategory({
-      variables: {
-        input: {
-          orgId: orgId,
-          name: data.name,
+    if (podId) {
+      createPodDocumentCategory({
+        variables: {
+          input: {
+            orgId,
+            podId,
+            name: data.name,
+          },
         },
-      },
-    });
+      });
+    } else {
+      createOrgDocumentCategory({
+        variables: {
+          input: {
+            orgId: orgId,
+            name: data.name,
+          },
+        },
+      });
+    }
     handleClose();
   };
 

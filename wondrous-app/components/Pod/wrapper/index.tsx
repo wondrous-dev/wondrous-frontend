@@ -227,6 +227,7 @@ const Wrapper = (props) => {
     }
   }, [podBoard?.podId]);
 
+  const showFilters = router?.pathname === '/pod/[podId]/boards';
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -390,13 +391,15 @@ const Wrapper = (props) => {
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
                 )}
-                <BoardsActivity
-                  onSearch={onSearch}
-                  filterSchema={filterSchema}
-                  onFilterChange={onFilterChange}
-                  statuses={statuses}
-                  userId={userId}
-                />
+                {showFilters && (
+                  <BoardsActivity
+                    onSearch={onSearch}
+                    filterSchema={filterSchema}
+                    onFilterChange={onFilterChange}
+                    statuses={statuses}
+                    userId={userId}
+                  />
+                )}
               </BoardsSubheaderWrapper>
               {children}
             </Tabs>

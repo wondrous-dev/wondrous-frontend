@@ -67,7 +67,14 @@ const ProfileInfo = ({ userProfile }) => {
       </ProfileInfoBioWrapper>
       <ProfileLinkContainer>
         {mainLink?.url && (
-          <ProfileInfoLink href={mainLink.url} target="_blank">
+          <ProfileInfoLink
+            href={
+              mainLink?.url?.startsWith('https') || mainLink?.url?.startsWith('http')
+                ? mainLink.url
+                : `https://${mainLink.url}`
+            }
+            target="_blank"
+          >
             <ProfileInfoMainLink>
               <ProfileInfoIcon>
                 <ProfileInfoLinkIcon />

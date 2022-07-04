@@ -11,48 +11,34 @@ const Tabs = (props) => {
   const asPathWithoutQueries = router.asPath.split('?')[0];
   const { username, podId } = router.query;
   const user = username ?? podId;
-  let tabsLinks = [];
-  if (page === 'organization') {
-    tabsLinks = [
-      {
-        href: `/${page}/${user}/boards`,
-        label: 'Boards',
-      },
-      {
-        href: `/${page}/${user}/docs`,
-        label: 'Docs',
-      },
-      {
-        href: `/${page}/${user}/activities`,
-        label: 'Activity',
-      },
-      {
-        href: `/${page}/${user}/analytics`,
-        label: 'Analytics',
-      },
-    ];
-  } else if (page === 'pod') {
-    tabsLinks = [
-      {
-        href: `/${page}/${user}/boards`,
-        label: 'Boards',
-      },
-      {
-        href: `/${page}/${user}/activities`,
-        label: 'Activity',
-      },
-      {
-        href: `/${page}/${user}/analytics`,
-        label: 'Analytics',
-      },
-    ];
-  }
+  let tabsLinks = [
+    {
+      href: `/${page}/${user}/boards`,
+      label: 'Boards',
+    },
+    {
+      href: `/${page}/${user}/docs`,
+      label: 'Docs',
+    },
+    {
+      href: `/${page}/${user}/activities`,
+      label: 'Activity',
+    },
+    {
+      href: `/${page}/${user}/analytics`,
+      label: 'Analytics',
+    },
+  ];
 
   return (
     <Container>
-      <StyledTabs value={asPathWithoutQueries} variant={'fullWidth'} style={{
-        marginTop: '16px'
-      }}>
+      <StyledTabs
+        value={asPathWithoutQueries}
+        variant={'fullWidth'}
+        style={{
+          marginTop: '16px',
+        }}
+      >
         {tabsLinks.map((tab) => (
           <Link
             // @ts-ignore
