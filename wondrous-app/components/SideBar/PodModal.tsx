@@ -10,7 +10,7 @@ import { useMe } from '../Auth/withAuth';
 import { SafeImage } from '../Common/Image';
 import {
   TaskListModalHeader,
-  TaskModal,
+  TaskModalBaseCard,
   TaskListCardWrapper,
   TaskHeader,
   TaskContent,
@@ -136,7 +136,7 @@ export const PodModal = (props) => {
         handleClose();
       }}
     >
-      <TaskModal>
+      <TaskModalBaseCard>
         <TaskListModalHeader>{pods?.length} Pods</TaskListModalHeader>
         <div
           style={{
@@ -148,7 +148,7 @@ export const PodModal = (props) => {
           })}
           <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
         </div>
-      </TaskModal>
+      </TaskModalBaseCard>
     </CreateModalOverlay>
   );
 };

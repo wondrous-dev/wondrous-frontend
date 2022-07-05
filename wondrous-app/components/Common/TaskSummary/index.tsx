@@ -32,7 +32,7 @@ import {
 import { Arrow, Media } from '../../Icons/sections';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
-import { TaskViewModal } from '../Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';

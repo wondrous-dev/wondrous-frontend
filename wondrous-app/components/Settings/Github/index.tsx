@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
-import { GithubButton, GithubButtonDiv } from './styles';
+import { GithubLink, GithubButtonDiv } from './styles';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
@@ -33,7 +33,7 @@ export const GithubIntegration = ({ orgId }) => {
         redirectUrl: encodeURIComponent(window.location.href),
         orgId,
       });
-      const redirectUrl = getGithubCallbackUrl()
+      const redirectUrl = getGithubCallbackUrl();
       setGithubUrl(`${GITHUB_BASE_URL}?state=${state}`);
     }
   }, []);
@@ -61,7 +61,7 @@ export const GithubIntegration = ({ orgId }) => {
             marginLeft: '0',
           }}
         >
-          <GithubButton
+          <GithubLink
             style={{
               backgroundColor: palette.green400,
               cursor: 'auto',
@@ -90,7 +90,7 @@ export const GithubIntegration = ({ orgId }) => {
                 });
               }}
             />
-          </GithubButton>
+          </GithubLink>
         </GithubButtonDiv>
       ) : (
         <GithubButtonDiv
@@ -98,14 +98,14 @@ export const GithubIntegration = ({ orgId }) => {
             marginLeft: '0',
           }}
         >
-          <GithubButton href={githubUrl}>
+          <GithubLink href={githubUrl}>
             <GitHubIcon
               style={{
                 marginRight: '8px',
               }}
             />
             <span>Connect Github Organization</span>
-          </GithubButton>
+          </GithubLink>
         </GithubButtonDiv>
       )}
     </IntegrationsInputsBlock>

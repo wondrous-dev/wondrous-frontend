@@ -4,7 +4,7 @@ import { styled } from '@mui/material/styles';
 
 import Typography from '@mui/material/Typography';
 
-import { DELETE_ORG_DOCUMENT } from 'graphql/mutations/documents';
+import { DELETE_DOCUMENT } from 'graphql/mutations/documents';
 
 import DocModal from 'components/DocModal';
 
@@ -13,8 +13,8 @@ import { textStyles } from './DeleteDocDialogStyles';
 const StyledText = styled(Typography)(textStyles);
 
 const DeleteDocDialog = ({ open, onClose, selectedDoc }) => {
-  const [deleteDocument] = useMutation(DELETE_ORG_DOCUMENT, {
-    refetchQueries: ['getOrgDocs'],
+  const [deleteDocument] = useMutation(DELETE_DOCUMENT, {
+    refetchQueries: ['getOrgDocs', 'getPodDocs'],
   });
 
   const handleDelete = () => {

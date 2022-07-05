@@ -44,7 +44,7 @@ import {
   TaskDescription,
   TaskTitle,
 } from './styles';
-import { TaskViewModal } from '../Common/Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import * as Constants from 'utils/constants';
