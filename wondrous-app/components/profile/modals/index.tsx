@@ -33,7 +33,9 @@ const PodItem = (props) => {
       >
         {pod?.name}
       </TabContainerText>
-      <PodExplainerText>{cutString(pod?.description)}</PodExplainerText>
+      <PodExplainerText>
+        <RichTextViewer text={pod?.description} />
+      </PodExplainerText>
     </PodWrapper>
   );
 };
