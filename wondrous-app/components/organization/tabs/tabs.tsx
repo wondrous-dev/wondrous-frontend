@@ -10,22 +10,22 @@ const Tabs = (props) => {
 
   const asPathWithoutQueries = router.asPath.split('?')[0];
   const { username, podId } = router.query;
-  const user = username ?? podId;
+  const entityId = username ?? podId;
   let tabsLinks = [
     {
-      href: `/${page}/${user}/boards`,
+      href: `/${page}/${entityId}/boards`,
       label: 'Boards',
     },
     {
-      href: `/${page}/${user}/docs`,
+      href: `/${page}/${entityId}/docs`,
       label: 'Docs',
     },
     {
-      href: `/${page}/${user}/activities`,
+      href: `/${page}/${entityId}/activities`,
       label: 'Activity',
     },
     {
-      href: `/${page}/${user}/analytics`,
+      href: `/${page}/${entityId}/analytics`,
       label: 'Analytics',
     },
   ];

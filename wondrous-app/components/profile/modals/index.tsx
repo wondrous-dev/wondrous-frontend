@@ -33,7 +33,9 @@ const PodItem = (props) => {
       >
         {pod?.name}
       </TabContainerText>
-      <PodExplainerText>{cutString(pod?.description)}</PodExplainerText>
+      <PodExplainerText>
+        <RichTextViewer text={pod?.description} />
+      </PodExplainerText>
     </PodWrapper>
   );
 };
@@ -49,7 +51,11 @@ const UserItem = (props) => {
         })
       }
     >
-      {user?.profilePicture ? <UserProfilePicture src={user?.profilePicture} /> : <DefaultProfilePicture />}
+      {user?.profilePicture ? (
+        <UserProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
+      ) : (
+        <DefaultProfilePicture />
+      )}
       <div
         style={{
           display: 'flex',

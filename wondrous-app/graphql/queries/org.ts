@@ -177,6 +177,25 @@ export const GET_JOIN_ORG_REQUESTS = gql`
   }
 `;
 
+export const GET_ORG_MEMBERSHIP_REQUEST = gql`
+  query getOrgMembershipRequest($orgId: ID!, $limit: Int, $offset: Int) {
+    getOrgMembershipRequest(orgId: $orgId, limit: $limit, offset: $offset) {
+      id
+      userId
+      orgId
+      approvedAt
+      message
+      rejectedAt
+      userUsername
+      userProfilePicture
+      orgProfilePicture
+      orgName
+      orgUsername
+      createdAt
+    }
+  }
+`;
+
 export const GET_USER_JOIN_ORG_REQUEST = gql`
   query getUserJoinOrgRequest($orgId: ID!) {
     getUserJoinOrgRequest(orgId: $orgId) {

@@ -128,7 +128,7 @@ const Wallets = (props) => {
     try {
       checksumAddress = wonderWeb3.toChecksumAddress(safeAddress);
     } catch (e) {
-      newError.safeAddressError = `Cannot convert to checksum address`;
+      newError.safeAddressError = `Must be valid EVM address`;
       setErrors(newError);
       return;
     }

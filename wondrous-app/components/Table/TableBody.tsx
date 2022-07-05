@@ -74,8 +74,15 @@ export default function TableBody({
   return (
     <StyledTableBody>
       {tasksToLimit?.map((task, index) => {
+        /** task here is created with createTasksFromColumns (at least for admin panel it seems) so the schema not exactly from graphql. but mutated some how
+         * it's a bit awkward to use this same components for admin panel and also for milestone bounties list view
+         *  Long term solution is to not use this table components for milestone and bounties.
+         */
         const status = task?.status;
-        const dropdownItemLabel = status ? task.type : 'task proposal';
+        const isTaskProposal = task?.__typename === 'TaskProposalCard';
+        const isTaskSubmission = task?.__typename === 'TaskSubmissionCard';
+        let dropdownItemLabel = isTaskProposal ? 'Proposal' : task.type;
+
         const permissions = parseUserPermissionContext({
           userPermissionsContext,
           orgId: task?.orgId,
@@ -84,7 +91,7 @@ export default function TableBody({
 
         let viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${view}`;
 
-        if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || task?.isProposal) {
+        if (status === TASK_STATUS_REQUESTED || status === TASK_STATUS_PROPOSAL_REQUEST || isTaskProposal) {
           viewUrl = `${delQuery(router.asPath)}?taskProposal=${task?.id}&view=${view}`;
         } else if (status === TASK_STATUS_IN_REVIEW || status === TASK_STATUS_SUBMISSION_REQUEST) {
           viewUrl = `${delQuery(router.asPath)}?task=${task?.taskId}&view=${view}`;
@@ -244,47 +251,49 @@ export default function TableBody({
               <MoreOptions disabled={!canManageTask}>
                 <Tooltip title="More actions" placement="top">
                   <div>
-                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                      <DropDownItem
-                        key={'task-menu-edit-' + task.id + index}
-                        onClick={() => editTask(task, status)}
-                        color="#C4C4C4"
-                        fontSize="13px"
-                        fontWeight="normal"
-                        textAlign="left"
-                      >
-                        Edit {dropdownItemLabel}
-                      </DropDownItem>
-                      <DropDownItem
-                        key={'task-menu-report-' + task.id}
-                        onClick={() => {
-                          setSelectedTask(task);
-                          setArchiveModalOpen(true);
-                        }}
-                        color="#C4C4C4"
-                        fontSize="13px"
-                        fontWeight="normal"
-                        textAlign="left"
-                      >
-                        Archive {dropdownItemLabel}
-                      </DropDownItem>
-                      {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
-                        !task?.isProposal && (
-                          <DropDownItem
-                            key={'task-menu-delete-' + task.id}
-                            onClick={() => {
-                              setSelectedTask(task);
-                              setDeleteModalOpen(true);
-                            }}
-                            color={palette.red800}
-                            fontSize="13px"
-                            fontWeight="normal"
-                            textAlign="left"
-                          >
-                            Delete {dropdownItemLabel}
-                          </DropDownItem>
-                        )}
-                    </DropDown>
+                    {!isTaskSubmission && (
+                      <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                        <DropDownItem
+                          key={'task-menu-edit-' + task.id + index}
+                          onClick={() => editTask(task, status)}
+                          color="#C4C4C4"
+                          fontSize="13px"
+                          fontWeight="normal"
+                          textAlign="left"
+                        >
+                          Edit {dropdownItemLabel}
+                        </DropDownItem>
+                        <DropDownItem
+                          key={'task-menu-report-' + task.id}
+                          onClick={() => {
+                            setSelectedTask(task);
+                            setArchiveModalOpen(true);
+                          }}
+                          color="#C4C4C4"
+                          fontSize="13px"
+                          fontWeight="normal"
+                          textAlign="left"
+                        >
+                          Archive {dropdownItemLabel}
+                        </DropDownItem>
+                        {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
+                          !task?.isProposal && (
+                            <DropDownItem
+                              key={'task-menu-delete-' + task.id}
+                              onClick={() => {
+                                setSelectedTask(task);
+                                setDeleteModalOpen(true);
+                              }}
+                              color={palette.red800}
+                              fontSize="13px"
+                              fontWeight="normal"
+                              textAlign="left"
+                            >
+                              Delete {dropdownItemLabel}
+                            </DropDownItem>
+                          )}
+                      </DropDown>
+                    )}
                   </div>
                 </Tooltip>
               </MoreOptions>
