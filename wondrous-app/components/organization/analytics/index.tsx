@@ -322,7 +322,7 @@ const filterUsers = (users) => {
   }
 
   return users.map((user) => ({
-    profilePicture: user?.profilePicture,
+    profilePicture: user?.thumbnailPicture || user?.profilePicture,
     label: user?.username,
     value: user?.id,
   }));
