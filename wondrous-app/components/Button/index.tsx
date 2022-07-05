@@ -17,3 +17,20 @@ export const Button = styled(MuiButton)`
     font-weight: 600;
   }
 `;
+
+export const GreyButton = styled(MuiButton)`
+  && {
+    min-height: 40px;
+    height: 40px;
+    background: #343434;
+    background: none;
+  }
+  
+  button {
+    padding: 2px 30px;
+    font-family: Space Grotesk;
+    font-size: 16px;
+    font-weight: 600;
+    background: #343434;
+  }
+`;

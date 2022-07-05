@@ -1,25 +1,37 @@
 import React from 'react';
-
-import { Button } from './Button';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
+import { Button, GreyButton } from 'components/Button';
+
 export default {
-  title: 'Wondrous/Button',
+  title: 'Wondrous/Buttons',
   component: Button,
-  argTypes: {
-    onClick: {
-      description: 'Optional. onClick function\n' +
-          '`(() => void) | undefined`',
+  parameters: {
+    layout: 'centered',
+    docs: {
+      description: {
+        component: `Buttons allow users to take actions, and make choices, with a single tap.
+ads via Carbon
+
+[Documentation](https://mui.com/material-ui/react-button/)
+
+[API](https://mui.com/material-ui/api/button/)
+`,
+      },
     },
-    className: {
-      description: 'used to set or return the value of an element\'s class attribute',
-    }
-  }
+  },
+  argTypes: {
+    disabled: {
+      description: 'If `true`, the component is disabled.',
+      control: {
+        type: 'boolean',
+      },
+    },
+  },
 } as ComponentMeta<typeof Button>;
 
-const Template: ComponentStory<typeof Button> = (args) => <Button {...args} />;
+const PrimaryTemplate: ComponentStory<typeof Button> = (args) => <Button {...args}>Primary</Button>;
+export const Primary = PrimaryTemplate.bind({});
 
-export const Primary = Template.bind({});
-Primary.args = {
-  label: 'Button',
-};
+const GreyButtonTemplate: ComponentStory<typeof Button> = (args) => <GreyButton {...args}>Grey</GreyButton>;
+export const Grey = GreyButtonTemplate.bind({});
