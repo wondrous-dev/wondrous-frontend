@@ -92,8 +92,9 @@ export const extractMentions = (nodes: Descendant[]) => {
 export const isRichText = (text: string) => {
   try {
     const parsed = JSON.parse(text);
-    if (!isNaN(parsed)) { // edge case because in js JSON.parse('11') return 11
-      return false
+    if (!isNaN(parsed)) {
+      // edge case because in js JSON.parse('11') return 11
+      return false;
     }
     return true;
   } catch (e) {

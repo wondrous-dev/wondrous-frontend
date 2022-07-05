@@ -14,7 +14,7 @@ import { TaskFragment } from 'types/task';
 import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
-import { TaskViewModal } from '../Common/Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { ViewType } from 'types/common';
 
 const TaskTypeIcons = {

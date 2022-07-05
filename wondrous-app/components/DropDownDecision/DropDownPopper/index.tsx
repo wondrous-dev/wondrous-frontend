@@ -99,21 +99,16 @@ export const DropDownPopper = (props) => {
           if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode) {
             const errorCode = err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode;
             if (errorCode === 'task_already_completed') {
-              setSubmissionApprovalError(
-                'Associated task is already completed, please reject the submission'
-              );
+              setSubmissionApprovalError('Associated task is already completed, please reject the submission');
             }
             if (errorCode === 'task_already_archived') {
-              setSubmissionApprovalError(
-                'Associated task is already archived, please reject the submission'
-              );
+              setSubmissionApprovalError('Associated task is already archived, please reject the submission');
             }
           }
           console.error(err);
         });
     }
   };
-
 
   const handleOnClick = (id, decision, status) => {
     if (status === TASK_STATUS_PROPOSAL_REQUEST) {
@@ -134,8 +129,8 @@ export const DropDownPopper = (props) => {
           text={submissionApprovalError}
           buttonText={'Reject Submission'}
           buttonAction={() => {
-            handleTaskSubmissionDecision(task.id, DECISION_REJECT)
-            setSubmissionApprovalError(null)
+            handleTaskSubmissionDecision(task.id, DECISION_REJECT);
+            setSubmissionApprovalError(null);
           }}
         />
       )}
