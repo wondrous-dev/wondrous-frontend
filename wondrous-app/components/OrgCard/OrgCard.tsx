@@ -31,7 +31,7 @@ const OrgCard = ({ item }) => {
           <OrgCardTitleContainer>
             <OrgCardImageWrapper>
               {org?.profilePicture ? (
-                <OrgCardImage src={org?.profilePicture} />
+                <OrgCardImage src={org?.thumbnailPicture || org?.profilePicture} />
               ) : (
                 <NoLogoDAO>
                   <DAOIcon />

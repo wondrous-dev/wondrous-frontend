@@ -233,7 +233,7 @@ const EditLayoutBaseModal = (props) => {
       const justCreatedPod = getPodObject();
       if (boardColumns?.setColumns && onCorrectPage) {
         const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-          userProfilePicture: user?.profilePicture,
+          userProfilePicture: user?.thumbnailPicture || user?.profilePicture,
           username: user?.username,
           podName: justCreatedPod?.name,
         });
