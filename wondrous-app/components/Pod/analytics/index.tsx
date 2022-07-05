@@ -257,11 +257,17 @@ const Analytics = (props) => {
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
-  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
-    variables: {
-      orgId,
-    },
-  });
+  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {});
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgUsers({
+        variables: {
+          orgId,
+        },
+      });
+    }
+  }, [orgId, getOrgUsers]);
 
   const today = new Date();
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
