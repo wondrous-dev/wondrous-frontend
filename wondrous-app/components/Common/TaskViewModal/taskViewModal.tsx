@@ -1261,17 +1261,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 )}
                 {canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0 && (
                   <TaskSectionDisplayDiv>
-                    <TaskSectionDisplayLabel>
-                      <AssigneeIcon />
-                      <TaskSectionInfoText>Applications</TaskSectionInfoText>
-                    </TaskSectionDisplayLabel>
+                    <TaskSectionLabel>Applications</TaskSectionLabel>
                     <Box display="flex" alignItems="center">
-                      <TaskSectionInfoText
-                        style={{
-                          marginTop: '8px',
-                          marginLeft: '16px',
-                        }}
-                      >
+                      <TaskSectionInfoText>
                         <ActionButton type="button" onClick={handleReviewButton}>
                           Review {taskApplicationCount?.getTaskApplicationsCount?.total} applications
                         </ActionButton>
