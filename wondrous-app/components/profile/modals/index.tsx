@@ -49,7 +49,11 @@ const UserItem = (props) => {
         })
       }
     >
-      {user?.profilePicture ? <UserProfilePicture src={user?.profilePicture} /> : <DefaultProfilePicture />}
+      {user?.profilePicture ? (
+        <UserProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
+      ) : (
+        <DefaultProfilePicture />
+      )}
       <div
         style={{
           display: 'flex',

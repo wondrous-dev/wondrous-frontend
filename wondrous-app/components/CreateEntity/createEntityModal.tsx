@@ -235,7 +235,7 @@ export const filterOrgUsers = (orgUsers) => {
   }
 
   return orgUsers.map((orgUser) => ({
-    profilePicture: orgUser?.user?.profilePicture,
+    profilePicture: orgUser?.user?.thumbnailPicture || orgUser?.user?.profilePicture,
     label: orgUser?.user?.username,
     value: orgUser?.user?.id,
   }));
@@ -627,10 +627,10 @@ const CreateLayoutBaseModal = (props) => {
                     pod === board?.podId)
                 ) {
                   const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-                    userProfilePicture: user?.profilePicture,
+                    userProfilePicture: user?.thumbnailPicture || user?.profilePicture,
                     username: user?.username,
                     orgName: board?.org?.name,
-                    orgProfilePicture: board?.org?.profilePicture,
+                    orgProfilePicture: board?.org?.thumbnailPicture || board?.org?.profilePicture,
                     podName: justCreatedPod?.name,
                   });
 
@@ -680,10 +680,10 @@ const CreateLayoutBaseModal = (props) => {
                   pod === board?.podId)
               ) {
                 const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {
-                  userProfilePicture: user?.profilePicture,
+                  userProfilePicture: user?.thumbnailPicture || user?.profilePicture,
                   username: user?.username,
                   orgName: board?.org?.name,
-                  orgProfilePicture: board?.org?.profilePicture,
+                  orgProfilePicture: board?.org?.thumbnailPicture || board?.org?.profilePicture,
                   podName: justCreatedPod?.name,
                 });
                 let columns = [...board?.columns];
