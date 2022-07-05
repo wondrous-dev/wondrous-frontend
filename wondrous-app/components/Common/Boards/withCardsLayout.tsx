@@ -5,7 +5,7 @@ import { useEffect } from 'react';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
-import { TaskViewModal } from '../Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { Table } from 'components/Table';
 import { ViewType } from 'types/common';
 import { CardsContainer } from './styles';

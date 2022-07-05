@@ -63,19 +63,7 @@ import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';
 import { RichTextEditor, useEditor, countCharacters, deserializeRichText, extractMentions } from 'components/RichText';
 import { useSnapshot } from 'services/snapshot';
-
-export const transformMediaFormat = (media) => {
-  return (
-    media &&
-    media.map((item) => {
-      return {
-        uploadSlug: item?.slug,
-        type: item?.type,
-        name: item?.name,
-      };
-    })
-  );
-};
+import { transformMediaFormat } from 'utils/helpers';
 
 const EditLayoutBaseModal = (props) => {
   const { entityType, handleClose, cancel, existingTask, isTaskProposal, open } = props;

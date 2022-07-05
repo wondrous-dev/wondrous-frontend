@@ -56,13 +56,11 @@ const typography = {
   },
   body1: {
     fontSize: '16px',
-    lineHeight: '28px',
     color: palette.grey100,
     letterSpacing: '0.5%',
   },
   body2: {
     fontSize: '14px',
-    lineHeight: '24px',
     color: palette.grey100,
     letterSpacing: '0.25%',
   },

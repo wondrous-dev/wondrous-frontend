@@ -17,6 +17,8 @@ interface ICreateEntity {
       id: string;
       url: string;
     };
+    claimPolicyRoles: [string] | null;
+    claimPolicy: string | null;
     githubPullRequest: {
       id: string;
       url: string;

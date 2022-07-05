@@ -5,9 +5,9 @@ import { Filename, MediaItemWrapper } from './styles';
 import VideoPlayer from './VideoPlayer';
 
 export const MediaItem = (props) => {
-  const { mediaItem, setMediaUploads, mediaUploads, removeMediaItem, viewOnly } = props;
+  const { mediaItem, setMediaUploads, mediaUploads, removeMediaItem, viewOnly, className } = props;
   return (
-    <MediaItemWrapper>
+    <MediaItemWrapper className={className}>
       {mediaItem?.type === 'image' && (
         <SafeImage
           src={mediaItem?.uploadSlug || mediaItem?.slug}

@@ -1,8 +1,10 @@
 import { Box, Typography } from '@mui/material';
 import styled from 'styled-components';
+import palette from 'theme/palette';
+
 import { ProgressBar } from '../ProgressBar';
 import { ProgressBarWrapper } from '../ProgressBar/styles';
-import palette from 'theme/palette';
+
 export const StyledBox = styled(Box)`
   background: #0f0f0f;
   border-radius: 6px;
@@ -40,3 +42,41 @@ export const StyledProgressBarWrapper = styled.div`
 `;
 
 export const StyledProgressBar = styled(ProgressBar)``;
+
+export const MilestoneProgressViewModalWrapper = styled.div`
+  background: #0f0f0f;
+  display: flex;
+  flex-grow: 1;
+  height: 26px;
+  border-radius: 6px;
+  gap: 9px;
+  padding: 0 8px;
+`;
+
+export const MilestoneProgressLabel = styled(Typography)`
+  && {
+    display: flex;
+    align-items: center;
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    font-weight: 700;
+    width: fit-content;
+    ${({ theme }) => `
+    color: ${theme.palette.white}
+  `}
+  }
+`;
+
+export const MilestoneProgressBarWrapper = styled.div`
+  flex-grow: 1;
+  ${ProgressBarWrapper} {
+    margin-top: 0;
+    display: flex;
+    align-items: center;
+    height: 100%;
+    > div {
+      height: 5px;
+      margin: 0;
+    }
+  }
+`;

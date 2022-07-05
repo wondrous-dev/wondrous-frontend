@@ -67,12 +67,12 @@ export const usePodBoard = () => useContext(PodBoardContext);
 
 export const useUserBoard = () => useContext(UserBoardContext);
 
-export const useBoard = () => {
+export const useBoards = () => {
   const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-
-  return orgBoard || userBoard || podBoard;
+  const userBoard = useUserBoard();
+  const board = orgBoard || podBoard || userBoard;
+  return { orgBoard, podBoard, userBoard, board };
 };
 
 export const useUserProfile = () => {

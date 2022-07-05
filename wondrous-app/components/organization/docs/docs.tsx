@@ -191,6 +191,7 @@ const Docs = (props) => {
         onClose={handleCloseDocDialog}
         title={docCategory?.name}
         orgId={orgId}
+        podId={null}
         category={docCategory}
         document={selectedDoc}
         pinned={pinned}
@@ -200,6 +201,7 @@ const Docs = (props) => {
         onClose={handleCloseCategoriesDialog}
         orgName={router.query.username}
         orgId={orgId}
+        podId={null}
         category={docCategory}
       />
       <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />

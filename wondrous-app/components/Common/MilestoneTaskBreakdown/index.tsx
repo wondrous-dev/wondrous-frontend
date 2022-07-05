@@ -17,7 +17,7 @@ export const TASK_ICONS_LABELS = {
 };
 
 export const MilestoneTaskBreakdown = (props) => {
-  const { milestoneId, open } = props;
+  const { milestoneId, open, className } = props;
   const [getPerStatusTaskCountForMilestone, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export const MilestoneTaskBreakdown = (props) => {
   }, [getPerStatusTaskCountForMilestone, milestoneId, open, data]);
 
   return (
-    <StyledBoxWrapper>
+    <StyledBoxWrapper className={className}>
       {Object.keys(TASK_ICONS_LABELS).map((key, index) => {
         const { icon: StatusIcon, label } = TASK_ICONS_LABELS[key];
         const taskCount = data?.getPerStatusTaskCountForMilestone?.[key] || 0;

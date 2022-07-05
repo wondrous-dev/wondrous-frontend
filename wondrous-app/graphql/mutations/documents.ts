@@ -10,7 +10,7 @@ export const CREATE_ORG_DOCUMENT = gql`
   ${DocFragment}
 `;
 
-export const UPDATE_ORG_DOCUMENT = gql`
+export const UPDATE_DOCUMENT = gql`
   mutation updateDocument($documentId: ID!, $input: DocumentInput) {
     updateDocument(documentId: $documentId, input: $input) {
       ...DocFragment
@@ -19,7 +19,7 @@ export const UPDATE_ORG_DOCUMENT = gql`
   ${DocFragment}
 `;
 
-export const DELETE_ORG_DOCUMENT = gql`
+export const DELETE_DOCUMENT = gql`
   mutation deleteDocument($documentId: ID!) {
     deleteDocument(documentId: $documentId) {
       success
@@ -36,7 +36,7 @@ export const CREATE_ORG_DOCUMENT_CATEGORY = gql`
   ${DocCategoryFragment}
 `;
 
-export const UPDATE_ORG_DOCUMENT_CATEGORY = gql`
+export const UPDATE_DOCUMENT_CATEGORY = gql`
   mutation updateDocumentCategory($documentCategoryId: ID!, $input: DocumentCategoryInput) {
     updateDocumentCategory(documentCategoryId: $documentCategoryId, input: $input) {
       ...DocCategoryFragment
@@ -45,10 +45,28 @@ export const UPDATE_ORG_DOCUMENT_CATEGORY = gql`
   ${DocCategoryFragment}
 `;
 
-export const DELETE_ORG_DOCUMENT_CATEGORY = gql`
+export const DELETE_DOCUMENT_CATEGORY = gql`
   mutation deleteDocumentCategory($documentCategoryId: ID!) {
     deleteDocumentCategory(documentCategoryId: $documentCategoryId) {
       success
     }
   }
+`;
+
+export const CREATE_POD_DOCUMENT = gql`
+  mutation createPodDocument($input: DocumentInput) {
+    createPodDocument(input: $input) {
+      ...DocFragment
+    }
+  }
+  ${DocFragment}
+`;
+
+export const CREATE_POD_DOCUMENT_CATEGORY = gql`
+  mutation createPodDocumentCategory($input: DocumentCategoryInput) {
+    createPodDocumentCategory(input: $input) {
+      ...DocCategoryFragment
+    }
+  }
+  ${DocCategoryFragment}
 `;

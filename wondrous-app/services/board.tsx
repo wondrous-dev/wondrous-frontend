@@ -293,6 +293,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: TASK_STATUS_TODO,
               name: 'Open milestones',
+              label: 'Open',
               icon: (
                 <FlagIcon
                   stroke="url(#open0)"
@@ -319,6 +320,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: TASK_STATUS_DONE,
               name: 'Completed milestones',
+              label: 'Completed',
               icon: (
                 <FlagIcon
                   stroke="url(#completed0)"
@@ -345,6 +347,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: TASK_STATUS_ARCHIVED,
               name: 'Archived milestones',
+              label: 'Archived',
               icon: (
                 <FlagIcon
                   stroke="#7A7A7A"
@@ -375,6 +378,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: TASK_STATUS_TODO,
               name: 'Open bounties',
+              label: 'Open',
               icon: (
                 <StarIcon
                   style={{
@@ -392,6 +396,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: TASK_STATUS_DONE,
               name: 'Completed bounties',
+              label: 'Completed',
               icon: (
                 <StarIcon
                   stroke="url(#completed)"
@@ -410,6 +415,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: TASK_STATUS_ARCHIVED,
               name: 'Archived bounties',
+              label: 'Archived',
               icon: (
                 <StarIcon
                   stroke="#7A7A7A"
@@ -441,13 +447,15 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: STATUS_OPEN,
               name: 'Open proposals',
+              label: 'Open',
               icon: <Proposal />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
               pillIcon: Proposal,
             },
             {
               id: STATUS_APPROVED,
-              name: 'Resolved proposals',
+              name: 'Approved proposals',
+              label: 'Approved',
               icon: <Approved />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #06FFA5 103.12%)',
               pillIcon: Approved,
@@ -455,6 +463,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
             {
               id: STATUS_CHANGE_REQUESTED,
               name: 'Rejected proposals',
+              label: 'Rejected',
               icon: <Rejected />,
               gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FFFFFF 103.12%)',
               pillIcon: Rejected,

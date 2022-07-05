@@ -14,7 +14,7 @@ import {
 } from 'utils/constants';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'utils/useLocation';
-import { TaskViewModal } from 'components/Common/Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery, dedupeColumns } from 'utils';
 import { useRouter } from 'next/router';
 import { DragDropContext } from 'react-beautiful-dnd';

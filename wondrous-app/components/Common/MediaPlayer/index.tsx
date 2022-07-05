@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeImage } from '../Image';
-import { MediaLink } from '../Task/modal';
+import MediaLink from 'components/Common/MediaLink';
 import { TaskMediaWrapper, TaskImage, TaskAudio, TaskVideo, TaskMediaUnsuported } from './styles';
 
 export const TaskMedia = (props) => {

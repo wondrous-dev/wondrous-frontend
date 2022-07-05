@@ -1,12 +1,11 @@
-import styled from 'styled-components';
-import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
-import palette from 'theme/palette';
-import { Typography } from '@mui/material';
-import { BaseCard } from '../card';
-import RightArrowIcon from '../../Icons/rightArrow';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { MenuItem, Modal, Typography } from '@mui/material';
 import ProposalIcon from 'components/Icons/proposalIcon';
-import { getContrastYIQ } from 'utils/colors';
+import styled from 'styled-components';
+
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { BaseCard } from '../card';
+import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
+
 export const TaskInner = styled.div`
   display: flex;
   flex: 1 1 auto;
@@ -69,7 +68,7 @@ export const TaskContent = styled.div`
   width: 100%;
   font-size: 16px;
   font-weight: 400;
-  color: ${palette.white};
+  color: ${({ theme }) => theme.palette.white};
   white-space: pre-line;
   cursor: pointer;
   overflow-x: hidden;
@@ -77,12 +76,8 @@ export const TaskContent = styled.div`
 
 export const TaskSeparator = styled.div`
   display: flex;
-  border-bottom: 1px solid ${palette.grey80};
+  border-bottom: 1px solid ${({ theme }) => theme.palette.grey80};
   margin-top: 5px;
-`;
-
-export const TaskDivider = styled(TaskSeparator)`
-  margin: 12px 0;
 `;
 
 export const MilestoneProgressWrapper = styled.div`
@@ -114,10 +109,6 @@ export const TaskTitle = styled.div`
       text-decoration: underline;
     }
   }
-`;
-
-export const TaskDescription = styled.p`
-  color: #c4c4c4;
 `;
 
 export const TaskFooter = styled.div`
@@ -160,12 +151,7 @@ export const TaskActionAmount = styled.div`
   flex-grow: 1;
   justify-content: flex-start;
   padding-left: 10px;
-  color: ${palette.grey250};
-`;
-
-export const TaskContentFooter = styled.div`
-  display: flex;
-  align-items: center;
+  color: ${({ theme }) => theme.palette.grey250};
 `;
 
 export const PodWrapper = styled.div`
@@ -180,7 +166,7 @@ export const PodName = styled(Typography)`
   && {
     background: #363636;
     font-size: 13px;
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
     padding: 1px 8px;
     border-radius: 190px;
   }
@@ -196,14 +182,20 @@ export const SubtaskCountWrapper = styled.div`
 
 export const SubtaskCount = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
     font-size: 13px;
     font-style: normal;
     color: #ffffff;
   }
 `;
 
-export const TaskModal = styled(BaseCard)`
+export const TaskModal = styled(Modal)`
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const TaskModalBaseCard = styled(BaseCard)`
   width: 680px;
   position: absolute;
   left: 50%;
@@ -241,137 +233,60 @@ export const TaskModal = styled(BaseCard)`
   }
 `;
 
-export const TaskModalHeader = styled.div`
+const TaskModalHeaderWrapper = styled.div`
   display: flex;
+  gap: 12px;
   align-items: center;
-  margin-bottom: 24px !important;
 `;
 
-export const RightArrowWrapper = styled.div`
-  margin-left: 12px;
+export const TaskModalHeaderWrapperRight = styled(TaskModalHeaderWrapper)`
+  justify-content: flex-end;
 `;
 
-export const RightArrow = styled(RightArrowIcon)``;
-
-export const PodNameTypography = styled(Typography)`
+const TaskModalHeaderMenuItem = styled(MenuItem)`
   && {
-    font-weight: 500;
+    display: flex;
+    justify-content: flex-start;
+    color: ${({ theme }) => theme.palette.white};
+    height: 32px;
     font-size: 13px;
-    line-height: 17px;
-    color: ${palette.white};
-  }
-`;
-
-export const TaskIconWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 12px;
-  cursor: pointer;
-`;
-
-export const TaskIconLabel = styled(Typography)`
-  && {
-    font-size: 13px;
-    margin-left: 8px;
-    color: #fff;
-  }
-`;
-
-export const SubtaskIconWrapper = styled(TaskIconWrapper)`
-  cursor: auto;
-`;
-
-export const SubtaskIconLabel = styled(TaskIconLabel)``;
-
-export const TaskTitleDiv = styled.div`
-  display: flex;
-  align-items: flex-start;
-`;
-
-export const TaskTitleTextDiv = styled.div``;
-
-export const TaskTitleText = styled(Typography)`
-  && {
-    color: ${palette.white};
-    font-style: normal;
-    font-weight: bold;
-    font-size: 24px;
-    line-height: 32px;
-    margin-bottom: 8px;
-  }
-`;
-
-export const TaskDescriptionText = styled(Typography)`
-  && {
-    color: #828282;
-    font-weight: 500;
-    font-size: 15px;
-    line-height: 19px;
-    white-space: pre-line;
-    max-width: 600px;
-    overflow-x: scroll;
-    &::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
+    padding: 12px;
+    :hover {
+      background: ${({ theme }) => theme.palette.black98};
     }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
   }
 `;
 
-export const TaskSectionDisplayDiv = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 12px;
-  & > *:not:first-child {
-    margin-top: -8px;
-  }
-`;
-
-export const TaskSectionDisplayLabel = styled.div`
-  background: #0f0f0f;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  padding: 4px 12px;
-  margin-top: 8px;
-`;
-
-export const TaskSectionDisplayText = styled(Typography)`
+export const TaskModalHeaderMenuItemRed = styled(TaskModalHeaderMenuItem)`
   && {
-    font-family: Space Grotesk;
-    font-style: normal;
-    font-weight: 500;
+    color: ${({ theme }) => theme.palette.red800};
+  }
+`;
+
+const TaskSectionDisplayText = styled(Typography)`
+  && {
     font-size: 14px;
-    line-height: 22px;
-    color: #ccbbff;
-    margin-left: 8px;
+    border-radius: 4px;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightMedium};
+    color: ${theme.palette.blue20};
+ `}
   }
 `;
 
 export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
   && {
-    color: #c4c4c4;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    ${({ theme }) => `
+    color: ${theme.palette.white};
+ `}
   }
 `;
 
 export const TaskSectionInfoDiv = styled.div`
-  margin-right: 12px;
-  margin-left: 12px;
-  display: flex;
-  align-items: center;
-  text-align: left;
-  margin-top: 8px;
-`;
-
-export const TaskModalFooter = styled.div`
-  margin-top: 16px;
-`;
-
-export const TaskSectionFooterTitleDiv = styled.div`
   display: flex;
   align-items: center;
 `;
@@ -388,33 +303,6 @@ export const TaskSubmissionTab = styled.div`
   border-bottom: ${(props) => `2px solid ${props.isActive ? '#7427FF' : '#4B4B4B'}`};
 `;
 
-export const TaskOverviewTab = styled.div`
-  flex: 1;
-  text-align: center;
-`;
-export const TaskTabText = styled(Typography)`
-  && {
-    font-weight: ${(props) => (props.isActive ? '500' : '400')};
-    font-size: 16px;
-    line-height: 24px;
-    color: ${palette.white};
-  }
-`;
-
-export const TaskSectionContent = styled.div`
-  text-align: center;
-  padding-top: 16px;
-  padding-bottom: 20px;
-  max-width: 630px;
-`;
-export const MakeSubmissionDiv = styled.div`
-  background: #0f0f0f;
-  border-radius: 8px;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-`;
-
 export const MakePaymentDiv = styled.div`
   background: #0f0f0f;
   border-radius: 184px;
@@ -423,28 +311,9 @@ export const MakePaymentDiv = styled.div`
   align-items: center;
 `;
 
-export const TaskSubmissionItemDiv = styled.div`
-  padding: 30px;
-  &:not(:last-child) {
-    border-bottom: 1px solid #363636;
-  }
-
-  & > :last-child {
-    margin-bottom: 32px;
-  }
-`;
-
-export const TaskSubmissionHeader = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 8px;
-`;
-
-export const TaskSubmissionHeaderTextDiv = styled.div``;
-
 export const TaskSubmissionHeaderCreatorText = styled(Typography)`
   && {
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
     font-size: 13px;
     line-height: 20px;
     font-weight: bold;
@@ -474,38 +343,12 @@ export const TaskLink = styled.a`
   }
 `;
 
-export const TaskSubmissionLink = styled(TaskLink)`
-  && {
-    margin-top: 8px;
-    margin-right: 8px;
-    max-width: 500px;
-    overflow-x: scroll;
-    text-align: left;
-    &::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
-    }
-
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
-  }
-`;
-
-export const TaskMediaContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 8px;
-  margin-left: 28px;
-`;
-
 export const TaskListModalHeader = styled(Typography)`
   && {
     font-size: 18px;
     line-height: 26px;
     margin-bottom: 20px;
-    color: ${palette.white};
+    color: ${({ theme }) => theme.palette.white};
   }
 `;
 
@@ -532,6 +375,9 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     padding: 4px 16px;
     margin-left: 0;
     margin-right: 12px;
+    display: flex;
+    justify-content: space-between;
+    gap: 4px;
     height: auto;
     z-index: 10;
     border: 1px solid transparent;
@@ -550,17 +396,17 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       border-radius: 180px;
     }
   }
-`;
-
-export const TaskUserDiv = styled.div`
-  display: flex;
-  align-items: center;
+  &.Mui-disabled {
+    &::before {
+      background: transparent;
+    }
+  }
 `;
 
 export const ProposalCardWrapper = styled.div`
   display: flex;
   flex-direction: column;
-  color: ${palette.white};
+  color: ${({ theme }) => theme.palette.white};
   padding: 14px;
   margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 3px;
@@ -586,8 +432,7 @@ export const ProposalCardWrapper = styled.div`
 `;
 
 export const ProposalCardType = styled.div`
-  color: ${palette.blue20};
-  font-family: 'Space Grotesk';
+  color: ${({ theme }) => theme.palette.blue20};
   font-style: normal;
   font-weight: 700;
   font-size: 13px;
@@ -595,16 +440,11 @@ export const ProposalCardType = styled.div`
 `;
 
 export const ProposalIconBackground = styled.div`
-  background: ${palette.background.default};
+  background: ${({ theme }) => theme.palette.background.default};
   padding: 5px;
   border-radius: 180px;
 `;
 
-export const CheckedIconWrapper = styled.div`
-  display: flex;
-  background: ${palette.grey85};
-  border-radius: 6px;
-`;
 const IconWrapper = styled.div`
   border-radius: 180px;
   display: flex;
@@ -622,7 +462,6 @@ export const ProposalCardIcon = () => (
 );
 
 export const ProposalFooterButton = styled.div`
-  font-family: 'Space Grotesk';
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -642,7 +481,7 @@ export const ProposalFooterButton = styled.div`
       `;
     } else {
       return `border: 1px solid ${borderColor || 'transparent'};
-    color: ${color || palette.white};
+    color: ${({ theme }) => color || theme.palette.white};
      ${
        !borderColor &&
        `&::before {
@@ -661,29 +500,6 @@ export const ProposalFooterButton = styled.div`
   }};
 `;
 
-export const ProposalCardFooter = styled.div`
-  display: flex;
-  justify-content: flex-start;
-  align-items: center;
-  gap: 10px;
-  width: 100%;
-  padding-top: 10px;
-  border-top: 1px solid ${palette.grey85};
-  padding-bottom: 15px;
-`;
-
-export const Tag = styled.div`
-  color: ${palette.white};
-  background: rgba(64, 0, 181, 0.3);
-  border: 1px solid #7427ff;
-  border-radius: 6px;
-  padding: 1px 6px;
-  margin: 5px 0;
-  &:not(:last-child) {
-    margin-right: 10px;
-  }
-`;
-
 export const DueDateText = styled(Typography)`
   && {
     font-family: Space Grotesk;
@@ -691,10 +507,4 @@ export const DueDateText = styled(Typography)`
     font-size: 13px;
     margin-right: 4px;
   }
-`;
-
-export const GithubBlock = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 16px;
 `;
