@@ -12,7 +12,7 @@ import ProfileInfo from 'components/ProfileInfo';
 import ProfileUserTaskDaos from 'components/ProfileUserTaskDaos';
 
 import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfileContainerContent } from './styles';
-import { TaskViewModal } from 'components/Common/Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils/index';
 import { enableContainerOverflow, disableContainerOverflow } from 'utils/helpers';

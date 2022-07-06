@@ -26,7 +26,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
-import { TaskViewModal } from 'components/Common/Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
@@ -322,7 +322,7 @@ const filterUsers = (users) => {
   }
 
   return users.map((user) => ({
-    profilePicture: user?.profilePicture,
+    profilePicture: user?.thumbnailPicture || user?.profilePicture,
     label: user?.username,
     value: user?.id,
   }));
@@ -332,15 +332,20 @@ const Analytics = (props) => {
   const { id: orgId } = orgData;
   const [ref, inView] = useInView({});
   const [assignee, setAssignee] = useState(null);
-  const [csvModal, setCSVModal] = useState(false);
   const [payoutModal, setPayoutModal] = useState(false);
   const [assigneeString, setAssigneeString] = useState('');
   const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
-  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
-    variables: {
-      orgId,
-    },
-  });
+  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {});
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgUsers({
+        variables: {
+          orgId,
+        },
+      });
+    }
+  }, [orgId, getOrgUsers]);
 
   const today = new Date();
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);

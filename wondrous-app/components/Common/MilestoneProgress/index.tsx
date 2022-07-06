@@ -1,7 +1,9 @@
-import { useLazyQuery } from '@apollo/client';
-import { useEffect, useState } from 'react';
-import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from 'graphql/queries';
+import useGetMilestoneTasksProgress from 'hooks/useGetMilestoneTasksProgress';
+
 import {
+  MilestoneProgressBarWrapper,
+  MilestoneProgressLabel,
+  MilestoneProgressViewModalWrapper,
   StyledBox,
   StyledProgressBar,
   StyledProgressBarWrapper,
@@ -11,44 +13,9 @@ import {
 } from './styles';
 
 export const MilestoneProgress = (props) => {
-  const { milestoneId, color = '#396CFF' } = props;
-  const [tasksTotal, setTaskTotal] = useState(null);
-  const [tasksCompleted, setTaskCompleted] = useState(null);
-  const [getPerStatusTaskCountForMilestone, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE);
-
-  useEffect(() => {
-    getPerStatusTaskCountForMilestone({
-      variables: {
-        milestoneId: milestoneId,
-      },
-    });
-
-    if (data?.getPerStatusTaskCountForMilestone) {
-      const { getPerStatusTaskCountForMilestone: getPerStatusTaskCountForMilestoneData } = data;
-      setTaskTotal(
-        Object.values(getPerStatusTaskCountForMilestoneData)
-          ?.filter((i) => typeof i === 'number')
-          ?.reduce((a: number, b: number) => a + b, 0) ?? 0
-      );
-      setTaskCompleted(
-        getPerStatusTaskCountForMilestoneData?.completed + getPerStatusTaskCountForMilestoneData?.archived
-      );
-    }
-
-    if (!data?.getPerStatusTaskCountForMilestone) {
-      setTaskTotal(0);
-      setTaskCompleted(0);
-    }
-  }, [getPerStatusTaskCountForMilestone, milestoneId, data]);
-
-  const calculateProgress = (completed, total) => {
-    return Math.floor((parseInt(completed, 10) / parseInt(total, 10)) * 100);
-  };
-
+  const { milestoneId } = props;
+  const { tasksTotal, tasksCompleted, progress } = useGetMilestoneTasksProgress({ milestoneId });
   if (!tasksTotal) return <StyledTasksCount>No tasks</StyledTasksCount>;
-
-  const progress = calculateProgress(tasksCompleted, tasksTotal);
-
   return (
     <StyledBox>
       <StyledTextWrapper>
@@ -59,5 +26,18 @@ export const MilestoneProgress = (props) => {
         <StyledProgressBar value={tasksCompleted} total={tasksTotal} />
       </StyledProgressBarWrapper>
     </StyledBox>
+  );
+};
+
+export const MilestoneProgressViewModal = ({ milestoneId, isMilestone }) => {
+  const { tasksTotal, tasksCompleted, progress } = useGetMilestoneTasksProgress({ milestoneId });
+  if (!isMilestone) return null;
+  return (
+    <MilestoneProgressViewModalWrapper>
+      <MilestoneProgressLabel>{progress}% complete</MilestoneProgressLabel>
+      <MilestoneProgressBarWrapper>
+        <StyledProgressBar value={tasksCompleted} total={tasksTotal} />
+      </MilestoneProgressBarWrapper>
+    </MilestoneProgressViewModalWrapper>
   );
 };

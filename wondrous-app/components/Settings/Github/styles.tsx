@@ -6,17 +6,31 @@ export const GithubButtonDiv = styled.div`
   margin-top: 32px;
   margin-left: 48px;
 `;
-export const GithubButton = styled.a`
-  background: #f5f8fa;
-  padding: 8px 12px;
-  text-decoration: none !important;
-  color: black !important;
-  border-radius: 8px;
-  font-weight: bolder;
+
+export const GithubLink = styled.a`
+  border: 1px solid #298fca;
   display: flex;
-  width: fit-content;
   align-items: center;
-  cursor: pointer;
+  gap: 8px;
+  height: 26px;
+  border-radius: 6px;
+  padding: 0 6px;
+  svg {
+    fill: #298fca;
+    width: 15px;
+    height: 15px;
+  }
+`;
+
+export const GithubLinkText = styled(Typography)`
+  && {
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 0;
+    ${({ theme }) => `
+      color: ${theme.palette.white}
+    `}
+  }
 `;
 
 export const PodGithubReposDiv = styled.div``;

@@ -97,8 +97,10 @@ export const CreateEntitySelectRoot = styled.button`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
-  width: 135px;
-  height: 32px;
+  width: 100%;
+  min-width: 135px;
+  height: fit-content;
+  min-height: 32px;
   border-radius: 4px;
   background: #1f1f1f;
   border: 1px solid ${(props) => (props['aria-expanded'] ? `#7a7a7a` : `transparent`)};
@@ -139,7 +141,8 @@ export const CreateEntitySelect = (props) => {
 
 export const CreateEntityOption = styled(OptionUnstyled)`
   list-style: none;
-  height: 34px;
+  height: fit-content;
+  min-height: 34px;
   padding: 6px;
   display: ${({ hide }) => (hide ? 'none' : 'flex')};
   align-items: center;
@@ -591,6 +594,16 @@ export const CreateEntityPrivacySelectRender = styled.div`
   padding: 0 8px;
 `;
 
+export const CreateEntityApplicationsSelectRender = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 8px;
+  color: white;
+  width: 100%;
+  flex-wrap: wrap;
+`;
+
 export const CreateEntityPrivacySelectRenderLabel = styled.div`
   display: flex;
   align-items: center;
@@ -709,11 +722,12 @@ export const MediaUploadDiv = styled.div`
   flex-flow: wrap;
 `;
 
-export const CreateEntityRewardWrapper = styled.div`
+export const CreateEntityWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
   gap: 6px;
+  align-items: flex-start;
 `;
 
 export const CreateEntityPaymentMethodRoot = styled.button`
@@ -817,7 +831,7 @@ export const CreateEntityPaymentMethodSelectRender = styled.div`
   align-items: center;
   font-family: 'Space Grotesk';
   font-size: 13px;
-  color: 13px;
+  color: white;
   justify-content: space-between;
 `;
 

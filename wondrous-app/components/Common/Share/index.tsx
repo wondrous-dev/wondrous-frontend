@@ -5,10 +5,11 @@ import { StyledShare } from './styles';
 
 interface IShareProps {
   url: string;
+  className?: string;
 }
 
 export const Share = (props: IShareProps) => {
-  const { url } = props;
+  const { url, className } = props;
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const handleOnClick = (e) => {
     e.preventDefault();
@@ -18,7 +19,7 @@ export const Share = (props: IShareProps) => {
     setSnackbarAlertOpen(true);
   };
   return (
-    <StyledShare onClick={handleOnClick}>
+    <StyledShare onClick={handleOnClick} className={className}>
       <TaskShareIcon />
     </StyledShare>
   );

@@ -20,7 +20,7 @@ import {
   TASK_STATUS_REQUESTED,
   PRIVACY_LEVEL,
 } from 'utils/constants';
-import { TaskListViewModal } from '../Task/modal';
+import { TaskListViewModal } from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 
 let windowOffset;

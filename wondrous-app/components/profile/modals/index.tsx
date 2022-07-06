@@ -7,7 +7,7 @@ import { useInView } from 'react-intersection-observer';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
-import { TaskModal, TaskSubmissionHeaderCreatorText } from '../../Common/Task/styles';
+import { TaskModalBaseCard, TaskSubmissionHeaderCreatorText } from '../../Common/Task/styles';
 import { TabContainer, Tab, TabContainerText, PodExplainerText } from './styles';
 import { DefaultProfilePicture, PodWrapper, Title, UserProfilePicture, UserWrapper } from './styles';
 import { useRouter } from 'next/router';
@@ -33,7 +33,9 @@ const PodItem = (props) => {
       >
         {pod?.name}
       </TabContainerText>
-      <PodExplainerText>{cutString(pod?.description)}</PodExplainerText>
+      <PodExplainerText>
+        <RichTextViewer text={pod?.description} />
+      </PodExplainerText>
     </PodWrapper>
   );
 };
@@ -49,7 +51,11 @@ const UserItem = (props) => {
         })
       }
     >
-      {user?.profilePicture ? <UserProfilePicture src={user?.profilePicture} /> : <DefaultProfilePicture />}
+      {user?.profilePicture ? (
+        <UserProfilePicture src={user?.thumbnailPicture || user?.profilePicture} />
+      ) : (
+        <DefaultProfilePicture />
+      )}
       <div
         style={{
           display: 'flex',
@@ -146,7 +152,7 @@ export const MoreInfoModal = (props) => {
         setDisplayPods(false);
       }}
     >
-      <TaskModal>
+      <TaskModalBaseCard>
         <Title>{name}</Title>
         <TabContainer>
           <Tab
@@ -182,7 +188,7 @@ export const MoreInfoModal = (props) => {
         )}
         {displayUsers && <>{userList && userList.map((user) => <UserItem key={user?.id} user={user} />)}</>}
         {displayPods && <>{podList && podList.map((pod) => <PodItem key={pod?.id} pod={pod} />)}</>}
-      </TaskModal>
+      </TaskModalBaseCard>
     </Modal>
   );
 };

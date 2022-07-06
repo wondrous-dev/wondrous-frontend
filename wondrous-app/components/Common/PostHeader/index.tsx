@@ -7,7 +7,7 @@ import { ObjectType, PostVerbType } from 'types/post';
 import * as Constants from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { KudosForm } from '../KudosForm';
-import { TaskViewModal } from '../Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   PostHeaderDefaultUserImage,
   PostHeaderImage,
@@ -119,8 +119,7 @@ export const PostHeader = (props) => {
       <KudosForm open={kudosForm} existingContent={content} onClose={handlePostEditClose} id={postId} />
       <TaskViewModal open={taskViewModal} taskId={taskId} handleClose={handleTaskViewModalClose} />
       <PostHeaderWrapper>
-        <PostHeaderImageTextWrapper
-        >
+        <PostHeaderImageTextWrapper>
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">

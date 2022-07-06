@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { DragDropContext } from 'react-beautiful-dnd';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
-import { TaskViewModal } from '../Task/modal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { KanbanBoardContainer, LoadMore } from './styles';
 import TaskColumn from './TaskColumn';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -344,6 +344,7 @@ const KanbanBoard = (props) => {
           handleClose={handleClose}
           taskId={taskId}
           isTaskProposal={!!location?.params?.taskProposal}
+          key={taskId}
         />
         <DragDropContext onDragEnd={onDragEnd}>
           {columns.map((column) => {
