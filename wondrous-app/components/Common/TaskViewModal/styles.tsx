@@ -67,12 +67,12 @@ export const TaskModalHeaderWrapperRight = styled(TaskModalHeaderWrapper)`
 `;
 
 export const TaskModalHeaderPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
-  background: #2d2d2d;
+  background: #212121;
   border-radius: 6px;
   width: 20px;
   height: 20px;
   svg {
-    width: 12px;
+    width: 13px;
     path {
       stroke: ${({ theme }) => theme.palette.white};
     }
