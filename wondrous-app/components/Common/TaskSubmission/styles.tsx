@@ -1,5 +1,5 @@
 import { ButtonBase, InputAdornment, InputBase, Popper, Typography } from '@mui/material';
-import { Button } from 'components/Common/button';
+import { Button as ButtonGradient } from 'components/Common/button';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import { SafeImage } from 'components/Common/Image';
@@ -35,7 +35,7 @@ export const SubmissionButtonWrapperBackground = styled.div`
   padding: 14px;
 `;
 
-export const SubmissionButtonCreate = styled(Button)`
+export const SubmissionButtonCreate = styled(ButtonGradient)`
   && {
     ${GradientHighlightHorizontal}
     height: 30px;
@@ -112,20 +112,22 @@ export const SubmissionButtonApprove = styled(ButtonBase)`
 `;
 
 export const SubmissionFilterSelectButton = styled(ButtonBase)`
-  background: #1b1b1b;
-  min-width: 245px;
-  max-width: fit-content;
-  height: 40px;
-  color: white;
-  font-family: 'Space Grotesk';
-  font-size: 15px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 8px;
-  gap: 8px;
-  border-radius: 6px;
-  border: 1px solid ${({ open }) => (open ? `#424242` : '#1b1b1b')};
+  && {
+    align-items: center;
+    background: #1b1b1b;
+    border-radius: 6px;
+    border: 1px solid ${({ open }) => (open ? `#424242` : '#1b1b1b')};
+    color: white;
+    display: flex;
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    gap: 8px;
+    height: 40px;
+    justify-content: space-between;
+    max-width: fit-content;
+    min-width: 245px;
+    padding: 8px;
+  }
 `;
 
 export const SubmissionFilterSelectPopper = styled(Popper)`
@@ -200,11 +202,13 @@ export const SubmissionFormWrapper = styled.div`
 `;
 
 export const SubmissionFormBackButton = styled(ButtonBase)`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  height: 32px;
-  align-self: flex-start;
+  && {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    height: 32px;
+    align-self: flex-start;
+  }
 `;
 
 export const SubmissionFormBackIcon = styled((props) => (
@@ -382,35 +386,40 @@ export const SubmissionFormError = styled(Typography)`
 `;
 
 export const SubmissionFormNewLink = styled(ButtonBase)`
-  background: #282828;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: max-content;
-  width: 40px;
-  border-radius: 6px;
-  height: 42px;
+  && {
+    align-items: center;
+    background: #282828;
+    border-radius: 6px;
+    display: flex;
+    height: 42px;
+    justify-content: center;
+    padding: 12px;
+    width: 40px;
+  }
 `;
 
 export const SubmissionFormUploadFileButton = styled(ButtonBase)`
-  background: #282828;
-  padding: 12px;
-  display: flex;
-  align-items: center;
-  height: 40px;
-  justify-content: center;
-  width: max-content;
-  min-width: 40px;
-  border-radius: 6px;
+  && {
+    background: #282828;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    justify-content: center;
+    width: max-content;
+    min-width: 40px;
+    border-radius: 6px;
+  }
 `;
 
 export const SubmissionFormUploadFileButtonText = styled(Typography)`
-  font-size: 14px;
-  font-family: 'Space Grotesk';
-  ${({ theme }) => `
+  && {
+    font-size: 14px;
+    font-family: 'Space Grotesk';
+    ${({ theme }) => `
     color: ${theme.palette.white}
   `};
+  }
 `;
 
 export const SubmissionFormUploadFileLoading = styled((props) => (
@@ -432,23 +441,25 @@ export const SubmissionFormButtonWrapper = styled.div`
 `;
 
 export const SubmissionFormCancel = styled(ButtonBase)`
-  height: 34px;
-  width: fit-content;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 30px;
-  border-radius: 50px;
-  font-family: 'Space Grotesk';
-  font-size: 15px;
-  ${({ theme }) => `
+  && {
+    height: 34px;
+    width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 8px 30px;
+    border-radius: 50px;
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    ${({ theme }) => `
     background-color: ${theme.palette.black92};
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightMedium};
   `};
+  }
 `;
 
-export const SubmissionFormSubmit = styled(Button)`
+export const SubmissionFormSubmit = styled(ButtonGradient)`
   && {
     ${GradientHighlightHorizontal}
     height: 34px;
