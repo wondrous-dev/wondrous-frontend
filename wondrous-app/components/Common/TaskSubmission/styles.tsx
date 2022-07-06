@@ -313,12 +313,19 @@ export const SubmissionFormLink = styled(InputBase)`
   flex-grow: 1;
   padding: 8px;
   height: 42px;
+
   ${({ theme }) => `
     color: ${theme.palette.white};
     background: #1b1b1b;
   `}
   .MuiInputBase-input {
     padding: 0;
+    ::placeholder {
+      ${({ theme }) => `
+        color: ${theme.palette.white};
+      `}
+      opacity: 0.33;
+    }
   }
 `;
 
