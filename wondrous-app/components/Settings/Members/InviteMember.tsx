@@ -96,7 +96,7 @@ const InviteMember = (props) => {
       })
       .map((user) => ({
         ...user,
-        profilePicture: user?.profilePicture,
+        profilePicture: user?.thumbnailPicture || user?.profilePicture,
         label: user?.username,
         value: user?.id,
       }));

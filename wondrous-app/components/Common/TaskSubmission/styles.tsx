@@ -67,42 +67,48 @@ export const SubmissionButtonReviewWrapper = styled.div`
 `;
 
 export const SubmissionButtonEdit = styled(ButtonBase)`
-  width: max-content;
-  height: 28px;
-  border-radius: 100px;
-  font-family: 'Space Grotesk';
-  padding: 7px 16px;
-  text-decoration: underline;
-  ${({ theme }) => `
+  && {
+    width: max-content;
+    height: 28px;
+    border-radius: 100px;
+    font-family: 'Space Grotesk';
+    padding: 7px 16px;
+    text-decoration: underline;
+    ${({ theme }) => `
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightMedium};
   `}
+  }
 `;
 
 export const SubmissionButtonRequestChange = styled(ButtonBase)`
-  border: 1px solid #474747;
-  width: max-content;
-  height: 28px;
-  border-radius: 100px;
-  font-family: 'Space Grotesk';
-  padding: 7px 16px;
-  ${({ theme }) => `
+  && {
+    border: 1px solid #474747;
+    width: max-content;
+    height: 28px;
+    border-radius: 100px;
+    font-family: 'Space Grotesk';
+    padding: 7px 16px;
+    ${({ theme }) => `
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightMedium};
   `}
+  }
 `;
 
 export const SubmissionButtonApprove = styled(ButtonBase)`
-  background: #474747;
-  width: max-content;
-  height: 28px;
-  border-radius: 100px;
-  font-family: 'Space Grotesk';
-  padding: 7px 16px;
-  ${({ theme }) => `
+  && {
+    background: #474747;
+    width: max-content;
+    height: 28px;
+    border-radius: 100px;
+    font-family: 'Space Grotesk';
+    padding: 7px 16px;
+    ${({ theme }) => `
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightMedium};
   `}
+  }
 `;
 
 export const SubmissionFilterSelectButton = styled(ButtonBase)`
