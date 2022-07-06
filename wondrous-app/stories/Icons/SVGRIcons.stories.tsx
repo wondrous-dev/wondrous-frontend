@@ -5,7 +5,7 @@ import Icons from './SVGRIcons';
 import {SVG} from "./SvgIcons.stories";
 
 export default {
-  title: 'Wondrous/Icons/SVGR',
+  title: 'Data Display/Icons/SVGR',
   component: Icons,
   // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
   argTypes: {

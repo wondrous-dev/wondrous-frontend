@@ -4,7 +4,7 @@ import { Text as TextComponent } from 'components/styled/Text';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
 export default {
-  title: 'Wondrous/Typography/Text',
+  title: 'Data Display/Typography/Text',
   component: TextComponent,
   parameters: {
     docs: {

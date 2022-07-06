@@ -6,7 +6,7 @@ import { SafeImage as SafeImageComponent } from 'components/Common/Image';
 import apollo from 'services/apollo';
 
 export default {
-  title: 'Wondrous/Image/SafeImage',
+  title: 'Data Display/Image/SafeImage',
   component: SafeImageComponent,
   parameters: {
     docs: {
@@ -30,7 +30,7 @@ export default {
       description: 'URL to the default image in case if `src` is not defined or null',
     },
     setImage: {
-      type: 'string',
+      action: 'setImage',
       description: 'Action called when preview file is loaded',
     },
     className: {

@@ -4,9 +4,9 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Tag as TagComponent } from 'components/styled/Tag';
 
 export default {
-  title: 'Wondrous/Tag',
+  title: 'Data Display/Tag',
   component: TagComponent,
-} as ComponentMeta<typeof Text>;
+} as ComponentMeta<typeof TagComponent>;
 
 const Template: ComponentStory<typeof TagComponent> = (args) => <>
   <TagComponent {...args}>Engineering</TagComponent>
@@ -14,4 +14,4 @@ const Template: ComponentStory<typeof TagComponent> = (args) => <>
   <TagComponent {...args}>Design</TagComponent>
 </>;
 
-export const Text = Template.bind({});
+export const Tag = Template.bind({});

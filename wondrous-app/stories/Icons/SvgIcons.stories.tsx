@@ -4,7 +4,7 @@ import { ComponentStory, ComponentMeta } from '@storybook/react';
 import SVGIcons from './SvgIcons';
 
 export default {
-  title: 'Wondrous/Icons/SVG',
+  title: 'Data Display/Icons/SVG',
   component: SVGIcons,
 } as ComponentMeta<typeof SVGIcons>;
 

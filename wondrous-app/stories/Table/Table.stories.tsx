@@ -5,7 +5,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { SVGR } from '../Icons/SVGRIcons.stories';
 
 export default {
-  title: 'Wondrous/Table',
+  title: 'Data Display/Table',
   component: TableComponent,
   parameters: {
     docs: {

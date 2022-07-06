@@ -4,7 +4,7 @@ import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Button, GreyButton } from 'components/Button';
 
 export default {
-  title: 'Wondrous/Buttons',
+  title: 'Inputs/Buttons',
   component: Button,
   parameters: {
     layout: 'centered',
