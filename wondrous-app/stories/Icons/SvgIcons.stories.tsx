@@ -17,3 +17,20 @@ const Template: ComponentStory<typeof SVGIcons> = (args) => {
 };
 
 export const SVG = Template.bind({});
+
+SVG.parameters = {
+  docs: {
+    source: {
+      code: `
+// example
+import Image from 'next/image';
+
+import createBounty from 'components/Icons/createBounty.svg';
+
+<Image src={createBounty} width={14} height={16} alt="Create bounty" />
+      `,
+      language: 'jsx',
+      type: 'auto',
+    },
+  },
+};

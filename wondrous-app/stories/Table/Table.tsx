@@ -5,16 +5,12 @@ import {
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-  LoadMore,
-  CreateModalOverlay,
-} from './style';
+  StyledTableBody,
+} from './styles';
 
 export const Table = () => {
   return (
     <>
-      <CreateModalOverlay aria-labelledby="modal-modal-title" aria-describedby="modal-modal-description">
-      </CreateModalOverlay>
-
       <StyledTableContainer>
         <StyledTable>
           <StyledTableHead>
@@ -22,26 +18,33 @@ export const Table = () => {
               <StyledTableCell align="center" width="56px">
                 DAO
               </StyledTableCell>
-              <StyledTableCell align="center" width="105px">
-                Created by :
-              </StyledTableCell>
-              <StyledTableCell align="center" width="77px">
-                Status
-              </StyledTableCell>
-              <StyledTableCell width="383px">Task</StyledTableCell>
-              {/*<StyledTableCell width="190px">Deliverables</StyledTableCell>*/}
-              <StyledTableCell align="center" width="88px">
-                Reward
-              </StyledTableCell>
-              <StyledTableCell align="center" width="80px">
-                Decision
-              </StyledTableCell>
-              <StyledTableCell width="54px" />
+              <StyledTableCell align="center">Created by :</StyledTableCell>
+              <StyledTableCell align="center">Status</StyledTableCell>
+              <StyledTableCell align="center">Reward</StyledTableCell>
             </StyledTableRow>
           </StyledTableHead>
-        </StyledTable>
 
-        <LoadMore />
+          <StyledTableBody>
+            <StyledTableCell align="center">Wonder</StyledTableCell>
+            <StyledTableCell align="center">Owner</StyledTableCell>
+            <StyledTableCell align="center">Open</StyledTableCell>
+            <StyledTableCell align="center">1000$</StyledTableCell>
+          </StyledTableBody>
+
+          <StyledTableBody>
+            <StyledTableCell align="center">Wonder</StyledTableCell>
+            <StyledTableCell align="center">Owner</StyledTableCell>
+            <StyledTableCell align="center">Open</StyledTableCell>
+            <StyledTableCell align="center">1000$</StyledTableCell>
+          </StyledTableBody>
+
+          <StyledTableBody>
+            <StyledTableCell align="center">Wonder</StyledTableCell>
+            <StyledTableCell align="center">Owner</StyledTableCell>
+            <StyledTableCell align="center">Open</StyledTableCell>
+            <StyledTableCell align="center">1000$</StyledTableCell>
+          </StyledTableBody>
+        </StyledTable>
       </StyledTableContainer>
     </>
   );

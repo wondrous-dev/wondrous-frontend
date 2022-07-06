@@ -2,6 +2,7 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import Icons from './SVGRIcons';
+import {SVG} from "./SvgIcons.stories";
 
 export default {
   title: 'Wondrous/Icons/SVGR',
@@ -56,4 +57,19 @@ SVGR.args = {
     width: '60px',
   },
   circle: false,
+};
+
+SVGR.parameters = {
+  docs: {
+    source: {
+      code: `
+// example
+export { Twitter } from 'components/Icons/twitter';
+
+<Twitter style={{ width: '40px', height: '40px' }} alt="Twitter" />
+      `,
+      language: 'jsx',
+      type: 'auto',
+    },
+  },
 };

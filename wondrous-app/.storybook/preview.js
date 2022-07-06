@@ -1,5 +1,4 @@
 // .storybook/preview.js
-// import * as NextImage from 'next/image';
 import { themes } from '@storybook/theming';
 
 import '../styles/body.css';
@@ -20,5 +19,14 @@ export const parameters = {
       color: /(background|color)$/i,
       date: /Date$/,
     },
-  }
+  },
+  backgrounds: {
+    default: 'dark',
+    values: [
+      {
+        name: 'dark',
+        value: '#0f0f0f',
+      },
+    ],
+  },
 };
