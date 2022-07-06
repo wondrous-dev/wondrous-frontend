@@ -1291,26 +1291,28 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     />
                   </TaskSectionDisplayDiv>
                 )}
-                <TaskSectionDisplayDiv>
-                  <TaskSectionLabel>Due Date</TaskSectionLabel>
-                  <TaskSectionImageContent
-                    hasContent={fetchedTask?.dueDate}
-                    ContentComponent={() => (
-                      <TaskSectionInfoText>
-                        {!isEmpty(fetchedTask?.recurringSchema) && (
-                          <Tooltip title="Recurring" placement="right">
-                            <TaskSectionInfoRecurringIcon>
-                              <RecurringIcon />
-                            </TaskSectionInfoRecurringIcon>
-                          </Tooltip>
-                        )}
-                        {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
-                      </TaskSectionInfoText>
-                    )}
-                    DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
-                    DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-                  />
-                </TaskSectionDisplayDiv>
+                {fetchedTask?.dueDate && (
+                  <TaskSectionDisplayDiv>
+                    <TaskSectionLabel>Due Date</TaskSectionLabel>
+                    <TaskSectionImageContent
+                      hasContent={fetchedTask?.dueDate}
+                      ContentComponent={() => (
+                        <TaskSectionInfoText>
+                          {!isEmpty(fetchedTask?.recurringSchema) && (
+                            <Tooltip title="Recurring" placement="right">
+                              <TaskSectionInfoRecurringIcon>
+                                <RecurringIcon />
+                              </TaskSectionInfoRecurringIcon>
+                            </Tooltip>
+                          )}
+                          {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
+                        </TaskSectionInfoText>
+                      )}
+                      DefaultContent={() => null}
+                      DefaultImageComponent={() => <TaskSectionInfoCalendar />}
+                    />
+                  </TaskSectionDisplayDiv>
+                )}
                 <Rewards fetchedTask={fetchedTask} user={user} />
                 {fetchedTask?.points && (
                   <TaskSectionDisplayDiv>
