@@ -557,6 +557,10 @@ export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
   }
 `;
 
+export const TaskSectionInfoTextMilestone = styled(TaskSectionInfoText)`
+  cursor: pointer;
+`;
+
 export const TaskSectionInfoTextUnderlined = styled(TaskSectionDisplayText)`
   && {
     text-decoration: underline;

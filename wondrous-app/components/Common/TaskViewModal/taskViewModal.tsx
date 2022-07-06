@@ -161,6 +161,7 @@ import {
   WalletError,
   WalletErrorText,
   ActionButton,
+  TaskSectionInfoTextMilestone,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
 import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
@@ -1327,12 +1328,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <TaskSectionImageContent
                       hasContent={fetchedTask?.milestoneId}
                       ContentComponent={() => (
-                        <TaskSectionInfoText
-                          style={{
-                            color: 'rgba(0, 186, 255, 1)',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                          }}
+                        <TaskSectionInfoTextMilestone
                           onClick={() => {
                             if (fetchedTask?.milestoneId) {
                               router.query.task = fetchedTask?.milestoneId;
@@ -1346,7 +1342,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           }}
                         >
                           {fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
-                        </TaskSectionInfoText>
+                        </TaskSectionInfoTextMilestone>
                       )}
                       DefaultImageComponent={() => <TaskSectionInfoMilestoneIcon />}
                     />
