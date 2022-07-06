@@ -9,8 +9,8 @@ const buildEslintCommand = (filenames) =>
 module.exports = {
     "*.{ts,tsx}": [
         () => 'yarn tsc --noEmit',
-        buildEslintCommand,
         "prettier --write",
+        buildEslintCommand,
     ],
     "*.{json}": ["prettier --write"]
 }

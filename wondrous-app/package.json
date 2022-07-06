@@ -76,7 +76,6 @@
   "devDependencies": {
     "@types/gtag.js": "^0.0.7",
     "@types/react": "17.0.14",
-    "@typescript-eslint/eslint-plugin": "^5.30.5",
     "babel-plugin-styled-components": "^1.13.2",
     "eslint": "7.30.0",
     "eslint-config-next": "11.0.1",
