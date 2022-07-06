@@ -458,6 +458,7 @@ export const SubmissionFormSubmit = styled(Button)`
     > button {
       font-family: 'Space Grotesk';
       font-size: 15px;
+      padding: 8px 30px;
       ${({ theme }) => `
         font-weight: ${theme.typography.fontWeightMedium};
         background: ${theme.palette.black}
