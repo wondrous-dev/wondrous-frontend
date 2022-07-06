@@ -1,5 +1,14 @@
 import { FeaturedList, gridMobileStyles } from './constants';
-import { OrgDescription, OrgName, StyledGridContainer, StyledGridItem, StyledGridItemContainer } from './styles';
+import {
+  OrgDescription,
+  OrgName,
+  StyledGridContainer,
+  StyledGridItem,
+  StyledGridItemContainer,
+  OrgsSectionHeader,
+  SectionSubheader,
+  SectionWrapper,
+} from './styles';
 import { SafeImage } from '../Common/Image';
 import Link from 'next/link';
 
@@ -44,11 +53,20 @@ const OrgItem = ({ org }) => {
 
 export const DaoSection = ({ isMobile }) => {
   return (
-    <StyledGridContainer container spacing={3} columns={3} style={isMobile ? gridMobileStyles : {}}>
-      {FeaturedList.map((org, index) => (
-        <OrgItem key={index} org={org} />
-      ))}
-    </StyledGridContainer>
+    <SectionWrapper>
+      <OrgsSectionHeader>Our Alpha Partners</OrgsSectionHeader>
+      <SectionSubheader>Work with the best DAO partners in the space.</SectionSubheader>
+      <StyledGridContainer
+        container
+        spacing={3}
+        columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
+        style={isMobile ? gridMobileStyles : {}}
+      >
+        {FeaturedList.map((org, index) => (
+          <OrgItem key={index} org={org} />
+        ))}
+      </StyledGridContainer>
+    </SectionWrapper>
   );
 };
 

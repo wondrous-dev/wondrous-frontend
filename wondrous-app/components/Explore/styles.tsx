@@ -3,49 +3,77 @@ import styled from 'styled-components';
 import { SIDEBAR_WIDTH } from 'utils/constants';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import Masonry from '@mui/lab/Masonry';
+import WheelSvg from './wheel.svg';
 
-export const Background = styled.div`
-  width: 80%;
-  padding-top: 30px;
-  margin-top: 60px;
+export const Wheel = styled(WheelSvg)`
+  && {
+    position: absolute;
+    right: 20%;
+    bottom: -20%;
+  }
+`;
+
+export const BackgroundImg = styled.img``;
+
+export const BackgroundContainer = styled.div`
+  width: 100%;
+  padding-top: 2rem;
   border-radius: 6px;
   display: flex;
   justify-content: center;
   margin-left: ${SIDEBAR_WIDTH};
-  margin-bottom: 24px;
+  background: linear-gradient(180deg, #1a1a1a 0%, #1d0052 100%);
+  position: relative;
+  ${BackgroundImg} {
+    width: 100%;
+  }
 `;
 
-export const BackgroundText = styled(Typography)`
-  && {
-    display: inline;
-    font-weight: 500;
-    font-size: 48px;
-    line-height: 52px;
-    background: linear-gradient(45.88deg, #f77bff 30.92%, #6b0eff 56.81%, #01f4fc 101.09%);
-    background-size: 200% auto;
-    background-clip: text;
-    -webkit-background-clip: text;
-    -moz-background-clip: text;
-    -moz-text-fill-color: transparent;
-    -webkit-text-fill-color: transparent;
-    text-align: center;
-  }
+export const BackgroundTextWrapper = styled.div`
+  display: flex;
+  position: absolute;
+  top: 50%;
+  flex-direction: column;
+  gap: 42px;
+  justify-content: flex-start;
+  width: 75%;
+`;
+
+export const BackgroundTextHeader = styled(Typography)`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 48px;
+  line-height: 46px;
+  /* identical to box height, or 96% */
+
+  letter-spacing: -0.03em;
+
+  /* glow */
+
+  background: linear-gradient(273.13deg, #fefec0 20.13%, #36a9ff 95.72%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+`;
+
+export const BackgroundTextSubHeader = styled(Typography)`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+  line-height: 33px;
+  /* identical to box height, or 206% */
+
+  letter-spacing: 0.0025em;
+
+  color: #ffffff;
 `;
 
 export const StyledGridContainer = styled(Masonry)`
   && {
-    width: 80%;
-    margin-left: ${SIDEBAR_WIDTH};
     display: flex;
-    overflow: scroll;
-    &::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
   }
 `;
 
@@ -104,7 +132,9 @@ export const TabsWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   gap: 25px;
+  margin-top: 24px;
   width: 100%;
+  margin-top: 33px;
   margin-left: ${SIDEBAR_WIDTH};
   width: 80%;
 `;
@@ -112,6 +142,7 @@ export const TabsWrapper = styled.div`
 export const IconWrapper = styled.div`
   margin-bottom: 16px;
   position: relative;
+  transition: transform 0.2s;
 `;
 
 export const Tab = styled.button`
@@ -123,7 +154,6 @@ export const Tab = styled.button`
   justify-content: space-between;
   align-items: center;
   border: 0;
-  margin-left: 12px;
   gap: 24px;
   max-height: 72px;
   span {
@@ -177,6 +207,8 @@ export const Tab = styled.button`
   }
   &:hover {
     ${IconWrapper} {
+      transform: ${({ rotateDeg }) => `rotate(${rotateDeg})`};
+
       &::before {
         background: ${({ hoverColor }) => hoverColor};
       }
@@ -187,4 +219,58 @@ export const Tab = styled.button`
       }
     }
   }
+`;
+
+export const ExplorePageContentWrapper = styled.div`
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-left: ${SIDEBAR_WIDTH};
+  background: url('/images/explore-page-background.svg');
+  background-size: cover;
+`;
+
+export const OrgsSectionHeader = styled(Typography)`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-size: 28px;
+  line-height: 24px;
+  /* identical to box height, or 86% */
+
+  letter-spacing: 0.0025em;
+
+  /* Status - Proposal */
+
+  background: linear-gradient(46.92deg, #b820ff 8.72%, #ffffff 115.55%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  text-fill-color: transparent;
+`;
+export const SectionSubheader = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 14px;
+    /* identical to box height, or 93% */
+
+    letter-spacing: 0.0025em;
+
+    color: #ffffff;
+  }
+`;
+
+export const SectionWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 80%;
+  gap: 24px;
+  margin-left: ${SIDEBAR_WIDTH};
+  margin-top: 33px;
 `;

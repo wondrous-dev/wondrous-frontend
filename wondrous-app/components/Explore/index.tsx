@@ -3,13 +3,23 @@ import { SideBarContext } from 'utils/contexts';
 import Header from '../Header';
 import SideBarComponent from '../SideBar';
 import { OverviewComponent } from '../Wrapper/styles';
-import { Button } from 'components/Button';
-import { Background, BackgroundText, OrgName, TabsWrapper, Tab, IconWrapper } from './styles';
+import {
+  BackgroundContainer,
+  BackgroundTextWrapper,
+  BackgroundTextHeader,
+  BackgroundTextSubHeader,
+  TabsWrapper,
+  Tab,
+  IconWrapper,
+  BackgroundImg,
+  Wheel,
+  ExplorePageContentWrapper,
+} from './styles';
 import { useIsMobile } from 'utils/hooks';
-import palette from 'theme/palette';
 import { gridMobileStyles, TABS_LABELS } from './constants';
 import { DaoSection, BountySection } from './sections';
 import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
+
 const ExploreComponent = () => {
   const [minimized, setMinimized] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
@@ -28,7 +38,6 @@ const ExploreComponent = () => {
     {
       title: 'Explore work',
       color: 'linear-gradient(180deg, #FFFFFF 0%, #FFD653 100%)',
-
       rotateDeg: '-70deg',
       action: () => setActiveTab(TABS_LABELS.BOUNTY),
       iconPseudoStyleWidth: '110%',
@@ -55,64 +64,38 @@ const ExploreComponent = () => {
             padding: '40px',
           }}
         >
-          <Background style={isMobile ? gridMobileStyles : {}}>
-            <BackgroundText>
-              Where world-changing web3 communities <br />
-              are being built.
-            </BackgroundText>
-          </Background>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <OrgName
-              style={{
-                marginTop: '24px',
-              }}
-            >
-              Want to use Wonder for your organization?
-            </OrgName>
-            <Button
-              style={{
-                marginLeft: '16px',
-                textDecoration: 'none',
-                color: palette.white,
-              }}
-            >
-              <a
-                style={{
-                  textDecoration: 'none',
-                  color: palette.white,
-                }}
-                href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Sign up here!
-              </a>
-            </Button>
-          </div>
-          <TabsWrapper>
-            {tabs.map((tab, idx) => (
-              <Tab
-                hoverColor={tab.hoverColor}
-                iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
-                key={idx}
-                onClick={tab.action}
-                type="button"
-                color={tab.color}
-              >
-                <span>{tab.title}</span>
-                <IconWrapper>{tab?.icon}</IconWrapper>
-              </Tab>
-            ))}
-          </TabsWrapper>
-          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
-          {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
-            <BountySection isMobile={isMobile} bounties={[]} />
-          )}
+          <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
+            <BackgroundImg src="/images/explore-page-banner.svg" />
+            <Wheel />
+            <BackgroundTextWrapper>
+              <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
+              <BackgroundTextSubHeader>
+                Join your next favorite project and ean crypto by contributing to one of our Partners
+              </BackgroundTextSubHeader>
+            </BackgroundTextWrapper>
+          </BackgroundContainer>
+          <ExplorePageContentWrapper>
+            <TabsWrapper>
+              {tabs.map((tab, idx) => (
+                <Tab
+                  hoverColor={tab.hoverColor}
+                  iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
+                  key={idx}
+                  onClick={tab.action}
+                  type="button"
+                  color={tab.color}
+                  rotateDeg={tab.rotateDeg}
+                >
+                  <span>{tab.title}</span>
+                  <IconWrapper>{tab?.icon}</IconWrapper>
+                </Tab>
+              ))}
+            </TabsWrapper>
+            {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+            {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
+              <BountySection isMobile={isMobile} bounties={[]} />
+            )}
+          </ExplorePageContentWrapper>
         </OverviewComponent>
       </SideBarContext.Provider>
     </>
