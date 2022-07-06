@@ -420,7 +420,7 @@ export const TaskDescriptionText = styled(Typography)`
       return `
       font-weight: ${theme.typography.fontWeightRegular};
       height: ${isExpanded ? 'fit-content' : `${initialHeight}px`};
-      color: #828282;
+      color: ${theme.palette.grey250};
     ${
       !isExpanded &&
       `
