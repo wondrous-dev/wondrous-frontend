@@ -1350,11 +1350,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     />
                   </TaskSectionDisplayDiv>
                 )}
-                <TaskSectionDisplayDiv>
-                  <TaskSectionLabel>Tags</TaskSectionLabel>
-                  <TaskSectionTagWrapper>
-                    {fetchedTask?.labels?.length ? (
-                      fetchedTask.labels.map((label) => {
+                {fetchedTask?.labels?.length > 0 && (
+                  <TaskSectionDisplayDiv>
+                    <TaskSectionLabel>Tags</TaskSectionLabel>
+                    <TaskSectionTagWrapper>
+                      {fetchedTask.labels.map((label) => {
                         return (
                           label && (
                             <TaskSectionImageContent
@@ -1365,12 +1365,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                             />
                           )
                         );
-                      })
-                    ) : (
-                      <TaskSectionInfoText>None</TaskSectionInfoText>
-                    )}
-                  </TaskSectionTagWrapper>
-                </TaskSectionDisplayDiv>
+                      })}
+                    </TaskSectionTagWrapper>
+                  </TaskSectionDisplayDiv>
+                )}
                 {isTaskProposal && (
                   <CreateFormFooterButtons>
                     {fetchedTask?.changeRequestedAt && (
