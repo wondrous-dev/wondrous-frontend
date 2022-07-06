@@ -270,7 +270,6 @@ const TaskModalTaskDataFullScreen = css`
 const TaskModalTaskDataMinimized = css`
   display: flex;
   flex-direction: column;
-  gap: 18px;
 `;
 
 export const TaskModalTaskData = styled.div`
@@ -458,10 +457,11 @@ export const TaskMediaWrapper = styled(TaskMedia)`
 `;
 
 export const TaskSectionDisplayDivWrapper = styled.div`
+  margin-top: 18px;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 18px;
   ${({ fullScreen }) =>
     fullScreen &&
     `
@@ -470,7 +470,14 @@ export const TaskSectionDisplayDivWrapper = styled.div`
     grid-row-start: 1;
     grid-row-end: 3;
     padding-top: 24px;
+    gap: 24px;
   `}
+`;
+
+export const TaskSectionDisplayData = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 export const TaskSectionDisplayDiv = styled.div`
@@ -483,6 +490,8 @@ export const TaskSectionDisplayLabel = styled.div`
   align-items: center;
   min-width: 120px;
 `;
+
+export const TaskSectionDisplayCreator = styled.div``;
 
 export const TaskSectionDisplayContentWrapper = styled.div`
   display: flex;
@@ -780,6 +789,7 @@ export const TaskModalFooter = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  margin-top: ${({ fullScreen }) => (fullScreen ? 36 : 32)}px;
 `;
 
 export const TaskSectionFooterTitleDiv = styled.div`
