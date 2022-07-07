@@ -1,14 +1,17 @@
-import React from 'react'
+import React from 'react';
 import {
   SettingsHeaderBlock,
   SettingsHeaderContent,
   SettingsHeaderText,
   SettingsHeaderTitle,
-} from './styles'
-import GeneralSettings from '../Icons/generalSettings'
+  SettingsHeaderInviteButton,
+  SettingsHeaderInviteButtonIcon,
+} from './styles';
+import GeneralSettings from '../Icons/generalSettings';
+import PlusIcon from 'components/Icons/plus';
 
 export const HeaderBlock = (props) => {
-  const { title, description, icon } = props
+  const { title, description, icon } = props;
 
   return (
     <SettingsHeaderBlock>
@@ -17,6 +20,12 @@ export const HeaderBlock = (props) => {
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
+      <SettingsHeaderInviteButton>
+        Invite
+        <SettingsHeaderInviteButtonIcon>
+          <PlusIcon fill="#FFFFFF" />
+        </SettingsHeaderInviteButtonIcon>
+      </SettingsHeaderInviteButton>
     </SettingsHeaderBlock>
-  )
-}
+  );
+};
