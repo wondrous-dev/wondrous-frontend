@@ -11,7 +11,7 @@ import GeneralSettings from '../Icons/generalSettings';
 import PlusIcon from 'components/Icons/plus';
 
 export const HeaderBlock = (props) => {
-  const { title, description, icon } = props;
+  const { title, description, icon, invite } = props;
 
   return (
     <SettingsHeaderBlock>
@@ -20,7 +20,7 @@ export const HeaderBlock = (props) => {
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
-      <SettingsHeaderInviteButton>
+      <SettingsHeaderInviteButton onClick={invite}>
         Invite
         <SettingsHeaderInviteButtonIcon>
           <PlusIcon fill="#FFFFFF" />
