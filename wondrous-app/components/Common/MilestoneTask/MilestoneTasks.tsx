@@ -73,7 +73,7 @@ const MilestoneTasks = ({ milestoneId, open, canCreate }) => {
 
   return (
     <>
-      <MilestoneTasksCreate />
+      <MilestoneTasksCreate canCreate={canCreate} />
       {data?.getTasksForMilestone.length > 0 && open && (
         <StyledTableContainer>
           <StyledTableHead>

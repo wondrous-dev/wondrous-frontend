@@ -1,3 +1,6 @@
+import { CreateEntity } from 'components/CreateEntity';
+import { useState } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 import {
   MilestonesTaskCreateButtonLabel,
   MilestonesTasksCreateButton,
@@ -6,11 +9,21 @@ import {
   MilestoneTasksCreateWrapper,
 } from './styles';
 
-const MilestoneTasksCreate = () => {
+const MilestoneTasksCreate = ({ canCreate }) => {
+  const [open, setOpen] = useState(false);
+  const handleModalStatus = () => setOpen(!open);
+  if (!canCreate) return null;
   return (
     <>
+      <CreateEntity
+        entityType={ENTITIES_TYPES.TASK}
+        cancel={handleModalStatus}
+        handleClose={handleModalStatus}
+        open={open}
+        handleCloseModal={handleModalStatus}
+      />
       <MilestoneTasksCreateWrapper>
-        <MilestonesTasksCreateButton>
+        <MilestonesTasksCreateButton onClick={handleModalStatus}>
           <MilestonesTasksCreateButtonIconWrapper>
             <MilestonesTasksCreateButtonIcon />
           </MilestonesTasksCreateButtonIconWrapper>
