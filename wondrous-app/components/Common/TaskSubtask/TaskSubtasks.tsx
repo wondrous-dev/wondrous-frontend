@@ -3,12 +3,11 @@ import TaskSubtaskHeader from './TaskSubtaskHeader';
 import TaskSubtaskList from './TaskSubtaskList';
 
 export const TaskSubtasks = ({ taskId, permissions, parentTask }) => {
+  if (!taskId) return null;
   return (
-    <>
-      <Subtask>
-        {taskId && <TaskSubtaskHeader taskId={taskId} permissions={permissions} parentTask={parentTask} />}
-        {taskId && <TaskSubtaskList taskId={taskId} />}
-      </Subtask>
-    </>
+    <Subtask>
+      <TaskSubtaskHeader taskId={taskId} permissions={permissions} parentTask={parentTask} />
+      <TaskSubtaskList taskId={taskId} />
+    </Subtask>
   );
 };
