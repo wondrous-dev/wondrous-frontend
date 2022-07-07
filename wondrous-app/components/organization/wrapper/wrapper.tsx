@@ -12,7 +12,6 @@ import ChooseEntityToCreate from '../../CreateEntity';
 import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import Tooltip from 'components/Tooltip';
-
 import {
   Content,
   ContentContainer,
@@ -350,7 +349,9 @@ const Wrapper = (props) => {
                 </HeaderTitleIcon>
                 <HeaderButtons>
                   {/* <Tooltip title="your permissions are:" > */}
-                  {permissions && orgRoleName && <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>}
+                  {permissions && orgRoleName && (
+                    <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
+                  )}
                   {/* </Tooltip> */}
                   {!isLoading && (
                     <TokenGatedBoard

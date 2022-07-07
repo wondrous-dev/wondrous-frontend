@@ -43,6 +43,9 @@ import { OrgBoardContext } from 'utils/contexts';
 import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -360,6 +363,7 @@ const BoardsPage = () => {
     date: null,
     privacyLevel: null,
   });
+  const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [orgData, setOrgData] = useState(null);
   const [searchString, setSearchString] = useState('');
   const [entityType, setEntityType] = useState(activeEntityFromQuery);
@@ -634,6 +638,11 @@ const BoardsPage = () => {
         : null
     );
   }
+
+  useHotkeys('tab+t', () => {
+    setCreateTaskModalOpen(true);
+  });
+
   return (
     <OrgBoardContext.Provider
       value={{
@@ -676,6 +685,21 @@ const BoardsPage = () => {
         userId={userId?.toString()}
         activeView={activeView}
       />
+      <CreateModalOverlay
+        style={{
+          height: '95vh',
+        }}
+        open={isCreateTaskModalOpen}
+        onClose={() => setCreateTaskModalOpen(false)}
+      >
+        <CreateEntityModal
+          entityType={ENTITIES_TYPES.TASK}
+          handleClose={() => setCreateTaskModalOpen(false)}
+          resetEntityType={() => {}}
+          setEntityType={() => {}}
+          cancel={() => setCreateTaskModalOpen(false)}
+        />
+      </CreateModalOverlay>
     </OrgBoardContext.Provider>
   );
 };
