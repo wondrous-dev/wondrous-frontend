@@ -1498,7 +1498,11 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}
                   {activeTab === tabs.tasks && (
-                    <MilestoneTasks milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
+                    <MilestoneTasks
+                      milestoneId={fetchedTask?.id}
+                      open={activeTab === tabs.tasks}
+                      canCreate={canCreate}
+                    />
                   )}
                 </TaskSectionContent>
               </TaskModalFooter>

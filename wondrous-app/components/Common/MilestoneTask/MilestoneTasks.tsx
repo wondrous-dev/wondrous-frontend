@@ -24,6 +24,7 @@ import {
 } from './styles';
 import SmartLink from 'components/Common/SmartLink';
 import { RichTextViewer } from 'components/RichText';
+import MilestoneTasksCreate from './MilestoneTasksCreate';
 
 const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -34,13 +35,11 @@ const TASK_ICONS = {
   [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
 };
 
-const MilestoneTasks = (props) => {
-  const { milestoneId, open } = props;
+const MilestoneTasks = ({ milestoneId, open, canCreate }) => {
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
   const [getTasksForMilestone, { fetchMore, data }] = useLazyQuery(GET_TASKS_FOR_MILESTONE);
-
   useEffect(() => {
     if (!data?.getTasksForMilestone && open) {
       getTasksForMilestone({
@@ -74,7 +73,7 @@ const MilestoneTasks = (props) => {
 
   return (
     <>
-      {data?.getTasksForMilestone.length === 0 && open && <StyledMilestoneEmpty>No task yet.</StyledMilestoneEmpty>}
+      <MilestoneTasksCreate />
       {data?.getTasksForMilestone.length > 0 && open && (
         <StyledTableContainer>
           <StyledTableHead>
