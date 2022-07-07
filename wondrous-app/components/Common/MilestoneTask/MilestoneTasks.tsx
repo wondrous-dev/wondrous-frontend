@@ -25,7 +25,7 @@ import {
 import SmartLink from 'components/Common/SmartLink';
 import { RichTextViewer } from 'components/RichText';
 
-export const TASK_ICONS = {
+const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
   [Constants.TASK_STATUS_IN_PROGRESS]: InProgress,
   [Constants.TASK_STATUS_DONE]: Done,
@@ -34,11 +34,10 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
 };
 
-export const MilestoneTaskList = (props) => {
+const MilestoneTasks = (props) => {
   const { milestoneId, open } = props;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
-  const router = useRouter();
   const limit = 10;
   const [getTasksForMilestone, { fetchMore, data }] = useLazyQuery(GET_TASKS_FOR_MILESTONE);
 
@@ -113,7 +112,9 @@ export const MilestoneTaskList = (props) => {
                       <TaskTitle>
                         <Link href={viewUrl}>{task.title}</Link>
                       </TaskTitle>
-                      <TaskDescription><RichTextViewer text={task.description}/></TaskDescription>
+                      <TaskDescription>
+                        <RichTextViewer text={task.description} />
+                      </TaskDescription>
                     </StyledTableCell>
                   </StyledTableRow>
                 </SmartLink>
@@ -126,3 +127,5 @@ export const MilestoneTaskList = (props) => {
     </>
   );
 };
+
+export default MilestoneTasks;

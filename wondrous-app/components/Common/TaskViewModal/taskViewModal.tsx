@@ -1,5 +1,8 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { Box } from '@mui/material';
+import MilestoneTasks from 'components/Common/MilestoneTask';
+import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskSubmission from 'components/Common/TaskSubmission';
 import { CreateEntity } from 'components/CreateEntity';
 import { Claim } from 'components/Icons/claimTask';
@@ -29,7 +32,7 @@ import { isEmpty, keys } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
@@ -77,19 +80,19 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import { DAOIcon } from '../../Icons/dao';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { SubtaskDarkIcon } from '../../Icons/subtask';
-import { AssigneeIcon, RejectIcon } from '../../Icons/taskModalIcons';
+import { RejectIcon } from '../../Icons/taskModalIcons';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { CompleteModal } from '../CompleteModal';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from '../MilestoneProgress';
-import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { TaskSubtasks } from '../TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import WalletModal from '../Wallet/WalletModal';
 import {
+  ActionButton,
   ArchivedTaskUndo,
   ConnectToWalletButton,
   GithubBlock,
@@ -128,6 +131,8 @@ import {
   TaskModalTitleDescriptionMedia,
   TaskSectionContent,
   TaskSectionDisplayContentWrapper,
+  TaskSectionDisplayCreator,
+  TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
   TaskSectionDisplayLabel,
@@ -153,6 +158,7 @@ import {
   TaskSectionInfoTakeTaskText,
   TaskSectionInfoText,
   TaskSectionInfoTextCreator,
+  TaskSectionInfoTextMilestone,
   TaskSectionInfoTextUnderlined,
   TaskSectionTagWrapper,
   TaskStatusHeaderText,
@@ -160,14 +166,8 @@ import {
   TaskTabText,
   WalletError,
   WalletErrorText,
-  ActionButton,
-  TaskSectionInfoTextMilestone,
-  TaskSectionDisplayCreator,
-  TaskSectionDisplayData,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
-import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
-import { Box } from '@mui/material';
 
 const tabs = {
   submissions: 'Submissions',
@@ -1498,7 +1498,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}
                   {activeTab === tabs.tasks && (
-                    <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
+                    <MilestoneTasks milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
                   )}
                 </TaskSectionContent>
               </TaskModalFooter>
