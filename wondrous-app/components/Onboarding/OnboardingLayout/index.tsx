@@ -18,7 +18,7 @@ type Props = {
   withLoginButton?: boolean;
   loading?: unknown;
   displayFooter?: boolean;
-  footer?: React.ReactNode;
+  footer?: any;
 };
 
 const OnboardingLayout = ({

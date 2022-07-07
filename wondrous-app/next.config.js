@@ -16,11 +16,12 @@ module.exports = withBundleAnalyzer({
 
     return config;
   },
-  swcMinify: false,
-  experimental: {
-    // ssr and displayName are configured by default
+  compiler: {
     styledComponents: true,
   },
+  // https://nextjs.org/docs/advanced-features/compiler#minification
+  // disable swcMinify because it's unstable
+  swcMinify: false,
   async headers() {
     return [
       {
@@ -46,5 +47,12 @@ module.exports = withBundleAnalyzer({
         ],
       },
     ];
+  },
+  typescript: {
+    // !! WARN !!
+    // Dangerously allow production builds to successfully complete even if
+    // your project has type errors.
+    // !! WARN !!
+    ignoreBuildErrors: true,
   },
 });
