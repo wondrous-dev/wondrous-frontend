@@ -274,3 +274,13 @@ export const SectionWrapper = styled.div`
   margin-left: ${SIDEBAR_WIDTH};
   margin-top: 33px;
 `;
+
+export const BountySectionHeader = styled(OrgsSectionHeader)`
+  && {
+    background: linear-gradient(180deg, #ffffff 0%, #ffd653 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
+`;

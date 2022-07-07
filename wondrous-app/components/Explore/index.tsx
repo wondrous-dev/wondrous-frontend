@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { SideBarContext } from 'utils/contexts';
 import Header from '../Header';
 import SideBarComponent from '../SideBar';
@@ -19,11 +19,47 @@ import { useIsMobile } from 'utils/hooks';
 import { gridMobileStyles, TABS_LABELS } from './constants';
 import { DaoSection, BountySection } from './sections';
 import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
+import { useQuery } from '@apollo/client';
+import { GET_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
+
+const LIMIT = 10;
 
 const ExploreComponent = () => {
   const [minimized, setMinimized] = useState(false);
   const [activeTab, setActiveTab] = useState(null);
+  const [hasMoreBounties, setHasMoreBounties] = useState(true);
   const isMobile = useIsMobile();
+  const {
+    data: bounties,
+    loading,
+    error,
+    fetchMore,
+  } = useQuery(GET_BOUNTIES_TO_EXPLORE, {
+    variables: {
+      limit: LIMIT,
+      offset: 0,
+    },
+    onCompleted: ({ getBountiesToExplore }) => {
+      if (getBountiesToExplore.length < LIMIT && hasMoreBounties) setHasMoreBounties(false);
+    },
+  });
+
+  const getBountiesToExploreFetchMore = useCallback(() => {
+    fetchMore({
+      variables: {
+        offset: bounties?.getBountiesToExplore.length,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        setHasMoreBounties(fetchMoreResult?.getBountiesToExplore?.length >= LIMIT);
+        const getBountiesToExplore = [...prev?.getBountiesToExplore, ...fetchMoreResult?.getBountiesToExplore];
+        return {
+          getBountiesToExplore,
+        };
+      },
+    }).catch((error) => {
+      console.log(error);
+    });
+  }, [bounties?.getBountiesToExplore, fetchMore]);
 
   const tabs = [
     {
@@ -93,7 +129,12 @@ const ExploreComponent = () => {
             </TabsWrapper>
             {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
             {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
-              <BountySection isMobile={isMobile} bounties={[]} />
+              <BountySection
+                isMobile={isMobile}
+                bounties={bounties?.getBountiesToExplore}
+                fetchMore={getBountiesToExploreFetchMore}
+                hasMore={hasMoreBounties}
+              />
             )}
           </ExplorePageContentWrapper>
         </OverviewComponent>

@@ -8,9 +8,17 @@ import {
   OrgsSectionHeader,
   SectionSubheader,
   SectionWrapper,
+  BountySectionHeader,
 } from './styles';
 import { SafeImage } from '../Common/Image';
 import Link from 'next/link';
+import BountyBoard from 'components/Common/BountyBoard';
+import { ShowMoreButton } from 'components/ListView/styles';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { useRouter } from 'next/router';
+import { delQuery } from 'utils';
+import { useLocation } from 'utils/useLocation';
+import { useState, useEffect } from 'react';
 
 const OrgItem = ({ org }) => {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
@@ -57,10 +65,9 @@ export const DaoSection = ({ isMobile }) => {
       <OrgsSectionHeader>Our Alpha Partners</OrgsSectionHeader>
       <SectionSubheader>Work with the best DAO partners in the space.</SectionSubheader>
       <StyledGridContainer
-        container
         spacing={3}
-        columns={{ xs: 1, sm: 2, md: 3, lg: 4 }}
-        style={isMobile ? gridMobileStyles : {}}
+        columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}
+        // style={isMobile ? gridMobileStyles : {}}
       >
         {FeaturedList.map((org, index) => (
           <OrgItem key={index} org={org} />
@@ -70,13 +77,65 @@ export const DaoSection = ({ isMobile }) => {
   );
 };
 
-export const BountySection = ({ isMobile, bounties }) => {
+let windowOffset = 0;
+
+export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) => {
+  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
+  const location = useLocation();
+
+  const handleCardClick = (bounty) => {
+    const newUrl = `${delQuery(router.asPath)}?task=${bounty?.id}`;
+    location.push(newUrl);
+    windowOffset = window.scrollY;
+    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+  };
+
+  useEffect(() => {
+    const params = location.params;
+    if (params.task || params.taskProposal) {
+      setOpenModal(true);
+    }
+  }, [location]);
+
+  const handleModalClose = () => {
+    const style = document.body.getAttribute('style');
+    const top = style.match(/(?<=top: -)(.*?)(?=px)/);
+    document.body.setAttribute('style', '');
+    if (top?.length > 0) {
+      window?.scrollTo(0, Number(top[0]));
+    }
+    let newUrl = `${delQuery(router.asPath)}`;
+    location.push(newUrl);
+    setOpenModal(false);
+  };
+
   return (
-    <StyledGridContainer container spacing={3} columns={3} style={isMobile ? gridMobileStyles : {}}>
-      {bounties.map(
-        (bounty, index) => null
-        // <OrgItem key={index} org={org} />
-      )}
-    </StyledGridContainer>
+    <SectionWrapper>
+      <BountySectionHeader>Discover work</BountySectionHeader>
+      <SectionSubheader>Make crypto while contributing to your favorite DAOs</SectionSubheader>
+
+      <StyledGridContainer
+        container
+        spacing={3}
+        columns={{ xs: 1, sm: 2, lg: 3 }}
+        style={isMobile ? gridMobileStyles : {}}
+      >
+        <TaskViewModal
+          disableEnforceFocus
+          open={openModal}
+          shouldFocusAfterRender={false}
+          handleClose={handleModalClose}
+          taskId={location?.params?.task?.toString()}
+        />
+
+        <BountyBoard tasks={bounties} handleCardClick={handleCardClick} />
+        {hasMore && !!bounties?.length && (
+          <ShowMoreButton type="button" onClick={() => fetchMore()}>
+            Show more
+          </ShowMoreButton>
+        )}
+      </StyledGridContainer>
+    </SectionWrapper>
   );
 };
