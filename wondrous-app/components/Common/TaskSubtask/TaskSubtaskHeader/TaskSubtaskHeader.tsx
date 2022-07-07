@@ -3,7 +3,13 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { useState } from 'react';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 
-import { CreateSubtaskButton, CreateSubtaskIcon, StyledPlusIcon, SubtaskHeader } from './styles';
+import {
+  TaskSubtaskHeaderButton,
+  TaskSubtaskHeaderButtonIcon,
+  TaskSubtaskHeaderButtonIconWrapper,
+  TaskSubtaskHeaderButtonLabel,
+  TaskSubtaskHeaderWrapper,
+} from './styles';
 
 export const TaskSubtaskHeader = ({ taskId, permissions, parentTask }) => {
   const canCreateSubtask =
@@ -11,7 +17,7 @@ export const TaskSubtaskHeader = ({ taskId, permissions, parentTask }) => {
   const [createFormModal, setCreateFormModal] = useState(false);
   const toggleCreateFormModal = () => setCreateFormModal((prevState) => !prevState);
   return (
-    <SubtaskHeader>
+    <TaskSubtaskHeaderWrapper>
       <CreateModalOverlay open={createFormModal} onClose={toggleCreateFormModal}>
         <CreateEntityModal
           entityType={parentTask?.type === ENTITIES_TYPES.BOUNTY ? ENTITIES_TYPES.BOUNTY : ENTITIES_TYPES.TASK}
@@ -21,13 +27,13 @@ export const TaskSubtaskHeader = ({ taskId, permissions, parentTask }) => {
         />
       </CreateModalOverlay>
       {canCreateSubtask && (
-        <CreateSubtaskButton onClick={toggleCreateFormModal}>
-          <CreateSubtaskIcon>
-            <StyledPlusIcon fill="#ccbbff" />
-          </CreateSubtaskIcon>
-          Add task
-        </CreateSubtaskButton>
+        <TaskSubtaskHeaderButton onClick={toggleCreateFormModal}>
+          <TaskSubtaskHeaderButtonIconWrapper>
+            <TaskSubtaskHeaderButtonIcon fill="#ccbbff" />
+          </TaskSubtaskHeaderButtonIconWrapper>
+          <TaskSubtaskHeaderButtonLabel>Add task</TaskSubtaskHeaderButtonLabel>
+        </TaskSubtaskHeaderButton>
       )}
-    </SubtaskHeader>
+    </TaskSubtaskHeaderWrapper>
   );
 };

@@ -1,71 +1,54 @@
 import { Typography } from '@mui/material';
+import { Button } from 'components/Common/button';
+import PlusIcon from 'components/Icons/plus';
 import styled from 'styled-components';
-import palette from 'theme/palette';
-import PlusIcon from '../../../Icons/plus';
-import { Button } from '../../button';
 
-export const SubtaskHeader = styled.div`
-  display: flex;
+export const TaskSubtaskHeaderWrapper = styled.div`
   align-items: center;
-  justify-content: space-between;
-  padding: 18px;
-  background: #0f0f0f;
+  background: #171717;
   border-radius: 6px;
-`;
-
-export const SubtaskCompletedWrapper = styled.div`
   display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: space-between;
-  width: 45%;
+  height: 68px;
+  justify-content: center;
 `;
 
-export const LabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  width: 100%;
-`;
-
-export const Label = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 13px;
-    font-style: normal;
-    font-weight: 400;
-    color: ${palette.white};
-    margin-left: 8px;
-  }
-`;
-
-export const CreateSubtaskButton = styled(Button)`
+export const TaskSubtaskHeaderButton = styled(Button)`
   && {
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-
+    height: 40px;
     button {
       background: #0f0f0f;
-      font-family: 'Space Grotesk';
-      font-size: 15px;
-      font-style: normal;
-      font-weight: 500;
-      padding: 8px;
+      padding: 5px 16px 5px 5px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
   }
 `;
 
-export const StyledPlusIcon = styled(PlusIcon)`
+export const TaskSubtaskHeaderButtonIconWrapper = styled.div`
+  align-items: center;
+  background: #1d1d1d;
+  border-radius: 100%;
+  display: flex;
+  height: 30px;
+  justify-content: center;
+  padding: 9px;
+  width: 30px;
+`;
+
+export const TaskSubtaskHeaderButtonIcon = styled(PlusIcon)`
   width: 12px;
   height: 12px;
 `;
 
-export const CreateSubtaskIcon = styled.div`
-  background: linear-gradient(0deg, #141414 0%, #474747 219.88%, rgba(20, 20, 20, 0) 219.9%);
-  padding: 9px;
-  width: 30px;
-  height: 30px;
-  border-radius: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-left: 8px;
+export const TaskSubtaskHeaderButtonLabel = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 600;
+    ${({ theme }) => `
+      color: ${theme.palette.white};
+    `};
+  }
 `;
