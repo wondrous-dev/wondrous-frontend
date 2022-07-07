@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Task } from '../Task';
-import { TaskInner, TaskWrapper } from '../Task/styles';
+import { Task } from '../../Task';
+import { TaskInner, TaskWrapper } from '../../Task/styles';
 
 // https://www.designcise.com/web/tutorial/why-is-styled-components-styled-wrapper-not-working-with-existing-react-component
 export const SubtaskTaskItem = styled((props) => <Task {...props} />)`

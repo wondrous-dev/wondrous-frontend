@@ -1,8 +1,8 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import PlusIcon from '../../Icons/plus';
-import { Button } from '../button';
+import PlusIcon from '../../../Icons/plus';
+import { Button } from '../../button';
 
 export const SubtaskHeader = styled.div`
   display: flex;
