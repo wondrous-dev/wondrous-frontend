@@ -4,11 +4,11 @@ import {
   OrgName,
   StyledGridContainer,
   StyledGridItem,
-  StyledGridItemContainer,
   OrgsSectionHeader,
   SectionSubheader,
   SectionWrapper,
   BountySectionHeader,
+  ShowMoreButtonWrapper,
 } from './styles';
 import { SafeImage } from '../Common/Image';
 import Link from 'next/link';
@@ -19,43 +19,43 @@ import { useRouter } from 'next/router';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
 import { useState, useEffect } from 'react';
+import palette from 'theme/palette';
 
 const OrgItem = ({ org }) => {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
   return (
-    <StyledGridItemContainer item md={4}>
-      <Link href={`/organization/${username}/boards`}>
-        <StyledGridItem key={username}>
-          {headerImage && <>{headerImage}</>}
-          {headerUrl && (
-            <SafeImage
-              style={{
-                width: '100%',
-                borderRadius: '12px 12px 0px 0px',
-                objectFit: 'cover',
-              }}
-              src={headerUrl}
-            />
-          )}
-          <div>
-            <SafeImage
-              src={imageUrl}
-              style={{
-                borderRadius: '5px',
-                width: '64px',
-                border: '4px solid #1E1E1E',
-                height: '64px',
-                marginTop: '-32px',
-                marginBottom: '16px',
-                objectFit: 'cover',
-              }}
-            />
-          </div>
-          <OrgName>{name}</OrgName>
-          <OrgDescription>{bio}</OrgDescription>
-        </StyledGridItem>
-      </Link>
-    </StyledGridItemContainer>
+    <Link href={`/organization/${username}/boards`}>
+      <StyledGridItem>
+        {headerImage && <>{headerImage}</>}
+        {headerUrl && (
+          <SafeImage
+            style={{
+              width: '100%',
+              borderRadius: '12px 12px 0px 0px',
+              objectFit: 'cover',
+            }}
+            src={headerUrl}
+          />
+        )}
+        <div>
+          <SafeImage
+            src={imageUrl}
+            style={{
+              borderRadius: '5px',
+              width: '64px',
+              border: '4px solid #1E1E1E',
+              height: '64px',
+              marginTop: '-32px',
+              marginBottom: '16px',
+              objectFit: 'cover',
+              background: palette.black,
+            }}
+          />
+        </div>
+        <OrgName>{name}</OrgName>
+        <OrgDescription>{bio}</OrgDescription>
+      </StyledGridItem>
+    </Link>
   );
 };
 
@@ -67,7 +67,7 @@ export const DaoSection = ({ isMobile }) => {
       <StyledGridContainer
         spacing={3}
         columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}
-        // style={isMobile ? gridMobileStyles : {}}
+        style={isMobile ? gridMobileStyles : {}}
       >
         {FeaturedList.map((org, index) => (
           <OrgItem key={index} org={org} />
@@ -130,12 +130,14 @@ export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, h
         />
 
         <BountyBoard tasks={bounties} handleCardClick={handleCardClick} />
-        {hasMore && !!bounties?.length && (
+      </StyledGridContainer>
+      {hasMore && !!bounties?.length && (
+        <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>
             Show more
           </ShowMoreButton>
-        )}
-      </StyledGridContainer>
+        </ShowMoreButtonWrapper>
+      )}
     </SectionWrapper>
   );
 };

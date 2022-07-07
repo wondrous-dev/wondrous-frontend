@@ -4,12 +4,22 @@ import { SIDEBAR_WIDTH } from 'utils/constants';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import Masonry from '@mui/lab/Masonry';
 import WheelSvg from './wheel.svg';
+import Metheor from './metheor.svg';
+import { ShowMoreButton } from 'components/ListView/styles';
 
 export const Wheel = styled(WheelSvg)`
   && {
     position: absolute;
     right: 20%;
     bottom: -20%;
+  }
+`;
+
+export const MetheorSvg = styled(Metheor)`
+  && {
+    position: absolute;
+    right: 10%;
+    top: 5%;
   }
 `;
 
@@ -71,28 +81,45 @@ export const BackgroundTextSubHeader = styled(Typography)`
   color: #ffffff;
 `;
 
-export const StyledGridContainer = styled(Masonry)`
-  && {
-    display: flex;
-  }
-`;
+export const StyledGridContainer = styled(Masonry)``;
 
-export const StyledGridItemContainer = styled(Grid)`
-  max-width: 327px;
+export const StyledGridItem = styled.div`
+  background-color: #1e1e1e;
+  border-radius: 12px;
+  text-align: center;
+  padding-bottom: 20px;
+  display: flex;
   cursor: pointer;
-`;
-export const StyledGridItem = styled(Grid)`
-  && {
-    background-color: #1e1e1e;
+  flex-direction: column;
+  position: relative;
+  align-items: center;
+  min-width: 327px;
+  overflow: hidden;
+  img {
+    transition: transform 0.4s ease;
+    transform-origin: 50% 50%;
+  }
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
     border-radius: 12px;
-    text-align: center;
-    margin: auto;
-    margin-top: 20px;
-    padding-bottom: 20px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    background: none;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+    pointer-events: none;
+  }
+
+  &:hover {
+    background: linear-gradient(180deg, #1e1e1e 50%, #373737 100%);
+    &::before {
+      background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
+    }
+    img {
+      transform: scale(1.1);
+    }
   }
 `;
 
@@ -176,7 +203,7 @@ export const Tab = styled.button`
     background-clip: text;
     text-fill-color: transparent;
     &::after {
-      background: none;
+      background: ${({ hoverColor, isActive }) => (isActive ? hoverColor : 'none')};
       content: attr(data-text);
       left: 0;
       filter: blur(18px);
@@ -198,24 +225,25 @@ export const Tab = styled.button`
       height: 100%;
       width: ${({ iconPseudoStyleWidth = '100%' }) => iconPseudoStyleWidth};
       z-index: 0;
-      background: none;
+      background: ${({ hoverColor, isActive }) => (isActive ? hoverColor : 'none')};
       filter: blur(28px);
       border-radius: 100%;
       left: 0;
       top: 0;
+      transform: ${({ rotateDeg, isActive }) => isActive && `rotate(${rotateDeg})`};
     }
   }
   &:hover {
     ${IconWrapper} {
-      transform: ${({ rotateDeg }) => `rotate(${rotateDeg})`};
+      transform: ${({ rotateDeg, isActive }) => !isActive && `rotate(${rotateDeg})`};
 
       &::before {
-        background: ${({ hoverColor }) => hoverColor};
+        background: ${({ hoverColor, isActive }) => !isActive && hoverColor};
       }
     }
     span {
       &::after {
-        background: ${({ hoverColor }) => hoverColor};
+        background: ${({ hoverColor, isActive }) => !isActive && hoverColor};
       }
     }
   }
@@ -224,12 +252,13 @@ export const Tab = styled.button`
 export const ExplorePageContentWrapper = styled.div`
   height: 100%;
   display: flex;
+  padding-bottom: 10rem;
   flex-direction: column;
   justify-content: center;
   align-items: center;
   width: 100%;
   margin-left: ${SIDEBAR_WIDTH};
-  background: url('/images/explore-page-background.svg');
+  background: url('/images/explore/explore-page-background.svg');
   background-size: cover;
 `;
 
@@ -282,5 +311,73 @@ export const BountySectionHeader = styled(OrgsSectionHeader)`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+  }
+`;
+
+export const ExplorePageFooter = styled.div`
+  position: relative;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-left: ${SIDEBAR_WIDTH};
+  ${BackgroundImg} {
+    width: 100%;
+  }
+`;
+
+export const PartnershipRequest = styled.div`
+  padding: 24px;
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background: #1e1e1e;
+  border: 1px solid #424242;
+  border-radius: 6px;
+  gap: 12px;
+  width: 40%;
+`;
+
+export const PartnershipRequestHeader = styled(Typography)`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-size: 24px;
+  line-height: 29px;
+  /* identical to box height, or 121% */
+
+  text-align: center;
+  letter-spacing: -0.03em;
+
+  color: #ffffff;
+`;
+
+export const PartnershipRequestSubheader = styled(Typography)`
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 15px;
+  line-height: 14px;
+  /* identical to box height, or 93% */
+
+  text-align: center;
+  letter-spacing: 0.0025em;
+
+  color: #ffffff;
+`;
+
+export const ShowMoreButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 0.5px dashed #2b2b2b;
+  border-radius: 6px;
+  border-top: 0.5px dashed #2b2b2b;
+  padding: 10px;
+  ${ShowMoreButton} {
+    margin-top: 0px;
+    width: fit-content;
   }
 `;
