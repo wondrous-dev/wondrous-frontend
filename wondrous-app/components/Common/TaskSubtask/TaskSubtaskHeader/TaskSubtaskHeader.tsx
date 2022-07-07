@@ -1,5 +1,4 @@
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import { CreateEntity } from 'components/CreateEntity';
 import { useState } from 'react';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 
@@ -18,14 +17,13 @@ export const TaskSubtaskHeader = ({ taskId, permissions, parentTask }) => {
   const toggleCreateFormModal = () => setCreateFormModal((prevState) => !prevState);
   return (
     <TaskSubtaskHeaderWrapper>
-      <CreateModalOverlay open={createFormModal} onClose={toggleCreateFormModal}>
-        <CreateEntityModal
-          entityType={parentTask?.type === ENTITIES_TYPES.BOUNTY ? ENTITIES_TYPES.BOUNTY : ENTITIES_TYPES.TASK}
-          handleClose={toggleCreateFormModal}
-          parentTaskId={taskId}
-          cancel={toggleCreateFormModal}
-        />
-      </CreateModalOverlay>
+      <CreateEntity
+        entityType={parentTask?.type === ENTITIES_TYPES.BOUNTY ? ENTITIES_TYPES.BOUNTY : ENTITIES_TYPES.TASK}
+        handleCloseModal={toggleCreateFormModal}
+        open={createFormModal}
+        cancel={toggleCreateFormModal}
+        handleClose={toggleCreateFormModal}
+      />
       {canCreateSubtask && (
         <TaskSubtaskHeaderButton onClick={toggleCreateFormModal}>
           <TaskSubtaskHeaderButtonIconWrapper>
