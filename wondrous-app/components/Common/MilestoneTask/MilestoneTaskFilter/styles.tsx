@@ -16,6 +16,7 @@ export const MilestoneTaskFilterSelectButton = styled(ButtonBase)`
     gap: 8px;
     height: 40px;
     justify-content: space-between;
+    margin-bottom: 24px;
     max-width: fit-content;
     min-width: 245px;
     padding: 8px;

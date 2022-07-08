@@ -11,22 +11,22 @@ import {
 } from './styles';
 
 const MilestoneTaskFilterSelected = ({ selected }) => {
-  if (isEmpty(selected)) {
-    return (
-      <MilestoneTaskFilterSelectWrapper>
-        <MilestoneTaskFilterStatusIcon /> Status
-      </MilestoneTaskFilterSelectWrapper>
-    );
-  }
-  const { Icon, label } = TASK_ICONS_LABELS[selected];
   return (
     <MilestoneTaskFilterSelectWrapper>
-      <Icon /> {label}
+      {isEmpty(selected) ? (
+        <>
+          <MilestoneTaskFilterStatusIcon /> Status
+        </>
+      ) : (
+        <>
+          <selected.Icon /> {selected.label}
+        </>
+      )}
     </MilestoneTaskFilterSelectWrapper>
   );
 };
 
-export const MilestoneTaskFilter = ({ status, setStatus }) => {
+export const MilestoneTaskFilter = ({ status, setStatus, data }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -36,6 +36,7 @@ export const MilestoneTaskFilter = ({ status, setStatus }) => {
     handleClose();
   };
   const menuItems = keys(TASK_ICONS_LABELS);
+  if (isEmpty(data)) return null;
   return (
     <>
       <MilestoneTaskFilterSelectButton onClick={handleClick} open={open}>
