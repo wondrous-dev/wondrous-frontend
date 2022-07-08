@@ -39,11 +39,12 @@ export const CreateModalOverlay = styled(Modal)`
   scrollbar-width: none; /* Firefox */
 `;
 
-export const CreateFormModalOverlay = styled(CreateModalOverlay)`
-  z-index: 20;
-  padding-top: 0;
+export const CreateFormModalOverlay = styled(Modal)`
+  align-items: center;
+  display: flex;
+  flex-direction: column;
   height: 100vh;
-  margin: auto;
+  justify-content: center;
 `;
 
 export const CreateLayoutsModal = styled(BaseCard)`

@@ -23,6 +23,7 @@ export const TaskModal = styled(Modal)`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 300;
 `;
 
 export const TaskModalCard = styled.div`
