@@ -8,9 +8,9 @@ import {
   TextHeadingWrapper,
   HeadingWrapper,
   IconTextWrapper,
+  InviteButton,
   InviteThruLinkLabel,
   InviteThruLinkTextField,
-  InviteThruLinkButton,
   InviteThruLinkButtonLabel,
   InviteThruLinkInputWrapper,
   StyledDivider,
@@ -22,7 +22,6 @@ import {
   InviteThruLinkFormControlSelect,
   InviteThruEmailTextFieldSelectWrapper,
   InviteThruEmailButtonLabel,
-  InviteThruEmailButton,
   InviteThruLinkButtonSuccessLabel,
   LinkSwitch,
   TextSubheading,
@@ -41,11 +40,15 @@ export const putDefaultRoleOnTop = (roles, permissions) => {
   roles = [...roles];
   let defaultRole;
   let defaultRoleIndex;
-  roles.forEach((role, index) => {
+  roles.some((role, index) => {
     if (role?.default) {
       defaultRole = { ...role };
       defaultRoleIndex = index;
+
+      return true;
     }
+
+    return false;
   });
   roles.filter((role) => {
     if (role?.permissions?.includes(PERMISSIONS.FULL_ACCESS) && !permissions.includes(PERMISSIONS.FULL_ACCESS)) {
@@ -172,7 +175,7 @@ export const NewOrgInviteLinkModal = (props) => {
             </InviteThruLinkSelect>
           </InviteThruLinkFormControlSelect>
           <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
-          <InviteThruLinkButton onClick={handleOnCopy}>
+          <InviteButton rightPadding={true} onClick={handleOnCopy}>
             {copy ? (
               <>
                 <InviteThruLinkButtonSuccessLabel>Link copied!</InviteThruLinkButtonSuccessLabel> <CopySuccessIcon />
@@ -182,7 +185,7 @@ export const NewOrgInviteLinkModal = (props) => {
                 <InviteThruLinkButtonLabel>Copy link</InviteThruLinkButtonLabel> <CopyIcon color="#7427FF" />
               </>
             )}
-          </InviteThruLinkButton>
+          </InviteButton>
         </InviteThruLinkInputWrapper>
 
         <StyledDivider />
@@ -201,9 +204,9 @@ export const NewOrgInviteLinkModal = (props) => {
                 ))}
             </InviteThruLinkSelect>
           </InviteThruLinkFormControlSelect>
-          <InviteThruEmailButton>
+          <InviteButton justifyCenter={true}>
             <InviteThruEmailButtonLabel>Send invite</InviteThruEmailButtonLabel>
-          </InviteThruEmailButton>
+          </InviteButton>
         </InviteThruEmailTextFieldButtonWrapper>
         <StyledDivider />
         <LinkSwitch label="One time use" checked={linkOneTimeUse} onClick={handleLinkOneTimeUseChange} />

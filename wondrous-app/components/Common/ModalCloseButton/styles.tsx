@@ -8,7 +8,7 @@ export const StyledCloseButton = styled(Button)`
     justify-content: center;
     min-width: 0px;
     background: rgba(0, 0, 0, 1);
-    border-radius: ${(props) => (props.circle ? '1000px' : '6px')};
+    border-radius: ${(props) => (props.circle ? '50%' : '6px')};
     padding: 10px 9px;
     max-height: 32px;
     max-width: 32px;

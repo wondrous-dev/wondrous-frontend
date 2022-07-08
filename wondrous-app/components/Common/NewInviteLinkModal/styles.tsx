@@ -221,39 +221,6 @@ export const InviteThruLinkMenuItem = styled(MenuItem)`
   }
 `;
 
-export const InviteThruLinkButton = styled(Button)`
-  && {
-    border: 1px solid #353535;
-    background: #0f0f0f;
-    font-weight: 400;
-    width: 137px;
-    flex-basis: 137px;
-    height: 40px;
-    border-radius: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 12px 0 0;
-    border-radius: 100px;
-
-    :hover {
-      background: #353535;
-    }
-
-    &::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
-      padding: 1px;
-      border-radius: 180px;
-    }
-  }
-`;
-
 export const InviteThruLinkButtonLabel = styled(Typography)`
   && {
     color: white;
@@ -265,10 +232,7 @@ export const InviteThruLinkButtonLabel = styled(Typography)`
 
 export const InviteThruLinkButtonSuccessLabel = styled(InviteThruLinkButtonLabel)`
   && {
-    background: #ffffff;
-    background: -webkit-linear-gradient(to bottom, #ffffff 0%, #06ffa5 100%);
-    background: -moz-linear-gradient(to bottom, #ffffff 0%, #06ffa5 100%);
-    background: linear-gradient(to bottom, #ffffff 0%, #06ffa5 100%);
+    background: #7a7a7a;
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -324,30 +288,23 @@ export const InviteThruEmailTextField = styled(TextField)`
   }
 `;
 
-export const InviteThruEmailButton = styled(ButtonComponent)`
+export const InviteButton = styled(Button)`
   && {
-    min-height: 0;
-    height: 40px;
+    border: 1px solid #353535;
+    background: #0f0f0f;
     font-weight: 400;
-    width: 125px;
-    border-radius: 1000px;
+    width: 137px;
+    flex-basis: 137px;
+    height: 40px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
-    justify-content: center;
-    position: relative;
-    overflow: hidden;
+    justify-content: ${(props) => (props.justifyCenter ? 'center' : 'space-between')};
+    padding: ${(props) => (props.rightPadding ? '0 12px 0 0' : '0')};
+    border-radius: 100px;
 
-    button {
-      background: #0f0f0f;
-      border-radius: 6px;
-      width: 135px;
-      height: 37px;
-      cursor: pointer;
-      transition: background 250ms;
-
-      :hover {
-        background: #353535;
-      }
+    :hover {
+      background: #353535;
     }
 
     &::before {
@@ -355,10 +312,8 @@ export const InviteThruEmailButton = styled(ButtonComponent)`
       position: absolute;
       inset: 0;
       background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-      pointer-events: none;
-      -webkit-mask-composite: xor;
-      mask-composite: exclude;
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: xor;
       padding: 1px;
       border-radius: 180px;
     }
