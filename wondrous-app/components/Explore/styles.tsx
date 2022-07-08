@@ -6,12 +6,18 @@ import Masonry from '@mui/lab/Masonry';
 import WheelSvg from './wheel.svg';
 import Metheor from './metheor.svg';
 import { ShowMoreButton } from 'components/ListView/styles';
+import palette from 'theme/palette';
+import { createSpacingUnit } from 'utils';
+import { device } from 'utils/device';
 
 export const Wheel = styled(WheelSvg)`
   && {
     position: absolute;
     right: 20%;
     bottom: -20%;
+    @media ${device.laptop} {
+      display: none;
+    }
   }
 `;
 
@@ -20,10 +26,17 @@ export const MetheorSvg = styled(Metheor)`
     position: absolute;
     right: 10%;
     top: 5%;
+    @media ${device.laptop} {
+      top: -10%;
+    }
   }
 `;
 
-export const BackgroundImg = styled.img``;
+export const BackgroundImg = styled.img`
+  @media ${device.laptop} {
+    min-height: 425px;
+  }
+`;
 
 export const BackgroundContainer = styled.div`
   width: 100%;
@@ -31,11 +44,21 @@ export const BackgroundContainer = styled.div`
   border-radius: 6px;
   display: flex;
   justify-content: center;
-  margin-left: ${SIDEBAR_WIDTH};
+  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   background: linear-gradient(180deg, #1a1a1a 0%, #1d0052 100%);
   position: relative;
   ${BackgroundImg} {
     width: 100%;
+    @media ${device.laptop} {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: left;
+    }
+
+    @media ${device.mobileS} {
+      font-size: 14px;
+    }
   }
 `;
 
@@ -47,6 +70,9 @@ export const BackgroundTextWrapper = styled.div`
   gap: 42px;
   justify-content: flex-start;
   width: 75%;
+  @media ${device.mobileL} {
+    top: 20%;
+  }
 `;
 
 export const BackgroundTextHeader = styled(Typography)`
@@ -93,7 +119,6 @@ export const StyledGridItem = styled.div`
   flex-direction: column;
   position: relative;
   align-items: center;
-  min-width: 327px;
   overflow: hidden;
   img {
     transition: transform 0.4s ease;
@@ -162,8 +187,10 @@ export const TabsWrapper = styled.div`
   margin-top: 24px;
   width: 100%;
   margin-top: 33px;
-  margin-left: ${SIDEBAR_WIDTH};
   width: 80%;
+  @media ${device.mobileL} {
+    flex-direction: column;
+  }
 `;
 
 export const IconWrapper = styled.div`
@@ -257,7 +284,7 @@ export const ExplorePageContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-left: ${SIDEBAR_WIDTH};
+  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   background: url('/images/explore/explore-page-background.svg');
   background-size: cover;
 `;
@@ -286,7 +313,7 @@ export const SectionSubheader = styled(Typography)`
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
-    line-height: 14px;
+    line-height: 20px;
     /* identical to box height, or 93% */
 
     letter-spacing: 0.0025em;
@@ -300,7 +327,6 @@ export const SectionWrapper = styled.div`
   flex-direction: column;
   width: 80%;
   gap: 24px;
-  margin-left: ${SIDEBAR_WIDTH};
   margin-top: 33px;
 `;
 
@@ -320,9 +346,12 @@ export const ExplorePageFooter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: ${SIDEBAR_WIDTH};
+  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   ${BackgroundImg} {
     width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: right;
   }
 `;
 
@@ -338,6 +367,9 @@ export const PartnershipRequest = styled.div`
   border-radius: 6px;
   gap: 12px;
   width: 40%;
+  @media ${device.mobileL} {
+    width: 80%;
+  }
 `;
 
 export const PartnershipRequestHeader = styled(Typography)`
@@ -359,7 +391,7 @@ export const PartnershipRequestSubheader = styled(Typography)`
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
-  line-height: 14px;
+  line-height: 20px;
   /* identical to box height, or 93% */
 
   text-align: center;

@@ -32,10 +32,10 @@ import palette from 'theme/palette';
 const LIMIT = 10;
 
 const ExploreComponent = () => {
-  const [minimized, setMinimized] = useState(false);
+  const isMobile = useIsMobile();
+  const [minimized, setMinimized] = useState(isMobile);
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
-  const isMobile = useIsMobile();
   const {
     data: bounties,
     loading,
@@ -68,10 +68,16 @@ const ExploreComponent = () => {
     });
   }, [bounties?.getBountiesToExplore, fetchMore]);
 
+  const handleTabClick = (key) => {
+    if (key === activeTab) {
+      return setActiveTab(null);
+    }
+    return setActiveTab(key);
+  };
   const tabs = [
     {
       title: 'Explore DAOs',
-      action: () => setActiveTab(TABS_LABELS.DAOS),
+      action: () => handleTabClick(TABS_LABELS.DAOS),
       color: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
       hoverColor: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
       key: TABS_LABELS.DAOS,
@@ -82,7 +88,7 @@ const ExploreComponent = () => {
       title: 'Explore work',
       color: 'linear-gradient(180deg, #FFFFFF 0%, #FFD653 100%)',
       rotateDeg: '-70deg',
-      action: () => setActiveTab(TABS_LABELS.BOUNTY),
+      action: () => handleTabClick(TABS_LABELS.BOUNTY),
       iconPseudoStyleWidth: '110%',
       key: TABS_LABELS.BOUNTY,
       icon: <BountyCone />,
@@ -105,11 +111,10 @@ const ExploreComponent = () => {
             justifyContent: 'center',
             alignItems: 'center',
             flexDirection: 'column',
-            padding: '40px',
-            paddingBottom: '0px',
+            paddingTop: '40px',
           }}
         >
-          <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
+          <BackgroundContainer isMinimized={minimized} style={isMobile ? gridMobileStyles : {}}>
             <BackgroundImg src="/images/explore/explore-page-banner.svg" />
             <Wheel />
             <BackgroundTextWrapper>
@@ -119,8 +124,8 @@ const ExploreComponent = () => {
               </BackgroundTextSubHeader>
             </BackgroundTextWrapper>
           </BackgroundContainer>
-          <ExplorePageContentWrapper>
-            <TabsWrapper>
+          <ExplorePageContentWrapper isMinimized={minimized}>
+            <TabsWrapper isMinimized={minimized}>
               {tabs.map((tab, idx) => (
                 <Tab
                   hoverColor={tab.hoverColor}
@@ -147,7 +152,7 @@ const ExploreComponent = () => {
               />
             )}
           </ExplorePageContentWrapper>
-          <ExplorePageFooter>
+          <ExplorePageFooter isMinimized={minimized}>
             <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
             <MetheorSvg />
             <PartnershipRequest>
