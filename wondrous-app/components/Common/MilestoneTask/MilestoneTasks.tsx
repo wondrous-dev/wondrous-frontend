@@ -1,4 +1,4 @@
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import SmartLink from 'components/Common/SmartLink';
 import { RichTextViewer } from 'components/RichText';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
@@ -32,47 +32,41 @@ const TASK_ICONS = {
   [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
 };
 
-const MilestoneTasks = ({ milestone, open, canCreate }) => {
+const getDataLength = (data) => data?.getTasksForMilestone?.length;
+
+const useGetTasksForMilestone = ({ milestone }) => {
   const { id } = milestone;
+  const limit = 5;
   const [ref, inView] = useInView({});
-  const [hasMore, setHasMore] = useState(false);
-  const limit = 10;
-  const [getTasksForMilestone, { fetchMore, data }] = useLazyQuery(GET_TASKS_FOR_MILESTONE);
+  const [hasMore, setHasMore] = useState(true);
+  const { fetchMore, data } = useQuery(GET_TASKS_FOR_MILESTONE, {
+    fetchPolicy: 'cache-and-network',
+    variables: {
+      milestoneId: id,
+      limit,
+      offset: 0,
+    },
+    onCompleted: (data) => setHasMore(getDataLength(data) >= limit),
+    onError: (err) => console.error(err),
+  });
   useEffect(() => {
-    if (!data?.getTasksForMilestone && open) {
-      getTasksForMilestone({
-        variables: {
-          milestoneId: id,
-          limit: limit,
-          offset: 0,
-        },
-      })
-        .then(({ data }) => {
-          setHasMore(data?.getTasksForMilestone.length >= limit);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
-    }
     if (inView && hasMore) {
       fetchMore({
         variables: {
-          offset: data?.getTasksForMilestone.length,
+          offset: getDataLength(data),
         },
-      })
-        .then(({ data }) => {
-          setHasMore(data?.getTasksForMilestone.length >= limit);
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+      }).then(({ data }) => setHasMore(getDataLength(data) >= limit));
     }
-  }, [getTasksForMilestone, id, setHasMore, inView, hasMore, fetchMore, data, open]);
+  }, [inView, fetchMore, hasMore, data]);
+  return { data: data?.getTasksForMilestone, ref, hasMore };
+};
 
+const MilestoneTasks = ({ milestone, canCreate }) => {
+  const { data, ref, hasMore } = useGetTasksForMilestone({ milestone });
   return (
     <>
       <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
-      {data?.getTasksForMilestone.length > 0 && open && (
+      {data?.length > 0 && (
         <StyledTableContainer>
           <StyledTableHead>
             <StyledTableRow>
@@ -82,10 +76,9 @@ const MilestoneTasks = ({ milestone, open, canCreate }) => {
             </StyledTableRow>
           </StyledTableHead>
           <StyledTableBody>
-            {data?.getTasksForMilestone.map((task) => {
+            {data?.map((task) => {
               const StatusIcon = TASK_ICONS[task.status];
               const viewUrl = `/organization/${task?.orgUsername || task?.org?.username}/boards?task=${task?.id}`;
-
               return (
                 <SmartLink href={viewUrl} key={task.id}>
                   <StyledTableRow
@@ -118,7 +111,7 @@ const MilestoneTasks = ({ milestone, open, canCreate }) => {
               );
             })}
           </StyledTableBody>
-          <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
+          <LoadMore ref={ref} hasMore={hasMore} />
         </StyledTableContainer>
       )}
     </>

@@ -1,5 +1,5 @@
+import { TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { TableContainer, TableHead, TableBody, TableRow, TableCell, Typography } from '@mui/material';
 
 export const StyledMilestoneEmpty = styled(Typography)`
   && {
@@ -108,6 +108,6 @@ export const TaskDescription = styled(Typography)`
 `;
 
 export const LoadMore = styled.div`
-  height: 50px;
+  height: 10px;
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
 `;
