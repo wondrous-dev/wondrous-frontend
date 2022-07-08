@@ -29,15 +29,25 @@ export const MilestoneTaskFilterSelectWrapper = styled.div`
   gap: 8px;
 `;
 
-export const MilestoneTaskFilterStatusIcon = styled(FilterStatusIcon)``;
+export const MilestoneTaskFilterStatusIcon = styled((props) => (
+  <div {...props}>
+    <FilterStatusIcon />
+  </div>
+))`
+  background: #0f0f0f;
+  height: 26px;
+  width: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+`;
 
-export const MilestoneTaskFilterButtonIcon = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const MilestoneTaskFilterButtonIcon = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
     display: flex;
