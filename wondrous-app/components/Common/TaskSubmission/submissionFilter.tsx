@@ -1,15 +1,12 @@
-import { ClickAwayListener } from '@mui/material';
 import { CompletedIcon, InReviewIcon } from 'components/Icons/statusIcons';
 import { isEmpty, values } from 'lodash';
 import { useState } from 'react';
 import { PAYMENT_STATUS } from 'utils/constants';
-
 import {
   SubmissionFilterButtonIcon,
   SubmissionFilterSelectButton,
   SubmissionFilterSelectItem,
   SubmissionFilterSelectMenu,
-  SubmissionFilterSelectPopper,
   SubmissionFilterSelectRender,
   SubmissionFilterStatusIcon,
   SubmissionItemStatusChangesRequestedIcon,
@@ -51,33 +48,29 @@ const TaskSubmissionsFilterSelected = ({ value }) => {
 export const TaskSubmissionsFilter = ({ fetchedTaskSubmissions, setFilteredSubmissions }) => {
   const [selected, setSelected] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
-  const handleClosePopper = () => setAnchorEl(null);
+  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClose = () => setAnchorEl(null);
   const open = Boolean(anchorEl);
   const handleOnClick = ({ Icon, label }) => {
     setSelected({ Icon, label });
     const handleFilterStatus = (submission) => isSubmissionStatus({ submission, label });
     setFilteredSubmissions(fetchedTaskSubmissions.filter(handleFilterStatus));
-    handleClosePopper();
+    handleClose();
   };
   if (isEmpty(fetchedTaskSubmissions)) return null;
   return (
-    <ClickAwayListener onClickAway={handleClosePopper}>
-      <div>
-        <SubmissionFilterSelectButton onClick={handleClick} open={open}>
-          <TaskSubmissionsFilterSelected value={selected} />
-          <SubmissionFilterButtonIcon open={open} />
-        </SubmissionFilterSelectButton>
-        <SubmissionFilterSelectPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal={true}>
-          <SubmissionFilterSelectMenu>
-            {values(filterOptions).map(({ Icon, label }) => (
-              <SubmissionFilterSelectItem key={label} value={label} onClick={() => handleOnClick({ Icon, label })}>
-                <Icon /> {label}
-              </SubmissionFilterSelectItem>
-            ))}
-          </SubmissionFilterSelectMenu>
-        </SubmissionFilterSelectPopper>
-      </div>
-    </ClickAwayListener>
+    <>
+      <SubmissionFilterSelectButton onClick={handleClick} open={open}>
+        <TaskSubmissionsFilterSelected value={selected} />
+        <SubmissionFilterButtonIcon open={open} />
+      </SubmissionFilterSelectButton>
+      <SubmissionFilterSelectMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
+        {values(filterOptions).map(({ Icon, label }) => (
+          <SubmissionFilterSelectItem key={label} value={label} onClick={() => handleOnClick({ Icon, label })}>
+            <Icon /> {label}
+          </SubmissionFilterSelectItem>
+        ))}
+      </SubmissionFilterSelectMenu>
+    </>
   );
 };
