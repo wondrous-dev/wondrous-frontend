@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 const TaskLink = styled.a`
   && {
-    color: #00baff;
     font-size: 14px;
     cursor: pointer;
+    text-decoration: none;
   }
 `;
 
