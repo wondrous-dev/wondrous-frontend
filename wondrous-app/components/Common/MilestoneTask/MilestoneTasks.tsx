@@ -1,10 +1,16 @@
 import { useQuery } from '@apollo/client';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import styled from 'styled-components';
+import MilestoneTaskFilter from './MilestoneTaskFilter';
 import MilestoneTaskList from './MilestoneTaskList';
 import MilestoneTasksCreate from './MilestoneTasksCreate';
-import { LoadMore } from './styles';
+
+export const LoadMore = styled.div`
+  height: 10px;
+  display: ${(props) => (props.hasMore ? 'block' : 'none')};
+`;
 
 const getDataLength = (data) => data?.getTasksForMilestone?.length;
 
@@ -39,6 +45,7 @@ const MilestoneTasks = ({ milestone, canCreate }) => {
   const { data, ref, hasMore } = useGetTasksForMilestone({ milestone });
   return (
     <>
+      <MilestoneTaskFilter />
       <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
       <MilestoneTaskList data={data} />
       <LoadMore ref={ref} hasMore={hasMore} />
