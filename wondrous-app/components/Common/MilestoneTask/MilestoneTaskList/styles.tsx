@@ -140,6 +140,7 @@ export const MilestoneTaskPrivacyAndStatus = styled.div`
   align-items: center;
   gap: 12px;
   min-width: 145px;
+  justify-content: flex-end;
 `;
 
 export const MilestoneTaskPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
