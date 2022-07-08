@@ -55,6 +55,7 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
+import RoleLabel from 'components/RoleLabel';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -299,7 +300,7 @@ const Wrapper = (props) => {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
-                  {permissions && podRole && <HeaderButton>your role: {podRole}</HeaderButton>}
+                  {permissions && podRole && <RoleLabel role={podRole} />}
 
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard

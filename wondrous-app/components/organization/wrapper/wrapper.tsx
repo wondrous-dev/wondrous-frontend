@@ -1,12 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { useHotkeys } from 'react-hotkeys-hook';
+
 import apollo from 'services/apollo';
-import { useMe } from '../../Auth/withAuth';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+
+import TypeSelector from 'components/TypeSelector';
+import { useMe } from 'components/Auth/withAuth';
+import BoardsActivity from 'components/Common/BoardsActivity';
 
 import Tabs from '../tabs/tabs';
-import TypeSelector from 'components/TypeSelector';
-import { parseUserPermissionContext } from 'utils/helpers';
-import BoardsActivity from 'components/Common/BoardsActivity';
 
 import {
   Content,
@@ -60,9 +63,9 @@ import {
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import { RichTextViewer } from 'components/RichText';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import RoleLabel from 'components/RoleLabel';
 
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
@@ -148,6 +151,7 @@ const Wrapper = (props) => {
     }
 
     const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
+
     if (!roles || roles?.length === 0) {
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
@@ -344,11 +348,29 @@ const Wrapper = (props) => {
                 {permissions && orgRoleName && (
                   <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
                 )}
+<<<<<<< HEAD
                 {/* </Tooltip> */}
                 {!isLoading && (
                   <TokenGatedBoard
                     isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
                     tooltipTitle={'Token gating'}
+=======
+                <HeaderTitleIcon>
+                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                  <HeaderTag>@{orgProfile?.username}</HeaderTag>
+                </HeaderTitleIcon>
+                <HeaderButtons>
+                  {permissions && orgRoleName && <RoleLabel onClick={handleJoinOrgButtonClick} role={orgRoleName} />}
+                  {!isLoading && (
+                    <TokenGatedBoard
+                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                      tooltipTitle={'Token gating'}
+                    />
+                  )}
+                  <ToggleBoardPrivacyIcon
+                    isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
+                    tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+>>>>>>> c6c4dd1a (Profile > Update Role labels UI)
                   />
                 )}
                 <ToggleBoardPrivacyIcon
