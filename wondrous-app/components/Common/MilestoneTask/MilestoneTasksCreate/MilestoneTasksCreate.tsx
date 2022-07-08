@@ -9,7 +9,8 @@ import {
   MilestoneTasksCreateWrapper,
 } from './styles';
 
-const MilestoneTasksCreate = ({ canCreate }) => {
+const MilestoneTasksCreate = ({ canCreate, milestone }) => {
+  const { id, orgId, podId } = milestone;
   const [open, setOpen] = useState(false);
   const handleModalStatus = () => setOpen(!open);
   if (!canCreate) return null;
@@ -21,6 +22,11 @@ const MilestoneTasksCreate = ({ canCreate }) => {
         handleClose={handleModalStatus}
         open={open}
         handleCloseModal={handleModalStatus}
+        formValues={{
+          orgId,
+          podId,
+          milestoneId: id,
+        }}
       />
       <MilestoneTasksCreateWrapper>
         <MilestonesTasksCreateButton onClick={handleModalStatus}>

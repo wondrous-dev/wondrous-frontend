@@ -1,14 +1,15 @@
 import { useLazyQuery } from '@apollo/client';
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import Link from 'next/link';
-import { useInView } from 'react-intersection-observer';
-
+import SmartLink from 'components/Common/SmartLink';
+import { RichTextViewer } from 'components/RichText';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
+import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import * as Constants from 'utils/constants';
-import { Done, InProgress, InReview, ToDo, AwaitingPayment } from '../../Icons';
+import { AwaitingPayment, Done, InProgress, InReview, ToDo } from '../../Icons';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 import { SmallAvatar } from '../AvatarList';
+import MilestoneTasksCreate from './MilestoneTasksCreate';
 import {
   LoadMore,
   StyledTableBody,
@@ -20,11 +21,7 @@ import {
   TableCellWrapper,
   TaskDescription,
   TaskTitle,
-  StyledMilestoneEmpty,
 } from './styles';
-import SmartLink from 'components/Common/SmartLink';
-import { RichTextViewer } from 'components/RichText';
-import MilestoneTasksCreate from './MilestoneTasksCreate';
 
 const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: ToDo,
@@ -35,7 +32,8 @@ const TASK_ICONS = {
   [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
 };
 
-const MilestoneTasks = ({ milestoneId, open, canCreate }) => {
+const MilestoneTasks = ({ milestone, open, canCreate }) => {
+  const { id } = milestone;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
   const limit = 10;
@@ -44,7 +42,7 @@ const MilestoneTasks = ({ milestoneId, open, canCreate }) => {
     if (!data?.getTasksForMilestone && open) {
       getTasksForMilestone({
         variables: {
-          milestoneId: milestoneId,
+          milestoneId: id,
           limit: limit,
           offset: 0,
         },
@@ -69,11 +67,11 @@ const MilestoneTasks = ({ milestoneId, open, canCreate }) => {
           console.error(err);
         });
     }
-  }, [getTasksForMilestone, milestoneId, setHasMore, inView, hasMore, fetchMore, data, open]);
+  }, [getTasksForMilestone, id, setHasMore, inView, hasMore, fetchMore, data, open]);
 
   return (
     <>
-      <MilestoneTasksCreate canCreate={canCreate} />
+      <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
       {data?.getTasksForMilestone.length > 0 && open && (
         <StyledTableContainer>
           <StyledTableHead>
