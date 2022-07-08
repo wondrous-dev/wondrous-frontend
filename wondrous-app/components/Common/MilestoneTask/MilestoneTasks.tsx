@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { AwaitingPayment, Done, InProgress, InReview, ToDo } from 'components/Icons';
+import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import { ArchivedIcon } from 'components/Icons/statusIcons';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
 import { isEmpty } from 'lodash';
@@ -14,9 +14,8 @@ import MilestoneTasksCreate from './MilestoneTasksCreate';
 export const TASK_ICONS_LABELS = {
   [Constants.TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
   [Constants.TASK_STATUS_IN_PROGRESS]: { Icon: InProgress, label: 'In Progress' },
-  [Constants.TASK_STATUS_DONE]: { Icon: Done, label: 'Done' },
   [Constants.TASK_STATUS_IN_REVIEW]: { Icon: InReview, label: 'In Review' },
-  [Constants.TASK_STATUS_AWAITING_PAYMENT]: { Icon: AwaitingPayment, label: 'Awaiting Payment' },
+  [Constants.TASK_STATUS_DONE]: { Icon: Done, label: 'Completed' },
   [Constants.TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
 };
 
@@ -74,7 +73,7 @@ const MilestoneTasks = ({ milestone, canCreate }) => {
   if (!canCreate && isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
   return (
     <>
-      <MilestoneTaskFilter status={status} setStatus={setStatus} data={data} />
+      <MilestoneTaskFilter status={status} setStatus={setStatus} />
       <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
       <MilestoneTaskList data={data} />
       <LoadMore ref={ref} hasMore={hasMore} />

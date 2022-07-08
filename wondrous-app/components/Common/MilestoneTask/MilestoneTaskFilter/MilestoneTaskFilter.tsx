@@ -10,23 +10,23 @@ import {
   MilestoneTaskFilterStatusIcon,
 } from './styles';
 
-const MilestoneTaskFilterSelected = ({ selected }) => {
+const MilestoneTaskFilterSelected = ({ status }) => {
+  if (isEmpty(status)) {
+    return (
+      <MilestoneTaskFilterSelectWrapper>
+        <MilestoneTaskFilterStatusIcon /> Status
+      </MilestoneTaskFilterSelectWrapper>
+    );
+  }
+  const { Icon, label } = TASK_ICONS_LABELS[status];
   return (
     <MilestoneTaskFilterSelectWrapper>
-      {isEmpty(selected) ? (
-        <>
-          <MilestoneTaskFilterStatusIcon /> Status
-        </>
-      ) : (
-        <>
-          <selected.Icon /> {selected.label}
-        </>
-      )}
+      <Icon /> {label}
     </MilestoneTaskFilterSelectWrapper>
   );
 };
 
-export const MilestoneTaskFilter = ({ status, setStatus, data }) => {
+export const MilestoneTaskFilter = ({ status, setStatus }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -36,11 +36,10 @@ export const MilestoneTaskFilter = ({ status, setStatus, data }) => {
     handleClose();
   };
   const menuItems = keys(TASK_ICONS_LABELS);
-  if (isEmpty(data)) return null;
   return (
     <>
       <MilestoneTaskFilterSelectButton onClick={handleClick} open={open}>
-        <MilestoneTaskFilterSelected selected={status} />
+        <MilestoneTaskFilterSelected status={status} />
         <MilestoneTaskFilterButtonIcon open={open} />
       </MilestoneTaskFilterSelectButton>
       <MilestoneTaskFilterMenu anchorEl={anchorEl} open={open} onClose={handleClose}>
