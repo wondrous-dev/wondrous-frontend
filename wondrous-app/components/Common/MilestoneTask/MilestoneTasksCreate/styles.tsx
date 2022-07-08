@@ -11,6 +11,7 @@ export const MilestoneTasksCreateWrapper = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #171717;
+  margin-top: 24px;
 `;
 
 export const MilestonesTasksCreateButton = styled(Button)`

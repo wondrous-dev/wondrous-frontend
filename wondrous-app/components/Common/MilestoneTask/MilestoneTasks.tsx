@@ -1,11 +1,23 @@
 import { useQuery } from '@apollo/client';
+import { AwaitingPayment, Done, InProgress, InReview, ToDo } from 'components/Icons';
+import { ArchivedIcon } from 'components/Icons/statusIcons';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';
+import * as Constants from 'utils/constants';
 import MilestoneTaskFilter from './MilestoneTaskFilter';
 import MilestoneTaskList from './MilestoneTaskList';
 import MilestoneTasksCreate from './MilestoneTasksCreate';
+
+export const TASK_ICONS_LABELS = {
+  [Constants.TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
+  [Constants.TASK_STATUS_IN_PROGRESS]: { Icon: InProgress, label: 'In Progress' },
+  [Constants.TASK_STATUS_DONE]: { Icon: Done, label: 'Done' },
+  [Constants.TASK_STATUS_IN_REVIEW]: { Icon: InReview, label: 'In Review' },
+  [Constants.TASK_STATUS_AWAITING_PAYMENT]: { Icon: AwaitingPayment, label: 'Awaiting Payment' },
+  [Constants.TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
+};
 
 export const LoadMore = styled.div`
   height: 10px;
@@ -14,9 +26,9 @@ export const LoadMore = styled.div`
 
 const getDataLength = (data) => data?.getTasksForMilestone?.length;
 
-const useGetTasksForMilestone = ({ milestone }) => {
+const useGetTasksForMilestone = ({ milestone, status }) => {
   const { id } = milestone;
-  const limit = 5;
+  const limit = 10;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const { fetchMore, data } = useQuery(GET_TASKS_FOR_MILESTONE, {
@@ -25,6 +37,7 @@ const useGetTasksForMilestone = ({ milestone }) => {
       milestoneId: id,
       limit,
       offset: 0,
+      status: status ?? '',
     },
     onCompleted: (data) => setHasMore(getDataLength(data) >= limit),
     onError: (err) => console.error(err),
@@ -42,10 +55,11 @@ const useGetTasksForMilestone = ({ milestone }) => {
 };
 
 const MilestoneTasks = ({ milestone, canCreate }) => {
-  const { data, ref, hasMore } = useGetTasksForMilestone({ milestone });
+  const [status, setStatus] = useState('');
+  const { data, ref, hasMore } = useGetTasksForMilestone({ milestone, status });
   return (
     <>
-      <MilestoneTaskFilter />
+      <MilestoneTaskFilter status={status} setStatus={setStatus} />
       <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
       <MilestoneTaskList data={data} />
       <LoadMore ref={ref} hasMore={hasMore} />
