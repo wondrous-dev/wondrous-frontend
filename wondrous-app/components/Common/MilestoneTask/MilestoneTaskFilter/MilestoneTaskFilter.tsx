@@ -5,6 +5,7 @@ import {
   MilestoneTaskFilterButtonIcon,
   MilestoneTaskFilterMenu,
   MilestoneTaskFilterMenuItem,
+  MilestoneTaskFilterMenuItemIcon,
   MilestoneTaskFilterSelectButton,
   MilestoneTaskFilterSelectWrapper,
   MilestoneTaskFilterStatusIcon,
@@ -21,7 +22,10 @@ const MilestoneTaskFilterSelected = ({ status }) => {
   const { Icon, label } = TASK_ICONS_LABELS[status];
   return (
     <MilestoneTaskFilterSelectWrapper>
-      <Icon /> {label}
+      <MilestoneTaskFilterMenuItemIcon>
+        <Icon />
+      </MilestoneTaskFilterMenuItemIcon>
+      {label}
     </MilestoneTaskFilterSelectWrapper>
   );
 };
@@ -47,7 +51,10 @@ export const MilestoneTaskFilter = ({ status, setStatus }) => {
           const { Icon, label } = TASK_ICONS_LABELS[item];
           return (
             <MilestoneTaskFilterMenuItem key={label} onClick={handleSelect(item)}>
-              <Icon /> {label}
+              <MilestoneTaskFilterMenuItemIcon>
+                <Icon />
+              </MilestoneTaskFilterMenuItemIcon>
+              {label}
             </MilestoneTaskFilterMenuItem>
           );
         })}

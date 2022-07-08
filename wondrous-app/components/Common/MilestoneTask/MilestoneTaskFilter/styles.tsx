@@ -84,3 +84,13 @@ export const MilestoneTaskFilterMenuItem = styled(MenuItem)`
     }
   }
 `;
+
+export const MilestoneTaskFilterMenuItemIcon = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    width: 26px;
+    height: 26px;
+  }
+`;
