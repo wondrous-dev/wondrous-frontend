@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import * as Sentry from '@sentry/nextjs';
 import {
   StyledModal,
   StyledBox,
@@ -86,6 +87,7 @@ export const NewOrgInviteLinkModal = (props) => {
     },
     onError: (e) => {
       console.error(e);
+      Sentry.captureException(e);
     },
   });
   const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
@@ -99,6 +101,7 @@ export const NewOrgInviteLinkModal = (props) => {
     },
     onError: (e) => {
       console.error(e);
+      Sentry.captureException(e);
     },
     fetchPolicy: 'cache-and-network',
   });
