@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@apollo/client';
-import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/createEntityModal';
+import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import PlusIcon from 'components/Icons/plus';
 import { deserializeRichText, isBlankValue, plainTextToRichText, RichTextEditor, useEditor } from 'components/RichText';
 import { Formik } from 'formik';

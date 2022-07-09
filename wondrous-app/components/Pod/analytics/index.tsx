@@ -42,7 +42,7 @@ import {
   StyledChip,
 } from 'components/CreateEntity/styles';
 import palette from 'theme/palette';
-import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
+import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
 import { exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
