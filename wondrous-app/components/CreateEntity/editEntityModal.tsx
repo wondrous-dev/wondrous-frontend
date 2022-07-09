@@ -57,7 +57,7 @@ import {
 } from 'graphql/mutations/taskProposal';
 import { useMe } from '../Auth/withAuth';
 import { getProposalStatus } from 'utils/board';
-import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './createEntityModal';
+import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './CreatePodModal';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { ErrorText } from '../Common';
 import { FileLoading } from '../Common/FileUpload/FileUpload';

@@ -33,7 +33,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS, TASK_STATUS_DONE } from 'utils/constants';
 import { format } from 'date-fns';
 import { calculatePoints, UserRowPictureStyles } from '.';
-import { filterPaymentMethods } from 'components/CreateEntity/createEntityModal';
+import { filterPaymentMethods } from 'components/CreateEntity/CreatePodModal';
 import {
   CreateFormMainBlockTitle,
   CreateFormRewardCurrency,

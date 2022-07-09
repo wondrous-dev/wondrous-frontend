@@ -1,41 +1,70 @@
-import React from 'react'
+import React from 'react';
 
-import DeleteIcon from '../../Icons/delete'
+import DeleteIcon from '../../Icons/delete';
 
 import {
-	CreateFormMembersListActivityButtons,
-	CreateFormMembersListAdminBlock,
-	CreateFormMembersListAdminBlockText,
-	CreateFormMembersListAvatar,
-	CreateFormMembersListDeleteButton,
-	CreateFormMembersListInfo,
-	CreateFormMembersListName,
-	CreateFormMembersListRow,
-} from './styles'
+  CreateFormMembersListActivityButtons,
+  CreateFormMembersListAdminBlock,
+  CreateFormMembersListAdminBlockText,
+  CreateFormMembersListAvatar,
+  CreateFormMembersListDeleteButton,
+  CreateFormMembersListInfo,
+  CreateFormMembersListName,
+  CreateFormMembersListRow,
+} from './styles';
 
 const MembersRow = (props) => {
-	const { name, styledSwitch } = props
+  const { name, styledSwitch } = props;
 
-	return (
-		<CreateFormMembersListRow>
-			<CreateFormMembersListInfo>
-				<CreateFormMembersListAvatar />
-				<CreateFormMembersListName>{name}</CreateFormMembersListName>
-			</CreateFormMembersListInfo>
+  return (
+    <CreateFormMembersListRow>
+      <CreateFormMembersListInfo>
+        <CreateFormMembersListAvatar />
+        <CreateFormMembersListName>{name}</CreateFormMembersListName>
+      </CreateFormMembersListInfo>
 
-			<CreateFormMembersListActivityButtons>
-				<CreateFormMembersListAdminBlock>
-					<CreateFormMembersListAdminBlockText>
-						Admin
-					</CreateFormMembersListAdminBlockText>
-					{styledSwitch}
-				</CreateFormMembersListAdminBlock>
-				<CreateFormMembersListDeleteButton>
-					<DeleteIcon />
-				</CreateFormMembersListDeleteButton>
-			</CreateFormMembersListActivityButtons>
-		</CreateFormMembersListRow>
-	)
+      <CreateFormMembersListActivityButtons>
+        <CreateFormMembersListAdminBlock>
+          <CreateFormMembersListAdminBlockText>Admin</CreateFormMembersListAdminBlockText>
+          {styledSwitch}
+        </CreateFormMembersListAdminBlock>
+        <CreateFormMembersListDeleteButton>
+          <DeleteIcon />
+        </CreateFormMembersListDeleteButton>
+      </CreateFormMembersListActivityButtons>
+    </CreateFormMembersListRow>
+  );
+};
+
+// const createPodMembersList = [
+// 	{
+// 	  avatar: '',
+// 	  name: '0xAndros',
+// 	  admin: 'true',
+// 	},
+// 	{
+// 	  avatar: '',
+// 	  name: '0xAndraos',
+// 	  admin: 'false',
+// 	},
+// 	{
+// 	  avatar: '',
+// 	  name: '0xAndos',
+// 	  admin: 'false',
+// 	},
+// 	{
+// 	  avatar: '',
+// 	  name: '0xAsndros',
+// 	  admin: 'false',
+// 	},
+//   ];
+
+{
+  /* <CreateFormMembersList>
+{createPodMembersList.map((item) => (
+  <MembersRow key={item.name} name={item.name} styledSwitch={<AndroidSwitch />} />
+))}
+</CreateFormMembersList> */
 }
 
-export default MembersRow
+export default MembersRow;
