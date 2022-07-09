@@ -321,7 +321,6 @@ const Wrapper = (props) => {
           paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <HeaderImageWrapper>
           {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
         </HeaderImageWrapper>
@@ -350,7 +349,9 @@ const Wrapper = (props) => {
                 </HeaderTitleIcon>
                 <HeaderButtons>
                   {/* <Tooltip title="your permissions are:" > */}
-                  {permissions && orgRoleName && <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>}
+                  {permissions && orgRoleName && (
+                    <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
+                  )}
                   {/* </Tooltip> */}
                   {!isLoading && (
                     <TokenGatedBoard
