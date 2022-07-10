@@ -1,7 +1,6 @@
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import CreateLayoutBaseModal from '../../CreateEntity/createEntityModal';
 import { CreateModalOverlay } from '../../CreateEntity/styles';
 import { TaskSubtaskHeader } from '../TaskSubtaskHeader';
 import { TaskSubtaskList } from '../TaskSubtaskList';

@@ -1,4 +1,4 @@
-import { ButtonBase, InputAdornment, InputBase, Popper, Typography } from '@mui/material';
+import { ButtonBase, InputAdornment, InputBase, Menu, MenuItem, Popper, Typography } from '@mui/material';
 import { Button as ButtonGradient } from 'components/Common/button';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
@@ -130,14 +130,6 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
   }
 `;
 
-export const SubmissionFilterSelectPopper = styled(Popper)`
-  z-index: 100;
-  width: 100%;
-  background: #1b1b1b;
-  max-width: fit-content;
-  border-radius: 6px;
-`;
-
 export const SubmissionFilterButtonIcon = styled((props) => {
   return (
     <div {...props}>
@@ -154,28 +146,31 @@ export const SubmissionFilterButtonIcon = styled((props) => {
   }
 `;
 
-export const SubmissionFilterSelectMenu = styled.ul`
-  background: #1b1b1b;
-  padding: 0;
-  margin: 0;
-  border: 1px solid #424242;
-  border-radius: 6px;
+export const SubmissionFilterSelectMenu = styled(Menu)`
+  && {
+    .MuiMenu-list,
+    .MuiMenu-paper {
+      padding: 0;
+      background-color: #1b1b1b;
+      min-width: 245px;
+      outline: 1px solid #424242;
+    }
+  }
 `;
 
-export const SubmissionFilterSelectItem = styled.li`
-  list-style: none;
-  background: #1b1b1b;
-  color: white;
-  font-family: 'Space Grotesk';
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 15px;
-  border-radius: 6px;
-  cursor: pointer;
-  :hover {
-    background: ${({ theme }) => theme.palette.black98};
+export const SubmissionFilterSelectItem = styled(MenuItem)`
+  && {
+    background: #1b1b1b;
+    color: white;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+    cursor: pointer;
+    :hover {
+      background: ${({ theme }) => theme.palette.black98};
+    }
   }
 `;
 

@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
-
+import { FilterBox } from 'components/Common/Filter/styles';
 export const CardWrapper = styled.div`
   background: #1d1d1d;
   border-radius: 6px;
@@ -158,6 +158,10 @@ export const LoadMore = styled.div`
 export const FiltersWrapper = styled.div`
   width: fit-content;
   padding-bottom: 12px;
+  align-self: baseline;
+  ${FilterBox} {
+    left: 0;
+  }
 `;
 
 export const SectionWrapper = styled.div`
@@ -165,8 +169,6 @@ export const SectionWrapper = styled.div`
   flex-direction: column;
   justify-content: center;
   align-items: flex-end;
-  background: #0f0f0f;
-  padding: 12px 24px 12px 24px;
   border-radius: 8px;
 `;
 
@@ -187,7 +189,7 @@ export const EmptyStateWrapper = styled.div`
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 66px;
+    border-radius: 6px;
     background: linear-gradient(94.19deg, #7427ff 10.13%, #232323 131.81%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;

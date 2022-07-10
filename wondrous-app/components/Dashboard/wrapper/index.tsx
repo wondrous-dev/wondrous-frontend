@@ -31,7 +31,6 @@ const Wrapper = (props) => {
           paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <Banner>
           <Image alt="Dashboard" src="/images/dashboard-banner.png" layout="fill" objectFit="cover" quality={80} />
         </Banner>
