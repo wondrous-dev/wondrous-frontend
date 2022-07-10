@@ -1,4 +1,4 @@
-import { isEmpty, keys } from 'lodash';
+import { keys } from 'lodash';
 import { useState } from 'react';
 import { TASK_ICONS_LABELS } from '../MilestoneTasks';
 import {
@@ -8,17 +8,9 @@ import {
   MilestoneTaskFilterMenuItemIcon,
   MilestoneTaskFilterSelectButton,
   MilestoneTaskFilterSelectWrapper,
-  MilestoneTaskFilterStatusIcon,
 } from './styles';
 
 const MilestoneTaskFilterSelected = ({ status }) => {
-  if (isEmpty(status)) {
-    return (
-      <MilestoneTaskFilterSelectWrapper>
-        <MilestoneTaskFilterStatusIcon /> Status
-      </MilestoneTaskFilterSelectWrapper>
-    );
-  }
   const { Icon, label } = TASK_ICONS_LABELS[status];
   return (
     <MilestoneTaskFilterSelectWrapper>

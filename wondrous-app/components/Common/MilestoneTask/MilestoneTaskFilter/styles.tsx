@@ -89,7 +89,7 @@ export const MilestoneTaskFilterMenuItemIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  svg {
+  > svg {
     width: 26px;
     height: 26px;
   }

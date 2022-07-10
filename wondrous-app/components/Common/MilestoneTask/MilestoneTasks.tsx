@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { Done, InProgress, InReview, ToDo } from 'components/Icons';
+import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import { ArchivedIcon } from 'components/Icons/statusIcons';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
 import { isEmpty } from 'lodash';
@@ -11,17 +12,25 @@ import MilestoneTaskFilter from './MilestoneTaskFilter';
 import MilestoneTaskList from './MilestoneTaskList';
 import MilestoneTasksCreate from './MilestoneTasksCreate';
 
-export const TASK_ICONS_LABELS = {
-  [Constants.TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
-  [Constants.TASK_STATUS_IN_PROGRESS]: { Icon: InProgress, label: 'In Progress' },
-  [Constants.TASK_STATUS_IN_REVIEW]: { Icon: InReview, label: 'In Review' },
-  [Constants.TASK_STATUS_DONE]: { Icon: Done, label: 'Completed' },
-  [Constants.TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
-};
-
 export const LoadMore = styled.div`
   height: 10px;
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
+`;
+
+const MilestoneTaskFilterStatusIcon = styled(({ className }) => (
+  <div className={className}>
+    <FilterStatusIcon />
+  </div>
+))`
+  && {
+    background: #0f0f0f;
+    height: 26px;
+    width: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
 `;
 
 const MilestoneEmpty = styled.div`
@@ -36,6 +45,15 @@ const MilestoneEmpty = styled.div`
   display: flex;
   font-family: 'Space Grotesk';
 `;
+
+export const TASK_ICONS_LABELS = {
+  '': { Icon: MilestoneTaskFilterStatusIcon, label: 'All Tasks' },
+  [Constants.TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
+  [Constants.TASK_STATUS_IN_PROGRESS]: { Icon: InProgress, label: 'In Progress' },
+  [Constants.TASK_STATUS_IN_REVIEW]: { Icon: InReview, label: 'In Review' },
+  [Constants.TASK_STATUS_DONE]: { Icon: Done, label: 'Completed' },
+  [Constants.TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
+};
 
 const getDataLength = (data) => data?.getTasksForMilestone?.length;
 
