@@ -329,23 +329,25 @@ export const SubmissionFormLinkWrapper = styled.div`
 `;
 
 export const SubmissionFormLink = styled(InputBase)`
-  border-radius: 6px;
-  font-size: 14px;
-  flex-grow: 1;
-  padding: 8px;
-  height: 42px;
+  && {
+    border-radius: 6px;
+    font-size: 14px;
+    flex-grow: 1;
+    padding: 8px;
+    height: 42px;
 
-  ${({ theme }) => `
+    ${({ theme }) => `
     color: ${theme.palette.white};
     background: #1b1b1b;
   `}
-  .MuiInputBase-input {
-    padding: 0;
-    ::placeholder {
-      ${({ theme }) => `
+    .MuiInputBase-input {
+      padding: 0;
+      ::placeholder {
+        ${({ theme }) => `
         color: ${theme.palette.white};
       `}
-      opacity: 0.33;
+        opacity: 0.33;
+      }
     }
   }
 `;
