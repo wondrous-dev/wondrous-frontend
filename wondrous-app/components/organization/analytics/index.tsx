@@ -34,7 +34,7 @@ import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
-import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
+import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import { PayoutModal } from './PayoutModal';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 
@@ -327,6 +327,36 @@ const filterUsers = (users) => {
     value: user?.id,
   }));
 };
+
+export const getContributorTaskData = (data) => {
+  const preFilteredcontributorTaskData = data?.getCompletedTasksBetweenPeriods || [];
+  const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
+  const tmp = preFilteredcontributorTaskData[noAssigneeIndex];
+  if (tmp) {
+    preFilteredcontributorTaskData[noAssigneeIndex] =
+      preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1];
+    preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1] = tmp;
+  }
+
+  let contributorTaskData = tmp
+    ? preFilteredcontributorTaskData.slice(0, preFilteredcontributorTaskData?.length - 1)
+    : preFilteredcontributorTaskData;
+  contributorTaskData.sort((a, b) => {
+    if (a?.tasks?.length > b?.tasks?.length) {
+      return -1;
+    } else if (a?.tasks?.length < b?.tasks?.length) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
+  if (tmp) {
+    contributorTaskData = [...contributorTaskData, tmp];
+  }
+  return contributorTaskData;
+};
+
 const Analytics = (props) => {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
@@ -351,26 +381,15 @@ const Analytics = (props) => {
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
   const [toTime, setToTime] = useState(today);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
-  const [getCompletedTasksBetweenPeriods, { data, loading }] = useLazyQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
-    fetchPolicy: 'network-only',
-  });
-  const preFilteredcontributorTaskData = data?.getCompletedTasksBetweenPeriods || [];
-  const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
-  var tmp = preFilteredcontributorTaskData[noAssigneeIndex];
-  preFilteredcontributorTaskData[noAssigneeIndex] =
-    preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1];
-  preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1] = tmp;
-  let contributorTaskData = preFilteredcontributorTaskData.slice(0, preFilteredcontributorTaskData?.length - 1);
-  contributorTaskData.sort((a, b) => {
-    if (a?.tasks?.length > b?.tasks?.length) {
-      return -1;
-    } else if (a?.tasks?.length < b?.tasks?.length) {
-      return 1;
-    } else {
-      return 0;
+  const [getCompletedTasksBetweenPeriods, { data: completedTaskData, loading }] = useLazyQuery(
+    GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD,
+    {
+      fetchPolicy: 'network-only',
     }
-  });
-  contributorTaskData = [...contributorTaskData, tmp];
+  );
+
+  const contributorTaskData = getContributorTaskData(completedTaskData);
+
   useEffect(() => {
     if (orgId && fromTime && toTime) {
       getCompletedTasksBetweenPeriods({

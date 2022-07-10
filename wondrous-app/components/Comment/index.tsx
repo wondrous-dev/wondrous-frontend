@@ -7,7 +7,7 @@ import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { TextInputContext } from 'utils/contexts';
 import { TextInput } from '../TextInput';
-import { filterOrgUsersForAutocomplete } from '../CreateEntity/createEntityModal';
+import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import { useMe } from '../Auth/withAuth';
 import { GET_COMMENTS_FOR_TASK } from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';

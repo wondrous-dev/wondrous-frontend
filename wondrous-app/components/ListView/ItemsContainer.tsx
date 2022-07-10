@@ -18,7 +18,6 @@ import { ChevronFilled } from 'components/Icons/sections';
 
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import Item from './Item';
 import { Draggable } from 'react-beautiful-dnd';

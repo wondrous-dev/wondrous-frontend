@@ -90,6 +90,29 @@ const PresetTokens = [
   },
 ];
 
+const EthereumPresetTokens = [
+  {
+    label: 'USDC',
+    icon: <USDCoin />,
+    value: 'USDC',
+  },
+  {
+    label: 'DAI',
+    icon: <DaiIcon />,
+    value: 'DAI',
+  },
+  {
+    label: 'ETH',
+    icon: <Ethereum />,
+    value: 'ETH',
+  },
+  {
+    label: 'Add Custom',
+    icon: <PlusIcon />,
+    value: 'custom',
+  },
+];
+
 const HarmonyPresetTokens = [
   {
     label: 'USDC',
@@ -163,7 +186,7 @@ const OptimismPresetTokens = [
 ];
 
 const PresetTokenPerChain = {
-  ethereum: PresetTokens,
+  ethereum: EthereumPresetTokens,
   polygon: PresetTokens,
   arbitrum: PresetTokens,
   boba: BobaPresetTokens,
