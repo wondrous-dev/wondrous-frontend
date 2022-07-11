@@ -29,41 +29,13 @@ import {
 } from './styles';
 import PersonAddIcon from '../../Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
+import { putDefaultRoleOnTop } from '../InviteLinkModal/OrgInviteLink';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK, PERMISSIONS } from 'utils/constants';
-
-export const putDefaultRoleOnTop = (roles, permissions) => {
-  if (!roles) return [];
-  roles = [...roles];
-  let defaultRole;
-  let defaultRoleIndex;
-  roles.some((role, index) => {
-    if (role?.default) {
-      defaultRole = { ...role };
-      defaultRoleIndex = index;
-
-      return true;
-    }
-
-    return false;
-  });
-  roles.filter((role) => {
-    if (role?.permissions?.includes(PERMISSIONS.FULL_ACCESS) && !permissions.includes(PERMISSIONS.FULL_ACCESS)) {
-      return false;
-    }
-    return true;
-  });
-
-  if (defaultRole && defaultRoleIndex) {
-    roles?.splice(defaultRoleIndex, 1);
-    roles?.unshift(defaultRole);
-  }
-  return roles;
-};
+import { LINK } from 'utils/constants';
 
 export const NewOrgInviteLinkModal = (props) => {
   const { orgOrPodName, orgId, open, onClose } = props;
