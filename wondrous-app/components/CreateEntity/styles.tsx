@@ -19,7 +19,7 @@ export const MediaUploadGrid = styled(Grid)`
   }
 `;
 export const CreateModalOverlay = styled(Modal)`
-  position: absolute;
+  position: fixed;
   width: 100%;
   overflow-y: scroll;
   height: 95vh;
