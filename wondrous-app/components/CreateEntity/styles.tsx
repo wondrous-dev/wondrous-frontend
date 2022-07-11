@@ -43,9 +43,8 @@ export const CreateFormModalOverlay = styled(Modal)`
   align-items: center;
   display: flex;
   flex-direction: column;
-  z-index: 1500;
-  padding-top: 0;
   height: 100vh;
+  justify-content: center;
 `;
 
 export const CreateLayoutsModal = styled(BaseCard)`
