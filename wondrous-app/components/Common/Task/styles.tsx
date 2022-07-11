@@ -508,3 +508,8 @@ export const DueDateText = styled(Typography)`
     margin-right: 4px;
   }
 `;
+
+export const LoadMore = styled.div`
+  height: 10px;
+  display: ${(props) => (props.hasMore ? 'block' : 'none')};
+`;

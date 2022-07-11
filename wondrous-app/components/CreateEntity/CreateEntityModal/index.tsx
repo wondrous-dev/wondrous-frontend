@@ -1090,8 +1090,19 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
-  useContextValue(!form.values.orgId && !form.values.podId && formValues, () =>
-    form.setValues({ ...form.values, orgId: formValues.orgId, podId: formValues.podId })
+  useContextValue(formValues?.orgId && !form.values.orgId, () =>
+    form.setValues({ ...form.values, orgId: formValues.orgId })
+  );
+  useContextValue(formValues?.podId && !form.values.podId, () =>
+    form.setValues({ ...form.values, podId: formValues.podId })
+  );
+  useContextValue(formValues?.milestoneId && !form.values.milestoneId, () =>
+    form.setValues({
+      ...form.values,
+      orgId: formValues.orgId,
+      podId: formValues.podId,
+      milestoneId: formValues.milestoneId,
+    })
   );
 
   useEffect(() => {
@@ -1802,6 +1813,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   form.setFieldValue('milestoneId', null);
                 }}
                 formValues={form.values}
+                disabled={formValues?.milestoneId}
               />
             )}
             {form.values.milestoneId === null && (
