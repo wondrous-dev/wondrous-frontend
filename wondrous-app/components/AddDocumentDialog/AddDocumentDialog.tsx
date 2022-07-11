@@ -121,8 +121,8 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
               pattern: { value: URL_REGEX, message: 'Please enter a valid link' },
             })}
             fullWidth
-            helperText={errors.link?.message as any}
-            error={errors.link as any}
+            helperText={errors.link?.message}
+            error={errors.link}
           />
         </Box>
         <Box mb={3.5}>
@@ -134,8 +134,8 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
               required: 'title is required',
             })}
             fullWidth
-            helperText={errors.title?.message as any}
-            error={errors.title as any}
+            helperText={errors.title?.message}
+            error={errors.title}
           />
         </Box>
         <Box mb={3.5}>
@@ -147,8 +147,8 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
               required: 'description is required',
             })}
             fullWidth
-            helperText={errors.description?.message as any}
-            error={errors.description as any}
+            helperText={errors.description?.message}
+            error={errors.description}
           />
         </Box>
 
