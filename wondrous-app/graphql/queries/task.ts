@@ -167,3 +167,12 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
     }
   }
 `;
+
+export const GET_TASK_SUBMISSION_COMMENTS = gql`
+  query getTaskSubmissionComments($submissionId: String!) {
+    getTaskSubmissionComments(submissionId: $submissionId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;

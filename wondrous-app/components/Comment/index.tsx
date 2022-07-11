@@ -9,7 +9,7 @@ import { TextInputContext } from 'utils/contexts';
 import { TextInput } from '../TextInput';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import { useMe } from '../Auth/withAuth';
-import { GET_COMMENTS_FOR_TASK } from 'graphql/queries/task';
+import { GET_COMMENTS_FOR_TASK, GET_TASK_SUBMISSION_COMMENTS } from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import {
   AddCommentButton,
@@ -32,10 +32,11 @@ import { useRouter } from 'next/router';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { updateTask } from 'utils/board';
 import { ErrorText } from '../Common';
+import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
 
 export const CommentBox = (props) => {
   const user = useMe();
-  const { orgId, existingContent, taskType, task, previousCommenterIds } = props;
+  const { orgId, existingContent, taskType, task, previousCommenterIds, submission } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -57,6 +58,10 @@ export const CommentBox = (props) => {
     refetchQueries: ['getTaskProposalComments'],
   });
 
+  const [createSubmissionComment] = useMutation(CREATE_SUBMISSION_COMMENT, {
+    refetchQueries: ['getTaskSubmissionComments'],
+  });
+
   const addComment = () => {
     if (!comment || comment.trim().length === 0) {
       setEmptyCommentError(true);
@@ -70,12 +75,21 @@ export const CommentBox = (props) => {
       ...(taskType !== TASK_STATUS_REQUESTED && {
         taskId: task?.id,
       }),
+      ...(submission && {
+        submissionId: submission?.id,
+      }),
       content: comment.trim(),
       userMentions: mentionedUsers,
       previousCommenterIds: previousCommenterIds,
     };
     if (taskType === TASK_STATUS_REQUESTED) {
       createTaskProposalComment({
+        variables: {
+          input: createArgs,
+        },
+      });
+    } else if (submission) {
+      createSubmissionComment({
         variables: {
           input: createArgs,
         },
@@ -136,7 +150,7 @@ const useScrollIntoView = (isElementToScroll) => {
 };
 
 const CommentItem = (props) => {
-  const { comment, task, taskType, list, setList } = props;
+  const { comment, task, taskType, list, setList, submission } = props;
   const loggedInUser = useMe();
   const router = useRouter();
   const orgBoard = useOrgBoard();
@@ -151,6 +165,10 @@ const CommentItem = (props) => {
 
   const [deleteTaskProposalComment] = useMutation(DELETE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
+  });
+
+  const [deleteTaskSubmissionComment] = useMutation(DELETE_SUBMISSION_COMMENT, {
+    refetchQueries: ['getTaskSubmissionComments'],
   });
 
   useEffect(() => {
@@ -216,6 +234,12 @@ const CommentItem = (props) => {
                       proposalCommentId: id,
                     },
                   });
+                } else if (submission) {
+                  deleteTaskSubmissionComment({
+                    variables: {
+                      submissionCommentId: id,
+                    },
+                  });
                 } else {
                   deleteTaskComment({
                     variables: {
@@ -235,7 +259,7 @@ const CommentItem = (props) => {
 };
 
 export const CommentList = (props) => {
-  const { taskType, task } = props;
+  const { taskType, task, submission } = props;
   const [comments, setComments] = useState([]);
   const [getTaskComments] = useLazyQuery(GET_COMMENTS_FOR_TASK, {
     onCompleted: (data) => {
@@ -252,11 +276,25 @@ export const CommentList = (props) => {
     fetchPolicy: 'network-only',
   });
 
+  const [getSubmissionComments] = useLazyQuery(GET_TASK_SUBMISSION_COMMENTS, {
+    onCompleted: (data) => {
+      const commentList = data?.getTaskSubmissionComments;
+      setComments(commentList);
+    },
+    fetchPolicy: 'network-only',
+  });
+
   useEffect(() => {
     if (task && taskType === TASK_STATUS_REQUESTED) {
       getTaskProposalComments({
         variables: {
           proposalId: task?.id,
+        },
+      });
+    } else if (submission) {
+      getSubmissionComments({
+        variables: {
+          submissionId: submission?.id,
         },
       });
     } else if (task) {
@@ -267,7 +305,8 @@ export const CommentList = (props) => {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task, taskType]);
+  }, [task, taskType, submission]);
+
   const set = new Set();
   comments?.forEach((comment) => {
     set.add(comment?.userId);
@@ -276,16 +315,17 @@ export const CommentList = (props) => {
   return (
     <CommentListWrapper>
       <CommentBox
-        orgId={task?.orgId}
+        orgId={task?.orgId || submission?.orgId}
         existingContent={''}
         taskType={taskType}
         task={task}
         previousCommenterIds={Array.from(set)}
+        submission={submission}
       />
       <CommentListContainer>
         {comments?.length > 0 &&
           comments.map((comment) => (
-            <CommentItem key={comment?.id} comment={comment} taskType={taskType} task={task} />
+            <CommentItem key={comment?.id} comment={comment} taskType={taskType} task={task} submission={submission} />
           ))}
       </CommentListContainer>
     </CommentListWrapper>
