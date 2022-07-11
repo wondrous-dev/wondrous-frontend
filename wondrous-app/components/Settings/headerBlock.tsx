@@ -11,7 +11,7 @@ import GeneralSettings from '../Icons/generalSettings';
 import PlusIcon from 'components/Icons/plus';
 
 export const HeaderBlock = (props) => {
-  const { title, description, icon, invite } = props;
+  const { title, description, icon, onInvite } = props;
 
   return (
     <SettingsHeaderBlock>
@@ -20,12 +20,14 @@ export const HeaderBlock = (props) => {
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
-      <SettingsHeaderInviteButton onClick={invite}>
-        Invite
-        <SettingsHeaderInviteButtonIcon>
-          <PlusIcon fill="#FFFFFF" />
-        </SettingsHeaderInviteButtonIcon>
-      </SettingsHeaderInviteButton>
+      {onInvite && (
+        <SettingsHeaderInviteButton onClick={onInvite}>
+          Invite
+          <SettingsHeaderInviteButtonIcon>
+            <PlusIcon fill="#FFFFFF" />
+          </SettingsHeaderInviteButtonIcon>
+        </SettingsHeaderInviteButton>
+      )}
     </SettingsHeaderBlock>
   );
 };

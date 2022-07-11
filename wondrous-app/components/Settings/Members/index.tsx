@@ -224,7 +224,7 @@ const Members = (props) => {
             </>
           }
           description="Use roles to organize contributors and admins"
-          invite={() => setOpenInvite(true)}
+          onInvite={() => setOpenInvite(true)}
         />
 
         <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
