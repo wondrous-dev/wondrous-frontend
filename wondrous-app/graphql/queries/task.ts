@@ -175,4 +175,13 @@ export const GET_TASK_SUBMISSION_COMMENTS = gql`
     }
   }
   ${CommentFragment}
+`
+
+export const GET_BOUNTIES_TO_EXPLORE = gql`
+  query getBountiesToExplore($limit: Int, $offset: Int) {
+    getBountiesToExplore(limit: $limit, offset: $offset) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
 `;

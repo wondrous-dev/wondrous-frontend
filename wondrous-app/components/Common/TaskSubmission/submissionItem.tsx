@@ -233,11 +233,11 @@ const SubmissionItemLink = ({ links }: { links: [] }) => {
   );
 };
 
-const SubmissionShowComments = ({ setShowComments, commentCount }) => {
+const SubmissionShowComments = ({ setShowComments, commentCount, showComments }) => {
   return (
     <>
       <Tooltip title="Submission comments" placement="top">
-        <TaskAction onClick={() => setShowComments(true)}>
+        <TaskAction onClick={() => setShowComments(!showComments)}>
           <TaskCommentIcon />
           {commentCount > 0 && <TaskActionAmount>{commentCount}</TaskActionAmount>}
         </TaskAction>
@@ -356,7 +356,11 @@ export const SubmissionItem = ({
         </SubmissionItemSection>
         <SubmissionDivider />
         <SubmissionItemFooter>
-          <SubmissionShowComments setShowComments={setShowComments} commentCount={submission?.commentCount} />
+          <SubmissionShowComments
+            setShowComments={setShowComments}
+            commentCount={submission?.commentCount}
+            showComments={showComments}
+          />
           <div
             style={{
               flex: 1,
