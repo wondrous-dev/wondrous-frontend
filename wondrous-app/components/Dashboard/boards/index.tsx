@@ -266,7 +266,15 @@ const useGetUserTaskBoard = ({
   };
 };
 
-const useAdminColumns = ({ isAdmin, selectedStatus, statuses, setSelectedStatus, setStatuses, podIds }) => {
+const useAdminColumns = ({
+  isAdmin,
+  selectedStatus,
+  statuses,
+  setSelectedStatus,
+  setStatuses,
+  podIds,
+  setHasMoreTasks,
+}) => {
   const [adminColumns, setAdminColumns] = useState([]);
   const [getProposalsUserCanReview] = useLazyQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
     fetchPolicy: 'cache-and-network',
@@ -277,13 +285,14 @@ const useAdminColumns = ({ isAdmin, selectedStatus, statuses, setSelectedStatus,
       setAdminColumns(newColumns);
     },
   });
-  const [getSubmissionsUserCanReview] = useLazyQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
+  const [getSubmissionsUserCanReview, { fetchMore }] = useLazyQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
     fetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const tasks = data?.getSubmissionsUserCanReview;
       const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
       newColumns[1].tasks = [...tasks];
       setAdminColumns(newColumns);
+      setHasMoreTasks(tasks.length >= LIMIT);
     },
   });
   useEffect(() => {
@@ -332,7 +341,25 @@ const useAdminColumns = ({ isAdmin, selectedStatus, statuses, setSelectedStatus,
       }
     }
   }, [setStatuses, selectedStatus, isAdmin]);
-  return { adminColumns };
+
+  const handleFetchMore = useCallback(() => {
+    if (statuses.length > 0) {
+      fetchMore({
+        variables: {
+          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
+          offset: adminColumns?.[1]?.tasks?.length,
+        },
+      }).then(({ data }) => {
+        const tasks = data?.getSubmissionsUserCanReview;
+        const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
+        newColumns[1].tasks = newColumns[1].tasks.concat(tasks);
+        setAdminColumns(newColumns);
+        setHasMoreTasks(tasks.length >= LIMIT);
+      });
+    }
+  }, [statuses]);
+
+  return { adminColumns, getSubmissionsUserCanReviewFetchMore: handleFetchMore };
 };
 
 const useFilterSchema = (loggedInUser, isAdmin) => {
@@ -419,13 +446,14 @@ const BoardsPage = (props) => {
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
-  const { adminColumns } = useAdminColumns({
+  const { adminColumns, getSubmissionsUserCanReviewFetchMore } = useAdminColumns({
     isAdmin,
     selectedStatus,
     statuses,
     setSelectedStatus,
     setStatuses,
     podIds,
+    setHasMoreTasks,
   });
 
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
@@ -562,11 +590,13 @@ const BoardsPage = (props) => {
             setHasMoreTasks(false);
           }
         });
+      } else if (isAdmin) {
+        getSubmissionsUserCanReviewFetchMore();
       } else {
         !isAdmin && getUserTaskBoardTasksFetchMore();
       }
     }
-  }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore]);
+  }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, getSubmissionsUserCanReviewFetchMore, isAdmin]);
 
   function handleSearch(searchString: string) {
     const searchTaskProposalsArgs = {

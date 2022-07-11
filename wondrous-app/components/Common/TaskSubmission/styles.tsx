@@ -171,6 +171,10 @@ export const SubmissionFilterSelectItem = styled(MenuItem)`
     :hover {
       background: ${({ theme }) => theme.palette.black98};
     }
+    > svg {
+      width: 26px;
+      height: 26px;
+    }
   }
 `;
 
@@ -178,9 +182,27 @@ export const SubmissionFilterSelectRender = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  > svg {
+    width: 26px;
+    height: 26px;
+  }
 `;
 
-export const SubmissionFilterStatusIcon = styled(FilterStatusIcon)``;
+export const SubmissionFilterStatusIcon = styled(({ className }) => (
+  <div className={className}>
+    <FilterStatusIcon />
+  </div>
+))`
+  && {
+    background: #0f0f0f;
+    height: 26px;
+    width: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+  }
+`;
 
 export const TaskSubmissionsFormInactiveWrapper = styled.div`
   display: flex;
@@ -307,23 +329,25 @@ export const SubmissionFormLinkWrapper = styled.div`
 `;
 
 export const SubmissionFormLink = styled(InputBase)`
-  border-radius: 6px;
-  font-size: 14px;
-  flex-grow: 1;
-  padding: 8px;
-  height: 42px;
+  && {
+    border-radius: 6px;
+    font-size: 14px;
+    flex-grow: 1;
+    padding: 8px;
+    height: 42px;
 
-  ${({ theme }) => `
+    ${({ theme }) => `
     color: ${theme.palette.white};
     background: #1b1b1b;
   `}
-  .MuiInputBase-input {
-    padding: 0;
-    ::placeholder {
-      ${({ theme }) => `
+    .MuiInputBase-input {
+      padding: 0;
+      ::placeholder {
+        ${({ theme }) => `
         color: ${theme.palette.white};
       `}
-      opacity: 0.33;
+        opacity: 0.33;
+      }
     }
   }
 `;

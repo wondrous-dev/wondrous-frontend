@@ -13,6 +13,7 @@ import {
 } from './styles';
 
 const filterOptions = {
+  allSubmissions: { label: 'All Submissions', Icon: SubmissionFilterStatusIcon },
   awaitingReview: { label: 'Awaiting Review', Icon: InReviewIcon },
   changesRequested: { label: 'Changes Requested', Icon: SubmissionItemStatusChangesRequestedIcon },
   approved: { label: 'Approved', Icon: CompletedIcon },
@@ -21,8 +22,10 @@ const filterOptions = {
 };
 
 const isSubmissionStatus = ({ submission, label }) => {
-  const { awaitingReview, changesRequested, approved, approvedAndProcessingPayment, approvedAndPaid } = filterOptions;
+  const { allSubmissions, awaitingReview, changesRequested, approved, approvedAndProcessingPayment, approvedAndPaid } =
+    filterOptions;
   const conditions = {
+    [allSubmissions.label]: true,
     [awaitingReview.label]: !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt,
     [changesRequested.label]: submission?.changeRequestedAt || submission?.rejectedAt,
     [approved.label]: submission?.approvedAt,

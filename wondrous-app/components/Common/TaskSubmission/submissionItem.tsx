@@ -156,7 +156,6 @@ const useRequestChangeTaskSubmission = ({ submission, handleBountyTypeCompletion
   return requestChangeTaskSubmission;
 };
 
-
 const SubmissionItemStatus = (props) => {
   const { submission } = props;
   const awaitingReview = !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt;
@@ -338,8 +337,8 @@ export const SubmissionItem = ({
         </SubmissionItemSection>
         <SubmissionDivider />
         <SubmissionItemFooter>
+          <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
           <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
-            <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
             <SubmissionRequestChangeButton
               submission={submission}
               requestChangeTaskSubmission={requestChangeTaskSubmission}
