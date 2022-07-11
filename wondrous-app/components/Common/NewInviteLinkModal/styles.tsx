@@ -6,25 +6,21 @@ import {
   Button,
   Divider,
   Select,
-  Menu,
   MenuItem,
   FormControl,
   FormControlLabel,
-  InputLabel,
 } from '@mui/material';
 import styled from 'styled-components';
 import { ModalCloseButton } from '../ModalCloseButton';
-import { Button as ButtonComponent } from '../button';
 import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
 import palette from 'theme/palette';
-import { capitalize } from 'lodash';
 
 export const StyledModal = styled(Modal)``;
 
 export const StyledBox = styled(Box)`
   width: 682px;
   border-radius: 6px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  background: linear-gradient(180deg, ${palette.black95} 0%, ${palette.black97} 100%);
   margin: 140px auto 0;
   padding: 26px;
   position: relative;
@@ -33,10 +29,9 @@ export const StyledBox = styled(Box)`
     content: '';
     position: absolute;
     inset: 0;
-    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.5) 7.84%, rgba(35, 35, 35, 0.5) 108.71%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
+    background: linear-gradient(169.47deg, ${palette.grey75}7f 7.84%, ${palette.black92}7f 108.71%);
+    mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
+    mask-composite: xor;
     padding: 1px;
     border-radius: 6px;
   }
@@ -53,7 +48,7 @@ export const IconTextWrapper = styled.div`
 `;
 
 export const PersonAddIconWrapper = styled.div`
-  background: #141414;
+  background: ${palette.black97};
   width: 60px;
   height: 60px;
   border-radius: 100%;
@@ -74,7 +69,7 @@ export const TextHeading = styled(Typography)`
   && {
     font-weight: bold;
     font-size: 20px;
-    color: #fff;
+    color: ${palette.white};
   }
 `;
 
@@ -82,7 +77,7 @@ export const TextSubheading = styled(Typography)`
   && {
     font-weight: bold;
     font-size: 20px;
-    color: #ccbbff;
+    color: ${palette.blue20};
   }
 `;
 
@@ -93,7 +88,7 @@ export const CloseButton = styled(ModalCloseButton)`
 
 export const StyledDivider = styled(Divider)`
   && {
-    background: #363636;
+    background: ${palette.grey85};
     height: 1px;
     border-radius: 6px;
     width: 630px;
@@ -103,7 +98,7 @@ export const StyledDivider = styled(Divider)`
 
 export const InviteThruLinkLabel = styled(Typography)`
   && {
-    color: #ccbbff;
+    color: ${palette.blue20};
     font-size: 14px;
     font-weight: 500;
     margin-top: 32px;
@@ -118,14 +113,14 @@ export const InviteThruLinkInputWrapper = styled.div`
 `;
 
 export const InviteThruLinkTextField = styled(TextField)`
-  background: #0f0f0f;
+  background: ${palette.background.default};
   border-radius: 6px;
   height: 40px;
   width: 351px;
   padding: 0;
 
   .MuiInputBase-input {
-    color: #c4c4c4;
+    color: ${palette.grey250};
   }
 
   .MuiOutlinedInput-input {
@@ -137,7 +132,7 @@ export const InviteThruLinkTextField = styled(TextField)`
     position: absolute;
     inset: 0;
     border-radius: 6px;
-    background: linear-gradient(270deg, #0f0f0f 2.96%, rgba(15, 15, 15, 0) 62.5%);
+    background: linear-gradient(270deg, ${palette.background.default} 2.96%, transparent 62.5%);
   }
 `;
 
@@ -145,11 +140,11 @@ export const InviteThruLinkFormControlSelect = styled(FormControl)``;
 
 export const StyledSelect = styled(Select)`
   && {
-    background: #0f0f0f;
+    background: ${palette.background.default};
     width: 141px;
     max-width: 100%;
     height: 40px;
-    color: #fff;
+    color: ${palette.white};
     border-radius: ${(props) => (props.rounded ? '6px' : '0')};
     font-size: 14px;
     text-transform: ${(props) => (props.capitalize ? 'capitalize' : 'inherit')};
@@ -184,15 +179,15 @@ export const InviteThruLinkSelect = styled(({ className, ...props }) => (
   <StyledSelect
     {...props}
     capitalize={true}
-    svgColor="#CCBBFF"
+    svgColor={palette.blue20}
     rounded={true}
     MenuProps={{ classes: { paper: className } }}
   />
 ))`
   &.MuiPaper-root {
-    background: linear-gradient(180deg, #1e1e1e 0%, #141414 109.19%);
+    background: linear-gradient(180deg, ${palette.black95} 0%, ${palette.black97} 109.19%);
     width: 141px;
-    color: #fff;
+    color: ${palette.white};
   }
   &.MuiPaper-root > .MuiList-padding {
     padding: 0;
@@ -201,8 +196,8 @@ export const InviteThruLinkSelect = styled(({ className, ...props }) => (
 
 export const InviteThruLinkMenuItem = styled(MenuItem)`
   && {
-    background: #121212;
-    color: #c4c4c4;
+    background: ${palette.black98};
+    color: ${palette.grey250};
     margin: 6px;
     border-radius: 6px;
     font-size: 13px;
@@ -211,8 +206,8 @@ export const InviteThruLinkMenuItem = styled(MenuItem)`
   }
 
   &&:hover {
-    background: rgba(0, 0, 0, 1);
-    border: 1px solid #7427ff;
+    background: ${palette.black};
+    border: 1px solid ${palette.highlightPurple};
   }
 
   .MuiListItem-root.Mui-selected,
@@ -223,7 +218,7 @@ export const InviteThruLinkMenuItem = styled(MenuItem)`
 
 export const InviteThruLinkButtonLabel = styled(Typography)`
   && {
-    color: white;
+    color: ${palette.white};
     font-size: 14px;
     margin-left: 25px;
     font-weight: 500;
@@ -232,7 +227,7 @@ export const InviteThruLinkButtonLabel = styled(Typography)`
 
 export const InviteThruLinkButtonSuccessLabel = styled(InviteThruLinkButtonLabel)`
   && {
-    background: #7a7a7a;
+    background: ${palette.grey57};
     background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -246,14 +241,14 @@ export const LinkSwitch = styled(({ ...props }) => (
   margin-top: 12px;
 
   .MuiTypography-body1 {
-    color: #c4c4c4;
+    color: ${palette.grey250};
     font-size: 14px;
   }
 `;
 
 export const InviteThruEmailLabel = styled(Typography)`
   && {
-    color: #ccbbff;
+    color: ${palette.blue20};
     font-size: 14px;
     font-weight: 500;
     margin-top: 32px;
@@ -271,14 +266,14 @@ export const InviteThruEmailTextFieldButtonWrapper = styled.div`
 export const InviteThruEmailTextFieldSelectWrapper = styled.div``;
 
 export const InviteThruEmailTextField = styled(TextField)`
-  background: #0f0f0f;
+  background: ${palette.background.default};
   border-radius: 6px 0 0 6px;
   height: 40px;
   width: 337px;
   border: 1px solid transparent;
 
   .MuiInputBase-input {
-    color: #c4c4c4;
+    color: ${palette.grey250};
     height: 20px;
     padding: 10px 15px;
   }
@@ -290,8 +285,8 @@ export const InviteThruEmailTextField = styled(TextField)`
 
 export const InviteButton = styled(Button)`
   && {
-    border: 1px solid #353535;
-    background: #0f0f0f;
+    border: 1px solid ${palette.black70};
+    background: ${palette.background.default};
     font-weight: 400;
     width: 137px;
     flex-basis: 137px;
@@ -304,15 +299,20 @@ export const InviteButton = styled(Button)`
     border-radius: 100px;
 
     :hover {
-      background: #353535;
+      background: ${palette.black70};
     }
 
     &::before {
       content: '';
       position: absolute;
       inset: 0;
-      background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
+      mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
       mask-composite: xor;
       padding: 1px;
       border-radius: 180px;
@@ -322,7 +322,7 @@ export const InviteButton = styled(Button)`
 
 export const InviteThruEmailButtonLabel = styled(Typography)`
   && {
-    color: white;
+    color: ${palette.white};
     font-size: 14px;
     font-weight: 500;
   }
