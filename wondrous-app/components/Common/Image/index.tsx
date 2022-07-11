@@ -31,8 +31,6 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
       return;
     }
 
-    console.log(src, '--------');
-
     try {
       const cachedPreviewUrl = localStorage.getItem(`safeImage.${src}`);
 
