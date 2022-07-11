@@ -76,35 +76,39 @@ export const BackgroundTextWrapper = styled.div`
 `;
 
 export const BackgroundTextHeader = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 48px;
-  line-height: 46px;
-  /* identical to box height, or 96% */
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 48px;
+    line-height: 46px;
+    /* identical to box height, or 96% */
 
-  letter-spacing: -0.03em;
+    letter-spacing: -0.03em;
 
-  /* glow */
+    /* glow */
 
-  background: linear-gradient(273.13deg, #fefec0 20.13%, #36a9ff 95.72%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+    background: linear-gradient(273.13deg, #fefec0 20.13%, #36a9ff 95.72%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
 `;
 
 export const BackgroundTextSubHeader = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 16px;
-  line-height: 33px;
-  /* identical to box height, or 206% */
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 33px;
+    /* identical to box height, or 206% */
 
-  letter-spacing: 0.0025em;
+    letter-spacing: 0.0025em;
 
-  color: #ffffff;
+    color: #ffffff;
+  }
 `;
 
 export const StyledGridContainer = styled(Masonry)``;
@@ -290,22 +294,24 @@ export const ExplorePageContentWrapper = styled.div`
 `;
 
 export const OrgsSectionHeader = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 28px;
-  line-height: 24px;
-  /* identical to box height, or 86% */
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 28px;
+    line-height: 24px;
+    /* identical to box height, or 86% */
 
-  letter-spacing: 0.0025em;
+    letter-spacing: 0.0025em;
 
-  /* Status - Proposal */
+    /* Status - Proposal */
 
-  background: linear-gradient(46.92deg, #b820ff 8.72%, #ffffff 115.55%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
+    background: linear-gradient(46.92deg, #b820ff 8.72%, #ffffff 115.55%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
+  }
 `;
 export const SectionSubheader = styled(Typography)`
   && {
@@ -373,31 +379,35 @@ export const PartnershipRequest = styled.div`
 `;
 
 export const PartnershipRequestHeader = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 600;
-  font-size: 24px;
-  line-height: 29px;
-  /* identical to box height, or 121% */
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 24px;
+    line-height: 29px;
+    /* identical to box height, or 121% */
 
-  text-align: center;
-  letter-spacing: -0.03em;
+    text-align: center;
+    letter-spacing: -0.03em;
 
-  color: #ffffff;
+    color: #ffffff;
+  }
 `;
 
 export const PartnershipRequestSubheader = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 400;
-  font-size: 15px;
-  line-height: 20px;
-  /* identical to box height, or 93% */
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+    /* identical to box height, or 93% */
 
-  text-align: center;
-  letter-spacing: 0.0025em;
+    text-align: center;
+    letter-spacing: 0.0025em;
 
-  color: #ffffff;
+    color: #ffffff;
+  }
 `;
 
 export const ShowMoreButtonWrapper = styled.div`
