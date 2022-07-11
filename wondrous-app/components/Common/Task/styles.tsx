@@ -131,6 +131,7 @@ export const TaskAction = styled.div`
   justify-content: flex-start;
   align-content: space-between;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const TaskActionMenu = styled.div`
@@ -507,4 +508,9 @@ export const DueDateText = styled(Typography)`
     font-size: 13px;
     margin-right: 4px;
   }
+`;
+
+export const LoadMore = styled.div`
+  height: 10px;
+  display: ${(props) => (props.hasMore ? 'block' : 'none')};
 `;

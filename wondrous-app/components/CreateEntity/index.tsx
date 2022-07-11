@@ -2,7 +2,7 @@ import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
-import CreateLayoutBaseModal from './createEntityModal';
+import CreatePodModal from './CreatePodModal';
 import { CreateEntityModal } from './CreateEntityModal/index';
 import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
@@ -53,7 +53,7 @@ export const CreateEntity = (props: ICreateEntity) => {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      {forNewModal ? <CreateEntityModal {...props} /> : <CreateLayoutBaseModal {...props} />}
+      {forNewModal ? <CreateEntityModal {...props} /> : <CreatePodModal {...props} />}
     </CreateFormModalOverlay>
   );
 };

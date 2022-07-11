@@ -1,5 +1,8 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { Box } from '@mui/material';
+import MilestoneTasks from 'components/Common/MilestoneTask';
+import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskSubmission from 'components/Common/TaskSubmission';
 import { CreateEntity } from 'components/CreateEntity';
 import { Claim } from 'components/Icons/claimTask';
@@ -29,7 +32,7 @@ import { isEmpty, keys } from 'lodash';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useContext, useCallback, useEffect, useState, useRef } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
@@ -77,19 +80,19 @@ import { CheckedBoxIcon } from '../../Icons/checkedBox';
 import { DAOIcon } from '../../Icons/dao';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { SubtaskDarkIcon } from '../../Icons/subtask';
-import { AssigneeIcon, RejectIcon } from '../../Icons/taskModalIcons';
+import { RejectIcon } from '../../Icons/taskModalIcons';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 import { CompleteModal } from '../CompleteModal';
 import { DeleteTaskModal } from '../DeleteTaskModal';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from '../MilestoneProgress';
-import { MilestoneTaskList } from '../MilestoneTaskList';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { TaskSubtasks } from '../TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import WalletModal from '../Wallet/WalletModal';
 import {
+  ActionButton,
   ArchivedTaskUndo,
   ConnectToWalletButton,
   GithubBlock,
@@ -128,6 +131,8 @@ import {
   TaskModalTitleDescriptionMedia,
   TaskSectionContent,
   TaskSectionDisplayContentWrapper,
+  TaskSectionDisplayCreator,
+  TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
   TaskSectionDisplayLabel,
@@ -153,6 +158,7 @@ import {
   TaskSectionInfoTakeTaskText,
   TaskSectionInfoText,
   TaskSectionInfoTextCreator,
+  TaskSectionInfoTextMilestone,
   TaskSectionInfoTextUnderlined,
   TaskSectionTagWrapper,
   TaskStatusHeaderText,
@@ -160,11 +166,8 @@ import {
   TaskTabText,
   WalletError,
   WalletErrorText,
-  ActionButton,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
-import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
-import { Box } from '@mui/material';
 
 const tabs = {
   submissions: 'Submissions',
@@ -1090,358 +1093,363 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 {!fullScreen && <TaskBorder />}
               </TaskModalTitleDescriptionMedia>
               <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
-                {!isTaskProposal && !isMilestone && (
-                  <TaskSectionDisplayDiv>
-                    <TaskSectionLabel>Reviewer</TaskSectionLabel>
-                    <TaskSectionDisplayContentWrapper>
-                      {reviewerData?.getTaskReviewers?.length > 0 ? (
-                        (reviewerData?.getTaskReviewers).map((taskReviewer) => (
-                          <TaskSectionImageContent
-                            key={taskReviewer.id}
-                            hasContent={taskReviewer.id}
-                            imgSrc={taskReviewer?.profilePicture}
-                            DefaultImageComponent={() => <DefaultUserImage />}
-                            ContentComponent={() => (
-                              <TaskSectionInfoTextUnderlined>{taskReviewer?.username}</TaskSectionInfoTextUnderlined>
-                            )}
-                            onClick={() => {
-                              handleClose();
-                              router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
-                                shallow: true,
-                              });
-                            }}
-                          />
-                        ))
-                      ) : (
-                        <TaskSectionInfoText>None</TaskSectionInfoText>
-                      )}
-                    </TaskSectionDisplayContentWrapper>
-                  </TaskSectionDisplayDiv>
-                )}
-                {showAssignee && (
-                  <TaskSectionDisplayDiv>
-                    <TaskSectionLabel>Assignee</TaskSectionLabel>
-                    <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.assigneeUsername}
-                        imgSrc={fetchedTask?.assigneeProfilePicture}
-                        DefaultImageComponent={() => <DefaultUserImage />}
-                        ContentComponent={() => {
-                          return (
-                            <>
-                              <TaskSectionInfoTextUnderlined>
-                                {fetchedTask?.assigneeUsername}
-                              </TaskSectionInfoTextUnderlined>
-                              {canEdit && (
-                                <TaskSectionInfoClose
-                                  onClick={(e) => {
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    removeTaskAssignee({
-                                      variables: {
-                                        taskId: fetchedTask?.id,
-                                      },
-                                      onCompleted: (data) => {
-                                        const task = data?.removeTaskAssignee;
-                                        const transformedTask = transformTaskToTaskCard(task, {});
-                                        setFetchedTask(transformedTask);
-                                        if (boardColumns?.setColumns && onCorrectPage) {
-                                          let columns = [...boardColumns?.columns];
-                                          if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                                            columns = updateInReviewItem(transformedTask, columns);
-                                          } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                            columns = updateInProgressTask(transformedTask, columns);
-                                          } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                            columns = updateTaskItem(transformedTask, columns);
-                                          } else if (transformedTask.status === TASK_STATUS_DONE) {
-                                            columns = updateCompletedItem(transformedTask, columns);
+                <TaskSectionDisplayData>
+                  {!isTaskProposal && !isMilestone && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Reviewer</TaskSectionLabel>
+                      <TaskSectionDisplayContentWrapper>
+                        {reviewerData?.getTaskReviewers?.length > 0 ? (
+                          (reviewerData?.getTaskReviewers).map((taskReviewer) => (
+                            <TaskSectionImageContent
+                              key={taskReviewer.id}
+                              hasContent={taskReviewer.id}
+                              imgSrc={taskReviewer?.profilePicture}
+                              DefaultImageComponent={() => <DefaultUserImage />}
+                              ContentComponent={() => (
+                                <TaskSectionInfoTextUnderlined>{taskReviewer?.username}</TaskSectionInfoTextUnderlined>
+                              )}
+                              onClick={() => {
+                                handleClose();
+                                router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                                  shallow: true,
+                                });
+                              }}
+                            />
+                          ))
+                        ) : (
+                          <TaskSectionInfoText>None</TaskSectionInfoText>
+                        )}
+                      </TaskSectionDisplayContentWrapper>
+                    </TaskSectionDisplayDiv>
+                  )}
+                  {showAssignee && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Assignee</TaskSectionLabel>
+                      <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
+                        <TaskSectionImageContent
+                          hasContent={fetchedTask?.assigneeUsername}
+                          imgSrc={fetchedTask?.assigneeProfilePicture}
+                          DefaultImageComponent={() => <DefaultUserImage />}
+                          ContentComponent={() => {
+                            return (
+                              <>
+                                <TaskSectionInfoTextUnderlined>
+                                  {fetchedTask?.assigneeUsername}
+                                </TaskSectionInfoTextUnderlined>
+                                {canEdit && (
+                                  <TaskSectionInfoClose
+                                    onClick={(e) => {
+                                      e.preventDefault();
+                                      e.stopPropagation();
+                                      removeTaskAssignee({
+                                        variables: {
+                                          taskId: fetchedTask?.id,
+                                        },
+                                        onCompleted: (data) => {
+                                          const task = data?.removeTaskAssignee;
+                                          const transformedTask = transformTaskToTaskCard(task, {});
+                                          setFetchedTask(transformedTask);
+                                          if (boardColumns?.setColumns && onCorrectPage) {
+                                            let columns = [...boardColumns?.columns];
+                                            if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                                              columns = updateInReviewItem(transformedTask, columns);
+                                            } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                              columns = updateInProgressTask(transformedTask, columns);
+                                            } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                              columns = updateTaskItem(transformedTask, columns);
+                                            } else if (transformedTask.status === TASK_STATUS_DONE) {
+                                              columns = updateCompletedItem(transformedTask, columns);
+                                            }
+                                            boardColumns.setColumns(columns);
                                           }
-                                          boardColumns.setColumns(columns);
+                                        },
+                                      });
+                                    }}
+                                  >
+                                    <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
+                                  </TaskSectionInfoClose>
+                                )}
+                              </>
+                            );
+                          }}
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                          DefaultContent={() => (
+                            <>
+                              {canClaim ? (
+                                <>
+                                  <TaskSectionInfoTakeTask
+                                    onClick={() => {
+                                      if (!user) {
+                                        router.push('/signup', undefined, {
+                                          shallow: true,
+                                        });
+                                      } else {
+                                        if (isTaskProposal) {
+                                          updateTaskProposalAssignee({
+                                            variables: {
+                                              proposalId: fetchedTask?.id,
+                                              assigneeId: user?.id,
+                                            },
+                                            onCompleted: (data) => {
+                                              const taskProposal = data?.updateTaskProposalAssignee;
+                                              if (boardColumns?.setColumns && onCorrectPage) {
+                                                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
+                                                  taskProposal,
+                                                  {}
+                                                );
+                                                let columns = [...boardColumns?.columns];
+                                                columns = updateProposalItem(transformedTaskProposal, columns);
+                                                boardColumns?.setColumns(columns);
+                                              }
+                                            },
+                                          });
+                                        } else {
+                                          updateTaskAssignee({
+                                            variables: {
+                                              taskId: fetchedTask?.id,
+                                              assigneeId: user?.id,
+                                            },
+                                            onCompleted: (data) => {
+                                              const task = data?.updateTaskAssignee;
+                                              const transformedTask = transformTaskToTaskCard(task, {});
+                                              setFetchedTask(transformedTask);
+                                              if (boardColumns?.setColumns && onCorrectPage) {
+                                                let columns = [...boardColumns?.columns];
+                                                if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                                                  columns = updateInReviewItem(transformedTask, columns);
+                                                } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                                                  columns = updateInProgressTask(transformedTask, columns);
+                                                } else if (transformedTask.status === TASK_STATUS_TODO) {
+                                                  columns = updateTaskItem(transformedTask, columns);
+                                                } else if (transformedTask.status === TASK_STATUS_DONE) {
+                                                  columns = updateCompletedItem(transformedTask, columns);
+                                                }
+                                                boardColumns.setColumns(columns);
+                                              }
+                                            },
+                                          });
                                         }
-                                      },
-                                    });
-                                  }}
-                                >
-                                  <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
-                                </TaskSectionInfoClose>
+                                      }
+                                    }}
+                                  >
+                                    <Claim />
+                                    <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
+                                  </TaskSectionInfoTakeTask>
+                                </>
+                              ) : (
+                                <>
+                                  {canApply ? (
+                                    <TaskApplicationButton
+                                      task={fetchedTask}
+                                      canApply={canApply}
+                                      title="Apply to task"
+                                    />
+                                  ) : (
+                                    <TaskSectionInfoText
+                                      style={{
+                                        marginLeft: '4px',
+                                        marginTop: '8px',
+                                      }}
+                                    >
+                                      None
+                                    </TaskSectionInfoText>
+                                  )}
+                                </>
                               )}
                             </>
-                          );
-                        }}
+                          )}
+                        />
+                      </TaskSectionInfoDiv>
+                    </TaskSectionDisplayDiv>
+                  )}
+                  {canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0 && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Applications</TaskSectionLabel>
+                      <Box display="flex" alignItems="center">
+                        <TaskSectionInfoText>
+                          <ActionButton type="button" onClick={handleReviewButton}>
+                            Review {taskApplicationCount?.getTaskApplicationsCount?.total} applications
+                          </ActionButton>
+                        </TaskSectionInfoText>
+                      </Box>
+                    </TaskSectionDisplayDiv>
+                  )}
+
+                  {isTaskProposal && !isMilestone && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Proposer</TaskSectionLabel>
+                      <TaskSectionImageContent
+                        hasContent={fetchedTask?.creatorUsername}
                         onClick={() => {
                           handleClose();
-                          router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                          router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
                             shallow: true,
                           });
                         }}
-                        DefaultContent={() => (
-                          <>
-                            {canClaim ? (
-                              <>
-                                <TaskSectionInfoTakeTask
-                                  onClick={() => {
-                                    if (!user) {
-                                      router.push('/signup', undefined, {
-                                        shallow: true,
-                                      });
-                                    } else {
-                                      if (isTaskProposal) {
-                                        updateTaskProposalAssignee({
-                                          variables: {
-                                            proposalId: fetchedTask?.id,
-                                            assigneeId: user?.id,
-                                          },
-                                          onCompleted: (data) => {
-                                            const taskProposal = data?.updateTaskProposalAssignee;
-                                            if (boardColumns?.setColumns && onCorrectPage) {
-                                              const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                                taskProposal,
-                                                {}
-                                              );
-                                              let columns = [...boardColumns?.columns];
-                                              columns = updateProposalItem(transformedTaskProposal, columns);
-                                              boardColumns?.setColumns(columns);
-                                            }
-                                          },
-                                        });
-                                      } else {
-                                        updateTaskAssignee({
-                                          variables: {
-                                            taskId: fetchedTask?.id,
-                                            assigneeId: user?.id,
-                                          },
-                                          onCompleted: (data) => {
-                                            const task = data?.updateTaskAssignee;
-                                            const transformedTask = transformTaskToTaskCard(task, {});
-                                            setFetchedTask(transformedTask);
-                                            if (boardColumns?.setColumns && onCorrectPage) {
-                                              let columns = [...boardColumns?.columns];
-                                              if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                                                columns = updateInReviewItem(transformedTask, columns);
-                                              } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                                columns = updateInProgressTask(transformedTask, columns);
-                                              } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                                columns = updateTaskItem(transformedTask, columns);
-                                              } else if (transformedTask.status === TASK_STATUS_DONE) {
-                                                columns = updateCompletedItem(transformedTask, columns);
-                                              }
-                                              boardColumns.setColumns(columns);
-                                            }
-                                          },
-                                        });
-                                      }
-                                    }
-                                  }}
-                                >
-                                  <Claim />
-                                  <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
-                                </TaskSectionInfoTakeTask>
-                              </>
-                            ) : (
-                              <>
-                                {canApply ? (
-                                  <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />
-                                ) : (
-                                  <TaskSectionInfoText
-                                    style={{
-                                      marginLeft: '4px',
-                                      marginTop: '8px',
-                                    }}
-                                  >
-                                    None
-                                  </TaskSectionInfoText>
-                                )}
-                              </>
-                            )}
-                          </>
+                        ContentComponent={() => (
+                          <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
                         )}
+                        imgSrc={fetchedTask?.creatorProfilePicture}
+                        DefaultImageComponent={() => <DefaultUserImage />}
+                        DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
                       />
-                    </TaskSectionInfoDiv>
-                  </TaskSectionDisplayDiv>
-                )}
-                {canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0 && (
-                  <TaskSectionDisplayDiv>
-                    <TaskSectionLabel>Applications</TaskSectionLabel>
-                    <Box display="flex" alignItems="center">
-                      <TaskSectionInfoText>
-                        <ActionButton type="button" onClick={handleReviewButton}>
-                          Review {taskApplicationCount?.getTaskApplicationsCount?.total} applications
-                        </ActionButton>
-                      </TaskSectionInfoText>
-                    </Box>
-                  </TaskSectionDisplayDiv>
-                )}
-
-                {isTaskProposal && !isMilestone && (
-                  <TaskSectionDisplayDiv>
-                    <TaskSectionLabel>Proposer</TaskSectionLabel>
+                    </TaskSectionDisplayDiv>
+                  )}
+                  {fetchedTask?.dueDate && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Due Date</TaskSectionLabel>
+                      <TaskSectionImageContent
+                        hasContent={fetchedTask?.dueDate}
+                        ContentComponent={() => (
+                          <TaskSectionInfoText>
+                            {!isEmpty(fetchedTask?.recurringSchema) && (
+                              <Tooltip title="Recurring" placement="right">
+                                <TaskSectionInfoRecurringIcon>
+                                  <RecurringIcon />
+                                </TaskSectionInfoRecurringIcon>
+                              </Tooltip>
+                            )}
+                            {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
+                          </TaskSectionInfoText>
+                        )}
+                        DefaultContent={() => null}
+                        DefaultImageComponent={() => <TaskSectionInfoCalendar />}
+                      />
+                    </TaskSectionDisplayDiv>
+                  )}
+                  <Rewards fetchedTask={fetchedTask} user={user} />
+                  {fetchedTask?.points && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Points</TaskSectionLabel>
+                      <TaskSectionImageContent
+                        hasContent={fetchedTask?.points}
+                        ContentComponent={() => <TaskSectionInfoPoints>{fetchedTask?.points}</TaskSectionInfoPoints>}
+                        DefaultImageComponent={() => <TaskSectionInfoPointsIcon />}
+                      />
+                    </TaskSectionDisplayDiv>
+                  )}
+                  {fetchedTask?.milestoneId && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Milestone</TaskSectionLabel>
+                      <TaskSectionImageContent
+                        hasContent={fetchedTask?.milestoneId}
+                        ContentComponent={() => (
+                          <TaskSectionInfoTextMilestone
+                            onClick={() => {
+                              if (fetchedTask?.milestoneId) {
+                                router.query.task = fetchedTask?.milestoneId;
+                                router.push(router);
+                                getTaskById({
+                                  variables: {
+                                    taskId: fetchedTask?.milestoneId,
+                                  },
+                                });
+                              }
+                            }}
+                          >
+                            {fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
+                          </TaskSectionInfoTextMilestone>
+                        )}
+                        DefaultImageComponent={() => <TaskSectionInfoMilestoneIcon />}
+                      />
+                    </TaskSectionDisplayDiv>
+                  )}
+                  {fetchedTask?.labels?.length > 0 && (
+                    <TaskSectionDisplayDiv>
+                      <TaskSectionLabel>Tags</TaskSectionLabel>
+                      <TaskSectionTagWrapper>
+                        {fetchedTask.labels.map((label) => {
+                          return (
+                            label && (
+                              <TaskSectionImageContent
+                                key={label.id}
+                                hasContent={label}
+                                ContentComponent={() => <Tag color={label.color}>{label.name}</Tag>}
+                                DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
+                              />
+                            )
+                          );
+                        })}
+                      </TaskSectionTagWrapper>
+                    </TaskSectionDisplayDiv>
+                  )}
+                  {isTaskProposal && (
+                    <CreateFormFooterButtons>
+                      {fetchedTask?.changeRequestedAt && (
+                        <>
+                          <div style={flexDivStyle}>
+                            <RejectIcon style={rejectIconStyle} />
+                            <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
+                          </div>
+                          <div
+                            style={{
+                              flex: 1,
+                            }}
+                          />
+                        </>
+                      )}
+                      {fetchedTask?.approvedAt && (
+                        <>
+                          <div style={flexDivStyle}>
+                            <CompletedIcon style={rejectIconStyle} />
+                            <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+                          </div>
+                          <div
+                            style={{
+                              flex: 1,
+                            }}
+                          />
+                        </>
+                      )}
+                      {canApproveProposal && !fetchedTask?.approvedAt && (
+                        <CreateFormButtonsBlock>
+                          {!fetchedTask?.changeRequestedAt && (
+                            <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                          )}
+                          <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
+                        </CreateFormButtonsBlock>
+                      )}
+                    </CreateFormFooterButtons>
+                  )}
+                  <GithubButtons fetchedTask={fetchedTask} />
+                </TaskSectionDisplayData>
+                <TaskSectionDisplayCreator>
+                  {fetchedTask?.creatorUsername && (
                     <TaskSectionImageContent
                       hasContent={fetchedTask?.creatorUsername}
+                      imgSrc={fetchedTask?.creatorProfilePicture}
+                      DefaultImageComponent={() => <DefaultUserImage />}
+                      ContentComponent={() => (
+                        <TaskSectionInfoTextCreator>
+                          {fetchedTask?.creatorUsername}{' '}
+                          <TaskSectionInfoCreatorTask>
+                            created this task{isTaskProposal && ' proposal'}{' '}
+                          </TaskSectionInfoCreatorTask>
+                          <TaskSectionInfoCreatorDaysAgo>
+                            {fetchedTask?.createdAt &&
+                              formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
+                                addSuffix: true,
+                              })}
+                          </TaskSectionInfoCreatorDaysAgo>
+                        </TaskSectionInfoTextCreator>
+                      )}
                       onClick={() => {
                         handleClose();
                         router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
                           shallow: true,
                         });
                       }}
-                      ContentComponent={() => <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>}
-                      imgSrc={fetchedTask?.creatorProfilePicture}
-                      DefaultImageComponent={() => <DefaultUserImage />}
-                      DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
                     />
-                  </TaskSectionDisplayDiv>
-                )}
-                <TaskSectionDisplayDiv>
-                  <TaskSectionLabel>Due Date</TaskSectionLabel>
-                  <TaskSectionImageContent
-                    hasContent={fetchedTask?.dueDate}
-                    ContentComponent={() => (
-                      <TaskSectionInfoText>
-                        {!isEmpty(fetchedTask?.recurringSchema) && (
-                          <Tooltip title="Recurring" placement="right">
-                            <TaskSectionInfoRecurringIcon>
-                              <RecurringIcon />
-                            </TaskSectionInfoRecurringIcon>
-                          </Tooltip>
-                        )}
-                        {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
-                      </TaskSectionInfoText>
-                    )}
-                    DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
-                    DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-                  />
-                </TaskSectionDisplayDiv>
-                <Rewards fetchedTask={fetchedTask} user={user} />
-                {fetchedTask?.points && (
-                  <TaskSectionDisplayDiv>
-                    <TaskSectionLabel>Points</TaskSectionLabel>
-                    <TaskSectionImageContent
-                      hasContent={fetchedTask?.points}
-                      ContentComponent={() => <TaskSectionInfoPoints>{fetchedTask?.points}</TaskSectionInfoPoints>}
-                      DefaultImageComponent={() => <TaskSectionInfoPointsIcon />}
-                    />
-                  </TaskSectionDisplayDiv>
-                )}
-                {fetchedTask?.milestoneId && (
-                  <TaskSectionDisplayDiv>
-                    <TaskSectionLabel>Milestone</TaskSectionLabel>
-                    <TaskSectionImageContent
-                      hasContent={fetchedTask?.milestoneId}
-                      ContentComponent={() => (
-                        <TaskSectionInfoText
-                          style={{
-                            color: 'rgba(0, 186, 255, 1)',
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                          }}
-                          onClick={() => {
-                            if (fetchedTask?.milestoneId) {
-                              router.query.task = fetchedTask?.milestoneId;
-                              router.push(router);
-                              getTaskById({
-                                variables: {
-                                  taskId: fetchedTask?.milestoneId,
-                                },
-                              });
-                            }
-                          }}
-                        >
-                          {fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
-                        </TaskSectionInfoText>
-                      )}
-                      DefaultImageComponent={() => <TaskSectionInfoMilestoneIcon />}
-                    />
-                  </TaskSectionDisplayDiv>
-                )}
-                <TaskSectionDisplayDiv>
-                  <TaskSectionLabel>Tags</TaskSectionLabel>
-                  <TaskSectionTagWrapper>
-                    {fetchedTask?.labels?.length ? (
-                      fetchedTask.labels.map((label) => {
-                        return (
-                          label && (
-                            <TaskSectionImageContent
-                              key={label.id}
-                              hasContent={label}
-                              ContentComponent={() => <Tag color={label.color}>{label.name}</Tag>}
-                              DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
-                            />
-                          )
-                        );
-                      })
-                    ) : (
-                      <TaskSectionInfoText>None</TaskSectionInfoText>
-                    )}
-                  </TaskSectionTagWrapper>
-                </TaskSectionDisplayDiv>
-                {isTaskProposal && (
-                  <CreateFormFooterButtons>
-                    {fetchedTask?.changeRequestedAt && (
-                      <>
-                        <div style={flexDivStyle}>
-                          <RejectIcon style={rejectIconStyle} />
-                          <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
-                        </div>
-                        <div
-                          style={{
-                            flex: 1,
-                          }}
-                        />
-                      </>
-                    )}
-                    {fetchedTask?.approvedAt && (
-                      <>
-                        <div style={flexDivStyle}>
-                          <CompletedIcon style={rejectIconStyle} />
-                          <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-                        </div>
-                        <div
-                          style={{
-                            flex: 1,
-                          }}
-                        />
-                      </>
-                    )}
-                    {canApproveProposal && !fetchedTask?.approvedAt && (
-                      <CreateFormButtonsBlock>
-                        {!fetchedTask?.changeRequestedAt && (
-                          <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
-                        )}
-                        <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
-                      </CreateFormButtonsBlock>
-                    )}
-                  </CreateFormFooterButtons>
-                )}
-                <GithubButtons fetchedTask={fetchedTask} />
-                {fetchedTask?.creatorUsername && (
-                  <TaskSectionImageContent
-                    hasContent={fetchedTask?.creatorUsername}
-                    imgSrc={fetchedTask?.creatorProfilePicture}
-                    DefaultImageComponent={() => <DefaultUserImage />}
-                    ContentComponent={() => (
-                      <TaskSectionInfoTextCreator>
-                        {fetchedTask?.creatorUsername}{' '}
-                        <TaskSectionInfoCreatorTask>
-                          created this task{isTaskProposal && ' proposal'}{' '}
-                        </TaskSectionInfoCreatorTask>
-                        <TaskSectionInfoCreatorDaysAgo>
-                          {fetchedTask?.createdAt &&
-                            formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
-                              addSuffix: true,
-                            })}
-                        </TaskSectionInfoCreatorDaysAgo>
-                      </TaskSectionInfoTextCreator>
-                    )}
-                    onClick={() => {
-                      handleClose();
-                      router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
-                        shallow: true,
-                      });
-                    }}
-                  />
-                )}
+                  )}
+                </TaskSectionDisplayCreator>
               </TaskSectionDisplayDivWrapper>
 
-              <TaskModalFooter>
+              <TaskModalFooter fullScreen={fullScreen}>
                 <TaskSectionFooterTitleDiv>
                   {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
                     const active = tab === activeTab;
@@ -1489,9 +1497,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   {activeTab === tabs.discussion && (
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}
-                  {activeTab === tabs.tasks && (
-                    <MilestoneTaskList milestoneId={fetchedTask?.id} open={activeTab === tabs.tasks} />
-                  )}
+                  {activeTab === tabs.tasks && <MilestoneTasks canCreate={canCreate} milestone={fetchedTask} />}
                 </TaskSectionContent>
               </TaskModalFooter>
             </TaskModalTaskData>
