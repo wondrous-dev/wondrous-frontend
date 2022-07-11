@@ -10,28 +10,26 @@ import {
   TaskSubtaskHeaderWrapper,
 } from './styles';
 
-export const TaskSubtaskHeader = ({ taskId, permissions, parentTask }) => {
-  const canCreateSubtask =
-    permissions.includes(PERMISSIONS.CREATE_TASK) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+export const TaskSubtaskHeader = ({ taskId, canCreate }) => {
   const [createFormModal, setCreateFormModal] = useState(false);
   const toggleCreateFormModal = () => setCreateFormModal((prevState) => !prevState);
+  if (!canCreate) return null;
   return (
     <TaskSubtaskHeaderWrapper>
       <CreateEntity
-        entityType={parentTask?.type === ENTITIES_TYPES.BOUNTY ? ENTITIES_TYPES.BOUNTY : ENTITIES_TYPES.TASK}
+        entityType={ENTITIES_TYPES.TASK}
         handleCloseModal={toggleCreateFormModal}
         open={createFormModal}
         cancel={toggleCreateFormModal}
         handleClose={toggleCreateFormModal}
+        parentTaskId={taskId}
       />
-      {canCreateSubtask && (
-        <TaskSubtaskHeaderButton onClick={toggleCreateFormModal}>
-          <TaskSubtaskHeaderButtonIconWrapper>
-            <TaskSubtaskHeaderButtonIcon fill="#ccbbff" />
-          </TaskSubtaskHeaderButtonIconWrapper>
-          <TaskSubtaskHeaderButtonLabel>Add task</TaskSubtaskHeaderButtonLabel>
-        </TaskSubtaskHeaderButton>
-      )}
+      <TaskSubtaskHeaderButton onClick={toggleCreateFormModal}>
+        <TaskSubtaskHeaderButtonIconWrapper>
+          <TaskSubtaskHeaderButtonIcon fill="#ccbbff" />
+        </TaskSubtaskHeaderButtonIconWrapper>
+        <TaskSubtaskHeaderButtonLabel>Add task</TaskSubtaskHeaderButtonLabel>
+      </TaskSubtaskHeaderButton>
     </TaskSubtaskHeaderWrapper>
   );
 };

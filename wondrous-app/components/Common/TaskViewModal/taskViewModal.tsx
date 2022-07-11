@@ -1491,9 +1491,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       taskSubmissionLoading={taskSubmissionsForTaskLoading}
                     />
                   )}
-                  {activeTab === tabs.subTasks && (
-                    <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
-                  )}
+                  {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
                   {activeTab === tabs.discussion && (
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}

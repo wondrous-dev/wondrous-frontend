@@ -6,11 +6,11 @@ const TaskSubtaskWrapper = styled.div`
   width: 100%;
 `;
 
-export const TaskSubtasks = ({ taskId, permissions, parentTask }) => {
+export const TaskSubtasks = ({ taskId, canCreate }) => {
   if (!taskId) return null;
   return (
     <TaskSubtaskWrapper>
-      <TaskSubtaskHeader taskId={taskId} permissions={permissions} parentTask={parentTask} />
+      <TaskSubtaskHeader taskId={taskId} canCreate={canCreate} />
       <TaskSubtaskList taskId={taskId} />
     </TaskSubtaskWrapper>
   );

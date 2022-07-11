@@ -859,6 +859,7 @@ const entityTypeData = {
       githubRepo: null,
       chooseGithubPullRequest: false,
       chooseGithubIssue: false,
+      parentTaskId: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -1194,7 +1195,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
-                disabled={formValues !== undefined}
+                disabled={isSubtask || formValues !== undefined}
               />
             </>
           )}
