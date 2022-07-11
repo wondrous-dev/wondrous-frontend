@@ -1,5 +1,8 @@
 import { useMutation } from '@apollo/client';
+import { CommentList } from 'components/Comment';
+import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RichTextViewer } from 'components/RichText';
+import Tooltip from 'components/Tooltip';
 import { formatDistance } from 'date-fns';
 import {
   APPROVE_BOUNTY_SUBMISSION,
@@ -16,6 +19,7 @@ import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { KudosForm } from '../KudosForm';
 import { PaymentButton } from '../Task/paymentButton';
+import { TaskAction, TaskActionAmount } from '../Task/styles';
 import {
   SubmissionButtonApprove,
   SubmissionButtonEdit,
@@ -229,6 +233,19 @@ const SubmissionItemLink = ({ links }: { links: [] }) => {
   );
 };
 
+const SubmissionShowComments = ({ setShowComments, commentCount, showComments }) => {
+  return (
+    <>
+      <Tooltip title="Submission comments" placement="top">
+        <TaskAction onClick={() => setShowComments(!showComments)}>
+          <TaskCommentIcon />
+          {commentCount > 0 && <TaskActionAmount>{commentCount}</TaskActionAmount>}
+        </TaskAction>
+      </Tooltip>
+    </>
+  );
+};
+
 const SubmissionEditButton = ({ isCreator, approvedAt, onClick }) => {
   if (isCreator && !approvedAt) return <SubmissionButtonEdit onClick={onClick}>Edit submission</SubmissionButtonEdit>;
   return null;
@@ -296,9 +313,11 @@ export const SubmissionItem = ({
   };
   const mediaUploads = submission?.media;
   const isCreator = user?.id === submission?.createdBy;
+  const canComment = user?.id === submission?.createdBy || canReview;
   const { orgBoard, podBoard, board } = useBoards();
   const boardColumns = useColumns();
   const [isKudosModalOpen, setIsKudosForm] = useState(false);
+  const [showComments, setShowComments] = useState(false);
   const handleNonBountyTypeCompletion = () =>
     nonBountyTypeCompletion({ fetchedTask, completeTask, setIsKudosForm, boardColumns, submission });
   const handleBountyTypeCompletion = () => bountyTypeCompletion({ fetchedTask, orgBoard, podBoard, board, submission });
@@ -337,6 +356,16 @@ export const SubmissionItem = ({
         </SubmissionItemSection>
         <SubmissionDivider />
         <SubmissionItemFooter>
+          <SubmissionShowComments
+            setShowComments={setShowComments}
+            commentCount={submission?.commentCount}
+            showComments={showComments}
+          />
+          <div
+            style={{
+              flex: 1,
+            }}
+          />
           <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
           <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
             <SubmissionRequestChangeButton
@@ -362,6 +391,11 @@ export const SubmissionItem = ({
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
           />
         </SubmissionItemFooter>
+        {showComments && (
+          <>
+            <CommentList submission={submission} />
+          </>
+        )}
       </SubmissionItemWrapper>
     </>
   );

@@ -472,6 +472,7 @@ export const TaskSectionDisplayDivWrapper = styled.div`
     grid-row-end: 3;
     padding-top: 24px;
     gap: 24px;
+    margin-top: 0;
   `}
 `;
 

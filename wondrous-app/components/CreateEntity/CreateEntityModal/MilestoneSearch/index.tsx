@@ -27,7 +27,7 @@ import {
 } from './styles';
 
 const MilestoneSearch = (props) => {
-  const { options, onChange, value, handleClose, formValues = null } = props;
+  const { options, onChange, value, handleClose, formValues = null, disabled } = props;
   const [createMilestone, setCreateMilestone] = useState(false);
 
   const [anchorEl, setAnchorEl] = useState(null);
@@ -63,7 +63,7 @@ const MilestoneSearch = (props) => {
   return (
     <MilestoneSearchClickAway onClickAway={handleClickAway}>
       <MilestoneSearchWrapper>
-        <MilestoneSearchButton open={open} disabled={!options} onClick={handleClick}>
+        <MilestoneSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
           <MilestoneSearchImageLabelWrapper>
             <MilestoneSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
             <MilestoneSearchLabel hasValue={selectedValue?.label}>
