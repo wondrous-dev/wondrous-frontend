@@ -926,3 +926,10 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     }
   }
 `;
+
+export const InfoPoint = styled(TaskSectionInfoCreatorDaysAgo)`
+  && {
+    padding-top: 6px;
+    display: block;
+  }
+`;

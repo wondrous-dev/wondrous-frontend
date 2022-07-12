@@ -166,6 +166,7 @@ import {
   TaskTabText,
   WalletError,
   WalletErrorText,
+  InfoPoint,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
 import VoteResults from 'components/Common/Votes';
@@ -1317,26 +1318,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     </>
                   )}
                   {fetchedTask?.dueDate && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Due Date</TaskSectionLabel>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.dueDate}
-                        ContentComponent={() => (
-                          <TaskSectionInfoText>
-                            {!isEmpty(fetchedTask?.recurringSchema) && (
-                              <Tooltip title="Recurring" placement="right">
-                                <TaskSectionInfoRecurringIcon>
-                                  <RecurringIcon />
-                                </TaskSectionInfoRecurringIcon>
-                              </Tooltip>
-                            )}
-                            {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
-                          </TaskSectionInfoText>
-                        )}
-                        DefaultContent={() => null}
-                        DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-                      />
-                    </TaskSectionDisplayDiv>
+                    <div>
+                      <TaskSectionDisplayDiv>
+                        <TaskSectionLabel>Due Date</TaskSectionLabel>
+                        <TaskSectionImageContent
+                          hasContent={fetchedTask?.dueDate}
+                          ContentComponent={() => (
+                            <TaskSectionInfoText>
+                              {!isEmpty(fetchedTask?.recurringSchema) && (
+                                <Tooltip title="Recurring" placement="right">
+                                  <TaskSectionInfoRecurringIcon>
+                                    <RecurringIcon />
+                                  </TaskSectionInfoRecurringIcon>
+                                </Tooltip>
+                              )}
+                              {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
+                            </TaskSectionInfoText>
+                          )}
+                          DefaultContent={() => null}
+                          DefaultImageComponent={() => <TaskSectionInfoCalendar />}
+                        />
+                      </TaskSectionDisplayDiv>
+                      {fetchedTask.shouldUnclaimOnDueDateExpiry && (
+                        <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>
+                      )}
+                    </div>
                   )}
                   <Rewards fetchedTask={fetchedTask} user={user} />
                   {fetchedTask?.points && (
