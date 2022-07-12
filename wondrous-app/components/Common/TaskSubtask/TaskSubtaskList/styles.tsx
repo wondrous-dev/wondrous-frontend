@@ -100,8 +100,23 @@ export const TaskSubtaskTitle = styled(Typography)`
   && {
     font-size: 16px;
     font-weight: 600;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
     margin-top: 14px;
+  }
+`;
+
+export const TaskSubTaskEmpty = styled(Typography)`
+  && {
+    margin-top: 18px;
+    font-size: 14px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.palette.grey250};
+    align-items: center;
+    background: #171717;
+    border-radius: 6px;
+    display: flex;
+    height: 68px;
+    justify-content: center;
   }
 `;
 
@@ -115,7 +130,7 @@ export const TaskSubtaskStatus = styled.div`
   border-radius: 4px;
   padding: 1px 8px;
   gap: 8px;
-  background-color: #141414;
+  background-color: ${({ theme }) => theme.palette.black97};
   svg {
     height: 18px;
     width: 18px;

@@ -30,6 +30,10 @@ export const TaskSubtaskFilterStatusIcon = styled(({ className }) => (
   }
 `;
 
+const TaskSubtaskWrapper = styled.div`
+  width: 100%;
+`;
+
 export const TASK_ICONS_LABELS = {
   '': { Icon: TaskSubtaskFilterStatusIcon, label: 'All Tasks' },
   [TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
@@ -38,10 +42,6 @@ export const TASK_ICONS_LABELS = {
   [TASK_STATUS_DONE]: { Icon: Done, label: 'Completed' },
   [TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
 };
-
-const TaskSubtaskWrapper = styled.div`
-  width: 100%;
-`;
 
 export const TaskSubtasks = ({ taskId, canCreate }) => {
   const [status, setStatus] = useState('');

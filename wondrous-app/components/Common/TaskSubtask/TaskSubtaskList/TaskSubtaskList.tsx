@@ -17,6 +17,7 @@ import {
   TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
   TaskSubtaskCoverImageWrapper,
+  TaskSubTaskEmpty,
   TaskSubtaskImageWrapper,
   TaskSubtaskItemContent,
   TaskSubtaskItemHeader,
@@ -166,7 +167,7 @@ export const TaskSubtaskList = ({ taskId, status }) => {
   const { hasMore, data, loading, ref } = useGetSubtasksForTask({ taskId, status });
   const router = useRouter();
   const { id: userId } = useMe();
-  if (!data) return null;
+  if (isEmpty(data)) return <TaskSubTaskEmpty>No subtask yet</TaskSubTaskEmpty>;
   return (
     <TaskSubtaskWrapper>
       {data.map((subtask) => {
