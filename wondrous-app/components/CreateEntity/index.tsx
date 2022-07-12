@@ -42,7 +42,7 @@ export const CreateEntity = (props: ICreateEntity) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        <EditLayoutBaseModal {...props} />
+        <CreateEntityModal {...props} />
       </CreateFormModalOverlay>
     );
   }
@@ -75,6 +75,7 @@ const ChooseEntityToCreate = (props) => {
     return (
       <CreateEntity
         entityType={entityType}
+        isTaskProposal={entityType === ENTITIES_TYPES.PROPOSAL}
         handleCloseModal={handleCloseModal}
         open={open}
         cancel={resetEntityType}

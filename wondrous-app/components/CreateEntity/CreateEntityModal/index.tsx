@@ -25,6 +25,12 @@ import {
   UPDATE_TASK,
   TURN_TASK_TO_BOUNTY,
 } from 'graphql/mutations/task';
+import {
+  CREATE_TASK_PROPOSAL,
+  UPDATE_TASK_PROPOSAL,
+  ATTACH_MEDIA_TO_TASK_PROPOSAL,
+  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
+} from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
@@ -723,6 +729,85 @@ const useUpdateBounty = () => {
   return { handleMutation, loading };
 };
 
+const useCreateTaskProposal = () => {
+  const [createTaskProposal, { loading }] = useMutation(CREATE_TASK_PROPOSAL, {
+    refetchQueries: () => [
+      'GetOrgTaskBoardProposals',
+      'GetPodTaskBoardProposals',
+      'GetUserTaskBoardProposals',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+    ],
+  });
+
+  const handleMutation = ({ input, board, pods, form, handleClose }) =>
+    createTaskProposal({
+      variables: {
+        input: {
+          title: input.title,
+          description: input.description,
+          milestoneId: input.milestoneId,
+          orgId: input.orgId,
+          podId: input.podId,
+          reviewerIds: input.reviewerIds,
+          dueDate: input.dueDate,
+          timezone: input.timezone,
+          labelIds: input.labelIds,
+          proposedAssigneeId: input.assigneeId,
+          userMentions: input.userMentions,
+          mediaUploads: input.mediaUploads,
+          rewards: input.rewards,
+          privacyLevel: input.privacyLevel,
+        },
+      },
+    })
+      .then(() => {
+        handleClose();
+      })
+      .catch((e) => console.log(e));
+
+  return { handleMutation, loading };
+};
+
+const useUpdateTaskProposal = () => {
+  const [updateTaskProposal, { loading }] = useMutation(UPDATE_TASK_PROPOSAL, {
+    refetchQueries: () => [
+      'GetUserTaskBoardProposals',
+      'GetOrgTaskBoardProposals',
+      'GetPodTaskBoardProposals',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+    ],
+  });
+
+  const handleMutation = ({ input, board, handleClose, existingTask }) => {
+    updateTaskProposal({
+      variables: {
+        proposalId: existingTask?.id,
+        input: {
+          title: input.title,
+          description: input.description,
+          milestoneId: input.milestoneId,
+          orgId: input.orgId,
+          podId: input.podId,
+          reviewerIds: input.reviewerIds,
+          dueDate: input.dueDate,
+          timezone: input.timezone,
+          labelIds: input.labelIds,
+          proposedAssigneeId: input.assigneeId,
+          userMentions: input.userMentions,
+          mediaUploads: input.mediaUploads,
+          rewards: input.rewards,
+          privacyLevel: input.privacyLevel,
+        },
+      },
+    }).then(() => {
+      handleClose();
+    });
+  };
+  return { handleMutation, loading };
+};
+
 const CreateEntityDropdownRenderOptions = (value) => {
   return (
     <CreateEntitySelectRootValue>
@@ -889,9 +974,25 @@ const entityTypeData = {
       reviewerIds: null,
       rewards: [],
       dueDate: null,
-      points: null,
       labelIds: null,
       milestoneId: null,
+      privacyLevel: privacyOptions.public.value,
+      mediaUploads: [],
+    },
+  },
+  [ENTITIES_TYPES.PROPOSAL]: {
+    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.tags],
+    createMutation: useCreateTaskProposal,
+    updateMutation: useUpdateTaskProposal,
+    initialValues: {
+      orgId: null,
+      podId: null,
+      title: '',
+      description: plainTextToRichText(''),
+      dueDate: null,
+      rewards: [],
+      milestoneId: null,
+      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
     },
@@ -938,13 +1039,13 @@ interface ICreateEntityModal {
   cancel: Function;
   existingTask?: {
     id: string;
-    claimPolicyRoles: [string] | null;
-    claimPolicy: string | null;
-    githubIssue: {
+    claimPolicyRoles?: [string] | null;
+    claimPolicy?: string | null;
+    githubIssue?: {
       id: string;
       url: string;
     };
-    githubPullRequest: {
+    githubPullRequest?: {
       id: string;
       url: string;
       title: string;
@@ -980,7 +1081,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
-  const { handleMutation, loading } = existingTask
+  const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
   const [turnTaskToBounty] = useMutation(TURN_TASK_TO_BOUNTY, {
@@ -1027,7 +1128,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           githubPullRequest,
         }),
       };
-      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
+      handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -1066,6 +1167,19 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
+  const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
+  const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL);
+
+  const handleMedia = () => {
+    if (entityType === ENTITIES_TYPES.PROPOSAL) {
+      return {
+        attach: attachTaskProposalMedia,
+        remove: removeTaskProposalMedia,
+      };
+    }
+    return { attach: attachMedia, remove: removeMedia };
+  };
+
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
@@ -1259,9 +1373,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   mediaItem={mediaItem}
                   removeMediaItem={() => {
                     if (existingTask) {
-                      removeMedia({
+                      handleMedia().remove({
                         variables: {
-                          taskId: existingTask?.['id'],
+                          ...(entityType === ENTITIES_TYPES.PROPOSAL
+                            ? { proposalId: existingTask?.id }
+                            : { taskId: existingTask?.id }),
                           slug: mediaItem?.uploadSlug || mediaItem?.slug,
                         },
                       });
@@ -1288,15 +1404,17 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 setFileUploadLoading,
               });
               if (existingTask) {
-                attachMedia({
+                handleMedia().attach({
                   variables: {
-                    taskId: existingTask?.['id'],
+                    ...(entityType === ENTITIES_TYPES.PROPOSAL
+                      ? { proposalId: existingTask?.id }
+                      : { taskId: existingTask?.id }),
                     input: {
                       mediaUploads: [fileToAdd],
                     },
                   },
                   onCompleted: (data) => {
-                    const task = data?.attachTaskMedia;
+                    const task = data?.attachTaskMedia || data?.attachTaskProposalMedia;
                     form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
                     setFileUploadLoading(false);
                   },
