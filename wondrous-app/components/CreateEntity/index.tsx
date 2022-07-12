@@ -42,7 +42,6 @@ export const CreateEntity = (props: ICreateEntity) => {
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
-        {/* <EditLayoutBaseModal {...props} /> */}
         <CreateEntityModal {...props} />
       </CreateFormModalOverlay>
     );

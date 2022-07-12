@@ -147,9 +147,6 @@ import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import { ErrorText } from 'components/Common';
 import { transformMediaFormat } from 'utils/helpers';
-import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
-import { getProposalStatus } from 'utils/board';
-import boards from 'pages/pod/[podId]/boards';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
