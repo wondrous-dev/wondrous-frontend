@@ -2,9 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
-import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import { Claim } from 'components/Icons/claimTask';
-import { ArchivedIcon } from 'components/Icons/statusIcons';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
 import { isEmpty } from 'lodash';
@@ -12,21 +10,13 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { delQuery } from 'utils';
-import {
-  MEDIA_TYPES,
-  PRIVACY_LEVEL,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_TODO,
-} from 'utils/constants';
+import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
+import { TASK_ICONS_LABELS } from '../TaskSubtasks';
 import {
   SubtaskTaskListHasMore,
   TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
   TaskSubtaskCoverImageWrapper,
-  TaskSubtaskFilterStatusIcon,
   TaskSubtaskImageWrapper,
   TaskSubtaskItemContent,
   TaskSubtaskItemHeader,
@@ -44,23 +34,17 @@ import {
 
 const LIMIT = 5;
 
-export const TASK_ICONS_LABELS = {
-  '': { Icon: TaskSubtaskFilterStatusIcon, label: 'All Tasks' },
-  [TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
-  [TASK_STATUS_IN_PROGRESS]: { Icon: InProgress, label: 'In Progress' },
-  [TASK_STATUS_IN_REVIEW]: { Icon: InReview, label: 'In Review' },
-  [TASK_STATUS_DONE]: { Icon: Done, label: 'Completed' },
-  [TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
-};
-
-const useGetSubtasksForTask = ({ taskId, inView }) => {
+const useGetSubtasksForTask = ({ taskId, status }) => {
+  const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const { data, fetchMore, loading } = useQuery(GET_SUBTASKS_FOR_TASK, {
-    fetchPolicy: 'cache-and-network',
+    fetchPolicy: 'network-only',
+    nextFetchPolicy: 'cache-and-network',
     variables: {
       taskId,
       limit: LIMIT,
       offset: 0,
+      status,
     },
     onCompleted: (data) => setHasMore(data?.getSubtasksForTask.length >= LIMIT),
   });
@@ -75,9 +59,10 @@ const useGetSubtasksForTask = ({ taskId, inView }) => {
     }
   }, [inView, fetchMore, data?.getSubtasksForTask, hasMore, loading]);
   return {
-    data: data?.getSubtasksForTask.filter((i) => i.status !== TASK_STATUS_ARCHIVED),
+    data: data?.getSubtasksForTask,
     loading,
     hasMore,
+    ref,
   };
 };
 
@@ -177,9 +162,8 @@ const TaskSubtaskClaimButton = ({ id, userId, assignee, taskApplicationPermissio
   );
 };
 
-export const TaskSubtaskList = ({ taskId }) => {
-  const [ref, inView] = useInView({});
-  const { hasMore, data, loading } = useGetSubtasksForTask({ taskId, inView });
+export const TaskSubtaskList = ({ taskId, status }) => {
+  const { hasMore, data, loading, ref } = useGetSubtasksForTask({ taskId, status });
   const router = useRouter();
   const { id: userId } = useMe();
   if (!data) return null;

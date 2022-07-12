@@ -107,22 +107,6 @@ export const TaskSubtaskTitle = styled(Typography)`
 
 export const SubtaskTaskListHasMore = styled.div``;
 
-export const TaskSubtaskFilterStatusIcon = styled(({ className }) => (
-  <div className={className}>
-    <FilterStatusIcon />
-  </div>
-))`
-  && {
-    background: #0f0f0f;
-    height: 28px;
-    width: 28px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 6px;
-  }
-`;
-
 export const TaskSubtaskStatus = styled.div`
   display: flex;
   align-items: center;
