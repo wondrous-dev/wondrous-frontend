@@ -343,23 +343,8 @@ const Wrapper = (props) => {
                 <HeaderTitle>{orgProfile?.name}</HeaderTitle>
                 <HeaderTag>@{orgProfile?.username}</HeaderTag>
               </HeaderTitleIcon>
+              
               <HeaderButtons>
-                {/* <Tooltip title="your permissions are:" > */}
-                {permissions && orgRoleName && (
-                  <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
-                )}
-<<<<<<< HEAD
-                {/* </Tooltip> */}
-                {!isLoading && (
-                  <TokenGatedBoard
-                    isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                    tooltipTitle={'Token gating'}
-=======
-                <HeaderTitleIcon>
-                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                  <HeaderTag>@{orgProfile?.username}</HeaderTag>
-                </HeaderTitleIcon>
-                <HeaderButtons>
                   {permissions && orgRoleName && <RoleLabel onClick={handleJoinOrgButtonClick} role={orgRoleName} />}
                   {!isLoading && (
                     <TokenGatedBoard
@@ -370,41 +355,35 @@ const Wrapper = (props) => {
                   <ToggleBoardPrivacyIcon
                     isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
                     tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
->>>>>>> c6c4dd1a (Profile > Update Role labels UI)
                   />
-                )}
-                <ToggleBoardPrivacyIcon
-                  isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                  tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-                />
-                {permissions === null && (
-                  <>
-                    {joinRequestSent || userJoinRequest?.id ? (
-                      <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
-                    ) : (
-                      <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
-                        Join org
+                  {permissions === null && (
+                    <>
+                      {joinRequestSent || userJoinRequest?.id ? (
+                        <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
+                      ) : (
+                        <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                          Join org
+                        </HeaderButton>
+                      )}
+                    </>
+                  )}
+                  {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                    <>
+                      <HeaderButton
+                        onClick={() => {
+                          router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                            shallow: true,
+                          });
+                        }}
+                      >
+                        Settings
                       </HeaderButton>
-                    )}
-                  </>
-                )}
-                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                  <>
-                    <HeaderButton
-                      onClick={() => {
-                        router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
-                          shallow: true,
-                        });
-                      }}
-                    >
-                      Settings
-                    </HeaderButton>
-                    <HeaderButton reversed onClick={() => setOpenInvite(true)}>
-                      Invite{' '}
-                    </HeaderButton>
-                  </>
-                )}
-              </HeaderButtons>
+                      <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                        Invite{' '}
+                      </HeaderButton>
+                    </>
+                  )}
+                </HeaderButtons>
             </HeaderMainBlock>
             <HeaderText>
               <RichTextViewer text={orgProfile?.description} />
