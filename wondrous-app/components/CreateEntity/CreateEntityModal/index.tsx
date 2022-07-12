@@ -147,6 +147,7 @@ import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import { ErrorText } from 'components/Common';
 import { transformMediaFormat } from 'utils/helpers';
+import TaskTemplatePicker from './TaskTemplatePicker';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -1305,6 +1306,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             <>
               <CreateEntityHeaderArrowIcon />
               <CreateEntityPodSearch
+                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+                value={form.values.podId}
+                onChange={handleOnchangePodId}
+                disabled={formValues !== undefined}
+              />
+              <CreateEntityHeaderArrowIcon />
+              <TaskTemplatePicker
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}

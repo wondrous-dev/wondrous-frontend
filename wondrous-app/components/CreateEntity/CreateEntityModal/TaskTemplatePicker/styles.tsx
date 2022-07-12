@@ -6,6 +6,10 @@ import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
 import Arrow from '../../../Icons/arrow.svg';
 import palette from 'theme/palette';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { TaskIcon } from 'components/Icons/Search/types';
+import { ReviewerIcon } from 'components/Icons/taskModalIcons';
+import { Folder, FolderOutlined } from '@mui/icons-material';
 
 export const scrollBarStyles = css`
   :hover {
@@ -38,7 +42,29 @@ export const scrollBarStyles = css`
 
 export const PodSearchWrapper = styled.div``;
 
-export const PodSearchButton = styled(ButtonUnstyled)`
+export const TaskTemplateIcon = styled((props) => (
+  <div {...props}>
+    <FolderOutlined
+      width={30}
+      height={30}
+      style={{ backgroundColor: '#474747', color: '#FFFFFF', borderRadius: 40, padding: 3 }}
+    />
+  </div>
+))`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${({ color }) => color};
+  border-radius: 50px;
+  width: 20px;
+  height: 20px;
+  color: '#474747' svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const TaskTemplateModal = styled(ButtonUnstyled)`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
@@ -58,7 +84,7 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   }
 `;
 
-export const PodSearchImageLabelWrapper = styled.div`
+export const TaskTemplateLabelWrapper = styled.div`
   display: flex;
   align-items: center;
   max-width: 100%;
@@ -76,7 +102,7 @@ export const PodSearchPopper = styled(PopperUnstyled)`
 
 export const PodSearchAutocomplete = styled(Autocomplete)``;
 
-export const PodSearchClickAway = styled(ClickAwayListener)``;
+export const TaskTemplateClickAway = styled(ClickAwayListener)``;
 
 export const PopperSearchInputList = styled.div`
   display: flex;
@@ -139,6 +165,20 @@ export const PodSearchAutocompletePopper = styled.div`
   }
 `;
 
+export const PodSearchLabel = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 500;
+    color: ${palette.white};
+    margin-left: 6px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: 100%;
+  }
+`;
+
 export const PodSearchPaper = styled.div`
   && {
     padding: 0;
@@ -164,7 +204,6 @@ export const PodSearchList = styled.ul`
 export const PodSearchListItem = styled.li`
   && {
     list-style: none;
-    height: 34px;
     padding: 6px 12px;
     display: ${({ hide }) => (hide ? 'none' : 'flex')};
     align-items: center;
@@ -181,6 +220,38 @@ export const PodSearchListItem = styled.li`
     &&.Mui-focused {
       background: rgba(122, 122, 122, 0.2);
     }
+  }
+`;
+
+export const TaskTemplateListItems = styled.li`
+  && {
+    list-style: none;
+    padding: 6px 12px;
+    display: ${({ hide }) => (hide ? 'none' : 'inline-grid')};
+    align-items: center;
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 500;
+    color: ${palette.white};
+    :last-of-type {
+      border-radius: 0 0 4px 4px;
+    }
+
+    &&[aria-selected='true'],
+    &&[aria-selected='true'].Mui-focused,
+    &&.Mui-focused {
+      background: rgba(122, 122, 122, 0.2);
+    }
+  }
+`;
+
+export const TaskTemplateContainer = styled.div`
+  margin: 12;
+  padding: 12;
+  border-bottom: 0.5px dashed #4b4b4b;
+
+  :hover {
+    background: rgba(122, 122, 122, 0.2);
   }
 `;
 
@@ -202,11 +273,11 @@ export const PodSearchDefaultImage = styled((props) => (
   }
 `;
 
-export const PodSearchLabel = styled(Typography)`
+export const TaskTemplateLabel = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 13px;
-    font-weight: 900;
+    font-weight: 500;
     color: ${palette.white};
     margin-left: 6px;
     white-space: nowrap;
@@ -216,7 +287,19 @@ export const PodSearchLabel = styled(Typography)`
   }
 `;
 
-export const PodSearchButtonArrowIcon = styled((props) => (
+export const TaskTemplateLabelValue = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 100;
+    color: ${palette.white};
+    margin-bottom: 4px;
+    overflow: hidden;
+    max-width: 100%;
+  }
+`;
+
+export const TaskTemplateArrowIcon = styled((props) => (
   <div {...props}>
     <Arrow />
   </div>
@@ -232,4 +315,4 @@ export const PodSearchButtonArrowIcon = styled((props) => (
   }
 `;
 
-export const PodSearchButtonDeleteIcon = styled(CloseModalIcon)``;
+export const TaskTemplateDeleteIcon = styled(CloseModalIcon)``;
