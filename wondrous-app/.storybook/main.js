@@ -8,16 +8,19 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     'storybook-dark-mode',
+    // https://storybook.js.org/addons/storybook-addon-next
+    'storybook-addon-next',
   ],
   framework: '@storybook/react',
   core: {
     builder: '@storybook/builder-webpack5',
   },
   staticDirs: ['../public'],
+  babel: async (options) => {
+    return { ...options, plugins: [['babel-plugin-styled-components', { fileName: false }]] };
+  },
   webpackFinal: async (config, { configType }) => {
     config.resolve.plugins = [new TsconfigPathsPlugin()];
-
-    config.resolve.alias['next/image'] = require.resolve('./NextImage.js');
 
     return config;
   },

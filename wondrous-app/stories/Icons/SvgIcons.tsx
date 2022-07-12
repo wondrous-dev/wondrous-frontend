@@ -19,7 +19,7 @@ import rolesLock from 'components/Icons/rolesLock.svg';
 import tokenGating from 'components/Icons/tokenGating.svg';
 import createBounty from 'components/Icons/createBounty.svg';
 
-const icons = [
+const images = [
   arrow,
   attachFile,
   checkBox,
@@ -43,13 +43,13 @@ const icons = [
 ];
 
 const SVGIcons = () => {
-  return icons.map((icon) => {
+  return images.map((image) => {
     return (
-      <div key={icon} style={{ display: 'flex', color: 'white', flexDirection: 'row' }}>
+      <div key={image.src} style={{ display: 'flex', color: 'white', flexDirection: 'row' }}>
         <div style={{ flex: '0 0 100px', textAlign: 'center' }}>
-          <img src={icon} width="60" />
+          <img src={image.src} width="60" />
         </div>
-        <div>{icon.replace('static/media/', '')}</div>
+        <div>{image.src.replace('static/media/', '')}</div>
       </div>
     );
   });
