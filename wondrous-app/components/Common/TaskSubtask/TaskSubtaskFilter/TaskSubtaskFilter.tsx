@@ -22,11 +22,16 @@ const MilestoneTaskFilterSelected = ({ status }) => {
   );
 };
 
-export const TaskSubtaskFilter = ({ status, setStatus }) => {
+const useAnchorEl = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
+  const open = Boolean(anchorEl);
+  return { anchorEl, handleClick, handleClose, open };
+};
+
+export const TaskSubtaskFilter = ({ status, setStatus }) => {
+  const { anchorEl, handleClick, handleClose, open } = useAnchorEl();
   const handleSelect = (item) => () => {
     setStatus(item);
     handleClose();
