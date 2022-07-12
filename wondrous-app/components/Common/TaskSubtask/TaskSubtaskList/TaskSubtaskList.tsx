@@ -1,8 +1,11 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
+import { useMe } from 'components/Auth/withAuth';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
 import { Done, InProgress, InReview, ToDo } from 'components/Icons';
+import { Claim } from 'components/Icons/claimTask';
 import { ArchivedIcon } from 'components/Icons/statusIcons';
+import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
 import { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
@@ -20,6 +23,7 @@ import {
 } from 'utils/constants';
 import {
   SubtaskTaskListHasMore,
+  TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
   TaskSubtaskCoverImageWrapper,
   TaskSubtaskFilterStatusIcon,
@@ -58,6 +62,7 @@ const useGetSubtasksForTask = ({ taskId, inView }) => {
       limit: LIMIT,
       offset: 0,
     },
+    onCompleted: (data) => setHasMore(data?.getSubtasksForTask.length >= LIMIT),
   });
 
   useEffect(() => {
@@ -140,20 +145,60 @@ const TaskSubTaskHasMore = ({ hasMore, loading, innerRef }) => {
   return null;
 };
 
+const useUpdateTaskAssignee = () => {
+  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE, {
+    refetchQueries: [GET_SUBTASKS_FOR_TASK],
+  });
+  const handleUpdateTaskAssignee = ({ id, userId }) => {
+    updateTaskAssignee({
+      variables: {
+        taskId: id,
+        assigneeId: userId,
+      },
+    });
+  };
+  return handleUpdateTaskAssignee;
+};
+
+const TaskSubtaskClaimButton = ({ id, userId, assignee, taskApplicationPermissions, status }) => {
+  const canClaim = taskApplicationPermissions?.canClaim && status !== TASK_STATUS_DONE;
+  const handleUpdateTaskAssignee = useUpdateTaskAssignee();
+  const handleClaim = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    handleUpdateTaskAssignee({ id, userId });
+  };
+  if (assignee || !canClaim) return null;
+  return (
+    <TaskSubtaskClaimButtonWrapper onClick={handleClaim}>
+      <Claim />
+      Claim
+    </TaskSubtaskClaimButtonWrapper>
+  );
+};
+
 export const TaskSubtaskList = ({ taskId }) => {
   const [ref, inView] = useInView({});
   const { hasMore, data, loading } = useGetSubtasksForTask({ taskId, inView });
   const router = useRouter();
+  const { id: userId } = useMe();
   if (!data) return null;
   return (
     <TaskSubtaskWrapper>
       {data.map((subtask) => {
-        const { assignee, privacyLevel, rewards, status, title, id, type, media } = subtask;
+        const { assignee, privacyLevel, rewards, status, title, id, type, media, taskApplicationPermissions } = subtask;
         return (
           <TaskSubtaskSmartLink key={id} router={router} type={type} id={id}>
             <TaskSubtaskItemWrapper>
               <TaskSubtaskItemHeader>
                 <TaskSubtaskItemContent>
+                  <TaskSubtaskClaimButton
+                    id={id}
+                    userId={userId}
+                    assignee={assignee}
+                    taskApplicationPermissions={taskApplicationPermissions}
+                    status={status}
+                  />
                   <TaskSubtaskUserImage assignee={assignee} />
                   <TaskSubTaskPrivacyIconWrapper privacyLevel={privacyLevel} />
                 </TaskSubtaskItemContent>
