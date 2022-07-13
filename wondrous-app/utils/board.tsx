@@ -41,9 +41,9 @@ export const updateProposalItem = (updatedItem, columns) => {
 export const getProposalStatus = (proposal) => {
   let proposalStatus = '';
 
-  if (proposal.approvedAt) proposalStatus = STATUS_APPROVED;
-  if (!proposal.approvedAt && !proposal.changeRequested) proposalStatus = STATUS_OPEN;
-  if (proposal.changeRequestedAt) proposalStatus = STATUS_CHANGE_REQUESTED;
+  if (proposal?.approvedAt) proposalStatus = STATUS_APPROVED;
+  if (!proposal?.approvedAt && !proposal?.changeRequested) proposalStatus = STATUS_OPEN;
+  if (proposal?.changeRequestedAt) proposalStatus = STATUS_CHANGE_REQUESTED;
   return proposalStatus;
 };
 
