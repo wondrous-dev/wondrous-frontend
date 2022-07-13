@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
   countCharacters,
@@ -1314,7 +1315,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           )}
         </CreateEntityHeaderWrapper>
         <CreateEntityHeaderWrapper>
-          <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+          <Tooltip title="Full screen" placement="top">
+            <Box>
+              <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+            </Box>
+          </Tooltip>
         </CreateEntityHeaderWrapper>
       </CreateEntityHeader>
       <CreateEntityBody>
