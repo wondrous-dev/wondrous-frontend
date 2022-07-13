@@ -131,6 +131,7 @@ export const TaskAction = styled.div`
   justify-content: flex-start;
   align-content: space-between;
   align-items: center;
+  cursor: pointer;
 `;
 
 export const TaskActionMenu = styled.div`

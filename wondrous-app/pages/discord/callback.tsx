@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
+import { CallbackBackground, CallbackHeading, CallbackWrapper } from 'components/Common/CallbackWrapper';
 import { useRouter } from 'next/router';
 import React, { useEffect, useCallback, useState } from 'react';
 import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
@@ -225,13 +226,13 @@ const Callback = () => {
     }
   }, [code, state]);
   return (
-    <InviteWelcomeBoxWrapper
-      style={{
-        minHeight: '100vh',
-      }}
-    >
-      <CircularProgress />
-    </InviteWelcomeBoxWrapper>
+    <>
+      <CallbackBackground></CallbackBackground>
+      <CallbackWrapper>
+        <CallbackHeading>Connecting Discord Server</CallbackHeading>
+        <CircularProgress />
+      </CallbackWrapper>
+    </>
   );
 };
 
