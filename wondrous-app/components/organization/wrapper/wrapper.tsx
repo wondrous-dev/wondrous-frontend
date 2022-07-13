@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
-import useSideBar from 'hooks/useSideBar';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import apollo from 'services/apollo';
 import { useMe } from '../../Auth/withAuth';
 
-import Header from '../../Header';
-import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
 import TypeSelector from 'components/TypeSelector';
-import ChooseEntityToCreate from '../../CreateEntity';
-import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
+import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import Tooltip from 'components/Tooltip';
 
 import {
   Content,
@@ -20,27 +15,18 @@ import {
   HeaderActivityLink,
   HeaderActivityLinkIcon,
   HeaderButtons,
-  HeaderContributeButton,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderFollowButton,
-  HeaderFollowButtonIcon,
-  HeaderFollowButtonText,
   HeaderImageDefault,
   HeaderMainBlock,
   HeaderButton,
   HeaderPods,
   HeaderPodsAmount,
   HeaderPodsText,
-  HeaderSettingsLockedButton,
   HeaderText,
   HeaderTitle,
-  OverviewComponent,
   TokenHeader,
-  TokenLogo,
-  HeaderInviteButton,
-  PlusIconWrapper,
   TokenEmptyLogo,
   HeaderTitleIcon,
   HeaderImage,
@@ -49,23 +35,20 @@ import {
   BoardsSubheaderWrapper,
 } from './styles';
 import { useOrgBoard, useTokenGating } from 'utils/hooks';
-import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { SafeImage } from '../../Common/Image';
-import PlusIcon from '../../Icons/plus';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { MoreInfoModal } from '../../profile/modals';
-import { Router, useRouter } from 'next/router';
-import { NoLogoDAO } from '../../SideBar/styles';
-import { DAOEmptyIcon, DAOIcon } from '../../Icons/dao';
+import { useRouter } from 'next/router';
+import { DAOEmptyIcon } from '../../Icons/dao';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA, SOCIAL_MEDIA_LINKEDIN } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { useWonderWeb3 } from 'services/web3';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import LinkedInIcon from '../../Icons/linkedIn';
 import OpenSeaIcon from '../../Icons/openSea';
-import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -330,9 +313,6 @@ const Wrapper = (props) => {
         />
       </CreateModalOverlay>
 
-      <HeaderImageWrapper>
-        {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
-      </HeaderImageWrapper>
       <HeaderImageWrapper>
         {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
       </HeaderImageWrapper>

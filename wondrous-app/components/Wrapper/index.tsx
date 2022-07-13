@@ -1,5 +1,3 @@
-import Header from '../Header';
-import SideBarComponent from '../SideBar';
 import { Content, ContentContainer, OverviewComponent } from './styles';
 
 const Wrapper = (props) => {

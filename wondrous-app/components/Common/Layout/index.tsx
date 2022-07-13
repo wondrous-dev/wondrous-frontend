@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { SIDEBAR_WIDTH } from 'utils/constants';
-import useSideBar from 'hooks/useSideBar';
 import HeaderComponent from 'components/Header';
 import SideBarComponent from 'components/SideBar';
 import { toggleHtmlOverflow } from 'utils/helpers';
@@ -11,12 +10,12 @@ import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries';
 import { SideBarContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
-
-const PAGES_WITH_NO_SIDEBAR = ['/', '/forgot-password', '/signup', '/login'];
+import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),

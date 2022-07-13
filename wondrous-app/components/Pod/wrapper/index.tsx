@@ -5,7 +5,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
-import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
@@ -37,7 +37,6 @@ import {
   BoardsSubheaderWrapper,
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
-import SideBarComponent from '../../SideBar';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   GET_USER_JOIN_POD_REQUEST,

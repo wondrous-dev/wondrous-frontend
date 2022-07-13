@@ -5,14 +5,11 @@ import { parseLinks } from 'utils/common';
 import router from 'next/router';
 import Image from 'next/image';
 import React, { useState } from 'react';
-import { SIDEBAR_WIDTH, SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
-import useSideBar from 'hooks/useSideBar';
+import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
 import { formatLinkDisplay } from 'utils/links';
 import { useMe } from '../../Auth/withAuth';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import Header from '../../Header';
-import SideBarComponent from '../../SideBar';
 import {
   Content,
   ContentContainer,
@@ -52,7 +49,6 @@ interface IWrapperProps {
 }
 
 const Wrapper = (props: IWrapperProps) => {
-  const { minimized } = useSideBar();
   const loggedInUser = useMe();
   const { children, userProfileData = {} } = props;
   const { links } = userProfileData;

@@ -1,7 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { SideBarContext } from 'utils/contexts';
-import Header from '../Header';
-import SideBarComponent from '../SideBar';
 import { OverviewComponent } from '../Wrapper/styles';
 import {
   BackgroundContainer,
@@ -33,7 +30,6 @@ const LIMIT = 10;
 
 const ExploreComponent = () => {
   const isMobile = useIsMobile();
-  const [minimized, setMinimized] = useState(isMobile);
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
   const {
@@ -106,7 +102,7 @@ const ExploreComponent = () => {
           paddingTop: '40px',
         }}
       >
-        <BackgroundContainer isMinimized={minimized} style={isMobile ? gridMobileStyles : {}}>
+        <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
           <BackgroundImg src="/images/explore/explore-page-banner.svg" />
           <Wheel />
           <BackgroundTextWrapper>
@@ -116,8 +112,8 @@ const ExploreComponent = () => {
             </BackgroundTextSubHeader>
           </BackgroundTextWrapper>
         </BackgroundContainer>
-        <ExplorePageContentWrapper isMinimized={minimized}>
-          <TabsWrapper isMinimized={minimized}>
+        <ExplorePageContentWrapper>
+          <TabsWrapper>
             {tabs.map((tab, idx) => (
               <Tab
                 hoverColor={tab.hoverColor}
@@ -144,7 +140,7 @@ const ExploreComponent = () => {
             />
           )}
         </ExplorePageContentWrapper>
-        <ExplorePageFooter isMinimized={minimized}>
+        <ExplorePageFooter>
           <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
           <MetheorSvg />
           <PartnershipRequest>

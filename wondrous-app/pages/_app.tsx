@@ -43,7 +43,6 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
   // be server-side rendered.
   const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
     initHotjar();

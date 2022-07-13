@@ -59,7 +59,7 @@ const HeaderComponent = (props) => {
         <HeaderLeftBlock>
           <Tooltip title="Explore page">
             <HeaderLogoWrapper>
-              <div onClick={() => (window.location.href = '/explore')}>
+              <div onClick={() => router.push('/explore')}>
                 <HeaderLogo />
               </div>
             </HeaderLogoWrapper>
