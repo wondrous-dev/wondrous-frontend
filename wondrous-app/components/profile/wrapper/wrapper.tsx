@@ -77,14 +77,7 @@ const Wrapper = (props: IWrapperProps) => {
   );
   return (
     <>
-      <Header />
-
-      <SideBarComponent />
-      <OverviewComponent
-        style={{
-          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-        }}
-      >
+      <OverviewComponent>
         <HeaderImageWrapper>
           <HeaderImageDefault />
         </HeaderImageWrapper>

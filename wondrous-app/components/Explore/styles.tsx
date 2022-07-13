@@ -44,7 +44,6 @@ export const BackgroundContainer = styled.div`
   border-radius: 6px;
   display: flex;
   justify-content: center;
-  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   background: linear-gradient(180deg, #1a1a1a 0%, #1d0052 100%);
   position: relative;
   ${BackgroundImg} {
@@ -288,7 +287,6 @@ export const ExplorePageContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   background: url('/images/explore/explore-page-background.svg');
   background-size: cover;
 `;
@@ -352,7 +350,6 @@ export const ExplorePageFooter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   ${BackgroundImg} {
     width: 100%;
     height: 100%;

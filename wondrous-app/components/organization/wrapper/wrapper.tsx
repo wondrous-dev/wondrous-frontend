@@ -86,7 +86,6 @@ const Wrapper = (props) => {
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
-  const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
@@ -103,8 +102,6 @@ const Wrapper = (props) => {
   const [claimableDiscordRole, setClaimableDiscordRole] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-
-  const [createFormModal, setCreateFormModal] = useState(false);
   const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
@@ -114,10 +111,6 @@ const Wrapper = (props) => {
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
 
-  const toggleCreateFormModal = () => {
-    toggleHtmlOverflow();
-    setCreateFormModal((prevState) => !prevState);
-  };
   const orgProfile = orgData;
   const links = orgProfile?.links;
   const router = useRouter();
@@ -336,180 +329,174 @@ const Wrapper = (props) => {
           cancel={() => setCreateTaskModalOpen(false)}
         />
       </CreateModalOverlay>
-      <Header openCreateFormModal={toggleCreateFormModal} />
 
-      <SideBarComponent />
-      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
-      <OverviewComponent
-        style={{
-          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-        }}
-      >
-        <HeaderImageWrapper>
-          {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
-        </HeaderImageWrapper>
+      <HeaderImageWrapper>
+        {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+      </HeaderImageWrapper>
+      <HeaderImageWrapper>
+        {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+      </HeaderImageWrapper>
 
-        <Content>
-          <ContentContainer>
-            <TokenHeader>
-              <HeaderMainBlock>
-                {orgProfile?.profilePicture ? (
-                  <SafeImage
-                    src={orgProfile?.profilePicture}
-                    style={{
-                      width: '60px',
-                      height: '60px',
-                      borderRadius: '6px',
-                    }}
-                  />
-                ) : (
-                  <TokenEmptyLogo>
-                    <DAOEmptyIcon />
-                  </TokenEmptyLogo>
+      <Content>
+        <ContentContainer>
+          <TokenHeader>
+            <HeaderMainBlock>
+              {orgProfile?.profilePicture ? (
+                <SafeImage
+                  src={orgProfile?.profilePicture}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '6px',
+                  }}
+                />
+              ) : (
+                <TokenEmptyLogo>
+                  <DAOEmptyIcon />
+                </TokenEmptyLogo>
+              )}
+              <HeaderTitleIcon>
+                <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                <HeaderTag>@{orgProfile?.username}</HeaderTag>
+              </HeaderTitleIcon>
+              <HeaderButtons>
+                {/* <Tooltip title="your permissions are:" > */}
+                {permissions && orgRoleName && (
+                  <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
                 )}
-                <HeaderTitleIcon>
-                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                  <HeaderTag>@{orgProfile?.username}</HeaderTag>
-                </HeaderTitleIcon>
-                <HeaderButtons>
-                  {/* <Tooltip title="your permissions are:" > */}
-                  {permissions && orgRoleName && (
-                    <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
-                  )}
-                  {/* </Tooltip> */}
-                  {!isLoading && (
-                    <TokenGatedBoard
-                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                      tooltipTitle={'Token gating'}
-                    />
-                  )}
-                  <ToggleBoardPrivacyIcon
-                    isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                    tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                {/* </Tooltip> */}
+                {!isLoading && (
+                  <TokenGatedBoard
+                    isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                    tooltipTitle={'Token gating'}
                   />
-                  {permissions === null && (
-                    <>
-                      {joinRequestSent || userJoinRequest?.id ? (
-                        <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
-                      ) : (
-                        <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
-                          Join org
-                        </HeaderButton>
-                      )}
-                    </>
-                  )}
-                  {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                    <>
-                      <HeaderButton
-                        onClick={() => {
-                          router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
-                            shallow: true,
-                          });
-                        }}
-                      >
-                        Settings
+                )}
+                <ToggleBoardPrivacyIcon
+                  isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
+                  tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                />
+                {permissions === null && (
+                  <>
+                    {joinRequestSent || userJoinRequest?.id ? (
+                      <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
+                    ) : (
+                      <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                        Join org
                       </HeaderButton>
-                      <HeaderButton reversed onClick={() => setOpenInvite(true)}>
-                        Invite{' '}
-                      </HeaderButton>
-                    </>
-                  )}
-                </HeaderButtons>
-              </HeaderMainBlock>
-              <HeaderText>
-                <RichTextViewer text={orgProfile?.description} />
-              </HeaderText>
-              <HeaderActivity>
-                <HeaderContributors
-                  onClick={() => {
-                    setOpen(true);
-                    setShowUsers(true);
-                  }}
-                >
-                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                  <HeaderContributorsText>Contributors</HeaderContributorsText>
-                </HeaderContributors>
-                <HeaderPods
-                  onClick={() => {
-                    setOpen(true);
-                    setShowPods(true);
-                  }}
-                >
-                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                  <HeaderPodsText>Pods</HeaderPodsText>
-                </HeaderPods>
+                    )}
+                  </>
+                )}
+                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                  <>
+                    <HeaderButton
+                      onClick={() => {
+                        router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                          shallow: true,
+                        });
+                      }}
+                    >
+                      Settings
+                    </HeaderButton>
+                    <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                      Invite{' '}
+                    </HeaderButton>
+                  </>
+                )}
+              </HeaderButtons>
+            </HeaderMainBlock>
+            <HeaderText>
+              <RichTextViewer text={orgProfile?.description} />
+            </HeaderText>
+            <HeaderActivity>
+              <HeaderContributors
+                onClick={() => {
+                  setOpen(true);
+                  setShowUsers(true);
+                }}
+              >
+                <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                <HeaderContributorsText>Contributors</HeaderContributorsText>
+              </HeaderContributors>
+              <HeaderPods
+                onClick={() => {
+                  setOpen(true);
+                  setShowPods(true);
+                }}
+              >
+                <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                <HeaderPodsText>Pods</HeaderPodsText>
+              </HeaderPods>
+              {links?.map((link, index) => {
+                if (link.type === 'link') {
+                  return (
+                    <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                      <HeaderActivityLinkIcon />
+                      {link?.name || link?.url}
+                    </HeaderActivityLink>
+                  );
+                }
+              })}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
                 {links?.map((link, index) => {
-                  if (link.type === 'link') {
-                    return (
-                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                        <HeaderActivityLinkIcon />
-                        {link?.name || link?.url}
-                      </HeaderActivityLink>
-                    );
+                  if (link.type !== 'link') {
+                    let SocialIcon = null;
+                    switch (link.type) {
+                      case SOCIAL_MEDIA_DISCORD:
+                        SocialIcon = DiscordIcon;
+                        break;
+                      case SOCIAL_MEDIA_TWITTER:
+                        SocialIcon = TwitterPurpleIcon;
+                        break;
+                      case SOCIAL_MEDIA_LINKEDIN:
+                        SocialIcon = LinkedInIcon;
+                        break;
+                      case SOCIAL_OPENSEA:
+                        SocialIcon = OpenSeaIcon;
+                        break;
+                    }
+                    if (SocialIcon) {
+                      return (
+                        <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                          <SocialIcon
+                            style={{
+                              width: '20px',
+                              height: '20px',
+                            }}
+                          />
+                        </HeaderActivityLink>
+                      );
+                    }
+                    return null;
                   }
                 })}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {links?.map((link, index) => {
-                    if (link.type !== 'link') {
-                      let SocialIcon = null;
-                      switch (link.type) {
-                        case SOCIAL_MEDIA_DISCORD:
-                          SocialIcon = DiscordIcon;
-                          break;
-                        case SOCIAL_MEDIA_TWITTER:
-                          SocialIcon = TwitterPurpleIcon;
-                          break;
-                        case SOCIAL_MEDIA_LINKEDIN:
-                          SocialIcon = LinkedInIcon;
-                          break;
-                        case SOCIAL_OPENSEA:
-                          SocialIcon = OpenSeaIcon;
-                          break;
-                      }
-                      if (SocialIcon) {
-                        return (
-                          <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                            <SocialIcon
-                              style={{
-                                width: '20px',
-                                height: '20px',
-                              }}
-                            />
-                          </HeaderActivityLink>
-                        );
-                      }
-                      return null;
-                    }
-                  })}
-                </div>
-              </HeaderActivity>
-            </TokenHeader>
-            <Tabs>
-              <BoardsSubheaderWrapper>
-                {orgBoard?.setEntityType && !search && (
-                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
-                )}
-                {!!filterSchema && (
-                  <BoardsActivity
-                    onSearch={onSearch}
-                    filterSchema={filterSchema}
-                    onFilterChange={onFilterChange}
-                    statuses={statuses}
-                    podIds={podIds}
-                    userId={userId}
-                  />
-                )}
-              </BoardsSubheaderWrapper>
-              {children}
-            </Tabs>
-          </ContentContainer>
-        </Content>
-      </OverviewComponent>
+              </div>
+            </HeaderActivity>
+          </TokenHeader>
+          <Tabs>
+            <BoardsSubheaderWrapper>
+              {orgBoard?.setEntityType && !search && (
+                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+              )}
+              {!!filterSchema && (
+                <BoardsActivity
+                  onSearch={onSearch}
+                  filterSchema={filterSchema}
+                  onFilterChange={onFilterChange}
+                  statuses={statuses}
+                  podIds={podIds}
+                  userId={userId}
+                />
+              )}
+            </BoardsSubheaderWrapper>
+            {children}
+          </Tabs>
+        </ContentContainer>
+      </Content>
     </>
   );
 };

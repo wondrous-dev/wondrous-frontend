@@ -6,8 +6,6 @@ const Wrapper = (props) => {
   const { children } = props;
   return (
     <>
-      <Header />
-      <SideBarComponent />
       <OverviewComponent>
         <Content>
           <ContentContainer>{children}</ContentContainer>

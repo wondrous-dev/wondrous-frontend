@@ -10,8 +10,6 @@ const DiscordNotificationSetupPage = () => {
   const { orgUsername } = router.query;
   return (
     <>
-      <HeaderComponent />
-      <SideBarComponent />
       <SettingsContainer
         style={{
           flexDirection: 'column',

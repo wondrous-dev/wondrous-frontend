@@ -18,6 +18,7 @@ import { initHotjar } from 'utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
 import OnboardingTour from 'components/Guide';
+import SidebarLayout from 'components/Common/Layout';
 declare global {
   interface Window {
     gtag: any;
@@ -76,15 +77,10 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
-              <SnackbarAlertProvider>
-                <Web3ReactProvider getLibrary={getLibrary}>
-                  <WonderWeb3Provider>
-                    <SideBarContext.Provider
-                      value={{
-                        minimized,
-                        setMinimized,
-                      }}
-                    >
+              <SidebarLayout>
+                <SnackbarAlertProvider>
+                  <Web3ReactProvider getLibrary={getLibrary}>
+                    <WonderWeb3Provider>
                       <OnboardingTour>
                         <Component
                           {...pageProps}
@@ -94,10 +90,10 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
                           key={router.asPath}
                         />
                       </OnboardingTour>
-                    </SideBarContext.Provider>
-                  </WonderWeb3Provider>
-                </Web3ReactProvider>
-              </SnackbarAlertProvider>
+                    </WonderWeb3Provider>
+                  </Web3ReactProvider>
+                </SnackbarAlertProvider>
+              </SidebarLayout>
             </ApolloProvider>
           </ThemeProvider>
         </StyledComponentProvider>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 
 import Box from '@mui/material/Box';
@@ -36,8 +36,7 @@ import { PodModal } from './PodModal';
 import HelpModal from './HelpModal.jsx';
 import { useIsMobile } from 'utils/hooks';
 
-const SideBarComponent = (props) => {
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
+const SideBarComponent = ({ userOrgs }) => {
   const isMobile = useIsMobile();
 
   const sidebar = useSideBar();
@@ -104,6 +103,7 @@ const SideBarComponent = (props) => {
   };
 
   if (isMobile) return null;
+
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
@@ -137,9 +137,9 @@ const SideBarComponent = (props) => {
                 <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                   <DrawerBottomButton type="button" {...actionProps}>
                     {!!link?.url && (
-                      <div onClick={() => (window.location.href = '/explore')}>
+                      <Link href="/explore">
                         <Icon id={link?.id} />
-                      </div>
+                      </Link>
                     )}
                     {link?.action && <Icon />}
                   </DrawerBottomButton>

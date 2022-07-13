@@ -27,13 +27,7 @@ const AppLayout = ({ banner, children, ...props }) => {
 
   return (
     <>
-      <Header />
-      <SideBarComponent />
-      <Main
-        style={{
-          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-        }}
-      >
+      <Main>
         {banner}
         <Container style={props?.containerStyle}>{children}</Container>
       </Main>
