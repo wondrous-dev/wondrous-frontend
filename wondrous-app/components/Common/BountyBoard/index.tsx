@@ -31,6 +31,7 @@ import { useRouter } from 'next/router';
 import { TASK_ICONS } from 'components/Common/Task/index';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
+import { DAOIcon } from 'components/Icons/dao';
 
 export const SubmissionsCount = ({ total, approved }) => {
   const config = [
@@ -57,7 +58,7 @@ export const SubmissionsCount = ({ total, approved }) => {
     </BountyCardSubmissionsCountWrapper>
   );
 };
-export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
+export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false }) {
   const router = useRouter();
   const goToPod = (podId) => {
     router.push(`/pod/${podId}/boards`, undefined, {
@@ -65,12 +66,12 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
     });
   };
 
+  const goToOrg = (orgId) => router.push(`/org/${orgId}/boards`, undefined, { shallow: true });
+
   return (
     <>
       {tasks.map((bounty) => {
         const reward = bounty?.rewards?.[0];
-        const rewardSymbol = reward?.symbol?.toLowerCase() || 'eth';
-        const rewardAmount = reward?.rewardAmount || null;
         let BountyStatusIcon = TASK_ICONS[bounty?.status];
         return (
           <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
@@ -105,7 +106,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
               <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
             </BoardsCardBody>
             <BoardsCardFooter>
-              {bounty?.podName && (
+              {bounty?.podName && !displayOrg && (
                 <PodWrapper
                   style={{ marginTop: '0' }}
                   onClick={(e) => {
@@ -123,6 +124,32 @@ export default function Board({ tasks, handleCardClick = (bounty) => {} }) {
                     }}
                   />
                   <PodName>{bounty?.podName}</PodName>
+                </PodWrapper>
+              )}
+              {displayOrg && (
+                <PodWrapper
+                  style={{ marginTop: '0', alignItems: 'center' }}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    goToOrg(bounty?.orgId);
+                  }}
+                >
+                  {bounty?.orgProfilePicture ? (
+                    <SafeImage
+                      src={bounty.orgProfilePicture}
+                      style={{
+                        width: '26px',
+                        height: '26px',
+                        borderRadius: '4px',
+                        marginRight: '8px',
+                      }}
+                    />
+                  ) : (
+                    <DAOIcon />
+                  )}
+
+                  <PodName>{bounty?.orgName}</PodName>
                 </PodWrapper>
               )}
               <div
