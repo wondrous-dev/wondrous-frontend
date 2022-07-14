@@ -35,7 +35,7 @@ import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK } from 'utils/constants';
+import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK } from 'utils/constants';
 
 export const NewOrgInviteLinkModal = (props) => {
   const { orgOrPodName, orgId, open, onClose } = props;
@@ -111,7 +111,7 @@ export const NewOrgInviteLinkModal = (props) => {
         variables: {
           input: {
             invitorId: '',
-            type: linkOneTimeUse ? 'one_time' : 'public',
+            type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
             orgId: orgId,
             orgRoleId: role,
           },

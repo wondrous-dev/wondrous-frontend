@@ -498,3 +498,7 @@ export const TASK_APPLICATION_STATUS_LABELS = {
   [TASK_APPLICATION_STATUS.APPROVED]: 'Approved',
   [TASK_APPLICATION_STATUS.REJECTED]: 'Rejected',
 };
+
+// Invite link type
+export const ONE_TIME_USE_INVITE_LINK = 'one_time';
+export const PUBLIC_INVITE_LINK = 'public';
