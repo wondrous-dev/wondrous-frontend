@@ -26,7 +26,7 @@ export const SettingsContainer = styled.div`
 `;
 
 export const SettingsSidebar = styled.div`
-  margin: 70px 0 0 80px;
+  margin: 70px 0 0 0px;
   min-width: 350px;
   width: 350px;
   padding: 55px 20px 50px 35px;

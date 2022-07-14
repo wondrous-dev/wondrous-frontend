@@ -2,12 +2,9 @@ import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import Image from 'next/image';
 
-import useSideBar from 'hooks/useSideBar';
 import { UserProfileContext } from 'utils/contexts';
 import useGetUserProfile from 'hooks/useGetUserProfile';
 
-import Header from 'components/Header';
-import SideBar from 'components/SideBar';
 import ProfileInfo from 'components/ProfileInfo';
 import ProfileUserTaskDaos from 'components/ProfileUserTaskDaos';
 
@@ -23,7 +20,6 @@ const UserProfileContainer = ({}) => {
   const { username, id: routerId } = router.query;
   const userProfileData = useGetUserProfile(routerId, username);
 
-  const { minimized } = useSideBar();
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
   const taskId = (location?.params?.task || location?.params.taskProposal)?.toString();
@@ -58,9 +54,7 @@ const UserProfileContainer = ({}) => {
         taskId={taskId}
         isTaskProposal={!!location?.params?.taskProposal}
       />
-      <Header />
-      <SideBar />
-      <UserProfileContainerWrapper minimized={minimized}>
+      <UserProfileContainerWrapper>
         <UserProfileHeaderImageWrapper>
           <Image src="/images/profile/profileBackground.png" layout="fill" objectFit="cover" alt="header-image" />
         </UserProfileHeaderImageWrapper>

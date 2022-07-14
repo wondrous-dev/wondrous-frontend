@@ -9,7 +9,6 @@ export const UserProfileContainerWrapper = styled(Box)`
   transition: 0.15s all ease;
   padding-bottom: 5px;
   padding-top: 68px;
-  padding-left: ${({ minimized }) => (minimized ? 0 : 80)}px;
 `;
 
 export const UserProfileHeaderImageWrapper = styled(Box)`
