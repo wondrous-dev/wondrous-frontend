@@ -34,7 +34,7 @@ const PodSearch = (props) => {
             <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
             <PodSearchLabel>{selectedValue?.label ?? `Select a Pod`}</PodSearchLabel>
           </PodSearchImageLabelWrapper>
-          {selectedValue ? (
+          {selectedValue && !disabled ? (
             <PodSearchButtonDeleteIcon
               onClick={(e) => {
                 e.preventDefault();

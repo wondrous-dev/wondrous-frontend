@@ -92,6 +92,7 @@ export const TaskFragment = gql`
     }
     claimPolicy
     claimPolicyRoles
+    shouldUnclaimOnDueDateExpiry
   }
 
   ${MediaFragment}
@@ -326,6 +327,13 @@ export const TaskProposalFragment = gql`
       color
     }
     snapshotId
+    votes {
+      counts {
+        approve
+        reject
+      }
+      userVote
+    }
   }
   ${MediaFragment}
 `;

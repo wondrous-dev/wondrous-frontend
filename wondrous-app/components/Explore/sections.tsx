@@ -129,7 +129,7 @@ export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, h
           taskId={location?.params?.task?.toString()}
         />
 
-        <BountyBoard tasks={bounties} handleCardClick={handleCardClick} />
+        <BountyBoard tasks={bounties} displayOrg handleCardClick={handleCardClick} />
       </StyledGridContainer>
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>

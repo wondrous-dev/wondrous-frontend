@@ -88,7 +88,7 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
-import { TaskSubtasks } from '../TaskSubtask';
+import TaskSubtasks from 'components/Common/TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import WalletModal from '../Wallet/WalletModal';
 import {
@@ -166,8 +166,11 @@ import {
   TaskTabText,
   WalletError,
   WalletErrorText,
+  InfoPoint,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
+import VoteResults from 'components/Common/Votes';
+import { ProposalVoteType } from 'utils/constants';
 
 const tabs = {
   submissions: 'Submissions',
@@ -930,6 +933,10 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     sectionRef?.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
+  const totalVotes =
+    Number(fetchedTask?.votes?.counts[ProposalVoteType.APPROVE]) +
+    Number(fetchedTask?.votes?.counts[ProposalVoteType.REJECT]);
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -1281,46 +1288,61 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   )}
 
                   {isTaskProposal && !isMilestone && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Proposer</TaskSectionLabel>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.creatorUsername}
-                        onClick={() => {
-                          handleClose();
-                          router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
-                            shallow: true,
-                          });
-                        }}
-                        ContentComponent={() => (
-                          <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                        )}
-                        imgSrc={fetchedTask?.creatorProfilePicture}
-                        DefaultImageComponent={() => <DefaultUserImage />}
-                        DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
-                      />
-                    </TaskSectionDisplayDiv>
+                    <>
+                      <TaskSectionDisplayDiv>
+                        <TaskSectionLabel>Proposer</TaskSectionLabel>
+                        <TaskSectionImageContent
+                          hasContent={fetchedTask?.creatorUsername}
+                          onClick={() => {
+                            handleClose();
+                            router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
+                              shallow: true,
+                            });
+                          }}
+                          ContentComponent={() => (
+                            <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
+                          )}
+                          imgSrc={fetchedTask?.creatorProfilePicture}
+                          DefaultImageComponent={() => <DefaultUserImage />}
+                          DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
+                        />
+                      </TaskSectionDisplayDiv>
+                      <TaskSectionDisplayDiv>
+                        <TaskSectionLabel>Voted</TaskSectionLabel>
+                        <TaskSectionImageContent
+                          hasContent={fetchedTask?.votes}
+                          ContentComponent={() => <TaskSectionInfoText>{totalVotes} votes</TaskSectionInfoText>}
+                          DefaultContent={() => null}
+                        />
+                      </TaskSectionDisplayDiv>
+                    </>
                   )}
                   {fetchedTask?.dueDate && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Due Date</TaskSectionLabel>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.dueDate}
-                        ContentComponent={() => (
-                          <TaskSectionInfoText>
-                            {!isEmpty(fetchedTask?.recurringSchema) && (
-                              <Tooltip title="Recurring" placement="right">
-                                <TaskSectionInfoRecurringIcon>
-                                  <RecurringIcon />
-                                </TaskSectionInfoRecurringIcon>
-                              </Tooltip>
-                            )}
-                            {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
-                          </TaskSectionInfoText>
-                        )}
-                        DefaultContent={() => null}
-                        DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-                      />
-                    </TaskSectionDisplayDiv>
+                    <div>
+                      <TaskSectionDisplayDiv>
+                        <TaskSectionLabel>Due Date</TaskSectionLabel>
+                        <TaskSectionImageContent
+                          hasContent={fetchedTask?.dueDate}
+                          ContentComponent={() => (
+                            <TaskSectionInfoText>
+                              {!isEmpty(fetchedTask?.recurringSchema) && (
+                                <Tooltip title="Recurring" placement="right">
+                                  <TaskSectionInfoRecurringIcon>
+                                    <RecurringIcon />
+                                  </TaskSectionInfoRecurringIcon>
+                                </Tooltip>
+                              )}
+                              {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
+                            </TaskSectionInfoText>
+                          )}
+                          DefaultContent={() => null}
+                          DefaultImageComponent={() => <TaskSectionInfoCalendar />}
+                        />
+                      </TaskSectionDisplayDiv>
+                      {fetchedTask.shouldUnclaimOnDueDateExpiry && (
+                        <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>
+                      )}
+                    </div>
                   )}
                   <Rewards fetchedTask={fetchedTask} user={user} />
                   {fetchedTask?.points && (
@@ -1379,42 +1401,51 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     </TaskSectionDisplayDiv>
                   )}
                   {isTaskProposal && (
-                    <CreateFormFooterButtons>
-                      {fetchedTask?.changeRequestedAt && (
-                        <>
-                          <div style={flexDivStyle}>
-                            <RejectIcon style={rejectIconStyle} />
-                            <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
-                          </div>
-                          <div
-                            style={{
-                              flex: 1,
-                            }}
-                          />
-                        </>
-                      )}
-                      {fetchedTask?.approvedAt && (
-                        <>
-                          <div style={flexDivStyle}>
-                            <CompletedIcon style={rejectIconStyle} />
-                            <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-                          </div>
-                          <div
-                            style={{
-                              flex: 1,
-                            }}
-                          />
-                        </>
-                      )}
-                      {canApproveProposal && !fetchedTask?.approvedAt && (
-                        <CreateFormButtonsBlock>
-                          {!fetchedTask?.changeRequestedAt && (
-                            <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
-                          )}
-                          <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
-                        </CreateFormButtonsBlock>
-                      )}
-                    </CreateFormFooterButtons>
+                    <>
+                      <VoteResults
+                        totalVotes={totalVotes}
+                        fullScreen={fullScreen}
+                        votes={fetchedTask?.votes}
+                        proposalStatus={getProposalStatus(fetchedTask)}
+                        taskId={fetchedTask?.id}
+                      />
+                      <CreateFormFooterButtons>
+                        {fetchedTask?.changeRequestedAt && (
+                          <>
+                            <div style={flexDivStyle}>
+                              <RejectIcon style={rejectIconStyle} />
+                              <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
+                            </div>
+                            <div
+                              style={{
+                                flex: 1,
+                              }}
+                            />
+                          </>
+                        )}
+                        {fetchedTask?.approvedAt && (
+                          <>
+                            <div style={flexDivStyle}>
+                              <CompletedIcon style={rejectIconStyle} />
+                              <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
+                            </div>
+                            <div
+                              style={{
+                                flex: 1,
+                              }}
+                            />
+                          </>
+                        )}
+                        {canApproveProposal && !fetchedTask?.approvedAt && (
+                          <CreateFormButtonsBlock>
+                            {!fetchedTask?.changeRequestedAt && (
+                              <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                            )}
+                            <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
+                          </CreateFormButtonsBlock>
+                        )}
+                      </CreateFormFooterButtons>
+                    </>
                   )}
                   <GithubButtons fetchedTask={fetchedTask} />
                 </TaskSectionDisplayData>
@@ -1491,9 +1522,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       taskSubmissionLoading={taskSubmissionsForTaskLoading}
                     />
                   )}
-                  {activeTab === tabs.subTasks && (
-                    <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
-                  )}
+                  {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
                   {activeTab === tabs.discussion && (
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}

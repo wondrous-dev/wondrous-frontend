@@ -498,3 +498,19 @@ export const TASK_APPLICATION_STATUS_LABELS = {
   [TASK_APPLICATION_STATUS.APPROVED]: 'Approved',
   [TASK_APPLICATION_STATUS.REJECTED]: 'Rejected',
 };
+
+export const ProposalVoteType = {
+  APPROVE: 'approve',
+  REJECT: 'reject',
+};
+
+export const PROPOSAL_VOTE_LABELS = {
+  [ProposalVoteType.APPROVE]: {
+    VOTED: 'Approved',
+    ACTION: 'Approve',
+  },
+  [ProposalVoteType.REJECT]: {
+    VOTED: 'Rejected',
+    ACTION: 'Reject',
+  },
+};
