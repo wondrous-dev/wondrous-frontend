@@ -93,8 +93,6 @@ export const TaskSubtaskPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
   }
 `;
 
-export const TaskSubtaskSafeImage = styled(SafeImage)``;
-
 export const TaskSubtaskTitle = styled(Typography)`
   && {
     font-size: 16px;
@@ -118,8 +116,6 @@ export const TaskSubTaskEmpty = styled(Typography)`
     justify-content: center;
   }
 `;
-
-export const SubtaskTaskListHasMore = styled.div``;
 
 export const TaskSubtaskStatus = styled.div`
   display: flex;

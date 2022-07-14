@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
+import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
 import { TASK_ICONS_LABELS } from 'components/Common/TaskSubtask/TaskSubtasks';
@@ -13,7 +14,6 @@ import { useInView } from 'react-intersection-observer';
 import { delQuery } from 'utils';
 import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import {
-  SubtaskTaskListHasMore,
   TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
   TaskSubtaskCoverImageWrapper,
@@ -26,7 +26,6 @@ import {
   TaskSubtaskRewardAmount,
   TaskSubtaskRewardIcon,
   TaskSubtaskRewardWrapper,
-  TaskSubtaskSafeImage,
   TaskSubtaskStatus,
   TaskSubtaskStatusLabel,
   TaskSubtaskTitle,
@@ -72,7 +71,7 @@ const TaskSubtaskUserImage = ({ assignee }) => {
   const profilePicture = assignee?.profilePicture;
   return (
     <TaskSubtaskImageWrapper>
-      {profilePicture ? <TaskSubtaskSafeImage src={profilePicture} /> : <DefaultUserImage />}
+      {profilePicture ? <SafeImage src={profilePicture} /> : <DefaultUserImage />}
     </TaskSubtaskImageWrapper>
   );
 };
@@ -127,7 +126,7 @@ const TaskSubtaskSmartLink = ({ router, type, id, children }) => {
 };
 
 const TaskSubTaskHasMore = ({ hasMore, loading, innerRef }) => {
-  if (hasMore && !loading) return <SubtaskTaskListHasMore ref={innerRef} />;
+  if (hasMore && !loading) return <div ref={innerRef} />;
   return null;
 };
 
