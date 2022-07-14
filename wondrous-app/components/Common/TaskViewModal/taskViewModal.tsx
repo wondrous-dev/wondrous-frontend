@@ -88,7 +88,7 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
-import { TaskSubtasks } from '../TaskSubtask';
+import TaskSubtasks from 'components/Common/TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import WalletModal from '../Wallet/WalletModal';
 import {
@@ -166,6 +166,7 @@ import {
   TaskTabText,
   WalletError,
   WalletErrorText,
+  InfoPoint,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
 import VoteResults from 'components/Common/Votes';
@@ -1317,26 +1318,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                     </>
                   )}
                   {fetchedTask?.dueDate && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Due Date</TaskSectionLabel>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.dueDate}
-                        ContentComponent={() => (
-                          <TaskSectionInfoText>
-                            {!isEmpty(fetchedTask?.recurringSchema) && (
-                              <Tooltip title="Recurring" placement="right">
-                                <TaskSectionInfoRecurringIcon>
-                                  <RecurringIcon />
-                                </TaskSectionInfoRecurringIcon>
-                              </Tooltip>
-                            )}
-                            {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
-                          </TaskSectionInfoText>
-                        )}
-                        DefaultContent={() => null}
-                        DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-                      />
-                    </TaskSectionDisplayDiv>
+                    <div>
+                      <TaskSectionDisplayDiv>
+                        <TaskSectionLabel>Due Date</TaskSectionLabel>
+                        <TaskSectionImageContent
+                          hasContent={fetchedTask?.dueDate}
+                          ContentComponent={() => (
+                            <TaskSectionInfoText>
+                              {!isEmpty(fetchedTask?.recurringSchema) && (
+                                <Tooltip title="Recurring" placement="right">
+                                  <TaskSectionInfoRecurringIcon>
+                                    <RecurringIcon />
+                                  </TaskSectionInfoRecurringIcon>
+                                </Tooltip>
+                              )}
+                              {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
+                            </TaskSectionInfoText>
+                          )}
+                          DefaultContent={() => null}
+                          DefaultImageComponent={() => <TaskSectionInfoCalendar />}
+                        />
+                      </TaskSectionDisplayDiv>
+                      {fetchedTask.shouldUnclaimOnDueDateExpiry && (
+                        <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>
+                      )}
+                    </div>
                   )}
                   <Rewards fetchedTask={fetchedTask} user={user} />
                   {fetchedTask?.points && (
@@ -1516,9 +1522,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       taskSubmissionLoading={taskSubmissionsForTaskLoading}
                     />
                   )}
-                  {activeTab === tabs.subTasks && (
-                    <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
-                  )}
+                  {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
                   {activeTab === tabs.discussion && (
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}

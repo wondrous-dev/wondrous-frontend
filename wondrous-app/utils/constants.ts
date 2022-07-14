@@ -499,6 +499,10 @@ export const TASK_APPLICATION_STATUS_LABELS = {
   [TASK_APPLICATION_STATUS.REJECTED]: 'Rejected',
 };
 
+// Invite link type
+export const ONE_TIME_USE_INVITE_LINK = 'one_time';
+export const PUBLIC_INVITE_LINK = 'public';
+
 export const ProposalVoteType = {
   APPROVE: 'approve',
   REJECT: 'reject',
@@ -514,3 +518,26 @@ export const PROPOSAL_VOTE_LABELS = {
     ACTION: 'Reject',
   },
 };
+
+export const PAGES_WITH_NO_SIDEBAR = [
+  '/',
+  '/forgot-password',
+  '/signup',
+  '/signup/email',
+  '/login',
+  '/discord/callback',
+  '/email/verify',
+  '/github/callback',
+  '/invite/[token]',
+  '/onboarding/build-profile',
+  '/onboarding/discord',
+  '/onboarding/email',
+  '/onboarding/twitter',
+  '/onboarding/wallet',
+  '/onboarding/welcome',
+  '/submission/[submissionId]',
+  '/twitter/callback',
+  '/twitter/verify-tweet',
+  '/forgot-password',
+  '/reset-password',
+];
