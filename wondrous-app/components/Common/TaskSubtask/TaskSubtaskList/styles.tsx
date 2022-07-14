@@ -2,7 +2,6 @@ import { Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
-import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import styled from 'styled-components';
 
 export const TaskSubtaskWrapper = styled.div`

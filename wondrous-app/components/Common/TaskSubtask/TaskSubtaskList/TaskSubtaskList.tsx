@@ -2,6 +2,7 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
+import { TASK_ICONS_LABELS } from 'components/Common/TaskSubtask/TaskSubtasks';
 import { Claim } from 'components/Icons/claimTask';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
@@ -11,7 +12,6 @@ import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { delQuery } from 'utils';
 import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
-import { TASK_ICONS_LABELS } from '../TaskSubtasks';
 import {
   SubtaskTaskListHasMore,
   TaskSubtaskClaimButtonWrapper,

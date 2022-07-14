@@ -1,7 +1,6 @@
 import { CreateEntity } from 'components/CreateEntity';
 import { useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-
+import { ENTITIES_TYPES } from 'utils/constants';
 import {
   TaskSubtaskHeaderButton,
   TaskSubtaskHeaderButtonIcon,

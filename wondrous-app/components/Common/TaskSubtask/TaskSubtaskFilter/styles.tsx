@@ -1,6 +1,5 @@
 import { ButtonBase, Menu, MenuItem } from '@mui/material';
 import Arrow from 'components/Icons/arrow.svg';
-import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import styled from 'styled-components';
 
 export const TaskSubtasksFilterSelectButton = styled(ButtonBase)`
