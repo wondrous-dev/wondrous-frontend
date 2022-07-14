@@ -76,10 +76,10 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
           <ThemeProvider theme={theme}>
             <CssBaseline />
             <ApolloProvider client={apollo}>
-              <SidebarLayout>
-                <SnackbarAlertProvider>
-                  <Web3ReactProvider getLibrary={getLibrary}>
-                    <WonderWeb3Provider>
+              <SnackbarAlertProvider>
+                <Web3ReactProvider getLibrary={getLibrary}>
+                  <WonderWeb3Provider>
+                    <SidebarLayout>
                       <OnboardingTour>
                         <Component
                           {...pageProps}
@@ -89,10 +89,10 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
                           key={router.asPath}
                         />
                       </OnboardingTour>
-                    </WonderWeb3Provider>
-                  </Web3ReactProvider>
-                </SnackbarAlertProvider>
-              </SidebarLayout>
+                    </SidebarLayout>
+                  </WonderWeb3Provider>
+                </Web3ReactProvider>
+              </SnackbarAlertProvider>
             </ApolloProvider>
           </ThemeProvider>
         </StyledComponentProvider>

@@ -9,7 +9,7 @@ import { GET_NOTIFICATIONS } from 'graphql/queries';
 import { useIsMobile } from 'utils/hooks';
 
 import Wallet from 'components/Common/Wallet';
-import { useMe } from '../Auth/withAuth';
+import { useMe, withAuth } from '../Auth/withAuth';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import { Button } from 'components/Common/button';
 import NotificationsBoard from 'components/Notifications';
@@ -110,4 +110,4 @@ const HeaderComponent = (props) => {
   );
 };
 
-export default HeaderComponent;
+export default withAuth(HeaderComponent);
