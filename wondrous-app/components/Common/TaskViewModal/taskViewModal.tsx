@@ -88,7 +88,7 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
-import { TaskSubtasks } from '../TaskSubtask';
+import TaskSubtasks from 'components/Common/TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import WalletModal from '../Wallet/WalletModal';
 import {
@@ -1522,9 +1522,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                       taskSubmissionLoading={taskSubmissionsForTaskLoading}
                     />
                   )}
-                  {activeTab === tabs.subTasks && (
-                    <TaskSubtasks taskId={fetchedTask?.id} permissions={permissions} parentTask={fetchedTask} />
-                  )}
+                  {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
                   {activeTab === tabs.discussion && (
                     <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
                   )}

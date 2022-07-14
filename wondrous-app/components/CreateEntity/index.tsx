@@ -30,6 +30,7 @@ interface ICreateEntity {
   handleCloseModal: Function;
   isTaskProposal?: boolean;
   formValues?: FormikValues;
+  parentTaskId?: string;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
