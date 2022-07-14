@@ -1,14 +1,12 @@
-import {
-    StyledCloseButton,
-} from './styles'
-import CloseModalIcon from '../../Icons/closeModal'
+import { StyledCloseButton } from './styles';
+import CloseModalIcon from 'components/Icons/closeModal';
 
 export const ModalCloseButton = (props) => {
-    const { onClick } = props
+  const { onClick, circle } = props;
 
-    return (
-        <StyledCloseButton onClick={onClick}>
-            <CloseModalIcon />
-        </StyledCloseButton>
-    )
-}
+  return (
+    <StyledCloseButton circle={circle} onClick={onClick}>
+      <CloseModalIcon />
+    </StyledCloseButton>
+  );
+};
