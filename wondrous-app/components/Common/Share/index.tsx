@@ -1,4 +1,5 @@
 import { TaskShareIcon } from 'components/Icons/taskShare';
+import Tooltip from 'components/Tooltip';
 import { useContext } from 'react';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { StyledShare } from './styles';
@@ -19,8 +20,10 @@ export const Share = (props: IShareProps) => {
     setSnackbarAlertOpen(true);
   };
   return (
-    <StyledShare onClick={handleOnClick} className={className}>
-      <TaskShareIcon />
-    </StyledShare>
+    <Tooltip title="Share task" placement="top">
+      <StyledShare onClick={handleOnClick}>
+        <TaskShareIcon />
+      </StyledShare>
+    </Tooltip>
   );
 };

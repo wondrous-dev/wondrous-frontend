@@ -23,6 +23,7 @@ export const TaskModal = styled(Modal)`
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 500;
 `;
 
 export const TaskModalCard = styled.div`
@@ -67,12 +68,12 @@ export const TaskModalHeaderWrapperRight = styled(TaskModalHeaderWrapper)`
 `;
 
 export const TaskModalHeaderPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
-  background: #2d2d2d;
+  background: #212121;
   border-radius: 6px;
   width: 20px;
   height: 20px;
   svg {
-    width: 12px;
+    width: 13px;
     path {
       stroke: ${({ theme }) => theme.palette.white};
     }
@@ -270,7 +271,6 @@ const TaskModalTaskDataFullScreen = css`
 const TaskModalTaskDataMinimized = css`
   display: flex;
   flex-direction: column;
-  gap: 18px;
 `;
 
 export const TaskModalTaskData = styled.div`
@@ -420,7 +420,7 @@ export const TaskDescriptionText = styled(Typography)`
       return `
       font-weight: ${theme.typography.fontWeightRegular};
       height: ${isExpanded ? 'fit-content' : `${initialHeight}px`};
-      color: #828282;
+      color: ${theme.palette.grey250};
     ${
       !isExpanded &&
       `
@@ -458,10 +458,11 @@ export const TaskMediaWrapper = styled(TaskMedia)`
 `;
 
 export const TaskSectionDisplayDivWrapper = styled.div`
+  margin-top: 18px;
   padding: 0 24px;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 18px;
   ${({ fullScreen }) =>
     fullScreen &&
     `
@@ -470,7 +471,15 @@ export const TaskSectionDisplayDivWrapper = styled.div`
     grid-row-start: 1;
     grid-row-end: 3;
     padding-top: 24px;
+    gap: 24px;
+    margin-top: 0;
   `}
+`;
+
+export const TaskSectionDisplayData = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 `;
 
 export const TaskSectionDisplayDiv = styled.div`
@@ -483,6 +492,8 @@ export const TaskSectionDisplayLabel = styled.div`
   align-items: center;
   min-width: 120px;
 `;
+
+export const TaskSectionDisplayCreator = styled.div``;
 
 export const TaskSectionDisplayContentWrapper = styled.div`
   display: flex;
@@ -555,6 +566,10 @@ export const TaskSectionInfoText = styled(TaskSectionDisplayText)`
     color: ${theme.palette.white};
  `}
   }
+`;
+
+export const TaskSectionInfoTextMilestone = styled(TaskSectionInfoText)`
+  cursor: pointer;
 `;
 
 export const TaskSectionInfoTextUnderlined = styled(TaskSectionDisplayText)`
@@ -776,6 +791,7 @@ export const TaskModalFooter = styled.div`
   flex-grow: 1;
   display: flex;
   flex-direction: column;
+  margin-top: ${({ fullScreen }) => (fullScreen ? 36 : 32)}px;
 `;
 
 export const TaskSectionFooterTitleDiv = styled.div`
@@ -908,5 +924,12 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     &::before {
       background: transparent;
     }
+  }
+`;
+
+export const InfoPoint = styled(TaskSectionInfoCreatorDaysAgo)`
+  && {
+    padding-top: 6px;
+    display: block;
   }
 `;

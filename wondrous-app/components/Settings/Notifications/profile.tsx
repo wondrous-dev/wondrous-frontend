@@ -55,7 +55,7 @@ const notificationsConfig = [
     label: 'Discussions',
     settings: [
       {
-        label: 'Comment',
+        label: 'When you receive a new comment',
         id: 'onComment',
       },
     ],
@@ -64,7 +64,7 @@ const notificationsConfig = [
     label: 'Membership requests',
     settings: [
       {
-        label: 'New requests',
+        label: 'When a member applies',
         id: 'onJoinRequest',
       },
       {
@@ -77,20 +77,20 @@ const notificationsConfig = [
     label: 'Assigned work',
     settings: [
       {
-        label: 'Assignments',
+        label: 'You’ve been assigned',
         id: 'onTaskAssign',
       },
       {
-        label: 'Signed off deliverables',
+        label: 'Your submission has been approved',
         id: 'onSubmissionsToReview',
       },
       {
+        label: 'Your work has been approved or rejected',
         id: 'onProposalSubmissionStatus',
-        label: 'Approvals and Rejections',
       },
       {
         id: 'onDueDate',
-        label: 'Due date reminders',
+        label: 'You have an upcoming due date',
       },
     ],
   },
@@ -99,7 +99,7 @@ const notificationsConfig = [
     settings: [
       {
         id: 'onTaskClaim',
-        label: 'Others claiming your tasks',
+        label: 'A task you created has been claimed',
       },
     ],
   },
@@ -107,7 +107,7 @@ const notificationsConfig = [
     label: 'Financial',
     settings: [
       {
-        label: 'New payment',
+        label: 'You’ve been paid for completed work',
         id: 'onPayment',
       },
     ],

@@ -1,7 +1,6 @@
-import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { transformMediaFormat } from 'utils/helpers';
 import MediaLink from '../MediaLink';
-import { TaskMediaContainer } from './styles';
+import { TaskMediaContainer, TaskMediaItem } from './styles';
 
 const TaskMedia = ({ media, className }: { media: Array<object>; className?: string }) => {
   if (!(media?.length > 0)) return null;
@@ -10,7 +9,7 @@ const TaskMedia = ({ media, className }: { media: Array<object>; className?: str
     <TaskMediaContainer className={className}>
       {formattedMedia?.map((mediaItem) => (
         <MediaLink key={mediaItem?.uploadSlug} media={mediaItem}>
-          <MediaItem mediaUploads={formattedMedia} mediaItem={mediaItem} viewOnly={true} />
+          <TaskMediaItem mediaUploads={formattedMedia} mediaItem={mediaItem} viewOnly={true} />
         </MediaLink>
       ))}
     </TaskMediaContainer>

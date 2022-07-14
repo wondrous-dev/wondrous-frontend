@@ -17,7 +17,7 @@ module.exports = withBundleAnalyzer({
     return config;
   },
   swcMinify: false,
-  experimental: {
+  compiler: {
     // ssr and displayName are configured by default
     styledComponents: true,
   },

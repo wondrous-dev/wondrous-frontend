@@ -502,3 +502,20 @@ export const TASK_APPLICATION_STATUS_LABELS = {
 // Invite link type
 export const ONE_TIME_USE_INVITE_LINK = 'one_time';
 export const PUBLIC_INVITE_LINK = 'public';
+
+export const ProposalVoteType = {
+  APPROVE: 'approve',
+  REJECT: 'reject',
+};
+
+export const PROPOSAL_VOTE_LABELS = {
+  [ProposalVoteType.APPROVE]: {
+    VOTED: 'Approved',
+    ACTION: 'Approve',
+  },
+  [ProposalVoteType.REJECT]: {
+    VOTED: 'Rejected',
+    ACTION: 'Reject',
+  },
+};
+

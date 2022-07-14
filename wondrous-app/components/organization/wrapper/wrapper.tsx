@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
 import useSideBar from 'hooks/useSideBar';
 import apollo from 'services/apollo';
 import { useMe } from '../../Auth/withAuth';
@@ -77,6 +77,9 @@ import {
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import { RichTextViewer } from 'components/RichText';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
@@ -99,6 +102,8 @@ const Wrapper = (props) => {
   const [orgRoleName, setOrgRoleName] = useState(null);
   const [claimableDiscordRole, setClaimableDiscordRole] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
+  const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
+
   const [createFormModal, setCreateFormModal] = useState(false);
   const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
@@ -279,6 +284,10 @@ const Wrapper = (props) => {
     }
   }, [orgBoard?.orgId]);
 
+  useHotkeys('tab+t', () => {
+    setCreateTaskModalOpen((prevState) => !prevState);
+  });
+
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -312,6 +321,21 @@ const Wrapper = (props) => {
         name={orgProfile?.name}
         orgId={orgBoard?.orgId}
       />
+      <CreateModalOverlay
+        style={{
+          height: '95vh',
+        }}
+        open={isCreateTaskModalOpen}
+        onClose={() => setCreateTaskModalOpen(false)}
+      >
+        <CreateEntityModal
+          entityType={ENTITIES_TYPES.TASK}
+          handleClose={() => setCreateTaskModalOpen(false)}
+          resetEntityType={() => {}}
+          setEntityType={() => {}}
+          cancel={() => setCreateTaskModalOpen(false)}
+        />
+      </CreateModalOverlay>
       <Header openCreateFormModal={toggleCreateFormModal} />
 
       <SideBarComponent />
@@ -321,7 +345,6 @@ const Wrapper = (props) => {
           paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
         }}
       >
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <HeaderImageWrapper>
           {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
         </HeaderImageWrapper>
@@ -350,7 +373,9 @@ const Wrapper = (props) => {
                 </HeaderTitleIcon>
                 <HeaderButtons>
                   {/* <Tooltip title="your permissions are:" > */}
-                  {permissions && orgRoleName && <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>}
+                  {permissions && orgRoleName && (
+                    <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
+                  )}
                   {/* </Tooltip> */}
                   {!isLoading && (
                     <TokenGatedBoard

@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import CircularProgress from '@mui/material/CircularProgress';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
   countCharacters,
@@ -25,6 +26,12 @@ import {
   UPDATE_TASK,
   TURN_TASK_TO_BOUNTY,
 } from 'graphql/mutations/task';
+import {
+  CREATE_TASK_PROPOSAL,
+  UPDATE_TASK_PROPOSAL,
+  ATTACH_MEDIA_TO_TASK_PROPOSAL,
+  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
+} from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
@@ -136,11 +143,14 @@ import {
   EditorToolbar,
   MediaUploadDiv,
   CreateEntityApplicationsSelectRender,
+  ApplicationInputWrapper,
+  ApplicationInputUnassignContainer,
 } from './styles';
 import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import { ErrorText } from 'components/Common';
 import { transformMediaFormat } from 'utils/helpers';
+import Checkbox from 'components/Checkbox';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -150,6 +160,7 @@ const formValidationSchema = Yup.object().shape({
   assigneeId: Yup.string().nullable(),
   claimPolicy: Yup.string().nullable(),
   claimPolicyRoles: Yup.array().of(Yup.string()).optional().nullable(),
+  shouldUnclaimOnDueDateExpiry: Yup.boolean().nullable(),
   points: Yup.number()
     .typeError('Points must be a number')
     .integer('Points must be whole number')
@@ -723,6 +734,85 @@ const useUpdateBounty = () => {
   return { handleMutation, loading };
 };
 
+const useCreateTaskProposal = () => {
+  const [createTaskProposal, { loading }] = useMutation(CREATE_TASK_PROPOSAL, {
+    refetchQueries: () => [
+      'GetOrgTaskBoardProposals',
+      'GetPodTaskBoardProposals',
+      'GetUserTaskBoardProposals',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+    ],
+  });
+
+  const handleMutation = ({ input, board, pods, form, handleClose }) =>
+    createTaskProposal({
+      variables: {
+        input: {
+          title: input.title,
+          description: input.description,
+          milestoneId: input.milestoneId,
+          orgId: input.orgId,
+          podId: input.podId,
+          reviewerIds: input.reviewerIds,
+          dueDate: input.dueDate,
+          timezone: input.timezone,
+          labelIds: input.labelIds,
+          proposedAssigneeId: input.assigneeId,
+          userMentions: input.userMentions,
+          mediaUploads: input.mediaUploads,
+          rewards: input.rewards,
+          privacyLevel: input.privacyLevel,
+        },
+      },
+    })
+      .then(() => {
+        handleClose();
+      })
+      .catch((e) => console.log(e));
+
+  return { handleMutation, loading };
+};
+
+const useUpdateTaskProposal = () => {
+  const [updateTaskProposal, { loading }] = useMutation(UPDATE_TASK_PROPOSAL, {
+    refetchQueries: () => [
+      'GetUserTaskBoardProposals',
+      'GetOrgTaskBoardProposals',
+      'GetPodTaskBoardProposals',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+    ],
+  });
+
+  const handleMutation = ({ input, board, handleClose, existingTask }) => {
+    updateTaskProposal({
+      variables: {
+        proposalId: existingTask?.id,
+        input: {
+          title: input.title,
+          description: input.description,
+          milestoneId: input.milestoneId,
+          orgId: input.orgId,
+          podId: input.podId,
+          reviewerIds: input.reviewerIds,
+          dueDate: input.dueDate,
+          timezone: input.timezone,
+          labelIds: input.labelIds,
+          proposedAssigneeId: input.assigneeId,
+          userMentions: input.userMentions,
+          mediaUploads: input.mediaUploads,
+          rewards: input.rewards,
+          privacyLevel: input.privacyLevel,
+        },
+      },
+    }).then(() => {
+      handleClose();
+    });
+  };
+  return { handleMutation, loading };
+};
+
 const CreateEntityDropdownRenderOptions = (value) => {
   return (
     <CreateEntitySelectRootValue>
@@ -820,6 +910,7 @@ enum Fields {
   milestone,
   tags,
   githubPullRequest,
+  shouldUnclaimOnDueDateExpiry,
 }
 
 const entityTypeData = {
@@ -829,6 +920,7 @@ const entityTypeData = {
       Fields.assignee,
       Fields.claimPolicy,
       Fields.claimPolicyRoles,
+      Fields.shouldUnclaimOnDueDateExpiry,
       Fields.dueDate,
       Fields.reward,
       Fields.points,
@@ -843,6 +935,7 @@ const entityTypeData = {
       podId: null,
       claimPolicy: null,
       claimPolicyRoles: null,
+      shouldUnclaimOnDueDateExpiry: null,
       title: '',
       description: plainTextToRichText(''),
       reviewerIds: null,
@@ -859,6 +952,7 @@ const entityTypeData = {
       githubRepo: null,
       chooseGithubPullRequest: false,
       chooseGithubIssue: false,
+      parentTaskId: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -889,9 +983,25 @@ const entityTypeData = {
       reviewerIds: null,
       rewards: [],
       dueDate: null,
-      points: null,
       labelIds: null,
       milestoneId: null,
+      privacyLevel: privacyOptions.public.value,
+      mediaUploads: [],
+    },
+  },
+  [ENTITIES_TYPES.PROPOSAL]: {
+    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.tags],
+    createMutation: useCreateTaskProposal,
+    updateMutation: useUpdateTaskProposal,
+    initialValues: {
+      orgId: null,
+      podId: null,
+      title: '',
+      description: plainTextToRichText(''),
+      dueDate: null,
+      rewards: [],
+      milestoneId: null,
+      labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
     },
@@ -938,13 +1048,13 @@ interface ICreateEntityModal {
   cancel: Function;
   existingTask?: {
     id: string;
-    claimPolicyRoles: [string] | null;
-    claimPolicy: string | null;
-    githubIssue: {
+    claimPolicyRoles?: [string] | null;
+    claimPolicy?: string | null;
+    githubIssue?: {
       id: string;
       url: string;
     };
-    githubPullRequest: {
+    githubPullRequest?: {
       id: string;
       url: string;
       title: string;
@@ -980,7 +1090,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
   const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
-  const { handleMutation, loading } = existingTask
+  const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
   const [turnTaskToBounty] = useMutation(TURN_TASK_TO_BOUNTY, {
@@ -1027,7 +1137,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           githubPullRequest,
         }),
       };
-      handleMutation({ input, board, pods, form, handleClose, existingTask: existingTask });
+      handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
@@ -1066,6 +1176,19 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const [fullScreen, setFullScreen] = useState(false);
   const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
+  const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
+  const [removeTaskProposalMedia] = useMutation(REMOVE_MEDIA_FROM_TASK_PROPOSAL);
+
+  const handleMedia = () => {
+    if (entityType === ENTITIES_TYPES.PROPOSAL) {
+      return {
+        attach: attachTaskProposalMedia,
+        remove: removeTaskProposalMedia,
+      };
+    }
+    return { attach: attachMedia, remove: removeMedia };
+  };
+
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
@@ -1090,8 +1213,19 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => handleOnchangePodId(board?.podId || routerPodId)
   );
-  useContextValue(!form.values.orgId && !form.values.podId && formValues, () =>
-    form.setValues({ ...form.values, orgId: formValues.orgId, podId: formValues.podId })
+  useContextValue(formValues?.orgId && !form.values.orgId, () =>
+    form.setValues({ ...form.values, orgId: formValues.orgId })
+  );
+  useContextValue(formValues?.podId && !form.values.podId, () =>
+    form.setValues({ ...form.values, podId: formValues.podId })
+  );
+  useContextValue(formValues?.milestoneId && !form.values.milestoneId, () =>
+    form.setValues({
+      ...form.values,
+      orgId: formValues.orgId,
+      podId: formValues.podId,
+      milestoneId: formValues.milestoneId,
+    })
   );
 
   useEffect(() => {
@@ -1183,13 +1317,17 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
-                disabled={formValues !== undefined}
+                disabled={isSubtask || formValues !== undefined}
               />
             </>
           )}
         </CreateEntityHeaderWrapper>
         <CreateEntityHeaderWrapper>
-          <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+          <Tooltip title="Full screen" placement="top">
+            <Box>
+              <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+            </Box>
+          </Tooltip>
         </CreateEntityHeaderWrapper>
       </CreateEntityHeader>
       <CreateEntityBody>
@@ -1248,9 +1386,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   mediaItem={mediaItem}
                   removeMediaItem={() => {
                     if (existingTask) {
-                      removeMedia({
+                      handleMedia().remove({
                         variables: {
-                          taskId: existingTask?.['id'],
+                          ...(entityType === ENTITIES_TYPES.PROPOSAL
+                            ? { proposalId: existingTask?.id }
+                            : { taskId: existingTask?.id }),
                           slug: mediaItem?.uploadSlug || mediaItem?.slug,
                         },
                       });
@@ -1277,15 +1417,17 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 setFileUploadLoading,
               });
               if (existingTask) {
-                attachMedia({
+                handleMedia().attach({
                   variables: {
-                    taskId: existingTask?.['id'],
+                    ...(entityType === ENTITIES_TYPES.PROPOSAL
+                      ? { proposalId: existingTask?.id }
+                      : { taskId: existingTask?.id }),
                     input: {
                       mediaUploads: [fileToAdd],
                     },
                   },
                   onCompleted: (data) => {
-                    const task = data?.attachTaskMedia;
+                    const task = data?.attachTaskMedia || data?.attachTaskProposalMedia;
                     form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
                     setFileUploadLoading(false);
                   },
@@ -1512,124 +1654,139 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
-        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.claimPolicy)}>
-          <CreateEntityLabelWrapper>
-            <CreateEntityLabel>Applications</CreateEntityLabel>
-          </CreateEntityLabelWrapper>
-          <CreateEntitySelectWrapper style={{ alignItems: 'center', flexWrap: 'nowrap' }}>
-            {form.values.claimPolicy !== null && (
-              <CreateEntityWrapper>
-                <CreateEntitySelect
-                  name="task-applications"
-                  value={form.values.claimPolicy}
-                  style={{ width: '100%' }}
-                  onChange={(value) => {
-                    form.setFieldValue('claimPolicy', value);
-                    if (value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value)
-                      form.setFieldValue('claimPolicyRoles', [roles[0]?.id]);
-                  }}
-                  renderValue={() => {
-                    const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value;
-                    return (
-                      <CreateEntityApplicationsSelectRender>
-                        <span>
-                          {isRolesSelected ? 'Role: ' : APPLICATION_POLICY_LABELS_MAP[form.values?.claimPolicy]?.title}
-                        </span>
-                        <CreateEntitySelectArrowIcon />
-                      </CreateEntityApplicationsSelectRender>
-                    );
-                  }}
-                >
-                  {Object.keys(APPLICATION_POLICY).map((policy, idx) => {
-                    const appPolicy = APPLICATION_POLICY[policy];
-                    return (
-                      <CreateEntityOption key={idx} value={appPolicy?.value}>
-                        <CreateEntityOptionLabel>{appPolicy?.title}</CreateEntityOptionLabel>
-                      </CreateEntityOption>
-                    );
-                  })}
-                </CreateEntitySelect>
-
-                {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
+        <ApplicationInputWrapper>
+          <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.claimPolicy)}>
+            <CreateEntityLabelWrapper>
+              <CreateEntityLabel>Applications</CreateEntityLabel>
+            </CreateEntityLabelWrapper>
+            <CreateEntitySelectWrapper style={{ alignItems: 'center', flexWrap: 'nowrap' }}>
+              {form.values.claimPolicy !== null && (
+                <CreateEntityWrapper>
                   <CreateEntitySelect
-                    name="task-applications-claim-roles"
-                    value={form.values.claimPolicyRoles}
-                    style={{ width: '100%', height: 'fit-content' }}
-                    onChange={(value) =>
-                      form.setFieldValue(
-                        'claimPolicyRoles',
-                        form.values.claimPolicyRoles ? [...form.values.claimPolicyRoles, value] : [value]
-                      )
-                    }
+                    name="task-applications"
+                    value={form.values.claimPolicy}
+                    style={{ width: '100%' }}
+                    onChange={(value) => {
+                      form.setFieldValue('claimPolicy', value);
+                      if (value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value)
+                        form.setFieldValue('claimPolicyRoles', [roles[0]?.id]);
+                    }}
                     renderValue={() => {
+                      const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value;
                       return (
                         <CreateEntityApplicationsSelectRender>
-                          <>
-                            {form.values?.claimPolicyRoles?.map((role) => {
-                              const roleData = getRoleDataById(role);
-                              return (
-                                <StyledChipTag
-                                  key={role}
-                                  style={{ margin: '2px' }}
-                                  deleteIcon={<div>&times;</div>}
-                                  onClick={() =>
-                                    form.setFieldValue(
-                                      'claimPolicyRoles',
-                                      form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
-                                    )
-                                  }
-                                  label={roleData?.name}
-                                  // background={option.color}
-                                  variant="outlined"
-                                />
-                              );
-                            })}
-                          </>
+                          <span>
+                            {isRolesSelected
+                              ? 'Role: '
+                              : APPLICATION_POLICY_LABELS_MAP[form.values?.claimPolicy]?.title}
+                          </span>
                           <CreateEntitySelectArrowIcon />
                         </CreateEntityApplicationsSelectRender>
                       );
                     }}
                   >
-                    {roles?.map((role, roleIdx) => {
-                      if (form.values.claimPolicyRoles?.includes(role.id)) return null;
+                    {Object.keys(APPLICATION_POLICY).map((policy, idx) => {
+                      const appPolicy = APPLICATION_POLICY[policy];
                       return (
-                        <CreateEntityOption key={roleIdx} value={role.id}>
-                          <CreateEntityOptionLabel>{role?.name}</CreateEntityOptionLabel>
+                        <CreateEntityOption key={idx} value={appPolicy?.value}>
+                          <CreateEntityOptionLabel>{appPolicy?.title}</CreateEntityOptionLabel>
                         </CreateEntityOption>
                       );
                     })}
                   </CreateEntitySelect>
-                )}
-              </CreateEntityWrapper>
-            )}
 
-            {form.values.claimPolicy !== null && (
-              <CreateEntityAutocompletePopperRenderInputAdornment
-                position="end"
-                onClick={() => {
-                  form.setFieldValue('claimPolicy', null);
-                  form.setFieldValue('claimPolicyRoles', null);
-                }}
-              >
-                <CreateEntityAutocompletePopperRenderInputIcon />
-              </CreateEntityAutocompletePopperRenderInputAdornment>
-            )}
-            {form.touched.claimPolicy && <CreateEntityError>{form.touched.claimPolicy}</CreateEntityError>}
-            {form.values.claimPolicy === null && (
-              <CreateEntityLabelAddButton
-                onClick={() => {
-                  console.log(APPLICATION_POLICY.ALL_MEMBERS.value);
-                  form.setFieldValue('claimPolicy', APPLICATION_POLICY.ALL_MEMBERS.value);
-                }}
-              >
-                <CreateEntityAddButtonIcon />
-                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
-              </CreateEntityLabelAddButton>
-            )}
-          </CreateEntitySelectWrapper>
-        </CreateEntityLabelSelectWrapper>
+                  {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
+                    <CreateEntitySelect
+                      name="task-applications-claim-roles"
+                      value={form.values.claimPolicyRoles}
+                      style={{ width: '100%', height: 'fit-content' }}
+                      onChange={(value) =>
+                        form.setFieldValue(
+                          'claimPolicyRoles',
+                          form.values.claimPolicyRoles ? [...form.values.claimPolicyRoles, value] : [value]
+                        )
+                      }
+                      renderValue={() => {
+                        return (
+                          <CreateEntityApplicationsSelectRender>
+                            <>
+                              {form.values?.claimPolicyRoles?.map((role) => {
+                                const roleData = getRoleDataById(role);
+                                return (
+                                  <StyledChipTag
+                                    key={role}
+                                    style={{ margin: '2px' }}
+                                    deleteIcon={<div>&times;</div>}
+                                    onClick={() =>
+                                      form.setFieldValue(
+                                        'claimPolicyRoles',
+                                        form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
+                                      )
+                                    }
+                                    label={roleData?.name}
+                                    // background={option.color}
+                                    variant="outlined"
+                                  />
+                                );
+                              })}
+                            </>
+                            <CreateEntitySelectArrowIcon />
+                          </CreateEntityApplicationsSelectRender>
+                        );
+                      }}
+                    >
+                      {roles?.map((role, roleIdx) => {
+                        if (form.values.claimPolicyRoles?.includes(role.id)) return null;
+                        return (
+                          <CreateEntityOption key={roleIdx} value={role.id}>
+                            <CreateEntityOptionLabel>{role?.name}</CreateEntityOptionLabel>
+                          </CreateEntityOption>
+                        );
+                      })}
+                    </CreateEntitySelect>
+                  )}
+                </CreateEntityWrapper>
+              )}
 
+              {form.values.claimPolicy !== null && (
+                <CreateEntityAutocompletePopperRenderInputAdornment
+                  position="end"
+                  onClick={() => {
+                    form.setFieldValue('claimPolicy', null);
+                    form.setFieldValue('claimPolicyRoles', null);
+                    form.setFieldValue('shouldUnclaimOnDueDateExpiry', null);
+                  }}
+                >
+                  <CreateEntityAutocompletePopperRenderInputIcon />
+                </CreateEntityAutocompletePopperRenderInputAdornment>
+              )}
+              {form.touched.claimPolicy && <CreateEntityError>{form.touched.claimPolicy}</CreateEntityError>}
+              {form.values.claimPolicy === null && (
+                <CreateEntityLabelAddButton
+                  onClick={() => {
+                    console.log(APPLICATION_POLICY.ALL_MEMBERS.value);
+                    form.setFieldValue('claimPolicy', APPLICATION_POLICY.ALL_MEMBERS.value);
+                  }}
+                >
+                  <CreateEntityAddButtonIcon />
+                  <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+                </CreateEntityLabelAddButton>
+              )}
+            </CreateEntitySelectWrapper>
+          </CreateEntityLabelSelectWrapper>
+          {form.values.claimPolicy !== null && entityTypeData[entityType].fields.includes(Fields.claimPolicy) && (
+            <ApplicationInputUnassignContainer>
+              <Checkbox
+                checked={form.values.shouldUnclaimOnDueDateExpiry}
+                onChange={() =>
+                  form.setFieldValue('shouldUnclaimOnDueDateExpiry', !form.values.shouldUnclaimOnDueDateExpiry)
+                }
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+              Remove assignee when due date is passed
+            </ApplicationInputUnassignContainer>
+          )}
+        </ApplicationInputWrapper>
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.dueDate)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Due Date</CreateEntityLabel>
@@ -1802,6 +1959,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   form.setFieldValue('milestoneId', null);
                 }}
                 formValues={form.values}
+                disabled={formValues?.milestoneId}
               />
             )}
             {form.values.milestoneId === null && (

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { CommentFragment } from 'graphql/fragments/comments';
 import { MediaFragment } from '../fragments/media';
 import { TaskSubmissionFragment } from '../fragments/task';
 
@@ -67,6 +68,23 @@ export const REQUEST_CHANGE_SUBMISSION = gql`
 export const REJECT_SUBMISSION = gql`
   mutation rejectTaskSubmission($submissionId: ID!, $timezone: String) {
     rejectTaskSubmission(submissionId: $submissionId, timezone: $timezone) {
+      success
+    }
+  }
+`;
+
+export const CREATE_SUBMISSION_COMMENT = gql`
+  mutation createTaskSubmissionComment($input: SubmissionCommentInput) {
+    createTaskSubmissionComment(input: $input) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;
+
+export const DELETE_SUBMISSION_COMMENT = gql`
+  mutation deleteTaskSubmissionComment($submissionCommentId: String!) {
+    deleteTaskSubmissionComment(submissionCommentId: $submissionCommentId) {
       success
     }
   }

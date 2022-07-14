@@ -186,7 +186,7 @@ export const FilterItem = styled.div`
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
-    padding: 0.3px;
+    padding: 1px;
   }`}
   &:hover {
     ${({ selected }) => !selected && '&::before { background: linear-gradient(270deg, #474747 1.17%, #7a7a7a 101%)}'}

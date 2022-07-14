@@ -30,6 +30,7 @@ import palette from 'theme/palette';
 import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
+import Tooltip from 'components/Tooltip';
 
 interface TokenGatingCondition {
   id: string;
@@ -53,6 +54,7 @@ const CHAIN_NAME_TO_CHAIN_ID = {
   rinkeby: 4,
   polygon: 137,
 };
+const UNDEFINED_CONTRACT_RESPONSE = 'Unidentified contract';
 
 const TokenGatedRoleDisplay = (props) => {
   const router = useRouter();
@@ -87,6 +89,8 @@ const TokenGatedRoleDisplay = (props) => {
     fetchPolicy: 'network-only',
   });
   const contractAddress = role?.tokenGatingCondition?.accessCondition[0].contractAddress;
+  const tokenGatingConditionName = role?.tokenGatingCondition?.name;
+
   useEffect(() => {
     if (checkPodRoleAccessData?.checkPodRoleTokenGatingCondition?.success) {
       setCanClaimRole(true);
@@ -175,17 +179,22 @@ const TokenGatedRoleDisplay = (props) => {
   return (
     <TokenGatedRoleWrapper>
       <div>
-        <TokenGatedRoleTitle>{role?.name}</TokenGatedRoleTitle>
+        <TokenGatedRoleTitle>Role: {role?.name}</TokenGatedRoleTitle>
+        {/* {tokenGatingConditionName && <TokenGatedRoleDescription> {tokenGatingConditionName}</TokenGatedRoleDescription>} */}
+        <Tooltip key={'claimable-role-' + role?.tokenGatingCondition?.id} title={contractAddress} placement="top">
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+            }}
+          >
+            <TokenLogoDisplay src={tokenLogo} />
+            <TokenGatedRoleDescription>
+              {tokenName && tokenName !== UNDEFINED_CONTRACT_RESPONSE ? tokenName : tokenGatingConditionName}
+            </TokenGatedRoleDescription>
+          </div>
+        </Tooltip>
 
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          <TokenLogoDisplay src={tokenLogo} />
-          <TokenGatedRoleDescription>{tokenName ? tokenName : contractAddress}</TokenGatedRoleDescription>
-        </div>
         <div
           style={{
             display: 'flex',
