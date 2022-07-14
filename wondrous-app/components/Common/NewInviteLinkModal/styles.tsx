@@ -11,8 +11,8 @@ import {
   FormControlLabel,
 } from '@mui/material';
 import styled from 'styled-components';
-import { ModalCloseButton } from '../ModalCloseButton';
-import { AndroidSwitch } from '../../CreateEntity/createEntityModal';
+import { ModalCloseButton } from 'components/Common/ModalCloseButton';
+import { AndroidSwitch } from 'components/CreateEntity/CreatePodModal';
 import palette from 'theme/palette';
 
 export const StyledModal = styled(Modal)``;
