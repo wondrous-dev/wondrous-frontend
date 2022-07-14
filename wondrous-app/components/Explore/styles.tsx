@@ -1,13 +1,10 @@
-import { Grid, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import { SIDEBAR_WIDTH } from 'utils/constants';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import Masonry from '@mui/lab/Masonry';
 import WheelSvg from './wheel.svg';
 import Metheor from './metheor.svg';
 import { ShowMoreButton } from 'components/ListView/styles';
-import palette from 'theme/palette';
-import { createSpacingUnit } from 'utils';
 import { device } from 'utils/device';
 
 export const Wheel = styled(WheelSvg)`
@@ -44,7 +41,6 @@ export const BackgroundContainer = styled.div`
   border-radius: 6px;
   display: flex;
   justify-content: center;
-  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   background: linear-gradient(180deg, #1a1a1a 0%, #1d0052 100%);
   position: relative;
   ${BackgroundImg} {
@@ -288,7 +284,6 @@ export const ExplorePageContentWrapper = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   background: url('/images/explore/explore-page-background.svg');
   background-size: cover;
 `;
@@ -352,7 +347,6 @@ export const ExplorePageFooter = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-left: ${({ isMinimized }) => (isMinimized ? '0' : SIDEBAR_WIDTH)};
   ${BackgroundImg} {
     width: 100%;
     height: 100%;

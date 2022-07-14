@@ -1,15 +1,10 @@
 import React from 'react';
-import { useRouter } from 'next/router';
-import SideBarComponent from 'components/SideBar';
-import { SettingsContainer } from 'components/Settings/styles';
-import { HeaderBlock } from 'components/Settings/headerBlock';
 import {
   ListType,
   DiscordParagraph,
   DiscordTitle,
   BoldParagraph,
   ListItem,
-  BoldSpan,
   SmallerTopParagraph,
 } from 'components/Discord/styles';
 import palette from 'theme/palette';

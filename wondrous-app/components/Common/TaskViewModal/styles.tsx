@@ -23,7 +23,7 @@ export const TaskModal = styled(Modal)`
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 300;
+  z-index: 500;
 `;
 
 export const TaskModalCard = styled.div`
@@ -924,5 +924,12 @@ export const ActionButton = styled(CreateFormPreviewButton)`
     &::before {
       background: transparent;
     }
+  }
+`;
+
+export const InfoPoint = styled(TaskSectionInfoCreatorDaysAgo)`
+  && {
+    padding-top: 6px;
+    display: block;
   }
 `;

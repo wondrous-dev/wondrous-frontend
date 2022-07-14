@@ -33,6 +33,7 @@ import { KICK_POD_USER } from 'graphql/mutations/pod';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
+import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
 
 const LIMIT = 10;
 
@@ -77,6 +78,7 @@ const Members = (props) => {
   const [userToRemove, setUserToRemove] = useState(null);
   const [users, setUsers] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
+  const [openInvite, setOpenInvite] = useState(false);
 
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
@@ -178,6 +180,12 @@ const Members = (props) => {
 
   return (
     <SettingsWrapper showPodIcon={false}>
+      <NewOrgInviteLinkModal
+        orgOrPodName={orgOrPodName}
+        orgId={orgId}
+        open={openInvite}
+        onClose={() => setOpenInvite(false)}
+      />
       <RolesContainer>
         <ConfirmModal
           open={!!userToRemove}
@@ -216,6 +224,7 @@ const Members = (props) => {
             </>
           }
           description="Use roles to organize contributors and admins"
+          onInvite={() => setOpenInvite(true)}
         />
 
         <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />

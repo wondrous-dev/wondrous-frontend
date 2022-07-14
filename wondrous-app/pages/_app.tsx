@@ -18,6 +18,7 @@ import { initHotjar } from 'utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
 import OnboardingTour from 'components/Guide';
+import SidebarLayout from 'components/Common/Layout';
 declare global {
   interface Window {
     gtag: any;
@@ -42,7 +43,6 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
   // be server-side rendered.
   const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-  const [minimized, setMinimized] = useState(false);
 
   useEffect(() => {
     initHotjar();
@@ -79,12 +79,7 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
               <SnackbarAlertProvider>
                 <Web3ReactProvider getLibrary={getLibrary}>
                   <WonderWeb3Provider>
-                    <SideBarContext.Provider
-                      value={{
-                        minimized,
-                        setMinimized,
-                      }}
-                    >
+                    <SidebarLayout>
                       <OnboardingTour>
                         <Component
                           {...pageProps}
@@ -94,7 +89,7 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
                           key={router.asPath}
                         />
                       </OnboardingTour>
-                    </SideBarContext.Provider>
+                    </SidebarLayout>
                   </WonderWeb3Provider>
                 </Web3ReactProvider>
               </SnackbarAlertProvider>

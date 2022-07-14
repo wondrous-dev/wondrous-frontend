@@ -1,7 +1,4 @@
 import React, { useState, useCallback } from 'react';
-import { SideBarContext } from 'utils/contexts';
-import Header from '../Header';
-import SideBarComponent from '../SideBar';
 import { OverviewComponent } from '../Wrapper/styles';
 import {
   BackgroundContainer,
@@ -33,7 +30,6 @@ const LIMIT = 10;
 
 const ExploreComponent = () => {
   const isMobile = useIsMobile();
-  const [minimized, setMinimized] = useState(isMobile);
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
   const {
@@ -97,91 +93,82 @@ const ExploreComponent = () => {
   ];
   return (
     <>
-      <Header />
-      <SideBarContext.Provider
-        value={{
-          minimized,
-          setMinimized,
+      <OverviewComponent
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          flexDirection: 'column',
+          paddingTop: '40px',
         }}
       >
-        <SideBarComponent />
-        <OverviewComponent
-          style={{
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'column',
-            paddingTop: '40px',
-          }}
-        >
-          <BackgroundContainer isMinimized={minimized} style={isMobile ? gridMobileStyles : {}}>
-            <BackgroundImg src="/images/explore/explore-page-banner.svg" />
-            <Wheel />
-            <BackgroundTextWrapper>
-              <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
-              <BackgroundTextSubHeader>
-                Join your next favorite project and ean crypto by contributing to one of our Partners
-              </BackgroundTextSubHeader>
-            </BackgroundTextWrapper>
-          </BackgroundContainer>
-          <ExplorePageContentWrapper isMinimized={minimized}>
-            <TabsWrapper isMinimized={minimized}>
-              {tabs.map((tab, idx) => (
-                <Tab
-                  hoverColor={tab.hoverColor}
-                  iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
-                  key={idx}
-                  onClick={tab.action}
-                  isActive={activeTab === tab.key}
-                  type="button"
-                  color={tab.color}
-                  rotateDeg={tab.rotateDeg}
-                >
-                  <span>{tab.title}</span>
-                  <IconWrapper>{tab?.icon}</IconWrapper>
-                </Tab>
-              ))}
-            </TabsWrapper>
-            {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
-            {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
-              <BountySection
-                isMobile={isMobile}
-                bounties={bounties?.getBountiesToExplore}
-                fetchMore={getBountiesToExploreFetchMore}
-                hasMore={hasMoreBounties}
-              />
-            )}
-          </ExplorePageContentWrapper>
-          <ExplorePageFooter isMinimized={minimized}>
-            <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
-            <MetheorSvg />
-            <PartnershipRequest>
-              <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
-              <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
-              <Button
+        <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
+          <BackgroundImg src="/images/explore/explore-page-banner.svg" />
+          <Wheel />
+          <BackgroundTextWrapper>
+            <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
+            <BackgroundTextSubHeader>
+              Join your next favorite project and ean crypto by contributing to one of our Partners
+            </BackgroundTextSubHeader>
+          </BackgroundTextWrapper>
+        </BackgroundContainer>
+        <ExplorePageContentWrapper>
+          <TabsWrapper>
+            {tabs.map((tab, idx) => (
+              <Tab
+                hoverColor={tab.hoverColor}
+                iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
+                key={idx}
+                onClick={tab.action}
+                isActive={activeTab === tab.key}
+                type="button"
+                color={tab.color}
+                rotateDeg={tab.rotateDeg}
+              >
+                <span>{tab.title}</span>
+                <IconWrapper>{tab?.icon}</IconWrapper>
+              </Tab>
+            ))}
+          </TabsWrapper>
+          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+          {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
+            <BountySection
+              isMobile={isMobile}
+              bounties={bounties?.getBountiesToExplore}
+              fetchMore={getBountiesToExploreFetchMore}
+              hasMore={hasMoreBounties}
+            />
+          )}
+        </ExplorePageContentWrapper>
+        <ExplorePageFooter>
+          <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
+          <MetheorSvg />
+          <PartnershipRequest>
+            <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
+            <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
+            <Button
+              style={{
+                textDecoration: 'none',
+                color: palette.white,
+                alignSelf: 'center',
+                marginTop: '28px',
+              }}
+            >
+              <a
                 style={{
                   textDecoration: 'none',
                   color: palette.white,
-                  alignSelf: 'center',
-                  marginTop: '28px',
                 }}
+                href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
+                target="_blank"
+                rel="noreferrer"
               >
-                <a
-                  style={{
-                    textDecoration: 'none',
-                    color: palette.white,
-                  }}
-                  href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
-                  target="_blank"
-                  rel="noreferrer"
-                >
-                  Sign up here!
-                </a>
-              </Button>
-            </PartnershipRequest>
-          </ExplorePageFooter>
-        </OverviewComponent>
-      </SideBarContext.Provider>
+                Sign up here!
+              </a>
+            </Button>
+          </PartnershipRequest>
+        </ExplorePageFooter>
+      </OverviewComponent>
     </>
   );
 };

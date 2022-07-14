@@ -53,6 +53,7 @@ const cache = new InMemoryCache({
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
         getProposalsUserCanReview: offsetLimitPagination(),
         getSubmissionsUserCanReview: offsetLimitPagination(),
+        getSubtasksForTask: offsetLimitPagination(['taskId', 'status']),
       },
     },
   },
