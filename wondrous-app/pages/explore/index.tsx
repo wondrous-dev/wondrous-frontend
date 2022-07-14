@@ -10,7 +10,6 @@ const Explore = ({ user }) => {
       setIsOpen(true);
     }
   }, [user]);
-
   return (
     <>
       <ExploreComponent />
