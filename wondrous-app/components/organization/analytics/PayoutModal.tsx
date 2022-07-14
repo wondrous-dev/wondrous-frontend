@@ -3,8 +3,6 @@ import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
 import { Tab } from '@mui/material';
 import {
-  PodNameTypography,
-  PaymentModal,
   PaymentTitleDiv,
   PaymentTitleTextDiv,
   PaymentTitleText,
@@ -262,8 +260,10 @@ export const PayoutModal = (props) => {
       }
       if (!userToPaymentMethod[contributor?.assigneeId] || !userToRewardAmount[contributor?.assigneeId]) {
         // if reward not selected then show error message
-        setErrorMessage('Must enter reward amount for all users');
-        return;
+        const confirmed = confirm('Reward amount is not set for all users, Continue?');
+        if (!confirmed) {
+          return;
+        }
       }
     }
 

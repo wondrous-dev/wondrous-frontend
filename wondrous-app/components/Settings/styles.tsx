@@ -227,6 +227,32 @@ export const SettingsHeaderText = styled(Typography)`
   }
 `;
 
+export const SettingsHeaderInviteButton = styled.button`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: #232323;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 150%;
+  padding: 7px 7px 7px 14px;
+  outline: none;
+  border: none;
+  border-radius: 1000px;
+  cursor: pointer;
+`;
+
+export const SettingsHeaderInviteButtonIcon = styled.div`
+  height: 25px;
+  width: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #3d3d3d;
+  border-radius: 1000px;
+`;
+
 //general settings styles
 export const GeneralSettingsContainer = styled.div`
   height: 100%;

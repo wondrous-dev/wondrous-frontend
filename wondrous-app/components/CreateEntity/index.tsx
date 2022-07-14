@@ -18,6 +18,7 @@ interface ICreateEntity {
       url: string;
     };
     claimPolicyRoles: [string] | null;
+    shouldUnclaimOnDueDateExpiry: boolean | null;
     claimPolicy: string | null;
     githubPullRequest: {
       id: string;
@@ -29,6 +30,7 @@ interface ICreateEntity {
   handleCloseModal: Function;
   isTaskProposal?: boolean;
   formValues?: FormikValues;
+  parentTaskId?: string;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
