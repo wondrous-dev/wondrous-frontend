@@ -326,6 +326,13 @@ export const TaskProposalFragment = gql`
       color
     }
     snapshotId
+    votes {
+      counts {
+        approve
+        reject
+      }
+      userVote
+    }
   }
   ${MediaFragment}
 `;
