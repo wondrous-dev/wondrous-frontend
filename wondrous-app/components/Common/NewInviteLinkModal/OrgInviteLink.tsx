@@ -164,7 +164,7 @@ export const NewOrgInviteLinkModal = (props) => {
         </InviteThruLinkInputWrapper>
 
         <StyledDivider />
-        <InviteThruEmailLabel>Invite through email</InviteThruEmailLabel>
+        {/* <InviteThruEmailLabel>Invite through email</InviteThruEmailLabel>
         <InviteThruEmailTextFieldButtonWrapper>
           <InviteThruEmailTextFieldSelectWrapper>
             <InviteThruEmailTextField placeholder="Enter email address" />
@@ -183,7 +183,7 @@ export const NewOrgInviteLinkModal = (props) => {
             <InviteThruEmailButtonLabel>Send invite</InviteThruEmailButtonLabel>
           </InviteButton>
         </InviteThruEmailTextFieldButtonWrapper>
-        <StyledDivider />
+        <StyledDivider /> */}
         <LinkSwitch label="One time use" checked={linkOneTimeUse} onClick={handleLinkOneTimeUseChange} />
       </StyledBox>
     </StyledModal>
