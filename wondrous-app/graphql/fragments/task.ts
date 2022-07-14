@@ -92,6 +92,7 @@ export const TaskFragment = gql`
     }
     claimPolicy
     claimPolicyRoles
+    shouldUnclaimOnDueDateExpiry
   }
 
   ${MediaFragment}
