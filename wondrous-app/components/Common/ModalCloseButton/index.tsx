@@ -1,5 +1,5 @@
 import { StyledCloseButton } from './styles';
-import CloseModalIcon from '../../Icons/closeModal';
+import CloseModalIcon from 'components/Icons/closeModal';
 
 export const ModalCloseButton = (props) => {
   const { onClick, circle } = props;

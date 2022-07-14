@@ -27,9 +27,9 @@ import {
   LinkSwitch,
   TextSubheading,
 } from './styles';
-import PersonAddIcon from '../../Icons/personAdd';
-import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
-import { putDefaultRoleOnTop } from '../InviteLinkModal/OrgInviteLink';
+import PersonAddIcon from 'components/Icons/personAdd';
+import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
+import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
