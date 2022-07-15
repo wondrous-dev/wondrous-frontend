@@ -137,6 +137,7 @@ export const SearchBox = styled.div`
     border: none;
     outline: none;
     color: #7a7a7a;
+    padding-left: 20px;
     flex: auto;
     &::placeholder {
       color: #7a7a7a;
@@ -179,14 +180,14 @@ export const StyledTabs = styled(Tabs)`
     color: unset;
   }
   .css-5kfebo-MuiButtonBase-root-MuiTab-root {
-    padding: 0 !important;
+    padding: 0 5px !important;
     min-height: unset !important;
   }
 
   .MuiTabs-indicator {
     background: linear-gradient(270deg, #ccbbff 2.13%, #7427ff 48.52%, #00baff 100%);
-    left: ${(props) => (props.value === 'pod' ? '103px !important' : '0')};
-    width: ${(props) => (props.value === 'pod' ? '39.4792px !important' : '90px !important')};
+    left: ${(props) => (props.value === 'pod' ? '115px !important' : '0')};
+    width: ${(props) => (props.value === 'pod' ? '47.4792px !important' : '98px !important')};
     /* 39.4792px */
   }
 `;
