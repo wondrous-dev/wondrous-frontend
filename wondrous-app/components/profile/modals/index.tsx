@@ -185,9 +185,11 @@ export const MoreInfoModal = (props) => {
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
       setDisplayUsers(true);
+      setActiveTab('contributors');
     }
     if (showPods && !displayUsers && !displayPods) {
       setDisplayPods(true);
+      setActiveTab('pod');
     }
     if (orgId) {
       if (displayPods) {
@@ -238,6 +240,7 @@ export const MoreInfoModal = (props) => {
         handleClose();
         setDisplayUsers(false);
         setDisplayPods(false);
+        setActiveTab('contributors');
       }}
     >
       <TaskModalBaseCard>
@@ -248,6 +251,7 @@ export const MoreInfoModal = (props) => {
               handleClose();
               setDisplayUsers(false);
               setDisplayPods(false);
+              setActiveTab('contributors');
             }}
             src="/images/icons/cancelIcon.svg"
             alt="cancel"
@@ -283,7 +287,6 @@ export const MoreInfoModal = (props) => {
             </TabText>
           </StyledTabs>
         </Container>
-
         <SearchBox>
           <Image src="/images/icons/search.svg" alt="search" width={20} height={18} />
           <input
