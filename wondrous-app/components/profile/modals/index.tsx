@@ -4,6 +4,8 @@ import { CircularProgress } from '@mui/material';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
+import Image from 'next/image';
+
 import { TaskModalBaseCard } from '../../Common/Task/styles';
 import {
   CommentLine,
@@ -19,6 +21,7 @@ import {
   StyledTab,
   StyledTabs,
   TabContainerText,
+  TabText,
   Title,
   UserProfilePicture,
   UserWrapper,
@@ -27,7 +30,6 @@ import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from '../../Comment/styles';
 import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
-import Image from 'next/image';
 
 const PodItem = (props) => {
   const router = useRouter();
@@ -99,8 +101,8 @@ export const MoreInfoModal = (props) => {
   const [displayPods, setDisplayPods] = useState(showPods);
   const [userList, setUserList] = useState([]);
   const [podList, setPodList] = useState([]);
-  const [userListFinal, setUserListFinal] = useState([]);
-  const [podListFinal, setPodListFinal] = useState([]);
+  const [userListSearch, setUserListSearch] = useState([]);
+  const [podListSearch, setPodListSearch] = useState([]);
   const [dividedUserList, setDividedUserList] = useState([]);
   const [dividedPodList, setDividedPodList] = useState([]);
   const [activeTab, setActiveTab] = useState('contributors');
@@ -124,6 +126,54 @@ export const MoreInfoModal = (props) => {
     fetchPolicy: 'cache-and-network',
   });
   const pods = orgPodData?.getOrgPods;
+
+  const searchUser = (value) => {
+    if (value) {
+      const newList = userList.filter((item) => {
+        if (item.username && item.bio) {
+          return (
+            item.username.toLowerCase().includes(value.toLowerCase()) ||
+            item.bio.toLowerCase().includes(value.toLowerCase())
+          );
+        }
+      });
+      setUserListSearch(newList);
+    } else {
+      setUserListSearch(userList);
+    }
+  };
+  const searchPod = (value) => {
+    if (value) {
+      const newList = podList.filter((item) => {
+        if (item.name && item.description) {
+          return (
+            item.name.toLowerCase().includes(value.toLowerCase()) ||
+            item.description.toLowerCase().includes(value.toLowerCase())
+          );
+        }
+      });
+      setPodListSearch(newList);
+    } else {
+      setPodListSearch(podList);
+    }
+  };
+  const array_chunks = (array, chunk_size) =>
+    Array(Math.ceil(array.length / chunk_size))
+      .fill(0)
+      .map((_, index) => index * chunk_size)
+      .map((begin) => array.slice(begin, begin + chunk_size));
+  useEffect(() => {
+    if (userListSearch) {
+      const newlist = array_chunks(userListSearch, 5);
+      setDividedUserList(newlist);
+    }
+  }, [userListSearch]);
+  useEffect(() => {
+    if (podListSearch) {
+      const newlist = array_chunks(podListSearch, 5);
+      setDividedPodList(newlist);
+    }
+  }, [podListSearch]);
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
       setDisplayUsers(true);
@@ -164,58 +214,14 @@ export const MoreInfoModal = (props) => {
   }, [orgId, podId, displayPods, displayUsers, showUsers, showPods, pods]);
   useEffect(() => {
     if (userList) {
-      setUserListFinal([...userList]);
+      setUserListSearch([...userList]);
     }
   }, [userList]);
   useEffect(() => {
     if (podList) {
-      setPodListFinal([...podList]);
+      setPodListSearch([...podList]);
     }
   }, [podList]);
-
-  const searchUser = (value) => {
-    if (value) {
-      const newList = userList.filter((item) => {
-        if (item.username) {
-          return item.username.toLowerCase().includes(value.toLowerCase());
-        }
-      });
-      setUserListFinal(newList);
-    } else {
-      setUserListFinal(userList);
-    }
-  };
-  const searchPod = (value) => {
-    if (value) {
-      const newList = podList.filter((item) => {
-        if (item.name) {
-          return item.name.toLowerCase().includes(value.toLowerCase());
-        }
-      });
-      setPodListFinal(newList);
-    } else {
-      setPodListFinal(podList);
-    }
-  };
-
-  const array_chunks = (array, chunk_size) =>
-    Array(Math.ceil(array.length / chunk_size))
-      .fill(0)
-      .map((_, index) => index * chunk_size)
-      .map((begin) => array.slice(begin, begin + chunk_size));
-
-  useEffect(() => {
-    if (userListFinal) {
-      const newlist = array_chunks(userListFinal, 5);
-      setDividedUserList(newlist);
-    }
-  }, [userListFinal]);
-  useEffect(() => {
-    if (podListFinal) {
-      const newlist = array_chunks(podListFinal, 5);
-      setDividedPodList(newlist);
-    }
-  }, [podListFinal]);
 
   return (
     <Modal
@@ -249,28 +255,24 @@ export const MoreInfoModal = (props) => {
               marginTop: '16px',
             }}
           >
-            <p>
-              <StyledTab
-                onClick={() => {
-                  setDisplayPods(false);
-                  setDisplayUsers(true);
-                  setActiveTab('contributors');
-                }}
-                isActive={activeTab === 'contributors'}
-                label={'Contributors'}
-              />
-            </p>
-            <p>
-              <StyledTab
-                onClick={() => {
-                  setDisplayPods(true);
-                  setDisplayUsers(false);
-                  setActiveTab('pod');
-                }}
-                isActive={activeTab === 'pod'}
-                label={'Pods'}
-              />{' '}
-            </p>
+            <TabText
+              onClick={() => {
+                setDisplayPods(false);
+                setDisplayUsers(true);
+                setActiveTab('contributors');
+              }}
+            >
+              <StyledTab isActive={activeTab === 'contributors'} label={'Contributors'} />
+            </TabText>
+            <TabText
+              onClick={() => {
+                setDisplayPods(true);
+                setDisplayUsers(false);
+                setActiveTab('pod');
+              }}
+            >
+              <StyledTab isActive={activeTab === 'pod'} label={'Pods'} />{' '}
+            </TabText>
           </StyledTabs>
         </Container>
 
@@ -284,10 +286,9 @@ export const MoreInfoModal = (props) => {
                 searchPod(e.target.value);
               }
             }}
-            placeholder={'Search contributors...'}
+            placeholder={`Search ${displayPods ? 'pods' : 'contributors'}...`}
             type="text"
             className="search"
-            style={{ marginLeft: 12 }}
           />
         </SearchBox>
         {displayUsers && (

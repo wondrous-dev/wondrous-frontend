@@ -198,13 +198,20 @@ export const StyledTab = styled(Tab)`
     font-weight: 500;
     min-width: fit-content;
     opacity: 1;
-    /* padding: 3px; */
     margin-right: 20px;
     color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
   }
 `;
 
 export const Snap = styled.div`
-  /* scroll-snap-type: y mandatory; */
   scroll-snap-align: start;
+`;
+export const TabText = styled.p`
+  margin: 0px !important;
+  height: 45px !important ;
+  margin-bottom: 0;
+  button {
+    display: flex !important;
+    height: 100% !important;
+  }
 `;
