@@ -135,6 +135,10 @@ export const MoreInfoModal = (props) => {
             item.username.toLowerCase().includes(value.toLowerCase()) ||
             item.bio.toLowerCase().includes(value.toLowerCase())
           );
+        } else if (item.username) {
+          return item.username.toLowerCase().includes(value.toLowerCase());
+        } else if (item.description) {
+          return item.bio.toLowerCase().includes(value.toLowerCase());
         }
       });
       setUserListSearch(newList);
@@ -150,6 +154,10 @@ export const MoreInfoModal = (props) => {
             item.name.toLowerCase().includes(value.toLowerCase()) ||
             item.description.toLowerCase().includes(value.toLowerCase())
           );
+        } else if (item.name) {
+          return item.name.toLowerCase().includes(value.toLowerCase());
+        } else if (item.description) {
+          return item.description.toLowerCase().includes(value.toLowerCase());
         }
       });
       setPodListSearch(newList);
