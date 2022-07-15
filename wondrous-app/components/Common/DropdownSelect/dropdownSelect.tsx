@@ -1,17 +1,17 @@
-import React, { useRef, useState } from 'react';
+import React, {  useState } from 'react';
+import { FormControl } from '@mui/material';
+
+import { SafeImage } from 'components/Common/Image';
 import {
   CreateFormInputLabel,
   CreateFormMenuItem,
   CreateFormMenuItemIcon,
   CreateFormSelect,
-  CreateFormSelectArrowIcon,
   CreateFormSelectBlock,
   CreateFormSelectBlockTitle,
 } from './styles';
-import { SafeImage } from '../Image';
-import { FormControl } from '@mui/material';
 
-const DefaultMenuProps = {
+const DEFAULT_MENU_PROPS = {
   PaperProps: {
     style: {
       maxHeight: '250px',
@@ -27,35 +27,33 @@ const DefaultMenuProps = {
   },
 };
 
-const DropdownSelect = (props) => {
-  const {
-    title,
-    className,
-    labelText,
-    labelIcon,
-    options,
-    MenuProps = DefaultMenuProps,
-    IconComponent,
-    name,
-    value,
-    setValue,
-    formSelectStyle,
-    disabled,
-    titleStyle,
-    onChange,
-    innerStyle,
-    hideLabel,
-    labelStyle,
-  } = props;
+const DropdownSelect = ({
+  title,
+  className,
+  labelText,
+  labelIcon,
+  options,
+  MenuProps = DEFAULT_MENU_PROPS,
+  IconComponent,
+  name,
+  value,
+  setValue,
+  formSelectStyle,
+  disabled,
+  titleStyle,
+  onChange,
+  innerStyle,
+  hideLabel,
+  labelStyle,
+}) => {
+  const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
     setValue(event.target.value);
-    if (onChange) {
-      onChange();
-    }
+
+    onChange && onChange();
   };
 
-  const [open, setOpen] = useState(false);
   return (
     <CreateFormSelectBlock style={formSelectStyle} className={className}>
       {!hideLabel && (

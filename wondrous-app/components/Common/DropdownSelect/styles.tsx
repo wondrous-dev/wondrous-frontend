@@ -47,7 +47,7 @@ export const CreateFormInputLabel = styled(InputLabel)({
     alignItems: 'center',
     justifyContent: 'center',
     padding: '4px 15px',
-    // padding: '0 15px',
+    height: `calc(100% - 14px)`,
     cursor: 'pointer',
 
     '& svg': {
