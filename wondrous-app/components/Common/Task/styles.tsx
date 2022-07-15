@@ -209,7 +209,7 @@ export const TaskModalBaseCard = styled(BaseCard)`
   align-items: center;
   justify-content: center;
   background: rgb(20, 20, 20) !important;
-
+  border: 1px solid #424242;
   &::-webkit-scrollbar {
     display: none;
     width: 0;
