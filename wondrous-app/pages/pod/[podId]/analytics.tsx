@@ -7,7 +7,7 @@ import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import Analytics from 'components/Pod/analytics';
 
-const useGetPodById = (podId) => {
+export const useGetPodById = (podId) => {
   const [getPodById, { data }] = useLazyQuery(GET_POD_BY_ID);
   useEffect(() => {
     if (!data && podId) {
