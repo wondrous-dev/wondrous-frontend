@@ -6,7 +6,7 @@ import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/quer
 import { OrgBoardContext } from 'utils/contexts';
 import Analytics from 'components/organization/analytics';
 
-const useGetOrgFromUsername = (username) => {
+export const useGetOrgFromUsername = (username) => {
   const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
   useEffect(() => {
     if (!data && username) {
