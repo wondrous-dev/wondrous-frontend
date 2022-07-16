@@ -509,6 +509,10 @@ const useCreateTask = () => {
       'getPerStatusTaskCountForUserBoard',
       'getSubtasksForTask',
       'getSubtaskCountForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
     ],
   });
 
@@ -1764,7 +1768,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               {form.values.claimPolicy === null && (
                 <CreateEntityLabelAddButton
                   onClick={() => {
-                    console.log(APPLICATION_POLICY.ALL_MEMBERS.value);
                     form.setFieldValue('claimPolicy', APPLICATION_POLICY.ALL_MEMBERS.value);
                   }}
                 >

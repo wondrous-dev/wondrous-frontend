@@ -63,6 +63,7 @@ import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import ChooseEntityToCreate from 'components/CreateEntity';
 
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
@@ -276,6 +277,7 @@ const Wrapper = (props) => {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
       />
+      <ChooseEntityToCreate />
       <TokenGatedAndClaimableRoleModal
         open={claimableRoleModalOpen}
         onClose={() => setClaimableRoleModalOpen(false)}

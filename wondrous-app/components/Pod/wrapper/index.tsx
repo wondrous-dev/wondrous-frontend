@@ -55,6 +55,7 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
+import ChooseEntityToCreate from 'components/CreateEntity';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -252,6 +253,7 @@ const Wrapper = (props) => {
         name={podProfile?.name}
         podId={podProfile?.id}
       />
+      <ChooseEntityToCreate />
       <OverviewComponent>
         <HeaderImageWrapper>
           {podProfile?.headerPicture ? <HeaderImage src={podProfile?.headerPicture} /> : <HeaderImageDefault />}

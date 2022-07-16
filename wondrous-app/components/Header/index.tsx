@@ -1,12 +1,11 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
-
 import Box from '@mui/material/Box';
 
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
-import { useIsMobile } from 'utils/hooks';
+import { useIsMobile, useCreateEntityContext } from 'utils/hooks';
 
 import Wallet from 'components/Common/Wallet';
 import { useMe, withAuth } from '../Auth/withAuth';
@@ -36,7 +35,8 @@ const HeaderComponent = (props) => {
   const { data: notifications, refetch, fetchMore: fetchMoreNotifications } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
   const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
-  const { openCreateFormModal } = props;
+  const createEntityContext = useCreateEntityContext();
+  const { toggleCreateFormModal: openCreateFormModal } = createEntityContext;
   const setNotifications = async (newNotifications = null) => {
     if (newNotifications) {
       // Mark as read specific notifications
