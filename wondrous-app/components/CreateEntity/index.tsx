@@ -26,6 +26,8 @@ interface ICreateEntity {
       url: string;
       title: string;
     };
+    orgId: string;
+    snapshotId?: string;
   };
   open: Boolean;
   handleCloseModal: Function;
