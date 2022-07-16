@@ -131,6 +131,13 @@ export const SettingsWrapper = (props) => {
       page: [SettingsPage.Org],
     },
     {
+      icon: <NotificationOutlineSettings />, // need a another icon
+      label: 'Task Import',
+      value: 'import',
+      href: `/organization/settings/${orgId}/task-import`,
+      page: [SettingsPage.Org],
+    },
+    {
       icon: <NotificationOutlineSettings />,
       label: 'Notifications',
       value: 'notifications',

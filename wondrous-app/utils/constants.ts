@@ -139,6 +139,10 @@ export const DISCORD_CONNECT_TYPES = {
   connectOnboarding: 'connectOnboarding',
 };
 
+export const NOTION_CONNECT_TYPES = {
+  TASK_IMPORT: 'taskImport',
+};
+
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
 
 export const CHAIN_IDS = {

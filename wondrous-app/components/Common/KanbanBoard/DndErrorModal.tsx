@@ -7,7 +7,7 @@ import {
   CreateLayoutsModalItemContainer,
   CreateLayoutsModalItemTitle,
   CreateModalOverlay,
-} from '../../CreateEntity/styles';
+} from 'components/CreateEntity/styles';
 import CloseModalIcon from '../../Icons/closeModal';
 import { ModalBody } from './styles';
 
