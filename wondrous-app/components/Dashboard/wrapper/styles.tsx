@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 
 export const OverviewComponent = styled.section`
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   height: 100%;
   background-color: #0f0f0f;
@@ -23,7 +23,7 @@ export const ContentContainer = styled.div`
 `;
 
 export const Banner = styled.div`
-  width: 100vw;
+  width: 100%;
   height: 230px;
   position: relative;
 `;
