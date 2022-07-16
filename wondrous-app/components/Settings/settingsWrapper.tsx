@@ -39,6 +39,7 @@ import {
   SettingsSidebarTabsSectionLabel,
   ArchivedPodIndicatorText,
 } from './styles';
+import ChooseEntityToCreate from 'components/CreateEntity';
 
 export const SettingsWrapper = (props) => {
   const { children, showPodIcon = true } = props;
@@ -229,6 +230,7 @@ export const SettingsWrapper = (props) => {
           pod,
         }}
       >
+        <ChooseEntityToCreate />
         <SettingsContainer>
           <SettingsSidebar>
             <SettingsSidebarContainer>

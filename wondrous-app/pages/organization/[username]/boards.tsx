@@ -43,7 +43,6 @@ import { OrgBoardContext } from 'utils/contexts';
 import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
-import ChooseEntityToCreate from 'components/CreateEntity';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -660,7 +659,6 @@ const BoardsPage = () => {
       }}
     >
       {isMobile ? <MobileComingSoonModal /> : null}
-      <ChooseEntityToCreate />
       <Boards
         columns={columns}
         searchString={searchString}

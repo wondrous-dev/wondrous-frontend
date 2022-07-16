@@ -255,6 +255,7 @@ const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefined, po
     orgId: orgId,
     podId: podId,
   });
+  console.log(permissions);
   return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
 };
 
@@ -1200,6 +1201,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       }),
     () => form.setFieldValue('orgId', board?.orgId)
   );
+  console.log(
+    board?.podId,
+    routerPodId,
+    hasCreateTaskPermission({
+      userPermissionsContext: fetchedUserPermissionsContext,
+      orgId: form.values.orgId,
+      podId: board?.podId,
+    })
+  );
   useContextValue(
     !form.values.podId &&
       (board?.podId || routerPodId) &&
@@ -1252,6 +1262,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
+  console.log(filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId));
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <ConvertTaskToBountyModal
