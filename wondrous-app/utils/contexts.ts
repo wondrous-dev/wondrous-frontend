@@ -25,3 +25,5 @@ export const SelectMembershipContext = createContext(null);
 export const EditTokenGatingConditionContext = createContext(null);
 
 export const UserProfileContext = createContext(null);
+
+export const CreateEntityContext = createContext(null);

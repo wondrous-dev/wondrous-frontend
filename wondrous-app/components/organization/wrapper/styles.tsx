@@ -11,7 +11,7 @@ import { LinkIcon } from '../../Icons/linkIcon';
 import { Button as ButtonComponent } from 'components/Common/button';
 
 export const OverviewComponent = styled.section`
-  width: 100vw;
+  width: 100%;
   min-height: 100vh;
   height: 100%;
   //background-color: ${palette.background.default};

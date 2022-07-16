@@ -6,20 +6,7 @@ import Analytic from 'components/Pod/analytics';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import Analytics from 'components/Pod/analytics';
-
-export const useGetPodById = (podId) => {
-  const [getPodById, { data }] = useLazyQuery(GET_POD_BY_ID);
-  useEffect(() => {
-    if (!data && podId) {
-      getPodById({
-        variables: {
-          podId,
-        },
-      });
-    }
-  }, [podId, data, getPodById]);
-  return data?.getPodById;
-};
+import { useGetPodById } from 'utils/hooks';
 
 const AnalyticsPage = () => {
   const router = useRouter();
