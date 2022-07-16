@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
-import { useEffect } from 'react';
 import Box from '@mui/material/Box';
 
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
@@ -32,9 +31,6 @@ const HeaderComponent = (props) => {
   const user = useMe();
   const isMobile = useIsMobile();
 
-  useEffect(() => {
-    console.count('header mount');
-  }, []);
   // Grab Notifications from Backend
   const { data: notifications, refetch, fetchMore: fetchMoreNotifications } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);

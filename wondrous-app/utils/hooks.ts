@@ -23,6 +23,7 @@ import {
   GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
   GET_POD_BY_ID,
   GET_ORG_FROM_USERNAME,
+  GET_ORG_BY_ID,
 } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 

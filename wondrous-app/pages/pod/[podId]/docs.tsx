@@ -5,20 +5,7 @@ import { withAuth } from 'components/Auth/withAuth';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import Docs from 'components/Pod/docs/docs';
 import { PodBoardContext } from 'utils/contexts';
-
-const useGetPodFromId = (podId) => {
-  const [getPodById, { data }] = useLazyQuery(GET_POD_BY_ID);
-  useEffect(() => {
-    if (!data && podId) {
-      getPodById({
-        variables: {
-          podId,
-        },
-      });
-    }
-  }, [podId, data, getPodById]);
-  return data?.getPodById;
-};
+import { useGetPodById } from 'utils/hooks';
 
 const DocsPage = () => {
   const router = useRouter();
@@ -28,7 +15,7 @@ const DocsPage = () => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const pod = useGetPodFromId(podId);
+  const pod = useGetPodById(podId);
   return (
     <PodBoardContext.Provider
       value={{
@@ -37,6 +24,7 @@ const DocsPage = () => {
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
+        orgId: pod?.orgId,
       }}
     >
       <Docs podData={pod} />

@@ -1,9 +1,8 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { withAuth } from 'components/Auth/withAuth';
-import Analytic from 'components/Pod/analytics';
-import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import Analytics from 'components/Pod/analytics';
 import { useGetPodById } from 'utils/hooks';
@@ -20,6 +19,7 @@ const AnalyticsPage = () => {
       value={{
         pod: getPodById,
         podId,
+        orgId: getPodById?.orgId,
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,

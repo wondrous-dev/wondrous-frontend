@@ -511,6 +511,8 @@ const useCreateTask = () => {
       'getSubtaskCountForTask',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
     ],
   });
 
