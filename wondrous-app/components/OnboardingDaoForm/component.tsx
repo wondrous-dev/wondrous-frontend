@@ -3,9 +3,9 @@ import {
   BackButton,
   ButtonWrapper,
   CancelButton,
-  ComponentWrapper,
   CloseButton,
   CloseButtonIcon,
+  ComponentWrapper,
   ContinueButton,
   FooterWrapper,
   FormWrapper,
@@ -19,15 +19,16 @@ import {
   Wrapper,
 } from './styles';
 
+const NO_OF_STEPS = 6;
+
 export const OnboardingStepIndicator = ({ step }) => {
-  const noOfSteps = 6;
   const rangeIndicator = (start, end, Component) =>
     Array.from({ length: start - end }, (_, i) => <Component key={i} />);
   return (
     <StepIndicatorWrapper>
       {rangeIndicator(step, 1, StepIndicatorDone)}
       <StepIndicatorFilled />
-      {rangeIndicator(noOfSteps, step, StepIndicatorEmpty)}
+      {rangeIndicator(NO_OF_STEPS, step, StepIndicatorEmpty)}
     </StepIndicatorWrapper>
   );
 };
@@ -44,12 +45,12 @@ const BackButtonWrapper = ({ step, handleBack }) => {
 };
 
 const CancelButtonWrapper = ({ step, handleLater }) => {
-  if (step === 6) return null;
+  if (step === NO_OF_STEPS) return null;
   return <CancelButton onClick={handleLater}>Later</CancelButton>;
 };
 
 const ContinueButtonWrapper = ({ step }) => {
-  if (step === 6) return <ContinueButton>🚀 Launch DAO</ContinueButton>;
+  if (step === NO_OF_STEPS) return <ContinueButton>🚀 Launch DAO</ContinueButton>;
   return <ContinueButton>Next</ContinueButton>;
 };
 
