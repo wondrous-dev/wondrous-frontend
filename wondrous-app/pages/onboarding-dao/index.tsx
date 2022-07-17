@@ -1,5 +1,5 @@
 import { withAuth } from 'components/Auth/withAuth';
-import OnboardingDaoForm, { CreateDao, AddImages } from 'components/OnboardingDaoForm';
+import OnboardingDaoForm, { AddImages, CreateDao, DaoCategory } from 'components/OnboardingDaoForm';
 import { useReducer } from 'react';
 
 const TempComp = () => <></>;
@@ -21,7 +21,7 @@ const fields = [
     title: 'DAO category',
     subtitle: 'How would you categorize what your DAO does?',
     step: 3,
-    Component: TempComp,
+    Component: DaoCategory,
   },
   {
     title: 'Import tasks',

@@ -1,3 +1,4 @@
+import { InputUnstyled } from '@mui/base';
 import { ButtonBase, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
@@ -213,4 +214,26 @@ export const ChildrenFieldWrapper = styled.div`
   flex-direction: column;
   gap: 24px;
   width: 100%;
+`;
+
+export const FieldInput = styled(InputUnstyled)`
+  && {
+    .MuiInput-input {
+      background: #141414;
+      border-radius: 6px;
+      border-radius: 6px;
+      border: none;
+      color: ${({ theme }) => theme.palette.white};
+      font-family: 'Space Grotesk';
+      font-size: 15px;
+      font-style: normal;
+      font-weight: 400;
+      height: 42px;
+      padding: 12px;
+      width: 100%;
+      :focus-visible {
+        outline: none;
+      }
+    }
+  }
 `;
