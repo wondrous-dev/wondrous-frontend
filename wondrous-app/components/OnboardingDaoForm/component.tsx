@@ -7,6 +7,7 @@ import {
   CloseButton,
   CloseButtonIcon,
   ContinueButton,
+  FooterWrapper,
   FormWrapper,
   HeaderWrapper,
   StepIndicatorDone,
@@ -16,7 +17,6 @@ import {
   Subtitle,
   Title,
   Wrapper,
-  FooterWrapper,
 } from './styles';
 
 export const OnboardingStepIndicator = ({ step }) => {
@@ -53,7 +53,7 @@ const ContinueButtonWrapper = ({ step }) => {
   return <ContinueButton>Next</ContinueButton>;
 };
 
-const OnboardingDaoForm = ({ children, title, subtitle, step, handleLater, handleBack }) => {
+const OnboardingDaoForm = ({ Component, title, subtitle, step, handleLater, handleBack }) => {
   return (
     <Wrapper>
       <FormWrapper>
@@ -65,7 +65,9 @@ const OnboardingDaoForm = ({ children, title, subtitle, step, handleLater, handl
         </HeaderWrapper>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
-        <ChildrenWrapper>{children}</ChildrenWrapper>
+        <ChildrenWrapper>
+          <Component />
+        </ChildrenWrapper>
         <FooterWrapper>
           <BackButtonWrapper step={step} handleBack={handleBack} />
           <ButtonWrapper>
