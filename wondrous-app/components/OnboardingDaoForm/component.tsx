@@ -32,6 +32,27 @@ export const OnboardingStepIndicator = ({ step }) => {
   );
 };
 
+const BackButtonWrapper = ({ step, handleBack }) => {
+  if (step === 1) return <ButtonWrapper />;
+  return (
+    <ButtonWrapper>
+      <BackButton onClick={handleBack}>
+        <LeftArrowIcon />
+      </BackButton>
+    </ButtonWrapper>
+  );
+};
+
+const CancelButtonWrapper = ({ step, handleLater }) => {
+  if (step === 6) return null;
+  return <CancelButton onClick={handleLater}>Later</CancelButton>;
+};
+
+const ContinueButtonWrapper = ({ step }) => {
+  if (step === 6) return <ContinueButton>🚀 Launch DAO</ContinueButton>;
+  return <ContinueButton>Next</ContinueButton>;
+};
+
 const OnboardingDaoForm = ({ children, title, subtitle, step, handleLater, handleBack }) => {
   return (
     <Wrapper>
@@ -46,14 +67,10 @@ const OnboardingDaoForm = ({ children, title, subtitle, step, handleLater, handl
         <Subtitle>{subtitle}</Subtitle>
         <ChildrenWrapper>{children}</ChildrenWrapper>
         <FooterWrapper>
+          <BackButtonWrapper step={step} handleBack={handleBack} />
           <ButtonWrapper>
-            <BackButton onClick={handleBack}>
-              <LeftArrowIcon />
-            </BackButton>
-          </ButtonWrapper>
-          <ButtonWrapper>
-            <CancelButton onClick={handleLater}>Later</CancelButton>
-            <ContinueButton>Continue</ContinueButton>
+            <CancelButtonWrapper step={step} handleLater={handleLater} />
+            <ContinueButtonWrapper step={step} />
           </ButtonWrapper>
         </FooterWrapper>
       </FormWrapper>
