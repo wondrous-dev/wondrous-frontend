@@ -1,5 +1,11 @@
 import { withAuth } from 'components/Auth/withAuth';
-import OnboardingDaoForm, { AddImages, CreateDao, DaoCategory, ImportTasks } from 'components/OnboardingDaoForm';
+import OnboardingDaoForm, {
+  AddImages,
+  CreateDao,
+  DaoCategory,
+  ImportTasks,
+  InviteCommunity,
+} from 'components/OnboardingDaoForm';
 import { useReducer } from 'react';
 
 const TempComp = () => <></>;
@@ -33,7 +39,7 @@ const fields = [
     title: 'Invite your community ',
     subtitle: `Upload a CSV with all your contributors and community members. Those who don\'t have an account will be sent an invite link.`,
     step: 5,
-    Component: TempComp,
+    Component: InviteCommunity,
   },
   {
     title: 'Review',

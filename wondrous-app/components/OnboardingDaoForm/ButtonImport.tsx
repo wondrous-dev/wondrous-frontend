@@ -2,19 +2,7 @@ import { ButtonBase, Typography } from '@mui/material';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import styled from 'styled-components';
 
-export const Wrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-`;
-
-export const ButtonWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-`;
-
-export const Button = styled(({ children, ...props }) => (
+const ButtonImportWrapper = styled(({ children, ...props }) => (
   <ButtonBase {...props}>
     <div>{children}</div>
   </ButtonBase>
@@ -42,7 +30,7 @@ export const Button = styled(({ children, ...props }) => (
   }
 `;
 
-export const ButtonIconTextWrapper = styled.div`
+const ButtonIconTextWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
@@ -77,21 +65,16 @@ export const RightArrow = styled((props) => (
   }
 `;
 
-export const ButtonCSVTemplate = styled(ButtonBase)`
-  && {
-    align-items: center;
-    background: #313131;
-    border-radius: 6px;
-    color: ${({ theme }) => theme.palette.white};
-    display: flex;
-    flex-direction: row;
-    font-family: 'Space Grotesk';
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-    height: 38px;
-    justify-content: center;
-    padding: 10px;
-    width: 113px;
-  }
-`;
+export const ButtonImport = ({ borderColor, Icon, text }) => {
+  return (
+    <ButtonImportWrapper borderColor={borderColor}>
+      <ButtonIconTextWrapper>
+        <Icon />
+        <ButtonText>{text}</ButtonText>
+      </ButtonIconTextWrapper>
+      <RightArrow />
+    </ButtonImportWrapper>
+  );
+};
+
+export default ButtonImport;
