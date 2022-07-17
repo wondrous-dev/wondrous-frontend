@@ -238,3 +238,34 @@ export const FieldInput = styled(InputUnstyled)`
     }
   }
 `;
+
+export const ButtonsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+`;
+
+export const ImportButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+`;
+
+export const ButtonCSVTemplate = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: #313131;
+    border-radius: 6px;
+    color: ${({ theme }) => theme.palette.white};
+    display: flex;
+    flex-direction: row;
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 500;
+    height: 38px;
+    justify-content: center;
+    padding: 10px;
+    width: 113px;
+  }
+`;
