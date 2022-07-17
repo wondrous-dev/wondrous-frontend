@@ -1,6 +1,7 @@
 import CSVIcon from 'components/Icons/csv.svg';
+import ButtonCSVTemplate from 'components/OnboardingDao/ButtonCSVTemplate';
 import ButtonImport from 'components/OnboardingDao/ButtonImport';
-import { ButtonCSVTemplate, ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
+import { ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
 
 const buttons = [
   {
@@ -18,7 +19,7 @@ const InviteCommunity = () => {
           <ButtonImport key={text} borderColor={borderColor} Icon={Icon} text={text} />
         ))}
       </ImportButtonWrapper>
-      <ButtonCSVTemplate>CSV Template</ButtonCSVTemplate>
+      <ButtonCSVTemplate />
     </ButtonsWrapper>
   );
 };

@@ -44,7 +44,7 @@ const BackButtonWrapper = ({ step, handleBack }) => {
   );
 };
 
-const CancelButtonWrapper = ({ step, handleLater }) => {
+const LaterButtonWrapper = ({ step, handleLater }) => {
   if (step === NO_OF_STEPS) return null;
   return <CancelButton onClick={handleLater}>Later</CancelButton>;
 };
@@ -54,7 +54,7 @@ const ContinueButtonWrapper = ({ step }) => {
   return <ContinueButton>Next</ContinueButton>;
 };
 
-const OnboardingDaoForm = ({ Component, title, subtitle, step, handleLater, handleBack }) => {
+const StepWrapper = ({ Component, title, subtitle, step, handleLater, handleBack }) => {
   return (
     <Wrapper>
       <FormWrapper>
@@ -72,7 +72,7 @@ const OnboardingDaoForm = ({ Component, title, subtitle, step, handleLater, hand
         <FooterWrapper>
           <BackButtonWrapper step={step} handleBack={handleBack} />
           <ButtonWrapper>
-            <CancelButtonWrapper step={step} handleLater={handleLater} />
+            <LaterButtonWrapper step={step} handleLater={handleLater} />
             <ContinueButtonWrapper step={step} />
           </ButtonWrapper>
         </FooterWrapper>
@@ -81,4 +81,4 @@ const OnboardingDaoForm = ({ Component, title, subtitle, step, handleLater, hand
   );
 };
 
-export default OnboardingDaoForm;
+export default StepWrapper;
