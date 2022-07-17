@@ -5,7 +5,7 @@ import OnboardingDaoForm, {
   DaoCategory,
   ImportTasks,
   InviteCommunity,
-} from 'components/OnboardingDaoForm';
+} from 'components/OnboardingDao';
 import { useReducer } from 'react';
 
 const TempComp = () => <></>;

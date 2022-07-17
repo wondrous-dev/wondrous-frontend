@@ -1,4 +1,4 @@
-import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
+import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { useState } from 'react';
 import { ChipWrapper, Divider, StyledChip } from './styles';
 

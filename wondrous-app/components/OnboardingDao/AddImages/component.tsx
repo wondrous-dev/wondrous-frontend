@@ -1,5 +1,5 @@
 import AddAPhotoIcon from 'components/Icons/addAPhoto.svg';
-import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
+import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, LogoWrapper } from './styles';
 
 const AddImages = () => {
