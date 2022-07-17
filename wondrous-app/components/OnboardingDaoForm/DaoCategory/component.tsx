@@ -35,7 +35,7 @@ const DaoCategory = () => {
           <Divider />
           <FieldWrapper>
             <FieldLabel>Enter custom goal</FieldLabel>
-            <FieldInput placeholder="What is the org's goal?" />
+            <FieldInput placeholder="What is your DAO's goal?" />
           </FieldWrapper>
         </>
       )}
