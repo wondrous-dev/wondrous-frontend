@@ -1,4 +1,4 @@
-import { ChildrenFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
+import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
 import { useState } from 'react';
 import { ChipWrapper, Divider, StyledChip } from './styles';
 
@@ -19,7 +19,7 @@ const CATEGORIES = [
 const DaoCategory = () => {
   const [selected, setSelected] = useState(null);
   return (
-    <ChildrenFieldWrapper>
+    <ComponentFieldWrapper>
       <ChipWrapper>
         {CATEGORIES.map((category, index) => (
           <StyledChip
@@ -39,7 +39,7 @@ const DaoCategory = () => {
           </FieldWrapper>
         </>
       )}
-    </ChildrenFieldWrapper>
+    </ComponentFieldWrapper>
   );
 };
 

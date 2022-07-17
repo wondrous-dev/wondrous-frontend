@@ -3,7 +3,7 @@ import {
   BackButton,
   ButtonWrapper,
   CancelButton,
-  ChildrenWrapper,
+  ComponentWrapper,
   CloseButton,
   CloseButtonIcon,
   ContinueButton,
@@ -65,9 +65,9 @@ const OnboardingDaoForm = ({ Component, title, subtitle, step, handleLater, hand
         </HeaderWrapper>
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
-        <ChildrenWrapper>
+        <ComponentWrapper>
           <Component />
-        </ChildrenWrapper>
+        </ComponentWrapper>
         <FooterWrapper>
           <BackButtonWrapper step={step} handleBack={handleBack} />
           <ButtonWrapper>
