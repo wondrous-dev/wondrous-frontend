@@ -30,7 +30,7 @@ export const PaymentModalHeader = styled.div`
 `;
 
 export const PaymentModal = styled(BaseCard)`
-  width: 680px;
+  width: 780px;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -147,6 +147,9 @@ export const StyledTabs = styled((props) => (
   '& .MuiTabs-indicatorSpan': {
     width: '100%',
     backgroundColor: '#7427FF',
+  },
+  '& .Mui-selected': {
+    color: 'white !important',
   },
 });
 

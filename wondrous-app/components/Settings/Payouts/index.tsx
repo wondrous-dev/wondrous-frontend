@@ -488,8 +488,7 @@ const Payouts = (props) => {
       </LedgerHeaderButtonsContainer>
       <StyledTableContainer
         style={{
-          marginLeft: '-3%',
-          width: '110%',
+          width: '100%',
         }}
       >
         <StyledTable>
