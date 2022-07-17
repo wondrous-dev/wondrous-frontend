@@ -1,4 +1,4 @@
-export { default } from './component';
+export { default as StepWrapper } from './OnboardingForm';
 export { default as AddImages } from './AddImages';
 export { default as CreateDao } from './CreateDao';
 export { default as DaoCategory } from './DaoCategory';

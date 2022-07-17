@@ -1,11 +1,5 @@
 import { withAuth } from 'components/Auth/withAuth';
-import OnboardingDaoForm, {
-  AddImages,
-  CreateDao,
-  DaoCategory,
-  ImportTasks,
-  InviteCommunity,
-} from 'components/OnboardingDao';
+import { AddImages, CreateDao, DaoCategory, ImportTasks, InviteCommunity, StepWrapper } from 'components/OnboardingDao';
 import { useReducer } from 'react';
 
 const TempComp = () => <></>;
@@ -59,7 +53,7 @@ const OnboardingCreateDao = () => {
   const [step, setStep] = useReducer(handleStep, 0);
   const currentField = fields[step];
   return (
-    <OnboardingDaoForm
+    <StepWrapper
       {...currentField}
       handleLater={() => setStep({ action: 'next' })}
       handleBack={() => setStep({ action: 'back' })}

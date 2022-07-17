@@ -2,8 +2,9 @@ import AsanaIcon from 'components/Icons/asana.svg';
 import CSVIcon from 'components/Icons/csv.svg';
 import GithubIcon from 'components/Icons/github.svg';
 import NotionIcon from 'components/Icons/notion.svg';
+import ButtonCSVTemplate from 'components/OnboardingDao/ButtonCSVTemplate';
 import ButtonImport from 'components/OnboardingDao/ButtonImport';
-import { ButtonCSVTemplate, ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
+import { ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
 
 const buttons = [
   {
@@ -36,7 +37,7 @@ const ImportTasks = () => {
           <ButtonImport key={text} borderColor={borderColor} Icon={Icon} text={text} />
         ))}
       </ImportButtonWrapper>
-      <ButtonCSVTemplate>CSV Template</ButtonCSVTemplate>
+      <ButtonCSVTemplate />
     </ButtonsWrapper>
   );
 };
