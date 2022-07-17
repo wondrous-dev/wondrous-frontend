@@ -1,31 +1,6 @@
 import { InputUnstyled } from '@mui/base';
-import { Typography } from '@mui/material';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
-
-export const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: 100%;
-`;
-
-export const FieldWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  width: 100%;
-`;
-
-export const FieldLabel = styled(Typography)`
-  && {
-    color: #ccbbff;
-    font-family: 'Space Grotesk';
-    font-size: 14px;
-    font-style: normal;
-    font-weight: 500;
-  }
-`;
 
 export const FieldInput = styled(InputUnstyled)`
   && {

@@ -1,5 +1,5 @@
 import { withAuth } from 'components/Auth/withAuth';
-import OnboardingDaoForm, { CreateDao } from 'components/OnboardingDaoForm';
+import OnboardingDaoForm, { CreateDao, AddImages } from 'components/OnboardingDaoForm';
 import { useReducer } from 'react';
 
 const TempComp = () => <></>;
@@ -15,7 +15,7 @@ const fields = [
     title: 'Add images',
     subtitle: 'Add your dOrgs logo and header to personalize your boards.',
     step: 2,
-    Component: TempComp,
+    Component: AddImages,
   },
   {
     title: 'DAO category',
