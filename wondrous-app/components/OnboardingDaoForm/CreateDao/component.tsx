@@ -1,5 +1,5 @@
-import { FieldLabel, FieldWrapper, ChildrenFieldWrapper } from 'components/OnboardingDaoForm/styles';
-import { FieldInput, FieldInputDao } from './styles';
+import { ChildrenFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
+import { FieldInputDao } from './styles';
 
 const CreateDao = () => {
   return (
