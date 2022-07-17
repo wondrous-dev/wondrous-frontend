@@ -1,5 +1,5 @@
 import { withAuth } from 'components/Auth/withAuth';
-import OnboardingDaoForm, { AddImages, CreateDao, DaoCategory } from 'components/OnboardingDaoForm';
+import OnboardingDaoForm, { AddImages, CreateDao, DaoCategory, ImportTasks } from 'components/OnboardingDaoForm';
 import { useReducer } from 'react';
 
 const TempComp = () => <></>;
@@ -27,7 +27,7 @@ const fields = [
     title: 'Import tasks',
     subtitle: 'Set up your workflow so members can begin contributing.',
     step: 4,
-    Component: TempComp,
+    Component: ImportTasks,
   },
   {
     title: 'Invite your community ',
