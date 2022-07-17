@@ -1,10 +1,10 @@
 import AddAPhotoIcon from 'components/Icons/addAPhoto.svg';
-import { ChildrenFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
+import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDaoForm/styles';
 import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, LogoWrapper } from './styles';
 
 const AddImages = () => {
   return (
-    <ChildrenFieldWrapper>
+    <ComponentFieldWrapper>
       <FieldWrapper>
         <FieldLabel>Logo</FieldLabel>
         <LogoWrapper>
@@ -22,7 +22,7 @@ const AddImages = () => {
         </HeaderWrapper>
         <HeaderText>Optimum size: 1358px x 160px</HeaderText>
       </FieldWrapper>
-    </ChildrenFieldWrapper>
+    </ComponentFieldWrapper>
   );
 };
 

@@ -122,13 +122,14 @@ export const Subtitle = styled(Typography)`
   }
 `;
 
-export const ChildrenWrapper = styled.div`
+export const ComponentWrapper = styled.div`
   margin-top: 24px;
   display: flex;
   padding: 24px 0;
   border-top: 1px dashed ${({ theme }) => theme.palette.grey75};
   border-bottom: 1px dashed ${({ theme }) => theme.palette.grey75};
   width: 100%;
+  min-height: 288px;
 `;
 
 export const FooterWrapper = styled.div`
@@ -209,7 +210,7 @@ export const FieldWrapper = styled.div`
   width: 100%;
 `;
 
-export const ChildrenFieldWrapper = styled.div`
+export const ComponentFieldWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
