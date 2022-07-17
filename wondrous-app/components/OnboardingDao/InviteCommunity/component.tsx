@@ -1,6 +1,6 @@
 import CSVIcon from 'components/Icons/csv.svg';
-import ButtonImport from 'components/OnboardingDaoForm/ButtonImport';
-import { ButtonCSVTemplate, ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDaoForm/styles';
+import ButtonImport from 'components/OnboardingDao/ButtonImport';
+import { ButtonCSVTemplate, ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
 
 const buttons = [
   {

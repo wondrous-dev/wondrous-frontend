@@ -2,8 +2,8 @@ import AsanaIcon from 'components/Icons/asana.svg';
 import CSVIcon from 'components/Icons/csv.svg';
 import GithubIcon from 'components/Icons/github.svg';
 import NotionIcon from 'components/Icons/notion.svg';
-import ButtonImport from 'components/OnboardingDaoForm/ButtonImport';
-import { ButtonCSVTemplate, ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDaoForm/styles';
+import ButtonImport from 'components/OnboardingDao/ButtonImport';
+import { ButtonCSVTemplate, ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
 
 const buttons = [
   {
