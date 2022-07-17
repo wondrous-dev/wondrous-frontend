@@ -1,43 +1,45 @@
 import { withAuth } from 'components/Auth/withAuth';
-import OnboardingDaoForm from 'components/OnboardingDaoForm';
-import { useReducer, useState } from 'react';
+import OnboardingDaoForm, { CreateDao } from 'components/OnboardingDaoForm';
+import { useReducer } from 'react';
+
+const TempComp = () => <></>;
 
 const fields = [
   {
     title: 'Create DAO',
     subtitle: 'Use the power of web3 to launch and scale your project.',
     step: 1,
-    children: <></>,
+    Component: CreateDao,
   },
   {
     title: 'Add images',
     subtitle: 'Add your dOrgs logo and header to personalize your boards.',
     step: 2,
-    children: <></>,
+    Component: TempComp,
   },
   {
     title: 'DAO category',
     subtitle: 'How would you categorize what your DAO does?',
     step: 3,
-    children: <></>,
+    Component: TempComp,
   },
   {
     title: 'Import tasks',
     subtitle: 'Set up your workflow so members can begin contributing.',
     step: 4,
-    children: <></>,
+    Component: TempComp,
   },
   {
     title: 'Invite your community ',
     subtitle: `Upload a CSV with all your contributors and community members. Those who don\'t have an account will be sent an invite link.`,
     step: 5,
-    children: <></>,
+    Component: TempComp,
   },
   {
     title: 'Review',
     subtitle: `Review your DAO details and then let\'s launch!`,
     step: 6,
-    children: <></>,
+    Component: TempComp,
   },
 ];
 
