@@ -1,8 +1,9 @@
-import { FieldInput, FieldInputDao, FieldLabel, FieldWrapper, Wrapper } from './styles';
+import { FieldLabel, FieldWrapper, ChildrenFieldWrapper } from 'components/OnboardingDaoForm/styles';
+import { FieldInput, FieldInputDao } from './styles';
 
 const CreateDao = () => {
   return (
-    <Wrapper>
+    <ChildrenFieldWrapper>
       <FieldWrapper>
         <FieldLabel>Enter DAO name</FieldLabel>
         <FieldInput placeholder="What is the org's title?" />
@@ -11,7 +12,7 @@ const CreateDao = () => {
         <FieldLabel>Enter DAO description</FieldLabel>
         <FieldInputDao placeholder="What is your DAOs aims?" multiline={true} />
       </FieldWrapper>
-    </Wrapper>
+    </ChildrenFieldWrapper>
   );
 };
 
