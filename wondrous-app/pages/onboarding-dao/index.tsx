@@ -67,9 +67,11 @@ const fieldSet = [
 ];
 
 const handleStep = (step, { action }) => {
-  if (action === 'next') return step + 1;
-  if (action === 'back') return step - 1;
-  return step;
+  const actions = {
+    next: step + 1,
+    back: step - 1,
+  };
+  return actions[action] ?? step;
 };
 
 const OnboardingCreateDao = () => {
