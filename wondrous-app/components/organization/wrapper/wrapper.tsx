@@ -325,6 +325,7 @@ const Wrapper = (props) => {
             <HeaderMainBlock>
               {orgProfile?.profilePicture ? (
                 <SafeImage
+                  useNextImage={false}
                   src={orgProfile?.profilePicture}
                   style={{
                     width: '60px',

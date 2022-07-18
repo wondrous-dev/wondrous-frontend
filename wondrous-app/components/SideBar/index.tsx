@@ -120,7 +120,7 @@ const SideBarComponent = ({ userOrgs }) => {
               }}
             >
               {user?.profilePicture ? (
-                <SafeImage style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
+                <SafeImage useNextImage={false} style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
               ) : (
                 <DefaultUserImage style={profilePictureStyle} />
               )}
@@ -183,6 +183,7 @@ const SideBarComponent = ({ userOrgs }) => {
                         <DrawerListItem button key={item.id} isActive={isActive}>
                           {item?.profilePicture ? (
                             <SafeImage
+                              useNextImage={false}
                               src={item?.thumbnailPicture || item?.profilePicture}
                               style={{
                                 width: '36px',

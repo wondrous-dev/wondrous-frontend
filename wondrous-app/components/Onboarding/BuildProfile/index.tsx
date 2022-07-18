@@ -135,6 +135,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
         {image ? (
           <ProfilePictureDiv>
             <SafeImage
+              useNextImage={false}
               src={image}
               style={{
                 width: '52px',

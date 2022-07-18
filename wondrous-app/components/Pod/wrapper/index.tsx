@@ -271,6 +271,7 @@ const Wrapper = (props) => {
                     >
                       {orgData?.getOrgById?.profilePicture ? (
                         <SafeImage
+                          useNextImage={false}
                           src={orgData?.getOrgById?.profilePicture}
                           style={{
                             width: '60px',

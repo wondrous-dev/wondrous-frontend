@@ -186,7 +186,7 @@ const PaymentItem = (props) => {
             }}
           >
             {item?.payeeProfilePicture ? (
-              <SafeImage src={item?.payeeProfilePicture} style={imageStyle} />
+              <SafeImage useNextImage={false} src={item?.payeeProfilePicture} style={imageStyle} />
             ) : (
               <DefaultUserImage style={imageStyle} />
             )}
@@ -206,6 +206,7 @@ const PaymentItem = (props) => {
             <IconContainer>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <SafeImage
+                useNextImage={false}
                 src={item?.icon}
                 style={{
                   width: '24px',

@@ -220,6 +220,7 @@ export const TaskCard = ({
             {(isUser || userProfile) &&
               (task?.orgProfilePicture ? (
                 <SafeImage
+                  useNextImage={false}
                   src={task?.orgProfilePicture}
                   style={{
                     width: '29px',
@@ -358,6 +359,7 @@ export const TaskCard = ({
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
+                useNextImage={false}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                 src={coverMedia.slug}
               />
@@ -569,6 +571,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
+                useNextImage={false}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                 src={coverMedia.slug}
               />

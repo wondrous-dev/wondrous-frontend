@@ -430,6 +430,7 @@ export const TaskListCard = (props) => {
       >
         <TaskHeader>
           <SafeImage
+            useNextImage={false}
             src={task?.orgProfilePicture}
             style={{
               width: '29px',

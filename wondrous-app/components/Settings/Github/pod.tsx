@@ -262,6 +262,7 @@ export const GithubIntegration = ({ orgId, podId }) => {
                   >
                     {option?.profilePicture && (
                       <SafeImage
+                        useNextImage={false}
                         src={option?.profilePicture}
                         style={{
                           width: '30px',

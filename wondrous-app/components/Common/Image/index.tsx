@@ -1,50 +1,95 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
+import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
+import Image from 'next/image';
 
 interface SafeImageArgs {
-  src: string;
-  style?: object;
-  defaultImage?: string;
-  setImage?(url: string): void;
+  alt?: string;
   className?: string;
+  placeholderSrc?: string; // Image src to display while the image is not visible or loaded.
+  placeholder?: JSX.Element; // React element to use as a placeholder.
+  height?: string;
+  src: string;
+  width?: string;
+  objectPosition?: string;
+  useNextImage?: boolean;
+  style?: object;
+  onPreviewLoaded?(url: string): void;
 }
+
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
-  const { src, style, defaultImage, setImage, className } = safeImageArgs;
-  const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
+  const {
+    src,
+    placeholderSrc,
+    alt,
+    onPreviewLoaded,
+    width,
+    height,
+    placeholder,
+    useNextImage = true,
+    ...props
+  } = safeImageArgs;
+  const [imgUrl, setImageUrl] = useState(null);
+  const safeImageUrl = (src?.startsWith('https') || src?.startsWith('file://') ? src : imgUrl) || placeholderSrc;
+
+  const [getPreviewFile] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
+    onCompleted: ({ getPreviewFile: { url } }) => {
+      setImageUrl(url);
+      localStorage.setItem(`safeImage.${src}`, url);
+
+      if (onPreviewLoaded) {
+        onPreviewLoaded(url);
+      }
+    },
   });
 
-  const imgUrl = data?.getPreviewFile?.url;
   useEffect(() => {
-    if (src && !src.startsWith('http')) {
-      getPreviewFile({
-        variables: {
-          path: src,
-        },
-      });
+    if (!src || src.startsWith('http')) {
+      return;
     }
-    if (imgUrl) {
-      if (setImage && !(src?.startsWith('https') || src?.startsWith('file://'))) {
-        setImage(data.getPreviewFile.url);
+
+    try {
+      const cachedPreviewUrl = localStorage.getItem(`safeImage.${src}`);
+
+      if (cachedPreviewUrl && false) {
+        // parse query params to get
+        // X-Goog-Date: The date and time the signed URL became usable, in the ISO 8601 basic format YYYYMMDD'T'HHMMSS'Z'.
+        // X-Goog-Expires: The length of time the signed URL remained valid, measured in seconds from the value in X-Goog-Date.
+        const [, signedISODate] = cachedPreviewUrl.match(/X-Goog-Date=([^&]*)/);
+        const [, expiresTime] = cachedPreviewUrl.match(/X-Goog-Expires=([^&]*)/);
+        const signedDate = parseISO(signedISODate).valueOf();
+        const expiredAt = addSeconds(signedDate, Number(expiresTime)).valueOf();
+
+        if (Date.now() < expiredAt) {
+          setImageUrl(cachedPreviewUrl);
+
+          if (onPreviewLoaded) {
+            onPreviewLoaded(cachedPreviewUrl);
+          }
+          return;
+        }
       }
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [imgUrl, src, setImage]);
+    } catch (error) {}
 
-  if (!src && defaultImage) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img style={style} className={className} src={defaultImage} alt="" />;
-  }
+    getPreviewFile({
+      variables: {
+        path: src,
+      },
+    });
+  }, [src, onPreviewLoaded]);
 
-  if (src?.startsWith('https') || src?.startsWith('file://')) {
-    // eslint-disable-next-line @next/next/no-img-element
-    return <img style={style} className={className} key={src} src={src} alt="" />;
-  } else if (imgUrl) {
-    return (
+  if (safeImageUrl) {
+    return useNextImage ? (
+      <Image src={imgUrl} alt={alt} width={width} height={height} {...props} />
+    ) : (
       // eslint-disable-next-line @next/next/no-img-element
-      <img style={style} className={className} key={src} src={imgUrl} alt="" />
+      <img src={imgUrl} alt={alt} width={width} height={height} {...props} />
     );
+  } else if (placeholder) {
+    return placeholder;
   }
+
   return null;
 };

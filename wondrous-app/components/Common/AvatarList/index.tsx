@@ -22,6 +22,7 @@ export const SmallAvatar = (props) => {
       {avatar.url ? (
         <SafeImage
           src={avatar.url}
+          useNextImage={false}
           style={{
             width: '29px',
             height: '29px',

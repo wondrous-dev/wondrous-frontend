@@ -83,6 +83,7 @@ export const TextInput = (props) => {
         renderSuggestion={(suggestion) => (
           <UserSuggestionWrapper>
             <SafeImage
+              useNextImage={false}
               src={suggestion?.profilePicture}
               style={{
                 width: '30px',

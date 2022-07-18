@@ -13,6 +13,7 @@ const ProfileCompensation = ({ rewards, taskIcon, style, pillStyle = {} }) => {
               <IconContainer>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <SafeImage
+                  useNextImage={false}
                   src={icon}
                   style={{
                     width: 24,

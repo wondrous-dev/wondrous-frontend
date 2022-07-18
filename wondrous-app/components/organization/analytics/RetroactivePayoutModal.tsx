@@ -165,7 +165,7 @@ export const RetroactivePayoutModal = (props) => {
                           }}
                         >
                           {contributor?.assigneeProfilePicture ? (
-                            <SafeImage src={contributor?.assigneeProfilePicture} style={imageStyle} />
+                            <SafeImage useNextImage={false} src={contributor?.assigneeProfilePicture} style={imageStyle} />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
@@ -196,6 +196,7 @@ export const RetroactivePayoutModal = (props) => {
                           <IconContainer>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <SafeImage
+                              useNextImage={false}
                               src={contributor?.icon}
                               style={{
                                 width: '24px',

@@ -38,6 +38,7 @@ export const CommentItemContainer = styled.div`
 export const CommentProfilePicture = (props) => (
   <SafeImage
     src={props?.src}
+    useNextImage={false}
     style={{
       width: '32px',
       height: '32px',

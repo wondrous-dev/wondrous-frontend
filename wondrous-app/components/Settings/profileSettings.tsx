@@ -303,6 +303,7 @@ const ProfileSettings = (props) => {
             <ProfilePictureDiv>
               <LabelBlock>Profile Picture</LabelBlock>
               <SafeImage
+                useNextImage={false}
                 src={profilePictureUrl}
                 style={{
                   width: '52px',

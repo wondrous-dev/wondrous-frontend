@@ -118,6 +118,7 @@ export default function TableBody({
               {task.orgProfilePicture ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <SafeImage
+                  useNextImage={false}
                   src={task?.orgProfilePicture}
                   style={{
                     width: '17px',
@@ -224,6 +225,7 @@ export default function TableBody({
                 {reward ? (
                   <Reward>
                     <SafeImage
+                      useNextImage={false}
                       src={reward.icon}
                       style={{
                         width: '16px',

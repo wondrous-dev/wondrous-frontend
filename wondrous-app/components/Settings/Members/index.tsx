@@ -255,6 +255,7 @@ const Members = (props) => {
                           <Grid container direction="row" alignItems="center" style={{ cursor: 'pointer' }}>
                             {user?.thumbnailPicture ? (
                               <SafeImage
+                                useNextImage={false}
                                 src={user?.thumbnailPicture}
                                 style={{
                                   width: '40px',

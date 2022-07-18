@@ -288,6 +288,7 @@ export default function ListViewItem({ task, entityType }) {
           <ListViewItemDataContainer>
             {assigneeProfilePicture ? (
               <SafeImage
+                useNextImage={false}
                 style={{
                   width: '26px',
                   height: '26px',

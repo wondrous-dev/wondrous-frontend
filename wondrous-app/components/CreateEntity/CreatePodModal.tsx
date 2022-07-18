@@ -144,7 +144,7 @@ export const filterPaymentMethods = (paymentMethods) => {
   return paymentMethods.map((paymentMethod) => {
     return {
       ...paymentMethod,
-      icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
+      icon: <SafeImage useNextImage={false} src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
       label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
       value: paymentMethod.id,
     };

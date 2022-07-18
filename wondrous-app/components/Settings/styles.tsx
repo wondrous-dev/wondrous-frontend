@@ -153,6 +153,7 @@ export const SettingsDaoPodIndicator = styled(Box)`
 
 export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
   <SafeImage
+    useNextImage={false}
     style={{
       width: '24px',
       height: '24px',
@@ -333,6 +334,7 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
 export const GeneralSettingsDAOProfileImage = styled((props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '52px',
       height: '52px',
@@ -344,6 +346,7 @@ export const GeneralSettingsDAOProfileImage = styled((props) => (
 export const GeneralSettingsDAOHeaderImage = styled((props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '100%',
       height: 'auto',
