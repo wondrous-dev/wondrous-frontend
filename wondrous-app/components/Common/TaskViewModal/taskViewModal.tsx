@@ -479,7 +479,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
-  const [fullScreen, setFullScreen] = useState(false);
+  const [fullScreen, setFullScreen] = useState(true);
   const [activeTab, setActiveTab] = useState(null);
   const [archiveTask, setArchiveTask] = useState(false);
   const [deleteTask, setDeleteTask] = useState(false);
