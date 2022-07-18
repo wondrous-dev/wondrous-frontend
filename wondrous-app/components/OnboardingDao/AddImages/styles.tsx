@@ -1,14 +1,26 @@
 import { Typography } from '@mui/material';
+import Image from 'next/image';
 import styled from 'styled-components';
 
-export const LogoWrapper = styled.div`
-  width: 80px;
-  height: 80px;
-  background: ${({ theme }) => theme.palette.grey85};
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+export const LogoUpload = styled.label`
+  && {
+    align-items: center;
+    background: ${({ theme }) => theme.palette.grey85};
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    height: 80px;
+    justify-content: center;
+    position: relative;
+    width: 80px;
+  }
+`;
+
+export const ImageWrapper = styled((props) => <Image width="80px" height="80px" alt="logo" {...props} />)`
+  && {
+    display: ${({ withImage }) => (withImage ? 'block' : 'none')};
+    border-radius: 6px;
+  }
 `;
 
 export const AddPhotoIconWrapper = styled.div`
@@ -19,6 +31,15 @@ export const AddPhotoIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  ${({ withImage }) =>
+    withImage &&
+    `
+    position: absolute;
+    opacity: 0;
+    ${LogoUpload}:hover & {
+      opacity: 0.75
+    }
+  `}
 `;
 
 export const HeaderWrapper = styled.div`
