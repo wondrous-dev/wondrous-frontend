@@ -6,13 +6,8 @@ import CreatePodModal from './CreatePodModal';
 import { CreateEntityModal } from './CreateEntityModal/index';
 import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
-import { OrgBoardContext, PodBoardContext } from 'utils/contexts';
 import { useRouter } from 'next/router';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { useQuery } from '@apollo/client';
-import { useGetOrgFromUsername } from 'pages/organization/[username]/analytics';
-import { useGetPodById } from 'pages/pod/[podId]/analytics';
-
+import { useCreateEntityContext } from 'utils/hooks';
 interface ICreateEntity {
   entityType: string;
   handleClose: Function;
@@ -31,6 +26,8 @@ interface ICreateEntity {
       url: string;
       title: string;
     };
+    orgId: string;
+    snapshotId?: string;
   };
   open: Boolean;
   handleCloseModal: Function;
@@ -41,6 +38,7 @@ interface ICreateEntity {
 
 export const CreateEntity = (props: ICreateEntity) => {
   const { open, entityType, handleCloseModal, isTaskProposal } = props;
+
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
   if (isTaskProposal) {
     return (
@@ -67,16 +65,9 @@ export const CreateEntity = (props: ICreateEntity) => {
 };
 
 const ChooseEntityToCreate = (props) => {
-  const { open, toggleOpen } = props;
+  const createEntityContext = useCreateEntityContext();
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
   const [entityType, setEntityType] = useState(undefined);
-  const router = useRouter();
-  const { username, podId } = router.query;
-  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const org = useGetOrgFromUsername(username);
-  const getPodById = useGetPodById(podId);
-
   const resetEntityType = () => {
     if (entityType) {
       setEntityType(undefined);
@@ -101,33 +92,14 @@ const ChooseEntityToCreate = (props) => {
   }
 
   return (
-    <PodBoardContext.Provider
-      value={{
-        pod: getPodById,
-        podId,
-        userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-          ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-          : null,
-      }}
+    <CreateFormModalOverlay
+      open={open}
+      onClose={handleCloseModal}
+      aria-labelledby="modal-modal-title"
+      aria-describedby="modal-modal-description"
     >
-      <OrgBoardContext.Provider
-        value={{
-          userPermissionsContext: userPermissionsContext?.getUserPermissionContext
-            ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-            : null,
-          orgId: org?.id,
-        }}
-      >
-        <CreateFormModalOverlay
-          open={open}
-          onClose={handleCloseModal}
-          aria-labelledby="modal-modal-title"
-          aria-describedby="modal-modal-description"
-        >
-          <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
-        </CreateFormModalOverlay>
-      </OrgBoardContext.Provider>
-    </PodBoardContext.Provider>
+      <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
+    </CreateFormModalOverlay>
   );
 };
 

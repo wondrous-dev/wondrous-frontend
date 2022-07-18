@@ -993,3 +993,26 @@ export const ApplicationInputUnassignContainer = styled.div`
     padding: 0px;
   }
 `;
+
+export const SnapshotErrorText = styled.div`
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 10px;
+`;
+
+// export const SnapshotButtonBlock = styled.div`
+//     height: 40px;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     margin-left: auto;
+// `;
+
+export const SnapshotButtonBlock = styled.div`
+  display: flex;
+  justify-content: left;
+  margin-left: 24px;
+`;

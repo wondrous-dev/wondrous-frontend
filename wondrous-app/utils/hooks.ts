@@ -16,8 +16,15 @@ import {
   SelectMembershipContext,
   EditTokenGatingConditionContext,
   UserProfileContext,
+  CreateEntityContext,
 } from './contexts';
-import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
+  GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
+  GET_POD_BY_ID,
+  GET_ORG_FROM_USERNAME,
+  GET_ORG_BY_ID,
+} from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 
 export const useIsMobile = () => useContext(IsMobileContext);
@@ -203,3 +210,33 @@ export const useGetPerStatusTaskCountForUserBoard = (userId) => {
 
   return { data };
 };
+
+export const useGetPodById = (podId) => {
+  const [getPodById, { data }] = useLazyQuery(GET_POD_BY_ID);
+  useEffect(() => {
+    if (!data && podId) {
+      getPodById({
+        variables: {
+          podId,
+        },
+      });
+    }
+  }, [podId, data, getPodById]);
+  return data?.getPodById;
+};
+
+export const useGetOrgFromUsername = (username) => {
+  const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
+  useEffect(() => {
+    if (!data && username) {
+      getOrgFromUsername({
+        variables: {
+          username,
+        },
+      });
+    }
+  }, [username, data, getOrgFromUsername]);
+  return data?.getOrgFromUsername;
+};
+
+export const useCreateEntityContext = () => useContext(CreateEntityContext);
