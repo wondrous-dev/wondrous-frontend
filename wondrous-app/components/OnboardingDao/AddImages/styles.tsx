@@ -18,9 +18,21 @@ export const LogoUpload = styled.label`
 
 export const ImageWrapper = styled((props) => <Image width="80px" height="80px" alt="logo" {...props} />)`
   && {
-    display: ${({ withImage }) => (withImage ? 'block' : 'none')};
     border-radius: 6px;
+    object-fit: cover;
   }
+`;
+
+export const HeaderWrapper = styled.label`
+  align-items: center;
+  background: ${({ theme }) => theme.palette.grey85};
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  height: 80px;
+  justify-content: center;
+  position: relative;
+  width: 100%;
 `;
 
 export const AddPhotoIconWrapper = styled.div`
@@ -36,20 +48,11 @@ export const AddPhotoIconWrapper = styled.div`
     `
     position: absolute;
     opacity: 0;
-    ${LogoUpload}:hover & {
+    ${LogoUpload}:hover &,
+    ${HeaderWrapper}:hover & {
       opacity: 0.75
     }
   `}
-`;
-
-export const HeaderWrapper = styled.div`
-  background: ${({ theme }) => theme.palette.grey85};
-  border-radius: 6px;
-  width: 100%;
-  height: 80px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 export const HeaderText = styled(Typography)`
