@@ -1,8 +1,14 @@
 import { withAuth } from 'components/Auth/withAuth';
-import { AddImages, CreateDao, DaoCategory, ImportTasks, InviteCommunity, StepWrapper } from 'components/OnboardingDao';
+import {
+  AddImages,
+  CreateDao,
+  DaoCategory,
+  ImportTasks,
+  InviteCommunity,
+  Review,
+  StepWrapper,
+} from 'components/OnboardingDao';
 import { useReducer } from 'react';
-
-const TempComp = () => <></>;
 
 const fields = [
   {
@@ -39,7 +45,7 @@ const fields = [
     title: 'Review',
     subtitle: `Review your DAO details and then let\'s launch!`,
     step: 6,
-    Component: TempComp,
+    Component: Review,
   },
 ];
 
