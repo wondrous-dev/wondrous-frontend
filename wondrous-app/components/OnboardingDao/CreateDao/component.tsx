@@ -1,17 +1,32 @@
 import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
+import { useField } from 'formik';
 import { FieldInputDao } from './styles';
 
-const CreateDao = () => {
+const DaoName = ({ label, ...props }) => {
+  const [field, meta] = useField(props.name);
+  return (
+    <FieldWrapper>
+      <FieldLabel>{label}</FieldLabel>
+      <FieldInput {...field} {...props} />
+    </FieldWrapper>
+  );
+};
+
+const Description = ({ label, ...props }) => {
+  const [field, meta] = useField(props.name);
+  return (
+    <FieldWrapper>
+      <FieldLabel>{label}</FieldLabel>
+      <FieldInputDao {...field} {...props} />
+    </FieldWrapper>
+  );
+};
+
+const CreateDao = (props) => {
   return (
     <ComponentFieldWrapper>
-      <FieldWrapper>
-        <FieldLabel>Enter DAO name</FieldLabel>
-        <FieldInput placeholder="What is the org's title?" />
-      </FieldWrapper>
-      <FieldWrapper>
-        <FieldLabel>Enter DAO description</FieldLabel>
-        <FieldInputDao placeholder="What is your DAOs aims?" multiline={true} />
-      </FieldWrapper>
+      <DaoName {...props.fields.name} />
+      <Description {...props.fields.description} />
     </ComponentFieldWrapper>
   );
 };

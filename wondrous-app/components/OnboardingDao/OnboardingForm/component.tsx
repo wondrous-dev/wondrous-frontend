@@ -54,7 +54,7 @@ const ContinueButtonWrapper = ({ step }) => {
   return <ContinueButton>Next</ContinueButton>;
 };
 
-const StepWrapper = ({ Component, title, subtitle, step, handleLater, handleBack }) => {
+const StepWrapper = ({ Component, title, subtitle, step, handleLater, handleBack, ...props }) => {
   return (
     <Wrapper>
       <FormWrapper>
@@ -67,7 +67,7 @@ const StepWrapper = ({ Component, title, subtitle, step, handleLater, handleBack
         <Title>{title}</Title>
         <Subtitle>{subtitle}</Subtitle>
         <ComponentWrapper>
-          <Component />
+          <Component {...props} />
         </ComponentWrapper>
         <FooterWrapper>
           <BackButtonWrapper step={step} handleBack={handleBack} />
