@@ -175,7 +175,7 @@ export const GET_TASK_SUBMISSION_COMMENTS = gql`
     }
   }
   ${CommentFragment}
-`
+`;
 
 export const GET_BOUNTIES_TO_EXPLORE = gql`
   query getBountiesToExplore($limit: Int, $offset: Int) {
@@ -184,4 +184,10 @@ export const GET_BOUNTIES_TO_EXPLORE = gql`
     }
   }
   ${TaskCardFragment}
+`;
+
+export const RENDER_RICH_TEXT = gql`
+  query renderRichText($jsonText: String) {
+    renderRichText(jsonText: $jsonText)
+  }
 `;
