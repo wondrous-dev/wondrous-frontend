@@ -33,6 +33,9 @@ import {
   HeaderImageWrapper,
   HeaderTag,
   BoardsSubheaderWrapper,
+  RoleButtonWrapper,
+  RoleText,
+  RoleButton,
 } from './styles';
 import { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -344,7 +347,10 @@ const Wrapper = (props) => {
               <HeaderButtons>
                 {/* <Tooltip title="your permissions are:" > */}
                 {permissions && orgRoleName && (
-                  <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>
+                  <RoleButtonWrapper>
+                    <RoleText>Your Role:</RoleText>
+                    <RoleButton onClick={handleJoinOrgButtonClick}>🔑 {orgRoleName}</RoleButton>
+                  </RoleButtonWrapper>
                 )}
                 {/* </Tooltip> */}
                 {!isLoading && (
