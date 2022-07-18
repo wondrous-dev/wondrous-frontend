@@ -33,8 +33,8 @@ const fieldSet = [
     step: 2,
     Component: AddImages,
     fields: {
-      headerPicture: { name: 'headerPicture' },
-      profilePicture: { name: 'profilePicture' },
+      headerPicture: { name: 'headerPicture', label: 'Header Picture' },
+      profilePicture: { name: 'profilePicture', label: 'Profile Picture' },
     },
   },
   {
