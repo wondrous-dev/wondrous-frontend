@@ -43,7 +43,7 @@ const fieldSet = [
     step: 3,
     Component: DaoCategory,
     fields: {
-      category: { name: 'category' },
+      category: { name: 'category', label: 'Enter custom goal', placeholder: "What is your DAO's goal?" },
     },
   },
   {

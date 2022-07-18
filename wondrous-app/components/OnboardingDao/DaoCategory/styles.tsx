@@ -1,9 +1,10 @@
-import { Chip } from '@mui/material';
+import { FormControlLabel, RadioGroup } from '@mui/material';
 import styled from 'styled-components';
 
-export const ChipWrapper = styled.div`
+export const CategoriesWrapper = styled(RadioGroup)`
   display: flex;
   flex-wrap: wrap;
+  flex-direction: row;
   gap: 14px;
 `;
 
@@ -12,19 +13,22 @@ export const Divider = styled.div`
   border-bottom: 1px dashed ${({ theme }) => theme.palette.grey75};
 `;
 
-export const StyledChip = styled(Chip)`
+export const Label = styled(FormControlLabel)`
   && {
     display: flex;
     justify-content: center;
     align-items: center;
     height: 26px;
-    background: ${({ selected }) => (selected ? `#4f00de` : `#141414`)};
+    background: ${({ checked }) => (checked ? `#4f00de` : `#141414`)};
     border-radius: 4px;
     :hover {
       background: #4f00de;
       cursor: pointer;
     }
-    .MuiChip-label {
+    .MuiRadio-root {
+      display: none;
+    }
+    .MuiTypography-root {
       padding: 0;
       padding: 4px 9px;
       font-family: 'Space Grotesk';
