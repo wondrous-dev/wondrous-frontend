@@ -16,12 +16,7 @@ import {
 } from 'components/CreateEntity/styles';
 import UtopiaIcon from 'components/Icons/utopiaIcon';
 import ParcelIcon from 'components/Icons/parcelIcon';
-
-export const EXPORT_PAYMENT_CSV_TYPE = {
-  UTOPIA: 'utopia',
-  PARCEL: 'parcel',
-  PLAIN: 'plain',
-};
+import { EXPORT_PAYMENT_CSV_TYPE } from 'utils/constants';
 
 export const ENTITIES_UI_ELEMENTS = {
   utopia: {

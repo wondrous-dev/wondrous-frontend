@@ -60,6 +60,12 @@ export const SOCIAL_OPENSEA = 'opensea';
 // Character Limits
 export const CHAR_LIMIT_PROFILE_BIO = 200;
 
+export const EXPORT_PAYMENT_CSV_TYPE = {
+  UTOPIA: 'utopia',
+  PARCEL: 'parcel',
+  PLAIN: 'plain',
+};
+
 export const PAYMENT_STATUS = {
   UNPAID: 'unpaid',
   PROCESSING: 'processing',

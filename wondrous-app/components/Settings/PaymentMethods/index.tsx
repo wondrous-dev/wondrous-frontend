@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/router';
 
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -11,7 +10,6 @@ import {
   NewPaymentMethodButton,
 } from './styles';
 import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
-import { GeneralSettingsContainer } from '../styles';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_BY_ID } from 'graphql/queries';
@@ -28,7 +26,7 @@ const PaymentMethods = (props) => {
       getPaymentMethods({
         variables: {
           orgId,
-          includeDeactivated: true
+          includeDeactivated: true,
         },
       });
     }

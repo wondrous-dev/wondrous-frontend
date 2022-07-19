@@ -1,6 +1,18 @@
 import { Checkbox, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+
+export const LedgerHeaderButtonsContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const BatchPayoutButton = styled(CreateFormPreviewButton)`
+  && {
+    margin-left: 12px;
+  }
+`;
 
 export const TableCellText = styled(Typography)`
   && {
