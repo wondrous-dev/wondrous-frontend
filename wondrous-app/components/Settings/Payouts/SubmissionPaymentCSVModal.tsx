@@ -16,30 +16,8 @@ import {
 } from 'components/CreateEntity/styles';
 import UtopiaIcon from 'components/Icons/utopiaIcon';
 import ParcelIcon from 'components/Icons/parcelIcon';
-
-export const EXPORT_PAYMENT_CSV_TYPE = {
-  UTOPIA: 'utopia',
-  PARCEL: 'parcel',
-  PLAIN: 'plain',
-};
-
-export const ENTITIES_UI_ELEMENTS = {
-  utopia: {
-    icon: UtopiaIcon,
-    color: '#e6e6e6',
-    label: 'Utopia Labs',
-  },
-  parcel: {
-    icon: ParcelIcon,
-    color: 'white',
-    label: 'Parcel',
-  },
-  plain: {
-    icon: <></>,
-    color: 'white',
-    label: 'Plain (Full info)',
-  },
-};
+import { EXPORT_PAYMENT_CSV_TYPE } from 'utils/constants';
+import { PAYMENT_PROVIDER_UI_ELEMENTS } from 'components/organization/analytics/CSVModal';
 
 const SubmissionPaymentCSVModal = (props) => {
   const { open, handleClose, exportPaymentCSV, unpaidSubmissions, isPod } = props;
@@ -54,7 +32,7 @@ const SubmissionPaymentCSVModal = (props) => {
           </CreateLayoutsModalCloseButton>
         </CreateLayoutsModalHeader>
         <CreateLayoutsModalItemContainer>
-          {Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, color, label }]) => (
+          {Object.entries(PAYMENT_PROVIDER_UI_ELEMENTS).map(([key, { icon: EntityIcon, color, label }]) => (
             <CreateLayoutsModalItem
               style={{
                 marginBottom: '8px',
