@@ -47,7 +47,7 @@ export const OfflinePaymentInputLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-size: 14px;
     font-weight: 500;
-    color: ${palette.blue20};
+    color: ${palette.white} !important;
     margin-top: 20px;
   }
 `;
