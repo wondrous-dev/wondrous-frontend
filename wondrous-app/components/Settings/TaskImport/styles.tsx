@@ -1,7 +1,8 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as MuiButton, Typography, InputBase } from '@mui/material';
-import { CreateLayoutsModal } from 'components/CreateEntity/styles';
+import { CreateLayoutsModal, CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import NotionIcon from 'components/Icons/Notion';
 
 export const TaskImportContainer = styled.div`
   height: 100vh;
@@ -82,5 +83,17 @@ export const ModalBody = styled(CreateLayoutsModal)`
   && {
     width: 50%;
     max-width: 600px;
+  }
+`;
+
+export const NotionImportButton = styled(CreateFormPreviewButton)`
+  && {
+    margin-top: 24px;
+  }
+`;
+
+export const NotionInButtonIcon = styled(NotionIcon)`
+  && {
+    margin-right: 10px;
   }
 `;

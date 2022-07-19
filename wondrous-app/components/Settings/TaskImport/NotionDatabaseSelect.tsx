@@ -1,21 +1,16 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-
-import NotionIcon from 'components/Icons/Notion';
-import { GET_ORG_NOTION_DATABASES } from 'graphql/queries';
-import { IMPORT_NOTION_TASK_TO_ORG } from 'graphql/mutations/integration';
-import { ErrorText } from 'components/Common';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
+import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import {
-  CreateFormPreviewButton,
   CreateLayoutsModalHeader,
   CreateLayoutsModalItemContainer,
   CreateLayoutsModalItemTitle,
   CreateModalOverlay,
 } from 'components/CreateEntity/styles';
-import CloseModalIcon from '../../Icons/closeModal';
-import { ModalBody } from './styles';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import { ModalBody, NotionImportButton, NotionInButtonIcon } from 'components/Settings/TaskImport/styles';
+import { IMPORT_NOTION_TASK_TO_ORG } from 'graphql/mutations/integration';
+import { GET_ORG_NOTION_DATABASES } from 'graphql/queries';
+import React, { useEffect, useState } from 'react';
 
 const NotionDatabaseSelect = (props) => {
   const { open, onClose, orgId, podId, toast, setToast } = props;
@@ -75,7 +70,6 @@ const NotionDatabaseSelect = (props) => {
           <CreateLayoutsModalItemTitle>Select Notion Databse</CreateLayoutsModalItemTitle>
           {databaseOptions && (
             <DropdownSelect
-              // title="Select database"
               value={selectedNotionDatabase}
               setValue={setSelectedNotionDatabase}
               labelText="Select database"
@@ -89,23 +83,14 @@ const NotionDatabaseSelect = (props) => {
           {loading ? (
             <CircularProgress
               sx={{
-                marginTop: '25px',
+                marginTop: '24px',
               }}
             />
           ) : (
-            <CreateFormPreviewButton
-              onClick={handleImportClick}
-              style={{
-                marginTop: '24px',
-              }}
-            >
-              <NotionIcon
-                style={{
-                  marginRight: '5px',
-                }}
-              />
+            <NotionImportButton onClick={handleImportClick}>
+              <NotionInButtonIcon />
               Import
-            </CreateFormPreviewButton>
+            </NotionImportButton>
           )}
         </CreateLayoutsModalItemContainer>
       </ModalBody>

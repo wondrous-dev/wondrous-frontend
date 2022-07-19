@@ -1,13 +1,9 @@
-import React from 'react';
-
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
-
-import { useRouter } from 'next/router';
-import { TaskImportContainer } from './styles';
-
 import NotionTaskImportSection from 'components/Settings/TaskImport/NotionTaskImport';
-import { GithubIntegration } from '../Github';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { HeaderBlock } from '../headerBlock';
+import { SettingsWrapper } from '../settingsWrapper';
+import { TaskImportContainer } from './styles';
 
 const TaskImport = (props) => {
   const router = useRouter();
