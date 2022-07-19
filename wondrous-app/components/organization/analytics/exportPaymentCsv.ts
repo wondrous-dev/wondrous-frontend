@@ -1,4 +1,4 @@
-import CSVModal, { EXPORT_PAYMENT_CSV_TYPE } from './CSVModal';
+import { EXPORT_PAYMENT_CSV_TYPE } from 'utils/constants';
 import { format } from 'date-fns';
 
 export const exportPaymentCSV = ({ paymentsData, exportCSVType, fromTime, toTime, isPod = false }) => {
@@ -25,24 +25,31 @@ export const exportPaymentCSV = ({ paymentsData, exportCSVType, fromTime, toTime
       return;
     }
 
-    let newRow 
+    let newRow;
     if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.UTOPIA) {
       newRow = [assigneeUsername, wallet, paymentAmount, 'USD', paymentMethod?.symbol];
-    } 
-    else if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.PARCEL) {
+    } else if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.PARCEL) {
       let tokenOrSymbol = paymentMethod?.tokenAddress;
       if (paymentMethod?.tokenAddress === '0x0000000000000000000000000000000000000000') {
         tokenOrSymbol = paymentMethod?.symbol;
       }
       newRow = [assigneeUsername, wallet, paymentAmount, tokenOrSymbol, paymentMethod?.symbol];
-    } 
-    else if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.PLAIN) {
-      let tokenAddress = paymentMethod?.tokenAddress
+    } else if (exportCSVType === EXPORT_PAYMENT_CSV_TYPE.PLAIN) {
+      let tokenAddress = paymentMethod?.tokenAddress;
       if (tokenAddress === '0x0000000000000000000000000000000000000000') {
-        tokenAddress = ''
+        tokenAddress = '';
       }
-      newRow = [assigneeUsername, wallet, paymentAmount, tokenAddress, paymentMethod?.tokenName, paymentMethod?.symbol, paymentMethod?.chain, paymentMethod?.decimal];
-    } 
+      newRow = [
+        assigneeUsername,
+        wallet,
+        paymentAmount,
+        tokenAddress,
+        paymentMethod?.tokenName,
+        paymentMethod?.symbol,
+        paymentMethod?.chain,
+        paymentMethod?.decimal,
+      ];
+    }
     rows.push(newRow);
   });
   let csvContent = 'data:text/csv;charset=utf-8,';

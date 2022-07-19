@@ -7,6 +7,7 @@ import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
 import { GeneralSettingsContainer } from '../styles';
+import isEmpty from 'lodash/isEmpty';
 import {
   StyledTable,
   StyledTableBody,
@@ -42,6 +43,8 @@ import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { ErrorText } from '../../Common';
 import Tooltip from 'components/Tooltip';
+import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
+import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
 
 enum ViewType {
   Paid = 'paid',
@@ -91,7 +94,7 @@ const PaymentItem = (props) => {
 
   const disabled =
     (chain && item?.chain !== chain) || item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid';
-  console.log('item', item);
+
   return (
     <>
       <PaymentModalContext.Provider
@@ -280,8 +283,10 @@ const Payouts = (props) => {
   const [enableBatchPay, setEnableBatchPay] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
-
+  const [openExportModal, setOpenExportModal] = useState(false);
+  const [noPaymentSelectedError, setNoPaymentSelectedError] = useState(null);
   useEffect(() => {
+    setNoPaymentSelectedError(false);
     if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
       setChainSelected(null);
     }
@@ -454,25 +459,67 @@ const Payouts = (props) => {
   const handleBatchPayButtonClick = () => {
     setOpenBatchPayModal(true);
   };
+
+  const handleExportButtonClick = () => {
+    if (!paymentSelected || isEmpty(paymentSelected)) {
+      setNoPaymentSelectedError(true);
+      return;
+    }
+    setOpenExportModal(true);
+  };
+
   const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
         <HeaderBlock icon={<PayoutSettingsHeaderIcon />} title="Payment Ledger" description="Manage all payouts" />
       </GeneralSettingsContainer>
+      <SubmissionPaymentCSVModal
+        chain={chainSelected}
+        podId={podId}
+        orgId={orgId}
+        open={openExportModal}
+        handleClose={() => setOpenExportModal(false)}
+        exportPaymentCSV={exportSubmissionPaymentCsv}
+        // open={openBatchPayModal}
+        // handleClose={() => setOpenBatchPayModal(false)}
+        unpaidSubmissions={paymentSelected}
+      />
+
       <div
         style={{
           display: 'flex',
-          alignItems: 'center',
+          justifyContent: 'space-between',
         }}
       >
-        <ToggleViewButton
-          options={listViewOptions}
+        <div
           style={{
-            marginTop: '32px',
-            marginBottom: '-16px',
+            display: 'flex',
+            alignItems: 'center',
           }}
-        />
+        >
+          <ToggleViewButton
+            options={listViewOptions}
+            style={{
+              marginTop: '32px',
+              marginBottom: '-16px',
+            }}
+          />
+        </div>
+        {!paid && (
+          <div>
+            <CreateFormPreviewButton
+              style={{
+                marginLeft: '12px',
+              }}
+              onClick={handleExportButtonClick}
+            >
+              {' '}
+              Export to csv
+            </CreateFormPreviewButton>
+            {noPaymentSelectedError && <ErrorText>No payments selected</ErrorText>}
+          </div>
+        )}
       </div>
       <StyledTableContainer
         style={{
