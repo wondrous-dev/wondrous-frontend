@@ -38,19 +38,19 @@ export const ConnectToNotionButton = styled(MuiButton)`
     min-width: min-content;
     padding: 8px 16px;
     height: 40px;
-    background: #0f0f0f;
+    background: ${palette.background};
     border: 1px solid deepskyblue;
     margin-left: 10px;
     //text
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
-    color: #ffffff;
+    color: ${palette.white};
     .MuiCircularProgress-root {
       margin-right: 10px;
     }
     .Mui-disabled {
-      color: #ffffff;
+      color: ${palette.white};
     }
     @media (max-width: 1096px) {
       margin-top: 10px;
@@ -59,13 +59,14 @@ export const ConnectToNotionButton = styled(MuiButton)`
   }
 `;
 
+// same as the component in components/Settings/styles.tsx should we import?
 export const LabelBlock = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.01em;
-    color: #ccbbff;
+    color: ${palette.blue20};
     margin-bottom: 10px;
   }
 `;
