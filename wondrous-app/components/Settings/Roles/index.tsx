@@ -826,7 +826,7 @@ export const DiscordRoleSelectModal = (props) => {
         {importRoleError && <ErrorText>{importRoleError}</ErrorText>}
       </StyledDialogContent>
       <DialogActions>
-        <CreateFormCancelButton>Cancel</CreateFormCancelButton>
+        <CreateFormCancelButton onClick={handleClose}>Cancel</CreateFormCancelButton>
         <CreateFormPreviewButton onClick={handleDiscordRoleImport}>Import</CreateFormPreviewButton>
       </DialogActions>
     </Dialog>
