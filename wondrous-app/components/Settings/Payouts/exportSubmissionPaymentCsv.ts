@@ -73,7 +73,7 @@ export const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, i
   var encodedUri = encodeURI(csvContent);
   var link = document.createElement('a');
   link.setAttribute('href', encodedUri);
-  link.setAttribute('download', `wonderverse_submission_payment.csv`);
+  link.setAttribute('download', `wonderverse_submission_payment_${format(new Date(), 'MM/dd/yyyy')}.csv`);
   document.body.appendChild(link); // Required for FF
   link.click();
 };
