@@ -259,6 +259,35 @@ export const HeaderButton = styled.button`
   margin-right: 10px;
 `;
 
+export const RoleButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+`;
+
+export const RoleText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    color: ${palette.grey250};
+  }
+`;
+
+export const RoleButton = styled(HeaderButton)`
+  && {
+    border-radius: 1000px;
+    border-color: ${palette.green300};
+    padding: 5.5px 7px;
+    text-transform: capitalize;
+    font-size: 13px;
+    line-height: 13px;
+  }
+`;
+
 export const HeaderSettingsLockedButton = (props) => (
   <BorderButton
     style={{
