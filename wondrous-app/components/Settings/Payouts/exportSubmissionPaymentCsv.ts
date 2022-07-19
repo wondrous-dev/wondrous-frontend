@@ -16,7 +16,7 @@ export const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, i
     return;
   }
   const paymentsArray = [];
-  console.log(unpaidSubmissions);
+
   for (const [submissionId, value] of Object.entries(unpaidSubmissions)) {
     const unpaidSubmission: any = value;
     const paymentData = {
@@ -31,7 +31,7 @@ export const exportSubmissionPaymentCsv = ({ unpaidSubmissions, exportCSVType, i
     };
     paymentsArray.push(paymentData);
   }
-  console.log(paymentsArray);
+
   paymentsArray.forEach((paymentData) => {
     const assigneeUsername = paymentData.username || '';
     const wallet = paymentData?.recipientAddress || '';
