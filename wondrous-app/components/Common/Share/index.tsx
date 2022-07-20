@@ -16,7 +16,7 @@ export const Share = (props: IShareProps) => {
     e.preventDefault();
     e.stopPropagation();
     navigator.clipboard.writeText(url);
-    setSnackbarAlertMessage('Task link copied');
+    setSnackbarAlertMessage('Bounty link copied');
     setSnackbarAlertOpen(true);
   };
   return (
