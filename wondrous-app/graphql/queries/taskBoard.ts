@@ -323,7 +323,7 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD = gql`
       inReview
       proposalOpen
       proposalApproved
-      proposalChangeRequested
+      proposalClosed
     }
   }
 `;
@@ -382,7 +382,7 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD = gql`
       inReview
       proposalOpen
       proposalApproved
-      proposalChangeRequested
+      proposalClosed
     }
   }
 `;
