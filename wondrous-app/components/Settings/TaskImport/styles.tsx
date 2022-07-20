@@ -12,7 +12,7 @@ export const TaskImportContainer = styled.div`
 
 export const TaskImportMethodBlock = styled.div`
   padding: 30px 0;
-  border-bottom: 1px solid #363636;
+  border-bottom: 1px solid ${palette.grey85};
 `;
 
 export const IntegrationsSnapshotBlock = styled.div`
