@@ -1,17 +1,17 @@
 import AddAPhotoIcon from 'components/Icons/addAPhoto.svg';
 import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { ImageUpload } from 'components/Settings/imageUpload';
-import { useField, useFormikContext } from 'formik';
+import { useField } from 'formik';
 import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, ImageWrapper, LogoUpload } from './styles';
 
-const ProfilePicture = ({ setFieldValue, ...props }) => {
-  const [field] = useField(props.name);
+const ProfilePicture = ({ ...props }) => {
+  const [field, _, helpers] = useField(props.name);
   const withImage = Boolean(field.value);
   return (
     <FieldWrapper>
       <FieldLabel>Logo</FieldLabel>
       <ImageUpload
-        updateFilesCb={(file) => setFieldValue(field.name, file)}
+        updateFilesCb={(file) => helpers.setValue(file)}
         imageName={field.name}
         LabelComponent={(props) => (
           <LogoUpload {...props}>
@@ -28,14 +28,14 @@ const ProfilePicture = ({ setFieldValue, ...props }) => {
   );
 };
 
-const HeaderPicture = ({ setFieldValue, ...props }) => {
-  const [field] = useField(props.name);
+const HeaderPicture = ({ ...props }) => {
+  const [field, _, helpers] = useField(props.name);
   const withImage = Boolean(field.value);
   return (
     <FieldWrapper>
       <FieldLabel>Header</FieldLabel>
       <ImageUpload
-        updateFilesCb={(file) => setFieldValue(field.name, file)}
+        updateFilesCb={(file) => helpers.setValue(file)}
         imageName={field.name}
         LabelComponent={(props) => (
           <HeaderWrapper {...props}>
@@ -54,11 +54,10 @@ const HeaderPicture = ({ setFieldValue, ...props }) => {
 };
 
 const AddImages = (props) => {
-  const { setFieldValue } = useFormikContext();
   return (
     <ComponentFieldWrapper>
-      <ProfilePicture {...props.fields.profilePicture} setFieldValue={setFieldValue} />
-      <HeaderPicture {...props.fields.headerPicture} setFieldValue={setFieldValue} />
+      <ProfilePicture {...props.fields.profilePicture} />
+      <HeaderPicture {...props.fields.headerPicture} />
     </ComponentFieldWrapper>
   );
 };
