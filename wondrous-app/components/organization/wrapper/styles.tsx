@@ -40,10 +40,6 @@ export const HeaderImage = styled((props) => (
   />
 ))``;
 
-export const HeaderImageDefault = styled(() => (
-  <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
-))``;
-
 export const TokenHeader = styled.div`
   position: relative;
   width: 95%;

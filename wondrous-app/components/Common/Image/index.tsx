@@ -2,40 +2,41 @@ import React, { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
-import Image from 'next/image';
+import Image, { ImageProps } from 'next/image';
 
-interface SafeImageArgs {
+type SafeImageArgs = ImageProps & {
   alt?: string;
   className?: string;
   placeholderSrc?: string; // Image src to display while the image is not visible or loaded.
-  placeholder?: JSX.Element; // React element to use as a placeholder.
-  isPlaceholderVisibleByDefault: boolean;
-  height?: string;
-  src: string;
-  width?: string;
-  objectPosition?: string;
+  placeholderComp?: JSX.Element; // React element to use as a placeholder.
+  isPlaceholderVisibleByDefault?: boolean;
   useNextImage?: boolean;
   style?: object;
-  layout?: string;
   onPreviewLoaded?(url: string): void;
-}
+};
 
 // https://nextjs.org/docs/api-reference/next/image
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
   const {
     src,
-    placeholderSrc,
     alt,
     onPreviewLoaded,
     width,
     height,
-    placeholder,
+    placeholderComp,
+    placeholderSrc,
     useNextImage = true,
     isPlaceholderVisibleByDefault = true,
     ...props
   } = safeImageArgs;
   const [imgUrl, setImageUrl] = useState(null);
-  const safeImageUrl = (src?.startsWith('https') || src?.startsWith('file://') ? src : imgUrl) || placeholderSrc;
+  const hasProtocol = typeof src === 'string' && (src?.startsWith('https') || src?.startsWith('file://'));
+  let safeImageUrl = (hasProtocol ? src : imgUrl) || placeholderSrc;
+
+  // In case if image was imported
+  if (typeof src === 'object' && useNextImage) {
+    safeImageUrl = src;
+  }
 
   const [getPreviewFile] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
@@ -50,7 +51,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
   });
 
   useEffect(() => {
-    if (!src || src.startsWith('http')) {
+    if (!src || hasProtocol) {
       return;
     }
 
@@ -86,13 +87,13 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
 
   if (safeImageUrl) {
     return useNextImage ? (
-      <Image src={imgUrl} alt={alt} width={width} height={height} {...props} />
+      <Image src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
       <img src={imgUrl} alt={alt} width={width} height={height} {...props} />
     );
-  } else if ((placeholder && isPlaceholderVisibleByDefault) || (!isPlaceholderVisibleByDefault && !src)) {
-    return placeholder;
+  } else if (placeholderComp) {
+    return placeholderComp;
   }
 
   return null;
