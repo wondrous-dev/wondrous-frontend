@@ -1,35 +1,13 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import { Box } from '@mui/material';
-import MilestoneTasks from 'components/Common/MilestoneTask';
-import { TaskApplicationButton, TaskApplicationList, useTaskApplicationCount } from 'components/Common/TaskApplication';
-import TaskSubmission from 'components/Common/TaskSubmission';
+import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import { CreateEntity } from 'components/CreateEntity';
-import { Claim } from 'components/Icons/claimTask';
-import ErrorIcon from 'components/Icons/errorIcon.svg';
-import MoreIcon from 'components/Icons/more';
-import { RichTextViewer } from 'components/RichText';
-import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';
 import Tooltip from 'components/Tooltip';
 import { format, formatDistance } from 'date-fns';
-import {
-  ARCHIVE_TASK,
-  COMPLETE_BOUNTY,
-  COMPLETE_MILESTONE,
-  REMOVE_TASK_ASSIGNEE,
-  UNARCHIVE_TASK,
-  UPDATE_TASK_ASSIGNEE,
-} from 'graphql/mutations/task';
-import {
-  APPROVE_TASK_PROPOSAL,
-  CLOSE_TASK_PROPOSAL,
-  UPDATE_TASK_PROPOSAL_ASSIGNEE,
-} from 'graphql/mutations/taskProposal';
+import { ARCHIVE_TASK } from 'graphql/mutations/task';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
-import { isEmpty, keys } from 'lodash';
-import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
@@ -52,11 +30,6 @@ import {
   PRIVACY_LEVEL,
   STATUS_APPROVED,
   TASK_STATUS_ARCHIVED,
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_TODO,
   TASK_TYPE,
 } from 'utils/constants';
 import { ApprovedSubmissionContext } from 'utils/contexts';
@@ -67,9 +40,7 @@ import {
 } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
-import RecurringIcon from '../../../public/images/icons/recurring.svg';
 import { useMe } from '../../Auth/withAuth';
-import { CommentList } from '../../Comment';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
@@ -81,41 +52,25 @@ import { DAOIcon } from '../../Icons/dao';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import { SubtaskDarkIcon } from '../../Icons/subtask';
 import { RejectIcon } from '../../Icons/taskModalIcons';
-import { ArchiveTaskModal } from '../ArchiveTaskModal';
-import { CompleteModal } from '../CompleteModal';
-import { DeleteTaskModal } from '../DeleteTaskModal';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
-import TaskSubtasks from 'components/Common/TaskSubtask';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
-import WalletModal from '../Wallet/WalletModal';
 import {
-  ActionButton,
-  ArchivedTaskUndo,
-  ConnectToWalletButton,
-  GithubBlock,
   SubtaskIconWrapper,
-  Tag,
   TaskBorder,
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
   TaskCardPodIcon,
-  TaskDescriptionText,
-  TaskDescriptionTextShowAllText,
   TaskMediaWrapper,
   TaskModal,
   TaskModalCard,
-  TaskModalFooter,
   TaskModalHeader,
   TaskModalHeaderArrow,
   TaskModalHeaderBackToList,
   TaskModalHeaderCloseModal,
   TaskModalHeaderIconWrapper,
-  TaskModalHeaderMenu,
-  TaskModalHeaderMenuButton,
-  TaskModalHeaderMenuItem,
   TaskModalHeaderOpenInFullIcon,
   TaskModalHeaderPrivacyIcon,
   TaskModalHeaderShare,
@@ -129,72 +84,33 @@ import {
   TaskModalTaskStatusMoreInfo,
   TaskModalTitle,
   TaskModalTitleDescriptionMedia,
-  TaskSectionContent,
-  TaskSectionDisplayContentWrapper,
   TaskSectionDisplayCreator,
   TaskSectionDisplayData,
-  TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
-  TaskSectionDisplayLabel,
-  TaskSectionDisplayLabelText,
-  TaskSectionFooterTitleDiv,
-  TaskSectionImageContentImage,
-  TaskSectionImageContentSafeImage,
-  TaskSectionImageContentWrapper,
-  TaskSectionInfoCalendar,
-  TaskSectionInfoClose,
   TaskSectionInfoCreatorDaysAgo,
   TaskSectionInfoCreatorTask,
-  TaskSectionInfoDiv,
-  TaskSectionInfoMilestoneIcon,
-  TaskSectionInfoPaymentAmount,
-  TaskSectionInfoPaymentMethodChain,
-  TaskSectionInfoPaymentMethodIcon,
-  TaskSectionInfoPaymentWrapper,
-  TaskSectionInfoPoints,
-  TaskSectionInfoPointsIcon,
-  TaskSectionInfoRecurringIcon,
-  TaskSectionInfoTakeTask,
-  TaskSectionInfoTakeTaskText,
-  TaskSectionInfoText,
   TaskSectionInfoTextCreator,
-  TaskSectionInfoTextMilestone,
-  TaskSectionInfoTextUnderlined,
-  TaskSectionTagWrapper,
   TaskStatusHeaderText,
-  TaskSubmissionTab,
-  TaskTabText,
-  WalletError,
-  WalletErrorText,
-  InfoPoint,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
 import VoteResults from 'components/Common/Votes';
 import { ProposalVoteType } from 'utils/constants';
-
-const tabs = {
-  submissions: 'Submissions',
-  subTasks: 'Subtasks',
-  discussion: 'Discussion',
-  tasks: 'Tasks',
-  applications: 'Applications',
-};
-
-const tabsPerType = {
-  proposalTabs: [tabs.discussion],
-  milestoneTabs: [tabs.tasks, tabs.discussion],
-  subtaskTabs: [tabs.submissions, tabs.discussion],
-  bountyTabs: [tabs.submissions, tabs.discussion],
-  taskTabs: [tabs.applications, tabs.submissions, tabs.subTasks, tabs.discussion],
-};
-
-const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
-  if (isTaskProposal) return tabsPerType.proposalTabs;
-  if (isMilestone) return tabsPerType.milestoneTabs;
-  if (isSubtask) return tabsPerType.subtaskTabs;
-  if (isBounty) return tabsPerType.bountyTabs;
-  return tabsPerType.taskTabs;
-};
+import { TaskDescriptionTextWrapper, TaskSectionImageContent, Rewards, GithubButtons, Menu } from './helpers';
+import { openSnapshot } from './utils';
+import { tabs } from './constants';
+import ActionModals from './actionModals';
+import TaskViewModalFooter from './taskViewModalFooter';
+import {
+  ReviewerField,
+  AssigneeField,
+  ApplicationField,
+  ProposerField,
+  VotesField,
+  DueDateField,
+  PointsField,
+  MilestoneField,
+  TagsField,
+} from './taskViewModalFields';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -206,229 +122,10 @@ interface ITaskListModalProps {
   shouldFocusAfterRender?: boolean;
 }
 
-const TaskHeaderMenu = ({ canEdit, children }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-  if (!canEdit) return null;
-  return (
-    <>
-      <Tooltip title="More actions" placement="top">
-        <TaskModalHeaderMenuButton onClick={handleClick} open={open}>
-          <MoreIcon />
-        </TaskModalHeaderMenuButton>
-      </Tooltip>
-      <TaskModalHeaderMenu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={handleClose}
-        anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right',
-        }}
-        transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right',
-        }}
-      >
-        {children}
-      </TaskModalHeaderMenu>
-    </>
-  );
-};
-
-const TaskDescriptionTextWrapper = ({ text }) => {
-  const initialHeight = 100;
-  const [showButton, setShowButton] = useState(false);
-  const [isExpanded, setIsExpanded] = useState(true);
-  const handleExpand = () => setIsExpanded(!isExpanded);
-  const checkRichTextHeight = useCallback((node) => {
-    if (!node) return;
-    const hasExceeded = node?.children?.[0]?.offsetHeight > initialHeight;
-    setShowButton(hasExceeded);
-    setIsExpanded(!hasExceeded);
-  }, []);
-  if (!text) return null;
-  return (
-    <>
-      <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight}>
-        <RichTextViewer text={text} />
-      </TaskDescriptionText>
-      {showButton && (
-        <TaskDescriptionTextShowAllText onClick={handleExpand}>
-          {isExpanded ? `Hide description` : `Show full description`}
-        </TaskDescriptionTextShowAllText>
-      )}
-    </>
-  );
-};
-
-const TaskSectionLabel = ({ children }) => (
-  <TaskSectionDisplayLabel>
-    <TaskSectionDisplayLabelText>{children}</TaskSectionDisplayLabelText>
-  </TaskSectionDisplayLabel>
-);
-
-const TaskSectionImageContent = ({
-  hasContent,
-  DefaultContent = null,
-  imgSrc = '',
-  DefaultImageComponent = null,
-  ContentComponent,
-  onClick = () => {},
-}) => {
-  if (!hasContent) return <DefaultContent />;
-  const defaultImage = DefaultImageComponent && (
-    <TaskSectionImageContentImage>
-      <DefaultImageComponent />
-    </TaskSectionImageContentImage>
-  );
-  const image = imgSrc ? (
-    <TaskSectionImageContentImage>
-      <TaskSectionImageContentSafeImage src={imgSrc} />
-    </TaskSectionImageContentImage>
-  ) : (
-    defaultImage
-  );
-  return (
-    <TaskSectionImageContentWrapper onClick={onClick}>
-      {image}
-      <ContentComponent />
-    </TaskSectionImageContentWrapper>
-  );
-};
-
-const GithubButtons = ({ fetchedTask }) => {
-  const githubIssue = fetchedTask?.githubIssue;
-  const githubPullRequest = fetchedTask?.githubPullRequest;
-  if (githubIssue || githubPullRequest) {
-    return (
-      <TaskSectionDisplayDiv>
-        <TaskSectionLabel>Github</TaskSectionLabel>
-        <GithubBlock>
-          {githubIssue && (
-            <GithubLink href={githubIssue?.url} target="_blank">
-              <GitHubIcon />
-              <GithubLinkText>Github issue</GithubLinkText>
-            </GithubLink>
-          )}
-          {githubPullRequest && (
-            <GithubLink href={githubPullRequest?.url} target="_blank">
-              <GitHubIcon />
-              <GithubLinkText>{githubPullRequest?.title}</GithubLinkText>
-            </GithubLink>
-          )}
-        </GithubBlock>
-      </TaskSectionDisplayDiv>
-    );
-  }
-  return null;
-};
-
-const ConnectToWallet = ({ user }) => {
-  const [walletModalOpen, setWalletModalOpen] = useState(false);
-  if (user?.activeEthAddress) return null;
-  return (
-    <TaskSectionInfoPaymentWrapper>
-      <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
-      <WalletError>
-        <ErrorIcon />
-        <WalletErrorText>Wallet not connected</WalletErrorText>
-      </WalletError>
-      <ConnectToWalletButton onClick={() => setWalletModalOpen(true)}>Connect</ConnectToWalletButton>
-    </TaskSectionInfoPaymentWrapper>
-  );
-};
-
-const Rewards = ({ fetchedTask, user }) => {
-  const rewards = fetchedTask?.rewards;
-  if (isEmpty(rewards)) return null;
-  return (
-    <TaskSectionDisplayDiv>
-      <TaskSectionLabel>Rewards</TaskSectionLabel>
-      {rewards.map((reward, index) => {
-        const { rewardAmount, symbol, icon, chain } = reward;
-        return (
-          <TaskSectionImageContent
-            key={index}
-            hasContent={reward}
-            ContentComponent={() => (
-              <TaskSectionInfoPaymentWrapper>
-                <TaskSectionInfoPaymentMethodIcon src={icon} />
-                <TaskSectionInfoPaymentAmount>
-                  {rewardAmount} {symbol}
-                </TaskSectionInfoPaymentAmount>
-                <TaskSectionInfoPaymentMethodChain>paid on {chain}</TaskSectionInfoPaymentMethodChain>
-                <ConnectToWallet user={user} />
-              </TaskSectionInfoPaymentWrapper>
-            )}
-          />
-        );
-      })}
-    </TaskSectionDisplayDiv>
-  );
-};
-
-const Menu = ({
-  canArchive,
-  canDelete,
-  canEdit,
-  isBounty,
-  isMilestone,
-  isTaskProposal,
-  setArchiveTask,
-  setCompleteModal,
-  setDeleteTask,
-  setEditTask,
-  taskType,
-}) => {
-  const menuItems = {
-    Complete: {
-      condition: canEdit && (isMilestone || isBounty),
-      onClick: setCompleteModal,
-    },
-    Edit: {
-      condition: canEdit,
-      onClick: setEditTask,
-    },
-    Archive: {
-      condition: canArchive && !isTaskProposal,
-      onClick: setArchiveTask,
-    },
-    Delete: {
-      condition: canDelete,
-      onClick: setDeleteTask,
-      warning: true,
-    },
-  };
-  return (
-    <TaskHeaderMenu canEdit={canEdit}>
-      {keys(menuItems).map((item) => {
-        const { condition, onClick, ...props } = menuItems[item];
-        return (
-          <>
-            {condition && (
-              <TaskModalHeaderMenuItem key={item} onClick={() => onClick(true)} {...props}>
-                {item} {taskType}
-              </TaskModalHeaderMenuItem>
-            )}
-          </>
-        );
-      })}
-    </TaskHeaderMenu>
-  );
-};
-
 export const TaskViewModal = (props: ITaskListModalProps) => {
   const { open, handleClose, taskId, isTaskProposal, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
-  const isTask = fetchedTask?.type === TASK_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
   const isBounty = fetchedTask?.type === BOUNTY_TYPE;
   const entityType = isTaskProposal ? ENTITIES_TYPES.PROPOSAL : fetchedTask?.type;
@@ -453,29 +150,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const boardColumns = useColumns();
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
-  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
-  const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
-  const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
-  const [completeMilestone] = useMutation(COMPLETE_MILESTONE, {
-    refetchQueries: () => [
-      'getTaskById',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-  });
-  const [completeBounty] = useMutation(COMPLETE_BOUNTY, {
-    refetchQueries: () => [
-      'getTaskById',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-  });
   const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
@@ -558,84 +234,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       // let columns = [...boardColumns?.columns]
     },
   });
-  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
-    refetchQueries: [
-      'getTaskById',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-    onError: () => {
-      console.error('Something went wrong unarchiving tasks');
-    },
-    onCompleted: () => {
-      // TODO: Move columns
-      // let columns = [...boardColumns?.columns]
-    },
-  });
-
-  const completeCallback = useCallback(() => {
-    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-    if (isMilestone) {
-      completeMilestone({
-        variables: {
-          milestoneId: taskId,
-          timezone,
-        },
-      }).then(() => {
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage(<>Milestone marked as complete :)</>);
-      });
-    } else if (isBounty) {
-      completeBounty({
-        variables: {
-          bountyId: taskId,
-          timezone,
-        },
-      }).then(() => {
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage(<>Bounty marked as complete :)</>);
-      });
-    }
-  }, [taskId, isMilestone, isBounty, setSnackbarAlertOpen, setSnackbarAlertMessage]);
-
-  const handleOnArchive = useCallback(() => {
-    archiveTaskMutation({
-      variables: {
-        taskId: fetchedTask?.id,
-      },
-    }).then((result) => {
-      handleClose();
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              setSnackbarAlertOpen(false);
-              unarchiveTaskMutation({
-                variables: {
-                  taskId: fetchedTask?.id,
-                },
-              });
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
-    });
-  }, [
-    fetchedTask?.id,
-    archiveTaskMutation,
-    handleClose,
-    setSnackbarAlertOpen,
-    unarchiveTaskMutation,
-    setSnackbarAlertMessage,
-  ]);
 
   useEffect(() => {
     if (open) {
@@ -653,16 +251,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     handleClose,
     open,
   ]);
-
-  useEffect(() => {
-    if (isMilestone) {
-      setActiveTab(tabs.tasks);
-    } else if (isTaskProposal || router?.query?.taskCommentId) {
-      setActiveTab(tabs.discussion);
-    } else {
-      setActiveTab(tabs.submissions);
-    }
-  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
   useEffect(() => {
     if (open) {
@@ -735,29 +323,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     }
   }, [fetchedTask?.snapshotId]);
 
-  useEffect(() => {
-    if (isMilestone) {
-      setActiveTab(tabs.tasks);
-    } else if (isTaskProposal || router?.query?.taskCommentId) {
-      setActiveTab(tabs.discussion);
-    } else {
-      setActiveTab(tabs.submissions);
-    }
-  }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
-
-  const openSnapshot = async () => {
-    try {
-      const space = orgSnapshot.snapshotEns;
-      const proposal = fetchedTask?.snapshotId;
-      const url = isTest
-        ? `https://demo.snapshot.org/#/${space}/proposal/${proposal}`
-        : `https://snapshot.org/#/${space}/proposal/${proposal}`;
-      window.open(url);
-    } catch (error) {
-      console.error(error);
-    }
-  };
-
   if (editTask) {
     return (
       <CreateEntity
@@ -797,17 +362,12 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       />
     );
   }
-  const canSubmit = fetchedTask?.assigneeId === user?.id || isBounty;
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   });
 
-  const canCreate =
-    permissions.includes(PERMISSIONS.CREATE_TASK) ||
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    fetchedTask?.createdBy === user?.id;
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
@@ -818,19 +378,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
     (fetchedTask?.createdBy === user?.id && fetchedTask?.type === TASK_TYPE);
 
-  const canMoveProgress =
-    (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    fetchedTask?.createdBy === user?.id ||
-    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
-
-  const canReview = permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.REVIEW_TASK);
-  if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-    // console.log('permission context in task modal', userPermissionsContext);
-    // console.log('user permissions in task modal', permissions);
-    // console.log('canEdit', canEdit);
-    // console.log('can Review', canReview);
-  }
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
@@ -842,8 +389,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const canApproveProposal =
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
 
-  const onCorrectPage =
-    fetchedTask?.orgId === board?.orgId || fetchedTask?.podId === board?.podId || fetchedTask?.userId === board?.userId;
   const taskType = isTaskProposal ? 'task proposal' : fetchedTask?.type;
   const handleOnCloseArchiveTaskModal = () => {
     setArchiveTask(false);
@@ -937,6 +482,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     Number(fetchedTask?.votes?.counts[ProposalVoteType.APPROVE]) +
     Number(fetchedTask?.votes?.counts[ProposalVoteType.REJECT]);
 
+  const handleSnapshot = () => openSnapshot(orgSnapshot, fetchedTask, isTest);
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -944,32 +490,19 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
       }}
     >
       <>
-        <CompleteModal
-          open={completeModal}
-          onClose={() => {
-            setCompleteModal(false);
-          }}
+        <ActionModals
+          completeModal={completeModal}
+          setCompleteModal={setCompleteModal}
           taskType={taskType}
-          taskId={fetchedTask?.id}
-          onComplete={completeCallback}
-        />
-        <ArchiveTaskModal
-          open={archiveTask}
-          onClose={handleOnCloseArchiveTaskModal}
-          onArchive={handleOnArchive}
-          taskType={taskType}
-          taskId={fetchedTask?.id}
-        />
-        <DeleteTaskModal
-          open={deleteTask}
-          onClose={() => setDeleteTask(false)}
-          taskType={taskType}
-          taskId={fetchedTask?.id}
-          onDelete={() => {
-            handleClose();
-            setSnackbarAlertOpen(true);
-            setSnackbarAlertMessage(`Deleted successfully!`);
-          }}
+          fetchedTask={fetchedTask}
+          archiveTask={archiveTask}
+          archiveTaskMutation={archiveTaskMutation}
+          handleOnCloseArchiveTaskModal={handleOnCloseArchiveTaskModal}
+          deleteTask={deleteTask}
+          setDeleteTask={setDeleteTask}
+          handleClose={handleClose}
+          setSnackbarAlertOpen={setSnackbarAlertOpen}
+          setSnackbarAlertMessage={setSnackbarAlertMessage}
         />
         <TaskModal
           open={open}
@@ -1080,7 +613,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                 <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
                 <TaskModalTaskStatusMoreInfo>
                   {fetchedTask?.snapshotId && (
-                    <TaskModalSnapshot onClick={openSnapshot}>
+                    <TaskModalSnapshot onClick={handleSnapshot}>
                       <TaskModalSnapshotLogo />
                       <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                     </TaskModalSnapshot>
@@ -1101,305 +634,62 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
               </TaskModalTitleDescriptionMedia>
               <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                 <TaskSectionDisplayData>
-                  {!isTaskProposal && !isMilestone && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Reviewer</TaskSectionLabel>
-                      <TaskSectionDisplayContentWrapper>
-                        {reviewerData?.getTaskReviewers?.length > 0 ? (
-                          (reviewerData?.getTaskReviewers).map((taskReviewer) => (
-                            <TaskSectionImageContent
-                              key={taskReviewer.id}
-                              hasContent={taskReviewer.id}
-                              imgSrc={taskReviewer?.profilePicture}
-                              DefaultImageComponent={() => <DefaultUserImage />}
-                              ContentComponent={() => (
-                                <TaskSectionInfoTextUnderlined>{taskReviewer?.username}</TaskSectionInfoTextUnderlined>
-                              )}
-                              onClick={() => {
-                                handleClose();
-                                router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
-                                  shallow: true,
-                                });
-                              }}
-                            />
-                          ))
-                        ) : (
-                          <TaskSectionInfoText>None</TaskSectionInfoText>
-                        )}
-                      </TaskSectionDisplayContentWrapper>
-                    </TaskSectionDisplayDiv>
-                  )}
-                  {showAssignee && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Assignee</TaskSectionLabel>
-                      <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
-                        <TaskSectionImageContent
-                          hasContent={fetchedTask?.assigneeUsername}
-                          imgSrc={fetchedTask?.assigneeProfilePicture}
-                          DefaultImageComponent={() => <DefaultUserImage />}
-                          ContentComponent={() => {
-                            return (
-                              <>
-                                <TaskSectionInfoTextUnderlined>
-                                  {fetchedTask?.assigneeUsername}
-                                </TaskSectionInfoTextUnderlined>
-                                {canEdit && (
-                                  <TaskSectionInfoClose
-                                    onClick={(e) => {
-                                      e.preventDefault();
-                                      e.stopPropagation();
-                                      removeTaskAssignee({
-                                        variables: {
-                                          taskId: fetchedTask?.id,
-                                        },
-                                        onCompleted: (data) => {
-                                          const task = data?.removeTaskAssignee;
-                                          const transformedTask = transformTaskToTaskCard(task, {});
-                                          setFetchedTask(transformedTask);
-                                          if (boardColumns?.setColumns && onCorrectPage) {
-                                            let columns = [...boardColumns?.columns];
-                                            if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                                              columns = updateInReviewItem(transformedTask, columns);
-                                            } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                              columns = updateInProgressTask(transformedTask, columns);
-                                            } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                              columns = updateTaskItem(transformedTask, columns);
-                                            } else if (transformedTask.status === TASK_STATUS_DONE) {
-                                              columns = updateCompletedItem(transformedTask, columns);
-                                            }
-                                            boardColumns.setColumns(columns);
-                                          }
-                                        },
-                                      });
-                                    }}
-                                  >
-                                    <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
-                                  </TaskSectionInfoClose>
-                                )}
-                              </>
-                            );
-                          }}
-                          onClick={() => {
-                            handleClose();
-                            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
-                              shallow: true,
-                            });
-                          }}
-                          DefaultContent={() => (
-                            <>
-                              {canClaim ? (
-                                <>
-                                  <TaskSectionInfoTakeTask
-                                    onClick={() => {
-                                      if (!user) {
-                                        router.push('/signup', undefined, {
-                                          shallow: true,
-                                        });
-                                      } else {
-                                        if (isTaskProposal) {
-                                          updateTaskProposalAssignee({
-                                            variables: {
-                                              proposalId: fetchedTask?.id,
-                                              assigneeId: user?.id,
-                                            },
-                                            onCompleted: (data) => {
-                                              const taskProposal = data?.updateTaskProposalAssignee;
-                                              if (boardColumns?.setColumns && onCorrectPage) {
-                                                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                                  taskProposal,
-                                                  {}
-                                                );
-                                                let columns = [...boardColumns?.columns];
-                                                columns = updateProposalItem(transformedTaskProposal, columns);
-                                                boardColumns?.setColumns(columns);
-                                              }
-                                            },
-                                          });
-                                        } else {
-                                          updateTaskAssignee({
-                                            variables: {
-                                              taskId: fetchedTask?.id,
-                                              assigneeId: user?.id,
-                                            },
-                                            onCompleted: (data) => {
-                                              const task = data?.updateTaskAssignee;
-                                              const transformedTask = transformTaskToTaskCard(task, {});
-                                              setFetchedTask(transformedTask);
-                                              if (boardColumns?.setColumns && onCorrectPage) {
-                                                let columns = [...boardColumns?.columns];
-                                                if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                                                  columns = updateInReviewItem(transformedTask, columns);
-                                                } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                                  columns = updateInProgressTask(transformedTask, columns);
-                                                } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                                  columns = updateTaskItem(transformedTask, columns);
-                                                } else if (transformedTask.status === TASK_STATUS_DONE) {
-                                                  columns = updateCompletedItem(transformedTask, columns);
-                                                }
-                                                boardColumns.setColumns(columns);
-                                              }
-                                            },
-                                          });
-                                        }
-                                      }
-                                    }}
-                                  >
-                                    <Claim />
-                                    <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
-                                  </TaskSectionInfoTakeTask>
-                                </>
-                              ) : (
-                                <>
-                                  {canApply ? (
-                                    <TaskApplicationButton
-                                      task={fetchedTask}
-                                      canApply={canApply}
-                                      title="Apply to task"
-                                    />
-                                  ) : (
-                                    <TaskSectionInfoText
-                                      style={{
-                                        marginLeft: '4px',
-                                        marginTop: '8px',
-                                      }}
-                                    >
-                                      None
-                                    </TaskSectionInfoText>
-                                  )}
-                                </>
-                              )}
-                            </>
-                          )}
-                        />
-                      </TaskSectionInfoDiv>
-                    </TaskSectionDisplayDiv>
-                  )}
-                  {canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0 && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Applications</TaskSectionLabel>
-                      <Box display="flex" alignItems="center">
-                        <TaskSectionInfoText>
-                          <ActionButton type="button" onClick={handleReviewButton}>
-                            Review {taskApplicationCount?.getTaskApplicationsCount?.total} applications
-                          </ActionButton>
-                        </TaskSectionInfoText>
-                      </Box>
-                    </TaskSectionDisplayDiv>
-                  )}
-
-                  {isTaskProposal && !isMilestone && (
-                    <>
-                      <TaskSectionDisplayDiv>
-                        <TaskSectionLabel>Proposer</TaskSectionLabel>
-                        <TaskSectionImageContent
-                          hasContent={fetchedTask?.creatorUsername}
-                          onClick={() => {
-                            handleClose();
-                            router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
-                              shallow: true,
-                            });
-                          }}
-                          ContentComponent={() => (
-                            <TaskSectionInfoText>{fetchedTask?.creatorUsername}</TaskSectionInfoText>
-                          )}
-                          imgSrc={fetchedTask?.creatorProfilePicture}
-                          DefaultImageComponent={() => <DefaultUserImage />}
-                          DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
-                        />
-                      </TaskSectionDisplayDiv>
-                      <TaskSectionDisplayDiv>
-                        <TaskSectionLabel>Voted</TaskSectionLabel>
-                        <TaskSectionImageContent
-                          hasContent={fetchedTask?.votes}
-                          ContentComponent={() => <TaskSectionInfoText>{totalVotes} votes</TaskSectionInfoText>}
-                          DefaultContent={() => null}
-                        />
-                      </TaskSectionDisplayDiv>
-                    </>
-                  )}
-                  {fetchedTask?.dueDate && (
-                    <div>
-                      <TaskSectionDisplayDiv>
-                        <TaskSectionLabel>Due Date</TaskSectionLabel>
-                        <TaskSectionImageContent
-                          hasContent={fetchedTask?.dueDate}
-                          ContentComponent={() => (
-                            <TaskSectionInfoText>
-                              {!isEmpty(fetchedTask?.recurringSchema) && (
-                                <Tooltip title="Recurring" placement="right">
-                                  <TaskSectionInfoRecurringIcon>
-                                    <RecurringIcon />
-                                  </TaskSectionInfoRecurringIcon>
-                                </Tooltip>
-                              )}
-                              {format(new Date(fetchedTask?.dueDate), 'MM/dd/yyyy')}
-                            </TaskSectionInfoText>
-                          )}
-                          DefaultContent={() => null}
-                          DefaultImageComponent={() => <TaskSectionInfoCalendar />}
-                        />
-                      </TaskSectionDisplayDiv>
-                      {fetchedTask.shouldUnclaimOnDueDateExpiry && (
-                        <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>
-                      )}
-                    </div>
-                  )}
+                  <ReviewerField
+                    shouldDisplay={!isTaskProposal && !isMilestone}
+                    reviewerData={reviewerData}
+                    handleClose={handleClose}
+                  />
+                  <AssigneeField
+                    shouldDisplay={showAssignee}
+                    fetchedTask={fetchedTask}
+                    canEdit={canEdit}
+                    setFetchedTask={setFetchedTask}
+                    updateInReviewItem={updateInReviewItem}
+                    boardColumns={boardColumns}
+                    handleClose={handleClose}
+                    user={user}
+                    canClaim={canClaim}
+                    isTaskProposal={isTaskProposal}
+                    updateProposalItem={updateProposalItem}
+                    updateInProgressTask={updateInProgressTask}
+                    updateTaskItem={updateTaskItem}
+                    updateCompletedItem={updateCompletedItem}
+                    canApply={canApply}
+                    orgId={board?.orgId}
+                    podId={board?.podId}
+                    userId={board?.userId}
+                  />
+                  <ApplicationField
+                    shouldDisplay={canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0}
+                    taskApplicationCount={taskApplicationCount}
+                    handleReviewButton={handleReviewButton}
+                  />
+                  <ProposerField
+                    shouldDisplay={isTaskProposal && !isMilestone}
+                    creatorProfilePicture={fetchedTask?.creatorProfilePicture}
+                    creatorUsername={fetchedTask?.creatorUsername}
+                    handleClose={handleClose}
+                  />
+                  <VotesField
+                    shouldDisplay={isTaskProposal && !isMilestone}
+                    totalVotes={totalVotes}
+                    hasContent={fetchedTask?.votes}
+                  />
+                  <DueDateField
+                    dueDate={fetchedTask?.dueDate}
+                    shouldDisplay={fetchedTask?.dueDate}
+                    recurringSchema={fetchedTask?.recurringSchema}
+                    shouldUnclaimOnDueDateExpiry={fetchedTask?.shouldUnclaimOnDueDateExpiry}
+                  />
                   <Rewards fetchedTask={fetchedTask} user={user} />
-                  {fetchedTask?.points && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Points</TaskSectionLabel>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.points}
-                        ContentComponent={() => <TaskSectionInfoPoints>{fetchedTask?.points}</TaskSectionInfoPoints>}
-                        DefaultImageComponent={() => <TaskSectionInfoPointsIcon />}
-                      />
-                    </TaskSectionDisplayDiv>
-                  )}
-                  {fetchedTask?.milestoneId && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Milestone</TaskSectionLabel>
-                      <TaskSectionImageContent
-                        hasContent={fetchedTask?.milestoneId}
-                        ContentComponent={() => (
-                          <TaskSectionInfoTextMilestone
-                            onClick={() => {
-                              if (fetchedTask?.milestoneId) {
-                                router.query.task = fetchedTask?.milestoneId;
-                                router.push(router);
-                                getTaskById({
-                                  variables: {
-                                    taskId: fetchedTask?.milestoneId,
-                                  },
-                                });
-                              }
-                            }}
-                          >
-                            {fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
-                          </TaskSectionInfoTextMilestone>
-                        )}
-                        DefaultImageComponent={() => <TaskSectionInfoMilestoneIcon />}
-                      />
-                    </TaskSectionDisplayDiv>
-                  )}
-                  {fetchedTask?.labels?.length > 0 && (
-                    <TaskSectionDisplayDiv>
-                      <TaskSectionLabel>Tags</TaskSectionLabel>
-                      <TaskSectionTagWrapper>
-                        {fetchedTask.labels.map((label) => {
-                          return (
-                            label && (
-                              <TaskSectionImageContent
-                                key={label.id}
-                                hasContent={label}
-                                ContentComponent={() => <Tag color={label.color}>{label.name}</Tag>}
-                                DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
-                              />
-                            )
-                          );
-                        })}
-                      </TaskSectionTagWrapper>
-                    </TaskSectionDisplayDiv>
-                  )}
+                  <PointsField shouldDisplay={!!fetchedTask?.points} points={fetchedTask?.points} />
+                  <MilestoneField
+                    shouldDisplay={!!fetchedTask?.milestoneId}
+                    milestoneId={fetchedTask?.milestoneId}
+                    getTaskById={getTaskById}
+                    milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
+                  />
+                  <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
                   {isTaskProposal && (
                     <>
                       <VoteResults
@@ -1479,56 +769,31 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                   )}
                 </TaskSectionDisplayCreator>
               </TaskSectionDisplayDivWrapper>
-
-              <TaskModalFooter fullScreen={fullScreen}>
-                <TaskSectionFooterTitleDiv>
-                  {selectTabsPerType(isTaskProposal, isMilestone, isSubtask, isBounty).map((tab, index) => {
-                    const active = tab === activeTab;
-                    return (
-                      <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-                        <TaskTabText isActive={active}>{tab}</TaskTabText>
-                      </TaskSubmissionTab>
-                    );
-                  })}
-                </TaskSectionFooterTitleDiv>
-                <TaskSectionContent ref={sectionRef}>
-                  {activeTab === tabs.applications && fetchedTask?.id && (
-                    <TaskApplicationList
-                      count={taskApplicationCount?.getTaskApplicationsCount?.total}
-                      task={fetchedTask}
-                      canApply={canApply}
-                      canClaim={canClaim}
-                      canViewApplications={canViewApplications}
-                    />
-                  )}
-                  {activeTab === tabs.submissions && (
-                    <TaskSubmission
-                      assigneeProfilePicture={fetchedTask?.profilePicture}
-                      assigneeUsername={fetchedTask?.assigneeUsername}
-                      board={board}
-                      boardColumns={boardColumns}
-                      canMoveProgress={canMoveProgress}
-                      canReview={canReview}
-                      canSubmit={canSubmit}
-                      fetchedTask={fetchedTask}
-                      fetchedTaskSubmissions={taskSubmissionsForTask?.getTaskSubmissionsForTask}
-                      getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-                      handleClose={handleClose}
-                      isBounty={isBounty}
-                      orgId={fetchedTask?.orgId}
-                      setFetchedTask={setFetchedTask}
-                      setShowPaymentModal={setShowPaymentModal}
-                      taskId={fetchedTask?.id}
-                      taskSubmissionLoading={taskSubmissionsForTaskLoading}
-                    />
-                  )}
-                  {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
-                  {activeTab === tabs.discussion && (
-                    <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
-                  )}
-                  {activeTab === tabs.tasks && <MilestoneTasks canCreate={canCreate} milestone={fetchedTask} />}
-                </TaskSectionContent>
-              </TaskModalFooter>
+              <TaskViewModalFooter
+                fullScreen={fullScreen}
+                canApply={canApply}
+                canClaim={canClaim}
+                ref={sectionRef}
+                board={board}
+                permissions={permissions}
+                taskApplicationCount={taskApplicationCount?.getTaskApplicationsCount?.total}
+                isTaskProposal={isTaskProposal}
+                isBounty={isBounty}
+                isMilestone={isMilestone}
+                isSubtask={isSubtask}
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                fetchedTask={fetchedTask}
+                user={user}
+                canViewApplications={canViewApplications}
+                boardColumns={boardColumns}
+                taskSubmissionsForTask={taskSubmissionsForTask}
+                getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                handleClose={handleClose}
+                setFetchedTask={setFetchedTask}
+                setShowPaymentModal={setShowPaymentModal}
+                taskSubmissionsForTaskLoading={taskSubmissionsForTaskLoading}
+              />
             </TaskModalTaskData>
           </TaskModalCard>
         </TaskModal>

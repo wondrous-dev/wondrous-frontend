@@ -12,7 +12,6 @@ export const KanbanBoardContainer = styled.div`
   margin-top: 32px;
 `;
 export const LoadMore = styled.div`
-  height: 50px;
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
 `;
 
