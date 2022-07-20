@@ -1,5 +1,4 @@
 import React from 'react';
-import { IconButton } from '@mui/material';
 
 import {
   CreateFormPreviewButton,
@@ -8,7 +7,6 @@ import {
   CreateLayoutsModalItemTitle,
   CreateModalOverlay,
 } from 'components/CreateEntity/styles';
-import CloseModalIcon from '../../Icons/closeModal';
 import { ModalBody } from './styles';
 
 const DndErrorModal = (props) => {
