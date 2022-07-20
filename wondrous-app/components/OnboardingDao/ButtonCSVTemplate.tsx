@@ -20,8 +20,14 @@ const Button = styled(ButtonBase)`
   }
 `;
 
+const TEMP_CSV = '/template.csv';
+
 const ButtonCSVTemplate = () => {
-  return <Button>CSV Template</Button>;
+  return (
+    <Button href={TEMP_CSV} download>
+      CSV Template
+    </Button>
+  );
 };
 
 export default ButtonCSVTemplate;
