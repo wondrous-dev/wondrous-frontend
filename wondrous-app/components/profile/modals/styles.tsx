@@ -5,6 +5,11 @@ import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { Tab, Tabs } from '@mui/material';
 
+export const ActivityIndicatorContainer = styled.div`
+  width: 100%;
+  text-align: center;
+`;
+
 export const PodWrapper = styled.div`
   background: #0f0f0f;
   border-radius: 6px;
@@ -22,6 +27,11 @@ export const UserWrapper = styled.div`
   margin-bottom: 16px;
   cursor: pointer;
 `;
+export const UserMetaDataContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+`;
 export const NameText = styled(Typography)`
   && {
     color: #ccbbff;
@@ -29,6 +39,7 @@ export const NameText = styled(Typography)`
     line-height: 20px;
     font-weight: 700;
     margin-right: 8px;
+    margin-bottom: 4px;
   }
 `;
 export const CommentLine = styled(Typography)`
@@ -69,6 +80,7 @@ export const TabContainerText = styled(Typography)`
     font-size: 16px;
     line-height: 19px;
     color: ${palette.white};
+    font-weight: bolder;
   }
 `;
 export const Tab2 = styled.div`
@@ -88,7 +100,7 @@ export const UserProfilePicture = (props) => {
 export const DefaultProfilePicture = (props) => {
   return <DefaultUserImage style={ProfilePictureStyles} />;
 };
-export const FlexTitle = styled.div`
+export const TitleSection = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
@@ -169,6 +181,7 @@ export const StyledTabs = styled(Tabs)`
   && {
     color: #fff;
     ${({ withMargin = true }) => withMargin && 'margin: 30px auto;'};
+    margin-top: 16px;
     width: 100%;
   }
 

@@ -8,11 +8,11 @@ import { useLazyQuery } from '@apollo/client';
 import SearchIcon from 'components/Icons/search';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import {
+  ActivityIndicatorContainer,
   CloseIconContainer,
   CommentLine,
   Container,
   DefaultProfilePicture,
-  FlexTitle,
   NameText,
   OverflowBox,
   PodExplainerText,
@@ -25,8 +25,10 @@ import {
   TabContainerText,
   TabText,
   Title,
+  TitleSection,
+  UserMetaDataContainer,
   UserProfilePicture,
-  UserWrapper,
+  UserWrapper
 } from './styles';
 import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
@@ -45,11 +47,7 @@ const PodItem = (props) => {
         })
       }
     >
-      <TabContainerText
-        style={{
-          fontWeight: 'bolder',
-        }}
-      >
+      <TabContainerText>
         {pod?.name}
       </TabContainerText>
       <PodExplainerText>
@@ -75,24 +73,14 @@ const UserItem = (props) => {
       ) : (
         <DefaultProfilePicture />
       )}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
-      >
+      <UserMetaDataContainer>
         <CommentTopFlexDiv>
-          <NameText
-            style={{
-              marginBottom: '4px',
-            }}
-          >
+          <NameText>
             {user?.username}
           </NameText>
         </CommentTopFlexDiv>
         <CommentLine>{cutString(user?.bio)}</CommentLine>
-      </div>
+      </UserMetaDataContainer>
     </UserWrapper>
   );
 };
@@ -247,7 +235,7 @@ export const MoreInfoModal = (props) => {
       }}
     >
       <TaskModalBaseCard>
-        <FlexTitle>
+        <TitleSection>
           <Title>{name}</Title>
           <CloseIconContainer
             onClick={() => {
@@ -261,13 +249,7 @@ export const MoreInfoModal = (props) => {
           </CloseIconContainer>
         </TitleSection>
         <Container>
-          <StyledTabs
-            value={activeTab}
-            variant={'fullWidth'}
-            style={{
-              marginTop: '16px',
-            }}
-          >
+          <StyledTabs value={activeTab} variant={'fullWidth'}>
             <TabText
               onClick={() => {
                 setDisplayPods(false);
@@ -309,14 +291,9 @@ export const MoreInfoModal = (props) => {
         {displayUsers && (
           <OverflowBox>
             {listLoading && (
-              <div
-                style={{
-                  width: '100%',
-                  textAlign: 'center',
-                }}
-              >
+              <ActivityIndicatorContainer>
                 <CircularProgress />
-              </div>
+              </ActivityIndicatorContainer>
             )}
             {dividedUserList.map((item, i) => {
               return (
@@ -332,14 +309,9 @@ export const MoreInfoModal = (props) => {
         {displayPods && (
           <OverflowBox>
             {listLoading && (
-              <div
-                style={{
-                  width: '100%',
-                  textAlign: 'center',
-                }}
-              >
+              <ActivityIndicatorContainer>
                 <CircularProgress />
-              </div>
+              </ActivityIndicatorContainer>
             )}
 
             {dividedPodList.map((item, i) => {
