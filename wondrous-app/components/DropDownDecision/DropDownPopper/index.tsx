@@ -3,10 +3,9 @@ import { useMutation } from '@apollo/client';
 import {
   APPROVE_SUBMISSION,
   APPROVE_TASK_PROPOSAL,
-  CLOSE_TASK_PROPOSAL,
   REJECT_SUBMISSION,
   REQUEST_CHANGE_SUBMISSION,
-  REQUEST_CHANGE_TASK_PROPOSAL,
+  CLOSE_TASK_PROPOSAL,
 } from 'graphql/mutations';
 import {
   DECISION_APPROVE_AND_PAY,
@@ -20,35 +19,29 @@ import { ApproveAndPayIcon, ApproveOnlyIcon, RejectIcon, SendIntoRevisionIcon } 
 import { StyledList, StyledListItem, StyledListItemIcon, StyledListItemText, StyledPopper } from './styles';
 import { ErrorModal } from 'components/Common/ErrorModal';
 
-const DECISIONS = [
+const SUBMISSION_DECISIONS = [
   [DECISION_SEND_INTO_REVISION, SendIntoRevisionIcon],
   [DECISION_REJECT, RejectIcon],
   [DECISION_APPROVE_ONLY, ApproveOnlyIcon],
   // [DECISION_APPROVE_AND_PAY, ApproveAndPayIcon], NOTE: Per Terry's instruction, payments should be hidden for now in Admin View
 ];
 
+const PROPOSAL_DECISIONS = [
+  [DECISION_REJECT, RejectIcon],
+  [DECISION_APPROVE_ONLY, ApproveOnlyIcon],
+];
 export const DropDownPopper = (props) => {
   const { task, status, onClose, openKudos, setKudosTask } = props;
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [rejectTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
   const [rejectTaskSubmission] = useMutation(REJECT_SUBMISSION);
   const [submissionApprovalError, setSubmissionApprovalError] = useState(null);
   const handleTaskProposalDecision = (id, decision) => {
     const refetchQueries = () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'];
-    if (decision === DECISION_SEND_INTO_REVISION) {
-      requestChangeTaskProposal({
-        variables: {
-          proposalId: id,
-        },
-        refetchQueries: refetchQueries(),
-      });
-    }
-
     if (decision === DECISION_REJECT) {
-      rejectTaskProposal({
+      closeTaskProposal({
         variables: {
           proposalId: id,
         },
@@ -120,6 +113,7 @@ export const DropDownPopper = (props) => {
     onClose();
   };
 
+  const DECISIONS = status === TASK_STATUS_PROPOSAL_REQUEST ? PROPOSAL_DECISIONS : SUBMISSION_DECISIONS;
   return (
     <>
       {submissionApprovalError && (

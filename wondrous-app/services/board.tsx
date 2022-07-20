@@ -11,11 +11,11 @@ import {
   COLUMNS_CONFIGURATION,
   STATUS_OPEN,
   STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
   ENTITIES_TYPES,
   TASK_DATE_OVERDUE,
   TASK_DATE_DUE_THIS_WEEK,
   TASK_DATE_DUE_NEXT_WEEK,
+  STATUS_CLOSED,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { StatusDefaultIcon } from 'components/Icons/statusIcons';
@@ -132,7 +132,7 @@ const PROPOSAL_APPROVED = {
 const PROPOSAL_REJECTED = {
   title: 'Rejected',
   tasks: [],
-  status: STATUS_CHANGE_REQUESTED,
+  status: STATUS_CLOSED,
 };
 
 const SHARED_FILTER_STATUSES_DATA = {
@@ -461,7 +461,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
               pillIcon: Approved,
             },
             {
-              id: STATUS_CHANGE_REQUESTED,
+              id: STATUS_CLOSED,
               name: 'Rejected proposals',
               label: 'Rejected',
               icon: <Rejected />,
@@ -625,15 +625,13 @@ export const populateProposalColumns = (proposals, columns) => {
     [STATUS_OPEN]: [],
     [STATUS_APPROVED]: [],
     // changes requested
-    [STATUS_CHANGE_REQUESTED]: [],
+    [STATUS_CLOSED]: [],
   };
   //temporary flag until we add a flag on BE?
   proposals?.forEach((proposal) => {
     if (proposal.approvedAt) proposalsMap[STATUS_APPROVED].push({ ...proposal, isProposal: true });
-    if (!proposal.approvedAt && !proposal.changeRequestedAt)
-      proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
-    if (proposal.changeRequestedAt && !proposal.approvedAt)
-      proposalsMap[STATUS_CHANGE_REQUESTED].push({ ...proposal, isProposal: true });
+    if (!proposal.approvedAt && !proposal.closedAt) proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
+    if (proposal.closedAt && !proposal.approvedAt) proposalsMap[STATUS_CLOSED].push({ ...proposal, isProposal: true });
   });
   return columns.map((column) => {
     return {

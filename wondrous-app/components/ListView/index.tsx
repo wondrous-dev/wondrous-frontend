@@ -7,10 +7,10 @@ import {
   TASK_STATUS_DONE,
   ENTITIES_TYPES,
   STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
   PERMISSIONS,
   PAYMENT_STATUS,
   BOARD_TYPE,
+  STATUS_CLOSED,
 } from 'utils/constants';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'utils/useLocation';
@@ -22,7 +22,7 @@ import { Droppable } from 'react-beautiful-dnd';
 import { useMe } from 'components/Auth/withAuth';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import apollo from 'services/apollo';
@@ -51,7 +51,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const location = useLocation();
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
 
@@ -125,8 +125,8 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
           });
           return;
         }
-        if (destinationStatus === STATUS_CHANGE_REQUESTED) {
-          requestChangeTaskProposal({
+        if (destinationStatus === STATUS_CLOSED) {
+          closeTaskProposal({
             variables: {
               proposalId: id,
             },

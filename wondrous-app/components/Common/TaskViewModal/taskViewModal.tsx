@@ -4,7 +4,7 @@ import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
 import { format, formatDistance } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS } from 'graphql/queries';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
@@ -151,7 +151,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
   const [editTask, setEditTask] = useState(false);
@@ -440,8 +440,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     });
   };
 
-  const requestProposalChanges = () => {
-    requestChangeTaskProposal({
+  const closeProposal = () => {
+    closeTaskProposal({
       variables: {
         proposalId: fetchedTask?.id,
       },
@@ -729,7 +729,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         {canApproveProposal && !fetchedTask?.approvedAt && (
                           <CreateFormButtonsBlock>
                             {!fetchedTask?.changeRequestedAt && (
-                              <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                              <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
                             )}
                             <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                           </CreateFormButtonsBlock>

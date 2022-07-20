@@ -497,7 +497,7 @@ export const TaskCard = ({
 
 const STATUS_ICONS = {
   [Constants.STATUS_APPROVED]: Approved,
-  [Constants.STATUS_CHANGE_REQUESTED]: Rejected,
+  [Constants.STATUS_CLOSED]: Rejected,
 };
 
 export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange, viewUrl }) {
@@ -527,7 +527,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
         },
       ],
     },
-    [Constants.STATUS_CHANGE_REQUESTED]: {
+    [Constants.STATUS_CLOSED]: {
       labelsAndActions: [
         {
           title: 'Rejected',
