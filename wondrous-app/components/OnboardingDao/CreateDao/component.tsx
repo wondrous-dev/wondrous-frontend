@@ -1,6 +1,6 @@
 import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { useField } from 'formik';
-import { FieldInputDao } from './styles';
+import { DescriptionCharacterLength, FieldInputDao, InputWrapper } from './styles';
 
 const DaoName = ({ label, ...props }) => {
   const [field, meta] = useField(props.name);
@@ -12,12 +12,25 @@ const DaoName = ({ label, ...props }) => {
   );
 };
 
-const Description = ({ label, ...props }) => {
-  const [field, meta] = useField(props.name);
+const Description = ({ label, maxLength, ...props }) => {
+  const [field, meta, helpers] = useField(props.name);
+  const fieldValueLength = field.value?.length ?? 0;
   return (
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>
-      <FieldInputDao {...field} {...props} />
+      <InputWrapper>
+        <FieldInputDao
+          {...field}
+          {...props}
+          onChange={(e) => {
+            const value = e.target.value;
+            value.length <= maxLength && helpers.setValue(value);
+          }}
+        />
+        <DescriptionCharacterLength>
+          {fieldValueLength}/{maxLength} characters
+        </DescriptionCharacterLength>
+      </InputWrapper>
     </FieldWrapper>
   );
 };

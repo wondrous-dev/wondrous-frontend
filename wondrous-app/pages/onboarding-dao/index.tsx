@@ -24,6 +24,7 @@ const fieldSet = [
         label: 'Enter DAO description',
         placeholder: 'What is your DAOs aims?',
         multiline: true,
+        maxLength: 200,
       },
     },
   },
