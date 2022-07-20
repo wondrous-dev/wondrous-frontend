@@ -270,7 +270,7 @@ const useGetOrgTaskBoardProposals = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && orgId) {
       const proposalBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
