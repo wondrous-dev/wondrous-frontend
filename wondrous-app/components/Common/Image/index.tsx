@@ -9,15 +9,18 @@ interface SafeImageArgs {
   className?: string;
   placeholderSrc?: string; // Image src to display while the image is not visible or loaded.
   placeholder?: JSX.Element; // React element to use as a placeholder.
+  isPlaceholderVisibleByDefault: boolean;
   height?: string;
   src: string;
   width?: string;
   objectPosition?: string;
   useNextImage?: boolean;
   style?: object;
+  layout?: string;
   onPreviewLoaded?(url: string): void;
 }
 
+// https://nextjs.org/docs/api-reference/next/image
 export const SafeImage = (safeImageArgs: SafeImageArgs) => {
   const {
     src,
@@ -28,6 +31,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     height,
     placeholder,
     useNextImage = true,
+    isPlaceholderVisibleByDefault = true,
     ...props
   } = safeImageArgs;
   const [imgUrl, setImageUrl] = useState(null);
@@ -87,7 +91,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
       // eslint-disable-next-line @next/next/no-img-element
       <img src={imgUrl} alt={alt} width={width} height={height} {...props} />
     );
-  } else if (placeholder) {
+  } else if ((placeholder && isPlaceholderVisibleByDefault) || (!isPlaceholderVisibleByDefault && !src)) {
     return placeholder;
   }
 

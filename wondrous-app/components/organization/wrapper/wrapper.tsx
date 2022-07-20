@@ -317,6 +317,14 @@ const Wrapper = (props) => {
 
       <HeaderImageWrapper>
         {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+
+        <SafeImage
+          src={orgProfile?.headerPicture}
+          placeholder={<HeaderImageDefault />}
+          width="100%"
+          height="100%"
+          layout="fill"
+        />
       </HeaderImageWrapper>
 
       <Content>
