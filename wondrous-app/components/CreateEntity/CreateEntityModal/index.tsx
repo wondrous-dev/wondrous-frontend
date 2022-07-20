@@ -1,39 +1,45 @@
+/* eslint-disable max-lines */
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import { CircularProgress } from '@mui/material';
+import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
-  countCharacters,
   deserializeRichText,
   extractMentions,
   plainTextToRichText,
   RichTextEditor,
   useEditor,
 } from 'components/RichText';
+import { GithubLink } from 'components/Settings/Github/styles';
+import { StyledChipTag } from 'components/Tags/styles';
 import Tooltip from 'components/Tooltip';
 import { FormikValues, useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_BOUNTY,
   CREATE_MILESTONE,
   CREATE_TASK,
-  REMOVE_MEDIA_FROM_TASK,
   CREATE_TASK_GITHUB_ISSUE,
+  CREATE_TASK_TEMPLATE,
+  DELETE_TASK_TEMPLATE,
+  REMOVE_MEDIA_FROM_TASK,
+  TURN_TASK_TO_BOUNTY,
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
-  TURN_TASK_TO_BOUNTY,
+  UPDATE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import {
-  CREATE_TASK_PROPOSAL,
-  UPDATE_TASK_PROPOSAL,
   ATTACH_MEDIA_TO_TASK_PROPOSAL,
+  CREATE_TASK_PROPOSAL,
   REMOVE_MEDIA_FROM_TASK_PROPOSAL,
+  UPDATE_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import {
   GET_POD_GITHUB_INTEGRATIONS,
   GET_POD_GITHUB_PULL_REQUESTS,
@@ -58,6 +64,8 @@ import {
   updateTaskItemOnEntityType,
 } from 'utils/board';
 import {
+  APPLICATION_POLICY,
+  APPLICATION_POLICY_LABELS_MAP,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
   PERMISSIONS,
@@ -66,20 +74,19 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
-  APPLICATION_POLICY,
-  APPLICATION_POLICY_LABELS_MAP,
 } from 'utils/constants';
-import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
+import { parseUserPermissionContext, transformMediaFormat, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { SafeImage } from '../../Common/Image';
 import Tags, { Option as Label } from '../../Tags';
-import { StyledChipTag } from 'components/Tags/styles';
 import { MediaItem } from '../MediaItem';
+import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
+  CreateEntityApplicationsSelectRender,
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
   CreateEntityAutocompleteOption,
@@ -124,7 +131,6 @@ import {
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
   CreateEntityPrivacySelectRenderLabel,
-  CreateEntityWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
@@ -135,18 +141,15 @@ import {
   CreateEntityTextfieldInputLabel,
   CreateEntityTextfieldInputPoints,
   CreateEntityTextfieldInputReward,
+  CreateEntityTextfieldInputTemplate,
   CreateEntityTextfieldPoints,
   CreateEntityTitle,
-  EditorPlaceholder,
+  CreateEntityWrapper,
   EditorContainer,
+  EditorPlaceholder,
   EditorToolbar,
   MediaUploadDiv,
-  CreateEntityApplicationsSelectRender,
 } from './styles';
-import { GithubLink } from 'components/Settings/Github/styles';
-import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
-import { ErrorText } from 'components/Common';
-import { transformMediaFormat } from 'utils/helpers';
 import TaskTemplatePicker from './TaskTemplatePicker';
 
 const formValidationSchema = Yup.object().shape({
@@ -895,6 +898,10 @@ const CreateEntityTextfieldInputRewardComponent = React.forwardRef(function Crea
   return <CreateEntityTextfieldInputReward {...props} ref={ref} />;
 });
 
+const CreateEntityTextfieldInputTemplateComponent = React.forwardRef(function CreateEntityTextfieldInput(props, ref) {
+  return <CreateEntityTextfieldInputTemplate {...props} ref={ref} />;
+});
+
 enum Fields {
   reviewer,
   assignee,
@@ -1063,6 +1070,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
+  const [richChanged, setRichChanged] = useState(false);
+  const [text, setText] = useState();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask = parentTaskId !== undefined;
   const orgBoard = useOrgBoard();
@@ -1092,6 +1101,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
     ],
+  });
+
+  const [createTaskTemplate] = useMutation(CREATE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesById'],
+  });
+
+  const [updateTaskTemplate] = useMutation(UPDATE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesById'],
+  });
+
+  const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesById'],
   });
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
@@ -1244,6 +1265,84 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
+  const handleSubmitTemplate = (template) => {
+    editor.children = JSON.parse(template?.description);
+    form.setFieldValue('title', template?.title);
+    form.setFieldValue('points', template?.points);
+
+    form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    form.setFieldValue('assigneeId', template?.assignee);
+    form.setFieldValue(
+      'reviewerIds',
+      template?.reviewer?.map((reviewerId) => reviewerId.id)
+    );
+    form.setFieldValue('description', JSON.parse(template?.description));
+  };
+
+  const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
+
+  const handleSaveTemplate = (template_name) => {
+    const rewards = _.isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            ...form.values.rewards[0],
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    createTaskTemplate({
+      variables: {
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards: rewards,
+          points: parseInt(form.values.points),
+          name: template_name,
+          description: description,
+        },
+      },
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  const handleEditTemplate = (templateId) => {
+    const rewards = _.isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            ...form.values.rewards[0],
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    updateTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards: rewards,
+          points: parseInt(form.values.points),
+          description: description,
+        },
+      },
+    });
+  };
+
+  const handleDeleteTemplate = (templateId) => {
+    deleteTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+      },
+    });
+  };
+
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <ConvertTaskToBountyModal
@@ -1306,13 +1405,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             <>
               <CreateEntityHeaderArrowIcon />
               <CreateEntityPodSearch
-                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
-                value={form.values.podId}
-                onChange={handleOnchangePodId}
-                disabled={formValues !== undefined}
-              />
-              <CreateEntityHeaderArrowIcon />
-              <TaskTemplatePicker
                 options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
@@ -1483,7 +1575,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           ref={params.InputProps.ref}
                           disableUnderline={true}
                           fullWidth={true}
-                          placeholder="Enter username..."
+                          placeholder={'Enter username...'}
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
@@ -1756,7 +1848,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             {form.values.claimPolicy === null && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  console.log(APPLICATION_POLICY.ALL_MEMBERS.value);
                   form.setFieldValue('claimPolicy', APPLICATION_POLICY.ALL_MEMBERS.value);
                 }}
               >
@@ -1813,7 +1904,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   renderValue={(value) => {
                     return (
                       <CreateEntityPaymentMethodSelectRender>
-                        {value?.label} <CreateEntitySelectArrowIcon />
+                        {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
+                        <CreateEntitySelectArrowIcon />
                       </CreateEntityPaymentMethodSelectRender>
                     );
                   }}
@@ -2217,6 +2309,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               </CreateEntitySelectWrapper>
             </CreateEntityLabelSelectWrapper>
           )}
+        <CreateEntityDivider />
+        <TaskTemplatePicker
+          options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+          value={form.values.podId}
+          onChange={handleOnchangePodId}
+          disabled={formValues !== undefined}
+          handleSubmitTemplate={handleSubmitTemplate}
+          paymentMethods={paymentMethods}
+          handleSaveTemplate={handleSaveTemplate}
+          handleEditTemplate={handleEditTemplate}
+          handleDeleteTemplate={handleDeleteTemplate}
+        />
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>

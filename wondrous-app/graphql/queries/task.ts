@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
-import { TaskCardFragment, TaskFragment, TaskSubmissionFragment } from '../fragments/task';
+import { TaskCardFragment, TaskFragment, TaskSubmissionFragment, TaskTemplateFragment } from '../fragments/task';
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {
@@ -9,6 +9,15 @@ export const GET_TASK_BY_ID = gql`
     }
   }
   ${TaskFragment}
+`;
+
+export const GET_TASK_TEMPLATES_BY_ID = gql`
+  query getTaskTemplatesById($userId: ID!) {
+    getTaskTemplatesById(userId: $userId) {
+      ...TaskTemplateFragment
+    }
+  }
+  ${TaskTemplateFragment}
 `;
 
 export const GET_TASK_REVIEWERS = gql`
@@ -175,7 +184,7 @@ export const GET_TASK_SUBMISSION_COMMENTS = gql`
     }
   }
   ${CommentFragment}
-`
+`;
 
 export const GET_BOUNTIES_TO_EXPLORE = gql`
   query getBountiesToExplore($limit: Int, $offset: Int) {

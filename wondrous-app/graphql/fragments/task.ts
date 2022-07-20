@@ -430,3 +430,31 @@ export const MilestoneFragment = gql`
     privacyLevel
   }
 `;
+
+export const TaskTemplateFragment = gql`
+  fragment TaskTemplateFragment on TaskTemplate {
+    id
+    title
+    createdAt
+    createdBy
+    name
+    description
+    assignee {
+      username
+      profilePicture
+    }
+    creator {
+      username
+      profilePicture
+    }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+      chain
+    }
+    points
+  }
+`;

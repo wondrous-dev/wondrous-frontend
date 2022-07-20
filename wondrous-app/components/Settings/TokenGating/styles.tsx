@@ -200,6 +200,14 @@ export const TokenGatingTextfieldButtonDown = styled(TokenGatingTextfieldButton)
   }
 `;
 
+export const TaskTemplateActionContainer = styled.div`
+  padding: 24px;
+  background: #141414;
+  width: 100%;
+  justify-content: flex-end;
+  display: flex;
+`;
+
 export const TokenGatingAutocompleteTextfieldDownIcon = styled(ArrowDropDownIcon)``;
 
 export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`

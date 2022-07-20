@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from '../fragments/comments';
 import { MediaFragment } from '../fragments/media';
-import { BountyFragment, MilestoneFragment, TaskFragment } from '../fragments/task';
+import { BountyFragment, MilestoneFragment, TaskFragment, TaskTemplateFragment } from '../fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -10,6 +10,32 @@ export const CREATE_TASK = gql`
     }
   }
   ${TaskFragment}
+`;
+
+export const CREATE_TASK_TEMPLATE = gql`
+  mutation createTaskTemplate($input: TaskTemplateInput) {
+    createTaskTemplate(input: $input) {
+      ...TaskTemplateFragment
+    }
+  }
+  ${TaskTemplateFragment}
+`;
+
+export const UPDATE_TASK_TEMPLATE = gql`
+  mutation updateTaskTemplate($taskTemplateId: ID!, $input: TaskTemplateInput) {
+    updateTaskTemplate(taskTemplateId: $taskTemplateId, input: $input) {
+      ...TaskTemplateFragment
+    }
+  }
+  ${TaskTemplateFragment}
+`;
+
+export const DELETE_TASK_TEMPLATE = gql`
+  mutation deleteTaskTemplate($taskTemplateId: ID!) {
+    deleteTaskTemplate(taskTemplateId: $taskTemplateId) {
+      success
+    }
+  }
 `;
 
 export const UPDATE_TASK = gql`
