@@ -4,10 +4,11 @@ import { CircularProgress } from '@mui/material';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
-import Image from 'next/image';
 
+import SearchIcon from 'components/Icons/search';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import {
+  CloseIconContainer,
   CommentLine,
   Container,
   DefaultProfilePicture,
@@ -17,6 +18,7 @@ import {
   PodExplainerText,
   PodWrapper,
   SearchBox,
+  SearchIconContainer,
   Snap,
   StyledTab,
   StyledTabs,
@@ -30,6 +32,7 @@ import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
+import CloseModalIcon from 'components/Icons/closeModal';
 
 const PodItem = (props) => {
   const router = useRouter();
@@ -246,19 +249,17 @@ export const MoreInfoModal = (props) => {
       <TaskModalBaseCard>
         <FlexTitle>
           <Title>{name}</Title>
-          <Image
+          <CloseIconContainer
             onClick={() => {
               handleClose();
               setDisplayUsers(false);
               setDisplayPods(false);
               setActiveTab('contributors');
             }}
-            src="/images/icons/cancelIcon.svg"
-            alt="cancel"
-            width={32}
-            height={32}
-          />
-        </FlexTitle>
+          >
+            <CloseModalIcon />
+          </CloseIconContainer>
+        </TitleSection>
         <Container>
           <StyledTabs
             value={activeTab}
@@ -288,7 +289,10 @@ export const MoreInfoModal = (props) => {
           </StyledTabs>
         </Container>
         <SearchBox>
-          <Image src="/images/icons/search.svg" alt="search" width={20} height={18} />
+          <SearchIconContainer>
+            <SearchIcon />
+          </SearchIconContainer>
+
           <input
             onChange={(e) => {
               if (displayUsers) {
