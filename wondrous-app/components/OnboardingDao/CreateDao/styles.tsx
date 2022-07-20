@@ -1,5 +1,6 @@
 import { InputUnstyled } from '@mui/base';
 import { Typography } from '@mui/material';
+import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
 
 export const InputWrapper = styled.div`
@@ -24,6 +25,7 @@ export const FieldInputDao = styled(InputUnstyled)`
       :focus-visible {
         outline: none;
       }
+      ${ScrollBarStyles}
     }
   }
 `;
