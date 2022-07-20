@@ -74,7 +74,6 @@ const TaskColumn = (props: ITaskColumn) => {
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
 
-  console.log(orgBoard);
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
@@ -199,7 +198,7 @@ const TaskColumn = (props: ITaskColumn) => {
                 </Draggable>
               ))
             ) : (
-              <EmptyStateBoards status={status} />
+              <EmptyStateBoards status={status} setOpenTaskModal={setOpenTaskModal} />
             )}
             <LoadMore ref={ref} hasMore={board?.hasMore}></LoadMore>
             {provided.placeholder}

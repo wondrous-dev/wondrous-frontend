@@ -16,10 +16,8 @@ import {
   BOARD_TYPE,
   PERMISSIONS,
   PAYMENT_STATUS,
-  TASK_TYPE,
   STATUS_APPROVED,
   STATUS_CHANGE_REQUESTED,
-  STATUS_OPEN,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
@@ -28,7 +26,7 @@ import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
 import ConfirmModal from 'components/Common/ConfirmModal';
-
+import BoardLock from 'components/BoardLock';
 export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
   if (orgBoard) {
     return BOARD_TYPE.org;
@@ -346,13 +344,17 @@ const KanbanBoard = (props) => {
           isTaskProposal={!!location?.params?.taskProposal}
           key={taskId}
         />
-        <DragDropContext onDragEnd={onDragEnd}>
-          {columns.map((column) => {
-            const { status, section, tasks } = column;
+        <BoardLock>
+          <DragDropContext onDragEnd={onDragEnd}>
+            {columns.map((column) => {
+              const { status, section, tasks } = column;
 
-            return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
-          })}
-        </DragDropContext>
+              return (
+                <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />
+              );
+            })}
+          </DragDropContext>
+        </BoardLock>
       </KanbanBoardContainer>
     </>
   );
