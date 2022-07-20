@@ -1,8 +1,9 @@
 import { useLazyQuery } from '@apollo/client';
+import { useMe } from 'components/Auth/withAuth';
 import { ActionButton } from 'components/Common/Task/styles';
 import { RichTextViewer } from 'components/RichText';
 import { TaskTemplateActionContainer, TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
-import { GET_TASK_TEMPLATES_BY_ID } from 'graphql/queries';
+import { GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
 import { useEffect, useState } from 'react';
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
@@ -57,6 +58,7 @@ const TaskTemplatePicker = (props) => {
   const [usedTemplate, setUsedTemplate] = useState(null);
   const [templateValue, setTemplateValue] = useState('');
 
+  const user = useMe();
   const handleEllipsesClick = (event) => setOptionAnchorEl(optionAnchorEl ? null : event.currentTarget);
   const [saveOrOpen, setSaveOrOpen] = useState('none');
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -68,9 +70,9 @@ const TaskTemplatePicker = (props) => {
   const templateOptionsOpen = Boolean(optionAnchorEl);
   const [templates, setTemplates] = useState([]);
 
-  const [getTaskTemplates] = useLazyQuery(GET_TASK_TEMPLATES_BY_ID, {
+  const [getTaskTemplates] = useLazyQuery(GET_TASK_TEMPLATES_BY_USER_ID, {
     onCompleted: (data) => {
-      setTemplates(data?.getTaskTemplatesById);
+      setTemplates(data?.getTaskTemplatesByUserId);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -78,7 +80,7 @@ const TaskTemplatePicker = (props) => {
   useEffect(() => {
     getTaskTemplates({
       variables: {
-        userId: '62219612940402689',
+        userId: user?.id,
       },
     });
   }, []);

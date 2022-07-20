@@ -11,9 +11,9 @@ export const GET_TASK_BY_ID = gql`
   ${TaskFragment}
 `;
 
-export const GET_TASK_TEMPLATES_BY_ID = gql`
-  query getTaskTemplatesById($userId: ID!) {
-    getTaskTemplatesById(userId: $userId) {
+export const GET_TASK_TEMPLATES_BY_USER_ID = gql`
+  query getTaskTemplatesByUserId($userId: ID!) {
+    getTaskTemplatesByUserId(userId: $userId) {
       ...TaskTemplateFragment
     }
   }

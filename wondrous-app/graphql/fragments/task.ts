@@ -438,6 +438,8 @@ export const TaskTemplateFragment = gql`
     createdAt
     createdBy
     name
+    orgId
+    podId
     description
     assignee {
       username

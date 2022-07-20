@@ -1104,15 +1104,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   });
 
   const [createTaskTemplate] = useMutation(CREATE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesById'],
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
   });
 
   const [updateTaskTemplate] = useMutation(UPDATE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesById'],
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
   });
 
   const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesById'],
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
   });
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
@@ -1269,6 +1269,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     editor.children = JSON.parse(template?.description);
     form.setFieldValue('title', template?.title);
     form.setFieldValue('points', template?.points);
+    form.setFieldValue('orgId', template?.orgId);
+    form.setFieldValue('podId', template?.podId);
 
     form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
     form.setFieldValue('assigneeId', template?.assignee);
@@ -1286,7 +1288,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       ? []
       : [
           {
-            ...form.values.rewards[0],
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
             rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
           },
         ];
@@ -1302,6 +1304,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           points: parseInt(form.values.points),
           name: template_name,
           description: description,
+          orgId: form.values.orgId,
+          podId: form.values.podId,
         },
       },
     }).catch((err) => {
@@ -1314,7 +1318,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       ? []
       : [
           {
-            ...form.values.rewards[0],
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
             rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
           },
         ];
@@ -1330,6 +1334,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           rewards: rewards,
           points: parseInt(form.values.points),
           description: description,
+          podId: form.values.podId,
         },
       },
     });
