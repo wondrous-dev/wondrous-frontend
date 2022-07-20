@@ -1,28 +1,32 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { CircularProgress } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { ethers, utils } from 'ethers';
+import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
-import { useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useMutation } from '@apollo/client';
 import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from 'graphql/mutations/payment';
-import { useGnosisSdk } from 'services/payment';
-import { ERC20abi } from 'services/contracts/erc20.abi';
-import { SafeTransactionDataPartial, SafeTransactionData } from '@gnosis.pm/safe-core-sdk-types';
+import { SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '..';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { PaymentPendingTypography } from './styles';
-import { usePaymentModal } from 'utils/hooks';
+
+import { CircularProgress } from '@mui/material';
+
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
+import { useGnosisSdk } from 'services/payment';
+import { useWonderWeb3 } from 'services/web3';
+import { ERC20abi } from 'services/contracts/erc20.abi';
+import { usePaymentModal } from 'utils/hooks';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME} from 'utils/web3Constants';
+
+import DropdownSelect from 'components/Common/DropdownSelect';
+
+import { ErrorText } from '..';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { PaymentPendingTypography } from './styles';
+
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
