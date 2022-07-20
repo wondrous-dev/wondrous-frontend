@@ -24,22 +24,19 @@ import {
   TaskColumnContainerHeader,
   TaskColumnContainerHeaderTitle,
   TaskColumnContainerCount,
-  DropMeHere,
-  TaskColumnDropContainer,
   TaskListContainer,
 } from './styles';
-import { Task } from '../../Task';
-import { LoadMore } from '../styles';
+import { Task } from 'components/Common/Task';
+import { LoadMore } from 'components/Common/KanbanBoard/styles';
 
-import { DropZone } from '../../../Icons/dropZone';
-import Milestone from '../../Milestone';
-import { useMe } from '../../../Auth/withAuth';
+import Milestone from 'components/Common/Milestone';
+import { useMe } from 'components/Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
-
+import EmptyStateBoards from 'components/EmptyStateBoards';
 interface ITaskColumn {
   cardsList: Array<any>;
   moveCard: any;
@@ -77,6 +74,7 @@ const TaskColumn = (props: ITaskColumn) => {
   const [isAddButtonVisible, setIsAddButtonVisible] = useState(false);
   const [ref, inView] = useInView({});
 
+  console.log(orgBoard);
   const board = orgBoard || userBoard || podBoard;
   const taskCount = board?.taskCount;
   const HeaderIcon = HEADER_ICONS[status];
@@ -176,29 +174,33 @@ const TaskColumn = (props: ITaskColumn) => {
       <Droppable droppableId={status}>
         {(provided) => (
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
-            {cardsList.map((card, index) => (
-              <Draggable key={card.id} draggableId={card.id} index={index}>
-                {(provided, snapshot) => (
-                  <div
-                    style={{
-                      width: '100%',
-                    }}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                    isDragging={snapshot.isDragging}
-                  >
-                    {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
-                      <Milestone>
+            {cardsList?.length ? (
+              cardsList.map((card, index) => (
+                <Draggable key={card.id} draggableId={card.id} index={index}>
+                  {(provided, snapshot) => (
+                    <div
+                      style={{
+                        width: '100%',
+                      }}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      ref={provided.innerRef}
+                      isDragging={snapshot.isDragging}
+                    >
+                      {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
+                        <Milestone>
+                          <Task task={card} setTask={() => {}} />
+                        </Milestone>
+                      ) : (
                         <Task task={card} setTask={() => {}} />
-                      </Milestone>
-                    ) : (
-                      <Task task={card} setTask={() => {}} />
-                    )}
-                  </div>
-                )}
-              </Draggable>
-            ))}
+                      )}
+                    </div>
+                  )}
+                </Draggable>
+              ))
+            ) : (
+              <EmptyStateBoards status={status} />
+            )}
             <LoadMore ref={ref} hasMore={board?.hasMore}></LoadMore>
             {provided.placeholder}
           </TaskListContainer>
