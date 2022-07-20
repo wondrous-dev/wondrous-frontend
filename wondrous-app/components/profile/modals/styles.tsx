@@ -229,3 +229,23 @@ export const TabText = styled.p`
     height: 100% !important;
   }
 `;
+
+export const SearchIconContainer = styled.div`
+  transform: translateY(2px);
+  svg {
+    path {
+      stroke: #ccbbff;
+    }
+  }
+`;
+
+export const CloseIconContainer = styled.div`
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+  background: black;
+  display: flex;
+  border-radius: 6px;
+  align-items: center;
+  justify-content: center;
+`;
