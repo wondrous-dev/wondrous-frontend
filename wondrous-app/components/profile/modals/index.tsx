@@ -6,7 +6,7 @@ import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
 import Image from 'next/image';
 
-import { TaskModalBaseCard } from '../../Common/Task/styles';
+import { TaskModalBaseCard } from 'components/Common/Task/styles';
 import {
   CommentLine,
   Container,
@@ -27,7 +27,7 @@ import {
   UserWrapper,
 } from './styles';
 import { useRouter } from 'next/router';
-import { CommentTopFlexDiv } from '../../Comment/styles';
+import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
 
