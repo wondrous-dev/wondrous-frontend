@@ -185,3 +185,9 @@ export const GET_BOUNTIES_TO_EXPLORE = gql`
   }
   ${TaskCardFragment}
 `;
+
+export const RENDER_RICH_TEXT = gql`
+  query renderRichText($jsonText: String) {
+    renderRichText(jsonText: $jsonText)
+  }
+`;

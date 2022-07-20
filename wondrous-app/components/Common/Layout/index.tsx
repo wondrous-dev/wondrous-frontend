@@ -8,7 +8,7 @@ import { useRouter } from 'next/router';
 import { SectionWrapper } from './styles';
 import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries';
-import { SideBarContext } from 'utils/contexts';
+import { SideBarContext, CreateEntityContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
 import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 
@@ -42,10 +42,16 @@ export default function SidebarLayout({ children }) {
           setMinimized,
         }}
       >
-        <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
         <SideBarComponent userOrgs={userOrgs} />
-        <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+        <CreateEntityContext.Provider
+          value={{
+            isCreateEntityModalOpen: createFormModal,
+            toggleCreateFormModal: toggleCreateFormModal,
+          }}
+        >
+          <HeaderComponent />
+          <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+        </CreateEntityContext.Provider>
       </SideBarContext.Provider>
     </>
   );

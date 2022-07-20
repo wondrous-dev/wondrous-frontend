@@ -2,14 +2,14 @@ import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, gql, ApolloClient, InMemoryCache } from '@apollo/client';
 import { GET_SPACE } from './gql';
 import { CONNECT_SNAPSHOT_TO_ORG, DISCONNECT_SNAPSHOT_TO_ORG } from 'graphql/mutations';
-import { GET_ORG_SNAPSHOT_INFO } from 'graphql/queries';
+import { GET_ORG_SNAPSHOT_INFO, RENDER_RICH_TEXT } from 'graphql/queries';
 import Snapshot from '@snapshot-labs/snapshot.js';
 
 // import specific Web3Provider snapshot is using
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { useWonderWeb3 } from '../web3';
-
+import apollo from 'services/apollo';
 
 const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 
@@ -174,10 +174,19 @@ export const useSnapshot = () => {
 
     let numWeeks = 1;
     let weekLater = new Date();
+    RENDER_RICH_TEXT;
+    console.log(typeof proposal.description);
+    const { data: renderRichTextData } = await apollo.query({
+      query: RENDER_RICH_TEXT,
+      variables: {
+        jsonText: proposal.description,
+      },
+    });
+    console.log(renderRichTextData);
     weekLater.setDate(weekLater.getDate() + numWeeks * 7);
     const proposalToValidate = {
       name: proposal.title,
-      body: proposal.description,
+      body: renderRichTextData?.renderRichText,
       choices: ['For', 'Against', 'Abstain'],
       start: Math.floor(Date.now() / 1000),
       end: proposal.dueDate
@@ -198,7 +207,7 @@ export const useSnapshot = () => {
     const proposalToSubmit = {
       space: orgSnapshot.snapshotEns,
       title: proposal.title,
-      body: proposal.description,
+      body: renderRichTextData?.renderRichText,
       choices: ['For', 'Against', 'Abstain'],
       //timestamp: Math.floor(Date.now() / 1000),
       start: Math.floor(Date.now() / 1000),
@@ -225,9 +234,14 @@ export const useSnapshot = () => {
     console.log('proposalToSubmit', proposalToSubmit);
 
     const valid = validateProposal(proposalToValidate);
-
     if (valid) {
-      const receipt: any = await snapshotClient.proposal(provider, account, proposalToSubmit);
+      let receipt: any;
+      try {
+        receipt = await snapshotClient.proposal(provider, account, proposalToSubmit);
+      } catch (err) {
+        console.error('error proposing snapshot', err);
+        setSubmittingProposal(false);
+      }
       console.log('proposal:', receipt);
       setSubmittingProposal(false);
       return receipt;

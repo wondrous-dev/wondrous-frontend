@@ -56,6 +56,8 @@ export const UnpaidSubmissionFragment = gql`
     symbol
     icon
     tokenName
+    decimal
+    tokenAddress
     safeAddress
     txHash
     safeTxHash

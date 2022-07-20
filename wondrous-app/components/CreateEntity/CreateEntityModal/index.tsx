@@ -1,6 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
+import apollo from 'services/apollo';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
   countCharacters,
@@ -145,12 +146,22 @@ import {
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
+  SnapshotErrorText,
+  SnapshotButtonBlock,
 } from './styles';
 import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import { ErrorText } from 'components/Common';
 import { transformMediaFormat } from 'utils/helpers';
 import Checkbox from 'components/Checkbox';
+
+import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
+import { useSnapshot } from 'services/snapshot';
+import {
+  TaskModalSnapshot,
+  TaskModalSnapshotLogo,
+  TaskModalSnapshotText,
+} from 'components/Common/TaskViewModal/styles';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -509,6 +520,10 @@ const useCreateTask = () => {
       'getPerStatusTaskCountForUserBoard',
       'getSubtasksForTask',
       'getSubtaskCountForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
     ],
   });
 
@@ -1060,6 +1075,8 @@ interface ICreateEntityModal {
       title: string;
     };
     type?: string;
+    orgId: string;
+    snapshotId?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1073,6 +1090,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask = parentTaskId !== undefined;
+  const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -1252,6 +1270,61 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
+  const [snapshotId, setSnapshotId] = useState(existingTask?.snapshotId);
+
+  // snapshot integration
+  const {
+    orgSnapshot,
+    getOrgSnapshotInfo,
+    snapshotConnected,
+    snapshotSpace,
+    snapshotErrorElement,
+    snapshotLoading,
+    exportTaskProposal,
+    cancelProposal,
+  } = useSnapshot();
+
+  useEffect(() => {
+    if (existingTask?.orgId && isProposal) {
+      getOrgSnapshotInfo({
+        variables: {
+          orgId: existingTask?.orgId,
+        },
+      });
+    }
+  }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
+
+  const exportProposalToSnapshot = async () => {
+    const receipt = await exportTaskProposal(existingTask);
+    if (!receipt) {
+      return;
+    }
+    setSnapshotId(receipt.id);
+    if (receipt && receipt.id) {
+      await apollo.mutate({
+        mutation: LINKE_PROPOSAL_TO_SNAPSHOT,
+        variables: {
+          proposalId: existingTask?.id,
+          snapshotId: receipt.id,
+        },
+      });
+    }
+    // update proposal, and if successful, initiate transaction to export to snapshot
+  };
+
+  // cancel snapshot proposal
+  const cancelSnapshotProposal = async () => {
+    await cancelProposal(existingTask.snapshotId).then((receipt) => {
+      setSnapshotId(null);
+    });
+    await apollo.mutate({
+      mutation: UNLINKE_PROPOSAL_FROM_SNAPSHOT,
+      variables: {
+        proposalId: existingTask?.id,
+      },
+    });
+  };
+
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
       <ConvertTaskToBountyModal
@@ -1330,6 +1403,44 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           </Tooltip>
         </CreateEntityHeaderWrapper>
       </CreateEntityHeader>
+      {snapshotConnected && isProposal && (
+        <SnapshotButtonBlock>
+          {!snapshotId && (
+            <TaskModalSnapshot onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
+              {snapshotLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                <>
+                  <TaskModalSnapshotLogo />
+
+                  <TaskModalSnapshotText>Export To Snapshot</TaskModalSnapshotText>
+                </>
+              )}
+            </TaskModalSnapshot>
+          )}
+          {snapshotId && (
+            <TaskModalSnapshot onClick={cancelSnapshotProposal} disabled={snapshotLoading}>
+              {snapshotLoading ? (
+                <CircularProgress size={20} />
+              ) : (
+                <>
+                  <TaskModalSnapshotLogo />
+
+                  <TaskModalSnapshotText>Cancel Snapshot Proposal</TaskModalSnapshotText>
+                </>
+              )}
+            </TaskModalSnapshot>
+          )}
+          {snapshotErrorElement && (
+            <SnapshotErrorText>
+              {snapshotErrorElement.map((elem, i) => (
+                <ErrorText key={i}>{elem}</ErrorText>
+              ))}
+            </SnapshotErrorText>
+          )}
+        </SnapshotButtonBlock>
+      )}
+
       <CreateEntityBody>
         <CreateEntityTitle
           type="text"
@@ -1764,7 +1875,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               {form.values.claimPolicy === null && (
                 <CreateEntityLabelAddButton
                   onClick={() => {
-                    console.log(APPLICATION_POLICY.ALL_MEMBERS.value);
                     form.setFieldValue('claimPolicy', APPLICATION_POLICY.ALL_MEMBERS.value);
                   }}
                 >

@@ -659,7 +659,6 @@ const BoardsPage = () => {
       }}
     >
       {isMobile ? <MobileComingSoonModal /> : null}
-
       <Boards
         columns={columns}
         searchString={searchString}
