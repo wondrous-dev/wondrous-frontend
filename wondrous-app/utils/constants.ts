@@ -30,9 +30,9 @@ export const COLUMN_TITLE_ARCHIVED = 'Archived';
 
 export const STATUS_OPEN = 'open';
 export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
-export const STATUS_CHANGE_REQUESTED = 'change_requested';
 export const STATUS_APPROVED = 'approved';
 export const STATUS_REJECTED = 'rejected';
+export const STATUS_CLOSED = 'closed';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';
@@ -264,7 +264,7 @@ export const STATUSES_ON_ENTITY_TYPES = {
   DEFAULT: DEFAULT_STATUSES,
 };
 
-export const PROPOSAL_STATUS_LIST = [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED, TASK_STATUS_ARCHIVED];
+export const PROPOSAL_STATUS_LIST = [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED, TASK_STATUS_ARCHIVED];
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',

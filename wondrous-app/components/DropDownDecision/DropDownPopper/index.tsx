@@ -3,10 +3,9 @@ import { useMutation } from '@apollo/client';
 import {
   APPROVE_SUBMISSION,
   APPROVE_TASK_PROPOSAL,
-  CLOSE_TASK_PROPOSAL,
   REJECT_SUBMISSION,
   REQUEST_CHANGE_SUBMISSION,
-  REQUEST_CHANGE_TASK_PROPOSAL,
+  CLOSE_TASK_PROPOSAL,
 } from 'graphql/mutations';
 import {
   DECISION_APPROVE_AND_PAY,
@@ -29,7 +28,7 @@ const DECISIONS = [
 
 export const DropDownPopper = (props) => {
   const { task, status, onClose, openKudos, setKudosTask } = props;
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [rejectTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
@@ -39,7 +38,7 @@ export const DropDownPopper = (props) => {
   const handleTaskProposalDecision = (id, decision) => {
     const refetchQueries = () => ['getProposalsUserCanReview', 'getWorkFlowBoardReviewableItemsCount'];
     if (decision === DECISION_SEND_INTO_REVISION) {
-      requestChangeTaskProposal({
+      closeTaskProposal({
         variables: {
           proposalId: id,
         },

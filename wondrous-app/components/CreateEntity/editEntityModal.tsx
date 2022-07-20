@@ -142,9 +142,9 @@ const EditLayoutBaseModal = (props) => {
   const [pod, setPod] = useState(existingTask?.podName && existingTask?.podId);
   const [dueDate, setDueDate] = useState(existingTask?.dueDate);
   const proposalRejected = existingTask?.rejectedAt;
-  const proposalChangeRequested = existingTask?.changeRequestedAt;
+  const proposalClosed = existingTask?.closedAt;
   const proposalApproved = existingTask?.approvedAt;
-  const proposalOpen = !proposalRejected && !proposalChangeRequested && !proposalApproved;
+  const proposalOpen = !proposalRejected && !proposalClosed && !proposalApproved;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
 
   const isTask = entityType === ENTITIES_TYPES.TASK;

@@ -22,7 +22,7 @@ import {
 } from 'graphql/mutations/task';
 import {
   APPROVE_TASK_PROPOSAL,
-  REQUEST_CHANGE_TASK_PROPOSAL,
+  CLOSE_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL_ASSIGNEE,
 } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS } from 'graphql/queries';
@@ -457,7 +457,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [completeMilestone] = useMutation(COMPLETE_MILESTONE, {
     refetchQueries: () => [
       'getTaskById',
@@ -895,8 +895,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     });
   };
 
-  const requestProposalChanges = () => {
-    requestChangeTaskProposal({
+  const closeProposal = () => {
+    closeTaskProposal({
       variables: {
         proposalId: fetchedTask?.id,
       },
@@ -1439,7 +1439,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         {canApproveProposal && !fetchedTask?.approvedAt && (
                           <CreateFormButtonsBlock>
                             {!fetchedTask?.changeRequestedAt && (
-                              <CreateFormCancelButton onClick={requestProposalChanges}>Reject</CreateFormCancelButton>
+                              <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
                             )}
                             <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
                           </CreateFormButtonsBlock>
