@@ -753,10 +753,12 @@ const useCreateTaskProposal = () => {
   const [createTaskProposal, { loading }] = useMutation(CREATE_TASK_PROPOSAL, {
     refetchQueries: () => [
       'GetOrgTaskBoardProposals',
-      'GetPodTaskBoardProposals',
+      'getPodTaskBoardProposals',
       'GetUserTaskBoardProposals',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForOrgBoard',
     ],
   });
 
@@ -794,7 +796,7 @@ const useUpdateTaskProposal = () => {
     refetchQueries: () => [
       'GetUserTaskBoardProposals',
       'GetOrgTaskBoardProposals',
-      'GetPodTaskBoardProposals',
+      'getPodTaskBoardProposals',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
     ],
