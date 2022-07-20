@@ -1,4 +1,4 @@
-import React, {  useState } from 'react';
+import React, { useState } from 'react';
 import { FormControl } from '@mui/material';
 
 import { SafeImage } from 'components/Common/Image';
@@ -27,9 +27,29 @@ const DEFAULT_MENU_PROPS = {
   },
 };
 
+interface DropdownSelectProps {
+  title?: any;
+  className?: any;
+  labelText?: any;
+  labelIcon?: any;
+  options?: any;
+  MenuProps?: any;
+  IconComponent?: any;
+  name?: any;
+  value?: any;
+  setValue?: any;
+  formSelectStyle?: any;
+  disabled?: any;
+  titleStyle?: any;
+  onChange?: any;
+  innerStyle?: any;
+  hideLabel?: any;
+  labelStyle?: any;
+}
+
 const DropdownSelect = ({
   title,
-  className,
+  className, // missing
   labelText,
   labelIcon,
   options,
@@ -45,7 +65,7 @@ const DropdownSelect = ({
   innerStyle,
   hideLabel,
   labelStyle,
-}) => {
+}: DropdownSelectProps) => {
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {

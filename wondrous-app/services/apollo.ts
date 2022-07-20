@@ -8,9 +8,6 @@ const graphqlUri = !process.env.NEXT_PUBLIC_STAGING
   ? process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL
   : 'https://apistaging.wonderapp.co/graphql';
 
-// const wsBaseUrl = graphqlUri;
-// const wsUri = wsBaseUrl.replace(/^https?/, process.env.NEXT_PUBLIC_ENV === 'dev' ? 'ws' : 'wss');
-
 const httpLink = new HttpLink({
   uri: graphqlUri,
   credentials: 'include',
