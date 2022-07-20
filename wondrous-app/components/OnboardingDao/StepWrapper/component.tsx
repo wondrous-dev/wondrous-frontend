@@ -51,7 +51,7 @@ const LaterButtonWrapper = ({ step, handleLater }) => {
 
 const ContinueButtonWrapper = ({ step }) => {
   if (step === NO_OF_STEPS) return <ContinueButton>🚀 Launch DAO</ContinueButton>;
-  return <ContinueButton>Next</ContinueButton>;
+  return <ContinueButton>Continue</ContinueButton>;
 };
 
 const StepWrapper = ({ Component, title, subtitle, step, handleLater, handleBack, ...props }) => {
