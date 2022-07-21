@@ -10,7 +10,6 @@ import { Table } from 'components/Table';
 import { ViewType } from 'types/common';
 import { CardsContainer } from './styles';
 import { ENTITIES_TYPES } from 'utils/constants';
-import BoardLock from 'components/BoardLock';
 let windowOffset = 0;
 
 export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
@@ -66,9 +65,7 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
             isTaskProposal={!!location?.params?.taskProposal}
           />
           {activeView === ViewType.Grid ? (
-            <BoardLock>
-              <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
-            </BoardLock>
+            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
           ) : (
             <Table tasks={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
           )}

@@ -27,7 +27,3 @@ export const EditTokenGatingConditionContext = createContext(null);
 export const UserProfileContext = createContext(null);
 
 export const CreateEntityContext = createContext(null);
-
-export const OrgBoardWrapperContext = createContext(null);
-
-export const PodBoardWrapperContext = createContext(null);

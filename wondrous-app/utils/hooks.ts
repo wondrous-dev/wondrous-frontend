@@ -17,15 +17,12 @@ import {
   EditTokenGatingConditionContext,
   UserProfileContext,
   CreateEntityContext,
-  OrgBoardWrapperContext,
-  PodBoardWrapperContext,
 } from './contexts';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
   GET_POD_BY_ID,
   GET_ORG_FROM_USERNAME,
-  GET_ORG_BY_ID,
 } from 'graphql/queries';
 import { useLazyQuery } from '@apollo/client';
 
@@ -242,7 +239,3 @@ export const useGetOrgFromUsername = (username) => {
 };
 
 export const useCreateEntityContext = () => useContext(CreateEntityContext);
-
-export const useOrgBoardWrapperContext = () => useContext(OrgBoardWrapperContext);
-
-export const usePodBoardWrapperContext = () => useContext(PodBoardWrapperContext);

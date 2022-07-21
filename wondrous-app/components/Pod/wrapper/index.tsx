@@ -56,6 +56,7 @@ import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import BoardLock from 'components/BoardLock';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -390,7 +391,12 @@ const Wrapper = (props) => {
                   />
                 )}
               </BoardsSubheaderWrapper>
-              {children}
+              <BoardLock
+                handleJoinClick={handleJoinPodButtonClick}
+                requestSent={joinRequestSent || userJoinRequest?.id}
+              >
+                {children}
+              </BoardLock>
             </Tabs>
           </ContentContainer>
         </Content>

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useOrgBoard, usePodBoard, useCreateEntityContext, useOrgBoardWrapperContext } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useCreateEntityContext } from 'utils/hooks';
 import { PRIVACY_LEVEL } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
@@ -7,23 +6,13 @@ import SkeletonBoard from 'components/Common/SkeletonBoard';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import { useRouter } from 'next/router';
 
-// const getPopupConfig = (user) => {
-//   return {
-//     title: !user
-//       ? 'You need to sign in and request permissions to view'
-//       : 'Org set to private.Please request permissions to view',
-//     buttonTitle: !user ? 'Sign in' : 'Apply to join',
-//   };
-// };
-const BoardLock = ({ children }) => {
+const BoardLock = ({ children, handleJoinClick, requestSent }) => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
   const entityContext = useCreateEntityContext();
   const router = useRouter();
   const user = useMe();
-  const orgBoardWrapper = useOrgBoardWrapperContext();
-  const { handleJoinClick, requestSent } = orgBoardWrapper;
   //we don't want to lock the user board
   if (!board) return children;
 

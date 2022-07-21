@@ -26,7 +26,7 @@ import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/ta
 import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import apollo from 'services/apollo';
-
+import BoardLock from 'components/BoardLock';
 interface Props {
   columns: any[];
   onLoadMore: any;
@@ -272,7 +272,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
       <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
         {columns.map((column) => {
           if (!column) return null;
-          const count = taskCount[STATUS_MAP[column?.status]] || 0;
+          const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || 0;
           return (
             <>
               <Droppable droppableId={column?.status}>
