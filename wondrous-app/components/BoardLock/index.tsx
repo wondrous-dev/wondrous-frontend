@@ -16,9 +16,16 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
   if (!board) return children;
   const { userOrgs } = entityContext;
 
+  const permissionsWithAccess = [
+    PERMISSIONS.FULL_ACCESS,
+    PERMISSIONS.CREATE_TASK,
+    PERMISSIONS.EDIT_TASK,
+    PERMISSIONS.REVIEW_TASK,
+  ];
+
   const hasNoPodAccess =
     board?.pod?.privacyLevel === PRIVACY_LEVEL.private &&
-    !board?.userPermissionsContext?.orgPermissions[board?.orgId]?.includes(PERMISSIONS.FULL_ACCESS);
+    !board?.userPermissionsContext?.podPermissions[board?.podId]?.some((el) => permissionsWithAccess.includes(el));
 
   const isNotAMemberOfTheOrg =
     !userOrgs || !userOrgs?.getUserOrgs?.find((org) => org.id === board?.orgId) || hasNoPodAccess;
@@ -34,7 +41,6 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
       : requestSent
       ? 'Request sent. Please wait for a response'
       : `${orgBoard ? 'Org' : 'Pod'} set to private. Please request permissions to view`;
-    // const { title, buttonTitle } = getPopupConfig(user);
     const buttonTitle = !user ? 'Sign in' : requestSent ? 'Request sent' : 'Apply to join';
     const action = user ? handleJoinClick : () => router.push('/login');
 

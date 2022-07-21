@@ -108,13 +108,11 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
           <NoPermissionToCreateWrapper>
             {user ? (
               <>
-                <UserRoleInfoHighlight>
-                  {role ? (
-                    <>
-                      You are a <span>{role}</span> in this org.
-                    </>
-                  ) : null}
-                </UserRoleInfoHighlight>
+                {role && (
+                  <UserRoleInfoHighlight>
+                    You are a <span>{role}</span> in this org.
+                  </UserRoleInfoHighlight>
+                )}
                 <UserRoleInfo>You need to have a role that can create {entityLabel}</UserRoleInfo>
               </>
             ) : (
