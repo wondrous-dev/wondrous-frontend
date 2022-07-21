@@ -156,21 +156,23 @@ export const MoreInfoModal = (props) => {
       setPodListSearch(podList);
     }
   };
-  const array_chunks = (array, chunk_size) =>
-    Array(Math.ceil(array.length / chunk_size))
-      .fill(0)
-      .map((_, index) => index * chunk_size)
-      .map((begin) => array.slice(begin, begin + chunk_size));
+
+  const paginateDataList = (dataList, perPageCount) =>
+    Array(Math.ceil(dataList.length / perPageCount))
+      .fill(null)
+      .map((_, index) => index * perPageCount)
+      .map((currentPageStartIndex) => dataList.slice(currentPageStartIndex, currentPageStartIndex + perPageCount));
+
   useEffect(() => {
-    if (userListSearch) {
-      const newlist = array_chunks(userListSearch, 5);
-      setDividedUserList(newlist);
+    if (searchedUserList) {
+      const newPaginatedUserList = paginateDataList(searchedUserList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
+      setPaginatedUserList(newPaginatedUserList);
     }
   }, [userListSearch]);
   useEffect(() => {
-    if (podListSearch) {
-      const newlist = array_chunks(podListSearch, 5);
-      setDividedPodList(newlist);
+    if (searchedPodList) {
+      const newPaginatedPodList = paginateDataList(searchedPodList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
+      setPaginatedPodList(newPaginatedPodList);
     }
   }, [podListSearch]);
   useEffect(() => {
