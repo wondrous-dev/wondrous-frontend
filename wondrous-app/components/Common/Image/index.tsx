@@ -9,7 +9,6 @@ type SafeImageArgs = ImageProps & {
   className?: string;
   placeholderSrc?: string; // Image src to display while the image is not visible or loaded.
   placeholderComp?: JSX.Element; // React element to use as a placeholder.
-  isPlaceholderVisibleByDefault?: boolean;
   useNextImage?: boolean;
   style?: React.CSSProperties;
   onPreviewLoaded?(url: string): void;
@@ -26,7 +25,6 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     placeholderComp,
     placeholderSrc,
     useNextImage = true,
-    isPlaceholderVisibleByDefault = true,
     ...props
   } = safeImageArgs;
   const [imgUrl, setImageUrl] = useState(null);
