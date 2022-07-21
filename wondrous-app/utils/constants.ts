@@ -30,9 +30,9 @@ export const COLUMN_TITLE_ARCHIVED = 'Archived';
 
 export const STATUS_OPEN = 'open';
 export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
-export const STATUS_CHANGE_REQUESTED = 'change_requested';
 export const STATUS_APPROVED = 'approved';
 export const STATUS_REJECTED = 'rejected';
+export const STATUS_CLOSED = 'closed';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';
@@ -59,6 +59,12 @@ export const SOCIAL_OPENSEA = 'opensea';
 
 // Character Limits
 export const CHAR_LIMIT_PROFILE_BIO = 200;
+
+export const EXPORT_PAYMENT_CSV_TYPE = {
+  UTOPIA: 'utopia',
+  PARCEL: 'parcel',
+  PLAIN: 'plain',
+};
 
 export const PAYMENT_STATUS = {
   UNPAID: 'unpaid',
@@ -131,6 +137,10 @@ export const DISCORD_CONNECT_TYPES = {
   login: 'login',
   connectSettings: 'connectSettings',
   connectOnboarding: 'connectOnboarding',
+};
+
+export const NOTION_CONNECT_TYPES = {
+  TASK_IMPORT: 'taskImport',
 };
 
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
@@ -258,7 +268,7 @@ export const STATUSES_ON_ENTITY_TYPES = {
   DEFAULT: DEFAULT_STATUSES,
 };
 
-export const PROPOSAL_STATUS_LIST = [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED, TASK_STATUS_ARCHIVED];
+export const PROPOSAL_STATUS_LIST = [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED, TASK_STATUS_ARCHIVED];
 
 export const IMAGE_FILE_EXTENSIONS_TYPE_MAPPING = {
   gif: 'image/gif',
@@ -504,3 +514,46 @@ export const TASK_APPLICATION_STATUS_LABELS = {
   [TASK_APPLICATION_STATUS.APPROVED]: 'Approved',
   [TASK_APPLICATION_STATUS.REJECTED]: 'Rejected',
 };
+
+// Invite link type
+export const ONE_TIME_USE_INVITE_LINK = 'one_time';
+export const PUBLIC_INVITE_LINK = 'public';
+
+export const ProposalVoteType = {
+  APPROVE: 'approve',
+  REJECT: 'reject',
+};
+
+export const PROPOSAL_VOTE_LABELS = {
+  [ProposalVoteType.APPROVE]: {
+    VOTED: 'Approved',
+    ACTION: 'Approve',
+  },
+  [ProposalVoteType.REJECT]: {
+    VOTED: 'Rejected',
+    ACTION: 'Reject',
+  },
+};
+
+export const PAGES_WITH_NO_SIDEBAR = [
+  '/',
+  '/forgot-password',
+  '/signup',
+  '/signup/email',
+  '/login',
+  '/discord/callback',
+  '/email/verify',
+  '/github/callback',
+  '/invite/[token]',
+  '/onboarding/build-profile',
+  '/onboarding/discord',
+  '/onboarding/email',
+  '/onboarding/twitter',
+  '/onboarding/wallet',
+  '/onboarding/welcome',
+  '/submission/[submissionId]',
+  '/twitter/callback',
+  '/twitter/verify-tweet',
+  '/forgot-password',
+  '/reset-password',
+];

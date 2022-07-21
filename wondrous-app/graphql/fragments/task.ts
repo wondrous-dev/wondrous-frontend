@@ -92,6 +92,7 @@ export const TaskFragment = gql`
     }
     claimPolicy
     claimPolicyRoles
+    shouldUnclaimOnDueDateExpiry
   }
 
   ${MediaFragment}
@@ -176,7 +177,7 @@ export const TaskProposalCardFragment = gql`
     title
     description
     approvedAt
-    changeRequestedAt
+    closedAt
     lastReviewedBy
     rejectedAt
     rewards {
@@ -297,7 +298,7 @@ export const TaskProposalFragment = gql`
     }
     userMentions
     approvedAt
-    changeRequestedAt
+    closedAt
     rejectedAt
     lastReviewedBy
     associatedTaskId
@@ -326,6 +327,13 @@ export const TaskProposalFragment = gql`
       color
     }
     snapshotId
+    votes {
+      counts {
+        approve
+        reject
+      }
+      userVote
+    }
   }
   ${MediaFragment}
 `;

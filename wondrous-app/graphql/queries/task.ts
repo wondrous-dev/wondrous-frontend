@@ -129,12 +129,12 @@ export const GET_SUBTASK_COUNT_FOR_TASK = gql`
 `;
 
 export const GET_SUBTASKS_FOR_TASK = gql`
-  query getSubtasksForTask($taskId: ID!, $limit: Int, $offset: Int) {
-    getSubtasksForTask(taskId: $taskId, limit: $limit, offset: $offset) {
-      ...TaskCardFragment
+  query getSubtasksForTask($taskId: ID!, $limit: Int, $offset: Int, $status: String) {
+    getSubtasksForTask(taskId: $taskId, limit: $limit, offset: $offset, status: $status) {
+      ...TaskFragment
     }
   }
-  ${TaskCardFragment}
+  ${TaskFragment}
 `;
 
 export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
@@ -193,4 +193,10 @@ export const GET_BOUNTIES_TO_EXPLORE = gql`
     }
   }
   ${TaskCardFragment}
+`;
+
+export const RENDER_RICH_TEXT = gql`
+  query renderRichText($jsonText: String) {
+    renderRichText(jsonText: $jsonText)
+  }
 `;

@@ -5,14 +5,11 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import { useMe } from '../../Auth/withAuth';
-import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import useSideBar from 'hooks/useSideBar';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
-import ChooseEntityToCreate from '../../CreateEntity';
-import Header from '../../Header';
 import PodIcon from '../../Icons/podIcon';
 import Tabs from '../../organization/tabs/tabs';
 import { useWonderWeb3 } from 'services/web3';
@@ -40,7 +37,6 @@ import {
   BoardsSubheaderWrapper,
 } from '../../organization/wrapper/styles';
 import { MoreInfoModal } from '../../profile/modals';
-import SideBarComponent from '../../SideBar';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   GET_USER_JOIN_POD_REQUEST,
@@ -59,6 +55,7 @@ import { DAOEmptyIcon } from '../../Icons/dao';
 import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
+import ChooseEntityToCreate from 'components/CreateEntity';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -66,7 +63,6 @@ const Wrapper = (props) => {
   const router = useRouter();
   const loggedInUser = useMe();
   const wonderWeb3 = useWonderWeb3();
-  const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
   const [podRole, setPodRole] = useState(null);
   const [showPods, setShowPods] = useState(false);
@@ -257,15 +253,8 @@ const Wrapper = (props) => {
         name={podProfile?.name}
         podId={podProfile?.id}
       />
-      <Header openCreateFormModal={toggleCreateFormModal} />
-
-      <SideBarComponent />
-      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
-      <OverviewComponent
-        style={{
-          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
-        }}
-      >
+      <ChooseEntityToCreate />
+      <OverviewComponent>
         <HeaderImageWrapper>
           {podProfile?.headerPicture ? <HeaderImage src={podProfile?.headerPicture} /> : <HeaderImageDefault />}
         </HeaderImageWrapper>

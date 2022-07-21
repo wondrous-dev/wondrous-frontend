@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client';
 import {
   StyledBody,
   StyledBox,
@@ -11,9 +10,7 @@ import {
   StyledDivider,
   StyledHeader,
 } from 'components/Common/DeleteTaskModal/styles';
-import { DELETE_MILESTONE, DELETE_TASK } from 'graphql/mutations';
-import CloseModalIcon from '../../Icons/closeModal';
-import { ArchivedIcon } from '../../Icons/statusIcons';
+import CloseModalIcon from 'components/Icons/closeModal';
 
 interface IImportTaskModalProps {
   open: boolean;

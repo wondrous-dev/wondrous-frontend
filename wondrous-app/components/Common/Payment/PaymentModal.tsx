@@ -291,7 +291,15 @@ export const MakePaymentModal = (props) => {
           </PaymentTitleDiv>
           <StyledTabs value={selectedTab}>
             {PAYMENT_TABS.map((tab) => (
-              <Tab value={tab.name} key={tab.name} label={tab.label} onClick={tab.action} />
+              <Tab
+                style={{
+                  color: 'white !important',
+                }}
+                value={tab.name}
+                key={tab.name}
+                label={tab.label}
+                onClick={tab.action}
+              />
             ))}
           </StyledTabs>
           <PaymentMethodWrapper>

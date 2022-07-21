@@ -42,3 +42,24 @@ export const GET_ORG_ROLES_CLAIMABLE_BY_DISCORD = gql`
     }
   }
 `;
+
+export const GET_ORG_NOTION_DATABASES = gql`
+  query getOrgNotionDatabases($orgId: ID!) {
+    getOrgNotionDatabases(orgId: $orgId) {
+      id
+      title
+      createdTime
+      lastEditedTime
+    }
+  }
+`;
+
+export const GET_ORG_NOTION_WORKSPACE = gql`
+  query getOrgNotionWorkspace($orgId: ID!) {
+    getOrgNotionWorkspace(orgId: $orgId) {
+      id
+      name
+      icon
+    }
+  }
+`;

@@ -1,12 +1,23 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { useRouter } from 'next/router';
-import { format } from 'date-fns';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import Checkbox from '@mui/material/Checkbox';
-
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
-import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
-import { GeneralSettingsContainer } from '../styles';
+import { useMe } from 'components/Auth/withAuth';
+import { ErrorText } from 'components/Common';
+import { CompensationAmount, CompensationPill, IconContainer } from 'components/Common/Compensation/styles';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
+import { ToggleViewButton } from 'components/Common/ToggleViewButton';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
+import { HeaderBlock } from 'components/Settings/headerBlock';
+import { SeeMoreText } from 'components/Settings/Members/styles';
+import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
+import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
+import { PayModal } from 'components/Settings/Payouts/modal';
+import { BatchPayoutButton, LedgerHeaderButtonsContainer, TableCellText } from 'components/Settings/Payouts/styles';
+import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
+import { SettingsWrapper } from 'components/Settings/settingsWrapper';
+import { GeneralSettingsContainer } from 'components/Settings/styles';
 import {
   StyledTable,
   StyledTableBody,
@@ -14,34 +25,25 @@ import {
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-} from '../../Table/styles';
-import { delQuery } from 'utils';
-import { ToggleViewButton } from '../../Common/ToggleViewButton';
-import { useLazyQuery, useQuery } from '@apollo/client';
+} from 'components/Table/styles';
+import Tooltip from 'components/Tooltip';
+import { format } from 'date-fns';
+import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { SafeImage } from '../../Common/Image';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { TableCellText } from './styles';
-import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import isEmpty from 'lodash/isEmpty';
 import Link from 'next/link';
-import { cutString, parseUserPermissionContext } from 'utils/helpers';
-import { constructGnosisRedirectUrl } from '../../Common/Payment/SingleWalletPayment';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useState } from 'react';
 import palette from 'theme/palette';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { PayModal } from './modal';
-import { BatchPayModal } from './BatchPayModal';
-import { PaymentModalContext } from 'utils/contexts';
-import { SeeMoreText } from '../Members/styles';
+import { delQuery } from 'utils';
 import { PERMISSIONS } from 'utils/constants';
-import { useMe } from '../../Auth/withAuth';
-import { ErrorText } from '../../Common';
-import Tooltip from 'components/Tooltip';
+import { PaymentModalContext } from 'utils/contexts';
+import { cutString, parseUserPermissionContext } from 'utils/helpers';
 
 enum ViewType {
   Paid = 'paid',
@@ -56,7 +58,6 @@ const PaymentItem = (props) => {
     podId,
     chain,
     setChainSelected,
-    setEnableBatchPay,
     paymentSelected,
     setPaymentsSelected,
     canViewPaymentLink,
@@ -91,7 +92,7 @@ const PaymentItem = (props) => {
 
   const disabled =
     (chain && item?.chain !== chain) || item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid';
-  console.log('item', item);
+
   return (
     <>
       <PaymentModalContext.Provider
@@ -150,8 +151,6 @@ const PaymentItem = (props) => {
                       }
                       setChecked(!checked);
                       setChainSelected(item.chain);
-
-                      setEnableBatchPay(true);
                     }}
                     inputProps={{ 'aria-label': 'controlled' }}
                   />
@@ -159,15 +158,7 @@ const PaymentItem = (props) => {
                 {item.paymentStatus !== 'paid' && (
                   <>
                     {item.paymentStatus !== 'processing' && (
-                      <CreateFormPreviewButton
-                        style={{
-                          marginLeft: '12px',
-                        }}
-                        onClick={() => setOpenModal(true)}
-                      >
-                        {' '}
-                        Pay{' '}
-                      </CreateFormPreviewButton>
+                      <BatchPayoutButton onClick={() => setOpenModal(true)}> Pay </BatchPayoutButton>
                     )}
                   </>
                 )}
@@ -198,25 +189,29 @@ const PaymentItem = (props) => {
             minWidth: '120px',
           }}
         >
-          <CompensationPill
-            style={{
-              backGround: 'none',
-            }}
-          >
-            <IconContainer>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <SafeImage
-                src={item?.icon}
-                style={{
-                  width: '24px',
-                  height: '24px',
-                }}
-              />
-            </IconContainer>
-            <CompensationAmount>
-              {item?.amount} {item?.symbol}
-            </CompensationAmount>
-          </CompensationPill>
+          {item?.amount ? (
+            <CompensationPill
+              style={{
+                backGround: 'none',
+              }}
+            >
+              <IconContainer>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <SafeImage
+                  src={item?.icon}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                  }}
+                />
+              </IconContainer>
+              <CompensationAmount>
+                {item?.amount} {item?.symbol}
+              </CompensationAmount>
+            </CompensationPill>
+          ) : (
+            <ErrorText>Reward removed from task</ErrorText>
+          )}
         </StyledTableCell>
         <StyledTableCell>
           <Link href={taskHref}>
@@ -250,10 +245,12 @@ const PaymentItem = (props) => {
             <TableCellText>{item.paymentStatus}</TableCellText>
           </StyledTableCell>
         )}
-        {item.chain && (
+        {item.chain ? (
           <StyledTableCell>
             <TableCellText>{item.chain}</TableCellText>
           </StyledTableCell>
+        ) : (
+          <StyledTableCell></StyledTableCell>
         )}
         {item.submissionApprovedAt && (
           <StyledTableCell>
@@ -277,11 +274,12 @@ const Payouts = (props) => {
   const { view: payView } = router.query;
   const [hasMore, setHasMore] = useState(false);
   const [chainSelected, setChainSelected] = useState(null);
-  const [enableBatchPay, setEnableBatchPay] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
-
+  const [openExportModal, setOpenExportModal] = useState(false);
+  const [noPaymentSelectedError, setNoPaymentSelectedError] = useState(null);
   useEffect(() => {
+    setNoPaymentSelectedError(false);
     if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
       setChainSelected(null);
     }
@@ -454,18 +452,32 @@ const Payouts = (props) => {
   const handleBatchPayButtonClick = () => {
     setOpenBatchPayModal(true);
   };
+
+  const handleExportButtonClick = () => {
+    if (!paymentSelected || isEmpty(paymentSelected)) {
+      setNoPaymentSelectedError(true);
+      return;
+    }
+    setOpenExportModal(true);
+  };
+
   const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
         <HeaderBlock icon={<PayoutSettingsHeaderIcon />} title="Payment Ledger" description="Manage all payouts" />
       </GeneralSettingsContainer>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
+      <SubmissionPaymentCSVModal
+        chain={chainSelected}
+        podId={podId}
+        orgId={orgId}
+        open={openExportModal}
+        handleClose={() => setOpenExportModal(false)}
+        exportPaymentCSV={exportSubmissionPaymentCsv}
+        unpaidSubmissions={paymentSelected}
+      />
+
+      <LedgerHeaderButtonsContainer>
         <ToggleViewButton
           options={listViewOptions}
           style={{
@@ -473,11 +485,16 @@ const Payouts = (props) => {
             marginBottom: '-16px',
           }}
         />
-      </div>
+        {!paid && (
+          <div>
+            <CreateFormPreviewButton onClick={handleExportButtonClick}> Export to csv</CreateFormPreviewButton>
+            {noPaymentSelectedError && <ErrorText>No payments selected</ErrorText>}
+          </div>
+        )}
+      </LedgerHeaderButtonsContainer>
       <StyledTableContainer
         style={{
-          marginLeft: '-3%',
-          width: '110%',
+          width: '100%',
         }}
       >
         <StyledTable>
@@ -554,7 +571,6 @@ const Payouts = (props) => {
               <>
                 {unpaidList?.map((item) => (
                   <PaymentItem
-                    setEnableBatchPay={setEnableBatchPay}
                     chain={chainSelected}
                     setChainSelected={setChainSelected}
                     key={item?.id}

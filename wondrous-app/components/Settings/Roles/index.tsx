@@ -310,6 +310,7 @@ const Roles = ({
                       </div>
                       <Switch
                         size="medium"
+                        color="secondary"
                         checked={orgRole.permissions.includes(item.permission)}
                         onChange={(e) => handleRolePermissionChange(orgRole, item.permission, e.currentTarget.checked)}
                       />
@@ -825,7 +826,7 @@ export const DiscordRoleSelectModal = (props) => {
         {importRoleError && <ErrorText>{importRoleError}</ErrorText>}
       </StyledDialogContent>
       <DialogActions>
-        <CreateFormCancelButton>Cancel</CreateFormCancelButton>
+        <CreateFormCancelButton onClick={handleClose}>Cancel</CreateFormCancelButton>
         <CreateFormPreviewButton onClick={handleDiscordRoleImport}>Import</CreateFormPreviewButton>
       </DialogActions>
     </Dialog>

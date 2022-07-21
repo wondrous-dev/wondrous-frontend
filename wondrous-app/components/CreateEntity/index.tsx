@@ -6,7 +6,8 @@ import CreatePodModal from './CreatePodModal';
 import { CreateEntityModal } from './CreateEntityModal/index';
 import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
-
+import { useRouter } from 'next/router';
+import { useCreateEntityContext } from 'utils/hooks';
 interface ICreateEntity {
   entityType: string;
   handleClose: Function;
@@ -18,21 +19,26 @@ interface ICreateEntity {
       url: string;
     };
     claimPolicyRoles: [string] | null;
+    shouldUnclaimOnDueDateExpiry: boolean | null;
     claimPolicy: string | null;
     githubPullRequest: {
       id: string;
       url: string;
       title: string;
     };
+    orgId: string;
+    snapshotId?: string;
   };
   open: Boolean;
   handleCloseModal: Function;
   isTaskProposal?: boolean;
   formValues?: FormikValues;
+  parentTaskId?: string;
 }
 
 export const CreateEntity = (props: ICreateEntity) => {
   const { open, entityType, handleCloseModal, isTaskProposal } = props;
+
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
   if (isTaskProposal) {
     return (
@@ -59,7 +65,8 @@ export const CreateEntity = (props: ICreateEntity) => {
 };
 
 const ChooseEntityToCreate = (props) => {
-  const { open, toggleOpen } = props;
+  const createEntityContext = useCreateEntityContext();
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
     if (entityType) {
