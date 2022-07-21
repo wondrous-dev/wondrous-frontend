@@ -16,8 +16,8 @@ const ProfileCompensation = ({ rewards, taskIcon, style, pillStyle = {} }) => {
                   useNextImage={false}
                   src={icon}
                   style={{
-                    width: 24,
-                    height: 24
+                    width: '24px',
+                    height: '24px'
                   }}
                 />
               </IconContainer>

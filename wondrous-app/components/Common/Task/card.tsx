@@ -198,6 +198,7 @@ export const TaskCard = ({
       document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     }
   };
+
   return (
     <ProposalCardWrapper
       onMouseEnter={() => canArchive && setDisplayActions(true)}
@@ -358,11 +359,35 @@ export const TaskCard = ({
           )}
           {coverMedia ? (
             <BoardsCardMedia>
+              {/*<SafeImage*/}
+              {/*  useNextImage={false}*/}
+              {/*  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}*/}
+              {/*  src={coverMedia.slug}*/}
+              {/*/>*/}
+
+
               <SafeImage
-                useNextImage={false}
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                width={270}
+                height="100%"
+                // width="100%"
+                // height="100%"
+                // width="100%"
+                // height="100%"
+                layout="responsive"
                 src={coverMedia.slug}
               />
+
+              {/*<SafeImage*/}
+              {/*  width={270}*/}
+              {/*  height={130}*/}
+              {/*  // width="100%"*/}
+              {/*  // height="100%"*/}
+              {/*  // width="100%"*/}
+              {/*  // height="100%"*/}
+              {/*  layout="responsive"*/}
+              {/*  objectFit="cover"*/}
+              {/*  src={coverMedia.slug}*/}
+              {/*/>*/}
             </BoardsCardMedia>
           ) : null}
         </TaskContent>

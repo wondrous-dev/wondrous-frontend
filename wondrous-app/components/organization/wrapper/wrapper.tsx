@@ -321,7 +321,7 @@ const Wrapper = (props) => {
           <SafeImage
             src={orgProfile?.headerPicture || DefaultBg}
             width="100%"
-            height="100%"
+            height={100}
             layout="fill"
             objectFit="cover"
           />
@@ -343,7 +343,6 @@ const Wrapper = (props) => {
                   width="60px"
                   height="60px"
                   style={{
-                    flex: '0 0 60px',
                     borderRadius: '6px',
                   }}
                 />

@@ -9,7 +9,6 @@ import {
   OrgCardBorderContainer,
   OrgCardTitleContainer,
   OrgCardImageWrapper,
-  OrgCardImage,
   OrgCardTitle,
   OrgCardDescription,
   OrgCardInfo,
@@ -18,6 +17,7 @@ import {
   OrgCardSectionChip,
   OrgCardSectionWhiteText,
 } from './styles';
+import { SafeImage } from 'components/Common/Image';
 
 const OrgCard = ({ item }) => {
   const userOrg = item;
@@ -30,13 +30,19 @@ const OrgCard = ({ item }) => {
         <OrgCardBorderContainer>
           <OrgCardTitleContainer>
             <OrgCardImageWrapper>
-              {org?.profilePicture ? (
-                <OrgCardImage src={org?.thumbnailPicture || org?.profilePicture} />
-              ) : (
-                <NoLogoDAO>
-                  <DAOIcon />
-                </NoLogoDAO>
-              )}
+              <SafeImage
+                src={org?.thumbnailPicture || org?.profilePicture}
+                placeholderComp={
+                  <NoLogoDAO>
+                    <DAOIcon />
+                  </NoLogoDAO>
+                }
+                width="32px"
+                height="32px"
+                style={{
+                  borderRadius: '5px',
+                }}
+              />
             </OrgCardImageWrapper>
 
             <OrgCardTitle>{org.name}</OrgCardTitle>

@@ -11,7 +11,7 @@ type SafeImageArgs = ImageProps & {
   placeholderComp?: JSX.Element; // React element to use as a placeholder.
   isPlaceholderVisibleByDefault?: boolean;
   useNextImage?: boolean;
-  style?: object;
+  style?: React.CSSProperties;
   onPreviewLoaded?(url: string): void;
 };
 
@@ -90,7 +90,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
       <Image src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
-      <img src={imgUrl} alt={alt} width={width} height={height} {...props} />
+      <img src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
     );
   } else if (placeholderComp) {
     return placeholderComp;

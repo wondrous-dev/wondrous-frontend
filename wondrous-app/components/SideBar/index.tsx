@@ -119,11 +119,16 @@ const SideBarComponent = ({ userOrgs }) => {
                 });
               }}
             >
-              {user?.profilePicture ? (
-                <SafeImage useNextImage={false} style={profilePictureStyle} src={user?.thumbnailPicture || user?.profilePicture} />
-              ) : (
-                <DefaultUserImage style={profilePictureStyle} />
-              )}
+              <SafeImage
+                src={user?.thumbnailPicture || user?.profilePicture}
+                placeholderComp={
+                  <DefaultUserImage style={profilePictureStyle} />
+                }
+                width={32}
+                height={32}
+                objectFit="cover"
+                style={profilePictureStyle}
+              />
             </DrawerTopBlockItem>
           </Tooltip>
 

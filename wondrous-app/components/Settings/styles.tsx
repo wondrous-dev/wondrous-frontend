@@ -331,31 +331,6 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   }
 `;
 
-export const GeneralSettingsDAOProfileImage = styled((props) => (
-  <SafeImage
-    {...props}
-    useNextImage={false}
-    style={{
-      width: '52px',
-      height: '52px',
-      marginTop: '30px',
-    }}
-  />
-))``;
-
-export const GeneralSettingsDAOHeaderImage = styled((props) => (
-  <SafeImage
-    {...props}
-    useNextImage={false}
-    style={{
-      width: '100%',
-      height: 'auto',
-      objectFit: 'contain',
-      marginTop: '30px',
-    }}
-  />
-))``;
-
 //socials block
 export const GeneralSettingsSocialsBlock = styled.div`
   padding: 30px 0 15px;

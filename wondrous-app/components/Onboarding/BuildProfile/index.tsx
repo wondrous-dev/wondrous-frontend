@@ -12,7 +12,7 @@ import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { useRouter } from 'next/router';
 
 import { useMe } from '../../Auth/withAuth';
-import palette from 'theme/palette'
+import palette from 'theme/palette';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
 import { SafeImage } from '../../Common/Image';
 import ProfilePictureAdd from '../../../public/images/onboarding/profile-picture-add.svg';
@@ -135,11 +135,11 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
         {image ? (
           <ProfilePictureDiv>
             <SafeImage
-              useNextImage={false}
               src={image}
+              width={52}
+              height={52}
+              objectFit="cover"
               style={{
-                width: '52px',
-                height: '52px',
                 borderRadius: '26px',
               }}
             />
