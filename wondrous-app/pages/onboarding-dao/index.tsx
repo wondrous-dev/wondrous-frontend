@@ -65,6 +65,14 @@ const fieldSet = [
     step: 6,
     Component: Review,
     hoverContinue: true,
+    fields: {
+      name: { name: 'name' },
+      description: {
+        name: 'description',
+        multiline: true,
+        maxLength: 200,
+      },
+    },
   },
 ];
 
