@@ -55,7 +55,7 @@ const useGetSubtasksForTask = ({ taskId, status }) => {
         variables: {
           offset: data?.getSubtasksForTask.length,
         },
-      }).then(({ data }) => setHasMore(data?.getSubtasksForTask.length >= LIMIT));
+      }).then(({ data: any }) => setHasMore(data?.getSubtasksForTask.length >= LIMIT));
     }
   }, [inView, fetchMore, data?.getSubtasksForTask, hasMore, loading]);
   return {

@@ -108,3 +108,11 @@ export const DELETE_ORG_GITHUB = gql`
     }
   }
 `;
+
+export const CONNECT_NOTION_TO_ORG = gql`
+  mutation connectNotionToOrg($orgId: ID!, $authorizationCode: String!) {
+    connectNotionToOrg(orgId: $orgId, authorizationCode: $authorizationCode) {
+      success
+    }
+  }
+`;

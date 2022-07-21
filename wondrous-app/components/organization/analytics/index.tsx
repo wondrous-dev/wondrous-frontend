@@ -146,7 +146,11 @@ const UserRow = ({ contributorTask }) => {
           {contributorTask?.assigneeId ? (
             <>
               {contributorTask?.assigneeProfilePicture ? (
-                <SafeImage useNextImage={false} src={contributorTask?.assigneeProfilePicture} style={UserRowPictureStyles} />
+                <SafeImage
+                  useNextImage={false}
+                  src={contributorTask?.assigneeProfilePicture}
+                  style={UserRowPictureStyles}
+                />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
               )}
@@ -379,8 +383,9 @@ const Analytics = (props) => {
   }, [orgId, getOrgUsers]);
 
   const today = new Date();
+  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
-  const [toTime, setToTime] = useState(today);
+  const [toTime, setToTime] = useState(tomorrow);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
   const [getCompletedTasksBetweenPeriods, { data: completedTaskData, loading }] = useLazyQuery(
     GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD,

@@ -1,6 +1,6 @@
 import { useMutation } from '@apollo/client';
 import { DELETE_MILESTONE, DELETE_TASK, DELETE_TASK_PROPOSAL } from 'graphql/mutations';
-import CloseModalIcon from '../../Icons/closeModal';
+import CloseModalIcon from 'components/Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 import {
   StyledBody,
@@ -35,7 +35,7 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
     'getSubtasksForTask',
     'getPerTypeTaskCountForOrgBoard',
     'getPerTypeTaskCountForPodBoard',
-    'GetOrgTaskBoardProposals'
+    'GetOrgTaskBoardProposals',
   ];
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },

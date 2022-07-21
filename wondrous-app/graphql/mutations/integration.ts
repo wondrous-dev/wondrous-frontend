@@ -8,7 +8,6 @@ export const VERIFY_TWITTER = gql`
   }
 `;
 
-
 export const VERIFY_USER_TWEET = gql`
   mutation verifyUserTweet {
     verifyUserTweet {
@@ -16,7 +15,6 @@ export const VERIFY_USER_TWEET = gql`
     }
   }
 `;
-
 
 export const CONNECT_SNAPSHOT_TO_ORG = gql`
   mutation connectSnapshotToOrg($orgId: ID, $input: SnapshotConnectInput) {
@@ -28,7 +26,6 @@ export const CONNECT_SNAPSHOT_TO_ORG = gql`
   }
 `;
 
-
 export const DISCONNECT_SNAPSHOT_TO_ORG = gql`
   mutation disconnectSnapshotToOrg($orgId: ID) {
     disconnectSnapshotToOrg(orgId: $orgId) {
@@ -36,8 +33,6 @@ export const DISCONNECT_SNAPSHOT_TO_ORG = gql`
     }
   }
 `;
-
-
 
 export const LINKE_PROPOSAL_TO_SNAPSHOT = gql`
   mutation linkProposalToSnapshot($proposalId: ID!, $snapshotId: String) {
@@ -47,7 +42,6 @@ export const LINKE_PROPOSAL_TO_SNAPSHOT = gql`
   }
 `;
 
-
 export const UNLINKE_PROPOSAL_FROM_SNAPSHOT = gql`
   mutation unlinkProposalFromSnapshot($proposalId: ID!) {
     unlinkProposalFromSnapshot(proposalId: $proposalId) {
@@ -55,7 +49,6 @@ export const UNLINKE_PROPOSAL_FROM_SNAPSHOT = gql`
     }
   }
 `;
-
 
 export const CONNECT_DISCORD_ROLE_TO_ORG_ROLE = gql`
   mutation connectDiscordRoleToOrgRole($orgRoleId: ID!, $discordRoleId: String) {
@@ -77,8 +70,6 @@ export const DISCONNECT_DISCORD_ROLE_TO_ORG_ROLE = gql`
   }
 `;
 
-
-
 export const CLAIM_ORG_ROLE_BY_DISCORD_ROLE = gql`
   mutation claimOrgRoleByDiscordRole($orgRoleId: ID!) {
     claimOrgRoleByDiscordRole(orgRoleId: $orgRoleId) {
@@ -90,6 +81,14 @@ export const CLAIM_ORG_ROLE_BY_DISCORD_ROLE = gql`
 export const IMPORT_DISCORD_ROLE_AS_ORG_ROLE = gql`
   mutation importDiscordRoleAsOrgRole($orgId: ID!, $discordRoleIds: [String]) {
     importDiscordRoleAsOrgRole(orgId: $orgId, discordRoleIds: $discordRoleIds) {
+      success
+    }
+  }
+`;
+
+export const IMPORT_NOTION_TASK_TO_ORG = gql`
+  mutation importNotionTaskToOrg($orgId: ID!, $notionDatabaseId: String!) {
+    importNotionTaskToOrg(orgId: $orgId, notionDatabaseId: $notionDatabaseId) {
       success
     }
   }

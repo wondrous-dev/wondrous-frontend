@@ -18,6 +18,7 @@ import ExitIcon from 'components/Icons/exit';
 import CardIcon from '../Icons/card';
 import GeneralSettingsIcon from '../Icons/generalSettings';
 import MembersIcon from '../Icons/members';
+import { TaskImportIcon } from '../Icons/taskImporticon';
 import { NotificationOutlineSettings } from '../Icons/notifications';
 import TokenGatingIcon from '../Icons/tokenGating.svg';
 import WrenchIcon from '../Icons/wrench';
@@ -128,6 +129,13 @@ export const SettingsWrapper = (props) => {
       label: 'Notifications',
       value: 'notifications',
       href: `/organization/settings/${orgId}/notifications`,
+      page: [SettingsPage.Org],
+    },
+    {
+      icon: <TaskImportIcon />, // need a another icon
+      label: 'Task Import',
+      value: 'import',
+      href: `/organization/settings/${orgId}/task-import`,
       page: [SettingsPage.Org],
     },
     {

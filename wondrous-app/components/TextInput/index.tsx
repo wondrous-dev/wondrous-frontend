@@ -25,7 +25,7 @@ export const TextInput = (props) => {
   }, [inputProps?.orgId]);
 
   const fetchData = (query) => {
-    return inputProps?.list.filter((user) => user?.username?.startsWith(query));
+    return inputProps?.list.filter((user) => user?.username?.toLowerCase().startsWith(query?.toLowerCase()));
   };
 
   const style = !overrideStyle && {

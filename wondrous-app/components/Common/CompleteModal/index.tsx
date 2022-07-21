@@ -1,5 +1,5 @@
 import * as Constants from 'utils/constants';
-import CloseModalIcon from '../../Icons/closeModal';
+import CloseModalIcon from 'components/Icons/closeModal';
 import { CompletedIcon } from '../../Icons/statusIcons';
 import {
   StyledArchivedLabel,
