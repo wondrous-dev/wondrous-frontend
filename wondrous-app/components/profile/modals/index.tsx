@@ -35,6 +35,7 @@ import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { MODAL_TABS_MAP } from 'utils/constants';
 
 const VIRTUAL_PAGINATION_PER_PAGE_COUNT = 5;
 
@@ -94,7 +95,7 @@ export const MoreInfoModal = (props) => {
   const [searchedPodList, setSearchedPodList] = useState([]);
   const [paginatedUserList, setPaginatedUserList] = useState([]);
   const [paginatedPodList, setPaginatedPodList] = useState([]);
-  const [activeTab, setActiveTab] = useState('contributors');
+  const [activeTab, setActiveTab] = useState(MODAL_TABS_MAP.CONTRIBUTORS);
   const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
@@ -182,11 +183,11 @@ export const MoreInfoModal = (props) => {
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
       setDisplayUsers(true);
-      setActiveTab('contributors');
+      setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
     }
     if (showPods && !displayUsers && !displayPods) {
       setDisplayPods(true);
-      setActiveTab('pod');
+      setActiveTab(MODAL_TABS_MAP.PODS);
     }
     if (orgId) {
       if (displayPods) {
@@ -239,7 +240,7 @@ export const MoreInfoModal = (props) => {
         handleClose();
         setDisplayUsers(false);
         setDisplayPods(false);
-        setActiveTab('contributors');
+        setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
       }}
     >
       <TaskModalBaseCard>
@@ -250,7 +251,7 @@ export const MoreInfoModal = (props) => {
               handleClose();
               setDisplayUsers(false);
               setDisplayPods(false);
-              setActiveTab('contributors');
+              setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
             }}
           >
             <CloseModalIcon />
@@ -262,19 +263,19 @@ export const MoreInfoModal = (props) => {
               onClick={() => {
                 setDisplayPods(false);
                 setDisplayUsers(true);
-                setActiveTab('contributors');
+                setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
               }}
             >
-              <StyledTab isActive={activeTab === 'contributors'} label={'Contributors'} />
+              <StyledTab isActive={activeTab === MODAL_TABS_MAP.CONTRIBUTORS} label={'Contributors'} />
             </TabText>
             <TabText
               onClick={() => {
                 setDisplayPods(true);
                 setDisplayUsers(false);
-                setActiveTab('pod');
+                setActiveTab(MODAL_TABS_MAP.PODS);
               }}
             >
-              <StyledTab isActive={activeTab === 'pod'} label={'Pods'} />{' '}
+              <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label={'Pods'} />{' '}
             </TabText>
           </StyledTabs>
         </Container>

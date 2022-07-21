@@ -4,6 +4,7 @@ import palette from 'theme/palette';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { Tab, Tabs } from '@mui/material';
+import { MODAL_TABS_MAP } from 'utils/constants';
 
 export const ActivityIndicatorContainer = styled.div`
   width: 100%;
@@ -199,8 +200,8 @@ export const StyledTabs = styled(Tabs)`
 
   .MuiTabs-indicator {
     background: linear-gradient(270deg, #ccbbff 2.13%, #7427ff 48.52%, #00baff 100%);
-    left: ${(props) => (props.value === 'pod' ? '115px !important' : '0')};
-    width: ${(props) => (props.value === 'pod' ? '47.4792px !important' : '98px !important')};
+    left: ${(props) => (props.value === MODAL_TABS_MAP.PODS ? '115px !important' : '0')};
+    width: ${(props) => (props.value === MODAL_TABS_MAP.PODS ? '47.4792px !important' : '98px !important')};
     /* 39.4792px */
   }
 `;

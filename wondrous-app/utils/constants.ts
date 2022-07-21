@@ -226,6 +226,11 @@ export const ENTITIES_TYPES = {
   PROPOSAL: 'proposal',
 };
 
+export const MODAL_TABS_MAP = {
+  CONTRIBUTORS: 'Contributors',
+  PODS: 'Pods',
+};
+
 export const MEDIA_TYPES = {
   IMAGE: 'image',
   TEXT: 'text',
