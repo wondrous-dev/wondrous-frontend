@@ -1,6 +1,5 @@
 import { FormikValues, useFormikContext } from 'formik';
-import Image from 'next/image';
-import { ItemWrapper, LabelText, LabelWrapper, Text, Wrapper } from './styles';
+import { Category, ChildrenWrapper, ItemWrapper, LabelText, LabelWrapper, Logo, Text, Wrapper } from './styles';
 
 const Item = ({ label, children }) => {
   return (
@@ -8,7 +7,7 @@ const Item = ({ label, children }) => {
       <LabelWrapper>
         <LabelText>{label}</LabelText>
       </LabelWrapper>
-      <div>{children}</div>
+      <ChildrenWrapper>{children}</ChildrenWrapper>
     </ItemWrapper>
   );
 };
@@ -23,14 +22,16 @@ const Review = () => {
       </Item>
       {profilePicture && (
         <Item label="DAO Logo">
-          <Image alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(profilePicture)} />
+          <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(profilePicture)} />
         </Item>
       )}
       <Item label="Description">
         <Text>{description}</Text>
       </Item>
       <Item label="Goals">
-        <Text>{category}</Text>
+        <Category>
+          <Text>{category}</Text>
+        </Category>
       </Item>
       <Item label="Task import file">Sample DAO</Item>
       <Item label="Community import file">Sample DAO</Item>
