@@ -5,16 +5,17 @@ import { useState } from 'react';
 import {
   Category,
   ChildrenWrapper,
-  DaoNameWrapper,
   EditButton,
   EditButtonText,
   EditInput,
+  EditInputMulti,
   EditInputWrapper,
   ItemWrapper,
   LabelText,
   LabelWrapper,
   Logo,
   Text,
+  TextAndInputWrapper,
   Wrapper,
 } from './styles';
 
@@ -37,18 +38,18 @@ const Edit = ({ onClick }) => {
   );
 };
 
-const EditDaoName = ({ name, setIsEditing }) => {
-  const [value, setValue] = useState(name);
-  const [_, __, helpers] = useField('name');
+const EditDaoName = ({ setIsEditing, ...props }) => {
+  const [field, _, helpers] = useField(props.name);
+  const [value, setValue] = useState(field.value);
   return (
     <ClickAwayListener
       onClickAway={() => {
         setIsEditing(false);
-        setValue(name);
+        setValue(field.value);
       }}
     >
       <EditInputWrapper>
-        <EditInput value={value} onChange={(e) => setValue(e.target.value)} />
+        <EditInput {...field} {...props} value={value} onChange={(e) => setValue(e.target.value)} />
         <Edit
           onClick={() => {
             setIsEditing(false);
@@ -60,33 +61,77 @@ const EditDaoName = ({ name, setIsEditing }) => {
   );
 };
 
-const DaoName = ({ name }) => {
+const DaoName = ({ name, field }) => {
   const [isEditing, setIsEditing] = useState(false);
   return (
     <Item label="DAO Name">
-      <DaoNameWrapper>
+      <TextAndInputWrapper>
         {isEditing ? (
-          <EditDaoName name={name} setIsEditing={setIsEditing} />
+          <EditDaoName setIsEditing={setIsEditing} {...field} />
         ) : (
           <Text onClick={() => setIsEditing(true)}>{name}</Text>
         )}
-      </DaoNameWrapper>
+      </TextAndInputWrapper>
     </Item>
   );
 };
 
-const Review = () => {
+const EditDescription = ({ setIsEditing, ...props }) => {
+  const [field, _, helpers] = useField(props.name);
+  const [value, setValue] = useState(field.value);
+  return (
+    <ClickAwayListener
+      onClickAway={() => {
+        setIsEditing(false);
+        setValue(field.value);
+      }}
+    >
+      <EditInputWrapper>
+        <EditInputMulti
+          {...field}
+          {...props}
+          value={value}
+          onChange={(e) => {
+            const value = e.target.value;
+            value.length <= props.maxLength && setValue(value);
+          }}
+        />
+        <Edit
+          onClick={() => {
+            setIsEditing(false);
+            helpers.setValue(value);
+          }}
+        />
+      </EditInputWrapper>
+    </ClickAwayListener>
+  );
+};
+
+const Description = ({ description, field }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  return (
+    <Item label="Description">
+      <TextAndInputWrapper>
+        {isEditing ? (
+          <EditDescription setIsEditing={setIsEditing} {...field} />
+        ) : (
+          <Text onClick={() => setIsEditing(true)}>{description}</Text>
+        )}
+      </TextAndInputWrapper>
+    </Item>
+  );
+};
+
+const Review = ({ fields }) => {
   const { values } = useFormikContext();
   const { name, description, profilePicture, category }: FormikValues = values;
   return (
     <Wrapper>
-      <DaoName name={name} />
+      <DaoName name={name} field={fields.name} />
       <Item label="DAO Logo">
         {profilePicture && <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(profilePicture)} />}
       </Item>
-      <Item label="Description">
-        <Text>{description}</Text>
-      </Item>
+      <Description description={description} field={fields.description} />
       <Item label="Goals">
         {category && (
           <Category>
