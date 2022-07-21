@@ -1,5 +1,5 @@
 export const RightCaret = (props) => {
-  const { style } = props
+  const { style } = props;
 
   return (
     <svg
@@ -17,5 +17,5 @@ export const RightCaret = (props) => {
         strokeLinejoin="round"
       />
     </svg>
-  )
-}
+  );
+};

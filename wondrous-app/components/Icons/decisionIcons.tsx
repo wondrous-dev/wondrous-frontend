@@ -1,11 +1,5 @@
 export const ApproveAndPayIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="15"
-    fill="none"
-    viewBox="0 0 14 15"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" fill="none" viewBox="0 0 14 15">
     <path
       fill="url(#paint0_linear_1310_19746)"
       fillRule="evenodd"
@@ -27,16 +21,10 @@ export const ApproveAndPayIcon = () => (
       </linearGradient>
     </defs>
   </svg>
-)
+);
 
 export const ApproveOnlyIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="15"
-    fill="none"
-    viewBox="0 0 14 15"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="15" fill="none" viewBox="0 0 14 15">
     <path
       fill="#00E08F"
       stroke="#00E08F"
@@ -48,32 +36,19 @@ export const ApproveOnlyIcon = () => (
       d="M6.855.985c-1.76 0-3.519.668-4.853 2.003-2.67 2.67-2.67 7.036 0 9.706 2.67 2.669 7.036 2.669 9.705 0 2.67-2.67 2.67-7.037 0-9.706A6.842 6.842 0 006.855.985zm0 1.372c1.407 0 2.814.534 3.882 1.602 2.135 2.135 2.135 5.629 0 7.764-2.136 2.135-5.63 2.135-7.765 0-2.135-2.136-2.135-5.63 0-7.764a5.474 5.474 0 013.883-1.602z"
     ></path>
   </svg>
-)
+);
 
 export const RejectIcon = (props) => (
-  <svg
-    style={props?.style}
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="14"
-    fill="none"
-    viewBox="0 0 14 14"
-  >
+  <svg style={props?.style} xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 14 14">
     <path
       fill="#F93701"
       d="M6.855.08c-1.76 0-3.519.667-4.853 2.002-2.67 2.669-2.67 7.036 0 9.705 2.67 2.67 7.036 2.67 9.705 0 2.67-2.669 2.67-7.036 0-9.705A6.842 6.842 0 006.855.079zm0 1.37c1.407 0 2.814.535 3.882 1.602 2.135 2.136 2.135 5.63 0 7.765-2.136 2.135-5.63 2.135-7.765 0-2.135-2.136-2.135-5.63 0-7.765A5.474 5.474 0 016.855 1.45zM4.476 3.853c-.17 0-.34.073-.485.218-.29.291-.29.68 0 .97l1.893 1.894-1.893 1.892c-.29.291-.29.68 0 .97.291.292.68.292.97 0l1.894-1.892 1.892 1.893c.291.29.68.29.97 0 .292-.291.292-.68 0-.97L7.826 6.934l1.893-1.893c.29-.291.29-.68 0-.97-.291-.292-.68-.292-.97 0L6.854 5.963 4.962 4.071a.687.687 0 00-.486-.218z"
     ></path>
   </svg>
-)
+);
 
 export const SendIntoRevisionIcon = () => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="14"
-    height="14"
-    fill="none"
-    viewBox="0 0 14 14"
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" fill="none" viewBox="0 0 14 14">
     <path
       fill="url(#paint0_linear_1310_19721)"
       d="M9.695 7.974V6.396c0-1.22-.99-2.21-2.21-2.21h-.947a.316.316 0 00-.315.316c0 .523.424.947.947.947h.315c.523 0 .947.424.947.947v1.578h-.408a.218.218 0 00-.155.372l.97.98a.316.316 0 00.449 0l.97-.98a.218.218 0 00-.155-.372h-.408z"
@@ -122,4 +97,4 @@ export const SendIntoRevisionIcon = () => (
       </linearGradient>
     </defs>
   </svg>
-)
+);

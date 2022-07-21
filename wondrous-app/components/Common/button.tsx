@@ -25,7 +25,7 @@ const ButtonWrapper = styled.div`
   min-height: 40px;
   padding: 1px;
   margin-top: ${(props) => props.marginTop || 0};
-  
+
   ${(props) => props.highlighted && GradientHighlightHorizontal}
 
   border-radius: 98px;

@@ -74,10 +74,10 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
         variables: {
           input: {
             ...data,
-            orgId: orgId,
+            orgId,
             podId,
             ...(category?.id && { categoryId: category.id }),
-            ...(pinned && { pinned: pinned }),
+            ...(pinned && { pinned }),
           },
         },
       });
@@ -86,9 +86,9 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
         variables: {
           input: {
             ...data,
-            orgId: orgId,
+            orgId,
             ...(category?.id && { categoryId: category.id }),
-            ...(pinned && { pinned: pinned }),
+            ...(pinned && { pinned }),
           },
         },
       });

@@ -153,7 +153,7 @@ export default function useWonderWeb3(): WonderWeb3 {
 
       // Get supported currencies for this chain
       const currencies = await getChainCurrencies();
-    
+
       const chainAssets = await currencies.reduce(async (acc, currency) => {
         const { contracts, symbol } = currency;
         const balance = contracts ? await getTokenBalance(currency) : await getNativeChainBalance();
@@ -169,7 +169,7 @@ export default function useWonderWeb3(): WonderWeb3 {
           },
         };
       }, {});
-    
+
       // Reset Assets based on Chain
       setAssets(chainAssets);
       setFetching(false);

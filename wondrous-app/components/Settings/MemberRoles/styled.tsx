@@ -7,7 +7,6 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodIconWithoutBg from 'components/Icons/podIconWithoutBg';
 
-
 export const Container = styled.div`
   color: white;
   margin: 23px 0;
@@ -24,7 +23,7 @@ export const PodMembers = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 15px;
-  
+
   svg {
     margin: 0 8px;
   }

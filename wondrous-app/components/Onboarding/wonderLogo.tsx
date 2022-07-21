@@ -1,7 +1,7 @@
-import React from "react";
+import React from 'react';
 
-import {LogoDiv, LogoText} from "components/Onboarding/styles";
-import WonderLogo from "../../public/images/onboarding/wonder-logo.svg";
+import { LogoDiv, LogoText } from 'components/Onboarding/styles';
+import WonderLogo from '../../public/images/onboarding/wonder-logo.svg';
 
 export const Logo = ({ divStyle }) => {
   return (

@@ -5,9 +5,13 @@ import { EthersAdapter, SafeTransactionOptionalProps } from '@gnosis.pm/safe-cor
 import Safe from '@gnosis.pm/safe-core-sdk';
 
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
-import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL} from '../utils/constants'
-import {HARMONY_MULTI_SEND_ADDR, HARMONY_PROXY_FACTORY, HARMONY_SAFE_MASTER_COPY, HARMONY_SAFE_MASTER_COPY2} from '../utils/constants'
-
+import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../utils/constants';
+import {
+  HARMONY_MULTI_SEND_ADDR,
+  HARMONY_PROXY_FACTORY,
+  HARMONY_SAFE_MASTER_COPY,
+  HARMONY_SAFE_MASTER_COPY2,
+} from '../utils/constants';
 
 const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   // todo refactor this to have one consistent naming probably
@@ -42,9 +46,9 @@ export const useGnosisSdk = () => {
       [1666600000]: {
         multiSendAddress: HARMONY_MULTI_SEND_ADDR,
         safeMasterCopyAddress: HARMONY_SAFE_MASTER_COPY,
-        safeProxyFactoryAddress: HARMONY_PROXY_FACTORY
-      }
-    }
+        safeProxyFactoryAddress: HARMONY_PROXY_FACTORY,
+      },
+    };
 
     const safe: Safe = await Safe.create({ ethAdapter: ethAdapterOwner1, safeAddress: safeAddress, contractNetworks });
     setSafeSdk(safe);
@@ -53,7 +57,7 @@ export const useGnosisSdk = () => {
     }
     try {
       const safeServiceUrl = CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL[chain];
-      const client = new SafeServiceClient(safeServiceUrl);  
+      const client = new SafeServiceClient(safeServiceUrl);
       setSafeServiceClient(client);
     } catch (e) {
       console.log(e);

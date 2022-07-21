@@ -59,7 +59,6 @@ const RolesPage = () => {
     }
   }, [podId, getPodRolesWithTokenGate]);
 
-
   function updateRolePermissions(role: Role, permissions: string[]) {
     role.permissions = permissions;
     setRoles([...roles]);

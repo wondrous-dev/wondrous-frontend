@@ -16,9 +16,9 @@ const ClaimableDiscordRoleDisplay = (props) => {
 
   const { role } = props;
   const handleClaimClick = async () => {
-    const confirmed = confirm(`Are you sure you want to claim ${role.name}`)
+    const confirmed = confirm(`Are you sure you want to claim ${role.name}`);
     if (!confirmed) {
-      return
+      return;
     }
     if (role.__typename === 'OrgRole') {
       try {

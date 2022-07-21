@@ -3,17 +3,17 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "NODE_OPTIONS=\"--max_old_space_size=4096\" next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint",
-    "lint:write": "next lint --cache --fix",
-    "format": "prettier --write './**/*.{ts,tsx}'",
-    "prepare": "cd .. && husky install wondrous-app/.husky",
     "analyze": "cross-env ANALYZE=true next build",
-    "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
-    "pipeline": "NODE_OPTIONS=\"--max_old_space_size=4096\" next lint && next build"
+    "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
+    "build": "next build",
+    "dev": "NODE_OPTIONS=\"--max_old_space_size=4096\" next dev",
+    "format": "prettier --write './**/*.{ts,tsx}'",
+    "lint": "next lint",
+    "lint:fix": "prettier --write '**/*.{ts,tsx}' && eslint --fix .",
+    "lint:write": "next lint --cache --fix",
+    "prepare": "cd .. && husky install wondrous-app/.husky",
+    "start": "next start"
   },
   "dependencies": {
     "@apollo/client": "3.6.6",
@@ -78,13 +78,18 @@
   "devDependencies": {
     "@types/gtag.js": "0.0.7",
     "@types/react": "17.0.14",
+    "@typescript-eslint/eslint-plugin": "^5.30.7",
     "babel-plugin-styled-components": "1.13.3",
     "eslint": "7.30.0",
+    "eslint-config-airbnb": "^19.0.4",
     "eslint-config-next": "11.0.1",
-    "eslint-config-prettier": "8.5.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
     "husky": "8.0.1",
-    "lint-staged": "13.0.0",
-    "prettier": "2.6.2",
+    "lint-staged": ">=10",
+    "prettier": "^2.5.0",
     "typescript": "4.3.5"
   }
 }

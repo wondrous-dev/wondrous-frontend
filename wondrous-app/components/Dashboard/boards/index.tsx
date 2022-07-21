@@ -253,8 +253,8 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
       label: 'Orgs',
       multiChoice: true,
       orgPods: {},
-      renderList: ({ schema, toggleOption, checkIsSelected }) => {
-        return Object.keys(schema.orgPods).map((orgName) => (
+      renderList: ({ schema, toggleOption, checkIsSelected }) =>
+        Object.keys(schema.orgPods).map((orgName) => (
           <FilterOrg
             key={orgName}
             title={
@@ -279,8 +279,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
               );
             })}
           </FilterOrg>
-        ));
-      },
+        )),
       items: [],
     },
   ]);
@@ -412,73 +411,76 @@ const BoardsPage = (props) => {
     if (selectMembershipHook?.selectMembershipRequests) {
       getJoinOrgRequests();
       getJoinPodRequests();
-    } else {
-      if (search) {
-        const searchTaskProposalsArgs = {
-          variables: {
-            userId: loggedInUser?.id,
-            podIds: [],
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-            searchString: search,
-          },
-        };
+      return;
+    }
 
-        const searchTasksArgs = {
-          variables: {
-            userId: loggedInUser?.id,
-            podIds: [],
-            limit: LIMIT,
-            offset: 0,
-            // Needed to exclude proposals
-            statuses: DEFAULT_STATUSES,
-            searchString: search,
-          },
-        };
+    if (search) {
+      const searchTaskProposalsArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString: search,
+        },
+      };
 
-        searchTasks(searchTasksArgs);
-        searchProposals(searchTaskProposalsArgs);
-      }
+      const searchTasksArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          limit: LIMIT,
+          offset: 0,
+          // Needed to exclude proposals
+          statuses: DEFAULT_STATUSES,
+          searchString: search,
+        },
+      };
+
+      searchTasks(searchTasksArgs);
+      searchProposals(searchTaskProposalsArgs);
     }
   }, [loggedInUser, selectMembershipHook?.selectMembershipRequests]);
 
   const handleLoadMore = useCallback(() => {
-    if (hasMoreTasks) {
-      if (selectMembershipHook?.selectMembershipRequests) {
-        fetchMoreJoinOrgRequests({
-          variables: {
-            offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
-            limit: LIMIT,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => ({
-            getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
-          }),
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getJoinOrgRequests;
-          if (results && results?.length === 0) {
-            setHasMoreTasks(false);
-          }
-        });
-        fetchMoreJoinPodRequests({
-          variables: {
-            offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
-            limit: LIMIT,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => ({
-            getJoinPodRequestsData: [...prev.getJoinPodRequests, ...fetchMoreResult.getJoinPodRequests],
-          }),
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getJoinPodRequests;
-          if (results && results?.length === 0) {
-            setHasMoreTasks(false);
-          }
-        });
-      } else if (isAdmin) {
-        handleAdminColumnsLoadMore();
-      } else {
-        !isAdmin && getUserTaskBoardTasksFetchMore();
-      }
+    if (!hasMoreTasks) {
+      return;
+    }
+
+    if (selectMembershipHook?.selectMembershipRequests) {
+      fetchMoreJoinOrgRequests({
+        variables: {
+          offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
+          limit: LIMIT,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => ({
+          getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
+        }),
+      }).then((fetchMoreResult) => {
+        const results = fetchMoreResult?.data?.getJoinOrgRequests;
+        if (results && results?.length === 0) {
+          setHasMoreTasks(false);
+        }
+      });
+      fetchMoreJoinPodRequests({
+        variables: {
+          offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
+          limit: LIMIT,
+        },
+        updateQuery: (prev, { fetchMoreResult }) => ({
+          getJoinPodRequestsData: [...prev.getJoinPodRequests, ...fetchMoreResult.getJoinPodRequests],
+        }),
+      }).then((fetchMoreResult) => {
+        const results = fetchMoreResult?.data?.getJoinPodRequests;
+        if (results && results?.length === 0) {
+          setHasMoreTasks(false);
+        }
+      });
+    } else if (isAdmin) {
+      handleAdminColumnsLoadMore();
+    } else {
+      !isAdmin && getUserTaskBoardTasksFetchMore();
     }
   }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, handleAdminColumnsLoadMore, isAdmin]);
 

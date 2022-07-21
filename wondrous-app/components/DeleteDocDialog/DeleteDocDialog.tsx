@@ -31,7 +31,7 @@ const DeleteDocDialog = ({ open, onClose, selectedDoc }) => {
       open={open}
       onClose={onClose}
       onDelete={handleDelete}
-      title={'Delete doc?'}
+      title="Delete doc?"
       titleIcon={<Image src="/images/icons/deleteDoc.svg" alt="folder icon" width={16} height={20} />}
     >
       <StyledText>Are you sure you want to delete {selectedDoc.title}?</StyledText>

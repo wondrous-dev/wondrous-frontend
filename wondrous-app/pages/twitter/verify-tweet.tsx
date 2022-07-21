@@ -27,7 +27,7 @@ const ConnectTwitterPage = () => {
 
   return (
     <MainWrapper>
-      <VerifyTweet  firstOrg={firstOrg} firstPod={firstPod}/>
+      <VerifyTweet firstOrg={firstOrg} firstPod={firstPod} />
     </MainWrapper>
   );
 };

@@ -28,7 +28,7 @@ const ConnectTwitterPage = () => {
 
   return (
     <MainWrapper>
-      <ConnectTwitter firstOrg={firstOrg} firstPod={firstPod}/>
+      <ConnectTwitter firstOrg={firstOrg} firstPod={firstPod} />
     </MainWrapper>
   );
 };

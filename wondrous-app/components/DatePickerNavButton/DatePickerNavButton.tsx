@@ -8,12 +8,10 @@ interface DatePickerNavButtonProps {
   next?: boolean;
 }
 
-const DatePickerNavButton = ({ prev, next }: DatePickerNavButtonProps) => {
-  return (
-    <Box sx={{ ...styles.root, ...(prev && styles.prev), ...(next && styles.next) }}>
-      <Image src="/images/icons/arrow.svg" alt="calendar button" width="8px" height="16px" />
-    </Box>
-  );
-};
+const DatePickerNavButton = ({ prev, next }: DatePickerNavButtonProps) => (
+  <Box sx={{ ...styles.root, ...(prev && styles.prev), ...(next && styles.next) }}>
+    <Image src="/images/icons/arrow.svg" alt="calendar button" width="8px" height="16px" />
+  </Box>
+);
 
 export default DatePickerNavButton;

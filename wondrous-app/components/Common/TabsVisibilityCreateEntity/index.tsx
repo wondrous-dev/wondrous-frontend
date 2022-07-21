@@ -20,7 +20,7 @@ export const TabsVisibilityCreateEntity = (props: ITabsVisibilityCreateEntity) =
     },
     [PRIVACY_LEVEL.private]: {
       title: isPod ? 'Pod Members Only' : 'DAO Members Only',
-      tooltip: `Private means only those with the proper permissions can see this ${type}`
+      tooltip: `Private means only those with the proper permissions can see this ${type}`,
     },
   };
   const tabsVisibilitySelected = isPublic

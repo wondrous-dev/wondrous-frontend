@@ -3,7 +3,6 @@ import Button from '@mui/material/Button';
 import { DialogContent, Typography } from '@mui/material';
 import palette from 'theme/palette';
 
-
 export const CategoryHeader = styled(Typography)`
   && {
     color: #ccbbff;

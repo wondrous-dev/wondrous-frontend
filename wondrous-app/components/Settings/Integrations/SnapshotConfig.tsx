@@ -34,9 +34,8 @@ const SnapshotConfigSection = (props) => {
     connectSnapshotToOrg,
     disconnectSnapshotToOrg,
     orgSnapshot,
-    getOrgSnapshotInfo
+    getOrgSnapshotInfo,
   } = useSnapshot();
-
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
@@ -47,34 +46,40 @@ const SnapshotConfigSection = (props) => {
 
   useEffect(() => {
     if (orgId) {
-      getOrgSnapshotInfo({variables: {
-        orgId
-      }})
+      getOrgSnapshotInfo({
+        variables: {
+          orgId,
+        },
+      });
     }
     setUserAddress(wonderWeb3.address);
   }, []);
 
   const handleConnectSnapshotSpace = async () => {
-    await connectSnapshotToOrg({ variables: {
-      orgId,
-      input: {
-        snapshotEns: snapshotSpace.id,
-        name: snapshotSpace.name,
-        symbol: snapshotSpace.symbol,
-        url: getSnapshotUrl(snapshotSpace.id),
-        network: snapshotSpace.network    
+    await connectSnapshotToOrg({
+      variables: {
+        orgId,
+        input: {
+          snapshotEns: snapshotSpace.id,
+          name: snapshotSpace.name,
+          symbol: snapshotSpace.symbol,
+          url: getSnapshotUrl(snapshotSpace.id),
+          network: snapshotSpace.network,
+        },
       },
-    }});
+    });
   };
 
   const handlDisconnectSnapshotSpace = async () => {
-    const confirmed = confirm('Are you sure you want to disconnect the snapshot space from org')
+    const confirmed = confirm('Are you sure you want to disconnect the snapshot space from org');
     if (!confirmed) {
-      return
+      return;
     }
-    await disconnectSnapshotToOrg({ variables: {
-      orgId,
-    }});
+    await disconnectSnapshotToOrg({
+      variables: {
+        orgId,
+      },
+    });
   };
 
   const handleCheckSnapshotClick = async () => {
@@ -93,37 +98,34 @@ const SnapshotConfigSection = (props) => {
                 <IntegrationsSnapshotENSInput
                   value={enteredSnapshotId}
                   placeholder="ENS domain"
-                  onChange={(e)=>setEnteredSnapshotId(e.target.value)}
+                  onChange={(e) => setEnteredSnapshotId(e.target.value)}
                 />
                 {getSnapshotSpaceError && <ErrorText>{getSnapshotSpaceError}</ErrorText>}
               </IntegrationsSnapshotInputSubBlock>
               <IntegrationsSnapshotButton onClick={handleCheckSnapshotClick}>Check Snapshot</IntegrationsSnapshotButton>
             </IntegrationsSnapshotSubBlock>
           </>
-        ) }
-        {!snapshotConnected && isSnapshotAdmin && snapshotSpace?.id &&(
-          <IntegrationsSnapshotButton onClick={handleConnectSnapshotSpace}>Connect Snapshot {snapshotSpace?.name}</IntegrationsSnapshotButton>
+        )}
+        {!snapshotConnected && isSnapshotAdmin && snapshotSpace?.id && (
+          <IntegrationsSnapshotButton onClick={handleConnectSnapshotSpace}>
+            Connect Snapshot {snapshotSpace?.name}
+          </IntegrationsSnapshotButton>
         )}
         {snapshotConnected && (
           <>
-          <IntegrationsSnapshotHelperText>
-            Snapshot connected:
-          </IntegrationsSnapshotHelperText>
-          <IntegrationsSnapshotSubBlock>
-            <IntegrationsSnapshotInputSubBlock>
-              <IntegrationsSnapshotENSInput
-                value={orgSnapshot?.snapshotEns}
-                // disabled
-              />
-            </IntegrationsSnapshotInputSubBlock>
-            <IntegrationsSnapshotButton
-              onClick={handlDisconnectSnapshotSpace}
-              disabled={podId ? true : false}
-            >
-              Disconnect Snapshot
-            </IntegrationsSnapshotButton>
-          </IntegrationsSnapshotSubBlock>
-        </>
+            <IntegrationsSnapshotHelperText>Snapshot connected:</IntegrationsSnapshotHelperText>
+            <IntegrationsSnapshotSubBlock>
+              <IntegrationsSnapshotInputSubBlock>
+                <IntegrationsSnapshotENSInput
+                  value={orgSnapshot?.snapshotEns}
+                  // disabled
+                />
+              </IntegrationsSnapshotInputSubBlock>
+              <IntegrationsSnapshotButton onClick={handlDisconnectSnapshotSpace} disabled={podId ? true : false}>
+                Disconnect Snapshot
+              </IntegrationsSnapshotButton>
+            </IntegrationsSnapshotSubBlock>
+          </>
         )}
       </IntegrationsSnapshotBlock>
     </IntegrationsInputsBlock>
