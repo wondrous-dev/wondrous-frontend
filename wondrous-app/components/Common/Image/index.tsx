@@ -11,7 +11,7 @@ type SafeImageArgs = ImageProps & {
   placeholderComp?: JSX.Element; // React element to use as a placeholder.
   useNextImage?: boolean;
   style?: React.CSSProperties;
-  onPreviewLoaded?(url: string): void;
+  onPreviewLoaded?(url: string): unknown;
 };
 
 // https://nextjs.org/docs/api-reference/next/image
