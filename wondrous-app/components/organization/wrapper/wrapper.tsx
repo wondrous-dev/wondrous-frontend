@@ -67,6 +67,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import { OrgBoardWrapperContext } from 'utils/contexts';
 
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
@@ -481,7 +482,14 @@ const Wrapper = (props) => {
                 />
               )}
             </BoardsSubheaderWrapper>
-            {children}
+            <OrgBoardWrapperContext.Provider
+              value={{
+                handleJoinClick: handleJoinOrgButtonClick,
+                requestSent: joinRequestSent || userJoinRequest?.id,
+              }}
+            >
+              {children}
+            </OrgBoardWrapperContext.Provider>
           </Tabs>
         </ContentContainer>
       </Content>

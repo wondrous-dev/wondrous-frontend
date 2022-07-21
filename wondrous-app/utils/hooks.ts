@@ -17,6 +17,8 @@ import {
   EditTokenGatingConditionContext,
   UserProfileContext,
   CreateEntityContext,
+  OrgBoardWrapperContext,
+  PodBoardWrapperContext,
 } from './contexts';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
@@ -240,3 +242,7 @@ export const useGetOrgFromUsername = (username) => {
 };
 
 export const useCreateEntityContext = () => useContext(CreateEntityContext);
+
+export const useOrgBoardWrapperContext = () => useContext(OrgBoardWrapperContext);
+
+export const usePodBoardWrapperContext = () => useContext(PodBoardWrapperContext);

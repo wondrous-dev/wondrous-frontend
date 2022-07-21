@@ -213,7 +213,7 @@ export const BoardsCardBodyDescription = styled(Typography)`
   }
 `;
 
-const CardsContainerInnerWrapper = styled.div`
+export const CardsContainerInnerWrapper = styled.div`
   margin-top: 32px;
   min-height: 100vh;
 `;
