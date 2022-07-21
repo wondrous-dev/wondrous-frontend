@@ -16,7 +16,7 @@ import {
   RightButtons,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
-import { TWITTER_CALLENGE_CODE } from 'utils/constants';
+import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg';
 
@@ -41,7 +41,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
   );
 
   const redirectToTwitterAuth = () => {
-    const url = buildTwitterAuthUrl(TWITTER_CALLENGE_CODE, 'onboarding');
+    const url = buildTwitterAuthUrl(TWITTER_CHALLENGE_CODE, 'onboarding');
     window.open(url);
   };
 

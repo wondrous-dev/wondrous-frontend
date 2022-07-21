@@ -42,7 +42,7 @@ import {
 import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
-import { TWITTER_CALLENGE_CODE } from 'utils/constants';
+import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
 
 const discordUrl = getDiscordUrl();
 
@@ -260,7 +260,7 @@ const ProfileSettings = (props) => {
   };
 
   const redirectToTwitterAuth = () => {
-    const url = buildTwitterAuthUrl(TWITTER_CALLENGE_CODE, 'profile');
+    const url = buildTwitterAuthUrl(TWITTER_CHALLENGE_CODE, 'profile');
     window.open(url);
   };
 
