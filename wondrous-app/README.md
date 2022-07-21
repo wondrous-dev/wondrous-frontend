@@ -52,6 +52,9 @@ The easiest way to deploy your Next.js app is to use the [Vercel Platform](https
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
 
+## Storybook
+[How to mock applo client](https://storybook.js.org/addons/storybook-addon-apollo-client)
+
 ## Known Issues and Solutions
 
 #### yarn dev openssl issue

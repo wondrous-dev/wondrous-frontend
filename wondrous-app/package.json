@@ -96,6 +96,7 @@
     "husky": ">=6",
     "lint-staged": ">=10",
     "prettier": "^2.4.1",
+    "storybook-addon-apollo-client": "4.0.12",
     "storybook-addon-next": "1.6.7",
     "storybook-dark-mode": "1.1.0",
     "tsconfig-paths-webpack-plugin": "3.5.2",

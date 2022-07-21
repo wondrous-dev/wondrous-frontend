@@ -10,6 +10,7 @@ module.exports = {
     'storybook-dark-mode',
     // https://storybook.js.org/addons/storybook-addon-next
     'storybook-addon-next',
+    'storybook-addon-apollo-client',
   ],
   framework: '@storybook/react',
   core: {

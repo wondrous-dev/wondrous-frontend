@@ -1,9 +1,8 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
-import { ApolloProvider } from '@apollo/client';
 
 import { SafeImage as SafeImageComponent } from 'components/Common/Image';
-import apollo from 'services/apollo';
+import { GET_PREVIEW_FILE } from 'graphql/queries';
 
 export default {
   title: 'Data Display/Image/SafeImage',
@@ -40,13 +39,32 @@ export default {
   },
 } as ComponentMeta<typeof SafeImageComponent>;
 
-const Template: ComponentStory<typeof SafeImageComponent> = (args) => (
-  <ApolloProvider client={apollo}>
-    <SafeImageComponent {...args} />
-  </ApolloProvider>
-);
+const Template: ComponentStory<typeof SafeImageComponent> = (args) => <SafeImageComponent {...args} />;
 
 export const SafeImage = Template.bind({});
 SafeImage.args = {
-  src: 'thumbnail/2YV3vwIQub4DPA.jpg',
+  src: 'image.jpg',
+};
+
+SafeImage.parameters = {
+  apolloClient: {
+    // do not put MockedProvider here, you can, but its preferred to do it in preview.js
+    mocks: [
+      {
+        request: {
+          query: GET_PREVIEW_FILE,
+          variables: {
+            path: SafeImage.args.src,
+          },
+        },
+        result: {
+          data: {
+            getPreviewFile: {
+              url: 'http://localhost:6006/images/boards/avatar.png',
+            },
+          },
+        },
+      },
+    ],
+  },
 };

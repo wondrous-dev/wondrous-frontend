@@ -15,6 +15,8 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     fetchPolicy: 'network-only',
   });
 
+  console.log(data, loading, error);
+
   const imgUrl = data?.getPreviewFile?.url;
   useEffect(() => {
     if (src && !src.startsWith('http')) {
@@ -25,7 +27,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
       });
     }
     if (imgUrl) {
-      if (setImage && !(src?.startsWith('https') || src?.startsWith('file://'))) {
+      if (setImage && !(src?.startsWith('http') || src?.startsWith('file://'))) {
         setImage(data.getPreviewFile.url);
       }
     }
@@ -37,7 +39,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     return <img style={style} className={className} src={defaultImage} alt="" />;
   }
 
-  if (src?.startsWith('https') || src?.startsWith('file://')) {
+  if (src?.startsWith('http') || src?.startsWith('file://')) {
     // eslint-disable-next-line @next/next/no-img-element
     return <img style={style} className={className} key={src} src={src} alt="" />;
   } else if (imgUrl) {

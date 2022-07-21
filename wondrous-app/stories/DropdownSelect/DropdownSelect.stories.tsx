@@ -125,8 +125,6 @@ export default {
 const Template: ComponentStory<typeof DropdownSelectComponent> = (props) => {
   const [value, setValue] = useState(null);
 
-  console.log('render');
-
   // return (
   //   <DropdownSelect
   //     {...props}

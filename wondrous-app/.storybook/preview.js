@@ -1,10 +1,16 @@
 // .storybook/preview.js
 import { themes } from '@storybook/theming';
+import { MockedProvider } from '@apollo/client/testing';
 
 import '../styles/body.css';
 import '../styles/globals.css';
 
 export const parameters = {
+  apolloClient: {
+    MockedProvider,
+    addTypename: false,
+    // any props you want to pass to MockedProvider on every story
+  },
   darkMode: {
     current: 'dark',
     stylePreview: true,

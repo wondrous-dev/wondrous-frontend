@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Typography, Box } from '@mui/material';
 
@@ -50,8 +50,14 @@ export default {
 } as ComponentMeta<typeof AccordionComponent>;
 
 const Template: ComponentStory<typeof AccordionComponent> = (args) => {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    setExpanded(args.expanded);
+  }, [args.expanded]);
+
   return (
-    <AccordionComponent {...args}>
+    <AccordionComponent {...args} expanded={expanded} onClick={() => setExpanded(!expanded)}>
       <Box sx={{ padding: '15px' }}>
         <Typography>
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse malesuada lacus ex, sit amet blandit leo
