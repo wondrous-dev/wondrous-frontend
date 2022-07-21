@@ -22,6 +22,7 @@ import styles from 'components/organization/docs/docsStyles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
+import EmptyStateGeneric from 'components/EmptyStateGeneric';
 
 const useGetPodDocs = (podId) => {
   const [getPodDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_POD_DOCS, {
@@ -156,6 +157,12 @@ const Docs = (props) => {
             </Box>
           </Box>
         </Tooltip>
+      )}
+
+      {isEmpty(docData) && (
+        <EmptyStateGeneric
+          content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+        />
       )}
 
       {!isEmpty(pinnedDocs) && (

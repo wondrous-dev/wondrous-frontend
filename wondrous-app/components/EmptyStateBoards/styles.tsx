@@ -8,7 +8,7 @@ export const AddTaskButton = styled.button`
   background: ${palette.grey900};
   border-radius: 6px;
   height: 50px;
-  width: 100%;
+  width: ${({ fullWidth }) => (fullWidth ? 'fit-content' : '100%')};
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,7 +42,7 @@ export const EmptyStateWrapper = styled.div`
   flex-direction: column;
   gap: 14px;
   margin-top: 1em;
-  ${({ fullWidth }) => fullWidth && 'width: 100%; align-items: center;'};
+  ${({ fullWidth }) => fullWidth && 'width: 100% !important; align-items: center;'};
 `;
 
 const PlusIconWrapper = styled.div`
@@ -77,6 +77,9 @@ export const NoPermissionToCreateWrapper = styled.div`
   border-radius: 6px;
   padding: 14px;
   text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 `;
 
 export const UserRoleInfoHighlight = styled(Typography)`

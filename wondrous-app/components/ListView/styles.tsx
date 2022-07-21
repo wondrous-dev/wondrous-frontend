@@ -5,7 +5,7 @@ import MuiAccordion from '@mui/material/Accordion';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 
-import { EmptyStateWrapper } from 'components/EmptyStateBoards/styles';
+import { EmptyStateWrapper, NoPermissionToCreateWrapper } from 'components/EmptyStateBoards/styles';
 
 export const Accordion = styled(MuiAccordion)`
   && {
@@ -43,6 +43,9 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
   ${EmptyStateWrapper} {
     width: fit-content;
     min-width: 10%;
+    ${NoPermissionToCreateWrapper} {
+      flex-direction: row;
+    }
   }
 `;
 

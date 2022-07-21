@@ -1,5 +1,5 @@
 import { useOrgBoard, usePodBoard, useCreateEntityContext } from 'utils/hooks';
-import { PRIVACY_LEVEL } from 'utils/constants';
+import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
 import SkeletonBoard from 'components/Common/SkeletonBoard';
@@ -13,12 +13,16 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
   const entityContext = useCreateEntityContext();
   const router = useRouter();
   const user = useMe();
-  //we don't want to lock the user board
   if (!board) return children;
-
   const { userOrgs } = entityContext;
 
-  const isNotAMemberOfTheOrg = !userOrgs || !userOrgs?.getUserOrgs?.find((org) => org.id === board?.orgId);
+  const hasNoPodAccess =
+    board?.pod?.privacyLevel === PRIVACY_LEVEL.private &&
+    !board?.userPermissionsContext?.orgPermissions[board?.orgId]?.includes(PERMISSIONS.FULL_ACCESS);
+
+  const isNotAMemberOfTheOrg =
+    !userOrgs || !userOrgs?.getUserOrgs?.find((org) => org.id === board?.orgId) || hasNoPodAccess;
+
   const isPrivate =
     isNotAMemberOfTheOrg &&
     (orgBoard?.orgData?.privacyLevel === PRIVACY_LEVEL.private ||
@@ -29,7 +33,7 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
       ? 'You need to sign in and request permissions to view'
       : requestSent
       ? 'Request sent. Please wait for a response'
-      : 'Org set to private.Please request permissions to view';
+      : `${orgBoard ? 'Org' : 'Pod'} set to private. Please request permissions to view`;
     // const { title, buttonTitle } = getPopupConfig(user);
     const buttonTitle = !user ? 'Sign in' : requestSent ? 'Request sent' : 'Apply to join';
     const action = user ? handleJoinClick : () => router.push('/login');

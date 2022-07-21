@@ -22,6 +22,7 @@ import styles from './docsStyles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
+import EmptyStateGeneric from 'components/EmptyStateGeneric';
 
 const useGetOrgDocs = (orgId) => {
   const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
@@ -147,8 +148,14 @@ const Docs = (props) => {
 
   const pinnedDocs = docData?.filter((doc) => doc.pinned);
 
+  console.log(orgData);
   return (
     <Wrapper orgData={orgData}>
+      {isEmpty(docData) && (
+        <EmptyStateGeneric
+          content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+        />
+      )}
       {canEdit && (
         <Tooltip title="Create new doc category" placement="top">
           <Box sx={styles.categoryButtonContainer}>
@@ -158,7 +165,6 @@ const Docs = (props) => {
           </Box>
         </Tooltip>
       )}
-
       {!isEmpty(pinnedDocs) && (
         <PinnedDocsSection
           onDialogOpen={handleOpenDocDialogPinned}

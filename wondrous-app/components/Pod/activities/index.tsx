@@ -5,6 +5,8 @@ import { GET_POD_FEED } from 'graphql/queries';
 import { Post } from '../../Common/Post';
 import { Feed, FeedLoadMore } from '../../organization/activities/styles';
 import Wrapper from '../wrapper/';
+import isEmpty from 'lodash/isEmpty';
+import EmptyStateGeneric from 'components/EmptyStateGeneric';
 
 const useGetPodFeed = (podId, inView) => {
   const [getPodFeed, { data, loading, fetchMore }] = useLazyQuery(GET_POD_FEED, {
@@ -40,6 +42,8 @@ const Activities = (props) => {
   const isMoreThanOne = feedDataLength > 1;
   return (
     <Wrapper>
+      {isEmpty(feedData) && <EmptyStateGeneric content="This is where your activity will go." />}
+
       <Feed isMoreThanOne={isMoreThanOne}>
         {feedData?.map((post) => (
           <Post key={post.id} post={post} />

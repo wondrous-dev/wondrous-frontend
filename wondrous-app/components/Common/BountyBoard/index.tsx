@@ -20,7 +20,7 @@ import {
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
 import { Compensation } from '../Compensation';
-import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
+import { PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
@@ -173,7 +173,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
           );
         })
       ) : (
-        <EmptyStateBoards hidePlaceholder status={'created'} fullWidth />
+        <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
       )}
     </>
   );

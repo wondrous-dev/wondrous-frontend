@@ -524,6 +524,8 @@ const useCreateTask = () => {
       'getPerTypeTaskCountForPodBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
     ],
   });
 
@@ -533,32 +535,7 @@ const useCreateTask = () => {
         input,
       },
     })
-      .then((result) => {
-        //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
-        if (!result?.data?.createTask?.parentTaskId) {
-          if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
-            const task = result?.data?.createTask;
-            const justCreatedPod = getPodObject(pods, task.podId);
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) ||
-                task?.podId === board?.podId ||
-                form.values.podId === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
-
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              board.setColumns(columns);
-            }
-          } else {
-            board?.setEntityType(ENTITIES_TYPES.TASK);
-          }
-        }
+      .then(() => {
         handleClose();
       })
       .catch((e) => console.log(e));
@@ -568,7 +545,12 @@ const useCreateTask = () => {
 
 const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
+    refetchQueries: () => [
+      'getUserTaskBoardTasks',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getMilestones',
+    ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
@@ -1084,10 +1066,11 @@ interface ICreateEntityModal {
   resetEntityType?: Function;
   setEntityType?: Function;
   formValues?: FormikValues;
+  status?: string;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -1156,6 +1139,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
         }),
+        ...(status && entityType === ENTITIES_TYPES.TASK && { status }),
       };
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
