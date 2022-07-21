@@ -40,10 +40,12 @@ export const OverlayPopup = styled.div`
 `;
 
 export const OverlayPopupTitle = styled(Typography)`
-  font-family: ${typography.fontFamily};
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  line-height: 16px;
-  color: ${palette.white};
+  && {
+    font-family: ${typography.fontFamily};
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    line-height: 16px;
+    color: ${palette.white};
+  }
 `;
