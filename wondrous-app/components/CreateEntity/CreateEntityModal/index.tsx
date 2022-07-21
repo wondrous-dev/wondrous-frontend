@@ -5,41 +5,41 @@ import CircularProgress from '@mui/material/CircularProgress';
 import apollo from 'services/apollo';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
+  countCharacters,
   deserializeRichText,
   extractMentions,
   plainTextToRichText,
   RichTextEditor,
   useEditor,
 } from 'components/RichText';
-import { GithubLink } from 'components/Settings/Github/styles';
-import { StyledChipTag } from 'components/Tags/styles';
 import Tooltip from 'components/Tooltip';
 import { FormikValues, useFormik } from 'formik';
 import { CREATE_LABEL } from 'graphql/mutations/org';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_BOUNTY,
   CREATE_MILESTONE,
   CREATE_TASK,
-  CREATE_TASK_GITHUB_ISSUE,
-  CREATE_TASK_TEMPLATE,
-  DELETE_TASK_TEMPLATE,
   REMOVE_MEDIA_FROM_TASK,
-  TURN_TASK_TO_BOUNTY,
+  CREATE_TASK_GITHUB_ISSUE,
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
+  TURN_TASK_TO_BOUNTY,
+  CREATE_TASK_TEMPLATE,
   UPDATE_TASK_TEMPLATE,
+  DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import {
-  ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
-  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
+  ATTACH_MEDIA_TO_TASK_PROPOSAL,
+  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
   GET_POD_GITHUB_INTEGRATIONS,
   GET_POD_GITHUB_PULL_REQUESTS,
@@ -64,8 +64,6 @@ import {
   updateTaskItemOnEntityType,
 } from 'utils/board';
 import {
-  APPLICATION_POLICY,
-  APPLICATION_POLICY_LABELS_MAP,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
   PERMISSIONS,
@@ -74,19 +72,20 @@ import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
+  APPLICATION_POLICY,
+  APPLICATION_POLICY_LABELS_MAP,
 } from 'utils/constants';
-import { parseUserPermissionContext, transformMediaFormat, transformTaskToTaskCard } from 'utils/helpers';
+import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { SafeImage } from '../../Common/Image';
 import Tags, { Option as Label } from '../../Tags';
+import { StyledChipTag } from 'components/Tags/styles';
 import { MediaItem } from '../MediaItem';
-import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
-  CreateEntityApplicationsSelectRender,
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
   CreateEntityAutocompleteOption,
@@ -131,6 +130,7 @@ import {
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
   CreateEntityPrivacySelectRenderLabel,
+  CreateEntityWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
@@ -141,21 +141,18 @@ import {
   CreateEntityTextfieldInputLabel,
   CreateEntityTextfieldInputPoints,
   CreateEntityTextfieldInputReward,
-  CreateEntityTextfieldInputTemplate,
   CreateEntityTextfieldPoints,
   CreateEntityTitle,
-  CreateEntityWrapper,
-  EditorContainer,
   EditorPlaceholder,
+  EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
-} from './styles';
-import TaskTemplatePicker from './TaskTemplatePicker';
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
   SnapshotButtonBlock,
+  CreateEntityTextfieldInputTemplate,
 } from './styles';
 import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
@@ -170,6 +167,7 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import TaskTemplatePicker from './TaskTemplatePicker';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -1375,6 +1373,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     deleteTaskTemplate({
       variables: {
         taskTemplateId: templateId,
+      },
+    });
+  };
+
   const [snapshotId, setSnapshotId] = useState(existingTask?.snapshotId);
 
   // snapshot integration
