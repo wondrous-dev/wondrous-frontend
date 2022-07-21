@@ -28,13 +28,15 @@ import {
   TitleSection,
   UserMetaDataContainer,
   UserProfilePicture,
-  UserWrapper
+  UserWrapper,
 } from './styles';
 import { useRouter } from 'next/router';
 import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
 import CloseModalIcon from 'components/Icons/closeModal';
+
+const VIRTUAL_PAGINATION_PER_PAGE_COUNT = 5;
 
 const PodItem = (props) => {
   const router = useRouter();
@@ -47,9 +49,7 @@ const PodItem = (props) => {
         })
       }
     >
-      <TabContainerText>
-        {pod?.name}
-      </TabContainerText>
+      <TabContainerText>{pod?.name}</TabContainerText>
       <PodExplainerText>
         <RichTextViewer text={pod?.description} />
       </PodExplainerText>
@@ -75,9 +75,7 @@ const UserItem = (props) => {
       )}
       <UserMetaDataContainer>
         <CommentTopFlexDiv>
-          <NameText>
-            {user?.username}
-          </NameText>
+          <NameText>{user?.username}</NameText>
         </CommentTopFlexDiv>
         <CommentLine>{cutString(user?.bio)}</CommentLine>
       </UserMetaDataContainer>
@@ -92,10 +90,10 @@ export const MoreInfoModal = (props) => {
   const [displayPods, setDisplayPods] = useState(showPods);
   const [userList, setUserList] = useState([]);
   const [podList, setPodList] = useState([]);
-  const [userListSearch, setUserListSearch] = useState([]);
-  const [podListSearch, setPodListSearch] = useState([]);
-  const [dividedUserList, setDividedUserList] = useState([]);
-  const [dividedPodList, setDividedPodList] = useState([]);
+  const [searchedUserList, setSearchedUserList] = useState([]);
+  const [searchedPodList, setSearchedPodList] = useState([]);
+  const [paginatedUserList, setPaginatedUserList] = useState([]);
+  const [paginatedPodList, setPaginatedPodList] = useState([]);
   const [activeTab, setActiveTab] = useState('contributors');
   const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
@@ -107,6 +105,7 @@ export const MoreInfoModal = (props) => {
     },
     fetchPolicy: 'cache-and-network',
   });
+
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
       const userData = data.getPodUsers;
@@ -116,45 +115,48 @@ export const MoreInfoModal = (props) => {
     },
     fetchPolicy: 'cache-and-network',
   });
+
   const pods = orgPodData?.getOrgPods;
 
-  const searchUser = (value) => {
-    if (value) {
+  const searchUser = (searchQuery) => {
+    const localSearchQuery = searchQuery.toLowerCase();
+    if (searchQuery) {
       const newList = userList.filter((item) => {
         if (item.username && item.bio) {
           return (
-            item.username.toLowerCase().includes(value.toLowerCase()) ||
-            item.bio.toLowerCase().includes(value.toLowerCase())
+            item.username.toLowerCase().includes(localSearchQuery) || item.bio.toLowerCase().includes(localSearchQuery)
           );
-        } else if (item.username) {
-          return item.username.toLowerCase().includes(value.toLowerCase());
-        } else if (item.description) {
-          return item.bio.toLowerCase().includes(value.toLowerCase());
+        }
+        if (item.username) {
+          return item.username.toLowerCase().includes(localSearchQuery);
+        }
+        if (item.bio) {
+          return item.bio.toLowerCase().includes(localSearchQuery);
         }
       });
-      setUserListSearch(newList);
-    } else {
-      setUserListSearch(userList);
-    }
+      setSearchedUserList(newList);
+    } else setSearchedUserList(userList);
   };
-  const searchPod = (value) => {
-    if (value) {
+
+  const searchPod = (searchQuery) => {
+    const localSearchQuery = searchQuery.toLowerCase();
+    if (searchQuery) {
       const newList = podList.filter((item) => {
         if (item.name && item.description) {
           return (
-            item.name.toLowerCase().includes(value.toLowerCase()) ||
-            item.description.toLowerCase().includes(value.toLowerCase())
+            item.name.toLowerCase().includes(localSearchQuery) ||
+            item.description.toLowerCase().includes(localSearchQuery)
           );
-        } else if (item.name) {
-          return item.name.toLowerCase().includes(value.toLowerCase());
-        } else if (item.description) {
-          return item.description.toLowerCase().includes(value.toLowerCase());
+        }
+        if (item.name) {
+          return item.name.toLowerCase().includes(localSearchQuery);
+        }
+        if (item.description) {
+          return item.description.toLowerCase().includes(localSearchQuery);
         }
       });
-      setPodListSearch(newList);
-    } else {
-      setPodListSearch(podList);
-    }
+      setSearchedPodList(newList);
+    } else setSearchedPodList(podList);
   };
 
   const paginateDataList = (dataList, perPageCount) =>
@@ -168,13 +170,15 @@ export const MoreInfoModal = (props) => {
       const newPaginatedUserList = paginateDataList(searchedUserList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
       setPaginatedUserList(newPaginatedUserList);
     }
-  }, [userListSearch]);
+  }, [searchedUserList]);
+
   useEffect(() => {
     if (searchedPodList) {
       const newPaginatedPodList = paginateDataList(searchedPodList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
       setPaginatedPodList(newPaginatedPodList);
     }
-  }, [podListSearch]);
+  }, [searchedPodList]);
+
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
       setDisplayUsers(true);
@@ -215,14 +219,16 @@ export const MoreInfoModal = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId, displayPods, displayUsers, showUsers, showPods, pods]);
+
   useEffect(() => {
     if (userList) {
-      setUserListSearch([...userList]);
+      setSearchedUserList([...userList]);
     }
   }, [userList]);
+
   useEffect(() => {
     if (podList) {
-      setPodListSearch([...podList]);
+      setSearchedPodList([...podList]);
     }
   }, [podList]);
 
@@ -297,7 +303,7 @@ export const MoreInfoModal = (props) => {
                 <CircularProgress />
               </ActivityIndicatorContainer>
             )}
-            {dividedUserList.map((item, i) => {
+            {paginatedUserList.map((item, i) => {
               return (
                 <Snap key={i} className="section_scroll">
                   {item.map((user, index) => {
@@ -316,7 +322,7 @@ export const MoreInfoModal = (props) => {
               </ActivityIndicatorContainer>
             )}
 
-            {dividedPodList.map((item, i) => {
+            {paginatedPodList.map((item, i) => {
               return (
                 <Snap key={i} className="section_scroll">
                   {item.map((pod, index) => {
