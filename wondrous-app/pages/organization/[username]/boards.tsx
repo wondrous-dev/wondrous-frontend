@@ -36,7 +36,7 @@ import {
   TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
   STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
+  STATUS_CLOSED,
   PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
@@ -273,11 +273,11 @@ const useGetOrgTaskBoardProposals = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && orgId) {
       const proposalBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
-          : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
+          : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED];
       getOrgTaskProposals({
         variables: {
           podIds: filters?.podIds,

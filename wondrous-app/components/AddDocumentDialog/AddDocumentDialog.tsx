@@ -122,7 +122,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
             })}
             fullWidth
             helperText={errors.link?.message}
-            error={errors.link}
+            error={Boolean(errors.link)}
           />
         </Box>
         <Box mb={3.5}>
@@ -135,7 +135,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
             })}
             fullWidth
             helperText={errors.title?.message}
-            error={errors.title}
+            error={Boolean(errors.title)}
           />
         </Box>
         <Box mb={3.5}>
@@ -148,7 +148,7 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
             })}
             fullWidth
             helperText={errors.description?.message}
-            error={errors.description}
+            error={Boolean(errors.description)}
           />
         </Box>
 

@@ -10,14 +10,15 @@ import { ENTITIES_TYPES } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { disableContainerOverflow, enableContainerOverflow, parseUserPermissionContext } from 'utils/helpers';
 import {
   BOARD_TYPE,
   PERMISSIONS,
   PAYMENT_STATUS,
   STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
+  STATUS_CLOSED,
+  STATUS_OPEN,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
@@ -60,7 +61,7 @@ const KanbanBoard = (props) => {
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [taskToConfirm, setTaskToConfirm] = useState<any>(null);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
@@ -227,8 +228,8 @@ const KanbanBoard = (props) => {
           });
           return;
         }
-        if (destinationStatus === STATUS_CHANGE_REQUESTED) {
-          requestChangeTaskProposal({
+        if (destinationStatus === STATUS_CLOSED) {
+          closeTaskProposal({
             variables: {
               proposalId: id,
             },
