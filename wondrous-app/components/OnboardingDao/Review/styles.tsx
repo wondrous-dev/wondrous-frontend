@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import Image from 'next/image';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -32,6 +33,11 @@ export const LabelText = styled.div`
   width: fit-content;
 `;
 
+export const ChildrenWrapper = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const Text = styled(Typography)`
   && {
     align-items: center;
@@ -41,4 +47,20 @@ export const Text = styled(Typography)`
     font-size: 14px;
     font-weight: 500;
   }
+`;
+
+export const Logo = styled(Image)`
+  && {
+    border-radius: 4px;
+  }
+`;
+
+export const Category = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 26px;
+  background: #141414;
+  border-radius: 4px;
+  padding: 4px 9px;
 `;
