@@ -198,7 +198,7 @@ const TaskColumn = (props: ITaskColumn) => {
                 </Draggable>
               ))
             ) : (
-              <EmptyStateBoards status={status} setOpenTaskModal={setOpenTaskModal} />
+              <EmptyStateBoards status={status} hidePlaceholder={board?.entityType === ENTITIES_TYPES.PROPOSAL} />
             )}
             <LoadMore ref={ref} hasMore={board?.hasMore}></LoadMore>
             {provided.placeholder}

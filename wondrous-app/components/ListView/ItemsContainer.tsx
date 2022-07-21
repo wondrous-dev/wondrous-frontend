@@ -24,6 +24,7 @@ import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
 import { ShowMoreButton } from './styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import EmptyStateBoards from 'components/EmptyStateBoards';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -90,25 +91,29 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
           )}
         </ListViewItemHeader>
         <AccordionDetails>
-          {tasks.map((task, idx) => {
-            return (
-              <Draggable key={task.id} draggableId={task.id} index={idx}>
-                {(provided, snapshot) => (
-                  <div
-                    style={{
-                      width: '100%',
-                    }}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                    isDragging={snapshot.isDragging}
-                  >
-                    <Item entityType={entityType} task={task} />
-                  </div>
-                )}
-              </Draggable>
-            );
-          })}
+          {tasks?.length ? (
+            tasks.map((task, idx) => {
+              return (
+                <Draggable key={task.id} draggableId={task.id} index={idx}>
+                  {(provided, snapshot) => (
+                    <div
+                      style={{
+                        width: '100%',
+                      }}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                      ref={provided.innerRef}
+                      isDragging={snapshot.isDragging}
+                    >
+                      <Item entityType={entityType} task={task} />
+                    </div>
+                  )}
+                </Draggable>
+              );
+            })
+          ) : (
+            <EmptyStateBoards hidePlaceholder status={status} />
+          )}
         </AccordionDetails>
         {taskCount > LIMIT && tasks.length <= LIMIT && (
           <ShowMoreButton type="button" onClick={() => handleShowAll(status, taskCount)}>

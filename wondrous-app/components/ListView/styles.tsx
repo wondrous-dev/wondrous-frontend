@@ -5,6 +5,8 @@ import MuiAccordion from '@mui/material/Accordion';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 
+import { EmptyStateWrapper } from 'components/EmptyStateBoards/styles';
+
 export const Accordion = styled(MuiAccordion)`
   && {
     margin-top: 0;
@@ -37,6 +39,10 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
     border-bottom: 0.5px dashed #2b2b2b;
     border-radius: 6px;
     border-top: 0.5px dashed #2b2b2b;
+  }
+  ${EmptyStateWrapper} {
+    width: fit-content;
+    min-width: 10%;
   }
 `;
 

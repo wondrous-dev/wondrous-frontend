@@ -42,6 +42,7 @@ export const EmptyStateWrapper = styled.div`
   flex-direction: column;
   gap: 14px;
   margin-top: 1em;
+  ${({ fullWidth }) => fullWidth && 'width: 100%; align-items: center;'};
 `;
 
 const PlusIconWrapper = styled.div`

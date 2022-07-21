@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import {
   AddTaskButton,
   EmptyStatePlaceholder,
@@ -7,7 +8,13 @@ import {
   NoPermissionToCreateWrapper,
   UserRoleInfoHighlight,
 } from './styles';
-import { TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO, TASK_STATUS_DONE, TASK_STATUS_IN_REVIEW } from 'utils/constants';
+import {
+  TASK_STATUS_IN_PROGRESS,
+  TASK_STATUS_TODO,
+  TASK_STATUS_DONE,
+  TASK_STATUS_IN_REVIEW,
+  STATUS_OPEN,
+} from 'utils/constants';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { canUserCreateTask } from 'utils/helpers';
 import {
@@ -16,10 +23,13 @@ import {
   EmptyStateInReviewIcon,
   EmptyStateCompletedIcon,
 } from 'components/Icons/emptyStates';
-
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
+import { ENTITIES_UI_ELEMENTS } from 'components/CreateEntity/chooseEntityToCreateModal';
 interface Props {
   status: string;
-  setOpenTaskModal: (boolean) => any;
+  hidePlaceholder?: boolean;
+  fullWidth?: boolean;
 }
 
 const ICONS_MAP = {
@@ -28,9 +38,10 @@ const ICONS_MAP = {
   [TASK_STATUS_IN_REVIEW]: EmptyStateInReviewIcon,
   [TASK_STATUS_DONE]: EmptyStateCompletedIcon,
 };
-const STATUSES_WITH_ADD_TASK_BUTTON = [TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO, TASK_STATUS_IN_REVIEW];
+const STATUSES_WITH_ADD_TASK_BUTTON = [TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO, TASK_STATUS_IN_REVIEW, STATUS_OPEN];
 
-const EmptyStateBoards = ({ status, setOpenTaskModal }: Props) => {
+const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
+  const [openTaskModal, setOpenTaskModal] = useState(false);
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -41,42 +52,61 @@ const EmptyStateBoards = ({ status, setOpenTaskModal }: Props) => {
 
   const shouldDisplayAddTaskButton = canCreateTask && STATUSES_WITH_ADD_TASK_BUTTON.includes(status);
 
-  const openTaskModal = () => setOpenTaskModal(true);
-
   const statusToDisplayNoRoleCard =
     board?.columns?.find((column) => column?.tasks?.length === 0 && column?.status !== TASK_STATUS_DONE)?.status ||
     TASK_STATUS_TODO;
 
-  console.log(userPermissionsContext);
   const orgRole = orgBoard && userPermissionsContext?.orgRoles[board?.orgId];
 
   const podRole = podBoard && userPermissionsContext?.podRoles[board?.orgId];
 
   const role = orgRole || podRole;
+
+  const handleTaskModal = () => setOpenTaskModal((prevState) => !prevState);
+
+  const entityLabel = ENTITIES_UI_ELEMENTS[board?.entityType]?.label;
   return (
-    <EmptyStateWrapper>
-      {shouldDisplayAddTaskButton ? (
-        <>
-          <AddTaskButton onClick={openTaskModal}>
-            <AddTaskPlusIcon />
-            Add task
-          </AddTaskButton>{' '}
-        </>
-      ) : null}
-      {!canCreateTask && status === statusToDisplayNoRoleCard ? (
-        <NoPermissionToCreateWrapper>
-          <UserRoleInfoHighlight>
-            {role ? (
-              <>
-                You are a <span>{role}</span> in this org.
-              </>
-            ) : null}
-          </UserRoleInfoHighlight>
-          <UserRoleInfo>You need to have a role that can create tasks</UserRoleInfo>
-        </NoPermissionToCreateWrapper>
-      ) : null}
-      <EmptyStatePlaceholder>{ICONS_MAP[status]()}</EmptyStatePlaceholder>
-    </EmptyStateWrapper>
+    <>
+      <CreateModalOverlay
+        style={{
+          height: '95vh',
+        }}
+        open={openTaskModal}
+        onClose={handleTaskModal}
+      >
+        <CreateEntityModal
+          entityType={board?.entityType}
+          handleClose={handleTaskModal}
+          resetEntityType={() => {}}
+          setEntityType={() => {}}
+          cancel={handleTaskModal}
+        />
+      </CreateModalOverlay>
+
+      <EmptyStateWrapper fullWidth={fullWidth}>
+        {shouldDisplayAddTaskButton ? (
+          <>
+            <AddTaskButton onClick={handleTaskModal}>
+              <AddTaskPlusIcon />
+              Add {entityLabel}
+            </AddTaskButton>
+          </>
+        ) : null}
+        {!canCreateTask && status === statusToDisplayNoRoleCard ? (
+          <NoPermissionToCreateWrapper>
+            <UserRoleInfoHighlight>
+              {role ? (
+                <>
+                  You are a <span>{role}</span> in this org.
+                </>
+              ) : null}
+            </UserRoleInfoHighlight>
+            <UserRoleInfo>You need to have a role that can create {entityLabel}</UserRoleInfo>
+          </NoPermissionToCreateWrapper>
+        ) : null}
+        {!hidePlaceholder && <EmptyStatePlaceholder>{ICONS_MAP[status]()}</EmptyStatePlaceholder>}
+      </EmptyStateWrapper>
+    </>
   );
 };
 
