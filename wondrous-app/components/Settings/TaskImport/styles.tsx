@@ -1,39 +1,18 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as MuiButton, Typography, InputBase } from '@mui/material';
+import { CreateLayoutsModal, CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import NotionIcon from 'components/Icons/Notion';
 
-export const IntegrationsContainer = styled.div`
+export const TaskImportContainer = styled.div`
   height: 100vh;
   width: 100%;
   max-width: 765px;
 `;
 
-export const TableValueText = styled(Typography)`
-  && {
-    color: #c4c4c4;
-    font-size: 14px;
-    font-height: 22px;
-  }
-`;
-
-export const IntegrationsAddressInput = styled(InputBase)`
-  && {
-    max-width: 100%;
-    height: 40px;
-    border: 1px solid #4b4b4b;
-    border-radius: 6px;
-    margin-right: 16px;
-    font-size: 14px;
-    line-height: 21px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-    padding: 10px 15px;
-  }
-`;
-
-export const IntegrationsInputsBlock = styled.div`
+export const TaskImportMethodBlock = styled.div`
   padding: 30px 0;
-  border-bottom: 1px solid #363636;
+  border-bottom: 1px solid ${palette.grey85};
 `;
 
 export const IntegrationsSnapshotBlock = styled.div`
@@ -52,58 +31,26 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   justify-content: space-between;
 `;
 
-export const IntegrationsSnapshotInputSubBlock = styled.div`
-  width: calc(100% - 220px);
-  min-width: 200px;
-  display: flex;
-  flex-direction: column;
-  @media (max-width: 1096px) {
-    width: 100%;
-  }
-`;
-
-export const IntegrationsSnapshotENSInput = styled(InputBase)`
-  && {
-    height: 40px;
-    border: 1px solid #4b4b4b;
-    border-radius: 6px;
-
-    font-size: 14px;
-    line-height: 21px;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-    padding: 10px 15px;
-  }
-`;
-
-export const IntegrationsSnapshotHelperText = styled(Typography)`
-  && {
-    font-size: 12px;
-    line-height: 15px;
-    color: #c4c4c4;
-    margin-bottom: 6px;
-  }
-`;
-
-export const IntegrationsSnapshotButton = styled(MuiButton)`
+// same as IntegrationsSnapshotButton
+export const ConnectToNotionButton = styled(MuiButton)`
   && {
     white-space: nowrap;
     min-width: min-content;
     padding: 8px 16px;
     height: 40px;
-    background: #0f0f0f;
+    background: ${palette.background};
     border: 1px solid deepskyblue;
     margin-left: 10px;
     //text
     font-weight: 500;
     font-size: 16px;
     line-height: 150%;
-    color: #ffffff;
+    color: ${palette.white};
     .MuiCircularProgress-root {
       margin-right: 10px;
     }
     .Mui-disabled {
-      color: #ffffff;
+      color: ${palette.white};
     }
     @media (max-width: 1096px) {
       margin-top: 10px;
@@ -130,5 +77,24 @@ export const LabelBlockText = styled(Typography)`
     font-family: Space Grotesk;
     font-size: 14px;
     margin-bottom: 12px;
+  }
+`;
+
+export const ModalBody = styled(CreateLayoutsModal)`
+  && {
+    width: 50%;
+    max-width: 600px;
+  }
+`;
+
+export const NotionImportButton = styled(CreateFormPreviewButton)`
+  && {
+    margin-top: 24px;
+  }
+`;
+
+export const NotionInButtonIcon = styled(NotionIcon)`
+  && {
+    margin-right: 10px;
   }
 `;

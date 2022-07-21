@@ -134,7 +134,7 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, podId, category })
             })}
             fullWidth
             helperText={errors.name?.message}
-            error={errors.name}
+            error={Boolean(errors.name)}
           />
         </Box>
 
