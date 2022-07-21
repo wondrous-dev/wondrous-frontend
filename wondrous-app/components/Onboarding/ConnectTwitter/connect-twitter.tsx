@@ -15,7 +15,8 @@ import {
   LaterButton,
   RightButtons,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
-import { buildTwitterAuthUrl, challengeCode } from 'components/Twitter/utils';
+import { buildTwitterAuthUrl } from 'components/Twitter/utils';
+import { TWITTER_CALLENGE_CODE } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg';
 
@@ -25,7 +26,6 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
     onCompleted: (data) => {
-
       if (userData?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/explore`, undefined, {
           shallow: true,
@@ -41,7 +41,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
   );
 
   const redirectToTwitterAuth = () => {
-    const url = buildTwitterAuthUrl(challengeCode, 'onboarding');
+    const url = buildTwitterAuthUrl(TWITTER_CALLENGE_CODE, 'onboarding');
     window.open(url);
   };
 
@@ -90,15 +90,19 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
         textAlign: 'center',
         display: 'flex',
         flexDirection: 'column',
-        alignItems: 'center'
-
+        alignItems: 'center',
       }}
     >
-      <Later onClick={handleLaterClick} style={{
-        width: '300px',
-        marginRight: 0,
-      }}>I&apos;ll connect it later</Later>
-      <ContinueButton style={{ marginTop: '20px',  width: '300px'}} onClick={redirectToTwitterAuth}>
+      <Later
+        onClick={handleLaterClick}
+        style={{
+          width: '300px',
+          marginRight: 0,
+        }}
+      >
+        I&apos;ll connect it later
+      </Later>
+      <ContinueButton style={{ marginTop: '20px', width: '300px' }} onClick={redirectToTwitterAuth}>
         <TwitterSmallLogo
           style={{
             marginRight: '12px',
@@ -116,7 +120,7 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
       headerRightContent={router.query.wallet ? headerRightContent : null}
       onBackClick={() => router.back()}
       displayFooter={false}
-      footer={isMobile? mobileFooter: footer}
+      footer={isMobile ? mobileFooter : footer}
       step={5}
     >
       <div style={{ textAlign: 'center', marginBottom: '50px', marginTop: '20px' }}>
