@@ -189,6 +189,10 @@ export const ContinueButton = styled(Button)`
       font-style: normal;
       font-weight: 600;
       font-size: 15px;
+      transition: background 0.5s ease-in-out;
+      :hover {
+        background: ${({ hoverContinue }) => hoverContinue && 'transparent'};
+      }
     }
   }
 `;

@@ -64,6 +64,7 @@ const fieldSet = [
     subtitle: `Review your DAO details and then let\'s launch!`,
     step: 6,
     Component: Review,
+    hoverContinue: true,
   },
 ];
 
