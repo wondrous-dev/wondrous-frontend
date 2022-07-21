@@ -129,7 +129,6 @@ export const Invite = ({
                 },
               });
             } else {
-              console.log('here', user);
               handleUserOnboardingRedirect(user, router);
             }
           }

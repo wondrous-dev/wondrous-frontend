@@ -14,7 +14,7 @@ import {
   BOARD_TYPE,
   STATUS_OPEN,
   STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
+  STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
 import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
@@ -37,7 +37,6 @@ import { useMe } from '../../../Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import CreateLayoutBaseModal from 'components/CreateEntity/createEntityModal';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 
@@ -56,7 +55,7 @@ const TITLES = {
   //PROPOSALS
   [STATUS_OPEN]: 'Open',
   [STATUS_APPROVED]: 'Approved',
-  [STATUS_CHANGE_REQUESTED]: 'Rejected',
+  [STATUS_CLOSED]: 'Rejected',
 };
 
 const HEADER_ICONS = {
@@ -66,7 +65,7 @@ const HEADER_ICONS = {
   [TASK_STATUS_DONE]: Done,
   [STATUS_OPEN]: Proposal,
   [STATUS_APPROVED]: Approved,
-  [STATUS_CHANGE_REQUESTED]: Rejected,
+  [STATUS_CLOSED]: Rejected,
 };
 
 const TaskColumn = (props: ITaskColumn) => {
@@ -118,8 +117,8 @@ const TaskColumn = (props: ITaskColumn) => {
       number = taskCount?.proposalApproved || 0;
       taskColumnWidth = '33.3%';
       break;
-    case STATUS_CHANGE_REQUESTED:
-      number = taskCount?.proposalChangeRequested || 0;
+    case STATUS_CLOSED:
+      number = taskCount?.proposalClosed || 0;
       taskColumnWidth = '33.3%';
       break;
     default:

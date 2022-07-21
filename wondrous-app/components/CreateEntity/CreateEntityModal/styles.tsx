@@ -975,3 +975,44 @@ export const EditorContainer = styled.div`
 export const EditorPlaceholder = styled.div`
   min-height: ${editorMinHeight - editorPadding * 2}px;
 `;
+
+export const ApplicationInputWrapper = styled.div``;
+
+export const ApplicationInputUnassignContainer = styled.div`
+  padding-top: 9px;
+  padding-bottom: 9px;
+  display: flex;
+  align-items: center;
+  font-family: 'Space Grotesk';
+  font-size: 13px;
+  font-weight: 500;
+  color: ${palette.white};
+  margin-left: 6px;
+  gap: 9px;
+  .MuiCheckbox-root {
+    padding: 0px;
+  }
+`;
+
+export const SnapshotErrorText = styled.div`
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+  line-height: 10px;
+`;
+
+// export const SnapshotButtonBlock = styled.div`
+//     height: 40px;
+//     display: flex;
+//     flex-direction: column;
+//     justify-content: center;
+//     align-items: center;
+//     margin-left: auto;
+// `;
+
+export const SnapshotButtonBlock = styled.div`
+  display: flex;
+  justify-content: left;
+  margin-left: 24px;
+`;

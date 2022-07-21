@@ -6,8 +6,8 @@ import {
   TASK_STATUS_REQUESTED,
   STATUS_APPROVED,
   STATUS_OPEN,
-  STATUS_CHANGE_REQUESTED,
   ENTITIES_TYPES,
+  STATUS_CLOSED,
 } from './constants';
 
 export const addProposalItem = (newItem, columns) => {
@@ -41,9 +41,9 @@ export const updateProposalItem = (updatedItem, columns) => {
 export const getProposalStatus = (proposal) => {
   let proposalStatus = '';
 
-  if (proposal.approvedAt) proposalStatus = STATUS_APPROVED;
-  if (!proposal.approvedAt && !proposal.changeRequested) proposalStatus = STATUS_OPEN;
-  if (proposal.changeRequestedAt) proposalStatus = STATUS_CHANGE_REQUESTED;
+  if (proposal?.approvedAt) proposalStatus = STATUS_APPROVED;
+  if (!proposal?.approvedAt && !proposal?.changeRequested) proposalStatus = STATUS_OPEN;
+  if (proposal?.statusClosed) proposalStatus = STATUS_CLOSED;
   return proposalStatus;
 };
 

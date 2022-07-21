@@ -96,9 +96,9 @@ export const MainBgGradientOval = styled(MainBgShape)`
   filter: blur(200px);
 `;
 
-export const Main = ({ children, style }) => {
+export const Main = ({ children }) => {
   return (
-    <MainWrapper style={style}>
+    <MainWrapper>
       <MainBgColorCircle />
       <MainBgGradientOval />
       {children}

@@ -1,17 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { PERMISSIONS, PRIVACY_LEVEL, SIDEBAR_WIDTH } from 'utils/constants';
-import useSideBar from 'hooks/useSideBar';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import apollo from 'services/apollo';
 import { useMe } from '../../Auth/withAuth';
 
-import Header from '../../Header';
-import SideBarComponent from '../../SideBar';
 import Tabs from '../tabs/tabs';
 import TypeSelector from 'components/TypeSelector';
-import ChooseEntityToCreate from '../../CreateEntity';
-import { parseUserPermissionContext, shrinkNumber, toggleHtmlOverflow } from 'utils/helpers';
+import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import Tooltip from 'components/Tooltip';
 
 import {
   Content,
@@ -20,52 +15,43 @@ import {
   HeaderActivityLink,
   HeaderActivityLinkIcon,
   HeaderButtons,
-  HeaderContributeButton,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderFollowButton,
-  HeaderFollowButtonIcon,
-  HeaderFollowButtonText,
   HeaderImageDefault,
   HeaderMainBlock,
   HeaderButton,
   HeaderPods,
   HeaderPodsAmount,
   HeaderPodsText,
-  HeaderSettingsLockedButton,
   HeaderText,
   HeaderTitle,
-  OverviewComponent,
   TokenHeader,
-  TokenLogo,
-  HeaderInviteButton,
-  PlusIconWrapper,
   TokenEmptyLogo,
   HeaderTitleIcon,
   HeaderImage,
   HeaderImageWrapper,
   HeaderTag,
   BoardsSubheaderWrapper,
+  RoleButtonWrapper,
+  RoleText,
+  RoleButton,
 } from './styles';
 import { useOrgBoard, useTokenGating } from 'utils/hooks';
-import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
-import { GET_ORG_BY_ID, GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { SafeImage } from '../../Common/Image';
-import PlusIcon from '../../Icons/plus';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { MoreInfoModal } from '../../profile/modals';
-import { Router, useRouter } from 'next/router';
-import { NoLogoDAO } from '../../SideBar/styles';
-import { DAOEmptyIcon, DAOIcon } from '../../Icons/dao';
+import { useRouter } from 'next/router';
+import { DAOEmptyIcon } from '../../Icons/dao';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA, SOCIAL_MEDIA_LINKEDIN } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { useWonderWeb3 } from 'services/web3';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import LinkedInIcon from '../../Icons/linkedIn';
 import OpenSeaIcon from '../../Icons/openSea';
-import LinkBigIcon from '../../Icons/link';
 import { DiscordIcon } from '../../Icons/discord';
 import { MembershipRequestModal } from './RequestModal';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -77,13 +63,16 @@ import {
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import { RichTextViewer } from 'components/RichText';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import ChooseEntityToCreate from 'components/CreateEntity';
 
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
-  const { minimized } = useSideBar();
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
@@ -99,7 +88,7 @@ const Wrapper = (props) => {
   const [orgRoleName, setOrgRoleName] = useState(null);
   const [claimableDiscordRole, setClaimableDiscordRole] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
-  const [createFormModal, setCreateFormModal] = useState(false);
+  const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
@@ -109,10 +98,6 @@ const Wrapper = (props) => {
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
 
-  const toggleCreateFormModal = () => {
-    toggleHtmlOverflow();
-    setCreateFormModal((prevState) => !prevState);
-  };
   const orgProfile = orgData;
   const links = orgProfile?.links;
   const router = useRouter();
@@ -279,6 +264,10 @@ const Wrapper = (props) => {
     }
   }, [orgBoard?.orgId]);
 
+  useHotkeys('tab+t', () => {
+    setCreateTaskModalOpen((prevState) => !prevState);
+  });
+
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -291,6 +280,7 @@ const Wrapper = (props) => {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
       />
+      <ChooseEntityToCreate />
       <TokenGatedAndClaimableRoleModal
         open={claimableRoleModalOpen}
         onClose={() => setClaimableRoleModalOpen(false)}
@@ -312,179 +302,189 @@ const Wrapper = (props) => {
         name={orgProfile?.name}
         orgId={orgBoard?.orgId}
       />
-      <Header openCreateFormModal={toggleCreateFormModal} />
-
-      <SideBarComponent />
-      <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
-      <OverviewComponent
+      <CreateModalOverlay
         style={{
-          paddingLeft: minimized ? 0 : SIDEBAR_WIDTH,
+          height: '95vh',
         }}
+        open={isCreateTaskModalOpen}
+        onClose={() => setCreateTaskModalOpen(false)}
       >
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
-        <HeaderImageWrapper>
-          {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
-        </HeaderImageWrapper>
+        <CreateEntityModal
+          entityType={ENTITIES_TYPES.TASK}
+          handleClose={() => setCreateTaskModalOpen(false)}
+          resetEntityType={() => {}}
+          setEntityType={() => {}}
+          cancel={() => setCreateTaskModalOpen(false)}
+        />
+      </CreateModalOverlay>
 
-        <Content>
-          <ContentContainer>
-            <TokenHeader>
-              <HeaderMainBlock>
-                {orgProfile?.profilePicture ? (
-                  <SafeImage
-                    src={orgProfile?.profilePicture}
-                    style={{
-                      width: '60px',
-                      height: '60px',
-                      borderRadius: '6px',
-                    }}
-                  />
-                ) : (
-                  <TokenEmptyLogo>
-                    <DAOEmptyIcon />
-                  </TokenEmptyLogo>
+      <HeaderImageWrapper>
+        {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+      </HeaderImageWrapper>
+
+      <Content>
+        <ContentContainer>
+          <TokenHeader>
+            <HeaderMainBlock>
+              {orgProfile?.profilePicture ? (
+                <SafeImage
+                  src={orgProfile?.profilePicture}
+                  style={{
+                    width: '60px',
+                    height: '60px',
+                    borderRadius: '6px',
+                  }}
+                />
+              ) : (
+                <TokenEmptyLogo>
+                  <DAOEmptyIcon />
+                </TokenEmptyLogo>
+              )}
+              <HeaderTitleIcon>
+                <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                <HeaderTag>@{orgProfile?.username}</HeaderTag>
+              </HeaderTitleIcon>
+              <HeaderButtons>
+                {/* <Tooltip title="your permissions are:" > */}
+                {permissions && orgRoleName && (
+                  <RoleButtonWrapper>
+                    <RoleText>Your Role:</RoleText>
+                    <RoleButton onClick={handleJoinOrgButtonClick}>🔑 {orgRoleName}</RoleButton>
+                  </RoleButtonWrapper>
                 )}
-                <HeaderTitleIcon>
-                  <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                  <HeaderTag>@{orgProfile?.username}</HeaderTag>
-                </HeaderTitleIcon>
-                <HeaderButtons>
-                  {/* <Tooltip title="your permissions are:" > */}
-                  {permissions && orgRoleName && <HeaderButton onClick={handleJoinOrgButtonClick}>your role: {orgRoleName}</HeaderButton>}
-                  {/* </Tooltip> */}
-                  {!isLoading && (
-                    <TokenGatedBoard
-                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                      tooltipTitle={'Token gating'}
-                    />
-                  )}
-                  <ToggleBoardPrivacyIcon
-                    isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
-                    tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                {/* </Tooltip> */}
+                {!isLoading && (
+                  <TokenGatedBoard
+                    isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
+                    tooltipTitle={'Token gating'}
                   />
-                  {permissions === null && (
-                    <>
-                      {joinRequestSent || userJoinRequest?.id ? (
-                        <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
-                      ) : (
-                        <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
-                          Join org
-                        </HeaderButton>
-                      )}
-                    </>
-                  )}
-                  {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
-                    <>
-                      <HeaderButton
-                        onClick={() => {
-                          router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
-                            shallow: true,
-                          });
-                        }}
-                      >
-                        Settings
+                )}
+                <ToggleBoardPrivacyIcon
+                  isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}
+                  tooltipTitle={orgData?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                />
+                {permissions === null && (
+                  <>
+                    {joinRequestSent || userJoinRequest?.id ? (
+                      <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
+                    ) : (
+                      <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                        Join org
                       </HeaderButton>
-                      <HeaderButton reversed onClick={() => setOpenInvite(true)}>
-                        Invite{' '}
-                      </HeaderButton>
-                    </>
-                  )}
-                </HeaderButtons>
-              </HeaderMainBlock>
-              <HeaderText>
-                <RichTextViewer text={orgProfile?.description} />
-              </HeaderText>
-              <HeaderActivity>
-                <HeaderContributors
-                  onClick={() => {
-                    setOpen(true);
-                    setShowUsers(true);
-                  }}
-                >
-                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                  <HeaderContributorsText>Contributors</HeaderContributorsText>
-                </HeaderContributors>
-                <HeaderPods
-                  onClick={() => {
-                    setOpen(true);
-                    setShowPods(true);
-                  }}
-                >
-                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                  <HeaderPodsText>Pods</HeaderPodsText>
-                </HeaderPods>
+                    )}
+                  </>
+                )}
+                {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
+                  <>
+                    <HeaderButton
+                      onClick={() => {
+                        router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                          shallow: true,
+                        });
+                      }}
+                    >
+                      Settings
+                    </HeaderButton>
+                    <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                      Invite{' '}
+                    </HeaderButton>
+                  </>
+                )}
+              </HeaderButtons>
+            </HeaderMainBlock>
+            <HeaderText>
+              <RichTextViewer text={orgProfile?.description} />
+            </HeaderText>
+            <HeaderActivity>
+              <HeaderContributors
+                onClick={() => {
+                  setOpen(true);
+                  setShowUsers(true);
+                }}
+              >
+                <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                <HeaderContributorsText>Contributors</HeaderContributorsText>
+              </HeaderContributors>
+              <HeaderPods
+                onClick={() => {
+                  setOpen(true);
+                  setShowPods(true);
+                }}
+              >
+                <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                <HeaderPodsText>Pods</HeaderPodsText>
+              </HeaderPods>
+              {links?.map((link, index) => {
+                if (link.type === 'link') {
+                  return (
+                    <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                      <HeaderActivityLinkIcon />
+                      {link?.name || link?.url}
+                    </HeaderActivityLink>
+                  );
+                }
+              })}
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                }}
+              >
                 {links?.map((link, index) => {
-                  if (link.type === 'link') {
-                    return (
-                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                        <HeaderActivityLinkIcon />
-                        {link?.name || link?.url}
-                      </HeaderActivityLink>
-                    );
+                  if (link.type !== 'link') {
+                    let SocialIcon = null;
+                    switch (link.type) {
+                      case SOCIAL_MEDIA_DISCORD:
+                        SocialIcon = DiscordIcon;
+                        break;
+                      case SOCIAL_MEDIA_TWITTER:
+                        SocialIcon = TwitterPurpleIcon;
+                        break;
+                      case SOCIAL_MEDIA_LINKEDIN:
+                        SocialIcon = LinkedInIcon;
+                        break;
+                      case SOCIAL_OPENSEA:
+                        SocialIcon = OpenSeaIcon;
+                        break;
+                    }
+                    if (SocialIcon) {
+                      return (
+                        <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                          <SocialIcon
+                            style={{
+                              width: '20px',
+                              height: '20px',
+                            }}
+                          />
+                        </HeaderActivityLink>
+                      );
+                    }
+                    return null;
                   }
                 })}
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                  }}
-                >
-                  {links?.map((link, index) => {
-                    if (link.type !== 'link') {
-                      let SocialIcon = null;
-                      switch (link.type) {
-                        case SOCIAL_MEDIA_DISCORD:
-                          SocialIcon = DiscordIcon;
-                          break;
-                        case SOCIAL_MEDIA_TWITTER:
-                          SocialIcon = TwitterPurpleIcon;
-                          break;
-                        case SOCIAL_MEDIA_LINKEDIN:
-                          SocialIcon = LinkedInIcon;
-                          break;
-                        case SOCIAL_OPENSEA:
-                          SocialIcon = OpenSeaIcon;
-                          break;
-                      }
-                      if (SocialIcon) {
-                        return (
-                          <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                            <SocialIcon
-                              style={{
-                                width: '20px',
-                                height: '20px',
-                              }}
-                            />
-                          </HeaderActivityLink>
-                        );
-                      }
-                      return null;
-                    }
-                  })}
-                </div>
-              </HeaderActivity>
-            </TokenHeader>
-            <Tabs>
-              <BoardsSubheaderWrapper>
-                {orgBoard?.setEntityType && !search && (
-                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
-                )}
-                {!!filterSchema && (
-                  <BoardsActivity
-                    onSearch={onSearch}
-                    filterSchema={filterSchema}
-                    onFilterChange={onFilterChange}
-                    statuses={statuses}
-                    podIds={podIds}
-                    userId={userId}
-                  />
-                )}
-              </BoardsSubheaderWrapper>
-              {children}
-            </Tabs>
-          </ContentContainer>
-        </Content>
-      </OverviewComponent>
+              </div>
+            </HeaderActivity>
+          </TokenHeader>
+          <Tabs>
+            <BoardsSubheaderWrapper>
+              {orgBoard?.setEntityType && !search && (
+                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+              )}
+              {!!filterSchema && (
+                <BoardsActivity
+                  onSearch={onSearch}
+                  filterSchema={filterSchema}
+                  onFilterChange={onFilterChange}
+                  statuses={statuses}
+                  podIds={podIds}
+                  userId={userId}
+                />
+              )}
+            </BoardsSubheaderWrapper>
+            {children}
+          </Tabs>
+        </ContentContainer>
+      </Content>
     </>
   );
 };

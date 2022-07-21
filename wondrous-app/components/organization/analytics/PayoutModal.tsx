@@ -3,8 +3,6 @@ import Modal from '@mui/material/Modal';
 import { Typography } from '@mui/material';
 import { Tab } from '@mui/material';
 import {
-  PodNameTypography,
-  PaymentModal,
   PaymentTitleDiv,
   PaymentTitleTextDiv,
   PaymentTitleText,
@@ -33,7 +31,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS, TASK_STATUS_DONE } from 'utils/constants';
 import { format } from 'date-fns';
 import { calculatePoints, UserRowPictureStyles } from '.';
-import { filterPaymentMethods } from 'components/CreateEntity/createEntityModal';
+import { filterPaymentMethods } from 'components/CreateEntity/CreatePodModal';
 import {
   CreateFormMainBlockTitle,
   CreateFormRewardCurrency,
@@ -262,8 +260,10 @@ export const PayoutModal = (props) => {
       }
       if (!userToPaymentMethod[contributor?.assigneeId] || !userToRewardAmount[contributor?.assigneeId]) {
         // if reward not selected then show error message
-        setErrorMessage('Must enter reward amount for all users');
-        return;
+        const confirmed = confirm('Reward amount is not set for all users, Continue?');
+        if (!confirmed) {
+          return;
+        }
       }
     }
 

@@ -42,9 +42,9 @@ import {
   StyledChip,
 } from 'components/CreateEntity/styles';
 import palette from 'theme/palette';
-import { filterOrgUsers } from 'components/CreateEntity/createEntityModal';
+import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
-import { exportContributorTaskCSV } from 'components/organization/analytics';
+import { exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
 
 const UserRowPictureStyles = {
@@ -270,29 +270,15 @@ const Analytics = (props) => {
   }, [orgId, getOrgUsers]);
 
   const today = new Date();
+  const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
   const lastTwoWeek = new Date(today.getFullYear(), today.getMonth(), today.getDate() - 14);
-  const [toTime, setToTime] = useState(today);
+  const [toTime, setToTime] = useState(tomorrow);
   const [fromTime, setFromTime] = useState(lastTwoWeek);
   const [getCompletedTasksBetweenPeriods, { data, loading }] = useLazyQuery(GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, {
     fetchPolicy: 'network-only',
   });
 
-  const preFilteredcontributorTaskData = data?.getCompletedTasksBetweenPeriods || [];
-  const noAssigneeIndex = preFilteredcontributorTaskData?.findIndex((element) => !element?.assigneeId);
-  var tmp = preFilteredcontributorTaskData[noAssigneeIndex];
-  preFilteredcontributorTaskData[noAssigneeIndex] =
-    preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1];
-  preFilteredcontributorTaskData[preFilteredcontributorTaskData?.length - 1] = tmp;
-  let contributorTaskData = preFilteredcontributorTaskData.slice(0, preFilteredcontributorTaskData?.length - 1);
-  contributorTaskData.sort((a, b) => {
-    if (a?.tasks?.length > b?.tasks?.length) {
-      return -1;
-    } else if (a?.tasks?.length < b?.tasks?.length) {
-      return 1;
-    } else {
-      return 0;
-    }
-  });
+  const contributorTaskData = getContributorTaskData(data);
   useEffect(() => {
     if (podId && fromTime && toTime) {
       getCompletedTasksBetweenPeriods({

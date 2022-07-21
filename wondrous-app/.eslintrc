@@ -1,3 +1,13 @@
 {
-  "extends": ["next", "next/core-web-vitals", "prettier"]
+  "extends": [
+    "next",
+    "next/core-web-vitals",
+    "prettier"
+  ],
+  "rules": {
+    "max-lines": [
+      "warn",
+      1000
+    ]
+  }
 }

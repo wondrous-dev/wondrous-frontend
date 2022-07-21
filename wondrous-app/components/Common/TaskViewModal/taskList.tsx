@@ -354,14 +354,14 @@ export const TaskListViewModal = (props) => {
     if (open) {
       if (fetchedList?.length === 0) {
         if (taskType === TASK_STATUS_REQUESTED) {
-          if (entityType === ENTITIES_TYPES.ORG) {
+          if (entityType === ENTITIES_TYPES.ORG && orgId) {
             getOrgTaskProposals({
               variables: {
                 orgId,
                 statuses: [STATUS_OPEN],
               },
             });
-          } else if (entityType === ENTITIES_TYPES.POD) {
+          } else if (entityType === ENTITIES_TYPES.POD && podId) {
             getPodTaskProposals({
               variables: {
                 input: {

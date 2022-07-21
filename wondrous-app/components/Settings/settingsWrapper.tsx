@@ -14,16 +14,14 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { logout, useMe } from '../Auth/withAuth';
-import ChooseEntityToCreate from '../CreateEntity';
-import HeaderComponent from '../Header';
 import ExitIcon from 'components/Icons/exit';
 import CardIcon from '../Icons/card';
 import GeneralSettingsIcon from '../Icons/generalSettings';
 import MembersIcon from '../Icons/members';
+import { TaskImportIcon } from '../Icons/taskImporticon';
 import { NotificationOutlineSettings } from '../Icons/notifications';
 import TokenGatingIcon from '../Icons/tokenGating.svg';
 import WrenchIcon from '../Icons/wrench';
-import SideBarComponent from '../SideBar';
 import {
   SettingsContainer,
   SettingsContentBlock,
@@ -42,6 +40,7 @@ import {
   SettingsSidebarTabsSectionLabel,
   ArchivedPodIndicatorText,
 } from './styles';
+import ChooseEntityToCreate from 'components/CreateEntity';
 
 export const SettingsWrapper = (props) => {
   const { children, showPodIcon = true } = props;
@@ -51,15 +50,9 @@ export const SettingsWrapper = (props) => {
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
-  const [createFormModal, setCreateFormModal] = useState(false);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-
-  const toggleCreateFormModal = () => {
-    toggleHtmlOverflow();
-    setCreateFormModal((prevState) => !prevState);
-  };
 
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
@@ -136,6 +129,13 @@ export const SettingsWrapper = (props) => {
       label: 'Notifications',
       value: 'notifications',
       href: `/organization/settings/${orgId}/notifications`,
+      page: [SettingsPage.Org],
+    },
+    {
+      icon: <TaskImportIcon />, // need a another icon
+      label: 'Task Import',
+      value: 'import',
+      href: `/organization/settings/${orgId}/task-import`,
       page: [SettingsPage.Org],
     },
     {
@@ -238,9 +238,7 @@ export const SettingsWrapper = (props) => {
           pod,
         }}
       >
-        <HeaderComponent openCreateFormModal={toggleCreateFormModal} />
-        <SideBarComponent />
-        <ChooseEntityToCreate open={createFormModal} toggleOpen={toggleCreateFormModal} />
+        <ChooseEntityToCreate />
         <SettingsContainer>
           <SettingsSidebar>
             <SettingsSidebarContainer>
