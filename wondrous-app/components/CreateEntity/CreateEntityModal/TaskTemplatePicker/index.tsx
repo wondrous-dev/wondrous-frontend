@@ -2,14 +2,14 @@ import { useLazyQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { ActionButton } from 'components/Common/Task/styles';
 import { RichTextViewer } from 'components/RichText';
-import { TaskTemplateActionContainer, TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
+import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
 import { GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
 import { useEffect, useState } from 'react';
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityTextfieldInputTemplate,
-} from '../styles';
+} from 'components/CreateEntity/CreateEntityModal/styles';
 import {
   CreateEntityDefaultDaoImage,
   PodSearchLabel,
@@ -35,11 +35,15 @@ import {
   TaskTemplateRewardBox,
   TaskTemplateRewardContainer,
   TaskTemplateRewardValue,
+  TaskTemplateSaveTopContainer,
   TaskTemplateSpecificTitleBar,
   TaskTemplateTitle,
   TaskTemplateTitleBar,
+  TaskTemplateActionContainer,
 } from './styles';
 import TemplateEllipsesIcon from './TemplateEllipsesIcon';
+import { MODAL_ACTIONS } from 'utils/constants';
+import { Typography } from '@mui/material';
 
 const TaskTemplatePicker = (props) => {
   const {
@@ -60,20 +64,17 @@ const TaskTemplatePicker = (props) => {
 
   const user = useMe();
   const handleEllipsesClick = (event) => setOptionAnchorEl(optionAnchorEl ? null : event.currentTarget);
-  const [saveOrOpen, setSaveOrOpen] = useState('none');
+  const [saveOrOpen, setSaveOrOpen] = useState(MODAL_ACTIONS.NONE);
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
   const handleClickAway = () => {
     setAnchorEl(null);
-    setSaveOrOpen('none');
+    setSaveOrOpen(MODAL_ACTIONS.NONE);
   };
   const open = Boolean(anchorEl);
   const templateOptionsOpen = Boolean(optionAnchorEl);
   const [templates, setTemplates] = useState([]);
 
-  const [getTaskTemplates] = useLazyQuery(GET_TASK_TEMPLATES_BY_USER_ID, {
-    onCompleted: (data) => {
-      setTemplates(data?.getTaskTemplatesByUserId);
-    },
+  const [getTaskTemplates, { data, loading }] = useLazyQuery(GET_TASK_TEMPLATES_BY_USER_ID, {
     fetchPolicy: 'cache-and-network',
   });
 
@@ -107,13 +108,14 @@ const TaskTemplatePicker = (props) => {
             color={'#FFFFFF'}
             onClick={() => {
               setAnchorEl(false);
-              setSaveOrOpen('none');
+              setSaveOrOpen(MODAL_ACTIONS.NONE);
             }}
           />
         </TaskTemplateTitleBar>
-
-        {templates.length > 0 ? (
-          templates.map((template, index) => {
+        {loading ? (
+          <TaskTemplateLabelValue>loading!</TaskTemplateLabelValue>
+        ) : data?.getTaskTemplatesByUserId.length > 0 ? (
+          data?.getTaskTemplatesByUserId.map((template, index) => {
             return (
               <TaskTemplateContainer
                 onClick={() => {
@@ -145,22 +147,22 @@ const TaskTemplatePicker = (props) => {
                   </TaskTemplateLabelValue>
 
                   {/* 
-
-                  Just in case we want to add reviewer and assignee later on:
-
-                  <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
-                    <TaskTemplateLabelValue>{`Reviewer(s): `}</TaskTemplateLabelValue>
-                    {template?.reviewer?.map((reviewer, index) => {
-                      if (index < template.reviewer.length - 1) {
-                        return <TaskTemplateReviewerValue>{`${reviewer.label}, `}</TaskTemplateReviewerValue>;
-                      } else {
-                        return <TaskTemplateReviewerValue>{`${reviewer.label}`}</TaskTemplateReviewerValue>;
-                      }
-                    })}
-                  </Grid>
-                  <TaskTemplateLabelValue>{`Assignee: ${template?.assignee?.label}`}</TaskTemplateLabelValue> 
-                  
-                  */}
+  
+                    Just in case we want to add reviewer and assignee later on:
+  
+                    <Grid container direction="row" justifyContent="flex-start" alignItems="flex-start">
+                      <TaskTemplateLabelValue>{`Reviewer(s): `}</TaskTemplateLabelValue>
+                      {template?.reviewer?.map((reviewer, index) => {
+                        if (index < template.reviewer.length - 1) {
+                          return <TaskTemplateReviewerValue>{`${reviewer.label}, `}</TaskTemplateReviewerValue>;
+                        } else {
+                          return <TaskTemplateReviewerValue>{`${reviewer.label}`}</TaskTemplateReviewerValue>;
+                        }
+                      })}
+                    </Grid>
+                    <TaskTemplateLabelValue>{`Assignee: ${template?.assignee?.label}`}</TaskTemplateLabelValue> 
+                    
+                    */}
 
                   <TaskTemplateRewardContainer>
                     {template?.rewards?.[0] ? (
@@ -198,46 +200,42 @@ const TaskTemplatePicker = (props) => {
   };
 
   const renderContainer = () => {
-    switch (saveOrOpen) {
-      case 'open':
-        return <TaskTemplateOpen />;
-      default:
-        return (
-          <TaskTemplateDefaultPopper
-            open={open}
-            anchorEl={anchorEl}
-            placement="top-start"
-            disablePortal={true}
-            style={sizingForPopperContainer()}
-          >
-            <TaskTemplateOptionsLabel
-              onClick={() => {
-                setSaveOrOpen('save');
-              }}
-            >
-              Save new template
-            </TaskTemplateOptionsLabel>
-            <TaskTemplateOptionsLabel
-              onClick={() => {
-                setSaveOrOpen('open');
-              }}
-            >
-              Open existing template
-            </TaskTemplateOptionsLabel>
-          </TaskTemplateDefaultPopper>
-        );
+    if (saveOrOpen === MODAL_ACTIONS.OPEN) {
+      return <TaskTemplateOpen />;
     }
+    return (
+      <TaskTemplateDefaultPopper
+        open={open}
+        anchorEl={anchorEl}
+        placement="top-start"
+        disablePortal={true}
+        style={sizingForPopperContainer()}
+      >
+        <TaskTemplateOptionsLabel
+          onClick={() => {
+            setSaveOrOpen(MODAL_ACTIONS.SAVE);
+          }}
+        >
+          Save new template
+        </TaskTemplateOptionsLabel>
+        <TaskTemplateOptionsLabel
+          onClick={() => {
+            setSaveOrOpen(MODAL_ACTIONS.OPEN);
+          }}
+        >
+          Open existing template
+        </TaskTemplateOptionsLabel>
+      </TaskTemplateDefaultPopper>
+    );
   };
 
   const sizingForPopperContainer = () => {
-    switch (saveOrOpen) {
-      case 'save':
-        return { width: 500, padding: '0px' };
-      case 'open':
-        return { height: 600, width: 500, padding: '24px' };
-      default:
-        return null;
+    if (saveOrOpen === MODAL_ACTIONS.SAVE) {
+      return { width: 500, padding: '0px' };
+    } else if (saveOrOpen === MODAL_ACTIONS.OPEN) {
+      return { height: 600, width: 500, padding: '24px' };
     }
+    return null;
   };
 
   const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
@@ -264,7 +262,7 @@ const TaskTemplatePicker = (props) => {
           )}
         </TaskTemplateModal>
 
-        {saveOrOpen === 'save' ? (
+        {saveOrOpen === MODAL_ACTIONS.SAVE ? (
           <TaskTemplateDefaultPopper
             open={open}
             anchorEl={anchorEl}
@@ -272,7 +270,7 @@ const TaskTemplatePicker = (props) => {
             disablePortal={true}
             style={sizingForPopperContainer()}
           >
-            <div style={{ padding: '24px' }}>
+            <TaskTemplateSaveTopContainer>
               <TaskTemplateTitleBar style={{ marginBottom: '18px' }}>
                 <TaskTemplateTitle>Save as preset?</TaskTemplateTitle>
                 <TaskTemplateCloseIcon
@@ -310,12 +308,12 @@ const TaskTemplatePicker = (props) => {
                   ),
                 }}
               />
-            </div>
+            </TaskTemplateSaveTopContainer>
 
             <TaskTemplateActionContainer>
               <TaskTemplateCancelButton
                 onClick={() => {
-                  setSaveOrOpen('none');
+                  setSaveOrOpen(MODAL_ACTIONS.NONE);
                 }}
               >
                 Cancel
@@ -325,7 +323,7 @@ const TaskTemplatePicker = (props) => {
                 style={{ padding: '8px 30px 8px 30px' }}
                 onClick={() => {
                   handleSaveTemplate(templateValue);
-                  setSaveOrOpen('open');
+                  setSaveOrOpen(MODAL_ACTIONS.OPEN);
                 }}
               >
                 Save

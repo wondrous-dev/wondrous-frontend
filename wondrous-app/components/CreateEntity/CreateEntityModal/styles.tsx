@@ -13,6 +13,7 @@ import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
 import styled, { css } from 'styled-components';
+import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
@@ -706,7 +707,7 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
 `;
 
 export const CreateEntitySaveTemplateButton = styled(ButtonUnstyled)`
-  background: #282828;
+  background: ${greyColors.grey90};
   font-family: 'Space Grotesk';
   font-size: 14px;
   height: 32px;
@@ -723,7 +724,7 @@ export const CreateEntitySaveTemplateButton = styled(ButtonUnstyled)`
   :hover {
     cursor: pointer;
     background: #454545;
-    filter: drop-shadow(0 8px 2px #171717);
+    filter: drop-shadow(0 8px 2px ${greyColors.grey100});
     transition: all ease-in-out 0.2s;
   }
 `;

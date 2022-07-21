@@ -1,6 +1,6 @@
 import { gql } from '@apollo/client';
-import { CommentFragment } from '../fragments/comments';
-import { TaskCardFragment, TaskFragment, TaskSubmissionFragment, TaskTemplateFragment } from '../fragments/task';
+import { CommentFragment } from 'graphql/fragments/comments';
+import { TaskCardFragment, TaskFragment, TaskSubmissionFragment, TaskTemplateFragment } from 'graphql/fragments/task';
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {

@@ -1,5 +1,5 @@
 import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
-import { Autocomplete, ClickAwayListener, InputAdornment, TextField, Typography } from '@mui/material';
+import { Autocomplete, Button, ClickAwayListener, InputAdornment, TextField, Typography } from '@mui/material';
 import { CheckedBoxPropsIcon } from 'components/Icons/checkedBoxProps';
 import CloseModalIcon from 'components/Icons/closeModal';
 import EllipsesIcon from 'components/Icons/ellipsesIcon';
@@ -8,6 +8,8 @@ import PodIcon from 'components/Icons/podIcon';
 import PointsIconCustom from 'components/Icons/PointsIconCustom';
 import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
+import theme from 'theme';
+import { greyColors, white } from 'theme/colors';
 import palette from 'theme/palette';
 import Arrow from '../../../Icons/arrow.svg';
 
@@ -75,8 +77,8 @@ export const TaskTemplateModal = styled(ButtonUnstyled)`
   max-width: 250px;
   border-radius: 4px;
   padding: 12px;
-  background: #282828;
-  border: 1px solid ${(props) => (props.open ? `#7a7a7a` : `transparent`)};
+  background: ${greyColors.grey90};
+  border: 1px solid ${(props) => (props.open ? greyColors.grey57 : `transparent`)};
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -95,37 +97,68 @@ export const TaskTemplateLabelWrapper = styled.div`
   margin-right: 8px;
 `;
 
-export const TaskTemplateDefaultPopper = styled((props) => <PopperUnstyled {...props} />)`
+export const TaskTemplateDefaultPopper = styled(PopperUnstyled)`
+  display: inline-block;
+  flex-direction: column;
   padding: 8px;
   border-radius: 4px;
-  background-color: #1f1f1f;
-  border: 1px solid #7a7a7a;
+  background-color: ${greyColors.grey95};
+  border: 1px solid ${greyColors.grey57};
   position: relative;
   z-index: 9999;
+  ${(props) => props.style}
 `;
 
-export const TaskTemplateActionPopper = styled((props) => <PopperUnstyled {...props} />)`
+export const TaskTemplateActionPopper = styled(PopperUnstyled)`
   padding: 24px;
   overflow-y: scroll;
   border-radius: 4px;
-  background-color: #1f1f1f;
-  border: 1px solid #7a7a7a;
+  background-color: ${greyColors.grey95};
+  border: 1px solid ${greyColors.grey57};
   position: relative;
   z-index: 9999;
-  ${scrollBarStyles}
+  ${(props) => props.style}
+
+  &::-webkit-scrollbar {
+    display: none;
+    position: absolute;
+    z-index: 999;
+    width: 20px;
+    background: transparent;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    border: 8px solid rgba(0, 0, 0, 0);
+    background: #c4c4c4;
+    background-clip: padding-box;
+  }
+`;
+
+export const TaskTemplateActionContainer = styled.div`
+  padding: 24px;
+  background: #141414;
+  width: 100%;
+  justify-content: flex-end;
+  display: flex;
+`;
+
+export const TaskTemplateSaveTopContainer = styled.div`
+  padding: 24px;
 `;
 
 export const TaskTemplateCancelButton = styled(ButtonUnstyled)`
   font-family: 'Space Grotesk';
   font-weight: 500;
   font-size: 13px;
-  color: #ffffff;
+  color: ${white};
   border-radius: 20px;
   margin-right: 8px;
   text-align: center;
   padding: 8px 30px 8px 30px;
   background: #1f1f1f;
-  border: 1px solid ${(props) => (props.open ? `#7a7a7a` : `transparent`)};
+  border: 1px solid ${(props) => (props.open ? greyColors.grey57 : `transparent`)};
   display: flex;
   align-items: center;
   :hover {
@@ -138,7 +171,7 @@ export const TemplateOptionsPopper = styled(PopperUnstyled)`
   padding: 4px;
   border-radius: 4px;
   background-color: #1f1f1f;
-  border: 1px solid #7a7a7a;
+  border: 1px solid ${greyColors.grey57};
   position: relative;
   z-index: 9999;
 `;
@@ -152,62 +185,6 @@ export const PopperSearchInputList = styled.div`
   flex-direction: column;
 `;
 
-export const PodSearchInput = styled(TextField)`
-  && {
-    width: 100%;
-    padding: 10px;
-    && .MuiOutlinedInput-root {
-      background: #313131;
-      width: 100%;
-      display: flex;
-      padding: 0 8px;
-    }
-    && .MuiOutlinedInput-input {
-      height: 32px;
-      padding: 0;
-      font-family: 'Space Grotesk';
-      font-weight: 400;
-      font-size: 14px;
-      color: ${palette.white};
-    }
-  }
-  .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
-`;
-
-export const PodSearchInputAdornment = styled(InputAdornment)`
-  && {
-    height: 13px;
-    width: 13px;
-  }
-`;
-
-export const PodSearchInputIcon = styled(SearchIcon)`
-  path {
-    stroke: ${palette.white};
-  }
-`;
-
-export const PodSearchAutocompletePopper = styled.div`
-  && {
-    position: relative;
-  }
-  .MuiAutocomplete-noOptions {
-    font-family: 'Space Grotesk';
-    color: ${palette.white};
-    margin: 0;
-    padding: 0;
-    background-image: none;
-    background: #1f1f1f !important;
-    border: none;
-    border-radius: 0;
-    padding: 12px;
-    font-size: 13px;
-    font-weight: 500;
-  }
-`;
-
 export const PodSearchLabel = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
@@ -219,28 +196,6 @@ export const PodSearchLabel = styled(Typography)`
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 100%;
-  }
-`;
-
-export const PodSearchPaper = styled.div`
-  && {
-    padding: 0;
-    margin: 0;
-    border-radius: 0 0 4px 4px;
-  }
-`;
-
-export const PodSearchList = styled.ul`
-  && {
-    color: ${palette.white};
-    margin: 0;
-    padding: 0;
-    background-image: none;
-    background: #1f1f1f !important;
-    border: none;
-    border-radius: 0;
-    max-height: 170px;
-    ${scrollBarStyles}
   }
 `;
 
@@ -286,13 +241,14 @@ export const TaskTemplateListItems = styled.li`
   }
 `;
 
-export const TaskTemplateTitleBar = styled((props) => <div {...props} />)`
+export const TaskTemplateTitleBar = styled.div`
   flex-direction: row;
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
+  ${(props) => props.style}
 `;
 
 export const TaskTemplateSpecificTitleBar = styled.div`
@@ -312,7 +268,7 @@ export const TaskTemplateCloseIcon = styled(CloseModalIcon)`
   padding: 8px;
   border-radius: 6px;
   path {
-    fill: #7a7a7a;
+    fill: ${greyColors.grey57};
   }
   :hover {
     background: rgba(122, 122, 122, 0.2);
@@ -321,7 +277,7 @@ export const TaskTemplateCloseIcon = styled(CloseModalIcon)`
 
 export const TaskTemplateEllipsesIcon = styled(EllipsesIcon)`
   width: 24px;
-  color: #ffffff;
+  color: ${white};
   background: rgba(122, 122, 122, 0.2);
   height: 24px;
   padding: 6px;
@@ -385,14 +341,15 @@ export const TaskTemplateRewardContainer = styled.div`
   }
 `;
 
-export const TaskTemplateLabelValue = styled((props) => <Typography {...props} />)`
+export const TaskTemplateLabelValue = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 100;
-    color: #ffffff;
+    color: ${white};
     margin-bottom: 4px;
     overflow: hidden;
+    ${(props) => props.style}
   }
 `;
 
@@ -414,7 +371,7 @@ export const TaskTemplatePointsValue = styled(Typography)`
 
     font-size: 13px;
     font-weight: 500;
-    background: linear-gradient(180deg, #ffffff 0%, #ffd653 100%);
+    background: linear-gradient(180deg, ${white} 0%, #ffd653 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
@@ -435,7 +392,7 @@ export const TaskTemplateRewardBox = styled(Typography)`
 `;
 
 export const CreateEntityDefaultDaoImage = styled(PointsIconCustom)`
-  color: linear-gradient(180deg, #ffffff 0%, #ffd653 100%);
+  color: linear-gradient(180deg, ${white}, 0%, #ffd653 100%);
   background: #000000;
   width: 24px;
   height: 24px;
@@ -453,13 +410,14 @@ export const TaskTemplateEthereumIcon = styled(Ethereum)`
   margin-right: 8px;
 `;
 
-export const TaskTemplateOptionsLabel = styled(Typography)`
+export const TaskTemplateOptionsLabel = styled(Button)`
   && {
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 100;
     padding: 4px 8px 4px 8px;
     color: ${palette.white};
+    width: 100%;
     margin-bottom: 4px;
     overflow: hidden;
     border-radius: 4px;
@@ -470,11 +428,12 @@ export const TaskTemplateOptionsLabel = styled(Typography)`
   }
 `;
 
-export const TaskTemplateOptionsDeleteLabel = styled(Typography)`
+export const TaskTemplateOptionsDeleteLabel = styled(Button)`
   && {
     font-family: 'Space Grotesk';
     font-size: 13px;
     font-weight: 100;
+    width: 100%;
     padding: 4px 8px 4px 8px;
     color: #cf4141;
     margin-bottom: 4px;
@@ -511,7 +470,7 @@ export const TaskTemplateArrowIcon = styled((props) => (
   transform: rotate(270deg);
   svg {
     path {
-      fill: #7a7a7a;
+      fill: ${greyColors.grey57};
     }
   }
 `;

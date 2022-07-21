@@ -20,7 +20,6 @@ interface Props {
 
   /** Node to render toolbar to */
   toolbarNode?: HTMLElement;
-  richChanged?: Boolean;
   /** Node to render mentions popper to */
   portalNode?: HTMLElement;
 

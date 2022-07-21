@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
-import { CommentFragment } from '../fragments/comments';
-import { MediaFragment } from '../fragments/media';
-import { BountyFragment, MilestoneFragment, TaskFragment, TaskTemplateFragment } from '../fragments/task';
+import { CommentFragment } from 'graphql/fragments/comments';
+import { MediaFragment } from 'graphql/fragments/media';
+import { BountyFragment, MilestoneFragment, TaskFragment, TaskTemplateFragment } from 'graphql/fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {

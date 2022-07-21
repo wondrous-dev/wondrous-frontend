@@ -1070,8 +1070,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
-  const [richChanged, setRichChanged] = useState(false);
-  const [text, setText] = useState();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask = parentTaskId !== undefined;
   const orgBoard = useOrgBoard();
