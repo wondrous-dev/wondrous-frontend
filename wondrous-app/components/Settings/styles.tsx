@@ -278,7 +278,7 @@ export const LabelBlock = styled(Typography)`
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.01em;
-    color: #ccbbff;
+    color: ${palette.blue20};
     margin-bottom: 10px;
   }
 `;

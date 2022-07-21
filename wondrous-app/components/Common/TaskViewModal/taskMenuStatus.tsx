@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL, UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import { useState } from 'react';
 import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import { STATUS_APPROVED, STATUS_CHANGE_REQUESTED, STATUS_OPEN, TASK_STATUS_ARCHIVED } from 'utils/constants';
+import { STATUS_APPROVED, STATUS_CLOSED, STATUS_OPEN, TASK_STATUS_ARCHIVED } from 'utils/constants';
 
 import {
   TaskModalStatusLabel,
@@ -14,7 +14,7 @@ import {
 
 const taskProposalStatus = (task) => {
   if (task?.approvedAt) return STATUS_APPROVED;
-  if (task?.changeRequestedAt) return STATUS_CHANGE_REQUESTED;
+  if (task?.closedAt) return STATUS_CLOSED;
   return STATUS_OPEN;
 };
 
@@ -42,7 +42,7 @@ const useTaskMenuStatusProposal = ({ task, entityType, taskId, canApproveProposa
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL, {
     refetchQueries: refetchTaskProposalQueries,
   });
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL, {
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
     refetchQueries: refetchTaskProposalQueries,
   });
   const handleOnChange = (newStatus) => {
@@ -50,8 +50,8 @@ const useTaskMenuStatusProposal = ({ task, entityType, taskId, canApproveProposa
       approveTaskProposal({ variables: { proposalId: taskId } });
       return;
     }
-    if (newStatus === STATUS_CHANGE_REQUESTED) {
-      requestChangeTaskProposal({ variables: { proposalId: taskId } });
+    if (newStatus === STATUS_CLOSED) {
+      closeTaskProposal({ variables: { proposalId: taskId } });
       return;
     }
   };
