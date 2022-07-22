@@ -2,10 +2,8 @@ import React, { useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
-import DropdownSelectComponent from 'components/Common/DropdownSelect/dropdownSelect';
-import EthereumIcon from 'components/Icons/ethereum';
-import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
-import { filterRoles } from 'components/Settings/Members/helpers';
+import GreyDropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 
 const chainOptions = [
   {
@@ -40,7 +38,7 @@ const chainOptions = [
 
 export default {
   title: 'Surfaces/DropdownSelect',
-  component: DropdownSelectComponent,
+  component: GreyDropdownSelect,
   parameters: {
     docs: {
       description: {
@@ -120,23 +118,21 @@ export default {
       description: 'Styles for label.',
     },
   },
-} as ComponentMeta<typeof DropdownSelectComponent>;
+} as ComponentMeta<typeof GreyDropdownSelect>;
 
-const Template: ComponentStory<typeof DropdownSelectComponent> = (props) => {
+const Template: ComponentStory<typeof GreyDropdownSelect> = (props) => {
   const [value, setValue] = useState(null);
 
-  // return (
-  //   <DropdownSelect
-  //     {...props}
-  //     title="DAO"
-  //     value={value}
-  //     setValue={() => null}
-  //     labelText="Choose DAO"
-  //     labelIcon={<CreateDaoIcon />}
-  //     options={[]}
-  //     name="dao"
-  //   />
-  // );
+  const GreyDropdownSelect = styled(DropdownSelect)`
+  .MuiInputBase-formControl {
+    background: #1e1e1e;
+    margin-top: 16px;
+    
+    &.Mui-focused .MuiOutlinedInput-notchedOutline {
+      border: none;
+    },
+  }
+`;
 
   const MenuProps = {
     disableScrollLock: true,
@@ -151,46 +147,21 @@ const Template: ComponentStory<typeof DropdownSelectComponent> = (props) => {
     },
   };
 
-  const RolesDropdown = styled(DropdownSelectComponent)`
-  .MuiInputBase-formControl {
-    background: #1e1e1e;
-  }
-`;
-
   return (
-    <div className="father">
-      <RolesDropdown
-        {...props}
-        value={value}
-        setValue={setValue}
-        title="Role"
-        titleStyle={{
-          marginBottom: '-8px',
-        }}
-        MenuProps={MenuProps}
-        IconComponent={() => <ArrowDropDownIcon style={{ height: '7px', right: '15px' }} fill="#CCBBFF" />}
-        // value={inviteeRole}
-        // setValue={setInviteeRole}
-        labelText="Choose Role"
-        // options={filterRoles(roleList, null, userIsOwner)}
-        style={{
-          background: 'red',
-        }}
-        formSelectStyle={{
-          width: 'auto',
-          flex: 1,
-          maxWidth: 'none',
-        }}
-      />
-    </div>
+    <GreyDropdownSelect
+      {...props}
+      value={value}
+      setValue={setValue}
+      displayEmpty
+      inputProps={{ 'aria-label': 'Without label' }}
+      MenuProps={MenuProps}
+    />
   );
 };
-export const DropdownSelect = Template.bind({});
+export const Dropdown = Template.bind({});
 
-DropdownSelect.args = {
-  // labelText: 'Choose a payment method',
-  // title: 'Dao',
-  // labelIcon: <EthereumIcon />,
+Dropdown.args = {
+  labelText: 'Choose Role',
   options: chainOptions,
-  // onChange: (e) => {},
+  onChange: (e) => {},
 };
