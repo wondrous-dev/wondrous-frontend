@@ -3,39 +3,46 @@ import CSVIcon from 'components/Icons/csv.svg';
 import GithubIcon from 'components/Icons/github.svg';
 import NotionIcon from 'components/Icons/notion.svg';
 import ButtonCSVTemplate from 'components/OnboardingDao/ButtonCSVTemplate';
-import ButtonImport from 'components/OnboardingDao/ButtonImport';
 import { ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
+import {
+  ImportAsanaButton,
+  ImportCsvButton,
+  ImportGithubButton,
+  ImportNotionButton,
+  ImportFromCsvWrapper,
+  CsvFile,
+  CsvFileText,
+  CsvFileCloseIcon,
+  ImportSuccess,
+  ImportSuccessText,
+  ImportStatus,
+} from './styles';
+import AttachFileIcon from 'components/Icons/attachFile.svg';
 
-const buttons = [
-  {
-    text: 'Import from CSV',
-    Icon: CSVIcon,
-    borderColor: `linear-gradient(270deg, #7427ff -5.62%, #06ffa5 103.12%)`,
-  },
-  {
-    text: 'Import from Notion',
-    Icon: NotionIcon,
-    borderColor: `linear-gradient(270deg, #7427FF -5.62%, #FFFFFF 103.12%)`,
-  },
-  {
-    text: 'Import from Asana',
-    Icon: AsanaIcon,
-    borderColor: `linear-gradient(270deg, #7427FF -5.62%, #F06A6A 103.12%)`,
-  },
-  {
-    text: 'Import from Github',
-    Icon: GithubIcon,
-    borderColor: `linear-gradient(270deg, #7427FF -5.62%, #00A2FF 103.12%)`,
-  },
-];
+const ImportFromCsv = () => {
+  return (
+    <ImportFromCsvWrapper>
+      <ImportCsvButton Icon={CSVIcon}>Import from CSV</ImportCsvButton>
+      <ImportStatus>
+        <CsvFile>
+          <AttachFileIcon /> <CsvFileText>SD-tasks-2022.csv</CsvFileText> <CsvFileCloseIcon />
+        </CsvFile>
+        <ImportSuccess>
+          <ImportSuccessText>Successfully imported</ImportSuccessText>
+        </ImportSuccess>
+      </ImportStatus>
+    </ImportFromCsvWrapper>
+  );
+};
 
 const ImportTasks = () => {
   return (
     <ButtonsWrapper>
       <ImportButtonWrapper>
-        {buttons.map(({ text, Icon, borderColor }) => (
-          <ButtonImport key={text} borderColor={borderColor} Icon={Icon} text={text} />
-        ))}
+        <ImportFromCsv />
+        <ImportNotionButton Icon={NotionIcon}>Import from Notion</ImportNotionButton>
+        <ImportAsanaButton Icon={AsanaIcon}>Import from Asana</ImportAsanaButton>
+        <ImportGithubButton Icon={GithubIcon}>Import from Github</ImportGithubButton>
       </ImportButtonWrapper>
       <ButtonCSVTemplate />
     </ButtonsWrapper>
