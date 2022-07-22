@@ -65,12 +65,12 @@ export const RightArrow = styled((props) => (
   }
 `;
 
-export const ButtonImport = ({ borderColor, Icon, text }) => {
+export const ButtonImport = ({ borderColor, Icon, children, className = '' }) => {
   return (
-    <ButtonImportWrapper borderColor={borderColor}>
+    <ButtonImportWrapper borderColor={borderColor} className={className}>
       <ButtonIconTextWrapper>
         <Icon />
-        <ButtonText>{text}</ButtonText>
+        <ButtonText>{children}</ButtonText>
       </ButtonIconTextWrapper>
       <RightArrow />
     </ButtonImportWrapper>
