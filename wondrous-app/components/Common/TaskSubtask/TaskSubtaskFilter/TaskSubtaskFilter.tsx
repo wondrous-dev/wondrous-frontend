@@ -1,5 +1,5 @@
 import { TASK_ICONS_LABELS } from 'components/Common/TaskSubtask/TaskSubtasks';
-import { keys } from 'lodash';
+import keys from 'lodash/keys';
 import { useState } from 'react';
 import {
   TaskSubtasksFilterButtonIcon,

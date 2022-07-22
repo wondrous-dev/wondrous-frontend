@@ -1,6 +1,8 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
-import { cloneDeep, isEmpty, min, uniqBy } from 'lodash';
+import uniqBy from 'lodash/uniqBy';
+import isEmpty from 'lodash/isEmpty';
+import cloneDeep from 'lodash/cloneDeep';
 import { useCallback, useEffect, useReducer, useState } from 'react';
 import { LIMIT } from 'services/board';
 import {
