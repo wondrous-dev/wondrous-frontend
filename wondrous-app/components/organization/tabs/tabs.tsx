@@ -21,6 +21,10 @@ const Tabs = (props) => {
       label: 'Docs',
     },
     {
+      href: `/${page}/${entityId}/members`,
+      label: 'Members',
+    },
+    {
       href: `/${page}/${entityId}/activities`,
       label: 'Activity',
     },
