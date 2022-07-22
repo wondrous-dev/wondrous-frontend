@@ -72,7 +72,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
     <>
       {tasks?.length ? (
         tasks.map((bounty) => {
-          let BountyStatusIcon = TASK_ICONS[bounty?.status];
+          const BountyStatusIcon = TASK_ICONS[bounty?.status];
           return (
             <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
               <BoardsCardHeader>

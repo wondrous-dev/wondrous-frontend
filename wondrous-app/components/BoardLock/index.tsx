@@ -1,10 +1,10 @@
+import { useRouter } from 'next/router';
 import { useOrgBoard, usePodBoard, useCreateEntityContext } from 'utils/hooks';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
-import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
 import SkeletonBoard from 'components/Common/SkeletonBoard';
 import { HeaderButton } from 'components/organization/wrapper/styles';
-import { useRouter } from 'next/router';
+import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
 
 const BoardLock = ({ children, handleJoinClick, requestSent }) => {
   const orgBoard = useOrgBoard();
@@ -28,7 +28,7 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
     !board?.userPermissionsContext?.podPermissions[board?.podId]?.some((el) => permissionsWithAccess.includes(el));
 
   const isNotAMemberOfTheOrg =
-    !userOrgs || !userOrgs?.getUserOrgs?.find((org) => org.id === board?.orgId) || hasNoPodAccess;
+    !userOrgs || !userOrgs?.getUserOrgs?.some((org) => org.id === board?.orgId) || hasNoPodAccess;
 
   const isPrivate =
     isNotAMemberOfTheOrg &&
@@ -36,11 +36,13 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
       podBoard?.pod?.privacyLevel === PRIVACY_LEVEL.private);
 
   if (isPrivate) {
-    const title = !user
-      ? 'You need to sign in and request permissions to view'
-      : requestSent
+    const boardTypeTitle = orgBoard ? 'Org' : 'Pod';
+
+    const sentRequestTitle = requestSent
       ? 'Request sent. Please wait for a response'
-      : `${orgBoard ? 'Org' : 'Pod'} set to private. Please request permissions to view`;
+      : `${boardTypeTitle} set to private. Please request permissions to view`;
+
+    const title = !user ? 'You need to sign in and request permissions to view' : sentRequestTitle;
     const buttonTitle = !user ? 'Sign in' : requestSent ? 'Request sent' : 'Apply to join';
     const action = user ? handleJoinClick : () => router.push('/login');
 
