@@ -160,7 +160,7 @@ export const GET_JOIN_POD_REQUESTS = gql`
 
 export const GET_POD_MEMBERSHIP_REQUEST = gql`
   query getPodMembershipRequest($podId: ID!, $limit: Int, $offset: Int) {
-    getOrgMembershipRequest(podId: $podId, limit: $limit, offset: $offset) {
+    getPodMembershipRequest(podId: $podId, limit: $limit, offset: $offset) {
       id
       userId
       orgId
