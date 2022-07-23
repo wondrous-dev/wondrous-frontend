@@ -1,6 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import React, { useEffect } from 'react';
-import { GET_ORG_MEMBERSHIP_REQUEST } from 'graphql/queries';
+import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST } from 'graphql/queries';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { SafeImage } from 'components/Common/Image';
@@ -18,30 +18,35 @@ import {
   RequestActionButtons,
   RequestDeclineButton,
   RequestApproveButton,
+  MemberRequestsListEndMessage,
 } from './styles';
 
+let QUERY_LIMIT = 1;
+let REFETCH_QUERY_LIMIT = undefined;
+
 const useGetOrgMemberRequests = (orgId) => {
-  const [getOrgUserMembershipRequests, { data }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST);
+  const [getOrgUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST);
   useEffect(() => {
     if (orgId) {
       getOrgUserMembershipRequests({
         variables: {
           orgId,
-          limit: 1000,
+          limit: QUERY_LIMIT,
         },
       });
     }
   }, [orgId, getOrgUserMembershipRequests]);
-  return data?.getOrgMembershipRequest;
+  return { data: data?.getOrgMembershipRequest, fetchMore };
 };
 
 const MemberRequests = (props) => {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
-  const orgUserMembershipRequests = useGetOrgMemberRequests(orgId);
+  const { data: orgUserMembershipRequests, fetchMore } = useGetOrgMemberRequests(orgId);
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
-  const refetchQueries = () => [GET_ORG_MEMBERSHIP_REQUEST];
+  const [showShowAllButton, setShowShowAllButton] = useState(true);
+  const refetchQueries = [GET_ORG_FROM_USERNAME];
 
   const approveRequest = (userId, orgId) => {
     approveJoinOrgRequest({
@@ -49,7 +54,17 @@ const MemberRequests = (props) => {
         userId,
         orgId,
       },
-      refetchQueries: refetchQueries(),
+      refetchQueries,
+      updateQueries: {
+        getOrgMembershipRequest: (prev, { mutationResult }) => {
+          const isMutationSuccess = mutationResult.data?.approveJoinOrgRequest?.success;
+          if (isMutationSuccess) {
+            const newOrgMembershipRequests = [...prev.getOrgMembershipRequest].filter((req) => req.userId !== userId);
+            return { getOrgMembershipRequest: newOrgMembershipRequests };
+          }
+          return { getOrgMembershipRequest: prev };
+        },
+      },
     });
   };
 
@@ -59,7 +74,32 @@ const MemberRequests = (props) => {
         userId,
         orgId,
       },
-      refetchQueries: refetchQueries(),
+      refetchQueries,
+      updateQueries: {
+        getOrgMembershipRequest: (prev, { mutationResult }) => {
+          const isMutationSuccess = mutationResult.data?.rejectJoinOrgRequest?.success;
+          if (isMutationSuccess) {
+            const newOrgMembershipRequests = [...prev.getOrgMembershipRequest].filter((req) => req.userId !== userId);
+            return { getOrgMembershipRequest: newOrgMembershipRequests };
+          }
+          return { getOrgMembershipRequest: prev };
+        },
+      },
+    });
+  };
+
+  const handleShowAllRequests = () => {
+    fetchMore({
+      variables: {
+        orgId,
+        offset: orgUserMembershipRequests?.length,
+        limit: REFETCH_QUERY_LIMIT,
+      },
+      updateQuery: (prev, { fetchMoreResult }) => {
+        const getOrgMembershipRequest = [...prev?.getOrgMembershipRequest, ...fetchMoreResult?.getOrgMembershipRequest];
+        setShowShowAllButton(false);
+        return { getOrgMembershipRequest };
+      },
     });
   };
 
@@ -112,7 +152,13 @@ const MemberRequests = (props) => {
           ))}
         </MemberRequestsList>
 
-        <ShowAllButton>Show all</ShowAllButton>
+        {showShowAllButton ? (
+          <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+        ) : (
+          <MemberRequestsListEndMessage>
+            These are all the requests for now. Come back later to see more.
+          </MemberRequestsListEndMessage>
+        )}
       </RequestsContainer>
     </Wrapper>
   );

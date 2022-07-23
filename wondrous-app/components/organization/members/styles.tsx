@@ -7,6 +7,7 @@ export const RequestsContainer = styled.div`
   border-radius: 6px;
   padding: 14px;
   width: 100%;
+  margin-bottom: 30px;
 `;
 
 export const RequestHeader = styled.div`
@@ -142,5 +143,14 @@ export const ShowAllButton = styled(RequestActionButton)`
     &:hover {
       background: ${palette.highlightPurple}b3;
     }
+  }
+`;
+
+export const MemberRequestsListEndMessage = styled(MemberName)`
+  && {
+    font-weight: 400;
+    color: ${palette.grey57};
+    text-align: center;
+    padding-top: 14px;
   }
 `;
