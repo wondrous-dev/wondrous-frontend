@@ -51,7 +51,7 @@ export const MemberRequestsList = styled.div`
   display: flex;
   flex-direction: column;
   gap: 8px;
-  padding-bottom: 14px;
+  padding: 8px 0;
   border-bottom: 1px ${palette.black91} dashed;
 `;
 
