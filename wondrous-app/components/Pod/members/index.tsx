@@ -19,6 +19,7 @@ import {
   RequestDeclineButton,
   RequestApproveButton,
   MemberRequestsListEndMessage,
+  EmptyMemberRequestsListMessage,
 } from './styles';
 
 let QUERY_LIMIT = 1;
@@ -36,7 +37,6 @@ const useGetPodMemberRequests = (podId) => {
       });
     }
   }, [podId, getPodUserMembershipRequests]);
-  console.log({ data });
   return { data: data?.getPodMembershipRequest, fetchMore };
 };
 
@@ -48,6 +48,7 @@ const MemberRequests = (props) => {
   const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST);
   const [showShowAllButton, setShowShowAllButton] = useState(true);
   const refetchQueries = [GET_POD_BY_ID];
+  const showEmptyState = podUserMembershipRequests?.length === 0;
 
   const approveRequest = (userId, podId) => {
     approveJoinPodRequest({
@@ -104,8 +105,6 @@ const MemberRequests = (props) => {
     });
   };
 
-  console.log({ podUserMembershipRequests });
-
   const getUserInitials = (name) =>
     name
       .split(' ')
@@ -122,43 +121,51 @@ const MemberRequests = (props) => {
           </RequestCountWrapper>
         </RequestHeader>
 
-        <MemberRequestsList>
-          {podUserMembershipRequests?.map((request) => (
-            <MemberRequestCard key={request.id}>
-              {request.userProfilePicture ? (
-                <SafeImage
-                  style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                  src={request.userProfilePicture}
-                />
-              ) : (
-                <SmallAvatar
-                  id={request.id}
-                  username={request.userUsername}
-                  initials={getUserInitials(request.userUsername)}
-                  style={{ width: '28px', height: '28px' }}
-                />
-              )}
-
-              <MemberName>{request.userUsername}</MemberName>
-              <MemberMessage>“{request.message}”</MemberMessage>
-              <RequestActionButtons>
-                <RequestDeclineButton onClick={() => declineRequest(request.userId, request.podId)}>
-                  Decline
-                </RequestDeclineButton>
-                <RequestApproveButton onClick={() => approveRequest(request.userId, request.podId)}>
-                  Approve
-                </RequestApproveButton>
-              </RequestActionButtons>
-            </MemberRequestCard>
-          ))}
-        </MemberRequestsList>
-
-        {showShowAllButton ? (
-          <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+        {showEmptyState ? (
+          <EmptyMemberRequestsListMessage>
+            There are no requests right now. Come back later to see some.
+          </EmptyMemberRequestsListMessage>
         ) : (
-          <MemberRequestsListEndMessage>
-            These are all the requests for now. Come back later to see more.
-          </MemberRequestsListEndMessage>
+          <>
+            <MemberRequestsList>
+              {podUserMembershipRequests?.map((request) => (
+                <MemberRequestCard key={request.id}>
+                  {request.userProfilePicture ? (
+                    <SafeImage
+                      style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                      src={request.userProfilePicture}
+                    />
+                  ) : (
+                    <SmallAvatar
+                      id={request.id}
+                      username={request.userUsername}
+                      initials={getUserInitials(request.userUsername)}
+                      style={{ width: '28px', height: '28px' }}
+                    />
+                  )}
+
+                  <MemberName>{request.userUsername}</MemberName>
+                  <MemberMessage>“{request.message}”</MemberMessage>
+                  <RequestActionButtons>
+                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.podId)}>
+                      Decline
+                    </RequestDeclineButton>
+                    <RequestApproveButton onClick={() => approveRequest(request.userId, request.podId)}>
+                      Approve
+                    </RequestApproveButton>
+                  </RequestActionButtons>
+                </MemberRequestCard>
+              ))}
+            </MemberRequestsList>
+
+            {showShowAllButton ? (
+              <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+            ) : (
+              <MemberRequestsListEndMessage>
+                These are all the requests for now. Come back later to see more.
+              </MemberRequestsListEndMessage>
+            )}
+          </>
         )}
       </RequestsContainer>
     </Wrapper>
