@@ -12,6 +12,7 @@ import {
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations/org';
 import { useReducer } from 'react';
+import * as Yup from 'yup';
 
 const fieldSet = [
   {
@@ -19,8 +20,9 @@ const fieldSet = [
     subtitle: 'Use the power of web3 to launch and scale your project.',
     step: 1,
     Component: CreateDao,
+    hideLater: true,
     fields: {
-      name: { name: 'name', label: 'Enter DAO name', placeholder: "What is the org's title?" },
+      name: { name: 'name', label: 'Enter DAO name', placeholder: "What is the org's title?", required: true },
       description: {
         name: 'description',
         label: 'Enter DAO description',
@@ -45,6 +47,7 @@ const fieldSet = [
     subtitle: 'How would you categorize what your DAO does?',
     step: 3,
     Component: DaoCategory,
+    hideLater: true,
     fields: {
       category: { name: 'category', label: 'Enter custom goal', placeholder: "What is your DAO's goal?" },
     },
@@ -78,7 +81,8 @@ const fieldSet = [
   },
 ];
 
-const handleStep = (step, { action }) => {
+const handleStep = (step, { action, hasError = false }) => {
+  if (hasError) return step;
   const actions = {
     next: step + 1,
     back: step - 1,
@@ -94,21 +98,26 @@ const useCreateOrg = () => {
   return handleCreateOrg;
 };
 
+const schema = Yup.object().shape({
+  name: Yup.string().required('DA0 name is required'),
+  description: Yup.string().required('DA0 description is required'),
+  category: Yup.string().required('DA0 category is required'),
+});
+
 const OnboardingCreateDao = () => {
   const [step, setStep] = useReducer(handleStep, 0);
   const currentField = fieldSet[step];
   const handleCreateOrg = useCreateOrg();
   return (
-    <Formik initialValues={{}} onSubmit={handleCreateOrg}>
+    <Formik
+      initialValues={{
+        category: '🌎 Social good',
+      }}
+      onSubmit={handleCreateOrg}
+      validationSchema={schema}
+    >
       <Form>
-        <StepWrapper
-          {...currentField}
-          handleNext={(e) => {
-            e.preventDefault();
-            setStep({ action: 'next' });
-          }}
-          handleBack={() => setStep({ action: 'back' })}
-        />
+        <StepWrapper {...currentField} handleStep={({ action, hasError = false }) => setStep({ action, hasError })} />
       </Form>
     </Formik>
   );

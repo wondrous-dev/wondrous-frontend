@@ -59,3 +59,12 @@ export const ImportButtonWrapper = styled.div`
   flex-direction: column;
   gap: 16px;
 `;
+
+export const Error = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-weight: 400;
+    font-size: 15px;
+    color: ${({ theme }) => theme.palette.red800};
+  }
+`;

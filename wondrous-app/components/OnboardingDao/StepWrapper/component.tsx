@@ -1,4 +1,7 @@
 import LeftArrowIcon from 'components/Icons/leftArrow';
+import { useFormikContext } from 'formik';
+import { mapKeys, some } from 'lodash';
+import { useEffect } from 'react';
 import {
   BackButton,
   ButtonWrapper,
@@ -33,33 +36,59 @@ export const OnboardingStepIndicator = ({ step }) => {
   );
 };
 
-const BackButtonWrapper = ({ step, handleBack }) => {
+const BackButtonWrapper = ({ step, handleStep }) => {
   if (step === 1) return <ButtonWrapper />;
   return (
     <ButtonWrapper>
-      <BackButton onClick={handleBack}>
+      <BackButton onClick={() => handleStep({ action: 'back' })}>
         <LeftArrowIcon />
       </BackButton>
     </ButtonWrapper>
   );
 };
 
-const LaterButtonWrapper = ({ step, handleLater }) => {
-  if (step === NO_OF_STEPS) return null;
-  return <CancelButton onClick={handleLater}>Later</CancelButton>;
+const LaterButtonWrapper = ({ step, handleStep, hideLater }) => {
+  if (step === NO_OF_STEPS || hideLater) return null;
+  return <CancelButton onClick={() => handleStep({ action: 'next' })}>Later</CancelButton>;
 };
 
-const ContinueButtonWrapper = ({ step, hoverContinue, handleContinue }) => {
-  if (step === NO_OF_STEPS)
+const useValidateStep = (fields) => {
+  const { errors, setFieldTouched, validateForm } = useFormikContext();
+  const touchFields = () => mapKeys(fields, (_, key) => setFieldTouched(key));
+  const hasError = some(fields, (_, key) => errors[key]);
+  useEffect(() => {
+    validateForm();
+  }, [validateForm]);
+  return { touchFields, errors, hasError };
+};
+
+const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {} }) => {
+  const { touchFields, hasError } = useValidateStep(fields);
+  const handleOnClick = (e) => {
+    e.preventDefault();
+    touchFields();
+    handleStep({ action: 'next', hasError });
+  };
+  if (step === NO_OF_STEPS) {
     return (
       <ContinueButton hoverContinue={hoverContinue} type="submit">
         🚀 Launch DAO
       </ContinueButton>
     );
-  return <ContinueButton onClick={handleContinue}>Continue</ContinueButton>;
+  }
+  return <ContinueButton onClick={handleOnClick}>Continue</ContinueButton>;
 };
 
-const StepWrapper = ({ Component, handleBack, handleNext, hoverContinue = false, step, subtitle, title, ...props }) => {
+const StepWrapper = ({
+  Component,
+  handleStep,
+  hideLater = false,
+  hoverContinue = false,
+  step,
+  subtitle,
+  title,
+  ...props
+}) => {
   return (
     <Wrapper>
       <FormWrapper>
@@ -75,10 +104,15 @@ const StepWrapper = ({ Component, handleBack, handleNext, hoverContinue = false,
           <Component {...props} />
         </ComponentWrapper>
         <FooterWrapper>
-          <BackButtonWrapper step={step} handleBack={handleBack} />
+          <BackButtonWrapper step={step} handleStep={handleStep} />
           <ButtonWrapper>
-            <LaterButtonWrapper step={step} handleLater={handleNext} />
-            <ContinueButtonWrapper step={step} hoverContinue={hoverContinue} handleContinue={handleNext} />
+            <LaterButtonWrapper step={step} handleStep={handleStep} hideLater={hideLater} />
+            <ContinueButtonWrapper
+              step={step}
+              hoverContinue={hoverContinue}
+              handleStep={handleStep}
+              fields={props.fields}
+            />
           </ButtonWrapper>
         </FooterWrapper>
       </FormWrapper>
