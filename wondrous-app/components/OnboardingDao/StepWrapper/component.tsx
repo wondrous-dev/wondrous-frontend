@@ -5,7 +5,6 @@ import { useEffect } from 'react';
 import {
   BackButton,
   ButtonWrapper,
-  CancelButton,
   CloseButton,
   CloseButtonIcon,
   ComponentWrapper,
@@ -13,6 +12,7 @@ import {
   FooterWrapper,
   FormWrapper,
   HeaderWrapper,
+  LaterButton,
   StepIndicatorDone,
   StepIndicatorEmpty,
   StepIndicatorFilled,
@@ -49,7 +49,7 @@ const BackButtonWrapper = ({ step, handleStep }) => {
 
 const LaterButtonWrapper = ({ step, handleStep, hideLater }) => {
   if (step === NO_OF_STEPS || hideLater) return null;
-  return <CancelButton onClick={() => handleStep({ action: 'next' })}>Later</CancelButton>;
+  return <LaterButton onClick={() => handleStep({ action: 'next' })}>Later</LaterButton>;
 };
 
 const useValidateStep = (fields) => {
