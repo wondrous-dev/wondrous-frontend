@@ -154,3 +154,5 @@ export const MemberRequestsListEndMessage = styled(MemberName)`
     padding-top: 14px;
   }
 `;
+
+export const EmptyMemberRequestsListMessage = styled(MemberRequestsListEndMessage)``;

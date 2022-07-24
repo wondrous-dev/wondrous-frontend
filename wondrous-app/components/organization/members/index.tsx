@@ -19,6 +19,7 @@ import {
   RequestDeclineButton,
   RequestApproveButton,
   MemberRequestsListEndMessage,
+  EmptyMemberRequestsListMessage,
 } from './styles';
 
 let QUERY_LIMIT = 1;
@@ -47,6 +48,7 @@ const MemberRequests = (props) => {
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
   const [showShowAllButton, setShowShowAllButton] = useState(true);
   const refetchQueries = [GET_ORG_FROM_USERNAME];
+  const showEmptyState = orgUserMembershipRequests?.length === 0;
 
   const approveRequest = (userId, orgId) => {
     approveJoinOrgRequest({
@@ -121,43 +123,51 @@ const MemberRequests = (props) => {
           </RequestCountWrapper>
         </RequestHeader>
 
-        <MemberRequestsList>
-          {orgUserMembershipRequests?.map((request) => (
-            <MemberRequestCard key={request.id}>
-              {request.userProfilePicture ? (
-                <SafeImage
-                  style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                  src={request.userProfilePicture}
-                />
-              ) : (
-                <SmallAvatar
-                  id={request.id}
-                  username={request.userUsername}
-                  initials={getUserInitials(request.userUsername)}
-                  style={{ width: '28px', height: '28px' }}
-                />
-              )}
-
-              <MemberName>{request.userUsername}</MemberName>
-              <MemberMessage>“{request.message}”</MemberMessage>
-              <RequestActionButtons>
-                <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId)}>
-                  Decline
-                </RequestDeclineButton>
-                <RequestApproveButton onClick={() => approveRequest(request.userId, request.orgId)}>
-                  Approve
-                </RequestApproveButton>
-              </RequestActionButtons>
-            </MemberRequestCard>
-          ))}
-        </MemberRequestsList>
-
-        {showShowAllButton ? (
-          <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+        {showEmptyState ? (
+          <EmptyMemberRequestsListMessage>
+            There are no requests right now. Come back later to see some.
+          </EmptyMemberRequestsListMessage>
         ) : (
-          <MemberRequestsListEndMessage>
-            These are all the requests for now. Come back later to see more.
-          </MemberRequestsListEndMessage>
+          <>
+            <MemberRequestsList>
+              {orgUserMembershipRequests?.map((request) => (
+                <MemberRequestCard key={request.id}>
+                  {request.userProfilePicture ? (
+                    <SafeImage
+                      style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                      src={request.userProfilePicture}
+                    />
+                  ) : (
+                    <SmallAvatar
+                      id={request.id}
+                      username={request.userUsername}
+                      initials={getUserInitials(request.userUsername)}
+                      style={{ width: '28px', height: '28px' }}
+                    />
+                  )}
+
+                  <MemberName>{request.userUsername}</MemberName>
+                  <MemberMessage>“{request.message}”</MemberMessage>
+                  <RequestActionButtons>
+                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId)}>
+                      Decline
+                    </RequestDeclineButton>
+                    <RequestApproveButton onClick={() => approveRequest(request.userId, request.orgId)}>
+                      Approve
+                    </RequestApproveButton>
+                  </RequestActionButtons>
+                </MemberRequestCard>
+              ))}
+            </MemberRequestsList>
+
+            {showShowAllButton ? (
+              <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+            ) : (
+              <MemberRequestsListEndMessage>
+                These are all the requests for now. Come back later to see more.
+              </MemberRequestsListEndMessage>
+            )}
+          </>
         )}
       </RequestsContainer>
     </Wrapper>
