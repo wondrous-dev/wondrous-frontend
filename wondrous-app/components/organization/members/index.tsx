@@ -111,8 +111,6 @@ const MemberRequests = (props) => {
       .map((word) => word[0])
       .join('');
 
-  console.log({ orgUserMembershipRequests });
-
   return (
     <Wrapper orgData={orgData}>
       <RequestsContainer>
