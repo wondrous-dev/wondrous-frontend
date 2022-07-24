@@ -148,7 +148,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
         {activeTab === tabs.discussion && (
           <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
         )}
-        {activeTab === tabs.tasks && <MilestoneTasks canCreate={canCreate} milestone={fetchedTask} />}
+        {activeTab === tabs.tasks && !!fetchedTask && <MilestoneTasks canCreate={canCreate} milestone={fetchedTask} />}
       </TaskSectionContent>
     </TaskModalFooter>
   );

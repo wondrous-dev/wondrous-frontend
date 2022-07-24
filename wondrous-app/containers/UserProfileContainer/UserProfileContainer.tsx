@@ -12,7 +12,7 @@ import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfile
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils/index';
-import { toggleHtmlOverflow } from 'utils/helpers';
+import { disableContainerOverflow, enableContainerOverflow } from 'utils/helpers';
 import { useEffect, useState } from 'react';
 
 const UserProfileContainer = ({}) => {
@@ -32,13 +32,13 @@ const UserProfileContainer = ({}) => {
     }
     let newUrl = `${delQuery(router.asPath)}`;
     location.push(newUrl);
+    enableContainerOverflow();
     setOpenModal(false);
   };
 
   useEffect(() => {
     const params = location.params;
     if (params.task || params.taskProposal) {
-      toggleHtmlOverflow();
       setOpenModal(true);
     }
   }, [location]);
