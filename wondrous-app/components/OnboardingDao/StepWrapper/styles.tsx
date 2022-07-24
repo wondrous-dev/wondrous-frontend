@@ -158,7 +158,7 @@ export const BackButton = styled(ButtonBase)`
   }
 `;
 
-export const CancelButton = styled(ButtonBase)`
+export const LaterButton = styled(ButtonBase)`
   && {
     display: flex;
     padding: 8px 24px;
