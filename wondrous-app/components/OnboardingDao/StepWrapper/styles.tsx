@@ -1,7 +1,5 @@
 import { InputUnstyled } from '@mui/base';
 import { ButtonBase, Typography } from '@mui/material';
-import { Button } from 'components/Common/button';
-import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import CloseIcon from 'components/Icons/close.svg';
 import styled from 'styled-components';
 
@@ -176,23 +174,34 @@ export const CancelButton = styled(ButtonBase)`
   }
 `;
 
-export const ContinueButton = styled(Button)`
+export const ContinueButton = styled(({ children, ...props }) => (
+  <ButtonBase {...props}>
+    <div>{children}</div>
+  </ButtonBase>
+))`
   && {
-    ${GradientHighlightHorizontal}
-    height: 40px;
-    > button {
-      padding: 8px 24px;
+    align-items: center;
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    border-radius: 35px;
+    color: ${({ theme }) => theme.palette.white};
+    display: flex;
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 600;
+    height: 38px;
+    justify-content: space-between;
+    padding: 1px;
+    text-align: center;
+    width: fit-content;
+    > div {
+      align-items: center;
       background: ${({ theme }) => theme.palette.background.default};
-      border-radius: 35px;
-      color: ${({ theme }) => theme.palette.white};
-      font-family: 'Space Grotesk';
-      font-style: normal;
-      font-weight: 600;
-      font-size: 15px;
-      transition: background 0.5s ease-in-out;
-      :hover {
-        background: ${({ hoverContinue }) => hoverContinue && 'transparent'};
-      }
+      border-radius: inherit;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      width: 100%;
+      padding: 8px 24px;
     }
   }
 `;

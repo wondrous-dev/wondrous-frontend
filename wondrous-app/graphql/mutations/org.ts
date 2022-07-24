@@ -116,3 +116,12 @@ export const CONNECT_NOTION_TO_ORG = gql`
     }
   }
 `;
+
+export const CREATE_ORG = gql`
+  mutation createOrg($input: OrgInput) {
+    createOrg(input: $input) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;

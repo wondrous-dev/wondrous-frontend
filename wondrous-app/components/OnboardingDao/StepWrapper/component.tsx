@@ -49,21 +49,17 @@ const LaterButtonWrapper = ({ step, handleLater }) => {
   return <CancelButton onClick={handleLater}>Later</CancelButton>;
 };
 
-const ContinueButtonWrapper = ({ step, hoverContinue }) => {
-  if (step === NO_OF_STEPS) return <ContinueButton hoverContinue={hoverContinue}>🚀 Launch DAO</ContinueButton>;
-  return <ContinueButton>Continue</ContinueButton>;
+const ContinueButtonWrapper = ({ step, hoverContinue, handleContinue }) => {
+  if (step === NO_OF_STEPS)
+    return (
+      <ContinueButton hoverContinue={hoverContinue} type="submit">
+        🚀 Launch DAO
+      </ContinueButton>
+    );
+  return <ContinueButton onClick={handleContinue}>Continue</ContinueButton>;
 };
 
-const StepWrapper = ({
-  Component,
-  title,
-  subtitle,
-  step,
-  handleLater,
-  handleBack,
-  hoverContinue = false,
-  ...props
-}) => {
+const StepWrapper = ({ Component, handleBack, handleNext, hoverContinue = false, step, subtitle, title, ...props }) => {
   return (
     <Wrapper>
       <FormWrapper>
@@ -81,8 +77,8 @@ const StepWrapper = ({
         <FooterWrapper>
           <BackButtonWrapper step={step} handleBack={handleBack} />
           <ButtonWrapper>
-            <LaterButtonWrapper step={step} handleLater={handleLater} />
-            <ContinueButtonWrapper step={step} hoverContinue={hoverContinue} />
+            <LaterButtonWrapper step={step} handleLater={handleNext} />
+            <ContinueButtonWrapper step={step} hoverContinue={hoverContinue} handleContinue={handleNext} />
           </ButtonWrapper>
         </FooterWrapper>
       </FormWrapper>

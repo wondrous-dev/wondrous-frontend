@@ -1,3 +1,4 @@
+import { useMutation } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
 import {
   AddImages,
@@ -9,6 +10,7 @@ import {
   StepWrapper,
 } from 'components/OnboardingDao';
 import { Form, Formik } from 'formik';
+import { CREATE_ORG } from 'graphql/mutations/org';
 import { useReducer } from 'react';
 
 const fieldSet = [
@@ -84,15 +86,27 @@ const handleStep = (step, { action }) => {
   return actions[action] ?? step;
 };
 
+const useCreateOrg = () => {
+  const [createOrg] = useMutation(CREATE_ORG);
+  const handleCreateOrg = (values) => {
+    createOrg({ variables: { input: values } });
+  };
+  return handleCreateOrg;
+};
+
 const OnboardingCreateDao = () => {
   const [step, setStep] = useReducer(handleStep, 0);
   const currentField = fieldSet[step];
+  const handleCreateOrg = useCreateOrg();
   return (
-    <Formik initialValues={{}} onSubmit={() => {}}>
+    <Formik initialValues={{}} onSubmit={handleCreateOrg}>
       <Form>
         <StepWrapper
           {...currentField}
-          handleLater={() => setStep({ action: 'next' })}
+          handleNext={(e) => {
+            e.preventDefault();
+            setStep({ action: 'next' });
+          }}
           handleBack={() => setStep({ action: 'back' })}
         />
       </Form>
