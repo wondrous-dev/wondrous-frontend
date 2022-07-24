@@ -1,4 +1,4 @@
-import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
+import { ComponentFieldWrapper, Error, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { useField } from 'formik';
 import { DescriptionCharacterLength, FieldInputDao, InputWrapper } from './styles';
 
@@ -8,6 +8,7 @@ const DaoName = ({ label, ...props }) => {
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>
       <FieldInput {...field} {...props} />
+      {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </FieldWrapper>
   );
 };
@@ -31,6 +32,7 @@ const Description = ({ label, maxLength, ...props }) => {
           {fieldValueLength}/{maxLength} characters
         </DescriptionCharacterLength>
       </InputWrapper>
+      {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </FieldWrapper>
   );
 };

@@ -1,5 +1,5 @@
 import { Radio, useRadioGroup } from '@mui/material';
-import { ComponentFieldWrapper, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
+import { ComponentFieldWrapper, Error, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { useField } from 'formik';
 import { CategoriesWrapper, Divider, Label } from './styles';
 
@@ -29,7 +29,7 @@ const CategoryItemOther = (props) => {
 };
 
 const DaoCategories = (props) => {
-  const [field, meta] = useField(props.name);
+  const [field] = useField(props.name);
   return (
     <CategoriesWrapper {...field} {...props}>
       {CATEGORIES.map((category) => (
@@ -49,6 +49,7 @@ const OtherField = ({ label, ...props }) => {
       <FieldWrapper>
         <FieldLabel>{label}</FieldLabel>
         <FieldInput {...field} {...props} />
+        {meta.touched && meta.error && <Error>{meta.error}</Error>}
       </FieldWrapper>
     </>
   );
