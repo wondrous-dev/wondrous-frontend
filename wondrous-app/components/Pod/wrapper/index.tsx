@@ -375,7 +375,7 @@ const Wrapper = (props) => {
               </HeaderActivity>
             </TokenHeader>
 
-            <Tabs page="pod">
+            <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
               <BoardsSubheaderWrapper>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />

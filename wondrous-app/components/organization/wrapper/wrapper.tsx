@@ -465,7 +465,7 @@ const Wrapper = (props) => {
               </div>
             </HeaderActivity>
           </TokenHeader>
-          <Tabs>
+          <Tabs showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
