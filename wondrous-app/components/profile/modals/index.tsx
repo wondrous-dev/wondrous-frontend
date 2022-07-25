@@ -95,8 +95,6 @@ export const MoreInfoModal = (props) => {
   const [searchedPodList, setSearchedPodList] = useState([]);
   const [paginatedUserList, setPaginatedUserList] = useState([]);
   const [paginatedPodList, setPaginatedPodList] = useState([]);
-  const [scrollTimer, setScrollTimer] = useState<any>(-1);
-  const [showScroll, setShowScroll] = useState(true);
   const [activeTab, setActiveTab] = useState(MODAL_TABS_MAP.CONTRIBUTORS);
   const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
@@ -300,14 +298,7 @@ export const MoreInfoModal = (props) => {
           />
         </SearchBox>
         {displayUsers && (
-          <OverflowBox
-            showScroll={showScroll}
-            onScroll={() => {
-              setShowScroll(false);
-              if (scrollTimer != -1) clearTimeout(scrollTimer);
-              setScrollTimer(setTimeout(() => setShowScroll(true), 500));
-            }}
-          >
+          <OverflowBox>
             {listLoading && (
               <ActivityIndicatorContainer>
                 <CircularProgress />
@@ -325,14 +316,7 @@ export const MoreInfoModal = (props) => {
           </OverflowBox>
         )}
         {displayPods && (
-          <OverflowBox
-            showScroll={showScroll}
-            onScroll={() => {
-              setShowScroll(false);
-              if (scrollTimer != -1) clearTimeout(scrollTimer);
-              setScrollTimer(setTimeout(() => setShowScroll(true), 500));
-            }}
-          >
+          <OverflowBox>
             {listLoading && (
               <ActivityIndicatorContainer>
                 <CircularProgress />
