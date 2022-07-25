@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
-import GreyDropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 
 const chainOptions = [
@@ -14,31 +13,11 @@ const chainOptions = [
     label: 'Polygon',
     value: 'polygon',
   },
-  {
-    label: 'Optimism',
-    value: 'optimism',
-  },
-  {
-    label: 'Harmony',
-    value: 'harmony',
-  },
-  {
-    label: 'Boba',
-    value: 'boba',
-  },
-  {
-    label: 'Arbitrum One',
-    value: 'arbitrum',
-  },
-  {
-    label: 'BSC',
-    value: 'bsc',
-  },
 ];
 
 export default {
-  title: 'Surfaces/DropdownSelect',
-  component: GreyDropdownSelect,
+  title: 'Surfaces/Dropdown Select',
+  component: DropdownSelect,
   parameters: {
     docs: {
       description: {
@@ -118,15 +97,14 @@ export default {
       description: 'Styles for label.',
     },
   },
-} as ComponentMeta<typeof GreyDropdownSelect>;
+} as ComponentMeta<typeof DropdownSelect>;
 
-const Template: ComponentStory<typeof GreyDropdownSelect> = (props) => {
+const Template: ComponentStory<typeof DropdownSelect> = (props) => {
   const [value, setValue] = useState(null);
 
   const GreyDropdownSelect = styled(DropdownSelect)`
   .MuiInputBase-formControl {
     background: #1e1e1e;
-    margin-top: 16px;
     
     &.Mui-focused .MuiOutlinedInput-notchedOutline {
       border: none;
@@ -150,6 +128,9 @@ const Template: ComponentStory<typeof GreyDropdownSelect> = (props) => {
   return (
     <GreyDropdownSelect
       {...props}
+      formSelectStyle={{
+        height: 'auto'
+      }}
       value={value}
       setValue={setValue}
       displayEmpty

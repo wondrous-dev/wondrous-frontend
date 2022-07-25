@@ -2,7 +2,6 @@ import React from 'react';
 
 import { Table as TableComponent } from './Table';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import { SVGR } from '../Icons/SVGRIcons.stories';
 
 export default {
   title: 'Data Display/Table',

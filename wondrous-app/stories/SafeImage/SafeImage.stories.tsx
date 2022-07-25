@@ -11,7 +11,7 @@ export default {
     docs: {
       description: {
         component:
-          'SafeImage is designed to load image from google cloud store.** Does not work currently in the Storybook due to the CORS **',
+          'SafeImage is designed to load image from google cloud store.',
       },
     },
   },
