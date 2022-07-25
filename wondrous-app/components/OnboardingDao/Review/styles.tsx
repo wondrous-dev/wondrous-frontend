@@ -38,7 +38,8 @@ export const LabelText = styled.div`
 
 export const ChildrenWrapper = styled.div`
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  flex-direction: column;
   gap: 12px;
   width: 100%;
   word-break: break-all;
@@ -119,6 +120,13 @@ export const EditButtonText = styled(Typography)`
     font-weight: 500;
     line-height: 0;
   }
+`;
+
+export const InputErrorWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 `;
 
 export const EditInputWrapper = styled.div`

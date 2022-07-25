@@ -1,5 +1,5 @@
-import { ClickAwayListener } from '@mui/material';
 import EditIcon from 'components/Icons/edit.svg';
+import { Error } from 'components/OnboardingDao/styles';
 import { FormikValues, useField, useFormikContext } from 'formik';
 import { useState } from 'react';
 import {
@@ -10,6 +10,7 @@ import {
   EditInput,
   EditInputMulti,
   EditInputWrapper,
+  InputErrorWrapper,
   ItemWrapper,
   LabelText,
   LabelWrapper,
@@ -39,25 +40,19 @@ const Edit = ({ onClick }) => {
 };
 
 const EditDaoName = ({ setIsEditing, ...props }) => {
-  const [field, _, helpers] = useField(props.name);
-  const [value, setValue] = useState(field.value);
+  const [field, meta, helpers] = useField(props.name);
   return (
-    <ClickAwayListener
-      onClickAway={() => {
-        setIsEditing(false);
-        setValue(field.value);
-      }}
-    >
+    <InputErrorWrapper>
       <EditInputWrapper>
-        <EditInput {...field} {...props} value={value} onChange={(e) => setValue(e.target.value)} />
+        <EditInput {...field} {...props} value={field.value} onChange={(e) => helpers.setValue(e.target.value)} />
         <Edit
           onClick={() => {
-            setIsEditing(false);
-            helpers.setValue(value);
+            if (!meta.error) setIsEditing(false);
           }}
         />
       </EditInputWrapper>
-    </ClickAwayListener>
+      {meta.touched && meta.error && <Error>{meta.error}</Error>}
+    </InputErrorWrapper>
   );
 };
 
@@ -77,33 +72,27 @@ const DaoName = ({ name, field }) => {
 };
 
 const EditDescription = ({ setIsEditing, ...props }) => {
-  const [field, _, helpers] = useField(props.name);
-  const [value, setValue] = useState(field.value);
+  const [field, meta, helpers] = useField(props.name);
   return (
-    <ClickAwayListener
-      onClickAway={() => {
-        setIsEditing(false);
-        setValue(field.value);
-      }}
-    >
+    <InputErrorWrapper>
       <EditInputWrapper>
         <EditInputMulti
           {...field}
           {...props}
-          value={value}
+          value={field.value}
           onChange={(e) => {
             const value = e.target.value;
-            value.length <= props.maxLength && setValue(value);
+            value.length <= props.maxLength && helpers.setValue(value);
           }}
         />
         <Edit
           onClick={() => {
-            setIsEditing(false);
-            helpers.setValue(value);
+            if (!meta.error) setIsEditing(false);
           }}
         />
       </EditInputWrapper>
-    </ClickAwayListener>
+      {meta.touched && meta.error && <Error>{meta.error}</Error>}
+    </InputErrorWrapper>
   );
 };
 
