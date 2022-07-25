@@ -1,6 +1,11 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_ORG_ROLES, GET_USER_TASK_BOARD_TASKS } from 'graphql/queries';
-import _ from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import isNull from 'lodash/isNull';
+import max from 'lodash/max';
+import values from 'lodash/values';
+import countBy from 'lodash/countBy';
+import map from 'lodash/map';
 import { useEffect, useState } from 'react';
 import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 
@@ -9,7 +14,7 @@ const FETCH_MORE_LIMIT = 8;
 const LIMIT = 4;
 
 const hasNoMoreData = (result, limit) => {
-  return _.isNull(result) || _.isEmpty(result) || result.length < limit;
+  return isNull(result) || isEmpty(result) || result.length < limit;
 };
 
 const useGetUserAboutPage = (userId) => {
@@ -45,7 +50,7 @@ const useGetUserAboutPage = (userId) => {
   const handleFetchMoreInProgressTasks = () => {
     inProgressFetchMore({
       variables: {
-        offset: _.max(_.values(_.countBy(_.map(inProgressData, (i) => i.status)))),
+        offset: max(values(countBy(map(inProgressData, (i) => i.status)))),
         limit: FETCH_MORE_LIMIT,
       },
     })
@@ -74,7 +79,7 @@ const useGetUserAboutPage = (userId) => {
           console.log(e);
         });
     }
-    if (_.isEmpty(inProgressData) && userId) {
+    if (isEmpty(inProgressData) && userId) {
       getUserInProgressTasks({
         variables: {
           userId: userId,
@@ -92,7 +97,7 @@ const useGetUserAboutPage = (userId) => {
           console.log(e);
         });
     }
-    if (_.isEmpty(completedTasksData) && userId) {
+    if (isEmpty(completedTasksData) && userId) {
       getUserCompletedTasks({
         variables: {
           userId: userId,
