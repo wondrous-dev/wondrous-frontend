@@ -59,14 +59,14 @@ const fieldSet = [
     Component: ImportTasks,
   },
   {
-    title: 'Invite your community ',
+    title: 'Invite your community',
     subtitle: `Upload a CSV with all your contributors and community members. Those who don't have an account will be sent an invite link.`,
     step: 5,
     Component: InviteCommunity,
   },
   {
     title: 'Review',
-    subtitle: `Review your DAO details and then let\'s launch!`,
+    subtitle: `Review your DAO details and then let's launch!`,
     step: 6,
     Component: Review,
     hoverContinue: true,
