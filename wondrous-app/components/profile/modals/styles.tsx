@@ -122,7 +122,7 @@ export const OverflowBox = styled.div`
 
   &::-webkit-scrollbar {
     height: 0px;
-    width: 7px;
+    width: ${(props) => (props.showScroll ? '7px' : '0')};
     border-radius: 210px;
     background: #606060;
   }
