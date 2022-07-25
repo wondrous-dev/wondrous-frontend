@@ -82,25 +82,14 @@ export const parseUserPermissionContext = (props) => {
   return [];
 };
 
-export const canUserCreateTask = (userPermissionContext, orgId = null, podId = null) => {
-  if (!userPermissionContext) return false;
-  //user board - we let the user create task if he has any org role with create task
-  if (!orgId) {
-    const permissions = Object.values(userPermissionContext?.orgPermissions).flat();
-    return permissions?.includes(PERMISSIONS.CREATE_TASK) || permissions.includes(PERMISSIONS.FULL_ACCESS);
-  }
-  //org board
-  const hasOrgPermission =
-    userPermissionContext?.orgPermissions[orgId]?.includes(PERMISSIONS.CREATE_TASK) ||
-    userPermissionContext?.orgPermissions[orgId]?.includes(PERMISSIONS.FULL_ACCESS);
-  //checks for pod board
-  if (podId) {
-    const hasPodPermission =
-      userPermissionContext?.podPermissions[podId]?.includes(PERMISSIONS.CREATE_TASK) ||
-      userPermissionContext?.podPermissions[podId]?.includes(PERMISSIONS.FULL_ACCESS);
-    return hasOrgPermission && hasPodPermission;
-  }
-  return hasOrgPermission;
+export const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefined, podId = undefined }) => {
+  let permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: orgId,
+    podId: podId,
+  });
+
+  return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
 };
 
 export const transformTaskToTaskCard = (task, extraData) => {

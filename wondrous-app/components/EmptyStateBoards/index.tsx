@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import {
@@ -20,7 +20,7 @@ import {
 } from 'utils/constants';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useMe } from 'components/Auth/withAuth';
-import { canUserCreateTask } from 'utils/helpers';
+import { hasCreateTaskPermission } from 'utils/helpers';
 import {
   EmptyStateTodoIcon,
   EmptyStateInProgressIcon,
@@ -52,10 +52,19 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
   const podBoard = usePodBoard();
   const router = useRouter();
   const board = orgBoard || podBoard || userBoard;
+  const [entityType, setEntityType] = useState(board?.entityType);
   const user = useMe();
   const userPermissionsContext = board?.userPermissionsContext;
 
-  const canCreateTask = canUserCreateTask(userPermissionsContext, board?.orgId, board?.podId);
+  //we want to be able to create proposals from the tasks list for users who cannot create tasks
+  useEffect(() => {
+    entityType !== board?.entityType && setEntityType(board?.entityType);
+  }, [board?.entityType]);
+
+  const canCreateTask =
+    hasCreateTaskPermission({ userPermissionsContext, orgId: board?.orgId, podId: board?.podId }) ||
+    board?.entityType === ENTITIES_TYPES.PROPOSAL ||
+    userBoard;
 
   const shouldDisplayAddTaskButton = canCreateTask && STATUSES_WITH_ADD_TASK_BUTTON.includes(status);
 
@@ -69,13 +78,22 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
 
   const role = orgRole || podRole;
 
-  const handleTaskModal = () => setOpenTaskModal((prevState) => !prevState);
+  const handleTaskModal = () => {
+    setOpenTaskModal((prevState) => !prevState);
+  };
 
   const entityLabel = ENTITIES_UI_ELEMENTS[board?.entityType]?.label;
 
   const handleRedirect = () => router.push('/login', undefined, { shallow: true });
 
   const IconComponent = ICONS_MAP[status];
+
+  const handleProposalCreate = () => {
+    setEntityType(ENTITIES_TYPES.PROPOSAL);
+    handleTaskModal();
+  };
+  const boardTypeTitle = orgBoard ? 'org' : 'pod';
+
   return (
     <>
       <CreateModalOverlay
@@ -86,7 +104,7 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
         onClose={handleTaskModal}
       >
         <CreateEntityModal
-          entityType={board?.entityType || ENTITIES_TYPES.TASK}
+          entityType={entityType || ENTITIES_TYPES.TASK}
           handleClose={handleTaskModal}
           resetEntityType={() => {}}
           setEntityType={() => {}}
@@ -110,10 +128,17 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
               <>
                 {role && (
                   <UserRoleInfoHighlight>
-                    You are a <span>{role}</span> in this org.
+                    You are a <span>{role}</span> in this {boardTypeTitle}.
                   </UserRoleInfoHighlight>
                 )}
-                <UserRoleInfo>You need to have a role that can create {entityLabel}</UserRoleInfo>
+                <UserRoleInfo>{`You can't create a ${entityLabel}, ${
+                  role ? 'but you can create a Proposal' : `you need to be a member of this ${boardTypeTitle}`
+                }`}</UserRoleInfo>
+                {role && (
+                  <HeaderButton type="button" onClick={handleProposalCreate} reversed>
+                    Create proposal
+                  </HeaderButton>
+                )}
               </>
             ) : (
               <>
