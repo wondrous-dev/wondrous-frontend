@@ -1,10 +1,11 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import {ResponsiveValue, space, SpaceProps} from 'styled-system';
+import { ResponsiveValue, space, SpaceProps } from 'styled-system';
 
 import palette from 'theme/palette';
 
 const ButtonWrapper = styled.div`
+  ${space};
   background: ${(props) => props.borderColor};
   border-radius: ${(props) => (!isNaN(props.borderRadius) ? props.borderRadius : 50)}px;
   display: flex;
@@ -30,8 +31,6 @@ const ButtonInner = styled.button`
   justify-content: center;
   padding: 0 30px;
 
-  ${space}
-
   &:hover {
     background: ${(props) => props?.hover?.background || props.background};
   }
@@ -39,9 +38,8 @@ const ButtonInner = styled.button`
 
 const theme = {
   primary: {
-    borderColor:
-      'linear-gradient(90deg, rgba(204, 187, 255, 1) 0%, rgba(116, 39, 255, 1) 50%, rgba(0, 186, 255, 1) 100%)',
-    background: palette.background.default,
+    borderColor: 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)',
+    background: 'linear-gradient(0deg, rgba(20, 20, 20, 1) 0%, rgba(30, 30, 30, 1) 100%)',
     hover: {
       background:
         'linear-gradient(270deg, rgb(204, 187, 255) -5.62%, rgb(116, 39, 255) 45.92%, rgb(0, 186, 255) 103.12%)',
@@ -88,9 +86,25 @@ type Props = SpaceProps & {
    */
   variant?: 'outlined' | 'contained' | 'text';
 
+  onClick?: () => unknown;
+
+  buttonTheme?: {
+    background?: string;
+    borderColor?: string;
+    hover: {
+      background?: string;
+    };
+  };
 };
 
-export const Button = ({ color = 'primary', variant = 'contained', children, ...props }: Props) => {
+export const Button = ({
+  color = 'primary',
+  variant = 'contained',
+  onClick,
+  buttonTheme,
+  children,
+  ...props
+}: Props) => {
   const buttonProps = { ...theme[color], ...props };
 
   if (variant === 'outlined') {
@@ -110,7 +124,9 @@ export const Button = ({ color = 'primary', variant = 'contained', children, ...
 
   return (
     <ButtonWrapper {...buttonProps}>
-      <ButtonInner {...buttonProps}>{children}</ButtonInner>
+      <ButtonInner {...buttonProps} {...buttonTheme} onClick={onClick}>
+        {children}
+      </ButtonInner>
     </ButtonWrapper>
   );
 };

@@ -8,7 +8,6 @@ module.exports = {
     '@storybook/addon-essentials',
     '@storybook/addon-interactions',
     'storybook-dark-mode',
-    // https://storybook.js.org/addons/storybook-addon-next
     'storybook-addon-next',
     'storybook-addon-apollo-client',
   ],

@@ -146,14 +146,7 @@ const ExploreComponent = () => {
           <PartnershipRequest>
             <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
             <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
-            <Button
-              style={{
-                textDecoration: 'none',
-                color: palette.white,
-                alignSelf: 'center',
-                marginTop: '28px',
-              }}
-            >
+            <Button marginTop="28px">
               <a
                 style={{
                   textDecoration: 'none',
