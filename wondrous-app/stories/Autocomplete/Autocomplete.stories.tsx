@@ -15,35 +15,35 @@ export default {
       },
     },
   },
-  // argTypes: {
-  //   open: {
-  //     control: 'object',
-  //   },
-  //   onOpen: {
-  //     action: 'setOpen',
-  //   },
-  //   onBlur: {
-  //     action: 'handleBlur',
-  //   },
-  //   onFocus: {
-  //     action: 'handleFocus',
-  //   },
-  //   onClose: {
-  //     action: 'setOpen',
-  //   },
-  //   onInputChange: {
-  //     control: 'boolean',
-  //   },
-  //   style: {
-  //     type: 'string',
-  //   },
-  //   freeSolo: {
-  //     type: 'string',
-  //   },
-  //   getOptionLabel: {
-  //     control: 'boolean',
-  //   },
-  // },
+  argTypes: {
+    open: {
+      control: 'object',
+    },
+    onOpen: {
+      action: 'setOpen',
+    },
+    onBlur: {
+      action: 'handleBlur',
+    },
+    onFocus: {
+      action: 'handleFocus',
+    },
+    onClose: {
+      action: 'setOpen',
+    },
+    onInputChange: {
+      control: 'boolean',
+    },
+    style: {
+      type: 'string',
+    },
+    freeSolo: {
+      type: 'string',
+    },
+    getOptionLabel: {
+      control: 'boolean',
+    },
+  },
 } as ComponentMeta<typeof AutocompleteComponent>;
 
 const Template: ComponentStory<typeof AutocompleteComponent> = (props) => {
