@@ -115,16 +115,16 @@ export const OverflowBox = styled.div`
   overflow-y: auto;
   padding-right: 5px;
   scroll-snap-type: y mandatory;
+  -ms-overflow-style: none;
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background: #606060;
   }
 
   &::-webkit-scrollbar {
-    height: 0px;
-    width: 7px;
-    border-radius: 210px;
-    background: #606060;
+    height: 0;
+    width: 0;
+    display: none;
   }
 
   &::-webkit-scrollbar-thumb {
