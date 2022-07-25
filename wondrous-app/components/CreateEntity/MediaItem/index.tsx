@@ -1,6 +1,6 @@
 import React from 'react';
 import { SafeImage } from '../../Common/Image';
-import DeleteIcon from '../../Icons/delete';
+import DeleteIcon from '../../Icons/DeleteIcon';
 import { Filename, MediaItemWrapper } from './styles';
 import VideoPlayer from './VideoPlayer';
 

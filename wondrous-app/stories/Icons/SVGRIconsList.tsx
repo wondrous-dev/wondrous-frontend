@@ -24,7 +24,7 @@ export { default as createPod } from 'components/Icons/createPod';
 export { default as dai } from 'components/Icons/dai';
 export { DAOIcon, DAOEmptyIcon } from 'components/Icons/dao';
 export { ApproveAndPayIcon, SendIntoRevisionIcon } from 'components/Icons/decisionIcons';
-// export { default as delete2 } from 'components/Icons/delete';
+export { default as deleteIcon } from 'components/Icons/DeleteIcon';
 export { Discord, DiscordIcon } from 'components/Icons/discord';
 export { default as doneCircle } from 'components/Icons/doneCircle';
 export { default as dots } from 'components/Icons/dots';
