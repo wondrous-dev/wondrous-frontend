@@ -2,6 +2,7 @@ import EditIcon from 'components/Icons/edit.svg';
 import { Error } from 'components/OnboardingDao/styles';
 import { FormikValues, useField, useFormikContext } from 'formik';
 import { useState } from 'react';
+import { useOnboardingCreateDaoContext } from '../context';
 import {
   Category,
   ChildrenWrapper,
@@ -113,12 +114,16 @@ const Description = ({ description, field }) => {
 
 const Review = ({ fields }) => {
   const { values } = useFormikContext();
-  const { name, description, profilePicture, category }: FormikValues = values;
+  const { name, description, category }: FormikValues = values;
+  const { tempState } = useOnboardingCreateDaoContext();
   return (
     <Wrapper>
       <DaoName name={name} field={fields.name} />
+      FIX STATE
       <Item label="DAO Logo">
-        {profilePicture && <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(profilePicture)} />}
+        {tempState.profilePicture && (
+          <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(tempState.profilePicture)} />
+        )}
       </Item>
       <Description description={description} field={fields.description} />
       <Item label="Goals">

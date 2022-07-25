@@ -9,6 +9,7 @@ import {
   Review,
   StepWrapper,
 } from 'components/OnboardingDao';
+import { OnboardingCreateDaoProvider } from 'components/OnboardingDao/context';
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations/org';
 import { useReducer } from 'react';
@@ -104,8 +105,14 @@ const schema = Yup.object().shape({
   category: Yup.string().required('DA0 category is required'),
 });
 
+const handleTempState = (field, { key, value }) => {
+  console.log('handleTempState', field, key, value);
+  return { ...field, [key]: value };
+};
+
 const OnboardingCreateDao = () => {
   const [step, setStep] = useReducer(handleStep, 0);
+  const [tempState, setTempState] = useReducer(handleTempState, {});
   const currentField = fieldSet[step];
   const handleCreateOrg = useCreateOrg();
   return (
@@ -117,7 +124,9 @@ const OnboardingCreateDao = () => {
       validationSchema={schema}
     >
       <Form>
-        <StepWrapper {...currentField} handleStep={({ action, hasError = false }) => setStep({ action, hasError })} />
+        <OnboardingCreateDaoProvider value={{ tempState, setTempState }}>
+          <StepWrapper {...currentField} handleStep={({ action, hasError = false }) => setStep({ action, hasError })} />
+        </OnboardingCreateDaoProvider>
       </Form>
     </Formik>
   );
