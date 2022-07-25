@@ -10,6 +10,7 @@ import {
   MemberRequestCard,
   RequestCount,
   RequestCountWrapper,
+  RequestCountEmptyState,
   RequestHeader,
   RequestsContainer,
   ShowAllButton,
@@ -115,10 +116,14 @@ const MemberRequests = (props) => {
     <Wrapper>
       <RequestsContainer>
         <RequestHeader>
-          <RequestCountWrapper>
-            Requests
-            <RequestCount>{podUserMembershipRequests?.length ?? 0}</RequestCount>
-          </RequestCountWrapper>
+          {showEmptyState ? (
+            <RequestCountEmptyState>No Requests</RequestCountEmptyState>
+          ) : (
+            <RequestCountWrapper>
+              Requests
+              <RequestCount>{podUserMembershipRequests?.length ?? 0}</RequestCount>
+            </RequestCountWrapper>
+          )}
         </RequestHeader>
 
         {showEmptyState ? (

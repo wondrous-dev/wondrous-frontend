@@ -48,6 +48,12 @@ export const RequestCount = styled(Typography)`
   line-height: 13px;
 `;
 
+export const RequestCountEmptyState = styled(RequestCount)`
+  && {
+    color: ${palette.white};
+  }
+`;
+
 export const MemberRequestsList = styled.div`
   display: flex;
   flex-direction: column;
