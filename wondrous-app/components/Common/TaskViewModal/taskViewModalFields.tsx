@@ -29,7 +29,7 @@ import Image from 'next/image';
 import { useMutation } from '@apollo/client';
 import { UPDATE_TASK_ASSIGNEE, REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
 import Box from '@mui/material/Box';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';

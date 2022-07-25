@@ -1,4 +1,4 @@
-import { keys } from 'lodash';
+import keys from 'lodash/keys';
 import { useState } from 'react';
 import { TASK_ICONS_LABELS } from '../MilestoneTasks';
 import {

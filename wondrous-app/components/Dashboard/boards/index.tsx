@@ -17,7 +17,8 @@ import {
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
 import { useAdminColumns } from 'hooks/useAdminColumns';
-import _ from 'lodash';
+
+import cloneDeep from 'lodash/cloneDeep';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
@@ -295,7 +296,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
         orgPods[pod.org.name].push(pod);
       });
 
-      const newFilterSchema: any = _.cloneDeep(filterSchema);
+      const newFilterSchema: any = cloneDeep(filterSchema);
       newFilterSchema[0].orgPods = orgPods;
       newFilterSchema[0].items = data.getUserPods;
 

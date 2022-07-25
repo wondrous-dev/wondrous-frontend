@@ -47,7 +47,14 @@ import {
   GET_MILESTONES,
   GET_TASK_BY_ID,
 } from 'graphql/queries/task';
-import _ from 'lodash';
+
+import isEmpty from 'lodash/isEmpty';
+import isNull from 'lodash/isNull';
+import cloneDeep from 'lodash/cloneDeep';
+import pick from 'lodash/pick';
+import isUndefined from 'lodash/isUndefined';
+import assignWith from 'lodash/assignWith';
+
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
@@ -1036,25 +1043,25 @@ const useContextValue = (condition, callback) => {
 };
 
 const initialValues = (entityType, existingTask = undefined) => {
-  const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
+  const defaultValues = cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
-  const existingTaskValues = _.pick(
+  const existingTaskValues = pick(
     {
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
-      reviewerIds: _.isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
+      reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
         return { rewardAmount, paymentMethodId };
       }),
-      labelIds: _.isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
+      labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
     },
     defaultValuesKeys
   );
-  const initialValues = _.assignWith(defaultValues, existingTaskValues, (objValue, srcValue) => {
-    return _.isNull(srcValue) || _.isUndefined(srcValue) ? objValue : srcValue;
+  const initialValues = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) => {
+    return isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue;
   });
   return initialValues;
 };
@@ -1135,7 +1142,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
       const points = parseInt(values.points);
-      const rewards = _.isEmpty(values.rewards)
+      const rewards = isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
       const githubPullRequest = {
@@ -1615,9 +1622,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                             <CreateEntityAutocompletePopperRenderInputAdornment
                               position="end"
                               onClick={() => {
-                                const newReviewers = _.cloneDeep(form.values.reviewerIds).filter(
-                                  (id, i) => i !== index
-                                );
+                                const newReviewers = cloneDeep(form.values.reviewerIds).filter((id, i) => i !== index);
                                 form.setFieldValue('reviewerIds', newReviewers);
                               }}
                             >
@@ -1644,7 +1649,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     }}
                     onChange={(event, value, reason) => {
                       if (reason === 'selectOption' && !form.values.reviewerIds.includes(value.id)) {
-                        const reviewerIds = _.cloneDeep(form.values.reviewerIds);
+                        const reviewerIds = cloneDeep(form.values.reviewerIds);
                         reviewerIds[index] = value.id;
                         form.setFieldValue('reviewerIds', reviewerIds);
                       }
@@ -1657,12 +1662,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               );
             })}
             <Tooltip
-              title={_.isEmpty(filteredEligibleReviewers) && 'You reached the maximum no. of available reviewers'}
+              title={isEmpty(filteredEligibleReviewers) && 'You reached the maximum no. of available reviewers'}
               placement="top"
             >
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  if (_.isEmpty(filteredEligibleReviewers)) return;
+                  if (isEmpty(filteredEligibleReviewers)) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
@@ -1671,7 +1676,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 }}
               >
                 <CreateEntityAddButtonIcon />
-                {(_.isNull(form.values.reviewerIds) || _.isEmpty(form.values.reviewerIds)) && (
+                {(isNull(form.values.reviewerIds) || isEmpty(form.values.reviewerIds)) && (
                   <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
                 )}
               </CreateEntityLabelAddButton>
@@ -2389,7 +2394,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 <CreateEntityCreateTaskButton type="submit">
                   {existingTask ? `Edit` : `Create`} {entityType}
                 </CreateEntityCreateTaskButton>
-                {!_.isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
+                {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>
             </>
           )}
