@@ -18,34 +18,38 @@ export const RequestHeader = styled.div`
 `;
 
 export const RequestCountWrapper = styled(Typography)`
-  position: relative;
-  padding: 7.5px 10px;
-  font-family: 'Space Grotesk';
-  font-weight: 500;
-  line-height: 13px;
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  border-radius: 1000px;
-  color: ${palette.white};
-
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(251.85deg, ${palette.white} -32.64%, ${palette.red300} 66.55%);
-    mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
-    mask-composite: xor;
-    padding: 1.8px;
+  && {
+    position: relative;
+    padding: 7.5px 10px;
+    font-family: 'Space Grotesk';
+    font-weight: 500;
+    line-height: 13px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
     border-radius: 1000px;
+    color: ${palette.white};
+
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(251.85deg, ${palette.white} -32.64%, ${palette.red300} 66.55%);
+      mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
+      mask-composite: xor;
+      padding: 1.8px;
+      border-radius: 1000px;
+    }
   }
 `;
 
 export const RequestCount = styled(Typography)`
-  color: ${palette.red750};
-  font-family: 'Space Grotesk';
-  font-weight: 500;
-  line-height: 13px;
+  && {
+    color: ${palette.red750};
+    font-family: 'Space Grotesk';
+    font-weight: 500;
+    line-height: 13px;
+  }
 `;
 
 export const RequestCountEmptyState = styled(RequestCount)`
@@ -71,11 +75,13 @@ export const MemberRequestCard = styled.div`
 `;
 
 export const MemberName = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-size: 16px;
-  font-weight: 600;
-  color: ${palette.white};
-  margin-left: 12px;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 16px;
+    font-weight: 600;
+    color: ${palette.white};
+    margin-left: 12px;
+  }
 `;
 
 export const MemberMessage = styled(MemberName)`
@@ -98,42 +104,48 @@ export const RequestActionButtons = styled.div`
 `;
 
 export const RequestActionButton = styled(Button)`
-  font-family: 'Space Grotesk';
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 14px;
-  padding: 7px 16px;
-  border-radius: 1000px;
-  color: ${palette.white};
+  && {
+    font-family: 'Space Grotesk';
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 14px;
+    padding: 7px 16px;
+    border-radius: 1000px;
+    color: ${palette.white};
+  }
 `;
 
 export const RequestDeclineButton = styled(RequestActionButton)`
-  background: ${palette.grey78};
-  &:hover {
-    background: ${palette.grey78}b3;
+  && {
+    background: ${palette.grey78};
+    &:hover {
+      background: ${palette.grey78}b3;
+    }
   }
 `;
 
 export const RequestApproveButton = styled(RequestActionButton)`
-  background: ${palette.background.default};
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(
-      270deg,
-      ${palette.blue20} -5.62%,
-      ${palette.highlightPurple} 45.92%,
-      ${palette.highlightBlue} 103.12%
-    );
-    mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
-    mask-composite: xor;
-    padding: 1.8px;
-    border-radius: 1000px;
-  }
-  &:hover {
-    background: ${palette.background.default}b3;
+  && {
+    background: ${palette.background.default};
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
+      mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
+      mask-composite: xor;
+      padding: 1.8px;
+      border-radius: 1000px;
+    }
+    &:hover {
+      background: ${palette.background.default}b3;
+    }
   }
 `;
 
