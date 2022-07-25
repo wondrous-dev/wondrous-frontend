@@ -119,7 +119,6 @@ const Review = ({ fields }) => {
   return (
     <Wrapper>
       <DaoName name={name} field={fields.name} />
-      FIX STATE
       <Item label="DAO Logo">
         {tempState.profilePicture && (
           <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(tempState.profilePicture)} />
