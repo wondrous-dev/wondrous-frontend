@@ -64,6 +64,7 @@ const ProfileInfo = ({ userProfile }) => {
           width={40}
           height={40}
           objectFit="cover"
+          useNextImage
           style={{
             borderRadius: '50%',
           }}

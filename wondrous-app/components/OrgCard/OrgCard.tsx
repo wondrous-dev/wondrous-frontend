@@ -39,6 +39,7 @@ const OrgCard = ({ item }) => {
                 }
                 width="32px"
                 height="32px"
+                useNextImage
                 style={{
                   borderRadius: '5px',
                 }}

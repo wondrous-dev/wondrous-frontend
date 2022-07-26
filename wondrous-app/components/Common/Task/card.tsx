@@ -313,7 +313,8 @@ export const TaskCard = ({
           {task?.privacyLevel === PRIVACY_LEVEL.public && (
             <ToggleBoardPrivacyIcon
               style={{
-                width: task?.assigneeId ? '40px' : 'auto',
+                width: '29px',
+                height: '29px',
                 marginRight: '0',
               }}
               isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
@@ -361,9 +362,12 @@ export const TaskCard = ({
             <BoardsCardMedia>
               <SafeImage
                 width={270}
+                objectFit="cover"
+                objectPosition="center"
                 height="100%"
                 layout="responsive"
                 src={coverMedia.slug}
+                useNextImage
               />
             </BoardsCardMedia>
           ) : null}
