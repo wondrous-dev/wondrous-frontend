@@ -1,6 +1,7 @@
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { useFormikContext } from 'formik';
 import { mapKeys, some } from 'lodash';
+import { useRouter } from 'next/router';
 import { useEffect } from 'react';
 import {
   BackButton,
@@ -89,12 +90,13 @@ const StepWrapper = ({
   title,
   ...props
 }) => {
+  const router = useRouter();
   return (
     <Wrapper>
       <FormWrapper>
         <HeaderWrapper>
           <OnboardingStepIndicator step={step} />
-          <CloseButton>
+          <CloseButton onClick={() => router.back()}>
             <CloseButtonIcon />
           </CloseButton>
         </HeaderWrapper>
