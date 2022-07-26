@@ -66,6 +66,7 @@ export const CreateEntity = (props: ICreateEntity) => {
 
 const ChooseEntityToCreate = (props) => {
   const createEntityContext = useCreateEntityContext();
+  const router = useRouter();
   const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
@@ -77,6 +78,11 @@ const ChooseEntityToCreate = (props) => {
     resetEntityType();
     toggleOpen();
   };
+
+  if (entityType === ENTITIES_TYPES.ORG) {
+    router.push('/onboarding-dao');
+    return null;
+  }
 
   if (entityType) {
     return (
