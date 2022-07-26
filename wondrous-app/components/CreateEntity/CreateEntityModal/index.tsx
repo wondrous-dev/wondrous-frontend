@@ -1326,7 +1326,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
 
   const handleSaveTemplate = (template_name) => {
-    const rewards = _.isEmpty(form.values.rewards)
+    const rewards = isEmpty(form.values.rewards)
       ? []
       : [
           {
@@ -1356,7 +1356,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   };
 
   const handleEditTemplate = (templateId) => {
-    const rewards = _.isEmpty(form.values.rewards)
+    const rewards = isEmpty(form.values.rewards)
       ? []
       : [
           {
