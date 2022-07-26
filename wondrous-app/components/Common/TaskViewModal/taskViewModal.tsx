@@ -587,6 +587,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
               <TaskModalHeaderWrapperRight>
                 {back && <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>}
                 <TaskModalHeaderShare
+                  isBounty={isBounty}
                   url={`${LINK}/organization/${fetchedTask?.orgUsername}/boards?task=${
                     isSubtask ? fetchedTask?.parentTaskId : taskId
                   }`}

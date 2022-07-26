@@ -7,16 +7,18 @@ import { StyledShare } from './styles';
 interface IShareProps {
   url: string;
   className?: string;
+  isBounty?: boolean;
 }
 
 export const Share = (props: IShareProps) => {
-  const { url, className } = props;
+  const { url, className, isBounty = false } = props;
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+  const snackbarAlertMessage = isBounty ? 'Bounty link copied' : 'Task link copied';
   const handleOnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
     navigator.clipboard.writeText(url);
-    setSnackbarAlertMessage('Bounty link copied');
+    setSnackbarAlertMessage(snackbarAlertMessage);
     setSnackbarAlertOpen(true);
   };
   return (
