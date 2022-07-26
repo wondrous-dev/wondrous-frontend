@@ -20,6 +20,16 @@ export const Wrapper = styled.div`
   }
 `;
 
+export const WrapperLoadingCircularProgress = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  align-items: center;
+  justify-content: center;
+`;
+
 export const FormWrapper = styled.div`
   display: flex;
   flex-direction: column;
