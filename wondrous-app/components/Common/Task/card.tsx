@@ -367,6 +367,7 @@ export const TaskCard = ({
                 height="100%"
                 layout="responsive"
                 src={coverMedia.slug}
+                useNextImage
               />
             </BoardsCardMedia>
           ) : null}

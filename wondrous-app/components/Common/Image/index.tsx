@@ -24,7 +24,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     height,
     placeholderComp,
     placeholderSrc,
-    useNextImage = true,
+    useNextImage = false,
     objectFit = 'cover',
     objectPosition = 'center',
     ...props
