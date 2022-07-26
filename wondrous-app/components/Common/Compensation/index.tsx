@@ -20,6 +20,7 @@ export const Compensation = (props) => {
               <IconContainer>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <SafeImage
+                  useNextImage={false}
                   src={icon}
                   style={{
                     width: '24px',

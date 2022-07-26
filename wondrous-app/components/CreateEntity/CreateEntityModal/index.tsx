@@ -248,7 +248,13 @@ const filterPaymentMethods = (paymentMethods) => {
   return paymentMethods.map((paymentMethod) => {
     return {
       ...paymentMethod,
-      icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
+      icon: (
+        <SafeImage
+          useNextImage={false}
+          src={paymentMethod.icon}
+          style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+        />
+      ),
       label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
       value: paymentMethod.id,
     };
@@ -881,7 +887,7 @@ const CreateEntityDropdown = (props) => {
         return (
           <CreateEntityOption key={value} value={i.value}>
             <CreateEntityOptionImageWrapper>
-              {imageUrl ? <SafeImage src={imageUrl} /> : <DefaultImageComponent color={color} />}
+              {imageUrl ? <SafeImage useNextImage={false} src={imageUrl} /> : <DefaultImageComponent color={color} />}
             </CreateEntityOptionImageWrapper>
             <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
           </CreateEntityOption>
@@ -1612,7 +1618,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
-                                <SafeImage src={reviewer.profilePicture} />
+                                <SafeImage useNextImage={false} src={reviewer.profilePicture} />
                               ) : (
                                 <CreateEntityDefaultUserImage />
                               )}
@@ -1637,7 +1643,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       return (
                         <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
-                            <SafeImage src={option?.profilePicture} />
+                            <SafeImage useNextImage={false} src={option?.profilePicture} />
                           ) : (
                             <CreateEntityDefaultUserImage />
                           )}
@@ -1716,7 +1722,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         startAdornment={
                           <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                             {assignee?.profilePicture ? (
-                              <SafeImage src={assignee.profilePicture} />
+                              <SafeImage useNextImage={false} src={assignee.profilePicture} />
                             ) : (
                               <CreateEntityDefaultUserImage />
                             )}
@@ -1739,7 +1745,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     return (
                       <CreateEntityAutocompleteOption {...props}>
                         {option?.profilePicture ? (
-                          <SafeImage src={option?.profilePicture} />
+                          <SafeImage useNextImage={false} src={option?.profilePicture} />
                         ) : (
                           <CreateEntityDefaultUserImage />
                         )}

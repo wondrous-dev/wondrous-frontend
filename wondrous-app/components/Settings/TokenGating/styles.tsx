@@ -256,6 +256,7 @@ export const TokenGatingAutocompleteListItem = styled(ListItem)`
 export const TokenGatingInputImage = styled((props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '24px',
       marginRight: '8px',
@@ -374,6 +375,7 @@ export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
 
 export const TokenLogoDisplay = (props) => (
   <SafeImage
+    useNextImage={false}
     src={props?.src}
     style={{
       width: '29px',

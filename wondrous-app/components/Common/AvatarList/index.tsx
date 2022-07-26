@@ -1,4 +1,5 @@
 import React from 'react';
+import { Box } from '@mui/system';
 import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import Tooltip from 'components/Tooltip';
@@ -20,19 +21,25 @@ export const SmallAvatar = (props) => {
       style={{ ...style, zIndex: 6 - (style.zIndex || 0) }}
     >
       {avatar.url ? (
-        <SafeImage
-          src={avatar.url}
-          style={{
-            width: '29px',
-            height: '29px',
-            borderRadius: '29px',
+        <Box
+          sx={{
             display: 'flex',
             alignSelf: 'flex-start',
             flexFlow: 'column',
             alignItems: 'center',
             justifyContent: 'center',
           }}
-        />
+        >
+          <SafeImage
+            width={29}
+            height={29}
+            src={avatar.url}
+            objectFit="cover"
+            style={{
+              borderRadius: '29px',
+            }}
+          />
+        </Box>
       ) : (
         <SmallAvatarWrapper
           randomColor={avatar?.color || randomColor}
