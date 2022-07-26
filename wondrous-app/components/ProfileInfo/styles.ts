@@ -127,6 +127,6 @@ const styles = {
   editInterest: {
     cursor: 'pointer',
   }
-  
+
 };
 export default styles
