@@ -25,6 +25,8 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     placeholderComp,
     placeholderSrc,
     useNextImage = true,
+    objectFit = 'cover',
+    objectPosition = 'center',
     ...props
   } = safeImageArgs;
   const [imgUrl, setImageUrl] = useState(null);
@@ -85,7 +87,15 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
 
   if (safeImageUrl) {
     return useNextImage ? (
-      <Image src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
+      <Image
+        objectFit={objectFit}
+        objectPosition={objectPosition}
+        src={safeImageUrl}
+        alt={alt}
+        width={width}
+        height={height}
+        {...props}
+      />
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
       <img src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
