@@ -61,13 +61,13 @@ const palette = {
 
 const ColorComponent = () => {
   return (
-    <Grid container spacing={5} sx={{ color: 'white' }}>
+    <Grid container spacing={5} sx={{ backgroundColor: '#eae8e8' }}>
       {Object.keys(palette).map((key) => {
         return (
           <>
             <Grid item>
               <Box sx={{ height: '30px', backgroundColor: palette[key] }} />
-              <div>{key}</div>
+              <div><strong>{key}</strong></div>
               <div><strong>hex: </strong>{palette[key]}</div>
             </Grid>
           </>
