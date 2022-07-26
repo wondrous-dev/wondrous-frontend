@@ -561,6 +561,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/twitter/verify-tweet',
   '/forgot-password',
   '/reset-password',
+  '/onboarding-dao',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
