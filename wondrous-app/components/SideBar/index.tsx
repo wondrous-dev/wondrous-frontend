@@ -125,6 +125,7 @@ const SideBarComponent = ({ userOrgs }) => {
                 width={32}
                 height={32}
                 objectFit="cover"
+                useNextImage
                 style={profilePictureStyle}
               />
             </DrawerTopBlockItem>

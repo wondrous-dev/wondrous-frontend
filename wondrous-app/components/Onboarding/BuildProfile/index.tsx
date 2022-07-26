@@ -139,6 +139,7 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
               width={52}
               height={52}
               objectFit="cover"
+              useNextImage
               style={{
                 borderRadius: '26px',
               }}

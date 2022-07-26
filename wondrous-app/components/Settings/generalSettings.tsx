@@ -165,7 +165,7 @@ const GeneralSettingsComponent = (props) => {
 
         {newProfile?.profilePicture && !logoImage ? (
           <Box sx={{ marginTop: '30px' }}>
-            <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" />
+            <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
           </Box>
         ) : null}
 
@@ -179,7 +179,7 @@ const GeneralSettingsComponent = (props) => {
 
         {newProfile?.headerPicture && !headerImage && (
           <Box sx={{ width: '100%', height: '100px', position: 'relative', marginTop: '30px' }}>
-            <SafeImage src={newProfile?.headerPicture} layout="fill" objectFit="cover" />
+            <SafeImage src={newProfile?.headerPicture} layout="fill" objectFit="cover" useNextImage />
           </Box>
         )}
 
