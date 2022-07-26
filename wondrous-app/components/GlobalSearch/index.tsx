@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
 import { InputAdornment } from '@mui/material';
-import { SafeImage } from 'components/Common/Image';
+import CircularProgress from '@mui/material/CircularProgress';
+
 import { SEARCH_GLOBAL } from 'graphql/queries';
 import apollo from 'services/apollo';
-import CircularProgress from '@mui/material/CircularProgress';
+
+import { SafeImage } from 'components/Common/Image';
 import { useOutsideAlerter } from 'utils/hooks';
-import { delQuery } from 'utils';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodIcon from 'components/Icons/podIcon';
 import { SearchIconWrapped } from 'components/SearchTasks/styles';
 import { DAOIcon } from 'components/Icons/dao';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
+
 import {
   GlobalSearchWrapper,
   SearchInput,
@@ -45,14 +47,23 @@ interface Labels {
   defaultImg: any;
 }
 
-const GlobalSearch = (props) => {
+const GlobalSearch = () => {
   const [options, setOptions] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const router = useRouter();
   const inputRef = useRef(null);
   const wrapperRef = useRef(null);
-  useOutsideAlerter(wrapperRef, () => setIsExpanded(false));
+
+  const handleClose = () => {
+    setIsExpanded(false);
+
+    if (inputRef?.current?.value) {
+      inputRef.current.value = '';
+    }
+  };
+
+  useOutsideAlerter(wrapperRef, handleClose);
 
   useEffect(() => {
     if (!isExpanded && Object.keys(options).length) setOptions({});
@@ -105,6 +116,7 @@ const GlobalSearch = (props) => {
   const handleInputExpand = () => (isExpanded ? false : setIsExpanded(true));
 
   const handleRedirect = (type, entity) => {
+    handleClose();
     if (type === GLOBAL_SEARCH_TYPES.ORGS)
       return router.push(`/organization/${entity.username}/boards?view=grid`, undefined, { shallow: true });
     if (type === GLOBAL_SEARCH_TYPES.PODS)

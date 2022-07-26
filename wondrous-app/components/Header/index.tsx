@@ -75,7 +75,7 @@ const HeaderComponent = (props) => {
               </Link>
             </Box>
           </Tooltip>
-          <GlobalSearch />
+          {!isMobile && <GlobalSearch />}
         </HeaderLeftBlock>
         <HeaderRightBlock>
           {user && (

@@ -77,6 +77,11 @@ export const SearchResultItem = styled.li`
   justify-content: flex-start;
   align-items: center;
   cursor: pointer;
+  img {
+    max-height: 29px;
+    max-width: 29px;
+    border-radius: 6px;
+  }
 `;
 
 export const SearchResultCategoryTitle = styled(Typography)`
