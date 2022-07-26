@@ -197,7 +197,6 @@ export const Task = (props) => {
   };
 
   const totalSubtask = task?.totalSubtaskCount;
-  const completedSubtask = task?.completedSubtaskCount;
   const [claimed, setClaimed] = useState(false);
   const handleOnArchive = useCallback(() => {
     orgBoard?.setFirstTimeFetch(false);
@@ -348,7 +347,6 @@ export const Task = (props) => {
         title={title}
         description={description}
         goToPod={goToPod}
-        completedSubtask={completedSubtask}
         media={media}
         assigneeId={assigneeId}
         claimed={claimed}

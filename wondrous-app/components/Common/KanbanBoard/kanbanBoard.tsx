@@ -260,13 +260,13 @@ const KanbanBoard = (props) => {
     const shouldConfirmInReviewTask =
       status === TASK_STATUS_DONE &&
       source.droppableId === TASK_STATUS_IN_REVIEW &&
-      taskToUpdate.approvedSubmissionsCount !== taskToUpdate.totalSubmissionsCount;
+      taskToUpdate.waitingForReviewSubmissionsCount &&
+      taskToUpdate.waitingForReviewSubmissionsCount > 0; // is this the right logic?
     if (shouldConfirmInReviewTask) {
       setTaskToConfirm({
         task: {
           id: taskToUpdate?.id,
-          approvedSubmissionsCount: taskToUpdate?.approvedSubmissionsCount,
-          totalSubmissionsCount: taskToUpdate?.totalSubmissionsCount,
+          waitingForReviewSubmissionsCount: taskToUpdate?.waitingForReviewSubmissionsCount,
           title: taskToUpdate?.title,
         },
         confirmTitle: `Task ${taskToUpdate?.title} has submissions you need to review`,
