@@ -32,7 +32,7 @@ export const MilestoneTaskImageWrapper = styled.div`
   min-width: 26px;
 `;
 
-export const MilestoneTaskImageSafeImage = styled(SafeImage)``;
+export const MilestoneTaskImageSafeImage = styled(SafeImage).attrs({ useNextImage: false })``;
 
 export const MilestoneTaskTitleAndInfo = styled.div`
   display: flex;
@@ -95,7 +95,7 @@ export const MilestoneTaskRewardWrapper = styled.div`
   padding: 0 8px;
 `;
 
-export const MilestoneTaskRewardIcon = styled(SafeImage)`
+export const MilestoneTaskRewardIcon = styled(SafeImage).attrs({ useNextImage: false })`
   && {
     width: 13px;
     height: 13px;

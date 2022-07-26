@@ -62,7 +62,6 @@ export interface TaskFragment {
   priority?: any;
   reactionCount?: any;
   rewards?: any;
-  shareCount?: any;
   status: string;
   title: string;
   type: string;

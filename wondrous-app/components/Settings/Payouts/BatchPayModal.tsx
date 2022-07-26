@@ -206,7 +206,7 @@ export const BatchPayModal = (props) => {
                           }}
                         >
                           {submission?.payeeProfilePicture ? (
-                            <SafeImage src={submission?.payeeProfilePicture} style={imageStyle} />
+                            <SafeImage useNextImage={false} src={submission?.payeeProfilePicture} style={imageStyle} />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
@@ -226,6 +226,7 @@ export const BatchPayModal = (props) => {
                           <IconContainer>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <SafeImage
+                              useNextImage={false}
                               src={submission?.icon}
                               style={{
                                 width: '24px',

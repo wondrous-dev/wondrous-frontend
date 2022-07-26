@@ -84,6 +84,7 @@ export default function ApplicationCard({
           <SmartLink href={`/profile/${username}/about`} asLink>
             {avatar ? (
               <SafeImage
+                useNextImage={false}
                 style={{
                   width: '26px',
                   height: '26px',

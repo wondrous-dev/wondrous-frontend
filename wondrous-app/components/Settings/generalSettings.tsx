@@ -1,6 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
+import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
@@ -27,10 +28,8 @@ import {
   GeneralSettingsDAODescriptionBlock,
   GeneralSettingsDAODescriptionInput,
   GeneralSettingsDAODescriptionInputCounter,
-  GeneralSettingsDAOHeaderImage,
   GeneralSettingsDAONameBlock,
   GeneralSettingsDAONameInput,
-  GeneralSettingsDAOProfileImage,
   GeneralSettingsInputsBlock,
   GeneralSettingsResetButton,
   GeneralSettingsSaveChangesButton,
@@ -41,6 +40,7 @@ import {
   Snackbar,
   SettingsHeaderText,
 } from './styles';
+import { SafeImage } from 'components/Common/Image';
 
 const LIMIT = 200;
 
@@ -162,8 +162,11 @@ const GeneralSettingsComponent = (props) => {
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
+
         {newProfile?.profilePicture && !logoImage ? (
-          <GeneralSettingsDAOProfileImage src={newProfile?.profilePicture} />
+          <Box sx={{ marginTop: '30px' }}>
+            <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" />
+          </Box>
         ) : null}
 
         <ImageUpload
@@ -174,7 +177,11 @@ const GeneralSettingsComponent = (props) => {
           updateFilesCb={(file) => handleImageChange(file, 'profile')}
         />
 
-        {newProfile?.headerPicture && !headerImage && <GeneralSettingsDAOHeaderImage src={newProfile?.headerPicture} />}
+        {newProfile?.headerPicture && !headerImage && (
+          <Box sx={{ width: '100%', height: '100px', position: 'relative', marginTop: '30px' }}>
+            <SafeImage src={newProfile?.headerPicture} layout="fill" objectFit="cover" />
+          </Box>
+        )}
 
         <ImageUpload
           image={headerImage}

@@ -33,6 +33,7 @@ const AboutPodsCard = (props) => {
         {org?.thumbnailPicture || org?.profilePicture ? (
           <SafeImage
             src={org?.thumbnailPicture || org?.profilePicture}
+            useNextImage={false}
             style={{
               width: '30px',
               height: '30px',

@@ -14,7 +14,8 @@
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
     "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "pipeline": "NODE_OPTIONS=\"--max_old_space_size=4096\" next lint && next build"
   },
   "dependencies": {
     "@apollo/client": "^3.3.21",

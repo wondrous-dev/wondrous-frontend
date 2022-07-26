@@ -3,8 +3,6 @@ import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import { parseLinks } from 'utils/common';
 import router from 'next/router';
-import Image from 'next/image';
-import React, { useState } from 'react';
 import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'utils/constants';
 import { formatLinkDisplay } from 'utils/links';
 import { useMe } from '../../Auth/withAuth';
@@ -67,7 +65,7 @@ const Wrapper = (props: IWrapperProps) => {
   };
 
   const profileImageComponent = profilePicture ? (
-    <SafeImage src={profilePicture} style={style} />
+    <SafeImage src={profilePicture} style={style as React.CSSProperties} useNextImage={false} />
   ) : (
     <DefaultUserImage style={style} />
   );

@@ -69,6 +69,7 @@ const Mentions: React.FC<
               }}
             >
               <SafeImage
+                useNextImage={false}
                 src={profilePicture}
                 style={{
                   width: '30px',
