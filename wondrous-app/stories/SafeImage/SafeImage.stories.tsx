@@ -10,31 +10,8 @@ export default {
   parameters: {
     docs: {
       description: {
-        component:
-          'SafeImage is designed to load image from google cloud store.',
+        component: 'SafeImage is designed to load image from google cloud store.',
       },
-    },
-  },
-  argTypes: {
-    src: {
-      type: { name: 'string', required: true },
-      description: 'Src indicates the path to the image being displayed.',
-    },
-    style: {
-      description: 'Inline styles',
-      control: 'object',
-    },
-    defaultImage: {
-      type: 'string',
-      description: 'URL to the default image in case if `src` is not defined or null',
-    },
-    setImage: {
-      action: 'setImage',
-      description: 'Action called when preview file is loaded',
-    },
-    className: {
-      type: 'string',
-      description: 'Element CSS class name',
     },
   },
 } as ComponentMeta<typeof SafeImageComponent>;
@@ -44,6 +21,9 @@ const Template: ComponentStory<typeof SafeImageComponent> = (args) => <SafeImage
 export const SafeImage = Template.bind({});
 SafeImage.args = {
   src: 'image.jpg',
+  useNextImage: false,
+  width: 29,
+  height: 29,
 };
 
 SafeImage.parameters = {
