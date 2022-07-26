@@ -123,7 +123,6 @@ export const TaskCardFragment = gql`
     completedAt
     reactionCount
     commentCount
-    shareCount
     orgOrder
     podOrder
     assigneeOrder
@@ -146,9 +145,9 @@ export const TaskCardFragment = gql`
     }
     parentTaskId
     totalSubtaskCount
-    completedSubtaskCount
     totalSubmissionsCount
     approvedSubmissionsCount
+    waitingForReviewSubmissionsCount
     points
     taskApplicationPermissions {
       canClaim
@@ -177,7 +176,7 @@ export const TaskProposalCardFragment = gql`
     title
     description
     approvedAt
-    changeRequestedAt
+    closedAt
     lastReviewedBy
     rejectedAt
     rewards {
@@ -298,7 +297,7 @@ export const TaskProposalFragment = gql`
     }
     userMentions
     approvedAt
-    changeRequestedAt
+    closedAt
     rejectedAt
     lastReviewedBy
     associatedTaskId

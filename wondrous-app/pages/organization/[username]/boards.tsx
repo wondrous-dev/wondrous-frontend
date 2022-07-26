@@ -12,7 +12,6 @@ import {
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
 import { GET_USER } from 'graphql/queries/user';
-import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
@@ -36,7 +35,7 @@ import {
   TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
   STATUS_APPROVED,
-  STATUS_CHANGE_REQUESTED,
+  STATUS_CLOSED,
   PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
@@ -270,11 +269,11 @@ const useGetOrgTaskBoardProposals = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search) {
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && orgId) {
       const proposalBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
-          : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
+          : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED];
       getOrgTaskProposals({
         variables: {
           podIds: filters?.podIds,

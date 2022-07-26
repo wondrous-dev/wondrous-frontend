@@ -37,7 +37,7 @@ import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_R
 import { parseUserPermissionContext } from 'utils/helpers';
 import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from 'graphql/mutations/taskSubmission';
 import { RejectIcon } from '../../Icons/taskModalIcons';
 import { CompletedIcon } from '../../Icons/statusIcons';
@@ -79,7 +79,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   let TaskIcon = TASK_ICONS[status];
   const [modalOpen, setModalOpen] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION);
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION);
   const location = useLocation();
@@ -141,7 +141,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
         },
       });
     requestChange = () =>
-      requestChangeTaskProposal({
+      closeTaskProposal({
         variables: {
           proposalId: task?.id,
         },

@@ -10,6 +10,7 @@ export const MediaItem = (props) => {
     <MediaItemWrapper className={className}>
       {mediaItem?.type === 'image' && (
         <SafeImage
+          useNextImage={false}
           src={mediaItem?.uploadSlug || mediaItem?.slug}
           style={{
             borderRadius: '4px',

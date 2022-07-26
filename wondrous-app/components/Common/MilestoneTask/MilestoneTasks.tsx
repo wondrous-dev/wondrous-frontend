@@ -3,7 +3,7 @@ import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import { ArchivedIcon } from 'components/Icons/statusIcons';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import styled from 'styled-components';

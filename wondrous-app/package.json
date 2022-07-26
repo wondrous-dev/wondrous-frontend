@@ -12,7 +12,8 @@
     "prepare": "cd .. && husky install wondrous-app/.husky",
     "analyze": "cross-env ANALYZE=true next build",
     "analyze:server": "cross-env BUNDLE_ANALYZE=server next build",
-    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build"
+    "analyze:browser": "cross-env BUNDLE_ANALYZE=browser next build",
+    "pipeline": "NODE_OPTIONS=\"--max_old_space_size=4096\" next lint && next build"
   },
   "dependencies": {
     "@apollo/client": "3.6.6",
@@ -31,7 +32,7 @@
     "@reactour/tour": "2.10.4",
     "@sentry/nextjs": "6.19.7",
     "@snapshot-labs/snapshot.js": "0.3.56",
-    "@svgr/webpack": "6.2.1",
+    "@svgr/webpack": "6.3.0",
     "@udecode/plate-combobox": "11.2.1",
     "@udecode/plate-core": "11.2.1",
     "@udecode/plate-mention": "11.2.1",
@@ -47,12 +48,12 @@
     "date-fns": "2.28.0",
     "ethers": "5.6.8",
     "formik": "2.2.9",
-    "graphql": "15.8.0",
+    "graphql": "15.5.1",
     "is-hotkey": "0.2.0",
     "is-url": "1.2.4",
     "lodash": "4.17.21",
     "moment": "2.29.3",
-    "next": "12.1.6",
+    "next": "12.2.3",
     "pluralize": "^8.0.0",
     "react": "17.0.2",
     "react-beautiful-dnd": "13.1.0",

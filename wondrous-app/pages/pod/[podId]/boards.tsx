@@ -34,12 +34,12 @@ import {
   TASK_STATUSES,
   ENTITIES_TYPES,
   STATUSES_ON_ENTITY_TYPES,
-  STATUS_CHANGE_REQUESTED,
   STATUS_APPROVED,
   PROPOSAL_STATUS_LIST,
+  STATUS_CLOSED,
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
-import _ from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
@@ -191,7 +191,7 @@ const useGetPodTaskProposals = ({
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         setPodTaskHasMore(fetchMoreResult?.getPodTaskBoardProposals.length >= LIMIT);
-        const getPodTaskBoardProposals = _.uniqBy(
+        const getPodTaskBoardProposals = uniqBy(
           [...prev.getOrgTaskBoardProposals, ...fetchMoreResult.getOrgTaskBoardProposals],
           'id'
         );
@@ -208,7 +208,7 @@ const useGetPodTaskProposals = ({
     const proposalBoardStatuses =
       statuses?.length > 0
         ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
-        : [STATUS_OPEN, STATUS_CHANGE_REQUESTED, STATUS_APPROVED];
+        : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED];
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId)
       getPodTaskProposals({
         variables: {

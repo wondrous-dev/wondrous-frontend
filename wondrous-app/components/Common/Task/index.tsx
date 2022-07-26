@@ -52,7 +52,7 @@ import { Arrow, Archived } from '../../Icons/sections';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { DeleteTaskModal } from '../DeleteTaskModal';
-import { REQUEST_CHANGE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { getBoardType } from '../KanbanBoard/kanbanBoard';
 import { CreateEntity } from 'components/CreateEntity';
 
@@ -132,7 +132,7 @@ export const Task = (props) => {
   const isMilestone = type === Constants.ENTITIES_TYPES.MILESTONE;
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
-  const [requestChangeTaskProposal] = useMutation(REQUEST_CHANGE_TASK_PROPOSAL);
+  const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -175,8 +175,8 @@ export const Task = (props) => {
 
   const reviewerData = useGetReviewers(editTask, task);
 
-  const proposalRequestChange = (id, status) => {
-    requestChangeTaskProposal({
+  const closeProposal = (id, status) => {
+    closeTaskProposal({
       variables: {
         proposalId: id,
       },
@@ -197,7 +197,6 @@ export const Task = (props) => {
   };
 
   const totalSubtask = task?.totalSubtaskCount;
-  const completedSubtask = task?.completedSubtaskCount;
   const [claimed, setClaimed] = useState(false);
   const handleOnArchive = useCallback(() => {
     orgBoard?.setFirstTimeFetch(false);
@@ -348,7 +347,6 @@ export const Task = (props) => {
         title={title}
         description={description}
         goToPod={goToPod}
-        completedSubtask={completedSubtask}
         media={media}
         assigneeId={assigneeId}
         claimed={claimed}
@@ -361,7 +359,7 @@ export const Task = (props) => {
         setArchiveTask={setArchiveTask}
         canDelete={canDelete}
         setDeleteTask={setDeleteTask}
-        proposalRequestChange={proposalRequestChange}
+        proposalRequestChange={closeProposal}
         boardType={getBoardType({
           orgBoard,
           podBoard,
@@ -430,6 +428,7 @@ export const TaskListCard = (props) => {
       >
         <TaskHeader>
           <SafeImage
+            useNextImage={false}
             src={task?.orgProfilePicture}
             style={{
               width: '29px',

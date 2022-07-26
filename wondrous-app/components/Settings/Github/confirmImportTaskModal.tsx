@@ -12,7 +12,7 @@ import {
   StyledHeader,
 } from 'components/Common/DeleteTaskModal/styles';
 import { DELETE_MILESTONE, DELETE_TASK } from 'graphql/mutations';
-import CloseModalIcon from '../../Icons/closeModal';
+import CloseModalIcon from 'components/Icons/closeModal';
 import { ArchivedIcon } from '../../Icons/statusIcons';
 
 interface IImportTaskModalProps {

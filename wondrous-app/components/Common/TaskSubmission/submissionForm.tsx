@@ -10,7 +10,7 @@ import {
   UPDATE_TASK_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
 import { GET_ORG_USERS } from 'graphql/queries/org';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useRef, useState } from 'react';
 import { ReactEditor } from 'slate-react';
 import { transformMediaFormat } from 'utils/helpers';

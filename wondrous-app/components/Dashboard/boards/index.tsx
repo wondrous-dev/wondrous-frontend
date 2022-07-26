@@ -1,13 +1,13 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { ViewType } from 'types/common';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
-import _ from 'lodash';
-import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import { useMe } from 'components/Auth/withAuth';
+import Boards from 'components/Common/Boards';
+import BoardsActivity from 'components/Common/BoardsActivity';
+import { FilterItem, FilterItemIcon, FilterItemName } from 'components/Common/Filter/styles';
+import CreateDaoIcon from 'components/Icons/createDao';
+import CreatePodIcon from 'components/Icons/createPod';
 import {
   GET_JOIN_ORG_REQUESTS,
   GET_JOIN_POD_REQUESTS,
-  GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_PODS,
   GET_USER_TASK_BOARD_PROPOSALS,
@@ -16,47 +16,27 @@ import {
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
-import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
+import { useAdminColumns } from 'hooks/useAdminColumns';
+
+import cloneDeep from 'lodash/cloneDeep';
+import { useRouter } from 'next/router';
+import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import { COLUMNS, FILTER_STATUSES, FILTER_STATUSES_ADMIN, LIMIT, populateTaskColumns } from 'services/board';
+import { COLUMNS, FILTER_STATUSES_ADMIN, LIMIT, populateTaskColumns } from 'services/board';
+import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
   DEFAULT_STATUSES,
   STATUS_OPEN,
   TASK_STATUSES,
-  TASK_STATUS_AWAITING_PAYMENT,
   TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_REQUESTED,
-  TASK_STATUS_SUBMISSION_REQUEST,
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useGetPerStatusTaskCountForUserBoard, useRouterQuery, useSelectMembership } from 'utils/hooks';
-import { useMe } from '../../Auth/withAuth';
-import Boards from '../../Common/Boards';
-import { FilterItem, FilterItemIcon, FilterItemName } from '../../Common/Filter/styles';
-import CreateDaoIcon from '../../Icons/createDao';
-import CreatePodIcon from '../../Icons/createPod';
 import { FilterItemOrgIcon, FilterOrg } from './styles';
-import BoardsActivity from 'components/Common/BoardsActivity';
-const proposal = {
-  status: TASK_STATUS_PROPOSAL_REQUEST,
-  tasks: [],
-};
-
-const submissions = {
-  status: TASK_STATUS_SUBMISSION_REQUEST,
-  tasks: [],
-};
-
-const awaitingPayment = {
-  // NOTE: Per Terry's instruction, payments will be hidden for now in Admin View
-  status: TASK_STATUS_AWAITING_PAYMENT,
-  tasks: [],
-};
-
-const baseColumnsAdmin = [proposal, submissions];
 
 const useGetUserTaskBoardTasks = ({
   isAdmin,
@@ -266,102 +246,6 @@ const useGetUserTaskBoard = ({
   };
 };
 
-const useAdminColumns = ({
-  isAdmin,
-  selectedStatus,
-  statuses,
-  setSelectedStatus,
-  setStatuses,
-  podIds,
-  setHasMoreTasks,
-}) => {
-  const [adminColumns, setAdminColumns] = useState([]);
-  const [getProposalsUserCanReview] = useLazyQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
-    fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      const tasks = data?.getProposalsUserCanReview;
-      const newColumns = adminColumns[0]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
-      newColumns[0].tasks = [...tasks];
-      setAdminColumns(newColumns);
-    },
-  });
-  const [getSubmissionsUserCanReview, { fetchMore }] = useLazyQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
-    fetchPolicy: 'cache-and-network',
-    onCompleted: (data) => {
-      const tasks = data?.getSubmissionsUserCanReview;
-      const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
-      newColumns[1].tasks = [...tasks];
-      setAdminColumns(newColumns);
-      setHasMoreTasks(tasks.length >= LIMIT);
-    },
-  });
-  useEffect(() => {
-    if (isAdmin) {
-      getProposalsUserCanReview({
-        variables: {
-          podIds,
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-        },
-      });
-      getSubmissionsUserCanReview({
-        variables: {
-          podIds,
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-        },
-      });
-      if (statuses.length > 0) {
-        const status =
-          statuses[0] === TASK_STATUS_REQUESTED ? TASK_STATUS_PROPOSAL_REQUEST : TASK_STATUS_SUBMISSION_REQUEST;
-        setSelectedStatus(status);
-      } else {
-        setSelectedStatus(null);
-      }
-    }
-  }, [
-    getProposalsUserCanReview,
-    getSubmissionsUserCanReview,
-    isAdmin,
-    setSelectedStatus,
-    setStatuses,
-    statuses,
-    podIds,
-  ]);
-
-  useEffect(() => {
-    if (isAdmin) {
-      if (selectedStatus) {
-        const status = {
-          [TASK_STATUS_PROPOSAL_REQUEST]: TASK_STATUS_REQUESTED,
-          [TASK_STATUS_SUBMISSION_REQUEST]: TASK_STATUS_IN_REVIEW,
-        };
-        const selected = status[selectedStatus];
-        setStatuses([selected]);
-      } else {
-        setStatuses([]);
-      }
-    }
-  }, [setStatuses, selectedStatus, isAdmin]);
-
-  const handleFetchMore = useCallback(() => {
-    if (statuses.length > 0) {
-      fetchMore({
-        variables: {
-          limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-          offset: adminColumns?.[1]?.tasks?.length,
-        },
-      }).then(({ data }) => {
-        const tasks = data?.getSubmissionsUserCanReview;
-        const newColumns = adminColumns[1]?.tasks ? [...adminColumns] : [...baseColumnsAdmin];
-        newColumns[1].tasks = newColumns[1].tasks.concat(tasks);
-        setAdminColumns(newColumns);
-        setHasMoreTasks(tasks.length >= LIMIT);
-      });
-    }
-  }, [statuses]);
-
-  return { adminColumns, getSubmissionsUserCanReviewFetchMore: handleFetchMore };
-};
-
 const useFilterSchema = (loggedInUser, isAdmin) => {
   const [filterSchema, setFilterSchema]: any = useState([
     {
@@ -412,7 +296,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
         orgPods[pod.org.name].push(pod);
       });
 
-      const newFilterSchema: any = _.cloneDeep(filterSchema);
+      const newFilterSchema: any = cloneDeep(filterSchema);
       newFilterSchema[0].orgPods = orgPods;
       newFilterSchema[0].items = data.getUserPods;
 
@@ -446,7 +330,7 @@ const BoardsPage = (props) => {
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
-  const { adminColumns, getSubmissionsUserCanReviewFetchMore } = useAdminColumns({
+  const { adminColumns, handleAdminColumnsLoadMore } = useAdminColumns({
     isAdmin,
     selectedStatus,
     statuses,
@@ -591,12 +475,12 @@ const BoardsPage = (props) => {
           }
         });
       } else if (isAdmin) {
-        getSubmissionsUserCanReviewFetchMore();
+        handleAdminColumnsLoadMore();
       } else {
         !isAdmin && getUserTaskBoardTasksFetchMore();
       }
     }
-  }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, getSubmissionsUserCanReviewFetchMore, isAdmin]);
+  }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, handleAdminColumnsLoadMore, isAdmin]);
 
   function handleSearch(searchString: string) {
     const searchTaskProposalsArgs = {

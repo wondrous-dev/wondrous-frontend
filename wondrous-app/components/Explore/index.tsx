@@ -108,7 +108,7 @@ const ExploreComponent = () => {
           <BackgroundTextWrapper>
             <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
             <BackgroundTextSubHeader>
-              Join your next favorite project and ean crypto by contributing to one of our Partners
+              Join your next favorite project and earn crypto by contributing to one of our Partners
             </BackgroundTextSubHeader>
           </BackgroundTextWrapper>
         </BackgroundContainer>

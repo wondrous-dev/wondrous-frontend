@@ -150,6 +150,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
               >
                 {taskOrUser.profilePicture ? (
                   <SafeImage
+                    useNextImage={false}
                     src={taskOrUser?.profilePicture}
                     style={{
                       width: '18px',

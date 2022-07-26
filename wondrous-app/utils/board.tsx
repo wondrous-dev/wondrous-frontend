@@ -1,4 +1,5 @@
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
+import map from 'lodash/map';
 import { COLUMNS } from 'services/board';
 import {
   TASK_STATUS_ARCHIVED,
@@ -6,8 +7,8 @@ import {
   TASK_STATUS_REQUESTED,
   STATUS_APPROVED,
   STATUS_OPEN,
-  STATUS_CHANGE_REQUESTED,
   ENTITIES_TYPES,
+  STATUS_CLOSED,
 } from './constants';
 
 export const addProposalItem = (newItem, columns) => {
@@ -43,7 +44,7 @@ export const getProposalStatus = (proposal) => {
 
   if (proposal?.approvedAt) proposalStatus = STATUS_APPROVED;
   if (!proposal?.approvedAt && !proposal?.changeRequested) proposalStatus = STATUS_OPEN;
-  if (proposal?.changeRequestedAt) proposalStatus = STATUS_CHANGE_REQUESTED;
+  if (proposal?.statusClosed) proposalStatus = STATUS_CLOSED;
   return proposalStatus;
 };
 
@@ -51,7 +52,7 @@ export const removeProposalItem = (itemId, columns) => {
   if (columns[0]?.section) {
     columns[0].section.tasks = columns[0].section.tasks.filter((task) => task.id !== itemId);
   } else {
-    let allItems = _.map(columns, 'tasks').flat();
+    let allItems = map(columns, 'tasks').flat();
     const item = allItems.find((task) => task.id === itemId);
     if (item) {
       let status = getProposalStatus(item);
@@ -242,8 +243,8 @@ export const bindSectionToColumns = ({ columns, data, section }) => {
     [TASK_STATUS_IN_REVIEW]: 1,
   };
   const columnIndex = sections[section];
-  const newColumns = columns[columnIndex]?.section ? _.cloneDeep(columns) : _.cloneDeep(COLUMNS);
-  newColumns[columnIndex].section.tasks = _.cloneDeep(data);
+  const newColumns = columns[columnIndex]?.section ? cloneDeep(columns) : cloneDeep(COLUMNS);
+  newColumns[columnIndex].section.tasks = cloneDeep(data);
   return newColumns;
 };
 

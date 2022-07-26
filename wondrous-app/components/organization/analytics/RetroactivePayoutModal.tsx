@@ -36,7 +36,7 @@ import { BatchRetroactivePayment } from './BatchRetroactivePayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 enum ViewType {
   Paid = 'paid',
@@ -165,7 +165,11 @@ export const RetroactivePayoutModal = (props) => {
                           }}
                         >
                           {contributor?.assigneeProfilePicture ? (
-                            <SafeImage src={contributor?.assigneeProfilePicture} style={imageStyle} />
+                            <SafeImage
+                              useNextImage={false}
+                              src={contributor?.assigneeProfilePicture}
+                              style={imageStyle}
+                            />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
@@ -196,6 +200,7 @@ export const RetroactivePayoutModal = (props) => {
                           <IconContainer>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <SafeImage
+                              useNextImage={false}
                               src={contributor?.icon}
                               style={{
                                 width: '24px',

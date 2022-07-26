@@ -112,13 +112,14 @@ export const IntegrationsSnapshotButton = styled(MuiButton)`
   }
 `;
 
+// same as the component in components/Settings/styles.tsx should we import?
 export const LabelBlock = styled(Typography)`
   && {
     font-weight: 500;
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.01em;
-    color: #ccbbff;
+    color: ${palette.blue20};
     margin-bottom: 10px;
   }
 `;

@@ -156,7 +156,7 @@ export const TaskModalHeaderIconWrapper = styled.div`
   cursor: pointer;
 `;
 
-export const TaskCardOrgPhoto = styled(SafeImage)`
+export const TaskCardOrgPhoto = styled(SafeImage).attrs({ useNextImage: false })`
   width: 20px;
   height: 20px;
   border-radius: 4px;
@@ -532,7 +532,7 @@ export const TaskSectionImageContentWrapper = styled.div`
   gap: 12px;
 `;
 
-export const TaskSectionImageContentSafeImage = styled(SafeImage)``;
+export const TaskSectionImageContentSafeImage = styled(SafeImage).attrs({ useNextImage: false })``;
 
 export const TaskSectionImageContentImage = styled.div`
   display: flex;
@@ -727,7 +727,7 @@ export const TaskSectionInfoMilestoneIcon = styled(({ className }) => (
   justify-content: center;
 `;
 
-export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage)`
+export const TaskSectionInfoPaymentMethodIcon = styled(SafeImage).attrs({ useNextImage: false })`
   && {
     width: 26px;
     height: 26px;

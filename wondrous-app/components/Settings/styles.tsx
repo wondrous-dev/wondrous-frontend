@@ -153,6 +153,7 @@ export const SettingsDaoPodIndicator = styled(Box)`
 
 export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
   <SafeImage
+    useNextImage={false}
     style={{
       width: '24px',
       height: '24px',
@@ -278,7 +279,7 @@ export const LabelBlock = styled(Typography)`
     font-size: 14px;
     line-height: 18px;
     letter-spacing: 0.01em;
-    color: #ccbbff;
+    color: ${palette.blue20};
     margin-bottom: 10px;
   }
 `;
@@ -329,29 +330,6 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
     padding: 8px;
   }
 `;
-
-export const GeneralSettingsDAOProfileImage = styled((props) => (
-  <SafeImage
-    {...props}
-    style={{
-      width: '52px',
-      height: '52px',
-      marginTop: '30px',
-    }}
-  />
-))``;
-
-export const GeneralSettingsDAOHeaderImage = styled((props) => (
-  <SafeImage
-    {...props}
-    style={{
-      width: '100%',
-      height: 'auto',
-      objectFit: 'contain',
-      marginTop: '30px',
-    }}
-  />
-))``;
 
 //socials block
 export const GeneralSettingsSocialsBlock = styled.div`

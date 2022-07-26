@@ -31,16 +31,13 @@ export const HeaderImageWrapper = styled.div`
 export const HeaderImage = styled((props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '100%',
       height: '100%',
       objectFit: 'cover',
     }}
   />
-))``;
-
-export const HeaderImageDefault = styled(() => (
-  <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
 ))``;
 
 export const TokenHeader = styled.div`
@@ -257,6 +254,35 @@ export const HeaderButton = styled.button`
   font-size: 15px;
   line-height: 150%;
   margin-right: 10px;
+`;
+
+export const RoleButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: max-content;
+`;
+
+export const RoleText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 13px;
+    line-height: 16px;
+    color: ${palette.grey250};
+  }
+`;
+
+export const RoleButton = styled(HeaderButton)`
+  && {
+    border-radius: 1000px;
+    border-color: ${palette.green300};
+    padding: 5.5px 7px;
+    text-transform: capitalize;
+    font-size: 13px;
+    line-height: 13px;
+  }
 `;
 
 export const HeaderSettingsLockedButton = (props) => (
@@ -624,6 +650,7 @@ export const TokenGatedRoleDescription = styled(Typography)`
 
 export const TokenLogoDisplay = (props) => (
   <SafeImage
+    useNextImage={false}
     src={props?.src}
     style={{
       width: '29px',

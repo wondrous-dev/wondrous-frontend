@@ -35,14 +35,12 @@ import usePrevious from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
 import { useRouter } from 'next/router';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
+import { BatchOfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { cutString } from 'utils/helpers';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 enum ViewType {
   Paid = 'paid',
@@ -62,6 +60,10 @@ export const BatchPayModal = (props) => {
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionsPaymentInfo, setSubmissionsPaymentInfo] = useState(null);
+  const PAYMENT_TABS = [
+    { name: 'wallet', label: 'Wallet', action: () => setSelectedTab('wallet') },
+    { name: 'off_platform', label: 'Off platform', action: () => setSelectedTab('off_platform') },
+  ];
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -148,10 +150,22 @@ export const BatchPayModal = (props) => {
             <PaymentDescriptionText>Pay the following submissions</PaymentDescriptionText>
           </PaymentTitleTextDiv>
         </PaymentTitleDiv>
+        <StyledTabs value={selectedTab}>
+          {PAYMENT_TABS.map((tab) => (
+            <Tab
+              style={{
+                color: 'white !important',
+              }}
+              value={tab.name}
+              key={tab.name}
+              label={tab.label}
+              onClick={tab.action}
+            />
+          ))}
+        </StyledTabs>
         <StyledTableContainer
           style={{
-            marginLeft: '-3%',
-            width: '110%',
+            width: '100%',
           }}
         >
           <StyledTable>
@@ -192,7 +206,7 @@ export const BatchPayModal = (props) => {
                           }}
                         >
                           {submission?.payeeProfilePicture ? (
-                            <SafeImage src={submission?.payeeProfilePicture} style={imageStyle} />
+                            <SafeImage useNextImage={false} src={submission?.payeeProfilePicture} style={imageStyle} />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
@@ -212,6 +226,7 @@ export const BatchPayModal = (props) => {
                           <IconContainer>
                             {/* eslint-disable-next-line @next/next/no-img-element */}
                             <SafeImage
+                              useNextImage={false}
                               src={submission?.icon}
                               style={{
                                 width: '24px',
@@ -245,15 +260,20 @@ export const BatchPayModal = (props) => {
         </StyledTableContainer>
 
         <PaymentMethodWrapper>
-          <BatchWalletPayment
-            orgId={orgId}
-            podId={podId}
-            unpaidSubmissions={unpaidSubmissions}
-            submissionIds={submissionIds}
-            wallets={wallets}
-            chain={chain}
-            submissionsPaymentInfo={submissionsPaymentInfo}
-          />
+          {selectedTab === 'off_platform' && (
+            <BatchOfflinePayment handleClose={handleClose} submissionIds={submissionIds} />
+          )}
+          {selectedTab === 'wallet' && (
+            <BatchWalletPayment
+              orgId={orgId}
+              podId={podId}
+              unpaidSubmissions={unpaidSubmissions}
+              submissionIds={submissionIds}
+              wallets={wallets}
+              chain={chain}
+              submissionsPaymentInfo={submissionsPaymentInfo}
+            />
+          )}
         </PaymentMethodWrapper>
       </PaymentModal>
     </Modal>
