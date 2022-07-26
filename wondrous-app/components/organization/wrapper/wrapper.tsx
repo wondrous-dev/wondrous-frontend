@@ -327,6 +327,7 @@ const Wrapper = (props) => {
             height={100}
             layout="fill"
             objectFit="cover"
+            useNextImage
           />
         ) : null}
       </HeaderImageWrapper>
@@ -345,6 +346,7 @@ const Wrapper = (props) => {
                   }
                   width="60px"
                   height="60px"
+                  useNextImage
                   style={{
                     borderRadius: '6px',
                   }}

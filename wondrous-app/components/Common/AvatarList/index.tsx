@@ -35,6 +35,7 @@ export const SmallAvatar = (props) => {
             height={29}
             src={avatar.url}
             objectFit="cover"
+            useNextImage
             style={{
               borderRadius: '29px',
             }}

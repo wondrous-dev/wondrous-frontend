@@ -24,7 +24,7 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
     height,
     placeholderComp,
     placeholderSrc,
-    useNextImage = true,
+    useNextImage = false,
     ...props
   } = safeImageArgs;
   const [imgUrl, setImageUrl] = useState(null);

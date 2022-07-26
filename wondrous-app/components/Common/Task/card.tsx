@@ -359,12 +359,7 @@ export const TaskCard = ({
           )}
           {coverMedia ? (
             <BoardsCardMedia>
-              <SafeImage
-                width={270}
-                height="100%"
-                layout="responsive"
-                src={coverMedia.slug}
-              />
+              <SafeImage width={270} height="100%" layout="responsive" useNextImage src={coverMedia.slug} />
             </BoardsCardMedia>
           ) : null}
         </TaskContent>
