@@ -123,7 +123,6 @@ export const TaskCardFragment = gql`
     completedAt
     reactionCount
     commentCount
-    shareCount
     orgOrder
     podOrder
     assigneeOrder
