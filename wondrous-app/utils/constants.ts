@@ -289,6 +289,12 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   webm: 'webm',
 };
 
+export const MODAL_ACTIONS = {
+  SAVE: 'save',
+  OPEN: 'open',
+  NONE: 'none',
+};
+
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
 export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;

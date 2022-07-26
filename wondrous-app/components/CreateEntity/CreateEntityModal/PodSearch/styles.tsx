@@ -206,7 +206,7 @@ export const PodSearchLabel = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 13px;
-    font-weight: 500;
+    font-weight: 900;
     color: ${palette.white};
     margin-left: 6px;
     white-space: nowrap;
