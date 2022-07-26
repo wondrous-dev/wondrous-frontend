@@ -92,7 +92,7 @@ const ChooseEntityToCreateModal = (props) => {
     ) {
       return false;
     }
-    return key !== ENTITIES_TYPES.ORG;
+    return true;
   });
 
   return (
