@@ -1,7 +1,7 @@
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
 import { format } from 'date-fns';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import * as Constants from 'utils/constants';
 import { TASK_ICONS_LABELS } from '../MilestoneTasks';
 import {

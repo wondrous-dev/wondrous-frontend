@@ -4,6 +4,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 });
 
 module.exports = withBundleAnalyzer({
+  /* config options here */
   reactStrictMode: true,
   images: { domains: ['www.notion.so', 'storage.googleapis.com'] },
   webpack(config) {
@@ -15,11 +16,6 @@ module.exports = withBundleAnalyzer({
     config.plugins.push(new CompressionPlugin());
 
     return config;
-  },
-  swcMinify: false,
-  compiler: {
-    // ssr and displayName are configured by default
-    styledComponents: true,
   },
   async headers() {
     return [

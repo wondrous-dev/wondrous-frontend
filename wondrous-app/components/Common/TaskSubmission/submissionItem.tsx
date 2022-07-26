@@ -9,7 +9,7 @@ import {
   APPROVE_SUBMISSION,
   REQUEST_CHANGE_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useState } from 'react';
 import { BOUNTY_TYPE, PAYMENT_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';

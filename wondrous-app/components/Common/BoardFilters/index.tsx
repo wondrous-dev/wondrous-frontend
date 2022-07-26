@@ -12,7 +12,7 @@ import {
   AppliedFiltersIconWrapper,
 } from './styles';
 import React, { useEffect, useState } from 'react';
-import _ from 'lodash';
+import omit from 'lodash/omit';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 export const FiltersTriggerButton = ({ onClick, isOpen }) => {
   return (
@@ -52,7 +52,7 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
   };
 
   const removeAppliedFilter = (filter) => {
-    const newFilters = _.omit(appliedFilters, filter);
+    const newFilters = omit(appliedFilters, filter);
     applyFilter(newFilters);
   };
 

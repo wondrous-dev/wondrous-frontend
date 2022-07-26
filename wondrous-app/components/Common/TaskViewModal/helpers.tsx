@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
-import { isEmpty, keys } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import keys from 'lodash/keys';
 import WalletModal from 'components/Common/Wallet/WalletModal';
 import { RichTextViewer } from 'components/RichText';
 import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';

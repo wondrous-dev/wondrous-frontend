@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import Image from 'next/image';
 
 import 'react-dates/initialize';
@@ -76,9 +76,9 @@ const SingleDatePicker = ({
   };
 
   useEffect(() => {
-    if(repeatType && !date) {
+    if (repeatType && !date) {
       // if there are no day selected but repeat value set, default to today
-     setDate(moment());   
+      setDate(moment());
     }
   }, [repeatType, date]);
 

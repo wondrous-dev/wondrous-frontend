@@ -12,7 +12,6 @@ import {
   SEARCH_TASKS_FOR_ORG_BOARD_VIEW,
 } from 'graphql/queries/taskBoard';
 import { GET_USER } from 'graphql/queries/user';
-import _ from 'lodash';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
