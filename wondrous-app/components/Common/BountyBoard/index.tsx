@@ -98,6 +98,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
               {bounty?.media?.[0] ? (
                 <BoardsCardMedia>
                   <SafeImage
+                    useNextImage={false}
                     style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                     src={bounty?.media[0].slug}
                   />
@@ -137,6 +138,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                 >
                   {bounty?.orgProfilePicture ? (
                     <SafeImage
+                      useNextImage={false}
                       src={bounty.orgProfilePicture}
                       style={{
                         width: '26px',

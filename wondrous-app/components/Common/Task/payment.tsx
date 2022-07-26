@@ -66,6 +66,7 @@ export const MakePaymentBlock = (props) => {
               <>
                 {fetchedTask?.assigneeProfilePicture ? (
                   <SafeImage
+                    useNextImage={false}
                     style={{
                       width: '26px',
                       height: '26px',

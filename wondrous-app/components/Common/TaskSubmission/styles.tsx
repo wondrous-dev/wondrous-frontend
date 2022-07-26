@@ -606,7 +606,7 @@ export const SubmissionItemTimeText = styled(Typography)`
   }
 `;
 
-export const SubmissionItemSafeImage = styled(SafeImage)`
+export const SubmissionItemSafeImage = styled(SafeImage).attrs({ useNextImage: false })`
   width: 28px;
   height: 28px;
   border-radius: 50px;

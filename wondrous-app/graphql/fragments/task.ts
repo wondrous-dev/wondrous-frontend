@@ -145,9 +145,9 @@ export const TaskCardFragment = gql`
     }
     parentTaskId
     totalSubtaskCount
-    completedSubtaskCount
     totalSubmissionsCount
     approvedSubmissionsCount
+    waitingForReviewSubmissionsCount
     points
     taskApplicationPermissions {
       canClaim

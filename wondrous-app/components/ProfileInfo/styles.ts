@@ -1,6 +1,4 @@
 import { Box, Chip, Link, Typography } from '@mui/material';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import LinkIcon from 'components/Icons/linkIcon.svg';
 import styled, { css } from 'styled-components';
 
@@ -23,20 +21,6 @@ export const ProfileInfoContainer = styled(Box)`
   gap: 10px;
 `;
 
-const ProfileInfoImage = css`
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-`;
-
-export const ProfileInfoUserImage = styled(SafeImage)`
-  ${ProfileInfoImage}
-`;
-
-export const ProfileInfoDefaultImage = styled(DefaultUserImage)`
-  ${ProfileInfoImage}
-`;
-
 export const ProfileInfoFullName = styled(WhiteTypographyStyles)`
   && {
     font-size: 26px;
@@ -45,7 +29,7 @@ export const ProfileInfoFullName = styled(WhiteTypographyStyles)`
 
 export const ProfileInfoUsername = styled(WhiteTypographyStyles)`
   && {
-    font-size: 18;
+    font-size: 18px;
     color: #c4c4c4;
   }
 `;
@@ -66,7 +50,7 @@ export const ProfileInterestText = styled(WhiteTypographyStyles)`
   && {
     fontfamily: 'Space Grotesk';
     font-weight: 500;
-    font-size: 16;
+    font-size: 16px;
     line-height: 16px;
   }
 `;

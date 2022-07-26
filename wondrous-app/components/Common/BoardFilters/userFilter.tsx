@@ -16,6 +16,7 @@ export default function UserFilterPill() {
     <AppliedFiltersItem>
       {profilePicture ? (
         <SafeImage
+          useNextImage={false}
           style={{
             width: '26px',
             height: '26px',
