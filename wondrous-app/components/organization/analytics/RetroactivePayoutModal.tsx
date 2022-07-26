@@ -165,11 +165,7 @@ export const RetroactivePayoutModal = (props) => {
                           }}
                         >
                           {contributor?.assigneeProfilePicture ? (
-                            <SafeImage
-                              useNextImage={false}
-                              src={contributor?.assigneeProfilePicture}
-                              style={imageStyle}
-                            />
+                            <SafeImage useNextImage={false} src={contributor?.assigneeProfilePicture} style={imageStyle} />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}

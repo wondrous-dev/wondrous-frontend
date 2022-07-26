@@ -48,18 +48,14 @@ export default function Board({ tasks, handleCardClick }) {
             <BoardsCardBody>
               <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
               <BoardsCardBodyDescription>
-                <RichTextViewer text={milestone.description} />
+              <RichTextViewer text={milestone.description} />
               </BoardsCardBodyDescription>
               <MilestoneProgressWrapper>
                 <MilestoneProgress milestoneId={milestone.id} />
               </MilestoneProgressWrapper>
               {coverMedia ? (
                 <BoardsCardMedia>
-                  <SafeImage
-                    useNextImage={false}
-                    style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                    src={coverMedia.slug}
-                  />
+                  <SafeImage useNextImage={false} style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }} src={coverMedia.slug} />
                 </BoardsCardMedia>
               ) : null}
               {milestone?.podName && (
