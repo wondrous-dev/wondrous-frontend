@@ -19,6 +19,14 @@ export const GET_ORG_FROM_USERNAME = gql`
   ${OrgFragment}
 `;
 
+export const IS_ORG_USERNAME_TAKEN = gql`
+  query isOrgUsernameTaken($username: String!) {
+    isOrgUsernameTaken(username: $username) {
+      exist
+    }
+  }
+`;
+
 export const GET_ORG_INVITE_ORG_INFO = gql`
   query getInvitedOrgInfo($token: String!) {
     getInvitedOrgInfo(token: $token) {

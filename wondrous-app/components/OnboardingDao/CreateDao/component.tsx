@@ -2,7 +2,7 @@ import { ComponentFieldWrapper, Error, FieldInput, FieldLabel, FieldWrapper } fr
 import { useField } from 'formik';
 import { DescriptionCharacterLength, FieldInputDao, InputWrapper } from './styles';
 
-const DaoName = ({ label, ...props }) => {
+const Name = ({ label, ...props }) => {
   const [field, meta] = useField(props.name);
   return (
     <FieldWrapper>
@@ -38,10 +38,12 @@ const Description = ({ label, maxLength, ...props }) => {
 };
 
 const CreateDao = (props) => {
+  const { name, username, description } = props.fields;
   return (
     <ComponentFieldWrapper>
-      <DaoName {...props.fields.name} />
-      <Description {...props.fields.description} />
+      <Name {...name} />
+      <Name {...username} />
+      <Description {...description} />
     </ComponentFieldWrapper>
   );
 };

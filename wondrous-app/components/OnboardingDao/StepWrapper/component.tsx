@@ -1,3 +1,4 @@
+import { CircularProgress } from '@mui/material';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { useFormikContext } from 'formik';
 import { mapKeys, some } from 'lodash';
@@ -21,6 +22,7 @@ import {
   Subtitle,
   Title,
   Wrapper,
+  WrapperLoadingCircularProgress,
 } from './styles';
 
 const NO_OF_STEPS = 6;
@@ -80,6 +82,21 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {} })
   return <ContinueButton onClick={handleOnClick}>Continue</ContinueButton>;
 };
 
+const WrapperLoading = ({ loading, children }) => {
+  return (
+    <Wrapper>
+      {loading ? (
+        <WrapperLoadingCircularProgress>
+          <CircularProgress />
+          <Subtitle>Loading...</Subtitle>
+        </WrapperLoadingCircularProgress>
+      ) : (
+        children
+      )}
+    </Wrapper>
+  );
+};
+
 const StepWrapper = ({
   Component,
   handleStep,
@@ -88,11 +105,12 @@ const StepWrapper = ({
   step,
   subtitle,
   title,
+  loading,
   ...props
 }) => {
   const router = useRouter();
   return (
-    <Wrapper>
+    <WrapperLoading loading={loading}>
       <FormWrapper>
         <HeaderWrapper>
           <OnboardingStepIndicator step={step} />
@@ -118,7 +136,7 @@ const StepWrapper = ({
           </ButtonWrapper>
         </FooterWrapper>
       </FormWrapper>
-    </Wrapper>
+    </WrapperLoading>
   );
 };
 

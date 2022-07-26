@@ -32,6 +32,21 @@ const Item = ({ label, children }) => {
   );
 };
 
+const ItemWithEdit = ({ value, field, EditComponent }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  return (
+    <Item label={field.label}>
+      <TextAndInputWrapper>
+        {isEditing ? (
+          <EditComponent setIsEditing={setIsEditing} {...field} />
+        ) : (
+          <Text onClick={() => setIsEditing(true)}>{value}</Text>
+        )}
+      </TextAndInputWrapper>
+    </Item>
+  );
+};
+
 const Edit = ({ onClick }) => {
   return (
     <EditButton onClick={onClick}>
@@ -40,7 +55,7 @@ const Edit = ({ onClick }) => {
   );
 };
 
-const EditDaoName = ({ setIsEditing, ...props }) => {
+const EditName = ({ setIsEditing, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
   return (
     <InputErrorWrapper>
@@ -54,21 +69,6 @@ const EditDaoName = ({ setIsEditing, ...props }) => {
       </EditInputWrapper>
       {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </InputErrorWrapper>
-  );
-};
-
-const DaoName = ({ name, field }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  return (
-    <Item label="DAO Name">
-      <TextAndInputWrapper>
-        {isEditing ? (
-          <EditDaoName setIsEditing={setIsEditing} {...field} />
-        ) : (
-          <Text onClick={() => setIsEditing(true)}>{name}</Text>
-        )}
-      </TextAndInputWrapper>
-    </Item>
   );
 };
 
@@ -97,34 +97,20 @@ const EditDescription = ({ setIsEditing, ...props }) => {
   );
 };
 
-const Description = ({ description, field }) => {
-  const [isEditing, setIsEditing] = useState(false);
-  return (
-    <Item label="Description">
-      <TextAndInputWrapper>
-        {isEditing ? (
-          <EditDescription setIsEditing={setIsEditing} {...field} />
-        ) : (
-          <Text onClick={() => setIsEditing(true)}>{description}</Text>
-        )}
-      </TextAndInputWrapper>
-    </Item>
-  );
-};
-
 const Review = ({ fields }) => {
   const { values } = useFormikContext();
-  const { name, description, category }: FormikValues = values;
+  const { name, username, description, category }: FormikValues = values;
   const { tempState } = useOnboardingCreateDaoContext();
   return (
     <Wrapper>
-      <DaoName name={name} field={fields.name} />
+      <ItemWithEdit value={name} field={fields.name} EditComponent={EditName} />
+      <ItemWithEdit value={username} field={fields.username} EditComponent={EditName} />
       <Item label="DAO Logo">
         {tempState.profilePicture && (
           <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(tempState.profilePicture)} />
         )}
       </Item>
-      <Description description={description} field={fields.description} />
+      <ItemWithEdit value={description} field={fields.description} EditComponent={EditDescription} />
       <Item label="Goals">
         {category && (
           <Category>
