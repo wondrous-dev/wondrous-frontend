@@ -136,6 +136,7 @@ export const MembershipRequestTable = (props) => {
                       }}
                     >
                       <SafeImage
+                        useNextImage={false}
                         src={request?.orgProfilePicture}
                         style={{
                           width: '17px',
@@ -186,6 +187,7 @@ export const MembershipRequestTable = (props) => {
                     >
                       {request?.userProfilePicture && (
                         <SafeImage
+                          useNextImage={false}
                           style={{
                             width: '17px',
                             height: '17px',

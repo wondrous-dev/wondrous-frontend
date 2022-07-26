@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
+import { Box } from '@mui/system';
 import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -23,7 +24,6 @@ import {
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderImageDefault,
   HeaderMainBlock,
   HeaderText,
   HeaderTitle,
@@ -56,6 +56,7 @@ import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import DefaultBg from '../../../public/images/overview/background.png';
 
 const Wrapper = (props) => {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
@@ -256,7 +257,15 @@ const Wrapper = (props) => {
       <ChooseEntityToCreate />
       <OverviewComponent>
         <HeaderImageWrapper>
-          {podProfile?.headerPicture ? <HeaderImage src={podProfile?.headerPicture} /> : <HeaderImageDefault />}
+          {podProfile ? (
+            <SafeImage
+              src={podProfile?.headerPicture || DefaultBg}
+              width="100%"
+              height={100}
+              layout="fill"
+              objectFit="cover"
+            />
+          ) : null}
         </HeaderImageWrapper>
         <Content>
           <ContentContainer>
@@ -269,20 +278,20 @@ const Wrapper = (props) => {
                         router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
                       }}
                     >
-                      {orgData?.getOrgById?.profilePicture ? (
-                        <SafeImage
-                          src={orgData?.getOrgById?.profilePicture}
-                          style={{
-                            width: '60px',
-                            height: '60px',
-                            borderRadius: '6px',
-                          }}
-                        />
-                      ) : (
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      )}
+                      <SafeImage
+                        src={orgData?.getOrgById?.profilePicture}
+                        placeholderComp={
+                          <TokenEmptyLogo>
+                            <DAOEmptyIcon />
+                          </TokenEmptyLogo>
+                        }
+                        width={60}
+                        height={60}
+                        layout="fixed"
+                        style={{
+                          borderRadius: '6px',
+                        }}
+                      />
                     </OrgLogoWrapper>
 
                     <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />

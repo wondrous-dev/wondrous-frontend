@@ -19,14 +19,13 @@ import { useGnosisSdk } from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
-import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME} from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
 
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
-
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
@@ -39,7 +38,7 @@ export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
     return `https://multisig.harmony.one/#/safes/${safeAddress}/transactions/`;
   }
   if (chain === 'boba') {
-    return `https://multisig.boba.network/boba:${safeAddress}/transactions/${safeTxHash}`
+    return `https://multisig.boba.network/boba:${safeAddress}/transactions/${safeTxHash}`;
   }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
@@ -204,9 +203,9 @@ export const SingleWalletPayment = (props) => {
     console.log(`getting calldata took ${t2 - t1} milliseconds`);
     t1 = performance.now();
     const gnosisClient = wonderGnosis?.safeServiceClient;
-    console.log('safeServiceClient, ', gnosisClient)
+    console.log('safeServiceClient, ', gnosisClient);
     const gnosisSdk = wonderGnosis?.safeSdk;
-    console.log('gnosisSdk, ', gnosisSdk)
+    console.log('gnosisSdk, ', gnosisSdk);
 
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     t2 = performance.now();
@@ -237,7 +236,7 @@ export const SingleWalletPayment = (props) => {
       data: transactionData.data,
       value: transactionData.value,
       nonce: nextNonce,
-      safeTxGas: safeTxGas ? Number(safeTxGas): 0,
+      safeTxGas: safeTxGas ? Number(safeTxGas) : 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
     const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);

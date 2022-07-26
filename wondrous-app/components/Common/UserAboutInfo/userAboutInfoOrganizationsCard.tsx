@@ -22,6 +22,7 @@ const AboutOrganizationsCard = (props) => {
         {thumbnailPicture || profilePicture ? (
           <SafeImage
             src={thumbnailPicture || profilePicture}
+            useNextImage={false}
             style={{
               width: '40px',
               height: '40px',

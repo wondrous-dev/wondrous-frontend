@@ -66,6 +66,7 @@ const PodListCard = (props) => {
         <PodModalFooter>
           {pod?.org?.profilePicture && (
             <SafeImage
+              useNextImage={false}
               src={pod?.org?.profilePicture}
               style={{
                 width: '26px',
