@@ -78,8 +78,6 @@ export const SearchResultItem = styled.li`
   align-items: center;
   cursor: pointer;
   img {
-    max-height: 29px;
-    max-width: 29px;
     border-radius: 6px;
   }
 `;

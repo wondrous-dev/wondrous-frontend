@@ -66,11 +66,8 @@ const GlobalSearch = () => {
   useOutsideAlerter(wrapperRef, handleClose);
 
   useEffect(() => {
-    if (!isExpanded && Object.keys(options).length) setOptions({});
-  }, [isExpanded]);
-
-  useEffect(() => {
     if (isExpanded) inputRef?.current?.focus();
+    if (!isExpanded && Object.keys(options).length) setOptions({});
   }, [isExpanded]);
 
   const handleSearch = async (searchString: string) => {
@@ -159,7 +156,11 @@ const GlobalSearch = () => {
                     options[option].map((item, idx) => {
                       return (
                         <SearchResultItem key={idx} onClick={() => handleRedirect(option, item)}>
-                          {item.profilePicture ? <SafeImage src={item.profilePicture} /> : defaultImg()}
+                          {item.profilePicture ? (
+                            <SafeImage width={29} height={29} src={item.profilePicture} />
+                          ) : (
+                            defaultImg()
+                          )}
                           {item.username}
                           {item.description ? <span>{item.description}</span> : null}
                         </SearchResultItem>
