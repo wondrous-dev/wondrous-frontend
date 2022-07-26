@@ -1,5 +1,6 @@
 import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
+import Grid from '@mui/material/Grid';
 
 import SVGIcons from './SvgIcons';
 
@@ -10,9 +11,9 @@ export default {
 
 const Template: ComponentStory<typeof SVGIcons> = (args) => {
   return (
-    <div style={{ background: '#0f0f0f', padding: '40px 0' }}>
+    <Grid container spacing={5} sx={{ backgroundColor: '#0f0f0f' }}>
       <SVGIcons {...args} />
-    </div>
+    </Grid>
   );
 };
 

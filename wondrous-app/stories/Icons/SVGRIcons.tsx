@@ -1,16 +1,30 @@
 import * as icons from './SVGRIconsList';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import React from 'react';
 
 const SVGRIcons = (props) => {
   return Object.keys(icons).map((key) => {
     const Icon = icons[key];
 
     return (
-      <div key={key} style={{ display: 'flex', color: 'white', flexDirection: 'row', margin: '10px 0' }}>
-        <div key={key} style={{ flex: '0 0 100px', textAlign: 'center' }}>
+      <Grid item key={key} sx={{ color: 'white', textAlign: 'center' }} xs={3}>
+        <Box
+          sx={{
+            height: '60px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            ' > svg': {
+              maxHeight: '50px',
+            },
+          }}
+        >
           <Icon {...props} />
-        </div>
-        <div>{key}</div>
-      </div>
+        </Box>
+
+        <Box sx={{ wordBreak: 'break-all' }}> {key}</Box>
+      </Grid>
     );
   });
 };

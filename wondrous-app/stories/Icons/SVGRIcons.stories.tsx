@@ -2,7 +2,8 @@ import React from 'react';
 import { ComponentStory, ComponentMeta } from '@storybook/react';
 
 import Icons from './SVGRIcons';
-import {SVG} from "./SvgIcons.stories";
+import { SVG } from './SvgIcons.stories';
+import Grid from '@mui/material/Grid';
 
 export default {
   title: 'Data Display/Icons/SVGR',
@@ -45,9 +46,9 @@ export default {
 
 const Template: ComponentStory<typeof Icons> = (args) => {
   return (
-    <div style={{ background: '#0f0f0f', padding: '40px 0' }}>
+    <Grid container spacing={5} sx={{ backgroundColor: '#0f0f0f' }}>
       <Icons {...args} />
-    </div>
+    </Grid>
   );
 };
 

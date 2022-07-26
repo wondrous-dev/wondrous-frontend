@@ -18,6 +18,9 @@ import privacyPublic from 'components/Icons/privacyPublic.svg';
 import rolesLock from 'components/Icons/rolesLock.svg';
 import tokenGating from 'components/Icons/tokenGating.svg';
 import createBounty from 'components/Icons/createBounty.svg';
+import Grid from '@mui/material/Grid';
+import Box from '@mui/material/Box';
+import React from 'react';
 
 const images = [
   arrow,
@@ -45,12 +48,21 @@ const images = [
 const SVGIcons = () => {
   return images.map((image) => {
     return (
-      <div key={image.src} style={{ display: 'flex', color: 'white', flexDirection: 'row' }}>
-        <div style={{ flex: '0 0 100px', textAlign: 'center' }}>
-          <img src={image.src} width="60" />
-        </div>
-        <div>{image.src.replace('static/media/', '')}</div>
-      </div>
+      <Grid item key={image.src} sx={{ color: 'white', textAlign: 'center' }} xs={4}>
+        <Box
+          sx={{
+            height: '40px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            marginBottom: '10px',
+          }}
+        >
+          <img src={image.src} style={{ height: '100%' }} />
+        </Box>
+
+        <Box sx={{ wordBreak: 'break-all' }}>{image.src.replace('static/media/', '')}</Box>
+      </Grid>
     );
   });
 };
