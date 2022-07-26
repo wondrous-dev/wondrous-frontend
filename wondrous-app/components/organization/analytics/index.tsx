@@ -12,14 +12,14 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
 import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
-import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { BOUNTY_TYPE, PRIVATE_TASK_TITLE } from 'utils/constants';
 import { PayoutModal } from './PayoutModal';
 import {
   ContributorRow,
@@ -236,6 +236,7 @@ function UserRow({ contributorTask }) {
                 >
                   {cutString(task.title === PRIVATE_TASK_TITLE ? 'Private Task' : task.title)}
                 </TaskTitle>
+                {task?.type === BOUNTY_TYPE && <BountySignifier>bounty</BountySignifier>}
                 <div
                   style={{
                     flex: 1,
@@ -264,6 +265,7 @@ function UserRow({ contributorTask }) {
                       style={{
                         marginTop: '0',
                         marginRight: '8px',
+                        alignItems: 'center',
                       }}
                     >
                       <PodIcon

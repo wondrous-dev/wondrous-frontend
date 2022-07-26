@@ -163,6 +163,17 @@ export const PodWrapper = styled.div`
   margin-top: 12px;
 `;
 
+export const BountySignifier = styled.div`
+  && {
+    background: #363636;
+    font-size: 13px;
+    color: ${({ theme }) => theme.palette.white};
+    padding: 1px 8px;
+    border-radius: 190px;
+    margin-left: -16px;
+  }
+`;
+
 export const PodName = styled(Typography)`
   && {
     background: #363636;
