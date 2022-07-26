@@ -3,7 +3,7 @@ import { DiscordIcon } from 'components/Icons/discord';
 import LinkBigIcon from 'components/Icons/link';
 import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
-import _ from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_USER } from 'graphql/mutations';
@@ -41,7 +41,8 @@ import {
 } from './styles';
 import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
-import { buildTwitterAuthUrl, challengeCode } from 'components/Twitter/utils';
+import { buildTwitterAuthUrl } from 'components/Twitter/utils';
+import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
 
 const discordUrl = getDiscordUrl();
 
@@ -77,7 +78,7 @@ const setLinkTypeWebsite = (links) => {
 };
 
 const updateLinks = ({ links, url, item }) => {
-  const unchangedLinks = _.cloneDeep(links)?.filter((link) => link.type !== item.type) ?? [];
+  const unchangedLinks = cloneDeep(links)?.filter((link) => link.type !== item.type) ?? [];
   const updatedLink = {
     url,
     displayName: url,
@@ -259,7 +260,7 @@ const ProfileSettings = (props) => {
   };
 
   const redirectToTwitterAuth = () => {
-    const url = buildTwitterAuthUrl(challengeCode, 'profile');
+    const url = buildTwitterAuthUrl(TWITTER_CHALLENGE_CODE, 'profile');
     window.open(url);
   };
 
@@ -344,72 +345,72 @@ const ProfileSettings = (props) => {
           >
             Integrations
           </LabelBlock>
-      
-            <GeneralSettingsIntegrationsBlockButton
-              style={{
-                maxWidth: 'none',
-                width: 'fit-content',
-                ...(loggedInUser?.userInfo?.discordUsername && {
-                  borderRadius: '8px',
-                }),
-              }}
-              buttonInnerStyle={{
-                ...(loggedInUser?.userInfo?.discordUsername && {
-                  borderRadius: '8px',
-                }),
-              }}
-              highlighted
-              onClick={() => {
-                if (!loggedInUser?.userInfo?.discordUsername) {
-                  const state = JSON.stringify({
-                    callbackType: DISCORD_CONNECT_TYPES.connectSettings,
-                  });
-                  window.location.href = `${discordUrl}&state=${state}`;
-                }
-              }}
-            >
-              <Tooltip title="This integration enables Discord notifications" placement="top">
-                <div>
-                  <GeneralSettingsDiscordIcon />
-                  {loggedInUser?.userInfo?.discordUsername
-                    ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
-                    : 'Connect discord'}
-                </div>
-              </Tooltip>
-            </GeneralSettingsIntegrationsBlockButton>
-            {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
-            {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
-            <GeneralSettingsIntegrationsBlockButton
-              style={{
-                marginTop: '30px',
 
-                maxWidth: 'none',
-                width: 'fit-content',
-                ...(loggedInUser?.userInfo?.twitterUsername && {
-                  borderRadius: '8px',
-                }),
-              }}
-              buttonInnerStyle={{
-                ...(loggedInUser?.userInfo?.twitterUsername && {
-                  borderRadius: '8px',
-                }),
-              }}
-              highlighted
-              onClick={() => {
-                if (!loggedInUser?.userInfo?.twitterUsername) {
-                  redirectToTwitterAuth()
-                }
-              }}
-            >
-              <Tooltip title="Connect your twitter account" placement="top">
-                <div>
-                  <GeneralSettingsTwitterIcon />
-                  {loggedInUser?.userInfo?.twitterUsername
-                    ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
-                    : 'Connect twitter'}
-                </div>
-              </Tooltip>
-            </GeneralSettingsIntegrationsBlockButton>
+          <GeneralSettingsIntegrationsBlockButton
+            style={{
+              maxWidth: 'none',
+              width: 'fit-content',
+              ...(loggedInUser?.userInfo?.discordUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            buttonInnerStyle={{
+              ...(loggedInUser?.userInfo?.discordUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            highlighted
+            onClick={() => {
+              if (!loggedInUser?.userInfo?.discordUsername) {
+                const state = JSON.stringify({
+                  callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+                });
+                window.location.href = `${discordUrl}&state=${state}`;
+              }
+            }}
+          >
+            <Tooltip title="This integration enables Discord notifications" placement="top">
+              <div>
+                <GeneralSettingsDiscordIcon />
+                {loggedInUser?.userInfo?.discordUsername
+                  ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
+                  : 'Connect discord'}
+              </div>
+            </Tooltip>
+          </GeneralSettingsIntegrationsBlockButton>
+          {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
+          {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
+          <GeneralSettingsIntegrationsBlockButton
+            style={{
+              marginTop: '30px',
+
+              maxWidth: 'none',
+              width: 'fit-content',
+              ...(loggedInUser?.userInfo?.twitterUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            buttonInnerStyle={{
+              ...(loggedInUser?.userInfo?.twitterUsername && {
+                borderRadius: '8px',
+              }),
+            }}
+            highlighted
+            onClick={() => {
+              if (!loggedInUser?.userInfo?.twitterUsername) {
+                redirectToTwitterAuth();
+              }
+            }}
+          >
+            <Tooltip title="Connect your twitter account" placement="top">
+              <div>
+                <GeneralSettingsTwitterIcon />
+                {loggedInUser?.userInfo?.twitterUsername
+                  ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
+                  : 'Connect twitter'}
+              </div>
+            </Tooltip>
+          </GeneralSettingsIntegrationsBlockButton>
         </GeneralSettingsInputsBlock>
 
         {/* <GeneralSettingsInputsBlock>
