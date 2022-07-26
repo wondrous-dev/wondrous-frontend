@@ -117,7 +117,7 @@ export const FullWidth = FullWidthTemplate.bind({});
 const ButtonWithIconTemplate: ComponentStory<typeof Button> = (props) => {
   return (
     <Container>
-      <Button color="primary" height={32} px={16}>
+      <Button color="primary" height={32} buttonTheme={{ paddingX: 10 }}>
         <Claim />
         <Typography marginLeft="10px">Claim</Typography>
       </Button>

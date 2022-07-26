@@ -29,10 +29,14 @@ const ButtonInner = styled.button`
   flex: 1 1 auto;
   font-size: 16px;
   justify-content: center;
-  padding: 0 30px;
+  padding: 0 ${props => props.paddingX || 30}px;
 
-  &:hover {
+  &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};
+  }
+
+  &:disabled {
+    cursor: not-allowed;
   }
 `;
 
@@ -87,11 +91,14 @@ type Props = SpaceProps & {
   variant?: 'outlined' | 'contained' | 'text';
 
   onClick?: () => unknown;
-
+  /**
+   * You can customize colors for button
+   */
   buttonTheme?: {
+    paddingX?: number;
     background?: string;
     borderColor?: string;
-    hover: {
+    hover?: {
       background?: string;
     };
   };
