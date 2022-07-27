@@ -6,7 +6,7 @@ import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import cloneDeep from 'lodash/cloneDeep';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { UPDATE_USER } from 'graphql/mutations';
+import { UPDATE_USER, USER_DISCORD_DISCONNECT } from 'graphql/mutations';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { getDiscordUrl } from 'utils';
 import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
@@ -43,6 +43,8 @@ import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
 
 const discordUrl = getDiscordUrl();
 
@@ -150,6 +152,9 @@ const ProfileSettings = (props) => {
   const [profileBanner, setProfileBanner] = useState(null);
   const [profileBio, setProfileBio] = useState(loggedInUser?.bio);
   const [updateUserProfile] = useMutation(UPDATE_USER);
+  const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
+    refetchQueries: [GET_LOGGED_IN_USER],
+  });
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
@@ -371,11 +376,29 @@ const ProfileSettings = (props) => {
             }}
           >
             <Tooltip title="This integration enables Discord notifications" placement="top">
-              <div>
+              <div
+                style={{
+                  display: 'flex',
+                }}
+              >
                 <GeneralSettingsDiscordIcon />
                 {loggedInUser?.userInfo?.discordUsername
                   ? `Connected to ${loggedInUser?.userInfo?.discordUsername}`
                   : 'Connect discord'}
+
+                {loggedInUser?.userInfo?.discordUsername && (
+                  <CloseModalIcon
+                    style={{
+                      marginLeft: '16px',
+                      cursor: 'pointer',
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      disconnectDiscord();
+                    }}
+                  />
+                )}
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>

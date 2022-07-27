@@ -26,7 +26,7 @@ import {
   HeaderHomeButtonWrapper,
   HeaderLogoWrapper,
 } from './styles';
-
+import GlobalSearch from 'components/GlobalSearch';
 const HeaderComponent = (props) => {
   const user = useMe();
   const isMobile = useIsMobile();
@@ -75,6 +75,7 @@ const HeaderComponent = (props) => {
               </Link>
             </Box>
           </Tooltip>
+          {!isMobile && <GlobalSearch />}
         </HeaderLeftBlock>
         <HeaderRightBlock>
           {user && (

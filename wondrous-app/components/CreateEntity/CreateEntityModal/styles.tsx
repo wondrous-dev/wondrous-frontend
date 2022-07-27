@@ -1,5 +1,5 @@
-import React from 'react';
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
+import { SaveAltOutlined } from '@mui/icons-material';
 import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
@@ -12,9 +12,8 @@ import PlusIcon from 'components/Icons/plus';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SingleDatePicker from 'components/SingleDatePicker';
-import { TextInput } from 'components/TextInput';
-import { UserSuggestionTypography, UserSuggestionWrapper } from 'components/TextInput/styles';
 import styled, { css } from 'styled-components';
+import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
@@ -664,6 +663,11 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
   }
 `;
 
+export const CreateEntityTemplateInput = styled.div`
+  flex-direction: 'row';
+  display: 'flex';
+`;
+
 export const CreateEntityCreateTaskButton = styled(Button)`
   && {
     min-height: 0;
@@ -702,7 +706,54 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
   }
 `;
 
+export const CreateEntitySaveTemplateButton = styled(ButtonUnstyled)`
+  background: ${greyColors.grey90};
+  font-family: 'Space Grotesk';
+  font-size: 14px;
+  height: 32px;
+  width: 225px;
+  font-weight: 500;
+  text-align: left;
+  color: ${palette.white};
+  border: none;
+  border-radius: 4px;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  :hover {
+    cursor: pointer;
+    background: #454545;
+    filter: drop-shadow(0 8px 2px ${greyColors.grey100});
+    transition: all ease-in-out 0.2s;
+  }
+`;
+
+export const CreateEntitySaveTemplateButtonDisabled = styled(ButtonUnstyled)`
+  background: #282828;
+  font-family: 'Space Grotesk';
+  font-size: 14px;
+  height: 32px;
+  width: 225px;
+  font-weight: 500;
+  text-align: left;
+  color: ${palette.white};
+  border: none;
+  border-radius: 4px;
+  opacity: 0.3;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+`;
+
 export const CreateEntityAttachmentIcon = styled(AttachFileIcon)`
+  && {
+    margin-right: 8px;
+  }
+`;
+
+export const CreateEntitySaveIcon = styled(SaveAltOutlined)`
   && {
     margin-right: 8px;
   }
@@ -753,6 +804,26 @@ export const CreateEntityTextfieldInputReward = styled(TextField)`
     font-size: 13px;
     font-weight: 500;
     color: #06ffa5;
+    .MuiOutlinedInput-input {
+      padding: 0;
+    }
+    .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
+  }
+`;
+
+export const CreateEntityTextfieldInputTemplate = styled(TextField)`
+  && {
+    padding: 0;
+  }
+  .MuiOutlinedInput-root {
+    height: 32px;
+    padding: 0;
+    font-family: 'Space Grotesk';
+    font-size: 13px;
+    font-weight: 500;
+    color: #ffffff;
     .MuiOutlinedInput-input {
       padding: 0;
     }
