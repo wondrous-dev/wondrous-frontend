@@ -2464,7 +2464,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           )}
         <CreateEntityDivider />
         <TaskTemplatePicker
-          options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+          options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
           value={form.values.podId}
           onChange={handleOnchangePodId}
           disabled={formValues !== undefined}
