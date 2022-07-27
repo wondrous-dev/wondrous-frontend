@@ -116,14 +116,14 @@ const useIsOrgUsernameTaken = () => {
   const handleIsOrgUsernameTaken = async (username) => {
     // TODO: debounce this
     if (!username) return false;
-    const { data } = await isOrgUsernameTaken({ variables: { username } });
+    const { data } = await isOrgUsernameTaken({ variables: { username: username } });
     return !data?.isOrgUsernameTaken?.exist;
   };
   return handleIsOrgUsernameTaken;
 };
 
 // https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
-const usernameRegex = /^(?=[a-zA-Z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
+const usernameRegex = /^(?=[a-z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
 
 const useSchema = () => {
   const handleIsOrgUsernameTaken = useIsOrgUsernameTaken();
@@ -133,7 +133,7 @@ const useSchema = () => {
       .required('DA0 username is required')
       .matches(
         usernameRegex,
-        'Username should be between 5 and 15 characters, and can only contain letters, numbers, and the underscore.'
+        'Usernames should be between 5 and 15 characters long and contain only lowercase letters, numbers, and underscores.'
       )
       .test('is-taken', 'This username is taken', handleIsOrgUsernameTaken), // https://github.com/jquense/yup#schematestname-string-message-string--function--any-test-function-schema=
     description: Yup.string().required('DA0 description is required'),
