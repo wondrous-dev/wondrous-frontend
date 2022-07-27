@@ -34,7 +34,7 @@ import { PublicEyeIcon } from 'components/Icons/userpass';
 import FlagIcon from 'components/Icons/flag';
 import StarIcon from 'components/Icons/starIcon';
 
-const TO_DO = (withSection: boolean = true) => {
+const generateTodoColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
   if (withSection) {
     config = {
@@ -59,7 +59,7 @@ const TO_DO = (withSection: boolean = true) => {
   return config;
 };
 
-const IN_PROGRESS = (withSection: boolean = true) => {
+const generateInProgressColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_IN_PROGRESS, tasks: [] };
   if (withSection) {
     config = {
@@ -84,12 +84,12 @@ const IN_PROGRESS = (withSection: boolean = true) => {
   return config;
 };
 
-const IN_REVIEW = () => ({
+const generateInReviewColumn = () => ({
   status: TASK_STATUS_IN_REVIEW,
   tasks: [],
 });
 
-const DONE = (withSection: boolean = true) => {
+const generateDoneColumn = (withSection: boolean = true) => {
   let config = {
     status: TASK_STATUS_DONE,
     tasks: [],
@@ -575,16 +575,23 @@ export const FILTER_STATUSES_ADMIN = {
 };
 
 const generateColumns = (withSection: boolean, type: string) => {
-  let todoColumn = TO_DO(withSection);
-  let inProgressColumn = IN_PROGRESS(withSection);
-  let doneColumn = DONE(withSection);
-  let inReviewColumn = IN_REVIEW();
+  let todoColumn = generateTodoColumn(withSection);
+  let inProgressColumn = generateInProgressColumn(withSection);
+  let doneColumn = generateDoneColumn(withSection);
+  let inReviewColumn = generateInReviewColumn();
   if (type === COLUMNS_CONFIGURATION.ASSIGNEE) {
     return [todoColumn, inProgressColumn, doneColumn];
   } else return [todoColumn, inProgressColumn, inReviewColumn, doneColumn];
 };
 
 export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
+
+export const USER_COLUMNS = [
+  generateTodoColumn(true),
+  generateInProgressColumn(false),
+  generateInReviewColumn(),
+  generateDoneColumn(false),
+];
 
 export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
 

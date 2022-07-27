@@ -25,7 +25,7 @@ export const DashboardPanelWrapper = styled.div`
 `;
 
 export const BoardsWrapper = styled.div`
-  width: 1037px;
+  width: 95%;
   margin: 0 auto;
   ${BoardFiltersContainer} {
     width: 30%;

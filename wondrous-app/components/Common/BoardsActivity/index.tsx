@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
@@ -42,7 +42,8 @@ export const BoardsActivityInlineView = ({
 export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
-  const board = orgBoard || podBoard;
+  const userBoard = useUserBoard();
+  const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const view = board?.activeView || String(router.query.view ?? ViewType.Grid);
   const { search: searchQuery } = router.query;

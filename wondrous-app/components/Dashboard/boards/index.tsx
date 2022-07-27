@@ -22,13 +22,13 @@ import cloneDeep from 'lodash/cloneDeep';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import { COLUMNS, FILTER_STATUSES_ADMIN, LIMIT, populateTaskColumns } from 'services/board';
+import { COLUMNS, FILTER_STATUSES_ADMIN, LIMIT, USER_COLUMNS, populateTaskColumns } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
-  DEFAULT_STATUSES,
+  TASKS_DEFAULT_STATUSES,
   STATUS_OPEN,
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
@@ -52,7 +52,7 @@ const useGetUserTaskBoardTasks = ({
     nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const tasks = data?.getUserTaskBoardTasks ?? [];
-      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
+      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : USER_COLUMNS);
       setContributorColumns(dedupeColumns(newColumns));
     },
     onError: (error) => {
@@ -96,7 +96,9 @@ const useGetUserTaskBoardTasks = ({
 
   useEffect(() => {
     const taskBoardStatuses =
-      statuses.length > 0 ? statuses?.filter((status) => DEFAULT_STATUSES.includes(status)) : DEFAULT_STATUSES;
+      statuses.length > 0
+        ? statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
+        : TASKS_DEFAULT_STATUSES;
     const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
     if (!isAdmin && loggedInUser?.id) {
       getUserTaskBoardTasks({
@@ -365,7 +367,7 @@ const BoardsPage = (props) => {
   const [searchTasks] = useLazyQuery(SEARCH_TASKS_FOR_USER_BOARD_VIEW, {
     onCompleted: (data) => {
       const tasks = data?.searchTasksForUserBoardView;
-      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : COLUMNS);
+      const newColumns = populateTaskColumns(tasks, contributorColumns.length > 0 ? contributorColumns : USER_COLUMNS);
       newColumns[0].section.tasks = [];
       newColumns[1].section.tasks = [];
       newColumns[2].section.tasks = [];
@@ -432,7 +434,7 @@ const BoardsPage = (props) => {
             limit: LIMIT,
             offset: 0,
             // Needed to exclude proposals
-            statuses: DEFAULT_STATUSES,
+            statuses: TASKS_DEFAULT_STATUSES,
             searchString: search,
           },
         };
@@ -501,7 +503,7 @@ const BoardsPage = (props) => {
         limit: LIMIT,
         offset: 0,
         // Needed to exclude proposals
-        statuses: DEFAULT_STATUSES,
+        statuses: TASKS_DEFAULT_STATUSES,
         searchString,
       },
     };
@@ -530,7 +532,7 @@ const BoardsPage = (props) => {
 
     if (search) {
       const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === DEFAULT_STATUSES;
+      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === TASKS_DEFAULT_STATUSES;
       const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
       const searchTaskProposalsArgs = {
         variables: {
