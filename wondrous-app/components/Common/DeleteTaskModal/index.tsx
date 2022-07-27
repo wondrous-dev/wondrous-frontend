@@ -35,7 +35,7 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
     'getSubtasksForTask',
     'getPerTypeTaskCountForOrgBoard',
     'getPerTypeTaskCountForPodBoard',
-    'GetOrgTaskBoardProposals',
+    ,
   ];
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },
@@ -48,7 +48,14 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
 
   const [deleteProposal] = useMutation(DELETE_TASK_PROPOSAL, {
     variables: { proposalId: taskId },
-    refetchQueries,
+    refetchQueries: [
+      'GetOrgTaskBoardProposals',
+      'getPerStatusTaskCountForUserBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+    ],
   });
 
   const handleDelete = () => {

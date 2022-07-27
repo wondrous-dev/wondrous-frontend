@@ -11,15 +11,13 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import apollo from 'services/apollo';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { disableContainerOverflow, enableContainerOverflow, parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpers';
 import {
   BOARD_TYPE,
   PERMISSIONS,
   PAYMENT_STATUS,
-  TASK_TYPE,
   STATUS_APPROVED,
   STATUS_CLOSED,
-  STATUS_OPEN,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
@@ -28,7 +26,6 @@ import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import DndErrorModal from './DndErrorModal';
 import ConfirmModal from 'components/Common/ConfirmModal';
-
 export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
   if (orgBoard) {
     return BOARD_TYPE.org;
@@ -57,7 +54,6 @@ const KanbanBoard = (props) => {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
-  const [once, setOnce] = useState(false);
   const router = useRouter();
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
@@ -287,7 +283,6 @@ const KanbanBoard = (props) => {
   useEffect(() => {
     const params = location.params;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
-      disableContainerOverflow();
       setOpenModal(true);
     }
   }, [orgBoard, podBoard, userBoard, location]);
