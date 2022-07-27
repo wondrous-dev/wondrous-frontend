@@ -139,6 +139,7 @@ const MemberRequests = (props) => {
                     <SafeImage
                       style={{ width: '28px', height: '28px', borderRadius: '50%' }}
                       src={request.userProfilePicture}
+                      useNextImage
                     />
                   ) : (
                     <SmallAvatar

@@ -39,6 +39,7 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
             {users.map(({ user }, index) => {
               return user?.thumbnailPicture ? (
                 <SafeImage
+                  useNextImage={false}
                   key={user.id}
                   style={{ left: index * width - index * overlapLeft }}
                   src={user?.thumbnailPicture}

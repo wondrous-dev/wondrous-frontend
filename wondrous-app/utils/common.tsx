@@ -126,3 +126,7 @@ export const parseLinks = (links) => {
     mainLink: mainLink,
   };
 };
+
+export const capitalize = (str: string): string => {
+  return str.charAt(0).toUpperCase() + str.slice(1);
+};

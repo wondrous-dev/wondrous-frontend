@@ -198,6 +198,7 @@ export const TaskCard = ({
       document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     }
   };
+
   return (
     <ProposalCardWrapper
       onMouseEnter={() => canArchive && setDisplayActions(true)}
@@ -220,6 +221,7 @@ export const TaskCard = ({
             {(isUser || userProfile) &&
               (task?.orgProfilePicture ? (
                 <SafeImage
+                  useNextImage={false}
                   src={task?.orgProfilePicture}
                   style={{
                     width: '29px',
@@ -311,7 +313,8 @@ export const TaskCard = ({
           {task?.privacyLevel === PRIVACY_LEVEL.public && (
             <ToggleBoardPrivacyIcon
               style={{
-                width: task?.assigneeId ? '40px' : 'auto',
+                width: '29px',
+                height: '29px',
                 marginRight: '0',
               }}
               isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
@@ -358,8 +361,13 @@ export const TaskCard = ({
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
-                style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                width={270}
+                objectFit="cover"
+                objectPosition="center"
+                height="100%"
+                layout="responsive"
                 src={coverMedia.slug}
+                useNextImage
               />
             </BoardsCardMedia>
           ) : null}
@@ -569,6 +577,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
+                useNextImage={false}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                 src={coverMedia.slug}
               />

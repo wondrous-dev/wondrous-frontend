@@ -180,6 +180,7 @@ const InviteMember = (props) => {
               >
                 {option?.thumbnailPicture ? (
                   <SafeImage
+                    useNextImage={false}
                     src={option?.thumbnailPicture}
                     style={{
                       width: '18px',

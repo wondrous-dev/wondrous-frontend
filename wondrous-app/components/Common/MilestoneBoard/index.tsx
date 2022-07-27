@@ -55,7 +55,7 @@ export default function Board({ tasks, handleCardClick }) {
               </MilestoneProgressWrapper>
               {coverMedia ? (
                 <BoardsCardMedia>
-                  <SafeImage style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }} src={coverMedia.slug} />
+                  <SafeImage useNextImage={false} style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }} src={coverMedia.slug} />
                 </BoardsCardMedia>
               ) : null}
               {milestone?.podName && (

@@ -18,6 +18,7 @@ export const PostHeaderImageTextWrapper = styled.div`
 export const PostHeaderImage = (props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '28px',
       height: '28px',

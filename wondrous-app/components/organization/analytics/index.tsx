@@ -146,7 +146,11 @@ const UserRow = ({ contributorTask }) => {
           {contributorTask?.assigneeId ? (
             <>
               {contributorTask?.assigneeProfilePicture ? (
-                <SafeImage src={contributorTask?.assigneeProfilePicture} style={UserRowPictureStyles} />
+                <SafeImage
+                  useNextImage={false}
+                  src={contributorTask?.assigneeProfilePicture}
+                  style={UserRowPictureStyles}
+                />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
               )}
@@ -268,6 +272,7 @@ const UserRow = ({ contributorTask }) => {
                   {reward && (
                     <Reward>
                       <SafeImage
+                        useNextImage={false}
                         src={'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018'}
                         style={{
                           width: '16px',
@@ -513,6 +518,7 @@ const Analytics = (props) => {
               >
                 {option?.profilePicture && (
                   <SafeImage
+                    useNextImage={false}
                     src={option?.profilePicture}
                     style={{
                       width: '30px',

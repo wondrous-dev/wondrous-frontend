@@ -78,6 +78,7 @@ export const TaskSummaryAction = styled.div`
 export const OrgProfilePicture = (props) => (
   <SafeImage
     src={props?.src}
+    useNextImage={false}
     style={{
       width: '29px',
       height: '28px',
