@@ -27,7 +27,7 @@ import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/typ
 import { delQuery } from 'utils';
 import { GET_ORG_PODS } from 'graphql/queries/org';
 import CreatePodIcon from 'components/Icons/createPod';
-import { GET_ORG_LABELS } from 'graphql/queries';
+import { GET_ORG_LABELS, GET_USER_PODS } from 'graphql/queries';
 import TagsIcon from 'components/Icons/tagsIcon';
 import CalendarIcon from 'components/Icons/calendar';
 import { PublicEyeIcon } from 'components/Icons/userpass';
@@ -557,6 +557,113 @@ export const FILTER_STATUSES = {
   ],
 };
 
+export const generateUserDashboardFilters = ({ userId }) => {
+  return [
+    {
+      ...SHARED_FILTER_STATUSES_DATA,
+      items: [
+        {
+          id: TASK_STATUS_TODO,
+          name: 'To-Do',
+          icon: <TaskStatus status={TASK_STATUS_TODO} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+        },
+        {
+          id: TASK_STATUS_IN_PROGRESS,
+          name: 'In-progress',
+          icon: <TaskStatus status={TASK_STATUS_IN_PROGRESS} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FFD653 103.12%)',
+        },
+        {
+          id: TASK_STATUS_IN_REVIEW,
+          name: 'In-review',
+          icon: <TaskStatus status={TASK_STATUS_IN_REVIEW} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
+        },
+        {
+          id: TASK_STATUS_DONE,
+          name: 'Completed',
+          icon: <TaskStatus status={TASK_STATUS_DONE} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #06FFA5 103.12%)',
+        },
+      ],
+    },
+    {
+      name: 'podIds',
+      label: 'Pods',
+      items: [],
+      query: GET_USER_PODS,
+      variables: { userId },
+      icon: CreatePodIcon,
+      multiChoice: true,
+      mutate: (items) => {
+        return items.map((pod) => ({
+          ...pod,
+          gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
+          icon: (
+            <CreatePodIcon
+              style={{
+                width: '26px',
+                height: '26px',
+                marginRight: '8px',
+                background: pod?.color,
+                borderRadius: '100%',
+              }}
+            />
+          ),
+          pillIcon: CreatePodIcon,
+        }));
+      },
+    },
+    {
+      name: 'date',
+      label: 'Dates',
+      icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
+      items: [
+        {
+          id: TASK_DATE_OVERDUE,
+          name: 'Overdue',
+          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#F93701" />,
+          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+        },
+        {
+          id: TASK_DATE_DUE_THIS_WEEK,
+          name: 'Due this week',
+          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+        },
+        {
+          id: TASK_DATE_DUE_NEXT_WEEK,
+          name: 'Due next week',
+          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
+          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+        },
+      ],
+    },
+    {
+      name: 'privacyLevel',
+      label: 'Privacy level',
+      icon: ({ style, ...rest }) => <PublicEyeIcon {...rest} style={{ ...style, padding: '4px' }} />,
+      items: [
+        {
+          id: 'public',
+          name: 'Public',
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+          pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
+        },
+        {
+          id: 'private',
+          name: 'All',
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+          pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
+        },
+      ],
+    },
+  ];
+};
 export const FILTER_STATUSES_ADMIN = {
   name: 'statuses',
   label: 'Status',

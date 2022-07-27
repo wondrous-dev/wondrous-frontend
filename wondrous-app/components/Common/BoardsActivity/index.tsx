@@ -22,6 +22,7 @@ export const BoardsActivityInlineView = ({
   searchQuery,
   isAdmin,
   listViewOptions,
+  isExpandable = true,
 }) => {
   const [displayFilters, setDisplayFilters] = useState(false);
 
@@ -29,7 +30,7 @@ export const BoardsActivityInlineView = ({
   return (
     <>
       <BoardsActivityInlineViewWrapper>
-        <SearchTasks isExpandable onSearch={onSearch} />
+        <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
         {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
         <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
       </BoardsActivityInlineViewWrapper>
@@ -96,6 +97,7 @@ export default function BoardsActivity(props) {
         view={view}
         searchQuery={searchQuery}
         isAdmin={isAdmin}
+        isExpandable={!userBoard}
         listViewOptions={listViewOptions}
       />
     );

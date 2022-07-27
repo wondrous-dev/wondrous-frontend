@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import { MenuItem, TextField } from '@mui/material';
 import Accordion from '../../Common/Accordion';
 import { BoardFiltersContainer } from 'components/Common/BoardFilters/styles';
+import { BoardsSubheaderWrapper } from 'components/organization/wrapper/styles';
 
 export const BoardsContainer = styled.div`
   margin-top: 42px;
@@ -27,7 +28,10 @@ export const DashboardPanelWrapper = styled.div`
 export const BoardsWrapper = styled.div`
   width: 95%;
   margin: 0 auto;
-  ${BoardFiltersContainer} {
-    width: 30%;
+`;
+
+export const BoardsActivityWrapper = styled(BoardsSubheaderWrapper)`
+  && {
+    grid-template-columns: 1fr;
   }
 `;

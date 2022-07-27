@@ -2,14 +2,10 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import { FilterItem, FilterItemIcon, FilterItemName } from 'components/Common/Filter/styles';
-import CreateDaoIcon from 'components/Icons/createDao';
-import CreatePodIcon from 'components/Icons/createPod';
 import {
   GET_JOIN_ORG_REQUESTS,
   GET_JOIN_POD_REQUESTS,
   GET_USER_PERMISSION_CONTEXT,
-  GET_USER_PODS,
   GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
@@ -18,11 +14,16 @@ import {
 } from 'graphql/queries';
 import { useAdminColumns } from 'hooks/useAdminColumns';
 
-import cloneDeep from 'lodash/cloneDeep';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import { COLUMNS, FILTER_STATUSES_ADMIN, LIMIT, USER_COLUMNS, populateTaskColumns } from 'services/board';
+import {
+  FILTER_STATUSES_ADMIN,
+  LIMIT,
+  USER_COLUMNS,
+  populateTaskColumns,
+  generateUserDashboardFilters,
+} from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
@@ -36,7 +37,7 @@ import {
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useGetPerStatusTaskCountForUserBoard, useRouterQuery, useSelectMembership } from 'utils/hooks';
-import { FilterItemOrgIcon, FilterOrg } from './styles';
+import { BoardsActivityWrapper } from './styles';
 
 const useGetUserTaskBoardTasks = ({
   isAdmin,
@@ -249,74 +250,15 @@ const useGetUserTaskBoard = ({
 };
 
 const useFilterSchema = (loggedInUser, isAdmin) => {
-  const [filterSchema, setFilterSchema]: any = useState([
-    {
-      name: 'podIds',
-      label: 'Orgs',
-      multiChoice: true,
-      orgPods: {},
-      renderList: ({ schema, toggleOption, checkIsSelected }) => {
-        return Object.keys(schema.orgPods).map((orgName) => (
-          <FilterOrg
-            key={orgName}
-            title={
-              <FilterItemOrgIcon>
-                <CreateDaoIcon /> {orgName}
-              </FilterItemOrgIcon>
-            }
-          >
-            {schema.orgPods[orgName].map((item) => {
-              const isSelected = checkIsSelected(item.id);
-              return (
-                <FilterItem
-                  onClick={() => toggleOption({ ...item, filterType: schema.name })}
-                  selected={isSelected}
-                  key={item.id}
-                >
-                  <FilterItemIcon>
-                    <CreatePodIcon />
-                  </FilterItemIcon>
-                  <FilterItemName>{item.name}</FilterItemName>
-                </FilterItem>
-              );
-            })}
-          </FilterOrg>
-        ));
-      },
-      items: [],
-    },
-  ]);
-  const [getUserPods] = useLazyQuery(GET_USER_PODS, {
-    fetchPolicy: 'network-only',
-    onCompleted: (data) => {
-      const orgPods = {};
-      data?.getUserPods?.forEach((pod) => {
-        if (!orgPods[pod.org.name]) {
-          orgPods[pod.org.name] = [];
-        }
-
-        orgPods[pod.org.name].push(pod);
-      });
-
-      const newFilterSchema: any = cloneDeep(filterSchema);
-      newFilterSchema[0].orgPods = orgPods;
-      newFilterSchema[0].items = data.getUserPods;
-
-      setFilterSchema(newFilterSchema);
-    },
-  });
+  const [filterSchema, setFilterSchema]: any = useState([]);
   useEffect(() => {
     if (isAdmin && loggedInUser?.id) {
       return setFilterSchema([FILTER_STATUSES_ADMIN]);
     }
     if (!isAdmin && loggedInUser?.id) {
-      return getUserPods({
-        variables: {
-          userId: loggedInUser?.id,
-        },
-      });
+      setFilterSchema(generateUserDashboardFilters({ userId: loggedInUser?.id }));
     }
-  }, [getUserPods, isAdmin, loggedInUser?.id]);
+  }, [isAdmin, loggedInUser?.id]);
   return filterSchema;
 };
 
@@ -526,7 +468,8 @@ const BoardsPage = (props) => {
     }));
   }
 
-  const handleFilterChange = ({ statuses = [], podIds = [] }: TaskFilter) => {
+  const handleFilterChange = ({ statuses = [], podIds = [], date = null }: TaskFilter) => {
+    console.log(statuses);
     setStatuses(statuses);
     setPodIds(podIds);
 
@@ -594,14 +537,16 @@ const BoardsPage = (props) => {
         onLoadMore: handleLoadMore,
       }}
     >
-      <BoardsActivity
-        onSearch={handleSearch}
-        filterSchema={filterSchema}
-        onFilterChange={handleFilterChange}
-        statuses={statuses}
-        podIds={podIds}
-        isAdmin={isAdmin}
-      />
+      <BoardsActivityWrapper>
+        <BoardsActivity
+          onSearch={handleSearch}
+          filterSchema={filterSchema}
+          onFilterChange={handleFilterChange}
+          statuses={statuses}
+          podIds={podIds}
+          isAdmin={isAdmin}
+        />
+      </BoardsActivityWrapper>
       <Boards
         columns={activeColumns}
         onLoadMore={handleLoadMore}
