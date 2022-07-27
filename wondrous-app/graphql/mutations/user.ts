@@ -101,3 +101,11 @@ export const CREATE_USER_INTEREST = gql`
     }
   }
 `;
+
+export const USER_DISCORD_DISCONNECT = gql`
+  mutation discordDisconnect {
+    discordDisconnect {
+      success
+    }
+  }
+`;
