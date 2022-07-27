@@ -564,3 +564,9 @@ export const PAGES_WITH_NO_SIDEBAR = [
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
+
+export const GLOBAL_SEARCH_TYPES = {
+  ORGS: 'orgs',
+  PODS: 'pods',
+  USERS: 'users',
+};
