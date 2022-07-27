@@ -1,5 +1,6 @@
 import { CompletedIcon, InReviewIcon } from 'components/Icons/statusIcons';
-import { isEmpty, values } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
+import values from 'lodash/values';
 import { useState } from 'react';
 import { PAYMENT_STATUS } from 'utils/constants';
 import {

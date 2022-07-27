@@ -42,7 +42,7 @@ import {
   UserDiscordNotificationSettingsContainer,
   NotificationSettingsButtonsBlock,
 } from './styles';
-import { isEqual } from 'lodash';
+import isEqual from 'lodash/isEqual';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({

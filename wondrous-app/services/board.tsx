@@ -22,7 +22,7 @@ import { StatusDefaultIcon } from 'components/Icons/statusIcons';
 import { Proposal, Approved, Rejected } from 'components/Icons';
 import TaskStatus from 'components/Icons/TaskStatus';
 import React from 'react';
-import { cloneDeep } from 'lodash';
+import cloneDeep from 'lodash/cloneDeep';
 import { BountyIcon, MilestoneIcon, TaskIcon } from 'components/Icons/Search/types';
 import { delQuery } from 'utils';
 import { GET_ORG_PODS } from 'graphql/queries/org';

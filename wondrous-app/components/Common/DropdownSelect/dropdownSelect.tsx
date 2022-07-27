@@ -118,6 +118,7 @@ const DropdownSelect = ({
             <CreateFormMenuItem key={item.value} value={item.value}>
               {item?.imageUrl ? (
                 <SafeImage
+                  useNextImage={false}
                   style={{
                     width: '20px',
                     height: '20px',

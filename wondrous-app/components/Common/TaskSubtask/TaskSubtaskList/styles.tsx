@@ -55,7 +55,7 @@ export const TaskSubtaskRewardWrapper = styled.div`
   padding: 0 8px;
 `;
 
-export const TaskSubtaskRewardIcon = styled(SafeImage)`
+export const TaskSubtaskRewardIcon = styled(SafeImage).attrs({ useNextImage: false })`
   && {
     width: 13px;
     height: 13px;
@@ -150,7 +150,7 @@ export const TaskSubtaskCoverImageWrapper = styled.div`
   margin-top: 16px;
 `;
 
-export const TaskSubtaskCoverImageSafeImage = styled(SafeImage)`
+export const TaskSubtaskCoverImageSafeImage = styled(SafeImage).attrs({ useNextImage: false })`
   width: calc(100% / 3 - 8px);
   height: 120px;
   object-fit: cover;

@@ -236,6 +236,11 @@ export const ENTITIES_TYPES = {
   PROPOSAL: 'proposal',
 };
 
+export const MODAL_TABS_MAP = {
+  CONTRIBUTORS: 'Contributors',
+  PODS: 'Pods',
+};
+
 export const MEDIA_TYPES = {
   IMAGE: 'image',
   TEXT: 'text',
@@ -287,6 +292,12 @@ export const VIDEO_FILE_EXTENSIONS_TYPE_MAPPING = {
   wmv: 'video/x-ms-wmv',
   flv: 'video/x-flv',
   webm: 'webm',
+};
+
+export const MODAL_ACTIONS = {
+  SAVE: 'save',
+  OPEN: 'open',
+  NONE: 'none',
 };
 
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
@@ -551,3 +562,5 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/forgot-password',
   '/reset-password',
 ];
+
+export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'

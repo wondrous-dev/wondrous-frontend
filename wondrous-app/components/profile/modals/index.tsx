@@ -1,19 +1,43 @@
-import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { CircularProgress } from '@mui/material';
-
-import { format, formatDistance } from 'date-fns';
-import { useInView } from 'react-intersection-observer';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_USERS } from 'graphql/queries/pod';
 import { useLazyQuery } from '@apollo/client';
-import { TaskModalBaseCard, TaskSubmissionHeaderCreatorText } from '../../Common/Task/styles';
-import { TabContainer, Tab, TabContainerText, PodExplainerText } from './styles';
-import { DefaultProfilePicture, PodWrapper, Title, UserProfilePicture, UserWrapper } from './styles';
+
+import SearchIcon from 'components/Icons/search';
+import { TaskModalBaseCard } from 'components/Common/Task/styles';
+import {
+  ActivityIndicatorContainer,
+  CloseIconContainer,
+  CommentLine,
+  Container,
+  DefaultProfilePicture,
+  NameText,
+  OverflowBox,
+  PodExplainerText,
+  PodWrapper,
+  SearchBox,
+  SearchIconContainer,
+  Snap,
+  StyledTab,
+  StyledTabs,
+  TabContainerText,
+  TabText,
+  Title,
+  TitleSection,
+  UserMetaDataContainer,
+  UserProfilePicture,
+  UserWrapper,
+} from './styles';
 import { useRouter } from 'next/router';
-import { CommentText, CommentTopFlexDiv } from '../../Comment/styles';
+import { CommentTopFlexDiv } from 'components/Comment/styles';
 import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { MODAL_TABS_MAP } from 'utils/constants';
+
+const VIRTUAL_PAGINATION_PER_PAGE_COUNT = 5;
 
 const PodItem = (props) => {
   const router = useRouter();
@@ -26,13 +50,7 @@ const PodItem = (props) => {
         })
       }
     >
-      <TabContainerText
-        style={{
-          fontWeight: 'bolder',
-        }}
-      >
-        {pod?.name}
-      </TabContainerText>
+      <TabContainerText>{pod?.name}</TabContainerText>
       <PodExplainerText>
         <RichTextViewer text={pod?.description} />
       </PodExplainerText>
@@ -56,27 +74,16 @@ const UserItem = (props) => {
       ) : (
         <DefaultProfilePicture />
       )}
-      <div
-        style={{
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-        }}
-      >
+      <UserMetaDataContainer>
         <CommentTopFlexDiv>
-          <TaskSubmissionHeaderCreatorText
-            style={{
-              marginBottom: '4px',
-            }}
-          >
-            {user?.username}
-          </TaskSubmissionHeaderCreatorText>
+          <NameText>{user?.username}</NameText>
         </CommentTopFlexDiv>
-        <CommentText>{cutString(user?.bio)}</CommentText>
-      </div>
+        <CommentLine>{cutString(user?.bio)}</CommentLine>
+      </UserMetaDataContainer>
     </UserWrapper>
   );
 };
+
 export const MoreInfoModal = (props) => {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
   const [displayUsers, setDisplayUsers] = useState(showUsers);
@@ -84,6 +91,11 @@ export const MoreInfoModal = (props) => {
   const [displayPods, setDisplayPods] = useState(showPods);
   const [userList, setUserList] = useState([]);
   const [podList, setPodList] = useState([]);
+  const [searchedUserList, setSearchedUserList] = useState([]);
+  const [searchedPodList, setSearchedPodList] = useState([]);
+  const [paginatedUserList, setPaginatedUserList] = useState([]);
+  const [paginatedPodList, setPaginatedPodList] = useState([]);
+  const [activeTab, setActiveTab] = useState(MODAL_TABS_MAP.CONTRIBUTORS);
   const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
@@ -104,13 +116,78 @@ export const MoreInfoModal = (props) => {
     },
     fetchPolicy: 'cache-and-network',
   });
+
   const pods = orgPodData?.getOrgPods;
+
+  const searchUser = (searchQuery) => {
+    const localSearchQuery = searchQuery.toLowerCase();
+    if (searchQuery) {
+      const newList = userList.filter((item) => {
+        if (item.username && item.bio) {
+          return (
+            item.username.toLowerCase().includes(localSearchQuery) || item.bio.toLowerCase().includes(localSearchQuery)
+          );
+        }
+        if (item.username) {
+          return item.username.toLowerCase().includes(localSearchQuery);
+        }
+        if (item.bio) {
+          return item.bio.toLowerCase().includes(localSearchQuery);
+        }
+      });
+      setSearchedUserList(newList);
+    } else setSearchedUserList(userList);
+  };
+
+  const searchPod = (searchQuery) => {
+    const localSearchQuery = searchQuery.toLowerCase();
+    if (searchQuery) {
+      const newList = podList.filter((item) => {
+        if (item.name && item.description) {
+          return (
+            item.name.toLowerCase().includes(localSearchQuery) ||
+            item.description.toLowerCase().includes(localSearchQuery)
+          );
+        }
+        if (item.name) {
+          return item.name.toLowerCase().includes(localSearchQuery);
+        }
+        if (item.description) {
+          return item.description.toLowerCase().includes(localSearchQuery);
+        }
+      });
+      setSearchedPodList(newList);
+    } else setSearchedPodList(podList);
+  };
+
+  const paginateDataList = (dataList, perPageCount) =>
+    Array(Math.ceil(dataList.length / perPageCount))
+      .fill(null)
+      .map((_, index) => index * perPageCount)
+      .map((currentPageStartIndex) => dataList.slice(currentPageStartIndex, currentPageStartIndex + perPageCount));
+
+  useEffect(() => {
+    if (searchedUserList) {
+      const newPaginatedUserList = paginateDataList(searchedUserList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
+      setPaginatedUserList(newPaginatedUserList);
+    }
+  }, [searchedUserList]);
+
+  useEffect(() => {
+    if (searchedPodList) {
+      const newPaginatedPodList = paginateDataList(searchedPodList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
+      setPaginatedPodList(newPaginatedPodList);
+    }
+  }, [searchedPodList]);
+
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
       setDisplayUsers(true);
+      setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
     }
     if (showPods && !displayUsers && !displayPods) {
       setDisplayPods(true);
+      setActiveTab(MODAL_TABS_MAP.PODS);
     }
     if (orgId) {
       if (displayPods) {
@@ -143,6 +220,19 @@ export const MoreInfoModal = (props) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId, displayPods, displayUsers, showUsers, showPods, pods]);
+
+  useEffect(() => {
+    if (userList) {
+      setSearchedUserList([...userList]);
+    }
+  }, [userList]);
+
+  useEffect(() => {
+    if (podList) {
+      setSearchedPodList([...podList]);
+    }
+  }, [podList]);
+
   return (
     <Modal
       open={open}
@@ -150,44 +240,100 @@ export const MoreInfoModal = (props) => {
         handleClose();
         setDisplayUsers(false);
         setDisplayPods(false);
+        setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
       }}
     >
       <TaskModalBaseCard>
-        <Title>{name}</Title>
-        <TabContainer>
-          <Tab
-            selected={displayUsers}
+        <TitleSection>
+          <Title>{name}</Title>
+          <CloseIconContainer
             onClick={() => {
+              handleClose();
+              setDisplayUsers(false);
               setDisplayPods(false);
-              setDisplayUsers(true);
+              setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
             }}
           >
-            <TabContainerText>Contributors</TabContainerText>
-          </Tab>
-          {orgId && (
-            <Tab
-              selected={displayPods}
+            <CloseModalIcon />
+          </CloseIconContainer>
+        </TitleSection>
+        <Container>
+          <StyledTabs value={activeTab} variant={'fullWidth'}>
+            <TabText
+              onClick={() => {
+                setDisplayPods(false);
+                setDisplayUsers(true);
+                setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
+              }}
+            >
+              <StyledTab isActive={activeTab === MODAL_TABS_MAP.CONTRIBUTORS} label={'Contributors'} />
+            </TabText>
+            <TabText
               onClick={() => {
                 setDisplayPods(true);
                 setDisplayUsers(false);
+                setActiveTab(MODAL_TABS_MAP.PODS);
               }}
             >
-              <TabContainerText>Pods</TabContainerText>
-            </Tab>
-          )}
-        </TabContainer>
-        {listLoading && (
-          <div
-            style={{
-              width: '100%',
-              textAlign: 'center',
+              <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label={'Pods'} />{' '}
+            </TabText>
+          </StyledTabs>
+        </Container>
+        <SearchBox>
+          <SearchIconContainer>
+            <SearchIcon />
+          </SearchIconContainer>
+
+          <input
+            onChange={(e) => {
+              if (displayUsers) {
+                searchUser(e.target.value);
+              } else if (displayPods) {
+                searchPod(e.target.value);
+              }
             }}
-          >
-            <CircularProgress />
-          </div>
+            placeholder={`Search ${displayPods ? 'pods' : 'contributors'}...`}
+            type="text"
+            className="search"
+          />
+        </SearchBox>
+        {displayUsers && (
+          <OverflowBox>
+            {listLoading && (
+              <ActivityIndicatorContainer>
+                <CircularProgress />
+              </ActivityIndicatorContainer>
+            )}
+            {paginatedUserList.map((item, i) => {
+              return (
+                <Snap key={i} className="section_scroll">
+                  {item.map((user, index) => {
+                    return <UserItem key={user?.id} user={user} />;
+                  })}
+                </Snap>
+              );
+            })}
+          </OverflowBox>
         )}
-        {displayUsers && <>{userList && userList.map((user) => <UserItem key={user?.id} user={user} />)}</>}
-        {displayPods && <>{podList && podList.map((pod) => <PodItem key={pod?.id} pod={pod} />)}</>}
+        {displayPods && (
+          <OverflowBox>
+            {listLoading && (
+              <ActivityIndicatorContainer>
+                <CircularProgress />
+              </ActivityIndicatorContainer>
+            )}
+
+            {paginatedPodList.map((item, i) => {
+              return (
+                <Snap key={i} className="section_scroll">
+                  {item.map((pod, index) => {
+                    return <PodItem key={pod?.id} pod={pod} />;
+                  })}
+                </Snap>
+              );
+            })}
+          </OverflowBox>
+        )}
       </TaskModalBaseCard>
     </Modal>
   );

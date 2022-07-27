@@ -16,6 +16,7 @@ export const TaskMedia = (props) => {
           borderRadius: '6px',
           objectFit: 'cover',
         }}
+        useNextImage={false}
         src={slug || uploadSlug}
       />
     ),

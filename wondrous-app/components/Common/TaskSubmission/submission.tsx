@@ -2,7 +2,7 @@ import { useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_STATUS } from 'graphql/mutations';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { delQuery } from 'utils';

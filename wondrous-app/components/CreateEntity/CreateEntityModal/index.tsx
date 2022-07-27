@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -26,6 +27,9 @@ import {
   UPDATE_MILESTONE,
   UPDATE_TASK,
   TURN_TASK_TO_BOUNTY,
+  CREATE_TASK_TEMPLATE,
+  UPDATE_TASK_TEMPLATE,
+  DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import {
   CREATE_TASK_PROPOSAL,
@@ -47,7 +51,14 @@ import {
   GET_MILESTONES,
   GET_TASK_BY_ID,
 } from 'graphql/queries/task';
-import _ from 'lodash';
+
+import isEmpty from 'lodash/isEmpty';
+import isNull from 'lodash/isNull';
+import cloneDeep from 'lodash/cloneDeep';
+import pick from 'lodash/pick';
+import isUndefined from 'lodash/isUndefined';
+import assignWith from 'lodash/assignWith';
+
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
@@ -148,6 +159,7 @@ import {
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
   SnapshotButtonBlock,
+  CreateEntityTextfieldInputTemplate,
 } from './styles';
 import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
@@ -162,6 +174,7 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import TaskTemplatePicker from './TaskTemplatePicker';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -241,7 +254,13 @@ const filterPaymentMethods = (paymentMethods) => {
   return paymentMethods.map((paymentMethod) => {
     return {
       ...paymentMethod,
-      icon: <SafeImage src={paymentMethod.icon} style={{ width: '30px', height: '30px', borderRadius: '15px' }} />,
+      icon: (
+        <SafeImage
+          useNextImage={false}
+          src={paymentMethod.icon}
+          style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+        />
+      ),
       label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
       value: paymentMethod.id,
     };
@@ -856,7 +875,7 @@ const CreateEntityDropdown = (props) => {
         return (
           <CreateEntityOption key={value} value={i.value}>
             <CreateEntityOptionImageWrapper>
-              {imageUrl ? <SafeImage src={imageUrl} /> : <DefaultImageComponent color={color} />}
+              {imageUrl ? <SafeImage useNextImage={false} src={imageUrl} /> : <DefaultImageComponent color={color} />}
             </CreateEntityOptionImageWrapper>
             <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
           </CreateEntityOption>
@@ -896,6 +915,10 @@ const CreateEntityTextfieldInputPointsComponent = React.forwardRef(function Crea
 
 const CreateEntityTextfieldInputRewardComponent = React.forwardRef(function CreateEntityTextfieldInput(props, ref) {
   return <CreateEntityTextfieldInputReward {...props} ref={ref} />;
+});
+
+const CreateEntityTextfieldInputTemplateComponent = React.forwardRef(function CreateEntityTextfieldInput(props, ref) {
+  return <CreateEntityTextfieldInputTemplate {...props} ref={ref} />;
 });
 
 enum Fields {
@@ -1018,25 +1041,25 @@ const useContextValue = (condition, callback) => {
 };
 
 const initialValues = (entityType, existingTask = undefined) => {
-  const defaultValues = _.cloneDeep(entityTypeData[entityType].initialValues);
+  const defaultValues = cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
-  const existingTaskValues = _.pick(
+  const existingTaskValues = pick(
     {
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
-      reviewerIds: _.isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
+      reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
         return { rewardAmount, paymentMethodId };
       }),
-      labelIds: _.isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
+      labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
     },
     defaultValuesKeys
   );
-  const initialValues = _.assignWith(defaultValues, existingTaskValues, (objValue, srcValue) => {
-    return _.isNull(srcValue) || _.isUndefined(srcValue) ? objValue : srcValue;
+  const initialValues = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) => {
+    return isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue;
   });
   return initialValues;
 };
@@ -1111,6 +1134,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     ],
   });
 
+  const [createTaskTemplate] = useMutation(CREATE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
+  });
+
+  const [updateTaskTemplate] = useMutation(UPDATE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
+  });
+
+  const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
+  });
+
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
 
@@ -1124,7 +1159,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
       const points = parseInt(values.points);
-      const rewards = _.isEmpty(values.rewards)
+      const rewards = isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
       const githubPullRequest = {
@@ -1264,6 +1299,89 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
+
+  const handleSubmitTemplate = (template) => {
+    editor.children = JSON.parse(template?.description);
+    form.setFieldValue('title', template?.title);
+    form.setFieldValue('points', template?.points);
+    form.setFieldValue('orgId', template?.orgId);
+    form.setFieldValue('podId', template?.podId);
+
+    form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    form.setFieldValue('assigneeId', template?.assignee);
+    form.setFieldValue(
+      'reviewerIds',
+      template?.reviewer?.map((reviewerId) => reviewerId.id)
+    );
+    form.setFieldValue('description', JSON.parse(template?.description));
+  };
+
+  const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
+
+  const handleSaveTemplate = (template_name) => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    createTaskTemplate({
+      variables: {
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards: rewards,
+          points: parseInt(form.values.points),
+          name: template_name,
+          description: description,
+          orgId: form.values.orgId,
+          podId: form.values.podId,
+        },
+      },
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  const handleEditTemplate = (templateId) => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    updateTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards: rewards,
+          points: parseInt(form.values.points),
+          description: description,
+          podId: form.values.podId,
+        },
+      },
+    });
+  };
+
+  const handleDeleteTemplate = (templateId) => {
+    deleteTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+      },
+    });
+  };
 
   const [snapshotId, setSnapshotId] = useState(existingTask?.snapshotId);
 
@@ -1599,11 +1717,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           ref={params.InputProps.ref}
                           disableUnderline={true}
                           fullWidth={true}
-                          placeholder="Enter username..."
+                          placeholder={'Enter username...'}
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
-                                <SafeImage src={reviewer.profilePicture} />
+                                <SafeImage useNextImage={false} src={reviewer.profilePicture} />
                               ) : (
                                 <CreateEntityDefaultUserImage />
                               )}
@@ -1613,9 +1731,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                             <CreateEntityAutocompletePopperRenderInputAdornment
                               position="end"
                               onClick={() => {
-                                const newReviewers = _.cloneDeep(form.values.reviewerIds).filter(
-                                  (id, i) => i !== index
-                                );
+                                const newReviewers = cloneDeep(form.values.reviewerIds).filter((id, i) => i !== index);
                                 form.setFieldValue('reviewerIds', newReviewers);
                               }}
                             >
@@ -1630,7 +1746,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       return (
                         <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
-                            <SafeImage src={option?.profilePicture} />
+                            <SafeImage useNextImage={false} src={option?.profilePicture} />
                           ) : (
                             <CreateEntityDefaultUserImage />
                           )}
@@ -1642,7 +1758,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     }}
                     onChange={(event, value, reason) => {
                       if (reason === 'selectOption' && !form.values.reviewerIds.includes(value.id)) {
-                        const reviewerIds = _.cloneDeep(form.values.reviewerIds);
+                        const reviewerIds = cloneDeep(form.values.reviewerIds);
                         reviewerIds[index] = value.id;
                         form.setFieldValue('reviewerIds', reviewerIds);
                       }
@@ -1655,12 +1771,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               );
             })}
             <Tooltip
-              title={_.isEmpty(filteredEligibleReviewers) && 'You reached the maximum no. of available reviewers'}
+              title={isEmpty(filteredEligibleReviewers) && 'You reached the maximum no. of available reviewers'}
               placement="top"
             >
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  if (_.isEmpty(filteredEligibleReviewers)) return;
+                  if (isEmpty(filteredEligibleReviewers)) return;
                   if (form.values.reviewerIds === null) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
@@ -1669,7 +1785,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 }}
               >
                 <CreateEntityAddButtonIcon />
-                {(_.isNull(form.values.reviewerIds) || _.isEmpty(form.values.reviewerIds)) && (
+                {(isNull(form.values.reviewerIds) || isEmpty(form.values.reviewerIds)) && (
                   <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
                 )}
               </CreateEntityLabelAddButton>
@@ -1709,7 +1825,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         startAdornment={
                           <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                             {assignee?.profilePicture ? (
-                              <SafeImage src={assignee.profilePicture} />
+                              <SafeImage useNextImage={false} src={assignee.profilePicture} />
                             ) : (
                               <CreateEntityDefaultUserImage />
                             )}
@@ -1732,7 +1848,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     return (
                       <CreateEntityAutocompleteOption {...props}>
                         {option?.profilePicture ? (
-                          <SafeImage src={option?.profilePicture} />
+                          <SafeImage useNextImage={false} src={option?.profilePicture} />
                         ) : (
                           <CreateEntityDefaultUserImage />
                         )}
@@ -1805,7 +1921,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       );
                     })}
                   </CreateEntitySelect>
-
                   {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
                     <CreateEntitySelect
                       name="task-applications-claim-roles"
@@ -1858,7 +1973,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   )}
                 </CreateEntityWrapper>
               )}
-
               {form.values.claimPolicy !== null && (
                 <CreateEntityAutocompletePopperRenderInputAdornment
                   position="end"
@@ -1943,7 +2057,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   renderValue={(value) => {
                     return (
                       <CreateEntityPaymentMethodSelectRender>
-                        {value?.label} <CreateEntitySelectArrowIcon />
+                        {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
+                        <CreateEntitySelectArrowIcon />
                       </CreateEntityPaymentMethodSelectRender>
                     );
                   }}
@@ -2347,6 +2462,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               </CreateEntitySelectWrapper>
             </CreateEntityLabelSelectWrapper>
           )}
+        <CreateEntityDivider />
+        <TaskTemplatePicker
+          options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+          value={form.values.podId}
+          onChange={handleOnchangePodId}
+          disabled={formValues !== undefined}
+          handleSubmitTemplate={handleSubmitTemplate}
+          paymentMethods={paymentMethods}
+          handleSaveTemplate={handleSaveTemplate}
+          handleEditTemplate={handleEditTemplate}
+          handleDeleteTemplate={handleDeleteTemplate}
+        />
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
@@ -2387,7 +2514,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 <CreateEntityCreateTaskButton type="submit">
                   {existingTask ? `Edit` : `Create`} {entityType}
                 </CreateEntityCreateTaskButton>
-                {!_.isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
+                {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>
             </>
           )}

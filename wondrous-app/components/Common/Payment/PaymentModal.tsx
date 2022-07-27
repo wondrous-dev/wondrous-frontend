@@ -177,6 +177,7 @@ export const MakePaymentModal = (props) => {
           <PaymentModalHeader>
             {fetchedTask?.orgProfilePicture ? (
               <SafeImage
+                useNextImage={false}
                 src={fetchedTask?.orgProfilePicture}
                 style={{
                   width: '29px',

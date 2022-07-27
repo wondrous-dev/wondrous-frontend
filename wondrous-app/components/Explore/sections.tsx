@@ -29,6 +29,7 @@ const OrgItem = ({ org }) => {
         {headerImage && <>{headerImage}</>}
         {headerUrl && (
           <SafeImage
+            useNextImage={false}
             style={{
               width: '100%',
               borderRadius: '12px 12px 0px 0px',
@@ -39,6 +40,7 @@ const OrgItem = ({ org }) => {
         )}
         <div>
           <SafeImage
+            useNextImage={false}
             src={imageUrl}
             style={{
               borderRadius: '5px',

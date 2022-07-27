@@ -17,8 +17,6 @@ import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInt
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
-  ProfileInfoUserImage,
-  ProfileInfoDefaultImage,
   ProfileInfoFullName,
   ProfileInfoUsername,
   ProfileInfoBioWrapper,
@@ -34,6 +32,8 @@ import styles, {
   ProfileInfoInterestsChipWrapper,
   ProfileInfoEarningsInterestWrapper,
 } from './styles';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 
 const SOCIAL_ICONS = {
   [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
@@ -59,7 +59,16 @@ const ProfileInfo = ({ userProfile }) => {
       />
 
       <ProfileInfoContainer>
-        {profilePicture ? <ProfileInfoUserImage src={profilePicture} /> : <ProfileInfoDefaultImage />}
+        <SafeImage
+          src={profilePicture || DefaultUserImage}
+          width={40}
+          height={40}
+          objectFit="cover"
+          useNextImage
+          style={{
+            borderRadius: '50%',
+          }}
+        />
         <ProfileInfoFullName>{fullName ? fullName : username}</ProfileInfoFullName>
         <ProfileInfoUsername>@{username}</ProfileInfoUsername>
       </ProfileInfoContainer>

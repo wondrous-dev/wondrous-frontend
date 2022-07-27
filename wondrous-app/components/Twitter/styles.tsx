@@ -53,7 +53,7 @@ export const InviteWelcomeBoxWrapper = styled.div`
   }
 `;
 
-export const OrgProfilePicture = styled(SafeImage)`
+export const OrgProfilePicture = styled(SafeImage).attrs({ useNextImage: false })`
   && {
     margin-bottom: 20px;
     width: 77px;

@@ -35,11 +35,6 @@ export const OrgCardImageWrapper = styled(Box)`
   border-radius: 5px;
 `;
 
-export const OrgCardImage = styled(SafeImage)`
-  width: 32px;
-  height: 32px;
-`;
-
 export const OrgCardTitle = styled(WhiteTypographyStyles)``;
 
 export const OrgCardDescription = styled(WhiteTypographyStyles)`

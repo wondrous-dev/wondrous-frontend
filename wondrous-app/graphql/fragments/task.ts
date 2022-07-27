@@ -123,7 +123,6 @@ export const TaskCardFragment = gql`
     completedAt
     reactionCount
     commentCount
-    shareCount
     orgOrder
     podOrder
     assigneeOrder
@@ -146,9 +145,9 @@ export const TaskCardFragment = gql`
     }
     parentTaskId
     totalSubtaskCount
-    completedSubtaskCount
     totalSubmissionsCount
     approvedSubmissionsCount
+    waitingForReviewSubmissionsCount
     points
     taskApplicationPermissions {
       canClaim
@@ -436,5 +435,35 @@ export const MilestoneFragment = gql`
     reactionCount
     commentCount
     privacyLevel
+  }
+`;
+
+export const TaskTemplateFragment = gql`
+  fragment TaskTemplateFragment on TaskTemplate {
+    id
+    title
+    createdAt
+    createdBy
+    name
+    orgId
+    podId
+    description
+    assignee {
+      username
+      profilePicture
+    }
+    creator {
+      username
+      profilePicture
+    }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+      chain
+    }
+    points
   }
 `;

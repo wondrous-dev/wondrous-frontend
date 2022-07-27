@@ -177,7 +177,7 @@ const PaymentItem = (props) => {
             }}
           >
             {item?.payeeProfilePicture ? (
-              <SafeImage src={item?.payeeProfilePicture} style={imageStyle} />
+              <SafeImage useNextImage={false} src={item?.payeeProfilePicture} style={imageStyle} />
             ) : (
               <DefaultUserImage style={imageStyle} />
             )}
@@ -189,25 +189,30 @@ const PaymentItem = (props) => {
             minWidth: '120px',
           }}
         >
-          <CompensationPill
-            style={{
-              backGround: 'none',
-            }}
-          >
-            <IconContainer>
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <SafeImage
-                src={item?.icon}
-                style={{
-                  width: '24px',
-                  height: '24px',
-                }}
-              />
-            </IconContainer>
-            <CompensationAmount>
-              {item?.amount} {item?.symbol}
-            </CompensationAmount>
-          </CompensationPill>
+          {item?.amount ? (
+            <CompensationPill
+              style={{
+                backGround: 'none',
+              }}
+            >
+              <IconContainer>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <SafeImage
+                  useNextImage={false}
+                  src={item?.icon}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                  }}
+                />
+              </IconContainer>
+              <CompensationAmount>
+                {item?.amount} {item?.symbol}
+              </CompensationAmount>
+            </CompensationPill>
+          ) : (
+            <ErrorText>Reward removed from task</ErrorText>
+          )}
         </StyledTableCell>
         <StyledTableCell>
           <Link href={taskHref}>
@@ -241,10 +246,12 @@ const PaymentItem = (props) => {
             <TableCellText>{item.paymentStatus}</TableCellText>
           </StyledTableCell>
         )}
-        {item.chain && (
+        {item.chain ? (
           <StyledTableCell>
             <TableCellText>{item.chain}</TableCellText>
           </StyledTableCell>
+        ) : (
+          <StyledTableCell></StyledTableCell>
         )}
         {item.submissionApprovedAt && (
           <StyledTableCell>

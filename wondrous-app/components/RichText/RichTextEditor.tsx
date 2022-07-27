@@ -1,15 +1,15 @@
-import { Editor, Descendant, Range, Transforms } from 'slate';
-import { DefaultElement, Editable, RenderElementProps, Slate } from 'slate-react';
+import { Descendant } from 'slate';
+import { DefaultElement, RenderElementProps, Slate } from 'slate-react';
 
-import EditorHelpers from './helpers';
-import { Leaf, LinkElement, MentionElement } from './elements';
-import { CustomEditor, CustomElement } from './types';
-import { BulletedList, NumberedList, StyledEditable } from './styles';
-import { plainTextToRichText } from './utils';
-import Toolbar from './components/Toolbar';
 import Portal from './components/Portal';
-import useMentions from './features/mentions/useMentions';
+import Toolbar from './components/Toolbar';
+import { Leaf, LinkElement, MentionElement } from './elements';
 import Mentions from './features/mentions/Mentions';
+import useMentions from './features/mentions/useMentions';
+import EditorHelpers from './helpers';
+import { BulletedList, NumberedList, StyledEditable } from './styles';
+import { CustomEditor } from './types';
+import { plainTextToRichText } from './utils';
 
 interface Props {
   editor: CustomEditor;
@@ -20,7 +20,6 @@ interface Props {
 
   /** Node to render toolbar to */
   toolbarNode?: HTMLElement;
-
   /** Node to render mentions popper to */
   portalNode?: HTMLElement;
 

@@ -31,16 +31,13 @@ export const HeaderImageWrapper = styled.div`
 export const HeaderImage = styled((props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '100%',
       height: '100%',
       objectFit: 'cover',
     }}
   />
-))``;
-
-export const HeaderImageDefault = styled(() => (
-  <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
 ))``;
 
 export const TokenHeader = styled.div`
@@ -653,6 +650,7 @@ export const TokenGatedRoleDescription = styled(Typography)`
 
 export const TokenLogoDisplay = (props) => (
   <SafeImage
+    useNextImage={false}
     src={props?.src}
     style={{
       width: '29px',

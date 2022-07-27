@@ -188,6 +188,7 @@ export const Invite = ({
           <Logo>
             {orgInfo?.profilePicture || podInfo?.org?.profilePicture ? (
               <SafeImage
+                useNextImage={false}
                 style={{
                   width: '78px',
                   height: '78px',

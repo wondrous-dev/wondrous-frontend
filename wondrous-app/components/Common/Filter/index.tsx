@@ -21,7 +21,7 @@ import {
 } from './styles';
 import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
 import { TaskFilter } from 'types/task';
-import _ from 'lodash';
+import uniqBy from 'lodash/uniqBy';
 interface IFilterProps {
   filterSchema: any;
   onChange: ({}: TaskFilter) => void;
@@ -54,7 +54,7 @@ const Filter = (props: IFilterProps) => {
     if (!isLoading && data) {
       const queriedItems = [...data, ...items];
       let mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
-      setItems(_.uniqBy(mutatedItems, 'id'));
+      setItems(uniqBy(mutatedItems, 'id'));
     }
   }, [isLoading]);
 

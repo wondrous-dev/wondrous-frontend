@@ -200,6 +200,14 @@ export const TokenGatingTextfieldButtonDown = styled(TokenGatingTextfieldButton)
   }
 `;
 
+export const TaskTemplateActionContainer = styled.div`
+  padding: 24px;
+  background: #141414;
+  width: 100%;
+  justify-content: flex-end;
+  display: flex;
+`;
+
 export const TokenGatingAutocompleteTextfieldDownIcon = styled(ArrowDropDownIcon)``;
 
 export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
@@ -256,6 +264,7 @@ export const TokenGatingAutocompleteListItem = styled(ListItem)`
 export const TokenGatingInputImage = styled((props) => (
   <SafeImage
     {...props}
+    useNextImage={false}
     style={{
       width: '24px',
       marginRight: '8px',
@@ -374,6 +383,7 @@ export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
 
 export const TokenLogoDisplay = (props) => (
   <SafeImage
+    useNextImage={false}
     src={props?.src}
     style={{
       width: '29px',

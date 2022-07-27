@@ -7,7 +7,7 @@ import { TASK_ICONS_LABELS } from 'components/Common/TaskSubtask/TaskSubtasks';
 import { Claim } from 'components/Icons/claimTask';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
@@ -71,7 +71,7 @@ const TaskSubtaskUserImage = ({ assignee }) => {
   const profilePicture = assignee?.profilePicture;
   return (
     <TaskSubtaskImageWrapper>
-      {profilePicture ? <SafeImage src={profilePicture} /> : <DefaultUserImage />}
+      {profilePicture ? <SafeImage useNextImage={false} src={profilePicture} /> : <DefaultUserImage />}
     </TaskSubtaskImageWrapper>
   );
 };

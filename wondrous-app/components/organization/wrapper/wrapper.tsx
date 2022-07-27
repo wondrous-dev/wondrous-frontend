@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import apollo from 'services/apollo';
 import { useMe } from '../../Auth/withAuth';
+import { Box } from '@mui/system';
 
 import Tabs from '../tabs/tabs';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
+import DefaultBg from 'public/images/overview/background.png';
 
 import {
   Content,
@@ -18,7 +20,6 @@ import {
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderImageDefault,
   HeaderMainBlock,
   HeaderButton,
   HeaderPods,
@@ -319,27 +320,39 @@ const Wrapper = (props) => {
       </CreateModalOverlay>
 
       <HeaderImageWrapper>
-        {orgProfile?.headerPicture ? <HeaderImage src={orgProfile?.headerPicture} /> : <HeaderImageDefault />}
+        {orgProfile ? (
+          <SafeImage
+            src={orgProfile?.headerPicture || DefaultBg}
+            width="100%"
+            height={100}
+            layout="fill"
+            objectFit="cover"
+            useNextImage
+          />
+        ) : null}
       </HeaderImageWrapper>
 
       <Content>
         <ContentContainer>
           <TokenHeader>
             <HeaderMainBlock>
-              {orgProfile?.profilePicture ? (
+              <Box sx={{ flex: '0 0 60px' }}>
                 <SafeImage
                   src={orgProfile?.profilePicture}
+                  placeholderComp={
+                    <TokenEmptyLogo>
+                      <DAOEmptyIcon />
+                    </TokenEmptyLogo>
+                  }
+                  width="60px"
+                  height="60px"
+                  useNextImage
                   style={{
-                    width: '60px',
-                    height: '60px',
                     borderRadius: '6px',
                   }}
                 />
-              ) : (
-                <TokenEmptyLogo>
-                  <DAOEmptyIcon />
-                </TokenEmptyLogo>
-              )}
+              </Box>
+
               <HeaderTitleIcon>
                 <HeaderTitle>{orgProfile?.name}</HeaderTitle>
                 <HeaderTag>@{orgProfile?.username}</HeaderTag>
@@ -465,7 +478,7 @@ const Wrapper = (props) => {
               </div>
             </HeaderActivity>
           </TokenHeader>
-          <Tabs>
+          <Tabs showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />

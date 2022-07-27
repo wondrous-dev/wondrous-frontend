@@ -4,7 +4,7 @@ import React from 'react';
 import { Container, StyledTab, StyledTabs, ChildrenWrapper } from './styles';
 
 const Tabs = (props) => {
-  const { children, page = 'organization' } = props;
+  const { children, page = 'organization', showMembers = false } = props;
 
   const router = useRouter();
 
@@ -29,6 +29,10 @@ const Tabs = (props) => {
       label: 'Analytics',
     },
   ];
+
+  if (showMembers) {
+    tabsLinks.splice(2, 0, { href: `/${page}/${entityId}/members`, label: 'Members' });
+  }
 
   return (
     <Container>

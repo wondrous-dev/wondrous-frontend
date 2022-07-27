@@ -3,7 +3,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
 import Image from 'next/image';
 import { useRouter } from 'next/router';
-import { isEmpty } from 'lodash';
+import isEmpty from 'lodash/isEmpty';
 
 import Box from '@mui/material/Box';
 

@@ -57,6 +57,7 @@ export default function Board({ tasks, handleCardClick }) {
                 {coverMedia ? (
                   <BoardsCardMedia>
                     <SafeImage
+                      useNextImage={false}
                       style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }}
                       src={coverMedia.slug}
                     />
