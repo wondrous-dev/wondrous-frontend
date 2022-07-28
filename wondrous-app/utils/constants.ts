@@ -572,3 +572,16 @@ export const GLOBAL_SEARCH_TYPES = {
   PODS: 'pods',
   USERS: 'users',
 };
+
+export const DAO_CATEGORIES = {
+  social_good: '🌎 Social good',
+  media_content: '🎬 Media & content',
+  nft_collective: '🐒 NFT collective',
+  investments: '‍‍💰️ Investments',
+  defi: '‍💸 Defi',
+  social: '🤝 Social',
+  service_dao: '🔨 Service DAO',
+  think_tank: '‍🤔 Think tank',
+  fun_memeable: '💀 Fun and memeable',
+  building_products: '‍🏗️ Building products',
+} as const;

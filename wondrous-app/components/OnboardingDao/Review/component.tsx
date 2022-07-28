@@ -2,6 +2,7 @@ import EditIcon from 'components/Icons/edit.svg';
 import { Error } from 'components/OnboardingDao/styles';
 import { FormikValues, useField, useFormikContext } from 'formik';
 import { useState } from 'react';
+import { DAO_CATEGORIES } from 'utils/constants';
 import {
   Category,
   ChildrenWrapper,
@@ -110,11 +111,9 @@ const Review = ({ fields }) => {
       )}
       <ItemWithEdit value={description} field={fields.description} EditComponent={EditDescription} />
       <Item label="Goals">
-        {category && (
-          <Category>
-            <Text>{category}</Text>
-          </Category>
-        )}
+        <Category>
+          <Text>{DAO_CATEGORIES[category]}</Text>
+        </Category>
       </Item>
       {/* NOTE: Not in use yet 
       <Item label="Task import file">Sample DAO</Item>

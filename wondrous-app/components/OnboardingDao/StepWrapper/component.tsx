@@ -26,7 +26,7 @@ import {
   WrapperLoadingCircularProgress,
 } from './styles';
 
-const NO_OF_STEPS = 5;
+const NO_OF_STEPS = 4;
 
 export const OnboardingStepIndicator = ({ step }) => {
   const rangeIndicator = (start, end, Component) =>

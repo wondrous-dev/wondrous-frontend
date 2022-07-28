@@ -1,6 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper } from 'components/OnboardingDao';
+import { AddImages, CreateDao, DaoCategory, Review, StepWrapper } from 'components/OnboardingDao';
 import { onboardingDaoValueLocalStorageKey } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations/org';
@@ -59,16 +59,16 @@ const fieldSet = [
   //   step: 4,
   //   Component: ImportTasks,
   // },
-  {
-    title: 'Invite your community',
-    subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
-    step: 4,
-    Component: InviteCommunity,
-  },
+  // {
+  //   title: 'Invite your community',
+  //   subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
+  //   step: 4,
+  //   Component: InviteCommunity,
+  // },
   {
     title: 'Review',
     subtitle: `Review your DAO details and then let's launch!`,
-    step: 5,
+    step: 4,
     Component: Review,
     hoverContinue: true,
     fields: {
@@ -82,7 +82,7 @@ const fieldSet = [
       },
     },
   },
-];
+] as const;
 
 const handleStep = (step, { action, hasError = false }) => {
   if (hasError) return step;
@@ -148,12 +148,12 @@ const useInitialValues = () => {
 const OnboardingCreateDao = () => {
   const { initialValues, restoreStep } = useInitialValues();
   const [step, setStep] = useReducer(handleStep, restoreStep);
-  const currentField = fieldSet.find((field) => field.step === step);
+  const currentFieldSet = fieldSet.find((field) => field.step === step);
   const { handleCreateOrg, loading } = useCreateOrg();
   return (
     <Formik
       initialValues={{
-        category: '🌎 Social good',
+        category: 'social_good',
         ...initialValues,
       }}
       onSubmit={handleCreateOrg}
@@ -162,7 +162,7 @@ const OnboardingCreateDao = () => {
       <Form>
         <StepWrapper
           key={step}
-          {...currentField}
+          {...currentFieldSet}
           handleStep={({ action, hasError = false }) => setStep({ action, hasError })}
           loading={loading}
         />
