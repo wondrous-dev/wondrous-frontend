@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { SafeImage } from 'components/Common/Image';
 import Image from 'next/image';
 import styled from 'styled-components';
 
@@ -16,7 +17,14 @@ export const LogoUpload = styled.label`
   }
 `;
 
-export const ImageWrapper = styled((props) => <Image width="80px" height="80px" alt="logo" {...props} />)`
+export const ImageWrapper = styled((props) => <Image alt="logo" {...props} />)`
+  && {
+    border-radius: 6px;
+    object-fit: cover;
+  }
+`;
+
+export const SafeImageWrapper = styled((props) => <SafeImage alt="logo" {...props} />)`
   && {
     border-radius: 6px;
     object-fit: cover;

@@ -3,27 +3,26 @@ import AddAPhotoIcon from 'components/Icons/addAPhoto.svg';
 import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { ImageUpload } from 'components/Settings/imageUpload';
 import { useField } from 'formik';
+import { useState } from 'react';
 import { handleImageFile, uploadMedia } from 'utils/media';
-import { useOnboardingCreateDaoContext } from '../context';
-import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, ImageWrapper, LogoUpload } from './styles';
+import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, ImageWrapper, LogoUpload, SafeImageWrapper } from './styles';
 
 const useHandleImageChange = ({ setValue, name }) => {
-  const { setTempState, tempState } = useOnboardingCreateDaoContext();
-  const file = tempState[name];
-  const withImage = Boolean(file);
+  const [file, setFile] = useState(null);
   const handleChange = async (file) => {
-    setTempState({ key: name, value: file });
+    setFile(file);
     const imageFile = handleImageFile({ file, id: makeUniqueId('temp') });
     setValue(imageFile.filename);
     await uploadMedia(imageFile);
   };
-  return { handleChange, file, withImage };
+  return { handleChange, file };
 };
 
 const ProfilePicture = ({ ...props }) => {
   const name = props.name;
   const [field, _, { setValue }] = useField(name);
-  const { handleChange, file, withImage } = useHandleImageChange({ name, setValue });
+  const { handleChange, file } = useHandleImageChange({ name, setValue });
+  const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
       <FieldLabel>Logo</FieldLabel>
@@ -32,9 +31,12 @@ const ProfilePicture = ({ ...props }) => {
         imageName={field.name}
         LabelComponent={(props) => (
           <LogoUpload {...props}>
-            {withImage && (
-              <ImageWrapper width="80px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
-            )}
+            {withImage &&
+              (file ? (
+                <ImageWrapper width="80px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
+              ) : (
+                <SafeImageWrapper width="80px" height="80px" alt={props.label} useNextImage={true} src={field.value} />
+              ))}
             <AddPhotoIconWrapper withImage={withImage}>
               <AddAPhotoIcon />
             </AddPhotoIconWrapper>
@@ -48,7 +50,8 @@ const ProfilePicture = ({ ...props }) => {
 const HeaderPicture = ({ ...props }) => {
   const name = props.name;
   const [field, _, { setValue }] = useField(name);
-  const { handleChange, file, withImage } = useHandleImageChange({ name, setValue });
+  const { handleChange, file } = useHandleImageChange({ name, setValue });
+  const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
       <FieldLabel>Header</FieldLabel>
@@ -57,9 +60,12 @@ const HeaderPicture = ({ ...props }) => {
         imageName={field.name}
         LabelComponent={(props) => (
           <HeaderWrapper {...props}>
-            {withImage && (
-              <ImageWrapper width="552px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
-            )}
+            {withImage &&
+              (file ? (
+                <ImageWrapper width="552px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
+              ) : (
+                <SafeImageWrapper width="552px" height="80px" alt={props.label} src={field.value} />
+              ))}
             <AddPhotoIconWrapper withImage={withImage}>
               <AddAPhotoIcon />
             </AddPhotoIconWrapper>

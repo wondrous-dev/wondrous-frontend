@@ -1,0 +1,35 @@
+import { Typography } from '@mui/material';
+import styled from 'styled-components';
+
+const ImportSuccessWrapper = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 2px 6px;
+  background: rgba(6, 255, 165, 0.1);
+  border-radius: 4px;
+  width: fit-content;
+`;
+
+const ImportSuccessText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    background: linear-gradient(180deg, #ffffff 0%, #06ffa5 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+`;
+
+export const ImportSuccess = ({ children }) => {
+  return (
+    <ImportSuccessWrapper>
+      <ImportSuccessText>{children}</ImportSuccessText>
+    </ImportSuccessWrapper>
+  );
+};
+
+export default ImportSuccess;

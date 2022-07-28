@@ -16,6 +16,7 @@ const ButtonImportWrapper = styled(({ children, ...props }) => (
     justify-content: space-between;
     padding: 1px;
     width: 280px;
+
     > div {
       align-items: center;
       background: ${({ theme }) => theme.palette.background.default};
@@ -34,6 +35,8 @@ const ButtonIconTextWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
+  height: 100%;
 `;
 
 export const ButtonText = styled(Typography)`
@@ -65,9 +68,9 @@ export const RightArrow = styled((props) => (
   }
 `;
 
-export const ButtonImport = ({ Icon = () => null, children, className = '' }) => {
+export const ButtonImport = ({ Icon = () => null, children, className = '', ...props }) => {
   return (
-    <ButtonImportWrapper className={className}>
+    <ButtonImportWrapper {...props} className={className}>
       <ButtonIconTextWrapper>
         <Icon />
         <ButtonText>{children}</ButtonText>

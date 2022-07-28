@@ -4,6 +4,7 @@ import { useFormikContext } from 'formik';
 import { mapKeys, some } from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
+import { onboardingDaoValueLocalStorageKey } from '../constants';
 import {
   BackButton,
   ButtonWrapper,
@@ -25,7 +26,7 @@ import {
   WrapperLoadingCircularProgress,
 } from './styles';
 
-const NO_OF_STEPS = 6;
+const NO_OF_STEPS = 5;
 
 export const OnboardingStepIndicator = ({ step }) => {
   const rangeIndicator = (start, end, Component) =>
@@ -114,7 +115,12 @@ const StepWrapper = ({
       <FormWrapper>
         <HeaderWrapper>
           <OnboardingStepIndicator step={step} />
-          <CloseButton onClick={() => router.back()}>
+          <CloseButton
+            onClick={() => {
+              router.push('/dashboard');
+              localStorage.removeItem(onboardingDaoValueLocalStorageKey);
+            }}
+          >
             <CloseButtonIcon />
           </CloseButton>
         </HeaderWrapper>
