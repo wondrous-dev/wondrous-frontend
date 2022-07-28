@@ -11,3 +11,4 @@ export * from './wallet';
 export * from './feed';
 export * from './tokenGating';
 export * from './integration';
+export * from './search';

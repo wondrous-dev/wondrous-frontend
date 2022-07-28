@@ -126,7 +126,6 @@ export const ProfileInfoInterestsChip = styled(Chip)`
 const styles = {
   editInterest: {
     cursor: 'pointer',
-  }
-  
+  },
 };
-export default styles
+export default styles;

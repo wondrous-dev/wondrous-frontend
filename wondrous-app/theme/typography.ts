@@ -64,6 +64,12 @@ const typography = {
     color: palette.grey100,
     letterSpacing: '0.25%',
   },
+  body3: {
+    fontSize: '15px',
+    color: palette.grey250,
+    lineHeight: '15px',
+    fontWeight: 600,
+  },
   fontFamily: 'Space Grotesk, sans-serif',
 };
 

@@ -36,7 +36,6 @@ export const disableContainerOverflow = () => {
 export const toggleHtmlOverflow = () => {
   const htmlTagElements = document.getElementsByTagName('html');
   const { style } = htmlTagElements.item(0);
-
   style.overflow = style.overflow ? '' : 'hidden';
 };
 
@@ -81,6 +80,16 @@ export const parseUserPermissionContext = (props) => {
     return userPermissionsContext?.orgPermissions[orgId] || [];
   }
   return [];
+};
+
+export const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefined, podId = undefined }) => {
+  let permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: orgId,
+    podId: podId,
+  });
+
+  return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
 };
 
 export const transformTaskToTaskCard = (task, extraData) => {

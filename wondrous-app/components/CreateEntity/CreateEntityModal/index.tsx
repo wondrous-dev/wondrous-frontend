@@ -1,3 +1,4 @@
+/* eslint-disable max-lines */
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -26,6 +27,9 @@ import {
   UPDATE_MILESTONE,
   UPDATE_TASK,
   TURN_TASK_TO_BOUNTY,
+  CREATE_TASK_TEMPLATE,
+  UPDATE_TASK_TEMPLATE,
+  DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import {
   CREATE_TASK_PROPOSAL,
@@ -78,7 +82,7 @@ import {
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
 } from 'utils/constants';
-import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
+import { transformTaskToTaskCard, hasCreateTaskPermission } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
@@ -155,6 +159,7 @@ import {
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
   SnapshotButtonBlock,
+  CreateEntityTextfieldInputTemplate,
 } from './styles';
 import { GithubLink } from 'components/Settings/Github/styles';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
@@ -169,6 +174,7 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import TaskTemplatePicker from './TaskTemplatePicker';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -273,26 +279,26 @@ const filterOrgUsers = (orgUsers) => {
   }));
 };
 
-const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefined, podId = undefined }) => {
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId: orgId,
-    podId: podId,
-  });
-  return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
-};
-
-const filterOptionsWithPermission = (options, userPermissionsContext, orgId = undefined) => {
+const filterOptionsWithPermission = (
+  entityType = ENTITIES_TYPES.TASK,
+  options,
+  userPermissionsContext,
+  orgId = undefined,
+  podId = undefined
+) => {
   if (!options) {
     return [];
   }
   return options
     .filter(({ id }) => {
-      return hasCreateTaskPermission({
-        userPermissionsContext,
-        orgId: orgId ?? id,
-        podId: orgId ? id : undefined,
-      });
+      const listPodId = orgId ? id : undefined;
+      return (
+        hasCreateTaskPermission({
+          userPermissionsContext,
+          orgId: orgId ?? id,
+          podId: podId || listPodId,
+        }) || entityType === ENTITIES_TYPES.PROPOSAL
+      );
     })
     .map(({ profilePicture, name, id, color }) => ({
       imageUrl: profilePicture,
@@ -537,6 +543,8 @@ const useCreateTask = () => {
       'getPerTypeTaskCountForPodBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
     ],
   });
 
@@ -546,32 +554,7 @@ const useCreateTask = () => {
         input,
       },
     })
-      .then((result) => {
-        //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
-        if (!result?.data?.createTask?.parentTaskId) {
-          if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
-            const task = result?.data?.createTask;
-            const justCreatedPod = getPodObject(pods, task.podId);
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) ||
-                task?.podId === board?.podId ||
-                form.values.podId === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
-
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              board.setColumns(columns);
-            }
-          } else {
-            board?.setEntityType(ENTITIES_TYPES.TASK);
-          }
-        }
+      .then(() => {
         handleClose();
       })
       .catch((e) => console.log(e));
@@ -581,7 +564,12 @@ const useCreateTask = () => {
 
 const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
+    refetchQueries: () => [
+      'getUserTaskBoardTasks',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getMilestones',
+    ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
@@ -929,6 +917,10 @@ const CreateEntityTextfieldInputRewardComponent = React.forwardRef(function Crea
   return <CreateEntityTextfieldInputReward {...props} ref={ref} />;
 });
 
+const CreateEntityTextfieldInputTemplateComponent = React.forwardRef(function CreateEntityTextfieldInput(props, ref) {
+  return <CreateEntityTextfieldInputTemplate {...props} ref={ref} />;
+});
+
 enum Fields {
   reviewer,
   assignee,
@@ -1097,10 +1089,11 @@ interface ICreateEntityModal {
   resetEntityType?: Function;
   setEntityType?: Function;
   formValues?: FormikValues;
+  status?: string;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -1122,7 +1115,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
+  const filteredDaoOptions = filterOptionsWithPermission(
+    entityType,
+    userOrgs?.getUserOrgs,
+    fetchedUserPermissionsContext,
+    undefined,
+    board?.podId
+  );
   const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
@@ -1133,6 +1132,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
     ],
+  });
+
+  const [createTaskTemplate] = useMutation(CREATE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
+  });
+
+  const [updateTaskTemplate] = useMutation(UPDATE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
+  });
+
+  const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
+    refetchQueries: () => ['getTaskTemplatesByUserId'],
   });
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
@@ -1169,6 +1180,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
         }),
+        ...(status && entityType === ENTITIES_TYPES.TASK && { status }),
       };
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
@@ -1225,12 +1237,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
+
   useContextValue(
     !form.values.orgId &&
-      hasCreateTaskPermission({
+      (hasCreateTaskPermission({
         userPermissionsContext: fetchedUserPermissionsContext,
         orgId: board?.orgId,
-      }),
+        podId: board?.podId,
+      }) ||
+        entityType === ENTITIES_TYPES.PROPOSAL),
     () => form.setFieldValue('orgId', board?.orgId)
   );
   useContextValue(
@@ -1284,6 +1299,89 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
+
+  const handleSubmitTemplate = (template) => {
+    editor.children = JSON.parse(template?.description);
+    form.setFieldValue('title', template?.title);
+    form.setFieldValue('points', template?.points);
+    form.setFieldValue('orgId', template?.orgId);
+    form.setFieldValue('podId', template?.podId);
+
+    form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    form.setFieldValue('assigneeId', template?.assignee);
+    form.setFieldValue(
+      'reviewerIds',
+      template?.reviewer?.map((reviewerId) => reviewerId.id)
+    );
+    form.setFieldValue('description', JSON.parse(template?.description));
+  };
+
+  const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
+
+  const handleSaveTemplate = (template_name) => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    createTaskTemplate({
+      variables: {
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards: rewards,
+          points: parseInt(form.values.points),
+          name: template_name,
+          description: description,
+          orgId: form.values.orgId,
+          podId: form.values.podId,
+        },
+      },
+    }).catch((err) => {
+      console.log(err);
+    });
+  };
+
+  const handleEditTemplate = (templateId) => {
+    const rewards = isEmpty(form.values.rewards)
+      ? []
+      : [
+          {
+            paymentMethodId: form.values.rewards[0].paymentMethodId,
+            rewardAmount: parseFloat(form.values.rewards[0].rewardAmount),
+          },
+        ];
+
+    const description = JSON.stringify(form.values.description);
+    updateTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+        input: {
+          title: form.values.title,
+          assigneeId: form.values.assigneeId,
+          reviewerIds: form.values.reviewerIds,
+          rewards: rewards,
+          points: parseInt(form.values.points),
+          description: description,
+          podId: form.values.podId,
+        },
+      },
+    });
+  };
+
+  const handleDeleteTemplate = (templateId) => {
+    deleteTaskTemplate({
+      variables: {
+        taskTemplateId: templateId,
+      },
+    });
+  };
 
   const [snapshotId, setSnapshotId] = useState(existingTask?.snapshotId);
 
@@ -1402,7 +1500,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             <>
               <CreateEntityHeaderArrowIcon />
               <CreateEntityPodSearch
-                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+                options={filterOptionsWithPermission(
+                  entityType,
+                  pods,
+                  fetchedUserPermissionsContext,
+                  form.values.orgId
+                )}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
                 disabled={isSubtask || formValues !== undefined}
@@ -1614,7 +1717,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           ref={params.InputProps.ref}
                           disableUnderline={true}
                           fullWidth={true}
-                          placeholder="Enter username..."
+                          placeholder={'Enter username...'}
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
@@ -1818,7 +1921,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       );
                     })}
                   </CreateEntitySelect>
-
                   {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
                     <CreateEntitySelect
                       name="task-applications-claim-roles"
@@ -1871,7 +1973,6 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   )}
                 </CreateEntityWrapper>
               )}
-
               {form.values.claimPolicy !== null && (
                 <CreateEntityAutocompletePopperRenderInputAdornment
                   position="end"
@@ -1956,7 +2057,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   renderValue={(value) => {
                     return (
                       <CreateEntityPaymentMethodSelectRender>
-                        {value?.label} <CreateEntitySelectArrowIcon />
+                        {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
+                        <CreateEntitySelectArrowIcon />
                       </CreateEntityPaymentMethodSelectRender>
                     );
                   }}
@@ -2360,6 +2462,18 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               </CreateEntitySelectWrapper>
             </CreateEntityLabelSelectWrapper>
           )}
+        <CreateEntityDivider />
+        <TaskTemplatePicker
+          options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
+          value={form.values.podId}
+          onChange={handleOnchangePodId}
+          disabled={formValues !== undefined}
+          handleSubmitTemplate={handleSubmitTemplate}
+          paymentMethods={paymentMethods}
+          handleSaveTemplate={handleSaveTemplate}
+          handleEditTemplate={handleEditTemplate}
+          handleDeleteTemplate={handleDeleteTemplate}
+        />
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
