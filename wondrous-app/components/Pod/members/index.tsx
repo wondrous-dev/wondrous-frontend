@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_POD_BY_ID, GET_POD_MEMBERSHIP_REQUEST } from 'graphql/queries';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
@@ -13,7 +13,7 @@ import {
   RequestCountEmptyState,
   RequestHeader,
   RequestsContainer,
-  ShowAllButton,
+  ShowMoreButton,
   MemberName,
   MemberMessage,
   RequestActionButtons,
@@ -23,8 +23,8 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-let QUERY_LIMIT = 1;
-let REFETCH_QUERY_LIMIT = undefined;
+let QUERY_LIMIT = 3;
+let REFETCH_QUERY_LIMIT = 20;
 
 const useGetPodMemberRequests = (podId) => {
   const [getPodUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_POD_MEMBERSHIP_REQUEST);
@@ -38,18 +38,27 @@ const useGetPodMemberRequests = (podId) => {
       });
     }
   }, [podId, getPodUserMembershipRequests]);
-  return { data: data?.getPodMembershipRequest, fetchMore };
+  const hasMore = data?.getPodMembershipRequest?.length >= QUERY_LIMIT;
+  return { data: data?.getPodMembershipRequest, fetchMore, hasMore };
 };
 
 const MemberRequests = (props) => {
   const { podData = {} } = props;
   const { id: podId } = podData;
-  const { data: podUserMembershipRequests, fetchMore } = useGetPodMemberRequests(podId);
+  const { data: podUserMembershipRequests, fetchMore, hasMore } = useGetPodMemberRequests(podId);
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST);
   const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST);
-  const [showShowAllButton, setShowShowAllButton] = useState(true);
+  const [showShowMoreButton, setShowShowMoreButton] = useState(false);
   const refetchQueries = [GET_POD_BY_ID];
   const showEmptyState = podUserMembershipRequests?.length === 0;
+  const initialLoad = useRef(true);
+
+  useEffect(() => {
+    if (initialLoad.current && hasMore) {
+      setShowShowMoreButton(true);
+      initialLoad.current = false;
+    }
+  }, [hasMore]);
 
   const approveRequest = (userId, podId) => {
     approveJoinPodRequest({
@@ -91,7 +100,7 @@ const MemberRequests = (props) => {
     });
   };
 
-  const handleShowAllRequests = () => {
+  const handleShowMoreRequests = () => {
     fetchMore({
       variables: {
         podId,
@@ -100,7 +109,8 @@ const MemberRequests = (props) => {
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         const getPodMembershipRequest = [...prev?.getPodMembershipRequest, ...fetchMoreResult?.getPodMembershipRequest];
-        setShowShowAllButton(false);
+        const hasMore = fetchMoreResult?.getPodMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
+        setShowShowMoreButton(hasMore);
         return { getPodMembershipRequest };
       },
     });
@@ -166,8 +176,8 @@ const MemberRequests = (props) => {
               ))}
             </MemberRequestsList>
 
-            {showShowAllButton ? (
-              <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+            {showShowMoreButton ? (
+              <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>
             ) : (
               <MemberRequestsListEndMessage>
                 These are all the requests for now. Come back later to see more.
