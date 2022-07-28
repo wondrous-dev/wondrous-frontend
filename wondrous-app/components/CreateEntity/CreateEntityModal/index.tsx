@@ -82,7 +82,7 @@ import {
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
 } from 'utils/constants';
-import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
+import { transformTaskToTaskCard, hasCreateTaskPermission } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
@@ -279,26 +279,26 @@ const filterOrgUsers = (orgUsers) => {
   }));
 };
 
-const hasCreateTaskPermission = ({ userPermissionsContext, orgId = undefined, podId = undefined }) => {
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId: orgId,
-    podId: podId,
-  });
-  return permissions.some((i) => [PERMISSIONS.FULL_ACCESS, PERMISSIONS.CREATE_TASK].includes(i));
-};
-
-const filterOptionsWithPermission = (options, userPermissionsContext, orgId = undefined) => {
+const filterOptionsWithPermission = (
+  entityType = ENTITIES_TYPES.TASK,
+  options,
+  userPermissionsContext,
+  orgId = undefined,
+  podId = undefined
+) => {
   if (!options) {
     return [];
   }
   return options
     .filter(({ id }) => {
-      return hasCreateTaskPermission({
-        userPermissionsContext,
-        orgId: orgId ?? id,
-        podId: orgId ? id : undefined,
-      });
+      const listPodId = orgId ? id : undefined;
+      return (
+        hasCreateTaskPermission({
+          userPermissionsContext,
+          orgId: orgId ?? id,
+          podId: podId || listPodId,
+        }) || entityType === ENTITIES_TYPES.PROPOSAL
+      );
     })
     .map(({ profilePicture, name, id, color }) => ({
       imageUrl: profilePicture,
@@ -543,6 +543,8 @@ const useCreateTask = () => {
       'getPerTypeTaskCountForPodBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
     ],
   });
 
@@ -552,32 +554,7 @@ const useCreateTask = () => {
         input,
       },
     })
-      .then((result) => {
-        //checking if it's pod or org to use pod/org entity type else we assume it's the userBoard and we use the normal flow
-        if (!result?.data?.createTask?.parentTaskId) {
-          if (board?.entityType === ENTITIES_TYPES.TASK || !board?.entityType) {
-            const task = result?.data?.createTask;
-            const justCreatedPod = getPodObject(pods, task.podId);
-            if (
-              board?.setColumns &&
-              ((task?.orgId === board?.orgId && !board?.podId) ||
-                task?.podId === board?.podId ||
-                form.values.podId === board?.podId)
-            ) {
-              const transformedTask = transformTaskToTaskCard(task, {
-                orgName: board?.org?.name,
-                orgProfilePicture: board?.org?.profilePicture,
-                podName: justCreatedPod?.name,
-              });
-
-              const columns = [...board?.columns];
-              columns[0].tasks = [transformedTask, ...columns[0].tasks];
-              board.setColumns(columns);
-            }
-          } else {
-            board?.setEntityType(ENTITIES_TYPES.TASK);
-          }
-        }
+      .then(() => {
         handleClose();
       })
       .catch((e) => console.log(e));
@@ -587,7 +564,12 @@ const useCreateTask = () => {
 
 const useCreateMilestone = () => {
   const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard', 'getMilestones'],
+    refetchQueries: () => [
+      'getUserTaskBoardTasks',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getMilestones',
+    ],
   });
   const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
     createMilestone({
@@ -1107,10 +1089,11 @@ interface ICreateEntityModal {
   resetEntityType?: Function;
   setEntityType?: Function;
   formValues?: FormikValues;
+  status?: string;
 }
 
 export const CreateEntityModal = (props: ICreateEntityModal) => {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -1132,7 +1115,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const filteredDaoOptions = filterOptionsWithPermission(userOrgs?.getUserOrgs, fetchedUserPermissionsContext);
+  const filteredDaoOptions = filterOptionsWithPermission(
+    entityType,
+    userOrgs?.getUserOrgs,
+    fetchedUserPermissionsContext,
+    undefined,
+    board?.podId
+  );
   const { handleMutation, loading }: any = existingTask
     ? entityTypeData[entityType]?.updateMutation()
     : entityTypeData[entityType]?.createMutation();
@@ -1191,6 +1180,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
         }),
+        ...(status && entityType === ENTITIES_TYPES.TASK && { status }),
       };
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
@@ -1247,12 +1237,15 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   useContextValue(!form.values.orgId && router?.pathname.includes('/dashboard') && filteredDaoOptions[0]?.value, () =>
     form.setFieldValue('orgId', filteredDaoOptions[0]?.value)
   );
+
   useContextValue(
     !form.values.orgId &&
-      hasCreateTaskPermission({
+      (hasCreateTaskPermission({
         userPermissionsContext: fetchedUserPermissionsContext,
         orgId: board?.orgId,
-      }),
+        podId: board?.podId,
+      }) ||
+        entityType === ENTITIES_TYPES.PROPOSAL),
     () => form.setFieldValue('orgId', board?.orgId)
   );
   useContextValue(
@@ -1507,7 +1500,12 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             <>
               <CreateEntityHeaderArrowIcon />
               <CreateEntityPodSearch
-                options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+                options={filterOptionsWithPermission(
+                  entityType,
+                  pods,
+                  fetchedUserPermissionsContext,
+                  form.values.orgId
+                )}
                 value={form.values.podId}
                 onChange={handleOnchangePodId}
                 disabled={isSubtask || formValues !== undefined}
@@ -2466,7 +2464,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           )}
         <CreateEntityDivider />
         <TaskTemplatePicker
-          options={filterOptionsWithPermission(pods, fetchedUserPermissionsContext, form.values.orgId)}
+          options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
           value={form.values.podId}
           onChange={handleOnchangePodId}
           disabled={formValues !== undefined}

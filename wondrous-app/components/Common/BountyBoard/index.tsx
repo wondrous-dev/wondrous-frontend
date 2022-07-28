@@ -8,7 +8,6 @@ import {
   SubtasksWrapper,
   BountyCommentsIcon,
 } from './styles';
-import { renderMentionString } from 'utils/common';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -21,7 +20,7 @@ import {
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
 import { Compensation } from '../Compensation';
-import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
+import { PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
@@ -32,6 +31,7 @@ import { TASK_ICONS } from 'components/Common/Task/index';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
+import EmptyStateBoards from 'components/EmptyStateBoards';
 
 export const SubmissionsCount = ({ total, approved }) => {
   const config = [
@@ -70,110 +70,112 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
 
   return (
     <>
-      {tasks.map((bounty) => {
-        const reward = bounty?.rewards?.[0];
-        let BountyStatusIcon = TASK_ICONS[bounty?.status];
-        return (
-          <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
-            <BoardsCardHeader>
-              <BoardsCardSubheader>
-                <BountyIcon />
-                <BountyCardType>Bounty</BountyCardType>
-                <BoardsPrivacyLabel>
-                  {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-                </BoardsPrivacyLabel>
-              </BoardsCardSubheader>
-              {bounty?.status === TASK_STATUS_DONE && !bounty?.rewards && <CompletedIcon />}
-              {bounty?.rewards && bounty?.rewards?.length > 0 && (
-                <BoardsRewardLabel>
-                  <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
-                </BoardsRewardLabel>
-              )}
-            </BoardsCardHeader>
-            <BoardsCardBody>
-              <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
-              <BoardsCardBodyDescription>
-                <RichTextViewer text={bounty.description} />
-              </BoardsCardBodyDescription>
-              {bounty?.media?.[0] ? (
-                <BoardsCardMedia>
-                  <SafeImage
-                    useNextImage={false}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                    src={bounty?.media[0].slug}
-                  />
-                </BoardsCardMedia>
-              ) : null}
-              <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
-            </BoardsCardBody>
-            <BoardsCardFooter>
-              {bounty?.podName && !displayOrg && (
-                <PodWrapper
-                  style={{ marginTop: '0' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goToPod(bounty?.podId);
-                  }}
-                >
-                  <PodIcon
-                    color={bounty?.podColor}
-                    style={{
-                      width: '26px',
-                      height: '26px',
-                      marginRight: '8px',
-                    }}
-                  />
-                  <PodName>{bounty?.podName}</PodName>
-                </PodWrapper>
-              )}
-              {displayOrg && (
-                <PodWrapper
-                  style={{ marginTop: '0', alignItems: 'center' }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goToOrg(bounty?.orgId);
-                  }}
-                >
-                  {bounty?.orgProfilePicture ? (
+      {tasks?.length ? (
+        tasks.map((bounty) => {
+          const BountyStatusIcon = TASK_ICONS[bounty?.status];
+          return (
+            <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
+              <BoardsCardHeader>
+                <BoardsCardSubheader>
+                  <BountyIcon />
+                  <BountyCardType>Bounty</BountyCardType>
+                  <BoardsPrivacyLabel>
+                    {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
+                  </BoardsPrivacyLabel>
+                </BoardsCardSubheader>
+                {bounty?.status === TASK_STATUS_DONE && !bounty?.rewards && <CompletedIcon />}
+                {bounty?.rewards && bounty?.rewards?.length > 0 && (
+                  <BoardsRewardLabel>
+                    <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
+                  </BoardsRewardLabel>
+                )}
+              </BoardsCardHeader>
+              <BoardsCardBody>
+                <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
+                <BoardsCardBodyDescription>
+                  <RichTextViewer text={bounty.description} />
+                </BoardsCardBodyDescription>
+                {bounty?.media?.[0] ? (
+                  <BoardsCardMedia>
                     <SafeImage
                       useNextImage={false}
-                      src={bounty.orgProfilePicture}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                      src={bounty?.media[0].slug}
+                    />
+                  </BoardsCardMedia>
+                ) : null}
+                <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
+              </BoardsCardBody>
+              <BoardsCardFooter>
+                {bounty?.podName && !displayOrg && (
+                  <PodWrapper
+                    style={{ marginTop: '0' }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      goToPod(bounty?.podId);
+                    }}
+                  >
+                    <PodIcon
+                      color={bounty?.podColor}
                       style={{
                         width: '26px',
                         height: '26px',
-                        borderRadius: '4px',
                         marginRight: '8px',
                       }}
                     />
-                  ) : (
-                    <DAOIcon />
-                  )}
+                    <PodName>{bounty?.podName}</PodName>
+                  </PodWrapper>
+                )}
+                {displayOrg && (
+                  <PodWrapper
+                    style={{ marginTop: '0', alignItems: 'center' }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      goToOrg(bounty?.orgId);
+                    }}
+                  >
+                    {bounty?.orgProfilePicture ? (
+                      <SafeImage
+                        src={bounty.orgProfilePicture}
+                        style={{
+                          width: '26px',
+                          height: '26px',
+                          borderRadius: '4px',
+                          marginRight: '8px',
+                        }}
+                      />
+                    ) : (
+                      <DAOIcon />
+                    )}
 
-                  <PodName>{bounty?.orgName}</PodName>
-                </PodWrapper>
-              )}
-              <div
-                style={{
-                  flex: 1,
-                }}
-              />
+                    <PodName>{bounty?.orgName}</PodName>
+                  </PodWrapper>
+                )}
+                <div
+                  style={{
+                    flex: 1,
+                  }}
+                />
 
-              {Number.isInteger(bounty.totalSubtaskCount) && (
-                <SubtasksWrapper>
-                  <SubtaskDarkIcon height="30" width="30" fill="transparent" />
-                  {bounty.totalSubtaskCount}
-                </SubtasksWrapper>
-              )}
-              <BountyCommentsIcon>
-                <CommentsIcon />
-                {bounty.commentCount || 0}
-              </BountyCommentsIcon>
-            </BoardsCardFooter>
-          </BountyCardWrapper>
-        );
-      })}
+                {Number.isInteger(bounty.totalSubtaskCount) && (
+                  <SubtasksWrapper>
+                    <SubtaskDarkIcon height="30" width="30" fill="transparent" />
+                    {bounty.totalSubtaskCount}
+                  </SubtasksWrapper>
+                )}
+                <BountyCommentsIcon>
+                  <CommentsIcon />
+                  {bounty.commentCount || 0}
+                </BountyCommentsIcon>
+              </BoardsCardFooter>
+            </BountyCardWrapper>
+          );
+        })
+      ) : (
+        <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
+      )}
     </>
   );
 }

@@ -201,10 +201,6 @@ export const TaskSubmissions = (props) => {
   const taskStatus = fetchedTask?.status;
   const loggedInUser = useMe();
   const handleTaskProgressStatus = () => {
-    router.push(`${delQuery(router.asPath)}`, undefined, {
-      shallow: true,
-    });
-    handleClose();
     updateTaskStatus({
       variables: {
         taskId: fetchedTask?.id,
@@ -213,6 +209,7 @@ export const TaskSubmissions = (props) => {
         },
       },
     });
+    handleClose();
   };
 
   const handleCancelSubmission = () => {

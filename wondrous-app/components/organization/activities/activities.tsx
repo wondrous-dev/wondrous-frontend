@@ -5,7 +5,8 @@ import { GET_ORG_FEED } from 'graphql/queries';
 import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import { Feed, FeedLoadMore } from './styles';
-
+import isEmpty from 'lodash/isEmpty';
+import EmptyStateGeneric from 'components/EmptyStateGeneric';
 const useGetOrgFeed = (orgId, inView) => {
   const [getOrgFeed, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_FEED, {
     pollInterval: 60000,
@@ -39,8 +40,10 @@ const Activities = (props) => {
   const feedData = data?.getOrgFeed;
   const feedDataLength = feedData?.length;
   const isMoreThanOne = feedDataLength > 1;
+
   return (
     <Wrapper orgData={orgData}>
+      {isEmpty(feedData) && <EmptyStateGeneric content="This is where your activity will go." />}
       <Feed isMoreThanOne={isMoreThanOne}>
         {feedData?.map((post) => (
           <Post key={post.id} post={post} />

@@ -95,7 +95,7 @@ export const Tab2 = styled.div`
   }
 `;
 export const UserProfilePicture = (props) => {
-  return <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false}/>;
+  return <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false} />;
 };
 
 export const DefaultProfilePicture = (props) => {
