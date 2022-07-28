@@ -50,7 +50,8 @@ export const FieldInput = styled(InputUnstyled)`
 
 export const ButtonsWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  flex-direction: column;
+  gap: 12px;
   width: 100%;
 `;
 

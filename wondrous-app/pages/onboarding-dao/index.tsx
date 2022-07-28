@@ -1,15 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import {
-  AddImages,
-  CreateDao,
-  DaoCategory,
-  ImportTasks,
-  InviteCommunity,
-  Review,
-  StepWrapper,
-} from 'components/OnboardingDao';
-import { OnboardingCreateDaoProvider } from 'components/OnboardingDao/context';
+import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper } from 'components/OnboardingDao';
+import { onboardingDaoValueLocalStorageKey } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations/org';
 import { IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
@@ -60,22 +52,23 @@ const fieldSet = [
       category: { name: 'category', label: 'Enter custom goal', placeholder: "What is your DAO's goal?" },
     },
   },
-  {
-    title: 'Import tasks',
-    subtitle: 'Set up your workflow so members can begin contributing.',
-    step: 4,
-    Component: ImportTasks,
-  },
+  // NOTE: not in used yet
+  // {
+  //   title: 'Import tasks',
+  //   subtitle: 'Set up your workflow so members can begin contributing.',
+  //   step: 4,
+  //   Component: ImportTasks,
+  // },
   {
     title: 'Invite your community',
-    subtitle: `Upload a CSV with all your contributors and community members. Those who don't have an account will be sent an invite link.`,
-    step: 5,
+    subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
+    step: 4,
     Component: InviteCommunity,
   },
   {
     title: 'Review',
     subtitle: `Review your DAO details and then let's launch!`,
-    step: 6,
+    step: 5,
     Component: Review,
     hoverContinue: true,
     fields: {
@@ -105,6 +98,7 @@ const useCreateOrg = () => {
   const router = useRouter();
   const handleCreateOrg = (values) => {
     createOrg({ variables: { input: values } }).then(() => {
+      localStorage.removeItem(onboardingDaoValueLocalStorageKey);
       router.push(`organization/${values.username}/boards`);
     });
   };
@@ -142,31 +136,36 @@ const useSchema = () => {
   return schema;
 };
 
-const handleTempState = (field, { key, value }) => {
-  return { ...field, [key]: value };
+const useInitialValues = () => {
+  const { restoreState } = useRouter().query;
+  if (!restoreState) typeof window !== 'undefined' && localStorage.removeItem(onboardingDaoValueLocalStorageKey);
+  const initialValues =
+    typeof window !== 'undefined' && JSON.parse(localStorage.getItem(onboardingDaoValueLocalStorageKey));
+  const restoreStep = restoreState ? 4 : 1;
+  return { initialValues, restoreStep };
 };
 
 const OnboardingCreateDao = () => {
-  const [step, setStep] = useReducer(handleStep, 0);
-  const [tempState, setTempState] = useReducer(handleTempState, {});
-  const currentField = fieldSet[step];
+  const { initialValues, restoreStep } = useInitialValues();
+  const [step, setStep] = useReducer(handleStep, restoreStep);
+  const currentField = fieldSet.find((field) => field.step === step);
   const { handleCreateOrg, loading } = useCreateOrg();
   return (
     <Formik
       initialValues={{
         category: '🌎 Social good',
+        ...initialValues,
       }}
       onSubmit={handleCreateOrg}
       validationSchema={useSchema()}
     >
       <Form>
-        <OnboardingCreateDaoProvider value={{ tempState, setTempState }}>
-          <StepWrapper
-            {...currentField}
-            handleStep={({ action, hasError = false }) => setStep({ action, hasError })}
-            loading={loading}
-          />
-        </OnboardingCreateDaoProvider>
+        <StepWrapper
+          key={step}
+          {...currentField}
+          handleStep={({ action, hasError = false }) => setStep({ action, hasError })}
+          loading={loading}
+        />
       </Form>
     </Formik>
   );

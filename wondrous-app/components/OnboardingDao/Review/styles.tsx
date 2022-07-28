@@ -1,7 +1,7 @@
 import { InputUnstyled } from '@mui/base';
 import { ButtonBase, Typography } from '@mui/material';
+import { SafeImage } from 'components/Common/Image';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
-import Image from 'next/image';
 import styled from 'styled-components';
 
 export const Wrapper = styled.div`
@@ -65,7 +65,7 @@ export const TextAndInputWrapper = styled.div`
   width: 100%;
 `;
 
-export const Logo = styled(Image)`
+export const Logo = styled(SafeImage)`
   && {
     border-radius: 4px;
   }

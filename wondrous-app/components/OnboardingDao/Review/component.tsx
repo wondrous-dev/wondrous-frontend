@@ -2,7 +2,6 @@ import EditIcon from 'components/Icons/edit.svg';
 import { Error } from 'components/OnboardingDao/styles';
 import { FormikValues, useField, useFormikContext } from 'formik';
 import { useState } from 'react';
-import { useOnboardingCreateDaoContext } from '../context';
 import {
   Category,
   ChildrenWrapper,
@@ -99,17 +98,16 @@ const EditDescription = ({ setIsEditing, ...props }) => {
 
 const Review = ({ fields }) => {
   const { values } = useFormikContext();
-  const { name, username, description, category }: FormikValues = values;
-  const { tempState } = useOnboardingCreateDaoContext();
+  const { name, username, profilePicture, description, category }: FormikValues = values;
   return (
     <Wrapper>
       <ItemWithEdit value={name} field={fields.name} EditComponent={EditName} />
       <ItemWithEdit value={username} field={fields.username} EditComponent={EditName} />
-      <Item label="DAO Logo">
-        {tempState.profilePicture && (
-          <Logo alt="Profile" width="26px" height="26px" src={URL?.createObjectURL(tempState.profilePicture)} />
-        )}
-      </Item>
+      {profilePicture && (
+        <Item label="DAO Logo">
+          <Logo alt="Profile" width="26px" height="26px" useNextImage={true} src={profilePicture} />
+        </Item>
+      )}
       <ItemWithEdit value={description} field={fields.description} EditComponent={EditDescription} />
       <Item label="Goals">
         {category && (
@@ -118,8 +116,10 @@ const Review = ({ fields }) => {
           </Category>
         )}
       </Item>
+      {/* NOTE: Not in use yet 
       <Item label="Task import file">Sample DAO</Item>
       <Item label="Community import file">Sample DAO</Item>
+      */}
     </Wrapper>
   );
 };

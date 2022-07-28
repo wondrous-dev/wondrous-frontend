@@ -127,6 +127,7 @@ const Callback = () => {
 
       if (
         parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding ||
+        parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao ||
         parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings
       ) {
         connectUserDiscord({
@@ -142,6 +143,20 @@ const Callback = () => {
               router.push('/onboarding/discord?success', undefined, {
                 shallow: true,
               });
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao) {
+              router.push(
+                {
+                  pathname: '/onboarding-dao',
+                  query: {
+                    restoreState: true,
+                    success: true,
+                  },
+                },
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
             }
           })
           .catch((err) => {
@@ -164,6 +179,21 @@ const Callback = () => {
                   query: {
                     discordError: 1,
                     discordUserExists: Number(alreadyExists),
+                  },
+                },
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao) {
+              router.push(
+                {
+                  pathname: '/onboarding-dao',
+                  query: {
+                    discordError: 1,
+                    discordUserExists: Number(alreadyExists),
+                    restoreState: true,
                   },
                 },
                 undefined,

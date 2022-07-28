@@ -137,6 +137,7 @@ export const DISCORD_CONNECT_TYPES = {
   login: 'login',
   connectSettings: 'connectSettings',
   connectOnboarding: 'connectOnboarding',
+  connectOnboardingDao: 'connectOnboardingDao',
 };
 
 export const NOTION_CONNECT_TYPES = {
