@@ -34,13 +34,14 @@ const Item = ({ label, children }) => {
 
 const ItemWithEdit = ({ value, field, EditComponent }) => {
   const [isEditing, setIsEditing] = useState(false);
+  const handleOnClick = () => setIsEditing(true);
   return (
     <Item label={field.label}>
       <TextAndInputWrapper>
         {isEditing ? (
           <EditComponent setIsEditing={setIsEditing} {...field} />
         ) : (
-          <Text onClick={() => setIsEditing(true)}>{value}</Text>
+          <Text onClick={handleOnClick}>{value}</Text>
         )}
       </TextAndInputWrapper>
     </Item>
@@ -57,15 +58,14 @@ const Edit = ({ onClick }) => {
 
 const EditName = ({ setIsEditing, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
+  const handleOnClick = () => {
+    if (!meta.error) setIsEditing(false);
+  };
   return (
     <InputErrorWrapper>
       <EditInputWrapper>
         <EditInput {...field} {...props} value={field.value} onChange={(e) => helpers.setValue(e.target.value)} />
-        <Edit
-          onClick={() => {
-            if (!meta.error) setIsEditing(false);
-          }}
-        />
+        <Edit onClick={handleOnClick} />
       </EditInputWrapper>
       {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </InputErrorWrapper>
@@ -74,6 +74,9 @@ const EditName = ({ setIsEditing, ...props }) => {
 
 const EditDescription = ({ setIsEditing, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
+  const handleOnClick = () => {
+    if (!meta.error) setIsEditing(false);
+  };
   return (
     <InputErrorWrapper>
       <EditInputWrapper>
@@ -86,11 +89,7 @@ const EditDescription = ({ setIsEditing, ...props }) => {
             value.length <= props.maxLength && helpers.setValue(value);
           }}
         />
-        <Edit
-          onClick={() => {
-            if (!meta.error) setIsEditing(false);
-          }}
-        />
+        <Edit onClick={handleOnClick} />
       </EditInputWrapper>
       {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </InputErrorWrapper>

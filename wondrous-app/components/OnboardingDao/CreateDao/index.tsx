@@ -9,7 +9,7 @@ const Name = ({ label, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedHelpersSetValue = useMemo(() => debounce(helpers.setValue, 500), []);
-  const handleChange = (e) => {
+  const handleOnChange = (e) => {
     const value = e.target.value;
     setValue(value);
     debouncedHelpersSetValue(value);
@@ -17,7 +17,7 @@ const Name = ({ label, ...props }) => {
   return (
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>
-      <FieldInput {...field} {...props} onChange={handleChange} value={value} />
+      <FieldInput {...field} {...props} onChange={handleOnChange} value={value} />
       {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </FieldWrapper>
   );
@@ -26,18 +26,15 @@ const Name = ({ label, ...props }) => {
 const Description = ({ label, maxLength, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
   const fieldValueLength = field.value?.length ?? 0;
+  const handleOnChange = (e) => {
+    const value = e.target.value;
+    value.length <= maxLength && helpers.setValue(value);
+  };
   return (
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>
       <InputWrapper>
-        <FieldInputDao
-          {...field}
-          {...props}
-          onChange={(e) => {
-            const value = e.target.value;
-            value.length <= maxLength && helpers.setValue(value);
-          }}
-        />
+        <FieldInputDao {...field} {...props} onChange={handleOnChange} />
         <DescriptionCharacterLength>
           {fieldValueLength}/{maxLength} characters
         </DescriptionCharacterLength>

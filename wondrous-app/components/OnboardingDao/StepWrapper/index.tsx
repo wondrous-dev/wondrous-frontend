@@ -110,17 +110,16 @@ const StepWrapper = ({
   ...props
 }) => {
   const router = useRouter();
+  const handleOnClick = () => {
+    router.push('/dashboard');
+    localStorage.removeItem(onboardingDaoValueLocalStorageKey);
+  };
   return (
     <WrapperLoading loading={loading}>
       <FormWrapper>
         <HeaderWrapper>
           <OnboardingStepIndicator step={step} />
-          <CloseButton
-            onClick={() => {
-              router.push('/dashboard');
-              localStorage.removeItem(onboardingDaoValueLocalStorageKey);
-            }}
-          >
+          <CloseButton onClick={handleOnClick}>
             <CloseButtonIcon />
           </CloseButton>
         </HeaderWrapper>
