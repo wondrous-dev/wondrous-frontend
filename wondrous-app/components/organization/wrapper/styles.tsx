@@ -710,7 +710,4 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
   align-items: center;
-  &.searchView {
-    grid-template-columns: 1fr;
-  }
 `;

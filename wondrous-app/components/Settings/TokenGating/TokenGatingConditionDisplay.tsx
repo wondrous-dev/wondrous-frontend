@@ -1,18 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
 
-import { HeaderBlock } from '../headerBlock';
-
-import { Button, CircularProgress } from '@mui/material';
-import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
 import { useLazyQuery } from '@apollo/client';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
 import { DELETE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
-import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../../Common';
-import Accordion from '../../Common/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 
@@ -30,36 +21,11 @@ import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import apollo from 'services/apollo';
 
-interface TokenGatingCondition {
-  id: string;
-  booleanLogic?: string;
-  name?: string;
-  orgId?: string;
-  accessCondition: [AccessCondition];
-}
-
-interface AccessCondition {
-  chain: string;
-  contractAddress: string;
-  method: string;
-  minValue: string;
-  tokenIds?: string;
-  type: string;
-}
-
-const CHAIN_NAME_TO_CHAIN_ID = {
-  ethereum: 1,
-  rinkeby: 4,
-  polygon: 137,
-};
-
 const TokenGatingConditionDisplay = (props) => {
   const router = useRouter();
-  const [showDetails, setShowDetails] = useState(false);
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
-  const wonderWeb3 = useWonderWeb3();
   const editTokenGatingCondition = useEditTokenGatingCondition();
 
   const { tokenGatingCondition } = props;

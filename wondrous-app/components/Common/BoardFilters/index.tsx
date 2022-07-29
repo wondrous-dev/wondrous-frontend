@@ -1,4 +1,3 @@
-import { HeaderButton } from 'components/organization/wrapper/styles';
 import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
 import {
@@ -16,7 +15,7 @@ import omit from 'lodash/omit';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 export const FiltersTriggerButton = ({ onClick, isOpen }) => {
   return (
-    <Button className={isOpen ? 'active' : ''} reversed onClick={onClick}>
+    <Button className={`FiltersTrigger-button ${isOpen ? 'active' : ''}`} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
       Add filters
     </Button>

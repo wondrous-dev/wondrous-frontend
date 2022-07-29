@@ -17,15 +17,7 @@ import {
 } from './styles';
 
 const DashboardPanelExpanded = (props) => {
-  const {
-    activePanel,
-    loading,
-    activePanelStatusCards,
-    selectedStatus,
-    setSelectedStatus,
-    isAdmin,
-    setSelectMembershipRequests,
-  } = props;
+  const { activePanel, loading, activePanelStatusCards, selectedStatus, setSelectedStatus, isAdmin } = props;
   const router = useRouter();
   const handleOnClick = () => {
     router.query.view !== ViewType.Admin

@@ -7,7 +7,6 @@ import {
   GET_JOIN_POD_REQUESTS,
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_TASK_BOARD_PROPOSALS,
-  GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
@@ -159,48 +158,6 @@ const useGetUserTaskBoardProposals = ({
   }, [getUserTaskBoardProposals, isAdmin, listView, loggedInUser?.id, podIds, section, statuses, data]);
 };
 
-const useGetUserTaskBoardSubmissions = ({
-  isAdmin,
-  listView,
-  section,
-  contributorColumns,
-  setContributorColumns,
-  loggedInUser,
-  statuses,
-  podIds,
-}) => {
-  const [getUserTaskBoardSubmissions, { data }] = useLazyQuery(GET_USER_TASK_BOARD_SUBMISSIONS, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-    onCompleted: (data) => {
-      const newColumns = bindSectionToColumns({
-        columns: contributorColumns,
-        data: data?.getUserTaskBoardSubmissions,
-        section: TASK_STATUS_IN_REVIEW,
-      });
-      setContributorColumns(newColumns);
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-  useEffect(() => {
-    if (!isAdmin && loggedInUser?.id) {
-      if (section === TASK_STATUS_IN_REVIEW || listView || data) {
-        getUserTaskBoardSubmissions({
-          variables: {
-            podIds,
-            userId: loggedInUser?.id,
-            statuses: [STATUS_OPEN],
-            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_IN_REVIEW) ? LIMIT : 0,
-            offset: 0,
-          },
-        });
-      }
-    }
-  }, [isAdmin, loggedInUser, getUserTaskBoardSubmissions, statuses, podIds, section, listView, data]);
-};
-
 const useGetUserTaskBoard = ({
   isAdmin,
   view,
@@ -232,16 +189,6 @@ const useGetUserTaskBoard = ({
     statuses,
     podIds,
   });
-  useGetUserTaskBoardSubmissions({
-    isAdmin,
-    listView,
-    section,
-    contributorColumns,
-    setContributorColumns,
-    loggedInUser,
-    statuses,
-    podIds,
-  });
 
   return {
     getUserTaskBoardTasksFetchMore,
@@ -263,7 +210,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
 };
 
 const BoardsPage = (props) => {
-  const { isAdmin, selectedStatus, setSelectedStatus, selectMembershipRequests } = props;
+  const { isAdmin, selectedStatus, setSelectedStatus } = props;
   const selectMembershipHook = useSelectMembership();
   const router = useRouter();
   const loggedInUser = useMe();
@@ -274,6 +221,8 @@ const BoardsPage = (props) => {
   const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
+  const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
+
   const { adminColumns, handleAdminColumnsLoadMore } = useAdminColumns({
     isAdmin,
     selectedStatus,
@@ -340,85 +289,56 @@ const BoardsPage = (props) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [joinOrgRequests, setJoinOrgRequests] = useState([]);
   const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
     useLazyQuery(GET_JOIN_ORG_REQUESTS);
   const [getJoinPodRequests, { data: getJoinPodRequestsData, fetchMore: fetchMoreJoinPodRequests }] =
     useLazyQuery(GET_JOIN_POD_REQUESTS);
+
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
+    getJoinOrgRequests();
+    getJoinPodRequests();
+  }, [isAdmin]);
+
+  useEffect(() => {
     if (!loggedInUser) {
       return;
     }
-    if (selectMembershipHook?.selectMembershipRequests) {
-      getJoinOrgRequests();
-      getJoinPodRequests();
-    } else {
-      if (search) {
-        const searchTaskProposalsArgs = {
-          variables: {
-            userId: loggedInUser?.id,
-            podIds: [],
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-            searchString: search,
-          },
-        };
+    if (search) {
+      const searchTaskProposalsArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString: search,
+        },
+      };
 
-        const searchTasksArgs = {
-          variables: {
-            userId: loggedInUser?.id,
-            podIds: [],
-            limit: LIMIT,
-            offset: 0,
-            // Needed to exclude proposals
-            statuses: TASKS_DEFAULT_STATUSES,
-            searchString: search,
-          },
-        };
+      const searchTasksArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          limit: LIMIT,
+          offset: 0,
+          // Needed to exclude proposals
+          statuses: TASKS_DEFAULT_STATUSES,
+          searchString: search,
+        },
+      };
 
-        searchTasks(searchTasksArgs);
-        searchProposals(searchTaskProposalsArgs);
-      }
+      searchTasks(searchTasksArgs);
+      searchProposals(searchTaskProposalsArgs);
     }
-  }, [loggedInUser, selectMembershipHook?.selectMembershipRequests]);
+  }, [loggedInUser]);
 
   const handleLoadMore = useCallback(() => {
     if (hasMoreTasks) {
-      if (selectMembershipHook?.selectMembershipRequests) {
-        fetchMoreJoinOrgRequests({
-          variables: {
-            offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
-            limit: LIMIT,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => ({
-            getJoinOrgRequests: [...prev.getJoinOrgRequests, ...fetchMoreResult.getJoinOrgRequests],
-          }),
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getJoinOrgRequests;
-          if (results && results?.length === 0) {
-            setHasMoreTasks(false);
-          }
-        });
-        fetchMoreJoinPodRequests({
-          variables: {
-            offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
-            limit: LIMIT,
-          },
-          updateQuery: (prev, { fetchMoreResult }) => ({
-            getJoinPodRequestsData: [...prev.getJoinPodRequests, ...fetchMoreResult.getJoinPodRequests],
-          }),
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getJoinPodRequests;
-          if (results && results?.length === 0) {
-            setHasMoreTasks(false);
-          }
-        });
-      } else if (isAdmin) {
+      if (isAdmin) {
         handleAdminColumnsLoadMore();
       } else {
         !isAdmin && getUserTaskBoardTasksFetchMore();
@@ -469,7 +389,6 @@ const BoardsPage = (props) => {
   }
 
   const handleFilterChange = ({ statuses = [], podIds = [], date = null }: TaskFilter) => {
-    console.log(statuses);
     setStatuses(statuses);
     setPodIds(podIds);
 
@@ -519,6 +438,7 @@ const BoardsPage = (props) => {
   };
   const activeColumns = isAdmin ? adminColumns : contributorColumns;
 
+  console.log(adminColumns);
   return (
     <UserBoardContext.Provider
       value={{
@@ -545,6 +465,7 @@ const BoardsPage = (props) => {
           statuses={statuses}
           podIds={podIds}
           isAdmin={isAdmin}
+          selectMembershipRequests={selectMembershipRequests}
         />
       </BoardsActivityWrapper>
       <Boards

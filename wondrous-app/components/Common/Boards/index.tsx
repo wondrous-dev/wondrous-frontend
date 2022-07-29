@@ -4,12 +4,9 @@ import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';
 import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
-import { delQuery } from 'utils';
-import { useOrgBoard, useSelectMembership } from 'utils/hooks';
+import { useSelectMembership } from 'utils/hooks';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
-import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
-import { ListViewIcon } from '../../Icons/ViewIcons/listView';
 import { Table } from '../../Table';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
@@ -22,6 +19,7 @@ import {
   ShowAllSearchResults,
 } from './styles';
 import ListView from 'components/ListView';
+import ListViewAdmin from 'components/ListViewAdmin';
 
 type Props = {
   columns: Array<any>;
@@ -47,8 +45,6 @@ const Boards = (props: Props) => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
-  const selectMembershipHook = useSelectMembership();
-  const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
   const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   useEffect(() => {
@@ -64,7 +60,7 @@ const Boards = (props: Props) => {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 
     if (isAdmin) {
-      return <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} isAdmin={isAdmin} />;
+      return <ListViewAdmin columns={columns} onLoadMore={onLoadMore} />;
     }
     return view ? (
       <>
@@ -133,12 +129,7 @@ const Boards = (props: Props) => {
 
   return (
     <ColumnsContext.Provider value={{ columns, setColumns }}>
-      <BoardsContainer>
-        {selectMembershipRequests && (
-          <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
-        )}
-        {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
-      </BoardsContainer>
+      <BoardsContainer>{searchQuery ? renderSearchResults() : renderBoard()}</BoardsContainer>
     </ColumnsContext.Provider>
   );
 };

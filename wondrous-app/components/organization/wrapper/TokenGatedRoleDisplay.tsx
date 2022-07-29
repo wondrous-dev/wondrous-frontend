@@ -1,20 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
-import { Button, CircularProgress } from '@mui/material';
-import CheckMarkIcon from '../../Icons/checkMark';
+import { CircularProgress } from '@mui/material';
 import RedXIcon from '../../Icons/redx';
 import { useRouter } from 'next/router';
 import {
   CHECK_ORG_ROLE_TOKEN_GATING_CONDITION,
   CHECK_POD_ROLE_TOKEN_GATING_CONDITION,
 } from 'graphql/queries/tokenGating';
-import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '../../Common';
-import Accordion from '../../Common/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
-import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { useMe } from '../../Auth/withAuth';
 
 import {
@@ -26,8 +20,6 @@ import {
   ClaimRoleLabel,
   RoleActionWrapper,
 } from './styles';
-import palette from 'theme/palette';
-import { useEditTokenGatingCondition } from 'utils/hooks';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
 import Tooltip from 'components/Tooltip';

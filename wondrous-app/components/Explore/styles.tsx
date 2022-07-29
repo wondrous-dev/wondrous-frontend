@@ -4,7 +4,7 @@ import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import Masonry from '@mui/lab/Masonry';
 import WheelSvg from './wheel.svg';
 import Metheor from './metheor.svg';
-import { ShowMoreButton } from 'components/ListView/styles';
+import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
 import { device } from 'utils/device';
 
 export const Wheel = styled(WheelSvg)`

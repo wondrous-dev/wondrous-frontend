@@ -1,78 +1,7 @@
 import styled from 'styled-components';
-import MuiAccordionSummary from '@mui/material/AccordionSummary';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import MuiAccordion from '@mui/material/Accordion';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
-
-export const Accordion = styled(MuiAccordion)`
-  && {
-    margin-top: 0;
-    background: transparent;
-    color: ${palette.white};
-    width: 100%;
-    box-shadow: none;
-  }
-`;
-
-export const AccordionSummary = styled(MuiAccordionSummary)`
-  .MuiAccordionSummary-root {
-    width: 100%;
-  }
-  .MuiAccordionSummary-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-  }
-`;
-
-export const AccordionDetails = styled(MuiAccordionDetails)`
-  && {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 8px 0px 8px;
-    border-bottom: 0.5px dashed #2b2b2b;
-    border-radius: 6px;
-    border-top: 0.5px dashed #2b2b2b;
-  }
-`;
-
-export const ListViewItemHeader = styled.div`
-  width: 100%;
-  justify-content: space-between;
-  align-items: center;
-  display: flex;
-  padding-top: 28px;
-  padding-bottom: 14px;
-`;
-
-export const ListViewItemStatus = styled.div`
-  display: flex;
-  cursor: pointer;
-  align-items: center;
-  gap: 18px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 700;
-  font-size: 14px;
-  line-height: 18px;
-  color: ${palette.white};
-  width: fit-content;
-  .accordion-expansion-icon {
-    transition: transform 0.2s ease-out;
-    ${({ isExpanded }) => (isExpanded ? 'transform: rotate(180deg)' : 'transform: rotate(0deg)')}
-  }
-`;
-
-export const ListViewItemCount = styled(Typography)`
-  && {
-    color: #828282;
-    margin-left: -12px;
-  }
-`;
+import { RequestApproveButton } from 'components/organization/members/styles';
 
 export const IconWrapper = styled.div`
   display: flex;
@@ -120,20 +49,10 @@ export const ListViewItemActions = styled.div`
   justify-content: center;
   align-items: center;
   gap: 16px;
-`;
 
-export const ShowMoreButton = styled.button`
-  color: white;
-  padding: 10px;
-  background: #7427ff;
-  border-radius: 6px;
-  cursor: pointer;
-  border: 0;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 14px;
-  line-height: 15px;
-  letter-spacing: 0.01em;
-  margin-top: 8px;
+  ${RequestApproveButton} {
+    &::before {
+      background: linear-gradient(270deg, #06ffa5 -5.62%, #7427ff 103.12%);
+    }
+  }
 `;
