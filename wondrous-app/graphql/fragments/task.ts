@@ -178,7 +178,6 @@ export const TaskProposalCardFragment = gql`
     approvedAt
     closedAt
     lastReviewedBy
-    rejectedAt
     rewards {
       rewardAmount
       paymentMethodId
@@ -298,7 +297,6 @@ export const TaskProposalFragment = gql`
     userMentions
     approvedAt
     closedAt
-    rejectedAt
     lastReviewedBy
     associatedTaskId
     creator {
