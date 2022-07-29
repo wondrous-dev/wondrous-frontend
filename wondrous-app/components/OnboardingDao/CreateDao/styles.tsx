@@ -15,7 +15,7 @@ export const FieldInputDao = styled(InputUnstyled)`
       background: #141414;
       border: none;
       color: ${({ theme }) => theme.palette.white};
-      font-family: 'Space Grotesk';
+      ${({ theme }) => theme.typography.fontFamily};
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
@@ -32,7 +32,7 @@ export const FieldInputDao = styled(InputUnstyled)`
 
 export const DescriptionCharacterLength = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    ${({ theme }) => theme.typography.fontFamily};
     font-size: 12px;
     font-weight: 400;
     line-height: 19px;

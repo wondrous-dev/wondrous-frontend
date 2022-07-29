@@ -31,7 +31,7 @@ export const Label = styled(FormControlLabel)`
     .MuiTypography-root {
       padding: 0;
       padding: 4px 9px;
-      font-family: 'Space Grotesk';
+      font-family: ${({ theme }) => theme.typography.fontFamily};
       font-weight: 500;
       font-size: 15px;
       color: ${({ theme }) => theme.palette.white};

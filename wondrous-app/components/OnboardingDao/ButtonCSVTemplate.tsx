@@ -9,7 +9,7 @@ const Button = styled(ButtonBase)`
     color: ${({ theme }) => theme.palette.white};
     display: flex;
     flex-direction: row;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-style: normal;
     font-weight: 500;

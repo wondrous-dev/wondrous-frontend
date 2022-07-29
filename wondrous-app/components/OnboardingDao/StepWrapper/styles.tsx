@@ -101,7 +101,7 @@ export const CloseButtonIcon = styled(CloseIcon)`
 export const Title = styled(Typography)`
   && {
     margin-top: 48px;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 500;
     font-size: 28px;
@@ -120,7 +120,7 @@ export const Title = styled(Typography)`
 export const Subtitle = styled(Typography)`
   && {
     margin-top: 12px;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
@@ -177,7 +177,7 @@ export const LaterButton = styled(ButtonBase)`
     background: #474747;
     border-radius: 35px;
     color: ${({ theme }) => theme.palette.white};
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 600;
     font-size: 15px;
@@ -195,7 +195,7 @@ export const ContinueButton = styled(({ children, ...props }) => (
     border-radius: 35px;
     color: ${({ theme }) => theme.palette.white};
     display: flex;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 15px;
     font-weight: 600;
     height: 38px;
@@ -219,7 +219,7 @@ export const ContinueButton = styled(({ children, ...props }) => (
 export const FieldLabel = styled(Typography)`
   && {
     color: #ccbbff;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
@@ -248,7 +248,7 @@ export const FieldInput = styled(InputUnstyled)`
       border-radius: 6px;
       border: none;
       color: ${({ theme }) => theme.palette.white};
-      font-family: 'Space Grotesk';
+      font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
@@ -282,7 +282,7 @@ export const ButtonCSVTemplate = styled(ButtonBase)`
     color: ${({ theme }) => theme.palette.white};
     display: flex;
     flex-direction: row;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-style: normal;
     font-weight: 500;

@@ -39,7 +39,7 @@ export const CsvFileCloseIcon = styled(CloseIcon)`
 
 export const CsvFileText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 14px;
     display: flex;
@@ -60,7 +60,7 @@ export const ImportSuccess = styled.div`
 
 export const ImportSuccessText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

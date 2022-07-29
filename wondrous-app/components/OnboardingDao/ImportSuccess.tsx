@@ -13,7 +13,7 @@ const ImportSuccessWrapper = styled.div`
 
 const ImportSuccessText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

@@ -26,7 +26,7 @@ export const LabelText = styled.div`
   border-radius: 4px;
   color: ${({ theme }) => theme.palette.blue20};
   display: flex;
-  font-family: 'Space Grotesk';
+  font-family: ${({ theme }) => theme.typography.fontFamily};
   font-size: 14px;
   font-style: normal;
   font-weight: 500;
@@ -50,7 +50,7 @@ export const Text = styled(Typography)`
     align-items: center;
     color: ${({ theme }) => theme.palette.white};
     display: flex;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-weight: 500;
     width: 100%;
@@ -115,7 +115,7 @@ export const EditButtonText = styled(Typography)`
     align-items: center;
     color: ${({ theme }) => theme.palette.highlightBlue};
     display: flex;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 13px;
     font-weight: 500;
     line-height: 0;
@@ -145,7 +145,7 @@ export const EditInput = styled(InputUnstyled)`
       border-radius: 4px;
       border: 1px solid #282828;
       color: ${({ theme }) => theme.palette.white};
-      font-family: 'Space Grotesk';
+      font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 14px;
       font-weight: 500;
       height: 100%;
@@ -167,7 +167,7 @@ export const EditInputMulti = styled(InputUnstyled)`
       border-radius: 4px;
       border: 1px solid #282828;
       color: ${({ theme }) => theme.palette.white};
-      font-family: 'Space Grotesk';
+      font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 14px;
       font-weight: 500;
       height: 100%;

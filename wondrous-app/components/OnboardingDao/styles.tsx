@@ -5,7 +5,7 @@ import styled from 'styled-components';
 export const FieldLabel = styled(Typography)`
   && {
     color: #ccbbff;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-style: normal;
     font-weight: 500;
@@ -34,7 +34,7 @@ export const FieldInput = styled(InputUnstyled)`
       border-radius: 6px;
       border: none;
       color: ${({ theme }) => theme.palette.white};
-      font-family: 'Space Grotesk';
+      font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
@@ -63,7 +63,7 @@ export const ImportButtonWrapper = styled.div`
 
 export const Error = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 400;
     font-size: 15px;
     color: ${({ theme }) => theme.palette.red800};
