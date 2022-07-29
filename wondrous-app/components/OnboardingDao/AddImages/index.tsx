@@ -7,7 +7,7 @@ import { useState } from 'react';
 import { handleImageFile, uploadMedia } from 'utils/media';
 import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, ImageWrapper, LogoUpload, SafeImageWrapper } from './styles';
 
-const useHandleImageChange = ({ setValue, name }) => {
+const useHandleImageChange = ({ setValue }) => {
   const [file, setFile] = useState(null);
   const handleChange = async (file) => {
     setFile(file);
@@ -18,10 +18,10 @@ const useHandleImageChange = ({ setValue, name }) => {
   return { handleChange, file };
 };
 
-const ProfilePicture = ({ ...props }) => {
-  const name = props.name;
+const ProfilePicture = (props) => {
+  const { name } = props;
   const [field, _, { setValue }] = useField(name);
-  const { handleChange, file } = useHandleImageChange({ name, setValue });
+  const { handleChange, file } = useHandleImageChange({ setValue });
   const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
@@ -47,10 +47,10 @@ const ProfilePicture = ({ ...props }) => {
   );
 };
 
-const HeaderPicture = ({ ...props }) => {
-  const name = props.name;
+const HeaderPicture = (props) => {
+  const { name } = props;
   const [field, _, { setValue }] = useField(name);
-  const { handleChange, file } = useHandleImageChange({ name, setValue });
+  const { handleChange, file } = useHandleImageChange({ setValue });
   const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
@@ -78,10 +78,11 @@ const HeaderPicture = ({ ...props }) => {
 };
 
 const AddImages = (props) => {
+  const { fields } = props;
   return (
     <ComponentFieldWrapper>
-      <ProfilePicture {...props.fields.profilePicture} />
-      <HeaderPicture {...props.fields.headerPicture} />
+      <ProfilePicture {...fields.profilePicture} />
+      <HeaderPicture {...fields.headerPicture} />
     </ComponentFieldWrapper>
   );
 };
