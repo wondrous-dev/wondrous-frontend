@@ -729,7 +729,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                         )}
                         {canApproveProposal && !fetchedTask?.approvedAt && (
                           <CreateFormButtonsBlock>
-                            {!fetchedTask?.changeRequestedAt && (
+                            {!fetchedTask?.closedAt && (
                               <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
                             )}
                             <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
