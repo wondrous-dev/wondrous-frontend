@@ -6,7 +6,7 @@ import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations/org';
 import { IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { useReducer } from 'react';
+import { useReducer, useState } from 'react';
 import * as Yup from 'yup';
 
 const fieldSet = [
@@ -106,12 +106,21 @@ const useCreateOrg = () => {
 };
 
 const useIsOrgUsernameTaken = () => {
-  const [isOrgUsernameTaken] = useLazyQuery(IS_ORG_USERNAME_TAKEN);
+  const [isOrgUsernameTaken] = useLazyQuery(IS_ORG_USERNAME_TAKEN, {
+    fetchPolicy: 'network-only',
+  });
+  const [prevUsername, setPrevUsername] = useState('');
+  const [prevResult, setPrevResult] = useState(false);
   const handleIsOrgUsernameTaken = async (username) => {
-    // TODO: debounce this
-    if (!username) return false;
-    const { data } = await isOrgUsernameTaken({ variables: { username: username } });
-    return !data?.isOrgUsernameTaken?.exist;
+    if (username && username !== prevUsername) {
+      // check the previous parameter first to prevent unnecessary queries during form validation; refer to https://github.com/jaredpalmer/formik/issues/512#issuecomment-666549238
+      const { data } = await isOrgUsernameTaken({ variables: { username: username } });
+      const result = !data?.isOrgUsernameTaken?.exist;
+      setPrevUsername(username);
+      setPrevResult(result);
+      return result;
+    }
+    return prevResult;
   };
   return handleIsOrgUsernameTaken;
 };
@@ -158,6 +167,7 @@ const OnboardingCreateDao = () => {
       }}
       onSubmit={handleCreateOrg}
       validationSchema={useSchema()}
+      validateOnMount={true}
     >
       <Form>
         <StepWrapper
