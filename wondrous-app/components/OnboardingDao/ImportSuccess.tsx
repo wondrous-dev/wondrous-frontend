@@ -17,7 +17,7 @@ const ImportSuccessText = styled(Typography)`
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
-    background: linear-gradient(180deg, #ffffff 0%, #06ffa5 100%);
+    background: ${({ theme }) => `linear-gradient(180deg, ${theme.palette.white} 0%, ${theme.palette.green800} 100%)`};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;

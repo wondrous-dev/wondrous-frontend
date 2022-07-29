@@ -4,7 +4,7 @@ import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
 
 export const InputWrapper = styled.div`
-  background: #141414;
+  background: ${({ theme }) => theme.palette.midnight};
   border-radius: 6px;
   padding: 12px;
 `;
@@ -12,7 +12,7 @@ export const InputWrapper = styled.div`
 export const FieldInputDao = styled(InputUnstyled)`
   && {
     .MuiInput-input {
-      background: #141414;
+      background: ${({ theme }) => theme.palette.midnight};
       border: none;
       color: ${({ theme }) => theme.palette.white};
       ${({ theme }) => theme.typography.fontFamily};
@@ -38,6 +38,6 @@ export const DescriptionCharacterLength = styled(Typography)`
     line-height: 19px;
     text-align: right;
     width: 100%;
-    color: #c4c4c4;
+    color: ${({ theme }) => theme.palette.grey250};
   }
 `;

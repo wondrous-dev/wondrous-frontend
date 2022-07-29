@@ -22,7 +22,7 @@ export const LabelWrapper = styled.div`
 
 export const LabelText = styled.div`
   align-items: center;
-  background: #282828;
+  background: ${({ theme }) => theme.palette.grey99};
   border-radius: 4px;
   color: ${({ theme }) => theme.palette.blue20};
   display: flex;
@@ -76,7 +76,7 @@ export const Category = styled.div`
   justify-content: center;
   align-items: center;
   height: 26px;
-  background: #141414;
+  background: ${({ theme }) => theme.palette.midnight};
   border-radius: 4px;
   padding: 4px 9px;
 `;
@@ -88,18 +88,19 @@ export const EditButton = styled(({ children, ...props }) => (
 ))`
   && {
     align-items: stretch;
-    background: #282828;
+    background: ${({ theme }) => theme.palette.grey99};
     border-radius: 4px;
     display: flex;
     height: 26px;
     padding: 1px;
     min-width: 60px;
     :hover {
-      background: linear-gradient(88.36deg, #ccbbff 12.48%, #00baff 98.91%);
+      background: ${({ theme }) =>
+        `linear-gradient(88.36deg, ${theme.palette.blue20} 12.48%, ${theme.palette.highlightBlue} 98.91%)`};
     }
     > div {
       align-items: center;
-      background: #282828;
+      background: ${({ theme }) => theme.palette.grey99};
       border-radius: inherit;
       display: flex;
       gap: 6px;
@@ -143,7 +144,7 @@ export const EditInput = styled(InputUnstyled)`
     .MuiInput-input {
       background: transparent;
       border-radius: 4px;
-      border: 1px solid #282828;
+      border: 1px solid ${({ theme }) => theme.palette.grey99};
       color: ${({ theme }) => theme.palette.white};
       font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 14px;
@@ -165,7 +166,7 @@ export const EditInputMulti = styled(InputUnstyled)`
     .MuiInput-input {
       background: transparent;
       border-radius: 4px;
-      border: 1px solid #282828;
+      border: 1px solid ${({ theme }) => theme.palette.grey99};
       color: ${({ theme }) => theme.palette.white};
       font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 14px;

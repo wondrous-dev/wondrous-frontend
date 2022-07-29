@@ -37,8 +37,8 @@ export const FormWrapper = styled.div`
   padding: 30px;
   width: 614px;
   min-height: 600px;
-  background: #1d1d1d;
-  border: 1px solid #424242;
+  background: ${({ theme }) => theme.palette.grey900};
+  border: 1px solid ${({ theme }) => theme.palette.grey79};
   border-radius: 6px;
 `;
 
@@ -57,8 +57,8 @@ export const StepIndicatorWrapper = styled.div`
 export const StepIndicatorDone = styled.div`
   width: 12px;
   height: 12px;
-  background: #00cd83;
-  border: 2px solid #06ffa5;
+  background: ${({ theme }) => theme.palette.green350};
+  border: 2px solid ${({ theme }) => theme.palette.green30};
   border-radius: 137.143px;
 `;
 
@@ -74,7 +74,7 @@ export const StepIndicatorFilled = styled.div`
 export const StepIndicatorEmpty = styled.div`
   width: 12px;
   height: 12px;
-  border: 2px solid #474747;
+  border: 2px solid ${({ theme }) => theme.palette.grey78};
   border-radius: 100px;
 `;
 
@@ -158,7 +158,7 @@ export const BackButton = styled(ButtonBase)`
   && {
     width: 40px;
     height: 40px;
-    background: #232323;
+    background: ${({ theme }) => theme.palette.black92};
     border: 0;
     border-radius: 50%;
     display: flex;
@@ -174,7 +174,7 @@ export const LaterButton = styled(ButtonBase)`
     padding: 8px 24px;
     width: 84px;
     height: 40px;
-    background: #474747;
+    background: ${({ theme }) => theme.palette.grey78};
     border-radius: 35px;
     color: ${({ theme }) => theme.palette.white};
     font-family: ${({ theme }) => theme.typography.fontFamily};
@@ -191,7 +191,8 @@ export const ContinueButton = styled(({ children, ...props }) => (
 ))`
   && {
     align-items: center;
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    background: ${({ theme }) =>
+      `linear-gradient(270deg, ${theme.palette.blue20} -5.62%, ${theme.palette.highlightPurple} 45.92%, ${theme.palette.highlightBlue} 103.12%);`};
     border-radius: 35px;
     color: ${({ theme }) => theme.palette.white};
     display: flex;
@@ -218,7 +219,7 @@ export const ContinueButton = styled(({ children, ...props }) => (
 
 export const FieldLabel = styled(Typography)`
   && {
-    color: #ccbbff;
+    color: ${({ theme }) => theme.palette.blue20};
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-style: normal;
@@ -243,7 +244,7 @@ export const ComponentFieldWrapper = styled.div`
 export const FieldInput = styled(InputUnstyled)`
   && {
     .MuiInput-input {
-      background: #141414;
+      background: ${({ theme }) => theme.palette.black97};
       border-radius: 6px;
       border-radius: 6px;
       border: none;
@@ -277,7 +278,7 @@ export const ImportButtonWrapper = styled.div`
 export const ButtonCSVTemplate = styled(ButtonBase)`
   && {
     align-items: center;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 6px;
     color: ${({ theme }) => theme.palette.white};
     display: flex;

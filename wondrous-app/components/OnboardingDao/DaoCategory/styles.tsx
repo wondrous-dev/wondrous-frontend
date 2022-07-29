@@ -19,10 +19,10 @@ export const Label = styled(FormControlLabel)`
     justify-content: center;
     align-items: center;
     height: 26px;
-    background: ${({ checked }) => (checked ? `#4f00de` : `#141414`)};
+    background: ${({ checked, theme }) => (checked ? theme.palette.violet100 : theme.palette.midnight)};
     border-radius: 4px;
     :hover {
-      background: #4f00de;
+      background: ${({ theme }) => theme.palette.violet100};
       cursor: pointer;
     }
     .MuiRadio-root {

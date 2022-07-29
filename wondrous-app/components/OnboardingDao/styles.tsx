@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export const FieldLabel = styled(Typography)`
   && {
-    color: #ccbbff;
+    color: ${({ theme }) => theme.palette.blue20};
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 14px;
     font-style: normal;
@@ -29,7 +29,7 @@ export const ComponentFieldWrapper = styled.div`
 export const FieldInput = styled(InputUnstyled)`
   && {
     .MuiInput-input {
-      background: #141414;
+      background: ${({ theme }) => theme.palette.black97};
       border-radius: 6px;
       border-radius: 6px;
       border: none;

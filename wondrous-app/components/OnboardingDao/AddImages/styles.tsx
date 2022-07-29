@@ -46,7 +46,7 @@ export const HeaderWrapper = styled.label`
 export const AddPhotoIconWrapper = styled.div`
   width: 48px;
   height: 48px;
-  background: #2c2c2c;
+  background: ${({ theme }) => theme.palette.grey97};
   border-radius: 100px;
   display: flex;
   align-items: center;
