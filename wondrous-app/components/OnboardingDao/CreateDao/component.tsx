@@ -1,13 +1,23 @@
 import { ComponentFieldWrapper, Error, FieldInput, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { useField } from 'formik';
+import { debounce } from 'lodash';
+import { useMemo, useState } from 'react';
 import { DescriptionCharacterLength, FieldInputDao, InputWrapper } from './styles';
 
 const Name = ({ label, ...props }) => {
-  const [field, meta] = useField(props.name);
+  const [value, setValue] = useState('');
+  const [field, meta, helpers] = useField(props.name);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedHelpersSetValue = useMemo(() => debounce(helpers.setValue, 500), []);
+  const handleChange = (e) => {
+    const value = e.target.value;
+    setValue(value);
+    debouncedHelpersSetValue(value);
+  };
   return (
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>
-      <FieldInput {...field} {...props} />
+      <FieldInput {...field} {...props} onChange={handleChange} value={value} />
       {meta.touched && meta.error && <Error>{meta.error}</Error>}
     </FieldWrapper>
   );
