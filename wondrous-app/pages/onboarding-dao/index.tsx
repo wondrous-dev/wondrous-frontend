@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
 import { AddImages, CreateDao, DaoCategory, Review, StepWrapper } from 'components/OnboardingDao';
-import { onboardingDaoValueLocalStorageKey } from 'components/OnboardingDao/constants';
+import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, STEP_ACTIONS } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations/org';
 import { IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
@@ -87,8 +87,8 @@ const fieldSet = [
 const handleStep = (step, { action, hasError = false }) => {
   if (hasError) return step;
   const actions = {
-    next: step + 1,
-    back: step - 1,
+    [STEP_ACTIONS.next]: step + 1,
+    [STEP_ACTIONS.prev]: step - 1,
   };
   return actions[action] ?? step;
 };
@@ -98,7 +98,7 @@ const useCreateOrg = () => {
   const router = useRouter();
   const handleCreateOrg = (values) => {
     createOrg({ variables: { input: values } }).then(() => {
-      localStorage.removeItem(onboardingDaoValueLocalStorageKey);
+      localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
       router.push(`organization/${values.username}/boards`);
     });
   };
@@ -147,9 +147,9 @@ const useSchema = () => {
 
 const useInitialValues = () => {
   const { restoreState } = useRouter().query;
-  if (!restoreState) typeof window !== 'undefined' && localStorage.removeItem(onboardingDaoValueLocalStorageKey);
+  if (!restoreState) typeof window !== 'undefined' && localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
   const initialValues =
-    typeof window !== 'undefined' && JSON.parse(localStorage.getItem(onboardingDaoValueLocalStorageKey));
+    typeof window !== 'undefined' && JSON.parse(localStorage.getItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY));
   const restoreStep = restoreState ? 4 : 1;
   return { initialValues, restoreStep };
 };

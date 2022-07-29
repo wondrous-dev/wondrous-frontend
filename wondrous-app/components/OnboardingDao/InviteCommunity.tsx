@@ -1,5 +1,5 @@
 import ButtonImport from 'components/OnboardingDao/ButtonImport';
-import { onboardingDaoValueLocalStorageKey } from 'components/OnboardingDao/constants';
+import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY } from 'components/OnboardingDao/constants';
 import ImportSuccess from 'components/OnboardingDao/ImportSuccess';
 import { ButtonsWrapper, Error, ImportButtonWrapper } from 'components/OnboardingDao/styles';
 import { useFormikContext } from 'formik';
@@ -30,7 +30,7 @@ const DISCORD_OAUTH_URL = getDiscordUrl();
 const useConnectDiscord = () => {
   const { values } = useFormikContext();
   const handleConnectDiscordClick = () => {
-    localStorage.setItem(onboardingDaoValueLocalStorageKey, JSON.stringify(values));
+    localStorage.setItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, JSON.stringify(values));
     const state = JSON.stringify({
       callbackType: DISCORD_CONNECT_TYPES.connectOnboardingDao,
     });

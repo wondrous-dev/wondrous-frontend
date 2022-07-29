@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik';
 import { mapKeys, some } from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { onboardingDaoValueLocalStorageKey } from '../constants';
+import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, STEP_ACTIONS } from '../constants';
 import {
   BackButton,
   ButtonWrapper,
@@ -44,7 +44,7 @@ const BackButtonWrapper = ({ step, handleStep }) => {
   if (step === 1) return <ButtonWrapper />;
   return (
     <ButtonWrapper>
-      <BackButton onClick={() => handleStep({ action: 'back' })}>
+      <BackButton onClick={() => handleStep({ action: STEP_ACTIONS.prev })}>
         <LeftArrowIcon />
       </BackButton>
     </ButtonWrapper>
@@ -53,7 +53,7 @@ const BackButtonWrapper = ({ step, handleStep }) => {
 
 const LaterButtonWrapper = ({ step, handleStep, hideLater }) => {
   if (step === NO_OF_STEPS || hideLater) return null;
-  return <LaterButton onClick={() => handleStep({ action: 'next' })}>Later</LaterButton>;
+  return <LaterButton onClick={() => handleStep({ action: STEP_ACTIONS.next })}>Later</LaterButton>;
 };
 
 const useValidateStep = (fields) => {
@@ -71,7 +71,7 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {} })
   const handleOnClick = (e) => {
     e.preventDefault();
     touchFields();
-    handleStep({ action: 'next', hasError });
+    handleStep({ action: STEP_ACTIONS.next, hasError });
   };
   if (step === NO_OF_STEPS) {
     return (
@@ -112,7 +112,7 @@ const StepWrapper = ({
   const router = useRouter();
   const handleOnClick = () => {
     router.push('/dashboard');
-    localStorage.removeItem(onboardingDaoValueLocalStorageKey);
+    localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
   };
   return (
     <WrapperLoading loading={loading}>
