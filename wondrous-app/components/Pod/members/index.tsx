@@ -23,8 +23,8 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-let QUERY_LIMIT = 3;
-let REFETCH_QUERY_LIMIT = 20;
+const QUERY_LIMIT = 3;
+const REFETCH_QUERY_LIMIT = 20;
 
 const useGetPodMemberRequests = (podId) => {
   const [getPodUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_POD_MEMBERSHIP_REQUEST);
@@ -49,7 +49,16 @@ const MemberRequests = (props) => {
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST);
   const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST);
   const [showShowMoreButton, setShowShowMoreButton] = useState(false);
-  const refetchQueries = [GET_POD_BY_ID];
+  const refetchQueries = [
+    GET_POD_BY_ID,
+    {
+      query: GET_POD_MEMBERSHIP_REQUEST,
+      variables: {
+        podId,
+        limit: podUserMembershipRequests?.length - 1,
+      },
+    },
+  ];
   const showEmptyState = podUserMembershipRequests?.length === 0;
   const initialLoad = useRef(true);
 
@@ -67,16 +76,6 @@ const MemberRequests = (props) => {
         podId,
       },
       refetchQueries,
-      updateQueries: {
-        getPodMembershipRequest: (prev, { mutationResult }) => {
-          const isMutationSuccess = mutationResult.data?.approveJoinPodRequest?.success;
-          if (isMutationSuccess) {
-            const newOrgMembershipRequests = [...prev.getPodMembershipRequest].filter((req) => req.userId !== userId);
-            return { getPodMembershipRequest: newOrgMembershipRequests };
-          }
-          return { getPodMembershipRequest: prev };
-        },
-      },
     });
   };
 
@@ -87,16 +86,6 @@ const MemberRequests = (props) => {
         podId,
       },
       refetchQueries,
-      updateQueries: {
-        getPodMembershipRequest: (prev, { mutationResult }) => {
-          const isMutationSuccess = mutationResult.data?.rejectJoinPodRequest?.success;
-          if (isMutationSuccess) {
-            const newOrgMembershipRequests = [...prev.getPodMembershipRequest].filter((req) => req.userId !== userId);
-            return { getPodMembershipRequest: newOrgMembershipRequests };
-          }
-          return { getPodMembershipRequest: prev };
-        },
-      },
     });
   };
 
@@ -107,12 +96,9 @@ const MemberRequests = (props) => {
         offset: podUserMembershipRequests?.length,
         limit: REFETCH_QUERY_LIMIT,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        const getPodMembershipRequest = [...prev?.getPodMembershipRequest, ...fetchMoreResult?.getPodMembershipRequest];
-        const hasMore = fetchMoreResult?.getPodMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
-        setShowShowMoreButton(hasMore);
-        return { getPodMembershipRequest };
-      },
+    }).then(({ data }) => {
+      const hasMore = data?.getPodMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
+      setShowShowMoreButton(hasMore);
     });
   };
 

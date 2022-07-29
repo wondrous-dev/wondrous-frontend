@@ -23,8 +23,8 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-let QUERY_LIMIT = 3;
-let REFETCH_QUERY_LIMIT = 20;
+const QUERY_LIMIT = 3;
+const REFETCH_QUERY_LIMIT = 20;
 
 const useGetOrgMemberRequests = (orgId) => {
   const [getOrgUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST);
@@ -49,7 +49,16 @@ const MemberRequests = (props) => {
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
   const [showShowMoreButton, setShowShowMoreButton] = useState(false);
-  const refetchQueries = [GET_ORG_FROM_USERNAME];
+  const refetchQueries = [
+    GET_ORG_FROM_USERNAME,
+    {
+      query: GET_ORG_MEMBERSHIP_REQUEST,
+      variables: {
+        orgId,
+        limit: orgUserMembershipRequests?.length - 1,
+      },
+    },
+  ];
   const showEmptyState = orgUserMembershipRequests?.length === 0;
   const initialLoad = useRef(true);
 
@@ -67,16 +76,6 @@ const MemberRequests = (props) => {
         orgId,
       },
       refetchQueries,
-      updateQueries: {
-        getOrgMembershipRequest: (prev, { mutationResult }) => {
-          const isMutationSuccess = mutationResult.data?.approveJoinOrgRequest?.success;
-          if (isMutationSuccess) {
-            const newOrgMembershipRequests = [...prev.getOrgMembershipRequest].filter((req) => req.userId !== userId);
-            return { getOrgMembershipRequest: newOrgMembershipRequests };
-          }
-          return { getOrgMembershipRequest: prev };
-        },
-      },
     });
   };
 
@@ -87,16 +86,6 @@ const MemberRequests = (props) => {
         orgId,
       },
       refetchQueries,
-      updateQueries: {
-        getOrgMembershipRequest: (prev, { mutationResult }) => {
-          const isMutationSuccess = mutationResult.data?.rejectJoinOrgRequest?.success;
-          if (isMutationSuccess) {
-            const newOrgMembershipRequests = [...prev.getOrgMembershipRequest].filter((req) => req.userId !== userId);
-            return { getOrgMembershipRequest: newOrgMembershipRequests };
-          }
-          return { getOrgMembershipRequest: prev };
-        },
-      },
     });
   };
 
@@ -107,12 +96,9 @@ const MemberRequests = (props) => {
         offset: orgUserMembershipRequests?.length,
         limit: REFETCH_QUERY_LIMIT,
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        const getOrgMembershipRequest = [...prev?.getOrgMembershipRequest, ...fetchMoreResult?.getOrgMembershipRequest];
-        const hasMore = fetchMoreResult?.getOrgMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
-        setShowShowMoreButton(hasMore);
-        return { getOrgMembershipRequest };
-      },
+    }).then(({ data }) => {
+      const hasMore = data?.getOrgMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
+      setShowShowMoreButton(hasMore);
     });
   };
 
