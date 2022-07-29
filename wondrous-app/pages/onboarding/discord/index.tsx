@@ -11,19 +11,22 @@ import { useMe, withAuth } from 'components/Auth/withAuth';
 const ConnectDiscordPage = () => {
   const router = useRouter();
   const user = useMe();
+
+  const goToNextStep = () => {
+    const nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
+
+    router.push(nextStep, undefined, { shallow: true });
+  };
+
   const [updateUser] = useMutation(UPDATE_USER, {
     onCompleted: () => {
-      router.push('/onboarding/email-setup', undefined, {
-        shallow: true,
-      });
+      goToNextStep();
     },
   });
 
   useEffect(() => {
     if (user?.userInfo?.discordUsername) {
-      router.push('/onboarding/email-setup', undefined, {
-        shallow: true,
-      });
+      goToNextStep();
     }
   }, [user?.userInfo?.discordUsername]);
 
