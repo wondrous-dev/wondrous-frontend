@@ -22,7 +22,7 @@ const DaoCategories = (props) => {
       {map(DAO_CATEGORIES, (value, key) => (
         <CategoryItem control={<Radio />} key={key} label={value} value={key} />
       ))}
-      <CategoryItemOther control={<Radio />} label={'👀 Something else? Tell us.'} value={''} />
+      {/* NOTE: hide for now <CategoryItemOther control={<Radio />} label={'👀 Something else? Tell us.'} value={''} /> */}
     </CategoriesWrapper>
   );
 };
@@ -46,7 +46,7 @@ const DaoCategory = (props) => {
   return (
     <ComponentFieldWrapper>
       <DaoCategories {...props.fields.category} />
-      <OtherField {...props.fields.category} />
+      {/* NOTE: hide for now <OtherField {...props.fields.category} /> */}
     </ComponentFieldWrapper>
   );
 };
