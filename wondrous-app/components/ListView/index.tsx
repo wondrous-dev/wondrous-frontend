@@ -132,7 +132,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
             },
             onCompleted: (data) => {
               boardColumns[sourceColumn]?.tasks?.splice(index, 1);
-              const updatedTask = { ...taskToUpdate, changeRequestedAt: new Date() };
+              const updatedTask = { ...taskToUpdate, closedAt: new Date() };
               boardColumns[destinationColumn]?.tasks?.unshift(updatedTask);
               setColumns(dedupeColumns(boardColumns));
             },
