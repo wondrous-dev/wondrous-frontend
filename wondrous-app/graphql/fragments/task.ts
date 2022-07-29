@@ -247,7 +247,6 @@ export const TaskSubmissionFragment = gql`
       type
     }
     approvedAt
-    changeRequestedAt
     rejectedAt
     lastReviewedBy
     paymentStatus

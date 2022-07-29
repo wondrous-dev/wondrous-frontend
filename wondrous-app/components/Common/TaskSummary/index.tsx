@@ -150,7 +150,7 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
           columns = updateProposalItem(
             {
               ...task,
-              changeRequestedAt: new Date(),
+              closedAt: new Date(),
             },
             columns
           );
