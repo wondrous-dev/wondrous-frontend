@@ -69,3 +69,12 @@ export const handleAddFile = async (props) => {
     return fileToAdd;
   }
 };
+
+export const handleImageFile = ({ file, id }) => {
+  if (!file) return { filename: null, fileType: null, file: null };
+  const fileName = file?.name;
+  // get image preview
+  const { fileType, filename } = getFilenameAndType(fileName);
+  const imageFile = `tmp/${id}/` + filename;
+  return { filename: imageFile, fileType, file };
+};
