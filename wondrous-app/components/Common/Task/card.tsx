@@ -310,12 +310,13 @@ export const TaskCard = ({
             {isMilestone && <MilestoneIcon />}
             {!userProfile && <AvatarList users={userList} id={'task-' + task?.id} />}
           </TaskHeaderIconWrapper>
-          {task?.privacyLevel === PRIVACY_LEVEL.public && (
+          {task?.privacyLevel !== PRIVACY_LEVEL.public && (
             <ToggleBoardPrivacyIcon
               style={{
                 width: '29px',
                 height: '29px',
                 marginRight: '0',
+                marginLeft: '8px',
               }}
               isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
               tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
