@@ -46,10 +46,12 @@ export const TaskFragment = gql`
       profilePicture
       name
       username
+      privacyLevel
     }
     pod {
       name
       color
+      privacyLevel
     }
     milestone {
       title
@@ -317,10 +319,12 @@ export const TaskProposalFragment = gql`
       profilePicture
       name
       username
+      privacyLevel
     }
     pod {
       name
       color
+      privacyLevel
     }
     snapshotId
     votes {
