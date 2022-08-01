@@ -26,16 +26,14 @@ import {
   WrapperLoadingCircularProgress,
 } from './styles';
 
-const NO_OF_STEPS = 4;
-
-export function OnboardingStepIndicator({ step }) {
+export const OnboardingStepIndicator = ({ step, fieldSetsLength }) => {
   const rangeIndicator = (start, end, Component) =>
     Array.from({ length: start - end }, (_, i) => <Component key={i} />);
   return (
     <StepIndicatorWrapper>
       {rangeIndicator(step, 1, StepIndicatorDone)}
       <StepIndicatorFilled />
-      {rangeIndicator(NO_OF_STEPS, step, StepIndicatorEmpty)}
+      {rangeIndicator(fieldSetsLength, step, StepIndicatorEmpty)}
     </StepIndicatorWrapper>
   );
 }
@@ -51,8 +49,8 @@ function BackButtonWrapper({ step, handleStep }) {
   );
 }
 
-function LaterButtonWrapper({ step, handleStep, hideLater }) {
-  if (step === NO_OF_STEPS || hideLater) return null;
+const LaterButtonWrapper = ({ step, handleStep, hideLater, fieldSetsLength }) => {
+  if (step === fieldSetsLength || hideLater) return null;
   return <LaterButton onClick={() => handleStep({ action: STEP_ACTIONS.next })}>Later</LaterButton>;
 }
 
@@ -66,14 +64,14 @@ const useValidateStep = (fields) => {
   return { touchFields, errors, hasError };
 };
 
-function ContinueButtonWrapper({ step, hoverContinue, handleStep, fields = {} }) {
+const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, fieldSetsLength }) => {
   const { touchFields, hasError } = useValidateStep(fields);
   const handleOnClick = (e) => {
     e.preventDefault();
     touchFields();
     handleStep({ action: STEP_ACTIONS.next, hasError });
   };
-  if (step === NO_OF_STEPS) {
+  if (step === fieldSetsLength) {
     return (
       <ContinueButton hoverContinue={hoverContinue} type="submit">
         🚀 Launch DAO
@@ -100,13 +98,14 @@ function WrapperLoading({ loading, children }) {
 
 function StepWrapper({
   Component,
+  fieldSetsLength,
   handleStep,
   hideLater = false,
   hoverContinue = false,
+  loading,
   step,
   subtitle,
   title,
-  loading,
   ...props
 }) {
   const router = useRouter();
@@ -118,7 +117,7 @@ function StepWrapper({
     <WrapperLoading loading={loading}>
       <FormWrapper>
         <HeaderWrapper>
-          <OnboardingStepIndicator step={step} />
+          <OnboardingStepIndicator step={step} fieldSetsLength={fieldSetsLength} />
           <CloseButton onClick={handleOnClick}>
             <CloseButtonIcon />
           </CloseButton>
@@ -131,12 +130,18 @@ function StepWrapper({
         <FooterWrapper>
           <BackButtonWrapper step={step} handleStep={handleStep} />
           <ButtonWrapper>
-            <LaterButtonWrapper step={step} handleStep={handleStep} hideLater={hideLater} />
+            <LaterButtonWrapper
+              step={step}
+              handleStep={handleStep}
+              hideLater={hideLater}
+              fieldSetsLength={fieldSetsLength}
+            />
             <ContinueButtonWrapper
               step={step}
               hoverContinue={hoverContinue}
               handleStep={handleStep}
               fields={props.fields}
+              fieldSetsLength={fieldSetsLength}
             />
           </ButtonWrapper>
         </FooterWrapper>
