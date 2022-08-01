@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_POD_BY_ID, GET_POD_MEMBERSHIP_REQUEST } from 'graphql/queries';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
@@ -27,7 +27,22 @@ const QUERY_LIMIT = 3;
 const REFETCH_QUERY_LIMIT = 20;
 
 const useGetPodMemberRequests = (podId) => {
-  const [getPodUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_POD_MEMBERSHIP_REQUEST);
+  const [hasMore, setHasMore] = useState(false);
+  const [getPodUserMembershipRequests, { data, fetchMore, previousData }] = useLazyQuery(GET_POD_MEMBERSHIP_REQUEST, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ getPodMembershipRequest }) => {
+      // if previousData is undefined, it means this is the initial fetch
+      const limitToRefer = previousData ? REFETCH_QUERY_LIMIT : QUERY_LIMIT;
+      const updatedDataLength = previousData
+        ? getPodMembershipRequest?.length - previousData?.getPodMembershipRequest?.length
+        : getPodMembershipRequest?.length;
+      // updatedDataLength >= 0 means it's not a refetch
+      updatedDataLength >= 0 && setHasMore(updatedDataLength >= limitToRefer);
+    },
+  });
   useEffect(() => {
     if (podId) {
       getPodUserMembershipRequests({
@@ -38,7 +53,6 @@ const useGetPodMemberRequests = (podId) => {
       });
     }
   }, [podId, getPodUserMembershipRequests]);
-  const hasMore = data?.getPodMembershipRequest?.length >= QUERY_LIMIT;
   return { data: data?.getPodMembershipRequest, fetchMore, hasMore };
 };
 
@@ -48,7 +62,6 @@ const MemberRequests = (props) => {
   const { data: podUserMembershipRequests, fetchMore, hasMore } = useGetPodMemberRequests(podId);
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST);
   const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST);
-  const [showShowMoreButton, setShowShowMoreButton] = useState(false);
   const refetchQueries = [
     GET_POD_BY_ID,
     {
@@ -60,14 +73,6 @@ const MemberRequests = (props) => {
     },
   ];
   const showEmptyState = podUserMembershipRequests?.length === 0;
-  const initialLoad = useRef(true);
-
-  useEffect(() => {
-    if (initialLoad.current && hasMore) {
-      setShowShowMoreButton(true);
-      initialLoad.current = false;
-    }
-  }, [hasMore]);
 
   const approveRequest = (userId, podId) => {
     approveJoinPodRequest({
@@ -96,9 +101,6 @@ const MemberRequests = (props) => {
         offset: podUserMembershipRequests?.length,
         limit: REFETCH_QUERY_LIMIT,
       },
-    }).then(({ data }) => {
-      const hasMore = data?.getPodMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
-      setShowShowMoreButton(hasMore);
     });
   };
 
@@ -162,7 +164,7 @@ const MemberRequests = (props) => {
               ))}
             </MemberRequestsList>
 
-            {showShowMoreButton ? (
+            {hasMore ? (
               <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>
             ) : (
               <MemberRequestsListEndMessage>

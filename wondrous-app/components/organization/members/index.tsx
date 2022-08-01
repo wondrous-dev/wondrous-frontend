@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST } from 'graphql/queries';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
@@ -27,7 +27,22 @@ const QUERY_LIMIT = 3;
 const REFETCH_QUERY_LIMIT = 20;
 
 const useGetOrgMemberRequests = (orgId) => {
-  const [getOrgUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST);
+  const [hasMore, setHasMore] = useState(false);
+  const [getOrgUserMembershipRequests, { data, fetchMore, previousData }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ getOrgMembershipRequest }) => {
+      // if previousData is undefined, it means this is the initial fetch
+      const limitToRefer = previousData ? REFETCH_QUERY_LIMIT : QUERY_LIMIT;
+      const updatedDataLength = previousData
+        ? getOrgMembershipRequest?.length - previousData?.getOrgMembershipRequest?.length
+        : getOrgMembershipRequest?.length;
+      // updatedDataLength >= 0 means it's not a refetch
+      updatedDataLength >= 0 && setHasMore(updatedDataLength >= limitToRefer);
+    },
+  });
   useEffect(() => {
     if (orgId) {
       getOrgUserMembershipRequests({
@@ -38,7 +53,6 @@ const useGetOrgMemberRequests = (orgId) => {
       });
     }
   }, [orgId, getOrgUserMembershipRequests]);
-  const hasMore = data?.getOrgMembershipRequest?.length >= QUERY_LIMIT;
   return { data: data?.getOrgMembershipRequest, fetchMore, hasMore };
 };
 
@@ -48,7 +62,6 @@ const MemberRequests = (props) => {
   const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
-  const [showShowMoreButton, setShowShowMoreButton] = useState(false);
   const refetchQueries = [
     GET_ORG_FROM_USERNAME,
     {
@@ -60,14 +73,6 @@ const MemberRequests = (props) => {
     },
   ];
   const showEmptyState = orgUserMembershipRequests?.length === 0;
-  const initialLoad = useRef(true);
-
-  useEffect(() => {
-    if (initialLoad.current && hasMore) {
-      setShowShowMoreButton(true);
-      initialLoad.current = false;
-    }
-  }, [hasMore]);
 
   const approveRequest = (userId, orgId) => {
     approveJoinOrgRequest({
@@ -96,9 +101,6 @@ const MemberRequests = (props) => {
         offset: orgUserMembershipRequests?.length,
         limit: REFETCH_QUERY_LIMIT,
       },
-    }).then(({ data }) => {
-      const hasMore = data?.getOrgMembershipRequest?.length >= REFETCH_QUERY_LIMIT;
-      setShowShowMoreButton(hasMore);
     });
   };
 
@@ -162,7 +164,7 @@ const MemberRequests = (props) => {
               ))}
             </MemberRequestsList>
 
-            {showShowMoreButton ? (
+            {hasMore ? (
               <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>
             ) : (
               <MemberRequestsListEndMessage>
