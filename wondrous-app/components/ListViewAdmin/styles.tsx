@@ -12,3 +12,13 @@ export const BoldName = styled(Typography)`
     color: ${palette.white};
   }
 `;
+
+export const Description = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 18px;
+    color: ${palette.grey250};
+  }
+`;

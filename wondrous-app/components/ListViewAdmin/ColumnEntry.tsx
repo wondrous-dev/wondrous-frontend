@@ -7,7 +7,7 @@ import Tooltip from 'components/Tooltip';
 import { TASK_STATUS_SUBMISSION_REQUEST, TASK_STATUS_PROPOSAL_REQUEST, MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
 import { NoLogoDAO } from 'components/SideBar/styles';
-import { BoldName } from './styles';
+import { BoldName, Description } from './styles';
 import { RequestDeclineButton, RequestApproveButton } from 'components/organization/members/styles';
 interface Props {
   userProfilePicture: string;
@@ -54,6 +54,7 @@ function ColumnEntry(props: Props) {
 
   const userAvatar = userProfilePicture || creatorProfilePicture;
   const username = userUsername || creatorUsername;
+  const entryMessage = message ? `"${message}"` : title;
   return (
     <ListViewItemBodyWrapper>
       <ListViewItemDataContainer>
@@ -75,6 +76,20 @@ function ColumnEntry(props: Props) {
               </NoLogoDAO>
             )}
           </div>
+        </Tooltip>
+        <Tooltip title={podName}>
+          {podId ? (
+            <div>
+              <PodIcon
+                color={podColor}
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  marginRight: '8px',
+                }}
+              />
+            </div>
+          ) : null}
         </Tooltip>
         <Tooltip title={username}>
           <div>
@@ -101,20 +116,9 @@ function ColumnEntry(props: Props) {
             )}
           </div>
         </Tooltip>
-        {podId ? (
-          <>
-            <PodIcon
-              color={podColor}
-              style={{
-                width: '26px',
-                height: '26px',
-                marginRight: '8px',
-              }}
-            />
-            <BoldName>{podName}</BoldName>
-          </>
-        ) : null}
-        <RichTextViewer text={message || description} />
+        <BoldName>{username}</BoldName>
+
+        <Description>{entryMessage}</Description>
       </ListViewItemDataContainer>
       <ListViewItemActions>
         <RequestDeclineButton>Decline</RequestDeclineButton>

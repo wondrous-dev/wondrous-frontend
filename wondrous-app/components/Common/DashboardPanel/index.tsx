@@ -135,14 +135,6 @@ const DashboardPanel = (props) => {
 
   return (
     <DashboardPanelWrapper>
-      {/* {!inView && (
-        <DashboardPanelSticky
-          activePanelStatusCards={activePanelStatusCards}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          isAdmin={isAdmin}
-        />
-      )} NOTE: hide for now */}
       <DashboardPanelExpanded
         activePanel={activePanel}
         activePanelStatusCards={activePanelStatusCards}

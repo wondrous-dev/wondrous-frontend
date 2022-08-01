@@ -1,7 +1,13 @@
 import Accordion from 'components/Common/ListViewAccordion';
 import ColumnEntry from './ColumnEntry';
-import { ADMIN_COLUMNS_TYPES } from 'utils/constants';
-
+import {
+  ADMIN_COLUMNS_TYPES,
+  TASK_STATUS_SUBMISSION_REQUEST,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  MEMBERSHIP_REQUESTS,
+} from 'utils/constants';
+import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'components/Icons/statusIcons';
+import { useUserBoard } from 'utils/hooks';
 interface ColumnItem {
   type: string;
   items: Array<any>;
@@ -13,20 +19,47 @@ interface Props {
   onLoadMore: () => any;
 }
 
+const ICON_MAP = {
+  [TASK_STATUS_SUBMISSION_REQUEST]: InReviewIcon,
+  [TASK_STATUS_PROPOSAL_REQUEST]: ProposalsRemainingIcon,
+  [MEMBERSHIP_REQUESTS]: MembershipRequestIcon,
+};
+
+const COUNTS_MAP = {
+  [TASK_STATUS_SUBMISSION_REQUEST]: 'submissionRequestCount',
+  [TASK_STATUS_PROPOSAL_REQUEST]: 'proposalRequestCount',
+  [MEMBERSHIP_REQUESTS]: 'membershipRequestCount',
+};
+
 function ListViewAdmin({ columns, onLoadMore }: Props) {
-  console.log(columns);
+  const board = useUserBoard();
+
+  const { adminWorkflowCount } = board;
+
+  const generateCount = (type) => {
+    if (type && adminWorkflowCount) {
+      const countType = COUNTS_MAP[type];
+
+      return type === MEMBERSHIP_REQUESTS
+        ? adminWorkflowCount?.podMembershipRequestCount + adminWorkflowCount?.orgMembershipRequestCount
+        : adminWorkflowCount[countType];
+    }
+    return 0;
+  };
   return (
     <>
       {columns.map((column, colIdx) => {
-        const title = ADMIN_COLUMNS_TYPES[column.type];
-
         if (!column) return null;
+        const title = ADMIN_COLUMNS_TYPES[column.type];
+        const Icon = ICON_MAP[column.type];
+        const count = generateCount(column.type);
         return (
           <Accordion
             isExpanded={column?.items?.length > 0}
             key={colIdx}
             title={title}
-            count={10}
+            count={count}
+            Icon={Icon}
             headerAddons={null}
             displayShowMore={column.hasMore}
             onShowMore={onLoadMore}

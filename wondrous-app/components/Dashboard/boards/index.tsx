@@ -11,6 +11,7 @@ import {
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
+import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from 'graphql/queries/workflowBoards';
 import { useAdminColumns } from 'hooks/useAdminColumns';
 
 import { useRouter } from 'next/router';
@@ -222,6 +223,9 @@ const BoardsPage = (props) => {
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
+  const [getWorkFlowBoardReviewableItemsCountData, { data: adminPanelCount }] = useLazyQuery(
+    GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT
+  );
 
   const { adminColumns, handleAdminColumnsLoadMore } = useAdminColumns({
     isAdmin,
@@ -289,18 +293,15 @@ const BoardsPage = (props) => {
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getJoinOrgRequests, { data: getJoinOrgRequestsData, fetchMore: fetchMoreJoinOrgRequests }] =
-    useLazyQuery(GET_JOIN_ORG_REQUESTS);
-  const [getJoinPodRequests, { data: getJoinPodRequestsData, fetchMore: fetchMoreJoinPodRequests }] =
-    useLazyQuery(GET_JOIN_POD_REQUESTS);
-
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
-    getJoinOrgRequests();
-    getJoinPodRequests();
+    // getWorkFlowBoardReviewableItemsCount()
+    if (isAdmin) {
+      getWorkFlowBoardReviewableItemsCountData();
+    }
   }, [isAdmin]);
 
   useEffect(() => {
@@ -438,7 +439,6 @@ const BoardsPage = (props) => {
   };
   const activeColumns = isAdmin ? adminColumns : contributorColumns;
 
-  console.log(adminColumns);
   return (
     <UserBoardContext.Provider
       value={{
@@ -449,12 +449,11 @@ const BoardsPage = (props) => {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         loggedInUserId: loggedInUser?.id,
-        joinOrgRequests: getJoinOrgRequestsData?.getJoinOrgRequests,
-        joinPodRequests: getJoinPodRequestsData?.getJoinPodRequests,
         setSection,
         fetchPerStatus,
         hasMore: hasMoreTasks,
         onLoadMore: handleLoadMore,
+        adminWorkflowCount: adminPanelCount?.getWorkFlowBoardReviewableItemsCount,
       }}
     >
       <BoardsActivityWrapper>
