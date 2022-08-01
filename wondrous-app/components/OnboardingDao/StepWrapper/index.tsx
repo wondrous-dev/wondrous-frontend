@@ -4,7 +4,7 @@ import { useFormikContext } from 'formik';
 import { mapKeys, some } from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect } from 'react';
-import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, STEP_ACTIONS } from '../constants';
+import { STEP_ACTIONS } from '../constants';
 import {
   BackButton,
   ButtonWrapper,
@@ -109,10 +109,7 @@ function StepWrapper({
   ...props
 }) {
   const router = useRouter();
-  const handleOnClick = () => {
-    router.push('/dashboard');
-    localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
-  };
+  const handleOnClick = () => router.push('/dashboard');
   return (
     <WrapperLoading loading={loading}>
       <FormWrapper>
