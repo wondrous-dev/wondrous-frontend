@@ -185,10 +185,7 @@ export const Task = (props) => {
         const columnToChange = columns.findIndex((column) => column.status === status);
         if (Number.isInteger(columnToChange)) {
           columns[columnToChange].tasks = columns[columnToChange].tasks.filter((task) => task.id !== id);
-          columns[columns.length - 1].tasks = [
-            { ...task, changeRequestedAt: new Date() },
-            ...columns[columns.length - 1].tasks,
-          ];
+          columns[columns.length - 1].tasks = [{ ...task, closedAt: new Date() }, ...columns[columns.length - 1].tasks];
         }
         board?.setColumns(columns);
       },

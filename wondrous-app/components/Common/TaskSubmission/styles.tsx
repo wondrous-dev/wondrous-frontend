@@ -588,6 +588,13 @@ export const SubmissionItemHeaderContent = styled.div`
   gap: 10px;
 `;
 
+export const SubmissionItemUserLink = styled.a`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+`;
+
 export const SubmissionItemCreator = styled(Typography)`
   && {
     font-size: 15px;

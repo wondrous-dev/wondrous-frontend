@@ -23,10 +23,14 @@ export const greyColors = {
   grey70: '#525252',
   grey75: '#4B4B4B',
   grey78: '#474747',
+  grey79: '#424242',
   grey80: '#393939',
   grey85: '#363636',
+  grey87: '#313131',
   grey90: '#262626',
   grey95: '#1f1f1f',
+  grey97: '#2c2c2c',
+  grey99: '#282828',
   grey100: '#161616',
   grey150: '#E3E5E9',
   grey200: '#DADADA',
@@ -38,10 +42,13 @@ export const greyColors = {
   grey600: '#E6E6E6',
   grey700: '#636975',
   grey800: '#2D333A',
+  grey850: '#787878',
+  grey900: '#1D1D1D',
 };
 
 export const redColors = {
   red10: '#FDDFE2',
+  red100: '#f06a6a',
   red200: '#FB7A75',
   red300: '#F93701',
   red400: '#EE4852',
@@ -54,6 +61,7 @@ export const blueColors = {
   blue3: '#0F72E5',
   blue10: '#D8EEFC',
   blue20: '#CCBBFF',
+  blue100: '#00a2ff',
   blue200: '#00B7FF',
   blue300: '#0D122A',
   blue400: '#0D22D7',
@@ -66,8 +74,10 @@ export const blueColors = {
 export const greenColors = {
   green10: '#daefe9',
   green20: '#9F6666',
+  green30: '#06ffa5',
   green200: '#7fff31',
   green300: '#7ecc49',
+  green350: '#00cd83',
   green400: '#6ADAAB',
   green600: '#00bf9c',
   green700: '#219653',
@@ -81,6 +91,7 @@ export const yellowColors = {
 };
 
 export const violetColors = {
+  violet100: '#4f00de',
   violet200: '#FB7A75',
   violet300: '#CCDDFF',
   violet400: '#815DFF',
@@ -121,4 +132,5 @@ export const blackColors = {
   black98: '#121212',
   black99: '#151515',
   black100: '#010114',
+  black101: '#1B1B1B',
 };

@@ -121,7 +121,7 @@ const MemberRequests = (props) => {
           ) : (
             <RequestCountWrapper>
               Requests
-              <RequestCount>{podUserMembershipRequests?.length ?? 0}</RequestCount>
+              {/* <RequestCount>{podUserMembershipRequests?.length ?? 0}</RequestCount> */}
             </RequestCountWrapper>
           )}
         </RequestHeader>

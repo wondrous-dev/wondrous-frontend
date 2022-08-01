@@ -68,7 +68,7 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-
+import BoardLock from 'components/BoardLock';
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
@@ -494,7 +494,9 @@ const Wrapper = (props) => {
                 />
               )}
             </BoardsSubheaderWrapper>
-            {children}
+            <BoardLock handleJoinClick={handleJoinOrgButtonClick} requestSent={joinRequestSent || userJoinRequest?.id}>
+              {children}
+            </BoardLock>
           </Tabs>
         </ContentContainer>
       </Content>

@@ -46,10 +46,12 @@ export const TaskFragment = gql`
       profilePicture
       name
       username
+      privacyLevel
     }
     pod {
       name
       color
+      privacyLevel
     }
     milestone {
       title
@@ -178,7 +180,6 @@ export const TaskProposalCardFragment = gql`
     approvedAt
     closedAt
     lastReviewedBy
-    rejectedAt
     rewards {
       rewardAmount
       paymentMethodId
@@ -248,7 +249,6 @@ export const TaskSubmissionFragment = gql`
       type
     }
     approvedAt
-    changeRequestedAt
     rejectedAt
     lastReviewedBy
     paymentStatus
@@ -298,7 +298,6 @@ export const TaskProposalFragment = gql`
     userMentions
     approvedAt
     closedAt
-    rejectedAt
     lastReviewedBy
     associatedTaskId
     creator {
@@ -320,10 +319,12 @@ export const TaskProposalFragment = gql`
       profilePicture
       name
       username
+      privacyLevel
     }
     pod {
       name
       color
+      privacyLevel
     }
     snapshotId
     votes {

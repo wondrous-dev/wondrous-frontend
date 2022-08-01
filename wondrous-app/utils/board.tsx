@@ -43,8 +43,8 @@ export const getProposalStatus = (proposal) => {
   let proposalStatus = '';
 
   if (proposal?.approvedAt) proposalStatus = STATUS_APPROVED;
-  if (!proposal?.approvedAt && !proposal?.changeRequested) proposalStatus = STATUS_OPEN;
-  if (proposal?.statusClosed) proposalStatus = STATUS_CLOSED;
+  if (!proposal?.approvedAt && !proposal?.closedAt) proposalStatus = STATUS_OPEN;
+  if (proposal?.closedAt) proposalStatus = STATUS_CLOSED;
   return proposalStatus;
 };
 

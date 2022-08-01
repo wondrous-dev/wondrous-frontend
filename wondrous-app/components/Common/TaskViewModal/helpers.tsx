@@ -26,7 +26,11 @@ import {
   TaskSectionInfoPaymentWrapper,
   WalletError,
   WalletErrorText,
+  LockedTask,
+  ActionButton,
 } from './styles';
+import EmptyState from 'components/EmptyStateGeneric';
+
 import ErrorIcon from 'components/Icons/errorIcon.svg';
 import Tooltip from 'components/Tooltip';
 import MoreIcon from 'components/Icons/more';
@@ -246,5 +250,15 @@ export const Menu = ({
         );
       })}
     </TaskHeaderMenu>
+  );
+};
+
+export const LockedTaskMessage = ({ handleClose }) => {
+  return (
+    <LockedTask>
+      <EmptyState content={"Oh! You don't have permission to view this task"}>
+        <ActionButton onClick={handleClose}>Visit board</ActionButton>
+      </EmptyState>
+    </LockedTask>
   );
 };

@@ -12,7 +12,7 @@ import {
 } from './styles';
 
 export const ImageUpload = (props) => {
-  const { image, imageWidth, imageHeight, imageName, updateFilesCb, ...otherProps } = props;
+  const { image, imageWidth, imageHeight, imageName, updateFilesCb, LabelComponent, ...otherProps } = props;
 
   const imageInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
@@ -61,6 +61,20 @@ export const ImageUpload = (props) => {
     setFiles({ file: null });
     updateFilesCb('');
   };
+
+  if (LabelComponent) {
+    return (
+      <ImageUploadBlockInputWrapper>
+        <ImageUploadBlockInputButton
+          id={imageInputId}
+          type="file"
+          ref={imageInputField}
+          onChange={handleNewFileUpload}
+        />
+        <LabelComponent for={imageInputId} />
+      </ImageUploadBlockInputWrapper>
+    );
+  }
 
   return (
     <ImageUploadBlock>

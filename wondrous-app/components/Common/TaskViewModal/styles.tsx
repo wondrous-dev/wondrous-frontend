@@ -14,10 +14,10 @@ import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
-
+import palette from 'theme/palette';
 import { GradientHighlightHorizontal } from '../gradients';
 import TaskMedia from '../TaskMedia';
-
+import { EmptyStateGenericWrapper } from 'components/EmptyStateGeneric/styles';
 export const TaskModal = styled(Modal)`
   height: 100vh;
   display: flex;
@@ -931,5 +931,21 @@ export const InfoPoint = styled(TaskSectionInfoCreatorDaysAgo)`
   && {
     padding-top: 6px;
     display: block;
+  }
+`;
+
+export const LockedTask = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  color: ${palette.white};
+  font-weight: 600;
+  flex-direction: column;
+  gap: 15px;
+  ${EmptyStateGenericWrapper} {
+    width: 100%;
+    height: 100%;
   }
 `;

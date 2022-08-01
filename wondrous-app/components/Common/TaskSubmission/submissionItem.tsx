@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useMutation } from '@apollo/client';
 import { CommentList } from 'components/Comment';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
@@ -40,6 +41,7 @@ import {
   SubmissionItemStatusTextCompleted,
   SubmissionItemStatusWrapper,
   SubmissionItemTimeText,
+  SubmissionItemUserLink,
   SubmissionItemWrapper,
   TaskSubmissionLink,
   TaskSubmissionLinkIcon,
@@ -211,6 +213,15 @@ const SubmissionItemUserImage = ({ creatorProfilePicture }) => {
   return <DefaultUserImage />;
 };
 
+const SubmissionItemUserWrapper = ({ creatorUsername, creatorProfilePicture }) => (
+  <Link href={`/profile/${creatorUsername}/about`} passHref>
+    <SubmissionItemUserLink>
+      <SubmissionItemUserImage creatorProfilePicture={creatorProfilePicture} />
+      <SubmissionItemCreator>{creatorUsername}</SubmissionItemCreator>
+    </SubmissionItemUserLink>
+  </Link>
+);
+
 const SubmissionItemCreatedAt = ({ createdAt }) => {
   if (!createdAt) return null;
   const formattedDistance = formatDistance(new Date(createdAt), new Date(), {
@@ -340,8 +351,10 @@ export const SubmissionItem = ({
       <SubmissionItemWrapper>
         <SubmissionItemHeader>
           <SubmissionItemHeaderContent>
-            <SubmissionItemUserImage creatorProfilePicture={submission?.creatorProfilePicture} />
-            <SubmissionItemCreator>{submission.creatorUsername}</SubmissionItemCreator>
+            <SubmissionItemUserWrapper
+              creatorUsername={submission?.creatorUsername}
+              creatorProfilePicture={submission?.creatorProfilePicture}
+            />
             <SubmissionItemCreatedAt createdAt={submission.createdAt} />
           </SubmissionItemHeaderContent>
           <SubmissionItemStatus submission={submission} />

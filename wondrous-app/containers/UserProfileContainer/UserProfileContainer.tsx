@@ -12,7 +12,7 @@ import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfile
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils/index';
-import { enableContainerOverflow, disableContainerOverflow } from 'utils/helpers';
+import { disableContainerOverflow, enableContainerOverflow } from 'utils/helpers';
 import { useEffect, useState } from 'react';
 
 const UserProfileContainer = ({}) => {
@@ -39,7 +39,6 @@ const UserProfileContainer = ({}) => {
   useEffect(() => {
     const params = location.params;
     if (params.task || params.taskProposal) {
-      disableContainerOverflow();
       setOpenModal(true);
     }
   }, [location]);
