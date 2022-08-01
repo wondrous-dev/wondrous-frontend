@@ -337,15 +337,24 @@ const BoardsPage = (props) => {
     }
   }, [loggedInUser]);
 
-  const handleLoadMore = useCallback(() => {
+  // const handleLoadMore = useCallback(() => {
+  //   if (hasMoreTasks) {
+  //     if (isAdmin) {
+  //       handleAdminColumnsLoadMore();
+  //     } else {
+  //       !isAdmin && getUserTaskBoardTasksFetchMore();
+  //     }
+  //   }
+  // }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, handleAdminColumnsLoadMore, isAdmin]);
+
+  const handleLoadMore = (type = null) => {
     if (hasMoreTasks) {
       if (isAdmin) {
-        handleAdminColumnsLoadMore();
-      } else {
-        !isAdmin && getUserTaskBoardTasksFetchMore();
+        return handleAdminColumnsLoadMore(type);
       }
+      return getUserTaskBoardTasksFetchMore();
     }
-  }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, handleAdminColumnsLoadMore, isAdmin]);
+  };
 
   function handleSearch(searchString: string) {
     const searchTaskProposalsArgs = {

@@ -33,7 +33,6 @@ const Tooltip = ({ title, description, children, placement, style }: Props) => {
     </Typography>
   );
 
-  console.log(tooltipTitle);
   return (
     <MuiTooltip arrow title={tooltipTitle} placement={placement} enterDelay={500}>
       {children}

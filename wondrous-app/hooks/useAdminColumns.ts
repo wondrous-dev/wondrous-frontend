@@ -70,7 +70,7 @@ const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses 
     {
       fetchPolicy: 'cache-and-network',
       onCompleted: ({ getProposalsUserCanReview }) => {
-        setHasMore(getProposalsUserCanReview?.length >= LIMIT);
+        setHasMore(getProposalsUserCanReview?.length <= LIMIT);
       },
     }
   );
@@ -91,12 +91,16 @@ const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses 
     if (statusIncludedOrEmpty({ status: TASK_STATUS_REQUESTED, statuses }) && hasMore) {
       getProposalsUserCanReviewFetchMore({
         variables: {
-          offset: adminColumns?.[0]?.tasks?.length,
+          offset: data?.getProposalsUserCanReview.length,
         },
+        updateQuery: (prev, { fetchMoreResult }) => ({
+          getProposalsUserCanReview: [...prev.getProposalsUserCanReview, ...fetchMoreResult.getProposalsUserCanReview],
+        }),
       });
     }
-  }, [adminColumns, getProposalsUserCanReviewFetchMore, statuses, hasMore]);
+  }, [getProposalsUserCanReviewFetchMore, statuses, hasMore, data]);
 
+  console.log(data?.getProposalsUserCanReview);
   return {
     getProposalsUserCanReviewData: data?.getProposalsUserCanReview,
     getProposalsUserCanReviewFetchMore: handleFetchMore,
@@ -237,16 +241,14 @@ export const useAdminColumns = (args) => {
     isAdmin,
   });
 
-  const handleLoadMore = useCallback(() => {
-    getProposalsUserCanReviewFetchMore();
-    getSubmissionsUserCanReviewFetchMore();
-    getMembershipRequestsFetchMore();
-  }, [getProposalsUserCanReviewFetchMore, getSubmissionsUserCanReviewFetchMore, getMembershipRequestsFetchMore]);
-
+  const handleLoadMore = (type) => {
+    if (type === MEMBERSHIP_REQUESTS) return getMembershipRequestsFetchMore();
+    if (type === TASK_STATUS_PROPOSAL_REQUEST) return getProposalsUserCanReviewFetchMore();
+    if (type === TASK_STATUS_SUBMISSION_REQUEST) return getSubmissionsUserCanReviewFetchMore();
+  };
   useEffect(() => {
     setAdminColumns([
       {
-        // title: 'Membership requests',
         type: MEMBERSHIP_REQUESTS,
         items: memberShipRequests || [],
         hasMore: hasMoreMembershipRequests,

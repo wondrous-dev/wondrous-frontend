@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import Accordion from 'components/Common/ListViewAccordion';
 import ColumnEntry from './ColumnEntry';
 import {
@@ -8,6 +9,10 @@ import {
 } from 'utils/constants';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'components/Icons/statusIcons';
 import { useUserBoard } from 'utils/hooks';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { useLocation } from 'utils/useLocation';
+import { useRouter } from 'next/router';
+import { delQuery, insertUrlParam } from 'utils';
 interface ColumnItem {
   type: string;
   items: Array<any>;
@@ -16,9 +21,10 @@ interface ColumnItem {
 
 interface Props {
   columns: ColumnItem[];
-  onLoadMore: () => any;
+  onLoadMore: (type?: string) => any;
 }
 
+let windowOffset;
 const ICON_MAP = {
   [TASK_STATUS_SUBMISSION_REQUEST]: InReviewIcon,
   [TASK_STATUS_PROPOSAL_REQUEST]: ProposalsRemainingIcon,
@@ -32,9 +38,19 @@ const COUNTS_MAP = {
 };
 
 function ListViewAdmin({ columns, onLoadMore }: Props) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const location = useLocation();
+  const router = useRouter();
   const board = useUserBoard();
 
   const { adminWorkflowCount } = board;
+
+  useEffect(() => {
+    const { params } = location;
+    if (params.task || params.taskProposal) {
+      setIsModalOpen(true);
+    }
+  }, [location]);
 
   const generateCount = (type) => {
     if (type && adminWorkflowCount) {
@@ -46,13 +62,46 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
     }
     return 0;
   };
+
+  const handleClose = () => {
+    const style = document.body.getAttribute('style');
+    const top = style.match(/(?<=top: -)(.*?)(?=px)/);
+    document.body.setAttribute('style', '');
+    if (top?.length > 0) {
+      window?.scrollTo(0, Number(top[0]));
+    }
+    let newUrl = `${delQuery(router.asPath)}?view=admin`;
+    location.push(newUrl);
+    setIsModalOpen(false);
+  };
+  const selectTask = (id, type) => {
+    const isTaskProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
+    const taskType = isTaskProposal ? 'taskProposal' : 'task';
+    insertUrlParam(taskType, id);
+    // setSelectedTask({ id, isTaskProposal });
+    const newUrl = `${delQuery(router.asPath)}?${taskType}=${id}&view?=admin`;
+    location.push(newUrl);
+    windowOffset = window.scrollY;
+    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+  };
+
   return (
     <>
+      <TaskViewModal
+        disableEnforceFocus
+        open={isModalOpen}
+        shouldFocusAfterRender={false}
+        handleClose={handleClose}
+        taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
+        isTaskProposal={!!location?.params?.taskProposal}
+      />
+
       {columns.map((column, colIdx) => {
         if (!column) return null;
         const title = ADMIN_COLUMNS_TYPES[column.type];
         const Icon = ICON_MAP[column.type];
         const count = generateCount(column.type);
+
         return (
           <Accordion
             isExpanded={column?.items?.length > 0}
@@ -62,30 +111,35 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
             Icon={Icon}
             headerAddons={null}
             displayShowMore={column.hasMore}
-            onShowMore={onLoadMore}
+            onShowMore={() => onLoadMore(column.type)}
           >
-            {column?.items.map((item, idx) => (
-              <ColumnEntry
-                key={idx}
-                type={column.type}
-                userProfilePicture={item.userProfilePicture}
-                orgUsername={item.orgUsername}
-                orgProfilePicture={item.orgProfilePicture}
-                podColor={item.podColor}
-                podId={item.podId}
-                podName={item.podName}
-                userId={item.userId}
-                userUsername={item.userUsername}
-                id={item.id}
-                creatorProfilePicture={item.creatorProfilePicture}
-                creatorUsername={item.creatorUsername}
-                description={item.description}
-                message={item.message}
-                title={item.title}
-                commentCount={item.commentCount}
-                taskId={item.taskId}
-              />
-            ))}
+            {column?.items.map((item, idx) => {
+              console.log(item, item.title);
+              return (
+                <ColumnEntry
+                  key={idx}
+                  type={column.type}
+                  userProfilePicture={item.userProfilePicture}
+                  orgUsername={item.orgUsername}
+                  orgProfilePicture={item.orgProfilePicture}
+                  podColor={item.podColor}
+                  podId={item.podId}
+                  podName={item.podName}
+                  userUsername={item.userUsername}
+                  id={item.id}
+                  orgId={item.orgId}
+                  userPermissionsContext={board?.userPermissionsContext}
+                  creatorProfilePicture={item.creatorProfilePicture}
+                  creatorUsername={item.creatorUsername}
+                  message={item.message}
+                  title={item.title}
+                  commentCount={item.commentCount}
+                  taskId={item.taskId}
+                  selectTask={selectTask}
+                  status={item.status}
+                />
+              );
+            })}
           </Accordion>
         );
       })}
