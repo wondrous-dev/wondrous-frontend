@@ -1,7 +1,7 @@
 import { NextRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import apollo from 'services/apollo';
-
+import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -239,3 +239,30 @@ export const useGetOrgFromUsername = (username) => {
 };
 
 export const useCreateEntityContext = () => useContext(CreateEntityContext);
+
+export const useCanViewTask = (task, userPermissionsContext, permissions) => {
+  const [canViewTask, setCanViewTask] = useState(null);
+
+  //if a pod exists we should check it's permissions else fallback to org permissions
+  const hasPermissionToPod = task?.podId
+    ? userPermissionsContext?.podPermissions[task?.podId] || task?.pod?.privacyLevel === PRIVACY_LEVEL.public
+    : true;
+
+  const hasPermissionToViewTask =
+    task?.privacyLevel === PRIVACY_LEVEL.public ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    (userPermissionsContext?.orgPermissions[task?.orgId] && hasPermissionToPod);
+
+  //there is no privacy level on proposal level / milestones so we will refer to org / pod policy
+  const hasPermissionToViewProposalAndMilestones =
+    task?.org?.privacyLevel === PRIVACY_LEVEL.public && hasPermissionToPod;
+  useEffect(() => {
+    if (task) {
+      if (task.type === TASK_TYPE || task.type === BOUNTY_TYPE) return setCanViewTask(hasPermissionToViewTask);
+      if (task.type === MILESTONE_TYPE || task.isProposal)
+        return setCanViewTask(hasPermissionToViewProposalAndMilestones);
+      return setCanViewTask(true);
+    }
+  }, [task]);
+  return { canViewTask };
+};

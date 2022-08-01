@@ -27,6 +27,9 @@ import {
   HeaderMainBlock,
   HeaderText,
   HeaderTitle,
+  RoleButtonWrapper,
+  RoleText,
+  RoleButton,
   OverviewComponent,
   TokenHeader,
   HeaderImage,
@@ -313,7 +316,12 @@ const Wrapper = (props) => {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
-                  {permissions && podRole && <HeaderButton>your role: {podRole}</HeaderButton>}
+                  {permissions && podRole && (
+                    <RoleButtonWrapper>
+                      <RoleText>Your Role:</RoleText>
+                      <RoleButton>🔑 {podRole}</RoleButton>
+                    </RoleButtonWrapper>
+                  )}
 
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard
