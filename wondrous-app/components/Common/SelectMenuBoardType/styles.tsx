@@ -2,6 +2,7 @@ import { MenuItem, Popper } from '@mui/material';
 import { ClickAwayListener, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import styled from 'styled-components';
+import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import { Chevron } from '../../Icons/sections';
 
@@ -65,8 +66,9 @@ export const SelectMenuBoardTypeItem = styled(MenuItem)`
     color: ${palette.white};
     font-size: 14px;
     background: none;
-    border-radius: 3px;
+    border-radius: 2px;
     padding: 6px;
+    background-color: ${(props) => (props.picked ? `${greyColors.grey90}` : 'black')};
     :hover {
       background-color: #474747;
     }

@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
+import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 
 export const Flex = styled.div`

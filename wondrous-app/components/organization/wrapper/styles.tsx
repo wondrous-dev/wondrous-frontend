@@ -1,5 +1,5 @@
 import { SafeImage } from 'components/Common/Image';
-import { Button, IconButton, Typography, Box } from '@mui/material';
+import { Button, IconButton, Typography, Box, Dialog, TextareaAutosize, MenuItem } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
@@ -9,6 +9,10 @@ import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
 import { Button as ButtonComponent } from 'components/Common/button';
+import { greyColors } from 'theme/colors';
+import CloseModalIcon from 'components/Icons/closeModal';
+import CheckMarkIcon from 'components/Icons/checkMark';
+import CloseModalIconRed from 'components/Icons/closeModalRed';
 
 export const OverviewComponent = styled.section`
   width: 100%;
@@ -18,6 +22,219 @@ export const OverviewComponent = styled.section`
   background-color: #0f0f0f;
   transition: 0.15s all ease;
   padding-bottom: 40px;
+`;
+
+export const RequestModalContainer = styled(Dialog)`
+  display: inline-block;
+  flex-direction: column;
+  border-radius: 6px;
+  background-color: rgba(0, 0, 0, 0);
+`;
+
+export const RequestModalTitleBar = styled.div`
+  flex-direction: row;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px dashed #4b4b4b;
+  ${(props) => props.style}
+`;
+
+export const RequestModalRolesAbilityContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-start;
+  flex: 1;
+  margin-bottom: 18px;
+  margin-top: 18px;
+  padding-bottom: 6px;
+  border-bottom: 0.5px dashed #4b4b4b;
+`;
+
+export const RequestModalCustomPopper = styled.div`
+  position: absolute;
+  background-color: black;
+  border-bottom: 0.5px #4b4b4b;
+  width: 80%;
+  border-radius: 6px;
+  margin-top: 6px;
+  margin-right: 24px;
+`;
+
+export const RequestModalTextareaWrapper = styled.div`
+  margin-top: 42px;
+  color: #c4c4c4;
+  background: #0f0f0f;
+  border-radius: 6px;
+  padding: 15px 18px;
+`;
+
+export const RequestModalRolesSubtitle = styled(Typography)`
+  && {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Space Grotesk';
+    color: #ccbbff;
+    margin-bottom: 12px;
+  }
+`;
+
+export const RequestModalTypeText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    font-style: normal;
+    font-weight: 400;
+    padding: 4px 12px 4px 12px;
+    color: white;
+    opacity: ${({ open }) => open && `40%`};
+    outline: 1px solid ${(props) => props.color};
+    border-radius: 56px;
+  }
+`;
+
+export const RequestModalTypeItem = styled(MenuItem)`
+  && {
+    color: ${palette.white};
+    font-size: 14px;
+    background: none;
+    border-radius: 3px;
+    padding: 6px;
+    :hover {
+      background-color: #7a7a7a;
+    }
+  }
+  &&.Mui-selected {
+    background: none;
+    :hover {
+      background-color: #474747;
+    }
+  }
+`;
+
+export const RequestModalTextarea = styled(TextareaAutosize)`
+  color: #c4c4c4;
+  border-radius: 6px;
+  background: #0f0f0f;
+  width: 100%;
+  font-family: 'Space Grotesk';
+  font-size: 14px;
+  font-weight: 400;
+  border: none;
+  resize: none;
+
+  &:focus {
+    outline: none;
+  }
+`;
+
+export const RequestModalRolesAbilityColumns = styled.div`
+  display: inline-block;
+  flex-direction: column;
+  flex: 1;
+  justify-content: flex-start;
+`;
+
+export const RequestModalRolesAbilityRows = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: flex-start;
+  margin-bottom: 12px;
+`;
+
+export const RequestModalRolesAbilityCheckIcon = styled(CheckMarkIcon)`
+  width: 24px;
+  height: 24px;
+  padding: 2px;
+  background-color: #474747;
+  border-radius: 4px;
+  margin-right: 16px;
+`;
+
+export const RequestModalRolesAbilityCloseIcon = styled(CloseModalIconRed)`
+  width: 24px;
+  height: 24px;
+  background-color: #474747;
+  border-radius: 4px;
+  margin-right: 16px;
+`;
+
+export const RequestModalRolesAbilityText = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 700;
+    color: ${palette.white};
+    white-space: nowrap;
+  }
+`;
+
+export const RequestModalButtonsContainer = styled.div`
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: flex-end;
+  align-items: center;
+  background: #141414;
+  padding: 24px;
+`;
+
+export const RequestModalTitle = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 24px;
+    font-weight: 700;
+    color: ${palette.white};
+    white-space: nowrap;
+  }
+`;
+
+export const RequestModalCloseIcon = styled(CloseModalIcon)`
+  transform: rotate(90deg);
+  background: rgba(0, 0, 0, 1);
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: 6px;
+  path {
+    fill: ${greyColors.grey57};
+  }
+  :hover {
+    background: rgba(122, 122, 122, 0.2);
+  }
+`;
+
+export const RequestModalBox = styled(Box)`
+  width: 488px;
+  height: 224px;
+  //for consistency on modals
+  background-color: #1d1d1d;
+  padding: 24px;
+`;
+
+export const RequestModalLevelContainer = styled.div`
+  && {
+    background-color: rgba(0, 0, 0, 1);
+
+    height: 40px;
+    border-radius: 3px;
+    min-width: 120px;
+    outline: 1px solid ${palette.grey80};
+    border-radius: 3px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px;
+    cursor: pointer;
+    & > svg {
+      ${({ open }) => open && `transform: rotate(180deg)`}
+    }
+  }
 `;
 
 export const HeaderImageWrapper = styled.div`

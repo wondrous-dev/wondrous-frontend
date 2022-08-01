@@ -280,6 +280,7 @@ const Wrapper = (props) => {
         onClose={() => setOpenJoinRequestModal(false)}
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
+        orgRole={orgRoleName}
       />
       <ChooseEntityToCreate />
       <TokenGatedAndClaimableRoleModal
@@ -362,7 +363,13 @@ const Wrapper = (props) => {
                 {permissions && orgRoleName && (
                   <RoleButtonWrapper>
                     <RoleText>Your Role:</RoleText>
-                    <RoleButton onClick={handleJoinOrgButtonClick}>🔑 {orgRoleName}</RoleButton>
+                    <RoleButton
+                      onClick={() => {
+                        setOpenJoinRequestModal(true);
+                      }}
+                    >
+                      🔑 {orgRoleName}
+                    </RoleButton>
                   </RoleButtonWrapper>
                 )}
                 {/* </Tooltip> */}
