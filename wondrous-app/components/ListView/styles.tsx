@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import Typography from '@mui/material/Typography';
-import palette from 'theme/palette';
 import { RequestApproveButton } from 'components/organization/members/styles';
 
 export const IconWrapper = styled.div`

@@ -47,6 +47,7 @@ export default function SidebarLayout({ children }) {
           value={{
             isCreateEntityModalOpen: createFormModal,
             toggleCreateFormModal: toggleCreateFormModal,
+            userOrgs: userOrgs,
           }}
         >
           <HeaderComponent />

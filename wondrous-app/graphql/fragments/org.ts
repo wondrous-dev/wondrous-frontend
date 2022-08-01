@@ -22,10 +22,9 @@ export const OrgFragment = gql`
     thumbnailPicture
     createdBy
     createdAt
-    tags
     contributorCount
     podCount
-    tasksCompletedCount
+    category
     links {
       url
       displayName

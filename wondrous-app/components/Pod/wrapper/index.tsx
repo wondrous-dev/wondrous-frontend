@@ -27,6 +27,9 @@ import {
   HeaderMainBlock,
   HeaderText,
   HeaderTitle,
+  RoleButtonWrapper,
+  RoleText,
+  RoleButton,
   OverviewComponent,
   TokenHeader,
   HeaderImage,
@@ -56,6 +59,7 @@ import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import BoardLock from 'components/BoardLock';
 import DefaultBg from '../../../public/images/overview/background.png';
 
 const Wrapper = (props) => {
@@ -312,7 +316,12 @@ const Wrapper = (props) => {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
-                  {permissions && podRole && <HeaderButton>your role: {podRole}</HeaderButton>}
+                  {permissions && podRole && (
+                    <RoleButtonWrapper>
+                      <RoleText>Your Role:</RoleText>
+                      <RoleButton>🔑 {podRole}</RoleButton>
+                    </RoleButtonWrapper>
+                  )}
 
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard
@@ -401,7 +410,12 @@ const Wrapper = (props) => {
                   />
                 )}
               </BoardsSubheaderWrapper>
-              {children}
+              <BoardLock
+                handleJoinClick={handleJoinPodButtonClick}
+                requestSent={joinRequestSent || userJoinRequest?.id}
+              >
+                {children}
+              </BoardLock>
             </Tabs>
           </ContentContainer>
         </Content>

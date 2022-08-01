@@ -140,6 +140,7 @@ export const DISCORD_CONNECT_TYPES = {
   login: 'login',
   connectSettings: 'connectSettings',
   connectOnboarding: 'connectOnboarding',
+  connectOnboardingDao: 'connectOnboardingDao',
 };
 
 export const NOTION_CONNECT_TYPES = {
@@ -534,12 +535,12 @@ export const ProposalVoteType = {
 
 export const PROPOSAL_VOTE_LABELS = {
   [ProposalVoteType.APPROVE]: {
-    VOTED: 'Approved',
-    ACTION: 'Approve',
+    VOTED: 'Voted For',
+    ACTION: 'Vote Against',
   },
   [ProposalVoteType.REJECT]: {
-    VOTED: 'Rejected',
-    ACTION: 'Reject',
+    VOTED: 'Voted Against',
+    ACTION: 'Vote For',
   },
 };
 
@@ -564,6 +565,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/twitter/verify-tweet',
   '/forgot-password',
   '/reset-password',
+  '/onboarding-dao',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
@@ -573,3 +575,21 @@ export const ADMIN_COLUMNS_TYPES = {
   [TASK_STATUS_PROPOSAL_REQUEST]: 'Proposals to review',
   [MEMBERSHIP_REQUESTS]: 'Membership requests',
 };
+export const GLOBAL_SEARCH_TYPES = {
+  ORGS: 'orgs',
+  PODS: 'pods',
+  USERS: 'users',
+};
+
+export const DAO_CATEGORIES = {
+  social_good: '🌎 Social good',
+  media_content: '🎬 Media & content',
+  nft_collective: '🐒 NFT collective',
+  investments: '‍‍💰️ Investments',
+  defi: '‍💸 Defi',
+  social: '🤝 Social',
+  service_dao: '🔨 Service DAO',
+  think_tank: '‍🤔 Think tank',
+  fun_memeable: '💀 Fun and memeable',
+  building_products: '‍🏗️ Building products',
+} as const;

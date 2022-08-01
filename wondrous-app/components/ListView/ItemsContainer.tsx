@@ -16,6 +16,8 @@ import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import Accordion from 'components/Common/ListViewAccordion';
+import EmptyStateBoards from 'components/EmptyStateBoards';
+
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
   [TASK_STATUS_IN_PROGRESS]: InProgress,
@@ -79,25 +81,29 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         onShowMore={() => handleShowAll(status, taskCount)}
         showMoreTitle="Show all"
       >
-        {tasks.map((task, idx) => {
-          return (
-            <Draggable key={task.id} draggableId={task.id} index={idx}>
-              {(provided, snapshot) => (
-                <div
-                  style={{
-                    width: '100%',
-                  }}
-                  {...provided.draggableProps}
-                  {...provided.dragHandleProps}
-                  ref={provided.innerRef}
-                  isDragging={snapshot.isDragging}
-                >
-                  <Item entityType={entityType} task={task} />
-                </div>
-              )}
-            </Draggable>
-          );
-        })}
+        {tasks?.length ? (
+          tasks.map((task, idx) => {
+            return (
+              <Draggable key={task.id} draggableId={task.id} index={idx}>
+                {(provided, snapshot) => (
+                  <div
+                    style={{
+                      width: '100%',
+                    }}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    isDragging={snapshot.isDragging}
+                  >
+                    <Item entityType={entityType} task={task} />
+                  </div>
+                )}
+              </Draggable>
+            );
+          })
+        ) : (
+          <EmptyStateBoards hidePlaceholder status={status} />
+        )}
       </Accordion>
     </>
   );

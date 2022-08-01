@@ -69,6 +69,7 @@ const useGetOrgTaskBoardTasks = ({
       setIsLoading(false);
     },
     onError: (error) => {
+      setIsLoading(false);
       console.log(error);
     },
   });
@@ -165,6 +166,7 @@ const useGetTaskRelatedToUser = ({
     },
     onError: (error) => {
       console.log(error);
+      setIsLoading(false);
     },
   });
 
@@ -243,6 +245,7 @@ const useGetOrgTaskBoardProposals = ({
     },
     onError: (error) => {
       console.log(error, 'err=');
+      setIsLoading(false);
     },
   });
 

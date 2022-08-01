@@ -17,8 +17,8 @@ export const VoteButtonLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 600;
-    font-size: 15px;
-    line-height: 150%;
+    font-size: 12px;
+    line-height: 100%;
     color: ${palette.white};
     ${({ isVoted, color }) =>
       isVoted &&

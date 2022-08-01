@@ -1,10 +1,9 @@
-import { Typography } from '@mui/material';
+import { Typography, Tab, Tabs } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { MODAL_TABS_MAP } from 'utils/constants';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { Tab, Tabs } from '@mui/material';
-import { MODAL_TABS_MAP } from 'utils/constants';
 
 export const ActivityIndicatorContainer = styled.div`
   width: 100%;
@@ -94,13 +93,11 @@ export const Tab2 = styled.div`
     margin-right: 0;
   }
 `;
-export const UserProfilePicture = (props) => {
-  return <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false}/>;
-};
+export const UserProfilePicture = (props) => (
+  <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false} />
+);
 
-export const DefaultProfilePicture = (props) => {
-  return <DefaultUserImage style={ProfilePictureStyles} />;
-};
+export const DefaultProfilePicture = (props) => <DefaultUserImage style={ProfilePictureStyles} />;
 export const TitleSection = styled.div`
   display: flex;
   justify-content: space-between;
@@ -193,9 +190,9 @@ export const StyledTabs = styled(Tabs)`
   .MuiTab-textColorInherit {
     color: unset;
   }
-  .css-5kfebo-MuiButtonBase-root-MuiTab-root {
-    padding: 0 5px !important;
-    min-height: unset !important;
+  .MuiButtonBase-root {
+    padding: 0 5px;
+    min-height: unset;
   }
 
   .MuiTabs-indicator {

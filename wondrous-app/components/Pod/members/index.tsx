@@ -121,7 +121,7 @@ const MemberRequests = (props) => {
           ) : (
             <RequestCountWrapper>
               Requests
-              <RequestCount>{podUserMembershipRequests?.length ?? 0}</RequestCount>
+              {/* <RequestCount>{podUserMembershipRequests?.length ?? 0}</RequestCount> */}
             </RequestCountWrapper>
           )}
         </RequestHeader>
@@ -137,6 +137,8 @@ const MemberRequests = (props) => {
                 <MemberRequestCard key={request.id}>
                   {request.userProfilePicture ? (
                     <SafeImage
+                      width={28}
+                      height={28}
                       style={{ width: '28px', height: '28px', borderRadius: '50%' }}
                       src={request.userProfilePicture}
                       useNextImage
