@@ -1,19 +1,18 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import { AddImages, CreateDao, DaoCategory, Review, StepWrapper } from 'components/OnboardingDao';
+import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper } from 'components/OnboardingDao';
 import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, STEP_ACTIONS } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
-import { CREATE_ORG } from 'graphql/mutations/org';
+import { CREATE_ORG } from 'graphql/mutations';
 import { IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useReducer, useState } from 'react';
 import * as Yup from 'yup';
 
-const fieldSet = [
+export const FIELD_SETS = [
   {
     title: 'Create DAO',
     subtitle: 'Use the power of web3 to launch and scale your project.',
-    step: 1,
     Component: CreateDao,
     hideLater: true,
     fields: {
@@ -35,7 +34,6 @@ const fieldSet = [
   {
     title: 'Add images',
     subtitle: 'Add your dOrgs logo and header to personalize your boards.',
-    step: 2,
     Component: AddImages,
     fields: {
       headerPicture: { name: 'headerPicture', label: 'Header Picture' },
@@ -45,7 +43,6 @@ const fieldSet = [
   {
     title: 'DAO category',
     subtitle: 'How would you categorize what your DAO does?',
-    step: 3,
     Component: DaoCategory,
     hideLater: true,
     fields: {
@@ -56,19 +53,16 @@ const fieldSet = [
   // {
   //   title: 'Import tasks',
   //   subtitle: 'Set up your workflow so members can begin contributing.',
-  //   step: 4,
   //   Component: ImportTasks,
   // },
-  // {
-  //   title: 'Invite your community',
-  //   subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
-  //   step: 4,
-  //   Component: InviteCommunity,
-  // },
+  {
+    title: 'Invite your community',
+    subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
+    Component: InviteCommunity,
+  },
   {
     title: 'Review',
     subtitle: `Review your DAO details and then let's launch!`,
-    step: 4,
     Component: Review,
     hoverContinue: true,
     fields: {
@@ -83,6 +77,8 @@ const fieldSet = [
     },
   },
 ] as const;
+
+const fieldSetsLength = FIELD_SETS.length;
 
 const handleStep = (step, { action, hasError = false }) => {
   if (hasError) return step;
@@ -125,11 +121,9 @@ const useIsOrgUsernameTaken = () => {
   return handleIsOrgUsernameTaken;
 };
 
-// https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
-const usernameRegex = /^(?=[a-z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
-
 const useSchema = () => {
   const handleIsOrgUsernameTaken = useIsOrgUsernameTaken();
+  const usernameRegex = /^(?=[a-z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/; // https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
   const schema = Yup.object().shape({
     name: Yup.string().required('DA0 name is required'),
     username: Yup.string()
@@ -155,15 +149,13 @@ const useInitialValues = () => {
 };
 
 const OnboardingCreateDao = () => {
-  const { initialValues, restoreStep } = useInitialValues();
-  const [step, setStep] = useReducer(handleStep, restoreStep);
-  const currentFieldSet = fieldSet.find((field) => field.step === step);
+  const [step, setStep] = useReducer(handleStep, 0);
+  const currentFieldSet = FIELD_SETS[step];
   const { handleCreateOrg, loading } = useCreateOrg();
   return (
     <Formik
       initialValues={{
         category: 'social_good',
-        ...initialValues,
       }}
       onSubmit={handleCreateOrg}
       validationSchema={useSchema()}
@@ -175,6 +167,8 @@ const OnboardingCreateDao = () => {
           {...currentFieldSet}
           handleStep={({ action, hasError = false }) => setStep({ action, hasError })}
           loading={loading}
+          step={step + 1}
+          fieldSetsLength={fieldSetsLength}
         />
       </Form>
     </Formik>
