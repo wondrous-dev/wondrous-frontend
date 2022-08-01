@@ -245,7 +245,9 @@ export const useCanViewTask = (task, userPermissionsContext, permissions) => {
 
   //if a pod exists we should check it's permissions else fallback to org permissions
   const hasPermissionToPod = task?.podId
-    ? userPermissionsContext?.podPermissions[task?.podId] || task?.pod?.privacyLevel === PRIVACY_LEVEL.public
+    ? userPermissionsContext?.podPermissions[task?.podId] ||
+      permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+      task?.pod?.privacyLevel === PRIVACY_LEVEL.public
     : true;
 
   const hasPermissionToViewTask =
