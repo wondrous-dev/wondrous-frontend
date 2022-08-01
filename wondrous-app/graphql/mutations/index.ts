@@ -9,3 +9,4 @@ export * from './payment';
 export * from './notification';
 export * from './integration';
 export * from './taskApplication';
+export * from './org';
