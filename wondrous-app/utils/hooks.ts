@@ -258,7 +258,11 @@ export const useCanViewTask = (task, userPermissionsContext, permissions) => {
   //there is no privacy level on proposal level / milestones so we will refer to org / pod policy
   const hasPermissionToViewProposalAndMilestones =
     (task?.org?.privacyLevel === PRIVACY_LEVEL.public && hasPermissionToPod) ||
+    (task?.org?.privacyLevel === PRIVACY_LEVEL.private &&
+      userPermissionsContext?.orgPermissions[task.orgId] &&
+      hasPermissionToPod) ||
     permissions?.includes(PERMISSIONS.FULL_ACCESS);
+
   useEffect(() => {
     if (task) {
       if (task.type === TASK_TYPE || task.type === BOUNTY_TYPE) return setCanViewTask(hasPermissionToViewTask);
