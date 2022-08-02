@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { RequestApproveButton } from 'components/organization/members/styles';
+import Typography from '@mui/material/Typography';
 
 export const IconWrapper = styled.div`
   display: flex;
@@ -22,7 +23,8 @@ export const ListViewItemBodyWrapper = styled.div`
 
 export const ListViewItemDataContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
+  flex: 1;
   align-items: center;
   gap: 16px;
   font-family: 'Space Grotesk';

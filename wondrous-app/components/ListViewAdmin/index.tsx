@@ -13,6 +13,7 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import { useLocation } from 'utils/useLocation';
 import { useRouter } from 'next/router';
 import { delQuery, insertUrlParam } from 'utils';
+import { useMe } from 'components/Auth/withAuth';
 interface ColumnItem {
   type: string;
   items: Array<any>;
@@ -42,6 +43,7 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
   const location = useLocation();
   const router = useRouter();
   const board = useUserBoard();
+  const user = useMe();
 
   const { adminWorkflowCount } = board;
 
@@ -75,16 +77,19 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
     setIsModalOpen(false);
   };
   const selectTask = (id, type) => {
-    const isTaskProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
-    const taskType = isTaskProposal ? 'taskProposal' : 'task';
-    insertUrlParam(taskType, id);
-    // setSelectedTask({ id, isTaskProposal });
-    const newUrl = `${delQuery(router.asPath)}?${taskType}=${id}&view?=admin`;
-    location.push(newUrl);
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    if (type !== MEMBERSHIP_REQUESTS) {
+      const isTaskProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
+      const taskType = isTaskProposal ? 'taskProposal' : 'task';
+      insertUrlParam(taskType, id);
+      // setSelectedTask({ id, isTaskProposal });
+      const newUrl = `${delQuery(router.asPath)}?${taskType}=${id}&view?=admin`;
+      location.push(newUrl);
+      windowOffset = window.scrollY;
+      document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    }
   };
 
+  console.log(columns);
   return (
     <>
       <TaskViewModal
@@ -95,9 +100,8 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
         taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
         isTaskProposal={!!location?.params?.taskProposal}
       />
-
       {columns.map((column, colIdx) => {
-        if (!column) return null;
+        if (!column || !user) return null;
         const title = ADMIN_COLUMNS_TYPES[column.type];
         const Icon = ICON_MAP[column.type];
         const count = generateCount(column.type);
@@ -114,10 +118,9 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
             onShowMore={() => onLoadMore(column.type)}
           >
             {column?.items.map((item, idx) => {
-              console.log(item, item.title);
               return (
                 <ColumnEntry
-                  key={idx}
+                  key={idx + item.id}
                   type={column.type}
                   userProfilePicture={item.userProfilePicture}
                   orgUsername={item.orgUsername}
@@ -137,6 +140,7 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
                   taskId={item.taskId}
                   selectTask={selectTask}
                   status={item.status}
+                  userId={item?.userId}
                 />
               );
             })}
