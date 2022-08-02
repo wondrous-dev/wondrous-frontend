@@ -149,7 +149,7 @@ export const RequestApproveButton = styled(RequestActionButton)`
   }
 `;
 
-export const ShowAllButton = styled(RequestActionButton)`
+export const ShowMoreButton = styled(RequestActionButton)`
   && {
     line-height: 15px;
     letter-spacing: 0.01em;
