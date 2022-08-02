@@ -12,13 +12,18 @@ import { UserProfileContainerWrapper, UserProfileHeaderImageWrapper, UserProfile
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils/index';
-import { disableContainerOverflow, enableContainerOverflow } from 'utils/helpers';
+import { enableContainerOverflow } from 'utils/helpers';
 import { useEffect, useState } from 'react';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { useQuery } from '@apollo/client';
 
 const UserProfileContainer = ({}) => {
   const router = useRouter();
   const { username, id: routerId } = router.query;
   const userProfileData = useGetUserProfile(routerId, username);
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
@@ -44,7 +49,13 @@ const UserProfileContainer = ({}) => {
   }, [location]);
 
   return (
-    <UserProfileContext.Provider value={{}}>
+    <UserProfileContext.Provider
+      value={{
+        userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+          ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+          : null,
+      }}
+    >
       <TaskViewModal
         disableEnforceFocus
         open={openModal}
