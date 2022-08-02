@@ -1245,9 +1245,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         orgId: board?.orgId,
         podId: board?.podId,
       }) ||
-        entityType === ENTITIES_TYPES.PROPOSAL),
+        entityType === ENTITIES_TYPES.PROPOSAL) &&
+      board?.orgId,
     () => form.setFieldValue('orgId', board?.orgId)
   );
+
   useContextValue(
     !form.values.podId &&
       (board?.podId || routerPodId) &&
