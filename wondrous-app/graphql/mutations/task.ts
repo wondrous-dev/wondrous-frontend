@@ -1,7 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
 import { MediaFragment } from 'graphql/fragments/media';
-import { BountyFragment, MilestoneFragment, TaskFragment, TaskTemplateFragment } from 'graphql/fragments/task';
+import { BountyFragment, MilestoneFragment, TaskFragment, TaskTemplateInputFragment } from 'graphql/fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -15,19 +15,19 @@ export const CREATE_TASK = gql`
 export const CREATE_TASK_TEMPLATE = gql`
   mutation createTaskTemplate($input: TaskTemplateInput) {
     createTaskTemplate(input: $input) {
-      ...TaskTemplateFragment
+      ...TaskTemplateInputFragment
     }
   }
-  ${TaskTemplateFragment}
+  ${TaskTemplateInputFragment}
 `;
 
 export const UPDATE_TASK_TEMPLATE = gql`
   mutation updateTaskTemplate($taskTemplateId: ID!, $input: TaskTemplateInput) {
     updateTaskTemplate(taskTemplateId: $taskTemplateId, input: $input) {
-      ...TaskTemplateFragment
+      ...TaskTemplateInputFragment
     }
   }
-  ${TaskTemplateFragment}
+  ${TaskTemplateInputFragment}
 `;
 
 export const DELETE_TASK_TEMPLATE = gql`

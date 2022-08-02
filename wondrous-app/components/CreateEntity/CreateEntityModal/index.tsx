@@ -1331,19 +1331,22 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         ];
 
     const description = JSON.stringify(form.values.description);
+
+    const input = {
+      title: form.values.title,
+      orgId: form.values.orgId,
+      podId: form.values.podId,
+      assigneeId: form.values.assigneeId,
+      reviewerIds: form.values.reviewerIds,
+      rewards: rewards,
+      points: parseInt(form.values.points),
+      name: template_name,
+      description: description,
+    };
+
     createTaskTemplate({
       variables: {
-        input: {
-          title: form.values.title,
-          assigneeId: form.values.assigneeId,
-          reviewerIds: form.values.reviewerIds,
-          rewards: rewards,
-          points: parseInt(form.values.points),
-          name: template_name,
-          description: description,
-          orgId: form.values.orgId,
-          podId: form.values.podId,
-        },
+        input,
       },
     }).catch((err) => {
       console.log(err);

@@ -443,21 +443,14 @@ export const MilestoneFragment = gql`
 export const TaskTemplateFragment = gql`
   fragment TaskTemplateFragment on TaskTemplate {
     id
-    title
-    createdAt
-    createdBy
     name
+    title
+    type
     orgId
     podId
-    description
-    assignee {
-      username
-      profilePicture
-    }
-    creator {
-      username
-      profilePicture
-    }
+    createdAt
+    createdBy
+    assigneeId
     rewards {
       rewardAmount
       paymentMethodId
@@ -466,6 +459,32 @@ export const TaskTemplateFragment = gql`
       tokenName
       chain
     }
+    assignee {
+      username
+      profilePicture
+    }
+    creator {
+      username
+      profilePicture
+    }
     points
+    description
+  }
+`;
+
+export const TaskTemplateInputFragment = gql`
+  fragment TaskTemplateInputFragment on TaskTemplate {
+    title
+    orgId
+    podId
+    assigneeId
+    reviewerIds
+    rewards {
+      rewardAmount
+      paymentMethodId
+    }
+    points
+    name
+    description
   }
 `;
