@@ -27,14 +27,6 @@ const Dashboard = () => {
           setSelectMembershipRequests,
         }}
       >
-        <DashboardPanelWrapper>
-          <DashboardPanel
-            isAdmin={isAdmin}
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-            setSelectMembershipRequests={setSelectMembershipRequests}
-          />
-        </DashboardPanelWrapper>
         <BoardsWrapper>
           <Boards
             isAdmin={isAdmin}

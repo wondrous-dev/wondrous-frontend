@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-
+import Typography from '@mui/material/Typography';
 export const OverviewComponent = styled.section`
   width: 100%;
   min-height: 100vh;
@@ -24,6 +24,20 @@ export const ContentContainer = styled.div`
 
 export const Banner = styled.div`
   width: 100%;
-  height: 230px;
+  height: 149px;
+  background: url('images/contrib.png');
   position: relative;
+  margin-top: 70px;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+export const DashboardHeader = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-weight: 700;
+    font-size: 40px;
+  }
 `;

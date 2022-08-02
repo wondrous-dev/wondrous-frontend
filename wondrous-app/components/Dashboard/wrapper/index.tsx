@@ -1,6 +1,5 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { Banner, Content, ContentContainer, OverviewComponent } from './styles';
+import React from 'react';
+import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader } from './styles';
 import ChooseEntityToCreate from 'components/CreateEntity';
 
 const Wrapper = (props) => {
@@ -11,7 +10,7 @@ const Wrapper = (props) => {
       <OverviewComponent>
         <ChooseEntityToCreate />
         <Banner>
-          <Image alt="Dashboard" src="/images/dashboard-banner.png" layout="fill" objectFit="cover" quality={80} />
+          <DashboardHeader>My contributor workspace</DashboardHeader>
         </Banner>
         <Content>
           <ContentContainer>{children}</ContentContainer>

@@ -70,15 +70,15 @@ const statusCardsBase = [
     dataKey: MEMBERSHIP_REQUEST_COUNT,
   },
   // NOTE: Per Terry's instruction, payments will be hidden for now from the Admin View
-  {
-    Icon: AwaitingPayment,
-    label: 'tasks awaiting payment',
-    color: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)',
-    panelPosition: 4,
-    panel: panels.admin,
-    dataKey: 'paymentRequestCount',
-    status: TASK_STATUS_AWAITING_PAYMENT,
-  },
+  // {
+  //   Icon: AwaitingPayment,
+  //   label: 'tasks awaiting payment',
+  //   color: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%)',
+  //   panelPosition: 4,
+  //   panel: panels.admin,
+  //   dataKey: 'paymentRequestCount',
+  //   status: TASK_STATUS_AWAITING_PAYMENT,
+  // },
 ];
 
 const updateStatusCards = (data, statusData, panel) => {
