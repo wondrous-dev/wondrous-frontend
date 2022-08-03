@@ -104,7 +104,7 @@ const useGetUserTaskBoardTasks = ({
   useEffect(() => {
     if (!isAdmin && loggedInUser?.id) {
       const taskBoardStatuses =
-        filters?.statuses.length > 0
+        filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
           : TASKS_DEFAULT_STATUSES;
       const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
@@ -284,7 +284,7 @@ const BoardsPage = (props) => {
         }
       });
 
-      if (filters?.statuses.length) {
+      if (filters?.statuses?.length) {
         newColumns.forEach((column) => {
           if (!filters?.statuses.includes(column.section.filter.taskType)) {
             column.section.tasks = [];

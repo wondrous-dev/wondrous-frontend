@@ -5,36 +5,39 @@ import { LIMIT } from 'services/board';
 import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST, MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
 
-const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses }) => {
+const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, filters }) => {
   const [hasMore, setHasMore] = useState(true);
-  const [getProposalsUserCanReview, { data, fetchMore: getProposalsUserCanReviewFetchMore, previousData }] =
+  const [getProposalsUserCanReview, { data, fetchMore: getProposalsUserCanReviewFetchMore }] =
     useLazyQuery(GET_PROPOSALS_USER_CAN_REVIEW);
 
   useEffect(() => {
     if (isAdmin) {
       getProposalsUserCanReview({
         variables: {
-          podIds,
           limit: LIMIT,
           offset: 0,
+          orgId: filters?.orgId,
+          podIds: filters?.podIds,
         },
       }).then(({ data }) => {
         setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getProposalsUserCanReview, isAdmin, podIds, statuses]);
+  }, [getProposalsUserCanReview, isAdmin, podIds, filters]);
 
   const handleFetchMore = useCallback(() => {
     if (hasMore) {
       getProposalsUserCanReviewFetchMore({
         variables: {
           offset: data?.getProposalsUserCanReview.length,
+          orgId: filters?.orgId,
+          podIds: filters?.podIds,
         },
       }).then(({ data }) => {
         setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getProposalsUserCanReviewFetchMore, hasMore, data]);
+  }, [getProposalsUserCanReviewFetchMore, hasMore, data, filters]);
 
   return {
     getProposalsUserCanReviewData: data?.getProposalsUserCanReview,
@@ -43,7 +46,7 @@ const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses 
   };
 };
 
-const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumns }) => {
+const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumns, filters }) => {
   const [hasMore, setHasMore] = useState(true);
   const [getSubmissionsUserCanReview, { data, fetchMore: getSubmissionsUserCanReviewFetchMore }] = useLazyQuery(
     GET_SUBMISSIONS_USER_CAN_REVIEW,
@@ -56,15 +59,17 @@ const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumn
     if (isAdmin) {
       getSubmissionsUserCanReview({
         variables: {
-          podIds,
+          podIds: filters?.podIds,
           limit: LIMIT,
           offset: 0,
+          orgId: filters?.orgId,
+          date: filters?.date,
         },
       }).then(({ data }) => {
         setHasMore(data?.getSubmissionsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getSubmissionsUserCanReview, isAdmin, podIds, statuses]);
+  }, [getSubmissionsUserCanReview, isAdmin, filters]);
 
   const handleFetchMore = useCallback(() => {
     if (hasMore) {
@@ -72,12 +77,14 @@ const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumn
         variables: {
           offset: data?.getSubmissionsUserCanReview?.length,
           limit: LIMIT,
+          orgId: filters?.orgId,
+          podIds: filters?.podIds,
         },
       }).then(({ data }) => {
         setHasMore(data?.getSubmissionsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [data, hasMore, getSubmissionsUserCanReviewFetchMore, statuses]);
+  }, [data, hasMore, getSubmissionsUserCanReviewFetchMore]);
 
   return {
     getSubmissionsUserCanReviewData: data?.getSubmissionsUserCanReview,
@@ -138,7 +145,7 @@ const useGetMembershipRequests = ({ adminColumns, isAdmin }) => {
 };
 
 export const useAdminColumns = (args) => {
-  const { isAdmin, filters } = args;
+  const { isAdmin } = args;
   const [adminColumns, setAdminColumns] = useState([]);
   const { getProposalsUserCanReviewData, getProposalsUserCanReviewFetchMore, hasMoreProposalsToReview } =
     useGetProposalsUserCanReview({
