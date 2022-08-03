@@ -9,6 +9,7 @@ import {
   APPROVE_BOUNTY_SUBMISSION,
   APPROVE_SUBMISSION,
   REQUEST_CHANGE_SUBMISSION,
+  REJECT_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
 import isEmpty from 'lodash/isEmpty';
 import { useState } from 'react';
@@ -16,7 +17,7 @@ import { BOUNTY_TYPE, PAYMENT_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns } from 'utils/hooks';
 
-import { CompletedIcon, InReviewIcon } from '../../Icons/statusIcons';
+import { CompletedIcon, InReviewIcon, RejectedIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { KudosForm } from '../KudosForm';
 import { PaymentButton } from '../Task/paymentButton';
@@ -25,6 +26,7 @@ import {
   SubmissionButtonApprove,
   SubmissionButtonEdit,
   SubmissionButtonRequestChange,
+  SubmissionButtonReject,
   SubmissionButtonReviewWrapper,
   SubmissionDescription,
   SubmissionDivider,
@@ -38,6 +40,7 @@ import {
   SubmissionItemStatusChangesRequestedIcon,
   SubmissionItemStatusTextAwaitingReview,
   SubmissionItemStatusTextChangesRequested,
+  SubmissionItemStatusTextChangesRejected,
   SubmissionItemStatusTextCompleted,
   SubmissionItemStatusWrapper,
   SubmissionItemTimeText,
@@ -47,6 +50,7 @@ import {
   TaskSubmissionLinkIcon,
   TaskSubmissionLinkWrapper,
 } from './styles';
+import palette from 'theme/palette';
 
 const isBountyApprovedUnpaid = ({ fetchedTask, submission }) => {
   const { approvedAt, paymentStatus } = submission;
@@ -162,10 +166,24 @@ const useRequestChangeTaskSubmission = ({ submission, handleBountyTypeCompletion
   return requestChangeTaskSubmission;
 };
 
+const useRejectTaskSubmission = ({ submission, handleBountyTypeCompletion }) => {
+  const [rejectTaskSubmission] = useMutation(REJECT_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    onCompleted: () => {
+      handleBountyTypeCompletion();
+    },
+    refetchQueries: ['getTaskSubmissionsForTask'],
+  });
+  return rejectTaskSubmission;
+};
+
 const SubmissionItemStatus = (props) => {
   const { submission } = props;
   const awaitingReview = !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt;
-  const changesRequested = submission?.changeRequestedAt || submission?.rejectedAt;
+  const changesRequested = submission?.changeRequestedAt;
+  const rejected = submission?.rejectedAt;
   const approvedAndPaid = submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PAID;
   const approvedAndProcessingPayment =
     submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PROCESSING;
@@ -182,6 +200,13 @@ const SubmissionItemStatus = (props) => {
       <SubmissionItemStatusWrapper>
         <SubmissionItemStatusChangesRequestedIcon />
         <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
+      </SubmissionItemStatusWrapper>
+    );
+  } else if (rejected) {
+    return (
+      <SubmissionItemStatusWrapper>
+        <RejectedIcon />
+        <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>
       </SubmissionItemStatusWrapper>
     );
   } else if (approvedAndPaid) {
@@ -262,9 +287,15 @@ const SubmissionEditButton = ({ isCreator, approvedAt, onClick }) => {
   return null;
 };
 
+const SubmissionRejectButton = ({ submission, rejectTaskSubmission }) => {
+  const { changeRequestedAt, approvedAt, rejectedAt } = submission;
+  if (changeRequestedAt || approvedAt || rejectedAt) return null;
+  return <SubmissionButtonReject onClick={rejectTaskSubmission}>Reject</SubmissionButtonReject>;
+};
+
 const SubmissionRequestChangeButton = ({ submission, requestChangeTaskSubmission }) => {
-  const { changeRequestedAt, approvedAt } = submission;
-  if (changeRequestedAt || approvedAt) return null;
+  const { changeRequestedAt, approvedAt, rejectedAt } = submission;
+  if (changeRequestedAt || approvedAt || rejectedAt) return null;
   return (
     <SubmissionButtonRequestChange onClick={requestChangeTaskSubmission}>Request changes</SubmissionButtonRequestChange>
   );
@@ -345,6 +376,10 @@ export const SubmissionItem = ({
     submission,
     handleBountyTypeCompletion,
   });
+  const rejectTaskSubmission = useRejectTaskSubmission({
+    submission,
+    handleBountyTypeCompletion,
+  });
   return (
     <>
       <KudosForm onClose={handleClose} open={isKudosModalOpen} submission={submission} />
@@ -381,6 +416,7 @@ export const SubmissionItem = ({
           />
           <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
           <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
+            <SubmissionRejectButton submission={submission} rejectTaskSubmission={rejectTaskSubmission} />
             <SubmissionRequestChangeButton
               submission={submission}
               requestChangeTaskSubmission={requestChangeTaskSubmission}

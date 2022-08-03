@@ -38,7 +38,7 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask } from 'utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask, useUserProfile } from 'utils/hooks';
 
 import { useMe } from '../../Auth/withAuth';
 import {
@@ -140,8 +140,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const userProfile = useUserProfile();
   const getUserPermissionContext = useCallback(() => {
-    return orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+    return (
+      orgBoard?.userPermissionsContext ||
+      podBoard?.userPermissionsContext ||
+      userBoard?.userPermissionsContext ||
+      userProfile?.userPermissionsContext
+    );
   }, [orgBoard, userBoard, podBoard]);
   const getBoard = useCallback(() => {
     return orgBoard || podBoard || userBoard;
@@ -173,7 +179,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   });
-
   const { canViewTask } = useCanViewTask(fetchedTask, userPermissionsContext, permissions);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
