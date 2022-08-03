@@ -54,5 +54,8 @@ export const ListViewItemActions = styled.div`
     &::before {
       background: linear-gradient(270deg, #06ffa5 -5.62%, #7427ff 103.12%);
     }
+    &:hover {
+      background: linear-gradient(270deg, #06ffa5 -5.62%, #7427ff 103.12%);
+    }
   }
 `;

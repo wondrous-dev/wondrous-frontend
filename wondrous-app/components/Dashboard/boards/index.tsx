@@ -23,10 +23,11 @@ import {
   USER_COLUMNS,
   populateTaskColumns,
   generateUserDashboardFilters,
+  generateAdminDashboardFilters,
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns } from 'utils';
+import { dedupeColumns, delQuery } from 'utils';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
   TASKS_DEFAULT_STATUSES,
@@ -34,9 +35,15 @@ import {
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
+  PRIVACY_LEVEL,
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
-import { useGetPerStatusTaskCountForUserBoard, useRouterQuery, useSelectMembership } from 'utils/hooks';
+import {
+  useCreateEntityContext,
+  useGetPerStatusTaskCountForUserBoard,
+  useRouterQuery,
+  useSelectMembership,
+} from 'utils/hooks';
 import { BoardsActivityWrapper } from './styles';
 
 const useGetUserTaskBoardTasks = ({
@@ -45,8 +52,7 @@ const useGetUserTaskBoardTasks = ({
   setContributorColumns,
   setHasMoreTasks,
   loggedInUser,
-  statuses,
-  podIds,
+  filters,
 }) => {
   const [getUserTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -96,79 +102,83 @@ const useGetUserTaskBoardTasks = ({
   };
 
   useEffect(() => {
-    const taskBoardStatuses =
-      statuses.length > 0
-        ? statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
-        : TASKS_DEFAULT_STATUSES;
-    const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
     if (!isAdmin && loggedInUser?.id) {
+      const taskBoardStatuses =
+        filters?.statuses.length > 0
+          ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
+          : TASKS_DEFAULT_STATUSES;
+      const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
       getUserTaskBoardTasks({
         variables: {
-          podIds,
+          podIds: filters?.podIds,
           userId: loggedInUser?.id,
           statuses: taskBoardStatuses,
           limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
           offset: 0,
+          orgId: filters?.orgId,
+          date: filters?.date,
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
         },
       });
+      setHasMoreTasks(true);
     }
-    setHasMoreTasks(true);
-  }, [getUserTaskBoardTasks, loggedInUser?.id, podIds, statuses, setHasMoreTasks]);
+  }, [getUserTaskBoardTasks, loggedInUser?.id, filters, setHasMoreTasks]);
   return { getUserTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
-const useGetUserTaskBoardProposals = ({
-  isAdmin,
-  listView,
-  section,
-  contributorColumns,
-  setContributorColumns,
-  loggedInUser,
-  statuses,
-  podIds,
-}) => {
-  const [getUserTaskBoardProposals, { data }] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
-    onCompleted: (data) => {
-      const newColumns = bindSectionToColumns({
-        columns: contributorColumns,
-        data: data?.getUserTaskBoardProposals,
-        section: TASK_STATUS_REQUESTED,
-      });
-      setContributorColumns(newColumns);
-    },
-    onError: (error) => {
-      console.error(error);
-    },
-  });
-  useEffect(() => {
-    if (!isAdmin && loggedInUser?.id) {
-      if (section === TASK_STATUS_REQUESTED || listView || data) {
-        getUserTaskBoardProposals({
-          variables: {
-            podIds,
-            userId: loggedInUser?.id,
-            statuses: [STATUS_OPEN],
-            limit: statuses.length === 0 || statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-            offset: 0,
-          },
-        });
-      }
-    }
-  }, [getUserTaskBoardProposals, isAdmin, listView, loggedInUser?.id, podIds, section, statuses, data]);
-};
+//TODO @Adrian: not used atm , comment out when we implement tabs to view props
+// const useGetUserTaskBoardProposals = ({
+//   isAdmin,
+//   listView,
+//   section,
+//   contributorColumns,
+//   setContributorColumns,
+//   loggedInUser,
+//   filters,
+// }) => {
+//   const [getUserTaskBoardProposals, { data }] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+//     fetchPolicy: 'cache-and-network',
+//     nextFetchPolicy: 'cache-first',
+//     onCompleted: (data) => {
+//       const newColumns = bindSectionToColumns({
+//         columns: contributorColumns,
+//         data: data?.getUserTaskBoardProposals,
+//         section: TASK_STATUS_REQUESTED,
+//       });
+//       setContributorColumns(newColumns);
+//     },
+//     onError: (error) => {
+//       console.error(error);
+//     },
+//   });
+//   useEffect(() => {
+//     if (!isAdmin && loggedInUser?.id) {
+//       if (section === TASK_STATUS_REQUESTED || listView || data) {
+//         getUserTaskBoardProposals({
+//           variables: {
+//             podIds: filters?.podIds,
+//             userId: loggedInUser?.id,
+//             statuses: [STATUS_OPEN],
+//             limit: filters?.statuses.length === 0 || filters?.statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
+//             offset: 0,
+//           },
+//         });
+//       }
+//     }
+//   }, [getUserTaskBoardProposals, isAdmin, listView, loggedInUser?.id, filters, section, data]);
+// };
 
 const useGetUserTaskBoard = ({
   isAdmin,
   view,
   section,
-  statuses,
   loggedInUser,
   setHasMoreTasks,
   contributorColumns,
   setContributorColumns,
-  podIds,
+  filters,
 }) => {
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus } = useGetUserTaskBoardTasks({
     isAdmin,
@@ -176,20 +186,18 @@ const useGetUserTaskBoard = ({
     setContributorColumns,
     setHasMoreTasks,
     loggedInUser,
-    statuses,
-    podIds,
+    filters,
   });
   const listView = view === ViewType.List;
-  useGetUserTaskBoardProposals({
-    isAdmin,
-    listView,
-    section,
-    contributorColumns,
-    setContributorColumns,
-    loggedInUser,
-    statuses,
-    podIds,
-  });
+  // useGetUserTaskBoardProposals({
+  //   isAdmin,
+  //   listView,
+  //   section,
+  //   contributorColumns,
+  //   setContributorColumns,
+  //   loggedInUser,
+  //   filters,
+  // });
 
   return {
     getUserTaskBoardTasksFetchMore,
@@ -198,13 +206,14 @@ const useGetUserTaskBoard = ({
 };
 
 const useFilterSchema = (loggedInUser, isAdmin) => {
+  const { userOrgs } = useCreateEntityContext();
   const [filterSchema, setFilterSchema]: any = useState([]);
   useEffect(() => {
-    if (isAdmin && loggedInUser?.id) {
-      return setFilterSchema([FILTER_STATUSES_ADMIN]);
-    }
     if (!isAdmin && loggedInUser?.id) {
-      setFilterSchema(generateUserDashboardFilters({ userId: loggedInUser?.id }));
+      return setFilterSchema(generateUserDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs }));
+    }
+    if (isAdmin && loggedInUser?.id) {
+      setFilterSchema(generateAdminDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs }));
     }
   }, [isAdmin, loggedInUser?.id]);
   return filterSchema;
@@ -218,8 +227,16 @@ const BoardsPage = (props) => {
   const { search, view } = router.query;
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
-  const [statuses, setStatuses] = useRouterQuery({ router, query: 'statuses' });
-  const [podIds, setPodIds] = useRouterQuery({ router, query: 'podIds' });
+
+  const [filters, setFilters] = useState<TaskFilter>({
+    podIds: [],
+    statuses: [],
+    labelId: null,
+    date: null,
+    privacyLevel: null,
+    orgId: null,
+  });
+
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
   const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
@@ -229,12 +246,7 @@ const BoardsPage = (props) => {
 
   const { adminColumns, handleAdminColumnsLoadMore } = useAdminColumns({
     isAdmin,
-    selectedStatus,
-    statuses,
-    setSelectedStatus,
-    setStatuses,
-    podIds,
-    setHasMoreTasks,
+    filters,
   });
 
   const filterSchema = useFilterSchema(loggedInUser, isAdmin);
@@ -242,13 +254,12 @@ const BoardsPage = (props) => {
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({
     isAdmin,
     section,
-    statuses,
     loggedInUser,
     setHasMoreTasks,
     contributorColumns,
     setContributorColumns,
-    podIds,
     view,
+    filters,
   });
 
   const bindProposalsToCols = (taskProposals) => {
@@ -273,9 +284,9 @@ const BoardsPage = (props) => {
         }
       });
 
-      if (statuses.length) {
+      if (filters?.statuses.length) {
         newColumns.forEach((column) => {
-          if (!statuses.includes(column.section.filter.taskType)) {
+          if (!filters?.statuses.includes(column.section.filter.taskType)) {
             column.section.tasks = [];
           }
         });
@@ -337,16 +348,6 @@ const BoardsPage = (props) => {
     }
   }, [loggedInUser]);
 
-  // const handleLoadMore = useCallback(() => {
-  //   if (hasMoreTasks) {
-  //     if (isAdmin) {
-  //       handleAdminColumnsLoadMore();
-  //     } else {
-  //       !isAdmin && getUserTaskBoardTasksFetchMore();
-  //     }
-  //   }
-  // }, [hasMoreTasks, contributorColumns, getUserTaskBoardTasksFetchMore, handleAdminColumnsLoadMore, isAdmin]);
-
   const handleLoadMore = (type = null) => {
     if (hasMoreTasks) {
       if (isAdmin) {
@@ -398,18 +399,17 @@ const BoardsPage = (props) => {
     }));
   }
 
-  const handleFilterChange = ({ statuses = [], podIds = [], date = null }: TaskFilter) => {
-    setStatuses(statuses);
-    setPodIds(podIds);
-
+  const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], date: null, orgId: null }) => {
+    setFilters(filtersToApply);
     if (search) {
-      const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
-      const shouldSearchProposals = statuses?.length !== taskStatuses?.length || statuses === TASKS_DEFAULT_STATUSES;
-      const shouldSearchTasks = !(searchProposals && statuses?.length === 1);
+      const taskStatuses = filtersToApply.statuses?.filter((status) => TASK_STATUSES.includes(status));
+      const shouldSearchProposals =
+        filtersToApply.statuses?.length !== taskStatuses?.length || filtersToApply.statuses === TASKS_DEFAULT_STATUSES;
+      const shouldSearchTasks = !(searchProposals && filtersToApply.statuses?.length === 1);
       const searchTaskProposalsArgs = {
         variables: {
           userId: loggedInUser?.id,
-          podIds,
+          podIds: filtersToApply.podIds,
           statuses: [STATUS_OPEN],
           offset: 0,
           limit: LIMIT,
@@ -420,7 +420,7 @@ const BoardsPage = (props) => {
       const searchTasksArgs = {
         variables: {
           userId: loggedInUser?.id,
-          podIds,
+          podIds: filtersToApply.podIds,
           limit: LIMIT,
           offset: 0,
           // Needed to exclude proposals
@@ -448,6 +448,25 @@ const BoardsPage = (props) => {
   };
   const activeColumns = isAdmin ? adminColumns : contributorColumns;
 
+  const handleOnToggle = () => {
+    router.query.view !== ViewType.Admin
+      ? router.replace(`${delQuery(router.asPath)}?view=${ViewType.Admin}`)
+      : router.replace(`${delQuery(router.asPath)}`);
+  };
+
+  const toggleItems = [
+    {
+      label: 'Contributor',
+      isActive: router.query.view !== ViewType.Admin,
+      onChange: handleOnToggle,
+    },
+    {
+      label: 'Admin',
+      isActive: router.query.view === ViewType.Admin,
+      onChange: handleOnToggle,
+    },
+  ];
+
   return (
     <UserBoardContext.Provider
       value={{
@@ -470,10 +489,12 @@ const BoardsPage = (props) => {
           onSearch={handleSearch}
           filterSchema={filterSchema}
           onFilterChange={handleFilterChange}
-          statuses={statuses}
-          podIds={podIds}
+          statuses={filters?.statuses}
+          podIds={filters?.podIds}
+          withAdminToggle
           isAdmin={isAdmin}
           selectMembershipRequests={selectMembershipRequests}
+          toggleItems={toggleItems}
         />
       </BoardsActivityWrapper>
       <Boards

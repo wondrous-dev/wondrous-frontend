@@ -1,67 +1,9 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
-import uniqBy from 'lodash/uniqBy';
-import isEmpty from 'lodash/isEmpty';
-import cloneDeep from 'lodash/cloneDeep';
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { LIMIT } from 'services/board';
-import {
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_SUBMISSION_REQUEST,
-  MEMBERSHIP_REQUESTS,
-} from 'utils/constants';
+import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST, MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
-
-const proposal = {
-  status: TASK_STATUS_PROPOSAL_REQUEST,
-  tasks: [],
-};
-
-const submissions = {
-  status: TASK_STATUS_SUBMISSION_REQUEST,
-  tasks: [],
-};
-
-const memberships = {
-  status: MEMBERSHIP_REQUESTS,
-  tasks: [],
-};
-
-const baseColumnsAdmin = [memberships, proposal, submissions];
-
-const statusIncludedOrEmpty = ({ status, statuses }) => {
-  return statuses.includes(status) || isEmpty(statuses);
-};
-
-const setStatus = ({ statuses, setSelectedStatus }) => {
-  if (statuses.length > 0) {
-    const status =
-      statuses[0] === TASK_STATUS_REQUESTED ? TASK_STATUS_PROPOSAL_REQUEST : TASK_STATUS_SUBMISSION_REQUEST;
-    setSelectedStatus(status);
-  } else {
-    setSelectedStatus(null);
-  }
-};
-
-const status = {
-  [TASK_STATUS_PROPOSAL_REQUEST]: TASK_STATUS_REQUESTED,
-  [TASK_STATUS_SUBMISSION_REQUEST]: TASK_STATUS_IN_REVIEW,
-};
-
-const useUpdateAdminStatus = ({ isAdmin, selectedStatus, setStatuses }) => {
-  useEffect(() => {
-    if (isAdmin) {
-      if (selectedStatus) {
-        const selected = status[selectedStatus];
-        setStatuses([selected]);
-      } else {
-        setStatuses([]);
-      }
-    }
-  }, [setStatuses, selectedStatus, isAdmin]);
-};
 
 const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses }) => {
   const [hasMore, setHasMore] = useState(true);
@@ -83,7 +25,7 @@ const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses 
   }, [getProposalsUserCanReview, isAdmin, podIds, statuses]);
 
   const handleFetchMore = useCallback(() => {
-    if (statusIncludedOrEmpty({ status: TASK_STATUS_REQUESTED, statuses }) && hasMore) {
+    if (hasMore) {
       getProposalsUserCanReviewFetchMore({
         variables: {
           offset: data?.getProposalsUserCanReview.length,
@@ -92,7 +34,7 @@ const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses 
         setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getProposalsUserCanReviewFetchMore, statuses, hasMore, data]);
+  }, [getProposalsUserCanReviewFetchMore, hasMore, data]);
 
   return {
     getProposalsUserCanReviewData: data?.getProposalsUserCanReview,
@@ -125,7 +67,7 @@ const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumn
   }, [getSubmissionsUserCanReview, isAdmin, podIds, statuses]);
 
   const handleFetchMore = useCallback(() => {
-    if (statusIncludedOrEmpty({ status: TASK_STATUS_IN_REVIEW, statuses }) && hasMore) {
+    if (hasMore) {
       getSubmissionsUserCanReviewFetchMore({
         variables: {
           offset: data?.getSubmissionsUserCanReview?.length,
@@ -196,7 +138,7 @@ const useGetMembershipRequests = ({ adminColumns, isAdmin }) => {
 };
 
 export const useAdminColumns = (args) => {
-  const { statuses, setSelectedStatus, isAdmin } = args;
+  const { isAdmin, filters } = args;
   const [adminColumns, setAdminColumns] = useState([]);
   const { getProposalsUserCanReviewData, getProposalsUserCanReviewFetchMore, hasMoreProposalsToReview } =
     useGetProposalsUserCanReview({
@@ -224,23 +166,21 @@ export const useAdminColumns = (args) => {
     setAdminColumns([
       {
         type: MEMBERSHIP_REQUESTS,
-        items: memberShipRequests || [],
+        items: memberShipRequests,
         hasMore: hasMoreMembershipRequests,
       },
       {
         type: TASK_STATUS_PROPOSAL_REQUEST,
-        items: getProposalsUserCanReviewData || [],
+        items: getProposalsUserCanReviewData,
         hasMore: hasMoreProposalsToReview,
       },
       {
         type: TASK_STATUS_SUBMISSION_REQUEST,
-        items: getSubmissionsUserCanReviewData || [],
+        items: getSubmissionsUserCanReviewData,
         hasMore: hasMoreSubmissionsToReview,
       },
     ]);
-    setStatus({ statuses, setSelectedStatus });
-  }, [getProposalsUserCanReviewData, getSubmissionsUserCanReviewData, setSelectedStatus, statuses]);
+  }, [getProposalsUserCanReviewData, getSubmissionsUserCanReviewData]);
 
-  useUpdateAdminStatus(args);
   return { adminColumns, handleAdminColumnsLoadMore: handleLoadMore };
 };

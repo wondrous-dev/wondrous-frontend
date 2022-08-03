@@ -33,6 +33,9 @@ import CalendarIcon from 'components/Icons/calendar';
 import { PublicEyeIcon } from 'components/Icons/userpass';
 import FlagIcon from 'components/Icons/flag';
 import StarIcon from 'components/Icons/starIcon';
+import { DAOIcon } from 'components/Icons/dao';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import palette from 'theme/palette';
 
 const generateTodoColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -557,7 +560,7 @@ export const FILTER_STATUSES = {
   ],
 };
 
-export const generateUserDashboardFilters = ({ userId }) => {
+export const generateUserDashboardFilters = ({ userId, orgs = [] }) => {
   return [
     {
       ...SHARED_FILTER_STATUSES_DATA,
@@ -600,9 +603,27 @@ export const generateUserDashboardFilters = ({ userId }) => {
       ],
     },
     {
+      name: 'orgId',
+      label: 'Orgs',
+      items: orgs.map((org) => ({
+        ...org,
+        icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
+        pillIcon: (props) => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+      })),
+      icon: ({ style, ...rest }) => (
+        <DAOIcon
+          encircled={false}
+          stroke={palette.blue20}
+          style={{ ...style, width: '28px', height: '28px' }}
+          {...rest}
+        />
+      ),
+      multiChoice: false,
+    },
+    {
       name: 'podIds',
       label: 'Pods',
-      items: [],
+      items: orgs,
       query: GET_USER_PODS,
       variables: { userId },
       icon: CreatePodIcon,
@@ -670,6 +691,84 @@ export const generateUserDashboardFilters = ({ userId }) => {
           name: 'All',
           gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
           pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
+        },
+      ],
+    },
+  ];
+};
+
+export const generateAdminDashboardFilters = ({ userId, orgs = [] }) => {
+  return [
+    {
+      name: 'orgId',
+      label: 'Orgs',
+      items: orgs.map((org) => ({
+        ...org,
+        icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
+        pillIcon: (props) => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+      })),
+      icon: ({ style, ...rest }) => (
+        <DAOIcon
+          encircled={false}
+          stroke={palette.blue20}
+          style={{ ...style, width: '28px', height: '28px' }}
+          {...rest}
+        />
+      ),
+      multiChoice: false,
+    },
+    {
+      name: 'podIds',
+      label: 'Pods',
+      items: orgs,
+      query: GET_USER_PODS,
+      variables: { userId },
+      icon: CreatePodIcon,
+      multiChoice: true,
+      mutate: (items) => {
+        return items.map((pod) => ({
+          ...pod,
+          gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
+          icon: (
+            <CreatePodIcon
+              style={{
+                width: '26px',
+                height: '26px',
+                marginRight: '8px',
+                background: pod?.color,
+                borderRadius: '100%',
+              }}
+            />
+          ),
+          pillIcon: CreatePodIcon,
+        }));
+      },
+    },
+    {
+      name: 'date',
+      label: 'Dates',
+      icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
+      items: [
+        {
+          id: TASK_DATE_OVERDUE,
+          name: 'Overdue',
+          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#F93701" />,
+          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+        },
+        {
+          id: TASK_DATE_DUE_THIS_WEEK,
+          name: 'Due this week',
+          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+        },
+        {
+          id: TASK_DATE_DUE_NEXT_WEEK,
+          name: 'Due next week',
+          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
+          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
+          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
         },
       ],
     },

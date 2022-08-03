@@ -81,7 +81,6 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
       const isTaskProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
       const taskType = isTaskProposal ? 'taskProposal' : 'task';
       insertUrlParam(taskType, id);
-      // setSelectedTask({ id, isTaskProposal });
       const newUrl = `${delQuery(router.asPath)}?${taskType}=${id}&view?=admin`;
       location.push(newUrl);
       windowOffset = window.scrollY;
@@ -89,7 +88,6 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
     }
   };
 
-  console.log(columns);
   return (
     <>
       <TaskViewModal
@@ -101,7 +99,7 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
         isTaskProposal={!!location?.params?.taskProposal}
       />
       {columns.map((column, colIdx) => {
-        if (!column || !user) return null;
+        if (!column?.items || !user) return null;
         const title = ADMIN_COLUMNS_TYPES[column.type];
         const Icon = ICON_MAP[column.type];
         const count = generateCount(column.type);

@@ -25,7 +25,7 @@ export const ContentContainer = styled.div`
 export const Banner = styled.div`
   width: 100%;
   height: 149px;
-  background: url('images/contrib.png');
+  background: url(${({ img }) => `${img}`});
   position: relative;
   margin-top: 70px;
   background-size: cover;
@@ -37,7 +37,8 @@ export const Banner = styled.div`
 export const DashboardHeader = styled(Typography)`
   && {
     color: ${palette.white};
-    font-weight: 700;
+    font-weight: 900;
     font-size: 40px;
+    transform: scale(1.1, 1);
   }
 `;

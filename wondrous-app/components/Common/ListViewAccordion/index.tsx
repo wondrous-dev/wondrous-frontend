@@ -22,7 +22,6 @@ const Accordion = ({
 }) => {
   const [isOpen, setIsOpen] = useState(isExpanded);
   const handleExpansion = () => setIsOpen(!isOpen);
-
   return (
     <AccordionComponent expanded={isOpen}>
       <ListViewItemHeader>

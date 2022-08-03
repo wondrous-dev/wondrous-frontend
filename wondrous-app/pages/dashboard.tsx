@@ -1,13 +1,11 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { withAuth } from 'components/Auth/withAuth';
-import DashboardPanel from 'components/Common/DashboardPanel';
 import Boards from 'components/Dashboard/boards';
 import Wrapper from 'components/Dashboard/wrapper';
 import { ViewType } from 'types/common';
 import { SelectMembershipContext } from 'utils/contexts';
-import { DashboardPanelWrapper, BoardsWrapper } from 'components/Dashboard/boards/styles';
+import { BoardsWrapper } from 'components/Dashboard/boards/styles';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
@@ -19,7 +17,7 @@ const Dashboard = () => {
   const isMobile = useIsMobile();
 
   return (
-    <Wrapper>
+    <Wrapper isAdmin={isAdmin}>
       {isMobile ? <MobileComingSoonModal /> : null}
       <SelectMembershipContext.Provider
         value={{

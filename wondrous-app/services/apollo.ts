@@ -58,7 +58,12 @@ const cache = new InMemoryCache({
             return [...existing, ...incoming];
           },
         },
-        getSubmissionsUserCanReview: offsetLimitPagination(),
+        getSubmissionsUserCanReview: {
+          keyArgs: false,
+          merge: (existing = [], incoming = []) => {
+            return [...existing, ...incoming];
+          },
+        },
         getSubtasksForTask: offsetLimitPagination(['taskId', 'status']),
       },
     },
