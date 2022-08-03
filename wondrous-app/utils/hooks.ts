@@ -242,7 +242,6 @@ export const useCreateEntityContext = () => useContext(CreateEntityContext);
 
 export const useCanViewTask = (task, userPermissionsContext, permissions) => {
   const [canViewTask, setCanViewTask] = useState(null);
-
   //if a pod exists we should check it's permissions else fallback to org permissions
   const hasPermissionToPod = task?.podId
     ? userPermissionsContext?.podPermissions[task?.podId] ||
@@ -269,5 +268,6 @@ export const useCanViewTask = (task, userPermissionsContext, permissions) => {
       return setCanViewTask(true);
     }
   }, [task]);
+
   return { canViewTask };
 };
