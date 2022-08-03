@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from 'react';
+import { useMemo, useState, useEffect, useRef } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
@@ -40,6 +40,7 @@ interface SingleDatePickerProps {
   hideRecurring?: boolean;
   className?: string;
   handleClose?(): void;
+  autoFocus?: boolean;
 }
 
 const SingleDatePicker = ({
@@ -53,6 +54,7 @@ const SingleDatePicker = ({
   hideRecurring,
   className,
   handleClose,
+  autoFocus,
 }: SingleDatePickerProps) => {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [showOptions, setShowOptions] = useState(false);
@@ -173,16 +175,22 @@ const SingleDatePicker = ({
     setShowOptions(null);
   };
 
-  const [anchorEl, setAnchorEl] = useState(null);
+  const [isOpen, setIsOpen] = useState(false);
+  const anchorEl = useRef(null);
+
+  useEffect(() => {
+    if (autoFocus) {
+      setIsOpen(true);
+    }
+  }, [autoFocus]);
 
   const handleClickAway = () => {
-    setAnchorEl(null);
+    setIsOpen(false);
   };
 
-  const handleClick = (event) => {
-    setAnchorEl(anchorEl ? null : event.currentTarget);
+  const handleClick = () => {
+    setIsOpen((isOpen) => !isOpen);
   };
-  const open = Boolean(anchorEl);
 
   return (
     <>
@@ -192,10 +200,11 @@ const SingleDatePicker = ({
         display="flex"
         flexDirection="column"
         maxWidth={300}
-        width={open ? 300 : 'default'}
+        width={isOpen ? 300 : 'default'}
       >
         <TextField
           placeholder="Choose date"
+          autoFocus={autoFocus}
           InputProps={{
             readOnly: true,
             startAdornment: (
@@ -209,7 +218,8 @@ const SingleDatePicker = ({
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
-                    setAnchorEl(null);
+                    // setAnchorEl(null);
+                    setIsOpen(false);
                     handleClose?.();
                   }}
                 >
@@ -220,11 +230,12 @@ const SingleDatePicker = ({
           }}
           value={displayValue}
           onClick={handleClick}
-          sx={open ? styles.mainTextfield : styles.mainTextfieldInactive}
+          ref={anchorEl}
+          sx={isOpen ? styles.mainTextfield : styles.mainTextfieldInactive}
         />
       </Box>
       <ClickAwayListener onClickAway={handleClickAway} mouseEvent={'onMouseDown'}>
-        <Popper open={open} anchorEl={anchorEl} placement="bottom" disablePortal={true}>
+        <Popper open={isOpen} anchorEl={anchorEl.current} placement="bottom" disablePortal={true}>
           <Box sx={styles.mainContainer}>
             <Box sx={{ ...styles.root, ...sx }}>
               <Box sx={styles.inputContainer}>
@@ -250,7 +261,7 @@ const SingleDatePicker = ({
                 initialDate={date}
                 id="your_unique_id"
                 onDateChange={(date) => handleDateChange(date)}
-                focusedInput={open}
+                focusedInput={isOpen}
                 onFocusChange={() => {}}
                 numberOfMonths={1}
                 displayFormat="MM/DD/yyyy"

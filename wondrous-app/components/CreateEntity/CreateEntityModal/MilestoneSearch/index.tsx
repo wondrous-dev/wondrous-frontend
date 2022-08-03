@@ -1,5 +1,5 @@
 import { CreateEntity } from 'components/CreateEntity';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useLocation } from 'utils/useLocation';
 import {
@@ -27,14 +27,20 @@ import {
 } from './styles';
 
 const MilestoneSearch = (props) => {
-  const { options, onChange, value, handleClose, formValues = null, disabled } = props;
+  const { options, onChange, value, handleClose, formValues = null, disabled, autoFocus = false } = props;
   const [createMilestone, setCreateMilestone] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
-  const [anchorEl, setAnchorEl] = useState(null);
-  const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
-  const handleClickAway = () => setAnchorEl(null);
+  const anchorEl = useRef(null);
+  const handleClick = () => setIsOpen((isOpen) => !isOpen);
+  const handleClickAway = () => setIsOpen(false);
 
-  const open = Boolean(anchorEl);
+  useEffect(() => {
+    if (autoFocus) {
+      setIsOpen(true);
+    }
+  }, [autoFocus]);
+
   const selectedValue = options.find((option) => option.id === value);
 
   if (createMilestone) {
@@ -45,7 +51,7 @@ const MilestoneSearch = (props) => {
           setCreateMilestone(false);
           handleClickAway();
         }}
-        open={open}
+        open={isOpen}
         cancel={() => {
           setCreateMilestone(false);
           handleClickAway();
@@ -63,7 +69,7 @@ const MilestoneSearch = (props) => {
   return (
     <MilestoneSearchClickAway onClickAway={handleClickAway}>
       <MilestoneSearchWrapper>
-        <MilestoneSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
+        <MilestoneSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
           <MilestoneSearchImageLabelWrapper>
             <MilestoneSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
             <MilestoneSearchLabel hasValue={selectedValue?.label}>
@@ -72,7 +78,7 @@ const MilestoneSearch = (props) => {
           </MilestoneSearchImageLabelWrapper>
           <MilestoneSearchButtonCloseIcon onClick={handleClose} />
         </MilestoneSearchButton>
-        <MilestoneSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal={true}>
+        <MilestoneSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal={true}>
           <MilestoneSearchAutocomplete
             name="milestoneId"
             value={selectedValue}
@@ -80,6 +86,7 @@ const MilestoneSearch = (props) => {
               return (
                 <MilestoneSearchInput
                   {...params}
+                  autoFocus={autoFocus}
                   ref={params.InputProps.ref}
                   disableUnderline={true}
                   fullWidth={true}
@@ -125,7 +132,7 @@ const MilestoneSearch = (props) => {
                 </MilestoneSearchAutocompletePopper>
               );
             }}
-            open={open}
+            open={isOpen}
             options={options}
             disablePortal={true}
             onChange={(event, value, reason) => {
