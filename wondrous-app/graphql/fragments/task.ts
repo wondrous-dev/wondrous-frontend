@@ -250,6 +250,7 @@ export const TaskSubmissionFragment = gql`
     }
     approvedAt
     rejectedAt
+    changeRequestedAt
     lastReviewedBy
     paymentStatus
     commentCount
