@@ -1,12 +1,4 @@
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { DAOIcon } from 'components/Icons/dao';
-import PodIcon from 'components/Icons/podIcon';
-import Tooltip from 'components/Tooltip';
-import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
-import { NoLogoDAO } from 'components/SideBar/styles';
-import { BoldName, Description } from './styles';
-import { RequestDeclineButton, RequestApproveButton } from 'components/organization/members/styles';
+import { useMutation } from '@apollo/client';
 import {
   TASK_STATUS_SUBMISSION_REQUEST,
   PERMISSIONS,
@@ -15,7 +7,6 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
 } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useMutation } from '@apollo/client';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import {
@@ -25,10 +16,32 @@ import {
   REQUEST_CHANGE_SUBMISSION,
   REJECT_SUBMISSION,
 } from 'graphql/mutations';
+import palette from 'theme/palette';
 import { KudosForm } from 'components/Common/KudosForm';
 import { useContext, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-
+import { LinkIcon } from 'components/Icons/taskModalIcons';
+import { Rewards } from 'components/Common/TaskViewModal/helpers';
+import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
+import { NoLogoDAO } from 'components/SideBar/styles';
+import {
+  BoldName,
+  Description,
+  IconsWrapper,
+  IconContainer,
+  MediaIcon,
+  ApproveButton,
+  DeclineButton,
+  RequestChangesButton,
+  DueDateWrapper,
+} from './styles';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { DAOIcon } from 'components/Icons/dao';
+import PodIcon from 'components/Icons/podIcon';
+import Tooltip from 'components/Tooltip';
+import { DueDateIcon } from 'components/Icons/taskModalIcons';
+import { format } from 'date-fns';
 interface Props {
   userProfilePicture: string;
   orgUsername: string;
@@ -50,7 +63,31 @@ interface Props {
   userPermissionsContext?: any;
   status?: string;
   userId?: string;
+  taskDueDate?: string;
+  rewards?: any;
+  links?: any;
+  media?: any;
 }
+
+const ICON_TYPES = {
+  MEDIA: 'media',
+  LINK: 'link',
+};
+
+const ICONS = {
+  [ICON_TYPES.MEDIA]: MediaIcon,
+  [ICON_TYPES.LINK]: LinkIcon,
+};
+const IconsList = ({ items = [], type = ICON_TYPES.LINK }) => {
+  const Icon = ICONS[type];
+  return (
+    <IconsWrapper>
+      {items.map((link, idx) => {
+        return <IconContainer key={idx}>{Icon ? <Icon stroke={palette.white} /> : null}</IconContainer>;
+      })}
+    </IconsWrapper>
+  );
+};
 
 function ColumnEntry(props: Props) {
   const {
@@ -73,6 +110,10 @@ function ColumnEntry(props: Props) {
     userPermissionsContext,
     status,
     userId,
+    rewards,
+    taskDueDate,
+    links,
+    media,
   } = props;
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
@@ -211,12 +252,12 @@ function ColumnEntry(props: Props) {
 
   let Buttons: any = [
     {
-      component: RequestDeclineButton,
+      component: DeclineButton,
       label: 'Decline',
       action: (e) => actionMapper(e).decline(),
     },
     {
-      component: RequestApproveButton,
+      component: ApproveButton,
       label: 'Approve',
       action: (e) => actionMapper(e).accept(),
     },
@@ -226,8 +267,8 @@ function ColumnEntry(props: Props) {
     Buttons = canReview
       ? [
           {
-            component: RequestDeclineButton,
-            label: 'Request changes',
+            component: RequestChangesButton,
+            label: 'Amends',
             action: (e) => actionMapper(e).requestChanges(),
           },
           ...Buttons,
@@ -315,8 +356,17 @@ function ColumnEntry(props: Props) {
           <BoldName>{username}</BoldName>
 
           <Description>{entryMessage}</Description>
+          {links ? <IconsList items={links} /> : null}
+          {media ? <IconsList items={media} type={ICON_TYPES.MEDIA} /> : null}
         </ListViewItemDataContainer>
         <ListViewItemActions>
+          {taskDueDate ? (
+            <DueDateWrapper>
+              <DueDateIcon />
+              {format(new Date(taskDueDate), 'MMM dd')}
+            </DueDateWrapper>
+          ) : null}
+          {rewards ? <Rewards user={null} withLabel={false} fetchedTask={{ rewards }} /> : null}
           {Buttons.map((btn, idx) => {
             const Button = btn.component;
             return (

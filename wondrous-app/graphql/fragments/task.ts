@@ -227,6 +227,15 @@ export const TaskSubmissionCardFragment = gql`
       displayName
       type
     }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+      chain
+    }
+    taskDueDate
     media {
       ...MediaFragment
     }
@@ -250,6 +259,7 @@ export const TaskSubmissionFragment = gql`
     }
     approvedAt
     rejectedAt
+    changeRequestedAt
     lastReviewedBy
     paymentStatus
     commentCount

@@ -49,9 +49,9 @@ const cache = new InMemoryCache({
         },
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
-        getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
-        // getOrgMembershipRequest: offsetLimitPagination(),
+        getOrgMembershipRequest: offsetLimitPagination(),
         getPodMembershipRequest: offsetLimitPagination(),
+        getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
         getProposalsUserCanReview: {
           keyArgs: ['input', ['orgId', 'podIds', 'date']],
           merge: (existing, incoming, { args }) => {

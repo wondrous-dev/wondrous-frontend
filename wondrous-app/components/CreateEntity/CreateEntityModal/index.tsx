@@ -1245,9 +1245,11 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
         orgId: board?.orgId,
         podId: board?.podId,
       }) ||
-        entityType === ENTITIES_TYPES.PROPOSAL),
+        entityType === ENTITIES_TYPES.PROPOSAL) &&
+      board?.orgId,
     () => form.setFieldValue('orgId', board?.orgId)
   );
+
   useContextValue(
     !form.values.podId &&
       (board?.podId || routerPodId) &&
@@ -1707,6 +1709,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                     }}
                     renderInput={(params) => {
                       const reviewer = eligibleReviewers.find((reviewer) => reviewer.id === params.inputProps.value);
+                      const shouldAutoFocus = form.values?.reviewerIds?.filter((id) => id === null)?.length > 0;
                       return (
                         <CreateEntityAutocompletePopperRenderInput
                           {...params}
@@ -1714,6 +1717,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                             ...params.inputProps,
                             value: reviewer?.label,
                           }}
+                          autoFocus={shouldAutoFocus}
                           ref={params.InputProps.ref}
                           disableUnderline={true}
                           fullWidth={true}
@@ -1818,6 +1822,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           ...params.inputProps,
                           value: assignee?.label,
                         }}
+                        autoFocus={!form.values.assigneeId}
                         ref={params.InputProps.ref}
                         disableUnderline={true}
                         fullWidth={true}
@@ -2018,6 +2023,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           <CreateEntitySelectWrapper>
             {form.values.dueDate !== null && (
               <CreateEntityDueDate
+                autoFocus={!form.values.dueDate}
                 setValue={(date) => form.setFieldValue('dueDate', date)}
                 setRecurrenceType={setRecurrenceType}
                 setRecurrenceValue={setRecurrenceValue}
@@ -2077,6 +2083,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 </CreateEntityPaymentMethodSelect>
                 <CreateEntityTextfield
                   autoComplete="off"
+                  autoFocus={!form.values.rewards?.[0]?.rewardAmount}
                   name="rewards"
                   onChange={(e) => {
                     form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], rewardAmount: e.target.value }]);
@@ -2128,6 +2135,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               <>
                 <CreateEntityTextfield
                   autoComplete="off"
+                  autoFocus={!form.values.points}
                   name="points"
                   onChange={form.handleChange('points')}
                   fullWidth={true}
@@ -2175,6 +2183,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
               <CreateEntityMilestoneSearch
+                autoFocus={!form.values?.milestoneId}
                 options={filterUserOptions(milestonesData)}
                 value={form.values.milestoneId}
                 onChange={(milestoneId) => {
@@ -2207,6 +2216,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           <CreateEntitySelectWrapper>
             {form.values.labelIds !== null && (
               <Tags
+                autoFocus={!form.values.labelIds?.length}
                 options={orgLabelsData || []}
                 ids={form.values.labelIds}
                 onChange={(labelIds) => {

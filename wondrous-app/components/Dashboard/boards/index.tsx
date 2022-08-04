@@ -152,7 +152,9 @@ const useFilterSchema = (loggedInUser, isAdmin, userPermissionsContext) => {
   const orgsWithAdminPermissions = userOrgs?.getUserOrgs.filter((org) => {
     const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, orgId: org?.id });
     const hasPermission =
-      permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
+      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+      permissions.includes(PERMISSIONS.CREATE_TASK) ||
+      permissions.includes(PERMISSIONS.MANAGE_MEMBER);
     return hasPermission;
   });
 

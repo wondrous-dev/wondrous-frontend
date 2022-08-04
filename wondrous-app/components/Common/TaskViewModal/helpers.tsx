@@ -138,12 +138,12 @@ export const ConnectToWallet = ({ user }) => {
   );
 };
 
-export const Rewards = ({ fetchedTask, user }) => {
+export const Rewards = ({ fetchedTask, user, withLabel = true }) => {
   const rewards = fetchedTask?.rewards;
   if (isEmpty(rewards)) return null;
   return (
     <TaskSectionDisplayDiv>
-      <TaskSectionLabel>Rewards</TaskSectionLabel>
+      {withLabel ? <TaskSectionLabel>Rewards</TaskSectionLabel> : null}
       {rewards.map((reward, index) => {
         const { rewardAmount, symbol, icon, chain } = reward;
         return (
@@ -157,7 +157,7 @@ export const Rewards = ({ fetchedTask, user }) => {
                   {rewardAmount} {symbol}
                 </TaskSectionInfoPaymentAmount>
                 <TaskSectionInfoPaymentMethodChain>paid on {chain}</TaskSectionInfoPaymentMethodChain>
-                <ConnectToWallet user={user} />
+                {user ? <ConnectToWallet user={user} /> : null}
               </TaskSectionInfoPaymentWrapper>
             )}
           />

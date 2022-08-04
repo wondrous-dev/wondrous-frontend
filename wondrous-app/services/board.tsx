@@ -731,7 +731,11 @@ export const generateAdminDashboardFilters = ({ userId, orgs = [], permissionCon
       mutate: (items) => {
         return items.reduce((filtered, pod) => {
           const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, podId: pod?.id });
-          if (permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK)) {
+          if (
+            permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+            permissions.includes(PERMISSIONS.CREATE_TASK) ||
+            permissions.includes(PERMISSIONS.MANAGE_MEMBER)
+          ) {
             filtered.push({
               ...pod,
               gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,

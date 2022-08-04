@@ -1,10 +1,11 @@
 import { useRouter } from 'next/router';
 import { useOrgBoard, usePodBoard, useCreateEntityContext } from 'utils/hooks';
-import { PRIVACY_LEVEL } from 'utils/constants';
+import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import SkeletonBoard from 'components/Common/SkeletonBoard';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
+import { parseUserPermissionContext } from 'utils/helpers';
 
 const BoardLock = ({ children, handleJoinClick, requestSent }) => {
   const orgBoard = useOrgBoard();
@@ -15,9 +16,16 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
   const user = useMe();
   if (!board) return children;
   const { userOrgs } = entityContext;
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: board?.userPermissionsContext,
+    orgId: board?.orgId,
+    podId: board?.podId,
+  });
 
   const hasNoPodAccess =
-    board?.pod?.privacyLevel === PRIVACY_LEVEL.private && !board?.userPermissionsContext?.podPermissions[board?.podId];
+    board?.pod?.privacyLevel === PRIVACY_LEVEL.private &&
+    !board?.userPermissionsContext?.podPermissions[board?.podId] &&
+    !permissions.includes(PERMISSIONS.FULL_ACCESS);
 
   const isNotAMemberOfTheOrg =
     !userOrgs || !userOrgs?.getUserOrgs?.some((org) => org.id === board?.orgId) || hasNoPodAccess;

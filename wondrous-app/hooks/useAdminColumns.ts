@@ -1,11 +1,10 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
 import { useCallback, useEffect, useState } from 'react';
-// import { LIMIT } from 'services/board';
+import { LIMIT } from 'services/board';
 import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST, MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
 
-const LIMIT = 2;
 const useGetProposalsUserCanReview = ({ isAdmin, filters }) => {
   const [hasMore, setHasMore] = useState(true);
   const [getProposalsUserCanReview, { data, fetchMore: getProposalsUserCanReviewFetchMore, loading }] = useLazyQuery(

@@ -76,7 +76,7 @@ const TaskSubtaskUserImage = ({ assignee }) => {
   );
 };
 
-const TaskSubtaskReward = ({ rewards }) => {
+export const TaskSubtaskReward = ({ rewards }) => {
   if (isEmpty(rewards)) return null;
   return (
     <>

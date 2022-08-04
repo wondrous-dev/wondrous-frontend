@@ -141,6 +141,10 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
                   selectTask={selectTask}
                   status={item.status}
                   userId={item?.userId}
+                  taskDueDate={item?.taskDueDate}
+                  rewards={item.rewards}
+                  links={item.links}
+                  media={item.media}
                 />
               );
             })}
