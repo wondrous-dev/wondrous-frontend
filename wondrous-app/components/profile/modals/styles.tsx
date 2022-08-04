@@ -169,7 +169,7 @@ export const Title = styled(Typography)`
 export const Container = styled.div`
   width: 100%;
   margin-bottom: 0 !important;
-  .css-1ujnqem-MuiTabs-root {
+  .MuiTabs-root {
     padding: 0 !important;
     margin: 0 !important;
   }
