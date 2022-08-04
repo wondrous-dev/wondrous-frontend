@@ -1,14 +1,21 @@
 import { useLazyQuery } from '@apollo/client';
 import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
 import { useCallback, useEffect, useState } from 'react';
-import { LIMIT } from 'services/board';
+// import { LIMIT } from 'services/board';
 import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST, MEMBERSHIP_REQUESTS } from 'utils/constants';
 import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
 
-const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, filters }) => {
+const LIMIT = 2;
+const useGetProposalsUserCanReview = ({ isAdmin, filters }) => {
   const [hasMore, setHasMore] = useState(true);
-  const [getProposalsUserCanReview, { data, fetchMore: getProposalsUserCanReviewFetchMore }] =
-    useLazyQuery(GET_PROPOSALS_USER_CAN_REVIEW);
+  const [getProposalsUserCanReview, { data, fetchMore: getProposalsUserCanReviewFetchMore, loading }] = useLazyQuery(
+    GET_PROPOSALS_USER_CAN_REVIEW,
+    {
+      fetchPolicy: 'cache-and-network',
+      nextFetchPolicy: 'cache-first',
+      notifyOnNetworkStatusChange: true,
+    }
+  );
 
   useEffect(() => {
     if (isAdmin) {
@@ -18,51 +25,53 @@ const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, filters }
           offset: 0,
           orgId: filters?.orgId,
           podIds: filters?.podIds,
+          date: filters?.date,
         },
       }).then(({ data }) => {
         setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getProposalsUserCanReview, isAdmin, podIds, filters]);
+  }, [getProposalsUserCanReview, isAdmin, filters]);
 
-  const handleFetchMore = useCallback(() => {
+  const handleFetchMore = () => {
     if (hasMore) {
       getProposalsUserCanReviewFetchMore({
         variables: {
           offset: data?.getProposalsUserCanReview.length,
           orgId: filters?.orgId,
           podIds: filters?.podIds,
+          date: filters?.date,
         },
       }).then(({ data }) => {
         setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getProposalsUserCanReviewFetchMore, hasMore, data, filters]);
-
+  };
   return {
     getProposalsUserCanReviewData: data?.getProposalsUserCanReview,
     getProposalsUserCanReviewFetchMore: handleFetchMore,
     hasMoreProposalsToReview: hasMore,
+    proposalsLoading: loading,
   };
 };
 
-const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumns, filters }) => {
+const useGetSubmissionsUserCanReview = ({ isAdmin, filters }) => {
   const [hasMore, setHasMore] = useState(true);
-  const [getSubmissionsUserCanReview, { data, fetchMore: getSubmissionsUserCanReviewFetchMore }] = useLazyQuery(
-    GET_SUBMISSIONS_USER_CAN_REVIEW,
-    {
+  const [getSubmissionsUserCanReview, { data, fetchMore: getSubmissionsUserCanReviewFetchMore, loading }] =
+    useLazyQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
       fetchPolicy: 'cache-and-network',
-    }
-  );
+      nextFetchPolicy: 'cache-first',
+      notifyOnNetworkStatusChange: true,
+    });
 
   useEffect(() => {
     if (isAdmin) {
       getSubmissionsUserCanReview({
         variables: {
-          podIds: filters?.podIds,
           limit: LIMIT,
           offset: 0,
           orgId: filters?.orgId,
+          podIds: filters?.podIds,
           date: filters?.date,
         },
       }).then(({ data }) => {
@@ -71,54 +80,78 @@ const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumn
     }
   }, [getSubmissionsUserCanReview, isAdmin, filters]);
 
-  const handleFetchMore = useCallback(() => {
+  const handleFetchMore = () => {
     if (hasMore) {
       getSubmissionsUserCanReviewFetchMore({
         variables: {
           offset: data?.getSubmissionsUserCanReview?.length,
-          limit: LIMIT,
           orgId: filters?.orgId,
           podIds: filters?.podIds,
+          date: filters?.date,
         },
       }).then(({ data }) => {
         setHasMore(data?.getSubmissionsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [data, hasMore, getSubmissionsUserCanReviewFetchMore]);
+  };
 
   return {
     getSubmissionsUserCanReviewData: data?.getSubmissionsUserCanReview,
     getSubmissionsUserCanReviewFetchMore: handleFetchMore,
     hasMoreSubmissionsToReview: hasMore,
+    submissionsLoading: loading,
   };
 };
 
-const useGetMembershipRequests = ({ adminColumns, isAdmin }) => {
+const useGetMembershipRequests = ({ isAdmin, filters }) => {
   const [hasMoreOrgRequests, setHasMoreOrgRequests] = useState(true);
   const [hasMorePodRequests, setHasMorePodRequests] = useState(true);
 
   const [
     getJoinOrgRequests,
-    { data: getJoinOrgRequestsData = { getJoinOrgRequests: [] }, fetchMore: fetchMoreJoinOrgRequests },
-  ] = useLazyQuery(GET_JOIN_ORG_REQUESTS);
+    {
+      data: getJoinOrgRequestsData = { getJoinOrgRequests: [] },
+      fetchMore: fetchMoreJoinOrgRequests,
+      loading: orgRequestsLoading,
+    },
+  ] = useLazyQuery(GET_JOIN_ORG_REQUESTS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+  });
   const [
     getJoinPodRequests,
-    { data: getJoinPodRequestsData = { getJoinPodRequests: [] }, fetchMore: fetchMoreJoinPodRequests },
-  ] = useLazyQuery(GET_JOIN_POD_REQUESTS);
+    {
+      data: getJoinPodRequestsData = { getJoinPodRequests: [] },
+      fetchMore: fetchMoreJoinPodRequests,
+      loading: podRequestsLoading,
+    },
+  ] = useLazyQuery(GET_JOIN_POD_REQUESTS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+  });
 
   useEffect(() => {
     if (isAdmin) {
-      getJoinOrgRequests().then(({ data }) => setHasMoreOrgRequests(data?.getJoinOrgRequestsData >= LIMIT));
-      getJoinPodRequests().then(({ data }) => setHasMorePodRequests(data?.getJoinPodRequestsData >= LIMIT));
+      getJoinOrgRequests({
+        variables: { limit: LIMIT, offset: 0, podIds: filters?.podIds, orgId: filters?.orgId, date: filters?.date },
+      }).then(({ data }) => setHasMoreOrgRequests(data?.getJoinOrgRequestsData >= LIMIT));
+      getJoinPodRequests({
+        variables: { limit: LIMIT, offset: 0, podIds: filters?.podIds, orgId: filters?.orgId, date: filters?.date },
+      }).then(({ data }) => setHasMorePodRequests(data?.getJoinPodRequestsData >= LIMIT));
     }
-  }, [getJoinOrgRequests, getJoinPodRequests, isAdmin]);
+  }, [getJoinOrgRequests, getJoinPodRequests, isAdmin, filters]);
 
-  const handleFetchMore = useCallback(() => {
+  const handleFetchMore = () => {
     if (hasMoreOrgRequests) {
       fetchMoreJoinOrgRequests({
         variables: {
           offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
           limit: LIMIT,
+          podIds: filters?.podIds,
+          orgId: filters?.orgId,
+          date: filters?.date,
         },
       }).then(({ data }) => setHasMoreOrgRequests(data?.getJoinOrgRequestsData >= LIMIT));
     }
@@ -128,10 +161,13 @@ const useGetMembershipRequests = ({ adminColumns, isAdmin }) => {
         variables: {
           offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
           limit: LIMIT,
+          podIds: filters?.podIds,
+          orgId: filters?.orgId,
+          date: filters?.date,
         },
       }).then(({ data }) => setHasMorePodRequests(data?.getJoinPodRequestsData >= LIMIT));
     }
-  }, [adminColumns, fetchMoreJoinOrgRequests, fetchMoreJoinPodRequests]);
+  };
 
   const memberShipRequests = [
     ...getJoinOrgRequestsData?.getJoinOrgRequests,
@@ -141,53 +177,59 @@ const useGetMembershipRequests = ({ adminColumns, isAdmin }) => {
     memberShipRequests,
     getMembershipRequestsFetchMore: handleFetchMore,
     hasMoreMembershipRequests: hasMoreOrgRequests || hasMorePodRequests,
+    membershipsLoading: orgRequestsLoading || podRequestsLoading,
   };
 };
 
 export const useAdminColumns = (args) => {
-  const { isAdmin } = args;
-  const [adminColumns, setAdminColumns] = useState([]);
-  const { getProposalsUserCanReviewData, getProposalsUserCanReviewFetchMore, hasMoreProposalsToReview } =
-    useGetProposalsUserCanReview({
-      adminColumns,
-      ...args,
-    });
-
-  const { getSubmissionsUserCanReviewData, getSubmissionsUserCanReviewFetchMore, hasMoreSubmissionsToReview } =
-    useGetSubmissionsUserCanReview({
-      adminColumns,
-      ...args,
-    });
-
-  const { memberShipRequests, getMembershipRequestsFetchMore, hasMoreMembershipRequests } = useGetMembershipRequests({
-    adminColumns,
-    isAdmin,
+  const {
+    getProposalsUserCanReviewData,
+    getProposalsUserCanReviewFetchMore,
+    hasMoreProposalsToReview,
+    proposalsLoading,
+  } = useGetProposalsUserCanReview({
+    ...args,
   });
+
+  const {
+    getSubmissionsUserCanReviewData,
+    getSubmissionsUserCanReviewFetchMore,
+    hasMoreSubmissionsToReview,
+    submissionsLoading,
+  } = useGetSubmissionsUserCanReview({
+    ...args,
+  });
+
+  const { memberShipRequests, getMembershipRequestsFetchMore, hasMoreMembershipRequests, membershipsLoading } =
+    useGetMembershipRequests({
+      ...args,
+    });
 
   const handleLoadMore = (type) => {
     if (type === MEMBERSHIP_REQUESTS) return getMembershipRequestsFetchMore();
     if (type === TASK_STATUS_PROPOSAL_REQUEST) return getProposalsUserCanReviewFetchMore();
     if (type === TASK_STATUS_SUBMISSION_REQUEST) return getSubmissionsUserCanReviewFetchMore();
   };
-  useEffect(() => {
-    setAdminColumns([
-      {
-        type: MEMBERSHIP_REQUESTS,
-        items: memberShipRequests,
-        hasMore: hasMoreMembershipRequests,
-      },
-      {
-        type: TASK_STATUS_PROPOSAL_REQUEST,
-        items: getProposalsUserCanReviewData,
-        hasMore: hasMoreProposalsToReview,
-      },
-      {
-        type: TASK_STATUS_SUBMISSION_REQUEST,
-        items: getSubmissionsUserCanReviewData,
-        hasMore: hasMoreSubmissionsToReview,
-      },
-    ]);
-  }, [getProposalsUserCanReviewData, getSubmissionsUserCanReviewData]);
 
+  const adminColumns = [
+    {
+      type: MEMBERSHIP_REQUESTS,
+      items: memberShipRequests,
+      hasMore: hasMoreMembershipRequests,
+      loading: membershipsLoading,
+    },
+    {
+      type: TASK_STATUS_PROPOSAL_REQUEST,
+      items: getProposalsUserCanReviewData,
+      hasMore: hasMoreProposalsToReview,
+      loading: proposalsLoading,
+    },
+    {
+      type: TASK_STATUS_SUBMISSION_REQUEST,
+      items: getSubmissionsUserCanReviewData,
+      hasMore: hasMoreSubmissionsToReview,
+      loading: submissionsLoading,
+    },
+  ];
   return { adminColumns, handleAdminColumnsLoadMore: handleLoadMore };
 };

@@ -50,18 +50,50 @@ const cache = new InMemoryCache({
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
-        getOrgMembershipRequest: offsetLimitPagination(),
-        getPodMembershipRequest: offsetLimitPagination(),
+        getOrgMembershipRequest: offsetLimitPagination(['orgId', 'podIds', 'date']),
+        getPodMembershipRequest: offsetLimitPagination(['orgId', 'podIds', 'date']),
         getProposalsUserCanReview: {
-          keyArgs: false,
-          merge: (existing = [], incoming = []) => {
-            return [...existing, ...incoming];
+          keyArgs: ['input', ['orgId', 'podIds', 'date']],
+          merge: (existing, incoming, { args }) => {
+            const merged = existing ? existing.slice(0) : [];
+            if (incoming) {
+              if (args) {
+                // Assume an offset of 0 if args.offset omitted.
+                const { offset = 0 } = args.input;
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+              } else {
+                // It's unusual (probably a mistake) for a paginated field not
+                // to receive any arguments, so you might prefer to throw an
+                // exception here, instead of recovering by appending incoming
+                // onto the existing array.
+                merged.push.apply(merged, incoming);
+              }
+            }
+            return merged;
           },
         },
         getSubmissionsUserCanReview: {
-          keyArgs: false,
-          merge: (existing = [], incoming = []) => {
-            return [...existing, ...incoming];
+          keyArgs: ['input', ['orgId', 'podIds', 'date']],
+          merge: (existing, incoming, { args }) => {
+            const merged = existing ? existing.slice(0) : [];
+            if (incoming) {
+              if (args) {
+                // Assume an offset of 0 if args.offset omitted.
+                const { offset = 0 } = args.input;
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+              } else {
+                // It's unusual (probably a mistake) for a paginated field not
+                // to receive any arguments, so you might prefer to throw an
+                // exception here, instead of recovering by appending incoming
+                // onto the existing array.
+                merged.push.apply(merged, incoming);
+              }
+            }
+            return merged;
           },
         },
         getSubtasksForTask: offsetLimitPagination(['taskId', 'status']),

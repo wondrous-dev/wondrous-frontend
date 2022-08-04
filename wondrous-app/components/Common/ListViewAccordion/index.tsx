@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   AccordionComponent,
   AccordionDetails,
@@ -8,6 +8,19 @@ import {
   ShowMoreButton,
 } from './styles';
 import { ChevronFilled } from 'components/Icons/sections';
+
+interface Props {
+  isExpanded?: boolean;
+  Icon?: any;
+  title: string;
+  count: number;
+  children: unknown[];
+  headerAddons?: any;
+  displayShowMore: boolean;
+  onShowMore: () => any;
+  showMoreTitle?: string;
+  loading?: boolean;
+}
 
 const Accordion = ({
   isExpanded = true,
@@ -19,9 +32,16 @@ const Accordion = ({
   displayShowMore,
   onShowMore,
   showMoreTitle = 'Show more',
-}) => {
+  loading,
+}: Props) => {
   const [isOpen, setIsOpen] = useState(isExpanded);
   const handleExpansion = () => setIsOpen(!isOpen);
+
+  useEffect(() => {
+    if (typeof loading === 'boolean' && !loading && isExpanded !== isOpen) {
+      setIsOpen(isExpanded);
+    }
+  }, [loading]);
   return (
     <AccordionComponent expanded={isOpen}>
       <ListViewItemHeader>

@@ -18,6 +18,7 @@ interface ColumnItem {
   type: string;
   items: Array<any>;
   hasMore: boolean;
+  loading: boolean;
 }
 
 interface Props {
@@ -99,7 +100,7 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
         isTaskProposal={!!location?.params?.taskProposal}
       />
       {columns.map((column, colIdx) => {
-        if (!column?.items || !user) return null;
+        if (!column || !user) return null;
         const title = ADMIN_COLUMNS_TYPES[column.type];
         const Icon = ICON_MAP[column.type];
         const count = generateCount(column.type);
@@ -108,6 +109,7 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
           <Accordion
             isExpanded={column?.items?.length > 0}
             key={colIdx}
+            loading={column.loading}
             title={title}
             count={count}
             Icon={Icon}
@@ -115,7 +117,7 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
             displayShowMore={column.hasMore}
             onShowMore={() => onLoadMore(column.type)}
           >
-            {column?.items.map((item, idx) => {
+            {column?.items?.map((item, idx) => {
               return (
                 <ColumnEntry
                   key={idx + item.id}

@@ -3,10 +3,7 @@ import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import {
-  GET_JOIN_ORG_REQUESTS,
-  GET_JOIN_POD_REQUESTS,
   GET_USER_PERMISSION_CONTEXT,
-  GET_USER_TASK_BOARD_PROPOSALS,
   GET_USER_TASK_BOARD_TASKS,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
@@ -18,7 +15,6 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import {
-  FILTER_STATUSES_ADMIN,
   LIMIT,
   USER_COLUMNS,
   populateTaskColumns,
@@ -28,22 +24,18 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, delQuery } from 'utils';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import { sectionOpeningReducer } from 'utils/board';
 import {
   TASKS_DEFAULT_STATUSES,
   STATUS_OPEN,
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
   PRIVACY_LEVEL,
+  PERMISSIONS,
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
-import {
-  useCreateEntityContext,
-  useGetPerStatusTaskCountForUserBoard,
-  useRouterQuery,
-  useSelectMembership,
-} from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useCreateEntityContext, useGetPerStatusTaskCountForUserBoard, useSelectMembership } from 'utils/hooks';
 import { BoardsActivityWrapper } from './styles';
 
 const useGetUserTaskBoardTasks = ({
@@ -128,48 +120,6 @@ const useGetUserTaskBoardTasks = ({
   return { getUserTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
-//TODO @Adrian: not used atm , comment out when we implement tabs to view props
-// const useGetUserTaskBoardProposals = ({
-//   isAdmin,
-//   listView,
-//   section,
-//   contributorColumns,
-//   setContributorColumns,
-//   loggedInUser,
-//   filters,
-// }) => {
-//   const [getUserTaskBoardProposals, { data }] = useLazyQuery(GET_USER_TASK_BOARD_PROPOSALS, {
-//     fetchPolicy: 'cache-and-network',
-//     nextFetchPolicy: 'cache-first',
-//     onCompleted: (data) => {
-//       const newColumns = bindSectionToColumns({
-//         columns: contributorColumns,
-//         data: data?.getUserTaskBoardProposals,
-//         section: TASK_STATUS_REQUESTED,
-//       });
-//       setContributorColumns(newColumns);
-//     },
-//     onError: (error) => {
-//       console.error(error);
-//     },
-//   });
-//   useEffect(() => {
-//     if (!isAdmin && loggedInUser?.id) {
-//       if (section === TASK_STATUS_REQUESTED || listView || data) {
-//         getUserTaskBoardProposals({
-//           variables: {
-//             podIds: filters?.podIds,
-//             userId: loggedInUser?.id,
-//             statuses: [STATUS_OPEN],
-//             limit: filters?.statuses.length === 0 || filters?.statuses.includes(TASK_STATUS_REQUESTED) ? LIMIT : 0,
-//             offset: 0,
-//           },
-//         });
-//       }
-//     }
-//   }, [getUserTaskBoardProposals, isAdmin, listView, loggedInUser?.id, filters, section, data]);
-// };
-
 const useGetUserTaskBoard = ({
   isAdmin,
   view,
@@ -188,34 +138,34 @@ const useGetUserTaskBoard = ({
     loggedInUser,
     filters,
   });
-  const listView = view === ViewType.List;
-  // useGetUserTaskBoardProposals({
-  //   isAdmin,
-  //   listView,
-  //   section,
-  //   contributorColumns,
-  //   setContributorColumns,
-  //   loggedInUser,
-  //   filters,
-  // });
-
   return {
     getUserTaskBoardTasksFetchMore,
     fetchPerStatus,
   };
 };
 
-const useFilterSchema = (loggedInUser, isAdmin) => {
+const useFilterSchema = (loggedInUser, isAdmin, userPermissionsContext) => {
   const { userOrgs } = useCreateEntityContext();
-  const [filterSchema, setFilterSchema]: any = useState([]);
-  useEffect(() => {
-    if (!isAdmin && loggedInUser?.id) {
-      return setFilterSchema(generateUserDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs }));
-    }
-    if (isAdmin && loggedInUser?.id) {
-      setFilterSchema(generateAdminDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs }));
-    }
-  }, [isAdmin, loggedInUser?.id]);
+  const permissionContext = userPermissionsContext?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+    : null;
+  const orgsWithAdminPermissions = userOrgs?.getUserOrgs.filter((org) => {
+    const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, orgId: org?.id });
+    const hasPermission =
+      permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
+    return hasPermission;
+  });
+
+  const userFilters = generateUserDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs });
+  const adminFilters = generateAdminDashboardFilters({
+    userId: loggedInUser?.id,
+    orgs: orgsWithAdminPermissions,
+    permissionContext,
+  });
+  let filterSchema = [];
+  if (loggedInUser?.id) {
+    filterSchema = isAdmin ? adminFilters : userFilters;
+  }
   return filterSchema;
 };
 
@@ -249,7 +199,11 @@ const BoardsPage = (props) => {
     filters,
   });
 
-  const filterSchema = useFilterSchema(loggedInUser, isAdmin);
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const filterSchema = useFilterSchema(loggedInUser, isAdmin, userPermissionsContext);
 
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({
     isAdmin,
@@ -301,10 +255,6 @@ const BoardsPage = (props) => {
   });
   const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
     onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
 

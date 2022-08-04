@@ -286,9 +286,20 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
     $podIds: [String]
     $limit: Int
     $offset: Int
+    $date: String
+    $onlyPublic: Boolean
   ) {
     getUserTaskBoardTasks(
-      input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
+      input: {
+        userId: $userId
+        statuses: $statuses
+        orgId: $orgId
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        date: $date
+        onlyPublic: $onlyPublic
+      }
     ) {
       ...TaskCardFragment
     }

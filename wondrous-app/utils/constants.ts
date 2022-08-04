@@ -593,3 +593,8 @@ export const DAO_CATEGORIES = {
   fun_memeable: '💀 Fun and memeable',
   building_products: '‍🏗️ Building products',
 } as const;
+
+export const SORT_BY = {
+  DESC: 'desc',
+  ASC: 'asc',
+};
