@@ -30,6 +30,7 @@ type Props = {
   // Callback fired when the value changes
   onChange?: (ids: string[]) => unknown;
   onCreate?: (option: Option) => unknown;
+  autoFocus?: boolean;
 };
 
 const filter = createFilterOptions({
@@ -40,9 +41,15 @@ const filter = createFilterOptions({
 const colors = Object.values(ColorTypes);
 const randomColors = shuffle(colors);
 
-function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
+function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false }: Props) {
   const [openTags, setOpenTags] = useState(false);
   const [randomColor, setRandomColor] = useState(randomColors[0]);
+
+  useEffect(() => {
+    if (autoFocus) {
+      setOpenTags(true);
+    }
+  }, [autoFocus]);
 
   const generateRandomColor = () => {
     return options.length < colors.length
@@ -152,6 +159,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
         return (
           <TagsTextField
             {...params}
+            autoFocus={autoFocus}
             fullWidth={true}
             placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
             InputProps={{
