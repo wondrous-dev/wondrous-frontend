@@ -1,6 +1,6 @@
-import { ApolloClient, InMemoryCache, HttpLink, split, defaultDataIdFromObject } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utilities';
+import { offsetLimitPagination } from '@apollo/client/utilities';
 import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuth';
 
 // Staging is http://34.135.9.199/graphql
@@ -49,11 +49,53 @@ const cache = new InMemoryCache({
         },
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
-        getOrgMembershipRequest: offsetLimitPagination(),
-        getPodMembershipRequest: offsetLimitPagination(),
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
-        getProposalsUserCanReview: offsetLimitPagination(),
-        getSubmissionsUserCanReview: offsetLimitPagination(),
+        getOrgMembershipRequest: offsetLimitPagination(['orgId', 'podIds', 'date']),
+        getPodMembershipRequest: offsetLimitPagination(['orgId', 'podIds', 'date']),
+        getProposalsUserCanReview: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date']],
+          merge: (existing, incoming, { args }) => {
+            const merged = existing ? existing.slice(0) : [];
+            if (incoming) {
+              if (args) {
+                // Assume an offset of 0 if args.offset omitted.
+                const { offset = 0 } = args.input;
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+              } else {
+                // It's unusual (probably a mistake) for a paginated field not
+                // to receive any arguments, so you might prefer to throw an
+                // exception here, instead of recovering by appending incoming
+                // onto the existing array.
+                merged.push.apply(merged, incoming);
+              }
+            }
+            return merged;
+          },
+        },
+        getSubmissionsUserCanReview: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date']],
+          merge: (existing, incoming, { args }) => {
+            const merged = existing ? existing.slice(0) : [];
+            if (incoming) {
+              if (args) {
+                // Assume an offset of 0 if args.offset omitted.
+                const { offset = 0 } = args.input;
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+              } else {
+                // It's unusual (probably a mistake) for a paginated field not
+                // to receive any arguments, so you might prefer to throw an
+                // exception here, instead of recovering by appending incoming
+                // onto the existing array.
+                merged.push.apply(merged, incoming);
+              }
+            }
+            return merged;
+          },
+        },
         getSubtasksForTask: offsetLimitPagination(['taskId', 'status']),
       },
     },
@@ -62,5 +104,5 @@ const cache = new InMemoryCache({
 
 export default new ApolloClient({
   link: authLink.concat(httpLink),
-  cache,
+  cache: cache,
 });
