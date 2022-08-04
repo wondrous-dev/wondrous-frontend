@@ -235,7 +235,28 @@ const SingleDatePicker = ({
         />
       </Box>
       <ClickAwayListener onClickAway={handleClickAway} mouseEvent={'onMouseDown'}>
-        <Popper open={isOpen} anchorEl={anchorEl.current} placement="bottom" disablePortal={true}>
+        <Popper
+          open={isOpen}
+          anchorEl={anchorEl.current}
+          placement="top"
+          disablePortal={true}
+          modifiers={[
+            {
+              name: 'flip',
+              enabled: true,
+              options: {
+                altBoundary: true,
+                rootBoundary: 'document',
+                padding: 8,
+              },
+            },
+            {
+              name: 'preventOverflow',
+              enabled: true,
+              options: { altAxis: true, altBoundary: true, tether: true, rootBoundary: 'document', padding: 8 },
+            },
+          ]}
+        >
           <Box sx={styles.mainContainer}>
             <Box sx={{ ...styles.root, ...sx }}>
               <Box sx={styles.inputContainer}>
