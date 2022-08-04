@@ -1,6 +1,6 @@
-import { ApolloClient, InMemoryCache, HttpLink, split, defaultDataIdFromObject } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utilities';
+import { offsetLimitPagination } from '@apollo/client/utilities';
 import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuth';
 
 // Staging is http://34.135.9.199/graphql
@@ -50,8 +50,8 @@ const cache = new InMemoryCache({
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
-        getOrgMembershipRequest: offsetLimitPagination(['orgId', 'podIds', 'date']),
-        getPodMembershipRequest: offsetLimitPagination(['orgId', 'podIds', 'date']),
+        // getOrgMembershipRequest: offsetLimitPagination(),
+        getPodMembershipRequest: offsetLimitPagination(),
         getProposalsUserCanReview: {
           keyArgs: ['input', ['orgId', 'podIds', 'date']],
           merge: (existing, incoming, { args }) => {
@@ -104,5 +104,5 @@ const cache = new InMemoryCache({
 
 export default new ApolloClient({
   link: authLink.concat(httpLink),
-  cache,
+  cache: cache,
 });
