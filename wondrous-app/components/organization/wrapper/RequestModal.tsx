@@ -105,9 +105,6 @@ export const MembershipRequestModal = (props) => {
     }
   };
 
-  const [textError, setTextError] = useState(false);
-  const user = useMe();
-  console.log(user);
   const useGetOrgRoles = (org) => {
     const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
       fetchPolicy: 'network-only',
@@ -125,8 +122,6 @@ export const MembershipRequestModal = (props) => {
   };
 
   const orgRoles = useGetOrgRoles(orgId);
-
-  console.log(orgRoles);
 
   const roleIndex = orgRoles
     ? orgRoles.findIndex((object) => {
@@ -151,8 +146,6 @@ export const MembershipRequestModal = (props) => {
   };
   const [anchorEl, setAnchorEl] = useState(null);
   const openLevel = Boolean(anchorEl);
-  console.log(anchorEl);
-  const handleOnClickButton = (e) => setAnchorEl(anchorEl ? null : e.currentTarget);
   const handleOnClickAway = () => setAnchorEl(null);
   const board = useOrgBoard();
   const [requestMessage, setRequestMessage] = useState('');
@@ -207,9 +200,6 @@ export const MembershipRequestModal = (props) => {
               <RequestModalCustomPopper>
                 {showPopper
                   ? orgRoles?.map((role) => {
-                      console.log(role.name);
-                      console.log(role.name === levelPicked);
-                      console.log(String(role.name === levelPicked));
                       return (
                         <SelectMenuBoardTypeItem
                           picked={role.name === levelPicked}

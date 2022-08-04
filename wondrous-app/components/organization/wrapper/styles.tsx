@@ -19,7 +19,7 @@ export const OverviewComponent = styled.section`
   min-height: 100vh;
   height: 100%;
   //background-color: ${palette.background.default};
-  background-color: #0f0f0f;
+  background-color: ${greyColors.grey910};
   transition: 0.15s all ease;
   padding-bottom: 40px;
 `;
@@ -39,7 +39,7 @@ export const RequestModalTitleBar = styled.div`
   align-items: center;
   margin-bottom: 18px;
   padding-bottom: 16px;
-  border-bottom: 0.5px dashed #4b4b4b;
+  border-bottom: 0.5px dashed ${greyColors.grey75};
   ${(props) => props.style}
 `;
 
@@ -52,13 +52,13 @@ export const RequestModalRolesAbilityContainer = styled.div`
   margin-bottom: 18px;
   margin-top: 18px;
   padding-bottom: 6px;
-  border-bottom: 0.5px dashed #4b4b4b;
+  border-bottom: 0.5px dashed ${greyColors.grey75};
 `;
 
 export const RequestModalCustomPopper = styled.div`
   position: absolute;
   background-color: black;
-  border-bottom: 0.5px #4b4b4b;
+  border-bottom: 0.5px ${greyColors.grey75};
   width: 80%;
   border-radius: 6px;
   margin-top: 6px;
@@ -67,8 +67,8 @@ export const RequestModalCustomPopper = styled.div`
 
 export const RequestModalTextareaWrapper = styled.div`
   margin-top: 42px;
-  color: #c4c4c4;
-  background: #0f0f0f;
+  color: ${greyColors.grey33};
+  background: ${greyColors.grey910};
   border-radius: 6px;
   padding: 15px 18px;
 `;
@@ -105,21 +105,21 @@ export const RequestModalTypeItem = styled(MenuItem)`
     border-radius: 3px;
     padding: 6px;
     :hover {
-      background-color: #7a7a7a;
+      background-color: ${greyColors.grey57};
     }
   }
   &&.Mui-selected {
     background: none;
     :hover {
-      background-color: #474747;
+      background-color: ${greyColors.grey78};
     }
   }
 `;
 
 export const RequestModalTextarea = styled(TextareaAutosize)`
-  color: #c4c4c4;
+  color: ${greyColors.grey33};
   border-radius: 6px;
-  background: #0f0f0f;
+  background: ${greyColors.grey910};
   width: 100%;
   font-family: 'Space Grotesk';
   font-size: 14px;
@@ -151,7 +151,7 @@ export const RequestModalRolesAbilityCheckIcon = styled(CheckMarkIcon)`
   width: 24px;
   height: 24px;
   padding: 2px;
-  background-color: #474747;
+  background-color: ${greyColors.grey78};
   border-radius: 4px;
   margin-right: 16px;
 `;
@@ -159,7 +159,7 @@ export const RequestModalRolesAbilityCheckIcon = styled(CheckMarkIcon)`
 export const RequestModalRolesAbilityCloseIcon = styled(CloseModalIconRed)`
   width: 24px;
   height: 24px;
-  background-color: #474747;
+  background-color: ${greyColors.grey78};
   border-radius: 4px;
   margin-right: 16px;
 `;
@@ -180,7 +180,7 @@ export const RequestModalButtonsContainer = styled.div`
   width: 100%;
   justify-content: flex-end;
   align-items: center;
-  background: #141414;
+  background: ${greyColors.grey105};
   padding: 24px;
 `;
 
@@ -196,7 +196,7 @@ export const RequestModalTitle = styled(Typography)`
 
 export const RequestModalCloseIcon = styled(CloseModalIcon)`
   transform: rotate(90deg);
-  background: rgba(0, 0, 0, 1);
+  background: black;
   width: 32px;
   height: 32px;
   padding: 8px;
@@ -212,8 +212,7 @@ export const RequestModalCloseIcon = styled(CloseModalIcon)`
 export const RequestModalBox = styled(Box)`
   width: 488px;
   height: 224px;
-  //for consistency on modals
-  background-color: #1d1d1d;
+  background-color: ${greyColors.grey98};
   padding: 24px;
 `;
 
@@ -613,7 +612,7 @@ export const PostComponent = styled(BaseCard)`
 export const PostBlock = styled.div`
   position: relative;
   padding: 0 26px 18px;
-  border-left: 1px solid #4b4b4b;
+  border-left: 1px solid ${greyColors.grey75};
   margin-bottom: 0 !important;
 `;
 
@@ -667,7 +666,7 @@ export const PostTask = styled.div`
   width: 100%;
   padding: 14px 14px 18px;
 
-  border: 1px solid #4b4b4b;
+  border: 1px solid ${greyColors.grey75};
   border-top-right-radius: 6px;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
