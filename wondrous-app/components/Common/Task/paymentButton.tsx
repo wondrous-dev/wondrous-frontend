@@ -7,7 +7,7 @@ import { useApprovedSubmission } from 'utils/hooks';
 import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 
-export const PaymentButton = (props) => {
+export function PaymentButton(props) {
   const approvedSubmissionContext = useApprovedSubmission();
   const { fetchedTask, taskSubmissions, handleClose, getTaskSubmissionsForTask, submission } = props;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
@@ -62,4 +62,4 @@ export const PaymentButton = (props) => {
       )}
     </>
   );
-};
+}

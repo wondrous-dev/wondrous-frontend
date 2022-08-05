@@ -1,11 +1,15 @@
 import React, { useMemo, useState, useEffect } from 'react';
 import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
-import { SmallAvatar } from '../Common/AvatarList';
-import { StyledBadge } from '../Header/styles';
 import NotificationsIcon from 'components/Icons/notifications';
 import Link from 'next/link';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { useInView } from 'react-intersection-observer';
+import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
+import { useMutation } from '@apollo/client';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
+import calculateTimeLapse from 'utils/calculateTimeLapse';
+import SmartLink from 'components/Common/SmartLink';
+import Tooltip from 'components/Tooltip';
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -25,17 +29,11 @@ import {
   NotificationsDot,
   NotificationsTitle,
 } from './styles';
-import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
-import { useMutation } from '@apollo/client';
-import { GET_NOTIFICATIONS } from 'graphql/queries';
-import calculateTimeLapse from 'utils/calculateTimeLapse';
-import SmartLink from 'components/Common/SmartLink';
-import Tooltip from 'components/Tooltip';
+import { StyledBadge } from '../Header/styles';
+import { SmallAvatar } from '../Common/AvatarList';
 
-const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifications }) => {
-  const unreadCount = useMemo(() => {
-    return notifications?.filter((n) => !n.viewedAt).length;
-  }, [notifications]);
+function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifications }) {
+  const unreadCount = useMemo(() => notifications?.filter((n) => !n.viewedAt).length, [notifications]);
 
   const [isOpen, setIsOpen] = useState(false);
   const [ref, inView] = useInView({});
@@ -88,7 +86,7 @@ const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifica
 
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
-    const objectId = notification.objectId;
+    const { objectId } = notification;
 
     const object = (
       <span>
@@ -109,9 +107,7 @@ const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifica
   const getContentPreview = (notification) => {
     if (notification?.additionalData?.contentPreview) {
       let contentPreview = notification.additionalData.contentPreview.substring(0, 30);
-      contentPreview.length < notification.additionalData.contentPreview.length
-        ? (contentPreview = contentPreview + '...')
-        : undefined;
+      contentPreview.length < notification.additionalData.contentPreview.length ? (contentPreview += '...') : undefined;
       return contentPreview;
     }
     return null;
@@ -121,7 +117,7 @@ const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifica
 
   return (
     <>
-      <NotificationsOverlay onClick={toggleNotifications} style={{ display: display }} />
+      <NotificationsOverlay onClick={toggleNotifications} style={{ display }} />
       <div style={{ position: 'relative' }}>
         <StyledBadge
           color="primary"
@@ -133,7 +129,7 @@ const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifica
             <NotificationsIcon />
           </Tooltip>
         </StyledBadge>
-        <NotificationsBoardWrapper style={{ display: display }}>
+        <NotificationsBoardWrapper style={{ display }}>
           <NotificationsBoardHeader>
             <NotificationsTitle>Notifications</NotificationsTitle>
             <NotificationsMarkRead enabled={unreadCount > 0}>
@@ -145,7 +141,7 @@ const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifica
               const isNotificationViewed = notification?.viewedAt;
               return (
                 <SmartLink
-                  key={'notifications-' + notification.id}
+                  key={`notifications-${notification.id}`}
                   href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
                   onClick={() => {
                     markNotificationRead({
@@ -173,23 +169,23 @@ const NotificationsBoard = ({ notifications, setNotifications, fetchMoreNotifica
               );
             })
           ) : (
-            <NotificationsItem emptyNotifications={true}>
-              <NotificationItemBody emptyNotifications={true}>No notifications</NotificationItemBody>
+            <NotificationsItem emptyNotifications>
+              <NotificationItemBody emptyNotifications>No notifications</NotificationItemBody>
             </NotificationsItem>
           )}
           <LoadMore
             style={{
               height: '20px',
             }}
-            hasMore={true}
+            hasMore
             ref={ref}
           />
         </NotificationsBoardWrapper>
-        <NotificationsBoardArrow style={{ display: display }} />
-        <NotificationsBoardOverArrow style={{ display: display }} />
+        <NotificationsBoardArrow style={{ display }} />
+        <NotificationsBoardOverArrow style={{ display }} />
       </div>
     </>
   );
-};
+}
 
 export default NotificationsBoard;

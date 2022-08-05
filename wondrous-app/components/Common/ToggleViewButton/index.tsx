@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { ToggleViewWrapper, ToggleViewOption } from './styles';
 import Tooltip from 'components/Tooltip';
+import { ToggleViewWrapper, ToggleViewOption } from './styles';
 
 interface IToggleViewButtonProps {
   options: {
@@ -14,7 +14,7 @@ interface IToggleViewButtonProps {
 }
 
 // Toggler between views (i.e. grid vs list)
-export const ToggleViewButton = (props: IToggleViewButtonProps) => {
+export function ToggleViewButton(props: IToggleViewButtonProps) {
   const { options } = props;
 
   return (
@@ -23,9 +23,9 @@ export const ToggleViewButton = (props: IToggleViewButtonProps) => {
         let className = opt.active && !opt?.disabled ? 'active' : '';
         if (opt?.disabled) className = `${className} disabled`;
         return (
-          <Tooltip key={'toggle-option-' + opt.name} title={opt.name + ' view'} placement="top">
+          <Tooltip key={`toggle-option-${opt.name}`} title={`${opt.name} view`} placement="top">
             <ToggleViewOption
-              key={'toggle-option-' + opt.name}
+              key={`toggle-option-${opt.name}`}
               className={className}
               onClick={() => {
                 opt.action();
@@ -38,4 +38,4 @@ export const ToggleViewButton = (props: IToggleViewButtonProps) => {
       })}
     </ToggleViewWrapper>
   );
-};
+}

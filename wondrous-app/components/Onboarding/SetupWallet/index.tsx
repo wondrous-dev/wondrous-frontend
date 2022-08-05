@@ -5,8 +5,6 @@ import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
-import WalletIcon from '../../../public/images/onboarding/union.svg';
-import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import { ErrorText } from 'components/Common';
@@ -17,8 +15,10 @@ import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
 import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
+import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
+import WalletIcon from '../../../public/images/onboarding/union.svg';
 
-export const SetupWallet = () => {
+export function SetupWallet() {
   const router = useRouter();
   const isMobile = useIsMobile();
 
@@ -124,4 +124,4 @@ export const SetupWallet = () => {
       </div>
     </OnboardingLayout>
   );
-};
+}

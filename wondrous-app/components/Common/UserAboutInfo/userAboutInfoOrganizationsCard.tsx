@@ -12,7 +12,7 @@ import {
   UserAboutInfoCardNoLogo,
 } from './styles';
 
-const AboutOrganizationsCard = (props) => {
+function AboutOrganizationsCard(props) {
   const router = useRouter();
   const { name, description, profilePicture, thumbnailPicture, username } = props;
   const handleOnClick = () => router.push(`/organization/${username}/boards`);
@@ -43,6 +43,6 @@ const AboutOrganizationsCard = (props) => {
       <UserAboutInfoCardContent>{description}</UserAboutInfoCardContent>
     </UserAboutInfoCard>
   );
-};
+}
 
 export default AboutOrganizationsCard;

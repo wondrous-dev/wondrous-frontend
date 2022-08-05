@@ -35,29 +35,33 @@ export const CommentItemContainer = styled.div`
   `}
 `;
 
-export const CommentProfilePicture = (props) => (
-  <SafeImage
-    src={props?.src}
-    useNextImage={false}
-    style={{
-      width: '32px',
-      height: '32px',
-      borderRadius: '16px',
-      marginRight: '12px',
-    }}
-  />
-);
+export function CommentProfilePicture(props) {
+  return (
+    <SafeImage
+      src={props?.src}
+      useNextImage={false}
+      style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '16px',
+        marginRight: '12px',
+      }}
+    />
+  );
+}
 
-export const DefaultCommentProfilePicture = (props) => (
-  <DefaultUserImage
-    style={{
-      width: '32px',
-      height: '32px',
-      borderRadius: '16px',
-      marginRight: '12px',
-    }}
-  />
-);
+export function DefaultCommentProfilePicture(props) {
+  return (
+    <DefaultUserImage
+      style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '16px',
+        marginRight: '12px',
+      }}
+    />
+  );
+}
 
 export const CommentTopFlexDiv = styled.div`
   display: flex;

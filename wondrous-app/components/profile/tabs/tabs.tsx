@@ -4,7 +4,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { StyledTabs } from './styles';
 
-const Tabs = (props) => {
+function Tabs(props) {
   const { children } = props;
 
   const router = useRouter();
@@ -45,6 +45,6 @@ const Tabs = (props) => {
       <div>{children}</div>
     </div>
   );
-};
+}
 
 export default Tabs;

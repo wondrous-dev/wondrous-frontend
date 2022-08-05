@@ -11,7 +11,7 @@ const DECISIONS = [
   // [DECISION_APPROVE_AND_PAY, ApproveAndPayIcon], NOTE: Per Terry's instruction, payments should be hidden for now in Admin View
 ];
 
-export const DropDownPopper = (props) => {
+export function DropDownPopper(props) {
   const { onClose, userId, orgId, podId } = props;
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
@@ -88,4 +88,4 @@ export const DropDownPopper = (props) => {
       </StyledList>
     </StyledPopper>
   );
-};
+}

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/router';
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
 import { Button } from 'components/Common/button';
@@ -8,11 +8,10 @@ import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
 import { StyledLink } from 'components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
-import { useState } from 'react';
 import { CenteredFlexRow } from 'components/Common/index';
 import { LockIcon } from 'components/Icons/userpass';
 
-const ResetPassword = () => {
+function ResetPassword() {
   const [password, setPassword] = useState('');
   const [repassword, setRePassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
@@ -70,6 +69,6 @@ const ResetPassword = () => {
       </LoginWrapper>
     </AuthLayout>
   );
-};
+}
 
 export default ResetPassword;

@@ -184,12 +184,12 @@ export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: ${({ color }) => (color ? color : '#0f0f0f')};
+  background: ${({ color }) => color || '#0f0f0f'};
   width: 24px;
   height: 24px;
 `;
 
-//headerBlock.tsx styles
+// headerBlock.tsx styles
 export const SettingsHeaderBlock = styled.div`
   position: relative;
   width: 100%;
@@ -254,7 +254,7 @@ export const SettingsHeaderInviteButtonIcon = styled.div`
   border-radius: 1000px;
 `;
 
-//general settings styles
+// general settings styles
 export const GeneralSettingsContainer = styled.div`
   height: 100%;
   width: 555px;
@@ -331,7 +331,7 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   }
 `;
 
-//socials block
+// socials block
 export const GeneralSettingsSocialsBlock = styled.div`
   padding: 30px 0 15px;
   border-bottom: 1px solid #363636;
@@ -359,7 +359,7 @@ export const GeneralSettingsSocialsBlockRowLabel = styled.div`
   margin-right: 10px;
 `;
 
-//integrations block
+// integrations block
 export const GeneralSettingsIntegrationsBlock = styled.div`
   width: 100%;
   padding: 28px 0;
@@ -390,7 +390,7 @@ export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   }
 `;
 
-//buttons block
+// buttons block
 export const GeneralSettingsButtonsBlock = styled.div`
   padding: 30px 0;
   display: flex;
@@ -423,7 +423,7 @@ export const GeneralSettingsSaveChangesButton = styled(Button)`
   }
 `;
 
-//imageUpload.tsx section
+// imageUpload.tsx section
 export const ImageUploadBlock = styled.div`
   width: 100%;
   padding: 30px 0;
@@ -482,7 +482,7 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
   }
 `;
 
-//LinkSquareIcon.tsx
+// LinkSquareIcon.tsx
 export const LinkSquareIconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -493,7 +493,7 @@ export const LinkSquareIconWrapper = styled.div`
   padding: 10px;
 `;
 
-//InputField.tsx
+// InputField.tsx
 export const LinkInputField = styled(InputBase)`
   && {
     width: 333px;

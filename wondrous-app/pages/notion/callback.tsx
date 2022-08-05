@@ -1,12 +1,11 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
 
-import { Typography } from '@mui/material';
+import { Typography, CircularProgress } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { CONNECT_NOTION_TO_ORG } from 'graphql/mutations/org';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
 import { CallbackBackground, CallbackHeading, CallbackWrapper } from 'components/Common/CallbackWrapper';
 import { LINK } from 'utils/constants';
 
@@ -35,7 +34,7 @@ export default function NotionCallbackPage() {
 
   return (
     <>
-      <CallbackBackground></CallbackBackground>
+      <CallbackBackground />
       <CallbackWrapper>
         <CallbackHeading>Connecting Notion Workspace</CallbackHeading>
         <CircularProgress />

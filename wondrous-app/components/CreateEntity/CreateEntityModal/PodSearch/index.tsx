@@ -19,7 +19,7 @@ import {
   PodSearchWrapper,
 } from './styles';
 
-const PodSearch = (props) => {
+function PodSearch(props) {
   const { options, onChange, value, disabled } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
@@ -46,58 +46,52 @@ const PodSearch = (props) => {
             <PodSearchButtonArrowIcon />
           )}
         </PodSearchButton>
-        <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal={true}>
+        <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal>
           <PodSearchAutocomplete
             value={selectedValue}
-            renderInput={(params) => {
-              return (
-                <PodSearchInput
-                  {...params}
-                  ref={params.InputProps.ref}
-                  disableUnderline={true}
-                  fullWidth={true}
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <PodSearchInputAdornment position="end">
-                        <PodSearchInputIcon />
-                      </PodSearchInputAdornment>
-                    ),
-                  }}
-                />
-              );
-            }}
-            disableClearable={true}
-            isOptionEqualToValue={(option, value) => {
-              return option.value === value?.value;
-            }}
+            renderInput={(params) => (
+              <PodSearchInput
+                {...params}
+                ref={params.InputProps.ref}
+                disableUnderline
+                fullWidth
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <PodSearchInputAdornment position="end">
+                      <PodSearchInputIcon />
+                    </PodSearchInputAdornment>
+                  ),
+                }}
+              />
+            )}
+            disableClearable
+            isOptionEqualToValue={(option, value) => option.value === value?.value}
             getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => {
-              return (
-                <PodSearchListItem {...props}>
-                  <PodSearchDefaultImage color={option?.color ?? '#474747'} />
-                  <PodSearchLabel>{option?.label}</PodSearchLabel>
-                </PodSearchListItem>
-              );
-            }}
+            renderOption={(props, option) => (
+              <PodSearchListItem {...props}>
+                <PodSearchDefaultImage color={option?.color ?? '#474747'} />
+                <PodSearchLabel>{option?.label}</PodSearchLabel>
+              </PodSearchListItem>
+            )}
             PaperComponent={PodSearchPaper}
             ListboxComponent={PodSearchList}
             PopperComponent={(params) => <PodSearchAutocompletePopper {...params} />}
             open={open}
             options={options}
-            disablePortal={true}
+            disablePortal
             onChange={(event, value, reason) => {
               if (reason === 'selectOption') {
                 onChange(value.value);
                 handleClickAway();
               }
             }}
-            blurOnSelect={true}
+            blurOnSelect
           />
         </PodSearchPopper>
       </PodSearchWrapper>
     </PodSearchClickAway>
   );
-};
+}
 
 export default PodSearch;

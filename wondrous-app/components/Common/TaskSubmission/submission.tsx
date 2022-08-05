@@ -28,7 +28,7 @@ import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
 import { SubmissionPayment } from './submissionPayment';
 
-const SubmissionButtonWrapper = ({ onClick = null, buttonText = null, helperText = '' }) => {
+function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '' }) {
   return (
     <SubmissionButtonWrapperGradient>
       <SubmissionButtonWrapperBackground>
@@ -41,10 +41,11 @@ const SubmissionButtonWrapper = ({ onClick = null, buttonText = null, helperText
       </SubmissionButtonWrapperBackground>
     </SubmissionButtonWrapperGradient>
   );
-};
+}
 
-const inProgressMoveCompleted = ({ handleClose, boardColumns, board }) => {
-  return (data) => {
+const inProgressMoveCompleted =
+  ({ handleClose, boardColumns, board }) =>
+  (data) => {
     const task = data?.updateTaskStatus;
     handleClose();
     if (boardColumns?.setColumns) {
@@ -65,14 +66,13 @@ const inProgressMoveCompleted = ({ handleClose, boardColumns, board }) => {
       boardColumns?.setColumns(columns);
     }
   };
-};
 
-const TaskSubmissionsLoading = ({ loading }) => {
+function TaskSubmissionsLoading({ loading }) {
   if (!loading) return null;
   return <CircularProgress />;
-};
+}
 
-const TaskSubmissionsTaskToDo = ({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) => {
+function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) {
   if (taskStatus === TASK_STATUS_TODO) {
     if (canSubmit || canMoveProgress) {
       return (
@@ -83,22 +83,22 @@ const TaskSubmissionsTaskToDo = ({ handleTaskProgressStatus, canSubmit, canMoveP
         />
       );
     }
-    return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
+    return <SubmissionButtonWrapper helperText="No submissions yet." />;
   }
   return null;
-};
+}
 
-const TaskSubmissionsTaskInProgress = ({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) => {
+function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) {
   if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
     if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
+    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText="No submissions yet." />;
   }
   return null;
-};
+}
 
-const TaskSubmissionMakePayment = ({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) => {
+function TaskSubmissionMakePayment({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) {
   if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK) {
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText={`No submissions`} />;
+    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText="No submissions" />;
     return (
       <SubmissionPayment
         fetchedTask={fetchedTask}
@@ -108,16 +108,16 @@ const TaskSubmissionMakePayment = ({ taskStatus, fetchedTask, setShowPaymentModa
     );
   }
   return null;
-};
+}
 
-const TaskSubmissionsForm = ({
+function TaskSubmissionsForm({
   makeSubmission,
   handleCancelSubmission,
   fetchedTaskSubmissions,
   orgId,
   fetchedTask,
   submissionToEdit,
-}) => {
+}) {
   if (makeSubmission)
     return (
       <TaskSubmissionForm
@@ -137,9 +137,9 @@ const TaskSubmissionsForm = ({
       />
     );
   return null;
-};
+}
 
-const TaskSubmissionList = ({
+function TaskSubmissionList({
   fetchedTaskSubmissions,
   setSubmissionToEdit,
   canReview,
@@ -147,34 +147,32 @@ const TaskSubmissionList = ({
   handleClose,
   loggedInUser,
   getTaskSubmissionsForTask,
-}) => {
+}) {
   return (
     <TaskSubmissionItemsWrapper>
-      {fetchedTaskSubmissions?.map((taskSubmission) => {
-        return (
-          <SubmissionItem
-            setSubmissionToEdit={setSubmissionToEdit}
-            key={taskSubmission?.id}
-            canReview={canReview}
-            fetchedTask={fetchedTask}
-            handleClose={handleClose}
-            fetchedTaskSubmissions={fetchedTaskSubmissions}
-            submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
-            user={loggedInUser}
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-          />
-        );
-      })}
+      {fetchedTaskSubmissions?.map((taskSubmission) => (
+        <SubmissionItem
+          setSubmissionToEdit={setSubmissionToEdit}
+          key={taskSubmission?.id}
+          canReview={canReview}
+          fetchedTask={fetchedTask}
+          handleClose={handleClose}
+          fetchedTaskSubmissions={fetchedTaskSubmissions}
+          submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
+          user={loggedInUser}
+          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+        />
+      ))}
     </TaskSubmissionItemsWrapper>
   );
-};
+}
 
-const TaskSubmissionsFormInactive = ({ makeSubmission, submissionToEdit, children }) => {
+function TaskSubmissionsFormInactive({ makeSubmission, submissionToEdit, children }) {
   if (makeSubmission || submissionToEdit) return null;
   return <TaskSubmissionsFormInactiveWrapper>{children}</TaskSubmissionsFormInactiveWrapper>;
-};
+}
 
-export const TaskSubmissions = (props) => {
+export function TaskSubmissions(props) {
   const {
     board,
     boardColumns,
@@ -268,4 +266,4 @@ export const TaskSubmissions = (props) => {
       </TaskSubmissionsFormInactive>
     </>
   );
-};
+}

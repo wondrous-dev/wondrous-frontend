@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
+
 export const EmptyStateGenericWrapper = styled.div`
   display: flex;
   justify-content: center;

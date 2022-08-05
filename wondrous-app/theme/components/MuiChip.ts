@@ -1,8 +1,8 @@
 const MuiChip = {
   styleOverrides: {
     root: {
-      '& .MuiChip-deleteIcon':{
-        color: 'inherit'
+      '& .MuiChip-deleteIcon': {
+        color: 'inherit',
       },
     },
   },

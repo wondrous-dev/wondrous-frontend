@@ -3,17 +3,21 @@ import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
 import { Button, CircularProgress } from '@mui/material';
-import CheckMarkIcon from '../../Icons/checkMark';
-import RedXIcon from '../../Icons/redx';
 import { useRouter } from 'next/router';
 import {
   CHECK_ORG_ROLE_TOKEN_GATING_CONDITION,
   CHECK_POD_ROLE_TOKEN_GATING_CONDITION,
+  GET_TOKEN_INFO,
+  GET_NFT_INFO,
 } from 'graphql/queries/tokenGating';
 import { useWonderWeb3 } from 'services/web3';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import palette from 'theme/palette';
+import { useEditTokenGatingCondition } from 'utils/hooks';
+import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
+import Tooltip from 'components/Tooltip';
 import { ErrorText } from '../../Common';
 import Accordion from '../../Common/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { useMe } from '../../Auth/withAuth';
 
@@ -26,11 +30,8 @@ import {
   ClaimRoleLabel,
   RoleActionWrapper,
 } from './styles';
-import palette from 'theme/palette';
-import { useEditTokenGatingCondition } from 'utils/hooks';
-import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
-import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
-import Tooltip from 'components/Tooltip';
+import RedXIcon from '../../Icons/redx';
+import CheckMarkIcon from '../../Icons/checkMark';
 
 interface TokenGatingCondition {
   id: string;
@@ -56,7 +57,7 @@ const CHAIN_NAME_TO_CHAIN_ID = {
 };
 const UNDEFINED_CONTRACT_RESPONSE = 'Unidentified contract';
 
-const TokenGatedRoleDisplay = (props) => {
+function TokenGatedRoleDisplay(props) {
   const router = useRouter();
   const user = useMe();
   const [tokenName, setTokenName] = useState(null);
@@ -181,7 +182,7 @@ const TokenGatedRoleDisplay = (props) => {
       <div>
         <TokenGatedRoleTitle>Role: {role?.name}</TokenGatedRoleTitle>
         {/* {tokenGatingConditionName && <TokenGatedRoleDescription> {tokenGatingConditionName}</TokenGatedRoleDescription>} */}
-        <Tooltip key={'claimable-role-' + role?.tokenGatingCondition?.id} title={contractAddress} placement="top">
+        <Tooltip key={`claimable-role-${role?.tokenGatingCondition?.id}`} title={contractAddress} placement="top">
           <div
             style={{
               display: 'flex',
@@ -254,6 +255,6 @@ const TokenGatedRoleDisplay = (props) => {
       </RoleActionWrapper>
     </TokenGatedRoleWrapper>
   );
-};
+}
 
 export default TokenGatedRoleDisplay;

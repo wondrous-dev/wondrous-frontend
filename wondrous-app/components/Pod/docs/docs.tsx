@@ -17,12 +17,12 @@ import PinnedDocsSection from 'components/PinnedDocsSection';
 import DocCategoriesSection from 'components/DocCategoriesSection';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 
-import Wrapper from '../wrapper';
 import styles from 'components/organization/docs/docsStyles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
+import Wrapper from '../wrapper';
 
 const useGetPodDocs = (podId) => {
   const [getPodDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_POD_DOCS, {
@@ -61,7 +61,7 @@ const useGetPodDocs = (podId) => {
   };
 };
 
-const Docs = (props) => {
+function Docs(props) {
   const { podData = {} } = props;
   const { id: podId } = podData;
   const router = useRouter();
@@ -213,6 +213,6 @@ const Docs = (props) => {
       <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
     </Wrapper>
   );
-};
+}
 
 export default Docs;

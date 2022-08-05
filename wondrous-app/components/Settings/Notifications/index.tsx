@@ -13,6 +13,12 @@ import {
   MANUAL_DISCORD_ORG_SETUP,
 } from 'graphql/mutations';
 
+import DiscordNotificationSetup, { BOT_URL } from 'components/DiscordNotificationSetup';
+import Link from 'next/link';
+import palette from 'theme/palette';
+import InputForm from 'components/Common/InputForm/inputForm';
+import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { SettingsWrapper } from '../settingsWrapper';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
 import { HeaderBlock } from '../headerBlock';
@@ -27,7 +33,6 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import DiscordNotificationSetup, { BOT_URL } from 'components/DiscordNotificationSetup';
 import {
   AddGuildButton,
   DiscordText,
@@ -36,14 +41,9 @@ import {
   LabelBlock,
   LabelBlockText,
 } from '../styles';
-import Link from 'next/link';
-import palette from 'theme/palette';
 import { ErrorText } from '../../Common';
-import InputForm from 'components/Common/InputForm/inputForm';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
-import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 
-const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) => {
+function CurrentNotificationSetting({ discordNotificationConfigData, orgId }) {
   const notificationEnabled = discordNotificationConfigData?.disabledAt === null;
   const [notificationOn, setNotificationOn] = useState(notificationEnabled);
   const [configurationError, setConfigurationError] = useState(null);
@@ -101,69 +101,67 @@ const CurrentNotificationSetting = ({ discordNotificationConfigData, orgId }) =>
     }
   };
   return (
-    <>
-      <StyledTableContainer
-        style={{
-          marginLeft: '-3%',
-          width: '100%',
-        }}
-      >
-        <StyledTable>
-          <StyledTableHead>
-            <StyledTableRow>
-              {/* <StyledTableCell align="center" width={'10%'}>
+    <StyledTableContainer
+      style={{
+        marginLeft: '-3%',
+        width: '100%',
+      }}
+    >
+      <StyledTable>
+        <StyledTableHead>
+          <StyledTableRow>
+            {/* <StyledTableCell align="center" width={'10%'}>
                 active
               </StyledTableCell> */}
-              <StyledTableCell align="center" width={'45%'}>
-                Connected Server
-              </StyledTableCell>
-              <StyledTableCell align="center" width={'45%'}>
-                channel
-              </StyledTableCell>
-              <StyledTableCell align="center" width="10%">
-                Enabled
-              </StyledTableCell>
-            </StyledTableRow>
-          </StyledTableHead>
-          <StyledTableBody>
-            <StyledTableRow
-              style={{
-                width: '150%',
-              }}
-            >
-              {/* <StyledTableCell align="center">
+            <StyledTableCell align="center" width="45%">
+              Connected Server
+            </StyledTableCell>
+            <StyledTableCell align="center" width="45%">
+              channel
+            </StyledTableCell>
+            <StyledTableCell align="center" width="10%">
+              Enabled
+            </StyledTableCell>
+          </StyledTableRow>
+        </StyledTableHead>
+        <StyledTableBody>
+          <StyledTableRow
+            style={{
+              width: '150%',
+            }}
+          >
+            {/* <StyledTableCell align="center">
                 <CheckMarkIcon />
               </StyledTableCell> */}
-              <StyledTableCell>
-                {serverDisconnectedError ? (
-                  <ErrorText>
-                    discord bot no longer connected to server, please add the bot back to the discord server
-                  </ErrorText>
-                ) : (
-                  <TableValueText>{discordNotificationConfigData?.channelInfo?.guildName}</TableValueText>
-                )}
-              </StyledTableCell>
-              <StyledTableCell>
-                {channelDeletedError ? (
-                  <ErrorText>the channel that the notificatoin was originally going to was deleted</ErrorText>
-                ) : (
-                  <TableValueText>{discordNotificationConfigData?.channelInfo?.channelName}</TableValueText>
-                )}
-              </StyledTableCell>
-              <StyledTableCell>
-                {' '}
-                <Switch size="medium" checked={notificationOn} onChange={(e) => handleEnableDisableSwitch()} />
-              </StyledTableCell>
-            </StyledTableRow>
-          </StyledTableBody>
-        </StyledTable>
-        {mutationError && <ErrorText>{mutationError}</ErrorText>}
-      </StyledTableContainer>
-    </>
+            <StyledTableCell>
+              {serverDisconnectedError ? (
+                <ErrorText>
+                  discord bot no longer connected to server, please add the bot back to the discord server
+                </ErrorText>
+              ) : (
+                <TableValueText>{discordNotificationConfigData?.channelInfo?.guildName}</TableValueText>
+              )}
+            </StyledTableCell>
+            <StyledTableCell>
+              {channelDeletedError ? (
+                <ErrorText>the channel that the notificatoin was originally going to was deleted</ErrorText>
+              ) : (
+                <TableValueText>{discordNotificationConfigData?.channelInfo?.channelName}</TableValueText>
+              )}
+            </StyledTableCell>
+            <StyledTableCell>
+              {' '}
+              <Switch size="medium" checked={notificationOn} onChange={(e) => handleEnableDisableSwitch()} />
+            </StyledTableCell>
+          </StyledTableRow>
+        </StyledTableBody>
+      </StyledTable>
+      {mutationError && <ErrorText>{mutationError}</ErrorText>}
+    </StyledTableContainer>
   );
-};
+}
 let timeout;
-const Notifications = ({ orgId }) => {
+function Notifications({ orgId }) {
   const [showInstructionPage, setShowInstructionPage] = useState(false);
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
@@ -285,40 +283,36 @@ const Notifications = ({ orgId }) => {
                 <DiscordCardElementDiv>
                   <DiscordText>2. Add bot</DiscordText>
                   {guildId && !discordBotAdded?.checkDiscordBotAdded?.botAdded ? (
-                    <>
-                      <AddGuildButton
+                    <AddGuildButton
+                      style={{
+                        border: '1px solid deepskyblue',
+                        backgroundColor: '#272729',
+                      }}
+                      href={`${BOT_URL}&guild_id=${guildId}`}
+                      target="_blank"
+                    >
+                      <DiscordText
                         style={{
-                          border: '1px solid deepskyblue',
-                          backgroundColor: '#272729',
+                          color: palette.white,
+                          fontSize: '14px',
+                          marginBottom: '0',
                         }}
-                        href={`${BOT_URL}&guild_id=${guildId}`}
-                        target="_blank"
                       >
-                        <DiscordText
-                          style={{
-                            color: palette.white,
-                            fontSize: '14px',
-                            marginBottom: '0',
-                          }}
-                        >
-                          Add Wonder bot
-                        </DiscordText>
-                      </AddGuildButton>
-                    </>
+                        Add Wonder bot
+                      </DiscordText>
+                    </AddGuildButton>
                   ) : (
-                    <>
-                      <AddGuildButton disabled>
-                        <DiscordText
-                          style={{
-                            color: '#8b8b8c',
-                            fontSize: '14px',
-                            marginBottom: '0',
-                          }}
-                        >
-                          {discordBotAdded?.checkDiscordBotAdded?.botAdded ? 'Wonder bot added' : 'Add Wonder bot'}
-                        </DiscordText>
-                      </AddGuildButton>
-                    </>
+                    <AddGuildButton disabled>
+                      <DiscordText
+                        style={{
+                          color: '#8b8b8c',
+                          fontSize: '14px',
+                          marginBottom: '0',
+                        }}
+                      >
+                        {discordBotAdded?.checkDiscordBotAdded?.botAdded ? 'Wonder bot added' : 'Add Wonder bot'}
+                      </DiscordText>
+                    </AddGuildButton>
                   )}
                 </DiscordCardElementDiv>
               </DiscordCardElement>
@@ -336,7 +330,7 @@ const Notifications = ({ orgId }) => {
                       background: '#272729',
                     }}
                     options={filteredDiscordChannels}
-                  ></DropdownSelect>
+                  />
                 </DiscordCardElementDiv>
               </DiscordCardElement>
             </DiscordCard>
@@ -375,6 +369,6 @@ const Notifications = ({ orgId }) => {
       </GeneralSettingsIntegrationsBlock>
     </SettingsWrapper>
   );
-};
+}
 
 export default Notifications;

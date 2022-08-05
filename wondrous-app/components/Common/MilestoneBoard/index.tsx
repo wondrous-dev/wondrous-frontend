@@ -1,4 +1,3 @@
-import { MilestoneCard, MilestoneCardTitle, MilestoneIcon, MilestoneProgressWrapper } from './styles';
 import CommentsIcon from 'components/Icons/comments';
 import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import { MilestoneProgress } from 'components/Common/MilestoneProgress';
@@ -12,13 +11,14 @@ import {
   BoardsCardBodyTitle,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-import { SafeImage } from '../Image';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import { SafeImage } from '../Image';
+import { MilestoneCard, MilestoneCardTitle, MilestoneIcon, MilestoneProgressWrapper } from './styles';
 
 export default function Board({ tasks, handleCardClick }) {
   const router = useRouter();

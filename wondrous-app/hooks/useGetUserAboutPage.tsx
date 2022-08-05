@@ -13,9 +13,7 @@ const FETCH_MORE_LIMIT = 8;
 
 const LIMIT = 4;
 
-const hasNoMoreData = (result, limit) => {
-  return isNull(result) || isEmpty(result) || result.length < limit;
-};
+const hasNoMoreData = (result, limit) => isNull(result) || isEmpty(result) || result.length < limit;
 
 const useGetUserAboutPage = (userId) => {
   const [completedTasksData, setCompletedTasksData] = useState([]);
@@ -68,7 +66,7 @@ const useGetUserAboutPage = (userId) => {
     if (!userOrgRolesData && userId) {
       getUserOrgRoles({
         variables: {
-          userId: userId,
+          userId,
         },
       })
         .then(({ data }) => {
@@ -82,7 +80,7 @@ const useGetUserAboutPage = (userId) => {
     if (isEmpty(inProgressData) && userId) {
       getUserInProgressTasks({
         variables: {
-          userId: userId,
+          userId,
           statuses: ['created', 'in_progress', 'in_review'],
           limit: LIMIT,
           offset: 0,
@@ -100,7 +98,7 @@ const useGetUserAboutPage = (userId) => {
     if (isEmpty(completedTasksData) && userId) {
       getUserCompletedTasks({
         variables: {
-          userId: userId,
+          userId,
           statuses: ['completed'],
           limit: LIMIT,
           offset: 0,

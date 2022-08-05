@@ -11,7 +11,7 @@ interface ITabsVisibilityCreateEntity {
   type: string;
 }
 
-export const TabsVisibilityCreateEntity = (props: ITabsVisibilityCreateEntity) => {
+export function TabsVisibilityCreateEntity(props: ITabsVisibilityCreateEntity) {
   const { isPod, isPublic, setIsPublic, podPrivacyLevel, orgPrivacyLevel, type } = props;
   const tabsVisibilityOptions = {
     [PRIVACY_LEVEL.public]: {
@@ -20,7 +20,7 @@ export const TabsVisibilityCreateEntity = (props: ITabsVisibilityCreateEntity) =
     },
     [PRIVACY_LEVEL.private]: {
       title: isPod ? 'Pod Members Only' : 'DAO Members Only',
-      tooltip: `Private means only those with the proper permissions can see this ${type}`
+      tooltip: `Private means only those with the proper permissions can see this ${type}`,
     },
   };
   const tabsVisibilitySelected = isPublic
@@ -42,4 +42,4 @@ export const TabsVisibilityCreateEntity = (props: ITabsVisibilityCreateEntity) =
       variant
     />
   );
-};
+}

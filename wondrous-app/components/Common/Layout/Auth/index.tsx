@@ -1,13 +1,13 @@
-import React from 'react'
-import { Main, Footer } from './styles'
+import React from 'react';
+import { Main, Footer } from './styles';
 
-const AuthLayout = ({ children }) => {
-	return (
-		<>
-			<Main>{children}</Main>
-			<Footer />
-		</>
-	)
+function AuthLayout({ children }) {
+  return (
+    <>
+      <Main>{children}</Main>
+      <Footer />
+    </>
+  );
 }
 
-export default AuthLayout
+export default AuthLayout;

@@ -3,23 +3,25 @@ import React, { useRef, useState } from 'react';
 
 import { FileUploadInput } from './styles';
 
-export const FileLoading = () => (
-  <CircularProgress
-    style={{
-      marginLeft: '8px',
-      width: '20px',
-      height: '20px',
-    }}
-  />
-);
-const FileUpload = (props) => {
+export function FileLoading() {
+  return (
+    <CircularProgress
+      style={{
+        marginLeft: '8px',
+        width: '20px',
+        height: '20px',
+      }}
+    />
+  );
+}
+function FileUpload(props) {
   const { updateFilesCb, ...otherProps } = props;
 
   const fileInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
 
   const addNewFiles = (newFiles) => {
-    for (let file of newFiles) {
+    for (const file of newFiles) {
       // if (file.size <= maxFileSizeInBytes) {
       if (!otherProps.multiple) {
         return { file };
@@ -48,6 +50,6 @@ const FileUpload = (props) => {
   };
 
   return <FileUploadInput type="file" ref={fileInputField} onChange={handleNewFileUpload} {...otherProps} />;
-};
+}
 
 export default FileUpload;

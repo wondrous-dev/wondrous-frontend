@@ -13,7 +13,7 @@ import palette from 'theme/palette';
 import { ContinueButton } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { emailSignup } from 'components/Auth/withAuth';
 
-const Signup = () => {
+function Signup() {
   // looks like this is not used?
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,7 +41,7 @@ const Signup = () => {
         minHeight: 'unset',
       }}
     >
-      <OnboardingHeader secondVersionLogo={true} />
+      <OnboardingHeader secondVersionLogo />
       <OnboardingTitle
         style={{
           textAlign: 'center',
@@ -102,6 +102,6 @@ const Signup = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default Signup;

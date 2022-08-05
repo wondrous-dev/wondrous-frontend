@@ -20,7 +20,7 @@ type Props = {
   step: number;
 };
 
-const ProgressBar = ({ step }: Props) => {
+function ProgressBar({ step }: Props) {
   const Step = stepsMap[step];
 
   return (
@@ -28,6 +28,6 @@ const ProgressBar = ({ step }: Props) => {
       <Step />
     </Container>
   );
-};
+}
 
 export default ProgressBar;

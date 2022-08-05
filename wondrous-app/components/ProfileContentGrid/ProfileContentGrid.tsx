@@ -11,7 +11,7 @@ import {
 const LIMIT = 4;
 const FETCH_MORE_LIMIT = 8;
 
-const ProfileContentGrid = ({ data, Component, fetchMore, buttonIsDisabled }) => {
+function ProfileContentGrid({ data, Component, fetchMore, buttonIsDisabled }) {
   const [NoOfItems, setNoOfItems] = useState(LIMIT);
   const handleOnClick = () => {
     const updatedNoOfItems = NoOfItems + FETCH_MORE_LIMIT;
@@ -37,6 +37,6 @@ const ProfileContentGrid = ({ data, Component, fetchMore, buttonIsDisabled }) =>
       </ProfileContentGridButtonContainer>
     </ProfileContentGridWrapper>
   );
-};
+}
 
 export default ProfileContentGrid;

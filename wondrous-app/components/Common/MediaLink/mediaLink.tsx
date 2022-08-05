@@ -11,7 +11,7 @@ const TaskLink = styled.a`
   }
 `;
 
-export const MediaLink = (props) => {
+export function MediaLink(props) {
   const { media, style, children } = props;
   const { name, slug, uploadSlug } = media;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
@@ -33,4 +33,4 @@ export const MediaLink = (props) => {
       {children ?? name}
     </TaskLink>
   );
-};
+}

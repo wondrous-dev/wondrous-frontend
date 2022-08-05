@@ -8,9 +8,7 @@ export const MentionsContainer = styled.div`
   box-shadow: 0px 24px 42px rgba(0, 0, 0, 0.55);
   z-index: 1000;
 
-  ${({ shown }) => {
-    return shown ? 'display: block;' : 'display: none;';
-  }}
+  ${({ shown }) => (shown ? 'display: block;' : 'display: none;')}
 `;
 
 export const MentionItem = styled.div`

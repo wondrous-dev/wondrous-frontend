@@ -9,7 +9,7 @@ import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from 'graphql/mutat
 import permissons from 'utils/podPermissions';
 import { withAuth } from 'components/Auth/withAuth';
 
-const RolesPage = () => {
+function RolesPage() {
   const [roles, setRoles] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '' });
   const [pod, setPod] = useState(null);
@@ -58,7 +58,6 @@ const RolesPage = () => {
       getPodRolesWithTokenGate();
     }
   }, [podId, getPodRolesWithTokenGate]);
-
 
   function updateRolePermissions(role: Role, permissions: string[]) {
     role.permissions = permissions;
@@ -112,6 +111,6 @@ const RolesPage = () => {
       getPodRolesWithTokenGate={getPodRolesWithTokenGate}
     />
   );
-};
+}
 
 export default withAuth(RolesPage);

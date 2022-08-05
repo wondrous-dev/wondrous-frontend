@@ -15,9 +15,10 @@ import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
+import { EmptyStateGenericWrapper } from 'components/EmptyStateGeneric/styles';
 import { GradientHighlightHorizontal } from '../gradients';
 import TaskMedia from '../TaskMedia';
-import { EmptyStateGenericWrapper } from 'components/EmptyStateGeneric/styles';
+
 export const TaskModal = styled(Modal)`
   height: 100vh;
   display: flex;
@@ -80,13 +81,11 @@ export const TaskModalHeaderPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
   }
 `;
 
-export const TaskModalHeaderArrow = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const TaskModalHeaderArrow = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     display: flex;
     height: 32px;

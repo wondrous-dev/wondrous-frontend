@@ -52,7 +52,6 @@ const useTaskMenuStatusProposal = ({ task, entityType, taskId, canApproveProposa
     }
     if (newStatus === STATUS_CLOSED) {
       closeTaskProposal({ variables: { proposalId: taskId } });
-      return;
     }
   };
   const { filterStatus, currentStatus } = statusesProposal({ task, entityType });
@@ -86,7 +85,7 @@ const useTaskMenuStatusNonProposal = ({ task, entityType, canArchive, status, ar
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
 
-const TaskMenu = ({ currentStatus, filterStatus, handleOnChange, disableMenu }) => {
+function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -112,16 +111,16 @@ const TaskMenu = ({ currentStatus, filterStatus, handleOnChange, disableMenu }) 
       </TaskStatusMenuWrapper>
     </>
   );
-};
+}
 
-export const TaskMenuStatus = ({
+export function TaskMenuStatus({
   task,
   entityType,
   archiveTaskMutation,
   canArchive,
   canApproveProposal,
   isTaskProposal,
-}) => {
+}) {
   const status = task?.status;
   const taskId = task?.id;
   const taskMenuStatusProposal = useTaskMenuStatusProposal({
@@ -149,4 +148,4 @@ export const TaskMenuStatus = ({
       disableMenu={disableMenu}
     />
   );
-};
+}

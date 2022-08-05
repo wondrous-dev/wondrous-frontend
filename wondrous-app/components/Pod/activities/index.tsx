@@ -2,11 +2,11 @@ import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_POD_FEED } from 'graphql/queries';
-import { Post } from '../../Common/Post';
-import { Feed, FeedLoadMore } from '../../organization/activities/styles';
-import Wrapper from '../wrapper/';
 import isEmpty from 'lodash/isEmpty';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
+import { Post } from '../../Common/Post';
+import { Feed, FeedLoadMore } from '../../organization/activities/styles';
+import Wrapper from '../wrapper';
 
 const useGetPodFeed = (podId, inView) => {
   const [getPodFeed, { data, loading, fetchMore }] = useLazyQuery(GET_POD_FEED, {
@@ -33,7 +33,7 @@ const useGetPodFeed = (podId, inView) => {
   return { data, loading };
 };
 
-const Activities = (props) => {
+function Activities(props) {
   const { podId } = props;
   const [ref, inView] = useInView({});
   const { data, loading } = useGetPodFeed(podId, inView);
@@ -52,6 +52,6 @@ const Activities = (props) => {
       {!loading && <FeedLoadMore ref={ref} />}
     </Wrapper>
   );
-};
+}
 
 export default Activities;

@@ -1,8 +1,8 @@
 import { Box, Button, Dialog, TextareaAutosize, Typography, Divider } from '@mui/material';
 import styled from 'styled-components';
+import { CreateLayoutsModal } from 'components/CreateEntity/styles';
 import { Button as SubmitButton } from '../button';
 import { ModalCloseButton } from '../ModalCloseButton';
-import { CreateLayoutsModal } from 'components/CreateEntity/styles';
 
 export const ModalBody = styled(CreateLayoutsModal)`
   && {

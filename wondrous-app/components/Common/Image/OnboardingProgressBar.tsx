@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const FirstStep = ({ style }) => {
+export function FirstStep({ style }) {
   return (
     <div style={style}>
       <svg width="100%" height="25" viewBox="0 0 555 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -57,77 +57,79 @@ export const FirstStep = ({ style }) => {
       </svg>
     </div>
   );
-};
+}
 
-export const SecondStep = ({ style }) => (
-  <div style={style}>
-    <svg width="100%" height="25" viewBox="0 0 554 25" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="5.09375" y="10.3872" width="543.462" height="4" fill="url(#paint0_linear_1987_14402)" />
-      <circle cx="12" cy="12.3872" r="11.5" fill="#00BAFF" stroke="url(#paint1_linear_1987_14402)" />
-      <path
-        d="M12.3831 16.9458H13.9191V8.5458H11.1471L9.43111 12.3378H11.0391L12.1671 9.6738H12.3831V16.9458Z"
-        fill="white"
-      />
-      <circle cx="144.5" cy="12.3872" r="11.5" fill="#00BAFF" stroke="url(#paint2_linear_1987_14402)" />
-      <path
-        d="M141.442 16.9458H147.538V15.5778H143.014V15.5298C143.014 14.9178 143.302 14.5698 144.334 14.2458L145.102 14.0058C146.53 13.5618 147.61 12.7698 147.61 11.1498V11.0298C147.61 9.4218 146.278 8.3778 144.55 8.3778C142.822 8.3778 141.466 9.4218 141.466 11.2338V11.4258H143.002V11.2098C143.002 10.2618 143.614 9.7458 144.55 9.7458C145.486 9.7458 146.074 10.2618 146.074 11.0538V11.1018C146.074 11.8698 145.582 12.3738 144.706 12.6498L143.902 12.9018C142.318 13.3938 141.442 14.1858 141.442 15.9378V16.9458Z"
-        fill="white"
-      />
-      <circle cx="277" cy="12.3872" r="12" fill="#7427FF" />
-      <path
-        d="M277.015 17.1138C278.827 17.1138 280.015 16.0818 280.015 14.4978V14.3658C280.015 12.8298 278.827 12.0618 277.411 12.0618H276.811V11.9178L279.943 9.9018V8.5458H274.123V9.4218H278.911V9.5658L275.707 11.6178V12.8298H277.075C278.167 12.8298 279.043 13.2978 279.043 14.3898V14.4858C279.043 15.4938 278.287 16.2378 277.015 16.2378C275.743 16.2378 274.903 15.4818 274.903 14.2578V14.0418H273.919V14.2698C273.919 16.0698 275.215 17.1138 277.015 17.1138Z"
-        fill="white"
-      />
-      <circle cx="409.5" cy="12.3872" r="12" fill="#7427FF" />
-      <path
-        d="M410.514 16.9458H411.486V15.2298H412.926V14.3538H411.486V8.5458H409.662L406.134 14.0778V15.2298H410.514V16.9458ZM407.106 14.3538V14.2098L410.346 9.1338H410.514V14.3538H407.106Z"
-        fill="white"
-      />
-      <circle cx="542" cy="12.3872" r="12" fill="#7427FF" />
-      <path
-        d="M542.032 17.1138C543.88 17.1138 545.02 15.9378 545.02 14.2338V14.1018C545.02 12.3618 543.844 11.3178 542.392 11.3178C541.228 11.3178 540.652 11.8578 540.412 12.3258H540.244V9.4218H544.792V8.5458H539.272V13.0938H540.592C540.808 12.6858 541.216 12.1458 542.176 12.1458C543.28 12.1458 544.048 12.9138 544.048 14.1138V14.2218C544.048 15.4698 543.292 16.2378 542.008 16.2378C540.796 16.2378 540.004 15.5418 540.004 14.2818V14.1738H539.02V14.3178C539.02 15.9858 540.196 17.1138 542.032 17.1138Z"
-        fill="white"
-      />
-      <defs>
-        <linearGradient
-          id="paint0_linear_1987_14402"
-          x1="251.281"
-          y1="14.3879"
-          x2="159.446"
-          y2="13.703"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#7427FF" stopOpacity="0.6" />
-          <stop offset="1" stopColor="#00BAFF" />
-        </linearGradient>
-        <linearGradient
-          id="paint1_linear_1987_14402"
-          x1="12"
-          y1="0.387207"
-          x2="12"
-          y2="24.3872"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#7EDCFF" />
-          <stop offset="1" stopColor="#00BAFF" />
-        </linearGradient>
-        <linearGradient
-          id="paint2_linear_1987_14402"
-          x1="144.5"
-          y1="0.387207"
-          x2="144.5"
-          y2="24.3872"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#7EDCFF" />
-          <stop offset="1" stopColor="#00BAFF" />
-        </linearGradient>
-      </defs>
-    </svg>
-  </div>
-);
+export function SecondStep({ style }) {
+  return (
+    <div style={style}>
+      <svg width="100%" height="25" viewBox="0 0 554 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="5.09375" y="10.3872" width="543.462" height="4" fill="url(#paint0_linear_1987_14402)" />
+        <circle cx="12" cy="12.3872" r="11.5" fill="#00BAFF" stroke="url(#paint1_linear_1987_14402)" />
+        <path
+          d="M12.3831 16.9458H13.9191V8.5458H11.1471L9.43111 12.3378H11.0391L12.1671 9.6738H12.3831V16.9458Z"
+          fill="white"
+        />
+        <circle cx="144.5" cy="12.3872" r="11.5" fill="#00BAFF" stroke="url(#paint2_linear_1987_14402)" />
+        <path
+          d="M141.442 16.9458H147.538V15.5778H143.014V15.5298C143.014 14.9178 143.302 14.5698 144.334 14.2458L145.102 14.0058C146.53 13.5618 147.61 12.7698 147.61 11.1498V11.0298C147.61 9.4218 146.278 8.3778 144.55 8.3778C142.822 8.3778 141.466 9.4218 141.466 11.2338V11.4258H143.002V11.2098C143.002 10.2618 143.614 9.7458 144.55 9.7458C145.486 9.7458 146.074 10.2618 146.074 11.0538V11.1018C146.074 11.8698 145.582 12.3738 144.706 12.6498L143.902 12.9018C142.318 13.3938 141.442 14.1858 141.442 15.9378V16.9458Z"
+          fill="white"
+        />
+        <circle cx="277" cy="12.3872" r="12" fill="#7427FF" />
+        <path
+          d="M277.015 17.1138C278.827 17.1138 280.015 16.0818 280.015 14.4978V14.3658C280.015 12.8298 278.827 12.0618 277.411 12.0618H276.811V11.9178L279.943 9.9018V8.5458H274.123V9.4218H278.911V9.5658L275.707 11.6178V12.8298H277.075C278.167 12.8298 279.043 13.2978 279.043 14.3898V14.4858C279.043 15.4938 278.287 16.2378 277.015 16.2378C275.743 16.2378 274.903 15.4818 274.903 14.2578V14.0418H273.919V14.2698C273.919 16.0698 275.215 17.1138 277.015 17.1138Z"
+          fill="white"
+        />
+        <circle cx="409.5" cy="12.3872" r="12" fill="#7427FF" />
+        <path
+          d="M410.514 16.9458H411.486V15.2298H412.926V14.3538H411.486V8.5458H409.662L406.134 14.0778V15.2298H410.514V16.9458ZM407.106 14.3538V14.2098L410.346 9.1338H410.514V14.3538H407.106Z"
+          fill="white"
+        />
+        <circle cx="542" cy="12.3872" r="12" fill="#7427FF" />
+        <path
+          d="M542.032 17.1138C543.88 17.1138 545.02 15.9378 545.02 14.2338V14.1018C545.02 12.3618 543.844 11.3178 542.392 11.3178C541.228 11.3178 540.652 11.8578 540.412 12.3258H540.244V9.4218H544.792V8.5458H539.272V13.0938H540.592C540.808 12.6858 541.216 12.1458 542.176 12.1458C543.28 12.1458 544.048 12.9138 544.048 14.1138V14.2218C544.048 15.4698 543.292 16.2378 542.008 16.2378C540.796 16.2378 540.004 15.5418 540.004 14.2818V14.1738H539.02V14.3178C539.02 15.9858 540.196 17.1138 542.032 17.1138Z"
+          fill="white"
+        />
+        <defs>
+          <linearGradient
+            id="paint0_linear_1987_14402"
+            x1="251.281"
+            y1="14.3879"
+            x2="159.446"
+            y2="13.703"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#7427FF" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#00BAFF" />
+          </linearGradient>
+          <linearGradient
+            id="paint1_linear_1987_14402"
+            x1="12"
+            y1="0.387207"
+            x2="12"
+            y2="24.3872"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#7EDCFF" />
+            <stop offset="1" stopColor="#00BAFF" />
+          </linearGradient>
+          <linearGradient
+            id="paint2_linear_1987_14402"
+            x1="144.5"
+            y1="0.387207"
+            x2="144.5"
+            y2="24.3872"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stopColor="#7EDCFF" />
+            <stop offset="1" stopColor="#00BAFF" />
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+  );
+}
 
-export const ThirdStep = ({ style }) => {
+export function ThirdStep({ style }) {
   return (
     <div style={style}>
       <svg width="100%" height="25" viewBox="0 0 554 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -206,9 +208,9 @@ export const ThirdStep = ({ style }) => {
       </svg>
     </div>
   );
-};
+}
 
-export const FourthStep = ({ style }) => {
+export function FourthStep({ style }) {
   return (
     <div style={style}>
       <svg width="100%" height="25" viewBox="0 0 555 25" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -298,9 +300,9 @@ export const FourthStep = ({ style }) => {
       </svg>
     </div>
   );
-};
+}
 
-export const FifthStep = ({ style }) => {
+export function FifthStep({ style }) {
   return (
     <div style={style}>
       <svg width={554} height={25} fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -352,4 +354,4 @@ export const FifthStep = ({ style }) => {
       </svg>
     </div>
   );
-};
+}

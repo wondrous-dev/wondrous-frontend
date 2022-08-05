@@ -58,7 +58,6 @@ export const GET_USER_PROFILE = gql`
   ${ProfileUserFragment}
 `;
 
-
 export const GET_USER_FROM_USERNAME = gql`
   query getUserFromUsername($username: String!) {
     getUserFromUsername(username: $username) {
@@ -105,7 +104,7 @@ export const GET_USER_INTERESTS = gql`
 
 export const GET_USER_TASKS_COMPLETED_COUNT = gql`
   query getUserTasksCompletedCount($userId: ID!) {
-    getUserTasksCompletedCount(userId: $userId) 
+    getUserTasksCompletedCount(userId: $userId)
   }
 `;
 

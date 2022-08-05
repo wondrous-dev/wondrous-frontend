@@ -16,7 +16,7 @@ const useGetMilestoneTasksProgress = ({ milestoneId }) => {
     if (milestoneId) {
       getPerStatusTaskCountForMilestone({
         variables: {
-          milestoneId: milestoneId,
+          milestoneId,
         },
       });
 

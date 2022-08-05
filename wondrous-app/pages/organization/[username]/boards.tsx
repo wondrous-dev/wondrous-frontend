@@ -24,7 +24,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns } from 'utils';
+import { dedupeColumns, insertUrlParam } from 'utils';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
   STATUSES_ON_ENTITY_TYPES,
@@ -39,7 +39,6 @@ import {
   PROPOSAL_STATUS_LIST,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
@@ -97,7 +96,7 @@ const useGetOrgTaskBoardTasks = ({
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-          : //double check in case we add new stuff and have no valid entityType.
+          : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getOrgTaskBoardTasks({
@@ -138,7 +137,7 @@ const useGetOrgTaskBoardTasks = ({
     });
   };
 
-  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus: fetchPerStatus };
+  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
 const useGetTaskRelatedToUser = ({
@@ -177,7 +176,7 @@ const useGetTaskRelatedToUser = ({
       variables: {
         offset:
           entityType === ENTITIES_TYPES.TASK
-            ? columns.reduce((prev, next) => (prev = prev + next.tasks.length), 0)
+            ? columns.reduce((prev, next) => (prev += next.tasks.length), 0)
             : columns.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -349,7 +348,7 @@ const useGetOrgTaskBoard = ({
   return { fetchMore, fetchPerStatus };
 };
 
-const BoardsPage = () => {
+function BoardsPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
@@ -679,6 +678,6 @@ const BoardsPage = () => {
       />
     </OrgBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(BoardsPage);

@@ -151,8 +151,8 @@ const addPodFilter = (orgId) => [
     variables: { orgId },
     icon: CreatePodIcon,
     multiChoice: true,
-    mutate: (items) => {
-      return items.map((pod) => ({
+    mutate: (items) =>
+      items.map((pod) => ({
         ...pod,
         gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
         icon: (
@@ -167,8 +167,7 @@ const addPodFilter = (orgId) => [
           />
         ),
         pillIcon: CreatePodIcon,
-      }));
-    },
+      })),
   },
 ];
 
@@ -182,13 +181,12 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
       icon: ({ style, ...rest }) => <TagsIcon {...rest} style={{ ...style, padding: '5px' }} viewBox="0 0 14 12" />,
       query: GET_ORG_LABELS,
       variables: { orgId },
-      mutate: (items) => {
-        return items.map((tag) => ({
+      mutate: (items) =>
+        items.map((tag) => ({
           ...tag,
           gradient: `linear-gradient(270deg, #7427FF -11.62%, ${tag?.color} 103.12%)`,
           pillIcon: (props) => <TagsIcon viewBox="0 0 18 12" {...props} />,
-        }));
-      },
+        })),
     },
     {
       name: 'date',
@@ -479,13 +477,12 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
           query: GET_ORG_LABELS,
           variables: { orgId },
           disabled: true,
-          mutate: (items) => {
-            return items.map((tag) => ({
+          mutate: (items) =>
+            items.map((tag) => ({
               ...tag,
               gradient: `linear-gradient(270deg, #7427FF -11.62%, ${tag?.color} 103.12%)`,
               pillIcon: TagsIcon,
-            }));
-          },
+            })),
         },
         {
           name: 'date',
@@ -575,13 +572,14 @@ export const FILTER_STATUSES_ADMIN = {
 };
 
 const generateColumns = (withSection: boolean, type: string) => {
-  let todoColumn = TO_DO(withSection);
-  let inProgressColumn = IN_PROGRESS(withSection);
-  let doneColumn = DONE(withSection);
-  let inReviewColumn = IN_REVIEW();
+  const todoColumn = TO_DO(withSection);
+  const inProgressColumn = IN_PROGRESS(withSection);
+  const doneColumn = DONE(withSection);
+  const inReviewColumn = IN_REVIEW();
   if (type === COLUMNS_CONFIGURATION.ASSIGNEE) {
     return [todoColumn, inProgressColumn, doneColumn];
-  } else return [todoColumn, inProgressColumn, inReviewColumn, doneColumn];
+  }
+  return [todoColumn, inProgressColumn, inReviewColumn, doneColumn];
 };
 
 export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
@@ -627,31 +625,29 @@ export const populateProposalColumns = (proposals, columns) => {
     // changes requested
     [STATUS_CLOSED]: [],
   };
-  //temporary flag until we add a flag on BE?
+  // temporary flag until we add a flag on BE?
   proposals?.forEach((proposal) => {
     if (proposal.approvedAt) proposalsMap[STATUS_APPROVED].push({ ...proposal, isProposal: true });
     if (!proposal.approvedAt && !proposal.closedAt) proposalsMap[STATUS_OPEN].push({ ...proposal, isProposal: true });
     if (proposal.closedAt && !proposal.approvedAt) proposalsMap[STATUS_CLOSED].push({ ...proposal, isProposal: true });
   });
-  return columns.map((column) => {
-    return {
-      ...column,
-      tasks: [...column.tasks, ...proposalsMap[column.status]],
-    };
-  });
+  return columns.map((column) => ({
+    ...column,
+    tasks: [...column.tasks, ...proposalsMap[column.status]],
+  }));
 };
 
 export const addToTaskColumns = (newResults, columns) => {
   if (!columns) return [];
 
-  const newColumns = columns.map((column) => {
-    return newResults.reduce((column, task) => {
+  const newColumns = columns.map((column) =>
+    newResults.reduce((column, task) => {
       if (column.status === task.status) {
         column.tasks = [...column.tasks, task];
       }
       return column;
-    }, column);
-  });
+    }, column)
+  );
   return newColumns;
 };
 

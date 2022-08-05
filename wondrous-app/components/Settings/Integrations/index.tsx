@@ -1,15 +1,15 @@
 import React from 'react';
 
+import { useRouter } from 'next/router';
+import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 
-import { useRouter } from 'next/router';
 import { IntegrationsContainer } from './styles';
 
-import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
 import { GithubIntegration } from '../Github';
 
-const Integrations = (props) => {
+function Integrations(props) {
   const router = useRouter();
   const { orgId, podId } = router.query;
 
@@ -25,6 +25,6 @@ const Integrations = (props) => {
       </IntegrationsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default Integrations;

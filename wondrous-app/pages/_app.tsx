@@ -19,6 +19,7 @@ import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
 import OnboardingTour from 'components/Guide';
 import SidebarLayout from 'components/Common/Layout';
+
 declare global {
   interface Window {
     gtag: any;
@@ -36,7 +37,7 @@ type AppContextStore = {
   user: User;
 };
 
-const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session, ...pageProps } }) => {
+function MyApp({ Component, context, isAuthenticated, user, pageProps: { session, ...pageProps } }) {
   // Only uncomment this method if you have blocking data requirements for
   // every single page in your application. This disables the ability to
   // perform automatic static optimization, causing every page in your app to
@@ -99,6 +100,6 @@ const MyApp = ({ Component, context, isAuthenticated, user, pageProps: { session
       </IsMobileContext.Provider>
     </>
   );
-};
+}
 
 export default MyApp;

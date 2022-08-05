@@ -7,13 +7,14 @@ import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA } from 'util
 import { CREATE_USER_INTEREST } from 'graphql/mutations';
 import { GET_USER_INTERESTS } from 'graphql/queries/user';
 import { useMutation } from '@apollo/client';
-import { useMe } from '../Auth/withAuth';
 
 import { DiscordIcon } from 'components/Icons/discord';
 import OpenSeaIcon from 'components/Icons/openSea';
 import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInterestModal';
 
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -32,8 +33,7 @@ import styles, {
   ProfileInfoInterestsChipWrapper,
   ProfileInfoEarningsInterestWrapper,
 } from './styles';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { useMe } from '../Auth/withAuth';
 
 const SOCIAL_ICONS = {
   [SOCIAL_MEDIA_TWITTER]: TwitterPurpleIcon,
@@ -41,7 +41,7 @@ const SOCIAL_ICONS = {
   [SOCIAL_OPENSEA]: OpenSeaIcon,
 };
 
-const ProfileInfo = ({ userProfile }) => {
+function ProfileInfo({ userProfile }) {
   const user = useMe();
   const [openInterestModal, setOpenInterestModal] = useState(false);
   const { id, links, firstName, lastName, username, bio, profilePicture, interests } = userProfile;
@@ -69,7 +69,7 @@ const ProfileInfo = ({ userProfile }) => {
             borderRadius: '50%',
           }}
         />
-        <ProfileInfoFullName>{fullName ? fullName : username}</ProfileInfoFullName>
+        <ProfileInfoFullName>{fullName || username}</ProfileInfoFullName>
         <ProfileInfoUsername>@{username}</ProfileInfoUsername>
       </ProfileInfoContainer>
       <ProfileInfoBioWrapper>
@@ -112,9 +112,9 @@ const ProfileInfo = ({ userProfile }) => {
           <ProfileInfoInterestsContainer>
             <ProfileInterestText>Interests</ProfileInterestText>
             <ProfileInfoInterestsChipWrapper>
-              {interests?.map((interest) => {
-                return <ProfileInfoInterestsChip key={interest} label={getInterestDisplay(interest)} />;
-              })}
+              {interests?.map((interest) => (
+                <ProfileInfoInterestsChip key={interest} label={getInterestDisplay(interest)} />
+              ))}
 
               {viewingSelf && (
                 <div
@@ -122,7 +122,7 @@ const ProfileInfo = ({ userProfile }) => {
                     setOpenInterestModal(true);
                   }}
                 >
-                  <ProfileInfoInterestsChip sx={styles.editInterest} key={'add-interest'} label={'+ Edit interest'} />
+                  <ProfileInfoInterestsChip sx={styles.editInterest} key="add-interest" label="+ Edit interest" />
                 </div>
               )}
             </ProfileInfoInterestsChipWrapper>
@@ -131,6 +131,6 @@ const ProfileInfo = ({ userProfile }) => {
       )}
     </ProfileInfoWrapper>
   );
-};
+}
 
 export default ProfileInfo;

@@ -18,64 +18,62 @@ interface IImportTaskModalProps {
   onConvert: () => void;
 }
 
-export const ConvertTaskToBountyModal = (props: IImportTaskModalProps) => {
+export function ConvertTaskToBountyModal(props: IImportTaskModalProps) {
   const { open, onClose, onConvert } = props;
 
   return (
-    <>
-      <StyledDialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="delete-task-modal"
-        aria-describedby="modal-modal-description"
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="delete-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <StyledBox
+        style={{
+          width: 'fit-content',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+        }}
       >
-        <StyledBox
+        <StyledCloseButton
           style={{
-            width: 'fit-content',
-            paddingLeft: '16px',
-            paddingRight: '16px',
+            marginLeft: '450px',
           }}
+          onClick={onClose}
         >
-          <StyledCloseButton
+          <CloseModalIcon />
+        </StyledCloseButton>
+        <StyledHeader>Do you want to turn this task into a bounty?</StyledHeader>
+        <StyledBody>You cannot undo this action.</StyledBody>
+        <StyledDivider />
+        <StyledButtonsContainer>
+          <StyledCancelButton
             style={{
-              marginLeft: '450px',
+              width: 'fit-content',
             }}
             onClick={onClose}
           >
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader>Do you want to turn this task into a bounty?</StyledHeader>
-          <StyledBody>You cannot undo this action.</StyledBody>
-          <StyledDivider />
-          <StyledButtonsContainer>
-            <StyledCancelButton
+            Cancel
+          </StyledCancelButton>
+          <StyledDeleteTaskButton
+            style={{
+              textAlign: 'center',
+            }}
+            buttonInnerStyle={{
+              justifyContent: 'center',
+            }}
+          >
+            <StyledDeleteLabel
               style={{
-                width: 'fit-content',
+                marginLeft: '0',
               }}
-              onClick={onClose}
+              onClick={onConvert}
             >
-              Cancel
-            </StyledCancelButton>
-            <StyledDeleteTaskButton
-              style={{
-                textAlign: 'center',
-              }}
-              buttonInnerStyle={{
-                justifyContent: 'center',
-              }}
-            >
-              <StyledDeleteLabel
-                style={{
-                  marginLeft: '0',
-                }}
-                onClick={onConvert}
-              >
-                Convert
-              </StyledDeleteLabel>
-            </StyledDeleteTaskButton>
-          </StyledButtonsContainer>
-        </StyledBox>
-      </StyledDialog>
-    </>
+              Convert
+            </StyledDeleteLabel>
+          </StyledDeleteTaskButton>
+        </StyledButtonsContainer>
+      </StyledBox>
+    </StyledDialog>
   );
-};
+}

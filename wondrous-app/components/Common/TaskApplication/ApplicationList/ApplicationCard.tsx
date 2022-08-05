@@ -1,6 +1,11 @@
 import calculateTimeLapse from 'utils/calculateTimeLapse';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import SmartLink from 'components/Common/SmartLink';
+import { TASK_APPLICATION_STATUS_LABELS, TASK_APPLICATION_STATUS } from 'utils/constants';
+import { Approved, Rejected, PendingApplication } from 'components/Icons';
+import { LinkIcon } from 'components/Icons/taskModalIcons';
+import { ActionButton } from 'components/Common/Task/styles';
 import {
   CardWrapper,
   CardHeader,
@@ -16,11 +21,6 @@ import {
   LinkContainer,
   RejectButton,
 } from './styles';
-import SmartLink from 'components/Common/SmartLink';
-import { TASK_APPLICATION_STATUS_LABELS, TASK_APPLICATION_STATUS } from 'utils/constants';
-import { Approved, Rejected, PendingApplication } from 'components/Icons';
-import { LinkIcon } from 'components/Icons/taskModalIcons';
-import { ActionButton } from 'components/Common/Task/styles';
 
 const STATUS_ICONS = {
   [TASK_APPLICATION_STATUS.APPROVED]: Approved,

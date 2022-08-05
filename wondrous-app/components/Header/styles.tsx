@@ -161,9 +161,7 @@ export const StyledBadge = styled.button`
   svg {
     circle {
       display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
-      ${({ isOpen }) => {
-        return isOpen ? `fill: url(#open-notif-gradient);` : ``;
-      }};
+      ${({ isOpen }) => (isOpen ? `fill: url(#open-notif-gradient);` : ``)};
     }
     rect {
       ${({ isOpen }) => (isOpen ? `stroke: url(#open-notif-gradient); fill: transparent;` : ``)}
