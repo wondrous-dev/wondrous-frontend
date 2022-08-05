@@ -31,7 +31,7 @@ export default function CreateBtnIcon(props) {
   );
 }
 
-export const CreateIconOutlined = (props) => {
+export function CreateIconOutlined(props) {
   return (
     <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <circle
@@ -63,4 +63,4 @@ export const CreateIconOutlined = (props) => {
       </defs>
     </svg>
   );
-};
+}

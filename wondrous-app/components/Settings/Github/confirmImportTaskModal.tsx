@@ -22,64 +22,62 @@ interface IImportTaskModalProps {
   onImport: () => void;
 }
 
-export const ImportTaskModal = (props: IImportTaskModalProps) => {
+export function ImportTaskModal(props: IImportTaskModalProps) {
   const { open, onClose, onContinue, onImport } = props;
 
   return (
-    <>
-      <StyledDialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="delete-task-modal"
-        aria-describedby="modal-modal-description"
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="delete-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <StyledBox
+        style={{
+          width: 'fit-content',
+          paddingLeft: '16px',
+          paddingRight: '16px',
+        }}
       >
-        <StyledBox
+        <StyledCloseButton
           style={{
-            width: 'fit-content',
-            paddingLeft: '16px',
-            paddingRight: '16px',
+            marginLeft: '450px',
           }}
+          onClick={onClose}
         >
-          <StyledCloseButton
+          <CloseModalIcon />
+        </StyledCloseButton>
+        <StyledHeader>Do you want to import tasks from Github?</StyledHeader>
+        <StyledBody>You cannot undo this action.</StyledBody>
+        <StyledDivider />
+        <StyledButtonsContainer>
+          <StyledCancelButton
             style={{
-              marginLeft: '450px',
+              width: 'fit-content',
             }}
-            onClick={onClose}
+            onClick={onContinue}
           >
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader>Do you want to import tasks from Github?</StyledHeader>
-          <StyledBody>You cannot undo this action.</StyledBody>
-          <StyledDivider />
-          <StyledButtonsContainer>
-            <StyledCancelButton
+            Continue without importing
+          </StyledCancelButton>
+          <StyledDeleteTaskButton
+            style={{
+              textAlign: 'center',
+            }}
+            buttonInnerStyle={{
+              justifyContent: 'center',
+            }}
+          >
+            <StyledDeleteLabel
               style={{
-                width: 'fit-content',
+                marginLeft: '0',
               }}
-              onClick={onContinue}
+              onClick={onImport}
             >
-              Continue without importing
-            </StyledCancelButton>
-            <StyledDeleteTaskButton
-              style={{
-                textAlign: 'center',
-              }}
-              buttonInnerStyle={{
-                justifyContent: 'center',
-              }}
-            >
-              <StyledDeleteLabel
-                style={{
-                  marginLeft: '0',
-                }}
-                onClick={onImport}
-              >
-                Import tasks
-              </StyledDeleteLabel>
-            </StyledDeleteTaskButton>
-          </StyledButtonsContainer>
-        </StyledBox>
-      </StyledDialog>
-    </>
+              Import tasks
+            </StyledDeleteLabel>
+          </StyledDeleteTaskButton>
+        </StyledButtonsContainer>
+      </StyledBox>
+    </StyledDialog>
   );
-};
+}

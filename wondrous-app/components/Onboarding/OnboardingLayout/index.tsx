@@ -1,9 +1,9 @@
 import React from 'react';
+import ProgressBar from 'components/Onboarding/OnboardingLayout/ProgressBar';
 import { Layout, OnboardingDescription, OnboardingTitle } from './styles';
 
 import OnboardingHeader from './Header';
 import OnboardingFooter from './Footer';
-import ProgressBar from 'components/Onboarding/OnboardingLayout/ProgressBar';
 
 type Props = {
   children?: any;
@@ -21,7 +21,7 @@ type Props = {
   footer?: React.ReactNode;
 };
 
-const OnboardingLayout = ({
+function OnboardingLayout({
   children,
   headerRightContent,
   onBackClick,
@@ -33,7 +33,7 @@ const OnboardingLayout = ({
   description,
   footer,
   withLoginButton = false,
-}: Props) => {
+}: Props) {
   return (
     <Layout>
       <div>
@@ -45,9 +45,7 @@ const OnboardingLayout = ({
 
       {children}
 
-      {footer ? (
-        footer
-      ) : (
+      {footer || (
         <div>
           <OnboardingFooter
             onContinueClick={onContinueClick}
@@ -59,6 +57,6 @@ const OnboardingLayout = ({
       )}
     </Layout>
   );
-};
+}
 
 export default OnboardingLayout;

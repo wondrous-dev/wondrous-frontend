@@ -2,9 +2,9 @@ import { useWeb3React } from '@web3-react/core';
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { Web3Provider } from '@ethersproject/providers';
 import { useContext, useEffect, useState } from 'react';
+import useAlerts from 'hooks/useAlerts';
 import useInjectedProviderListener from './useInjectedProviderListener';
 import { WonderWeb3Context } from '../context/WonderWeb3Context';
-import useAlerts from 'hooks/useAlerts';
 
 /**
  * Hook that adds additional low-level functionality to web3-react useWeb3React.

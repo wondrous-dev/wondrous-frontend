@@ -17,15 +17,6 @@ import {
   STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
-import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
-import { ColumnSection } from '../../ColumnSection';
-import {
-  TaskColumnContainer,
-  TaskColumnContainerHeader,
-  TaskColumnContainerHeaderTitle,
-  TaskColumnContainerCount,
-  TaskListContainer,
-} from './styles';
 import { Task } from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 
@@ -37,6 +28,16 @@ import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import {
+  TaskColumnContainer,
+  TaskColumnContainerHeader,
+  TaskColumnContainerHeaderTitle,
+  TaskColumnContainerCount,
+  TaskListContainer,
+} from './styles';
+import { ColumnSection } from '../../ColumnSection';
+import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
+
 interface ITaskColumn {
   cardsList: Array<any>;
   moveCard: any;
@@ -49,7 +50,7 @@ const TITLES = {
   [TASK_STATUS_IN_PROGRESS]: 'In-Progress',
   [TASK_STATUS_IN_REVIEW]: 'In-Review',
   [TASK_STATUS_DONE]: 'Done',
-  //PROPOSALS
+  // PROPOSALS
   [STATUS_OPEN]: 'Open',
   [STATUS_APPROVED]: 'Approved',
   [STATUS_CLOSED]: 'Rejected',
@@ -65,7 +66,7 @@ const HEADER_ICONS = {
   [STATUS_CLOSED]: Rejected,
 };
 
-const TaskColumn = (props: ITaskColumn) => {
+function TaskColumn(props: ITaskColumn) {
   const { cardsList, moveCard, status, section } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -200,13 +201,13 @@ const TaskColumn = (props: ITaskColumn) => {
             ) : (
               <EmptyStateBoards status={status} hidePlaceholder={board?.entityType === ENTITIES_TYPES.PROPOSAL} />
             )}
-            <LoadMore ref={ref} hasMore={board?.hasMore}></LoadMore>
+            <LoadMore ref={ref} hasMore={board?.hasMore} />
             {provided.placeholder}
           </TaskListContainer>
         )}
       </Droppable>
     </TaskColumnContainer>
   );
-};
+}
 
 export default TaskColumn;

@@ -29,9 +29,7 @@ export default function WonderAbstractConnector({
       return (
         <>
           {icon}
-          {showText ? (
-            <PaddedParagraph padding="0 10px">Change to Mainnet or Supported Newtork</PaddedParagraph>
-          ) : null}
+          {showText ? <PaddedParagraph padding="0 10px">Change to Mainnet or Supported Newtork</PaddedParagraph> : null}
         </>
       );
     if (connecting && connector === currentConnector)

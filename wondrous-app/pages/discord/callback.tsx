@@ -13,7 +13,7 @@ import {
 } from 'graphql/mutations';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
 
-const Callback = () => {
+function Callback() {
   const router = useRouter();
   const { code } = router.query;
   const state = router?.query?.state as string;
@@ -24,8 +24,8 @@ const Callback = () => {
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
 
   const returnToPage = useCallback(() => {
-    let inviteToken,
-      inviteType = null;
+    let inviteToken;
+    let inviteType = null;
     if (state) {
       const parsedState = JSON.parse(state);
       inviteToken = parsedState?.token;
@@ -217,8 +217,8 @@ const Callback = () => {
             const response = result?.data?.discordSignupLogin;
             const token = response?.token;
             const discordUser = response?.user;
-            let inviteToken,
-              inviteType = null;
+            let inviteToken;
+            let inviteType = null;
             inviteToken = parsedState?.token;
             inviteType = parsedState?.type;
             await storeAuthHeader(token, discordUser);
@@ -229,22 +229,20 @@ const Callback = () => {
               } else {
                 redeemOrgInvite(inviteToken, discordUser);
               }
-            } else {
-              if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
-                // Only place to change this is in settings
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
+              // Only place to change this is in settings
+              router.push('/dashboard', undefined, {
+                shallow: true,
+              });
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
+              if (!discordUser?.username) {
+                router.push('/onboarding/welcome', undefined, {
+                  shallow: true,
+                });
+              } else {
                 router.push('/dashboard', undefined, {
                   shallow: true,
                 });
-              } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
-                if (!discordUser?.username) {
-                  router.push('/onboarding/welcome', undefined, {
-                    shallow: true,
-                  });
-                } else {
-                  router.push('/dashboard', undefined, {
-                    shallow: true,
-                  });
-                }
               }
             }
           })
@@ -257,13 +255,13 @@ const Callback = () => {
   }, [code, state]);
   return (
     <>
-      <CallbackBackground></CallbackBackground>
+      <CallbackBackground />
       <CallbackWrapper>
         <CallbackHeading>Connecting Discord Server</CallbackHeading>
         <CircularProgress />
       </CallbackWrapper>
     </>
   );
-};
+}
 
 export default Callback;

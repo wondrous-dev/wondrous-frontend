@@ -17,16 +17,16 @@ import {
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '../../Common';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { PaymentPendingTypography } from './styles';
 import { usePaymentModal } from 'utils/hooks';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
+import { ErrorText } from '../../Common';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { PaymentPendingTypography } from './styles';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
-    return address.substring(0, 4) + '...' + address.substring(address.length - 3);
+    return `${address.substring(0, 4)}...${address.substring(address.length - 3)}`;
   }
 };
 
@@ -50,7 +50,7 @@ interface Props {
   wallets: any;
 }
 
-export const BatchRetroactivePayment = (props: Props) => {
+export function BatchRetroactivePayment(props: Props) {
   const { podId, orgId, payoutData, wallets, chain } = props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
@@ -133,7 +133,7 @@ export const BatchRetroactivePayment = (props: Props) => {
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
     setGnosisTransactionLoading(true);
-    let iface = new ethers.utils.Interface(ERC20abi);
+    const iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
     payoutData?.map((paymentData) => {
       console.log(paymentData);
@@ -180,7 +180,7 @@ export const BatchRetroactivePayment = (props: Props) => {
       console.log(e);
     }
     const options: SafeTransactionOptionalProps = {
-      safeTxGas: safeTxGas ? safeTxGas : 0,
+      safeTxGas: safeTxGas || 0,
       // baseGas, // Optional
       // gasPrice, // Optional
       // gasToken, // Optional
@@ -294,32 +294,31 @@ export const BatchRetroactivePayment = (props: Props) => {
         )}
       </>
     );
-  } else {
-    return (
-      <div
-        style={{
-          marginTop: '16px',
-        }}
-      >
-        {incompatibleWalletError && (
-          <ErrorText
-            style={{
-              marginBottom: '16px',
-            }}
-          >
-            {incompatibleWalletError}
-          </ErrorText>
-        )}
-
-        <CreateFormPreviewButton
-          style={{
-            marginLeft: 0,
-          }}
-          onClick={handleCreateNewWalletClick}
-        >
-          Create new wallets
-        </CreateFormPreviewButton>
-      </div>
-    );
   }
-};
+  return (
+    <div
+      style={{
+        marginTop: '16px',
+      }}
+    >
+      {incompatibleWalletError && (
+        <ErrorText
+          style={{
+            marginBottom: '16px',
+          }}
+        >
+          {incompatibleWalletError}
+        </ErrorText>
+      )}
+
+      <CreateFormPreviewButton
+        style={{
+          marginLeft: 0,
+        }}
+        onClick={handleCreateNewWalletClick}
+      >
+        Create new wallets
+      </CreateFormPreviewButton>
+    </div>
+  );
+}

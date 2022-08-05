@@ -1,10 +1,7 @@
 import React from 'react';
 import { IconButton } from '@mui/material';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-
-import CloseModalIcon from 'components/Icons/closeModal';
-import RightArrowIcon from 'components/Icons/rightArrow';
 import {
+  CreateModalOverlay,
   CreateLayoutsModal,
   CreateLayoutsModalCloseButton,
   CreateLayoutsModalHeader,
@@ -14,12 +11,15 @@ import {
   CreateLayoutsModalItemTitleBlock,
   CreateLayoutsModalTitle,
 } from 'components/CreateEntity/styles';
+
+import CloseModalIcon from 'components/Icons/closeModal';
+import RightArrowIcon from 'components/Icons/rightArrow';
 import UtopiaIcon from 'components/Icons/utopiaIcon';
 import ParcelIcon from 'components/Icons/parcelIcon';
 import { EXPORT_PAYMENT_CSV_TYPE } from 'utils/constants';
 import { PAYMENT_PROVIDER_UI_ELEMENTS } from 'components/organization/analytics/CSVModal';
 
-const SubmissionPaymentCSVModal = (props) => {
+function SubmissionPaymentCSVModal(props) {
   const { open, handleClose, exportPaymentCSV, unpaidSubmissions, isPod } = props;
 
   return (
@@ -72,6 +72,6 @@ const SubmissionPaymentCSVModal = (props) => {
       </CreateLayoutsModal>
     </CreateModalOverlay>
   );
-};
+}
 
 export default SubmissionPaymentCSVModal;

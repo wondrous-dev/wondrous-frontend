@@ -18,10 +18,9 @@ import CoinbaseConnector from 'components/WalletConnectors/Coinbase';
 import WalletConnectConnector from 'components/WalletConnectors/WalletConnect';
 import { Button } from 'components/Common/button';
 import { getDiscordUrl } from 'utils/index';
-import { DISCORD_CONNECT_TYPES } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS } from 'utils/constants';
 import { DiscordIcon } from 'components/Icons/discord';
 import { Connectors } from 'components/Onboarding/styles';
-import { GRAPHQL_ERRORS } from 'utils/constants';
 import { useMutation } from '@apollo/client';
 import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from 'graphql/mutations';
 
@@ -40,7 +39,7 @@ const checkPasswordStrength = (password) => {
   }
   return true;
 };
-const Signup = () => {
+function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -167,7 +166,7 @@ const Signup = () => {
         minHeight: 'unset',
       }}
     >
-      <OnboardingHeader secondVersionLogo={true} />
+      <OnboardingHeader secondVersionLogo />
       <OnboardingTitle
         style={{
           textAlign: 'center',
@@ -267,6 +266,6 @@ const Signup = () => {
       </div>
     </Layout>
   );
-};
+}
 
 export default Signup;

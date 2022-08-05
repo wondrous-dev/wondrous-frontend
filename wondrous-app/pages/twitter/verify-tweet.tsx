@@ -8,7 +8,7 @@ import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_USER_PODS } from 'graphql/queries';
 
-const ConnectTwitterPage = () => {
+function ConnectTwitterPage() {
   const { data: getOrgData } = useQuery(GET_USER_ORGS);
 
   const { data: getPodData } = useQuery(GET_USER_PODS);
@@ -27,9 +27,9 @@ const ConnectTwitterPage = () => {
 
   return (
     <MainWrapper>
-      <VerifyTweet  firstOrg={firstOrg} firstPod={firstPod}/>
+      <VerifyTweet firstOrg={firstOrg} firstPod={firstPod} />
     </MainWrapper>
   );
-};
+}
 
 export default withAuth(ConnectTwitterPage);

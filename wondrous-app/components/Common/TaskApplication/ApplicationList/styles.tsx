@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { Typography } from '@mui/material';
 import { FilterBox } from 'components/Common/Filter/styles';
+
 export const CardWrapper = styled.div`
   background: #1d1d1d;
   border-radius: 6px;

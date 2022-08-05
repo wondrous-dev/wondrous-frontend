@@ -10,7 +10,7 @@ import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
 import { withAuth } from 'components/Auth/withAuth';
 
-const RolesPage = () => {
+function RolesPage() {
   const [roles, setRoles] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '' });
   // Get organization roles
@@ -132,6 +132,6 @@ const RolesPage = () => {
       onToastClose={() => setToast({ ...toast, show: false })}
     />
   );
-};
+}
 
 export default withAuth(RolesPage);

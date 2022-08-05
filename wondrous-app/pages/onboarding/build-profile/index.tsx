@@ -6,7 +6,7 @@ import { MainWrapper } from 'components/Onboarding/styles';
 import { UPDATE_USER } from 'graphql/mutations';
 import { withAuth } from 'components/Auth/withAuth';
 
-const ContributorBuildProfilePage = () => {
+function ContributorBuildProfilePage() {
   const [updateUser] = useMutation(UPDATE_USER);
 
   return (
@@ -14,6 +14,6 @@ const ContributorBuildProfilePage = () => {
       <OnboardingBuildProfile updateUser={updateUser} />
     </MainWrapper>
   );
-};
+}
 
 export default withAuth(ContributorBuildProfilePage);

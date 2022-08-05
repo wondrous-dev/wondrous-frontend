@@ -3,7 +3,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
-import { useRouterQuery } from 'utils/hooks';
+import { useRouterQuery, useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
@@ -27,7 +27,7 @@ import {
   populateProposalColumns,
 } from 'services/board';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns } from 'utils';
+import { dedupeColumns, insertUrlParam } from 'utils';
 import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
@@ -40,9 +40,7 @@ import {
 } from 'utils/constants';
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
-import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { useIsMobile } from 'utils/hooks';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -114,11 +112,9 @@ const useGetPodTaskBoardTasks = ({
 
     fetchMore({
       variables: fetchMoreVariables,
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return {
-          getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
-        };
-      },
+      updateQuery: (prev, { fetchMoreResult }) => ({
+        getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
+      }),
     }).catch((error) => {
       console.log(error);
     });
@@ -129,7 +125,7 @@ const useGetPodTaskBoardTasks = ({
       const taskBoardStatuses =
         statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
-          : //double check in case we add new stuff and have no valid entityType.
+          : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
       const taskBoardStatusesIsNotEmpty = taskBoardStatuses?.length > 0;
@@ -277,7 +273,7 @@ const useGetPodTaskBoard = ({
   return { fetchMore, fetchPerStatus };
 };
 
-const BoardsPage = () => {
+function BoardsPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
@@ -560,7 +556,7 @@ const BoardsPage = () => {
             offset: 0,
             // Needed to exclude proposals
             statuses: taskStatuses,
-            labelId: labelId,
+            labelId,
             searchString: search,
             ...(privacyLevel === PRIVACY_LEVEL.public && {
               onlyPublic: true,
@@ -629,6 +625,6 @@ const BoardsPage = () => {
       />
     </PodBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(BoardsPage);

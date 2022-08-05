@@ -7,7 +7,7 @@ import { OrgBoardContext } from 'utils/contexts';
 import Analytics from 'components/organization/analytics';
 import { useGetOrgFromUsername } from 'utils/hooks';
 
-const ActivitiesPage = () => {
+function ActivitiesPage() {
   const router = useRouter();
   const { username } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -26,6 +26,6 @@ const ActivitiesPage = () => {
       <Analytics orgData={org} />
     </OrgBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(ActivitiesPage);

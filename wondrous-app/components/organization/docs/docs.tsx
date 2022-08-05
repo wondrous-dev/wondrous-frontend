@@ -17,12 +17,12 @@ import PinnedDocsSection from 'components/PinnedDocsSection';
 import DocCategoriesSection from 'components/DocCategoriesSection';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 
-import Wrapper from '../wrapper/wrapper';
-import styles from './docsStyles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
+import styles from './docsStyles';
+import Wrapper from '../wrapper/wrapper';
 
 const useGetOrgDocs = (orgId) => {
   const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
@@ -61,7 +61,7 @@ const useGetOrgDocs = (orgId) => {
   };
 };
 
-const Docs = (props) => {
+function Docs(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const router = useRouter();
@@ -213,6 +213,6 @@ const Docs = (props) => {
       <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
     </Wrapper>
   );
-};
+}
 
 export default Docs;

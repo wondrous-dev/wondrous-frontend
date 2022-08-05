@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { GradientHighlightHorizontal, GradientMidnightVertical } from '../gradients';
 import palette from 'theme/palette';
+import { GradientHighlightHorizontal, GradientMidnightVertical } from '../gradients';
 
 export const StyledButton = styled.button`
   display: flex;
@@ -19,4 +19,6 @@ export const StyledButton = styled.button`
   border-radius: 6px;
 `;
 
-export const HomeButton = (className) => <StyledButton className={className}>H</StyledButton>;
+export function HomeButton(className) {
+  return <StyledButton className={className}>H</StyledButton>;
+}

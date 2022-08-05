@@ -6,7 +6,7 @@ import { storeAuthHeader, useMe, withAuth } from 'components/Auth/withAuth';
 import { InviteWelcomeBoxWrapper } from 'components/Onboarding/styles';
 import { CONNECT_ORG_GITHUB } from 'graphql/mutations/org';
 
-const Callback = () => {
+function Callback() {
   const user = useMe();
   const router = useRouter();
   const { code } = router.query;
@@ -41,6 +41,6 @@ const Callback = () => {
       <CircularProgress />
     </InviteWelcomeBoxWrapper>
   );
-};
+}
 
 export default withAuth(Callback);

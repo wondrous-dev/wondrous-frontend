@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import palette from 'theme/palette';
 
-export const TaskLikeIcon = (props) => {
+export function TaskLikeIcon(props) {
   const { liked = false } = props;
   const [colorFill, setColorFill] = useState(palette.grey57);
 
@@ -33,4 +33,4 @@ export const TaskLikeIcon = (props) => {
       />
     </svg>
   );
-};
+}

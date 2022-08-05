@@ -8,7 +8,6 @@ import { BaseRange, Editor, Range } from 'slate';
 import { Button as CommonButton } from 'components/Common/button';
 import EditorHelpers from 'components/RichText/helpers';
 import { CustomEditor, MarkType, TogglabaleBlock } from 'components/RichText/types';
-import { LinkModal, LinkModalInput, LinkModalTitle, ToolbarButton, ToolbarContainer } from './styles';
 import BoldIcon from 'components/RichText/icons/BoldIcon';
 import ItalicIcon from 'components/RichText/icons/ItalicIcon';
 import UnderlineIcon from 'components/RichText/icons/UnderlineIcon';
@@ -17,6 +16,7 @@ import BulletedListIcon from 'components/RichText/icons/BulletedListIcon';
 import NumberedListIcon from 'components/RichText/icons/NumberedListIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import CodeIcon from 'components/RichText/icons/CodeIcon';
+import { LinkModal, LinkModalInput, LinkModalTitle, ToolbarButton, ToolbarContainer } from './styles';
 
 const InsertLinkModal: React.FC<{
   editor: CustomEditor;
@@ -166,7 +166,7 @@ const BlockButton: React.FC<{
   );
 };
 
-const Toolbar = () => {
+function Toolbar() {
   const editor = useSlate();
   const [selectionOverride, setSelectionOverride] = useState<BaseRange | null>(null);
   const [initialLinkText, setInitialLinkText] = useState('');
@@ -210,6 +210,6 @@ const Toolbar = () => {
       />
     </ToolbarContainer>
   );
-};
+}
 
 export default Toolbar;
