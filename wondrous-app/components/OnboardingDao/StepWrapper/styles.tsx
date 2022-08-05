@@ -184,39 +184,6 @@ export const LaterButton = styled(ButtonBase)`
   }
 `;
 
-export const ContinueButton = styled(({ children, ...props }) => (
-  <ButtonBase {...props}>
-    <div>{children}</div>
-  </ButtonBase>
-))`
-  && {
-    align-items: center;
-    background: ${({ theme }) =>
-      `linear-gradient(270deg, ${theme.palette.blue20} -5.62%, ${theme.palette.highlightPurple} 45.92%, ${theme.palette.highlightBlue} 103.12%);`};
-    border-radius: 35px;
-    color: ${({ theme }) => theme.palette.white};
-    display: flex;
-    font-family: ${({ theme }) => theme.typography.fontFamily};
-    font-size: 15px;
-    font-weight: 600;
-    height: 38px;
-    justify-content: space-between;
-    padding: 1px;
-    text-align: center;
-    width: fit-content;
-    > div {
-      align-items: center;
-      background: ${({ theme }) => theme.palette.background.default};
-      border-radius: inherit;
-      display: flex;
-      height: 100%;
-      justify-content: center;
-      width: 100%;
-      padding: 8px 24px;
-    }
-  }
-`;
-
 export const FieldLabel = styled(Typography)`
   && {
     color: ${({ theme }) => theme.palette.blue20};

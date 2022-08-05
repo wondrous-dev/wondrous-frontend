@@ -3,25 +3,24 @@ import AddAPhotoIcon from 'components/Icons/addAPhoto.svg';
 import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
 import { ImageUpload } from 'components/Settings/imageUpload';
 import { useField } from 'formik';
-import { useState } from 'react';
 import { handleImageFile, uploadMedia } from 'utils/media';
 import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, ImageWrapper, LogoUpload, SafeImageWrapper } from './styles';
 
-const useHandleImageChange = ({ setValue }) => {
-  const [file, setFile] = useState(null);
+const useHandleImageChange = ({ setValue, tempState, setTempState, name }) => {
   const handleChange = async (file) => {
-    setFile(file);
+    setTempState({ ...tempState, [name]: file });
     const imageFile = handleImageFile({ file, id: makeUniqueId('temp') });
     setValue(imageFile.filename);
     await uploadMedia(imageFile);
   };
-  return { handleChange, file };
+  return { handleChange };
 };
 
 const ProfilePicture = (props) => {
-  const { name } = props;
+  const { name, tempState, setTempState } = props;
+  const file = tempState[name];
   const [field, _, { setValue }] = useField(name);
-  const { handleChange, file } = useHandleImageChange({ setValue });
+  const { handleChange } = useHandleImageChange({ setValue, tempState, setTempState, name });
   const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
@@ -48,9 +47,10 @@ const ProfilePicture = (props) => {
 };
 
 const HeaderPicture = (props) => {
-  const { name } = props;
+  const { name, tempState, setTempState } = props;
+  const file = tempState[name];
   const [field, _, { setValue }] = useField(name);
-  const { handleChange, file } = useHandleImageChange({ setValue });
+  const { handleChange } = useHandleImageChange({ setValue, tempState, setTempState, name });
   const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
@@ -78,11 +78,12 @@ const HeaderPicture = (props) => {
 };
 
 const AddImages = (props) => {
-  const { fields } = props;
+  const { fields, ...rest } = props;
+  const { profilePicture, headerPicture } = fields;
   return (
     <ComponentFieldWrapper>
-      <ProfilePicture {...fields.profilePicture} />
-      <HeaderPicture {...fields.headerPicture} />
+      <ProfilePicture {...profilePicture} {...rest} />
+      <HeaderPicture {...headerPicture} {...rest} />
     </ComponentFieldWrapper>
   );
 };
