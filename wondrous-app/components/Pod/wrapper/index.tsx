@@ -410,12 +410,8 @@ const Wrapper = (props) => {
                   />
                 )}
               </BoardsSubheaderWrapper>
-              <BoardLock
-                handleJoinClick={handleJoinPodButtonClick}
-                requestSent={joinRequestSent || userJoinRequest?.id}
-              >
-                {children}
-              </BoardLock>
+
+              {children}
             </Tabs>
           </ContentContainer>
         </Content>
