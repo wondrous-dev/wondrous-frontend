@@ -4,7 +4,7 @@ import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper
 import { STEP_ACTIONS } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations';
-import { IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useReducer, useState } from 'react';
 import * as Yup from 'yup';
@@ -56,9 +56,18 @@ export const FIELD_SETS = [
   //   Component: ImportTasks,
   // },
   {
-    title: 'Invite your community',
-    subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
+    title: 'Discord Integration',
+    subtitle: `For private channels, please ensure that the bot is added as a role.`,
     Component: InviteCommunity,
+    fields: {
+      guildId: { name: 'guildId', label: '1. Paste Invite Link', placeholder: 'Paste invite link from Discord' },
+      addBot: { name: 'addBot', label: '2. Add bot', placeholder: 'Add Wonder Bot' },
+      channelId: {
+        name: 'channelId',
+        label: '3.  Select Channel',
+        placeholder: 'Where do you want to add the Wonder Bot?',
+      },
+    },
   },
   {
     title: 'Review',
@@ -90,10 +99,17 @@ const handleStep = (step, { action, hasError = false }) => {
 };
 
 const useCreateOrg = () => {
-  const [createOrg, { loading }] = useMutation(CREATE_ORG);
   const router = useRouter();
+  const [createOrg, { loading }] = useMutation(CREATE_ORG, {
+    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
+    onCompleted: ({ createOrg }) => {
+      const { username } = createOrg;
+      router.push(`organization/${username}/boards`);
+    },
+  });
   const handleCreateOrg = (values) => {
-    createOrg({ variables: { input: values } }).then(() => router.push(`organization/${values.username}/boards`));
+    const { addBot, ...rest } = values;
+    createOrg({ variables: { input: rest } });
   };
   return { handleCreateOrg, loading };
 };
@@ -132,12 +148,22 @@ const useSchema = () => {
       .test('is-taken', 'This username is taken', handleIsOrgUsernameTaken), // https://github.com/jquense/yup#schematestname-string-message-string--function--any-test-function-schema=
     description: Yup.string().required('DA0 description is required'),
     category: Yup.string().required('DA0 category is required'),
+    guildId: Yup.string().optional(),
+    addBot: Yup.boolean().optional(),
+    channelId: Yup.string().when('guildId', {
+      is: (guildId) => guildId,
+      then: Yup.string().required('Channel is required'),
+      otherwise: Yup.string().optional(),
+    }),
+    headerPicture: Yup.string().optional(),
+    profilePicture: Yup.string().optional(),
   });
   return schema;
 };
 
 const OnboardingCreateDao = () => {
   const [step, setStep] = useReducer(handleStep, 0);
+  const [tempState, setTempState] = useState({});
   const currentFieldSet = FIELD_SETS[step];
   const { handleCreateOrg, loading } = useCreateOrg();
   return (
@@ -157,6 +183,8 @@ const OnboardingCreateDao = () => {
           loading={loading}
           step={step + 1}
           fieldSetsLength={fieldSetsLength}
+          tempState={tempState}
+          setTempState={setTempState}
         />
       </Form>
     </Formik>

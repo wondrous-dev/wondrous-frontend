@@ -1,17 +1,16 @@
 import { CircularProgress } from '@mui/material';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { useFormikContext } from 'formik';
-import { mapKeys, some } from 'lodash';
+import { mapKeys, mapValues, some } from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { STEP_ACTIONS } from '../constants';
+import { MainButton } from '../styles';
 import {
   BackButton,
   ButtonWrapper,
   CloseButton,
   CloseButtonIcon,
   ComponentWrapper,
-  ContinueButton,
   FooterWrapper,
   FormWrapper,
   HeaderWrapper,
@@ -25,6 +24,29 @@ import {
   Wrapper,
   WrapperLoadingCircularProgress,
 } from './styles';
+
+const useValidateStep = (fields) => {
+  const { errors, setFieldTouched, validateField } = useFormikContext();
+  const validateFields = () => {
+    Object.keys(fields).forEach((key) => {
+      validateField(key);
+      setFieldTouched(key);
+    });
+  };
+  const hasError = () => some(fields, (_, key) => errors[key]);
+  return { validateFields, errors, hasError };
+};
+
+const useClearFields = (props) => {
+  const { tempState, setTempState, fields } = props;
+  const { values, setValues } = useFormikContext() as any;
+  const handleClearFields = () => {
+    const clearFields = mapValues(fields, () => '');
+    setTempState({ ...tempState, ...clearFields });
+    setValues({ ...values, ...clearFields });
+  };
+  return handleClearFields;
+};
 
 export const OnboardingStepIndicator = ({ step, fieldSetsLength }) => {
   const rangeIndicator = (start, end, Component) =>
@@ -47,39 +69,33 @@ function BackButtonWrapper({ step, handleStep }) {
       </BackButton>
     </ButtonWrapper>
   );
-}
+};
 
-const LaterButtonWrapper = ({ step, handleStep, hideLater, fieldSetsLength }) => {
+const LaterButtonWrapper = ({ step, handleStep, hideLater, fieldSetsLength, handleClearFields }) => {
+  const handleOnClick = () => {
+    handleClearFields();
+    handleStep({ action: STEP_ACTIONS.next });
+  };
   if (step === fieldSetsLength || hideLater) return null;
-  return <LaterButton onClick={() => handleStep({ action: STEP_ACTIONS.next })}>Later</LaterButton>;
-}
-
-const useValidateStep = (fields) => {
-  const { errors, setFieldTouched, validateForm } = useFormikContext();
-  const touchFields = () => mapKeys(fields, (_, key) => setFieldTouched(key));
-  const hasError = some(fields, (_, key) => errors[key]);
-  useEffect(() => {
-    validateForm();
-  }, [validateForm]);
-  return { touchFields, errors, hasError };
+  return <LaterButton onClick={handleOnClick}>Later</LaterButton>;
 };
 
 const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, fieldSetsLength }) => {
-  const { touchFields, hasError } = useValidateStep(fields);
+  const { validateFields, hasError } = useValidateStep(fields);
   const handleOnClick = (e) => {
     e.preventDefault();
-    touchFields();
-    handleStep({ action: STEP_ACTIONS.next, hasError });
+    validateFields();
+    handleStep({ action: STEP_ACTIONS.next, hasError: hasError() });
   };
   if (step === fieldSetsLength) {
     return (
-      <ContinueButton hoverContinue={hoverContinue} type="submit">
+      <MainButton hoverContinue={hoverContinue} type="submit">
         🚀 Launch DAO
-      </ContinueButton>
+      </MainButton>
     );
   }
-  return <ContinueButton onClick={handleOnClick}>Continue</ContinueButton>;
-}
+  return <MainButton onClick={handleOnClick}>Continue</MainButton>;
+};
 
 function WrapperLoading({ loading, children }) {
   return (
@@ -110,6 +126,7 @@ function StepWrapper({
 }) {
   const router = useRouter();
   const handleOnClick = () => router.push('/dashboard');
+  const handleClearFields = useClearFields(props);
   return (
     <WrapperLoading loading={loading}>
       <FormWrapper>
@@ -132,6 +149,7 @@ function StepWrapper({
               handleStep={handleStep}
               hideLater={hideLater}
               fieldSetsLength={fieldSetsLength}
+              handleClearFields={handleClearFields}
             />
             <ContinueButtonWrapper
               step={step}
