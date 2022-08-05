@@ -288,8 +288,10 @@ const SubmissionEditButton = ({ isCreator, approvedAt, onClick }) => {
 };
 
 const SubmissionRejectButton = ({ submission, rejectTaskSubmission }) => {
-  const { changeRequestedAt, approvedAt, rejectedAt } = submission;
-  if (changeRequestedAt || approvedAt || rejectedAt) return null;
+  const { rejectedAt, paymentStatus } = submission;
+  const hasBeenPaidOrIsBeingProcessed =
+    paymentStatus === PAYMENT_STATUS.PAID || paymentStatus === PAYMENT_STATUS.PROCESSING;
+  if (rejectedAt || hasBeenPaidOrIsBeingProcessed) return null;
   return <SubmissionButtonReject onClick={rejectTaskSubmission}>Reject</SubmissionButtonReject>;
 };
 
