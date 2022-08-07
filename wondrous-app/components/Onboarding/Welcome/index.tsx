@@ -62,12 +62,6 @@ const OnboardingWelcome = ({ updateUser, user }) => {
           onError: (e) => {
             setError(e.message);
           },
-        }).then(({ data }) => {
-          const { updateUser } = data;
-          // If updateUser is null, then the username is already taken
-          if (updateUser === null) {
-            setError('Oops! The username you have chosen is taken. Please try again.');
-          }
         });
       } else {
         setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
