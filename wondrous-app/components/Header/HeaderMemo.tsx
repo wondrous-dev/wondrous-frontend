@@ -24,7 +24,7 @@ import GlobalSearch from 'components/GlobalSearch';
 import { User } from 'types/User';
 import { Notification } from 'types/Notification';
 
-type HeaderProps = {
+type Props = {
   fetchMoreNotifications: (fetchData, fetchVars) => unknown;
   isMobile: boolean;
   notifications: Notification[];
@@ -36,7 +36,7 @@ type HeaderProps = {
   user: User | null;
 };
 
-const Header = ({
+const HeaderMemo = ({
   fetchMoreNotifications,
   isMobile,
   notifications,
@@ -46,9 +46,7 @@ const Header = ({
   setNotifications,
   showCreateButton,
   user,
-}: HeaderProps) => {
-  console.log('Header Render');
-
+}: Props) => {
   return (
     <HeaderBar>
       <HeaderContainer>
@@ -106,13 +104,17 @@ const Header = ({
 };
 
 // eslint-disable-next-line react/display-name
-export default memo(Header, (prevProps, nextProps) => {
-  // We could use lodash like isEqual(pick(prevProps, fields), pick(nextProps, fields));
-  // But the code below is much faster
+export default memo(HeaderMemo, (prevProps, nextProps) => {
   return (
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.showCreateButton === nextProps.showCreateButton &&
     prevProps.user?.id === nextProps.user?.id &&
-    prevProps.notifications.every((notification, index) => notification.id === nextProps.notifications[index]?.id)
+    prevProps.notifications.length === nextProps.notifications.length &&
+    prevProps.notifications.every((notification, index) => {
+      return (
+        notification.id === nextProps.notifications[index]?.id &&
+        notification.viewedAt === nextProps.notifications[index]?.viewedAt
+      );
+    })
   );
 });
