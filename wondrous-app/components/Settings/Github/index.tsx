@@ -65,6 +65,7 @@ export const GithubIntegration = ({ orgId }) => {
             style={{
               backgroundColor: palette.green400,
               cursor: 'auto',
+              border: 'none',
             }}
           >
             <span

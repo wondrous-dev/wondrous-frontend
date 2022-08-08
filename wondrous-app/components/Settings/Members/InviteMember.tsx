@@ -111,7 +111,13 @@ const InviteMember = (props) => {
           marginRight: '18px',
         }}
       >
-        <CreateFormAddDetailsInputLabel>Username</CreateFormAddDetailsInputLabel>
+        <CreateFormAddDetailsInputLabel
+          style={{
+            marginBottom: '9px',
+          }}
+        >
+          Username
+        </CreateFormAddDetailsInputLabel>
         <StyledAutocomplete
           options={filterOrgUsersForAutocomplete(searchedUsers) || []}
           renderInput={(params) => (
@@ -203,9 +209,6 @@ const InviteMember = (props) => {
 
       <RolesDropdown
         title="Role"
-        titleStyle={{
-          marginBottom: '-8px',
-        }}
         MenuProps={MenuProps}
         IconComponent={() => <ArrowDropDownIcon style={{ height: '7px', right: '15px' }} fill="#CCBBFF" />}
         value={inviteeRole}

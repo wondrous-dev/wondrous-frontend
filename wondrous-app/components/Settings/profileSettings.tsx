@@ -6,6 +6,7 @@ import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import cloneDeep from 'lodash/cloneDeep';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import useAlerts from 'hooks/useAlerts';
 import { UPDATE_USER, USER_DISCORD_DISCONNECT } from 'graphql/mutations';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { getDiscordUrl } from 'utils';
@@ -155,9 +156,11 @@ const ProfileSettings = (props) => {
   const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
     refetchQueries: [GET_LOGGED_IN_USER],
   });
+  const { showError } = useAlerts();
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const setSnackbarAlertSeverity = snackbarContext?.setSnackbarAlertSeverity;
   const [errors, setErrors] = useState({
     username: null,
     email: null,
@@ -256,8 +259,12 @@ const ProfileSettings = (props) => {
             if (data?.updateUser?.profilePicture) {
               setProfilePictureUrl(data?.updateUser?.profilePicture);
             }
+            setSnackbarAlertSeverity('success');
             setSnackbarAlertOpen(true);
             setSnackbarAlertMessage(<>User profile updated successfully</>);
+          },
+          onError: (error) => {
+            showError(error?.message, true);
           },
         });
       }

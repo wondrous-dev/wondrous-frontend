@@ -494,9 +494,7 @@ const Wrapper = (props) => {
                 />
               )}
             </BoardsSubheaderWrapper>
-            <BoardLock handleJoinClick={handleJoinOrgButtonClick} requestSent={joinRequestSent || userJoinRequest?.id}>
-              {children}
-            </BoardLock>
+            {children}
           </Tabs>
         </ContentContainer>
       </Content>

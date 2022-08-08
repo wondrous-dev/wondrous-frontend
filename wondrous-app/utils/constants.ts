@@ -533,11 +533,11 @@ export const ProposalVoteType = {
 export const PROPOSAL_VOTE_LABELS = {
   [ProposalVoteType.APPROVE]: {
     VOTED: 'Voted For',
-    ACTION: 'Vote Against',
+    ACTION: 'Vote For',
   },
   [ProposalVoteType.REJECT]: {
     VOTED: 'Voted Against',
-    ACTION: 'Vote For',
+    ACTION: 'Vote Against',
   },
 };
 

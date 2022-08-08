@@ -38,7 +38,7 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask } from 'utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask, useUserProfile } from 'utils/hooks';
 
 import { useMe } from '../../Auth/withAuth';
 import {
@@ -130,7 +130,7 @@ interface ITaskListModalProps {
 }
 
 export const TaskViewModal = (props: ITaskListModalProps) => {
-  const { open, handleClose, taskId, isTaskProposal, back } = props;
+  const { open, handleClose, taskId, isTaskProposal = false, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
@@ -140,8 +140,14 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const userProfile = useUserProfile();
   const getUserPermissionContext = useCallback(() => {
-    return orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
+    return (
+      orgBoard?.userPermissionsContext ||
+      podBoard?.userPermissionsContext ||
+      userBoard?.userPermissionsContext ||
+      userProfile?.userPermissionsContext
+    );
   }, [orgBoard, userBoard, podBoard]);
   const getBoard = useCallback(() => {
     return orgBoard || podBoard || userBoard;
@@ -173,7 +179,6 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
     orgId: fetchedTask?.orgId,
     podId: fetchedTask?.podId,
   });
-
   const { canViewTask } = useCanViewTask(fetchedTask, userPermissionsContext, permissions);
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
@@ -759,7 +764,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           <GithubButtons fetchedTask={fetchedTask} />
                         </TaskSectionDisplayData>
                         <TaskSectionDisplayCreator>
-                          {fetchedTask?.creatorUsername && (
+                          {fetchedTask?.creatorUsername && !isTaskProposal && (
                             <TaskSectionImageContent
                               hasContent={fetchedTask?.creatorUsername}
                               imgSrc={fetchedTask?.creatorProfilePicture}
