@@ -12,9 +12,10 @@ const BountiesPage = () => {
 
   return (
     <Wrapper isAdmin={isAdmin}>
+      {isMobile ? <MobileComingSoonModal /> : null}
       <Board isAdmin={isAdmin} />
     </Wrapper>
   );
 };
 
-export default BountiesPage;
+export default withAuth(BountiesPage);

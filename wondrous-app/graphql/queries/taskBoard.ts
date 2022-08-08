@@ -260,6 +260,7 @@ export const SEARCH_TASKS_FOR_USER_BOARD_VIEW = gql`
     $podIds: [String]
     $limit: Int
     $offset: Int
+    $types: [String]
   ) {
     searchTasksForUserBoardView(
       input: {
@@ -270,6 +271,7 @@ export const SEARCH_TASKS_FOR_USER_BOARD_VIEW = gql`
         podIds: $podIds
         limit: $limit
         offset: $offset
+        types: $types
       }
     ) {
       ...TaskCardFragment

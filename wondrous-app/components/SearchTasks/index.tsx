@@ -16,6 +16,7 @@ import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { ViewType } from 'types/common';
+import { useUserBoard } from 'utils/hooks';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -41,6 +42,9 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const [options, setOptions] = useState([]);
   const [hasMore, setHasMore] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
+  const board = useUserBoard() || {};
+
+  const { searchLabel = 'Search tasks or people...' } = board;
   const LIMIT = 5;
 
   React.useEffect(() => {
@@ -63,8 +67,8 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
       } else {
         const { users = [], proposals, tasks } = await onSearch(searchString);
 
-        const hasMore = [...tasks, ...proposals].length > LIMIT;
-        const tasksWithProposals = [...tasks, ...proposals].slice(0, LIMIT);
+        const hasMore = [...tasks, ...(proposals || [])].length > LIMIT;
+        const tasksWithProposals = [...tasks, ...(proposals || [])].slice(0, LIMIT);
 
         setOptions([...tasksWithProposals, ...users]);
         setHasMore(hasMore);
@@ -188,7 +192,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
             <Input
               sx={{ height: '40px' }}
               {...params}
-              placeholder={`${isExpanded || !isExpandable ? 'Search tasks or people...' : 'Search'}`}
+              placeholder={`${isExpanded || !isExpandable ? searchLabel : 'Search'}`}
               InputProps={{
                 ...params.InputProps,
                 startAdornment: (
