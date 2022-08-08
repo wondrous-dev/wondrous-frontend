@@ -3,7 +3,7 @@ import { Button, ButtonBase, Menu, MenuItem, Modal, Typography } from '@mui/mate
 import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
-import { Share } from 'components/Common/Share';
+import Share from 'components/Common/Share';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import Arrow from 'components/Icons/arrow.svg';
 import CalendarIcon from 'components/Icons/calendar';
