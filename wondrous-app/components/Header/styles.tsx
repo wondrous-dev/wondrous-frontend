@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
-export const Header = styled(AppBar)`
+export const HeaderBar = styled(AppBar)`
   && {
     height: 70px;
     background: #1d1d1d;
