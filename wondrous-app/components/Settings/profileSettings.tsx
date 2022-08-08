@@ -213,14 +213,14 @@ const ProfileSettings = (props) => {
     } else {
       if (username) {
         let input = {
-          ...(username && {
-            username,
-          }),
           ...(profileBio && {
             bio: profileBio,
           }),
           links,
         };
+        if (username !== loggedInUser?.username) {
+          input['username'] = username;
+        }
         if (email !== loggedInUser?.email) {
           input['email'] = email;
         }
