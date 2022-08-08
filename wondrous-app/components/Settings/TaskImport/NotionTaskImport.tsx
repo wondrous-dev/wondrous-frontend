@@ -1,8 +1,9 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Snackbar } from 'components/Settings/styles';
 import NotionDatabaseSelect from 'components/Settings/TaskImport/NotionDatabaseSelect';
 import { NotionInButtonIcon } from 'components/Settings/TaskImport/styles';
 import { GET_ORG_NOTION_WORKSPACE } from 'graphql/queries';
+import { DISCONNECT_NOTION_FROM_ORG } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { LINK, NOTION_CONNECT_TYPES } from 'utils/constants';
@@ -18,6 +19,9 @@ const NotionTaskImportSection = (props) => {
   const [toast, setToast] = useState({ show: false, message: '' });
 
   const [getOrgNotionWorkspace, { data: getOrgNotionWorkspaceData }] = useLazyQuery(GET_ORG_NOTION_WORKSPACE, {});
+  const [disconnectNotionFromOrg] = useMutation(DISCONNECT_NOTION_FROM_ORG, {
+    refetchQueries: ['getOrgNotionWorkspace'],
+  });
 
   const redirectToNotionAuth = () => {
     const state = JSON.stringify({
