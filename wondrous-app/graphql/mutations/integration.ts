@@ -93,3 +93,11 @@ export const IMPORT_NOTION_TASK_TO_ORG = gql`
     }
   }
 `;
+
+export const DISCONNECT_NOTION_FROM_ORG = gql`
+  mutation disconnectNotionFromOrg($orgId: ID!, $notionWorkspaceId: String!) {
+    disconnectNotionFromOrg(orgId: $orgId, notionWorkspaceId: $notionWorkspaceId) {
+      success
+    }
+  }
+`;
