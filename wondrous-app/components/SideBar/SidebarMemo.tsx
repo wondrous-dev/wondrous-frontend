@@ -1,8 +1,6 @@
 import React, { useState, useEffect, memo } from 'react';
 import Link from 'next/link';
 
-import Box from '@mui/material/Box';
-
 import Tooltip from 'components/Tooltip';
 import {
   DrawerBackButton,
@@ -251,8 +249,6 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
 
 // eslint-disable-next-line react/display-name
 export default memo(SideBarMemo, (prevProps, nextProps) => {
-  console.log(prevProps, nextProps);
-
   return (
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.sidebar?.minimized === nextProps.sidebar?.minimized &&
