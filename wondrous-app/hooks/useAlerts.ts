@@ -10,9 +10,9 @@ const useAlerts = () => {
     setSnackbarAlertAutoHideDuration,
   } = useContext(SnackbarAlertContext);
 
-  const showError = (errorMsg) => {
+  const showError = (errorMsg, isSeverityError = false) => {
     setSnackbarAlertMessage(errorMsg);
-    setSnackbarAlertSeverity('warning');
+    setSnackbarAlertSeverity(isSeverityError ? 'error' : 'warning');
     setSnackbarAlertOpen(true);
   };
 
