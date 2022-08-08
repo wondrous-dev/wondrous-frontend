@@ -45,8 +45,6 @@ type Props = {
 };
 
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: Props) => {
-  console.log('SideBarMemo - render');
-
   const minimized = sidebar?.minimized;
   const setMinimized = sidebar?.setMinimized;
   const [openPodModal, setOpenPodModal] = useState(false);
