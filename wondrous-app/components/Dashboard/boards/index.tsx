@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
-import BoardsActivity from 'components/Common/BoardsActivity';
+import BoardWrapper from './BoardWrapper';
 import {
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_TASK_BOARD_TASKS,
@@ -21,9 +21,8 @@ import {
   generateUserDashboardFilters,
   generateAdminDashboardFilters,
 } from 'services/board';
-import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, delQuery } from 'utils';
+import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
   TASKS_DEFAULT_STATUSES,
@@ -36,7 +35,6 @@ import {
 import { UserBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useCreateEntityContext, useGetPerStatusTaskCountForUserBoard, useSelectMembership } from 'utils/hooks';
-import { BoardsActivityWrapper } from './styles';
 
 const useGetUserTaskBoardTasks = ({
   isAdmin,
@@ -400,25 +398,6 @@ const BoardsPage = (props) => {
   };
   const activeColumns = isAdmin ? adminColumns : contributorColumns;
 
-  const handleOnToggle = () => {
-    router.query.view !== ViewType.Admin
-      ? router.replace(`${delQuery(router.asPath)}?view=${ViewType.Admin}`)
-      : router.replace(`${delQuery(router.asPath)}`);
-  };
-
-  const toggleItems = [
-    {
-      label: 'Contributor',
-      isActive: router.query.view !== ViewType.Admin,
-      onChange: handleOnToggle,
-    },
-    {
-      label: 'Admin',
-      isActive: router.query.view === ViewType.Admin,
-      onChange: handleOnToggle,
-    },
-  ];
-
   return (
     <UserBoardContext.Provider
       value={{
@@ -436,26 +415,22 @@ const BoardsPage = (props) => {
         adminWorkflowCount: adminPanelCount?.getWorkFlowBoardReviewableItemsCount,
       }}
     >
-      <BoardsActivityWrapper>
-        <BoardsActivity
-          onSearch={handleSearch}
-          filterSchema={filterSchema}
-          onFilterChange={handleFilterChange}
-          statuses={filters?.statuses}
-          podIds={filters?.podIds}
-          withAdminToggle
-          isAdmin={isAdmin}
-          selectMembershipRequests={selectMembershipRequests}
-          toggleItems={toggleItems}
-        />
-      </BoardsActivityWrapper>
-      <Boards
-        columns={activeColumns}
-        onLoadMore={handleLoadMore}
-        hasMore={hasMoreTasks}
+      <BoardWrapper
         isAdmin={isAdmin}
-        setColumns={setContributorColumns}
-      />
+        onSearch={handleSearch}
+        filterSchema={filterSchema}
+        onFilterChange={handleFilterChange}
+        statuses={filters?.statuses}
+        podIds={filters?.podIds}
+      >
+        <Boards
+          columns={activeColumns}
+          onLoadMore={handleLoadMore}
+          hasMore={hasMoreTasks}
+          isAdmin={isAdmin}
+          setColumns={setContributorColumns}
+        />
+      </BoardWrapper>
     </UserBoardContext.Provider>
   );
 };

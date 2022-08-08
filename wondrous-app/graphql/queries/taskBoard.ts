@@ -406,3 +406,12 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD = gql`
   }
   ${PerStatusTaskCountFragment}
 `;
+
+export const GET_USER_BOARD_BOUNTIES = gql`
+  query getUserTaskBoardBounties($input: UserTaskBoardQueryInput) {
+    getUserTaskBoardBounties(input: $input) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;

@@ -11,24 +11,61 @@ const Tabs = (props) => {
   const asPathWithoutQueries = router.asPath.split('?')[0];
   const { username, podId } = router.query;
   const entityId = username ?? podId;
-  let tabsLinks = [
-    {
-      href: `/${page}/${entityId}/boards`,
-      label: 'Boards',
-    },
-    {
-      href: `/${page}/${entityId}/docs`,
-      label: 'Docs',
-    },
-    {
-      href: `/${page}/${entityId}/activities`,
-      label: 'Activity',
-    },
-    {
-      href: `/${page}/${entityId}/analytics`,
-      label: 'Analytics',
-    },
-  ];
+
+  const TAB_LINKS_MAP = {
+    dashboard: [
+      {
+        href: '/dashboard',
+        label: 'Tasks',
+      },
+      {
+        href: '/dashboard/bounties',
+        label: 'Bounties',
+      },
+      {
+        href: '/dashboard/proposals',
+        label: 'Proposals',
+      },
+    ],
+    organization: [
+      {
+        href: `/${page}/${entityId}/boards`,
+        label: 'Boards',
+      },
+      {
+        href: `/${page}/${entityId}/docs`,
+        label: 'Docs',
+      },
+      {
+        href: `/${page}/${entityId}/activities`,
+        label: 'Activity',
+      },
+      {
+        href: `/${page}/${entityId}/analytics`,
+        label: 'Analytics',
+      },
+    ],
+    pod: [
+      {
+        href: `/${page}/${entityId}/boards`,
+        label: 'Boards',
+      },
+      {
+        href: `/${page}/${entityId}/docs`,
+        label: 'Docs',
+      },
+      {
+        href: `/${page}/${entityId}/activities`,
+        label: 'Activity',
+      },
+      {
+        href: `/${page}/${entityId}/analytics`,
+        label: 'Analytics',
+      },
+    ],
+  };
+
+  let tabsLinks = TAB_LINKS_MAP[page];
 
   if (showMembers) {
     tabsLinks.splice(2, 0, { href: `/${page}/${entityId}/members`, label: 'Members' });

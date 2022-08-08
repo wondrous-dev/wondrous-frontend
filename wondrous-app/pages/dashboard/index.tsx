@@ -5,7 +5,6 @@ import Boards from 'components/Dashboard/boards';
 import Wrapper from 'components/Dashboard/wrapper';
 import { ViewType } from 'types/common';
 import { SelectMembershipContext } from 'utils/contexts';
-import { BoardsWrapper } from 'components/Dashboard/boards/styles';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
@@ -25,14 +24,12 @@ const Dashboard = () => {
           setSelectMembershipRequests,
         }}
       >
-        <BoardsWrapper>
-          <Boards
-            isAdmin={isAdmin}
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-            selectMembershipRequests={selectMembershipRequests}
-          />
-        </BoardsWrapper>
+        <Boards
+          isAdmin={isAdmin}
+          selectedStatus={selectedStatus}
+          setSelectedStatus={setSelectedStatus}
+          selectMembershipRequests={selectMembershipRequests}
+        />
       </SelectMembershipContext.Provider>
     </Wrapper>
   );

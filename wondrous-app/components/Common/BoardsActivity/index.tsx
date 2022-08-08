@@ -24,11 +24,12 @@ export const BoardsActivityInlineView = ({
   listViewOptions,
   isExpandable = true,
   withAdminToggle,
-  toggleItems = [],
+  toggleItems,
 }) => {
   const [displayFilters, setDisplayFilters] = useState(false);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
+
   return (
     <>
       <BoardsActivityInlineViewWrapper>

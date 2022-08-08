@@ -1,4 +1,4 @@
-import { NextRouter } from 'next/router';
+import { NextRouter, useRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
 import apollo from 'services/apollo';
 import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';

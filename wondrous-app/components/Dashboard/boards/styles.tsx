@@ -16,7 +16,7 @@ export const DashboardPanelWrapper = styled.div`
   width: 100%;
 `;
 
-export const BoardsWrapper = styled.div`
+export const Wrapper = styled.div`
   width: 95%;
   margin: 0 auto;
   margin-top: 30px;
