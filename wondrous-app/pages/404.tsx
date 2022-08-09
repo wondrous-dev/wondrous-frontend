@@ -86,7 +86,7 @@ export default function Custom404() {
       <Custom404Wrapper>
         <Custom404Heading>Hey Wonderer!</Custom404Heading>
         <Custom404SubHeading>Looks like there is no such planet in the Wonderverse.</Custom404SubHeading>
-        <Link href={'/dashboard'} passHref>
+        <Link href="/dashboard" passHref>
           <Custom404Button>Back to the homepage</Custom404Button>
         </Link>
       </Custom404Wrapper>

@@ -22,9 +22,7 @@ const EXCLUDED_PATHS = [
   '/explore',
 ];
 
-export const useMe = () => {
-  return useContext(MyContext);
-};
+export const useMe = () => useContext(MyContext);
 
 export const emailSignup = async (email: string, password: string) => {
   try {
@@ -90,8 +88,8 @@ export const emailSignin = async (email: string, password: string) => {
     } = await apollo.mutate({
       mutation: LOGIN_MUTATION,
       variables: {
-        email: email,
-        password: password,
+        email,
+        password,
       },
     });
 
@@ -154,13 +152,9 @@ export const getUserSigningMessage = async (
   }
 };
 
-export const getAuthHeader = () => {
-  return localStorage.getItem('wonderToken') || null;
-};
+export const getAuthHeader = () => localStorage.getItem('wonderToken') || null;
 
-export const getWaitlistAuthHeader = () => {
-  return localStorage.getItem('waitlistToken') || null;
-};
+export const getWaitlistAuthHeader = () => localStorage.getItem('waitlistToken') || null;
 
 export const linkWallet = async (web3Address: string, signedMessage: string, blockchain: string) => {
   try {
@@ -241,7 +235,7 @@ export const logout = async () => {
 };
 
 export const withAuth = (Component, noCache = false) => {
-  const AuthComponent = (props) => {
+  function AuthComponent(props) {
     const { navigation, route } = props;
     const router = useRouter();
     const [token, setToken] = useState(null);
@@ -267,23 +261,22 @@ export const withAuth = (Component, noCache = false) => {
         window.location.href = '/login';
       }
       return <Component {...props} />;
-    } else {
-      const user = data?.getLoggedinUser;
-      if (user && !user?.username && router.pathname !== '/onboarding/welcome') {
-        router.push('/onboarding/welcome');
-      }
-      return (
-        <MyContext.Provider value={user}>
-          <Component {...props} user={user} />
-        </MyContext.Provider>
-      );
     }
-  };
+    const user = data?.getLoggedinUser;
+    if (user && !user?.username && router.pathname !== '/onboarding/welcome') {
+      router.push('/onboarding/welcome');
+    }
+    return (
+      <MyContext.Provider value={user}>
+        <Component {...props} user={user} />
+      </MyContext.Provider>
+    );
+  }
   return AuthComponent;
 };
 
 export const withWaitlistAuth = (Component, noCache = false) => {
-  const WaitlistAuthComponent = (props) => {
+  function WaitlistAuthComponent(props) {
     const [token, setToken] = useState(null);
     const [tokenLoading, setTokenLoading] = useState(true);
     const { data, loading, error } = useQuery(GET_LOGGED_IN_WAITLIST_USER);
@@ -298,14 +291,13 @@ export const withWaitlistAuth = (Component, noCache = false) => {
 
     if (!tokenLoading && !token) {
       return <Component {...props} />;
-    } else {
-      const user = data?.getLoggedinWaitlistUser;
-      return (
-        <MyContext.Provider value={user}>
-          <Component {...props} user={user} />
-        </MyContext.Provider>
-      );
     }
-  };
+    const user = data?.getLoggedinWaitlistUser;
+    return (
+      <MyContext.Provider value={user}>
+        <Component {...props} user={user} />
+      </MyContext.Provider>
+    );
+  }
   return WaitlistAuthComponent;
 };

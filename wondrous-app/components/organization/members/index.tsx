@@ -56,7 +56,7 @@ const useGetOrgMemberRequests = (orgId) => {
   return { data: data?.getOrgMembershipRequest, fetchMore, hasMore };
 };
 
-const MemberRequests = (props) => {
+function MemberRequests(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
@@ -176,6 +176,6 @@ const MemberRequests = (props) => {
       </RequestsContainer>
     </Wrapper>
   );
-};
+}
 
 export default MemberRequests;

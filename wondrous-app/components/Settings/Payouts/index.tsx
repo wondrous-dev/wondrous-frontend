@@ -51,7 +51,7 @@ enum ViewType {
 }
 
 const LIMIT = 10;
-const PaymentItem = (props) => {
+function PaymentItem(props) {
   const {
     item,
     org,
@@ -77,8 +77,8 @@ const PaymentItem = (props) => {
   const taskHref = org
     ? `/organization/${org?.username}/boards?task=${item.taskId}`
     : `/pod/${podId}/boards?task=${item.taskId}`;
-  let link,
-    linkText = null;
+  let link;
+  let linkText = null;
   if (item?.additionalData?.manualExplorerLink) {
     link = item?.additionalData?.manualExplorerLink;
     linkText = item?.additionalData?.manualExplorerLink;
@@ -233,7 +233,7 @@ const PaymentItem = (props) => {
               style={{
                 color: palette.white,
               }}
-              target={'_blank'}
+              target="_blank"
               rel="noreferrer"
               href={link}
             >
@@ -251,7 +251,7 @@ const PaymentItem = (props) => {
             <TableCellText>{item.chain}</TableCellText>
           </StyledTableCell>
         ) : (
-          <StyledTableCell></StyledTableCell>
+          <StyledTableCell />
         )}
         {item.submissionApprovedAt && (
           <StyledTableCell>
@@ -266,9 +266,9 @@ const PaymentItem = (props) => {
       </StyledTableRow>
     </>
   );
-};
+}
 
-const Payouts = (props) => {
+function Payouts(props) {
   const { orgId, podId } = props;
   const [view, setView] = useState(ViewType.Unpaid);
   const router = useRouter();
@@ -616,6 +616,6 @@ const Payouts = (props) => {
       )}
     </SettingsWrapper>
   );
-};
+}
 
 export default Payouts;

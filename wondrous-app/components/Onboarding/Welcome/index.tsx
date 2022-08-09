@@ -6,6 +6,7 @@ import { USERNAME_REGEX } from 'utils/constants';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import {
   InviteWelcomeBoxParagraph,
   UsernameTitle,
@@ -15,9 +16,8 @@ import {
   Label,
   WalletConnected,
 } from '../styles';
-import { useMe, withAuth } from 'components/Auth/withAuth';
 
-const OnboardingWelcome = ({ updateUser, user }) => {
+function OnboardingWelcome({ updateUser, user }) {
   const wonderWeb3 = useWonderWeb3();
   const router = useRouter();
   const [username, setUsername] = useState(user?.username);
@@ -51,21 +51,19 @@ const OnboardingWelcome = ({ updateUser, user }) => {
       router.push('/onboarding/build-profile', undefined, {
         shallow: true,
       });
+    } else if (username && USERNAME_REGEX.test(username)) {
+      updateUser({
+        variables: {
+          input: {
+            username,
+          },
+        },
+        onError: (e) => {
+          setError(e.message);
+        },
+      });
     } else {
-      if (username && USERNAME_REGEX.test(username)) {
-        updateUser({
-          variables: {
-            input: {
-              username,
-            },
-          },
-          onError: (e) => {
-            setError(e.message);
-          },
-        });
-      } else {
-        setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
-      }
+      setError("Please enter a valid username with 3-15 alphanumeric characters with no '.'");
     }
   };
 
@@ -113,6 +111,6 @@ const OnboardingWelcome = ({ updateUser, user }) => {
       {error && <ErrorText>{error}</ErrorText>}
     </OnboardingLayout>
   );
-};
+}
 
 export default withAuth(OnboardingWelcome);

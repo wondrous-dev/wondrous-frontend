@@ -28,7 +28,7 @@ interface DocModalProps {
   onSubmit?: any;
 }
 
-const DocModal = ({
+function DocModal({
   open,
   onClose,
   title,
@@ -40,7 +40,7 @@ const DocModal = ({
   submitLabel,
   deleteLabel,
   cancelLabel,
-}: DocModalProps) => {
+}: DocModalProps) {
   return (
     <Dialog
       open={open}
@@ -91,6 +91,6 @@ const DocModal = ({
       </DialogActions>
     </Dialog>
   );
-};
+}
 
 export default DocModal;

@@ -28,7 +28,7 @@ import {
 
 const NO_OF_STEPS = 4;
 
-export const OnboardingStepIndicator = ({ step }) => {
+export function OnboardingStepIndicator({ step }) {
   const rangeIndicator = (start, end, Component) =>
     Array.from({ length: start - end }, (_, i) => <Component key={i} />);
   return (
@@ -38,9 +38,9 @@ export const OnboardingStepIndicator = ({ step }) => {
       {rangeIndicator(NO_OF_STEPS, step, StepIndicatorEmpty)}
     </StepIndicatorWrapper>
   );
-};
+}
 
-const BackButtonWrapper = ({ step, handleStep }) => {
+function BackButtonWrapper({ step, handleStep }) {
   if (step === 1) return <ButtonWrapper />;
   return (
     <ButtonWrapper>
@@ -49,12 +49,12 @@ const BackButtonWrapper = ({ step, handleStep }) => {
       </BackButton>
     </ButtonWrapper>
   );
-};
+}
 
-const LaterButtonWrapper = ({ step, handleStep, hideLater }) => {
+function LaterButtonWrapper({ step, handleStep, hideLater }) {
   if (step === NO_OF_STEPS || hideLater) return null;
   return <LaterButton onClick={() => handleStep({ action: STEP_ACTIONS.next })}>Later</LaterButton>;
-};
+}
 
 const useValidateStep = (fields) => {
   const { errors, setFieldTouched, validateForm } = useFormikContext();
@@ -66,7 +66,7 @@ const useValidateStep = (fields) => {
   return { touchFields, errors, hasError };
 };
 
-const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {} }) => {
+function ContinueButtonWrapper({ step, hoverContinue, handleStep, fields = {} }) {
   const { touchFields, hasError } = useValidateStep(fields);
   const handleOnClick = (e) => {
     e.preventDefault();
@@ -81,9 +81,9 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {} })
     );
   }
   return <ContinueButton onClick={handleOnClick}>Continue</ContinueButton>;
-};
+}
 
-const WrapperLoading = ({ loading, children }) => {
+function WrapperLoading({ loading, children }) {
   return (
     <Wrapper>
       {loading ? (
@@ -96,9 +96,9 @@ const WrapperLoading = ({ loading, children }) => {
       )}
     </Wrapper>
   );
-};
+}
 
-const StepWrapper = ({
+function StepWrapper({
   Component,
   handleStep,
   hideLater = false,
@@ -108,7 +108,7 @@ const StepWrapper = ({
   title,
   loading,
   ...props
-}) => {
+}) {
   const router = useRouter();
   const handleOnClick = () => {
     router.push('/dashboard');
@@ -143,6 +143,6 @@ const StepWrapper = ({
       </FormWrapper>
     </WrapperLoading>
   );
-};
+}
 
 export default StepWrapper;

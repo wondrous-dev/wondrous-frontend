@@ -1,10 +1,11 @@
 import React from 'react';
-
-import { useMe, withAuth } from '../Auth/withAuth';
-import useSideBar from 'hooks/useSideBar';
 import { useRouter } from 'next/router';
-import SidebarMemo from './SidebarMemo';
+
+import useSideBar from 'hooks/useSideBar';
 import { useIsMobile } from 'utils/hooks';
+import { useMe, withAuth } from 'components/Auth/withAuth';
+
+import SidebarMemo from './SidebarMemo';
 
 const SideBarComponent = ({ userOrgs }) => {
   const isMobile = useIsMobile();

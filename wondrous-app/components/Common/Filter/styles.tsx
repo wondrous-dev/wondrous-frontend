@@ -306,13 +306,15 @@ export const ButtonsWrapper = styled.div`
   padding-top: 12px;
 `;
 
-export const FilterCheckbox = ({ checked }) => (
-  <Checkbox
-    checked={checked}
-    icon={<CircleUnchecked style={{ width: '17px', height: '17px', color: '#474747' }} />}
-    checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '17px', height: '17px' }} />}
-  />
-);
+export function FilterCheckbox({ checked }) {
+  return (
+    <Checkbox
+      checked={checked}
+      icon={<CircleUnchecked style={{ width: '17px', height: '17px', color: '#474747' }} />}
+      checkedIcon={<CircleChecked style={{ color: '#7427FF', width: '17px', height: '17px' }} />}
+    />
+  );
+}
 
 export const FilterIconWrapper = styled.div`
   background: #0f0f0f;

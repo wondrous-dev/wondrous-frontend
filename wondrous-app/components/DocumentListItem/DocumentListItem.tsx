@@ -13,7 +13,7 @@ import { GET_PREVIEW_FILE } from 'graphql/queries';
 
 import styles, { WhiteTypography, DescriptionTypography } from './DocumentListItemStyles';
 
-const DocumentListItem = ({ title, description, media, url, icon, permission, onClick }) => {
+function DocumentListItem({ title, description, media, url, icon, permission, onClick }) {
   const [getPreviewFile, { data, loading }] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
   });
@@ -41,14 +41,7 @@ const DocumentListItem = ({ title, description, media, url, icon, permission, on
     >
       <Box sx={styles.listItem}>
         <Box sx={styles.imageContainer}>
-          {imgUrl && (
-            <Image
-              src={imgUrl}
-              alt={`media for ${title}`}
-              layout="fill"
-              objectFit="cover"
-            />
-          )}
+          {imgUrl && <Image src={imgUrl} alt={`media for ${title}`} layout="fill" objectFit="cover" />}
         </Box>
         <Box
           ml={1.75}
@@ -68,6 +61,6 @@ const DocumentListItem = ({ title, description, media, url, icon, permission, on
       </Box>
     </Grid>
   );
-};
+}
 
 export default DocumentListItem;

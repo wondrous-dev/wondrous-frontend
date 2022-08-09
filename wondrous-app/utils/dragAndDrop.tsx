@@ -18,6 +18,7 @@ export default class SmoothScrollPlugin {
     isDragging: false,
     lastMouseClientY: undefined,
   };
+
   constructor() {
     this.addEventListeners();
   }

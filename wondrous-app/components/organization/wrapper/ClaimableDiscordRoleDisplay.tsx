@@ -1,3 +1,7 @@
+import apollo from 'services/apollo';
+import { useRouter } from 'next/router';
+
+import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
 import {
   TokenGatedRoleTitle,
   TokenGatedRoleWrapper,
@@ -6,19 +10,15 @@ import {
   ClaimRoleLabel,
   RoleActionWrapper,
 } from './styles';
-import apollo from 'services/apollo';
-import { useRouter } from 'next/router';
 
-import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
-
-const ClaimableDiscordRoleDisplay = (props) => {
+function ClaimableDiscordRoleDisplay(props) {
   const router = useRouter();
 
   const { role } = props;
   const handleClaimClick = async () => {
-    const confirmed = confirm(`Are you sure you want to claim ${role.name}`)
+    const confirmed = confirm(`Are you sure you want to claim ${role.name}`);
     if (!confirmed) {
-      return
+      return;
     }
     if (role.__typename === 'OrgRole') {
       try {
@@ -57,6 +57,6 @@ const ClaimableDiscordRoleDisplay = (props) => {
       </RoleActionWrapper>
     </TokenGatedRoleWrapper>
   );
-};
+}
 
 export default ClaimableDiscordRoleDisplay;

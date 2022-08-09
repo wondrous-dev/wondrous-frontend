@@ -30,7 +30,7 @@ export const plainTextToRichText = (text: string): Descendant[] => {
             type: 'mention',
             mentionable: username,
             id,
-            children: [{ text: '@' + username }],
+            children: [{ text: `@${username}` }],
           },
           ...parseMentionsInPlaintext(text.slice(mentionEndIndex + 1)),
         ];
@@ -48,7 +48,7 @@ export const plainTextToRichText = (text: string): Descendant[] => {
 
 export const deserializeRichText = (text: string = ''): Descendant[] => {
   try {
-    let parsed = JSON.parse(text);
+    const parsed = JSON.parse(text);
 
     return parsed;
   } catch (e) {
@@ -102,9 +102,7 @@ export const isRichText = (text: string) => {
   }
 };
 
-export const trimRichText = (nodes: Descendant[]) => {
-  return nodes; // TODO
-};
+export const trimRichText = (nodes: Descendant[]) => nodes; // TODO
 
 export const countCharacters = (nodes: Descendant[]) => {
   let result = 0;

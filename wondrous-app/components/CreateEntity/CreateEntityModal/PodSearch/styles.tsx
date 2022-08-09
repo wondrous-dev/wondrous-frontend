@@ -4,8 +4,8 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import PodIcon from 'components/Icons/podIcon';
 import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
-import Arrow from '../../../Icons/arrow.svg';
 import palette from 'theme/palette';
+import Arrow from '../../../Icons/arrow.svg';
 
 export const scrollBarStyles = css`
   :hover {

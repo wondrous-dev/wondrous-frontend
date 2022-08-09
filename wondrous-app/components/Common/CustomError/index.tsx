@@ -1,6 +1,7 @@
-import { ErrorWrapper, ErrorImage, ErrorHeader, EscapeButton } from './styles';
 import { SectionSubheader } from 'components/Explore/styles';
 import Link from 'next/link';
+import { ErrorWrapper, ErrorImage, ErrorHeader, EscapeButton } from './styles';
+
 function CustomErrorComponent() {
   return (
     <ErrorWrapper>

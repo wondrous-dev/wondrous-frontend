@@ -15,7 +15,7 @@ import {
   UserAboutInfoPodsCardName,
 } from './styles';
 
-const AboutPodsCard = (props) => {
+function AboutPodsCard(props) {
   const { id, color, name = '', description = '', org = {}, tasksIncompleteCount, milestoneCount } = props;
   const router = useRouter();
   const handleOnClick = () => router.push(`/pod/${id}/boards`);
@@ -55,6 +55,6 @@ const AboutPodsCard = (props) => {
       </UserAboutInfoPodsCardFooter>
     </UserAboutInfoCard>
   );
-};
+}
 
 export default AboutPodsCard;

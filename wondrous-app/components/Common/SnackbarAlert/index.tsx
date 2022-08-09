@@ -4,7 +4,7 @@ import { StyledAlert, StyledSnackbar } from './styles';
 
 export const SnackbarAlertContext = createContext(null);
 
-export const SnackbarAlertProvider = ({ children }) => {
+export function SnackbarAlertProvider({ children }) {
   const [message, setSnackbarAlertMessage] = useState('');
   const [anchorOrigin, setSnackbarAlertAnchorOrigin] = useState({
     vertical: 'top',
@@ -53,4 +53,4 @@ export const SnackbarAlertProvider = ({ children }) => {
       {children}
     </SnackbarAlertContext.Provider>
   );
-};
+}

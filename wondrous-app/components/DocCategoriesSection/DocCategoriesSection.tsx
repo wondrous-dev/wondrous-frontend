@@ -7,7 +7,7 @@ import DocumentListItem from 'components/DocumentListItem';
 import ListLayout from 'components/ListLayout';
 import { SectionTitleTypography, DocsButton } from './DocCategoriesSectionStyles';
 
-const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, onCategoryDialogOpen, canEdit }) => {
+function DocCategoriesSection({ onItemClick, onOpenDocDialog, docs, category, onCategoryDialogOpen, canEdit }) {
   const router = useRouter();
 
   const docsByCategory = docs?.filter((doc) => doc.documentCategory?.id === category.id);
@@ -59,6 +59,6 @@ const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, on
       </ListLayout>
     </Box>
   );
-};
+}
 
 export default DocCategoriesSection;

@@ -1,8 +1,8 @@
 import styled from 'styled-components';
 import { TextField, Typography } from '@mui/material';
+import palette from 'theme/palette';
 import { Button } from '../Common/button';
 import { SafeImage } from '../Common/Image';
-import palette from 'theme/palette';
 
 export const MainWrapper = styled.div`
   width: 100%;

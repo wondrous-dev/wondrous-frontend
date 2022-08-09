@@ -3,7 +3,7 @@ import ArrowDropDownIcon from '../../Icons/arrowDropDown';
 import { DropDownPopper } from '../DropDownPopper/MembershipRequest';
 import { StyledClickAwayListener, StyledDropDownButton, StyledDropDownButtonWrapper } from './styles';
 
-export const DropDownButtonDecision = (props) => {
+export function DropDownButtonDecision(props) {
   const { userId, orgId, podId, status } = props;
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -31,7 +31,7 @@ export const DropDownButtonDecision = (props) => {
           podId={podId}
           anchorEl={anchorEl}
           placement="bottom-start"
-          disablePortal={true}
+          disablePortal
           modifiers={{
             flip: {
               enabled: false,
@@ -45,4 +45,4 @@ export const DropDownButtonDecision = (props) => {
       </StyledDropDownButtonWrapper>
     </StyledClickAwayListener>
   );
-};
+}

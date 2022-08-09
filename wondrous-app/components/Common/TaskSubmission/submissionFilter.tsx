@@ -37,7 +37,7 @@ const isSubmissionStatus = ({ submission, label }) => {
   return conditions[label];
 };
 
-const TaskSubmissionsFilterSelected = ({ value }) => {
+function TaskSubmissionsFilterSelected({ value }) {
   return isEmpty(value) ? (
     <SubmissionFilterSelectRender>
       <SubmissionFilterStatusIcon /> Status
@@ -47,9 +47,9 @@ const TaskSubmissionsFilterSelected = ({ value }) => {
       <value.Icon /> {value.label}
     </SubmissionFilterSelectRender>
   );
-};
+}
 
-export const TaskSubmissionsFilter = ({ fetchedTaskSubmissions, setFilteredSubmissions }) => {
+export function TaskSubmissionsFilter({ fetchedTaskSubmissions, setFilteredSubmissions }) {
   const [selected, setSelected] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -77,4 +77,4 @@ export const TaskSubmissionsFilter = ({ fetchedTaskSubmissions, setFilteredSubmi
       </SubmissionFilterSelectMenu>
     </>
   );
-};
+}

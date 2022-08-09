@@ -1,4 +1,4 @@
-export const MoreIcon = () => {
+export function MoreIcon() {
   return (
     <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="12.7129" cy="12.3232" r="12.1562" fill="#0F0F0F" />
@@ -11,6 +11,6 @@ export const MoreIcon = () => {
       />
     </svg>
   );
-};
+}
 
 export default MoreIcon;

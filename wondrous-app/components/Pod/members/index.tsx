@@ -56,7 +56,7 @@ const useGetPodMemberRequests = (podId) => {
   return { data: data?.getPodMembershipRequest, fetchMore, hasMore };
 };
 
-const MemberRequests = (props) => {
+function MemberRequests(props) {
   const { podData = {} } = props;
   const { id: podId } = podData;
   const { data: podUserMembershipRequests, fetchMore, hasMore } = useGetPodMemberRequests(podId);
@@ -176,6 +176,6 @@ const MemberRequests = (props) => {
       </RequestsContainer>
     </Wrapper>
   );
-};
+}
 
 export default MemberRequests;

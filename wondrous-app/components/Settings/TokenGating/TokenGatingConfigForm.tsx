@@ -10,6 +10,7 @@ import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { SettingsWrapper } from '../settingsWrapper';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import {
@@ -40,7 +41,6 @@ import {
   CREATE_TOKEN_GATING_CONDITION_FOR_ORG,
   UPDATE_TOKEN_GATING_CONDITION,
 } from '../../../graphql/mutations/tokenGating';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { NFT_LIST, HARMONY_TOKEN_LIST } from '../../../utils/tokenList';
 
 const chainOptions = [
@@ -90,43 +90,41 @@ const tokenListItemVirtualized = (props: ListChildComponentProps) => {
 
 const OuterElementContext = React.createContext({});
 
-const OuterElementType = React.forwardRef<HTMLDivElement>(function OuterElementType(props, ref) {
+const OuterElementType = React.forwardRef<HTMLDivElement>((props, ref) => {
   const outerProps = React.useContext(OuterElementContext);
   return <TokenGatingAutocompleteList ref={ref} {...props} {...outerProps} />;
 });
 
-const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLElement>>(
-  function ListboxComponent(props, ref) {
-    const { children, ...other } = props;
-    const itemData: React.ReactChild[] = (children as React.ReactChild[]).flatMap(
-      (item: React.ReactChild & { children?: React.ReactChild[] }) => [item, ...(item.children || [])]
-    );
-    const itemCount = itemData?.length;
-    const itemSize = 50;
-    const maxNoOfItemsToDisplay = 5;
-    const height = itemCount > maxNoOfItemsToDisplay ? itemSize * maxNoOfItemsToDisplay : itemCount * itemSize;
-    return (
-      <div ref={ref}>
-        <OuterElementContext.Provider value={other}>
-          <FixedSizeList
-            itemData={itemData}
-            height={height}
-            width="100%"
-            outerElementType={OuterElementType}
-            innerElementType="ul"
-            itemSize={itemSize}
-            overscanCount={20}
-            itemCount={itemCount}
-          >
-            {tokenListItemVirtualized}
-          </FixedSizeList>
-        </OuterElementContext.Provider>
-      </div>
-    );
-  }
-);
+const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLElement>>((props, ref) => {
+  const { children, ...other } = props;
+  const itemData: React.ReactChild[] = (children as React.ReactChild[]).flatMap(
+    (item: React.ReactChild & { children?: React.ReactChild[] }) => [item, ...(item.children || [])]
+  );
+  const itemCount = itemData?.length;
+  const itemSize = 50;
+  const maxNoOfItemsToDisplay = 5;
+  const height = itemCount > maxNoOfItemsToDisplay ? itemSize * maxNoOfItemsToDisplay : itemCount * itemSize;
+  return (
+    <div ref={ref}>
+      <OuterElementContext.Provider value={other}>
+        <FixedSizeList
+          itemData={itemData}
+          height={height}
+          width="100%"
+          outerElementType={OuterElementType}
+          innerElementType="ul"
+          itemSize={itemSize}
+          overscanCount={20}
+          itemCount={itemCount}
+        >
+          {tokenListItemVirtualized}
+        </FixedSizeList>
+      </OuterElementContext.Provider>
+    </div>
+  );
+});
 
-const TokenGatingConfigForm = (props) => {
+function TokenGatingConfigForm(props) {
   const router = useRouter();
   const { orgId, org, open, setShowConfigModal, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
   const [chain, setChain] = useState(chainOptions[0].value);
@@ -336,13 +334,11 @@ const TokenGatingConfigForm = (props) => {
   };
   const getTokenList = async () => {
     if (chain === 'harmony') {
-      const formatted = HARMONY_TOKEN_LIST.map((token) => {
-        return {
-          label: token.name,
-          value: token.address,
-          icon: token.logoURI,
-        };
-      });
+      const formatted = HARMONY_TOKEN_LIST.map((token) => ({
+        label: token.name,
+        value: token.address,
+        icon: token.logoURI,
+      }));
       setTokenList(formatted);
       return formatted;
     }
@@ -350,26 +346,22 @@ const TokenGatingConfigForm = (props) => {
     const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
     const [erc20s] = await Promise.all([erc20Promise]);
     const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
-    const formatted = sorted.map((token) => {
-      return {
-        label: token.name,
-        value: token.address,
-        icon: token.logoURI,
-      };
-    });
+    const formatted = sorted.map((token) => ({
+      label: token.name,
+      value: token.address,
+      icon: token.logoURI,
+    }));
     setTokenList(formatted);
     return formatted;
   };
 
   async function getNFTList() {
     const sorted = NFT_LIST.sort((a, b) => (a.name > b.name ? 1 : -1));
-    const formatted = sorted.map((token) => {
-      return {
-        label: token.name,
-        value: token.address,
-        icon: token.logoURI,
-      };
-    });
+    const formatted = sorted.map((token) => ({
+      label: token.name,
+      value: token.address,
+      icon: token.logoURI,
+    }));
     setNftList(formatted);
     return formatted;
   }
@@ -493,7 +485,7 @@ const TokenGatingConfigForm = (props) => {
               <TokenGatingAutocompleteLabel>Min. amount to hold</TokenGatingAutocompleteLabel>
               <TokenGatingTextfieldInputWrapper>
                 <TokenGatingTextfieldInput
-                  type={'number'}
+                  type="number"
                   value={minAmount.toString()}
                   onChange={handleMinAmountOnChange}
                   open={openChainSelection}
@@ -529,7 +521,7 @@ const TokenGatingConfigForm = (props) => {
             style={{
               marginTop: 12,
             }}
-          ></TokenGatingTextfieldInput>
+          />
           {selectedTokenGatingCondition ? (
             <TokenGatingButton onClick={handleUpdateTokenGate}>Update Token Gate </TokenGatingButton>
           ) : (
@@ -539,6 +531,6 @@ const TokenGatingConfigForm = (props) => {
       </TokenGatingConfigModal>
     </Modal>
   );
-};
+}
 
 export default TokenGatingConfigForm;

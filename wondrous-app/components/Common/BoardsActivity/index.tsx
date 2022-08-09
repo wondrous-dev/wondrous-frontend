@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
@@ -13,8 +12,9 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
+import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 
-export const BoardsActivityInlineView = ({
+export function BoardsActivityInlineView({
   onSearch,
   filterSchema,
   onChange,
@@ -22,7 +22,7 @@ export const BoardsActivityInlineView = ({
   searchQuery,
   isAdmin,
   listViewOptions,
-}) => {
+}) {
   const [displayFilters, setDisplayFilters] = useState(false);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
@@ -37,7 +37,7 @@ export const BoardsActivityInlineView = ({
       <UserFilter />
     </>
   );
-};
+}
 
 export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
@@ -101,13 +101,11 @@ export default function BoardsActivity(props) {
   }
 
   return (
-    <>
-      <BoardsActivityWrapper>
-        <SearchTasks onSearch={onSearch} />
-        <BoardFilters filterSchema={filterSchema} onChange={onFilterChange} />
-        {orgBoard && <SelectMenuBoardType router={router} view={view} />}
-        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-      </BoardsActivityWrapper>
-    </>
+    <BoardsActivityWrapper>
+      <SearchTasks onSearch={onSearch} />
+      <BoardFilters filterSchema={filterSchema} onChange={onFilterChange} />
+      {orgBoard && <SelectMenuBoardType router={router} view={view} />}
+      {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
+    </BoardsActivityWrapper>
   );
 }

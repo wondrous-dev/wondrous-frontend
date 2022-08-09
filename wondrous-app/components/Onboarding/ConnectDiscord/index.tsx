@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
-import DiscordLogo from '../../../public/images/onboarding/discord.svg';
-import DiscordSuccessLogo from '../../../public/images/onboarding/discord-success.svg';
-import { useMe } from '../../Auth/withAuth';
 import { getDiscordUrl } from 'utils/index';
 import { DISCORD_CONNECT_TYPES } from 'utils/constants';
 import { ErrorText } from 'components/Common';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import { useIsMobile } from 'utils/hooks';
+import { useMe } from '../../Auth/withAuth';
+import DiscordSuccessLogo from '../../../public/images/onboarding/discord-success.svg';
+import DiscordLogo from '../../../public/images/onboarding/discord.svg';
 
 enum Text {
   TitleSuccess = 'Success!',
@@ -21,7 +21,7 @@ enum Text {
 
 const DISCORD_OAUTH_URL = getDiscordUrl();
 
-export const ConnectDiscord = ({ updateUser }) => {
+export function ConnectDiscord({ updateUser }) {
   const router = useRouter();
   const [bio, setBio] = useState('');
   const user = useMe();
@@ -85,4 +85,4 @@ export const ConnectDiscord = ({ updateUser }) => {
       )}
     </>
   );
-};
+}

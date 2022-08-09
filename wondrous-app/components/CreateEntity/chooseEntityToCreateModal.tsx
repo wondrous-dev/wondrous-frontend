@@ -1,11 +1,13 @@
 import React from 'react';
 import { IconButton } from '@mui/material';
 
-import CloseModalIcon from '../Icons/closeModal';
-import RightArrowIcon from '../Icons/rightArrow';
-
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 
+import { useRouter } from 'next/router';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useQuery } from '@apollo/client';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import {
   CreateLayoutDaoIcon,
   CreateLayoutMilestoneIcon,
@@ -22,11 +24,8 @@ import {
   CreateLayoutBountyIcon,
   CreateLayoutProposalIcon,
 } from './styles';
-import { useRouter } from 'next/router';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useQuery } from '@apollo/client';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import RightArrowIcon from '../Icons/rightArrow';
+import CloseModalIcon from '../Icons/closeModal';
 
 export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
@@ -55,7 +54,7 @@ export const ENTITIES_UI_ELEMENTS = {
   },
 };
 
-const ChooseEntityToCreateModal = (props) => {
+function ChooseEntityToCreateModal(props) {
   const { handleClose, setEntityType } = props;
 
   // TODO: remove since DAO creation will be introduced
@@ -105,7 +104,7 @@ const ChooseEntityToCreateModal = (props) => {
         </CreateLayoutsModalCloseButton>
       </CreateLayoutsModalHeader>
       <CreateLayoutsModalItemContainer>
-        {/*{Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => (*/}
+        {/* {Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => ( */}
         {entries.map(([key, { icon: EntityIcon, label }]) => (
           <CreateLayoutsModalItem key={key} onClick={() => setEntityType(key)}>
             <CreateLayoutsModalItemTitleBlock>
@@ -120,6 +119,6 @@ const ChooseEntityToCreateModal = (props) => {
       </CreateLayoutsModalItemContainer>
     </CreateLayoutsModal>
   );
-};
+}
 
 export default ChooseEntityToCreateModal;

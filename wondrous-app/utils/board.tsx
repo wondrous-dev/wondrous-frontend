@@ -52,10 +52,10 @@ export const removeProposalItem = (itemId, columns) => {
   if (columns[0]?.section) {
     columns[0].section.tasks = columns[0].section.tasks.filter((task) => task.id !== itemId);
   } else {
-    let allItems = map(columns, 'tasks').flat();
+    const allItems = map(columns, 'tasks').flat();
     const item = allItems.find((task) => task.id === itemId);
     if (item) {
-      let status = getProposalStatus(item);
+      const status = getProposalStatus(item);
       const columnIdx = status ? columns.findIndex((column) => column.status === status) : false;
       if (Number.isInteger(columnIdx)) {
         columns[columnIdx].tasks = columns[columnIdx].tasks.filter((task) => task.id !== itemId);
@@ -191,8 +191,8 @@ export const removeCompletedItem = (itemId, columns) => {
   return columns;
 };
 
-export const updateTask = (updatedTask, columns) => {
-  return columns.map((column) => {
+export const updateTask = (updatedTask, columns) =>
+  columns.map((column) => {
     if (column.section) {
       column.section.tasks = column.section.tasks.map((task) => {
         if (task.id === (updatedTask?.taskId ?? updatedTask.id)) {
@@ -206,17 +206,15 @@ export const updateTask = (updatedTask, columns) => {
         return updatedTask;
       }
       return column;
-    } else {
-      column.tasks = column.tasks.map((task) => {
-        if (task.id === updatedTask.id) {
-          return updatedTask;
-        }
-        return task;
-      });
-      return column;
     }
+    column.tasks = column.tasks.map((task) => {
+      if (task.id === updatedTask.id) {
+        return updatedTask;
+      }
+      return task;
+    });
+    return column;
   });
-};
 
 export const updateTaskColumns = (tasks, columns) => {
   if (!columns) return [];

@@ -12,7 +12,7 @@ import { textStyles } from './DeleteDocDialogStyles';
 
 const StyledText = styled(Typography)(textStyles);
 
-const DeleteDocDialog = ({ open, onClose, selectedDoc }) => {
+function DeleteDocDialog({ open, onClose, selectedDoc }) {
   const [deleteDocument] = useMutation(DELETE_DOCUMENT, {
     refetchQueries: ['getOrgDocs', 'getPodDocs'],
   });
@@ -31,13 +31,13 @@ const DeleteDocDialog = ({ open, onClose, selectedDoc }) => {
       open={open}
       onClose={onClose}
       onDelete={handleDelete}
-      title={'Delete doc?'}
+      title="Delete doc?"
       titleIcon={<Image src="/images/icons/deleteDoc.svg" alt="folder icon" width={16} height={20} />}
     >
       <StyledText>Are you sure you want to delete {selectedDoc.title}?</StyledText>
       <StyledText>This action cannot be undone</StyledText>
     </DocModal>
   );
-};
+}
 
 export default DeleteDocDialog;

@@ -4,15 +4,8 @@ import { DragDropContext } from 'react-beautiful-dnd';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
-import { KanbanBoardContainer, LoadMore } from './styles';
-import TaskColumn from './TaskColumn';
-import { ENTITIES_TYPES } from 'utils/constants';
-// Task update (column changes)
-import apollo from 'services/apollo';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
-import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpers';
 import {
+  ENTITIES_TYPES,
   BOARD_TYPE,
   PERMISSIONS,
   PAYMENT_STATUS,
@@ -21,23 +14,33 @@ import {
   TASK_STATUS_DONE,
   TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
-import { useMe } from '../../Auth/withAuth';
+// Task update (column changes)
+import apollo from 'services/apollo';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
-import DndErrorModal from './DndErrorModal';
 import ConfirmModal from 'components/Common/ConfirmModal';
+import { useMe } from '../../Auth/withAuth';
+import DndErrorModal from './DndErrorModal';
+import TaskColumn from './TaskColumn';
+import { KanbanBoardContainer, LoadMore } from './styles';
+
 export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
   if (orgBoard) {
     return BOARD_TYPE.org;
-  } else if (podBoard) {
+  }
+  if (podBoard) {
     return BOARD_TYPE.pod;
-  } else if (userBoard) {
+  }
+  if (userBoard) {
     return BOARD_TYPE.assignee;
   }
 };
 export const populateOrder = (index, tasks, field) => {
-  let aboveOrder = null,
-    belowOrder = null;
+  let aboveOrder = null;
+  let belowOrder = null;
   if (index > 0) {
     aboveOrder = tasks[index - 1][field];
   }
@@ -50,7 +53,7 @@ export const populateOrder = (index, tasks, field) => {
   };
 };
 
-const KanbanBoard = (props) => {
+function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
@@ -136,7 +139,7 @@ const KanbanBoard = (props) => {
   };
 
   const moveCard = async (id, status, index, source) => {
-    //TODO get rid of nested loop
+    // TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
       const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
@@ -151,7 +154,8 @@ const KanbanBoard = (props) => {
         if (checkPermissions(task)) {
           const filteredColumn = column.tasks.filter((task) => task.id !== id);
           const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
-          let aboveOrder, belowOrder;
+          let aboveOrder;
+          let belowOrder;
           let board = null;
           if (orgBoard) {
             board = BOARD_TYPE.org;
@@ -187,15 +191,13 @@ const KanbanBoard = (props) => {
             ...column,
             tasks: newTasks,
           };
-        } else {
-          return {
-            ...column,
-            tasks: [updatedTask, ...column.tasks],
-          };
         }
-      } else {
-        return column;
+        return {
+          ...column,
+          tasks: [updatedTask, ...column.tasks],
+        };
       }
+      return column;
     });
     setColumns(dedupeColumns(updatedColumns));
   };
@@ -251,7 +253,7 @@ const KanbanBoard = (props) => {
     const taskType = taskToUpdate?.isProposal ? 'taskProposal' : 'task';
     let viewUrl = `${delQuery(router.asPath)}?${taskType}=${taskToUpdate?.id}&view=${router.query.view || 'grid'}`;
     if (board?.entityType) {
-      viewUrl = viewUrl + `&entity=${board?.entityType}`;
+      viewUrl += `&entity=${board?.entityType}`;
     }
     const shouldConfirmInReviewTask =
       status === TASK_STATUS_DONE &&
@@ -281,7 +283,7 @@ const KanbanBoard = (props) => {
   };
 
   useEffect(() => {
-    const params = location.params;
+    const { params } = location;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
       setOpenModal(true);
     }
@@ -305,7 +307,7 @@ const KanbanBoard = (props) => {
     }
     let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}`;
     if (board?.entityType) {
-      newUrl = newUrl + `&entity=${board?.entityType}`;
+      newUrl += `&entity=${board?.entityType}`;
     }
     location.push(newUrl);
     enableContainerOverflow();
@@ -314,43 +316,41 @@ const KanbanBoard = (props) => {
 
   const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
   return (
-    <>
-      <KanbanBoardContainer>
-        <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
-        <ConfirmModal
-          open={!!taskToConfirm}
-          onClose={() => {
-            setTaskToConfirm(null);
-          }}
-          onSubmit={taskToConfirm?.closeAction}
-          title={taskToConfirm?.confirmTitle}
-          submitLabel="Review"
-          cancelLabel="Move anyway"
-          rejectAction={taskToConfirm?.confirmAction}
-          reverseButtons
-        >
-          {null}
-        </ConfirmModal>
+    <KanbanBoardContainer>
+      <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
+      <ConfirmModal
+        open={!!taskToConfirm}
+        onClose={() => {
+          setTaskToConfirm(null);
+        }}
+        onSubmit={taskToConfirm?.closeAction}
+        title={taskToConfirm?.confirmTitle}
+        submitLabel="Review"
+        cancelLabel="Move anyway"
+        rejectAction={taskToConfirm?.confirmAction}
+        reverseButtons
+      >
+        {null}
+      </ConfirmModal>
 
-        <TaskViewModal
-          disableEnforceFocus
-          open={openModal}
-          shouldFocusAfterRender={false}
-          handleClose={handleClose}
-          taskId={taskId}
-          isTaskProposal={!!location?.params?.taskProposal}
-          key={taskId}
-        />
-        <DragDropContext onDragEnd={onDragEnd}>
-          {columns.map((column) => {
-            const { status, section, tasks } = column;
+      <TaskViewModal
+        disableEnforceFocus
+        open={openModal}
+        shouldFocusAfterRender={false}
+        handleClose={handleClose}
+        taskId={taskId}
+        isTaskProposal={!!location?.params?.taskProposal}
+        key={taskId}
+      />
+      <DragDropContext onDragEnd={onDragEnd}>
+        {columns.map((column) => {
+          const { status, section, tasks } = column;
 
-            return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
-          })}
-        </DragDropContext>
-      </KanbanBoardContainer>
-    </>
+          return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
+        })}
+      </DragDropContext>
+    </KanbanBoardContainer>
   );
-};
+}
 
 export default KanbanBoard;

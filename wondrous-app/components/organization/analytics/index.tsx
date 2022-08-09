@@ -5,8 +5,22 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
 import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
-import Wrapper from '../wrapper/wrapper';
 import palette from 'theme/palette';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
+import RightArrowCaret from 'components/Icons/RightArrowCaret';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
+import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import PodIcon from 'components/Icons/podIcon';
+import { cutString, shrinkNumber } from 'utils/helpers';
+import TaskStatus from 'components/Icons/TaskStatus';
+import { TextField } from '@mui/material';
+import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
+import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
+import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { PayoutModal } from './PayoutModal';
 import {
   ContributorRow,
   ContributorDiv,
@@ -22,24 +36,18 @@ import {
   ExportCSVButton,
   ExportCSVButtonText,
 } from './styles';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
-import RightArrowCaret from 'components/Icons/RightArrowCaret';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
-import PodIcon from 'components/Icons/podIcon';
-import { cutString, shrinkNumber } from 'utils/helpers';
-import TaskStatus from 'components/Icons/TaskStatus';
-import { TextField } from '@mui/material';
-import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
-import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
-import { PayoutModal } from './PayoutModal';
-import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import Wrapper from '../wrapper/wrapper';
 
 export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime, isPod = false }) => {
-  let headers = ['username', 'Address/ENS', 'taskTitle', 'taskLink', 'points', 'Amount', 'Token Address/Token Symbol'];
+  const headers = [
+    'username',
+    'Address/ENS',
+    'taskTitle',
+    'taskLink',
+    'points',
+    'Amount',
+    'Token Address/Token Symbol',
+  ];
 
   const rows = [[headers]];
   if (!contributorTaskData) {
@@ -57,7 +65,7 @@ export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime
         ? `${link}pod/${task?.pod?.id}/boards?task=${task?.id}`
         : `${link}organization/${task?.org?.username}/boards?task=${task?.id}`;
       const reward = (task.rewards || [])[0];
-      let newRow = [
+      const newRow = [
         assigneeUsername,
         wallet,
         task?.title === PRIVATE_TASK_TITLE ? 'Private Task' : task?.title,
@@ -70,12 +78,12 @@ export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime
     });
   });
   let csvContent = 'data:text/csv;charset=utf-8,';
-  rows.forEach(function (rowArray) {
-    let row = rowArray.join(',');
-    csvContent += row + '\r\n';
+  rows.forEach((rowArray) => {
+    const row = rowArray.join(',');
+    csvContent += `${row}\r\n`;
   });
-  var encodedUri = encodeURI(csvContent);
-  var link = document.createElement('a');
+  const encodedUri = encodeURI(csvContent);
+  const link = document.createElement('a');
   link.setAttribute('href', encodedUri);
   link.setAttribute(
     'download',
@@ -105,13 +113,13 @@ export const calculatePoints = (tasks) => {
   }
   tasks.forEach((task) => {
     if (task?.points) {
-      points = points + Number(task?.points);
+      points += Number(task?.points);
     }
   });
   return points;
 };
 
-const UserRow = ({ contributorTask }) => {
+function UserRow({ contributorTask }) {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
@@ -273,7 +281,7 @@ const UserRow = ({ contributorTask }) => {
                     <Reward>
                       <SafeImage
                         useNextImage={false}
-                        src={'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018'}
+                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018"
                         style={{
                           width: '16px',
                           height: '16px',
@@ -319,7 +327,7 @@ const UserRow = ({ contributorTask }) => {
       )}
     </ContributorDiv>
   );
-};
+}
 
 const filterUsers = (users) => {
   if (!users) {
@@ -349,11 +357,11 @@ export const getContributorTaskData = (data) => {
   contributorTaskData.sort((a, b) => {
     if (a?.tasks?.length > b?.tasks?.length) {
       return -1;
-    } else if (a?.tasks?.length < b?.tasks?.length) {
-      return 1;
-    } else {
-      return 0;
     }
+    if (a?.tasks?.length < b?.tasks?.length) {
+      return 1;
+    }
+    return 0;
   });
 
   if (tmp) {
@@ -362,7 +370,7 @@ export const getContributorTaskData = (data) => {
   return contributorTaskData;
 };
 
-const Analytics = (props) => {
+function Analytics(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const [ref, inView] = useInView({});
@@ -508,29 +516,27 @@ const Analytics = (props) => {
               });
             }
           }}
-          renderOption={(props, option, state) => {
-            return (
-              <OptionDiv
-                onClick={(event) => {
-                  setAssignee(option);
-                  props?.onClick(event);
-                }}
-              >
-                {option?.profilePicture && (
-                  <SafeImage
-                    useNextImage={false}
-                    src={option?.profilePicture}
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '15px',
-                    }}
-                  />
-                )}
-                <OptionTypography>{option?.label}</OptionTypography>
-              </OptionDiv>
-            );
-          }}
+          renderOption={(props, option, state) => (
+            <OptionDiv
+              onClick={(event) => {
+                setAssignee(option);
+                props?.onClick(event);
+              }}
+            >
+              {option?.profilePicture && (
+                <SafeImage
+                  useNextImage={false}
+                  src={option?.profilePicture}
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '15px',
+                  }}
+                />
+              )}
+              <OptionTypography>{option?.label}</OptionTypography>
+            </OptionDiv>
+          )}
         />
         <div
           style={{
@@ -590,6 +596,6 @@ const Analytics = (props) => {
       ))}
     </Wrapper>
   );
-};
+}
 
 export default Analytics;

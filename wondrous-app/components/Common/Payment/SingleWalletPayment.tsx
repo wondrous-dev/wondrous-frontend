@@ -29,7 +29,7 @@ import { PaymentPendingTypography } from './styles';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
-    return address.substring(0, 4) + '...' + address.substring(address.length - 3);
+    return `${address.substring(0, 4)}...${address.substring(address.length - 3)}`;
   }
 };
 
@@ -57,7 +57,7 @@ interface PaymentData {
   decimal: number;
 }
 
-export const SingleWalletPayment = (props) => {
+export function SingleWalletPayment(props) {
   const {
     open,
     handleClose,
@@ -173,7 +173,7 @@ export const SingleWalletPayment = (props) => {
     setSigningError(null);
     setGnosisTransactionLoading(true);
     let t1 = performance.now();
-    let iface = new ethers.utils.Interface(ERC20abi);
+    const iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
     let finalAmount = paymentData.amount;
@@ -371,44 +371,43 @@ export const SingleWalletPayment = (props) => {
         )}
       </>
     );
-  } else {
-    return (
-      <div
-        style={{
-          marginTop: '16px',
-        }}
-      >
-        {parentError ? (
-          <ErrorText
-            style={{
-              marginBottom: '16px',
-            }}
-          >
-            {parentError}
-          </ErrorText>
-        ) : (
-          <>
-            {incompatibleWalletError && (
-              <ErrorText
-                style={{
-                  marginBottom: '16px',
-                }}
-              >
-                {incompatibleWalletError}
-              </ErrorText>
-            )}
-          </>
-        )}
-
-        <CreateFormPreviewButton
-          style={{
-            marginLeft: 0,
-          }}
-          onClick={handleCreateNewWalletClick}
-        >
-          Create new wallets
-        </CreateFormPreviewButton>
-      </div>
-    );
   }
-};
+  return (
+    <div
+      style={{
+        marginTop: '16px',
+      }}
+    >
+      {parentError ? (
+        <ErrorText
+          style={{
+            marginBottom: '16px',
+          }}
+        >
+          {parentError}
+        </ErrorText>
+      ) : (
+        <>
+          {incompatibleWalletError && (
+            <ErrorText
+              style={{
+                marginBottom: '16px',
+              }}
+            >
+              {incompatibleWalletError}
+            </ErrorText>
+          )}
+        </>
+      )}
+
+      <CreateFormPreviewButton
+        style={{
+          marginLeft: 0,
+        }}
+        onClick={handleCreateNewWalletClick}
+      >
+        Create new wallets
+      </CreateFormPreviewButton>
+    </div>
+  );
+}

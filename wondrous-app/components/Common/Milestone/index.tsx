@@ -33,7 +33,7 @@ export const MilestoneInner = styled.div`
   }
 `;
 
-const Milestone = ({ children }) => {
+function Milestone({ children }) {
   return (
     <>
       <MilestoneHeader>Milestone</MilestoneHeader>
@@ -42,6 +42,6 @@ const Milestone = ({ children }) => {
       </MilestoneWrapper>
     </>
   );
-};
+}
 
 export default Milestone;

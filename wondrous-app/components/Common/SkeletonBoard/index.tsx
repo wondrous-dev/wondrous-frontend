@@ -1,8 +1,8 @@
 import SkeletonCard from 'components/Common/SkeletonCard';
-import { SkeletonBoardWrapper } from './styles';
 import { CardsContainer } from 'components/Common/Boards/styles';
+import { SkeletonBoardWrapper } from './styles';
 
-const SkeletonBoard = () => {
+function SkeletonBoard() {
   const cards = Array(8).fill(null);
   return (
     <SkeletonBoardWrapper>
@@ -13,6 +13,6 @@ const SkeletonBoard = () => {
       </CardsContainer>
     </SkeletonBoardWrapper>
   );
-};
+}
 
 export default SkeletonBoard;

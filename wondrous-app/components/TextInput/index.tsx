@@ -1,11 +1,11 @@
 import { MentionsInput, Mention } from 'react-mentions';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTextInput } from 'utils/hooks';
+import palette from 'theme/palette';
 import { UserSuggestionTypography, UserSuggestionWrapper } from './styles';
 import { SafeImage } from '../Common/Image';
-import palette from 'theme/palette';
 
-export const TextInput = (props) => {
+export function TextInput(props) {
   const { overrideStyle, ...rest } = props;
   const [name, setName] = useState('');
   const inputProps = useTextInput();
@@ -24,9 +24,8 @@ export const TextInput = (props) => {
     }
   }, [inputProps?.orgId]);
 
-  const fetchData = (query) => {
-    return inputProps?.list.filter((user) => user?.username?.toLowerCase().startsWith(query?.toLowerCase()));
-  };
+  const fetchData = (query) =>
+    inputProps?.list.filter((user) => user?.username?.toLowerCase().startsWith(query?.toLowerCase()));
 
   const style = !overrideStyle && {
     ...{
@@ -76,7 +75,7 @@ export const TextInput = (props) => {
     >
       <Mention
         trigger="@"
-        open={true}
+        open
         data={fetchData}
         displayTransform={(id, display) => `@${display}`}
         regex={/@\[(.*?)]\((.*?)\)/}
@@ -97,4 +96,4 @@ export const TextInput = (props) => {
       />
     </MentionsInput>
   );
-};
+}

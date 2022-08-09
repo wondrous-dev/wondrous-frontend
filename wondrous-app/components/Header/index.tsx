@@ -7,7 +7,7 @@ import { useIsMobile, useCreateEntityContext } from 'utils/hooks';
 import { useMe, withAuth } from '../Auth/withAuth';
 import HeaderMemo from './HeaderMemo';
 
-const HeaderComponent = (props) => {
+const HeaderComponent = () => {
   const user = useMe();
   const isMobile = useIsMobile();
 

@@ -5,7 +5,7 @@ import { HeaderBlock } from '../headerBlock';
 import { SettingsWrapper } from '../settingsWrapper';
 import { TaskImportContainer } from './styles';
 
-const TaskImport = (props) => {
+function TaskImport(props) {
   const router = useRouter();
   const { orgId, podId } = router.query;
 
@@ -17,6 +17,6 @@ const TaskImport = (props) => {
       </TaskImportContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default TaskImport;

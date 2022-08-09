@@ -17,6 +17,7 @@ import { BOUNTY_TYPE, PAYMENT_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns } from 'utils/hooks';
 
+import palette from 'theme/palette';
 import { CompletedIcon, InReviewIcon, RejectedIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { KudosForm } from '../KudosForm';
@@ -51,7 +52,6 @@ import {
   TaskSubmissionLinkWrapper,
   TaskSubmissionLinkText,
 } from './styles';
-import palette from 'theme/palette';
 
 const isBountyApprovedUnpaid = ({ fetchedTask, submission }) => {
   const { approvedAt, paymentStatus } = submission;
@@ -62,9 +62,8 @@ const isBountyApprovedUnpaid = ({ fetchedTask, submission }) => {
   );
 };
 
-const isBountyTypeOnBoard = ({ fetchedTask, orgBoard, podBoard }) => {
-  return fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard);
-};
+const isBountyTypeOnBoard = ({ fetchedTask, orgBoard, podBoard }) =>
+  fetchedTask?.type === BOUNTY_TYPE && (orgBoard || podBoard);
 
 const idNotEqual = (submission) => (taskSubmission) => taskSubmission.id !== submission?.id;
 
@@ -91,13 +90,13 @@ const completeTask = ({ fetchedTask, boardColumns, submission }) => {
     status: TASK_STATUS_DONE,
   };
   const transformedTask = transformTaskToTaskCard(newTask, {});
-  //TODO refactor this
+  // TODO refactor this
   const columns = [...boardColumns?.columns];
   const newInProgress = columns[1].tasks.filter((task) => task.id !== fetchedTask.id);
   const newDone = [transformedTask, ...columns[2].tasks];
   const newColumns = updateColumns({ columns, submission, newInProgress, newDone });
   boardColumns?.setColumns(newColumns);
-  //TODO: add pod board and user board
+  // TODO: add pod board and user board
 };
 
 const nonBountyTypeCompletion = ({ fetchedTask, completeTask, setIsKudosForm, boardColumns, submission }) => {
@@ -196,35 +195,40 @@ const SubmissionItemStatus = (props) => {
         <SubmissionItemStatusTextAwaitingReview>Awaiting review</SubmissionItemStatusTextAwaitingReview>
       </SubmissionItemStatusWrapper>
     );
-  } else if (changesRequested) {
+  }
+  if (changesRequested) {
     return (
       <SubmissionItemStatusWrapper>
         <SubmissionItemStatusChangesRequestedIcon />
         <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
       </SubmissionItemStatusWrapper>
     );
-  } else if (rejected) {
+  }
+  if (rejected) {
     return (
       <SubmissionItemStatusWrapper>
         <RejectedIcon />
         <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>
       </SubmissionItemStatusWrapper>
     );
-  } else if (approvedAndPaid) {
+  }
+  if (approvedAndPaid) {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
         <SubmissionItemStatusTextCompleted>Approved and Paid</SubmissionItemStatusTextCompleted>
       </SubmissionItemStatusWrapper>
     );
-  } else if (approvedAndProcessingPayment) {
+  }
+  if (approvedAndProcessingPayment) {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
         <SubmissionItemStatusTextCompleted>Approved and Processing Payment</SubmissionItemStatusTextCompleted>
       </SubmissionItemStatusWrapper>
     );
-  } else if (approvedAt) {
+  }
+  if (approvedAt) {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
@@ -232,31 +236,35 @@ const SubmissionItemStatus = (props) => {
       </SubmissionItemStatusWrapper>
     );
   }
+
+  return null;
 };
 
-const SubmissionItemUserImage = ({ creatorProfilePicture }) => {
+function SubmissionItemUserImage({ creatorProfilePicture }) {
   if (creatorProfilePicture) return <SubmissionItemSafeImage src={creatorProfilePicture} />;
   return <DefaultUserImage />;
-};
+}
 
-const SubmissionItemUserWrapper = ({ creatorUsername, creatorProfilePicture }) => (
-  <Link href={`/profile/${creatorUsername}/about`} passHref>
-    <SubmissionItemUserLink>
-      <SubmissionItemUserImage creatorProfilePicture={creatorProfilePicture} />
-      <SubmissionItemCreator>{creatorUsername}</SubmissionItemCreator>
-    </SubmissionItemUserLink>
-  </Link>
-);
+function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture }) {
+  return (
+    <Link href={`/profile/${creatorUsername}/about`} passHref>
+      <SubmissionItemUserLink>
+        <SubmissionItemUserImage creatorProfilePicture={creatorProfilePicture} />
+        <SubmissionItemCreator>{creatorUsername}</SubmissionItemCreator>
+      </SubmissionItemUserLink>
+    </Link>
+  );
+}
 
-const SubmissionItemCreatedAt = ({ createdAt }) => {
+function SubmissionItemCreatedAt({ createdAt }) {
   if (!createdAt) return null;
   const formattedDistance = formatDistance(new Date(createdAt), new Date(), {
     addSuffix: true,
   });
   return <SubmissionItemTimeText>{formattedDistance}</SubmissionItemTimeText>;
-};
+}
 
-const SubmissionItemLink = ({ links }: { links: [] }) => {
+function SubmissionItemLink({ links }: { links: [] }) {
   if (isEmpty(links)) return null;
   return (
     <TaskSubmissionLinkWrapper>
@@ -268,67 +276,65 @@ const SubmissionItemLink = ({ links }: { links: [] }) => {
       ))}
     </TaskSubmissionLinkWrapper>
   );
-};
+}
 
-const SubmissionShowComments = ({ setShowComments, commentCount, showComments }) => {
+function SubmissionShowComments({ setShowComments, commentCount, showComments }) {
   return (
-    <>
-      <Tooltip title="Submission comments" placement="top">
-        <TaskAction onClick={() => setShowComments(!showComments)}>
-          <TaskCommentIcon />
-          {commentCount > 0 && <TaskActionAmount>{commentCount}</TaskActionAmount>}
-        </TaskAction>
-      </Tooltip>
-    </>
+    <Tooltip title="Submission comments" placement="top">
+      <TaskAction onClick={() => setShowComments(!showComments)}>
+        <TaskCommentIcon />
+        {commentCount > 0 && <TaskActionAmount>{commentCount}</TaskActionAmount>}
+      </TaskAction>
+    </Tooltip>
   );
-};
+}
 
-const SubmissionEditButton = ({ isCreator, approvedAt, onClick }) => {
+function SubmissionEditButton({ isCreator, approvedAt, onClick }) {
   if (isCreator && !approvedAt) return <SubmissionButtonEdit onClick={onClick}>Edit submission</SubmissionButtonEdit>;
   return null;
-};
+}
 
-const SubmissionRejectButton = ({ submission, rejectTaskSubmission }) => {
+function SubmissionRejectButton({ submission, rejectTaskSubmission }) {
   const { rejectedAt, paymentStatus } = submission;
   const hasBeenPaidOrIsBeingProcessed =
     paymentStatus === PAYMENT_STATUS.PAID || paymentStatus === PAYMENT_STATUS.PROCESSING;
   if (rejectedAt || hasBeenPaidOrIsBeingProcessed) return null;
   return <SubmissionButtonReject onClick={rejectTaskSubmission}>Reject</SubmissionButtonReject>;
-};
+}
 
-const SubmissionRequestChangeButton = ({ submission, requestChangeTaskSubmission }) => {
+function SubmissionRequestChangeButton({ submission, requestChangeTaskSubmission }) {
   const { changeRequestedAt, approvedAt, rejectedAt } = submission;
   if (changeRequestedAt || approvedAt || rejectedAt) return null;
   return (
     <SubmissionButtonRequestChange onClick={requestChangeTaskSubmission}>Request changes</SubmissionButtonRequestChange>
   );
-};
+}
 
-const SubmissionApproveTaskButton = ({ submission, fetchedTaskType, onClick }) => {
+function SubmissionApproveTaskButton({ submission, fetchedTaskType, onClick }) {
   if (!submission.approvedAt && fetchedTaskType === TASK_TYPE)
     return <SubmissionButtonApprove onClick={onClick}>Approve</SubmissionButtonApprove>;
   return null;
-};
+}
 
-const SubmissionApproveBountyButton = ({ submission, fetchedTaskType, onClick }) => {
+function SubmissionApproveBountyButton({ submission, fetchedTaskType, onClick }) {
   if (!submission.approvedAt && fetchedTaskType === BOUNTY_TYPE)
     return <SubmissionButtonApprove onClick={onClick}>Approve</SubmissionButtonApprove>;
   return null;
-};
+}
 
-const SubmissionReviewButtons = ({ canReview, fetchedTaskStatus, children }) => {
+function SubmissionReviewButtons({ canReview, fetchedTaskStatus, children }) {
   if (canReview && fetchedTaskStatus !== TASK_STATUS_DONE)
     return <SubmissionButtonReviewWrapper>{children}</SubmissionButtonReviewWrapper>;
   return null;
-};
+}
 
-const SubmissionBountyPaymentButton = ({
+function SubmissionBountyPaymentButton({
   fetchedTask,
   submission,
   fetchedTaskSubmissions,
   handleClose,
   getTaskSubmissionsForTask,
-}) => {
+}) {
   if (isBountyApprovedUnpaid({ fetchedTask, submission })) {
     return (
       <PaymentButton
@@ -341,9 +347,9 @@ const SubmissionBountyPaymentButton = ({
     );
   }
   return null;
-};
+}
 
-export const SubmissionItem = ({
+export function SubmissionItem({
   submission,
   setSubmissionToEdit,
   canReview,
@@ -352,7 +358,7 @@ export const SubmissionItem = ({
   handleClose,
   user,
   getTaskSubmissionsForTask,
-}) => {
+}) {
   const handleEdit = () => {
     setSubmissionToEdit(submission);
   };
@@ -443,12 +449,8 @@ export const SubmissionItem = ({
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
           />
         </SubmissionItemFooter>
-        {showComments && (
-          <>
-            <CommentList submission={submission} />
-          </>
-        )}
+        {showComments && <CommentList submission={submission} />}
       </SubmissionItemWrapper>
     </>
   );
-};
+}

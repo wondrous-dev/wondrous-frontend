@@ -16,7 +16,7 @@ import {
   StyledBorder,
 } from './styles';
 
-const DashboardPanelExpanded = (props) => {
+function DashboardPanelExpanded(props) {
   const {
     activePanel,
     loading,
@@ -63,6 +63,6 @@ const DashboardPanelExpanded = (props) => {
       </StyledBackground>
     </StyledBorder>
   );
-};
+}
 
 export default React.memo(DashboardPanelExpanded);

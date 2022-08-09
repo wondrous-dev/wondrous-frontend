@@ -21,20 +21,20 @@ import {
   Wrapper,
 } from './styles';
 
-const Item = ({ label, children }) => {
-  return (
-    <ItemWrapper>
-      <LabelWrapper>
-        <LabelText>{label}</LabelText>
-      </LabelWrapper>
-      <ChildrenWrapper>{children}</ChildrenWrapper>
-    </ItemWrapper>
-  );
-};
+const Item = ({ label, children }) => (
+  <ItemWrapper>
+    <LabelWrapper>
+      <LabelText>{label}</LabelText>
+    </LabelWrapper>
+    <ChildrenWrapper>{children}</ChildrenWrapper>
+  </ItemWrapper>
+);
 
 const ItemWithEdit = ({ value, field, EditComponent }) => {
   const [isEditing, setIsEditing] = useState(false);
+
   const handleOnClick = () => setIsEditing(true);
+
   return (
     <Item label={field.label}>
       <TextAndInputWrapper>
@@ -48,19 +48,19 @@ const ItemWithEdit = ({ value, field, EditComponent }) => {
   );
 };
 
-const Edit = ({ onClick }) => {
-  return (
-    <EditButton onClick={onClick}>
-      <EditIcon /> <EditButtonText>Edit</EditButtonText>
-    </EditButton>
-  );
-};
+const Edit = ({ onClick }) => (
+  <EditButton onClick={onClick}>
+    <EditIcon /> <EditButtonText>Edit</EditButtonText>
+  </EditButton>
+);
 
 const EditName = ({ setIsEditing, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
+
   const handleOnClick = () => {
     if (!meta.error) setIsEditing(false);
   };
+
   return (
     <InputErrorWrapper>
       <EditInputWrapper>
@@ -74,9 +74,11 @@ const EditName = ({ setIsEditing, ...props }) => {
 
 const EditDescription = ({ setIsEditing, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
+
   const handleOnClick = () => {
     if (!meta.error) setIsEditing(false);
   };
+
   return (
     <InputErrorWrapper>
       <EditInputWrapper>
@@ -85,7 +87,7 @@ const EditDescription = ({ setIsEditing, ...props }) => {
           {...props}
           value={field.value}
           onChange={(e) => {
-            const value = e.target.value;
+            const { value } = e.target;
             value.length <= props.maxLength && helpers.setValue(value);
           }}
         />
@@ -99,13 +101,14 @@ const EditDescription = ({ setIsEditing, ...props }) => {
 const Review = ({ fields }) => {
   const { values } = useFormikContext();
   const { name, username, profilePicture, description, category }: FormikValues = values;
+
   return (
     <Wrapper>
       <ItemWithEdit value={name} field={fields.name} EditComponent={EditName} />
       <ItemWithEdit value={username} field={fields.username} EditComponent={EditName} />
       {profilePicture && (
         <Item label="DAO Logo">
-          <Logo alt="Profile" width="26px" height="26px" useNextImage={true} src={profilePicture} />
+          <Logo alt="Profile" width="26px" height="26px" useNextImage src={profilePicture} />
         </Item>
       )}
       <ItemWithEdit value={description} field={fields.description} EditComponent={EditDescription} />

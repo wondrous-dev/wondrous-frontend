@@ -1,4 +1,7 @@
-import { PostHeader } from '../PostHeader';
+import SmartLink from 'components/Common/SmartLink';
+import { delQuery } from 'utils/index';
+import { useRouter } from 'next/router';
+import { RichTextViewer } from 'components/RichText';
 import {
   PostContentBackground,
   PostContentBorder,
@@ -11,12 +14,9 @@ import {
   ReferenceMediaWrapper,
   ReferenceTitle,
 } from './styles';
-import SmartLink from 'components/Common/SmartLink';
-import { delQuery } from 'utils/index';
-import { useRouter } from 'next/router';
-import { RichTextViewer } from 'components/RichText';
+import { PostHeader } from '../PostHeader';
 
-export const PostQuote = (props) => {
+export function PostQuote(props) {
   const { post } = props;
   const router = useRouter();
   const { referencedObject, content } = post;
@@ -55,4 +55,4 @@ export const PostQuote = (props) => {
       </PostQuoteWrapper>
     </PostQuoteBackground>
   );
-};
+}
