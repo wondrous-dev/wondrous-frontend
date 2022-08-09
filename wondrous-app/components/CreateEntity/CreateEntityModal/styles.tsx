@@ -1,5 +1,5 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
-import { SaveAltOutlined } from '@mui/icons-material';
+import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
 import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
