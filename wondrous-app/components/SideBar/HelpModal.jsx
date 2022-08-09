@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import {
   CreateFormPreviewButton,
@@ -18,7 +19,7 @@ function HelpModal(props) {
       function l() {
         if (!d.getElementById(i)) {
           const f = d.getElementsByTagName(s)[0];
-            const e = d.createElement(s);
+          const e = d.createElement(s);
           (e.type = 'text/javascript'),
             (e.async = !0),
             (e.src = 'https://canny.io/sdk.js'),

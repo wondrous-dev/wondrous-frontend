@@ -9,6 +9,9 @@ import NotificationsBoard from 'components/Notifications';
 import Tooltip from 'components/Tooltip';
 import HomeIcon from 'components/Icons/home';
 
+import GlobalSearch from 'components/GlobalSearch';
+import { User } from 'types/User';
+import { Notification } from 'types/Notification';
 import {
   HeaderBar,
   HeaderContainer,
@@ -20,9 +23,6 @@ import {
   HeaderHomeButtonWrapper,
   HeaderLogoWrapper,
 } from './styles';
-import GlobalSearch from 'components/GlobalSearch';
-import { User } from 'types/User';
-import { Notification } from 'types/Notification';
 
 type Props = {
   fetchMoreNotifications: (fetchData, fetchVars) => unknown;
@@ -46,75 +46,72 @@ const HeaderMemo = ({
   setNotifications,
   showCreateButton,
   user,
-}: Props) => {
-  return (
-    <HeaderBar>
-      <HeaderContainer>
-        <HeaderLeftBlock>
-          <Tooltip title="Explore page">
-            <HeaderLogoWrapper>
-              <div onClick={onLogoClick}>
-                <HeaderLogo />
-              </div>
-            </HeaderLogoWrapper>
-          </Tooltip>
-          <Tooltip title="Dashboard">
-            <Box>
-              <Link passHref href="/dashboard">
-                <HeaderHomeButtonWrapper>
-                  <HeaderHomeButton>
-                    <HomeIcon id="tour-header-dashboard-icon" />
-                  </HeaderHomeButton>
-                </HeaderHomeButtonWrapper>
-              </Link>
-            </Box>
-          </Tooltip>
-          {!isMobile && <GlobalSearch />}
-        </HeaderLeftBlock>
-        <HeaderRightBlock>
-          {user && (
-            <>
-              {!isMobile && <Wallet />}
-              <NotificationsBoard
-                fetchMoreNotifications={fetchMoreNotifications}
-                notifications={notifications}
-                setNotifications={setNotifications}
-              />
-              <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-                <CreateIconOutlined id="tour-header-create-btn" />
-              </HeaderCreateButton>
-            </>
-          )}
-          {!user && (
-            <Button
-              highlighted
-              type="submit"
-              style={{
-                width: '100px',
-              }}
-              onClick={onSignInClick}
-            >
-              Sign in
-            </Button>
-          )}
-        </HeaderRightBlock>
-      </HeaderContainer>
-    </HeaderBar>
-  );
-};
+}: Props) => (
+  <HeaderBar>
+    <HeaderContainer>
+      <HeaderLeftBlock>
+        <Tooltip title="Explore page">
+          <HeaderLogoWrapper>
+            <div onClick={onLogoClick}>
+              <HeaderLogo />
+            </div>
+          </HeaderLogoWrapper>
+        </Tooltip>
+        <Tooltip title="Dashboard">
+          <Box>
+            <Link passHref href="/dashboard">
+              <HeaderHomeButtonWrapper>
+                <HeaderHomeButton>
+                  <HomeIcon id="tour-header-dashboard-icon" />
+                </HeaderHomeButton>
+              </HeaderHomeButtonWrapper>
+            </Link>
+          </Box>
+        </Tooltip>
+        {!isMobile && <GlobalSearch />}
+      </HeaderLeftBlock>
+      <HeaderRightBlock>
+        {user && (
+          <>
+            {!isMobile && <Wallet />}
+            <NotificationsBoard
+              fetchMoreNotifications={fetchMoreNotifications}
+              notifications={notifications}
+              setNotifications={setNotifications}
+            />
+            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+              <CreateIconOutlined id="tour-header-create-btn" />
+            </HeaderCreateButton>
+          </>
+        )}
+        {!user && (
+          <Button
+            highlighted
+            type="submit"
+            style={{
+              width: '100px',
+            }}
+            onClick={onSignInClick}
+          >
+            Sign in
+          </Button>
+        )}
+      </HeaderRightBlock>
+    </HeaderContainer>
+  </HeaderBar>
+);
 
 // eslint-disable-next-line react/display-name
-export default memo(HeaderMemo, (prevProps, nextProps) => {
-  return (
+export default memo(
+  HeaderMemo,
+  (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.showCreateButton === nextProps.showCreateButton &&
     prevProps.user?.id === nextProps.user?.id &&
     prevProps.notifications.length === nextProps.notifications.length &&
-    prevProps.notifications.every((notification, index) => {
-      return (
+    prevProps.notifications.every(
+      (notification, index) =>
         notification.id === nextProps.notifications[index]?.id &&
         notification.viewedAt === nextProps.notifications[index]?.viewedAt
-      );
-    })
-  );
-});
+    )
+);
