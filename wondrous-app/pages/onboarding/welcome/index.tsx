@@ -16,10 +16,13 @@ const OnboardingWelcomePage = () => {
   });
 
   const [updateUser] = useMutation(UPDATE_USER, {
-    onCompleted: () => {
-      router.push('/onboarding/build-profile', undefined, {
-        shallow: true,
-      });
+    onCompleted: (data) => {
+      const { updateUser } = data;
+      if (updateUser) {
+        router.push('/onboarding/build-profile', undefined, {
+          shallow: true,
+        });
+      }
     },
   });
 
