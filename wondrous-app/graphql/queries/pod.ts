@@ -134,8 +134,8 @@ export const GET_USER_JOIN_POD_REQUEST = gql`
 `;
 
 export const GET_JOIN_POD_REQUESTS = gql`
-  query getJoinPodRequests($limit: Int, $offset: Int, $date: String, $orgId: ID, $podIds: [ID]) {
-    getJoinPodRequests(limit: $limit, offset: $offset, date: $date, orgId: $orgId, podIds: $podIds) {
+  query getJoinPodRequests($limit: Int, $offset: Int, $sortOrder: String, $orgId: ID, $podIds: [ID]) {
+    getJoinPodRequests(limit: $limit, offset: $offset, sortOrder: $sortOrder, orgId: $orgId, podIds: $podIds) {
       id
       userId
       orgId

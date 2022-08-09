@@ -8,19 +8,11 @@ import {
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
-import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from 'graphql/queries/workflowBoards';
-import { useAdminColumns } from 'hooks/useAdminColumns';
 
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
-import {
-  LIMIT,
-  USER_COLUMNS,
-  populateTaskColumns,
-  generateUserDashboardFilters,
-  generateAdminDashboardFilters,
-} from 'services/board';
+import { LIMIT, USER_COLUMNS, populateTaskColumns, generateUserDashboardFilters } from 'services/board';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
@@ -30,14 +22,11 @@ import {
   TASK_STATUSES,
   TASK_STATUS_IN_REVIEW,
   PRIVACY_LEVEL,
-  PERMISSIONS,
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useCreateEntityContext, useGetPerStatusTaskCountForUserBoard, useSelectMembership } from 'utils/hooks';
+import { useCreateEntityContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 
 const useGetUserTaskBoardTasks = ({
-  isAdmin,
   contributorColumns,
   setContributorColumns,
   setHasMoreTasks,
@@ -92,7 +81,7 @@ const useGetUserTaskBoardTasks = ({
   };
 
   useEffect(() => {
-    if (!isAdmin && loggedInUser?.id) {
+    if (loggedInUser?.id) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
@@ -119,7 +108,6 @@ const useGetUserTaskBoardTasks = ({
 };
 
 const useGetUserTaskBoard = ({
-  isAdmin,
   view,
   section,
   loggedInUser,
@@ -129,7 +117,6 @@ const useGetUserTaskBoard = ({
   filters,
 }) => {
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus } = useGetUserTaskBoardTasks({
-    isAdmin,
     contributorColumns,
     setContributorColumns,
     setHasMoreTasks,
@@ -142,36 +129,16 @@ const useGetUserTaskBoard = ({
   };
 };
 
-const useFilterSchema = (loggedInUser, isAdmin, userPermissionsContext) => {
+const useFilterSchema = (loggedInUser) => {
   const { userOrgs } = useCreateEntityContext();
-  const permissionContext = userPermissionsContext?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-    : null;
-  const orgsWithAdminPermissions = userOrgs?.getUserOrgs.filter((org) => {
-    const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, orgId: org?.id });
-    const hasPermission =
-      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-      permissions.includes(PERMISSIONS.CREATE_TASK) ||
-      permissions.includes(PERMISSIONS.MANAGE_MEMBER);
-    return hasPermission;
-  });
 
-  const userFilters = generateUserDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs });
-  const adminFilters = generateAdminDashboardFilters({
-    userId: loggedInUser?.id,
-    orgs: orgsWithAdminPermissions,
-    permissionContext,
-  });
-  let filterSchema = [];
   if (loggedInUser?.id) {
-    filterSchema = isAdmin ? adminFilters : userFilters;
+    return generateUserDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs });
   }
-  return filterSchema;
 };
 
 const BoardsPage = (props) => {
   const { isAdmin, selectedStatus, setSelectedStatus } = props;
-  const selectMembershipHook = useSelectMembership();
   const router = useRouter();
   const loggedInUser = useMe();
   const { search, view } = router.query;
@@ -189,24 +156,14 @@ const BoardsPage = (props) => {
 
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
-  const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
-  const [getWorkFlowBoardReviewableItemsCountData, { data: adminPanelCount }] = useLazyQuery(
-    GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT
-  );
-
-  const { adminColumns, handleAdminColumnsLoadMore } = useAdminColumns({
-    isAdmin,
-    filters,
-  });
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
 
-  const filterSchema = useFilterSchema(loggedInUser, isAdmin, userPermissionsContext);
+  const filterSchema = useFilterSchema(loggedInUser);
 
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({
-    isAdmin,
     section,
     loggedInUser,
     setHasMoreTasks,
@@ -259,13 +216,6 @@ const BoardsPage = (props) => {
   });
 
   useEffect(() => {
-    // getWorkFlowBoardReviewableItemsCount()
-    if (isAdmin) {
-      getWorkFlowBoardReviewableItemsCountData();
-    }
-  }, [isAdmin]);
-
-  useEffect(() => {
     if (!loggedInUser) {
       return;
     }
@@ -300,9 +250,6 @@ const BoardsPage = (props) => {
 
   const handleLoadMore = (type = null) => {
     if (hasMoreTasks) {
-      if (isAdmin) {
-        return handleAdminColumnsLoadMore(type);
-      }
       return getUserTaskBoardTasksFetchMore();
     }
   };
@@ -396,7 +343,6 @@ const BoardsPage = (props) => {
       }
     }
   };
-  const activeColumns = isAdmin ? adminColumns : contributorColumns;
 
   return (
     <UserBoardContext.Provider
@@ -412,7 +358,6 @@ const BoardsPage = (props) => {
         fetchPerStatus,
         hasMore: hasMoreTasks,
         onLoadMore: handleLoadMore,
-        adminWorkflowCount: adminPanelCount?.getWorkFlowBoardReviewableItemsCount,
       }}
     >
       <BoardWrapper
@@ -424,7 +369,7 @@ const BoardsPage = (props) => {
         podIds={filters?.podIds}
       >
         <Boards
-          columns={activeColumns}
+          columns={contributorColumns}
           onLoadMore={handleLoadMore}
           hasMore={hasMoreTasks}
           isAdmin={isAdmin}

@@ -20,7 +20,7 @@ export const GET_PROPOSALS_USER_CAN_REVIEW = gql`
     $podIds: [ID]
     $limit: Int
     $offset: Int
-    $date: String
+    $sortOrder: String
   ) {
     getProposalsUserCanReview(
       input: {
@@ -29,7 +29,7 @@ export const GET_PROPOSALS_USER_CAN_REVIEW = gql`
         podIds: $podIds
         limit: $limit
         offset: $offset
-        date: $date
+        sortOrder: $sortOrder
       }
     ) {
       ...TaskProposalCardFragment
@@ -45,7 +45,7 @@ export const GET_SUBMISSIONS_USER_CAN_REVIEW = gql`
     $podIds: [ID]
     $limit: Int
     $offset: Int
-    $date: String
+    $sortOrder: String
   ) {
     getSubmissionsUserCanReview(
       input: {
@@ -54,7 +54,7 @@ export const GET_SUBMISSIONS_USER_CAN_REVIEW = gql`
         podIds: $podIds
         limit: $limit
         offset: $offset
-        date: $date
+        sortOrder: $sortOrder
       }
     ) {
       ...TaskSubmissionCardFragment

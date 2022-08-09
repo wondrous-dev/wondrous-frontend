@@ -67,8 +67,8 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
       } else {
         const { users = [], proposals, tasks } = await onSearch(searchString);
 
-        const hasMore = [...tasks, ...(proposals || [])].length > LIMIT;
-        const tasksWithProposals = [...tasks, ...(proposals || [])].slice(0, LIMIT);
+        const hasMore = [...(tasks || []), ...(proposals || [])].length > LIMIT;
+        const tasksWithProposals = [...(tasks || []), ...(proposals || [])].slice(0, LIMIT);
 
         setOptions([...tasksWithProposals, ...users]);
         setHasMore(hasMore);

@@ -48,15 +48,6 @@ export const ToggleItem = styled.button`
   ${({ isActive }) =>
     isActive &&
     `
-  @keyframes glow {
-  from {
-    background-size: 0%;
- }
-  to {
-    background-size: 100%;
-  }
-}
-  animation-name: glow;
   transform: scale(1.1);
   animation-duration: 0.5s;
   &::before {

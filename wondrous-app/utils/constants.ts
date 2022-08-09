@@ -598,3 +598,23 @@ export const SORT_BY = {
   DESC: 'desc',
   ASC: 'asc',
 };
+
+export const USER_BOARD_PAGE_TYPES = {
+  CONTRIBUTOR: 'contributor',
+  ADMIN: 'admin',
+};
+
+export const ADMIN_PAGE_TYPES = {
+  memberships: {
+    query: 'memberships',
+    type: MEMBERSHIP_REQUESTS,
+  },
+  proposals: {
+    query: 'proposals',
+    type: TASK_STATUS_PROPOSAL_REQUEST,
+  },
+  submissions: {
+    query: 'submissions',
+    type: TASK_STATUS_SUBMISSION_REQUEST,
+  },
+};

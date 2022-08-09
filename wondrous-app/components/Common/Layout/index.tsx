@@ -7,7 +7,7 @@ import ChooseEntityToCreate from 'components/CreateEntity';
 import { useRouter } from 'next/router';
 import { SectionWrapper } from './styles';
 import { useQuery } from '@apollo/client';
-import { GET_USER_ORGS } from 'graphql/queries';
+import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SideBarContext, CreateEntityContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
 import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
@@ -15,6 +15,10 @@ import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
+
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
 
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
@@ -48,6 +52,7 @@ export default function SidebarLayout({ children }) {
             isCreateEntityModalOpen: createFormModal,
             toggleCreateFormModal: toggleCreateFormModal,
             userOrgs: userOrgs,
+            userPermissionsContext,
           }}
         >
           <HeaderComponent />

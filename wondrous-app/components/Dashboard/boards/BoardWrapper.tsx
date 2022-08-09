@@ -1,35 +1,35 @@
 import { useRouter } from 'next/router';
 import Tabs from 'components/organization/tabs/tabs';
-import { Wrapper } from './styles';
+import { USER_BOARD_PAGE_TYPES, ADMIN_PAGE_TYPES } from 'utils/constants';
 import { BoardsActivityWrapper } from 'components/Dashboard/boards/styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ViewType } from 'types/common';
-import { delQuery } from 'utils';
-
+import { Wrapper } from './styles';
 const BoardWrapper = ({ children, isAdmin, onSearch, filterSchema, onFilterChange, statuses, podIds }) => {
   const router = useRouter();
   const handleOnToggle = () => {
-    router.query.view !== ViewType.Admin
-      ? router.replace(`${delQuery(router.asPath)}?view=${ViewType.Admin}`)
-      : router.replace(`${delQuery(router.asPath)}`);
+    !router.asPath.includes('admin')
+      ? router.replace(`/dashboard/admin?boardType=${ADMIN_PAGE_TYPES.memberships.query}`)
+      : router.replace(`/dashboard`);
   };
 
   const toggleItems = [
     {
       label: 'Contributor',
-      isActive: router.query.view !== ViewType.Admin,
+      isActive: !router.asPath.includes(ViewType.Admin),
       onChange: handleOnToggle,
     },
     {
       label: 'Admin',
-      isActive: router.query.view === ViewType.Admin,
+      isActive: router.asPath.includes(ViewType.Admin),
       onChange: handleOnToggle,
     },
   ];
 
+  const pageType = isAdmin ? USER_BOARD_PAGE_TYPES.ADMIN : USER_BOARD_PAGE_TYPES.CONTRIBUTOR;
   return (
     <Wrapper>
-      <Tabs page="dashboard">
+      <Tabs page={pageType} withQueries>
         <BoardsActivityWrapper>
           <BoardsActivity
             onSearch={onSearch}

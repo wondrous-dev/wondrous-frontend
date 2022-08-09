@@ -102,31 +102,18 @@ export default function BoardsActivity(props) {
     },
   ];
 
-  if (board) {
-    return (
-      <BoardsActivityInlineView
-        onSearch={onSearch}
-        filterSchema={filterSchema}
-        onChange={onFilterChange}
-        view={view}
-        searchQuery={searchQuery}
-        isAdmin={isAdmin}
-        isExpandable={!userBoard}
-        listViewOptions={listViewOptions}
-        withAdminToggle={withAdminToggle}
-        toggleItems={toggleItems}
-      />
-    );
-  }
-
   return (
-    <>
-      <BoardsActivityWrapper>
-        <SearchTasks onSearch={onSearch} />
-        <BoardFilters filterSchema={filterSchema} onChange={onFilterChange} />
-        {orgBoard && <SelectMenuBoardType router={router} view={view} />}
-        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-      </BoardsActivityWrapper>
-    </>
+    <BoardsActivityInlineView
+      onSearch={onSearch}
+      filterSchema={filterSchema}
+      onChange={onFilterChange}
+      view={view}
+      searchQuery={searchQuery}
+      isAdmin={isAdmin}
+      isExpandable={!userBoard}
+      listViewOptions={listViewOptions}
+      withAdminToggle={withAdminToggle}
+      toggleItems={toggleItems}
+    />
   );
 }

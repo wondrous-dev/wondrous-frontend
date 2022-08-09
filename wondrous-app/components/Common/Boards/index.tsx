@@ -4,12 +4,10 @@ import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';
 import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
-import { useSelectMembership } from 'utils/hooks';
 import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import { Table } from '../../Table';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import {
   BoardsContainer,
   ResultsCount,
@@ -19,14 +17,13 @@ import {
   ShowAllSearchResults,
 } from './styles';
 import ListView from 'components/ListView';
-import ListViewAdmin from 'components/ListViewAdmin';
 
 type Props = {
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
-  setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  setColumns?: React.Dispatch<React.SetStateAction<{}>>;
   activeView?: string;
   onSearch?: any;
   onFilterChange?: any;
@@ -59,9 +56,6 @@ const Boards = (props: Props) => {
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 
-    if (isAdmin) {
-      return <ListViewAdmin columns={columns} onLoadMore={onLoadMore} />;
-    }
     return view ? (
       <>
         {/* TEMPORARY until we come up with a list view for proposals */}

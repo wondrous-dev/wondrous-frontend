@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { withAuth } from 'components/Auth/withAuth';
 import Boards from 'components/Dashboard/boards';
 import Wrapper from 'components/Dashboard/wrapper';
-import { ViewType } from 'types/common';
 import { SelectMembershipContext } from 'utils/contexts';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
@@ -12,9 +11,8 @@ const Dashboard = () => {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectMembershipRequests, setSelectMembershipRequests] = useState(false);
   const router = useRouter();
-  const isAdmin = router.query.view === ViewType.Admin;
+  const isAdmin = router.asPath.includes('/dashboard/admin');
   const isMobile = useIsMobile();
-
   return (
     <Wrapper isAdmin={isAdmin}>
       {isMobile ? <MobileComingSoonModal /> : null}

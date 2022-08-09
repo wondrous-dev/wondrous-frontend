@@ -471,7 +471,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
         );
         boardColumns?.setColumns(columns);
       },
-      refetchQueries: ['GetOrgTaskBoardProposals'],
+      refetchQueries: ['GetOrgTaskBoardProposals', 'getUserTaskBoardProposals'],
     });
     document.body.setAttribute('style', `position: relative;`);
     handleClose();

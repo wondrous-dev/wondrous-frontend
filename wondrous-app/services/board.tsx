@@ -718,7 +718,7 @@ export const generateAdminDashboardFilters = ({ userId, orgs = [], permissionCon
       },
     },
     {
-      name: 'date',
+      name: 'sortOrder',
       label: 'Sort by',
       icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
       items: [

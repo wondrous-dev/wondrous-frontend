@@ -19,11 +19,11 @@ interface ColumnItem {
   items: Array<any>;
   hasMore: boolean;
   loading: boolean;
+  handleFetchMore: () => any;
 }
 
 interface Props {
-  columns: ColumnItem[];
-  onLoadMore: (type?: string) => any;
+  column: ColumnItem;
 }
 
 let windowOffset;
@@ -39,7 +39,7 @@ const COUNTS_MAP = {
   [MEMBERSHIP_REQUESTS]: 'membershipRequestCount',
 };
 
-function ListViewAdmin({ columns, onLoadMore }: Props) {
+function ListViewAdmin({ column }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const location = useLocation();
   const router = useRouter();
@@ -88,6 +88,10 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
       document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     }
   };
+  if (!column || !user) return null;
+  const title = ADMIN_COLUMNS_TYPES[column.type];
+  const Icon = ICON_MAP[column.type];
+  const count = generateCount(column.type);
 
   return (
     <>
@@ -99,58 +103,49 @@ function ListViewAdmin({ columns, onLoadMore }: Props) {
         taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
         isTaskProposal={!!location?.params?.taskProposal}
       />
-      {columns.map((column, colIdx) => {
-        if (!column || !user) return null;
-        const title = ADMIN_COLUMNS_TYPES[column.type];
-        const Icon = ICON_MAP[column.type];
-        const count = generateCount(column.type);
 
-        return (
-          <Accordion
-            isExpanded={column?.items?.length > 0}
-            key={colIdx}
-            loading={column.loading}
-            title={title}
-            count={count}
-            Icon={Icon}
-            headerAddons={null}
-            displayShowMore={column.hasMore}
-            onShowMore={() => onLoadMore(column.type)}
-          >
-            {column?.items?.map((item, idx) => {
-              return (
-                <ColumnEntry
-                  key={idx + item.id}
-                  type={column.type}
-                  userProfilePicture={item.userProfilePicture}
-                  orgUsername={item.orgUsername}
-                  orgProfilePicture={item.orgProfilePicture}
-                  podColor={item.podColor}
-                  podId={item.podId}
-                  podName={item.podName}
-                  userUsername={item.userUsername}
-                  id={item.id}
-                  orgId={item.orgId}
-                  userPermissionsContext={board?.userPermissionsContext}
-                  creatorProfilePicture={item.creatorProfilePicture}
-                  creatorUsername={item.creatorUsername}
-                  message={item.message}
-                  title={item.title}
-                  commentCount={item.commentCount}
-                  taskId={item.taskId}
-                  selectTask={selectTask}
-                  status={item.status}
-                  userId={item?.userId}
-                  taskDueDate={item?.taskDueDate}
-                  rewards={item.rewards}
-                  links={item.links}
-                  media={item.media}
-                />
-              );
-            })}
-          </Accordion>
-        );
-      })}
+      <Accordion
+        isExpanded={column?.items?.length > 0}
+        loading={column.loading}
+        title={title}
+        count={count}
+        Icon={Icon}
+        headerAddons={null}
+        displayShowMore={column.hasMore}
+        onShowMore={column.handleFetchMore}
+      >
+        {column?.items?.map((item, idx) => {
+          return (
+            <ColumnEntry
+              key={idx + item.id}
+              type={column.type}
+              userProfilePicture={item.userProfilePicture}
+              orgUsername={item.orgUsername}
+              orgProfilePicture={item.orgProfilePicture}
+              podColor={item.podColor}
+              podId={item.podId}
+              podName={item.podName}
+              userUsername={item.userUsername}
+              id={item.id}
+              orgId={item.orgId}
+              userPermissionsContext={board?.userPermissionsContext}
+              creatorProfilePicture={item.creatorProfilePicture}
+              creatorUsername={item.creatorUsername}
+              message={item.message}
+              title={item.title}
+              commentCount={item.commentCount}
+              taskId={item.taskId}
+              selectTask={selectTask}
+              status={item.status}
+              userId={item?.userId}
+              taskDueDate={item?.taskDueDate}
+              rewards={item.rewards}
+              links={item.links}
+              media={item.media}
+            />
+          );
+        })}
+      </Accordion>
     </>
   );
 }

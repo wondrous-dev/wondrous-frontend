@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader } from './styles';
 import ChooseEntityToCreate from 'components/CreateEntity';
 
 const CONFIG_MAP = {
   ADMIN: {
     label: 'My operator workspace',
-    img: 'images/operator.png',
+    img: '/images/operator.png',
   },
   CONTRIBUTOR: {
     label: 'My contributor workspace',
-    img: 'images/contrib.png',
+    img: '/images/contrib.png',
   },
 };
 
