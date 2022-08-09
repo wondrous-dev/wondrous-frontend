@@ -130,7 +130,7 @@ interface ITaskListModalProps {
 }
 
 export const TaskViewModal = (props: ITaskListModalProps) => {
-  const { open, handleClose, taskId, isTaskProposal, back } = props;
+  const { open, handleClose, taskId, isTaskProposal = false, back } = props;
   const [fetchedTask, setFetchedTask] = useState(null);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
@@ -764,7 +764,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                           <GithubButtons fetchedTask={fetchedTask} />
                         </TaskSectionDisplayData>
                         <TaskSectionDisplayCreator>
-                          {fetchedTask?.creatorUsername && (
+                          {fetchedTask?.creatorUsername && !isTaskProposal && (
                             <TaskSectionImageContent
                               hasContent={fetchedTask?.creatorUsername}
                               imgSrc={fetchedTask?.creatorProfilePicture}

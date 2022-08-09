@@ -729,6 +729,13 @@ export const TaskSubmissionLink = styled.a`
 
 export const TaskSubmissionLinkIcon = styled(LinkIcon)``;
 
+export const TaskSubmissionLinkText = styled.p`
+  max-width: 580px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
+
 export const SubmissionDescription = styled.div`
   && {
     font-size: 15px;
