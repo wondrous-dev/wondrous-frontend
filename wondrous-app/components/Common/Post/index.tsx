@@ -17,7 +17,7 @@ const selectPostTypeComponent = (post) => {
   }
 };
 
-export const Post = (props) => {
+export function Post(props) {
   const { post } = props;
   const postTypeComponent = selectPostTypeComponent(post);
   return (
@@ -28,4 +28,4 @@ export const Post = (props) => {
       <PostBorder>{postTypeComponent}</PostBorder>
     </PostWrapper>
   );
-};
+}

@@ -10,7 +10,7 @@ import { DashboardPanelWrapper, BoardsWrapper } from 'components/Dashboard/board
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
-const Dashboard = () => {
+function Dashboard() {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectMembershipRequests, setSelectMembershipRequests] = useState(false);
   const router = useRouter();
@@ -45,6 +45,6 @@ const Dashboard = () => {
       </SelectMembershipContext.Provider>
     </Wrapper>
   );
-};
+}
 
 export default withAuth(Dashboard);

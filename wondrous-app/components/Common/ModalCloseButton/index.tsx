@@ -1,7 +1,7 @@
-import { StyledCloseButton } from './styles';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { StyledCloseButton } from './styles';
 
-export const ModalCloseButton = (props) => {
+export function ModalCloseButton(props) {
   const { onClick, circle } = props;
 
   return (
@@ -9,4 +9,4 @@ export const ModalCloseButton = (props) => {
       <CloseModalIcon />
     </StyledCloseButton>
   );
-};
+}

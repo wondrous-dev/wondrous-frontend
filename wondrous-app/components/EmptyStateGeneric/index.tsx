@@ -6,7 +6,7 @@ interface Props {
   children?: any;
 }
 
-const EmptyStateGeneric = ({ content = '', children }: Props) => {
+function EmptyStateGeneric({ content = '', children }: Props) {
   return (
     <EmptyStateGenericWrapper>
       <EmptyStateGenericText>{content}</EmptyStateGenericText>
@@ -14,6 +14,6 @@ const EmptyStateGeneric = ({ content = '', children }: Props) => {
       {children}
     </EmptyStateGenericWrapper>
   );
-};
+}
 
 export default EmptyStateGeneric;

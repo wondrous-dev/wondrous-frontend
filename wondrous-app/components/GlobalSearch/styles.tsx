@@ -3,8 +3,7 @@ import Typography from '@mui/material/Typography';
 
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { Input } from 'components/SearchTasks/styles';
-import { SearchIconWrapped } from 'components/SearchTasks/styles';
+import { Input, SearchIconWrapped } from 'components/SearchTasks/styles';
 
 export const GlobalSearchWrapper = styled.div`
   display: flex;

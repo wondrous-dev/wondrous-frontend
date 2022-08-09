@@ -32,8 +32,10 @@ const BaseCardInner = styled.div`
   }
 `;
 
-export const BaseCard = ({ className, children }) => (
-  <BaseCardWrapper className={className}>
-    <BaseCardInner>{children}</BaseCardInner>
-  </BaseCardWrapper>
-);
+export function BaseCard({ className, children }) {
+  return (
+    <BaseCardWrapper className={className}>
+      <BaseCardInner>{children}</BaseCardInner>
+    </BaseCardWrapper>
+  );
+}

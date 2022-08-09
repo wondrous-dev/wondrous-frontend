@@ -23,7 +23,7 @@ interface IArchiveTaskModalProps {
   onDelete: () => void;
 }
 
-export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
+export function DeleteTaskModal(props: IArchiveTaskModalProps) {
   const { open, onClose, onDelete, taskType, taskId } = props;
   const refetchQueries = [
     'getUserTaskBoardTasks',
@@ -73,29 +73,27 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
   };
 
   return (
-    <>
-      <StyledDialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="delete-task-modal"
-        aria-describedby="modal-modal-description"
-      >
-        <StyledBox>
-          <StyledCloseButton onClick={onClose}>
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader>Delete this {taskType}?</StyledHeader>
-          <StyledBody>You cannot undo this action.</StyledBody>
-          <StyledDivider />
-          <StyledButtonsContainer>
-            <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-            <StyledDeleteTaskButton>
-              <ArchivedIcon />
-              <StyledDeleteLabel onClick={() => handleDelete()}>Delete {taskType}</StyledDeleteLabel>
-            </StyledDeleteTaskButton>
-          </StyledButtonsContainer>
-        </StyledBox>
-      </StyledDialog>
-    </>
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="delete-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <StyledBox>
+        <StyledCloseButton onClick={onClose}>
+          <CloseModalIcon />
+        </StyledCloseButton>
+        <StyledHeader>Delete this {taskType}?</StyledHeader>
+        <StyledBody>You cannot undo this action.</StyledBody>
+        <StyledDivider />
+        <StyledButtonsContainer>
+          <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
+          <StyledDeleteTaskButton>
+            <ArchivedIcon />
+            <StyledDeleteLabel onClick={() => handleDelete()}>Delete {taskType}</StyledDeleteLabel>
+          </StyledDeleteTaskButton>
+        </StyledButtonsContainer>
+      </StyledBox>
+    </StyledDialog>
   );
-};
+}

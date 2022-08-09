@@ -1,4 +1,4 @@
-export const ReviewerIcon = (props) => {
+export function ReviewerIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -22,9 +22,9 @@ export const ReviewerIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const ProposerIcon = (props) => {
+export function ProposerIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="11" height="14" viewBox="0 0 11 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,9 +44,9 @@ export const ProposerIcon = (props) => {
       <path d="M7.17105 5.25989H3.89844" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-};
+}
 
-export const AssigneeIcon = (props) => {
+export function AssigneeIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="14" height="11" viewBox="0 0 14 11" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,9 +66,9 @@ export const AssigneeIcon = (props) => {
       <path d="M13.2682 4.90186H9.99561" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-};
+}
 
-export const DueDateIcon = (props) => {
+export function DueDateIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -83,9 +83,9 @@ export const DueDateIcon = (props) => {
       <path d="M1.26904 6.22559H12.269" stroke="#CCBBFF" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-};
+}
 
-export const TokenIcon = (props) => {
+export function TokenIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="14" height="15" viewBox="0 0 14 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -109,9 +109,9 @@ export const TokenIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const MilestoneIcon = (props) => {
+export function MilestoneIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="13" height="15" viewBox="0 0 13 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -124,9 +124,9 @@ export const MilestoneIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const LinkIcon = (props) => {
+export function LinkIcon(props) {
   const { style, stroke = '#CCBBFF' } = props;
   return (
     <svg style={style} width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -144,9 +144,9 @@ export const LinkIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const ImageIcon = (props) => {
+export function ImageIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -173,9 +173,9 @@ export const ImageIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const NotesIcon = (props) => {
+export function NotesIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="13" height="13" viewBox="0 0 13 13" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -185,9 +185,9 @@ export const NotesIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const ClockIcon = (props) => {
+export function ClockIcon(props) {
   const { style } = props;
   return (
     <svg style={style} width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -197,9 +197,9 @@ export const ClockIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const RejectIcon = (props) => {
+export function RejectIcon(props) {
   const { style, onClick } = props;
   return (
     <svg
@@ -217,4 +217,4 @@ export const RejectIcon = (props) => {
       />
     </svg>
   );
-};
+}

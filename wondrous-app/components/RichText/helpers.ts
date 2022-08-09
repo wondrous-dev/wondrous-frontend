@@ -117,9 +117,7 @@ const EditorHelpers = {
     const [match] = Array.from(
       Editor.nodes(editor, {
         at: Editor.unhangRange(editor, selection),
-        match: (n) => {
-          return !Editor.isEditor(n) && Element.isElement(n) && n.type === blockType;
-        },
+        match: (n) => !Editor.isEditor(n) && Element.isElement(n) && n.type === blockType,
       })
     );
 
@@ -150,7 +148,7 @@ const EditorHelpers = {
       type: 'mention',
       mentionable,
       id,
-      children: [{ text: '@' + mentionable }],
+      children: [{ text: `@${mentionable}` }],
     };
     Transforms.insertNodes(editor, mention);
     Transforms.move(editor);

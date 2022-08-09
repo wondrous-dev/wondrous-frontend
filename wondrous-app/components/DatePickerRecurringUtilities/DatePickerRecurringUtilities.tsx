@@ -14,8 +14,8 @@ import {
 import DaySelector from 'components/DaySelector';
 import WeekDaySelector from 'components/WeekDaySelector';
 
-import styles from './DatePickerRecurringUtilitiesStyles';
 import DatePickerSelect from 'components/DatePickerSelect';
+import styles from './DatePickerRecurringUtilitiesStyles';
 
 interface DatePickerRecurringUtilitiesProps {
   date?: any;
@@ -34,7 +34,7 @@ interface DatePickerRecurringUtilitiesProps {
   monthInView: any;
 }
 
-const DatePickerRecurringUtilities = ({
+function DatePickerRecurringUtilities({
   date,
   setDate,
   dateRange,
@@ -49,7 +49,7 @@ const DatePickerRecurringUtilities = ({
   monthInView,
   onWeekDaysChange,
   weekDaysSelected,
-}: DatePickerRecurringUtilitiesProps) => {
+}: DatePickerRecurringUtilitiesProps) {
   const clearAll = () => {
     setDate && setDate(DEFAULT_SINGLE_DATEPICKER_VALUE);
     setDateRange && setDateRange(DEFAULT_DATEPICKER_VALUE);
@@ -137,6 +137,6 @@ const DatePickerRecurringUtilities = ({
       </Box>
     </Box>
   );
-};
+}
 
 export default DatePickerRecurringUtilities;

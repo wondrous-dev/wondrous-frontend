@@ -1,7 +1,13 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography } from '@mui/material';
-import { Tab } from '@mui/material';
+import { Typography, Tab } from '@mui/material';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { cutString } from 'utils/helpers';
+import isEqual from 'lodash/isEqual';
 import {
   PodNameTypography,
   PaymentModal,
@@ -26,17 +32,10 @@ import {
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { TableCellText } from './styles';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { useRouter } from 'next/router';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchRetroactivePayment } from './BatchRetroactivePayment';
-import Link from 'next/link';
-import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { cutString } from 'utils/helpers';
-import isEqual from 'lodash/isEqual';
 
 enum ViewType {
   Paid = 'paid',
@@ -50,7 +49,7 @@ const imageStyle = {
   marginRight: '8px',
 };
 
-export const RetroactivePayoutModal = (props) => {
+export function RetroactivePayoutModal(props) {
   const { podId, orgId, open, handleClose, paymentsData, chain } = props;
   const router = useRouter();
   const [wallets, setWallets] = useState([]);
@@ -83,7 +82,7 @@ export const RetroactivePayoutModal = (props) => {
           if (!wallets || wallets?.length === 0) {
             const podResult = await getPodById({
               variables: {
-                podId: podId,
+                podId,
               },
             });
             const pod = podResult?.data?.getPodById;
@@ -96,7 +95,7 @@ export const RetroactivePayoutModal = (props) => {
             setWallets(wallets);
           }
         } catch (err) {
-          console.error('failed to fetch wallet: ' + err?.message);
+          console.error(`failed to fetch wallet: ${err?.message}`);
         }
       } else if (orgId) {
         getOrgWallet({
@@ -130,13 +129,13 @@ export const RetroactivePayoutModal = (props) => {
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
-                <StyledTableCell align="center" width={'33%'}>
+                <StyledTableCell align="center" width="33%">
                   Receipient
                 </StyledTableCell>
-                <StyledTableCell align="center" width={'33%'}>
+                <StyledTableCell align="center" width="33%">
                   Address
                 </StyledTableCell>
-                <StyledTableCell align="center" width={'33%'}>
+                <StyledTableCell align="center" width="33%">
                   Payout
                 </StyledTableCell>
               </StyledTableRow>
@@ -232,4 +231,4 @@ export const RetroactivePayoutModal = (props) => {
       </PaymentModal>
     </Modal>
   );
-};
+}

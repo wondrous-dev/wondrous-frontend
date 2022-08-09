@@ -13,7 +13,7 @@ import {
   CreateFormMembersListRow,
 } from './styles';
 
-const MembersRow = (props) => {
+function MembersRow(props) {
   const { name, styledSwitch } = props;
 
   return (
@@ -34,7 +34,7 @@ const MembersRow = (props) => {
       </CreateFormMembersListActivityButtons>
     </CreateFormMembersListRow>
   );
-};
+}
 
 // const createPodMembersList = [
 // 	{

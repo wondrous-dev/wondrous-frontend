@@ -1,15 +1,15 @@
 import React from 'react';
 import { Box } from '@mui/system';
-import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import Tooltip from 'components/Tooltip';
-import { SafeImage } from '../Image';
 import { useRouter } from 'next/router';
+import { SafeImage } from '../Image';
+import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
 
-export const SmallAvatar = (props) => {
+export function SmallAvatar(props) {
   const { avatar = {}, id, username, goTo, initials = '', style = {} } = props;
 
-  //TODO: create this as a service
+  // TODO: create this as a service
   const randomColor = '#363636';
 
   return (
@@ -52,9 +52,9 @@ export const SmallAvatar = (props) => {
       )}
     </SmallAvatarContainer>
   );
-};
+}
 
-export const SmallAvatarOverflow = (props) => {
+export function SmallAvatarOverflow(props) {
   const { index = 0, overflow = 0 } = props;
 
   return (
@@ -62,29 +62,29 @@ export const SmallAvatarOverflow = (props) => {
       <SmallAvatarWrapper avatarURL="/images/avatar-overflow.png">+{overflow}</SmallAvatarWrapper>
     </SmallAvatarContainer>
   );
-};
+}
 
-export const AvatarList = (props) => {
+export function AvatarList(props) {
   const { id = '', users = [], align = '', style = {} } = props;
   const router = useRouter();
 
   // Siege User List to max of AVATAR_LIST_OVERFLOW_MAX
-  let usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX);
-  let overflow = users.length - usersSieged.length;
+  const usersSieged = users.slice(0, AVATAR_LIST_OVERFLOW_MAX);
+  const overflow = users.length - usersSieged.length;
 
   const goToUser = (username) => {
     window.location.href = `/profile/${username}/about`;
   };
 
   return (
-    <AvatarListWrapper key={id + '-list'} align={align} style={style}>
+    <AvatarListWrapper key={`${id}-list`} align={align} style={style}>
       {usersSieged.map((user, index) => (
-        <Tooltip key={'user-tooltip-' + user.id} title={user.name || user.initials} placement="top">
+        <Tooltip key={`user-tooltip-${user.id}`} title={user.name || user.initials} placement="top">
           <div>
             <SmallAvatar
               id={user.id}
               username={user.username || user?.name}
-              key={'avatar-' + user.id}
+              key={`avatar-${user.id}`}
               avatar={user.avatar}
               initials={user.initials}
               style={{ zIndex: index }}
@@ -94,10 +94,10 @@ export const AvatarList = (props) => {
         </Tooltip>
       ))}
       {overflow > 0 && users.length > AVATAR_LIST_OVERFLOW_MAX ? (
-        <SmallAvatarOverflow id={'avatar-overflow-' + id} overflow={overflow} />
+        <SmallAvatarOverflow id={`avatar-overflow-${id}`} overflow={overflow} />
       ) : (
         ''
       )}
     </AvatarListWrapper>
   );
-};
+}

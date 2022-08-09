@@ -147,13 +147,11 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
   }
 `;
 
-export const SubmissionFilterButtonIcon = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const SubmissionFilterButtonIcon = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
     display: flex;

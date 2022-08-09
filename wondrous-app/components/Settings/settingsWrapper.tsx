@@ -13,8 +13,9 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import { logout, useMe } from '../Auth/withAuth';
 import ExitIcon from 'components/Icons/exit';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import { logout, useMe } from '../Auth/withAuth';
 import CardIcon from '../Icons/card';
 import GeneralSettingsIcon from '../Icons/generalSettings';
 import MembersIcon from '../Icons/members';
@@ -40,9 +41,8 @@ import {
   SettingsSidebarTabsSectionLabel,
   ArchivedPodIndicatorText,
 } from './styles';
-import ChooseEntityToCreate from 'components/CreateEntity';
 
-export const SettingsWrapper = (props) => {
+export function SettingsWrapper(props) {
   const { children, showPodIcon = true } = props;
 
   const router = useRouter();
@@ -221,7 +221,7 @@ export const SettingsWrapper = (props) => {
       path: `/pod/${podId}/boards`,
       label: 'Pod',
     },
-    ['']: {
+    '': {
       page: SettingsPage.Profile,
       path: `/profile/${user?.username}/about`,
       label: 'Profile',
@@ -230,76 +230,72 @@ export const SettingsWrapper = (props) => {
   const activeSettingsPage = settingsPageConfig?.[String(podId ?? orgId ?? '')];
   const podIsArchived = !!podData?.getPodById?.archivedAt;
   return (
-    <>
-      <SettingsBoardContext.Provider
-        value={{
-          userPermissionsContext: parsedUserPermissionsContext,
-          org,
-          pod,
-        }}
-      >
-        <ChooseEntityToCreate />
-        <SettingsContainer>
-          <SettingsSidebar>
-            <SettingsSidebarContainer>
-              <SettingsSidebarHeader>
-                <Link href={activeSettingsPage?.path} passHref>
-                  <SettingsSidebarTabsListItem>
-                    <SettingsSidebarTabsListItemIcon>
-                      <LeftArrowIcon />
-                    </SettingsSidebarTabsListItemIcon>
-                    <SettingsSidebarTabsListItemText>
-                      Back to {activeSettingsPage.label}
-                    </SettingsSidebarTabsListItemText>
-                  </SettingsSidebarTabsListItem>
-                </Link>
-              </SettingsSidebarHeader>
-              <SettingsSidebarTabsSection>
-                <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
-                <SettingsSidebarTabsListContainer>
-                  {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
-                    if (!item.page?.includes(activeSettingsPage.page)) return null;
-                    const { href, icon, label } = item;
-                    const pathnameSplit = pathname.split('/');
-                    const hrefSplit = href.split('/');
-                    const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                    const endHref = hrefSplit[hrefSplit.length - 1];
-                    const active = endHref === endPathName;
-                    return (
-                      <Link key={href} href={href} passHref>
-                        <SettingsSidebarTabsListItem active={active}>
-                          <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
-                          <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
-                        </SettingsSidebarTabsListItem>
-                      </Link>
-                    );
-                  })}
-                  <SettingsSidebarTabsListItem onClick={signOut}>
-                    <SettingsSidebarTabsListItemIcon>
-                      <ExitIcon />
-                    </SettingsSidebarTabsListItemIcon>
-                    <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
-                  </SettingsSidebarTabsListItem>
-                </SettingsSidebarTabsListContainer>
-              </SettingsSidebarTabsSection>
-            </SettingsSidebarContainer>
-          </SettingsSidebar>
+    <SettingsBoardContext.Provider
+      value={{
+        userPermissionsContext: parsedUserPermissionsContext,
+        org,
+        pod,
+      }}
+    >
+      <ChooseEntityToCreate />
+      <SettingsContainer>
+        <SettingsSidebar>
+          <SettingsSidebarContainer>
+            <SettingsSidebarHeader>
+              <Link href={activeSettingsPage?.path} passHref>
+                <SettingsSidebarTabsListItem>
+                  <SettingsSidebarTabsListItemIcon>
+                    <LeftArrowIcon />
+                  </SettingsSidebarTabsListItemIcon>
+                  <SettingsSidebarTabsListItemText>Back to {activeSettingsPage.label}</SettingsSidebarTabsListItemText>
+                </SettingsSidebarTabsListItem>
+              </Link>
+            </SettingsSidebarHeader>
+            <SettingsSidebarTabsSection>
+              <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
+              <SettingsSidebarTabsListContainer>
+                {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                  if (!item.page?.includes(activeSettingsPage.page)) return null;
+                  const { href, icon, label } = item;
+                  const pathnameSplit = pathname.split('/');
+                  const hrefSplit = href.split('/');
+                  const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                  const endHref = hrefSplit[hrefSplit.length - 1];
+                  const active = endHref === endPathName;
+                  return (
+                    <Link key={href} href={href} passHref>
+                      <SettingsSidebarTabsListItem active={active}>
+                        <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
+                        <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                      </SettingsSidebarTabsListItem>
+                    </Link>
+                  );
+                })}
+                <SettingsSidebarTabsListItem onClick={signOut}>
+                  <SettingsSidebarTabsListItemIcon>
+                    <ExitIcon />
+                  </SettingsSidebarTabsListItemIcon>
+                  <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
+                </SettingsSidebarTabsListItem>
+              </SettingsSidebarTabsListContainer>
+            </SettingsSidebarTabsSection>
+          </SettingsSidebarContainer>
+        </SettingsSidebar>
 
-          <SettingsContentBlock>
-            {showPodIcon ? (
-              <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
-                <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-                <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
-                  <PodIcon />
-                </SettingsDaoPodIndicatorIconWrapper>
-                <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-                {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
-              </SettingsDaoPodIndicator>
-            ) : null}
-            {children}
-          </SettingsContentBlock>
-        </SettingsContainer>
-      </SettingsBoardContext.Provider>
-    </>
+        <SettingsContentBlock>
+          {showPodIcon ? (
+            <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+              <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+              <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                <PodIcon />
+              </SettingsDaoPodIndicatorIconWrapper>
+              <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+              {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
+            </SettingsDaoPodIndicator>
+          ) : null}
+          {children}
+        </SettingsContentBlock>
+      </SettingsContainer>
+    </SettingsBoardContext.Provider>
   );
-};
+}

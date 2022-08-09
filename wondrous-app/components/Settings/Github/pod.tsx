@@ -1,8 +1,5 @@
-import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
-import { AddRepoDiv, GithubLink, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
@@ -21,10 +18,13 @@ import {
 } from 'components/CreateEntity/styles';
 import { TextField } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
-import { ImportTaskModal } from './confirmImportTaskModal';
 import { ADD_POD_GITHUB_REPO, DELETE_POD_GITHUB_REPO_INTEGRATION } from 'graphql/mutations/pod';
 import { GRAPHQL_ERRORS } from 'utils/constants';
 import { ErrorText } from 'components/Common';
+import { ImportTaskModal } from './confirmImportTaskModal';
+import { AddRepoDiv, GithubLink, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
+import { SettingsWrapper } from '../settingsWrapper';
+import { HeaderBlock } from '../headerBlock';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
 
@@ -38,7 +38,7 @@ const filterGithubRepo = (repositories) => {
   }));
 };
 
-export const GithubIntegrationRow = ({ githubIntegrationId, githubInfo, deletePodGithubIntegration }) => {
+export function GithubIntegrationRow({ githubIntegrationId, githubInfo, deletePodGithubIntegration }) {
   return (
     <RepoDiv>
       <RepoDivTitle>
@@ -67,9 +67,9 @@ export const GithubIntegrationRow = ({ githubIntegrationId, githubInfo, deletePo
       />
     </RepoDiv>
   );
-};
+}
 
-export const GithubIntegration = ({ orgId, podId }) => {
+export function GithubIntegration({ orgId, podId }) {
   const router = useRouter();
   const [getPodGithubIntegrations, { data: podGithubIntegrationData, error: podGithubIntegrationError }] =
     useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
@@ -252,29 +252,27 @@ export const GithubIntegration = ({ orgId, podId }) => {
                   setChosenRepo(null);
                 }
               }}
-              renderOption={(props, option, state) => {
-                return (
-                  <OptionDiv
-                    onClick={(event) => {
-                      setChosenRepo(option);
-                      props?.onClick(event);
-                    }}
-                  >
-                    {option?.profilePicture && (
-                      <SafeImage
-                        useNextImage={false}
-                        src={option?.profilePicture}
-                        style={{
-                          width: '30px',
-                          height: '30px',
-                          borderRadius: '15px',
-                        }}
-                      />
-                    )}
-                    <OptionTypography>{option?.label}</OptionTypography>
-                  </OptionDiv>
-                );
-              }}
+              renderOption={(props, option, state) => (
+                <OptionDiv
+                  onClick={(event) => {
+                    setChosenRepo(option);
+                    props?.onClick(event);
+                  }}
+                >
+                  {option?.profilePicture && (
+                    <SafeImage
+                      useNextImage={false}
+                      src={option?.profilePicture}
+                      style={{
+                        width: '30px',
+                        height: '30px',
+                        borderRadius: '15px',
+                      }}
+                    />
+                  )}
+                  <OptionTypography>{option?.label}</OptionTypography>
+                </OptionDiv>
+              )}
             />
             <CreateFormPreviewButton
               disabled={!(chosenRepo?.id && chosenRepoString)}
@@ -299,16 +297,14 @@ export const GithubIntegration = ({ orgId, podId }) => {
             </CreateFormPreviewButton>
           </AddRepoDiv>
           {githubIntegrations?.length > 0 &&
-            githubIntegrations?.map((githubIntegration, index) => {
-              return (
-                <GithubIntegrationRow
-                  key={index}
-                  githubIntegrationId={githubIntegration?.id}
-                  githubInfo={githubIntegration?.githubInfo}
-                  deletePodGithubIntegration={deletePodGithubIntegration}
-                />
-              );
-            })}
+            githubIntegrations?.map((githubIntegration, index) => (
+              <GithubIntegrationRow
+                key={index}
+                githubIntegrationId={githubIntegration?.id}
+                githubInfo={githubIntegration?.githubInfo}
+                deletePodGithubIntegration={deletePodGithubIntegration}
+              />
+            ))}
         </>
       ) : (
         <GithubButtonDiv>
@@ -325,4 +321,4 @@ export const GithubIntegration = ({ orgId, podId }) => {
       {addRepoError && <ErrorText>{addRepoError}</ErrorText>}
     </SettingsWrapper>
   );
-};
+}

@@ -88,7 +88,7 @@ export const AuthProvider: React.FC = ({ children }) => {
       await onCacheResult(data);
     },
     onError: async (error) => {
-      console.log('Error while loading user from cache. ' + error);
+      console.log(`Error while loading user from cache. ${error}`);
       await onCacheResult();
     },
   });

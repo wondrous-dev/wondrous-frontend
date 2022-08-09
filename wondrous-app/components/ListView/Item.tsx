@@ -1,10 +1,4 @@
 import { useState, useContext, useEffect } from 'react';
-import {
-  ListViewItemBodyWrapper,
-  ListViewItemDataContainer,
-  ListViewItemIconsWrapper,
-  ListViewItemActions,
-} from './styles';
 import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { SafeImage } from 'components/Common/Image';
@@ -17,13 +11,11 @@ import { DueDateText, ActionButton, ArchivedTaskUndo } from 'components/Common/T
 import Tooltip from 'components/Tooltip';
 import palette from 'theme/palette';
 import { Claim } from 'components/Icons/claimTask';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
-import { useMutation } from '@apollo/client';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { transformTaskToTaskCard } from 'utils/helpers';
 import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
@@ -38,6 +30,12 @@ import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
 import { CreateEntity } from 'components/CreateEntity';
+import {
+  ListViewItemBodyWrapper,
+  ListViewItemDataContainer,
+  ListViewItemIconsWrapper,
+  ListViewItemActions,
+} from './styles';
 
 export default function ListViewItem({ task, entityType }) {
   let windowOffset = 0;
@@ -118,8 +116,8 @@ export default function ListViewItem({ task, entityType }) {
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId: orgId,
-    podId: podId,
+    orgId,
+    podId,
   });
 
   const hasPermissionToPay =
@@ -175,7 +173,7 @@ export default function ListViewItem({ task, entityType }) {
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
 
   if (entityType) {
-    viewUrl = viewUrl + `&entity=${entityType}`;
+    viewUrl += `&entity=${entityType}`;
   }
 
   const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
@@ -399,7 +397,7 @@ export default function ListViewItem({ task, entityType }) {
                       </DropDownItem>
                       {canDelete && (
                         <DropDownItem
-                          key={'task-menu-delete-' + task.id}
+                          key={`task-menu-delete-${task.id}`}
                           onClick={() => {
                             setDeleteTask(true);
                           }}

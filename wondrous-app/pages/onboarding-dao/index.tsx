@@ -114,7 +114,7 @@ const useIsOrgUsernameTaken = () => {
   const handleIsOrgUsernameTaken = async (username) => {
     if (username && username !== prevUsername) {
       // check the previous parameter first to prevent unnecessary queries during form validation; refer to https://github.com/jaredpalmer/formik/issues/512#issuecomment-666549238
-      const { data } = await isOrgUsernameTaken({ variables: { username: username } });
+      const { data } = await isOrgUsernameTaken({ variables: { username } });
       const result = !data?.isOrgUsernameTaken?.exist;
       setPrevUsername(username);
       setPrevResult(result);
@@ -154,7 +154,7 @@ const useInitialValues = () => {
   return { initialValues, restoreStep };
 };
 
-const OnboardingCreateDao = () => {
+function OnboardingCreateDao() {
   const { initialValues, restoreStep } = useInitialValues();
   const [step, setStep] = useReducer(handleStep, restoreStep);
   const currentFieldSet = fieldSet.find((field) => field.step === step);
@@ -167,7 +167,7 @@ const OnboardingCreateDao = () => {
       }}
       onSubmit={handleCreateOrg}
       validationSchema={useSchema()}
-      validateOnMount={true}
+      validateOnMount
     >
       <Form>
         <StepWrapper
@@ -179,6 +179,6 @@ const OnboardingCreateDao = () => {
       </Form>
     </Formik>
   );
-};
+}
 
 export default withAuth(OnboardingCreateDao);

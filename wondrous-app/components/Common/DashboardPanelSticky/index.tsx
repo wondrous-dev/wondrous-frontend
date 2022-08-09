@@ -1,7 +1,7 @@
 import { StyledBorder, StyledBackground, DashboardPanelStatusCardWrapper, StyledDropShadow } from './styles';
 import DashboardPanelStatusCardSticky from '../DashboardPanelStickyStatusCard';
 
-export const DashboardPanelSticky = (props) => {
+export function DashboardPanelSticky(props) {
   const { activePanelStatusCards, selectedStatus, setSelectedStatus, isAdmin } = props;
   return (
     <StyledDropShadow>
@@ -22,6 +22,6 @@ export const DashboardPanelSticky = (props) => {
       </StyledBorder>
     </StyledDropShadow>
   );
-};
+}
 
 export default DashboardPanelSticky;

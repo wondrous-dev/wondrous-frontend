@@ -1,5 +1,7 @@
 import { StyledBox } from './PermissionTagStyles';
 
-const PermissionTag = ({ children }) => <StyledBox>{children}</StyledBox>;
+function PermissionTag({ children }) {
+  return <StyledBox>{children}</StyledBox>;
+}
 
 export default PermissionTag;

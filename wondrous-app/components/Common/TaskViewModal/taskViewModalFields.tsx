@@ -1,3 +1,17 @@
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { useRouter } from 'next/router';
+import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
+import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
+import { Claim } from 'components/Icons/claimTask';
+import TaskApplicationButton from 'components/Common/TaskApplication/TaskApplicationButton';
+import Image from 'next/image';
+import { useMutation } from '@apollo/client';
+import { UPDATE_TASK_ASSIGNEE, REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
+import Box from '@mui/material/Box';
+import isEmpty from 'lodash/isEmpty';
+import { format } from 'date-fns';
+import Tooltip from 'components/Tooltip';
+import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
   TaskSectionDisplayContentWrapper,
@@ -18,23 +32,9 @@ import {
   TaskSectionTagWrapper,
   Tag,
 } from './styles';
-import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { useRouter } from 'next/router';
-import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
-import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
-import { Claim } from 'components/Icons/claimTask';
-import TaskApplicationButton from 'components/Common/TaskApplication/TaskApplicationButton';
-import Image from 'next/image';
-import { useMutation } from '@apollo/client';
-import { UPDATE_TASK_ASSIGNEE, REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
-import Box from '@mui/material/Box';
-import isEmpty from 'lodash/isEmpty';
-import { format } from 'date-fns';
-import Tooltip from 'components/Tooltip';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';
 
-export const ReviewerField = ({ reviewerData, handleClose, shouldDisplay }) => {
+export function ReviewerField({ reviewerData, handleClose, shouldDisplay }) {
   const router = useRouter();
 
   if (!shouldDisplay) {
@@ -68,9 +68,9 @@ export const ReviewerField = ({ reviewerData, handleClose, shouldDisplay }) => {
       </TaskSectionDisplayContentWrapper>
     </TaskSectionDisplayDiv>
   );
-};
+}
 
-export const AssigneeField = ({
+export function AssigneeField({
   fetchedTask,
   canEdit,
   setFetchedTask,
@@ -89,7 +89,7 @@ export const AssigneeField = ({
   orgId,
   podId,
   userId,
-}) => {
+}) {
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
@@ -107,21 +107,83 @@ export const AssigneeField = ({
           hasContent={fetchedTask?.assigneeUsername}
           imgSrc={fetchedTask?.assigneeProfilePicture}
           DefaultImageComponent={() => <DefaultUserImage />}
-          ContentComponent={() => {
-            return (
-              <>
-                <TaskSectionInfoTextUnderlined>{fetchedTask?.assigneeUsername}</TaskSectionInfoTextUnderlined>
-                {canEdit && (
-                  <TaskSectionInfoClose
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      removeTaskAssignee({
+          ContentComponent={() => (
+            <>
+              <TaskSectionInfoTextUnderlined>{fetchedTask?.assigneeUsername}</TaskSectionInfoTextUnderlined>
+              {canEdit && (
+                <TaskSectionInfoClose
+                  onClick={(e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    removeTaskAssignee({
+                      variables: {
+                        taskId: fetchedTask?.id,
+                      },
+                      onCompleted: (data) => {
+                        const task = data?.removeTaskAssignee;
+                        const transformedTask = transformTaskToTaskCard(task, {});
+                        setFetchedTask(transformedTask);
+                        if (boardColumns?.setColumns && onCorrectPage) {
+                          let columns = [...boardColumns?.columns];
+                          if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                            columns = updateInReviewItem(transformedTask, columns);
+                          } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                            columns = updateInProgressTask(transformedTask, columns);
+                          } else if (transformedTask.status === TASK_STATUS_TODO) {
+                            columns = updateTaskItem(transformedTask, columns);
+                          } else if (transformedTask.status === TASK_STATUS_DONE) {
+                            columns = updateCompletedItem(transformedTask, columns);
+                          }
+                          boardColumns.setColumns(columns);
+                        }
+                      },
+                    });
+                  }}
+                >
+                  <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
+                </TaskSectionInfoClose>
+              )}
+            </>
+          )}
+          onClick={() => {
+            handleClose();
+            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+              shallow: true,
+            });
+          }}
+          DefaultContent={() => (
+            <>
+              {canClaim ? (
+                <TaskSectionInfoTakeTask
+                  onClick={() => {
+                    if (!user) {
+                      router.push('/signup', undefined, {
+                        shallow: true,
+                      });
+                    } else if (isTaskProposal) {
+                      updateTaskProposalAssignee({
                         variables: {
-                          taskId: fetchedTask?.id,
+                          proposalId: fetchedTask?.id,
+                          assigneeId: user?.id,
                         },
                         onCompleted: (data) => {
-                          const task = data?.removeTaskAssignee;
+                          const taskProposal = data?.updateTaskProposalAssignee;
+                          if (boardColumns?.setColumns && onCorrectPage) {
+                            const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
+                            let columns = [...boardColumns?.columns];
+                            columns = updateProposalItem(transformedTaskProposal, columns);
+                            boardColumns?.setColumns(columns);
+                          }
+                        },
+                      });
+                    } else {
+                      updateTaskAssignee({
+                        variables: {
+                          taskId: fetchedTask?.id,
+                          assigneeId: user?.id,
+                        },
+                        onCompleted: (data) => {
+                          const task = data?.updateTaskAssignee;
                           const transformedTask = transformTaskToTaskCard(task, {});
                           setFetchedTask(transformedTask);
                           if (boardColumns?.setColumns && onCorrectPage) {
@@ -139,83 +201,12 @@ export const AssigneeField = ({
                           }
                         },
                       });
-                    }}
-                  >
-                    <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
-                  </TaskSectionInfoClose>
-                )}
-              </>
-            );
-          }}
-          onClick={() => {
-            handleClose();
-            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
-              shallow: true,
-            });
-          }}
-          DefaultContent={() => (
-            <>
-              {canClaim ? (
-                <>
-                  <TaskSectionInfoTakeTask
-                    onClick={() => {
-                      if (!user) {
-                        router.push('/signup', undefined, {
-                          shallow: true,
-                        });
-                      } else {
-                        if (isTaskProposal) {
-                          updateTaskProposalAssignee({
-                            variables: {
-                              proposalId: fetchedTask?.id,
-                              assigneeId: user?.id,
-                            },
-                            onCompleted: (data) => {
-                              const taskProposal = data?.updateTaskProposalAssignee;
-                              if (boardColumns?.setColumns && onCorrectPage) {
-                                const transformedTaskProposal = transformTaskProposalToTaskProposalCard(
-                                  taskProposal,
-                                  {}
-                                );
-                                let columns = [...boardColumns?.columns];
-                                columns = updateProposalItem(transformedTaskProposal, columns);
-                                boardColumns?.setColumns(columns);
-                              }
-                            },
-                          });
-                        } else {
-                          updateTaskAssignee({
-                            variables: {
-                              taskId: fetchedTask?.id,
-                              assigneeId: user?.id,
-                            },
-                            onCompleted: (data) => {
-                              const task = data?.updateTaskAssignee;
-                              const transformedTask = transformTaskToTaskCard(task, {});
-                              setFetchedTask(transformedTask);
-                              if (boardColumns?.setColumns && onCorrectPage) {
-                                let columns = [...boardColumns?.columns];
-                                if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                                  columns = updateInReviewItem(transformedTask, columns);
-                                } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                                  columns = updateInProgressTask(transformedTask, columns);
-                                } else if (transformedTask.status === TASK_STATUS_TODO) {
-                                  columns = updateTaskItem(transformedTask, columns);
-                                } else if (transformedTask.status === TASK_STATUS_DONE) {
-                                  columns = updateCompletedItem(transformedTask, columns);
-                                }
-                                boardColumns.setColumns(columns);
-                              }
-                            },
-                          });
-                        }
-                      }
-                    }}
-                  >
-                    <Claim />
-                    <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
-                  </TaskSectionInfoTakeTask>
-                </>
+                    }
+                  }}
+                >
+                  <Claim />
+                  <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
+                </TaskSectionInfoTakeTask>
               ) : (
                 <>
                   {canApply ? (
@@ -238,9 +229,9 @@ export const AssigneeField = ({
       </TaskSectionInfoDiv>
     </TaskSectionDisplayDiv>
   );
-};
+}
 
-export const ApplicationField = ({ shouldDisplay, taskApplicationCount, handleReviewButton }) => {
+export function ApplicationField({ shouldDisplay, taskApplicationCount, handleReviewButton }) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
@@ -254,9 +245,9 @@ export const ApplicationField = ({ shouldDisplay, taskApplicationCount, handleRe
       </Box>
     </TaskSectionDisplayDiv>
   );
-};
+}
 
-export const ProposerField = ({ shouldDisplay, creatorUsername, creatorProfilePicture, handleClose }) => {
+export function ProposerField({ shouldDisplay, creatorUsername, creatorProfilePicture, handleClose }) {
   const router = useRouter();
   if (!shouldDisplay) return null;
   return (
@@ -277,8 +268,8 @@ export const ProposerField = ({ shouldDisplay, creatorUsername, creatorProfilePi
       />
     </TaskSectionDisplayDiv>
   );
-};
-export const VotesField = ({ shouldDisplay, totalVotes, hasContent }) => {
+}
+export function VotesField({ shouldDisplay, totalVotes, hasContent }) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
@@ -290,9 +281,9 @@ export const VotesField = ({ shouldDisplay, totalVotes, hasContent }) => {
       />
     </TaskSectionDisplayDiv>
   );
-};
+}
 
-export const DueDateField = ({ shouldDisplay, dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry }) => {
+export function DueDateField({ shouldDisplay, dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry }) {
   if (!shouldDisplay) return null;
   return (
     <div>
@@ -319,9 +310,9 @@ export const DueDateField = ({ shouldDisplay, dueDate, recurringSchema, shouldUn
       {shouldUnclaimOnDueDateExpiry && <InfoPoint>Assignee will be removed once the task is past due date</InfoPoint>}
     </div>
   );
-};
+}
 
-export const PointsField = ({ shouldDisplay, points }) => {
+export function PointsField({ shouldDisplay, points }) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
@@ -333,9 +324,9 @@ export const PointsField = ({ shouldDisplay, points }) => {
       />
     </TaskSectionDisplayDiv>
   );
-};
+}
 
-export const MilestoneField = ({ shouldDisplay, milestoneId, getTaskById, milestoneTitle }) => {
+export function MilestoneField({ shouldDisplay, milestoneId, getTaskById, milestoneTitle }) {
   const router = useRouter();
 
   if (!shouldDisplay) return null;
@@ -365,16 +356,16 @@ export const MilestoneField = ({ shouldDisplay, milestoneId, getTaskById, milest
       />
     </TaskSectionDisplayDiv>
   );
-};
+}
 
-export const TagsField = ({ shouldDisplay, labels }) => {
+export function TagsField({ shouldDisplay, labels }) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Tags</TaskSectionLabel>
       <TaskSectionTagWrapper>
-        {labels.map((label) => {
-          return (
+        {labels.map(
+          (label) =>
             label && (
               <TaskSectionImageContent
                 key={label.id}
@@ -383,9 +374,8 @@ export const TagsField = ({ shouldDisplay, labels }) => {
                 DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
               />
             )
-          );
-        })}
+        )}
       </TaskSectionTagWrapper>
     </TaskSectionDisplayDiv>
   );
-};
+}

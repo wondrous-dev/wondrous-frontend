@@ -12,7 +12,7 @@ import {
   StyledTextWrapper,
 } from './styles';
 
-export const MilestoneProgress = (props) => {
+export function MilestoneProgress(props) {
   const { milestoneId } = props;
   const { tasksTotal, tasksCompleted, progress } = useGetMilestoneTasksProgress({ milestoneId });
   if (!tasksTotal) return <StyledTasksCount>No tasks</StyledTasksCount>;
@@ -27,9 +27,9 @@ export const MilestoneProgress = (props) => {
       </StyledProgressBarWrapper>
     </StyledBox>
   );
-};
+}
 
-export const MilestoneProgressViewModal = ({ milestoneId, isMilestone }) => {
+export function MilestoneProgressViewModal({ milestoneId, isMilestone }) {
   const { tasksTotal, tasksCompleted, progress } = useGetMilestoneTasksProgress({ milestoneId });
   if (!isMilestone) return null;
   return (
@@ -40,4 +40,4 @@ export const MilestoneProgressViewModal = ({ milestoneId, isMilestone }) => {
       </MilestoneProgressBarWrapper>
     </MilestoneProgressViewModalWrapper>
   );
-};
+}

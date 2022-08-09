@@ -26,7 +26,7 @@ interface IArchiveTaskModalProps {
   taskId: string;
 }
 
-export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
+export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
   const { open, onClose, onArchive, taskType, taskId = '' } = props;
   const board = useOrgBoard();
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -71,33 +71,29 @@ export const ArchiveTaskModal = (props: IArchiveTaskModalProps) => {
   };
 
   return (
-    <>
-      <StyledDialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="archive-task-modal"
-        aria-describedby="modal-modal-description"
-      >
-        <StyledBox>
-          <StyledCloseButton onClick={onClose}>
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader>Archive this {taskType}?</StyledHeader>
-          <StyledBody>
-            {isTaskProposal
-              ? 'You cannot undo this action.'
-              : 'You can undo this in the archived section in the board.'}
-          </StyledBody>
-          <StyledDivider />
-          <StyledButtonsContainer>
-            <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-            <StyledArchiveTaskButton>
-              <ArchivedIcon />
-              <StyledArchivedLabel onClick={handleArchive}>Archive {taskType}</StyledArchivedLabel>
-            </StyledArchiveTaskButton>
-          </StyledButtonsContainer>
-        </StyledBox>
-      </StyledDialog>
-    </>
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="archive-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <StyledBox>
+        <StyledCloseButton onClick={onClose}>
+          <CloseModalIcon />
+        </StyledCloseButton>
+        <StyledHeader>Archive this {taskType}?</StyledHeader>
+        <StyledBody>
+          {isTaskProposal ? 'You cannot undo this action.' : 'You can undo this in the archived section in the board.'}
+        </StyledBody>
+        <StyledDivider />
+        <StyledButtonsContainer>
+          <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
+          <StyledArchiveTaskButton>
+            <ArchivedIcon />
+            <StyledArchivedLabel onClick={handleArchive}>Archive {taskType}</StyledArchivedLabel>
+          </StyledArchiveTaskButton>
+        </StyledButtonsContainer>
+      </StyledBox>
+    </StyledDialog>
   );
-};
+}

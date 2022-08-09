@@ -4,7 +4,7 @@ import Typography from '@mui/material/Typography';
 
 import styles from './CalendarDayStyles';
 
-const CalendarDay = ({
+function CalendarDay({
   day,
   isFocused,
   isOutsideDay,
@@ -13,7 +13,7 @@ const CalendarDay = ({
   onDayMouseEnter,
   onDayMouseLeave,
   tabIndex,
-}) => {
+}) {
   return (
     <Box
       role="button"
@@ -54,6 +54,6 @@ const CalendarDay = ({
       </Box>
     </Box>
   );
-};
+}
 
 export default CalendarDay;

@@ -1,3 +1,4 @@
+import { ActionButton } from 'components/Common/Task/styles';
 import {
   TaskApplicationFormModal,
   TaskApplicationFormBorder,
@@ -8,7 +9,6 @@ import {
 } from './TaskApplicationFormModal/styles';
 import { ConfirmationModalBody, ConfirmationModalFooter } from './styles';
 import { RejectButton } from './ApplicationList/styles';
-import { ActionButton } from 'components/Common/Task/styles';
 
 interface Props {
   onClose: () => void;

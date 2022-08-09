@@ -1,7 +1,21 @@
 import React, { useEffect, useState, useContext, useCallback } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { LogoButton } from '../logo';
 import Link from 'next/link';
+import * as Constants from 'utils/constants';
+import { renderMentionString } from 'utils/common';
+import { useRouter } from 'next/router';
+import { Typography } from '@mui/material';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
+import palette from 'theme/palette';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { delQuery } from 'utils';
+import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { CreateEntity } from 'components/CreateEntity';
+import { LogoButton } from '../logo';
 
 import {
   TodoWithBorder,
@@ -21,7 +35,6 @@ import { RejectIcon } from '../../Icons/taskModalIcons';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { ArchiveTaskModal } from '../ArchiveTaskModal';
 
-import * as Constants from 'utils/constants';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
 import {
   TaskHeader,
@@ -36,25 +49,12 @@ import {
   ArchivedTaskUndo,
   TaskCardDescriptionText,
 } from './styles';
-import { renderMentionString } from 'utils/common';
-import { useRouter } from 'next/router';
-import { Typography } from '@mui/material';
 import { SafeImage } from '../Image';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { useLocation } from 'utils/useLocation';
-import palette from 'theme/palette';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { useMe } from '../../Auth/withAuth';
-import { delQuery } from 'utils';
 import { TaskSummaryAction } from '../TaskSummary/styles';
 import { Arrow, Archived } from '../../Icons/sections';
-import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { DeleteTaskModal } from '../DeleteTaskModal';
-import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { getBoardType } from '../KanbanBoard/kanbanBoard';
-import { CreateEntity } from 'components/CreateEntity';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -81,7 +81,7 @@ const useGetReviewers = (editTask, task) => {
   return reviewerData?.getTaskReviewers;
 };
 
-export const Task = (props) => {
+export function Task(props) {
   const { task, setTask, className } = props;
   const {
     actions = {},
@@ -181,7 +181,7 @@ export const Task = (props) => {
         proposalId: id,
       },
       onCompleted: () => {
-        let columns = [...board?.columns];
+        const columns = [...board?.columns];
         const columnToChange = columns.findIndex((column) => column.status === status);
         if (Number.isInteger(columnToChange)) {
           columns[columnToChange].tasks = columns[columnToChange].tasks.filter((task) => task.id !== id);
@@ -260,7 +260,7 @@ export const Task = (props) => {
   const taskType = task?.isProposal ? 'taskProposal' : 'task';
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
   if (board?.entityType) {
-    viewUrl = viewUrl + `&entity=${board?.entityType}`;
+    viewUrl += `&entity=${board?.entityType}`;
   }
 
   const goToPod = (podId) => {
@@ -365,9 +365,9 @@ export const Task = (props) => {
       />
     </span>
   );
-};
+}
 
-export const TaskListCard = (props) => {
+export function TaskListCard(props) {
   const { taskType, task } = props;
   const router = useRouter();
   const [viewDetails, setViewDetails] = useState(false);
@@ -390,7 +390,8 @@ export const TaskListCard = (props) => {
     podId: task?.podId,
   });
 
-  let canEdit, canApprove;
+  let canEdit;
+  let canApprove;
   if (taskType === Constants.TASK_STATUS_REQUESTED) {
     canEdit = permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) || task.createdBy === user?.id;
     canApprove =
@@ -416,7 +417,7 @@ export const TaskListCard = (props) => {
         }}
         taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
-        back={true}
+        back
       />
       <TaskListCardWrapper
         onClick={() => {
@@ -449,7 +450,7 @@ export const TaskListCard = (props) => {
                 },
               },
             ]}
-            id={'task-' + task?.id}
+            id={`task-${task?.id}`}
           />
           {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
         </TaskHeader>
@@ -500,4 +501,4 @@ export const TaskListCard = (props) => {
       </TaskListCardWrapper>
     </>
   );
-};
+}

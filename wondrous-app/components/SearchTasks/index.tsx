@@ -3,19 +3,18 @@ import { InputAdornment } from '@mui/material';
 import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
 
-import { Autocomplete as DefaultAutocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
-import TaskIcon from '../Icons/TaskTypes/task';
-import MilestoneIcon from '../Icons/TaskTypes/milestone';
-import BountyIcon from '../Icons/TaskTypes/bounty';
-import { SafeImage } from '../Common/Image';
-import { UserIconSmall } from '../Icons/Search/types';
-
 import { TaskFragment } from 'types/task';
 import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { ViewType } from 'types/common';
+import { Autocomplete as DefaultAutocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
+import TaskIcon from '../Icons/TaskTypes/task';
+import MilestoneIcon from '../Icons/TaskTypes/milestone';
+import BountyIcon from '../Icons/TaskTypes/bounty';
+import { SafeImage } from '../Common/Image';
+import { UserIconSmall } from '../Icons/Search/types';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -135,7 +134,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
         isLoading={isLoading}
         filterOptions={(x) => x}
         renderOption={(props, taskOrUser) => {
-          let content = [];
+          const content = [];
 
           if (taskOrUser.username) {
             content.push(
@@ -183,28 +182,26 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
 
           return content;
         }}
-        renderInput={(params) => {
-          return (
-            <Input
-              sx={{ height: '40px' }}
-              {...params}
-              placeholder={`${isExpanded || !isExpandable ? 'Search tasks or people...' : 'Search'}`}
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIconWrapped />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          );
-        }}
+        renderInput={(params) => (
+          <Input
+            sx={{ height: '40px' }}
+            {...params}
+            placeholder={`${isExpanded || !isExpandable ? 'Search tasks or people...' : 'Search'}`}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIconWrapped />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
       />
     </>
   );

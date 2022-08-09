@@ -1,4 +1,14 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+
+import { useRouter } from 'next/router';
+
+import palette from 'theme/palette';
+import { getFilenameAndType, uploadMedia } from 'utils/media';
+import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
+import { useMe } from '../../Auth/withAuth';
+import { SafeImage } from '../../Common/Image';
+import ProfilePictureAdd from '../../../public/images/onboarding/profile-picture-add.svg';
 import {
   UsernameTitle,
   UsernameDescription,
@@ -7,18 +17,8 @@ import {
   RemovePictureBtn,
   ErrorText,
 } from '../styles';
-import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 
-import { useRouter } from 'next/router';
-
-import { useMe } from '../../Auth/withAuth';
-import palette from 'theme/palette';
-import { getFilenameAndType, uploadMedia } from 'utils/media';
-import { SafeImage } from '../../Common/Image';
-import ProfilePictureAdd from '../../../public/images/onboarding/profile-picture-add.svg';
-import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
-
-export const OnboardingBuildProfile = ({ updateUser }) => {
+export function OnboardingBuildProfile({ updateUser }) {
   const router = useRouter();
   const [bio, setBio] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
@@ -186,4 +186,4 @@ export const OnboardingBuildProfile = ({ updateUser }) => {
       </div>
     </OnboardingLayout>
   );
-};
+}

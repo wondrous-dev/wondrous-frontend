@@ -29,14 +29,13 @@ export const ToolbarButton = styled(Button)`
       color: #fff;
     }
 
-    ${({ $active }) => {
-      return $active
+    ${({ $active }) =>
+      $active
         ? `
       background: rgba(29, 29, 29, 0.5);
       color: ${palette.white};
       `
-        : '';
-    }}
+        : ''}
   }
 `;
 

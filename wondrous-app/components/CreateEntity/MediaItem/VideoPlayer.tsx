@@ -8,7 +8,7 @@ interface VideoPlayerArgs {
   style?: object;
   name: string;
 }
-const VideoPlayer = (VideoPlayerArgs: VideoPlayerArgs) => {
+function VideoPlayer(VideoPlayerArgs: VideoPlayerArgs) {
   const { src, name, style = { width: '100%', height: '100%' } } = VideoPlayerArgs;
   const [getPreviewFile, { data, loading, error }] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
@@ -35,6 +35,6 @@ const VideoPlayer = (VideoPlayerArgs: VideoPlayerArgs) => {
     return <TaskVideo {...style} controls url={videoUrl} />;
   }
   return null;
-};
+}
 
 export default VideoPlayer;

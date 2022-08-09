@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
+
 export const VoteResultsWrapper = styled.div`
   display: flex;
   flex-direction: column;

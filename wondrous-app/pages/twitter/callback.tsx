@@ -10,7 +10,7 @@ import { VERIFY_TWITTER } from 'graphql/mutations';
 import { GRAPHQL_ERRORS } from 'utils/constants';
 // https://yourCallbackUrl.com?oauth_token=NPcudxy0yU5T3tBzho7iCotZ3cnetKwcTIRlX0iwRl0&oauth_verifier=uw7NjWHT6OJ1MpJOXsHfNxoAhPKpgI8BlYDhxEjIBY
 
-const Callback = () => {
+function Callback() {
   const router = useRouter();
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
   const { code, state, error: twitterError } = router.query;
@@ -59,6 +59,6 @@ const Callback = () => {
       {successfullyVerified && <h1>success</h1>}
     </InviteWelcomeBoxWrapper>
   );
-};
+}
 
 export default Callback;

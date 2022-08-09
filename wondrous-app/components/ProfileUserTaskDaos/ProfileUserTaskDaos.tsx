@@ -5,12 +5,12 @@ import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
 
 import { ProfileUserTaskDaosContainer, ProfileUserTaskDaosTitle, ProfileUserTaskDaosWrapper } from './styles';
 
-const ProfileUserTaskCard = (props) => {
+function ProfileUserTaskCard(props) {
   const { item } = props;
   return <Task {...props} task={item} />;
-};
+}
 
-const ProfileUserTaskDaos = ({ userProfile }) => {
+function ProfileUserTaskDaos({ userProfile }) {
   const { id: userId } = userProfile;
 
   const {
@@ -61,6 +61,6 @@ const ProfileUserTaskDaos = ({ userProfile }) => {
       </ProfileUserTaskDaosContainer>
     </ProfileUserTaskDaosWrapper>
   );
-};
+}
 
 export default ProfileUserTaskDaos;

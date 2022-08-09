@@ -7,7 +7,7 @@ import { PodBoardContext } from 'utils/contexts';
 import Analytics from 'components/Pod/analytics';
 import { useGetPodById } from 'utils/hooks';
 
-const AnalyticsPage = () => {
+function AnalyticsPage() {
   const router = useRouter();
   const { podId } = router.query;
   const getPodById = useGetPodById(podId);
@@ -28,6 +28,6 @@ const AnalyticsPage = () => {
       <Analytics podId={podId} podData={getPodById} />
     </PodBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(AnalyticsPage);

@@ -9,8 +9,8 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
 import React, { useContext, useState } from 'react';
-import { ErrorText } from '../..';
 import palette from 'theme/palette';
+import { ErrorText } from '../..';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
 import {
@@ -34,7 +34,7 @@ const OFFLINE_PAYMENT_OPTIONS = [
   { label: 'Parcel link', value: 'parcel_link' },
 ];
 
-export const OfflinePayment = (props) => {
+export function OfflinePayment(props) {
   const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo } = props;
   const recipientAddress = submissionPaymentInfo?.paymentData?.[0]?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
@@ -71,16 +71,14 @@ export const OfflinePayment = (props) => {
     }
     setSnackbarAlertOpen(true);
     setSnackbarAlertMessage(
-      <>
-        <Typography
-          variant="body1"
-          style={{
-            color: palette.white,
-          }}
-        >
-          Payment linked
-        </Typography>
-      </>
+      <Typography
+        variant="body1"
+        style={{
+          color: palette.white,
+        }}
+      >
+        Payment linked
+      </Typography>
     );
   };
   const [linkOffPlatformPayment] = useMutation(LINK_OFF_PLATFORM_PAYMENT, {
@@ -136,9 +134,9 @@ export const OfflinePayment = (props) => {
       </OfflinePaymentButtonWrapper>
     </OfflinePaymentWrapper>
   );
-};
+}
 
-export const BatchOfflinePayment = (props) => {
+export function BatchOfflinePayment(props) {
   const { handleClose, approvedSubmission, submissionIds } = props;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
@@ -184,16 +182,14 @@ export const BatchOfflinePayment = (props) => {
     }
     setSnackbarAlertOpen(true);
     setSnackbarAlertMessage(
-      <>
-        <Typography
-          variant="body1"
-          style={{
-            color: palette.white,
-          }}
-        >
-          Payment linked
-        </Typography>
-      </>
+      <Typography
+        variant="body1"
+        style={{
+          color: palette.white,
+        }}
+      >
+        Payment linked
+      </Typography>
     );
   };
 
@@ -227,4 +223,4 @@ export const BatchOfflinePayment = (props) => {
       </OfflinePaymentButtonWrapper>
     </OfflinePaymentWrapper>
   );
-};
+}

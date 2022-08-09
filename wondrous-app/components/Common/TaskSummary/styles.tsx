@@ -1,9 +1,9 @@
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import SmartLink from 'components/Common/SmartLink';
 import { CreateFormButtonsBlock, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { SafeImage } from '../Image';
-import SmartLink from 'components/Common/SmartLink';
 
 export const TaskSummaryWrapper = styled(SmartLink)`
   display: flex;
@@ -75,18 +75,20 @@ export const TaskSummaryAction = styled.div`
   color: ${palette.violet300};
 `;
 
-export const OrgProfilePicture = (props) => (
-  <SafeImage
-    src={props?.src}
-    useNextImage={false}
-    style={{
-      width: '29px',
-      height: '28px',
-      borderRadius: '4px',
-      marginRight: '16px',
-    }}
-  />
-);
+export function OrgProfilePicture(props) {
+  return (
+    <SafeImage
+      src={props?.src}
+      useNextImage={false}
+      style={{
+        width: '29px',
+        height: '28px',
+        borderRadius: '4px',
+        marginRight: '16px',
+      }}
+    />
+  );
+}
 
 export const SmallerCardActionButtons = styled(CreateFormButtonsBlock)`
   && {

@@ -12,7 +12,7 @@ export const Builders = styled.div`
   border-top: 1px dashed #2b2b2b;
 `;
 
-const OrganicSignUpPage = () => {
+function OrganicSignUpPage() {
   const router = useRouter();
 
   return (
@@ -34,6 +34,6 @@ const OrganicSignUpPage = () => {
       </Invite>
     </MainWrapper>
   );
-};
+}
 
 export default OrganicSignUpPage;

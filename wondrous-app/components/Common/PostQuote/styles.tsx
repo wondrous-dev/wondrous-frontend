@@ -54,7 +54,7 @@ export const ReferenceTitle = styled(Typography)`
       color: #fff;
       font-weight: 700;
       text-decoration: none;
-      
+
       &:hover {
         text-decoration: underline;
       }

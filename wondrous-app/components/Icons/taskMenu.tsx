@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import palette from 'theme/palette';
 
-export const TaskMenuIcon = (props) => {
+export function TaskMenuIcon(props) {
   const { fill = palette.background.default } = props;
 
   const [colorFill, setColorFill] = useState(fill);
@@ -38,4 +38,4 @@ export const TaskMenuIcon = (props) => {
       />
     </svg>
   );
-};
+}

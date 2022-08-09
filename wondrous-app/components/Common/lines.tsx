@@ -1,6 +1,6 @@
-import { CenteredFlexRow } from './index';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { CenteredFlexRow } from './index';
 
 export const Line = styled.h2`
   && {
@@ -11,7 +11,7 @@ export const Line = styled.h2`
   }
 `;
 
-export const LineWithText = ({ children, width = '25%', borderBottom = `1px solid ${palette.grey85}` }) => {
+export function LineWithText({ children, width = '25%', borderBottom = `1px solid ${palette.grey85}` }) {
   return (
     <CenteredFlexRow>
       <Line width={width} borderBottom={borderBottom} />
@@ -19,4 +19,4 @@ export const LineWithText = ({ children, width = '25%', borderBottom = `1px soli
       <Line width={width} borderBottom={borderBottom} />
     </CenteredFlexRow>
   );
-};
+}
