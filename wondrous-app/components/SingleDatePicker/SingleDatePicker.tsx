@@ -234,12 +234,12 @@ function SingleDatePicker({
           sx={isOpen ? styles.mainTextfield : styles.mainTextfieldInactive}
         />
       </Box>
-      <ClickAwayListener onClickAway={handleClickAway} mouseEvent={'onMouseDown'}>
+      <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
         <Popper
           open={isOpen}
           anchorEl={anchorEl.current}
           placement="top"
-          disablePortal={true}
+          disablePortal
           modifiers={[
             {
               name: 'flip',
