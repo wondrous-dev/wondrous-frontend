@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { useMutation } from '@apollo/client';
 import { DiscordIcon } from 'components/Icons/discord';
 import LinkBigIcon from 'components/Icons/link';
@@ -234,10 +235,10 @@ function ProfileSettings(props) {
     };
 
     if (username !== loggedInUser?.username) {
-      input.username = username;
+      input['username'] = username;
     }
     if (email !== loggedInUser?.email) {
-      input.email = email;
+      input['email'] = email;
     }
 
     if (profilePicture) {
@@ -250,7 +251,7 @@ function ProfileSettings(props) {
       const imageUrl = imagePrefix + filename;
 
       await uploadMedia({ filename: imageUrl, fileType, file });
-      input.profilePicture = imageUrl;
+      input['profilePicture'] = imageUrl;
     }
 
     // ----> Backend not Ready yet...
