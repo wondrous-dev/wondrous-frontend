@@ -770,7 +770,7 @@ const generateColumns = (withSection: boolean, type: string) => {
 export const COLUMNS = generateColumns(true, COLUMNS_CONFIGURATION.ASSIGNEE);
 
 export const USER_COLUMNS = [
-  generateTodoColumn(true),
+  generateTodoColumn(false),
   generateInProgressColumn(false),
   generateInReviewColumn(),
   generateDoneColumn(false),

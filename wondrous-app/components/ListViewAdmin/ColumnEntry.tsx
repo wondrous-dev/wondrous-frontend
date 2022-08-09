@@ -67,6 +67,7 @@ interface Props {
   rewards?: any;
   links?: any;
   media?: any;
+  taskStatus?: string;
 }
 
 const ICON_TYPES = {
@@ -114,6 +115,7 @@ function ColumnEntry(props: Props) {
     taskDueDate,
     links,
     media,
+    taskStatus,
   } = props;
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
@@ -260,6 +262,8 @@ function ColumnEntry(props: Props) {
       component: ApproveButton,
       label: 'Approve',
       action: (e) => actionMapper(e).accept(),
+      isCompleted: taskStatus === TASK_STATUS_DONE,
+      isCompletedLabel: 'Task approved',
     },
   ];
 
@@ -370,8 +374,14 @@ function ColumnEntry(props: Props) {
           {Buttons.map((btn, idx) => {
             const Button = btn.component;
             return (
-              <Button type="button" onClick={btn.action} key={idx}>
-                {btn.label}
+              <Button
+                type="button"
+                isCompleted={btn.isCompleted}
+                disabled={btn.isCompleted}
+                onClick={btn.action}
+                key={idx}
+              >
+                {btn.isCompleted ? btn.isCompletedLabel : btn.label}
               </Button>
             );
           })}

@@ -52,7 +52,9 @@ export default function SidebarLayout({ children }) {
             isCreateEntityModalOpen: createFormModal,
             toggleCreateFormModal: toggleCreateFormModal,
             userOrgs: userOrgs,
-            userPermissionsContext,
+            userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+              ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+              : null,
           }}
         >
           <HeaderComponent />

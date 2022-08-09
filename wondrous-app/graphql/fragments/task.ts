@@ -239,6 +239,7 @@ export const TaskSubmissionCardFragment = gql`
     media {
       ...MediaFragment
     }
+    taskStatus
   }
   ${MediaFragment}
 `;

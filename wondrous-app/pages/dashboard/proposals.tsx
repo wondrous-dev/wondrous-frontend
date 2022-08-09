@@ -9,7 +9,7 @@ const ProposalsPage = () => {
   return (
     <Wrapper isAdmin={false}>
       {isMobile ? <MobileComingSoonModal /> : null}
-      <Board isAdmin={false} />
+      <Board />
     </Wrapper>
   );
 };

@@ -138,7 +138,7 @@ const useFilterSchema = (loggedInUser) => {
 };
 
 const BoardsPage = (props) => {
-  const { isAdmin, selectedStatus, setSelectedStatus } = props;
+  const { isAdmin } = props;
   const router = useRouter();
   const loggedInUser = useMe();
   const { search, view } = router.query;

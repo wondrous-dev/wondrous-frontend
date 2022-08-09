@@ -2,7 +2,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
-import { format, formatDistance } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS } from 'graphql/queries';
@@ -38,7 +38,15 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask, useUserProfile } from 'utils/hooks';
+import {
+  useColumns,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useCanViewTask,
+  useUserProfile,
+  useCreateEntityContext,
+} from 'utils/hooks';
 
 import { useMe } from '../../Auth/withAuth';
 import {
@@ -140,14 +148,9 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const userProfile = useUserProfile();
+  const createEntityContext = useCreateEntityContext();
   const getUserPermissionContext = useCallback(() => {
-    return (
-      orgBoard?.userPermissionsContext ||
-      podBoard?.userPermissionsContext ||
-      userBoard?.userPermissionsContext ||
-      userProfile?.userPermissionsContext
-    );
+    return createEntityContext?.userPermissionsContext;
   }, [orgBoard, userBoard, podBoard]);
   const getBoard = useCallback(() => {
     return orgBoard || podBoard || userBoard;

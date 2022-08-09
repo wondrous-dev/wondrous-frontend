@@ -112,6 +112,9 @@ export const RequestActionButton = styled(Button)`
     padding: 7px 16px;
     border-radius: 1000px;
     color: ${palette.white};
+    &.Mui-disabled {
+      color: ${palette.white};
+    }
   }
 `;
 

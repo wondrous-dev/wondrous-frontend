@@ -8,7 +8,7 @@ import {
   MEMBERSHIP_REQUESTS,
 } from 'utils/constants';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'components/Icons/statusIcons';
-import { useUserBoard } from 'utils/hooks';
+import { useCreateEntityContext, useUserBoard } from 'utils/hooks';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useLocation } from 'utils/useLocation';
 import { useRouter } from 'next/router';
@@ -45,6 +45,7 @@ function ListViewAdmin({ column }: Props) {
   const router = useRouter();
   const board = useUserBoard();
   const user = useMe();
+  const createEntityContext = useCreateEntityContext();
 
   const { adminWorkflowCount } = board;
 
@@ -128,7 +129,7 @@ function ListViewAdmin({ column }: Props) {
               userUsername={item.userUsername}
               id={item.id}
               orgId={item.orgId}
-              userPermissionsContext={board?.userPermissionsContext}
+              userPermissionsContext={createEntityContext?.userPermissionsContext}
               creatorProfilePicture={item.creatorProfilePicture}
               creatorUsername={item.creatorUsername}
               message={item.message}
@@ -142,6 +143,7 @@ function ListViewAdmin({ column }: Props) {
               rewards={item.rewards}
               links={item.links}
               media={item.media}
+              taskStatus={item.taskStatus}
             />
           );
         })}

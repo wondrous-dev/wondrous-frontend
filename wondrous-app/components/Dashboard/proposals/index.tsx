@@ -4,34 +4,42 @@ import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
 import { useCreateEntityContext } from 'utils/hooks';
 import { useMe } from 'components/Auth/withAuth';
 import { useQuery } from '@apollo/client';
-import { GET_USER_TASK_BOARD_PROPOSALS, SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
+  GET_USER_TASK_BOARD_PROPOSALS,
+  SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
+} from 'graphql/queries';
 import { generateUserDashboardFilters, ORG_POD_PROPOSAL_COLUMNS, populateProposalColumns, LIMIT } from 'services/board';
 import { ENTITIES_TYPES, PRIVACY_LEVEL, STATUS_APPROVED, STATUS_CLOSED, STATUS_OPEN } from 'utils/constants';
 import { Spinner } from 'components/Dashboard/bounties/styles';
 import Boards from 'components/Common/Boards';
 import apollo from 'services/apollo';
 
-const ProposalsBoard = ({ isAdmin }) => {
+const ProposalsBoard = () => {
   const loggedInUser = useMe();
   const { userOrgs } = useCreateEntityContext();
   const [hasMore, setHasMore] = useState(true);
-  const { data, error, loading, fetchMore, variables, previousData, refetch } = useQuery(
-    GET_USER_TASK_BOARD_PROPOSALS,
-    {
-      variables: {
-        limit: LIMIT,
-        offset: 0,
-        userId: loggedInUser?.id,
-        statuses: [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED],
-      },
-      onCompleted: ({ getUserTaskBoardProposals }) => {
-        if (!previousData) {
-          const hasMoreData = getUserTaskBoardProposals?.length >= LIMIT;
-          setHasMore(hasMoreData);
-        }
-      },
-    }
-  );
+  const { data: getPerStatusTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, {
+    variables: {
+      userId: loggedInUser?.id,
+    },
+    skip: !loggedInUser?.id,
+  });
+
+  const { data, loading, fetchMore, variables, previousData, refetch } = useQuery(GET_USER_TASK_BOARD_PROPOSALS, {
+    variables: {
+      limit: LIMIT,
+      offset: 0,
+      userId: loggedInUser?.id,
+      statuses: [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED],
+    },
+    onCompleted: ({ getUserTaskBoardProposals }) => {
+      if (!previousData) {
+        const hasMoreData = getUserTaskBoardProposals?.length >= LIMIT;
+        setHasMore(hasMoreData);
+      }
+    },
+  });
 
   const filterSchema = generateUserDashboardFilters({
     userId: loggedInUser?.id,
@@ -98,6 +106,7 @@ const ProposalsBoard = ({ isAdmin }) => {
         columns,
         loggedInUserId: loggedInUser?.id,
         onLoadMore,
+        taskCount: getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard,
       }}
     >
       <BoardWrapper

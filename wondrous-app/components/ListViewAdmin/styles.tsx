@@ -49,7 +49,10 @@ export const MediaIcon = styled(AttachFileIcon)`
 export const ApproveButton = styled(RequestApproveButton)`
   && {
     &::before {
-      background: linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%);
+      background: ${({ isCompleted }) =>
+        !isCompleted
+          ? `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%)`
+          : palette.green30};
     }
     &:hover {
       background: linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%);
