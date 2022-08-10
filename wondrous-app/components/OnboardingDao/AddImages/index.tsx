@@ -18,7 +18,7 @@ const useHandleImageChange = ({ setValue }) => {
   return { handleChange, file };
 };
 
-const ProfilePicture = (props) => {
+function ProfilePicture(props) {
   const { name } = props;
   const [field, _, { setValue }] = useField(name);
   const { handleChange, file } = useHandleImageChange({ setValue });
@@ -35,7 +35,7 @@ const ProfilePicture = (props) => {
               (file ? (
                 <ImageWrapper width="80px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
               ) : (
-                <SafeImageWrapper width="80px" height="80px" alt={props.label} useNextImage={true} src={field.value} />
+                <SafeImageWrapper width="80px" height="80px" alt={props.label} useNextImage src={field.value} />
               ))}
             <AddPhotoIconWrapper withImage={withImage}>
               <AddAPhotoIcon />
@@ -45,9 +45,9 @@ const ProfilePicture = (props) => {
       />
     </FieldWrapper>
   );
-};
+}
 
-const HeaderPicture = (props) => {
+function HeaderPicture(props) {
   const { name } = props;
   const [field, _, { setValue }] = useField(name);
   const { handleChange, file } = useHandleImageChange({ setValue });
@@ -75,9 +75,9 @@ const HeaderPicture = (props) => {
       <HeaderText>Optimum size: 1358px x 160px</HeaderText>
     </FieldWrapper>
   );
-};
+}
 
-const AddImages = (props) => {
+function AddImages(props) {
   const { fields } = props;
   return (
     <ComponentFieldWrapper>
@@ -85,6 +85,6 @@ const AddImages = (props) => {
       <HeaderPicture {...fields.headerPicture} />
     </ComponentFieldWrapper>
   );
-};
+}
 
 export default AddImages;

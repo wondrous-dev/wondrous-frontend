@@ -8,7 +8,7 @@ import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import OnboardingWelcome from 'components/Onboarding/Welcome';
 
-const OnboardingWelcomePage = () => {
+function OnboardingWelcomePage() {
   const router = useRouter();
   const user = useMe();
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
@@ -31,6 +31,6 @@ const OnboardingWelcomePage = () => {
       <OnboardingWelcome updateUser={updateUser} user={userData?.getLoggedinUser} />
     </MainWrapper>
   );
-};
+}
 
 export default withAuth(OnboardingWelcomePage);

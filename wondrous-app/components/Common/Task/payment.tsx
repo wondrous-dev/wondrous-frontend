@@ -1,18 +1,18 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { formatDistance } from 'date-fns';
-import { TaskSectionInfoText, TaskSectionInfoDiv, MakePaymentDiv } from './styles';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { SafeImage } from '../Image';
-import { useMe } from '../../Auth/withAuth';
-import DefaultUserImage from '../Image/DefaultUserImage';
-import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
 import { useRouter } from 'next/router';
 import { useApprovedSubmission } from 'utils/hooks';
 import { PAYMENT_STATUS, PERMISSIONS } from 'utils/constants';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
+import { MakeSubmissionPaymentButton } from '../../CreateEntity/styles';
+import DefaultUserImage from '../Image/DefaultUserImage';
+import { useMe } from '../../Auth/withAuth';
+import { SafeImage } from '../Image';
+import { TaskSectionInfoText, TaskSectionInfoDiv, MakePaymentDiv } from './styles';
 
-export const MakePaymentBlock = (props) => {
+export function MakePaymentBlock(props) {
   const approvedSubmissionContext = useApprovedSubmission();
   const { fetchedTask, taskSubmissions, setShowPaymentModal } = props;
   const [approvedSubmission, setApprovedSubmission] = useState(null);
@@ -107,4 +107,4 @@ export const MakePaymentBlock = (props) => {
       )}
     </>
   );
-};
+}

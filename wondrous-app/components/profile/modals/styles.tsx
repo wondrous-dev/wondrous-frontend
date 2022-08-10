@@ -93,11 +93,14 @@ export const Tab2 = styled.div`
     margin-right: 0;
   }
 `;
-export const UserProfilePicture = (props) => (
-  <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false} />
-);
+export function UserProfilePicture(props) {
+  return <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false} />;
+}
 
-export const DefaultProfilePicture = (props) => <DefaultUserImage style={ProfilePictureStyles} />;
+export function DefaultProfilePicture(props) {
+  return <DefaultUserImage style={ProfilePictureStyles} />;
+}
+
 export const TitleSection = styled.div`
   display: flex;
   justify-content: space-between;

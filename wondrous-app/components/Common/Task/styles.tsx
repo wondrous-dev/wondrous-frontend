@@ -454,13 +454,15 @@ const IconWrapper = styled.div`
   padding: 4px;
   background: linear-gradient(196.76deg, #474747 -48.71%, #181818 90.48%);
 `;
-export const ProposalCardIcon = () => (
-  <ProposalIconBackground>
-    <IconWrapper>
-      <ProposalIcon />
-    </IconWrapper>
-  </ProposalIconBackground>
-);
+export function ProposalCardIcon() {
+  return (
+    <ProposalIconBackground>
+      <IconWrapper>
+        <ProposalIcon />
+      </IconWrapper>
+    </ProposalIconBackground>
+  );
+}
 
 export const ProposalFooterButton = styled.div`
   font-style: normal;
@@ -480,8 +482,8 @@ export const ProposalFooterButton = styled.div`
       z-index: 100;
       background:#363636;
       `;
-    } else {
-      return `border: 1px solid ${borderColor || 'transparent'};
+    }
+    return `border: 1px solid ${borderColor || 'transparent'};
     color: ${({ theme }) => color || theme.palette.white};
      ${
        !borderColor &&
@@ -497,7 +499,6 @@ export const ProposalFooterButton = styled.div`
           border-radius: 180px;
       }`
      }`;
-    }
   }};
 `;
 

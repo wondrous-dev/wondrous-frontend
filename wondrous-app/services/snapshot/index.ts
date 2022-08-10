@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation, gql, ApolloClient, InMemoryCache } from '@apollo/client';
-import { GET_SPACE } from './gql';
 import { CONNECT_SNAPSHOT_TO_ORG, DISCONNECT_SNAPSHOT_TO_ORG } from 'graphql/mutations';
 import { GET_ORG_SNAPSHOT_INFO, RENDER_RICH_TEXT } from 'graphql/queries';
 import Snapshot from '@snapshot-labs/snapshot.js';
@@ -8,15 +7,16 @@ import Snapshot from '@snapshot-labs/snapshot.js';
 // import specific Web3Provider snapshot is using
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
-import { useWonderWeb3 } from '../web3';
 import apollo from 'services/apollo';
+import { useWonderWeb3 } from '../web3';
+import { GET_SPACE } from './gql';
 
 const SNAPSHOT_DOCS = 'https://docs.snapshot.org/spaces/create';
 
 // set to configure which snapshot API to use
 // true = testnet
 // false = hub
-const isTestSnapshot = process.env.NEXT_PUBLIC_PRODUCTION ? false : true;
+const isTestSnapshot = !process.env.NEXT_PUBLIC_PRODUCTION;
 
 const hub = process.env.NEXT_PUBLIC_PRODUCTION ? 'https://hub.snapshot.org' : 'https://testnet.snapshot.org';
 const snapshotClient = new Snapshot.Client712(hub);
@@ -26,7 +26,7 @@ const snapshotAPI = `${hub}/graphql`;
 
 const cache = new InMemoryCache();
 const snapshotClientGQL = new ApolloClient({
-  cache: cache,
+  cache,
   uri: snapshotAPI,
 });
 
@@ -117,7 +117,7 @@ export const useSnapshot = () => {
         // sets local state of integrations field from 'org' table, or null if nonexistent
         setOrgSnapshot({ snapshotEns, name, symbol, network, url });
         // updates snapshot connection state
-        setSnapshotConnected(snapshotEns ? true : false);
+        setSnapshotConnected(!!snapshotEns);
       }
     },
     onError: (error) => {
@@ -161,7 +161,7 @@ export const useSnapshot = () => {
   // creates transaction to export proposal to snapshot, throws error if exporter doesn't have credentials or invalid proposal
   const exportTaskProposal = async (proposal: any): Promise<any> => {
     setSubmittingProposal(true);
-    //const web3 = wonderWeb3.web3Provider;
+    // const web3 = wonderWeb3.web3Provider;
     const provider = new Web3Provider(wonderWeb3.web3Provider);
     const account = ethers.utils.getAddress(wonderWeb3.address);
     const { data } = await getSnapshotSpace({ variables: { id: orgSnapshot.snapshotEns } });
@@ -172,8 +172,8 @@ export const useSnapshot = () => {
       params: strat.params,
     }));
 
-    let numWeeks = 1;
-    let weekLater = new Date();
+    const numWeeks = 1;
+    const weekLater = new Date();
     RENDER_RICH_TEXT;
     console.log(typeof proposal.description);
     const { data: renderRichTextData } = await apollo.query({
@@ -209,7 +209,7 @@ export const useSnapshot = () => {
       title: proposal.title,
       body: renderRichTextData?.renderRichText,
       choices: ['For', 'Against', 'Abstain'],
-      //timestamp: Math.floor(Date.now() / 1000),
+      // timestamp: Math.floor(Date.now() / 1000),
       start: Math.floor(Date.now() / 1000),
       end: proposal.dueDate
         ? Math.floor(Date.parse(proposal.dueDate) / 1000)
@@ -218,7 +218,7 @@ export const useSnapshot = () => {
       type: 'single-choice',
       network: data.space.network,
       discussion: '',
-      //from: account,
+      // from: account,
       strategies: JSON.stringify(strategies),
       plugins: data.space.plugins
         ? typeof data.space.plugins === 'string'
@@ -265,15 +265,14 @@ export const useSnapshot = () => {
       const errors = [];
       valid.forEach((err) => {
         const field = err.instancePath.slice(1);
-        const message = err.message;
+        const { message } = err;
         errors.push(`${field}: ${message}`);
       });
       console.log(errors);
       return false;
-    } else {
-      setSnapshotErrorElement(null);
-      return true;
     }
+    setSnapshotErrorElement(null);
+    return true;
   };
 
   const loading =

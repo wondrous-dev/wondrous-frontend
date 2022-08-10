@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { highlightBlue } from 'theme/colors';
 import palette from 'theme/palette';
+
 export const BoardFiltersWrapper = styled.div`
   display: flex;
   width: 100%;

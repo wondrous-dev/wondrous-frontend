@@ -10,9 +10,9 @@ export const AvatarWrapper = styled.div`
   width: 106px;
   height: 106px;
   border-radius: 106px;
-  border: ${(props) => (props.isOwnerOfPod ? '10px solid ' + palette.highlightBlue : '10px solid black')};
+  border: ${(props) => (props.isOwnerOfPod ? `10px solid ${palette.highlightBlue}` : '10px solid black')};
   background-color: ${(props) => props.randomColor || palette.highlightBlue};
-  ${(props) => (props.avatarURL ? 'background: url(' + props.avatarURL + ');' : '')}
+  ${(props) => (props.avatarURL ? `background: url(${props.avatarURL});` : '')}
   background-position: center;
   background-size: cover;
   font-size: 24px;

@@ -1,4 +1,4 @@
-const BottomArrowCaret = (props) => {
+function BottomArrowCaret(props) {
   return (
     <svg
       width={props?.width || '8'}
@@ -14,6 +14,6 @@ const BottomArrowCaret = (props) => {
       />
     </svg>
   );
-};
+}
 
 export default BottomArrowCaret;

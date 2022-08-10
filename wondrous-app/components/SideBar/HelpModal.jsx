@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React, { useEffect } from 'react';
 import {
   CreateFormPreviewButton,
@@ -10,28 +11,28 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import { ModalBody } from 'components/Common/KanbanBoard/styles';
 import { useMe } from 'components/Auth/withAuth';
 
-const HelpModal = (props) => {
+function HelpModal(props) {
   const { handleClose, setEntityType, open } = props;
   const user = useMe();
   useEffect(() => {
     (function (w, d, i, s) {
       function l() {
         if (!d.getElementById(i)) {
-          var f = d.getElementsByTagName(s)[0],
-            e = d.createElement(s);
+          const f = d.getElementsByTagName(s)[0];
+          const e = d.createElement(s);
           (e.type = 'text/javascript'),
             (e.async = !0),
             (e.src = 'https://canny.io/sdk.js'),
             f.parentNode.insertBefore(e, f);
         }
       }
-      if ('function' != typeof w.Canny) {
+      if (typeof w.Canny !== 'function') {
         var c = function () {
           c.q.push(arguments);
         };
         (c.q = []),
           (w.Canny = c),
-          'complete' === d.readyState
+          d.readyState === 'complete'
             ? l()
             : w.attachEvent
             ? w.attachEvent('onload', l)
@@ -54,7 +55,7 @@ const HelpModal = (props) => {
   return (
     <CreateModalOverlay open={open} onClose={handleClose}>
       <ModalBody>
-        <CreateLayoutsModalHeader></CreateLayoutsModalHeader>
+        <CreateLayoutsModalHeader />
         <CreateLayoutsModalItemContainer>
           <CreateLayoutsModalItemTitle>
             Would you like to go check our tutorials or go to our support team?
@@ -87,6 +88,6 @@ const HelpModal = (props) => {
       </ModalBody>
     </CreateModalOverlay>
   );
-};
+}
 
 export default HelpModal;

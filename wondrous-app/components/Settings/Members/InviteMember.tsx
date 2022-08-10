@@ -9,7 +9,6 @@ import { INVITE_USER_TO_POD } from 'graphql/mutations/pod';
 import { PERMISSIONS } from 'utils/constants';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { InviteDiv } from 'components/Settings/Members/styles';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import {
   AutocompleteList,
   CreateFormAddDetailsInputBlock,
@@ -23,10 +22,11 @@ import { InputAdornment, TextField } from '@mui/material';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
-import { filterRoles } from './helpers';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import SearchIcon from 'components/Icons/search';
 import RolesIcon from 'components/Icons/roles';
+import { filterRoles } from './helpers';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
 export const RolesDropdown = styled(DropdownSelect)`
   .MuiInputBase-formControl {
@@ -34,14 +34,14 @@ export const RolesDropdown = styled(DropdownSelect)`
   }
 `;
 
-const InviteMember = (props) => {
+function InviteMember(props) {
   const { podId, roleList, setUsers, users } = props;
   const [inviteeRole, setInviteeRole] = useState(null);
   const [invitee, setInvitee] = useState(null);
   const [touched, setTouched] = useState(false);
   const [inviteeString, setInviteeString] = useState('');
   const settings = useSettings();
-  let orgId = props?.orgId || settings?.pod?.orgId;
+  const orgId = props?.orgId || settings?.pod?.orgId;
   const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
   const loggedInUserPermissions = settings?.userPermissionsContext;
   const permissions = parseUserPermissionContext({
@@ -121,33 +121,31 @@ const InviteMember = (props) => {
         <StyledAutocomplete
           options={filterOrgUsersForAutocomplete(searchedUsers) || []}
           renderInput={(params) => (
-            <>
-              <TextField
-                style={{
-                  color: palette.white,
-                  fontFamily: 'Space Grotesk',
-                  fontSize: '14px',
-                  paddingLeft: '10px',
-                }}
-                placeholder="Enter username..."
-                InputLabelProps={{ shrink: false }}
-                {...params}
-                InputProps={{
-                  ...params.InputProps,
-                  disableUnderline: true,
-                  startAdornment: (
-                    <InputAdornment position="start">
-                      <RolesIcon color="#CCBBFF" />
-                    </InputAdornment>
-                  ),
-                  endAdornment: (
-                    <InputAdornment position="start" style={{ paddingRight: 0 }}>
-                      <SearchIcon color="white" height={11} />
-                    </InputAdornment>
-                  ),
-                }}
-              />
-            </>
+            <TextField
+              style={{
+                color: palette.white,
+                fontFamily: 'Space Grotesk',
+                fontSize: '14px',
+                paddingLeft: '10px',
+              }}
+              placeholder="Enter username..."
+              InputLabelProps={{ shrink: false }}
+              {...params}
+              InputProps={{
+                ...params.InputProps,
+                disableUnderline: true,
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <RolesIcon color="#CCBBFF" />
+                  </InputAdornment>
+                ),
+                endAdornment: (
+                  <InputAdornment position="start" style={{ paddingRight: 0 }}>
+                    <SearchIcon color="white" height={11} />
+                  </InputAdornment>
+                ),
+              }}
+            />
           )}
           style={{
             background: '#1E1E1E',
@@ -176,34 +174,32 @@ const InviteMember = (props) => {
             });
             setInviteeString(newInputValue);
           }}
-          renderOption={(props, option, state) => {
-            return (
-              <OptionDiv
-                onClick={(event) => {
-                  setInvitee(option);
-                  props?.onClick(event);
-                }}
-              >
-                {option?.thumbnailPicture ? (
-                  <SafeImage
-                    useNextImage={false}
-                    src={option?.thumbnailPicture}
-                    style={{
-                      width: '18px',
-                      height: '18px',
-                      borderRadius: '50%',
-                    }}
-                  />
-                ) : (
-                  <DefaultUserImage />
-                )}
+          renderOption={(props, option, state) => (
+            <OptionDiv
+              onClick={(event) => {
+                setInvitee(option);
+                props?.onClick(event);
+              }}
+            >
+              {option?.thumbnailPicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={option?.thumbnailPicture}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '50%',
+                  }}
+                />
+              ) : (
+                <DefaultUserImage />
+              )}
 
-                <OptionTypography>
-                  {option?.firstName} <span>@{option?.username}</span>
-                </OptionTypography>
-              </OptionDiv>
-            );
-          }}
+              <OptionTypography>
+                {option?.firstName} <span>@{option?.username}</span>
+              </OptionTypography>
+            </OptionDiv>
+          )}
         />
       </CreateFormAddDetailsInputBlock>
 
@@ -249,6 +245,6 @@ const InviteMember = (props) => {
       </CreateFormPreviewButton>
     </InviteDiv>
   );
-};
+}
 
 export default InviteMember;

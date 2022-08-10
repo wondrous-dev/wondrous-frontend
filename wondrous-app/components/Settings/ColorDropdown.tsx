@@ -32,7 +32,7 @@ const Circle = styled.div`
   border-radius: 5px;
   margin-right: 8px;
 `;
-const DropdownSelect = (props) => {
+function DropdownSelect(props) {
   const {
     title,
     labelText,
@@ -99,6 +99,6 @@ const DropdownSelect = (props) => {
       </FormControl>
     </CreateFormSelectBlock>
   );
-};
+}
 
 export default DropdownSelect;

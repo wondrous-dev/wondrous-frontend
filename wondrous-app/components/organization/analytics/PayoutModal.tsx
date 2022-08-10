@@ -1,36 +1,12 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography } from '@mui/material';
-import { Tab } from '@mui/material';
-import {
-  PaymentTitleDiv,
-  PaymentTitleTextDiv,
-  PaymentTitleText,
-  PaymentDescriptionText,
-  StyledTabs,
-  PaymentMethodWrapper,
-} from '../../Common/Payment/styles';
-import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
-import CSVModal from './CSVModal';
-import {
-  ContributorRowText,
-  ContributorTaskModalRow,
-  PayoutPaymentModal,
-  TaskCountText,
-  TaskCountWrapper,
-  PayContributorButton,
-  ExplainerText,
-  PayOptionButtonWrapper,
-} from './styles';
-import { SafeImage } from '../../Common/Image';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
+import { Typography, Tab } from '@mui/material';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_PAYMENT_METHODS_FOR_ORG, GET_SUBMISSIONS_PAYMENT_INFO } from 'graphql/queries/payment';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS, TASK_STATUS_DONE } from 'utils/constants';
 import { format } from 'date-fns';
-import { calculatePoints, UserRowPictureStyles } from '.';
 import { filterPaymentMethods } from 'components/CreateEntity/CreatePodModal';
 import {
   CreateFormMainBlockTitle,
@@ -41,6 +17,29 @@ import {
 import InputForm from 'components/Common/InputForm/inputForm';
 import CloseModalIcon from 'components/Icons/closeModal';
 import TaskStatus from 'components/Icons/TaskStatus';
+import { calculatePoints, UserRowPictureStyles } from '.';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
+import { SafeImage } from '../../Common/Image';
+import {
+  ContributorRowText,
+  ContributorTaskModalRow,
+  PayoutPaymentModal,
+  TaskCountText,
+  TaskCountWrapper,
+  PayContributorButton,
+  ExplainerText,
+  PayOptionButtonWrapper,
+} from './styles';
+import CSVModal from './CSVModal';
+import {
+  PaymentTitleDiv,
+  PaymentTitleTextDiv,
+  PaymentTitleText,
+  PaymentDescriptionText,
+  StyledTabs,
+  PaymentMethodWrapper,
+} from '../../Common/Payment/styles';
+import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
 import { ErrorText } from '../../Common';
 import { exportPaymentCSV } from './exportPaymentCsv';
 import { RetroactivePayoutModal } from './RetroactivePayoutModal';
@@ -57,7 +56,7 @@ const imageStyle = {
   marginRight: '8px',
 };
 
-const ContributorTaskRowElement = (props) => {
+function ContributorTaskRowElement(props) {
   const {
     index,
     contributorTask,
@@ -79,9 +78,9 @@ const ContributorTaskRowElement = (props) => {
   useEffect(() => {
     if (selectedPaymentMethodId) {
       delete userToPaymentMethod[contributorTask?.assigneeId];
-      const selectedPaymentMethod = paymentMethods.find((paymentMethod) => {
-        return paymentMethod.id === selectedPaymentMethodId;
-      });
+      const selectedPaymentMethod = paymentMethods.find(
+        (paymentMethod) => paymentMethod.id === selectedPaymentMethodId
+      );
       setUserToPaymentMethod({ [contributorTask?.assigneeId]: selectedPaymentMethod, ...userToPaymentMethod });
     }
   }, [selectedPaymentMethodId]);
@@ -169,7 +168,7 @@ const ContributorTaskRowElement = (props) => {
               name="reward-currency"
               setValue={setSelectedPaymentMethodId}
               value={selectedPaymentMethodId}
-              hideLabel={true}
+              hideLabel
               innerStyle={{
                 marginTop: 12,
                 background: '#171717',
@@ -180,7 +179,7 @@ const ContributorTaskRowElement = (props) => {
             />
 
             <InputForm
-              type={'number'}
+              type="number"
               style={{
                 width: 'auto',
                 background: '#171717',
@@ -208,15 +207,15 @@ const ContributorTaskRowElement = (props) => {
       </>
     </ContributorTaskModalRow>
   );
-};
+}
 
-export const PayoutModal = (props) => {
+export function PayoutModal(props) {
   const { podId, orgId, open, handleClose, fromTime, toTime, contributorTaskData } = props;
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const [fetchPaymentMethod, setFetchPaymentMethod] = useState(false);
   const [userToPaymentMethod, setUserToPaymentMethod] = useState({});
   const [userToRewardAmount, setUserToRewardAmount] = useState({});
-  const [selectedChain, setSelectedChain] = useState(null); //only relevant when doing payment through wonder
+  const [selectedChain, setSelectedChain] = useState(null); // only relevant when doing payment through wonder
   const [errorMessage, setErrorMessage] = useState(null);
   const [csvModal, setCSVModal] = useState(false);
   const paymentsData = {
@@ -370,4 +369,4 @@ export const PayoutModal = (props) => {
       </PayoutPaymentModal>
     </Modal>
   );
-};
+}

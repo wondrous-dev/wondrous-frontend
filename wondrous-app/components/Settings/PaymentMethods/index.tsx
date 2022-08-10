@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_ORG_BY_ID } from 'graphql/queries';
 import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import {
@@ -10,13 +13,10 @@ import {
   NewPaymentMethodButton,
 } from './styles';
 import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { GET_ORG_BY_ID } from 'graphql/queries';
 import PaymentMethodList from './PaymentMethodList';
 import ConfigPaymentMethodModal from './ConfigPaymentMethodModal';
 
-const PaymentMethods = (props) => {
+function PaymentMethods(props) {
   const { orgId } = props;
   const [showConfigModal, setShowConfigModal] = useState(null);
 
@@ -33,7 +33,7 @@ const PaymentMethods = (props) => {
   }, [orgId, getPaymentMethods]);
   const { data: orgData } = useQuery(GET_ORG_BY_ID, {
     variables: {
-      orgId: orgId,
+      orgId,
     },
   });
   const org = orgData?.getOrgById;
@@ -57,6 +57,6 @@ const PaymentMethods = (props) => {
       </PaymentMethodSettingWrapper>
     </SettingsWrapper>
   );
-};
+}
 
 export default PaymentMethods;

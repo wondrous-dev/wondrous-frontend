@@ -28,7 +28,7 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
       {!isDAO ? (
         <PodMembers>
           <div>
-            {users.length + ' '}
+            {`${users.length} `}
             <Text as="span" color="#6C6C6C">
               pod {pluralize('member', users.length)}
             </Text>
@@ -36,8 +36,8 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
           <PodIconWithoutBg />
 
           <Avatars style={{ width: `fit-content` }}>
-            {users.map(({ user }, index) => {
-              return user?.thumbnailPicture ? (
+            {users.map(({ user }, index) =>
+              user?.thumbnailPicture ? (
                 <SafeImage
                   useNextImage={false}
                   key={user.id}
@@ -46,14 +46,14 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
                 />
               ) : (
                 <DefaultUserImage key={user.id} style={{ left: index * width - index * overlapLeft }} />
-              );
-            })}
+              )
+            )}
           </Avatars>
         </PodMembers>
       ) : null}
 
       <div>
-        {roleList.length + ' '}
+        {`${roleList.length} `}
         <Text as="span" color="#6C6C6C" marginRight="8px">
           {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
         </Text>

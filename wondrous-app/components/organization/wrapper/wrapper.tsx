@@ -1,15 +1,50 @@
 import React, { useEffect, useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import {
+  ENTITIES_TYPES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+  SOCIAL_MEDIA_DISCORD,
+  SOCIAL_MEDIA_TWITTER,
+  SOCIAL_OPENSEA,
+  SOCIAL_MEDIA_LINKEDIN,
+} from 'utils/constants';
 import apollo from 'services/apollo';
-import { useMe } from '../../Auth/withAuth';
 import { Box } from '@mui/system';
 
-import Tabs from '../tabs/tabs';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
 
+import { useOrgBoard, useTokenGating } from 'utils/hooks';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
+import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
+import { useRouter } from 'next/router';
+import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
+import { useWonderWeb3 } from 'services/web3';
+import {
+  GET_TOKEN_GATED_ROLES_FOR_ORG,
+  LIT_SIGNATURE_EXIST,
+  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
+} from 'graphql/queries';
+import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
+import { RichTextViewer } from 'components/RichText';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import BoardLock from 'components/BoardLock';
+import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import { MembershipRequestModal } from './RequestModal';
+import { DiscordIcon } from '../../Icons/discord';
+import OpenSeaIcon from '../../Icons/openSea';
+import LinkedInIcon from '../../Icons/linkedIn';
+import { DAOEmptyIcon } from '../../Icons/dao';
+import { MoreInfoModal } from '../../profile/modals';
+import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
+import { SafeImage } from '../../Common/Image';
 import {
   Content,
   ContentContainer,
@@ -38,38 +73,11 @@ import {
   RoleText,
   RoleButton,
 } from './styles';
-import { useOrgBoard, useTokenGating } from 'utils/hooks';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
-import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
-import { SafeImage } from '../../Common/Image';
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
-import { MoreInfoModal } from '../../profile/modals';
-import { useRouter } from 'next/router';
-import { DAOEmptyIcon } from '../../Icons/dao';
-import { SOCIAL_MEDIA_DISCORD, SOCIAL_MEDIA_TWITTER, SOCIAL_OPENSEA, SOCIAL_MEDIA_LINKEDIN } from 'utils/constants';
-import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import { useWonderWeb3 } from 'services/web3';
+import Tabs from '../tabs/tabs';
+import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
-import LinkedInIcon from '../../Icons/linkedIn';
-import OpenSeaIcon from '../../Icons/openSea';
-import { DiscordIcon } from '../../Icons/discord';
-import { MembershipRequestModal } from './RequestModal';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import {
-  GET_TOKEN_GATED_ROLES_FOR_ORG,
-  LIT_SIGNATURE_EXIST,
-  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
-} from 'graphql/queries';
-import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
-import { RichTextViewer } from 'components/RichText';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
-const Wrapper = (props) => {
+
+function Wrapper(props) {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
@@ -104,7 +112,7 @@ const Wrapper = (props) => {
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity } = router.query;
-  const asPath: any = router.asPath;
+  const { asPath } = router;
   let finalPath = '';
   if (asPath) {
     const finalPathArr = asPath.split('/');
@@ -369,7 +377,7 @@ const Wrapper = (props) => {
                 {!isLoading && (
                   <TokenGatedBoard
                     isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                    tooltipTitle={'Token gating'}
+                    tooltipTitle="Token gating"
                   />
                 )}
                 <ToggleBoardPrivacyIcon
@@ -500,6 +508,6 @@ const Wrapper = (props) => {
       </Content>
     </>
   );
-};
+}
 
 export default Wrapper;

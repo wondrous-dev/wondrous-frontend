@@ -1,4 +1,4 @@
-const PointsIconFilled = (props) => {
+function PointsIconFilled(props) {
   return (
     <svg
       width={props?.width || '13'}
@@ -27,6 +27,6 @@ const PointsIconFilled = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
 export default PointsIconFilled;

@@ -1,18 +1,17 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-
-import { HeaderBlock } from '../headerBlock';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 
 import { Button, CircularProgress } from '@mui/material';
-import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
-import { useLazyQuery } from '@apollo/client';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { DELETE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
 import { useWonderWeb3 } from 'services/web3';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import palette from 'theme/palette';
+import { useEditTokenGatingCondition } from 'utils/hooks';
+import apollo from 'services/apollo';
 import { ErrorText } from '../../Common';
 import Accordion from '../../Common/Accordion';
-import AccordionSummary from '@mui/material/AccordionSummary';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 
@@ -25,10 +24,8 @@ import {
   TokenGatingHeaderLabel,
   TokenLogoDisplay,
 } from './styles';
-import palette from 'theme/palette';
-import { useEditTokenGatingCondition } from 'utils/hooks';
-import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
-import apollo from 'services/apollo';
+import UserCheckIcon from '../../Icons/userCheckIcon';
+import { HeaderBlock } from '../headerBlock';
 
 interface TokenGatingCondition {
   id: string;
@@ -53,7 +50,7 @@ const CHAIN_NAME_TO_CHAIN_ID = {
   polygon: 137,
 };
 
-const TokenGatingConditionDisplay = (props) => {
+function TokenGatingConditionDisplay(props) {
   const router = useRouter();
   const [showDetails, setShowDetails] = useState(false);
   const [tokenName, setTokenName] = useState(null);
@@ -137,7 +134,7 @@ const TokenGatingConditionDisplay = (props) => {
         <TokenGateActionMenu right="true">
           <DropDown DropdownHandler={TaskMenuIcon}>
             <DropDownItem
-              key={'token-gate-edit' + tokenGatingCondition?.id}
+              key={`token-gate-edit${tokenGatingCondition?.id}`}
               onClick={() => {
                 editTokenGatingCondition?.setSelectedTokenGatingCondition(tokenGatingCondition);
                 editTokenGatingCondition?.setShowConfigModal(true);
@@ -147,7 +144,7 @@ const TokenGatingConditionDisplay = (props) => {
               Edit
             </DropDownItem>
             <DropDownItem
-              key={'token-gate-delete' + tokenGatingCondition?.id}
+              key={`token-gate-delete${tokenGatingCondition?.id}`}
               style={dropdownItemStyle}
               onClick={handleDelete}
             >
@@ -173,7 +170,7 @@ const TokenGatingConditionDisplay = (props) => {
           <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
           <TokenLogoDisplay src={tokenLogo} />
           <TokenGatingNameHeader>
-            <span>{tokenName ? tokenName : tokenGatingCondition?.accessCondition[0].contractAddress}</span>
+            <span>{tokenName || tokenGatingCondition?.accessCondition[0].contractAddress}</span>
           </TokenGatingNameHeader>
         </TokenGateListItemDiv>
         <TokenGateListItemDiv>
@@ -184,6 +181,6 @@ const TokenGatingConditionDisplay = (props) => {
       {deleteError && <ErrorText>There are roles associated with this condition</ErrorText>}
     </TokenGatingElementWrapper>
   );
-};
+}
 
 export default TokenGatingConditionDisplay;

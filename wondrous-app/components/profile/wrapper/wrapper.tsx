@@ -46,7 +46,7 @@ interface IWrapperProps {
   children: React.ReactNode;
 }
 
-const Wrapper = (props: IWrapperProps) => {
+function Wrapper(props: IWrapperProps) {
   const loggedInUser = useMe();
   const { children, userProfileData = {} } = props;
   const { links } = userProfileData;
@@ -70,66 +70,64 @@ const Wrapper = (props: IWrapperProps) => {
     <DefaultUserImage style={style} />
   );
   return (
-    <>
-      <OverviewComponent>
-        <HeaderImageWrapper>
-          <HeaderImageDefault />
-        </HeaderImageWrapper>
+    <OverviewComponent>
+      <HeaderImageWrapper>
+        <HeaderImageDefault />
+      </HeaderImageWrapper>
 
-        <Content>
-          <ContentContainer>
-            <TokenHeader>
-              {profileImageComponent}
-              <HeaderMainBlock>
-                <HeaderTitle>{fullName}</HeaderTitle>
-                {viewingSelf && (
-                  <HeaderButtons>
-                    <HeaderEditProfileButton
-                      onClick={() =>
-                        router.push(`/profile/settings`, undefined, {
-                          shallow: true,
-                        })
-                      }
-                    >
-                      Edit my profile
-                    </HeaderEditProfileButton>
-                  </HeaderButtons>
-                )}
-              </HeaderMainBlock>
-              <HeaderUserName>@{username}</HeaderUserName>
-              {bio && <HeaderText>{bio}</HeaderText>}
-              <HeaderActivity>
-                <HeaderOrgPodCount>
-                  <HeaderPodCount>{podCount}</HeaderPodCount>
-                  <HeaderPodCountText>Pods</HeaderPodCountText>
-                </HeaderOrgPodCount>
-                <HeaderOrgPodCount>
-                  <HeaderOrgCount>{orgCount}</HeaderOrgCount>
-                  <HeaderOrgCountText>DAOs</HeaderOrgCountText>
-                </HeaderOrgPodCount>
-                {mainLink?.url && (
-                  <HeaderActivityLink href={mainLink.url} target="_blank">
-                    <HeaderActivityLinkIcon />
-                    <HeaderActivityLinkText>{formatLinkDisplay(mainLink)}</HeaderActivityLinkText>
+      <Content>
+        <ContentContainer>
+          <TokenHeader>
+            {profileImageComponent}
+            <HeaderMainBlock>
+              <HeaderTitle>{fullName}</HeaderTitle>
+              {viewingSelf && (
+                <HeaderButtons>
+                  <HeaderEditProfileButton
+                    onClick={() =>
+                      router.push(`/profile/settings`, undefined, {
+                        shallow: true,
+                      })
+                    }
+                  >
+                    Edit my profile
+                  </HeaderEditProfileButton>
+                </HeaderButtons>
+              )}
+            </HeaderMainBlock>
+            <HeaderUserName>@{username}</HeaderUserName>
+            {bio && <HeaderText>{bio}</HeaderText>}
+            <HeaderActivity>
+              <HeaderOrgPodCount>
+                <HeaderPodCount>{podCount}</HeaderPodCount>
+                <HeaderPodCountText>Pods</HeaderPodCountText>
+              </HeaderOrgPodCount>
+              <HeaderOrgPodCount>
+                <HeaderOrgCount>{orgCount}</HeaderOrgCount>
+                <HeaderOrgCountText>DAOs</HeaderOrgCountText>
+              </HeaderOrgPodCount>
+              {mainLink?.url && (
+                <HeaderActivityLink href={mainLink.url} target="_blank">
+                  <HeaderActivityLinkIcon />
+                  <HeaderActivityLinkText>{formatLinkDisplay(mainLink)}</HeaderActivityLinkText>
+                </HeaderActivityLink>
+              )}
+              {social.map(({ url, type }) => {
+                if (!url) return null;
+                const SocialIcon = socialIcons[type];
+                return (
+                  <HeaderActivityLink key={url} href={url} target="_blank">
+                    <HeaderActivitySocialIcon Component={SocialIcon} />
                   </HeaderActivityLink>
-                )}
-                {social.map(({ url, type }) => {
-                  if (!url) return null;
-                  const SocialIcon = socialIcons[type];
-                  return (
-                    <HeaderActivityLink key={url} href={url} target="_blank">
-                      <HeaderActivitySocialIcon Component={SocialIcon} />
-                    </HeaderActivityLink>
-                  );
-                })}
-              </HeaderActivity>
-            </TokenHeader>
-            {children}
-          </ContentContainer>
-        </Content>
-      </OverviewComponent>
-    </>
+                );
+              })}
+            </HeaderActivity>
+          </TokenHeader>
+          {children}
+        </ContentContainer>
+      </Content>
+    </OverviewComponent>
   );
-};
+}
 
 export default Wrapper;

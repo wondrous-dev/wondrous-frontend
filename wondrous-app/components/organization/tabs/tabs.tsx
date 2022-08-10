@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { Container, StyledTab, StyledTabs, ChildrenWrapper } from './styles';
 
-const Tabs = (props) => {
+function Tabs(props) {
   const { children, page = 'organization', showMembers = false } = props;
 
   const router = useRouter();
@@ -11,7 +11,7 @@ const Tabs = (props) => {
   const asPathWithoutQueries = router.asPath.split('?')[0];
   const { username, podId } = router.query;
   const entityId = username ?? podId;
-  let tabsLinks = [
+  const tabsLinks = [
     {
       href: `/${page}/${entityId}/boards`,
       label: 'Boards',
@@ -38,7 +38,7 @@ const Tabs = (props) => {
     <Container>
       <StyledTabs
         value={asPathWithoutQueries}
-        variant={'fullWidth'}
+        variant="fullWidth"
         style={{
           marginTop: '16px',
         }}
@@ -58,6 +58,6 @@ const Tabs = (props) => {
       <ChildrenWrapper>{children}</ChildrenWrapper>
     </Container>
   );
-};
+}
 
 export default Tabs;

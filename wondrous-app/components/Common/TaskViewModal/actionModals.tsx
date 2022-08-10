@@ -6,6 +6,7 @@ import { useMutation } from '@apollo/client';
 import { COMPLETE_MILESTONE, COMPLETE_BOUNTY, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations';
 import { BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import { ArchivedTaskUndo } from './styles';
+
 export default function ActionModals({
   completeModal,
   setCompleteModal,

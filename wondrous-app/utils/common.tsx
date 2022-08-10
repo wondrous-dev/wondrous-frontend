@@ -17,7 +17,7 @@ export const renderMentionString = (props) => {
       if (mentionExp) {
         const [original, username, id] = mentionExp;
         if (simple) {
-          return '@' + username;
+          return `@${username}`;
         }
         return (
           <span
@@ -37,7 +37,8 @@ export const renderMentionString = (props) => {
             {`@${username}`}
           </span>
         );
-      } else if (httpMatch) {
+      }
+      if (httpMatch) {
         return (
           <a
             href={match}
@@ -52,9 +53,8 @@ export const renderMentionString = (props) => {
             {match}
           </a>
         );
-      } else {
-        return match;
       }
+      return match;
     },
     input: content,
   });
@@ -72,7 +72,7 @@ const statusMap = {
   ARCHIVED: 'archived',
 };
 
-export const GetStatusIcon = (props) => {
+export function GetStatusIcon(props) {
   const { style, status } = props;
   switch (status) {
     case statusMap.TODO:
@@ -85,9 +85,10 @@ export const GetStatusIcon = (props) => {
       return <CompletedIcon style={style} width={style?.width} height={style?.height} />;
     case statusMap.ARCHIVED:
       return <ArchivedIcon style={style} width={style?.width} height={style?.height} />;
+    default:
+      return null;
   }
-  return null;
-};
+}
 
 export const parseLinks = (links) => {
   /**
@@ -122,11 +123,9 @@ export const parseLinks = (links) => {
   }
   return {
     social: socialLinks,
-    websites: websites,
-    mainLink: mainLink,
+    websites,
+    mainLink,
   };
 };
 
-export const capitalize = (str: string): string => {
-  return str.charAt(0).toUpperCase() + str.slice(1);
-};
+export const capitalize = (str: string): string => str.charAt(0).toUpperCase() + str.slice(1);

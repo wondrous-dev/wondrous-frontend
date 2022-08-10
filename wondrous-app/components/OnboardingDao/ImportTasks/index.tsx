@@ -4,6 +4,7 @@ import GithubIcon from 'components/Icons/github.svg';
 import NotionIcon from 'components/Icons/notion.svg';
 import ButtonCSVTemplate from 'components/OnboardingDao/ButtonCSVTemplate';
 import { ButtonsWrapper, ImportButtonWrapper } from 'components/OnboardingDao/styles';
+import AttachFileIcon from 'components/Icons/attachFile.svg';
 import {
   ImportAsanaButton,
   ImportCsvButton,
@@ -17,9 +18,8 @@ import {
   ImportSuccessText,
   ImportStatus,
 } from './styles';
-import AttachFileIcon from 'components/Icons/attachFile.svg';
 
-const ImportFromCsv = () => {
+function ImportFromCsv() {
   return (
     <ImportFromCsvWrapper>
       <ImportCsvButton Icon={CSVIcon}>Import from CSV</ImportCsvButton>
@@ -33,9 +33,9 @@ const ImportFromCsv = () => {
       </ImportStatus>
     </ImportFromCsvWrapper>
   );
-};
+}
 
-const ImportTasks = () => {
+function ImportTasks() {
   return (
     <ButtonsWrapper>
       <ImportButtonWrapper>
@@ -47,6 +47,6 @@ const ImportTasks = () => {
       <ButtonCSVTemplate />
     </ButtonsWrapper>
   );
-};
+}
 
 export default ImportTasks;

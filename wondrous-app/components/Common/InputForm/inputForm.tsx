@@ -2,7 +2,7 @@ import React from 'react';
 import SearchIcon from '../../Icons/search';
 import { SearchInput, SearchInputBlock, SearchInputIcon, SearchInputIconButton } from './styles';
 
-const InputForm = (props) => {
+function InputForm(props) {
   const { icon, placeholder, search, margin, style, type, value, onChange, min, endAdornment } = props;
 
   return (
@@ -24,6 +24,6 @@ const InputForm = (props) => {
       )}
     </SearchInputBlock>
   );
-};
+}
 
 export default InputForm;

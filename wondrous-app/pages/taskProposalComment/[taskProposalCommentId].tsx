@@ -5,7 +5,7 @@ import { GET_TASK_PROPOSAL_BY_ID, GET_TASK_PROPOSAL_COMMENT_BY_ID } from 'graphq
 import AppLayout from 'components/Common/Layout/App';
 import { CircularProgress } from '@mui/material';
 
-const TaskRedirect = () => {
+function TaskRedirect() {
   const router = useRouter();
   const { taskProposalCommentId } = router.query;
   const [getTaskProposalById, { data: taskProposalData }] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID);
@@ -43,6 +43,6 @@ const TaskRedirect = () => {
       <CircularProgress />
     </AppLayout>
   );
-};
+}
 
 export default TaskRedirect;

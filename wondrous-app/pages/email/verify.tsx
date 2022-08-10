@@ -35,7 +35,7 @@ import { CONFIRM_EMAIL_ADDRESS } from 'graphql/mutations';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { CircularProgress } from '@mui/material';
 
-const EmailVerify = () => {
+function EmailVerify() {
   const router = useRouter();
   const [verificationError, setVerificationError] = useState(null);
   const { token, userid } = router.query; // it's userid here instead of userId since it'f from the redirect
@@ -95,6 +95,6 @@ const EmailVerify = () => {
       </ProfileCenteredDiv>
     </ProfileWrapper>
   );
-};
+}
 
 export default EmailVerify;

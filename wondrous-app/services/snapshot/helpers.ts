@@ -1,9 +1,4 @@
-
-import {
-  Proposal,
-  Space,
-  Vote
-} from './types'
+import { Proposal, Space, Vote } from './types';
 
 // export const isValidSpace = (space: Space): any => (
 //   snapshot.utils.validateSchema(

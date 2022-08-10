@@ -1,4 +1,4 @@
-const RightArrowCaret = (props) => {
+function RightArrowCaret(props) {
   return (
     <svg
       width={props?.width || '6'}
@@ -14,6 +14,6 @@ const RightArrowCaret = (props) => {
       />
     </svg>
   );
-};
+}
 
 export default RightArrowCaret;

@@ -4,10 +4,10 @@ import { space } from 'styled-system';
 import { InputBase, Switch, Typography } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
 
-import { Button } from '../../Common/button';
-import { BaseCard } from '../../Common/card';
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
 import palette from 'theme/palette';
+import { Button } from '../../Common/button';
+import { BaseCard } from '../../Common/card';
 
 export const RolesContainer = styled.div`
   width: 100%;

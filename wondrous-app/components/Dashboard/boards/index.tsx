@@ -84,11 +84,9 @@ const useGetUserTaskBoardTasks = ({
         statuses: [status],
         ...(limit ? { limit } : {}),
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return {
-          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
-        };
-      },
+      updateQuery: (prev, { fetchMoreResult }) => ({
+        getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+      }),
     }).catch((error) => {
       console.log(error);
     });
@@ -253,8 +251,8 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
       label: 'Orgs',
       multiChoice: true,
       orgPods: {},
-      renderList: ({ schema, toggleOption, checkIsSelected }) => {
-        return Object.keys(schema.orgPods).map((orgName) => (
+      renderList: ({ schema, toggleOption, checkIsSelected }) =>
+        Object.keys(schema.orgPods).map((orgName) => (
           <FilterOrg
             key={orgName}
             title={
@@ -279,8 +277,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
               );
             })}
           </FilterOrg>
-        ));
-      },
+        )),
       items: [],
     },
   ]);
@@ -318,7 +315,7 @@ const useFilterSchema = (loggedInUser, isAdmin) => {
   return filterSchema;
 };
 
-const BoardsPage = (props) => {
+function BoardsPage(props) {
   const { isAdmin, selectedStatus, setSelectedStatus, selectMembershipRequests } = props;
   const selectMembershipHook = useSelectMembership();
   const router = useRouter();
@@ -412,34 +409,32 @@ const BoardsPage = (props) => {
     if (selectMembershipHook?.selectMembershipRequests) {
       getJoinOrgRequests();
       getJoinPodRequests();
-    } else {
-      if (search) {
-        const searchTaskProposalsArgs = {
-          variables: {
-            userId: loggedInUser?.id,
-            podIds: [],
-            statuses: [STATUS_OPEN],
-            offset: 0,
-            limit: LIMIT,
-            searchString: search,
-          },
-        };
+    } else if (search) {
+      const searchTaskProposalsArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          statuses: [STATUS_OPEN],
+          offset: 0,
+          limit: LIMIT,
+          searchString: search,
+        },
+      };
 
-        const searchTasksArgs = {
-          variables: {
-            userId: loggedInUser?.id,
-            podIds: [],
-            limit: LIMIT,
-            offset: 0,
-            // Needed to exclude proposals
-            statuses: DEFAULT_STATUSES,
-            searchString: search,
-          },
-        };
+      const searchTasksArgs = {
+        variables: {
+          userId: loggedInUser?.id,
+          podIds: [],
+          limit: LIMIT,
+          offset: 0,
+          // Needed to exclude proposals
+          statuses: DEFAULT_STATUSES,
+          searchString: search,
+        },
+      };
 
-        searchTasks(searchTasksArgs);
-        searchProposals(searchTaskProposalsArgs);
-      }
+      searchTasks(searchTasksArgs);
+      searchProposals(searchTaskProposalsArgs);
     }
   }, [loggedInUser, selectMembershipHook?.selectMembershipRequests]);
 
@@ -609,6 +604,6 @@ const BoardsPage = (props) => {
       />
     </UserBoardContext.Provider>
   );
-};
+}
 
 export default BoardsPage;

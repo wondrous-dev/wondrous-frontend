@@ -26,7 +26,7 @@ import {
   MilestoneSearchWrapper,
 } from './styles';
 
-const MilestoneSearch = (props) => {
+function MilestoneSearch(props) {
   const { options, onChange, value, handleClose, formValues = null, disabled, autoFocus = false } = props;
   const [createMilestone, setCreateMilestone] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
@@ -78,40 +78,36 @@ const MilestoneSearch = (props) => {
           </MilestoneSearchImageLabelWrapper>
           <MilestoneSearchButtonCloseIcon onClick={handleClose} />
         </MilestoneSearchButton>
-        <MilestoneSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal={true}>
+        <MilestoneSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
           <MilestoneSearchAutocomplete
             name="milestoneId"
             value={selectedValue}
-            renderInput={(params) => {
-              return (
-                <MilestoneSearchInput
-                  {...params}
-                  autoFocus={autoFocus}
-                  ref={params.InputProps.ref}
-                  disableUnderline={true}
-                  fullWidth={true}
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <MilestoneSearchInputAdornment position="end">
-                        <MilestoneSearchInputIcon />
-                      </MilestoneSearchInputAdornment>
-                    ),
-                  }}
-                />
-              );
-            }}
-            disableClearable={true}
+            renderInput={(params) => (
+              <MilestoneSearchInput
+                {...params}
+                autoFocus={autoFocus}
+                ref={params.InputProps.ref}
+                disableUnderline
+                fullWidth
+                InputProps={{
+                  ...params.InputProps,
+                  endAdornment: (
+                    <MilestoneSearchInputAdornment position="end">
+                      <MilestoneSearchInputIcon />
+                    </MilestoneSearchInputAdornment>
+                  ),
+                }}
+              />
+            )}
+            disableClearable
             isOptionEqualToValue={(option, value) => option.id === value?.id}
             getOptionLabel={(option) => option.label}
-            renderOption={(props, option) => {
-              return (
-                <MilestoneSearchListItem {...props}>
-                  {selectedValue?.id === option.id ? <MilestoneSearchCheckBox /> : <MilestoneSearchCheckBoxEmpty />}
-                  <MilestoneSearchLabel hasValue={true}>{option?.label}</MilestoneSearchLabel>
-                </MilestoneSearchListItem>
-              );
-            }}
+            renderOption={(props, option) => (
+              <MilestoneSearchListItem {...props}>
+                {selectedValue?.id === option.id ? <MilestoneSearchCheckBox /> : <MilestoneSearchCheckBoxEmpty />}
+                <MilestoneSearchLabel hasValue>{option?.label}</MilestoneSearchLabel>
+              </MilestoneSearchListItem>
+            )}
             PaperComponent={MilestoneSearchPaper}
             ListboxComponent={MilestoneSearchList}
             PopperComponent={(params) => {
@@ -134,19 +130,19 @@ const MilestoneSearch = (props) => {
             }}
             open={isOpen}
             options={options}
-            disablePortal={true}
+            disablePortal
             onChange={(event, value, reason) => {
               if (reason === 'selectOption') {
                 onChange(value.id);
                 handleClickAway();
               }
             }}
-            blurOnSelect={true}
+            blurOnSelect
           />
         </MilestoneSearchPopper>
       </MilestoneSearchWrapper>
     </MilestoneSearchClickAway>
   );
-};
+}
 
 export default MilestoneSearch;

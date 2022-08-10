@@ -20,7 +20,7 @@ const useGetOrgFromUsername = (username) => {
   return data?.getOrgFromUsername;
 };
 
-const ActivitiesPage = () => {
+function ActivitiesPage() {
   const router = useRouter();
   const { username } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -39,6 +39,6 @@ const ActivitiesPage = () => {
       <Activities orgData={org} />
     </OrgBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(ActivitiesPage);

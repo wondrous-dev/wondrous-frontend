@@ -45,7 +45,7 @@ enum Text {
   ErrorConnecting = 'Error connecting to Discord. Please try again or contact support.',
 }
 
-const InviteCommunity = () => {
+function InviteCommunity() {
   const router = useRouter();
   const { discordUserExists, discordError, success } = router.query;
   const handleConnectDiscordClick = useConnectDiscord();
@@ -61,6 +61,6 @@ const InviteCommunity = () => {
       {+discordUserExists && <Error>{Text.UserConnected}</Error>}
     </ButtonsWrapper>
   );
-};
+}
 
 export default InviteCommunity;

@@ -25,16 +25,18 @@ const ButtonWrapper = styled.div`
   min-height: 40px;
   padding: 1px;
   margin-top: ${(props) => props.marginTop || 0};
-  
+
   ${(props) => props.highlighted && GradientHighlightHorizontal}
 
   border-radius: 98px;
 `;
 
-export const Button = ({ children, disabled = false, ...props }) => (
-  <ButtonWrapper {...props}>
-    <ButtonInner style={props?.buttonInnerStyle} disabled={disabled} type={props.type}>
-      {children}
-    </ButtonInner>
-  </ButtonWrapper>
-);
+export function Button({ children, disabled = false, ...props }) {
+  return (
+    <ButtonWrapper {...props}>
+      <ButtonInner style={props?.buttonInnerStyle} disabled={disabled} type={props.type}>
+        {children}
+      </ButtonInner>
+    </ButtonWrapper>
+  );
+}
