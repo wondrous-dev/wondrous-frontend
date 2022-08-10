@@ -1,4 +1,3 @@
-import { UserBoardContext } from 'utils/contexts';
 import BoardWrapper from '../boards/BoardWrapper';
 import {
   MEMBERSHIP_REQUESTS,
