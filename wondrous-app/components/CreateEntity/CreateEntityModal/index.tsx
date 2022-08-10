@@ -169,6 +169,7 @@ import {
   SnapshotErrorText,
   SnapshotButtonBlock,
   CreateEntityTextfieldInputTemplate,
+  CreateEntityPaymentMethodSelected,
 } from './styles';
 import { MediaItem } from '../MediaItem';
 import Tags, { Option as Label } from '../../Tags';
@@ -1080,6 +1081,16 @@ interface ICreateEntityModal {
   status?: string;
 }
 
+const CreateEntityPaymentMethodItem = ({ icon, chain, symbol }) => (
+  <>
+    <CreateEntityPaymentMethodOptionIcon>{icon}</CreateEntityPaymentMethodOptionIcon>
+    <CreateEntityPaymentMethodLabel>
+      {symbol}
+      <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
+    </CreateEntityPaymentMethodLabel>
+  </>
+);
+
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
@@ -1305,8 +1316,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     );
     form.setFieldValue('description', JSON.parse(template?.description));
   };
-
-  const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
 
   const handleSaveTemplate = (template_name) => {
     const rewards = isEmpty(form.values.rewards)
@@ -2038,20 +2047,19 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   onChange={(value) => {
                     form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
                   }}
-                  renderValue={(value) => (
-                    <CreateEntityPaymentMethodSelectRender>
-                      {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
-                      <CreateEntitySelectArrowIcon />
-                    </CreateEntityPaymentMethodSelectRender>
-                  )}
+                  renderValue={(value) => {
+                    if (!value?.label?.props) return null;
+                    return (
+                      <CreateEntityPaymentMethodSelected>
+                        <CreateEntityPaymentMethodItem {...value.label.props} />
+                        <CreateEntitySelectArrowIcon />
+                      </CreateEntityPaymentMethodSelected>
+                    );
+                  }}
                 >
                   {paymentMethods.map(({ symbol, icon, id, chain }) => (
                     <CreateEntityPaymentMethodOption key={id} value={id}>
-                      <CreateEntityPaymentMethodOptionIcon>{icon ?? <></>}</CreateEntityPaymentMethodOptionIcon>
-                      <CreateEntityPaymentMethodLabel>
-                        {symbol}
-                        <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
-                      </CreateEntityPaymentMethodLabel>
+                      <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
                     </CreateEntityPaymentMethodOption>
                   ))}
                 </CreateEntityPaymentMethodSelect>
