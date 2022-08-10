@@ -27,11 +27,8 @@ const AdminBoard = ({ type }) => {
   const createEntityContext = useCreateEntityContext();
   const { userOrgs, userPermissionsContext } = createEntityContext;
 
-  const permissionContext = userPermissionsContext?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-    : null;
   const orgsWithAdminPermissions = userOrgs?.getUserOrgs.filter((org) => {
-    const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, orgId: org?.id });
+    const permissions = parseUserPermissionContext({ userPermissionsContext, orgId: org?.id });
     const hasPermission =
       permissions.includes(PERMISSIONS.FULL_ACCESS) ||
       permissions.includes(PERMISSIONS.CREATE_TASK) ||
@@ -42,7 +39,7 @@ const AdminBoard = ({ type }) => {
   const adminFilters = generateAdminDashboardFilters({
     userId: loggedInUser?.id,
     orgs: orgsWithAdminPermissions,
-    permissionContext,
+    permissionContext: userPermissionsContext,
   });
 
   const useGetColumnData = PAGE_TYPE_TO_HOOK_MAP[type];
