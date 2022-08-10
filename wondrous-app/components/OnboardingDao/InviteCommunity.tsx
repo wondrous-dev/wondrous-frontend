@@ -81,12 +81,12 @@ const DropdownSelectItem = styled(MenuItem)`
 
 const useGetDiscordGuildFromInviteCode = ({ setValue, setError }) => {
   const [query, { data }] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE, {
-    onCompleted: (data) => setValue(data.getDiscordGuildFromInviteCode.guildId),
+    onCompleted: ({ getDiscordGuildFromInviteCode }) => setValue(getDiscordGuildFromInviteCode.guildId),
     onError: () => setError('Invalid invite link'),
   });
   const queryHandler = useCallback(
     async ({ inviteLink }) =>
-      await query({
+      query({
         variables: {
           inviteCode: last(inviteLink.split('/')),
         },
@@ -104,7 +104,7 @@ const useCheckDiscordBotAdded = ({ setError, setValue }) => {
   const [query, { startPolling, stopPolling }] = useLazyQuery(CHECK_DISCORD_BOT_ADDED, {
     onCompleted: ({ checkDiscordBotAdded }) => {
       stopPolling();
-      !checkDiscordBotAdded?.botAdded && startPolling(1000);
+      if (!checkDiscordBotAdded?.botAdded) startPolling(1000);
       setError(undefined);
       setValue(checkDiscordBotAdded?.botAdded);
     },
@@ -172,7 +172,7 @@ const AddWonderBotsButtons = ({ formik, guildId, isDiscordBotAdded, handleOnClic
   }
   return (
     <ButtonWrapper>
-      <DisabledButton {...props} disabled={true}>
+      <DisabledButton {...props} disabled>
         Add Wonder Bot
       </DisabledButton>
       {isDiscordBotAdded && <ImportSuccess>Successfully Added</ImportSuccess>}
