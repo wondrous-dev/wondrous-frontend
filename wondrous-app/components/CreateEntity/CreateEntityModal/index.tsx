@@ -50,6 +50,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
   GET_MILESTONES,
   GET_TASK_BY_ID,
+  GET_TASK_REVIEWERS,
 } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
@@ -1117,6 +1118,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   });
   const inputRef: any = useRef();
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
+  const [getReviewers] = useLazyQuery(GET_TASK_REVIEWERS);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -1283,6 +1285,34 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       milestoneId: formValues.milestoneId,
     })
   );
+
+  useEffect(() => {
+    if (existingTask?.id) {
+      getTaskById({
+        variables: {
+          taskId: existingTask.id,
+        },
+      }).then((data) => {
+        const task = data?.data?.getTaskById;
+        form.setFieldValue('points', task?.points);
+        form.setFieldValue('labelIds', isEmpty(task?.labels) ? null : task?.labels?.map((label) => label.id));
+        form.setFieldValue('milestoneId', task?.milestoneId);
+        form.setFieldValue('claimPolicy', task?.claimPolicy);
+      });
+
+      getReviewers({
+        variables: {
+          taskId: existingTask.id,
+        },
+      }).then((data) => {
+        const reviewers = data?.data?.getTaskReviewers;
+        form.setFieldValue(
+          'reviewerIds',
+          reviewers?.map((reviewer) => reviewer.id)
+        );
+      });
+    }
+  }, [existingTask?.id]);
 
   useEffect(() => {
     if (isSubtask) {
