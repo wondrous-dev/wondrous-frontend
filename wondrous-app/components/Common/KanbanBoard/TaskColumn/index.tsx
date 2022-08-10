@@ -26,7 +26,7 @@ import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import {
   TaskColumnContainer,

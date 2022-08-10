@@ -13,7 +13,7 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import {
   ShowMoreButton,
