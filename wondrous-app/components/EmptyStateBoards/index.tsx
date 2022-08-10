@@ -19,7 +19,7 @@ import {
   EmptyStateCompletedIcon,
 } from 'components/Icons/emptyStates';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import { ENTITIES_UI_ELEMENTS } from 'components/CreateEntity/chooseEntityToCreateModal';
 import { HeaderButton } from 'components/organization/wrapper/styles';
 import {

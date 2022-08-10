@@ -1080,7 +1080,7 @@ interface ICreateEntityModal {
   status?: string;
 }
 
-export function CreateEntityModal(props: ICreateEntityModal) {
+export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
