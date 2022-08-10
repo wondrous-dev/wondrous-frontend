@@ -1091,6 +1091,13 @@ const CreateEntityPaymentMethodItem = ({ icon, chain, symbol }) => (
   </>
 );
 
+const handleRewardOnChange = (form) => (e) => {
+  const { value } = e.target;
+  if (/^\d*\.?\d*$/.test(value)) {
+    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], rewardAmount: value }]);
+  }
+};
+
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
@@ -2067,9 +2074,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   autoComplete="off"
                   autoFocus={!form.values.rewards?.[0]?.rewardAmount}
                   name="rewards"
-                  onChange={(e) => {
-                    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], rewardAmount: e.target.value }]);
-                  }}
+                  onChange={handleRewardOnChange(form)}
                   placeholder="Enter rewards..."
                   value={form.values?.rewards?.[0]?.rewardAmount}
                   fullWidth
@@ -2097,7 +2102,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('rewards', [{ rewardAmount: null, paymentMethodId: paymentMethods?.[0]?.id }]);
+                  form.setFieldValue('rewards', [{ rewardAmount: '', paymentMethodId: paymentMethods?.[0]?.id }]);
                 }}
               >
                 <CreateEntityAddButtonIcon />
