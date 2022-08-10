@@ -306,7 +306,6 @@ export function Task(props) {
         cancel={() => setEditTask(false)}
         existingTask={{
           ...task,
-          reviewers: reviewerData || [],
         }}
         isTaskProposal={false}
       />
