@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
+
 export const Wrapper = styled.div`
   display: flex;
 `;

@@ -95,7 +95,7 @@ export function PodsIcon(props) {
   );
 }
 
-export const JoinDaoIcon = (props) => {
+export function JoinDaoIcon(props) {
   return (
     <svg width="33" height="33" viewBox="0 0 33 33" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <rect x="0.501953" y="0.152344" width="32" height="32" rx="4" fill="#282828" />
@@ -109,4 +109,4 @@ export const JoinDaoIcon = (props) => {
       <path d="M15.5039 11.7871V15.1524V18.5177" stroke="white" strokeLinecap="round" />
     </svg>
   );
-};
+}

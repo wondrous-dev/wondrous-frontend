@@ -60,7 +60,7 @@ export const OnboardingStepIndicator = ({ step, fieldSetsLength }) => {
   );
 };
 
-const BackButtonWrapper = ({ step, handleStep }) => {
+function BackButtonWrapper({ step, handleStep }) {
   if (step === 1) return <ButtonWrapper />;
   return (
     <ButtonWrapper>
@@ -69,7 +69,7 @@ const BackButtonWrapper = ({ step, handleStep }) => {
       </BackButton>
     </ButtonWrapper>
   );
-};
+}
 
 const LaterButtonWrapper = ({ step, handleStep, hideLater, fieldSetsLength, handleClearFields }) => {
   const handleOnClick = () => {
@@ -97,7 +97,7 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, f
   return <MainButton onClick={handleOnClick}>Continue</MainButton>;
 };
 
-const WrapperLoading = ({ loading, children }) => {
+function WrapperLoading({ loading, children }) {
   return (
     <Wrapper>
       {loading ? (
@@ -110,9 +110,9 @@ const WrapperLoading = ({ loading, children }) => {
       )}
     </Wrapper>
   );
-};
+}
 
-const StepWrapper = ({
+function StepWrapper({
   Component,
   fieldSetsLength,
   handleStep,
@@ -123,7 +123,7 @@ const StepWrapper = ({
   subtitle,
   title,
   ...props
-}) => {
+}) {
   const router = useRouter();
   const handleOnClick = () => router.push('/dashboard');
   const handleClearFields = useClearFields(props);
@@ -163,6 +163,6 @@ const StepWrapper = ({
       </FormWrapper>
     </WrapperLoading>
   );
-};
+}
 
 export default StepWrapper;

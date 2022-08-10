@@ -27,16 +27,16 @@ import {
   MilestoneTaskTitleAndInfo,
 } from './styles';
 
-const MilestoneUserImage = ({ assignee }) => {
+function MilestoneUserImage({ assignee }) {
   const hasProfileImage = assignee && assignee.profilePicture;
   return (
     <MilestoneTaskImageWrapper>
       {hasProfileImage ? <MilestoneTaskImageSafeImage src={hasProfileImage} /> : <DefaultUserImage />}
     </MilestoneTaskImageWrapper>
   );
-};
+}
 
-const MilestoneTaskDuDate = ({ dueDate }) => {
+function MilestoneTaskDuDate({ dueDate }) {
   if (!dueDate) return null;
   return (
     <MilestoneTaskDueDateWrapper>
@@ -44,9 +44,9 @@ const MilestoneTaskDuDate = ({ dueDate }) => {
       <MilestoneTaskDueDateText>{format(new Date(dueDate), 'MMM dd')}</MilestoneTaskDueDateText>
     </MilestoneTaskDueDateWrapper>
   );
-};
+}
 
-const MilestoneTaskReward = ({ rewards }) => {
+function MilestoneTaskReward({ rewards }) {
   if (isEmpty(rewards)) return null;
   return (
     <>
@@ -61,9 +61,9 @@ const MilestoneTaskReward = ({ rewards }) => {
       })}
     </>
   );
-};
+}
 
-export const MilestoneTaskList = ({ data }) => {
+export function MilestoneTaskList({ data }) {
   if (isEmpty(data)) return null;
   return (
     <MilestoneTaskListWrapper>
@@ -73,7 +73,7 @@ export const MilestoneTaskList = ({ data }) => {
         const isPrivate = privacyLevel !== Constants.PRIVACY_LEVEL.public;
         const viewUrl = `/organization/${orgUsername || org?.username}/boards?task=${id}`;
         return (
-          <SmartLink href={viewUrl} key={id} asLink={true}>
+          <SmartLink href={viewUrl} key={id} asLink>
             <MilestoneTaskItem>
               <MilestoneUserImage assignee={assignee} />
               <MilestoneTaskTitleAndInfo>
@@ -100,4 +100,4 @@ export const MilestoneTaskList = ({ data }) => {
       })}
     </MilestoneTaskListWrapper>
   );
-};
+}

@@ -34,7 +34,7 @@ const ProfilePicture = (props) => {
               (file ? (
                 <ImageWrapper width="80px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
               ) : (
-                <SafeImageWrapper width="80px" height="80px" alt={props.label} useNextImage={true} src={field.value} />
+                <SafeImageWrapper width="80px" height="80px" alt={props.label} useNextImage src={field.value} />
               ))}
             <AddPhotoIconWrapper withImage={withImage}>
               <AddAPhotoIcon />
@@ -46,7 +46,7 @@ const ProfilePicture = (props) => {
   );
 };
 
-const HeaderPicture = (props) => {
+function HeaderPicture(props) {
   const { name, tempState, setTempState } = props;
   const file = tempState[name];
   const [field, _, { setValue }] = useField(name);
@@ -75,7 +75,7 @@ const HeaderPicture = (props) => {
       <HeaderText>Optimum size: 1358px x 160px</HeaderText>
     </FieldWrapper>
   );
-};
+}
 
 const AddImages = (props) => {
   const { fields, ...rest } = props;

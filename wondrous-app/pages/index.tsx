@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { getAuthHeader } from 'components/Auth/withAuth';
 
-const Index = () => {
+function Index() {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
@@ -27,6 +27,6 @@ const Index = () => {
     return <></>;
   }
   return <></>;
-};
+}
 
 export default Index;

@@ -25,7 +25,7 @@ const MenuProps = {
   },
 };
 
-const DatePicker = (props) => {
+function DatePicker(props) {
   const { title, labelText, labelIcon, options, name, value, setValue } = props;
 
   const handleChange = (event) => {
@@ -52,10 +52,10 @@ const DatePicker = (props) => {
           value={value}
           onChange={handleChange}
           renderInput={(params) => <StyledTextField {...params} />}
-        ></StyledDatePicker>
+        />
       </FormControl>
     </CreateFormSelectBlock>
   );
-};
+}
 
 export default DatePicker;

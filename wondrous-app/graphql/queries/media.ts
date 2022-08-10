@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const GET_PRESIGNED_IMAGE_URL = gql`
   query GetPresignedImageUrl($filename: String!) {
@@ -6,7 +6,7 @@ export const GET_PRESIGNED_IMAGE_URL = gql`
       url
     }
   }
-`
+`;
 
 export const GET_PRESIGNED_VIDEO_URL = gql`
   query GetPresignedVideoUrl($filename: String!) {
@@ -14,7 +14,7 @@ export const GET_PRESIGNED_VIDEO_URL = gql`
       url
     }
   }
-`
+`;
 
 export const GET_PREVIEW_FILE = gql`
   query GetPreviewFile($path: String!) {
@@ -22,4 +22,4 @@ export const GET_PREVIEW_FILE = gql`
       url
     }
   }
-`
+`;

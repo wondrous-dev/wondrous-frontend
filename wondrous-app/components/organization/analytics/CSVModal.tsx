@@ -36,7 +36,7 @@ export const PAYMENT_PROVIDER_UI_ELEMENTS = {
   },
 };
 
-const CSVModal = (props) => {
+function CSVModal(props) {
   const { handleClose, fromTime, toTime, exportPaymentCSV, paymentsData, isPod } = props;
 
   return (
@@ -48,7 +48,7 @@ const CSVModal = (props) => {
         </CreateLayoutsModalCloseButton>
       </CreateLayoutsModalHeader>
       <CreateLayoutsModalItemContainer>
-        {/*{Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => (*/}
+        {/* {Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => ( */}
         {Object.entries(PAYMENT_PROVIDER_UI_ELEMENTS).map(([key, { icon: EntityIcon, color, label }]) => (
           <CreateLayoutsModalItem
             style={{
@@ -94,6 +94,6 @@ const CSVModal = (props) => {
       </CreateLayoutsModalItemContainer>
     </CreateLayoutsModal>
   );
-};
+}
 
 export default CSVModal;

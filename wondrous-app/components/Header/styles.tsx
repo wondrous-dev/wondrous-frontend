@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
-export const Header = styled(AppBar)`
+export const HeaderBar = styled(AppBar)`
   && {
     height: 70px;
     background: #1d1d1d;
@@ -161,9 +161,7 @@ export const StyledBadge = styled.button`
   svg {
     circle {
       display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
-      ${({ isOpen }) => {
-        return isOpen ? `fill: url(#open-notif-gradient);` : ``;
-      }};
+      ${({ isOpen }) => (isOpen ? `fill: url(#open-notif-gradient);` : ``)};
     }
     rect {
       ${({ isOpen }) => (isOpen ? `stroke: url(#open-notif-gradient); fill: transparent;` : ``)}

@@ -176,13 +176,7 @@ export const StyledSelect = styled(Select)`
 `;
 
 export const InviteThruLinkSelect = styled(({ className, ...props }) => (
-  <StyledSelect
-    {...props}
-    capitalize={true}
-    svgColor={palette.blue20}
-    rounded={true}
-    MenuProps={{ classes: { paper: className } }}
-  />
+  <StyledSelect {...props} capitalize svgColor={palette.blue20} rounded MenuProps={{ classes: { paper: className } }} />
 ))`
   &.MuiPaper-root {
     background: linear-gradient(180deg, ${palette.black95} 0%, ${palette.black97} 109.19%);

@@ -10,7 +10,7 @@ import {
   TaskContentPaidOutWrapper,
 } from './styles';
 
-export const TaskBountyOverview = (props) => {
+export function TaskBountyOverview(props) {
   const { totalSubmissionsCount = 0, approvedSubmissionsCount = 0 } = props;
   const pluralizeSubmission = pluralize('submission', totalSubmissionsCount, true);
   const approvedSubmissionsPercentage = (approvedSubmissionsCount / totalSubmissionsCount) * 100 || 0;
@@ -28,4 +28,4 @@ export const TaskBountyOverview = (props) => {
       </TaskContentBountyCard>
     </TaskContentBountyWrapper>
   );
-};
+}

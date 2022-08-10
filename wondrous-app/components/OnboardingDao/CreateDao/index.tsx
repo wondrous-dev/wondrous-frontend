@@ -9,11 +9,13 @@ const Name = ({ label, tempState, setTempState, ...props }) => {
   const [field, meta, helpers] = useField(name);
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedHelpersSetValue = useMemo(() => debounce(helpers.setValue, 500), []);
+
   const handleOnChange = (e) => {
     const value = e.target.value;
     setTempState({ ...tempState, [name]: value });
     debouncedHelpersSetValue(value);
   };
+
   return (
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>
@@ -25,11 +27,17 @@ const Name = ({ label, tempState, setTempState, ...props }) => {
 
 const Description = ({ label, maxLength, ...props }) => {
   const [field, meta, helpers] = useField(props.name);
+
   const fieldValueLength = field.value?.length ?? 0;
+
   const handleOnChange = (e) => {
-    const value = e.target.value;
-    value.length <= maxLength && helpers.setValue(value);
+    const { value } = e.target;
+
+    if (value.length <= maxLength) {
+      helpers.setValue(value);
+    }
   };
+
   return (
     <FieldWrapper>
       <FieldLabel>{label}</FieldLabel>

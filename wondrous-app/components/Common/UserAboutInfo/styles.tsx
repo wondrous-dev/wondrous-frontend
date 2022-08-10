@@ -1,9 +1,9 @@
 import { Box, Button, Dialog, IconButton, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { LogoSquare } from '../../Common/ci';
-import { ModalCloseButton } from '../../Common/ModalCloseButton';
-import { Task } from '../../Common/Task';
-import { TaskInner, TaskWrapper } from '../../Common/Task/styles';
+import { LogoSquare } from '../ci';
+import { ModalCloseButton } from '../ModalCloseButton';
+import { Task } from '../Task';
+import { TaskInner, TaskWrapper } from '../Task/styles';
 import PodIcon from '../../Icons/podIcon';
 
 export const UserAboutInfoContainer = styled.div`
@@ -124,9 +124,9 @@ export const UserAboutInfoCardHeader = styled.div`
   width: 100%;
 `;
 
-export const UserAboutInfoCardHeaderPodIcon = (props) => (
-  <PodIcon {...props} style={{ width: '24px', height: '24px' }} />
-);
+export function UserAboutInfoCardHeaderPodIcon(props) {
+  return <PodIcon {...props} style={{ width: '24px', height: '24px' }} />;
+}
 
 export const UserAboutInfoCardHeaderName = styled(Typography)`
   && {
@@ -159,7 +159,7 @@ export const UserAboutInfoCardNoLogo = styled.div`
   width: 40px;
 `;
 
-//about pods card
+// about pods card
 
 export const UserAboutInfoPodsCardName = styled(Typography)`
   && {

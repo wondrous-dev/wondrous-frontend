@@ -17,7 +17,7 @@ interface ISelectMenuBoardType {
   view: string;
 }
 
-const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
+function SelectMenuBoardType(props: ISelectMenuBoardType) {
   const { router, view } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -56,7 +56,7 @@ const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
         <SelectMenuBoardTypePopper open={open} anchorEl={anchorEl}>
           <SelectMenuBoardTypePopperMenu>
             {Object.keys(menuItems).map((item) => (
-              <SelectMenuBoardTypeItem onClick={handleOnChange} value={item} key={'menu-item-' + item}>
+              <SelectMenuBoardTypeItem onClick={handleOnChange} value={item} key={`menu-item-${item}`}>
                 {menuItems[item]}
               </SelectMenuBoardTypeItem>
             ))}
@@ -65,6 +65,6 @@ const SelectMenuBoardType = (props: ISelectMenuBoardType) => {
       </SelectMenuBoardTypeWrapper>
     </SelectMenuBoardTypeClickAway>
   );
-};
+}
 
 export default SelectMenuBoardType;

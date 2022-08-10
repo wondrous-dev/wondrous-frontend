@@ -1,6 +1,13 @@
-import { Button } from '../button';
 import React, { useCallback, useEffect, useState, useContext } from 'react';
 import { useWonderWeb3 } from 'services/web3';
+import { SupportedChainType } from 'utils/web3Constants';
+import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
+import useEagerConnect from 'services/web3/hooks/useEagerConnect';
+import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
+import Tooltip from 'components/Tooltip';
+import { FilterCheckbox } from 'components/Common/Filter/styles';
+import { ChevronFilled } from 'components/Icons/sections';
+import { Button } from '../button';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
 import { WonderCoin } from '../../Icons/wonderCoin';
@@ -26,15 +33,8 @@ import Arbitrum from '../../Icons/arbitrum';
 import Harmony from '../../Icons/harmony';
 import Binance from '../../Icons/binace';
 import Boba from '../../Icons/Boba';
-import { SupportedChainType } from 'utils/web3Constants';
 import { ErrorText } from '..';
-import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import WalletModal from './WalletModal';
-import useEagerConnect from 'services/web3/hooks/useEagerConnect';
-import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
-import Tooltip from 'components/Tooltip';
-import { FilterCheckbox } from 'components/Common/Filter/styles';
-import { ChevronFilled } from 'components/Icons/sections';
 
 const CHAIN_LOGO = {
   '1': <Ethereum />,
@@ -76,7 +76,7 @@ const CURRENCY_UI_ELEMENTS = {
   BNB: { icon: <Binance />, label: 'BNB' },
 };
 
-const Balance = ({ currency, isOpen }) => {
+function Balance({ currency, isOpen }) {
   return (
     <WonderBalance isExpanded={isOpen}>
       {CURRENCY_SYMBOL[currency.symbol]}
@@ -90,9 +90,9 @@ const Balance = ({ currency, isOpen }) => {
       <ChevronFilled fill="white" className="accordion-expansion-icon" />
     </WonderBalance>
   );
-};
+}
 
-const Wallet = () => {
+function Wallet() {
   const wonderWeb3 = useWonderWeb3();
 
   const { provider } = useContext(WonderWeb3Context);
@@ -189,7 +189,7 @@ const Wallet = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [wonderWeb3.address, provider]);
 
-  const CurrencyDropdownItem = ({ currency, selected }) => {
+  function CurrencyDropdownItem({ currency, selected }) {
     if (currency in CURRENCY_UI_ELEMENTS) {
       const { icon: currencyIcon, label: currencyLabel } = CURRENCY_UI_ELEMENTS[currency];
       return (
@@ -205,7 +205,7 @@ const Wallet = () => {
       );
     }
     return <></>;
-  };
+  }
 
   if (!connected) {
     return (
@@ -226,31 +226,32 @@ const Wallet = () => {
         <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       </WalletWrapper>
     );
-  } else if (wonderWeb3.notSupportedChain) {
+  }
+  if (wonderWeb3.notSupportedChain) {
     return (
       <WalletWrapper>
         <WalletDisplay>Chain Not Supported</WalletDisplay>
       </WalletWrapper>
     );
-  } else {
-    return (
-      <WalletWrapper>
-        <Tooltip title={CHAIN_TOOLTIP[wonderWeb3.wallet.chain]}>
-          <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
-        </Tooltip>
-        <WalletDisplay>
-          <DropDown DropdownHandler={Balance} currency={currency}>
-            <CurrencyDropdownItem currency={'WONDER'} selected={currency.symbol === 'WONDER'} />
-            <CurrencyDropdownItem currency={'USDC'} selected={currency.symbol === 'USDC'} />
-            {wonderWeb3.nativeTokenSymbol && (
-              <CurrencyDropdownItem
-                currency={wonderWeb3.nativeTokenSymbol}
-                selected={currency.symbol === wonderWeb3.nativeTokenSymbol}
-              />
-            )}
-          </DropDown>
-          <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
-          {/* {differentAccountError && (
+  }
+  return (
+    <WalletWrapper>
+      <Tooltip title={CHAIN_TOOLTIP[wonderWeb3.wallet.chain]}>
+        <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
+      </Tooltip>
+      <WalletDisplay>
+        <DropDown DropdownHandler={Balance} currency={currency}>
+          <CurrencyDropdownItem currency="WONDER" selected={currency.symbol === 'WONDER'} />
+          <CurrencyDropdownItem currency="USDC" selected={currency.symbol === 'USDC'} />
+          {wonderWeb3.nativeTokenSymbol && (
+            <CurrencyDropdownItem
+              currency={wonderWeb3.nativeTokenSymbol}
+              selected={currency.symbol === wonderWeb3.nativeTokenSymbol}
+            />
+          )}
+        </DropDown>
+        <WalletAddress>{wonderWeb3.wallet.addressTag || 'loading...'}</WalletAddress>
+        {/* {differentAccountError && (
             <ErrorText
               style={{
                 width: '120px',
@@ -260,10 +261,9 @@ const Wallet = () => {
               Not linked wallet
             </ErrorText>
           )} */}
-        </WalletDisplay>
-      </WalletWrapper>
-    );
-  }
-};
+      </WalletDisplay>
+    </WalletWrapper>
+  );
+}
 
 export default Wallet;

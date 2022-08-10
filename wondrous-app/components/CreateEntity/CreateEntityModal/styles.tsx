@@ -1,5 +1,5 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
-import { SaveAltOutlined } from '@mui/icons-material';
+import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
 import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
@@ -127,7 +127,7 @@ export const CreateEntitySelectPopper = styled(PopperUnstyled)`
   ${scrollBarStyles}
 `;
 
-export const CreateEntitySelect = (props) => {
+export function CreateEntitySelect(props) {
   const components = {
     Root: CreateEntitySelectRoot,
     Listbox: CreateEntitySelectListbox,
@@ -136,7 +136,7 @@ export const CreateEntitySelect = (props) => {
   };
 
   return <SelectUnstyled {...props} components={components} />;
-};
+}
 
 export const CreateEntityOption = styled(OptionUnstyled)`
   list-style: none;
@@ -247,13 +247,11 @@ export const CreateEntitySelectArrowIcon = styled(Arrow)`
   }
 `;
 
-export const CreateEntityHeaderArrowIcon = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const CreateEntityHeaderArrowIcon = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     display: flex;
     height: 32px;
@@ -446,9 +444,9 @@ export const CreateEntityAutocomplete = styled(Autocomplete)`
   }
 `;
 
-export const CreateEntityAutocompletePopper = styled(({ className, ...props }) => {
-  return <CreateEntityAutocomplete {...props} classes={{ paper: className }} />;
-})`
+export const CreateEntityAutocompletePopper = styled(({ className, ...props }) => (
+  <CreateEntityAutocomplete {...props} classes={{ paper: className }} />
+))`
   .MuiAutocomplete-listbox {
     border-color: #7a7a7a;
     scroll-padding-right: 0;
@@ -575,7 +573,7 @@ export const CreateEntityPrivacyPopper = styled(PopperUnstyled)`
   z-index: 100;
 `;
 
-export const CreateEntityPrivacySelect = (props) => {
+export function CreateEntityPrivacySelect(props) {
   const components = {
     Root: CreateEntityPrivacyRoot,
     Listbox: CreateEntityPrivacyList,
@@ -584,7 +582,7 @@ export const CreateEntityPrivacySelect = (props) => {
   };
 
   return <SelectUnstyled {...props} components={components} />;
-};
+}
 
 export const CreateEntityPrivacySelectRender = styled.div`
   display: flex;
@@ -851,7 +849,7 @@ export const CreateEntityPaymentMethodPopper = styled(PopperUnstyled)`
   ${scrollBarStyles}
 `;
 
-export const CreateEntityPaymentMethodSelect = (props) => {
+export function CreateEntityPaymentMethodSelect(props) {
   const components = {
     Root: CreateEntityPaymentMethodRoot,
     Listbox: CreateEntityPaymentMethodList,
@@ -860,7 +858,7 @@ export const CreateEntityPaymentMethodSelect = (props) => {
   };
 
   return <SelectUnstyled {...props} components={components} />;
-};
+}
 
 export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   list-style: none;

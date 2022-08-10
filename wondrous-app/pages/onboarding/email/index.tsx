@@ -9,7 +9,7 @@ import { useMe, withAuth } from 'components/Auth/withAuth';
 import { GET_USER_ORGS } from 'graphql/queries/org';
 import { GET_USER_PODS } from 'graphql/queries';
 
-const SetupEmailPage = () => {
+function SetupEmailPage() {
   const router = useRouter();
   const { data: getOrgData } = useQuery(GET_USER_ORGS);
   const user = useMe();
@@ -32,6 +32,6 @@ const SetupEmailPage = () => {
       <SetupEmail firstOrg={firstOrg} firstPod={firstPod} />
     </MainWrapper>
   );
-};
+}
 
 export default withAuth(SetupEmailPage);

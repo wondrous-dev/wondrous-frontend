@@ -1,3 +1,12 @@
+import RetractVoteIcon from 'components/Icons/retractVote';
+import { useMutation } from '@apollo/client';
+import {
+  UPVOTE_TASK_PROPOSAL,
+  DOWNVOTE_TASK_PROPOSAL,
+  REMOVE_TASK_PROPOSAL_VOTE,
+} from 'graphql/mutations/taskProposal';
+import { ProposalVoteType, PROPOSAL_VOTE_LABELS, STATUS_OPEN } from 'utils/constants';
+import { useMe } from 'components/Auth/withAuth';
 import {
   VoteResultsWrapper,
   VoteButton,
@@ -9,15 +18,6 @@ import {
   RetractButton,
   VoteButtonLabel,
 } from './styles';
-import RetractVoteIcon from 'components/Icons/retractVote';
-import { useMutation } from '@apollo/client';
-import {
-  UPVOTE_TASK_PROPOSAL,
-  DOWNVOTE_TASK_PROPOSAL,
-  REMOVE_TASK_PROPOSAL_VOTE,
-} from 'graphql/mutations/taskProposal';
-import { ProposalVoteType, PROPOSAL_VOTE_LABELS, STATUS_OPEN } from 'utils/constants';
-import { useMe } from 'components/Auth/withAuth';
 
 interface Props {
   votes: {

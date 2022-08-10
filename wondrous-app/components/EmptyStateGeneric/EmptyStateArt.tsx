@@ -1,4 +1,4 @@
-const EmptyStateArt = () => {
+function EmptyStateArt() {
   return (
     <svg width="195" height="147" viewBox="0 0 195 147" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M73.8111 3.09351L103.767 31.8626L67.9956 61.3437L39.2266 33.7853L73.8111 3.09351Z" fill="#1D1D1D" />
@@ -402,5 +402,5 @@ const EmptyStateArt = () => {
       />
     </svg>
   );
-};
+}
 export default EmptyStateArt;

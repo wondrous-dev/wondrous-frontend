@@ -1,4 +1,4 @@
-export const EmptyStateTodoIcon = () => {
+export function EmptyStateTodoIcon() {
   return (
     <svg width="201" height="200" viewBox="0 0 201 200" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -9,9 +9,9 @@ export const EmptyStateTodoIcon = () => {
       />
     </svg>
   );
-};
+}
 
-export const EmptyStateInProgressIcon = () => {
+export function EmptyStateInProgressIcon() {
   return (
     <svg width="201" height="201" viewBox="0 0 201 201" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -20,9 +20,9 @@ export const EmptyStateInProgressIcon = () => {
       />
     </svg>
   );
-};
+}
 
-export const EmptyStateInReviewIcon = () => {
+export function EmptyStateInReviewIcon() {
   return (
     <svg width="201" height="200" viewBox="0 0 201 200" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -33,9 +33,9 @@ export const EmptyStateInReviewIcon = () => {
       />
     </svg>
   );
-};
+}
 
-export const EmptyStateCompletedIcon = () => {
+export function EmptyStateCompletedIcon() {
   return (
     <svg width="201" height="200" viewBox="0 0 201 200" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -46,4 +46,4 @@ export const EmptyStateCompletedIcon = () => {
       />
     </svg>
   );
-};
+}

@@ -381,15 +381,17 @@ export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
   }
 `;
 
-export const TokenLogoDisplay = (props) => (
-  <SafeImage
-    useNextImage={false}
-    src={props?.src}
-    style={{
-      width: '29px',
-      height: '28px',
-      borderRadius: '4px',
-      marginRight: '5px',
-    }}
-  />
-);
+export function TokenLogoDisplay(props) {
+  return (
+    <SafeImage
+      useNextImage={false}
+      src={props?.src}
+      style={{
+        width: '29px',
+        height: '28px',
+        borderRadius: '4px',
+        marginRight: '5px',
+      }}
+    />
+  );
+}

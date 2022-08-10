@@ -19,10 +19,11 @@ import {
   PRIVACY_LEVEL,
 } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
-import { TextInput } from '../TextInput';
-
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
+import { TextInput } from '../TextInput';
+
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
 import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
@@ -37,7 +38,6 @@ import CodeIcon from '../Icons/MediaTypesIcons/code';
 import ImageIcon from '../Icons/MediaTypesIcons/image';
 import VideoIcon from '../Icons/MediaTypesIcons/video';
 import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
-import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
 
 import {
   CreateFormAddDetailsAppearBlock,
@@ -141,20 +141,18 @@ export const filterOrgUsersForAutocomplete = (orgUsers): { display: string; id: 
 
 export const filterPaymentMethods = (paymentMethods) => {
   if (!paymentMethods) return [];
-  return paymentMethods.map((paymentMethod) => {
-    return {
-      ...paymentMethod,
-      icon: (
-        <SafeImage
-          useNextImage={false}
-          src={paymentMethod.icon}
-          style={{ width: '30px', height: '30px', borderRadius: '15px' }}
-        />
-      ),
-      label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
-      value: paymentMethod.id,
-    };
-  });
+  return paymentMethods.map((paymentMethod) => ({
+    ...paymentMethod,
+    icon: (
+      <SafeImage
+        useNextImage={false}
+        src={paymentMethod.icon}
+        style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+      />
+    ),
+    label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
+    value: paymentMethod.id,
+  }));
 };
 
 export const filterOrgUsers = (orgUsers) => {
@@ -169,7 +167,7 @@ export const filterOrgUsers = (orgUsers) => {
   }));
 };
 
-const CreatePodModal = (props) => {
+function CreatePodModal(props) {
   const { entityType, handleClose, cancel, open, parentTaskId } = props;
   const user = useMe();
   const [addDetails, setAddDetails] = useState(true);
@@ -227,12 +225,13 @@ const CreatePodModal = (props) => {
   const [pod, setPod] = useState(null);
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === pod)[0]?.privacyLevel;
   const [isPublicEntity, setIsPublicEntity] = useState(false);
-  const { showLinkAttachmentSection, showVisibility } = useMemo(() => {
-    return {
+  const { showLinkAttachmentSection, showVisibility } = useMemo(
+    () => ({
       showLinkAttachmentSection: true,
       showVisibility: true,
-    };
-  }, []);
+    }),
+    []
+  );
 
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
 
@@ -496,12 +495,12 @@ const CreatePodModal = (props) => {
             onClick={submitMutation}
           >
             {creating ? <CircularProgress size={20} /> : null}
-            {'Create'} {titleText}
+            Create {titleText}
           </CreateFormPreviewButton>
         </CreateFormButtonsBlock>
       </CreateFormFooterButtons>
     </CreateFormBaseModal>
   );
-};
+}
 
 export default CreatePodModal;

@@ -10,7 +10,7 @@ import {
   MilestoneTaskFilterSelectWrapper,
 } from './styles';
 
-const MilestoneTaskFilterSelected = ({ status }) => {
+function MilestoneTaskFilterSelected({ status }) {
   const { Icon, label } = TASK_ICONS_LABELS[status];
   return (
     <MilestoneTaskFilterSelectWrapper>
@@ -20,9 +20,9 @@ const MilestoneTaskFilterSelected = ({ status }) => {
       {label}
     </MilestoneTaskFilterSelectWrapper>
   );
-};
+}
 
-export const MilestoneTaskFilter = ({ status, setStatus }) => {
+export function MilestoneTaskFilter({ status, setStatus }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
@@ -53,4 +53,4 @@ export const MilestoneTaskFilter = ({ status, setStatus }) => {
       </MilestoneTaskFilterMenu>
     </>
   );
-};
+}

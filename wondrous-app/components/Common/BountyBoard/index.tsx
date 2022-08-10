@@ -1,14 +1,4 @@
 import {
-  BountyCardWrapper,
-  BountyIcon,
-  BountyCardType,
-  BountyCardSubmissionsCountWrapper,
-  BountyCardSubmissionsCount,
-  SubmissionCount,
-  SubtasksWrapper,
-  BountyCommentsIcon,
-} from './styles';
-import {
   BoardsCardSubheader,
   BoardsCardHeader,
   BoardsCardBody,
@@ -19,7 +9,6 @@ import {
   BoardsCardBodyDescription,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-import { Compensation } from '../Compensation';
 import { PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
@@ -32,8 +21,19 @@ import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import { Compensation } from '../Compensation';
+import {
+  BountyCardWrapper,
+  BountyIcon,
+  BountyCardType,
+  BountyCardSubmissionsCountWrapper,
+  BountyCardSubmissionsCount,
+  SubmissionCount,
+  SubtasksWrapper,
+  BountyCommentsIcon,
+} from './styles';
 
-export const SubmissionsCount = ({ total, approved }) => {
+export function SubmissionsCount({ total, approved }) {
   const config = [
     {
       label: 'submissions',
@@ -57,7 +57,7 @@ export const SubmissionsCount = ({ total, approved }) => {
       ))}
     </BountyCardSubmissionsCountWrapper>
   );
-};
+}
 export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false }) {
   const router = useRouter();
   const goToPod = (podId) => {

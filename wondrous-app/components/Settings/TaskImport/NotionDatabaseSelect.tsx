@@ -12,7 +12,7 @@ import { IMPORT_NOTION_TASK_TO_ORG } from 'graphql/mutations/integration';
 import { GET_ORG_NOTION_DATABASES } from 'graphql/queries';
 import React, { useEffect, useState } from 'react';
 
-const NotionDatabaseSelect = (props) => {
+function NotionDatabaseSelect(props) {
   const { open, onClose, orgId, podId, toast, setToast } = props;
 
   const [importNotionTaskToOrg, { loading, error: importError }] = useMutation(IMPORT_NOTION_TASK_TO_ORG);
@@ -65,7 +65,7 @@ const NotionDatabaseSelect = (props) => {
   return (
     <CreateModalOverlay open={open} onClose={handleOnClose}>
       <ModalBody>
-        <CreateLayoutsModalHeader></CreateLayoutsModalHeader>
+        <CreateLayoutsModalHeader />
         <CreateLayoutsModalItemContainer>
           <CreateLayoutsModalItemTitle>Select Notion Databse</CreateLayoutsModalItemTitle>
           {databaseOptions && (
@@ -96,6 +96,6 @@ const NotionDatabaseSelect = (props) => {
       </ModalBody>
     </CreateModalOverlay>
   );
-};
+}
 
 export default NotionDatabaseSelect;

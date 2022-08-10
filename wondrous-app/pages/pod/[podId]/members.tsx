@@ -7,7 +7,7 @@ import { PodBoardContext } from 'utils/contexts';
 import { useGetPodById } from 'utils/hooks';
 import MemberRequests from 'components/Pod/members';
 
-const PodMembersPage = () => {
+function PodMembersPage() {
   const router = useRouter();
   const { podId } = router.query;
   const getPodById = useGetPodById(podId);
@@ -28,6 +28,6 @@ const PodMembersPage = () => {
       <MemberRequests podId={podId} podData={getPodById} />
     </PodBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(PodMembersPage);

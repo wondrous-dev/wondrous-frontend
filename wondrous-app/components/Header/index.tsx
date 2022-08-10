@@ -1,33 +1,13 @@
-import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
-import Box from '@mui/material/Box';
 
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import { useIsMobile, useCreateEntityContext } from 'utils/hooks';
-
-import Wallet from 'components/Common/Wallet';
 import { useMe, withAuth } from '../Auth/withAuth';
-import { CreateIconOutlined } from 'components/Icons/createBtn';
-import { Button } from 'components/Common/button';
-import NotificationsBoard from 'components/Notifications';
-import Tooltip from 'components/Tooltip';
-import HomeIcon from 'components/Icons/home';
+import HeaderMemo from './HeaderMemo';
 
-import {
-  Header,
-  HeaderContainer,
-  HeaderCreateButton,
-  HeaderHomeButton,
-  HeaderLeftBlock,
-  HeaderLogo,
-  HeaderRightBlock,
-  HeaderHomeButtonWrapper,
-  HeaderLogoWrapper,
-} from './styles';
-import GlobalSearch from 'components/GlobalSearch';
-const HeaderComponent = (props) => {
+const HeaderComponent = () => {
   const user = useMe();
   const isMobile = useIsMobile();
 
@@ -53,61 +33,19 @@ const HeaderComponent = (props) => {
   const router = useRouter();
   const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
+
   return (
-    <Header>
-      <HeaderContainer>
-        <HeaderLeftBlock>
-          <Tooltip title="Explore page">
-            <HeaderLogoWrapper>
-              <div onClick={() => router.push('/explore')}>
-                <HeaderLogo />
-              </div>
-            </HeaderLogoWrapper>
-          </Tooltip>
-          <Tooltip title="Dashboard">
-            <Box>
-              <Link passHref href="/dashboard">
-                <HeaderHomeButtonWrapper>
-                  <HeaderHomeButton>
-                    <HomeIcon id="tour-header-dashboard-icon" />
-                  </HeaderHomeButton>
-                </HeaderHomeButtonWrapper>
-              </Link>
-            </Box>
-          </Tooltip>
-          {!isMobile && <GlobalSearch />}
-        </HeaderLeftBlock>
-        <HeaderRightBlock>
-          {user && (
-            <>
-              {!isMobile && <Wallet />}
-              <NotificationsBoard
-                fetchMoreNotifications={fetchMoreNotifications}
-                notifications={notifications?.getNotifications || []}
-                setNotifications={setNotifications}
-              />
-              <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-                <CreateIconOutlined id="tour-header-create-btn" />
-              </HeaderCreateButton>
-            </>
-          )}
-          {!user && (
-            <Button
-              highlighted
-              type="submit"
-              style={{
-                width: '100px',
-              }}
-              onClick={() => {
-                router.push('/login');
-              }}
-            >
-              Sign in
-            </Button>
-          )}
-        </HeaderRightBlock>
-      </HeaderContainer>
-    </Header>
+    <HeaderMemo
+      fetchMoreNotifications={fetchMoreNotifications}
+      isMobile={isMobile}
+      notifications={notifications?.getNotifications || []}
+      onLogoClick={() => router.push('/explore')}
+      onSignInClick={() => router.push('/login')}
+      openCreateFormModal={openCreateFormModal}
+      setNotifications={setNotifications}
+      showCreateButton={showCreateButton}
+      user={user}
+    />
   );
 };
 

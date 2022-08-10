@@ -4,7 +4,8 @@ import React, { useEffect } from 'react';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import AppLayout from 'components/Common/Layout/App';
 import { CircularProgress } from '@mui/material';
-const TaskRedirect = () => {
+
+function TaskRedirect() {
   const router = useRouter();
   const { proposalId } = router.query;
   const [getTaskById, { data: proposalData }] = useLazyQuery(GET_TASK_PROPOSAL_BY_ID);
@@ -28,6 +29,6 @@ const TaskRedirect = () => {
       <CircularProgress />
     </AppLayout>
   );
-};
+}
 
 export default TaskRedirect;

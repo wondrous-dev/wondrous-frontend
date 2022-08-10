@@ -22,12 +22,12 @@ const Button = styled(ButtonBase)`
 
 const TEMP_CSV = '/template.csv';
 
-const ButtonCSVTemplate = () => {
+function ButtonCSVTemplate() {
   return (
     <Button href={TEMP_CSV} download>
       CSV Template
     </Button>
   );
-};
+}
 
 export default ButtonCSVTemplate;

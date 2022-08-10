@@ -43,9 +43,11 @@ export const FieldInput = styled.input`
   }
 `;
 
-export const Field = ({ ...props }) => (
-  <FieldWrapper {...props}>
-    {props.icon && props.icon()}
-    <FieldInput {...props} />
-  </FieldWrapper>
-);
+export function Field({ ...props }) {
+  return (
+    <FieldWrapper {...props}>
+      {props.icon && props.icon()}
+      <FieldInput {...props} />
+    </FieldWrapper>
+  );
+}

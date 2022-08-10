@@ -3,12 +3,12 @@ import Image from 'next/image';
 import Modal from '@mui/material/Modal';
 
 import { Layout, OnboardingDescription, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
-import { CloseButton, ModalBackdrop, ModalContent } from './styles';
 import { UsernameDescription, UsernameTitle } from 'components/Onboarding/styles';
 import { useIsMobile } from 'utils/hooks';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { CloseButton, ModalBackdrop, ModalContent } from './styles';
 
-const MobileComingSoonModal = () => {
+function MobileComingSoonModal() {
   const isMobile = useIsMobile();
   const [isOpen, setIsOpen] = useState(isMobile);
 
@@ -73,6 +73,6 @@ const MobileComingSoonModal = () => {
       </ModalContent>
     </Modal>
   );
-};
+}
 
 export default MobileComingSoonModal;
