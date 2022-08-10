@@ -1,19 +1,18 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
-import { AddImages, CreateDao, DaoCategory, Review, StepWrapper } from 'components/OnboardingDao';
-import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, STEP_ACTIONS } from 'components/OnboardingDao/constants';
+import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper } from 'components/OnboardingDao';
+import { STEP_ACTIONS } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
-import { CREATE_ORG } from 'graphql/mutations/org';
-import { IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
+import { CREATE_ORG } from 'graphql/mutations';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useReducer, useState } from 'react';
 import * as Yup from 'yup';
 
-const fieldSet = [
+export const FIELD_SETS = [
   {
     title: 'Create DAO',
     subtitle: 'Use the power of web3 to launch and scale your project.',
-    step: 1,
     Component: CreateDao,
     hideLater: true,
     fields: {
@@ -35,7 +34,6 @@ const fieldSet = [
   {
     title: 'Add images',
     subtitle: 'Add your dOrgs logo and header to personalize your boards.',
-    step: 2,
     Component: AddImages,
     fields: {
       headerPicture: { name: 'headerPicture', label: 'Header Picture' },
@@ -45,7 +43,6 @@ const fieldSet = [
   {
     title: 'DAO category',
     subtitle: 'How would you categorize what your DAO does?',
-    step: 3,
     Component: DaoCategory,
     hideLater: true,
     fields: {
@@ -56,19 +53,25 @@ const fieldSet = [
   // {
   //   title: 'Import tasks',
   //   subtitle: 'Set up your workflow so members can begin contributing.',
-  //   step: 4,
   //   Component: ImportTasks,
   // },
-  // {
-  //   title: 'Invite your community',
-  //   subtitle: `Invite your contributors and community members. Those who don't have an account will be sent an invite link.`,
-  //   step: 4,
-  //   Component: InviteCommunity,
-  // },
+  {
+    title: 'Discord Integration',
+    subtitle: `For private channels, please ensure that the bot is added as a role.`,
+    Component: InviteCommunity,
+    fields: {
+      guildId: { name: 'guildId', label: '1. Paste Invite Link', placeholder: 'Paste invite link from Discord' },
+      addBot: { name: 'addBot', label: '2. Add bot', placeholder: 'Add Wonder Bot' },
+      channelId: {
+        name: 'channelId',
+        label: '3.  Select Channel',
+        placeholder: 'Where do you want to add the Wonder Bot?',
+      },
+    },
+  },
   {
     title: 'Review',
     subtitle: `Review your DAO details and then let's launch!`,
-    step: 4,
     Component: Review,
     hoverContinue: true,
     fields: {
@@ -84,6 +87,8 @@ const fieldSet = [
   },
 ] as const;
 
+const fieldSetsLength = FIELD_SETS.length;
+
 const handleStep = (step, { action, hasError = false }) => {
   if (hasError) return step;
   const actions = {
@@ -94,13 +99,17 @@ const handleStep = (step, { action, hasError = false }) => {
 };
 
 const useCreateOrg = () => {
-  const [createOrg, { loading }] = useMutation(CREATE_ORG);
   const router = useRouter();
+  const [createOrg, { loading }] = useMutation(CREATE_ORG, {
+    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
+    onCompleted: ({ createOrg }) => {
+      const { username } = createOrg;
+      router.push(`organization/${username}/boards`);
+    },
+  });
   const handleCreateOrg = (values) => {
-    createOrg({ variables: { input: values } }).then(() => {
-      localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
-      router.push(`organization/${values.username}/boards`);
-    });
+    const { addBot, ...rest } = values;
+    createOrg({ variables: { input: rest } });
   };
   return { handleCreateOrg, loading };
 };
@@ -125,11 +134,9 @@ const useIsOrgUsernameTaken = () => {
   return handleIsOrgUsernameTaken;
 };
 
-// https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
-const usernameRegex = /^(?=[a-z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/;
-
 const useSchema = () => {
   const handleIsOrgUsernameTaken = useIsOrgUsernameTaken();
+  const usernameRegex = /^(?=[a-z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/; // https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
   const schema = Yup.object().shape({
     name: Yup.string().required('DA0 name is required'),
     username: Yup.string()
@@ -141,29 +148,28 @@ const useSchema = () => {
       .test('is-taken', 'This username is taken', handleIsOrgUsernameTaken), // https://github.com/jquense/yup#schematestname-string-message-string--function--any-test-function-schema=
     description: Yup.string().required('DA0 description is required'),
     category: Yup.string().required('DA0 category is required'),
+    guildId: Yup.string().optional(),
+    addBot: Yup.boolean().optional(),
+    channelId: Yup.string().when('guildId', {
+      is: (guildId) => guildId,
+      then: Yup.string().required('Channel is required'),
+      otherwise: Yup.string().optional(),
+    }),
+    headerPicture: Yup.string().optional(),
+    profilePicture: Yup.string().optional(),
   });
   return schema;
 };
 
-const useInitialValues = () => {
-  const { restoreState } = useRouter().query;
-  if (!restoreState) typeof window !== 'undefined' && localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
-  const initialValues =
-    typeof window !== 'undefined' && JSON.parse(localStorage.getItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY));
-  const restoreStep = restoreState ? 4 : 1;
-  return { initialValues, restoreStep };
-};
-
-function OnboardingCreateDao() {
-  const { initialValues, restoreStep } = useInitialValues();
-  const [step, setStep] = useReducer(handleStep, restoreStep);
-  const currentFieldSet = fieldSet.find((field) => field.step === step);
+const OnboardingCreateDao = () => {
+  const [step, setStep] = useReducer(handleStep, 0);
+  const [tempState, setTempState] = useState({});
+  const currentFieldSet = FIELD_SETS[step];
   const { handleCreateOrg, loading } = useCreateOrg();
   return (
     <Formik
       initialValues={{
         category: 'social_good',
-        ...initialValues,
       }}
       onSubmit={handleCreateOrg}
       validationSchema={useSchema()}
@@ -175,10 +181,14 @@ function OnboardingCreateDao() {
           {...currentFieldSet}
           handleStep={({ action, hasError = false }) => setStep({ action, hasError })}
           loading={loading}
+          step={step + 1}
+          fieldSetsLength={fieldSetsLength}
+          tempState={tempState}
+          setTempState={setTempState}
         />
       </Form>
     </Formik>
   );
-}
+};
 
 export default withAuth(OnboardingCreateDao);

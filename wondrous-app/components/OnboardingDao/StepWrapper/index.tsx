@@ -1,17 +1,16 @@
 import { CircularProgress } from '@mui/material';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { useFormikContext } from 'formik';
-import { mapKeys, some } from 'lodash';
+import { mapKeys, mapValues, some } from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect } from 'react';
-import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, STEP_ACTIONS } from '../constants';
+import { STEP_ACTIONS } from '../constants';
+import { MainButton } from '../styles';
 import {
   BackButton,
   ButtonWrapper,
   CloseButton,
   CloseButtonIcon,
   ComponentWrapper,
-  ContinueButton,
   FooterWrapper,
   FormWrapper,
   HeaderWrapper,
@@ -26,19 +25,40 @@ import {
   WrapperLoadingCircularProgress,
 } from './styles';
 
-const NO_OF_STEPS = 4;
+const useValidateStep = (fields) => {
+  const { errors, setFieldTouched, validateField } = useFormikContext();
+  const validateFields = () => {
+    Object.keys(fields).forEach((key) => {
+      validateField(key);
+      setFieldTouched(key);
+    });
+  };
+  const hasError = () => some(fields, (_, key) => errors[key]);
+  return { validateFields, errors, hasError };
+};
 
-export function OnboardingStepIndicator({ step }) {
+const useClearFields = (props) => {
+  const { tempState, setTempState, fields } = props;
+  const { values, setValues } = useFormikContext() as any;
+  const handleClearFields = () => {
+    const clearFields = mapValues(fields, () => '');
+    setTempState({ ...tempState, ...clearFields });
+    setValues({ ...values, ...clearFields });
+  };
+  return handleClearFields;
+};
+
+export const OnboardingStepIndicator = ({ step, fieldSetsLength }) => {
   const rangeIndicator = (start, end, Component) =>
     Array.from({ length: start - end }, (_, i) => <Component key={i} />);
   return (
     <StepIndicatorWrapper>
       {rangeIndicator(step, 1, StepIndicatorDone)}
       <StepIndicatorFilled />
-      {rangeIndicator(NO_OF_STEPS, step, StepIndicatorEmpty)}
+      {rangeIndicator(fieldSetsLength, step, StepIndicatorEmpty)}
     </StepIndicatorWrapper>
   );
-}
+};
 
 function BackButtonWrapper({ step, handleStep }) {
   if (step === 1) return <ButtonWrapper />;
@@ -51,37 +71,31 @@ function BackButtonWrapper({ step, handleStep }) {
   );
 }
 
-function LaterButtonWrapper({ step, handleStep, hideLater }) {
-  if (step === NO_OF_STEPS || hideLater) return null;
-  return <LaterButton onClick={() => handleStep({ action: STEP_ACTIONS.next })}>Later</LaterButton>;
-}
-
-const useValidateStep = (fields) => {
-  const { errors, setFieldTouched, validateForm } = useFormikContext();
-  const touchFields = () => mapKeys(fields, (_, key) => setFieldTouched(key));
-  const hasError = some(fields, (_, key) => errors[key]);
-  useEffect(() => {
-    validateForm();
-  }, [validateForm]);
-  return { touchFields, errors, hasError };
+const LaterButtonWrapper = ({ step, handleStep, hideLater, fieldSetsLength, handleClearFields }) => {
+  const handleOnClick = () => {
+    handleClearFields();
+    handleStep({ action: STEP_ACTIONS.next });
+  };
+  if (step === fieldSetsLength || hideLater) return null;
+  return <LaterButton onClick={handleOnClick}>Later</LaterButton>;
 };
 
-function ContinueButtonWrapper({ step, hoverContinue, handleStep, fields = {} }) {
-  const { touchFields, hasError } = useValidateStep(fields);
+const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, fieldSetsLength }) => {
+  const { validateFields, hasError } = useValidateStep(fields);
   const handleOnClick = (e) => {
     e.preventDefault();
-    touchFields();
-    handleStep({ action: STEP_ACTIONS.next, hasError });
+    validateFields();
+    handleStep({ action: STEP_ACTIONS.next, hasError: hasError() });
   };
-  if (step === NO_OF_STEPS) {
+  if (step === fieldSetsLength) {
     return (
-      <ContinueButton hoverContinue={hoverContinue} type="submit">
+      <MainButton hoverContinue={hoverContinue} type="submit">
         🚀 Launch DAO
-      </ContinueButton>
+      </MainButton>
     );
   }
-  return <ContinueButton onClick={handleOnClick}>Continue</ContinueButton>;
-}
+  return <MainButton onClick={handleOnClick}>Continue</MainButton>;
+};
 
 function WrapperLoading({ loading, children }) {
   return (
@@ -100,25 +114,24 @@ function WrapperLoading({ loading, children }) {
 
 function StepWrapper({
   Component,
+  fieldSetsLength,
   handleStep,
   hideLater = false,
   hoverContinue = false,
+  loading,
   step,
   subtitle,
   title,
-  loading,
   ...props
 }) {
   const router = useRouter();
-  const handleOnClick = () => {
-    router.push('/dashboard');
-    localStorage.removeItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY);
-  };
+  const handleOnClick = () => router.push('/dashboard');
+  const handleClearFields = useClearFields(props);
   return (
     <WrapperLoading loading={loading}>
       <FormWrapper>
         <HeaderWrapper>
-          <OnboardingStepIndicator step={step} />
+          <OnboardingStepIndicator step={step} fieldSetsLength={fieldSetsLength} />
           <CloseButton onClick={handleOnClick}>
             <CloseButtonIcon />
           </CloseButton>
@@ -131,12 +144,19 @@ function StepWrapper({
         <FooterWrapper>
           <BackButtonWrapper step={step} handleStep={handleStep} />
           <ButtonWrapper>
-            <LaterButtonWrapper step={step} handleStep={handleStep} hideLater={hideLater} />
+            <LaterButtonWrapper
+              step={step}
+              handleStep={handleStep}
+              hideLater={hideLater}
+              fieldSetsLength={fieldSetsLength}
+              handleClearFields={handleClearFields}
+            />
             <ContinueButtonWrapper
               step={step}
               hoverContinue={hoverContinue}
               handleStep={handleStep}
               fields={props.fields}
+              fieldSetsLength={fieldSetsLength}
             />
           </ButtonWrapper>
         </FooterWrapper>
