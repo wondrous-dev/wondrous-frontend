@@ -81,21 +81,21 @@ const statusCardsBase = [
   // },
 ];
 
-const updateStatusCards = (data, statusData, panel) => {
-  return statusData
+const updateStatusCards = (data, statusData, panel) =>
+  statusData
     .filter((i) => panel === i.panel)
     .map((status) => {
       if (status?.dataKey === MEMBERSHIP_REQUEST_COUNT) {
         let count = 0;
         if (data?.orgMembershipRequestCount) {
-          count = count + Number(data?.orgMembershipRequestCount);
+          count += Number(data?.orgMembershipRequestCount);
         }
         if (data?.podMembershipRequestCount) {
-          count = count + Number(data?.podMembershipRequestCount);
+          count += Number(data?.podMembershipRequestCount);
         }
         return {
           ...status,
-          count: count,
+          count,
         };
       }
       return {
@@ -104,9 +104,8 @@ const updateStatusCards = (data, statusData, panel) => {
       };
     })
     .sort((a, b) => a.panelPosition - b.panelPosition);
-};
 
-const DashboardPanel = (props) => {
+function DashboardPanel(props) {
   const { isAdmin, selectedStatus, setSelectedStatus } = props;
   const [ref, inView] = useInView({});
   const loggedInUser = useMe();
@@ -146,6 +145,6 @@ const DashboardPanel = (props) => {
       <span ref={ref} />
     </DashboardPanelWrapper>
   );
-};
+}
 
 export default React.memo(DashboardPanel);

@@ -1,4 +1,13 @@
-import { FeaturedList, gridMobileStyles } from './constants';
+import Link from 'next/link';
+import BountyBoard from 'components/Common/BountyBoard';
+import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { useRouter } from 'next/router';
+import { delQuery } from 'utils';
+import { useLocation } from 'utils/useLocation';
+import { useState, useEffect } from 'react';
+import palette from 'theme/palette';
+import { SafeImage } from '../Common/Image';
 import {
   OrgDescription,
   OrgName,
@@ -10,18 +19,9 @@ import {
   BountySectionHeader,
   ShowMoreButtonWrapper,
 } from './styles';
-import { SafeImage } from '../Common/Image';
-import Link from 'next/link';
-import BountyBoard from 'components/Common/BountyBoard';
-import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { useRouter } from 'next/router';
-import { delQuery } from 'utils';
-import { useLocation } from 'utils/useLocation';
-import { useState, useEffect } from 'react';
-import palette from 'theme/palette';
+import { FeaturedList, gridMobileStyles } from './constants';
 
-const OrgItem = ({ org }) => {
+function OrgItem({ org }) {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
   return (
     <Link href={`/organization/${username}/boards`}>
@@ -59,9 +59,9 @@ const OrgItem = ({ org }) => {
       </StyledGridItem>
     </Link>
   );
-};
+}
 
-export const DaoSection = ({ isMobile }) => {
+export function DaoSection({ isMobile }) {
   return (
     <SectionWrapper>
       <OrgsSectionHeader>Our Alpha Partners</OrgsSectionHeader>
@@ -77,11 +77,11 @@ export const DaoSection = ({ isMobile }) => {
       </StyledGridContainer>
     </SectionWrapper>
   );
-};
+}
 
 let windowOffset = 0;
 
-export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) => {
+export function BountySection({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const location = useLocation();
@@ -94,7 +94,7 @@ export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, h
   };
 
   useEffect(() => {
-    const params = location.params;
+    const { params } = location;
     if (params.task || params.taskProposal) {
       setOpenModal(true);
     }
@@ -107,7 +107,7 @@ export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, h
     if (top?.length > 0) {
       window?.scrollTo(0, Number(top[0]));
     }
-    let newUrl = `${delQuery(router.asPath)}`;
+    const newUrl = `${delQuery(router.asPath)}`;
     location.push(newUrl);
     setOpenModal(false);
   };
@@ -142,4 +142,4 @@ export const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, h
       )}
     </SectionWrapper>
   );
-};
+}

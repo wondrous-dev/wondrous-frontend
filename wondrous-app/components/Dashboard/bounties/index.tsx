@@ -2,17 +2,16 @@ import { useCallback, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { UserBoardContext } from 'utils/contexts';
 import { GET_USER_BOARD_BOUNTIES, SEARCH_TASKS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
-import { LIMIT } from 'services/board';
+import { LIMIT , generateUserDashboardFilters } from 'services/board';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
 import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ViewType } from 'types/common';
-import { Spinner } from './styles';
-import { generateUserDashboardFilters } from 'services/board';
 import { useMe } from 'components/Auth/withAuth';
 import { useCreateEntityContext } from 'utils/hooks';
 import { ENTITIES_TYPES, PRIVACY_LEVEL, TASKS_DEFAULT_STATUSES } from 'utils/constants';
 import apollo from 'services/apollo';
+import { Spinner } from './styles';
 
 const Board = withCardsLayout(BountyBoard, 3);
 const BountiesDashboard = ({ isAdmin }) => {
@@ -56,7 +55,7 @@ const BountiesDashboard = ({ isAdmin }) => {
   }, [hasMore, fetchMore, data, variables, setHasMore]);
 
   const onFilterChange = (filtersToApply) => {
-    let { privacyLevel, ...rest } = filtersToApply;
+    const { privacyLevel, ...rest } = filtersToApply;
     const filters = {
       input: {
         ...rest,

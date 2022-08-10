@@ -25,7 +25,7 @@ export const StyledTabs = styled((props) => (
     width: 210,
     borderBottom: '2px solid #4B4B4B',
 
-    //text
+    // text
     fontWeight: 600,
     fontSize: '16px',
     lineHeight: '19px',

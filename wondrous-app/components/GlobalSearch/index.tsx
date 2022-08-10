@@ -47,7 +47,7 @@ interface Labels {
   defaultImg: any;
 }
 
-const GlobalSearch = () => {
+function GlobalSearch() {
   const [options, setOptions] = useState({});
   const [isLoading, setIsLoading] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
@@ -123,60 +123,56 @@ const GlobalSearch = () => {
   };
 
   return (
-    <>
-      <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
-        <SearchIconWrapper isExpanded={isExpanded}>
-          <SearchIconWrapped />
-        </SearchIconWrapper>
+    <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
+      <SearchIconWrapper isExpanded={isExpanded}>
+        <SearchIconWrapped />
+      </SearchIconWrapper>
 
-        <SearchInputWrapper isExpanded={isExpanded}>
-          <SearchInput
-            sx={{ height: '40px' }}
-            isExpanded={isExpanded}
-            placeholder={'Search'}
-            inputRef={inputRef}
-            onChange={handleInputChange}
-            InputProps={{
-              endAdornment: (
-                <InputAdornment position="end">
-                  {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-                </InputAdornment>
-              ),
-            }}
-          />
-        </SearchInputWrapper>
-        {Object.keys(options)?.length ? (
-          <SearchResults>
-            {Object.keys(options).map((option, optionIdx) => {
-              const { label, defaultImg }: Labels = LABELS_DEFAULT_IMAGES_MAP[option];
-              return (
-                <SearchResultCategory key={optionIdx}>
-                  <SearchResultCategoryTitle>{label}</SearchResultCategoryTitle>
-                  {options[option]?.length ? (
-                    options[option].map((item, idx) => {
-                      return (
-                        <SearchResultItem key={idx} onClick={() => handleRedirect(option, item)}>
-                          {item.profilePicture ? (
-                            <SafeImage width={29} height={29} src={item.profilePicture} />
-                          ) : (
-                            defaultImg()
-                          )}
-                          {item.username}
-                          {item.description ? <span>{item.description}</span> : null}
-                        </SearchResultItem>
-                      );
-                    })
-                  ) : (
-                    <span>No results found</span>
-                  )}
-                </SearchResultCategory>
-              );
-            })}
-          </SearchResults>
-        ) : null}
-      </GlobalSearchWrapper>
-    </>
+      <SearchInputWrapper isExpanded={isExpanded}>
+        <SearchInput
+          sx={{ height: '40px' }}
+          isExpanded={isExpanded}
+          placeholder="Search"
+          inputRef={inputRef}
+          onChange={handleInputChange}
+          InputProps={{
+            endAdornment: (
+              <InputAdornment position="end">
+                {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+              </InputAdornment>
+            ),
+          }}
+        />
+      </SearchInputWrapper>
+      {Object.keys(options)?.length ? (
+        <SearchResults>
+          {Object.keys(options).map((option, optionIdx) => {
+            const { label, defaultImg }: Labels = LABELS_DEFAULT_IMAGES_MAP[option];
+            return (
+              <SearchResultCategory key={optionIdx}>
+                <SearchResultCategoryTitle>{label}</SearchResultCategoryTitle>
+                {options[option]?.length ? (
+                  options[option].map((item, idx) => (
+                    <SearchResultItem key={idx} onClick={() => handleRedirect(option, item)}>
+                      {item.profilePicture ? (
+                        <SafeImage width={29} height={29} src={item.profilePicture} />
+                      ) : (
+                        defaultImg()
+                      )}
+                      {item.username}
+                      {item.description ? <span>{item.description}</span> : null}
+                    </SearchResultItem>
+                  ))
+                ) : (
+                  <span>No results found</span>
+                )}
+              </SearchResultCategory>
+            );
+          })}
+        </SearchResults>
+      ) : null}
+    </GlobalSearchWrapper>
   );
-};
+}
 
 export default GlobalSearch;

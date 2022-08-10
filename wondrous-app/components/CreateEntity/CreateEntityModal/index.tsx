@@ -82,14 +82,23 @@ import {
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
 } from 'utils/constants';
-import { transformTaskToTaskCard, hasCreateTaskPermission } from 'utils/helpers';
+import { transformTaskToTaskCard, hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { SafeImage } from '../../Common/Image';
-import Tags, { Option as Label } from '../../Tags';
 import { StyledChipTag } from 'components/Tags/styles';
-import { MediaItem } from '../MediaItem';
+import { GithubLink } from 'components/Settings/Github/styles';
+import { ErrorText } from 'components/Common';
+import Checkbox from 'components/Checkbox';
+
+import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
+import { useSnapshot } from 'services/snapshot';
+import {
+  TaskModalSnapshot,
+  TaskModalSnapshotLogo,
+  TaskModalSnapshotText,
+} from 'components/Common/TaskViewModal/styles';
+import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
@@ -161,19 +170,9 @@ import {
   SnapshotButtonBlock,
   CreateEntityTextfieldInputTemplate,
 } from './styles';
-import { GithubLink } from 'components/Settings/Github/styles';
-import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
-import { ErrorText } from 'components/Common';
-import { transformMediaFormat } from 'utils/helpers';
-import Checkbox from 'components/Checkbox';
-
-import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
-import { useSnapshot } from 'services/snapshot';
-import {
-  TaskModalSnapshot,
-  TaskModalSnapshotLogo,
-  TaskModalSnapshotText,
-} from 'components/Common/TaskViewModal/styles';
+import { MediaItem } from '../MediaItem';
+import Tags, { Option as Label } from '../../Tags';
+import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 
 const formValidationSchema = Yup.object().shape({
@@ -219,13 +218,11 @@ const privacyOptions = {
 };
 const filterUserOptions = (options) => {
   if (!options) return [];
-  return options.map((option) => {
-    return {
-      label: option?.username ?? option?.title,
-      id: option?.id,
-      profilePicture: option?.profilePicture,
-    };
-  });
+  return options.map((option) => ({
+    label: option?.username ?? option?.title,
+    id: option?.id,
+    profilePicture: option?.profilePicture,
+  }));
 };
 
 const filterOrgUsersForAutocomplete = (orgUsers) => {
@@ -251,20 +248,18 @@ const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
 };
 const filterPaymentMethods = (paymentMethods) => {
   if (!paymentMethods) return [];
-  return paymentMethods.map((paymentMethod) => {
-    return {
-      ...paymentMethod,
-      icon: (
-        <SafeImage
-          useNextImage={false}
-          src={paymentMethod.icon}
-          style={{ width: '30px', height: '30px', borderRadius: '15px' }}
-        />
-      ),
-      label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
-      value: paymentMethod.id,
-    };
-  });
+  return paymentMethods.map((paymentMethod) => ({
+    ...paymentMethod,
+    icon: (
+      <SafeImage
+        useNextImage={false}
+        src={paymentMethod.icon}
+        style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+      />
+    ),
+    label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
+    value: paymentMethod.id,
+  }));
 };
 
 const filterOrgUsers = (orgUsers) => {
@@ -304,7 +299,7 @@ const filterOptionsWithPermission = (
       imageUrl: profilePicture,
       label: name,
       value: id,
-      color: color,
+      color,
     }));
 };
 
@@ -442,7 +437,7 @@ const useGetOrgLabels = (orgId) => {
     if (orgId) {
       getOrgLabels({
         variables: {
-          orgId: orgId,
+          orgId,
         },
       });
     }
@@ -478,7 +473,7 @@ const useCreateLabel = (orgId, callback) => {
     } = await createLabel({
       variables: {
         input: {
-          orgId: orgId,
+          orgId,
           name: label.name,
           color: label.color,
         },
@@ -716,7 +711,7 @@ const useUpdateMilestone = () => {
           columns = updateInReviewItem(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
           columns = updateInProgressTask(transformedTask, columns);
-          //if there's no entityType we assume it's the userBoard and keeping the old logic
+          // if there's no entityType we assume it's the userBoard and keeping the old logic
         } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
           columns = updateTaskItem(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
@@ -838,16 +833,16 @@ const useUpdateTaskProposal = () => {
   return { handleMutation, loading };
 };
 
-const CreateEntityDropdownRenderOptions = (value) => {
+function CreateEntityDropdownRenderOptions(value) {
   return (
     <CreateEntitySelectRootValue>
       <CreateEntitySelectRootValueWrapper>{value?.label}</CreateEntitySelectRootValueWrapper>
       <CreateEntitySelectArrowIcon />
     </CreateEntitySelectRootValue>
   );
-};
+}
 
-const CreateEntityDropdown = (props) => {
+function CreateEntityDropdown(props) {
   const {
     value,
     options,
@@ -871,9 +866,9 @@ const CreateEntityDropdown = (props) => {
       error={error}
       onFocus={onFocus}
     >
-      <CreateEntityOption key={'placeholder'} value={'placeholder'} hide={true}>
+      <CreateEntityOption key="placeholder" value="placeholder" hide>
         <CreateEntityOptionImageWrapper>
-          <DefaultImageComponent color={'#474747'} />
+          <DefaultImageComponent color="#474747" />
         </CreateEntityOptionImageWrapper>
         <CreateEntityOptionLabel>{placeholderText[name]}</CreateEntityOptionLabel>
       </CreateEntityOption>
@@ -890,43 +885,38 @@ const CreateEntityDropdown = (props) => {
       })}
     </CreateEntitySelect>
   );
-};
+}
 
-const CreateEntityTextfieldInputPointsComponent = React.forwardRef(function CreateEntityTextfieldInputCustom(
-  props,
-  ref
-) {
-  return (
-    <CreateEntityTextfieldInputPoints
-      {...props}
-      fullWidth={false}
-      ref={ref}
-      inputProps={{
-        maxLength: 3,
-      }}
-      InputProps={{
-        startAdornment: (
-          <CreateEntityAutocompletePopperRenderInputAdornment position="start">
-            <CreateEntityTextfieldPoints />
-          </CreateEntityAutocompletePopperRenderInputAdornment>
-        ),
-        endAdornment: (
-          <CreateEntityAutocompletePopperRenderInputAdornment position="end">
-            <CreateEntityTextfieldInputLabel>PTS</CreateEntityTextfieldInputLabel>
-          </CreateEntityAutocompletePopperRenderInputAdornment>
-        ),
-      }}
-    />
-  );
-});
+const CreateEntityTextfieldInputPointsComponent = React.forwardRef((props, ref) => (
+  <CreateEntityTextfieldInputPoints
+    {...props}
+    fullWidth={false}
+    ref={ref}
+    inputProps={{
+      maxLength: 3,
+    }}
+    InputProps={{
+      startAdornment: (
+        <CreateEntityAutocompletePopperRenderInputAdornment position="start">
+          <CreateEntityTextfieldPoints />
+        </CreateEntityAutocompletePopperRenderInputAdornment>
+      ),
+      endAdornment: (
+        <CreateEntityAutocompletePopperRenderInputAdornment position="end">
+          <CreateEntityTextfieldInputLabel>PTS</CreateEntityTextfieldInputLabel>
+        </CreateEntityAutocompletePopperRenderInputAdornment>
+      ),
+    }}
+  />
+));
 
-const CreateEntityTextfieldInputRewardComponent = React.forwardRef(function CreateEntityTextfieldInput(props, ref) {
-  return <CreateEntityTextfieldInputReward {...props} ref={ref} />;
-});
+const CreateEntityTextfieldInputRewardComponent = React.forwardRef((props, ref) => (
+  <CreateEntityTextfieldInputReward {...props} ref={ref} />
+));
 
-const CreateEntityTextfieldInputTemplateComponent = React.forwardRef(function CreateEntityTextfieldInput(props, ref) {
-  return <CreateEntityTextfieldInputTemplate {...props} ref={ref} />;
-});
+const CreateEntityTextfieldInputTemplateComponent = React.forwardRef((props, ref) => (
+  <CreateEntityTextfieldInputTemplate {...props} ref={ref} />
+));
 
 enum Fields {
   reviewer,
@@ -1058,16 +1048,14 @@ const initialValues = (entityType, existingTask = undefined) => {
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
-      rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => {
-        return { rewardAmount, paymentMethodId };
-      }),
+      rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
       labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
     },
     defaultValuesKeys
   );
-  const initialValues = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) => {
-    return isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue;
-  });
+  const initialValues = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
+    isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue
+  );
   return initialValues;
 };
 
@@ -1099,7 +1087,7 @@ interface ICreateEntityModal {
   status?: string;
 }
 
-export const CreateEntityModal = (props: ICreateEntityModal) => {
+export function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
@@ -1156,7 +1144,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
 
-  const form = useFormik({
+  const form: any = useFormik({
     initialValues: initialValues(entityType, existingTask),
     validateOnChange: false,
     validateOnBlur: false,
@@ -1344,10 +1332,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           title: form.values.title,
           assigneeId: form.values.assigneeId,
           reviewerIds: form.values.reviewerIds,
-          rewards: rewards,
+          rewards,
           points: parseInt(form.values.points),
           name: template_name,
-          description: description,
+          description,
           orgId: form.values.orgId,
           podId: form.values.podId,
         },
@@ -1375,9 +1363,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           title: form.values.title,
           assigneeId: form.values.assigneeId,
           reviewerIds: form.values.reviewerIds,
-          rewards: rewards,
+          rewards,
           points: parseInt(form.values.points),
-          description: description,
+          description,
           podId: form.values.podId,
         },
       },
@@ -1470,10 +1458,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               } else if (board?.orgData) {
                 window.location.href = `/pod/${board?.podData?.id}/boards?entity=bounty`;
               }
-            } else {
-              if (handleClose) {
-                handleClose();
-              }
+            } else if (handleClose) {
+              handleClose();
             }
           });
         }}
@@ -1613,7 +1599,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
           />
         </EditorContainer>
         {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
-        <CreateEntityLabelSelectWrapper show={true}>
+        <CreateEntityLabelSelectWrapper show>
           <MediaUploadDiv>
             {form.values.mediaUploads?.length > 0 &&
               form.values.mediaUploads.map((mediaItem) => (
@@ -1708,12 +1694,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                 <CreateEntitySelectErrorWrapper key={index}>
                   <CreateEntityAutocompletePopper
                     onFocus={() => form.setFieldError('reviewerIds', undefined)}
-                    openOnFocus={true}
+                    openOnFocus
                     options={eligibleReviewers}
                     value={reviewerId}
-                    isOptionEqualToValue={(option, value) => {
-                      return option.id === value;
-                    }}
+                    isOptionEqualToValue={(option, value) => option.id === value}
                     renderInput={(params) => {
                       const reviewer = eligibleReviewers.find((reviewer) => reviewer.id === params.inputProps.value);
                       const shouldAutoFocus = form.values?.reviewerIds?.filter((id) => id === null)?.length > 0;
@@ -1726,9 +1710,9 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           }}
                           autoFocus={shouldAutoFocus}
                           ref={params.InputProps.ref}
-                          disableUnderline={true}
-                          fullWidth={true}
-                          placeholder={'Enter username...'}
+                          disableUnderline
+                          fullWidth
+                          placeholder="Enter username..."
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
@@ -1774,7 +1758,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         form.setFieldValue('reviewerIds', reviewerIds);
                       }
                     }}
-                    blurOnSelect={true}
+                    blurOnSelect
                     error={hasError}
                   />
                   {hasError && <CreateEntityError>{hasError}</CreateEntityError>}
@@ -1814,12 +1798,10 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
               <CreateEntitySelectErrorWrapper>
                 <CreateEntityAutocompletePopper
                   onFocus={() => form.setFieldError('assigneeId', undefined)}
-                  openOnFocus={true}
+                  openOnFocus
                   options={filteredOrgUsersData}
                   value={form.values.assigneeId}
-                  isOptionEqualToValue={(option, value) => {
-                    return option.value === value;
-                  }}
+                  isOptionEqualToValue={(option, value) => option.value === value}
                   renderInput={(params) => {
                     const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
                     return (
@@ -1831,8 +1813,8 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                         }}
                         autoFocus={!form.values.assigneeId}
                         ref={params.InputProps.ref}
-                        disableUnderline={true}
-                        fullWidth={true}
+                        disableUnderline
+                        fullWidth
                         placeholder="Enter username..."
                         startAdornment={
                           <CreateEntityAutocompletePopperRenderInputAdornment position="start">
@@ -1856,26 +1838,24 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       />
                     );
                   }}
-                  renderOption={(props, option) => {
-                    return (
-                      <CreateEntityAutocompleteOption {...props}>
-                        {option?.profilePicture ? (
-                          <SafeImage useNextImage={false} src={option?.profilePicture} />
-                        ) : (
-                          <CreateEntityDefaultUserImage />
-                        )}
-                        <CreateEntityAutocompleteOptionTypography>
-                          {option?.label}
-                        </CreateEntityAutocompleteOptionTypography>
-                      </CreateEntityAutocompleteOption>
-                    );
-                  }}
+                  renderOption={(props, option) => (
+                    <CreateEntityAutocompleteOption {...props}>
+                      {option?.profilePicture ? (
+                        <SafeImage useNextImage={false} src={option?.profilePicture} />
+                      ) : (
+                        <CreateEntityDefaultUserImage />
+                      )}
+                      <CreateEntityAutocompleteOptionTypography>
+                        {option?.label}
+                      </CreateEntityAutocompleteOptionTypography>
+                    </CreateEntityAutocompleteOption>
+                  )}
                   onChange={(event, value, reason) => {
                     if (reason === 'selectOption') {
                       form.setFieldValue('assigneeId', value.value);
                     }
                   }}
-                  blurOnSelect={true}
+                  blurOnSelect
                   error={form.errors?.assigneeId}
                 />
                 {form.errors?.assigneeId && <CreateEntityError>{form.errors?.assigneeId}</CreateEntityError>}
@@ -1944,34 +1924,32 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                           form.values.claimPolicyRoles ? [...form.values.claimPolicyRoles, value] : [value]
                         )
                       }
-                      renderValue={() => {
-                        return (
-                          <CreateEntityApplicationsSelectRender>
-                            <>
-                              {form.values?.claimPolicyRoles?.map((role) => {
-                                const roleData = getRoleDataById(role);
-                                return (
-                                  <StyledChipTag
-                                    key={role}
-                                    style={{ margin: '2px' }}
-                                    deleteIcon={<div>&times;</div>}
-                                    onClick={() =>
-                                      form.setFieldValue(
-                                        'claimPolicyRoles',
-                                        form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
-                                      )
-                                    }
-                                    label={roleData?.name}
-                                    // background={option.color}
-                                    variant="outlined"
-                                  />
-                                );
-                              })}
-                            </>
-                            <CreateEntitySelectArrowIcon />
-                          </CreateEntityApplicationsSelectRender>
-                        );
-                      }}
+                      renderValue={() => (
+                        <CreateEntityApplicationsSelectRender>
+                          <>
+                            {form.values?.claimPolicyRoles?.map((role) => {
+                              const roleData = getRoleDataById(role);
+                              return (
+                                <StyledChipTag
+                                  key={role}
+                                  style={{ margin: '2px' }}
+                                  deleteIcon={<div>&times;</div>}
+                                  onClick={() =>
+                                    form.setFieldValue(
+                                      'claimPolicyRoles',
+                                      form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
+                                    )
+                                  }
+                                  label={roleData?.name}
+                                  // background={option.color}
+                                  variant="outlined"
+                                />
+                              );
+                            })}
+                          </>
+                          <CreateEntitySelectArrowIcon />
+                        </CreateEntityApplicationsSelectRender>
+                      )}
                     >
                       {roles?.map((role, roleIdx) => {
                         if (form.values.claimPolicyRoles?.includes(role.id)) return null;
@@ -2067,26 +2045,22 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   onChange={(value) => {
                     form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
                   }}
-                  renderValue={(value) => {
-                    return (
-                      <CreateEntityPaymentMethodSelectRender>
-                        {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
-                        <CreateEntitySelectArrowIcon />
-                      </CreateEntityPaymentMethodSelectRender>
-                    );
-                  }}
+                  renderValue={(value) => (
+                    <CreateEntityPaymentMethodSelectRender>
+                      {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
+                      <CreateEntitySelectArrowIcon />
+                    </CreateEntityPaymentMethodSelectRender>
+                  )}
                 >
-                  {paymentMethods.map(({ symbol, icon, id, chain }) => {
-                    return (
-                      <CreateEntityPaymentMethodOption key={id} value={id}>
-                        <CreateEntityPaymentMethodOptionIcon>{icon ?? <></>}</CreateEntityPaymentMethodOptionIcon>
-                        <CreateEntityPaymentMethodLabel>
-                          {symbol}
-                          <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
-                        </CreateEntityPaymentMethodLabel>
-                      </CreateEntityPaymentMethodOption>
-                    );
-                  })}
+                  {paymentMethods.map(({ symbol, icon, id, chain }) => (
+                    <CreateEntityPaymentMethodOption key={id} value={id}>
+                      <CreateEntityPaymentMethodOptionIcon>{icon ?? <></>}</CreateEntityPaymentMethodOptionIcon>
+                      <CreateEntityPaymentMethodLabel>
+                        {symbol}
+                        <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
+                      </CreateEntityPaymentMethodLabel>
+                    </CreateEntityPaymentMethodOption>
+                  ))}
                 </CreateEntityPaymentMethodSelect>
                 <CreateEntityTextfield
                   autoComplete="off"
@@ -2097,7 +2071,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   }}
                   placeholder="Enter rewards..."
                   value={form.values?.rewards?.[0]?.rewardAmount}
-                  fullWidth={true}
+                  fullWidth
                   InputProps={{
                     inputComponent: CreateEntityTextfieldInputRewardComponent,
                     endAdornment: (
@@ -2111,13 +2085,13 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                       </CreateEntityAutocompletePopperRenderInputAdornment>
                     ),
                   }}
-                  error={form.errors?.rewards?.[0]?.['rewardAmount']}
+                  error={form.errors?.rewards?.[0]?.rewardAmount}
                   onFocus={() => form.setFieldError('rewards', undefined)}
                 />
               </CreateEntityWrapper>
             )}
-            {form.touched.rewards && form.errors?.rewards?.[0]?.['rewardAmount'] && (
-              <CreateEntityError>{form.errors?.rewards?.[0]?.['rewardAmount']}</CreateEntityError>
+            {form.touched.rewards && form.errors?.rewards?.[0]?.rewardAmount && (
+              <CreateEntityError>{form.errors?.rewards?.[0]?.rewardAmount}</CreateEntityError>
             )}
             {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
@@ -2145,7 +2119,7 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   autoFocus={!form.values.points}
                   name="points"
                   onChange={form.handleChange('points')}
-                  fullWidth={true}
+                  fullWidth
                   value={form.values.points}
                   InputProps={{
                     inputComponent: CreateEntityTextfieldInputPointsComponent,
@@ -2308,56 +2282,50 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   <CreateEntitySelectErrorWrapper>
                     <CreateEntityAutocompletePopper
                       onFocus={() => form.setFieldError('githubRepo', undefined)}
-                      openOnFocus={true}
+                      openOnFocus
                       options={availableRepos}
                       value={form.values.githubRepo}
-                      isOptionEqualToValue={(option, value) => {
-                        return option.value?.id === value;
-                      }}
+                      isOptionEqualToValue={(option, value) => option.value?.id === value}
                       getOptionLabel={(option) => option?.label || option.title || ''}
-                      renderInput={(params) => {
+                      renderInput={(params) => (
                         // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
-                        return (
-                          <CreateEntityAutocompletePopperRenderInput
-                            {...params}
-                            // inputProps={{
-                            //   ...params.inputProps,
-                            //   value: githubPullRequest?.label,
-                            // }}
-                            ref={params.InputProps.ref}
-                            disableUnderline={true}
-                            fullWidth={true}
-                            placeholder="Choose Repo"
-                            endAdornment={
-                              <CreateEntityAutocompletePopperRenderInputAdornment
-                                position="end"
-                                onClick={() => {
-                                  form.setFieldValue('githubRepo', null);
-                                }}
-                              >
-                                <CreateEntityAutocompletePopperRenderInputIcon />
-                              </CreateEntityAutocompletePopperRenderInputAdornment>
+                        <CreateEntityAutocompletePopperRenderInput
+                          {...params}
+                          // inputProps={{
+                          //   ...params.inputProps,
+                          //   value: githubPullRequest?.label,
+                          // }}
+                          ref={params.InputProps.ref}
+                          disableUnderline
+                          fullWidth
+                          placeholder="Choose Repo"
+                          endAdornment={
+                            <CreateEntityAutocompletePopperRenderInputAdornment
+                              position="end"
+                              onClick={() => {
+                                form.setFieldValue('githubRepo', null);
+                              }}
+                            >
+                              <CreateEntityAutocompletePopperRenderInputIcon />
+                            </CreateEntityAutocompletePopperRenderInputAdornment>
+                          }
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <CreateEntityAutocompleteOption
+                          {...props}
+                          onClick={() => {
+                            if (form.values.githubPullRequest?.id !== option.id) {
+                              form.setFieldValue('githubRepo', option);
                             }
-                          />
-                        );
-                      }}
-                      renderOption={(props, option) => {
-                        return (
-                          <CreateEntityAutocompleteOption
-                            {...props}
-                            onClick={() => {
-                              if (form.values.githubPullRequest?.id !== option.id) {
-                                form.setFieldValue('githubRepo', option);
-                              }
-                              form.setFieldError('githuRepo', undefined);
-                            }}
-                          >
-                            <CreateEntityAutocompleteOptionTypography>
-                              {option?.label}
-                            </CreateEntityAutocompleteOptionTypography>
-                          </CreateEntityAutocompleteOption>
-                        );
-                      }}
+                            form.setFieldError('githuRepo', undefined);
+                          }}
+                        >
+                          <CreateEntityAutocompleteOptionTypography>
+                            {option?.label}
+                          </CreateEntityAutocompleteOptionTypography>
+                        </CreateEntityAutocompleteOption>
+                      )}
                       error={form.errors?.githubRepo}
                     />
                     {form.errors?.githubRepo && <CreateEntityError>{form.errors?.githubRepo}</CreateEntityError>}
@@ -2409,56 +2377,50 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
                   <CreateEntitySelectErrorWrapper>
                     <CreateEntityAutocompletePopper
                       onFocus={() => form.setFieldError('githubPullRequest', undefined)}
-                      openOnFocus={true}
+                      openOnFocus
                       options={availablePullRequests}
                       value={form.values.githubPullRequest}
-                      isOptionEqualToValue={(option, value) => {
-                        return option.value?.id === value;
-                      }}
+                      isOptionEqualToValue={(option, value) => option.value?.id === value}
                       getOptionLabel={(option) => option?.label || option.title || ''}
-                      renderInput={(params) => {
+                      renderInput={(params) => (
                         // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
-                        return (
-                          <CreateEntityAutocompletePopperRenderInput
-                            {...params}
-                            // inputProps={{
-                            //   ...params.inputProps,
-                            //   value: githubPullRequest?.label,
-                            // }}
-                            ref={params.InputProps.ref}
-                            disableUnderline={true}
-                            fullWidth={true}
-                            placeholder="Enter PR name"
-                            endAdornment={
-                              <CreateEntityAutocompletePopperRenderInputAdornment
-                                position="end"
-                                onClick={() => {
-                                  form.setFieldValue('githubPullRequest', null);
-                                }}
-                              >
-                                <CreateEntityAutocompletePopperRenderInputIcon />
-                              </CreateEntityAutocompletePopperRenderInputAdornment>
+                        <CreateEntityAutocompletePopperRenderInput
+                          {...params}
+                          // inputProps={{
+                          //   ...params.inputProps,
+                          //   value: githubPullRequest?.label,
+                          // }}
+                          ref={params.InputProps.ref}
+                          disableUnderline
+                          fullWidth
+                          placeholder="Enter PR name"
+                          endAdornment={
+                            <CreateEntityAutocompletePopperRenderInputAdornment
+                              position="end"
+                              onClick={() => {
+                                form.setFieldValue('githubPullRequest', null);
+                              }}
+                            >
+                              <CreateEntityAutocompletePopperRenderInputIcon />
+                            </CreateEntityAutocompletePopperRenderInputAdornment>
+                          }
+                        />
+                      )}
+                      renderOption={(props, option) => (
+                        <CreateEntityAutocompleteOption
+                          {...props}
+                          onClick={() => {
+                            if (form.values.githubPullRequest?.id !== option.id) {
+                              form.setFieldValue('githubPullRequest', option);
                             }
-                          />
-                        );
-                      }}
-                      renderOption={(props, option) => {
-                        return (
-                          <CreateEntityAutocompleteOption
-                            {...props}
-                            onClick={() => {
-                              if (form.values.githubPullRequest?.id !== option.id) {
-                                form.setFieldValue('githubPullRequest', option);
-                              }
-                              form.setFieldError('githubPullRequest', undefined);
-                            }}
-                          >
-                            <CreateEntityAutocompleteOptionTypography>
-                              {option?.label}
-                            </CreateEntityAutocompleteOptionTypography>
-                          </CreateEntityAutocompleteOption>
-                        );
-                      }}
+                            form.setFieldError('githubPullRequest', undefined);
+                          }}
+                        >
+                          <CreateEntityAutocompleteOptionTypography>
+                            {option?.label}
+                          </CreateEntityAutocompleteOptionTypography>
+                        </CreateEntityAutocompleteOption>
+                      )}
                       error={form.errors?.githubPullRequest}
                     />
                     {form.errors?.githubPullRequest && (
@@ -2499,16 +2461,14 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
-            renderValue={(value) => {
-              return (
-                <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
-                  <CreateEntityPrivacySelectRender>
-                    <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
-                    <CreateEntitySelectArrowIcon />
-                  </CreateEntityPrivacySelectRender>
-                </Tooltip>
-              );
-            }}
+            renderValue={(value) => (
+              <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
+                <CreateEntityPrivacySelectRender>
+                  <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                  <CreateEntitySelectArrowIcon />
+                </CreateEntityPrivacySelectRender>
+              </Tooltip>
+            )}
           >
             {Object.keys(privacyOptions).map((i) => {
               const { label, value, Icon } = privacyOptions[i];
@@ -2539,4 +2499,4 @@ export const CreateEntityModal = (props: ICreateEntityModal) => {
       </CreateEntityHeader>
     </CreateEntityForm>
   );
-};
+}

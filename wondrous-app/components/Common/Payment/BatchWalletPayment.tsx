@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
@@ -17,9 +16,6 @@ import {
 import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '..';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { PaymentPendingTypography } from './styles';
 import { usePaymentModal } from 'utils/hooks';
 import {
   GET_PAYMENTS_FOR_ORG,
@@ -28,11 +24,15 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
+import { ErrorText } from '..';
+import { CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { PaymentPendingTypography } from './styles';
+import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { constructGnosisRedirectUrl } from './SingleWalletPayment';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
-    return address.substring(0, 4) + '...' + address.substring(address.length - 3);
+    return `${address.substring(0, 4)}...${address.substring(address.length - 3)}`;
   }
 };
 
@@ -49,7 +49,7 @@ interface PaymentData {
   chain: string;
 }
 
-export const BatchWalletPayment = (props) => {
+export function BatchWalletPayment(props) {
   const { open, handleClose, podId, orgId, unpaidSubmissions, submissionIds, wallets, submissionsPaymentInfo, chain } =
     props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
@@ -150,7 +150,7 @@ export const BatchWalletPayment = (props) => {
   const constructAndSignTransactionData = async () => {
     setSigningError(null);
     setGnosisTransactionLoading(true);
-    let iface = new ethers.utils.Interface(ERC20abi);
+    const iface = new ethers.utils.Interface(ERC20abi);
     const transactions: MetaTransactionData[] = [];
     submissionsPaymentInfo?.map((submissionPaymentInfo) => {
       const paymentsData = submissionPaymentInfo.paymentData;
@@ -198,7 +198,7 @@ export const BatchWalletPayment = (props) => {
       console.log(e);
     }
     const options: SafeTransactionOptionalProps = {
-      safeTxGas: safeTxGas ? safeTxGas : 0,
+      safeTxGas: safeTxGas || 0,
       // baseGas, // Optional
       // gasPrice, // Optional
       // gasToken, // Optional
@@ -312,32 +312,31 @@ export const BatchWalletPayment = (props) => {
         )}
       </>
     );
-  } else {
-    return (
-      <div
-        style={{
-          marginTop: '16px',
-        }}
-      >
-        {incompatibleWalletError && (
-          <ErrorText
-            style={{
-              marginBottom: '16px',
-            }}
-          >
-            {incompatibleWalletError}
-          </ErrorText>
-        )}
-
-        <CreateFormPreviewButton
-          style={{
-            marginLeft: 0,
-          }}
-          onClick={handleCreateNewWalletClick}
-        >
-          Create new wallets
-        </CreateFormPreviewButton>
-      </div>
-    );
   }
-};
+  return (
+    <div
+      style={{
+        marginTop: '16px',
+      }}
+    >
+      {incompatibleWalletError && (
+        <ErrorText
+          style={{
+            marginBottom: '16px',
+          }}
+        >
+          {incompatibleWalletError}
+        </ErrorText>
+      )}
+
+      <CreateFormPreviewButton
+        style={{
+          marginLeft: 0,
+        }}
+        onClick={handleCreateNewWalletClick}
+      >
+        Create new wallets
+      </CreateFormPreviewButton>
+    </div>
+  );
+}

@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { IconWrapper } from './styles';
 import {
   TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
@@ -11,12 +10,13 @@ import {
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import Item from './Item';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import Accordion from 'components/Common/ListViewAccordion';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import { IconWrapper } from './styles';
+import Item from './Item';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -82,8 +82,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         showMoreTitle="Show all"
       >
         {tasks?.length ? (
-          tasks.map((task, idx) => {
-            return (
+          tasks.map((task, idx) => (
               <Draggable key={task.id} draggableId={task.id} index={idx}>
                 {(provided, snapshot) => (
                   <div
@@ -99,8 +98,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
                   </div>
                 )}
               </Draggable>
-            );
-          })
+            ))
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}

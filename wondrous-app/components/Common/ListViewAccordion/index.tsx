@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { ChevronFilled } from 'components/Icons/sections';
 import {
   AccordionComponent,
   AccordionDetails,
@@ -7,7 +8,6 @@ import {
   ListViewItemCount,
   ShowMoreButton,
 } from './styles';
-import { ChevronFilled } from 'components/Icons/sections';
 
 interface Props {
   isExpanded?: boolean;
@@ -51,7 +51,7 @@ const Accordion = ({
           {title}
           <ListViewItemCount>{count}</ListViewItemCount>
         </ListViewItemStatus>
-        {headerAddons ? headerAddons : null}
+        {headerAddons || null}
       </ListViewItemHeader>
       <AccordionDetails>{children}</AccordionDetails>
       {displayShowMore ? (

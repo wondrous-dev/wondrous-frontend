@@ -1,6 +1,7 @@
 import { Box, Button, Dialog, TextareaAutosize, Typography, Input } from '@mui/material';
 import styled from 'styled-components';
 import { ModalCloseButton } from 'components/Common/ModalCloseButton';
+
 export const TaskApplicationFormModal = styled(Dialog)`
   .MuiPaper-root {
     background: transparent;

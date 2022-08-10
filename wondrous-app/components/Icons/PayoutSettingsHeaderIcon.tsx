@@ -1,4 +1,4 @@
-export const PayoutSettingsHeaderIcon = () => {
+export function PayoutSettingsHeaderIcon() {
   return (
     <svg width="61" height="62" viewBox="0 0 61 62" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="30.1832" cy="30.8458" r="30.1832" fill="url(#paint0_linear_1310_558)" />
@@ -24,4 +24,4 @@ export const PayoutSettingsHeaderIcon = () => {
       </defs>
     </svg>
   );
-};
+}

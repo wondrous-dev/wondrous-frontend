@@ -4,10 +4,10 @@ import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import SkeletonBoard from 'components/Common/SkeletonBoard';
 import { HeaderButton } from 'components/organization/wrapper/styles';
-import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
 import { parseUserPermissionContext } from 'utils/helpers';
+import { BoardLockWrapper, BoardOverlay, OverlayPopup, OverlayPopupTitle } from './styles';
 
-const BoardLock = ({ children, handleJoinClick, requestSent }) => {
+function BoardLock({ children, handleJoinClick, requestSent }) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
@@ -62,6 +62,6 @@ const BoardLock = ({ children, handleJoinClick, requestSent }) => {
     );
   }
   return children;
-};
+}
 
 export default BoardLock;

@@ -1,7 +1,10 @@
-import React, { useState, useEffect, memo } from 'react';
+/* eslint-disable import/extensions */
+import React, { useState, memo } from 'react';
 import Link from 'next/link';
 
 import Tooltip from 'components/Tooltip';
+import { User } from 'types/User';
+import { Org } from 'types/Org';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -26,8 +29,6 @@ import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
 import HelpModal from './HelpModal';
-import { User } from 'types/User';
-import { Org } from 'types/Org';
 
 type Props = {
   isMobile: boolean;
@@ -166,39 +167,37 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
             <StyledDivider />
           </StyledDividerDiv>
 
-          <DrawerList id={'tour-sidebar-daos'}>
-            {orgsList.map((item) => {
-              return (
-                <Tooltip key={item.id} title={`${item?.name}`} style={toolTipStyle}>
-                  <div>
-                    <Link
-                      key={item.id}
-                      href={`/organization/[username]/boards`}
-                      as={`/organization/${item?.username}/boards`}
-                      passHref={true}
-                    >
-                      <DrawerListItem button key={item.id} isActive={item.isActive}>
-                        {item?.profilePicture ? (
-                          <SafeImage
-                            useNextImage={false}
-                            src={item?.thumbnailPicture || item?.profilePicture}
-                            style={{
-                              width: '36px',
-                              height: '36px',
-                              borderRadius: '6px',
-                            }}
-                          />
-                        ) : (
-                          <NoLogoDAO>
-                            <DAOIcon />
-                          </NoLogoDAO>
-                        )}
-                      </DrawerListItem>
-                    </Link>
-                  </div>
-                </Tooltip>
-              );
-            })}
+          <DrawerList id="tour-sidebar-daos">
+            {orgsList.map((item) => (
+              <Tooltip key={item.id} title={`${item?.name}`} style={toolTipStyle}>
+                <div>
+                  <Link
+                    key={item.id}
+                    href="/organization/[username]/boards"
+                    as={`/organization/${item?.username}/boards`}
+                    passHref
+                  >
+                    <DrawerListItem button key={item.id} isActive={item.isActive}>
+                      {item?.profilePicture ? (
+                        <SafeImage
+                          useNextImage={false}
+                          src={item?.thumbnailPicture || item?.profilePicture}
+                          style={{
+                            width: '36px',
+                            height: '36px',
+                            borderRadius: '6px',
+                          }}
+                        />
+                      ) : (
+                        <NoLogoDAO>
+                          <DAOIcon />
+                        </NoLogoDAO>
+                      )}
+                    </DrawerListItem>
+                  </Link>
+                </div>
+              </Tooltip>
+            ))}
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>
@@ -246,14 +245,14 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
 };
 
 // eslint-disable-next-line react/display-name
-export default memo(SideBarMemo, (prevProps, nextProps) => {
-  return (
+export default memo(
+  SideBarMemo,
+  (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.sidebar?.minimized === nextProps.sidebar?.minimized &&
     prevProps.user?.id === nextProps.user?.id &&
     prevProps.orgsList.length === nextProps.orgsList.length &&
-    prevProps.orgsList.every((org, index) => {
-      return org.id === org.id && nextProps.orgsList[index]?.isActive === nextProps.orgsList[index]?.isActive;
-    })
-  );
-});
+    prevProps.orgsList.every(
+      (org, index) => org.id === nextProps.orgsList[index]?.id && org.isActive === nextProps.orgsList[index]?.isActive
+    )
+);

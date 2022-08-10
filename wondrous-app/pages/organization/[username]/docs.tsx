@@ -20,7 +20,7 @@ const useGetOrgFromUsername = (username) => {
   return data?.getOrgFromUsername;
 };
 
-const DocsPage = () => {
+function DocsPage() {
   const router = useRouter();
   const { username } = router.query;
 
@@ -42,6 +42,6 @@ const DocsPage = () => {
       <Docs orgData={org} />
     </OrgBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(DocsPage);

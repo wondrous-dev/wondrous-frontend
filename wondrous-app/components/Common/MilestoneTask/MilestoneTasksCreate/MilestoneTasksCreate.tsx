@@ -9,7 +9,7 @@ import {
   MilestoneTasksCreateWrapper,
 } from './styles';
 
-const MilestoneTasksCreate = ({ canCreate, milestone }) => {
+function MilestoneTasksCreate({ canCreate, milestone }) {
   const { id, orgId, podId } = milestone;
   const [open, setOpen] = useState(false);
   const handleModalStatus = () => setOpen(!open);
@@ -38,6 +38,6 @@ const MilestoneTasksCreate = ({ canCreate, milestone }) => {
       </MilestoneTasksCreateWrapper>
     </>
   );
-};
+}
 
 export default MilestoneTasksCreate;

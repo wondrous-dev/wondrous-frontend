@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { BoardsActivityWrapper, BoardsActivityInlineViewWrapper } from './styles';
 import SearchTasks from 'components/SearchTasks';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
@@ -14,7 +13,9 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
-export const BoardsActivityInlineView = ({
+import { BoardsActivityInlineViewWrapper } from './styles';
+
+export function BoardsActivityInlineView({
   onSearch,
   filterSchema,
   onChange,
@@ -25,7 +26,7 @@ export const BoardsActivityInlineView = ({
   isExpandable = true,
   withAdminToggle,
   toggleItems,
-}) => {
+}) {
   const [displayFilters, setDisplayFilters] = useState(false);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
@@ -42,7 +43,7 @@ export const BoardsActivityInlineView = ({
       <UserFilter />
     </>
   );
-};
+}
 
 export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();

@@ -1,4 +1,3 @@
-import BoardWrapper from '../boards/BoardWrapper';
 import {
   MEMBERSHIP_REQUESTS,
   PERMISSIONS,
@@ -15,6 +14,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { useCreateEntityContext } from 'utils/hooks';
 import { generateAdminDashboardFilters } from 'services/board';
 import { parseUserPermissionContext } from 'utils/helpers';
+import BoardWrapper from '../boards/BoardWrapper';
 
 const PAGE_TYPE_TO_HOOK_MAP = {
   [MEMBERSHIP_REQUESTS]: useGetMembershipRequests,

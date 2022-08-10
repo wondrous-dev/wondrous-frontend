@@ -1,7 +1,7 @@
 import { Box, Button, Dialog, Divider, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Button as ButtonComponent } from '../button';
 import palette from 'theme/palette';
+import { Button as ButtonComponent } from '../button';
 
 export const StyledDialog = styled(Dialog)`
   border-radius: 6px;

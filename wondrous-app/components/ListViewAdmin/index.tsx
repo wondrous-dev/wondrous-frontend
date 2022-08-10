@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import Accordion from 'components/Common/ListViewAccordion';
-import ColumnEntry from './ColumnEntry';
 import {
   ADMIN_COLUMNS_TYPES,
   TASK_STATUS_SUBMISSION_REQUEST,
@@ -14,6 +13,8 @@ import { useLocation } from 'utils/useLocation';
 import { useRouter } from 'next/router';
 import { delQuery, insertUrlParam } from 'utils';
 import { useMe } from 'components/Auth/withAuth';
+import ColumnEntry from './ColumnEntry';
+
 interface ColumnItem {
   type: string;
   items: Array<any>;
@@ -74,7 +75,7 @@ function ListViewAdmin({ column }: Props) {
     if (top?.length > 0) {
       window?.scrollTo(0, Number(top[0]));
     }
-    let newUrl = `${delQuery(router.asPath)}?view=admin`;
+    const newUrl = `${delQuery(router.asPath)}?view=admin`;
     location.push(newUrl);
     setIsModalOpen(false);
   };
@@ -115,8 +116,7 @@ function ListViewAdmin({ column }: Props) {
         displayShowMore={column.hasMore}
         onShowMore={column.handleFetchMore}
       >
-        {column?.items?.map((item, idx) => {
-          return (
+        {column?.items?.map((item, idx) => (
             <ColumnEntry
               key={idx + item.id}
               type={column.type}
@@ -145,8 +145,7 @@ function ListViewAdmin({ column }: Props) {
               media={item.media}
               taskStatus={item.taskStatus}
             />
-          );
-        })}
+          ))}
       </Accordion>
     </>
   );

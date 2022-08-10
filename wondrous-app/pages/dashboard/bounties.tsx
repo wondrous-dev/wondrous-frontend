@@ -5,6 +5,7 @@ import { useIsMobile } from 'utils/hooks';
 import { ViewType } from 'types/common';
 import { useRouter } from 'next/router';
 import Board from 'components/Dashboard/bounties';
+
 const BountiesPage = () => {
   const isMobile = useIsMobile();
   const router = useRouter();

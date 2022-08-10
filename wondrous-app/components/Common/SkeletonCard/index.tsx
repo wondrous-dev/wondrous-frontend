@@ -16,6 +16,7 @@ import {
   CommentSkeletonCounter,
   SkeletonCardWrapper,
 } from './styles';
+
 export default function SkeletonCard() {
   return (
     <SkeletonCardWrapper>

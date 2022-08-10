@@ -15,7 +15,7 @@ type SafeImageArgs = ImageProps & {
 };
 
 // https://nextjs.org/docs/api-reference/next/image
-export const SafeImage = (safeImageArgs: SafeImageArgs) => {
+export function SafeImage(safeImageArgs: SafeImageArgs) {
   const {
     src,
     alt,
@@ -100,9 +100,10 @@ export const SafeImage = (safeImageArgs: SafeImageArgs) => {
       // eslint-disable-next-line @next/next/no-img-element
       <img src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
     );
-  } else if (placeholderComp) {
+  }
+  if (placeholderComp) {
     return placeholderComp;
   }
 
   return null;
-};
+}

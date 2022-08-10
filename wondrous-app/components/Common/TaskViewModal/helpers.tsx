@@ -6,6 +6,11 @@ import { RichTextViewer } from 'components/RichText';
 import { GithubLink, GithubLinkText } from 'components/Settings/Github/styles';
 import GitHubIcon from '@mui/icons-material/GitHub';
 
+import ErrorIcon from 'components/Icons/errorIcon.svg';
+import Tooltip from 'components/Tooltip';
+import MoreIcon from 'components/Icons/more';
+import EmptyState from 'components/EmptyStateGeneric';
+
 import {
   ConnectToWalletButton,
   GithubBlock,
@@ -29,11 +34,6 @@ import {
   LockedTask,
   ActionButton,
 } from './styles';
-import EmptyState from 'components/EmptyStateGeneric';
-
-import ErrorIcon from 'components/Icons/errorIcon.svg';
-import Tooltip from 'components/Tooltip';
-import MoreIcon from 'components/Icons/more';
 
 export const TaskSectionImageContent = ({
   hasContent,
@@ -44,11 +44,13 @@ export const TaskSectionImageContent = ({
   onClick = () => {},
 }) => {
   if (!hasContent) return <DefaultContent />;
+
   const defaultImage = DefaultImageComponent && (
     <TaskSectionImageContentImage>
       <DefaultImageComponent />
     </TaskSectionImageContentImage>
   );
+
   const image = imgSrc ? (
     <TaskSectionImageContentImage>
       <TaskSectionImageContentSafeImage src={imgSrc} />
@@ -56,6 +58,7 @@ export const TaskSectionImageContent = ({
   ) : (
     defaultImage
   );
+
   return (
     <TaskSectionImageContentWrapper onClick={onClick}>
       {image}
@@ -67,6 +70,7 @@ export const TaskSectionImageContent = ({
 export const GithubButtons = ({ fetchedTask }) => {
   const githubIssue = fetchedTask?.githubIssue;
   const githubPullRequest = fetchedTask?.githubPullRequest;
+
   if (githubIssue || githubPullRequest) {
     return (
       <TaskSectionDisplayDiv>
@@ -88,6 +92,7 @@ export const GithubButtons = ({ fetchedTask }) => {
       </TaskSectionDisplayDiv>
     );
   }
+
   return null;
 };
 
@@ -95,14 +100,18 @@ export const TaskDescriptionTextWrapper = ({ text }) => {
   const initialHeight = 100;
   const [showButton, setShowButton] = useState(false);
   const [isExpanded, setIsExpanded] = useState(true);
+
   const handleExpand = () => setIsExpanded(!isExpanded);
+
   const checkRichTextHeight = useCallback((node) => {
     if (!node) return;
     const hasExceeded = node?.children?.[0]?.offsetHeight > initialHeight;
     setShowButton(hasExceeded);
     setIsExpanded(!hasExceeded);
   }, []);
+
   if (!text) return null;
+
   return (
     <>
       <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight}>
@@ -125,7 +134,9 @@ export const TaskSectionLabel = ({ children }) => (
 
 export const ConnectToWallet = ({ user }) => {
   const [walletModalOpen, setWalletModalOpen] = useState(false);
+
   if (user?.activeEthAddress) return null;
+
   return (
     <TaskSectionInfoPaymentWrapper>
       <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
@@ -170,13 +181,17 @@ export const Rewards = ({ fetchedTask, user, withLabel = true }) => {
 const TaskHeaderMenu = ({ canEdit, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleClose = () => {
     setAnchorEl(null);
   };
+
   if (!canEdit) return null;
+
   return (
     <>
       <Tooltip title="More actions" placement="top">
@@ -253,12 +268,10 @@ export const Menu = ({
   );
 };
 
-export const LockedTaskMessage = ({ handleClose }) => {
-  return (
-    <LockedTask>
-      <EmptyState content={"Oh! You don't have permission to view this task"}>
-        <ActionButton onClick={handleClose}>Visit board</ActionButton>
-      </EmptyState>
-    </LockedTask>
-  );
-};
+export const LockedTaskMessage = ({ handleClose }) => (
+  <LockedTask>
+    <EmptyState content={"Oh! You don't have permission to view this task"}>
+      <ActionButton onClick={handleClose}>Visit board</ActionButton>
+    </EmptyState>
+  </LockedTask>
+);

@@ -10,8 +10,8 @@ import { isRichText } from './utils';
 import { BulletedList, NumberedList, RichTextStyled, Strikethrough } from './styles';
 import { Leaf } from './elements';
 
-const renderNodes = (nodes: Descendant[] | FormattedText[]) => {
-  return nodes.map((node: Descendant | FormattedText, i) => {
+const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
+  nodes.map((node: Descendant | FormattedText, i) => {
     if (Text.isText(node)) {
       return <Leaf leaf={node}>{node.text}</Leaf>;
     }
@@ -45,7 +45,6 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) => {
         return children;
     }
   });
-};
 
 const RichTextViewer: React.FC<{ text?: string }> = ({ text }) => {
   const router = useRouter();

@@ -1,4 +1,5 @@
 import { ToggleWrapper, ToggleItem } from './styles';
+
 interface Props {
   items: unknown[];
 }
@@ -8,8 +9,7 @@ interface Item {
   label: string;
   isActive: boolean;
 }
-const Toggle = ({ items }: Props) => {
-  return (
+const Toggle = ({ items }: Props) => (
     <ToggleWrapper>
       {items.map((item: Item, idx) => (
         <ToggleItem key={idx} onClick={item.onChange} isActive={item.isActive}>
@@ -18,6 +18,5 @@ const Toggle = ({ items }: Props) => {
       ))}
     </ToggleWrapper>
   );
-};
 
 export default Toggle;

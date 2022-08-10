@@ -66,7 +66,7 @@ const useGetSubtasksForTask = ({ taskId, status }) => {
   };
 };
 
-const TaskSubtaskUserImage = ({ assignee }) => {
+function TaskSubtaskUserImage({ assignee }) {
   if (!assignee) return null;
   const profilePicture = assignee?.profilePicture;
   return (
@@ -74,9 +74,9 @@ const TaskSubtaskUserImage = ({ assignee }) => {
       {profilePicture ? <SafeImage useNextImage={false} src={profilePicture} /> : <DefaultUserImage />}
     </TaskSubtaskImageWrapper>
   );
-};
+}
 
-export const TaskSubtaskReward = ({ rewards }) => {
+function TaskSubtaskReward({ rewards }) {
   if (isEmpty(rewards)) return null;
   return (
     <>
@@ -91,14 +91,14 @@ export const TaskSubtaskReward = ({ rewards }) => {
       })}
     </>
   );
-};
+}
 
-const TaskSubTaskPrivacyIconWrapper = ({ privacyLevel }) => {
+function TaskSubTaskPrivacyIconWrapper({ privacyLevel }) {
   const isPrivate = privacyLevel !== PRIVACY_LEVEL.public;
   return <TaskSubtaskPrivacyIcon isPrivate={isPrivate} tooltipTitle={isPrivate ? 'Members only' : 'Public'} />;
-};
+}
 
-const TaskSubtaskStatusIcon = ({ status }) => {
+function TaskSubtaskStatusIcon({ status }) {
   const { Icon, label } = TASK_ICONS_LABELS[status];
   return (
     <TaskSubtaskStatus>
@@ -106,9 +106,9 @@ const TaskSubtaskStatusIcon = ({ status }) => {
       <TaskSubtaskStatusLabel>{label}</TaskSubtaskStatusLabel>
     </TaskSubtaskStatus>
   );
-};
+}
 
-const TaskSubtaskCoverImage = ({ media }) => {
+function TaskSubtaskCoverImage({ media }) {
   const coverMedia = media?.filter((media) => media.type === MEDIA_TYPES.IMAGE).slice(0, 3);
   if (isEmpty(coverMedia)) return null;
   return (
@@ -118,17 +118,17 @@ const TaskSubtaskCoverImage = ({ media }) => {
       ))}
     </TaskSubtaskCoverImageWrapper>
   );
-};
+}
 
-const TaskSubtaskSmartLink = ({ router, type, id, children }) => {
+function TaskSubtaskSmartLink({ router, type, id, children }) {
   const viewUrl = `${delQuery(router.asPath)}?${type}=${id}&view=${router.query.view || 'grid'}`;
   return <SmartLink href={viewUrl}>{children}</SmartLink>;
-};
+}
 
-const TaskSubTaskHasMore = ({ hasMore, loading, innerRef }) => {
+function TaskSubTaskHasMore({ hasMore, loading, innerRef }) {
   if (hasMore && !loading) return <div ref={innerRef} />;
   return null;
-};
+}
 
 const useUpdateTaskAssignee = () => {
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE, {
@@ -145,7 +145,7 @@ const useUpdateTaskAssignee = () => {
   return handleUpdateTaskAssignee;
 };
 
-const TaskSubtaskClaimButton = ({ id, userId, assignee, taskApplicationPermissions, status }) => {
+function TaskSubtaskClaimButton({ id, userId, assignee, taskApplicationPermissions, status }) {
   const canClaim = taskApplicationPermissions?.canClaim && status !== TASK_STATUS_DONE;
   const handleUpdateTaskAssignee = useUpdateTaskAssignee();
   const handleClaim = (e) => {
@@ -160,9 +160,9 @@ const TaskSubtaskClaimButton = ({ id, userId, assignee, taskApplicationPermissio
       Claim
     </TaskSubtaskClaimButtonWrapper>
   );
-};
+}
 
-export const TaskSubtaskList = ({ taskId, status }) => {
+export function TaskSubtaskList({ taskId, status }) {
   const { hasMore, data, loading, ref } = useGetSubtasksForTask({ taskId, status });
   const router = useRouter();
   const { id: userId } = useMe();
@@ -200,4 +200,4 @@ export const TaskSubtaskList = ({ taskId, status }) => {
       <TaskSubTaskHasMore hasMore={hasMore} loading={loading} innerRef={ref} />
     </TaskSubtaskWrapper>
   );
-};
+}

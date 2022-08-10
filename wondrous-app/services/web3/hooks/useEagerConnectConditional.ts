@@ -13,9 +13,10 @@ export default function useEagerConnectConditional(address) {
   const user = useMe();
   const { activate } = useWeb3React();
   const { storedConnector } = useStoredConnector();
-  
+
   useEffect(() => {
-    if (storedConnector && user?.activeEthAddress && address) { // FIXME this is hacky, not sure how to resolve
+    if (storedConnector && user?.activeEthAddress && address) {
+      // FIXME this is hacky, not sure how to resolve
       activate(connectors[storedConnector], undefined, true).catch((err) => {
         console.log('Error while activating stored connector', err);
       });

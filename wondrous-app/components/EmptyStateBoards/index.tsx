@@ -2,15 +2,6 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import {
-  AddTaskButton,
-  EmptyStatePlaceholder,
-  EmptyStateWrapper,
-  AddTaskPlusIcon,
-  UserRoleInfo,
-  NoPermissionToCreateWrapper,
-  UserRoleInfoHighlight,
-} from './styles';
-import {
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_TODO,
   TASK_STATUS_DONE,
@@ -31,6 +22,16 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal';
 import { ENTITIES_UI_ELEMENTS } from 'components/CreateEntity/chooseEntityToCreateModal';
 import { HeaderButton } from 'components/organization/wrapper/styles';
+import {
+  AddTaskButton,
+  EmptyStatePlaceholder,
+  EmptyStateWrapper,
+  AddTaskPlusIcon,
+  UserRoleInfo,
+  NoPermissionToCreateWrapper,
+  UserRoleInfoHighlight,
+} from './styles';
+
 interface Props {
   status: string;
   hidePlaceholder?: boolean;
@@ -45,7 +46,7 @@ const ICONS_MAP = {
 };
 const STATUSES_WITH_ADD_TASK_BUTTON = [TASK_STATUS_IN_PROGRESS, TASK_STATUS_TODO, TASK_STATUS_IN_REVIEW, STATUS_OPEN];
 
-const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
+function EmptyStateBoards({ status, hidePlaceholder, fullWidth }: Props) {
   const [openTaskModal, setOpenTaskModal] = useState(false);
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -56,7 +57,7 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
   const user = useMe();
   const userPermissionsContext = board?.userPermissionsContext;
 
-  //we want to be able to create proposals from the tasks list for users who cannot create tasks
+  // we want to be able to create proposals from the tasks list for users who cannot create tasks
   useEffect(() => {
     entityType !== board?.entityType && setEntityType(board?.entityType);
   }, [board?.entityType]);
@@ -115,12 +116,10 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
 
       <EmptyStateWrapper fullWidth={fullWidth}>
         {shouldDisplayAddTaskButton ? (
-          <>
-            <AddTaskButton onClick={handleTaskModal} fullWidth={fullWidth}>
-              <AddTaskPlusIcon />
-              Add {entityLabel}
-            </AddTaskButton>
-          </>
+          <AddTaskButton onClick={handleTaskModal} fullWidth={fullWidth}>
+            <AddTaskPlusIcon />
+            Add {entityLabel}
+          </AddTaskButton>
         ) : null}
         {!canCreateTask && status === statusToDisplayNoRoleCard ? (
           <NoPermissionToCreateWrapper>
@@ -154,6 +153,6 @@ const EmptyStateBoards = ({ status, hidePlaceholder, fullWidth }: Props) => {
       </EmptyStateWrapper>
     </>
   );
-};
+}
 
 export default EmptyStateBoards;

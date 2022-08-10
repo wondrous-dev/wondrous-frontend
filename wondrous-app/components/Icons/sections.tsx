@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Arrow = (props) => {
+export function Arrow(props) {
   return (
     <svg style={props?.style} width="14" height="8" viewBox="0 0 14 8" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -9,9 +9,9 @@ export const Arrow = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const Media = (props) => {
+export function Media(props) {
   return (
     <svg width="18" height="14" viewBox="0 0 18 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -20,9 +20,9 @@ export const Media = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const Chevron = (props) => {
+export function Chevron(props) {
   return (
     <svg
       width={props.width ?? '12'}
@@ -38,18 +38,20 @@ export const Chevron = (props) => {
       />
     </svg>
   );
-};
+}
 
-export const ChevronFilled = ({ fill = '#4B4B4B', ...rest }) => (
-  <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
-    <path
-      d="M5.11337 5.21602L8.19819 1.76462C8.63196 1.27902 8.32174 0.45459 7.70487 0.45459L1.09568 0.45459C0.479252 0.454589 0.168593 1.27902 0.602806 1.76462L3.68762 5.21602C4.0805 5.65533 4.72093 5.65533 5.11337 5.21602Z"
-      fill={fill}
-    />
-  </svg>
-);
+export function ChevronFilled({ fill = '#4B4B4B', ...rest }) {
+  return (
+    <svg width="9" height="6" viewBox="0 0 9 6" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
+      <path
+        d="M5.11337 5.21602L8.19819 1.76462C8.63196 1.27902 8.32174 0.45459 7.70487 0.45459L1.09568 0.45459C0.479252 0.454589 0.168593 1.27902 0.602806 1.76462L3.68762 5.21602C4.0805 5.65533 4.72093 5.65533 5.11337 5.21602Z"
+        fill={fill}
+      />
+    </svg>
+  );
+}
 
-export const Requested = (props) => {
+export function Requested(props) {
   const active = (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -90,9 +92,9 @@ export const Requested = (props) => {
   );
 
   return props.active ? active : inactive;
-};
+}
 
-export const InReview = (props) => {
+export function InReview(props) {
   const active = (
     <svg width="15" height="15" viewBox="0 0 15 15" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -125,9 +127,9 @@ export const InReview = (props) => {
   );
 
   return props.active ? active : inactive;
-};
+}
 
-export const Archived = (props) => {
+export function Archived(props) {
   const active = (
     <svg width="17" height="14" viewBox="0 0 17 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -178,4 +180,4 @@ export const Archived = (props) => {
   );
 
   return props.active ? active : inactive;
-};
+}

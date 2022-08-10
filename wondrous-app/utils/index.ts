@@ -2,14 +2,14 @@ export const addSearchParamsUrl = (url: string, param: string, paramValue: strin
   const newUrl = new URL(url);
   const searchParams = new URLSearchParams(newUrl.searchParams);
   searchParams.set(param, paramValue);
-  return newUrl.pathname + '?' + searchParams.toString();
+  return `${newUrl.pathname}?${searchParams.toString()}`;
 };
 
 export const generateRandomString = function (length: number) {
   let text = '';
   const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
-  for (var i = 0; i < length; i++) {
+  for (let i = 0; i < length; i++) {
     text += possible.charAt(Math.floor(Math.random() * possible.length));
   }
   return text;
@@ -23,17 +23,16 @@ export function createSpacingUnit(multiplier = 1) {
 
 export function insertUrlParam(key, value) {
   if (history.pushState) {
-    let searchParams = new URLSearchParams(window.location.search);
+    const searchParams = new URLSearchParams(window.location.search);
     searchParams.set(key, value);
-    let newurl =
-      window.location.protocol + '//' + window.location.host + window.location.pathname + '?' + searchParams.toString();
+    const newurl = `${window.location.protocol}//${window.location.host}${
+      window.location.pathname
+    }?${searchParams.toString()}`;
     window.history.pushState({ path: newurl }, '', newurl);
   }
 }
 
-export const delQuery = (asPath) => {
-  return asPath.split('?')[0];
-};
+export const delQuery = (asPath) => asPath.split('?')[0];
 
 export const dedupeColumns = (columns) => {
   const taskMap = {};
@@ -54,7 +53,8 @@ export const dedupeColumns = (columns) => {
 export const getDiscordUrl = () => {
   if (process.env.NEXT_PUBLIC_PRODUCTION) {
     return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fapp.wonderverse.xyz%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
-  } else if (process.env.NEXT_PUBLIC_STAGING) {
+  }
+  if (process.env.NEXT_PUBLIC_STAGING) {
     return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=https%3A%2F%2Fwondrous-app-git-staging-wonderverse.vercel.app%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';
   }
   return 'https://discord.com/api/oauth2/authorize?client_id=917630803314352208&redirect_uri=http%3A%2F%2Flocalhost%3A3000%2Fdiscord%2Fcallback&response_type=code&scope=email%20identify';

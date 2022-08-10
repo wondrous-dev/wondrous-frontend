@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-import { UsernameTitle, UsernameInput, ErrorText } from '../styles';
 import { validateEmail } from 'utils/constants';
 import { SET_USER_SIGNUP_COMPLETE, UPDATE_USER } from 'graphql/mutations';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import { useMe } from 'components/Auth/withAuth';
+import { UsernameTitle, UsernameInput, ErrorText } from '../styles';
 
-export const SetupEmail = ({ firstOrg, firstPod }) => {
+export function SetupEmail({ firstOrg, firstPod }) {
   const [email, setEmail] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(null);
@@ -80,4 +80,4 @@ export const SetupEmail = ({ firstOrg, firstPod }) => {
       <div>{error && <ErrorText>{error}</ErrorText>}</div>
     </OnboardingLayout>
   );
-};
+}

@@ -32,9 +32,7 @@ interface Props {
   placeholder?: React.ReactNode;
 }
 
-const renderLeaf = (props) => {
-  return <Leaf {...props} />;
-};
+const renderLeaf = (props) => <Leaf {...props} />;
 
 const renderElement = (props: RenderElementProps) => {
   switch (props.element.type) {
@@ -77,7 +75,7 @@ const RichTextEditor: React.FC<Props> = ({
       value={initialValue}
       editor={editor}
       onChange={(value) => {
-        const isAstChange = editor.operations.some((op) => 'set_selection' !== op.type);
+        const isAstChange = editor.operations.some((op) => op.type !== 'set_selection');
         if (isAstChange) {
           onChange(value);
         }

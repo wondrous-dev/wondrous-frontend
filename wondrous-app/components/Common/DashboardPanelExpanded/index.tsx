@@ -16,8 +16,16 @@ import {
   StyledBorder,
 } from './styles';
 
-const DashboardPanelExpanded = (props) => {
-  const { activePanel, loading, activePanelStatusCards, selectedStatus, setSelectedStatus, isAdmin } = props;
+function DashboardPanelExpanded(props) {
+  const {
+    activePanel,
+    loading,
+    activePanelStatusCards,
+    selectedStatus,
+    setSelectedStatus,
+    isAdmin,
+    setSelectMembershipRequests,
+  } = props;
   const router = useRouter();
   const handleOnClick = () => {
     router.query.view !== ViewType.Admin
@@ -55,6 +63,6 @@ const DashboardPanelExpanded = (props) => {
       </StyledBackground>
     </StyledBorder>
   );
-};
+}
 
 export default React.memo(DashboardPanelExpanded);

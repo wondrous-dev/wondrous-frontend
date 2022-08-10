@@ -7,7 +7,7 @@ import Docs from 'components/Pod/docs/docs';
 import { PodBoardContext } from 'utils/contexts';
 import { useGetPodById } from 'utils/hooks';
 
-const DocsPage = () => {
+function DocsPage() {
   const router = useRouter();
   const { podId } = router.query;
 
@@ -30,6 +30,6 @@ const DocsPage = () => {
       <Docs podData={pod} />
     </PodBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(DocsPage);

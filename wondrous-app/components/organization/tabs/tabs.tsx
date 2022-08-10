@@ -80,7 +80,7 @@ const Tabs = (props) => {
     ],
   };
 
-  let tabsLinks = TAB_LINKS_MAP[page];
+  const tabsLinks = TAB_LINKS_MAP[page];
 
   if (showMembers) {
     tabsLinks.splice(2, 0, { href: `/${page}/${entityId}/members`, label: 'Members' });
@@ -90,7 +90,7 @@ const Tabs = (props) => {
     <Container>
       <StyledTabs
         value={asPath}
-        variant={'fullWidth'}
+        variant="fullWidth"
         style={{
           marginTop: '16px',
         }}
@@ -111,6 +111,6 @@ const Tabs = (props) => {
       <ChildrenWrapper>{children}</ChildrenWrapper>
     </Container>
   );
-};
+}
 
 export default Tabs;

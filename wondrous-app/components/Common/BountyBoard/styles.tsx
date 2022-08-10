@@ -18,11 +18,13 @@ const SUB_BACKGROUND_MAP = {
   green: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%);',
 };
 
-export const BountyIcon = () => (
-  <IconWrapper>
-    <StarIcon />
-  </IconWrapper>
-);
+export function BountyIcon() {
+  return (
+    <IconWrapper>
+      <StarIcon />
+    </IconWrapper>
+  );
+}
 
 export const BountyContainer = styled.div`
   ${({ isFullWidth }) =>

@@ -43,7 +43,7 @@ export const TASK_ICONS_LABELS = {
   [TASK_STATUS_ARCHIVED]: { Icon: ArchivedIcon, label: 'Archived' },
 };
 
-export const TaskSubtasks = ({ taskId, canCreate }) => {
+export function TaskSubtasks({ taskId, canCreate }) {
   const [status, setStatus] = useState('');
   if (!taskId) return null;
   return (
@@ -53,4 +53,4 @@ export const TaskSubtasks = ({ taskId, canCreate }) => {
       <TaskSubtaskList taskId={taskId} status={status} />
     </TaskSubtaskWrapper>
   );
-};
+}

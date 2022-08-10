@@ -15,9 +15,9 @@ import {
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
 } from 'utils/constants';
+import { ErrorModal } from 'components/Common/ErrorModal';
 import { ApproveAndPayIcon, ApproveOnlyIcon, RejectIcon, SendIntoRevisionIcon } from '../../Icons/decisionIcons';
 import { StyledList, StyledListItem, StyledListItemIcon, StyledListItemText, StyledPopper } from './styles';
-import { ErrorModal } from 'components/Common/ErrorModal';
 
 const SUBMISSION_DECISIONS = [
   [DECISION_SEND_INTO_REVISION, SendIntoRevisionIcon],
@@ -30,7 +30,7 @@ const PROPOSAL_DECISIONS = [
   [DECISION_REJECT, RejectIcon],
   [DECISION_APPROVE_ONLY, ApproveOnlyIcon],
 ];
-export const DropDownPopper = (props) => {
+export function DropDownPopper(props) {
   const { task, status, onClose, openKudos, setKudosTask } = props;
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -121,7 +121,7 @@ export const DropDownPopper = (props) => {
           open={submissionApprovalError}
           onClose={() => setSubmissionApprovalError(null)}
           text={submissionApprovalError}
-          buttonText={'Reject Submission'}
+          buttonText="Reject Submission"
           buttonAction={() => {
             handleTaskSubmissionDecision(task.id, DECISION_REJECT);
             setSubmissionApprovalError(null);
@@ -142,4 +142,4 @@ export const DropDownPopper = (props) => {
       </StyledPopper>
     </>
   );
-};
+}

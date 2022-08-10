@@ -1,5 +1,8 @@
 import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
+import React, { useEffect, useState } from 'react';
+import omit from 'lodash/omit';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import {
   BoardFiltersWrapper,
   BoardFiltersContainer,
@@ -10,17 +13,15 @@ import {
   CloseIcon,
   AppliedFiltersIconWrapper,
 } from './styles';
-import React, { useEffect, useState } from 'react';
-import omit from 'lodash/omit';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
-export const FiltersTriggerButton = ({ onClick, isOpen }) => {
+
+export function FiltersTriggerButton({ onClick, isOpen }) {
   return (
     <Button className={`FiltersTrigger-button ${isOpen ? 'active' : ''}`} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
       Add filters
     </Button>
   );
-};
+}
 
 export default function BoardFilters({ filterSchema, onChange, showAppliedFilters = false }) {
   const [appliedFilters, setAppliedFilters] = useState<any>({});
@@ -33,7 +34,7 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
   const applyFilter = (filters) => {
     setAppliedFilters(filters);
     const newFilters: any = Object.keys(filters).reduce((acc, next) => {
-      let value = Array.isArray(filters[next]) ? filters[next].map((item) => item.id) : filters[next]?.id;
+      const value = Array.isArray(filters[next]) ? filters[next].map((item) => item.id) : filters[next]?.id;
 
       acc[next] = value;
       return acc;
@@ -81,19 +82,17 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
   return (
     <BoardFiltersContainer>
       <BoardFiltersWrapper>
-        {filterSchema.map((filter, idx) => {
-          return (
-            <FilterItem
-              key={idx}
-              schemaLength={filterSchema.length}
-              currentIdx={idx}
-              selected={appliedFilters[filter.name]}
-              filterSchema={filter}
-              onChange={handleFilterChange}
-              onRemove={removeAppliedFilter}
-            />
-          );
-        })}
+        {filterSchema.map((filter, idx) => (
+          <FilterItem
+            key={idx}
+            schemaLength={filterSchema.length}
+            currentIdx={idx}
+            selected={appliedFilters[filter.name]}
+            filterSchema={filter}
+            onChange={handleFilterChange}
+            onRemove={removeAppliedFilter}
+          />
+        ))}
       </BoardFiltersWrapper>
       {!!appliedFiltersMap.length && showAppliedFilters && (
         <AppliedFiltersWrapper>

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import Typography from '@mui/material/Typography';
+
 export const OverviewComponent = styled.section`
   width: 100%;
   min-height: 100vh;

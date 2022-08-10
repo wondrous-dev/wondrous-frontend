@@ -3,6 +3,7 @@ import { withAuth } from 'components/Auth/withAuth';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 import Board from 'components/Dashboard/proposals';
+
 const ProposalsPage = () => {
   const isMobile = useIsMobile();
 

@@ -5,17 +5,17 @@ import { map } from 'lodash';
 import { DAO_CATEGORIES } from 'utils/constants';
 import { CategoriesWrapper, Divider, Label } from './styles';
 
-const CategoryItem = (props) => {
+function CategoryItem(props) {
   const radioGroup = useRadioGroup();
   return <Label checked={radioGroup?.value === props.value} {...props} />;
-};
+}
 
-const CategoryItemOther = (props) => {
+function CategoryItemOther(props) {
   const { value } = useRadioGroup();
   return <Label checked={!DAO_CATEGORIES[value]} {...props} />;
-};
+}
 
-const DaoCategories = (props) => {
+function DaoCategories(props) {
   const [field] = useField(props.name);
   return (
     <CategoriesWrapper {...field} {...props}>
@@ -25,9 +25,9 @@ const DaoCategories = (props) => {
       {/* NOTE: hide for now <CategoryItemOther control={<Radio />} label={'👀 Something else? Tell us.'} value={''} /> */}
     </CategoriesWrapper>
   );
-};
+}
 
-const OtherField = ({ label, ...props }) => {
+function OtherField({ label, ...props }) {
   const [field, meta] = useField(props.name);
   if (DAO_CATEGORIES[field.value]) return null;
   return (
@@ -40,15 +40,15 @@ const OtherField = ({ label, ...props }) => {
       </FieldWrapper>
     </>
   );
-};
+}
 
-const DaoCategory = (props) => {
+function DaoCategory(props) {
   return (
     <ComponentFieldWrapper>
       <DaoCategories {...props.fields.category} />
       {/* NOTE: hide for now <OtherField {...props.fields.category} /> */}
     </ComponentFieldWrapper>
   );
-};
+}
 
 export default DaoCategory;

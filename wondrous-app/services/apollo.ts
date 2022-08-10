@@ -24,7 +24,7 @@ const getWaitlistAuth = () => {
 };
 
 const authLink = setContext((_, { headers }) => {
-  let auth = getAuth() || getWaitlistAuth();
+  const auth = getAuth() || getWaitlistAuth();
 
   return {
     headers: {

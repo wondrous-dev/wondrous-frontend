@@ -31,6 +31,7 @@ import {
   STATUS_APPROVED,
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
+  ProposalVoteType,
 } from 'utils/constants';
 import { ApprovedSubmissionContext } from 'utils/contexts';
 import {
@@ -48,6 +49,7 @@ import {
   useCreateEntityContext,
 } from 'utils/hooks';
 
+import VoteResults from 'components/Common/Votes';
 import { useMe } from '../../Auth/withAuth';
 import {
   CreateFormButtonsBlock,
@@ -101,8 +103,6 @@ import {
   TaskStatusHeaderText,
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
-import VoteResults from 'components/Common/Votes';
-import { ProposalVoteType } from 'utils/constants';
 import {
   TaskDescriptionTextWrapper,
   TaskSectionImageContent,
@@ -137,8 +137,8 @@ interface ITaskListModalProps {
   shouldFocusAfterRender?: boolean;
 }
 
-export const TaskViewModal = (props: ITaskListModalProps) => {
-  const { open, handleClose, taskId, isTaskProposal = false, back } = props;
+// eslint-disable-next-line import/prefer-default-export
+export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = false, back }: ITaskListModalProps) => {
   const [fetchedTask, setFetchedTask] = useState(null);
   const isMilestone = fetchedTask?.type === MILESTONE_TYPE;
   const isSubtask = fetchedTask?.parentTaskId !== null;
@@ -149,12 +149,8 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const createEntityContext = useCreateEntityContext();
-  const getUserPermissionContext = useCallback(() => {
-    return createEntityContext?.userPermissionsContext;
-  }, [orgBoard, userBoard, podBoard]);
-  const getBoard = useCallback(() => {
-    return orgBoard || podBoard || userBoard;
-  }, [orgBoard, userBoard, podBoard]);
+  const getUserPermissionContext = useCallback(() => createEntityContext?.userPermissionsContext, [createEntityContext]);
+  const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
   const {
     loading: taskApplicationCountLoading,
@@ -574,7 +570,7 @@ export const TaskViewModal = (props: ITaskListModalProps) => {
                               href={`/organization/${fetchedTask?.orgUsername}/boards?task=${
                                 isSubtask ? fetchedTask?.parentTaskId : taskId
                               }`}
-                              passHref={true}
+                              passHref
                             >
                               <Tooltip title="Task" placement="top">
                                 <span>

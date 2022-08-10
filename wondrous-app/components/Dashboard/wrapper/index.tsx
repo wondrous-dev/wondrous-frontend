@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
-import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader } from './styles';
+import React from 'react';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader } from './styles';
 
 const CONFIG_MAP = {
   ADMIN: {
@@ -19,8 +19,7 @@ const Wrapper = (props) => {
   const config = isAdmin ? CONFIG_MAP.ADMIN : CONFIG_MAP.CONTRIBUTOR;
 
   return (
-    <>
-      <OverviewComponent>
+    <OverviewComponent>
         <ChooseEntityToCreate />
         <Banner img={config.img}>
           <DashboardHeader>{config.label}</DashboardHeader>
@@ -29,8 +28,7 @@ const Wrapper = (props) => {
           <ContentContainer>{children}</ContentContainer>
         </Content>
       </OverviewComponent>
-    </>
   );
-};
+}
 
 export default Wrapper;

@@ -11,7 +11,7 @@ export interface WonderWeb3ContextShape {
 
 export const WonderWeb3Context = createContext<WonderWeb3ContextShape>(null);
 
-export const WonderWeb3Provider = ({ children }) => {
+export function WonderWeb3Provider({ children }) {
   const [connecting, setConnecting] = useState(false);
   const [provider, setProvider] = useState<any>(null);
   const [isActivating, setIsActivating] = useState(false);
@@ -30,4 +30,4 @@ export const WonderWeb3Provider = ({ children }) => {
       {children}
     </WonderWeb3Context.Provider>
   );
-};
+}

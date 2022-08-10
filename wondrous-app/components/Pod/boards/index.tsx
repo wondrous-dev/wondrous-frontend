@@ -1,7 +1,5 @@
 import React from 'react';
 
-import Wrapper from '../wrapper';
-import Boards from '../../Common/Boards';
 import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -9,6 +7,8 @@ import MilestoneBoard from 'components/Common/MilestoneBoard';
 import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ColumnsContext } from 'utils/contexts';
+import Boards from '../../Common/Boards';
+import Wrapper from '../wrapper';
 
 const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -33,7 +33,7 @@ type Props = {
   statuses?: string[];
 };
 
-const PodBoards = (props: Props) => {
+function PodBoards(props: Props) {
   const {
     columns,
     onLoadMore,
@@ -71,6 +71,6 @@ const PodBoards = (props: Props) => {
       </ColumnsContext.Provider>
     </Wrapper>
   );
-};
+}
 
 export default PodBoards;

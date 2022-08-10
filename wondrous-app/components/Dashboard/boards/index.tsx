@@ -1,7 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
-import BoardWrapper from './BoardWrapper';
 import {
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_TASK_BOARD_TASKS,
@@ -25,6 +24,7 @@ import {
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 import { useCreateEntityContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
+import BoardWrapper from './BoardWrapper';
 
 const useGetUserTaskBoardTasks = ({
   contributorColumns,
@@ -70,11 +70,9 @@ const useGetUserTaskBoardTasks = ({
         statuses: [status],
         ...(limit ? { limit } : {}),
       },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        return {
-          getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
-        };
-      },
+      updateQuery: (prev, { fetchMoreResult }) => ({
+        getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
+      }),
     }).catch((error) => {
       console.log(error);
     });
@@ -378,6 +376,6 @@ const BoardsPage = (props) => {
       </BoardWrapper>
     </UserBoardContext.Provider>
   );
-};
+}
 
 export default BoardsPage;

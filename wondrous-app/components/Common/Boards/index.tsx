@@ -4,10 +4,11 @@ import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';
 import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
-import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
+import { ENTITIES_TYPES } from 'utils/constants';
+import ListView from 'components/ListView';
+import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import { Table } from '../../Table';
-import { ENTITIES_TYPES } from 'utils/constants';
 import {
   BoardsContainer,
   ResultsCount,
@@ -16,7 +17,6 @@ import {
   ShowAllButton,
   ShowAllSearchResults,
 } from './styles';
-import ListView from 'components/ListView';
 
 type Props = {
   columns: Array<any>;
@@ -36,7 +36,7 @@ type Props = {
 const LIST_VIEW_MAP = {
   [ENTITIES_TYPES.TASK]: ListView,
 };
-const Boards = (props: Props) => {
+function Boards(props: Props) {
   const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
   const router = useRouter();
   const [totalCount, setTotalCount] = useState(0);
@@ -126,6 +126,6 @@ const Boards = (props: Props) => {
       <BoardsContainer>{searchQuery ? renderSearchResults() : renderBoard()}</BoardsContainer>
     </ColumnsContext.Provider>
   );
-};
+}
 
 export default Boards;

@@ -9,7 +9,7 @@ const MentionStyled = styled.span`
   box-shadow: ${({ selected, focused }) => (selected && focused ? '0 1px 0 0 rgba(0, 186, 255, 0.2)' : 'none')};
 `;
 
-const MentionElement = ({ attributes, children, element }) => {
+function MentionElement({ attributes, children, element }) {
   const selected = useSelected();
   const focused = useFocused();
 
@@ -25,6 +25,6 @@ const MentionElement = ({ attributes, children, element }) => {
       {children}
     </MentionStyled>
   );
-};
+}
 
 export default MentionElement;

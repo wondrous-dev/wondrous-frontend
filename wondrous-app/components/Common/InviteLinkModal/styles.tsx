@@ -13,10 +13,10 @@ import {
   InputLabel,
 } from '@mui/material';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 import { ModalCloseButton } from '../ModalCloseButton';
 import { Button as ButtonComponent } from '../button';
 import { AndroidSwitch } from '../../CreateEntity/CreatePodModal';
-import palette from 'theme/palette';
 
 export const StyledModal = styled(Modal)``;
 

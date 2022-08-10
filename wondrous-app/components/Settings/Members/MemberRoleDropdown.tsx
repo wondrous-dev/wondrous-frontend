@@ -9,14 +9,14 @@ import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import { filterRoles } from './helpers';
 
-const MemberRoleDropdown = (props) => {
+function MemberRoleDropdown(props) {
   const { existingRole, roleList, userId, podId, isPod } = props;
   const [role, setRole] = useState(existingRole?.id);
   const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
   const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
   const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
   const settings = useSettings();
-  let orgId = props?.orgId || settings?.pod?.orgId;
+  const orgId = props?.orgId || settings?.pod?.orgId;
   const loggedInUserPermissions = settings?.userPermissionsContext;
   const permissions = parseUserPermissionContext({
     userPermissionsContext: loggedInUserPermissions,
@@ -82,6 +82,6 @@ const MemberRoleDropdown = (props) => {
       }}
     />
   );
-};
+}
 
 export default MemberRoleDropdown;

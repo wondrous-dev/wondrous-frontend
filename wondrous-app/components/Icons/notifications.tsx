@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const StatusLiked = () => {
+export function StatusLiked() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7.97949" cy="8.0791" r="7.15137" fill="#7547FF" />
@@ -12,9 +12,9 @@ export const StatusLiked = () => {
       />
     </svg>
   );
-};
+}
 
-export const StatusAssigned = () => {
+export function StatusAssigned() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7.97949" cy="8.0791" r="7.15137" fill="url(#paint0_linear_1310_59461)" />
@@ -34,9 +34,9 @@ export const StatusAssigned = () => {
       </defs>
     </svg>
   );
-};
+}
 
-export const StatusArchived = () => {
+export function StatusArchived() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7.97949" cy="8.0791" r="7.15137" fill="#30799E" />
@@ -50,9 +50,9 @@ export const StatusArchived = () => {
       <path d="M7.36719 9.07812H8.58892" stroke="white" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
-};
+}
 
-export const StatusFlag = () => {
+export function StatusFlag() {
   return (
     <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
       <circle cx="7.97949" cy="8.0791" r="7.15137" fill="#FBAB50" />
@@ -65,9 +65,9 @@ export const StatusFlag = () => {
       />
     </svg>
   );
-};
+}
 
-export const NotificationOutlineSettings = (props) => {
+export function NotificationOutlineSettings(props) {
   const { width, height } = props;
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 20 20" {...props}>
@@ -77,10 +77,10 @@ export const NotificationOutlineSettings = (props) => {
         strokeLinejoin="round"
         strokeWidth="1"
         d="M15.294 6.74a5.4 5.4 0 00-10.798 0c0 6.298-2.7 8.098-2.7 8.098h16.198s-2.7-1.8-2.7-8.099zM11.45 18.438a1.8 1.8 0 01-3.114 0"
-      ></path>
+      />
     </svg>
   );
-};
+}
 
 export default function NotificationsIcon(props) {
   return (

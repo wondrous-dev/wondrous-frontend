@@ -20,10 +20,16 @@ import palette from 'theme/palette';
 import { KudosForm } from 'components/Common/KudosForm';
 import { useContext, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { LinkIcon } from 'components/Icons/taskModalIcons';
+import { LinkIcon , DueDateIcon } from 'components/Icons/taskModalIcons';
 import { Rewards } from 'components/Common/TaskViewModal/helpers';
 import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
 import { NoLogoDAO } from 'components/SideBar/styles';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { DAOIcon } from 'components/Icons/dao';
+import PodIcon from 'components/Icons/podIcon';
+import Tooltip from 'components/Tooltip';
+import { format } from 'date-fns';
 import {
   BoldName,
   Description,
@@ -35,13 +41,7 @@ import {
   RequestChangesButton,
   DueDateWrapper,
 } from './styles';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { DAOIcon } from 'components/Icons/dao';
-import PodIcon from 'components/Icons/podIcon';
-import Tooltip from 'components/Tooltip';
-import { DueDateIcon } from 'components/Icons/taskModalIcons';
-import { format } from 'date-fns';
+
 interface Props {
   userProfilePicture: string;
   orgUsername: string;
@@ -83,9 +83,7 @@ const IconsList = ({ items = [], type = ICON_TYPES.LINK }) => {
   const Icon = ICONS[type];
   return (
     <IconsWrapper>
-      {items.map((link, idx) => {
-        return <IconContainer key={idx}>{Icon ? <Icon stroke={palette.white} /> : null}</IconContainer>;
-      })}
+      {items.map((link, idx) => <IconContainer key={idx}>{Icon ? <Icon stroke={palette.white} /> : null}</IconContainer>)}
     </IconsWrapper>
   );
 };
@@ -166,9 +164,9 @@ function ColumnEntry(props: Props) {
     onError,
   });
   const permissions = parseUserPermissionContext({
-    userPermissionsContext: userPermissionsContext,
-    orgId: orgId,
-    podId: podId,
+    userPermissionsContext,
+    orgId,
+    podId,
   });
 
   const canReview =
@@ -184,7 +182,7 @@ function ColumnEntry(props: Props) {
       setSnackbarAlertOpen(true);
       setSnackbarAlertMessage('Request declined!');
     };
-    let config = {
+    const config = {
       accept: () =>
         approveJoinOrgRequest({
           variables: {
@@ -201,8 +199,8 @@ function ColumnEntry(props: Props) {
         }).then(() => negativeCallback()),
     };
     if (podId) {
-      config['accept'] = () => approveJoinPodRequest({ variables: { userId, podId } }).then(() => positiveCallback());
-      config['decline'] = () => rejectJoinPodRequest({ variables: { userId, podId } }).then(() => negativeCallback());
+      config.accept = () => approveJoinPodRequest({ variables: { userId, podId } }).then(() => positiveCallback());
+      config.decline = () => rejectJoinPodRequest({ variables: { userId, podId } }).then(() => negativeCallback());
     }
     return config;
   };
@@ -286,7 +284,7 @@ function ColumnEntry(props: Props) {
   const entryMessage = message ? `"${message}"` : title;
 
   const handleItemClick = () => {
-    //used for proposals
+    // used for proposals
     const viewItemId = taskId || id;
     selectTask(viewItemId, type);
   };

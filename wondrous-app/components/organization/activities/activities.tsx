@@ -2,11 +2,12 @@ import { useLazyQuery } from '@apollo/client';
 import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_ORG_FEED } from 'graphql/queries';
+import isEmpty from 'lodash/isEmpty';
+import EmptyStateGeneric from 'components/EmptyStateGeneric';
 import { Post } from '../../Common/Post';
 import Wrapper from '../wrapper/wrapper';
 import { Feed, FeedLoadMore } from './styles';
-import isEmpty from 'lodash/isEmpty';
-import EmptyStateGeneric from 'components/EmptyStateGeneric';
+
 const useGetOrgFeed = (orgId, inView) => {
   const [getOrgFeed, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_FEED, {
     pollInterval: 60000,
@@ -15,7 +16,7 @@ const useGetOrgFeed = (orgId, inView) => {
     if (!data && orgId) {
       getOrgFeed({
         variables: {
-          orgId: orgId,
+          orgId,
           offset: 0,
           limit: 15,
         },
@@ -32,7 +33,7 @@ const useGetOrgFeed = (orgId, inView) => {
   return { data, loading };
 };
 
-const Activities = (props) => {
+function Activities(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const [ref, inView] = useInView({});
@@ -52,6 +53,6 @@ const Activities = (props) => {
       {!loading && <FeedLoadMore ref={ref} />}
     </Wrapper>
   );
-};
+}
 
 export default Activities;

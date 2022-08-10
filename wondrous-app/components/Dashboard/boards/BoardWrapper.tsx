@@ -1,10 +1,10 @@
 import { useRouter } from 'next/router';
 import Tabs from 'components/organization/tabs/tabs';
 import { USER_BOARD_PAGE_TYPES, ADMIN_PAGE_TYPES } from 'utils/constants';
-import { BoardsActivityWrapper } from 'components/Dashboard/boards/styles';
+import { BoardsActivityWrapper , Wrapper } from 'components/Dashboard/boards/styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { ViewType } from 'types/common';
-import { Wrapper } from './styles';
+
 const BoardWrapper = ({ children, isAdmin, onSearch, filterSchema, onFilterChange, statuses, podIds }) => {
   const router = useRouter();
   const handleOnToggle = () => {
