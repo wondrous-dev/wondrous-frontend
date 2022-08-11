@@ -211,10 +211,10 @@ const ModalEllipse2 = styled.div`
   ${TransitionStyle};
 `;
 
-const useHover = () => {
+const useEllipseState = () => {
   const [showEllipse, setShowEllipse] = useState<Boolean>(false);
-  const handleHover = (a) => () => setShowEllipse(a);
-  return { showEllipse, handleHover };
+  const handleSetShowEllipse = (a) => () => setShowEllipse(a);
+  return { showEllipse, handleSetShowEllipse };
 };
 
 const ButtonOption = ({ Icon, children, ...props }) => (
@@ -231,12 +231,12 @@ const ButtonOption = ({ Icon, children, ...props }) => (
 );
 
 const AddDaoModal = ({ open, handleClose }) => {
+  const { showEllipse, handleSetShowEllipse } = useEllipseState();
   const router = useRouter();
   const handleOnClick = (link) => () => {
     handleClose();
     router.push(link);
   };
-  const { showEllipse, handleHover } = useHover();
   return (
     <StyledModal open={open} onClose={handleClose}>
       <ModalWrapper onClick={handleClose}>
@@ -249,16 +249,16 @@ const AddDaoModal = ({ open, handleClose }) => {
             <ButtonOption
               Icon={CreateDaoIcon}
               onClick={handleOnClick('/onboarding-dao')}
-              onMouseEnter={handleHover(true)}
-              onMouseLeave={handleHover(false)}
+              onMouseEnter={handleSetShowEllipse(true)}
+              onMouseLeave={handleSetShowEllipse(false)}
             >
               Create new DAO
             </ButtonOption>
             <ButtonOption
               Icon={ExplorePageIcon}
               onClick={handleOnClick('/explore')}
-              onMouseEnter={handleHover(true)}
-              onMouseLeave={handleHover(false)}
+              onMouseEnter={handleSetShowEllipse(true)}
+              onMouseLeave={handleSetShowEllipse(false)}
             >
               Explore existing DAOs
             </ButtonOption>
