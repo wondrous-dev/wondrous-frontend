@@ -169,6 +169,7 @@ import {
   SnapshotErrorText,
   SnapshotButtonBlock,
   CreateEntityTextfieldInputTemplate,
+  CreateEntityPaymentMethodSelected,
 } from './styles';
 import { MediaItem } from '../MediaItem';
 import Tags, { Option as Label } from '../../Tags';
@@ -1087,7 +1088,24 @@ interface ICreateEntityModal {
   status?: string;
 }
 
-export function CreateEntityModal(props: ICreateEntityModal) {
+const CreateEntityPaymentMethodItem = ({ icon, chain, symbol }) => (
+  <>
+    <CreateEntityPaymentMethodOptionIcon>{icon}</CreateEntityPaymentMethodOptionIcon>
+    <CreateEntityPaymentMethodLabel>
+      {symbol}
+      <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
+    </CreateEntityPaymentMethodLabel>
+  </>
+);
+
+const handleRewardOnChange = (form) => (e) => {
+  const { value } = e.target;
+  if (/^\d*\.?\d*$/.test(value)) {
+    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], rewardAmount: value }]);
+  }
+};
+
+export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [recurrenceType, setRecurrenceType] = useState(null);
   const [recurrenceValue, setRecurrenceValue] = useState(null);
@@ -1312,8 +1330,6 @@ export function CreateEntityModal(props: ICreateEntityModal) {
     );
     form.setFieldValue('description', JSON.parse(template?.description));
   };
-
-  const getPaymentMethodData = (id) => paymentMethods.find((payment) => payment.id === id);
 
   const handleSaveTemplate = (template_name) => {
     const rewards = isEmpty(form.values.rewards)
@@ -2045,20 +2061,19 @@ export function CreateEntityModal(props: ICreateEntityModal) {
                   onChange={(value) => {
                     form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
                   }}
-                  renderValue={(value) => (
-                    <CreateEntityPaymentMethodSelectRender>
-                      {getPaymentMethodData(form.values.rewards[0]?.paymentMethodId)?.symbol}
-                      <CreateEntitySelectArrowIcon />
-                    </CreateEntityPaymentMethodSelectRender>
-                  )}
+                  renderValue={(value) => {
+                    if (!value?.label?.props) return null;
+                    return (
+                      <CreateEntityPaymentMethodSelected>
+                        <CreateEntityPaymentMethodItem {...value.label.props} />
+                        <CreateEntitySelectArrowIcon />
+                      </CreateEntityPaymentMethodSelected>
+                    );
+                  }}
                 >
                   {paymentMethods.map(({ symbol, icon, id, chain }) => (
                     <CreateEntityPaymentMethodOption key={id} value={id}>
-                      <CreateEntityPaymentMethodOptionIcon>{icon ?? <></>}</CreateEntityPaymentMethodOptionIcon>
-                      <CreateEntityPaymentMethodLabel>
-                        {symbol}
-                        <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
-                      </CreateEntityPaymentMethodLabel>
+                      <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
                     </CreateEntityPaymentMethodOption>
                   ))}
                 </CreateEntityPaymentMethodSelect>
@@ -2066,9 +2081,7 @@ export function CreateEntityModal(props: ICreateEntityModal) {
                   autoComplete="off"
                   autoFocus={!form.values.rewards?.[0]?.rewardAmount}
                   name="rewards"
-                  onChange={(e) => {
-                    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], rewardAmount: e.target.value }]);
-                  }}
+                  onChange={handleRewardOnChange(form)}
                   placeholder="Enter rewards..."
                   value={form.values?.rewards?.[0]?.rewardAmount}
                   fullWidth
@@ -2096,7 +2109,7 @@ export function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('rewards', [{ rewardAmount: null, paymentMethodId: paymentMethods?.[0]?.id }]);
+                  form.setFieldValue('rewards', [{ rewardAmount: '', paymentMethodId: paymentMethods?.[0]?.id }]);
                 }}
               >
                 <CreateEntityAddButtonIcon />

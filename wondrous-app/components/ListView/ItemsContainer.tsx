@@ -12,8 +12,8 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import Accordion from 'components/Common/ListViewAccordion';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import { IconWrapper } from './styles';
 import Item from './Item';
@@ -83,22 +83,22 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
       >
         {tasks?.length ? (
           tasks.map((task, idx) => (
-              <Draggable key={task.id} draggableId={task.id} index={idx}>
-                {(provided, snapshot) => (
-                  <div
-                    style={{
-                      width: '100%',
-                    }}
-                    {...provided.draggableProps}
-                    {...provided.dragHandleProps}
-                    ref={provided.innerRef}
-                    isDragging={snapshot.isDragging}
-                  >
-                    <Item entityType={entityType} task={task} />
-                  </div>
-                )}
-              </Draggable>
-            ))
+            <Draggable key={task.id} draggableId={task.id} index={idx}>
+              {(provided, snapshot) => (
+                <div
+                  style={{
+                    width: '100%',
+                  }}
+                  {...provided.draggableProps}
+                  {...provided.dragHandleProps}
+                  ref={provided.innerRef}
+                  isDragging={snapshot.isDragging}
+                >
+                  <Item entityType={entityType} task={task} />
+                </div>
+              )}
+            </Draggable>
+          ))
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}

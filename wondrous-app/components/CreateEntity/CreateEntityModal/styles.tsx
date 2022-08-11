@@ -860,6 +860,13 @@ export function CreateEntityPaymentMethodSelect(props) {
   return <SelectUnstyled {...props} components={components} />;
 }
 
+export const CreateEntityPaymentMethodSelected = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 0 8px;
+`;
+
 export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   list-style: none;
   font-family: 'Space Grotesk';

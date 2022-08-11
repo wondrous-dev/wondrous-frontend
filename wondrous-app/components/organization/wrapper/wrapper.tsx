@@ -33,7 +33,7 @@ import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper
 import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';

@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 import { useCreateEntityContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
-import { CreateEntityModal } from './CreateEntityModal/index';
+import CreateEntityModal from './CreateEntityModal/index';
 import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
 

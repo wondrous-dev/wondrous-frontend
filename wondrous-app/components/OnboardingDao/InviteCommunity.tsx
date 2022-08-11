@@ -1,66 +1,249 @@
-import ButtonImport from 'components/OnboardingDao/ButtonImport';
-import { ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY } from 'components/OnboardingDao/constants';
-import ImportSuccess from 'components/OnboardingDao/ImportSuccess';
-import { ButtonsWrapper, Error, ImportButtonWrapper } from 'components/OnboardingDao/styles';
-import { useFormikContext } from 'formik';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import styled from 'styled-components';
-import { getDiscordUrl } from 'utils';
-import { DISCORD_CONNECT_TYPES } from 'utils/constants';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { ButtonBase, MenuItem, Select } from '@mui/material';
+import { BOT_URL } from 'components/DiscordNotificationSetup';
+import CheckCircleIcon from 'components/Icons/checkCircle.svg';
+import {
+  ComponentFieldWrapper,
+  Error,
+  FieldInput,
+  FieldLabel,
+  FieldWrapper,
+  MainButton,
+} from 'components/OnboardingDao/styles';
+import { useField, useFormikContext } from 'formik';
+import {
+  CHECK_DISCORD_BOT_ADDED,
+  GET_CHANNELS_FROM_DISCORD,
+  GET_DISCORD_GUILD_FROM_INVITE_CODE,
+} from 'graphql/queries';
+import { debounce, last } from 'lodash';
+import { useCallback, useMemo } from 'react';
+import styled, { css } from 'styled-components';
+import ImportSuccess from './ImportSuccess';
 
-const ImportDiscordButton = styled(ButtonImport)`
-  background: linear-gradient(270deg, #7427ff -5.62%, #06ffa5 103.12%);
-`;
-
-const DiscordLogoIcon = styled((props) => (
-  <div {...props}>
-    <Image width="33px" height="26px" src="/images/discord-logo.png" alt="discord-icon" />
-  </div>
-))`
+const DisabledButton = styled(ButtonBase)`
   && {
-    display: flex;
     align-items: center;
-    justify-content: center;
+    border-radius: 35px;
+    border: 1px solid ${({ theme }) => theme.palette.grey78};
+    color: ${({ theme }) => theme.palette.grey57};
+    display: flex;
+    font-family: 'Space Grotesk';
+    font-size: 15px;
+    font-weight: 600;
+    height: 40px;
+    padding: 8px 24px;
+    text-align: center;
+    width: fit-content;
   }
 `;
 
-const DISCORD_OAUTH_URL = getDiscordUrl();
+const ButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 18px;
+`;
 
-const useConnectDiscord = () => {
-  const { values } = useFormikContext();
-  const handleConnectDiscordClick = () => {
-    localStorage.setItem(ONBOARDING_DAO_VALUE_LOCAL_STORAGE_KEY, JSON.stringify(values));
-    const state = JSON.stringify({
-      callbackType: DISCORD_CONNECT_TYPES.connectOnboardingDao,
-    });
-    window.location.href = `${DISCORD_OAUTH_URL}&state=${state}`;
+const SelectTypography = css`
+  font-family: 'Space Grotesk';
+  color: ${({ theme }) => theme.palette.white};
+  font-size: 14px;
+  font-weight: 500;
+`;
+
+const StyledSelect = styled(Select)`
+  && {
+    background: ${({ theme }) => theme.palette.background.default};
+    height: 42px;
+    width: 220px;
+    border-radius: 6px;
+    ${SelectTypography}
+
+    svg {
+      color: ${({ theme }) => theme.palette.white};
+    }
+  }
+`;
+
+const DropdownSelect = styled(({ className, ...props }) => (
+  <StyledSelect {...props} {...className} MenuProps={{ classes: { paper: className } }} />
+))`
+  &.MuiPaper-root {
+    background: ${({ theme }) => theme.palette.background.default};
+    width: 141px;
+    color: ${({ theme }) => theme.palette.white};
+  }
+`;
+
+const DropdownSelectItem = styled(MenuItem)`
+  ${SelectTypography}
+`;
+
+const useGetDiscordGuildFromInviteCode = ({ setValue, setError }) => {
+  const [query, { data }] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE, {
+    onCompleted: ({ getDiscordGuildFromInviteCode }) => setValue(getDiscordGuildFromInviteCode.guildId),
+    onError: () => setError('Invalid invite link'),
+  });
+  const queryHandler = useCallback(
+    async ({ inviteLink }) =>
+      query({
+        variables: {
+          inviteCode: last(inviteLink.split('/')),
+        },
+      }),
+    [query]
+  );
+  const debouncedQueryHandler = useMemo(() => debounce(queryHandler, 3000), [queryHandler]);
+  return {
+    guildId: data?.getDiscordGuildFromInviteCode?.guildId,
+    handleGetDiscordGuildFromInviteCode: debouncedQueryHandler,
   };
-  return handleConnectDiscordClick;
 };
 
-enum Text {
-  DescriptionSuccess = 'You have connected the Discord.',
-  UserConnected = 'Discord user already connected to another account.',
-  ErrorConnecting = 'Error connecting to Discord. Please try again or contact support.',
-}
+const useCheckDiscordBotAdded = ({ setError, setValue }) => {
+  const [query, { startPolling, stopPolling }] = useLazyQuery(CHECK_DISCORD_BOT_ADDED, {
+    onCompleted: ({ checkDiscordBotAdded }) => {
+      stopPolling();
+      if (!checkDiscordBotAdded?.botAdded) startPolling(1000);
+      setError(undefined);
+      setValue(checkDiscordBotAdded?.botAdded);
+    },
+    onError: () => {
+      stopPolling();
+      setError('Unable to add bot to server');
+      setValue(false);
+    },
+  });
+  const handleQuery = async ({ guildId }) => {
+    await query({
+      variables: {
+        guildId,
+      },
+    });
+  };
+  return { checkDiscordBotAdded: handleQuery };
+};
 
-function InviteCommunity() {
-  const router = useRouter();
-  const { discordUserExists, discordError, success } = router.query;
-  const handleConnectDiscordClick = useConnectDiscord();
+const useGetChannelsFromDiscord = ({ guildId }) => {
+  const { data } = useQuery(GET_CHANNELS_FROM_DISCORD, {
+    variables: { guildId },
+    skip: !guildId,
+  });
+  return { channels: data?.getAvailableChannelsForDiscordGuild || [] };
+};
+
+const Link = ({ label, tempState, setTempState, channelIdField, addBotField, ...props }) => {
+  const { name } = props;
+  const { setFieldValue } = useFormikContext();
+  const [field, meta, { setValue, setError }] = useField(name);
+  const { guildId, handleGetDiscordGuildFromInviteCode } = useGetDiscordGuildFromInviteCode({
+    setValue,
+    setError,
+  });
+  const handleOnChange = async (e) => {
+    const inviteLink = e.target.value;
+    await handleGetDiscordGuildFromInviteCode({ inviteLink });
+    setTempState({ ...tempState, [name]: inviteLink });
+    setFieldValue(channelIdField.name, '');
+    setFieldValue(addBotField.name, false);
+  };
   return (
-    <ButtonsWrapper>
-      <ImportButtonWrapper>
-        <ImportDiscordButton Icon={DiscordLogoIcon} onClick={handleConnectDiscordClick}>
-          Connect to Discord
-        </ImportDiscordButton>
-      </ImportButtonWrapper>
-      {success && <ImportSuccess>{Text.DescriptionSuccess}</ImportSuccess>}
-      {+discordError && !+discordUserExists && <Error>{Text.ErrorConnecting}</Error>}
-      {+discordUserExists && <Error>{Text.UserConnected}</Error>}
-    </ButtonsWrapper>
+    <FieldWrapper>
+      <FieldLabel>{label}</FieldLabel>
+      <FieldInput
+        {...field}
+        {...props}
+        value={tempState[name]}
+        onChange={handleOnChange}
+        endAdornment={guildId && <CheckCircleIcon />}
+      />
+      {meta.touched && meta.error && <Error>{meta.error}</Error>}
+    </FieldWrapper>
   );
-}
+};
+
+const AddWonderBotsButtons = ({ formik, guildId, isDiscordBotAdded, handleOnClick, ...props }) => {
+  if (!formik.errors.guildId && guildId && !isDiscordBotAdded) {
+    return (
+      <MainButton {...props} onClick={handleOnClick}>
+        Add Wonder Bot
+      </MainButton>
+    );
+  }
+  return (
+    <ButtonWrapper>
+      <DisabledButton {...props} disabled>
+        Add Wonder Bot
+      </DisabledButton>
+      {isDiscordBotAdded && <ImportSuccess>Successfully Added</ImportSuccess>}
+    </ButtonWrapper>
+  );
+};
+
+const AddWonderBot = ({ label, ...props }) => {
+  const [fields, meta, { setError, setValue }] = useField(props.name);
+  const formik = useFormikContext() as any;
+  const { guildId } = formik.values;
+  const { checkDiscordBotAdded } = useCheckDiscordBotAdded({
+    setError,
+    setValue,
+  });
+  const handleOnClick = async () => {
+    window.open(`${BOT_URL}&guild_id=${guildId}`, '_blank');
+    await checkDiscordBotAdded({ guildId });
+  };
+  return (
+    <FieldWrapper>
+      <FieldLabel>{label}</FieldLabel>
+      <AddWonderBotsButtons
+        {...fields}
+        {...props}
+        formik={formik}
+        guildId={guildId}
+        isDiscordBotAdded={fields.value}
+        handleOnClick={handleOnClick}
+      />
+      {meta.error && <Error>{meta.error}</Error>}
+    </FieldWrapper>
+  );
+};
+
+const SelectChannel = ({ label, ...props }) => {
+  const [field, meta] = useField(props.name);
+  const formik = useFormikContext() as any;
+  const { guildId } = formik.values;
+  const { channels } = useGetChannelsFromDiscord({ guildId });
+  return (
+    <FieldWrapper>
+      <FieldLabel>{label}</FieldLabel>
+      <DropdownSelect {...field} {...props} disabled={!guildId || formik.errors?.guildId}>
+        {channels.map(({ id, name }) => (
+          <DropdownSelectItem key={id} value={id}>
+            {name}
+          </DropdownSelectItem>
+        ))}
+      </DropdownSelect>
+      {meta.touched && meta.error && <Error>{meta.error}</Error>}
+    </FieldWrapper>
+  );
+};
+
+const InviteCommunity = (props) => {
+  const { fields, tempState, setTempState } = props;
+  const { guildId, addBot, channelId } = fields;
+  return (
+    <ComponentFieldWrapper>
+      <Link
+        {...guildId}
+        tempState={tempState}
+        setTempState={setTempState}
+        channelIdField={channelId}
+        addBotField={addBot}
+      />
+      <AddWonderBot {...addBot} />
+      <SelectChannel {...channelId} />
+    </ComponentFieldWrapper>
+  );
+};
 
 export default InviteCommunity;
