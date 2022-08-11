@@ -269,3 +269,13 @@ export const useCanViewTask = (task, userPermissionsContext, permissions) => {
 
   return { canViewTask };
 };
+
+export const useScrollIntoView = (isElementToScroll, cb = null) => {
+  const elementRef = useRef(null);
+  useEffect(() => {
+    if (isElementToScroll) {
+      elementRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [elementRef, isElementToScroll]);
+  return elementRef;
+};

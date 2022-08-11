@@ -4,7 +4,6 @@ import { withAuth } from 'components/Auth/withAuth';
 import Wrapper from 'components/Dashboard/wrapper';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
-import { ADMIN_PAGE_TYPES } from 'utils/constants';
 import AdminBoard from 'components/Dashboard/admin';
 import { UserBoardContext } from 'utils/contexts';
 import { useQuery } from '@apollo/client';
@@ -21,11 +20,6 @@ const AdminDashboard = () => {
 
   const queryBoardType: any = router?.query?.boardType;
 
-  const type = ADMIN_PAGE_TYPES[queryBoardType]?.type;
-
-  useEffect(() => {
-    console.log('mounted1');
-  }, []);
   return (
     <Wrapper isAdmin>
       <UserBoardContext.Provider
@@ -35,7 +29,7 @@ const AdminDashboard = () => {
         }}
       >
         {isMobile ? <MobileComingSoonModal /> : null}
-        {type ? <AdminBoard type={type} /> : null}
+        {queryBoardType ? <AdminBoard type={queryBoardType} /> : null}
       </UserBoardContext.Provider>
     </Wrapper>
   );

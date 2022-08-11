@@ -19,10 +19,13 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
     const location = useLocation();
     const [openModal, setOpenModal] = useState(false);
 
-    const handleCardClick = (milestone) => {
-      const newUrl = `${delQuery(router.asPath)}?task=${milestone?.id}&view=${router.query.view || 'grid'}&entity=${
+    const handleCardClick = (task, query = '') => {
+      let newUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${router.query.view || 'grid'}&entity=${
         location?.params?.entity || ENTITIES_TYPES.TASK
       }`;
+      if (query) {
+        newUrl += query;
+      }
       location.push(newUrl);
       windowOffset = window.scrollY;
       document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);

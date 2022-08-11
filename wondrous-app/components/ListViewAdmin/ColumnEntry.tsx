@@ -3,7 +3,8 @@ import {
   TASK_STATUS_SUBMISSION_REQUEST,
   PERMISSIONS,
   TASK_STATUS_DONE,
-  MEMBERSHIP_REQUESTS,
+  ORG_MEMBERSHIP_REQUESTS,
+  POD_MEMBERSHIP_REQUESTS,
   TASK_STATUS_PROPOSAL_REQUEST,
 } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -20,7 +21,7 @@ import palette from 'theme/palette';
 import { KudosForm } from 'components/Common/KudosForm';
 import { useContext, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { LinkIcon , DueDateIcon } from 'components/Icons/taskModalIcons';
+import { LinkIcon, DueDateIcon } from 'components/Icons/taskModalIcons';
 import { Rewards } from 'components/Common/TaskViewModal/helpers';
 import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
 import { NoLogoDAO } from 'components/SideBar/styles';
@@ -70,7 +71,7 @@ interface Props {
   taskStatus?: string;
 }
 
-const ICON_TYPES = {
+export const ICON_TYPES = {
   MEDIA: 'media',
   LINK: 'link',
 };
@@ -79,11 +80,13 @@ const ICONS = {
   [ICON_TYPES.MEDIA]: MediaIcon,
   [ICON_TYPES.LINK]: LinkIcon,
 };
-const IconsList = ({ items = [], type = ICON_TYPES.LINK }) => {
+export const IconsList = ({ items = [], type = ICON_TYPES.LINK }) => {
   const Icon = ICONS[type];
   return (
     <IconsWrapper>
-      {items.map((link, idx) => <IconContainer key={idx}>{Icon ? <Icon stroke={palette.white} /> : null}</IconContainer>)}
+      {items.map((link, idx) => (
+        <IconContainer key={idx}>{Icon ? <Icon stroke={palette.white} /> : null}</IconContainer>
+      ))}
     </IconsWrapper>
   );
 };
@@ -207,7 +210,7 @@ function ColumnEntry(props: Props) {
 
   const actionMapper: any = (e) => {
     e.preventDefault();
-    if (type === MEMBERSHIP_REQUESTS) {
+    if ([ORG_MEMBERSHIP_REQUESTS, POD_MEMBERSHIP_REQUESTS].includes(type)) {
       return handleMemberships();
     }
     if (type === TASK_STATUS_SUBMISSION_REQUEST) {

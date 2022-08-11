@@ -611,11 +611,7 @@ const useCreateMilestone = () => {
 
 const useCreateBounty = () => {
   const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
-    refetchQueries: () => [
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-      'getUserTaskBoardBounties',
-    ],
+    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
   });
   const handleMutation = ({ input, board, pods, form, handleClose }) => {
     createBounty({
@@ -735,7 +731,6 @@ const useUpdateBounty = () => {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
-      'getUserTaskBoardBounties',
     ],
   });
   const handleMutation = ({ input, existingTask, handleClose }) => {

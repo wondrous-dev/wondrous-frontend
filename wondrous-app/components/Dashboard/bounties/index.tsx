@@ -1,37 +1,40 @@
 import { useCallback, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { UserBoardContext } from 'utils/contexts';
-import { GET_USER_BOARD_BOUNTIES, SEARCH_TASKS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
-import { LIMIT , generateUserDashboardFilters } from 'services/board';
+import { GET_USER_TASK_BOARD_SUBMISSIONS, SEARCH_TASKS_FOR_USER_BOARD_VIEW } from 'graphql/queries';
+import { LIMIT, generateUserDashboardFilters } from 'services/board';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
-import BountyBoard from 'components/Common/BountyBoard';
+import SubmissionBoard from 'components/SubmissionBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ViewType } from 'types/common';
 import { useMe } from 'components/Auth/withAuth';
 import { useCreateEntityContext } from 'utils/hooks';
-import { ENTITIES_TYPES, PRIVACY_LEVEL, TASKS_DEFAULT_STATUSES } from 'utils/constants';
+import { ENTITIES_TYPES, PRIVACY_LEVEL, TASKS_DEFAULT_STATUSES, STATUS_OPEN } from 'utils/constants';
 import apollo from 'services/apollo';
 import { Spinner } from './styles';
 
-const Board = withCardsLayout(BountyBoard, 3);
+const Board = withCardsLayout(SubmissionBoard, 4);
 const BountiesDashboard = ({ isAdmin }) => {
   const loggedInUser = useMe();
   const { userOrgs } = useCreateEntityContext();
   const [hasMore, setHasMore] = useState(true);
-  const { data, error, loading, fetchMore, variables, previousData, refetch } = useQuery(GET_USER_BOARD_BOUNTIES, {
-    variables: {
-      input: {
+  const { data, error, loading, fetchMore, variables, previousData, refetch } = useQuery(
+    GET_USER_TASK_BOARD_SUBMISSIONS,
+    {
+      variables: {
         limit: LIMIT,
         offset: 0,
+        userId: loggedInUser?.id,
+        statuses: [STATUS_OPEN],
       },
-    },
-    onCompleted: ({ getUserTaskBoardBounties }) => {
-      if (!previousData) {
-        const hasMoreData = getUserTaskBoardBounties?.length >= LIMIT;
-        if (hasMoreData !== hasMore) setHasMore(hasMoreData);
-      }
-    },
-  });
+      onCompleted: ({ getUserTaskBoardSubmissions }) => {
+        if (!previousData) {
+          const hasMoreData = getUserTaskBoardSubmissions?.length >= LIMIT;
+          if (hasMoreData !== hasMore) setHasMore(hasMoreData);
+        }
+      },
+    }
+  );
 
   const filterSchema = generateUserDashboardFilters({
     userId: loggedInUser?.id,
@@ -43,13 +46,10 @@ const BountiesDashboard = ({ isAdmin }) => {
     if (hasMore)
       fetchMore({
         variables: {
-          input: {
-            ...variables.input,
-            offset: data?.getUserTaskBoardBounties.length,
-          },
+          offset: data?.getUserTaskBoardSubmissions.length,
         },
       }).then(({ data }) => {
-        const hasMoreData = data?.getUserTaskBoardBounties?.length >= LIMIT;
+        const hasMoreData = data?.getUserTaskBoardSubmissions?.length >= LIMIT;
         if (hasMoreData !== hasMore) setHasMore(hasMoreData);
       });
   }, [hasMore, fetchMore, data, variables, setHasMore]);
@@ -57,14 +57,12 @@ const BountiesDashboard = ({ isAdmin }) => {
   const onFilterChange = (filtersToApply) => {
     const { privacyLevel, ...rest } = filtersToApply;
     const filters = {
-      input: {
-        ...rest,
-        limit: variables.input.limit,
-        offset: variables.input.offset,
-        ...(privacyLevel === PRIVACY_LEVEL.public && { onlyPublic: true }),
-      },
+      ...rest,
+      limit: variables.limit,
+      offset: variables.offset,
+      ...(privacyLevel === PRIVACY_LEVEL.public && { onlyPublic: true }),
     };
-    refetch({ ...filters }).then(({ data }) => setHasMore(data?.getUserTaskBoardBounties?.length >= LIMIT));
+    refetch({ ...filters }).then(({ data }) => setHasMore(data?.getUserTaskBoardSubmissions?.length >= LIMIT));
   };
 
   function handleSearch(searchString: string) {
@@ -75,7 +73,6 @@ const BountiesDashboard = ({ isAdmin }) => {
         limit: LIMIT,
         types: [ENTITIES_TYPES.BOUNTY],
         offset: 0,
-        // Needed to exclude proposals
         statuses: TASKS_DEFAULT_STATUSES,
         searchString,
       },
@@ -112,7 +109,7 @@ const BountiesDashboard = ({ isAdmin }) => {
         ) : (
           <Board
             onLoadMore={onLoadMore}
-            columns={data?.getUserTaskBoardBounties}
+            columns={data?.getUserTaskBoardSubmissions}
             hasMore={hasMore}
             activeView={ViewType.Grid}
           />

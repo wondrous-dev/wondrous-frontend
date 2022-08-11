@@ -1,7 +1,13 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { USER_BOARD_PAGE_TYPES, ADMIN_PAGE_TYPES } from 'utils/constants';
+import {
+  USER_BOARD_PAGE_TYPES,
+  ORG_MEMBERSHIP_REQUESTS,
+  POD_MEMBERSHIP_REQUESTS,
+  TASK_STATUS_SUBMISSION_REQUEST,
+  TASK_STATUS_PROPOSAL_REQUEST,
+} from 'utils/constants';
 import { Container, StyledTab, StyledTabs, ChildrenWrapper } from './styles';
 
 const Tabs = (props) => {
@@ -30,15 +36,19 @@ const Tabs = (props) => {
     ],
     [USER_BOARD_PAGE_TYPES.ADMIN]: [
       {
-        href: `/dashboard/admin?boardType=${ADMIN_PAGE_TYPES.memberships.query}`,
-        label: 'Membership Requests',
+        href: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
+        label: 'Org membership Requests',
       },
       {
-        href: `/dashboard/admin?boardType=${ADMIN_PAGE_TYPES.proposals.query}`,
+        href: `/dashboard/admin?boardType=${POD_MEMBERSHIP_REQUESTS}`,
+        label: 'Pod membership Requests',
+      },
+      {
+        href: `/dashboard/admin?boardType=${TASK_STATUS_PROPOSAL_REQUEST}`,
         label: 'Proposals to review',
       },
       {
-        href: `/dashboard/admin?boardType=${ADMIN_PAGE_TYPES.submissions.query}`,
+        href: `/dashboard/admin?boardType=${TASK_STATUS_SUBMISSION_REQUEST}`,
         label: 'Submissions to review',
       },
     ],
@@ -104,13 +114,13 @@ const Tabs = (props) => {
             passHref
             shallow
           >
-            <StyledTab isActive={tab.href === asPath} label={tab.label} />
+            <StyledTab isActive={tab.href.includes(asPath)} label={tab.label} />
           </Link>
         ))}
       </StyledTabs>
       <ChildrenWrapper>{children}</ChildrenWrapper>
     </Container>
   );
-}
+};
 
 export default Tabs;

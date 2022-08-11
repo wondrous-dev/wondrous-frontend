@@ -1,5 +1,6 @@
 import {
-  MEMBERSHIP_REQUESTS,
+  ORG_MEMBERSHIP_REQUESTS,
+  POD_MEMBERSHIP_REQUESTS,
   PERMISSIONS,
   TASK_STATUS_PROPOSAL_REQUEST,
   TASK_STATUS_SUBMISSION_REQUEST,
@@ -17,7 +18,8 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import BoardWrapper from '../boards/BoardWrapper';
 
 const PAGE_TYPE_TO_HOOK_MAP = {
-  [MEMBERSHIP_REQUESTS]: useGetMembershipRequests,
+  [POD_MEMBERSHIP_REQUESTS]: useGetMembershipRequests,
+  [ORG_MEMBERSHIP_REQUESTS]: useGetMembershipRequests,
   [TASK_STATUS_PROPOSAL_REQUEST]: useGetProposalsUserCanReview,
   [TASK_STATUS_SUBMISSION_REQUEST]: useGetSubmissionsUserCanReview,
 };

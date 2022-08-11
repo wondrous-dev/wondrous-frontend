@@ -4,7 +4,8 @@ import {
   ADMIN_COLUMNS_TYPES,
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_PROPOSAL_REQUEST,
-  MEMBERSHIP_REQUESTS,
+  ORG_MEMBERSHIP_REQUESTS,
+  POD_MEMBERSHIP_REQUESTS,
 } from 'utils/constants';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon } from 'components/Icons/statusIcons';
 import { useCreateEntityContext, useUserBoard } from 'utils/hooks';
@@ -31,13 +32,15 @@ let windowOffset;
 const ICON_MAP = {
   [TASK_STATUS_SUBMISSION_REQUEST]: InReviewIcon,
   [TASK_STATUS_PROPOSAL_REQUEST]: ProposalsRemainingIcon,
-  [MEMBERSHIP_REQUESTS]: MembershipRequestIcon,
+  [ORG_MEMBERSHIP_REQUESTS]: MembershipRequestIcon,
+  [POD_MEMBERSHIP_REQUESTS]: MembershipRequestIcon,
 };
 
 const COUNTS_MAP = {
   [TASK_STATUS_SUBMISSION_REQUEST]: 'submissionRequestCount',
   [TASK_STATUS_PROPOSAL_REQUEST]: 'proposalRequestCount',
-  [MEMBERSHIP_REQUESTS]: 'membershipRequestCount',
+  [ORG_MEMBERSHIP_REQUESTS]: 'orgMembershipRequestCount',
+  [POD_MEMBERSHIP_REQUESTS]: 'podMembershipRequestCount',
 };
 
 function ListViewAdmin({ column }: Props) {
@@ -61,9 +64,7 @@ function ListViewAdmin({ column }: Props) {
     if (type && adminWorkflowCount) {
       const countType = COUNTS_MAP[type];
 
-      return type === MEMBERSHIP_REQUESTS
-        ? adminWorkflowCount?.podMembershipRequestCount + adminWorkflowCount?.orgMembershipRequestCount
-        : adminWorkflowCount[countType];
+      return adminWorkflowCount[countType];
     }
     return 0;
   };
@@ -80,7 +81,7 @@ function ListViewAdmin({ column }: Props) {
     setIsModalOpen(false);
   };
   const selectTask = (id, type) => {
-    if (type !== MEMBERSHIP_REQUESTS) {
+    if (![ORG_MEMBERSHIP_REQUESTS, POD_MEMBERSHIP_REQUESTS].includes(type)) {
       const isTaskProposal = type === TASK_STATUS_PROPOSAL_REQUEST;
       const taskType = isTaskProposal ? 'taskProposal' : 'task';
       insertUrlParam(taskType, id);
@@ -117,35 +118,35 @@ function ListViewAdmin({ column }: Props) {
         onShowMore={column.handleFetchMore}
       >
         {column?.items?.map((item, idx) => (
-            <ColumnEntry
-              key={idx + item.id}
-              type={column.type}
-              userProfilePicture={item.userProfilePicture}
-              orgUsername={item.orgUsername}
-              orgProfilePicture={item.orgProfilePicture}
-              podColor={item.podColor}
-              podId={item.podId}
-              podName={item.podName}
-              userUsername={item.userUsername}
-              id={item.id}
-              orgId={item.orgId}
-              userPermissionsContext={createEntityContext?.userPermissionsContext}
-              creatorProfilePicture={item.creatorProfilePicture}
-              creatorUsername={item.creatorUsername}
-              message={item.message}
-              title={item.title}
-              commentCount={item.commentCount}
-              taskId={item.taskId}
-              selectTask={selectTask}
-              status={item.status}
-              userId={item?.userId}
-              taskDueDate={item?.taskDueDate}
-              rewards={item.rewards}
-              links={item.links}
-              media={item.media}
-              taskStatus={item.taskStatus}
-            />
-          ))}
+          <ColumnEntry
+            key={idx + item.id}
+            type={column.type}
+            userProfilePicture={item.userProfilePicture}
+            orgUsername={item.orgUsername}
+            orgProfilePicture={item.orgProfilePicture}
+            podColor={item.podColor}
+            podId={item.podId}
+            podName={item.podName}
+            userUsername={item.userUsername}
+            id={item.id}
+            orgId={item.orgId}
+            userPermissionsContext={createEntityContext?.userPermissionsContext}
+            creatorProfilePicture={item.creatorProfilePicture}
+            creatorUsername={item.creatorUsername}
+            message={item.message}
+            title={item.title}
+            commentCount={item.commentCount}
+            taskId={item.taskId}
+            selectTask={selectTask}
+            status={item.status}
+            userId={item?.userId}
+            taskDueDate={item?.taskDueDate}
+            rewards={item.rewards}
+            links={item.links}
+            media={item.media}
+            taskStatus={item.taskStatus}
+          />
+        ))}
       </Accordion>
     </>
   );

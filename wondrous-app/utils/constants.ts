@@ -18,8 +18,7 @@ export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
 export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
 
 export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
-
-export const MEMBERSHIP_REQUESTS = 'membership_requests';
+export const POD_MEMBERSHIP_REQUESTS = 'pod_membership_requests';
 
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,
@@ -571,7 +570,8 @@ export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important b
 export const ADMIN_COLUMNS_TYPES = {
   [TASK_STATUS_SUBMISSION_REQUEST]: 'Submissions to review',
   [TASK_STATUS_PROPOSAL_REQUEST]: 'Proposals to review',
-  [MEMBERSHIP_REQUESTS]: 'Membership requests',
+  [ORG_MEMBERSHIP_REQUESTS]: 'Org membership requests',
+  [POD_MEMBERSHIP_REQUESTS]: 'Pod membership requests',
 };
 export const GLOBAL_SEARCH_TYPES = {
   ORGS: 'orgs',
@@ -600,19 +600,4 @@ export const SORT_BY = {
 export const USER_BOARD_PAGE_TYPES = {
   CONTRIBUTOR: 'contributor',
   ADMIN: 'admin',
-};
-
-export const ADMIN_PAGE_TYPES = {
-  memberships: {
-    query: 'memberships',
-    type: MEMBERSHIP_REQUESTS,
-  },
-  proposals: {
-    query: 'proposals',
-    type: TASK_STATUS_PROPOSAL_REQUEST,
-  },
-  submissions: {
-    query: 'submissions',
-    type: TASK_STATUS_SUBMISSION_REQUEST,
-  },
 };
