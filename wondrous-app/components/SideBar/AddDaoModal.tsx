@@ -30,10 +30,10 @@ const ModalWrapper = styled.div`
 `;
 
 const DialogWrapper = styled.div`
-  background: #1d1d1d;
+  background: ${({ theme }) => theme.palette.grey900};
   width: 520px;
   min-height: 260px;
-  border: 1px solid #424242;
+  border: 1px solid ${({ theme }) => theme.palette.grey79};
   border-radius: 6px;
   padding: 24px;
   position: relative;
@@ -49,7 +49,7 @@ const Header = styled.div`
 const HeaderText = styled(Typography)`
   && {
     align-items: center;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
     display: flex;
     font-family: 'Space Grotesk';
     font-size: 24px;
@@ -69,13 +69,13 @@ const HeaderIcon = styled((props) => (
     align-items: center;
     width: 32px;
     height: 32px;
-    background: #0f0f0f;
+    background: ${({ theme }) => theme.palette.background.default};
     border-radius: 6px;
   }
 `;
 
 const Divider = styled.div`
-  border-top: 1px dashed #4b4b4b;
+  border-top: 1px dashed ${({ theme }) => theme.palette.grey75};
   border-radius: 6px;
   height: 5px;
   width: 100%;
@@ -92,12 +92,13 @@ const ButtonStyled = styled(({ children, ...props }) => (
     border-radius: 6px;
     height: 50px;
     width: 100%;
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    ${({ theme }) =>
+      `background: linear-gradient(270deg, ${theme.palette.blue20} -5.62%, ${theme.palette.highlightPurple} 45.92%, ${theme.palette.highlightBlue} 103.12%)`}
   }
   > div {
     height: inherit;
     width: inherit;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: inherit;
     display: flex;
     align-items: center;
@@ -109,7 +110,7 @@ const ButtonStyled = styled(({ children, ...props }) => (
   }
   > div > div {
     align-items: center;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 5px;
     display: flex;
     height: calc(100% - 2px);
@@ -124,13 +125,13 @@ const ButtonText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-weight: 600;
     font-size: 16px;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
   }
 `;
 
 const ButtonArrowIcon = styled(ArrowIcon)`
   path {
-    fill: #fff;
+    fill: ${({ theme }) => theme.palette.white};
   }
 `;
 
@@ -145,19 +146,21 @@ const CreateDaoIcon = styled(({ children, ...props }) => (
     width: 30px;
     height: 30px;
     border-radius: 60px;
-    background: linear-gradient(228.64deg, #ccbbff -40.38%, #7427ff 13.55%, #00baff 73.41%);
+    ${({ theme }) =>
+      `background: linear-gradient(228.64deg, ${theme.palette.blue20} -40.38%, ${theme.palette.highlightPurple} 13.55%, ${theme.palette.highlightBlue} 73.41%);`}
     display: flex;
     justify-content: center;
     align-items: center;
     ${TransitionStyle};
     ${ButtonStyled}:hover & {
-      filter: drop-shadow(0px 0px 1px #ccbbff) drop-shadow(0px 0px 1px #7427ff) drop-shadow(0px 0px 1px #00baff);
+      ${({ theme }) =>
+        `filter: drop-shadow(0px 0px 1px ${theme.palette.blue20}) drop-shadow(0px 0px 1px ${theme.palette.highlightPurple}) drop-shadow(0px 0px 1px ${theme.palette.highlightBlue});`}
     }
     > div {
       width: calc(100% - 2px);
       height: calc(100% - 2px);
       border-radius: 58px;
-      background: #0f0f0f;
+      background: ${({ theme }) => theme.palette.background.default};
       display: flex;
       align-items: center;
       justify-content: center;
@@ -203,7 +206,7 @@ const ModalEllipse1 = styled.div`
   height: 558px;
   left: -10%;
   top: -30%;
-  background: #360097;
+  background: ${({ theme }) => theme.palette.violet800};
   filter: blur(230px);
   opacity: ${({ showEllipse }) => (showEllipse ? 1 : 0)};
   ${TransitionStyle};
@@ -215,7 +218,7 @@ const ModalEllipse2 = styled.div`
   height: 558px;
   right: -10%;
   bottom: -20%;
-  background: #700097;
+  background: ${({ theme }) => theme.palette.violet900};
   filter: blur(436.5px);
   opacity: ${({ showEllipse }) => (showEllipse ? 1 : 0)};
   ${TransitionStyle};

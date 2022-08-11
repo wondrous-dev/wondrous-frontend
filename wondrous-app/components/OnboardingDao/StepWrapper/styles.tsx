@@ -264,7 +264,7 @@ export const Ellipses1 = styled.div`
   height: 558px;
   left: -10%;
   top: -10%;
-  background: #360097;
+  background: ${({ theme }) => theme.palette.violet800};
   filter: blur(250px);
 `;
 
@@ -274,7 +274,7 @@ export const Ellipses2 = styled.div`
   height: 558px;
   right: -10%;
   bottom: -10%;
-  background: #700097;
+  background: ${({ theme }) => theme.palette.violet900};
   filter: blur(400px);
 `;
 
@@ -314,7 +314,7 @@ export const CreateDaoText = styled(Typography)`
     font-family: 'Space Grotesk';
     font-weight: 400;
     font-size: 26px;
-    color: #7427ff;
+    color: ${({ theme }) => theme.palette.highlightPurple};
     min-width: fit-content;
     margin-right: 24px;
   }

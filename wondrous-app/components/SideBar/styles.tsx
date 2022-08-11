@@ -139,13 +139,15 @@ export const DrawerListCreateDao = styled(({ children, ...props }) => (
     width: 30px;
     height: 30px;
     border-radius: 60px;
-    background: linear-gradient(206.66deg, #ccbbff -18.49%, #7427ff 109.85%, #00baff 252.3%);
     padding: 1px;
+    ${({ theme }) =>
+      `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
     div {
       width: 100%;
       height: 100%;
       border-radius: inherit;
-      background: linear-gradient(180deg, #474747 0%, #313131 43.61%);
+      ${({ theme }) =>
+        `background: linear-gradient(180deg, ${theme.palette.grey78} 0%, ${theme.palette.grey87} 43.61%);`}
       display: flex;
       align-items: center;
       justify-content: center;
