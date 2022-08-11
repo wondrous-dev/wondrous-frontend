@@ -234,6 +234,7 @@ const AddDaoModal = ({ open, handleClose }) => {
   const { showEllipse, handleSetShowEllipse } = useEllipseState();
   const router = useRouter();
   const handleOnClick = (link) => () => {
+    handleSetShowEllipse(false)();
     handleClose();
     router.push(link);
   };
