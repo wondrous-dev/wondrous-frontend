@@ -126,7 +126,7 @@ const DrawerListCreateDaoWrapper = styled.div`
   justify-content: center;
 `;
 
-export const DrawerListCreateDao = styled(({ children, ...props }) => (
+export const DrawerListCreateDao = styled((props) => (
   <DrawerListCreateDaoWrapper>
     <ButtonBase {...props}>
       <div>
@@ -140,8 +140,11 @@ export const DrawerListCreateDao = styled(({ children, ...props }) => (
     height: 30px;
     border-radius: 60px;
     padding: 1px;
-    ${({ theme }) =>
-      `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
+    background: transparent;
+    :hover {
+      ${({ theme }) =>
+        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
+    }
     div {
       width: 100%;
       height: 100%;
