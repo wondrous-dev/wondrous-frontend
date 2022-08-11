@@ -109,7 +109,7 @@ export const DrawerListItem = styled(ListItem)`
     border-radius: 10px;
     ${({ isActive }) => isActive && `border: 1px solid white;`};
     &:hover {
-      border: 1px solid rgba(54, 54, 54, 1);
+      outline: 1px solid rgba(54, 54, 54, 1);
     }
   }
 `;
