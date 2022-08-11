@@ -180,19 +180,6 @@ const Options = styled.div`
   gap: 18px;
 `;
 
-const ButtonOption = ({ Icon, children, ...props }) => (
-  <Options>
-    <Divider />
-    <ButtonStyled {...props}>
-      <IconTextWrapper>
-        <Icon />
-        <ButtonText>{children}</ButtonText>
-      </IconTextWrapper>
-      <ButtonArrowIcon />
-    </ButtonStyled>
-  </Options>
-);
-
 const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -229,6 +216,19 @@ const useHover = () => {
   const handleHover = (a) => () => setShowEllipse(a);
   return { showEllipse, handleHover };
 };
+
+const ButtonOption = ({ Icon, children, ...props }) => (
+  <Options>
+    <Divider />
+    <ButtonStyled {...props}>
+      <IconTextWrapper>
+        <Icon />
+        <ButtonText>{children}</ButtonText>
+      </IconTextWrapper>
+      <ButtonArrowIcon />
+    </ButtonStyled>
+  </Options>
+);
 
 const AddDaoModal = ({ open, handleClose }) => {
   const router = useRouter();
