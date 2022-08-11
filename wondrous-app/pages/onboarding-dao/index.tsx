@@ -100,18 +100,18 @@ const handleStep = (step, { action, hasError = false }) => {
 
 const useCreateOrg = () => {
   const router = useRouter();
-  const [createOrg, { loading }] = useMutation(CREATE_ORG, {
+  const [mutation, { loading }] = useMutation(CREATE_ORG, {
     refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
     onCompleted: ({ createOrg }) => {
       const { username } = createOrg;
       router.push(`organization/${username}/boards`);
     },
   });
-  const handleCreateOrg = (values) => {
+  const handleMutation = (values) => {
     const { addBot, ...rest } = values;
-    createOrg({ variables: { input: rest } });
+    mutation({ variables: { input: rest } });
   };
-  return { handleCreateOrg, loading };
+  return { handleCreateOrg: handleMutation, loading };
 };
 
 const useIsOrgUsernameTaken = () => {
