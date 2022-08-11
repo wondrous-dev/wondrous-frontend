@@ -30,6 +30,7 @@ import DefaultUserImage from '../Common/Image/DefaultUserImage';
 import { DAOIcon } from '../Icons/dao';
 import { PodModal } from './PodModal';
 import HelpModal from './HelpModal';
+import AddDaoModal from './AddDaoModal';
 
 type Props = {
   isMobile: boolean;
@@ -46,11 +47,19 @@ type Props = {
   };
 };
 
+const useCreateDaoModalState = () => {
+  const [openCreateDaoModal, setCreateDaoModal] = useState<boolean>(false);
+  const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
+  return { openCreateDaoModal, handleCreateDaoModal };
+};
+
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: Props) => {
   const minimized = sidebar?.minimized;
   const setMinimized = sidebar?.setMinimized;
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
+  const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
+
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -113,6 +122,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
+      <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
@@ -200,7 +210,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
               </Tooltip>
             ))}
             <Tooltip title="New DAO" style={toolTipStyle}>
-              <DrawerListCreateDao />
+              <DrawerListCreateDao onClick={handleCreateDaoModal(true)} />
             </Tooltip>
           </DrawerList>
         </DrawerTopBlock>
