@@ -6,18 +6,14 @@ import styled from 'styled-components';
 export const Wrapper = styled.div`
   width: 100%;
   min-height: 100vh;
-  height: 100%;
-  background: url('/images/onboarding/background.png') no-repeat center center
+  background: url('/images/onboarding/dao-onboarding-bg.webp') no-repeat center center
     ${({ theme }) => theme.palette.background.default};
   display: flex;
   align-items: center;
   justify-content: center;
   background-size: cover;
-  padding: 0 20px;
-
-  @media (min-width: 641px) {
-    padding: 0;
-  }
+  position: relative;
+  overflow: hidden;
 `;
 
 export const WrapperLoadingCircularProgress = styled.div`
@@ -40,6 +36,7 @@ export const FormWrapper = styled.div`
   background: ${({ theme }) => theme.palette.grey900};
   border: 1px solid ${({ theme }) => theme.palette.grey79};
   border-radius: 6px;
+  z-index: 100;
 `;
 
 export const HeaderWrapper = styled.div`
@@ -258,5 +255,67 @@ export const ButtonCSVTemplate = styled(ButtonBase)`
     justify-content: center;
     padding: 10px;
     width: 113px;
+  }
+`;
+
+export const Ellipses1 = styled.div`
+  position: absolute;
+  width: 558px;
+  height: 558px;
+  left: -10%;
+  top: -10%;
+  background: #360097;
+  filter: blur(250px);
+`;
+
+export const Ellipses2 = styled.div`
+  position: absolute;
+  width: 558px;
+  height: 558px;
+  right: -10%;
+  bottom: -10%;
+  background: #700097;
+  filter: blur(400px);
+`;
+
+export const CreateDaoTextWrapperRotated = styled.div`
+  // https://stackoverflow.com/questions/15306032/css3-transform-rotate-text-fixed-position-left-and-right-vertically-centered
+  display: flex;
+  gap: 24px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  ${({ left }) =>
+    left
+      ? `
+  margin-left: 100px;
+  left: 0;
+  transform-origin: 0 50%;
+  transform: rotate(-90deg) translate(-50%, 50%);
+  `
+      : `
+  margin-right: 100px;
+  right: 0;
+  transform-origin: 100% 50%;
+  transform: rotate(90deg) translate(50%, 50%);
+  `}
+`;
+
+export const CreateDaoTextLogoWrapper = styled.div`
+  display: inline;
+  align-items: center;
+  min-width: fit-content;
+`;
+
+export const CreateDaoText = styled(Typography)`
+  && {
+    display: inline-block;
+    font-family: 'Space Grotesk';
+    font-weight: 400;
+    font-size: 26px;
+    color: #7427ff;
+    min-width: fit-content;
+    margin-right: 24px;
   }
 `;
