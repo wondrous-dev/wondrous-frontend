@@ -76,7 +76,9 @@ const DropdownSelect = styled(({ className, ...props }) => (
 `;
 
 const DropdownSelectItem = styled(MenuItem)`
-  ${SelectTypography}
+  && {
+    ${SelectTypography}
+  }
 `;
 
 const useGetDiscordGuildFromInviteCode = ({ setValue, setError }) => {
