@@ -22,6 +22,7 @@ import {
   StyledTutorialsIcon,
   StyledExplorePageIcon,
   StyledPodsIcon,
+  DrawerListCreateDao,
 } from './styles';
 import BackArrowIcon from '../Icons/backArrow';
 import { SafeImage } from '../Common/Image';
@@ -198,6 +199,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
                 </div>
               </Tooltip>
             ))}
+            <Tooltip title="New DAO" style={toolTipStyle}>
+              <DrawerListCreateDao />
+            </Tooltip>
           </DrawerList>
         </DrawerTopBlock>
         <DrawerBottomBlock>

@@ -1,9 +1,10 @@
-import styled from 'styled-components';
-import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
-import { SIDEBAR_WIDTH } from 'utils/constants';
+import { ButtonBase, Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
+import AddIcon from 'components/Icons/add.svg';
 import SettingsIcon from 'components/Icons/settings';
-import { TutorialsIcon, PodsIcon, ExplorePageIcon } from 'components/Icons/sidebar';
+import { ExplorePageIcon, PodsIcon, TutorialsIcon } from 'components/Icons/sidebar';
+import styled from 'styled-components';
 import palette from 'theme/palette';
+import { SIDEBAR_WIDTH } from 'utils/constants';
 
 export const DrawerComponent = styled(Drawer)`
   && {
@@ -117,6 +118,39 @@ export const DrawerListItem = styled(ListItem)`
 export const DrawerListItemIcon = styled.img`
   width: 36px;
   height: 36px;
+`;
+
+const DrawerListCreateDaoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DrawerListCreateDao = styled(({ children, ...props }) => (
+  <DrawerListCreateDaoWrapper>
+    <ButtonBase {...props}>
+      <div>
+        <AddIcon />
+      </div>
+    </ButtonBase>
+  </DrawerListCreateDaoWrapper>
+))`
+  && {
+    width: 30px;
+    height: 30px;
+    border-radius: 60px;
+    background: linear-gradient(206.66deg, #ccbbff -18.49%, #7427ff 109.85%, #00baff 252.3%);
+    padding: 1px;
+    div {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(180deg, #474747 0%, #313131 43.61%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 `;
 
 export const DrawerBottomBlock = styled.div`
