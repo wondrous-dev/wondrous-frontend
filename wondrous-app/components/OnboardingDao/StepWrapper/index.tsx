@@ -145,7 +145,7 @@ function StepWrapper({
   ...props
 }) {
   const router = useRouter();
-  const handleOnClick = () => router.push('/dashboard');
+  const handleOnClick = () => router.back();
   const handleClearFields = useClearFields(props);
   return (
     <WrapperLoading loading={loading}>
