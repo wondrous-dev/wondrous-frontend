@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_POD_BY_ID, GET_POD_MEMBERSHIP_REQUEST } from 'graphql/queries';
@@ -8,7 +9,6 @@ import { SmallAvatar } from 'components/Common/AvatarList';
 import {
   MemberRequestsList,
   MemberRequestCard,
-  RequestCount,
   RequestCountWrapper,
   RequestCountEmptyState,
   RequestHeader,
@@ -21,9 +21,10 @@ import {
   RequestApproveButton,
   MemberRequestsListEndMessage,
   EmptyMemberRequestsListMessage,
+  MemberProfileLink,
 } from './styles';
 
-const QUERY_LIMIT = 20;
+const QUERY_LIMIT = 3;
 
 const useGetPodMemberRequests = (podId) => {
   const [hasMore, setHasMore] = useState(false);
@@ -140,24 +141,27 @@ function MemberRequests(props) {
             <MemberRequestsList>
               {podUserMembershipRequests?.map((request) => (
                 <MemberRequestCard key={request.id}>
-                  {request.userProfilePicture ? (
-                    <SafeImage
-                      width={28}
-                      height={28}
-                      style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                      src={request.userProfilePicture}
-                      useNextImage
-                    />
-                  ) : (
-                    <SmallAvatar
-                      id={request.id}
-                      username={request.userUsername}
-                      initials={getUserInitials(request.userUsername)}
-                      style={{ width: '28px', height: '28px' }}
-                    />
-                  )}
-
-                  <MemberName>{request.userUsername}</MemberName>
+                  <Link href={`/profile/${request.userUsername}/about`} passHref>
+                    <MemberProfileLink>
+                      {request.userProfilePicture ? (
+                        <SafeImage
+                          width={28}
+                          height={28}
+                          style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                          src={request.userProfilePicture}
+                          useNextImage
+                        />
+                      ) : (
+                        <SmallAvatar
+                          id={request.id}
+                          username={request.userUsername}
+                          initials={getUserInitials(request.userUsername)}
+                          style={{ width: '28px', height: '28px' }}
+                        />
+                      )}
+                      <MemberName>{request.userUsername}</MemberName>
+                    </MemberProfileLink>
+                  </Link>
                   <MemberMessage>“{request.message}”</MemberMessage>
                   <RequestActionButtons>
                     <RequestDeclineButton onClick={() => declineRequest(request.userId, request.podId)}>

@@ -75,13 +75,19 @@ export const MemberRequestCard = styled.div`
   width: 100%;
 `;
 
+export const MemberProfileLink = styled.a`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 12px;
+`;
+
 export const MemberName = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 16px;
     font-weight: 600;
     color: ${palette.white};
-    margin-left: 12px;
   }
 `;
 
