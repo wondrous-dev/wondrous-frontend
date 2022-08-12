@@ -133,7 +133,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      goToOrg(bounty?.orgUsername);
+                      goToOrg(bounty?.orgName);
                     }}
                   >
                     {bounty?.orgProfilePicture ? (
