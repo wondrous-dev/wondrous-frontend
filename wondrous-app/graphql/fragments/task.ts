@@ -171,6 +171,7 @@ export const TaskProposalCardFragment = gql`
     orgId
     orgProfilePicture
     orgName
+    orgUsername
     podId
     podProfilePicture
     podName
