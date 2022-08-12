@@ -1314,8 +1314,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     form.setFieldValue('points', template?.points);
     form.setFieldValue('orgId', template?.orgId);
     form.setFieldValue('podId', template?.podId);
-
-    form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    if (template?.rewards?.[0]) {
+      form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    }
     form.setFieldValue('assigneeId', template?.assignee);
     form.setFieldValue(
       'reviewerIds',
@@ -2495,7 +2496,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
               <CreateEntitySelectErrorWrapper>
                 <CreateEntityCreateTaskButton type="submit">
-                  {existingTask ? `Edit` : `Create`} {entityType}
+                  {existingTask ? 'Save changes' : `Create ${entityType}`}
                 </CreateEntityCreateTaskButton>
                 {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>

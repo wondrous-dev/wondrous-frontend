@@ -362,7 +362,7 @@ function EditLayoutBaseModal(props) {
       },
     });
   };
-  console.log('snapshitId', snapshotId);
+
   return (
     <CreateFormBaseModal>
       <CreateFormBaseModalCloseBtn onClick={handleClose}>
