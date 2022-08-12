@@ -110,6 +110,7 @@ export const TaskCardFragment = gql`
     orgId
     orgProfilePicture
     orgName
+    orgUsername
     podId
     podProfilePicture
     podName
