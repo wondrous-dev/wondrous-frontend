@@ -1,8 +1,10 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
+import TaskMenuStatus from 'components/Common/TaskMenuStatus';
+import VoteResults from 'components/Common/Votes';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
-import { format, formatDistance } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS } from 'graphql/queries';
@@ -28,10 +30,10 @@ import {
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
+  ProposalVoteType,
   STATUS_APPROVED,
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
-  ProposalVoteType,
 } from 'utils/constants';
 import { ApprovedSubmissionContext } from 'utils/contexts';
 import {
@@ -39,9 +41,7 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask, useUserProfile } from 'utils/hooks';
-
-import VoteResults from 'components/Common/Votes';
+import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useUserProfile } from 'utils/hooks';
 import { useMe } from '../../Auth/withAuth';
 import {
   CreateFormButtonsBlock,
@@ -59,6 +59,16 @@ import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+import ActionModals from './actionModals';
+import { tabs } from './constants';
+import {
+  GithubButtons,
+  LockedTaskMessage,
+  Menu,
+  Rewards,
+  TaskDescriptionTextWrapper,
+  TaskSectionImageContent,
+} from './helpers';
 import {
   SubtaskIconWrapper,
   TaskBorder,
@@ -94,30 +104,19 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import TaskMenuStatus from './taskMenuStatus';
 import {
-  TaskDescriptionTextWrapper,
-  TaskSectionImageContent,
-  Rewards,
-  GithubButtons,
-  Menu,
-  LockedTaskMessage,
-} from './helpers';
-import { openSnapshot } from './utils';
-import { tabs } from './constants';
-import ActionModals from './actionModals';
-import TaskViewModalFooter from './taskViewModalFooter';
-import {
-  ReviewerField,
-  AssigneeField,
   ApplicationField,
-  ProposerField,
-  VotesField,
+  AssigneeField,
   DueDateField,
-  PointsField,
   MilestoneField,
+  PointsField,
+  ProposerField,
+  ReviewerField,
   TagsField,
+  VotesField,
 } from './taskViewModalFields';
+import TaskViewModalFooter from './taskViewModalFooter';
+import { openSnapshot } from './utils';
 
 interface ITaskListModalProps {
   open: boolean;

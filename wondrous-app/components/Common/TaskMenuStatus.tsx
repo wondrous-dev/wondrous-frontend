@@ -1,16 +1,90 @@
 import { useMutation } from '@apollo/client';
+import { ButtonBase, Menu, MenuItem, Typography } from '@mui/material';
+import Arrow from 'components/Icons/arrow.svg';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import { useState } from 'react';
 import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
+import styled from 'styled-components';
 import { STATUS_APPROVED, STATUS_CLOSED, STATUS_OPEN, TASK_STATUS_ARCHIVED } from 'utils/constants';
 
-import {
-  TaskModalStatusLabel,
-  TaskStatusMenuButton,
-  TaskStatusMenuButtonArrow,
-  TaskStatusMenuItem,
-  TaskStatusMenuWrapper,
-} from './styles';
+const TaskStatusMenuWrapper = styled(Menu)`
+  && {
+    .MuiMenu-list,
+    .MuiMenu-paper {
+      padding: 0;
+      background-color: #141414;
+      min-width: 150px;
+      outline: 1px solid #424242;
+    }
+  }
+`;
+
+const TaskStatusMenuItem = styled(MenuItem)`
+  background-color: #141414;
+  display: flex;
+  align-items: center;
+  padding: 6px;
+  gap: 8px;
+  height: 28px;
+  && {
+    > svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+  :hover {
+    background: #040404;
+  }
+`;
+
+const TaskStatusMenuButtonArrow = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 9px;
+    transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
+    svg {
+      path {
+        fill: white;
+      }
+    }
+  }
+`;
+
+const TaskStatusMenuButton = styled(ButtonBase)`
+  outline: ${({ open }) => open && `1px solid #424242`};
+  background-color: #141414;
+  max-width: fit-content;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 6px;
+  gap: 8px;
+  height: 28px;
+  && {
+    > svg {
+      width: 18px !important;
+      height: 18px !important;
+    }
+  }
+`;
+
+const TaskModalStatusLabel = styled(Typography)`
+  && {
+    font-size: 14px;
+    line-height: 0;
+    ${({ theme }) => `
+    font-weight: ${theme.typography.fontWeightRegular};
+    color: ${theme.palette.white};
+  `}
+  }
+`;
 
 const taskProposalStatus = (task) => {
   if (task?.approvedAt) return STATUS_APPROVED;
@@ -88,7 +162,10 @@ const useTaskMenuStatusNonProposal = ({ task, entityType, canArchive, status, ar
 function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
-  const handleClick = (event) => setAnchorEl(event.currentTarget);
+  const handleClick = (e) => {
+    e.preventDefault();
+    setAnchorEl(e.currentTarget);
+  };
   const handleClose = () => setAnchorEl(null);
   const handleOnClick = (status) => {
     handleClose();
