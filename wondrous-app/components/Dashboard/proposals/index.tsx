@@ -107,6 +107,8 @@ const ProposalsBoard = () => {
         loggedInUserId: loggedInUser?.id,
         onLoadMore,
         taskCount: getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard,
+        enableViewSwitcher: false,
+        setColumns: () => {},
       }}
     >
       <BoardWrapper

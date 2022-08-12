@@ -1,17 +1,15 @@
 import { BoardsCardMedia } from 'components/Common/Boards/styles';
 import { SafeImage } from 'components/Common/Image';
 import { useRouter } from 'next/router';
-import EmptyStateBoards from 'components/EmptyStateBoards';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { OrgProfilePicture, PodProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { RichTextViewer } from 'components/RichText';
-import { BountyIcon } from 'components/Common/BountyBoard/styles';
 import { IconsList, ICON_TYPES } from 'components/ListViewAdmin/ColumnEntry';
 import Tooltip from 'components/Tooltip';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RequestDeclineButton } from 'components/organization/members/styles';
+import { SubmissionItemStatus } from 'components/Common/TaskSubmission/submissionItem';
 import {
-  BountyIconWrapper,
   SubmissionCardWrapper,
   SubmissionCardHeader,
   SubmissionIconWrapper,
@@ -21,6 +19,7 @@ import {
   LinksWrapper,
   SubmissionCardFooter,
   OrgButton,
+  SubmissionIcon,
 } from './styles';
 
 const SubmissionBoard = ({ tasks, handleCardClick }) => {
@@ -56,9 +55,9 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                   {task?.podName ? (
                     <PodProfilePicture goToPod={goToPod} podId={task?.podId} podColor={task?.podColor} />
                   ) : null}
-                  <BountyIconWrapper>
-                    <BountyIcon />
-                  </BountyIconWrapper>
+                  <SubmissionIcon>
+                    <SubmissionItemStatus hideTitle submission={task} />
+                  </SubmissionIcon>
                 </SubmissionIconWrapper>
 
                 <SubmissionType>Your bounty submission</SubmissionType>
@@ -88,7 +87,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                     <TaskActionAmount>{task?.commentCount}</TaskActionAmount>
                   </TaskAction>
                 </Tooltip>
-                <RequestDeclineButton type="button">Edit submission</RequestDeclineButton>
+                {!task?.approvedAt && <RequestDeclineButton type="button">Edit submission</RequestDeclineButton>}
               </SubmissionCardFooter>
             </SubmissionCardWrapper>
           ))

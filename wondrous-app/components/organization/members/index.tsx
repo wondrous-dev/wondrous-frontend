@@ -8,7 +8,6 @@ import { SmallAvatar } from 'components/Common/AvatarList';
 import {
   MemberRequestsList,
   MemberRequestCard,
-  RequestCount,
   RequestCountWrapper,
   RequestCountEmptyState,
   RequestHeader,

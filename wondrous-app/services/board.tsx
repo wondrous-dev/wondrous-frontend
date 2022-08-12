@@ -18,9 +18,12 @@ import {
   STATUS_CLOSED,
   PERMISSIONS,
   SORT_BY,
+  STATUS_WAITING_FOR_REVIEW,
+  STATUS_REJECTED,
+  STATUS_CHANGE_REQUESTED,
 } from 'utils/constants';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
-import { StatusDefaultIcon } from 'components/Icons/statusIcons';
+import { StatusDefaultIcon, InReviewIcon } from 'components/Icons/statusIcons';
 import { Proposal, Approved, Rejected } from 'components/Icons';
 import TaskStatus from 'components/Icons/TaskStatus';
 import React from 'react';
@@ -39,6 +42,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import palette from 'theme/palette';
 import { parseUserPermissionContext } from 'utils/helpers';
+import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
 
 const generateTodoColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -387,11 +391,46 @@ const PROPOSAL_TYPE_STATUS_FILTERS = {
   ],
 };
 
-const ENTITY_TO_STATUS_MAP = {
+const SUBMISSION_TYPE_STATUS_FILTERS = {
+  ...SHARED_FILTER_STATUSES_DATA,
+  label: 'Submission status',
+  items: [
+    {
+      id: STATUS_WAITING_FOR_REVIEW,
+      name: 'Waiting for review',
+      label: 'Waiting for review',
+      icon: <InReviewIcon />,
+      gradient: ' -webkit-linear-gradient(#ffffff, #00baff)',
+    },
+    {
+      id: STATUS_CHANGE_REQUESTED,
+      name: 'Changes requested',
+      label: 'Changes requested',
+      icon: <SubmissionItemStatusChangesRequestedIcon />,
+      gradient: '-webkit-linear-gradient(#ffffff, #ffd653)',
+    },
+    {
+      id: STATUS_APPROVED,
+      name: 'Approved',
+      label: 'Approved',
+      icon: <Approved />,
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #06FFA5 103.12%)',
+    },
+    {
+      id: STATUS_REJECTED,
+      name: 'Rejected',
+      label: 'Rejected',
+      icon: <Rejected />,
+      gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FFFFFF 103.12%)',
+    },
+  ],
+};
+export const ENTITY_TO_STATUS_MAP = {
   [ENTITIES_TYPES.TASK]: TASK_TYPE_STATUS_FILTERS,
   [ENTITIES_TYPES.BOUNTY]: BOUNTY_STATUS_FILTERS,
   [ENTITIES_TYPES.MILESTONE]: MILESTONE_TYPE_STATUS_FILTERS,
   [ENTITIES_TYPES.PROPOSAL]: PROPOSAL_TYPE_STATUS_FILTERS,
+  [ENTITIES_TYPES.SUBMISSION]: SUBMISSION_TYPE_STATUS_FILTERS,
 };
 
 export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false }) => {
@@ -559,184 +598,178 @@ export const FILTER_STATUSES = {
   ],
 };
 
-export const generateUserDashboardFilters = ({ userId, orgs = [], type = ENTITIES_TYPES.TASK }) => {
-  return [
-    ENTITY_TO_STATUS_MAP[type],
-    {
-      name: 'orgId',
-      label: 'Orgs',
-      items: orgs.map((org) => ({
-        ...org,
-        icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
-        pillIcon: (props) => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+export const generateUserDashboardFilters = ({ userId, orgs = [], type = ENTITIES_TYPES.TASK }) => [
+  ENTITY_TO_STATUS_MAP[type],
+  {
+    name: 'orgId',
+    label: 'Orgs',
+    items: orgs.map((org) => ({
+      ...org,
+      icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
+      pillIcon: (props) => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+    })),
+    icon: ({ style, ...rest }) => (
+      <DAOIcon
+        encircled={false}
+        stroke={palette.blue20}
+        style={{ ...style, width: '28px', height: '28px' }}
+        {...rest}
+      />
+    ),
+    multiChoice: false,
+  },
+  {
+    name: 'podIds',
+    label: 'Pods',
+    items: orgs,
+    query: GET_USER_PODS,
+    variables: { userId },
+    icon: CreatePodIcon,
+    multiChoice: true,
+    mutate: (items) =>
+      items.map((pod) => ({
+        ...pod,
+        gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
+        icon: (
+          <CreatePodIcon
+            style={{
+              width: '26px',
+              height: '26px',
+              marginRight: '8px',
+              background: pod?.color,
+              borderRadius: '100%',
+            }}
+          />
+        ),
+        pillIcon: CreatePodIcon,
       })),
-      icon: ({ style, ...rest }) => (
-        <DAOIcon
-          encircled={false}
-          stroke={palette.blue20}
-          style={{ ...style, width: '28px', height: '28px' }}
-          {...rest}
-        />
-      ),
-      multiChoice: false,
-    },
-    {
-      name: 'podIds',
-      label: 'Pods',
-      items: orgs,
-      query: GET_USER_PODS,
-      variables: { userId },
-      icon: CreatePodIcon,
-      multiChoice: true,
-      mutate: (items) => {
-        return items.map((pod) => ({
-          ...pod,
-          gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
-          icon: (
-            <CreatePodIcon
-              style={{
-                width: '26px',
-                height: '26px',
-                marginRight: '8px',
-                background: pod?.color,
-                borderRadius: '100%',
-              }}
-            />
-          ),
-          pillIcon: CreatePodIcon,
-        }));
+  },
+  {
+    name: 'date',
+    label: 'Dates',
+    icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
+    items: [
+      {
+        id: TASK_DATE_OVERDUE,
+        name: 'Overdue',
+        icon: <CalendarIcon style={{ padding: '3px' }} stroke="#F93701" />,
+        pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
       },
-    },
-    {
-      name: 'date',
-      label: 'Dates',
-      icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
-      items: [
-        {
-          id: TASK_DATE_OVERDUE,
-          name: 'Overdue',
-          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#F93701" />,
-          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-        },
-        {
-          id: TASK_DATE_DUE_THIS_WEEK,
-          name: 'Due this week',
-          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-        },
-        {
-          id: TASK_DATE_DUE_NEXT_WEEK,
-          name: 'Due next week',
-          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
-          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-        },
-      ],
-    },
-    {
-      name: 'privacyLevel',
-      label: 'Privacy level',
-      icon: ({ style, ...rest }) => <PublicEyeIcon {...rest} style={{ ...style, padding: '4px' }} />,
-      items: [
-        {
-          id: 'public',
-          name: 'Public',
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
-          pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
-        },
-        {
-          id: 'private',
-          name: 'All',
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-          pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
-        },
-      ],
-    },
-  ];
-};
+      {
+        id: TASK_DATE_DUE_THIS_WEEK,
+        name: 'Due this week',
+        icon: <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+        pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+      },
+      {
+        id: TASK_DATE_DUE_NEXT_WEEK,
+        name: 'Due next week',
+        icon: <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
+        pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+      },
+    ],
+  },
+  {
+    name: 'privacyLevel',
+    label: 'Privacy level',
+    icon: ({ style, ...rest }) => <PublicEyeIcon {...rest} style={{ ...style, padding: '4px' }} />,
+    items: [
+      {
+        id: 'public',
+        name: 'Public',
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #F93701 103.12%)',
+        pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
+      },
+      {
+        id: 'private',
+        name: 'All',
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+        pillIcon: (props) => <PublicEyeIcon viewBox="0 0 18 13" {...props} />,
+      },
+    ],
+  },
+];
 
-export const generateAdminDashboardFilters = ({ userId, orgs = [], permissionContext = null }) => {
-  return [
-    {
-      name: 'orgId',
-      label: 'Orgs',
-      items: orgs.map((org) => ({
-        ...org,
-        icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
-        pillIcon: (props) => <OrgProfilePicture profilePicture={org?.profilePicture} />,
-      })),
-      icon: ({ style, ...rest }) => (
-        <DAOIcon
-          encircled={false}
-          stroke={palette.blue20}
-          style={{ ...style, width: '28px', height: '28px' }}
-          {...rest}
-        />
-      ),
-      multiChoice: false,
-    },
-    {
-      name: 'podIds',
-      label: 'Pods',
-      items: orgs,
-      query: GET_USER_PODS,
-      variables: { userId },
-      icon: CreatePodIcon,
-      multiChoice: true,
-      mutate: (items) => {
-        return items.reduce((filtered, pod) => {
-          const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, podId: pod?.id });
-          if (
-            permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-            permissions.includes(PERMISSIONS.CREATE_TASK) ||
-            permissions.includes(PERMISSIONS.MANAGE_MEMBER)
-          ) {
-            filtered.push({
-              ...pod,
-              gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
-              icon: (
-                <CreatePodIcon
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    marginRight: '8px',
-                    background: pod?.color,
-                    borderRadius: '100%',
-                  }}
-                />
-              ),
-              pillIcon: CreatePodIcon,
-            });
-          }
-          return filtered;
-        }, []);
+export const generateAdminDashboardFilters = ({ userId, orgs = [], permissionContext = null }) => [
+  {
+    name: 'orgId',
+    label: 'Orgs',
+    items: orgs.map((org) => ({
+      ...org,
+      icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
+      pillIcon: (props) => <OrgProfilePicture profilePicture={org?.profilePicture} />,
+    })),
+    icon: ({ style, ...rest }) => (
+      <DAOIcon
+        encircled={false}
+        stroke={palette.blue20}
+        style={{ ...style, width: '28px', height: '28px' }}
+        {...rest}
+      />
+    ),
+    multiChoice: false,
+  },
+  {
+    name: 'podIds',
+    label: 'Pods',
+    items: orgs,
+    query: GET_USER_PODS,
+    variables: { userId },
+    icon: CreatePodIcon,
+    multiChoice: true,
+    mutate: (items) =>
+      items.reduce((filtered, pod) => {
+        const permissions = parseUserPermissionContext({ userPermissionsContext: permissionContext, podId: pod?.id });
+        if (
+          permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+          permissions.includes(PERMISSIONS.CREATE_TASK) ||
+          permissions.includes(PERMISSIONS.MANAGE_MEMBER)
+        ) {
+          filtered.push({
+            ...pod,
+            gradient: `linear-gradient(270deg, #7427FF -11.62%, ${pod?.color || 'white'} 103.12%)`,
+            icon: (
+              <CreatePodIcon
+                style={{
+                  width: '26px',
+                  height: '26px',
+                  marginRight: '8px',
+                  background: pod?.color,
+                  borderRadius: '100%',
+                }}
+              />
+            ),
+            pillIcon: CreatePodIcon,
+          });
+        }
+        return filtered;
+      }, []),
+  },
+  {
+    name: 'sortOrder',
+    label: 'Sort by',
+    icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
+    items: [
+      {
+        id: SORT_BY.DESC,
+        name: 'Latest first',
+        icon: <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
+        pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
       },
-    },
-    {
-      name: 'sortOrder',
-      label: 'Sort by',
-      icon: ({ style, ...rest }) => <CalendarIcon {...rest} style={{ ...style, padding: '5px' }} />,
-      items: [
-        {
-          id: SORT_BY.DESC,
-          name: 'Latest first',
-          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#FFD653" />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #FAD000 103.12%)',
-          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-        },
-        {
-          id: SORT_BY.ASC,
-          name: 'Oldest first',
-          icon: <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
-          gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
-          pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
-        },
-      ],
-    },
-  ];
-};
+      {
+        id: SORT_BY.ASC,
+        name: 'Oldest first',
+        icon: <CalendarIcon style={{ padding: '3px' }} stroke="#00BAFF" />,
+        gradient: 'linear-gradient(270deg, #7427FF -11.62%, #00BAFF 103.12%)',
+        pillIcon: (props) => <CalendarIcon viewBox="0 0 18 14" {...props} />,
+      },
+    ],
+  },
+];
 export const FILTER_STATUSES_ADMIN = {
   name: 'statuses',
   label: 'Status',
@@ -755,10 +788,10 @@ export const FILTER_STATUSES_ADMIN = {
 };
 
 const generateColumns = (withSection: boolean, type: string) => {
-  let todoColumn = generateTodoColumn(withSection);
-  let inProgressColumn = generateInProgressColumn(withSection);
-  let doneColumn = generateDoneColumn(withSection);
-  let inReviewColumn = generateInReviewColumn();
+  const todoColumn = generateTodoColumn(withSection);
+  const inProgressColumn = generateInProgressColumn(withSection);
+  const doneColumn = generateDoneColumn(withSection);
+  const inReviewColumn = generateInReviewColumn();
   if (type === COLUMNS_CONFIGURATION.ASSIGNEE) {
     return [todoColumn, inProgressColumn, doneColumn];
   }

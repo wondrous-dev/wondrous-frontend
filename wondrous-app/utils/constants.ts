@@ -35,6 +35,7 @@ export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
 export const STATUS_APPROVED = 'approved';
 export const STATUS_REJECTED = 'rejected';
 export const STATUS_CLOSED = 'closed';
+export const STATUS_CHANGE_REQUESTED = 'change_requested';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';
@@ -237,6 +238,7 @@ export const ENTITIES_TYPES = {
   ORG: 'org',
   BOUNTY: 'bounty',
   PROPOSAL: 'proposal',
+  SUBMISSION: 'submission',
 };
 
 export const MODAL_TABS_MAP = {

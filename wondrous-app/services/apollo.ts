@@ -88,6 +88,10 @@ const cache = new InMemoryCache({
             return merged;
           },
         },
+        getUserTaskBoardSubmissions: {
+          keyArgs: ['input', ['status']],
+          merge: offsetLimitPaginationInput,
+        },
         getJoinPodRequests: {
           keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
           merge: (existing, incoming, { args }) => {

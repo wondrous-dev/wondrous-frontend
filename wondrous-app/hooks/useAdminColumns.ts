@@ -101,10 +101,8 @@ export const useGetSubmissionsUserCanReview = () => {
   };
 };
 
-export const useGetMembershipRequests = () => {
-  const [hasMoreOrgRequests, setHasMoreOrgRequests] = useState(true);
-  const [hasMorePodRequests, setHasMorePodRequests] = useState(true);
-
+export const useGetOrgMembershipRequestsToReview = () => {
+  const [hasMore, setHasMore] = useState(true);
   const {
     data: getJoinOrgRequestsData = { getJoinOrgRequests: [] },
     fetchMore: fetchMoreJoinOrgRequests,
@@ -120,6 +118,43 @@ export const useGetMembershipRequests = () => {
       offset: 0,
     },
   });
+
+  const onFilterChange = (filtersToApply) => {
+    const filters = {
+      orgId: filtersToApply?.orgId,
+      podIds: filtersToApply?.podIds,
+      sortOrder: filtersToApply?.sortOrder,
+    };
+    refetchJoinOrgRequests({ ...orgRequestsVariables, ...filters }).then(({ data }) =>
+      setHasMore(data?.getJoinOrgRequestsData?.length >= LIMIT)
+    );
+  };
+
+  const handleFetchMore = () => {
+    if (hasMore) {
+      fetchMoreJoinOrgRequests({
+        variables: {
+          offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
+          limit: LIMIT,
+        },
+      }).then(({ data }) => {
+        setHasMore(data?.getJoinOrgRequests?.length >= LIMIT);
+      });
+    }
+  };
+
+  return {
+    items: getJoinOrgRequestsData?.getJoinPodRequests,
+    handleFetchMore,
+    hasMore,
+    loading: orgRequestsLoading,
+    onFilterChange,
+  };
+};
+
+export const useGetPodmembershipRequestsToReview = () => {
+  const [hasMore, setHasMore] = useState(true);
+
   const {
     data: getJoinPodRequestsData = { getJoinPodRequests: [] },
     fetchMore: fetchMoreJoinPodRequests,
@@ -142,47 +177,29 @@ export const useGetMembershipRequests = () => {
       podIds: filtersToApply?.podIds,
       sortOrder: filtersToApply?.sortOrder,
     };
-    refetchJoinOrgRequests({ ...orgRequestsVariables, ...filters }).then(({ data }) =>
-      setHasMoreOrgRequests(data?.getJoinOrgRequestsData?.length >= LIMIT)
-    );
     refetchJoinPodRequests({ ...podRequestsVariables, ...filters }).then(({ data }) =>
-      setHasMorePodRequests(data?.getJoinPodRequestsData?.length >= LIMIT)
+      setHasMore(data?.getJoinPodRequestsData?.length >= LIMIT)
     );
   };
 
   const handleFetchMore = () => {
-    if (hasMoreOrgRequests) {
-      fetchMoreJoinOrgRequests({
-        variables: {
-          offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
-          limit: LIMIT,
-        },
-      }).then(({ data }) => {
-        setHasMoreOrgRequests(data?.getJoinOrgRequests?.length >= LIMIT);
-      });
-    }
-
-    if (hasMorePodRequests) {
+    if (hasMore) {
       fetchMoreJoinPodRequests({
         variables: {
-          offset: getJoinPodRequestsData?.getJoinPodRequests?.length,
+          offset: getJoinPodRequestsData?.getJoinOrgRequests?.length,
           limit: LIMIT,
         },
       }).then(({ data }) => {
-        setHasMorePodRequests(data?.getJoinPodRequests?.length >= LIMIT);
+        setHasMore(data?.getJoinOrgRequests?.length >= LIMIT);
       });
     }
   };
 
-  const memberShipRequests = [
-    ...getJoinOrgRequestsData?.getJoinOrgRequests,
-    ...getJoinPodRequestsData?.getJoinPodRequests,
-  ];
   return {
-    items: memberShipRequests,
+    items: getJoinPodRequestsData?.getJoinPodRequests,
     handleFetchMore,
-    hasMore: hasMoreOrgRequests || hasMorePodRequests,
-    loading: orgRequestsLoading || podRequestsLoading,
+    hasMore,
+    loading: podRequestsLoading,
     onFilterChange,
   };
 };

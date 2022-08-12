@@ -14,6 +14,8 @@ import { useLocation } from 'utils/useLocation';
 import { useRouter } from 'next/router';
 import { delQuery, insertUrlParam } from 'utils';
 import { useMe } from 'components/Auth/withAuth';
+import { EmptyMemberRequestsListMessage } from 'components/organization/members/styles';
+import { Spinner } from 'components/Dashboard/bounties/styles';
 import ColumnEntry from './ColumnEntry';
 
 interface ColumnItem {
@@ -107,47 +109,59 @@ function ListViewAdmin({ column }: Props) {
         isTaskProposal={!!location?.params?.taskProposal}
       />
 
-      <Accordion
-        isExpanded={column?.items?.length > 0}
-        loading={column.loading}
-        title={title}
-        count={count}
-        Icon={Icon}
-        headerAddons={null}
-        displayShowMore={column.hasMore}
-        onShowMore={column.handleFetchMore}
-      >
-        {column?.items?.map((item, idx) => (
-          <ColumnEntry
-            key={idx + item.id}
-            type={column.type}
-            userProfilePicture={item.userProfilePicture}
-            orgUsername={item.orgUsername}
-            orgProfilePicture={item.orgProfilePicture}
-            podColor={item.podColor}
-            podId={item.podId}
-            podName={item.podName}
-            userUsername={item.userUsername}
-            id={item.id}
-            orgId={item.orgId}
-            userPermissionsContext={createEntityContext?.userPermissionsContext}
-            creatorProfilePicture={item.creatorProfilePicture}
-            creatorUsername={item.creatorUsername}
-            message={item.message}
-            title={item.title}
-            commentCount={item.commentCount}
-            taskId={item.taskId}
-            selectTask={selectTask}
-            status={item.status}
-            userId={item?.userId}
-            taskDueDate={item?.taskDueDate}
-            rewards={item.rewards}
-            links={item.links}
-            media={item.media}
-            taskStatus={item.taskStatus}
-          />
-        ))}
-      </Accordion>
+      {column?.items?.length ? (
+        <Accordion
+          isExpanded={column?.items?.length > 0}
+          loading={column.loading}
+          title={title}
+          count={count}
+          Icon={Icon}
+          headerAddons={null}
+          displayShowMore={column.hasMore}
+          onShowMore={column.handleFetchMore}
+        >
+          {column?.items?.map((item, idx) => (
+            <ColumnEntry
+              key={idx + item.id}
+              type={column.type}
+              userProfilePicture={item.userProfilePicture}
+              orgUsername={item.orgUsername}
+              orgProfilePicture={item.orgProfilePicture}
+              podColor={item.podColor}
+              podId={item.podId}
+              podName={item.podName}
+              userUsername={item.userUsername}
+              id={item.id}
+              orgId={item.orgId}
+              userPermissionsContext={createEntityContext?.userPermissionsContext}
+              creatorProfilePicture={item.creatorProfilePicture}
+              creatorUsername={item.creatorUsername}
+              message={item.message}
+              title={item.title}
+              commentCount={item.commentCount}
+              taskId={item.taskId}
+              selectTask={selectTask}
+              status={item.status}
+              userId={item?.userId}
+              taskDueDate={item?.taskDueDate}
+              rewards={item.rewards}
+              links={item.links}
+              media={item.media}
+              taskStatus={item.taskStatus}
+            />
+          ))}
+        </Accordion>
+      ) : (
+        <>
+          {column.loading ? (
+            <Spinner />
+          ) : (
+            <EmptyMemberRequestsListMessage>
+              There is nothing here. Come back later to see more.
+            </EmptyMemberRequestsListMessage>
+          )}
+        </>
+      )}
     </>
   );
 }

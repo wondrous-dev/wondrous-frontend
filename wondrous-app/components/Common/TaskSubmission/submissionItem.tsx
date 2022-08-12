@@ -179,8 +179,8 @@ const useRejectTaskSubmission = ({ submission, handleBountyTypeCompletion }) => 
   return rejectTaskSubmission;
 };
 
-const SubmissionItemStatus = (props) => {
-  const { submission } = props;
+export const SubmissionItemStatus = (props) => {
+  const { submission, hideTitle = false } = props;
   const awaitingReview = !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt;
   const changesRequested = submission?.changeRequestedAt;
   const rejected = submission?.rejectedAt;
@@ -192,7 +192,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <InReviewIcon />
-        <SubmissionItemStatusTextAwaitingReview>Awaiting review</SubmissionItemStatusTextAwaitingReview>
+        {!hideTitle && <SubmissionItemStatusTextAwaitingReview>Awaiting review</SubmissionItemStatusTextAwaitingReview>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -200,7 +200,9 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <SubmissionItemStatusChangesRequestedIcon />
-        <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
+        {!hideTitle && (
+          <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
+        )}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -208,7 +210,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <RejectedIcon />
-        <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>
+        {!hideTitle && <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -216,7 +218,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
-        <SubmissionItemStatusTextCompleted>Approved and Paid</SubmissionItemStatusTextCompleted>
+        {!hideTitle && <SubmissionItemStatusTextCompleted>Approved and Paid</SubmissionItemStatusTextCompleted>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -224,7 +226,9 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
-        <SubmissionItemStatusTextCompleted>Approved and Processing Payment</SubmissionItemStatusTextCompleted>
+        {!hideTitle && (
+          <SubmissionItemStatusTextCompleted>Approved and Processing Payment</SubmissionItemStatusTextCompleted>
+        )}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -232,7 +236,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
-        <SubmissionItemStatusTextCompleted>Approved</SubmissionItemStatusTextCompleted>
+        {!hideTitle && <SubmissionItemStatusTextCompleted>Approved</SubmissionItemStatusTextCompleted>}
       </SubmissionItemStatusWrapper>
     );
   }

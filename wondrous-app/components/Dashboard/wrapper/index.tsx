@@ -4,11 +4,11 @@ import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader }
 
 const CONFIG_MAP = {
   ADMIN: {
-    label: 'My operator workspace',
+    label: 'My Operator Workspace',
     img: '/images/operator.png',
   },
   CONTRIBUTOR: {
-    label: 'My contributor workspace',
+    label: 'My Contributor Workspace',
     img: '/images/contrib.png',
   },
 };
@@ -20,15 +20,15 @@ const Wrapper = (props) => {
 
   return (
     <OverviewComponent>
-        <ChooseEntityToCreate />
-        <Banner img={config.img}>
-          <DashboardHeader>{config.label}</DashboardHeader>
-        </Banner>
-        <Content>
-          <ContentContainer>{children}</ContentContainer>
-        </Content>
-      </OverviewComponent>
+      <ChooseEntityToCreate />
+      <Banner img={config.img}>
+        <DashboardHeader>{config.label}</DashboardHeader>
+      </Banner>
+      <Content>
+        <ContentContainer>{children}</ContentContainer>
+      </Content>
+    </OverviewComponent>
   );
-}
+};
 
 export default Wrapper;

@@ -26,20 +26,33 @@ export function BoardsActivityInlineView({
   isExpandable = true,
   withAdminToggle,
   toggleItems,
+  enableViewSwitcher = true,
+  displaySingleViewFilter = false,
 }) {
-  const [displayFilters, setDisplayFilters] = useState(false);
+  const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
 
   return (
     <>
-      <BoardsActivityInlineViewWrapper>
+      <BoardsActivityInlineViewWrapper displaySingleViewFilter={displaySingleViewFilter}>
         <SearchTasks isExpandable={isExpandable} onSearch={onSearch} />
+        {displaySingleViewFilter && (
+          <BoardFilters
+            showAppliedFilters={!displaySingleViewFilter}
+            filterSchema={[filterSchema]}
+            onChange={onChange}
+          />
+        )}
         {withAdminToggle ? <Toggle items={toggleItems} /> : null}
-        {view && !searchQuery && !isAdmin ? <ToggleViewButton options={listViewOptions} /> : null}
-        <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
+        {view && !searchQuery && !isAdmin && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
+        {!displaySingleViewFilter ? (
+          <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
+        ) : null}
       </BoardsActivityInlineViewWrapper>
-      {displayFilters && <BoardFilters showAppliedFilters filterSchema={filterSchema} onChange={onChange} />}
+      {displayFilters && !displaySingleViewFilter && (
+        <BoardFilters showAppliedFilters filterSchema={filterSchema} onChange={onChange} />
+      )}
       <UserFilter />
     </>
   );
@@ -115,6 +128,8 @@ export default function BoardsActivity(props) {
       listViewOptions={listViewOptions}
       withAdminToggle={withAdminToggle}
       toggleItems={toggleItems}
+      enableViewSwitcher={board?.enableViewSwitcher}
+      displaySingleViewFilter={board?.displaySingleViewFilter}
     />
   );
 }

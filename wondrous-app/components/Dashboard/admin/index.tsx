@@ -6,7 +6,8 @@ import {
   TASK_STATUS_SUBMISSION_REQUEST,
 } from 'utils/constants';
 import {
-  useGetMembershipRequests,
+  useGetOrgMembershipRequestsToReview,
+  useGetPodmembershipRequestsToReview,
   useGetSubmissionsUserCanReview,
   useGetProposalsUserCanReview,
 } from 'hooks/useAdminColumns';
@@ -18,8 +19,8 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import BoardWrapper from '../boards/BoardWrapper';
 
 const PAGE_TYPE_TO_HOOK_MAP = {
-  [POD_MEMBERSHIP_REQUESTS]: useGetMembershipRequests,
-  [ORG_MEMBERSHIP_REQUESTS]: useGetMembershipRequests,
+  [ORG_MEMBERSHIP_REQUESTS]: useGetOrgMembershipRequestsToReview,
+  [POD_MEMBERSHIP_REQUESTS]: useGetPodmembershipRequestsToReview,
   [TASK_STATUS_PROPOSAL_REQUEST]: useGetProposalsUserCanReview,
   [TASK_STATUS_SUBMISSION_REQUEST]: useGetSubmissionsUserCanReview,
 };

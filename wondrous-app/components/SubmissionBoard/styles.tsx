@@ -1,34 +1,7 @@
 import styled from 'styled-components';
-import {
-  BountyCardWrapper,
-  BountyIcon,
-  BountyCardType,
-  BountyCardSubmissionsCountWrapper,
-  BountyCardSubmissionsCount,
-  SubmissionCount,
-  SubtasksWrapper,
-  BountyCommentsIcon,
-} from 'components/Common/BountyBoard/styles';
+import { BountyCardWrapper } from 'components/Common/BountyBoard/styles';
 
-import {
-  ProposalCardType,
-  ProposalCardIcon,
-  ProposalFooterButton,
-  TaskHeader,
-  TaskContent,
-  TaskTitle,
-  TaskAction,
-  TaskActionAmount,
-  TaskActionMenu,
-  PodWrapper,
-  PodName,
-  MilestoneProgressWrapper,
-  TaskHeaderIconWrapper,
-  SubtaskCountWrapper,
-  SubtaskCount,
-  ActionButton,
-  DueDateText,
-} from 'components/Common/Task/styles';
+import { TaskHeader } from 'components/Common/Task/styles';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
@@ -44,7 +17,7 @@ export const SubmissionCardWrapper = styled(BountyCardWrapper)`
   }
 `;
 
-export const BountyIconWrapper = styled.div`
+export const SubmissionIcon = styled.div`
   align-self: flex-end;
   flex: 1;
   margin-right: auto;
@@ -52,8 +25,13 @@ export const BountyIconWrapper = styled.div`
   justify-content: flex-end;
   align-items: center;
   div {
-    height: 29px;
-    width: 29px;
+    padding: 0;
+    height: 100%;
+    width: fit-content;
+    svg {
+      height: 29px;
+      width: 29px;
+    }
   }
 `;
 

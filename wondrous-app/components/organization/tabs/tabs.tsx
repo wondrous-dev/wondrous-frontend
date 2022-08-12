@@ -37,11 +37,11 @@ const Tabs = (props) => {
     [USER_BOARD_PAGE_TYPES.ADMIN]: [
       {
         href: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
-        label: 'Org membership Requests',
+        label: 'Org member requests',
       },
       {
         href: `/dashboard/admin?boardType=${POD_MEMBERSHIP_REQUESTS}`,
-        label: 'Pod membership Requests',
+        label: 'Pod member requests',
       },
       {
         href: `/dashboard/admin?boardType=${TASK_STATUS_PROPOSAL_REQUEST}`,
