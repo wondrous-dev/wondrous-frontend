@@ -23,7 +23,7 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-const QUERY_LIMIT = 3;
+const QUERY_LIMIT = 20;
 
 const useGetOrgMemberRequests = (orgId) => {
   const [hasMore, setHasMore] = useState(false);
