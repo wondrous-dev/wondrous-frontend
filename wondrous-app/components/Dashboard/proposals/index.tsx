@@ -109,6 +109,8 @@ const ProposalsBoard = () => {
         taskCount: getPerStatusTaskCountData?.getPerStatusTaskCountForUserBoard,
         enableViewSwitcher: false,
         setColumns: () => {},
+        entityType: ENTITIES_TYPES.PROPOSAL,
+        isDragDisabled: true,
       }}
     >
       <BoardWrapper

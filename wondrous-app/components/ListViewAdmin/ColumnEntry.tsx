@@ -121,8 +121,8 @@ function ColumnEntry(props: Props) {
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const commonRefetchQueries = ['getWorkFlowBoardReviewableItemsCount'];
-  const orgRequestsRefetchQueries = [...commonRefetchQueries, 'getJoinOrgRequests', 'getJoinPodRequests'];
-  const podRequestsRefetchQueries = [...commonRefetchQueries, 'getJoinPodRequests', 'getJoinOrgRequests'];
+  const orgRequestsRefetchQueries = [...commonRefetchQueries, 'getJoinOrgRequests'];
+  const podRequestsRefetchQueries = [...commonRefetchQueries, 'getJoinPodRequests'];
   const proposalRefetchQueries = [...commonRefetchQueries, 'getProposalsUserCanReview'];
   const submissionsRefetchQueries = [...commonRefetchQueries, 'getSubmissionsUserCanReview'];
 
