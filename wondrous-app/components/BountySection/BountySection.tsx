@@ -1,61 +1,21 @@
-import Link from 'next/link';
+import { useState, useEffect } from 'react';
 import BountyBoard from 'components/Common/BountyBoard';
 import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
-import { useState, useEffect } from 'react';
-import { SafeImage } from '../Common/Image';
 import {
-  OrgDescription,
-  OrgName,
-  StyledGridItem,
-  OrgsSectionHeader,
+  BountySectionHeader,
   SectionSubheader,
   SectionWrapper,
-  BountySectionHeader,
   ShowMoreButtonWrapper,
   Masonry,
-  LogoContainer,
 } from './styles';
-import { FeaturedList } from './constants';
-
-function OrgItem({ org }) {
-  const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
-
-  return (
-    <Link href={`/organization/${username}/boards`}>
-      <StyledGridItem>
-        {headerImage}
-        {headerUrl && <SafeImage useNextImage={false} style={{ width: '100%' }} src={headerUrl} />}
-        <LogoContainer>
-          <SafeImage useNextImage width={56} height={56} src={imageUrl} />
-        </LogoContainer>
-        <OrgName>{name}</OrgName>
-        <OrgDescription>{bio}</OrgDescription>
-      </StyledGridItem>
-    </Link>
-  );
-}
-
-export function DaoSection() {
-  return (
-    <SectionWrapper>
-      <OrgsSectionHeader>Our Alpha Partners</OrgsSectionHeader>
-      <SectionSubheader>Work with the best DAO partners in the space.</SectionSubheader>
-      <Masonry>
-        {FeaturedList.map((org, index) => (
-          <OrgItem key={index} org={org} />
-        ))}
-      </Masonry>
-    </SectionWrapper>
-  );
-}
 
 let windowOffset = 0;
 
-export function BountySection({ bounties = [], fetchMore = () => {}, hasMore }) {
+const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) => {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const location = useLocation();
@@ -109,4 +69,6 @@ export function BountySection({ bounties = [], fetchMore = () => {}, hasMore }) 
       )}
     </SectionWrapper>
   );
-}
+};
+
+export default BountySection;
