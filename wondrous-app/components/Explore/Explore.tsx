@@ -1,13 +1,19 @@
 import React, { useState, useCallback } from 'react';
 import { useIsMobile } from 'utils/hooks';
 import { Button } from 'components/Button';
+import MuiButton from '@mui/material/Button';
+import { Box, Typography, TextField } from '@mui/material';
+
 import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';
 import { GET_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
 import palette from 'theme/palette';
-import { DaoSection, BountySection } from './sections';
-import { gridMobileStyles, TABS_LABELS } from './constants';
-import {
+import { GRID_MOBILE_STYLES, TABS_LABELS } from 'utils/constants';
+import BountySection from 'components/BountySection';
+import DaoSection from 'components/DaoSection';
+import ExploreFilters from 'components/ExploreFilters';
+
+import styles, {
   BackgroundContainer,
   BackgroundTextWrapper,
   BackgroundTextHeader,
@@ -32,12 +38,7 @@ function ExploreComponent() {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
-  const {
-    data: bounties,
-    loading,
-    error,
-    fetchMore,
-  } = useQuery(GET_BOUNTIES_TO_EXPLORE, {
+  const { data: bounties, fetchMore } = useQuery(GET_BOUNTIES_TO_EXPLORE, {
     variables: {
       limit: LIMIT,
       offset: 0,
@@ -46,6 +47,8 @@ function ExploreComponent() {
       if (getBountiesToExplore.length < LIMIT && hasMoreBounties) setHasMoreBounties(false);
     },
   });
+
+  const [openFilters, setOpenFilters] = useState(false);
 
   const getBountiesToExploreFetchMore = useCallback(() => {
     fetchMore({
@@ -60,7 +63,7 @@ function ExploreComponent() {
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [bounties?.getBountiesToExplore, fetchMore]);
 
@@ -100,7 +103,7 @@ function ExploreComponent() {
         flexDirection: 'column',
       }}
     >
-      <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
+      <BackgroundContainer style={isMobile ? GRID_MOBILE_STYLES : {}}>
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />
         <Wheel />
         <BackgroundTextWrapper>
@@ -110,33 +113,43 @@ function ExploreComponent() {
           </BackgroundTextSubHeader>
         </BackgroundTextWrapper>
       </BackgroundContainer>
-      <ExplorePageContentWrapper>
-        <TabsWrapper>
-          {tabs.map((tab, idx) => (
-            <Tab
-              hoverColor={tab.hoverColor}
-              iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
-              key={idx}
-              onClick={tab.action}
-              isActive={activeTab === tab.key}
-              type="button"
-              color={tab.color}
-              rotateDeg={tab.rotateDeg}
-            >
-              <span>{tab.title}</span>
-              <IconWrapper>{tab?.icon}</IconWrapper>
-            </Tab>
-          ))}
-        </TabsWrapper>
-        {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection />}
-        {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
-          <BountySection
-            bounties={bounties?.getBountiesToExplore}
-            fetchMore={getBountiesToExploreFetchMore}
-            hasMore={hasMoreBounties}
-          />
-        )}
-      </ExplorePageContentWrapper>
+      <Box sx={{ display: 'flex', width: '100%' }}>
+        <ExploreFilters open={openFilters} setOpen={setOpenFilters} />
+        <ExplorePageContentWrapper>
+          <TabsWrapper>
+            <MuiButton sx={styles.filterButton} onClick={() => setOpenFilters(!openFilters)}>
+              Add filters
+            </MuiButton>
+            <Box sx={{ mr: 'auto', display: 'flex', gap: 3 }}>
+              {tabs.map((tab, idx) => (
+                <Tab
+                  hoverColor={tab.hoverColor}
+                  iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
+                  key={tab.key}
+                  onClick={tab.action}
+                  isActive={activeTab === tab.key}
+                  type="button"
+                  color={tab.color}
+                  rotateDeg={tab.rotateDeg}
+                >
+                  <span>{tab.title}</span>
+                  <IconWrapper>{tab?.icon}</IconWrapper>
+                </Tab>
+              ))}
+            </Box>
+          </TabsWrapper>
+          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+          {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
+            <BountySection
+              isMobile={isMobile}
+              bounties={bounties?.getBountiesToExplore}
+              fetchMore={getBountiesToExploreFetchMore}
+              hasMore={hasMoreBounties}
+            />
+          )}
+        </ExplorePageContentWrapper>
+      </Box>
+
       <ExplorePageFooter>
         <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
         <MetheorSvg />
