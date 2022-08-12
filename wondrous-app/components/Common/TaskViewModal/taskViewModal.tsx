@@ -94,7 +94,7 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import { TaskMenuStatus } from './taskMenuStatus';
+import TaskMenuStatus from './taskMenuStatus';
 import {
   TaskDescriptionTextWrapper,
   TaskSectionImageContent,

@@ -113,7 +113,7 @@ function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu }) 
   );
 }
 
-export function TaskMenuStatus({
+export default function TaskMenuStatus({
   task,
   entityType,
   archiveTaskMutation,
