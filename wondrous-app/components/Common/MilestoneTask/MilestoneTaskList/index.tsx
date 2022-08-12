@@ -5,6 +5,7 @@ import { format } from 'date-fns';
 import isEmpty from 'lodash/isEmpty';
 import * as Constants from 'utils/constants';
 import {
+  MilestoneEmpty,
   MilestoneTaskCommentCount,
   MilestoneTaskCommentCountText,
   MilestoneTaskCommentIcon,
@@ -64,7 +65,7 @@ function MilestoneTaskReward({ rewards }) {
 }
 
 export default function MilestoneTaskList({ data }) {
-  if (isEmpty(data)) return null;
+  if (isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
   return (
     <MilestoneTaskListWrapper>
       {data?.map((task) => {

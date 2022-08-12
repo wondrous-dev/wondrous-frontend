@@ -183,3 +183,16 @@ export const MilestoneTaskStatusLabel = styled(Typography)`
     `}
   }
 `;
+
+export const MilestoneEmpty = styled.div`
+  align-items: center;
+  background-color: #171717;
+  border-radius: 6px;
+  color: ${({ theme }) => theme.palette.grey250};
+  display: flex;
+  font-family: 'Space Grotesk';
+  font-weight: 500;
+  height: 68px;
+  justify-content: center;
+  margin-top: 24px;
+`;
