@@ -144,7 +144,7 @@ export const useGetOrgMembershipRequestsToReview = () => {
   };
 
   return {
-    items: getJoinOrgRequestsData?.getJoinPodRequests,
+    items: getJoinOrgRequestsData?.getJoinOrgRequests,
     handleFetchMore,
     hasMore,
     loading: orgRequestsLoading,
