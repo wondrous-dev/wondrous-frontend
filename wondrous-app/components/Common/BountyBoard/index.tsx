@@ -66,7 +66,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
     });
   };
 
-  const goToOrg = (orgId) => router.push(`/org/${orgId}/boards`, undefined, { shallow: true });
+  const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
 
   return (
     <>
@@ -133,7 +133,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      goToOrg(bounty?.orgId);
+                      goToOrg(bounty?.orgUsername);
                     }}
                   >
                     {bounty?.orgProfilePicture ? (
