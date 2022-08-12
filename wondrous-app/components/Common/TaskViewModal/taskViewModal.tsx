@@ -633,14 +633,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                             </TaskModalSnapshot>
                           )}
-                          <TaskMenuStatus
-                            task={fetchedTask}
-                            entityType={entityType}
-                            archiveTaskMutation={archiveTaskMutation}
-                            canArchive={canArchive}
-                            canApproveProposal={canApproveProposal}
-                            isTaskProposal={isTaskProposal}
-                          />
+                          <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
                           <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                         </TaskModalTaskStatusMoreInfo>
                         <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />

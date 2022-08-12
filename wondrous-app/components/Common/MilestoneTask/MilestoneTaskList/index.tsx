@@ -1,5 +1,4 @@
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import TASK_ICONS_LABELS from 'components/Common/MilestoneTask/constants';
 import SmartLink from 'components/Common/SmartLink';
 import { format } from 'date-fns';
 import isEmpty from 'lodash/isEmpty';
@@ -17,13 +16,12 @@ import {
   MilestoneTaskInfo,
   MilestoneTaskItem,
   MilestoneTaskListWrapper,
+  MilestoneTaskMenuStatus,
   MilestoneTaskPrivacyAndStatus,
   MilestoneTaskPrivacyIcon,
   MilestoneTaskRewardAmount,
   MilestoneTaskRewardIcon,
   MilestoneTaskRewardWrapper,
-  MilestoneTaskStatus,
-  MilestoneTaskStatusLabel,
   MilestoneTaskTitle,
   MilestoneTaskTitleAndInfo,
 } from './styles';
@@ -69,8 +67,7 @@ export default function MilestoneTaskList({ data }) {
   return (
     <MilestoneTaskListWrapper>
       {data?.map((task) => {
-        const { id, title, status, assignee, orgUsername, org, privacyLevel, dueDate, rewards, commentCount } = task;
-        const { Icon, label } = TASK_ICONS_LABELS[status];
+        const { id, title, assignee, orgUsername, org, privacyLevel, dueDate, rewards, commentCount } = task;
         const isPrivate = privacyLevel !== Constants.PRIVACY_LEVEL.public;
         const viewUrl = `/organization/${orgUsername || org?.username}/boards?task=${id}`;
         return (
@@ -90,10 +87,7 @@ export default function MilestoneTaskList({ data }) {
               </MilestoneTaskTitleAndInfo>
               <MilestoneTaskPrivacyAndStatus>
                 <MilestoneTaskPrivacyIcon isPrivate={isPrivate} tooltipTitle={isPrivate ? 'Members only' : 'Public'} />
-                <MilestoneTaskStatus>
-                  <Icon />
-                  <MilestoneTaskStatusLabel>{label}</MilestoneTaskStatusLabel>
-                </MilestoneTaskStatus>
+                <MilestoneTaskMenuStatus task={task} />
               </MilestoneTaskPrivacyAndStatus>
             </MilestoneTaskItem>
           </SmartLink>
