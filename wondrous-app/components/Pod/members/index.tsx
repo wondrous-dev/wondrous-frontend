@@ -23,8 +23,7 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-const QUERY_LIMIT = 3;
-const REFETCH_QUERY_LIMIT = 20;
+const QUERY_LIMIT = 20;
 
 const useGetPodMemberRequests = (podId) => {
   const [hasMore, setHasMore] = useState(false);
@@ -35,7 +34,7 @@ const useGetPodMemberRequests = (podId) => {
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getPodMembershipRequest }) => {
       // if previousData is undefined, it means this is the initial fetch
-      const limitToRefer = previousData ? REFETCH_QUERY_LIMIT : QUERY_LIMIT;
+      const limitToRefer = previousData ? QUERY_LIMIT : QUERY_LIMIT;
       const updatedDataLength = previousData
         ? getPodMembershipRequest?.length - previousData?.getPodMembershipRequest?.length
         : getPodMembershipRequest?.length;
@@ -99,7 +98,7 @@ function MemberRequests(props) {
       variables: {
         podId,
         offset: podUserMembershipRequests?.length,
-        limit: REFETCH_QUERY_LIMIT,
+        limit: QUERY_LIMIT,
       },
     });
   };
