@@ -1,9 +1,10 @@
-import styled from 'styled-components';
-import { Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
-import { SIDEBAR_WIDTH } from 'utils/constants';
+import { ButtonBase, Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
+import AddIcon from 'components/Icons/add.svg';
 import SettingsIcon from 'components/Icons/settings';
-import { TutorialsIcon, PodsIcon, ExplorePageIcon } from 'components/Icons/sidebar';
+import { ExplorePageIcon, PodsIcon, TutorialsIcon } from 'components/Icons/sidebar';
+import styled from 'styled-components';
 import palette from 'theme/palette';
+import { SIDEBAR_WIDTH } from 'utils/constants';
 
 export const DrawerComponent = styled(Drawer)`
   && {
@@ -109,7 +110,7 @@ export const DrawerListItem = styled(ListItem)`
     border-radius: 10px;
     ${({ isActive }) => isActive && `border: 1px solid white;`};
     &:hover {
-      border: 1px solid rgba(54, 54, 54, 1);
+      outline: 1px solid rgba(54, 54, 54, 1);
     }
   }
 `;
@@ -117,6 +118,44 @@ export const DrawerListItem = styled(ListItem)`
 export const DrawerListItemIcon = styled.img`
   width: 36px;
   height: 36px;
+`;
+
+const DrawerListCreateDaoWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const DrawerListCreateDao = styled((props) => (
+  <DrawerListCreateDaoWrapper>
+    <ButtonBase {...props}>
+      <div>
+        <AddIcon />
+      </div>
+    </ButtonBase>
+  </DrawerListCreateDaoWrapper>
+))`
+  && {
+    width: 30px;
+    height: 30px;
+    border-radius: 60px;
+    padding: 1px;
+    background: transparent;
+    :hover {
+      ${({ theme }) =>
+        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
+    }
+    div {
+      width: 100%;
+      height: 100%;
+      border-radius: inherit;
+      ${({ theme }) =>
+        `background: linear-gradient(180deg, ${theme.palette.grey78} 0%, ${theme.palette.grey87} 43.61%);`}
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 `;
 
 export const DrawerBottomBlock = styled.div`

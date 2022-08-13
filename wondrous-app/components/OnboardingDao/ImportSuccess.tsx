@@ -24,12 +24,10 @@ const ImportSuccessText = styled(Typography)`
   }
 `;
 
-export function ImportSuccess({ children }) {
-  return (
-    <ImportSuccessWrapper>
-      <ImportSuccessText>{children}</ImportSuccessText>
-    </ImportSuccessWrapper>
-  );
-}
+const ImportSuccess = ({ children }) => (
+  <ImportSuccessWrapper>
+    <ImportSuccessText>{children}</ImportSuccessText>
+  </ImportSuccessWrapper>
+);
 
 export default ImportSuccess;

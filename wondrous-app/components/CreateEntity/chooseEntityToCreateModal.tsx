@@ -91,9 +91,7 @@ function ChooseEntityToCreateModal(props) {
     ) {
       return false;
     }
-    if (!process.env.NEXT_PUBLIC_PRODUCTION) return true;
     return key !== ENTITIES_TYPES.ORG;
-    // return true;
   });
 
   return (
