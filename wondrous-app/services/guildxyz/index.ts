@@ -1,16 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { useLazyQuery, useMutation, gql, ApolloClient, InMemoryCache } from '@apollo/client';
-
 // import specific Web3Provider snapshot is using
 import { Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { useWonderWeb3 } from '../web3';
-import apollo from 'services/apollo';
 
 const GUILD_BASE_URL = 'https://api.guild.xyz/v1';
 
-export const useGuildXyz = () => {
+const useGuildXyz = () => {
   const wonderWeb3 = useWonderWeb3();
 
   const getGuildsJoinedByAddress = async (address: string) => {
@@ -24,9 +21,10 @@ export const useGuildXyz = () => {
 
   const getGuildsByIds = async (guildIds: string[]) => {
     const guildsInfo = [];
-    for (let i = 0; i < guildIds.length; i++) {
-      let guildId = guildIds[i];
+    for (let i = 0; i < guildIds.length; i += 1) {
+      const guildId = guildIds[i];
       const url = `${GUILD_BASE_URL}/guild/${guildId}`;
+      /* eslint-disable no-await-in-loop */
       const response = await fetch(url, {
         method: 'GET',
       });
@@ -36,8 +34,22 @@ export const useGuildXyz = () => {
     return guildsInfo;
   };
 
+  const getGuildById = async (guildId: string) => {
+    const url = `${GUILD_BASE_URL}/guild/${guildId}`;
+    /* eslint-disable no-await-in-loop */
+    const response = await fetch(url, {
+      method: 'GET',
+    });
+    const guildInfo = await response.json();
+
+    return guildInfo;
+  };
+
   return {
     getGuildsJoinedByAddress,
     getGuildsByIds,
+    getGuildById,
   };
 };
+
+export default useGuildXyz;
