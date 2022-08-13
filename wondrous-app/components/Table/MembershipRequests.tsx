@@ -1,47 +1,13 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import Link from 'next/link';
 
-import {
-  COLUMN_TITLE_ARCHIVED,
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_AWAITING_PAYMENT,
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_TODO,
-} from 'utils/constants';
-import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from 'utils/helpers';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { delQuery } from 'utils';
-import { useRouter } from 'next/router';
-import * as Constants from 'utils/constants';
-import { OrgBoardContext } from 'utils/contexts';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useUserBoard } from 'utils/hooks';
 import SmartLink from 'components/Common/SmartLink';
-import { AvatarList } from '../Common/AvatarList';
-import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton/MembershipRequest';
-import { DoneWithBorder, InProgressWithBorder, TodoWithBorder, WonderCoin } from '../Icons';
-import ImageIcon from '../Icons/image';
-import AudioIcon from '../Icons/MediaTypesIcons/audio';
-import PlayIcon from '../Icons/play';
-import { RewardRed } from '../Icons/reward';
-import { TaskMenuIcon } from '../Icons/taskMenu';
+
 import {
-  Box,
-  DeliverableContainer,
-  DeliverableItem,
-  DeliverablesIconContainer,
   Initials,
-  MoreOptions,
-  Reward,
-  RewardAmount,
-  RewardContainer,
-  StyledLinkIcon,
   StyledTable,
   StyledTableBody,
   StyledTableCell,
@@ -49,38 +15,15 @@ import {
   StyledTableHead,
   StyledTableRow,
   TaskDescription,
-  TaskTitle,
 } from './styles';
-import { SnackbarAlertContext } from '../Common/SnackbarAlert';
-import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
-import { useMe } from '../Auth/withAuth';
 
-const DELIVERABLES_ICONS = {
-  audio: <AudioIcon />,
-  image: <ImageIcon />,
-  link: <StyledLinkIcon />,
-  video: <PlayIcon />,
-};
-
-const STATUS_BY_TYPENAME = {
-  TaskSubmissionCard: TASK_STATUS_IN_REVIEW,
-  TaskProposalCard: TASK_STATUS_REQUESTED,
-};
-
-const windowOffset = 0;
+// eslint-disable-next-line import/prefer-default-export
 export function MembershipRequestTable(props) {
-  const { onLoadMore, hasMore, allTasks, limit, isAdmin } = props;
-  const router = useRouter();
+  const { onLoadMore, hasMore, isAdmin } = props;
 
   const [ref, inView] = useInView({});
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const orgBoardContext = useContext(OrgBoardContext);
-  const orgBoard = useOrgBoard();
-  const podBoard = usePodBoard();
   const userBoard = useUserBoard();
 
   useEffect(() => {
@@ -90,7 +33,7 @@ export function MembershipRequestTable(props) {
   }, [inView, hasMore, onLoadMore]);
   let requests = [];
   if (userBoard?.joinOrgRequests) {
-    requests = [...requests, ...userBoard?.joinOrgRequests];
+    requests = [...requests, ...userBoard.joinOrgRequests];
   }
   if (userBoard?.joinPodRequests) {
     requests = [...requests, ...userBoard.joinPodRequests];
@@ -122,7 +65,7 @@ export function MembershipRequestTable(props) {
           </StyledTableRow>
         </StyledTableHead>
         <StyledTableBody>
-          {requests?.map((request, index) => (
+          {requests?.map((request) => (
             <StyledTableRow key={request.id}>
               <StyledTableCell align="center">
                 {(request.orgProfilePicture || request.orgUsername) && (
@@ -145,6 +88,7 @@ export function MembershipRequestTable(props) {
                       }}
                     />
                     <Link passHref href={`/organization/${request?.orgUsername}/boards`}>
+                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                       <a target="_blank" rel="noopener noreferrer">
                         <TaskDescription
                           style={{
@@ -163,6 +107,7 @@ export function MembershipRequestTable(props) {
                 {request?.podName ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <Link passHref href={`/pod/${request?.podId}/boards`}>
+                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a target="_blank" rel="noopener noreferrer">
                       <TaskDescription
                         style={{
