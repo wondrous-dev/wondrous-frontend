@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { Box, Chip, OutlinedInput } from '@mui/material';
 
+import { toggleHtmlOverflow } from 'utils/helpers';
 import FilterIcon from '../../Icons/filter';
 import ArrowDropDownIcon from '../../Icons/arrowDropDown';
-import { toggleHtmlOverflow } from 'utils/helpers';
 
 import { CreateFormSelectArrowIcon } from '../DropdownSelect/styles';
 
@@ -33,7 +33,7 @@ const MenuProps = {
   },
 };
 
-export const MultiSelect = (props) => {
+export function MultiSelect(props) {
   const { name, options } = props;
   const [value, setValue] = useState([]);
 
@@ -102,4 +102,4 @@ export const MultiSelect = (props) => {
       </MultiSelectSelector>
     </MultiSelectForm>
   );
-};
+}

@@ -17,9 +17,9 @@ export const StyledAutocomplete = styled(Autocomplete).attrs(() => ({
   color: ${palette.white};
 `;
 
-export const TagAutocompletePopper = styled(({ className, ...props }) => {
-  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
-})`
+export const TagAutocompletePopper = styled(({ className, ...props }) => (
+  <StyledAutocomplete {...props} classes={{ paper: className }} />
+))`
   .MuiAutocomplete-listbox {
     border-color: #7a7a7a;
     max-height: 200px;

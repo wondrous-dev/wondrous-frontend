@@ -7,6 +7,12 @@ import { useLazyQuery } from '@apollo/client';
 
 import SearchIcon from 'components/Icons/search';
 import { TaskModalBaseCard } from 'components/Common/Task/styles';
+import { useRouter } from 'next/router';
+import { CommentTopFlexDiv } from 'components/Comment/styles';
+import { cutString } from 'utils/helpers';
+import { RichTextViewer } from 'components/RichText';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { MODAL_TABS_MAP } from 'utils/constants';
 import {
   ActivityIndicatorContainer,
   CloseIconContainer,
@@ -30,16 +36,10 @@ import {
   UserProfilePicture,
   UserWrapper,
 } from './styles';
-import { useRouter } from 'next/router';
-import { CommentTopFlexDiv } from 'components/Comment/styles';
-import { cutString } from 'utils/helpers';
-import { RichTextViewer } from 'components/RichText';
-import CloseModalIcon from 'components/Icons/closeModal';
-import { MODAL_TABS_MAP } from 'utils/constants';
 
 const VIRTUAL_PAGINATION_PER_PAGE_COUNT = 5;
 
-const PodItem = (props) => {
+function PodItem(props) {
   const router = useRouter();
   const { pod } = props;
   return (
@@ -56,9 +56,9 @@ const PodItem = (props) => {
       </PodExplainerText>
     </PodWrapper>
   );
-};
+}
 
-const UserItem = (props) => {
+function UserItem(props) {
   const router = useRouter();
   const { user } = props;
   return (
@@ -82,9 +82,9 @@ const UserItem = (props) => {
       </UserMetaDataContainer>
     </UserWrapper>
   );
-};
+}
 
-export const MoreInfoModal = (props) => {
+export function MoreInfoModal(props) {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
   const [displayUsers, setDisplayUsers] = useState(showUsers);
   const [listLoading, setListLoading] = useState(true);
@@ -258,7 +258,7 @@ export const MoreInfoModal = (props) => {
           </CloseIconContainer>
         </TitleSection>
         <Container>
-          <StyledTabs value={activeTab} variant={'fullWidth'}>
+          <StyledTabs value={activeTab} variant="fullWidth">
             <TabText
               onClick={() => {
                 setDisplayPods(false);
@@ -266,7 +266,7 @@ export const MoreInfoModal = (props) => {
                 setActiveTab(MODAL_TABS_MAP.CONTRIBUTORS);
               }}
             >
-              <StyledTab isActive={activeTab === MODAL_TABS_MAP.CONTRIBUTORS} label={'Contributors'} />
+              <StyledTab isActive={activeTab === MODAL_TABS_MAP.CONTRIBUTORS} label="Contributors" />
             </TabText>
             <TabText
               onClick={() => {
@@ -275,7 +275,7 @@ export const MoreInfoModal = (props) => {
                 setActiveTab(MODAL_TABS_MAP.PODS);
               }}
             >
-              <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label={'Pods'} />{' '}
+              <StyledTab isActive={activeTab === MODAL_TABS_MAP.PODS} label="Pods" />{' '}
             </TabText>
           </StyledTabs>
         </Container>
@@ -304,15 +304,13 @@ export const MoreInfoModal = (props) => {
                 <CircularProgress />
               </ActivityIndicatorContainer>
             )}
-            {paginatedUserList.map((item, i) => {
-              return (
-                <Snap key={i} className="section_scroll">
-                  {item.map((user, index) => {
-                    return <UserItem key={user?.id} user={user} />;
-                  })}
-                </Snap>
-              );
-            })}
+            {paginatedUserList.map((item, i) => (
+              <Snap key={i} className="section_scroll">
+                {item.map((user, index) => (
+                  <UserItem key={user?.id} user={user} />
+                ))}
+              </Snap>
+            ))}
           </OverflowBox>
         )}
         {displayPods && (
@@ -323,18 +321,16 @@ export const MoreInfoModal = (props) => {
               </ActivityIndicatorContainer>
             )}
 
-            {paginatedPodList.map((item, i) => {
-              return (
-                <Snap key={i} className="section_scroll">
-                  {item.map((pod, index) => {
-                    return <PodItem key={pod?.id} pod={pod} />;
-                  })}
-                </Snap>
-              );
-            })}
+            {paginatedPodList.map((item, i) => (
+              <Snap key={i} className="section_scroll">
+                {item.map((pod, index) => (
+                  <PodItem key={pod?.id} pod={pod} />
+                ))}
+              </Snap>
+            ))}
           </OverflowBox>
         )}
       </TaskModalBaseCard>
     </Modal>
   );
-};
+}

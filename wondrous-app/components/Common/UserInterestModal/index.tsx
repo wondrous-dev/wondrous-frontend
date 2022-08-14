@@ -6,9 +6,10 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 
 import CloseModalIcon from 'components/Icons/closeModal';
-import styles, { CategoryHeader, CategoryRow, InterestButton, StyledDialogContent } from './styles';
 import { useState } from 'react';
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import styles, { CategoryHeader, CategoryRow, InterestButton, StyledDialogContent } from './styles';
+
 const designCategories = [
   {
     display: '✒️ Graphic Design',
@@ -158,7 +159,7 @@ export const getInterestDisplay = (interest) => {
     }
   }
 };
-export const UserInterestModal = ({ open, onClose, createUserInterest }) => {
+export function UserInterestModal({ open, onClose, createUserInterest }) {
   const [interests, setInterests] = useState({});
   const saveUnsaveInterest = (interest) => {
     if (interest in interests) {
@@ -289,4 +290,4 @@ export const UserInterestModal = ({ open, onClose, createUserInterest }) => {
       </DialogActions>
     </Dialog>
   );
-};
+}

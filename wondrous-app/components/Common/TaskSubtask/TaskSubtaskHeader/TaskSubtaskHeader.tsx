@@ -9,7 +9,7 @@ import {
   TaskSubtaskHeaderWrapper,
 } from './styles';
 
-export const TaskSubtaskHeader = ({ taskId, canCreate }) => {
+export function TaskSubtaskHeader({ taskId, canCreate }) {
   const [createFormModal, setCreateFormModal] = useState(false);
   const toggleCreateFormModal = () => setCreateFormModal((prevState) => !prevState);
   if (!canCreate) return null;
@@ -31,4 +31,4 @@ export const TaskSubtaskHeader = ({ taskId, canCreate }) => {
       </TaskSubtaskHeaderButton>
     </TaskSubtaskHeaderWrapper>
   );
-};
+}

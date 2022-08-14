@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 
 /**
  * Trackable is a HOC that tracks mouse clicks over any WrappedComponent
@@ -7,71 +7,64 @@ import React from 'react'
  * NOTE: All WrappedComponent must accept an onClick parameter and handle it. This is usually handled
  * at the root level HTML element in WrappedComponent.
  */
-const Trackable = (
-	WrappedComponent,
-	{ trackingComponentName }: { trackingComponentName?: string } = {},
-	...props
-) => {
-	return class extends React.Component<IProps, IState> {
-		displayName: string = `Trackable(${getDisplayName(WrappedComponent)})`
+const Trackable = (WrappedComponent, { trackingComponentName }: { trackingComponentName?: string } = {}, ...props) =>
+  class extends React.Component<IProps, IState> {
+    displayName: string = `Trackable(${getDisplayName(WrappedComponent)})`;
 
-		constructor(props) {
-			super(props)
+    constructor(props) {
+      super(props);
 
-			this.onClick = this.onClick.bind(this)
-		}
+      this.onClick = this.onClick.bind(this);
+    }
 
-		/**
-		 * load analytics client asynchronously since not available server-side
-		 */
-		componentDidMount() {
-			this.setState({
-				// TODO: integrate analytics client here
-				// analytics: getAnalyticsClient()
-			})
-		}
+    /**
+     * load analytics client asynchronously since not available server-side
+     */
+    componentDidMount() {
+      this.setState({
+        // TODO: integrate analytics client here
+        // analytics: getAnalyticsClient()
+      });
+    }
 
-		onClick(originalEvent) {
-			// const { analytics } = this.state
-			const { eventName, eventParameters, onClick } = this.props
+    onClick(originalEvent) {
+      // const { analytics } = this.state
+      const { eventName, eventParameters, onClick } = this.props;
 
-			// if (analytics) {
-			// 	// first, track click analytics
-			// 	const componentName = trackingComponentName
-			// 		? trackingComponentName
-			// 		: getDisplayName(WrappedComponent)
-			// 	analytics.logEvent(`click.${componentName}`)
+      // if (analytics) {
+      // 	// first, track click analytics
+      // 	const componentName = trackingComponentName
+      // 		? trackingComponentName
+      // 		: getDisplayName(WrappedComponent)
+      // 	analytics.logEvent(`click.${componentName}`)
 
-			// 	// then, track any additional, custom analytics
-			// 	if (eventName && eventParameters) {
-			// 		analytics.logEvent(eventName, eventParameters)
-			// 	}
-			// }
+      // 	// then, track any additional, custom analytics
+      // 	if (eventName && eventParameters) {
+      // 		analytics.logEvent(eventName, eventParameters)
+      // 	}
+      // }
 
-			// then, continue with onClick specified for WrappedComponent
-			if (onClick) {
-				onClick(originalEvent)
-			}
-		}
+      // then, continue with onClick specified for WrappedComponent
+      if (onClick) {
+        onClick(originalEvent);
+      }
+    }
 
-		render() {
-			return <WrappedComponent {...this.props} onClick={this.onClick} />
-		}
-	}
-}
+    render() {
+      return <WrappedComponent {...this.props} onClick={this.onClick} />;
+    }
+  };
 
-const getDisplayName = (WrappedComponent) => {
-	return WrappedComponent.displayName || WrappedComponent.name || 'Component'
-}
+const getDisplayName = (WrappedComponent) => WrappedComponent.displayName || WrappedComponent.name || 'Component';
 
 interface IProps {
-	onClick?: (e: any) => void
-	eventName?: string
-	eventParameters?: object
+  onClick?: (e: any) => void;
+  eventName?: string;
+  eventParameters?: object;
 }
 
 interface IState {
-	// analytics: TODO:
+  // analytics: TODO:
 }
 
-export default Trackable
+export default Trackable;

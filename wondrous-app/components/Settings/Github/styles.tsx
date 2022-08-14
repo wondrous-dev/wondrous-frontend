@@ -12,9 +12,12 @@ export const GithubLink = styled.a`
   display: flex;
   align-items: center;
   gap: 8px;
-  height: 26px;
+  width: fit-content;
   border-radius: 6px;
-  padding: 0 6px;
+  padding: 12px;
+  color: ${palette.white} !important;
+  text-decoration: none !important;
+  font-weight: bold;
   svg {
     fill: #298fca;
     width: 15px;

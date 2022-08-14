@@ -1,11 +1,38 @@
 import { useState, useRef } from 'react';
 import { format } from 'date-fns';
 
-import { TaskCommentIcon } from '../../Icons/taskComment';
-import { TaskMenuIcon } from '../../Icons/taskMenu';
-import { DropDown, DropDownItem } from '../dropdown';
-import MilestoneIcon from '../../Icons/milestone';
+import { transformTaskToTaskCard, parseUserPermissionContext } from 'utils/helpers';
+import palette from 'theme/palette';
+import { updateInProgressTask, updateTaskItem, getProposalStatus } from 'utils/board';
+import * as Constants from 'utils/constants';
+import { useRouter } from 'next/router';
+import { useColumns, useUserProfile } from 'utils/hooks';
 import {
+  BoardsCardSubheader,
+  BoardsCardBody,
+  BoardsCardHeader,
+  BoardsCardBodyDescription,
+  BoardsCardBodyTitle,
+  BoardsPrivacyLabel,
+  BoardsCardMedia,
+  BoardsCardFooter,
+} from 'components/Common/Boards/styles';
+import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
+import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import SmartLink from 'components/Common/SmartLink';
+import { useLocation } from 'utils/useLocation';
+import Tooltip from 'components/Tooltip';
+import { RichTextViewer } from 'components/RichText';
+import { DAOIcon } from 'components/Icons/dao';
+import { TaskApplicationButton } from 'components/Common/TaskApplication';
+import {
+  ProposalCardWrapper,
+  ProposalCardType,
+  ProposalCardIcon,
+  ProposalFooterButton,
   TaskHeader,
   TaskContent,
   TaskTitle,
@@ -21,20 +48,7 @@ import {
   ActionButton,
   DueDateText,
 } from './styles';
-import { transformTaskToTaskCard } from 'utils/helpers';
-import palette from 'theme/palette';
-import { TaskCreatedBy } from '../TaskCreatedBy';
-import { MilestoneProgress } from '../MilestoneProgress';
-import PodIcon from '../../Icons/podIcon';
-import { SubtaskLightIcon } from '../../Icons/subtask';
-import { Compensation } from '../Compensation';
-import { Claim } from '../../Icons/claimTask';
-import { updateInProgressTask, updateTaskItem, getProposalStatus } from 'utils/board';
-import { TaskBountyOverview } from '../TaskBountyOverview';
-import { SafeImage } from '../Image';
-import * as Constants from 'utils/constants';
-import { AvatarList } from '../AvatarList';
-import { useRouter } from 'next/router';
+import { Archived } from '../../Icons/sections';
 import {
   TodoWithBorder,
   InProgressWithBorder,
@@ -46,33 +60,20 @@ import {
   Approved,
   Rejected,
 } from '../../Icons';
-import { Archived } from '../../Icons/sections';
-import { useColumns, useUserProfile } from 'utils/hooks';
-import {
-  BoardsCardSubheader,
-  BoardsCardBody,
-  BoardsCardHeader,
-  BoardsCardBodyDescription,
-  BoardsCardBodyTitle,
-  BoardsPrivacyLabel,
-  BoardsCardMedia,
-  BoardsCardFooter,
-} from 'components/Common/Boards/styles';
-import { ProposalCardWrapper, ProposalCardType, ProposalCardIcon, ProposalFooterButton } from './styles';
-import { PRIVACY_LEVEL } from 'utils/constants';
-import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
-import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { PERMISSIONS } from 'utils/constants';
-import SmartLink from 'components/Common/SmartLink';
-import { useLocation } from 'utils/useLocation';
+import { AvatarList } from '../AvatarList';
+import { SafeImage } from '../Image';
+import { TaskBountyOverview } from '../TaskBountyOverview';
+import { Claim } from '../../Icons/claimTask';
+import { Compensation } from '../Compensation';
+import { SubtaskLightIcon } from '../../Icons/subtask';
+import PodIcon from '../../Icons/podIcon';
+import { MilestoneProgress } from '../MilestoneProgress';
+import { TaskCreatedBy } from '../TaskCreatedBy';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
-import Tooltip from 'components/Tooltip';
-import { RichTextViewer } from 'components/RichText';
-import { DAOIcon } from 'components/Icons/dao';
-import { TaskApplicationButton } from 'components/Common/TaskApplication';
+import MilestoneIcon from '../../Icons/milestone';
+import { DropDown, DropDownItem } from '../dropdown';
+import { TaskMenuIcon } from '../../Icons/taskMenu';
+import { TaskCommentIcon } from '../../Icons/taskComment';
 
 export const TASK_ICONS = {
   [Constants.TASK_STATUS_TODO]: TodoWithBorder,
@@ -87,7 +88,7 @@ export const TASK_ICONS = {
 
 let windowOffset = 0;
 
-export const TaskCard = ({
+export function TaskCard({
   openModal,
   id,
   task,
@@ -113,9 +114,9 @@ export const TaskCard = ({
   canDelete,
   setDeleteTask,
   boardType,
-}) => {
+}) {
   const location = useLocation();
-  let TaskIcon = TASK_ICONS[task.status];
+  const TaskIcon = TASK_ICONS[task.status];
   const ref = useRef(null);
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
@@ -164,7 +165,7 @@ export const TaskCard = ({
     },
   });
 
-  //refactor this. move this logic in a separate hook
+  // refactor this. move this logic in a separate hook
   const displayPayButton =
     !!task?.approvedSubmissionsCount &&
     task?.status === Constants.TASK_STATUS_DONE &&
@@ -191,7 +192,7 @@ export const TaskCard = ({
   const canApply = !canClaim && task?.taskApplicationPermissions?.canApply;
 
   const onNavigate = (e) => {
-    //TODO refactor this
+    // TODO refactor this
     if (!showPaymentModal && !isApplicationModalOpen) {
       location.push(viewUrl);
       windowOffset = window.scrollY;
@@ -308,14 +309,15 @@ export const TaskCard = ({
               </ActionButton>
             )}
             {isMilestone && <MilestoneIcon />}
-            {!userProfile && <AvatarList users={userList} id={'task-' + task?.id} />}
+            {!userProfile && <AvatarList users={userList} id={`task-${task?.id}`} />}
           </TaskHeaderIconWrapper>
-          {task?.privacyLevel === PRIVACY_LEVEL.public && (
+          {task?.privacyLevel !== PRIVACY_LEVEL.public && (
             <ToggleBoardPrivacyIcon
               style={{
                 width: '29px',
                 height: '29px',
                 marginRight: '0',
+                marginLeft: '8px',
               }}
               isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
               tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
@@ -420,7 +422,7 @@ export const TaskCard = ({
           {!isMilestone && commentCount > 0 && (
             <Tooltip title="View comments" placement="top">
               <TaskAction
-                key={'task-comment-' + id}
+                key={`task-comment-${id}`}
                 style={{
                   marginRight: !isSubtask && !isMilestone && totalSubtask > 0 ? '0' : '18px',
                 }}
@@ -463,7 +465,7 @@ export const TaskCard = ({
                     }}
                   >
                     <DropDownItem
-                      key={'task-menu-edit-edit-' + id}
+                      key={`task-menu-edit-edit-${id}`}
                       onClick={() => {
                         setEditTask(true);
                       }}
@@ -472,7 +474,7 @@ export const TaskCard = ({
                       Edit {type}
                     </DropDownItem>
                     <DropDownItem
-                      key={'task-menu-edit-archive' + id}
+                      key={`task-menu-edit-archive${id}`}
                       onClick={() => {
                         setArchiveTask(true);
                       }}
@@ -483,7 +485,7 @@ export const TaskCard = ({
 
                     {canDelete && (
                       <DropDownItem
-                        key={'task-menu-delete-' + id}
+                        key={`task-menu-delete-${id}`}
                         onClick={() => {
                           setDeleteTask(true);
                         }}
@@ -501,7 +503,7 @@ export const TaskCard = ({
       </SmartLink>
     </ProposalCardWrapper>
   );
-};
+}
 
 const STATUS_ICONS = {
   [Constants.STATUS_APPROVED]: Approved,

@@ -4,7 +4,7 @@ import DeleteIcon from '../../Icons/DeleteIcon';
 import { Filename, MediaItemWrapper } from './styles';
 import VideoPlayer from './VideoPlayer';
 
-export const MediaItem = (props) => {
+export function MediaItem(props) {
   const { mediaItem, setMediaUploads, mediaUploads, removeMediaItem, viewOnly, className } = props;
   return (
     <MediaItemWrapper className={className}>
@@ -34,9 +34,10 @@ export const MediaItem = (props) => {
             width: '30',
           }}
           onClick={() => {
-            const newMediaUploads = mediaUploads.filter((mediaUpload) => {
-              return mediaUpload.uploadSlug !== mediaItem?.uploadSlug && mediaUpload?.uploadSlug !== mediaItem?.slug;
-            });
+            const newMediaUploads = mediaUploads.filter(
+              (mediaUpload) =>
+                mediaUpload.uploadSlug !== mediaItem?.uploadSlug && mediaUpload?.uploadSlug !== mediaItem?.slug
+            );
             setMediaUploads(newMediaUploads);
             if (removeMediaItem) {
               removeMediaItem();
@@ -46,4 +47,4 @@ export const MediaItem = (props) => {
       )}
     </MediaItemWrapper>
   );
-};
+}

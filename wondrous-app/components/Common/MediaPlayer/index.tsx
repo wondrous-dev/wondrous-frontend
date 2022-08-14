@@ -1,9 +1,9 @@
 import React from 'react';
-import { SafeImage } from '../Image';
 import MediaLink from 'components/Common/MediaLink';
+import { SafeImage } from '../Image';
 import { TaskMediaWrapper, TaskImage, TaskAudio, TaskVideo, TaskMediaUnsuported } from './styles';
 
-export const TaskMedia = (props) => {
+export function TaskMedia(props) {
   const { id = '', media = {} } = props;
   const { type = '', slug = '', uploadSlug = '' } = media;
   const mediaContentComponents = {
@@ -57,5 +57,5 @@ export const TaskMedia = (props) => {
     mediaContent = <TaskMediaUnsuported>Media not supported.</TaskMediaUnsuported>;
   }
 
-  return <TaskMediaWrapper key={'media-task-' + id}>{mediaContent}</TaskMediaWrapper>;
-};
+  return <TaskMediaWrapper key={`media-task-${id}`}>{mediaContent}</TaskMediaWrapper>;
+}

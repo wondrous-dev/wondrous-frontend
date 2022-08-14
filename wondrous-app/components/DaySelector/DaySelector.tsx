@@ -17,7 +17,7 @@ interface DaySelectorProps {
   repeatValue: any;
 }
 
-const DaySelector = ({ dateRange, todayMoment, onChange, date, monthInView, repeatValue }: DaySelectorProps) => {
+function DaySelector({ dateRange, todayMoment, onChange, date, monthInView, repeatValue }: DaySelectorProps) {
   const [lastSelected, setLastSelected] = useState(false);
 
   const daysInMonth = Array.from(
@@ -52,6 +52,6 @@ const DaySelector = ({ dateRange, todayMoment, onChange, date, monthInView, repe
       ))}
     </DatePickerSelect>
   );
-};
+}
 
 export default DaySelector;

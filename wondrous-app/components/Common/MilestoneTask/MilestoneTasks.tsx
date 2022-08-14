@@ -85,7 +85,7 @@ const useGetTasksForMilestone = ({ milestone, status }) => {
   return { data: data?.getTasksForMilestone, ref, hasMore };
 };
 
-const MilestoneTasks = ({ milestone, canCreate }) => {
+function MilestoneTasks({ milestone, canCreate }) {
   const [status, setStatus] = useState('');
   const { data, ref, hasMore } = useGetTasksForMilestone({ milestone, status });
   if (!canCreate && isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
@@ -97,6 +97,6 @@ const MilestoneTasks = ({ milestone, canCreate }) => {
       <LoadMore ref={ref} hasMore={hasMore} />
     </>
   );
-};
+}
 
 export default MilestoneTasks;

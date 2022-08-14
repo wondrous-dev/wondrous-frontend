@@ -12,7 +12,7 @@ type Props = {
   style?: object;
 };
 
-const Tooltip = ({ title, description, children, placement, style }: Props) => {
+function Tooltip({ title, description, children, placement, style }: Props) {
   if (!title) {
     return children;
   }
@@ -38,6 +38,6 @@ const Tooltip = ({ title, description, children, placement, style }: Props) => {
       {children}
     </MuiTooltip>
   );
-};
+}
 
 export default Tooltip;

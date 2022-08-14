@@ -1,6 +1,5 @@
 import { useRouter } from 'next/router';
 import React, { useState } from 'react';
-import styled from 'styled-components';
 import { withAuth } from 'components/Auth/withAuth';
 import DashboardPanel from 'components/Common/DashboardPanel';
 import Boards from 'components/Dashboard/boards';
@@ -11,7 +10,7 @@ import { DashboardPanelWrapper, BoardsWrapper } from 'components/Dashboard/board
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
-const Dashboard = () => {
+function Dashboard() {
   const [selectedStatus, setSelectedStatus] = useState(null);
   const [selectMembershipRequests, setSelectMembershipRequests] = useState(false);
   const router = useRouter();
@@ -46,6 +45,6 @@ const Dashboard = () => {
       </SelectMembershipContext.Provider>
     </Wrapper>
   );
-};
+}
 
 export default withAuth(Dashboard);

@@ -4,11 +4,10 @@ import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as BorderButton } from '../../Common/button';
+import { Button as ButtonComponent, Button as BorderButton } from 'components/Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
-import { Button as ButtonComponent } from 'components/Common/button';
 
 export const OverviewComponent = styled.section`
   width: 100%;
@@ -221,20 +220,22 @@ export const HeaderContributeButton = styled(Button)`
   }
 `;
 
-export const HeaderManageSettingsButton = (props) => (
-  <BorderButton
-    style={{
-      background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-      borderRadius: '204px',
-      width: 'fit-content',
-      height: '40px',
-      minHeight: '0',
-    }}
-    onClick={props?.onClick}
-  >
-    {props.children}
-  </BorderButton>
-);
+export function HeaderManageSettingsButton(props) {
+  return (
+    <BorderButton
+      style={{
+        background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+        borderRadius: '204px',
+        width: 'fit-content',
+        height: '40px',
+        minHeight: '0',
+      }}
+      onClick={props?.onClick}
+    >
+      {props.children}
+    </BorderButton>
+  );
+}
 
 export const HeaderButton = styled.button`
   border-radius: 6px;
@@ -285,27 +286,29 @@ export const RoleButton = styled(HeaderButton)`
   }
 `;
 
-export const HeaderSettingsLockedButton = (props) => (
-  <BorderButton
-    style={{
-      background: '#474747',
-      cursor: 'default',
-      borderRadius: '204px',
-      width: 'fit-content',
-      height: '40px',
-      minHeight: '0',
-      visibility: 'hidden',
-      ...props?.style,
-    }}
-    buttonInnerStyle={{
-      color: '#474747',
-      fontFamily: 'Space Grotesk',
-      padding: '8px',
-    }}
-  >
-    {props.children}
-  </BorderButton>
-);
+export function HeaderSettingsLockedButton(props) {
+  return (
+    <BorderButton
+      style={{
+        background: '#474747',
+        cursor: 'default',
+        borderRadius: '204px',
+        width: 'fit-content',
+        height: '40px',
+        minHeight: '0',
+        visibility: 'hidden',
+        ...props?.style,
+      }}
+      buttonInnerStyle={{
+        color: '#474747',
+        fontFamily: 'Space Grotesk',
+        padding: '8px',
+      }}
+    >
+      {props.children}
+    </BorderButton>
+  );
+}
 
 export const HeaderText = styled(Typography)`
   && {
@@ -379,7 +382,7 @@ export const HeaderPodsText = styled(HeaderContributorsAmount)`
   color: #6c6c6c;
 `;
 
-//cardStyles
+// cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;
   margin: 0 auto;
@@ -387,7 +390,7 @@ export const PostsContainer = styled.div`
   flex-direction: column;
 `;
 
-//cardStyles
+// cardStyles
 export const PostComponent = styled(BaseCard)`
   margin-top: 22px;
   height: 540px;
@@ -648,18 +651,20 @@ export const TokenGatedRoleDescription = styled(Typography)`
   }
 `;
 
-export const TokenLogoDisplay = (props) => (
-  <SafeImage
-    useNextImage={false}
-    src={props?.src}
-    style={{
-      width: '29px',
-      height: '28px',
-      borderRadius: '4px',
-      marginRight: '5px',
-    }}
-  />
-);
+export function TokenLogoDisplay(props) {
+  return (
+    <SafeImage
+      useNextImage={false}
+      src={props?.src}
+      style={{
+        width: '29px',
+        height: '28px',
+        borderRadius: '4px',
+        marginRight: '5px',
+      }}
+    />
+  );
+}
 
 export const ClaimRoleButton = styled(ButtonComponent)`
   && {

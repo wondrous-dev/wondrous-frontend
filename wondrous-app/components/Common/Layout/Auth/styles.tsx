@@ -27,14 +27,14 @@ export const MainWrapper = styled.main`
   overflow-y: auto;
 `;
 
-export const Main = ({ children }) => {
+export function Main({ children }) {
   return (
     <MainWrapper>
       {children}
       {/* TODO: Space Bubbles */}
     </MainWrapper>
   );
-};
+}
 
 export const Container = styled.div`
   max-width: 1024px;
@@ -92,7 +92,7 @@ const FooterCopy = styled.p`
   margin-top: ${createSpacingUnit(2)};
 `;
 
-export const Footer = () => {
+export function Footer() {
   const year = new Date().getFullYear();
 
   return (
@@ -110,4 +110,4 @@ export const Footer = () => {
       <FooterCopy>&copy; {year} Wonder</FooterCopy>
     </FooterWrapper>
   );
-};
+}

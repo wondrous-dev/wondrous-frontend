@@ -1,7 +1,6 @@
-import Link from 'next/link';
-
-import { ErrorWrapper, ErrorImage, ErrorHeader } from './styles';
 import { SectionSubheader } from 'components/Explore/styles';
+import Link from 'next/link';
+import { ErrorWrapper, ErrorImage, ErrorHeader } from './styles';
 import { Button } from 'components/Button';
 
 function CustomErrorComponent() {

@@ -1,5 +1,12 @@
 import React, { useState, useCallback } from 'react';
-import { OverviewComponent } from '../Wrapper/styles';
+import { useIsMobile } from 'utils/hooks';
+import { Button } from 'components/Button';
+import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
+import { useQuery } from '@apollo/client';
+import { GET_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
+import palette from 'theme/palette';
+import { DaoSection, BountySection } from './sections';
+import { gridMobileStyles, TABS_LABELS } from './constants';
 import {
   BackgroundContainer,
   BackgroundTextWrapper,
@@ -17,18 +24,11 @@ import {
   PartnershipRequestHeader,
   PartnershipRequestSubheader,
 } from './styles';
-import { useIsMobile } from 'utils/hooks';
-import { Button } from 'components/Button';
-import { gridMobileStyles, TABS_LABELS } from './constants';
-import { DaoSection, BountySection } from './sections';
-import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
-import { useQuery } from '@apollo/client';
-import { GET_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
-import palette from 'theme/palette';
+import { OverviewComponent } from '../Wrapper/styles';
 
 const LIMIT = 10;
 
-const ExploreComponent = () => {
+function ExploreComponent() {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
@@ -92,78 +92,76 @@ const ExploreComponent = () => {
     },
   ];
   return (
-    <>
-      <OverviewComponent
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          flexDirection: 'column',
-          paddingTop: '40px',
-        }}
-      >
-        <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
-          <BackgroundImg src="/images/explore/explore-page-banner.svg" />
-          <Wheel />
-          <BackgroundTextWrapper>
-            <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
-            <BackgroundTextSubHeader>
-              Join your next favorite project and earn crypto by contributing to one of our Partners
-            </BackgroundTextSubHeader>
-          </BackgroundTextWrapper>
-        </BackgroundContainer>
-        <ExplorePageContentWrapper>
-          <TabsWrapper>
-            {tabs.map((tab, idx) => (
-              <Tab
-                hoverColor={tab.hoverColor}
-                iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
-                key={idx}
-                onClick={tab.action}
-                isActive={activeTab === tab.key}
-                type="button"
-                color={tab.color}
-                rotateDeg={tab.rotateDeg}
-              >
-                <span>{tab.title}</span>
-                <IconWrapper>{tab?.icon}</IconWrapper>
-              </Tab>
-            ))}
-          </TabsWrapper>
-          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
-          {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
-            <BountySection
-              isMobile={isMobile}
-              bounties={bounties?.getBountiesToExplore}
-              fetchMore={getBountiesToExploreFetchMore}
-              hasMore={hasMoreBounties}
-            />
-          )}
-        </ExplorePageContentWrapper>
-        <ExplorePageFooter>
-          <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
-          <MetheorSvg />
-          <PartnershipRequest>
-            <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
-            <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
-            <Button marginTop="28px">
-              <a
-                style={{
-                  textDecoration: 'none',
-                  color: palette.white,
-                }}
-                href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Sign up here!
-              </a>
-            </Button>
-          </PartnershipRequest>
-        </ExplorePageFooter>
-      </OverviewComponent>
-    </>
+    <OverviewComponent
+      style={{
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'column',
+        paddingTop: '40px',
+      }}
+    >
+      <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
+        <BackgroundImg src="/images/explore/explore-page-banner.svg" />
+        <Wheel />
+        <BackgroundTextWrapper>
+          <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
+          <BackgroundTextSubHeader>
+            Join your next favorite project and earn crypto by contributing to one of our Partners
+          </BackgroundTextSubHeader>
+        </BackgroundTextWrapper>
+      </BackgroundContainer>
+      <ExplorePageContentWrapper>
+        <TabsWrapper>
+          {tabs.map((tab, idx) => (
+            <Tab
+              hoverColor={tab.hoverColor}
+              iconPseudoStyleWidth={tab.iconPseudoStyleWidth}
+              key={idx}
+              onClick={tab.action}
+              isActive={activeTab === tab.key}
+              type="button"
+              color={tab.color}
+              rotateDeg={tab.rotateDeg}
+            >
+              <span>{tab.title}</span>
+              <IconWrapper>{tab?.icon}</IconWrapper>
+            </Tab>
+          ))}
+        </TabsWrapper>
+        {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+        {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
+          <BountySection
+            isMobile={isMobile}
+            bounties={bounties?.getBountiesToExplore}
+            fetchMore={getBountiesToExploreFetchMore}
+            hasMore={hasMoreBounties}
+          />
+        )}
+      </ExplorePageContentWrapper>
+      <ExplorePageFooter>
+        <BackgroundImg src="/images/explore/explore-page-footer-bg.svg" />
+        <MetheorSvg />
+        <PartnershipRequest>
+          <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
+          <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
+          <Button marginTop="28px">
+            <a
+              style={{
+                textDecoration: 'none',
+                color: palette.white,
+              }}
+              href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
+              target="_blank"
+              rel="noreferrer"
+            >
+              Sign up here!
+            </a>
+          </Button>
+        </PartnershipRequest>
+      </ExplorePageFooter>
+    </OverviewComponent>
   );
-};
+}
 
 export default ExploreComponent;

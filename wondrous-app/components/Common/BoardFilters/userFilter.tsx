@@ -1,7 +1,8 @@
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { AppliedFiltersItem, CloseIcon } from './styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { AppliedFiltersItem, CloseIcon } from './styles';
+
 export default function UserFilterPill() {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();

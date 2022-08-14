@@ -10,21 +10,21 @@ import Button from '@mui/material/Button';
 import { handleAddFile } from 'utils/media';
 import { URL_REGEX } from 'utils/constants';
 
+import { useLazyQuery } from '@apollo/client';
+import { GET_PREVIEW_FILE } from 'graphql/queries';
 import styles, {
   inputStyles,
   uploadButtonStyles,
   deleteButtonStyles,
   whiteTypographyStyles,
 } from './ImageUploaderStyles';
-import { useLazyQuery } from '@apollo/client';
-import { GET_PREVIEW_FILE } from 'graphql/queries';
 
 const HiddenInput = styled('input')(inputStyles);
 const UploadButton = styled(Button)(uploadButtonStyles);
 const DeleteButton = styled(Button)(deleteButtonStyles);
 const WhiteTypography = styled(Typography)(whiteTypographyStyles);
 
-const ImageUploader = ({ errors, setValue, value }) => {
+function ImageUploader({ errors, setValue, value }) {
   const [file, setFile] = useState(value);
   const hiddenFileInput = useRef(null);
   const [mediaUploads, setMediaUploads] = useState([]);
@@ -96,6 +96,6 @@ const ImageUploader = ({ errors, setValue, value }) => {
       {errors?.file && <Typography>{errors.file?.message}</Typography>}
     </Box>
   );
-};
+}
 
 export default ImageUploader;

@@ -1,4 +1,4 @@
-const PodIconWithoutBg = (props) => {
+function PodIconWithoutBg(props) {
   return (
     <svg width={35} height={35} fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
@@ -10,6 +10,6 @@ const PodIconWithoutBg = (props) => {
       <rect x={0.566} y={0.677} width={33} height={33} rx={16.5} stroke="#6ACCBC" />
     </svg>
   );
-};
+}
 
 export default PodIconWithoutBg;

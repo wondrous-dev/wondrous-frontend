@@ -3,8 +3,8 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Checkbox from '@mui/material/Checkbox';
-import { Button } from '../../Common/button';
 import palette from 'theme/palette';
+import { Button } from '../../Common/button';
 
 export const ConnectDiscordButton = styled(Button)`
   && {

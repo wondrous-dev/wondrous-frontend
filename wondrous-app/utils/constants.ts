@@ -12,7 +12,7 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
-//Task date types
+// Task date types
 export const TASK_DATE_OVERDUE = 'overdue';
 export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
 export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
@@ -144,7 +144,7 @@ export const NOTION_CONNECT_TYPES = {
   TASK_IMPORT: 'taskImport',
 };
 
-export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
+export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId, 10));
 
 export const CHAIN_IDS = {
   ETH: 1,
@@ -312,7 +312,7 @@ export const PERMISSIONS = {
   CAN_COMMENT: 'can_comment',
   FULL_ACCESS: 'full_access',
   MANAGE_MEMBER: 'manage_member',
-  REVIEW_TASK: 'review_task', //can be set as reviewer, once approved, it' automatically done
+  REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
@@ -388,9 +388,7 @@ export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const URL_REGEX =
   /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
-export const validateEmail = (email) => {
-  return email.match(EMAIL_REGEX);
-};
+export const validateEmail = (email) => email.match(EMAIL_REGEX);
 
 export const GRAPHQL_ERRORS = {
   WEB3_ADDRESS_ALREADY_EXISTS: 'web3_address_already_exist',
@@ -533,11 +531,11 @@ export const ProposalVoteType = {
 export const PROPOSAL_VOTE_LABELS = {
   [ProposalVoteType.APPROVE]: {
     VOTED: 'Voted For',
-    ACTION: 'Vote Against',
+    ACTION: 'Vote For',
   },
   [ProposalVoteType.REJECT]: {
     VOTED: 'Voted Against',
-    ACTION: 'Vote For',
+    ACTION: 'Vote Against',
   },
 };
 

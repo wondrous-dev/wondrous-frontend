@@ -13,6 +13,7 @@ import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import LinkIcon from 'components/Icons/linkSubmissionIcon.svg';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const SubmissionButtonWrapperGradient = styled.div`
   background: linear-gradient(94.19deg, #7427ff 10.13%, #232323 131.81%);
@@ -96,6 +97,22 @@ export const SubmissionButtonRequestChange = styled(ButtonBase)`
   }
 `;
 
+export const SubmissionButtonReject = styled(ButtonBase)`
+  && {
+    border: 1px solid #474747;
+    width: max-content;
+    height: 28px;
+    border-radius: 100px;
+    border-color: ${palette.red400};
+    font-family: 'Space Grotesk';
+    padding: 7px 16px;
+    ${({ theme }) => `
+    color: ${theme.palette.white};
+    font-weight: ${theme.typography.fontWeightMedium};
+  `}
+  }
+`;
+
 export const SubmissionButtonApprove = styled(ButtonBase)`
   && {
     background: #474747;
@@ -130,13 +147,11 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
   }
 `;
 
-export const SubmissionFilterButtonIcon = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const SubmissionFilterButtonIcon = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
     display: flex;
@@ -653,6 +668,10 @@ export const SubmissionItemStatusTextChangesRequested = styled(SubmissionItemSta
   background: -webkit-linear-gradient(#ffffff, #ffd653);
 `;
 
+export const SubmissionItemStatusTextChangesRejected = styled(SubmissionItemStatusText)`
+  background: -webkit-linear-gradient(#ffffff, ${palette.red400});
+`;
+
 export const SubmissionItemStatusChangesRequestedIcon = styled((props) => (
   <div {...props}>
     <ChangesRequestedIcon />
@@ -707,6 +726,13 @@ export const TaskSubmissionLink = styled.a`
 `;
 
 export const TaskSubmissionLinkIcon = styled(LinkIcon)``;
+
+export const TaskSubmissionLinkText = styled.p`
+  max-width: 580px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+`;
 
 export const SubmissionDescription = styled.div`
   && {

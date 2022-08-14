@@ -22,7 +22,7 @@ import CalendarDay from 'components/CalendarDay';
 
 import styles from './DateRangePickerStyles';
 
-const DateRangePicker = ({ sx }) => {
+function DateRangePicker({ sx }) {
   const [dateRange, setDateRange] = useState(DEFAULT_DATEPICKER_VALUE);
   const [focusedInput, setFocusedInput] = useState(null);
   const [showOptions, setShowOptions] = useState(false);
@@ -59,7 +59,7 @@ const DateRangePicker = ({ sx }) => {
 
     if (!start && !end && !repeatType) return '';
 
-    return `${start ? `${start} - ` : ''} ${end ? end : ''} ${repeatType ? repeatType : ''}`;
+    return `${start ? `${start} - ` : ''} ${end || ''} ${repeatType || ''}`;
   }, [dateRange, repeatType]);
 
   const setDateAtStartDate = () => {
@@ -196,6 +196,6 @@ const DateRangePicker = ({ sx }) => {
       )}
     </Box>
   );
-};
+}
 
 export default DateRangePicker;

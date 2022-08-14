@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST } from 'graphql/queries';
@@ -8,12 +9,12 @@ import { SmallAvatar } from 'components/Common/AvatarList';
 import {
   MemberRequestsList,
   MemberRequestCard,
-  RequestCount,
   RequestCountWrapper,
   RequestCountEmptyState,
   RequestHeader,
   RequestsContainer,
-  ShowAllButton,
+  ShowMoreButton,
+  MemberProfileLink,
   MemberName,
   MemberMessage,
   RequestActionButtons,
@@ -23,11 +24,30 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-let QUERY_LIMIT = 1;
-let REFETCH_QUERY_LIMIT = undefined;
+const QUERY_LIMIT = 20;
 
 const useGetOrgMemberRequests = (orgId) => {
-  const [getOrgUserMembershipRequests, { data, fetchMore }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST);
+  const [hasMore, setHasMore] = useState(false);
+  const [isInitialFetchForThePage, setIsInitialFetchForThePage] = useState(true); // this state is used to determine if the fetch is from a fetchMore or from route change
+  const [getOrgUserMembershipRequests, { data, fetchMore, previousData }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ getOrgMembershipRequest }) => {
+      const isPreviousDataValid = previousData && previousData?.getOrgMembershipRequest?.length > 1; // if length of previous data is 1, it is likely a refetch;
+
+      const limitToRefer = QUERY_LIMIT;
+      const previousDataLength = previousData?.getOrgMembershipRequest?.length;
+      const currentDataLength = getOrgMembershipRequest?.length;
+      const updatedDataLength = isPreviousDataValid ? currentDataLength - previousDataLength : currentDataLength;
+      if (isInitialFetchForThePage) {
+        setHasMore(currentDataLength >= limitToRefer);
+      } else {
+        updatedDataLength >= 0 && setHasMore(updatedDataLength >= limitToRefer); // updatedDataLength >= 0 means it's not a refetch
+      }
+    },
+  });
   useEffect(() => {
     if (orgId) {
       getOrgUserMembershipRequests({
@@ -35,20 +55,31 @@ const useGetOrgMemberRequests = (orgId) => {
           orgId,
           limit: QUERY_LIMIT,
         },
+      }).then(({ data }) => {
+        const requestData = data?.getOrgMembershipRequest;
+        if (requestData) setIsInitialFetchForThePage(false);
       });
     }
   }, [orgId, getOrgUserMembershipRequests]);
-  return { data: data?.getOrgMembershipRequest, fetchMore };
+  return { data: data?.getOrgMembershipRequest, fetchMore, hasMore };
 };
 
-const MemberRequests = (props) => {
+function MemberRequests(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
-  const { data: orgUserMembershipRequests, fetchMore } = useGetOrgMemberRequests(orgId);
+  const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
-  const [showShowAllButton, setShowShowAllButton] = useState(true);
-  const refetchQueries = [GET_ORG_FROM_USERNAME];
+  const refetchQueries = [
+    GET_ORG_FROM_USERNAME,
+    {
+      query: GET_ORG_MEMBERSHIP_REQUEST,
+      variables: {
+        orgId,
+        limit: orgUserMembershipRequests?.length - 1 ? orgUserMembershipRequests.length - 1 : QUERY_LIMIT,
+      },
+    },
+  ];
   const showEmptyState = orgUserMembershipRequests?.length === 0;
 
   const approveRequest = (userId, orgId) => {
@@ -58,16 +89,6 @@ const MemberRequests = (props) => {
         orgId,
       },
       refetchQueries,
-      updateQueries: {
-        getOrgMembershipRequest: (prev, { mutationResult }) => {
-          const isMutationSuccess = mutationResult.data?.approveJoinOrgRequest?.success;
-          if (isMutationSuccess) {
-            const newOrgMembershipRequests = [...prev.getOrgMembershipRequest].filter((req) => req.userId !== userId);
-            return { getOrgMembershipRequest: newOrgMembershipRequests };
-          }
-          return { getOrgMembershipRequest: prev };
-        },
-      },
     });
   };
 
@@ -78,30 +99,14 @@ const MemberRequests = (props) => {
         orgId,
       },
       refetchQueries,
-      updateQueries: {
-        getOrgMembershipRequest: (prev, { mutationResult }) => {
-          const isMutationSuccess = mutationResult.data?.rejectJoinOrgRequest?.success;
-          if (isMutationSuccess) {
-            const newOrgMembershipRequests = [...prev.getOrgMembershipRequest].filter((req) => req.userId !== userId);
-            return { getOrgMembershipRequest: newOrgMembershipRequests };
-          }
-          return { getOrgMembershipRequest: prev };
-        },
-      },
     });
   };
 
-  const handleShowAllRequests = () => {
+  const handleShowMoreRequests = () => {
     fetchMore({
       variables: {
         orgId,
         offset: orgUserMembershipRequests?.length,
-        limit: REFETCH_QUERY_LIMIT,
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        const getOrgMembershipRequest = [...prev?.getOrgMembershipRequest, ...fetchMoreResult?.getOrgMembershipRequest];
-        setShowShowAllButton(false);
-        return { getOrgMembershipRequest };
       },
     });
   };
@@ -135,24 +140,27 @@ const MemberRequests = (props) => {
             <MemberRequestsList>
               {orgUserMembershipRequests?.map((request) => (
                 <MemberRequestCard key={request.id}>
-                  {request.userProfilePicture ? (
-                    <SafeImage
-                      width={28}
-                      height={28}
-                      style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                      src={request.userProfilePicture}
-                      useNextImage
-                    />
-                  ) : (
-                    <SmallAvatar
-                      id={request.id}
-                      username={request.userUsername}
-                      initials={getUserInitials(request.userUsername)}
-                      style={{ width: '28px', height: '28px' }}
-                    />
-                  )}
-
-                  <MemberName>{request.userUsername}</MemberName>
+                  <Link href={`/profile/${request.userUsername}/about`} passHref>
+                    <MemberProfileLink>
+                      {request.userProfilePicture ? (
+                        <SafeImage
+                          width={28}
+                          height={28}
+                          style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                          src={request.userProfilePicture}
+                          useNextImage
+                        />
+                      ) : (
+                        <SmallAvatar
+                          id={request.id}
+                          username={request.userUsername}
+                          initials={getUserInitials(request.userUsername)}
+                          style={{ width: '28px', height: '28px' }}
+                        />
+                      )}
+                      <MemberName>{request.userUsername}</MemberName>
+                    </MemberProfileLink>
+                  </Link>
                   <MemberMessage>“{request.message}”</MemberMessage>
                   <RequestActionButtons>
                     <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId)}>
@@ -166,8 +174,8 @@ const MemberRequests = (props) => {
               ))}
             </MemberRequestsList>
 
-            {showShowAllButton ? (
-              <ShowAllButton onClick={handleShowAllRequests}>Show all</ShowAllButton>
+            {hasMore ? (
+              <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>
             ) : (
               <MemberRequestsListEndMessage>
                 These are all the requests for now. Come back later to see more.
@@ -178,6 +186,6 @@ const MemberRequests = (props) => {
       </RequestsContainer>
     </Wrapper>
   );
-};
+}
 
 export default MemberRequests;

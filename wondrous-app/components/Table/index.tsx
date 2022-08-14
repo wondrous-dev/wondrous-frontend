@@ -17,11 +17,13 @@ import {
 } from 'utils/constants';
 import { useColumns } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import { CreateEntity } from 'components/CreateEntity';
 import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { KudosForm } from '../Common/KudosForm';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
 import { CreateModalOverlay } from '../CreateEntity/styles';
 import { Claim } from '../Icons/claimTask';
@@ -47,7 +49,7 @@ import {
   TaskDescription,
   TaskTitle,
 } from './styles';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import TableBody from './TableBody';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -55,17 +57,13 @@ const DELIVERABLES_ICONS = {
   link: <StyledLinkIcon />,
   video: <PlayIcon />,
 };
-import TableBody from './TableBody';
-import { CreateEntity } from 'components/CreateEntity';
 
-const createTasksFromColumns = (columns) => {
-  return columns.reduce((acc, column) => {
-    const newColumnTasks = column?.tasks?.map((task) => {
-      return {
-        ...task,
-        status: column?.status || task?.status,
-      };
-    });
+const createTasksFromColumns = (columns) =>
+  columns.reduce((acc, column) => {
+    const newColumnTasks = column?.tasks?.map((task) => ({
+      ...task,
+      status: column?.status || task?.status,
+    }));
     acc = [...acc, ...newColumnTasks];
     if (column?.section?.tasks) {
       const newColumnSectionTasks = column?.section?.tasks?.map((task) => {
@@ -74,7 +72,8 @@ const createTasksFromColumns = (columns) => {
             ...task,
             status: TASK_STATUS_PROPOSAL_REQUEST,
           };
-        } else if (column?.status === Constants.TASK_STATUS_IN_PROGRESS) {
+        }
+        if (column?.status === Constants.TASK_STATUS_IN_PROGRESS) {
           return {
             ...task,
             status: TASK_STATUS_SUBMISSION_REQUEST,
@@ -87,9 +86,8 @@ const createTasksFromColumns = (columns) => {
     }
     return acc;
   }, []);
-};
 
-export const Table = (props) => {
+export function Table(props) {
   const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin, tasks, entityType } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
@@ -133,7 +131,7 @@ export const Table = (props) => {
   });
 
   async function editTask(task, status = '') {
-    let populatedTask = { ...task };
+    const populatedTask = { ...task };
     const isTaskProposal =
       status === Constants.TASK_STATUS_REQUESTED ||
       status === Constants.TASK_STATUS_PROPOSAL_REQUEST ||
@@ -292,7 +290,7 @@ export const Table = (props) => {
                 Status
               </StyledTableCell>
               <StyledTableCell width="383px"> {isAdmin ? 'Submission' : 'Task'}</StyledTableCell>
-              {/*<StyledTableCell width="190px">Deliverables</StyledTableCell>*/}
+              {/* <StyledTableCell width="190px">Deliverables</StyledTableCell> */}
               <StyledTableCell align="center" width="88px">
                 Reward
               </StyledTableCell>
@@ -301,7 +299,7 @@ export const Table = (props) => {
                   Decision
                 </StyledTableCell>
               )}
-              <StyledTableCell width="54px"></StyledTableCell>
+              <StyledTableCell width="54px" />
             </StyledTableRow>
           </StyledTableHead>
           <TableBody
@@ -321,4 +319,4 @@ export const Table = (props) => {
       </StyledTableContainer>
     </>
   );
-};
+}

@@ -26,7 +26,7 @@ import { labelStyles, inputStyles } from './DocCategoriesDialogStyles';
 const LabelTypography = styled(Typography)(labelStyles);
 const StyledTextField = styled(TextField)(inputStyles);
 
-const DocCategoriesDialog = ({ open, onClose, orgName, orgId, podId, category }) => {
+function DocCategoriesDialog({ open, onClose, orgName, orgId, podId, category }) {
   const {
     register,
     handleSubmit,
@@ -91,7 +91,7 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, podId, category })
       createOrgDocumentCategory({
         variables: {
           input: {
-            orgId: orgId,
+            orgId,
             name: data.name,
           },
         },
@@ -152,6 +152,6 @@ const DocCategoriesDialog = ({ open, onClose, orgName, orgId, podId, category })
       </form>
     </DocModal>
   );
-};
+}
 
 export default DocCategoriesDialog;

@@ -1,7 +1,20 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography } from '@mui/material';
-import { Tab } from '@mui/material';
+import { Typography, Tab } from '@mui/material';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { PERMISSIONS } from 'utils/constants';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { delQuery } from 'utils';
+import { DAOIcon } from '../../Icons/dao';
+import { OrganisationsCardNoLogo } from '../../profile/about/styles';
+import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
+import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import {
   PodNameTypography,
   PaymentModal,
@@ -14,28 +27,14 @@ import {
   PaymentMethodWrapper,
   WarningTypography,
 } from '../../Common/Payment/styles';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { PERMISSIONS } from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { useRouter } from 'next/router';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
-import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
-import Link from 'next/link';
-import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { delQuery } from 'utils';
 
 enum ViewType {
   Paid = 'paid',
   Unpaid = 'unpaid',
 }
 
-export const PayModal = (props) => {
+export function PayModal(props) {
   const { podId, orgId, open, handleClose, assigneeId, assigneeUsername, taskTitle, submissionId } = props;
   const router = useRouter();
   const [selectedTab, setSelectedTab] = useState('wallet');
@@ -77,7 +76,7 @@ export const PayModal = (props) => {
           if (!wallets || wallets?.length === 0) {
             const podResult = await getPodById({
               variables: {
-                podId: podId,
+                podId,
               },
             });
             const pod = podResult?.data?.getPodById;
@@ -90,7 +89,7 @@ export const PayModal = (props) => {
             setWallets(wallets);
           }
         } catch (err) {
-          console.error('failed to fetch wallet: ' + err?.message);
+          console.error(`failed to fetch wallet: ${err?.message}`);
         }
       } else if (orgId) {
         getOrgWallet({
@@ -179,4 +178,4 @@ export const PayModal = (props) => {
       </PaymentModal>
     </Modal>
   );
-};
+}

@@ -24,9 +24,7 @@ const submissions = {
 
 const baseColumnsAdmin = [proposal, submissions];
 
-const statusIncludedOrEmpty = ({ status, statuses }) => {
-  return statuses.includes(status) || isEmpty(statuses);
-};
+const statusIncludedOrEmpty = ({ status, statuses }) => statuses.includes(status) || isEmpty(statuses);
 
 const setStatus = ({ statuses, setSelectedStatus }) => {
   if (statuses.length > 0) {

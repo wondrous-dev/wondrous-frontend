@@ -1,13 +1,14 @@
 import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
-import CreatePodModal from './CreatePodModal';
-import { CreateEntityModal } from './CreateEntityModal/index';
-import EditLayoutBaseModal from './editEntityModal';
-import { CreateFormModalOverlay } from './styles';
 import { useRouter } from 'next/router';
 import { useCreateEntityContext } from 'utils/hooks';
+import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
+import CreatePodModal from './CreatePodModal';
+import CreateEntityModal from './CreateEntityModal/index';
+import EditLayoutBaseModal from './editEntityModal';
+import { CreateFormModalOverlay } from './styles';
+
 interface ICreateEntity {
   entityType: string;
   handleClose: Function;
@@ -36,7 +37,7 @@ interface ICreateEntity {
   parentTaskId?: string;
 }
 
-export const CreateEntity = (props: ICreateEntity) => {
+export function CreateEntity(props: ICreateEntity) {
   const { open, entityType, handleCloseModal, isTaskProposal } = props;
 
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
@@ -62,11 +63,10 @@ export const CreateEntity = (props: ICreateEntity) => {
       {forNewModal ? <CreateEntityModal {...props} /> : <CreatePodModal {...props} />}
     </CreateFormModalOverlay>
   );
-};
+}
 
-const ChooseEntityToCreate = (props) => {
+function ChooseEntityToCreate(props) {
   const createEntityContext = useCreateEntityContext();
-  const router = useRouter();
   const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
@@ -78,11 +78,6 @@ const ChooseEntityToCreate = (props) => {
     resetEntityType();
     toggleOpen();
   };
-
-  if (entityType === ENTITIES_TYPES.ORG) {
-    router.push('/onboarding-dao');
-    return null;
-  }
 
   if (entityType) {
     return (
@@ -107,6 +102,6 @@ const ChooseEntityToCreate = (props) => {
       <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
     </CreateFormModalOverlay>
   );
-};
+}
 
 export default ChooseEntityToCreate;

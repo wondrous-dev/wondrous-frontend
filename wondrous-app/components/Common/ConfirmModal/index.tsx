@@ -28,7 +28,7 @@ interface DocModalProps {
   reverseButtons?: boolean;
 }
 
-const ConfirmModal = ({
+function ConfirmModal({
   open,
   onClose,
   title,
@@ -41,7 +41,7 @@ const ConfirmModal = ({
   cancelLabel = 'Cancel',
   rejectAction,
   reverseButtons = false,
-}: DocModalProps) => {
+}: DocModalProps) {
   const cancelButtonAction = rejectAction || onClose;
   return (
     <Dialog
@@ -83,6 +83,6 @@ const ConfirmModal = ({
       </DialogActions>
     </Dialog>
   );
-};
+}
 
 export default ConfirmModal;

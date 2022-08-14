@@ -5,15 +5,32 @@ import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
-import PodIcon from '../../Icons/podIcon';
-import Tabs from '../../organization/tabs/tabs';
 import { useWonderWeb3 } from 'services/web3';
+import {
+  GET_USER_JOIN_POD_REQUEST,
+  GET_TOKEN_GATED_ROLES_FOR_POD,
+  LIT_SIGNATURE_EXIST,
+  GET_ORG_BY_ID,
+  GET_TASKS_PER_TYPE_FOR_POD,
+} from 'graphql/queries';
+import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
+import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
+import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
+import TypeSelector from 'components/TypeSelector';
+import { SafeImage } from 'components/Common/Image';
+import BoardsActivity from 'components/Common/BoardsActivity';
+import { RichTextViewer } from 'components/RichText';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import BoardLock from 'components/BoardLock';
+import { LogoWrapper, OrgLogoWrapper } from './styles';
+import { DAOEmptyIcon } from '../../Icons/dao';
+import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import { MoreInfoModal } from '../../profile/modals';
 import {
   Content,
   ContentContainer,
@@ -39,30 +56,13 @@ import {
   HeaderButton,
   BoardsSubheaderWrapper,
 } from '../../organization/wrapper/styles';
-import { MoreInfoModal } from '../../profile/modals';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import {
-  GET_USER_JOIN_POD_REQUEST,
-  GET_TOKEN_GATED_ROLES_FOR_POD,
-  LIT_SIGNATURE_EXIST,
-  GET_ORG_BY_ID,
-  GET_TASKS_PER_TYPE_FOR_POD,
-} from 'graphql/queries';
-import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
-import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
-import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
-import TypeSelector from 'components/TypeSelector';
-import { SafeImage } from 'components/Common/Image';
-import { DAOEmptyIcon } from '../../Icons/dao';
-import { LogoWrapper, OrgLogoWrapper } from './styles';
-import BoardsActivity from 'components/Common/BoardsActivity';
-import { RichTextViewer } from 'components/RichText';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
+import Tabs from '../../organization/tabs/tabs';
+import PodIcon from '../../Icons/podIcon';
+import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import { useMe } from '../../Auth/withAuth';
 import DefaultBg from '../../../public/images/overview/background.png';
 
-const Wrapper = (props) => {
+function Wrapper(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
 
   const router = useRouter();
@@ -326,7 +326,7 @@ const Wrapper = (props) => {
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard
                       isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                      tooltipTitle={'Token gating'}
+                      tooltipTitle="Token gating"
                     />
                   )}
                   <ToggleBoardPrivacyIcon
@@ -410,18 +410,14 @@ const Wrapper = (props) => {
                   />
                 )}
               </BoardsSubheaderWrapper>
-              <BoardLock
-                handleJoinClick={handleJoinPodButtonClick}
-                requestSent={joinRequestSent || userJoinRequest?.id}
-              >
-                {children}
-              </BoardLock>
+
+              {children}
             </Tabs>
           </ContentContainer>
         </Content>
       </OverviewComponent>
     </>
   );
-};
+}
 
 export default Wrapper;

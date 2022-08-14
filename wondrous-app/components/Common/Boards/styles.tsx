@@ -218,7 +218,7 @@ export const CardsContainerInnerWrapper = styled.div`
   min-height: 100vh;
 `;
 
-export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {
+export function CardsContainer({ isFullWidth, numberOfColumns, children }) {
   return (
     <CardsContainerInnerWrapper>
       {isFullWidth ? (
@@ -234,4 +234,4 @@ export const CardsContainer = ({ isFullWidth, numberOfColumns, children }) => {
       )}
     </CardsContainerInnerWrapper>
   );
-};
+}

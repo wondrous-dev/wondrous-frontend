@@ -24,7 +24,7 @@ const getWaitlistAuth = () => {
 };
 
 const authLink = setContext((_, { headers }) => {
-  let auth = getAuth() || getWaitlistAuth();
+  const auth = getAuth() || getWaitlistAuth();
 
   return {
     headers: {
@@ -49,6 +49,8 @@ const cache = new InMemoryCache({
         },
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
+        getOrgMembershipRequest: offsetLimitPagination(['orgId']),
+        getPodMembershipRequest: offsetLimitPagination(['podId']),
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
         getProposalsUserCanReview: offsetLimitPagination(),
         getSubmissionsUserCanReview: offsetLimitPagination(),

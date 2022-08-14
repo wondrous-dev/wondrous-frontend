@@ -73,6 +73,14 @@ export const REJECT_SUBMISSION = gql`
   }
 `;
 
+export const ARCHIVE_SUBMISSION = gql`
+  mutation archiveTaskSubmission($submissionId: ID!) {
+    archiveTaskSubmission(submissionId: $submissionId) {
+      success
+    }
+  }
+`;
+
 export const CREATE_SUBMISSION_COMMENT = gql`
   mutation createTaskSubmissionComment($input: SubmissionCommentInput) {
     createTaskSubmissionComment(input: $input) {
