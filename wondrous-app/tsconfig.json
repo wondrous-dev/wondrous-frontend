@@ -21,6 +21,7 @@
       "services/*": ["services/*"],
       "utils/*": ["utils/*"],
       "types/*": ["types/*"],
+      "hooks/*": ["hooks/*"],
       "graphql/*": ["graphql/*"]
     }
   },
