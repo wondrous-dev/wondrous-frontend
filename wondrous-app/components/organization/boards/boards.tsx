@@ -6,6 +6,7 @@ import MilestoneBoard from 'components/Common/MilestoneBoard';
 import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ColumnsContext } from 'utils/contexts';
+import TaskActionsProvider from 'containers/TaskActionsProvider';
 import Boards from '../../Common/Boards';
 import Wrapper from '../wrapper/wrapper';
 
@@ -67,14 +68,16 @@ function OrgBoards(props: Props) {
     >
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {!loading && (
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
+          <TaskActionsProvider>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </TaskActionsProvider>
         )}
       </ColumnsContext.Provider>
     </Wrapper>

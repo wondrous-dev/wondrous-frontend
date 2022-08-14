@@ -1,17 +1,14 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Droppable, Draggable } from 'react-beautiful-dnd';
-import CreateBtnIcon from 'components/Icons/createBtn';
 import { useInView } from 'react-intersection-observer';
 
 import {
-  PERMISSIONS,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
-  BOARD_TYPE,
   STATUS_OPEN,
   STATUS_APPROVED,
   STATUS_CLOSED,
@@ -21,9 +18,7 @@ import { Task } from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 
 import Milestone from 'components/Common/Milestone';
-import { useMe } from 'components/Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';

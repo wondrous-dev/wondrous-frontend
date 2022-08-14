@@ -1,12 +1,12 @@
 import React from 'react';
 
 import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import BoardsActivity from 'components/Common/BoardsActivity';
 import { ENTITIES_TYPES } from 'utils/constants';
 import MilestoneBoard from 'components/Common/MilestoneBoard';
 import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ColumnsContext } from 'utils/contexts';
+import TaskActionsProvider from '../../../containers/TaskActionsProvider';
 import Boards from '../../Common/Boards';
 import Wrapper from '../wrapper';
 
@@ -59,14 +59,16 @@ function PodBoards(props: Props) {
     <Wrapper onSearch={onSearch} filterSchema={filterSchema} onFilterChange={onFilterChange} userId={userId}>
       <ColumnsContext.Provider value={{ columns, setColumns }}>
         {!loading && (
-          <ActiveBoard
-            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            setColumns={setColumns}
-            entityType={entityType}
-          />
+          <TaskActionsProvider>
+            <ActiveBoard
+              activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+              setColumns={setColumns}
+              entityType={entityType}
+            />
+          </TaskActionsProvider>
         )}
       </ColumnsContext.Provider>
     </Wrapper>

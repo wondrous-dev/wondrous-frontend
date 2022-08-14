@@ -1,21 +1,13 @@
-import React, { useEffect, useState, useContext, useCallback } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import Link from 'next/link';
+import useTaskActions from 'hooks/useTaskActions';
+import React, { useEffect, useState } from 'react';
+import { useMutation } from '@apollo/client';
 import * as Constants from 'utils/constants';
-import { renderMentionString } from 'utils/common';
 import { useRouter } from 'next/router';
-import { Typography } from '@mui/material';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { useLocation } from 'utils/useLocation';
-import palette from 'theme/palette';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery } from 'utils';
-import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations/task';
 import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { CreateEntity } from 'components/CreateEntity';
-import { LogoButton } from '../logo';
 
 import {
   TodoWithBorder,
@@ -27,33 +19,8 @@ import {
   Paid,
 } from '../../Icons';
 import Card from './card';
-import { AvatarList } from '../AvatarList';
-import { Compensation } from '../Compensation';
-import { TaskMedia } from '../MediaPlayer';
-import { CompletedIcon } from '../../Icons/statusIcons';
-import { RejectIcon } from '../../Icons/taskModalIcons';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import { ArchiveTaskModal } from '../ArchiveTaskModal';
-
-import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
-import {
-  TaskHeader,
-  TaskContent,
-  TaskTitle,
-  TaskSeparator,
-  TaskFooter,
-  PodWrapper,
-  PodName,
-  TaskListCardWrapper,
-  TaskStatusHeaderText,
-  ArchivedTaskUndo,
-  TaskCardDescriptionText,
-} from './styles';
-import { SafeImage } from '../Image';
 import { useMe } from '../../Auth/withAuth';
-import { TaskSummaryAction } from '../TaskSummary/styles';
-import { Arrow, Archived } from '../../Icons/sections';
-import { DeleteTaskModal } from '../DeleteTaskModal';
+import { Archived } from '../../Icons/sections';
 import { getBoardType } from '../KanbanBoard/kanbanBoard';
 
 export const TASK_ICONS = {
@@ -65,20 +32,6 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_ARCHIVED]: Archived,
   [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
   [Constants.TASK_STATUS_PAID]: Paid,
-};
-
-const useGetReviewers = (editTask, task) => {
-  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
-  useEffect(() => {
-    if (editTask && !reviewerData?.getTaskReviewers?.length) {
-      getReviewers({
-        variables: {
-          taskId: task?.id,
-        },
-      });
-    }
-  }, [editTask, getReviewers, reviewerData?.getTaskReviewers?.length, task?.id]);
-  return reviewerData?.getTaskReviewers;
 };
 
 export function Task(props) {
@@ -109,19 +62,13 @@ export function Task(props) {
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard || userBoard;
-
+  const { editTask, deleteTask, archiveTask } = useTaskActions();
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
   const [liked, setLiked] = useState(iLiked);
-  const [archiveTask, setArchiveTask] = useState(false);
-  const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
-  const [editTask, setEditTask] = useState(false);
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   let TaskIcon = TASK_ICONS[status];
   if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
     TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
@@ -133,47 +80,6 @@ export function Task(props) {
   const isSubtask = task?.parentTaskId !== null;
   const isBounty = type === Constants.ENTITIES_TYPES.BOUNTY;
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
-
-  const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
-    refetchQueries: [
-      'getTaskById',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForPodBoard',
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-    ],
-    onError: () => {
-      console.error('Something went wrong with archiving tasks');
-    },
-    onCompleted: () => {
-      // TODO: Move columns
-      // let columns = [...boardColumns?.columns]
-    },
-  });
-  const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
-    refetchQueries: [
-      'getTaskById',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getOrgTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-    onError: () => {
-      console.error('Something went wrong unarchiving tasks');
-    },
-    onCompleted: () => {
-      // TODO: Move columns
-      // let columns = [...boardColumns?.columns]
-    },
-  });
-
-  const reviewerData = useGetReviewers(editTask, task);
 
   const closeProposal = (id, status) => {
     closeTaskProposal({
@@ -195,33 +101,6 @@ export function Task(props) {
 
   const totalSubtask = task?.totalSubtaskCount;
   const [claimed, setClaimed] = useState(false);
-  const handleOnArchive = useCallback(() => {
-    orgBoard?.setFirstTimeFetch(false);
-    archiveTaskMutation({
-      variables: {
-        taskId: id,
-      },
-    }).then((result) => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage(
-        <>
-          Task archived successfully!{' '}
-          <ArchivedTaskUndo
-            onClick={() => {
-              setSnackbarAlertOpen(false);
-              unarchiveTaskMutation({
-                variables: {
-                  taskId: id,
-                },
-              });
-            }}
-          >
-            Undo
-          </ArchivedTaskUndo>
-        </>
-      );
-    });
-  }, [id, orgBoard, archiveTaskMutation, setSnackbarAlertMessage, setSnackbarAlertOpen, unarchiveTaskMutation]);
 
   useEffect(() => {
     if (!initialStatus) {
@@ -294,41 +173,6 @@ export function Task(props) {
 
   return (
     <span className={className}>
-      <CreateEntity
-        open={editTask}
-        handleCloseModal={() => {
-          setEditTask(false);
-        }}
-        entityType={task?.type}
-        handleClose={() => {
-          setEditTask(false);
-        }}
-        cancel={() => setEditTask(false)}
-        existingTask={{
-          ...task,
-          reviewers: reviewerData || [],
-        }}
-        isTaskProposal={false}
-      />
-      <ArchiveTaskModal
-        open={archiveTask}
-        onClose={() => setArchiveTask(false)}
-        onArchive={handleOnArchive}
-        taskType={type}
-        taskId={task?.id}
-      />
-      <DeleteTaskModal
-        open={deleteTask}
-        onClose={() => {
-          setDeleteTask(false);
-        }}
-        taskType={type}
-        taskId={task?.id}
-        onDelete={() => {
-          setSnackbarAlertOpen(true);
-          setSnackbarAlertMessage(`Deleted successfully!`);
-        }}
-      />
       <Card
         viewUrl={viewUrl}
         id={id}
@@ -352,10 +196,10 @@ export function Task(props) {
         user={user}
         commentCount={commentCount}
         canArchive={canArchive}
-        setEditTask={setEditTask}
-        setArchiveTask={setArchiveTask}
+        setEditTask={() => editTask(task)}
+        setArchiveTask={() => archiveTask(board)}
         canDelete={canDelete}
-        setDeleteTask={setDeleteTask}
+        setDeleteTask={() => deleteTask(board)}
         proposalRequestChange={closeProposal}
         boardType={getBoardType({
           orgBoard,
@@ -364,141 +208,5 @@ export function Task(props) {
         })}
       />
     </span>
-  );
-}
-
-export function TaskListCard(props) {
-  const { taskType, task } = props;
-  const router = useRouter();
-  const [viewDetails, setViewDetails] = useState(false);
-  let TaskIcon = TASK_ICONS?.[taskType];
-  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PROCESSING) {
-    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_AWAITING_PAYMENT];
-  }
-  if (task?.paymentStatus === Constants.PAYMENT_STATUS.PAID) {
-    TaskIcon = TASK_ICONS[Constants.TASK_STATUS_PAID];
-  }
-  const orgBoard = useOrgBoard();
-  const podBoard = usePodBoard();
-  const userBoard = useUserBoard();
-  const board = orgBoard || podBoard || userBoard;
-  const userPermissionsContext = board?.userPermissionsContext;
-  const user = useMe();
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId: task?.orgId,
-    podId: task?.podId,
-  });
-
-  let canEdit;
-  let canApprove;
-  if (taskType === Constants.TASK_STATUS_REQUESTED) {
-    canEdit = permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) || task.createdBy === user?.id;
-    canApprove =
-      permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-      permissions.includes(Constants.PERMISSIONS.CREATE_TASK);
-  } else if (taskType === Constants.TASK_STATUS_IN_REVIEW) {
-    canEdit = task.createdBy === user?.id;
-    canApprove =
-      permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
-      permissions.includes(Constants.PERMISSIONS.REVIEW_TASK);
-  } else if (taskType === Constants.TASK_STATUS_ARCHIVED) {
-    canEdit = task.createdBy === user?.id || task.assigneeId === user?.id;
-  }
-
-  return (
-    <>
-      <TaskViewModal
-        open={viewDetails}
-        handleClose={() => {
-          setViewDetails(false);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
-          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
-        }}
-        taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
-        isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
-        back
-      />
-      <TaskListCardWrapper
-        onClick={() => {
-          setViewDetails(true);
-        }}
-      >
-        <TaskHeader>
-          <SafeImage
-            useNextImage={false}
-            src={task?.orgProfilePicture}
-            style={{
-              width: '29px',
-              height: '28px',
-              borderRadius: '4px',
-            }}
-          />
-          <AvatarList
-            style={{ marginLeft: '12px' }}
-            users={[
-              {
-                id: task?.assigneeId || task?.createdBy,
-                name: task?.assigneeUsername || task?.creatorUsername,
-                initials:
-                  (task?.assigneeUsername && task?.assigneeUsername[0].toUpperCase()) ||
-                  (task?.creatorUsername && task?.creatorUsername[0].toUpperCase()),
-                avatar: {
-                  url: task?.assigneeProfilePicture || task?.creatorProfilePicture,
-                  isOwnerOfPod: false,
-                  color: null,
-                },
-              },
-            ]}
-            id={`task-${task?.id}`}
-          />
-          {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
-        </TaskHeader>
-        <TaskContent>
-          <TaskTitle>{task?.title}</TaskTitle>
-          <TaskCardDescriptionText>
-            {renderMentionString({
-              content: task?.description,
-              router,
-            })}
-          </TaskCardDescriptionText>
-          {task?.podName && (
-            <PodWrapper
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                const newUrl = `/pod/${task?.podId}/boards`;
-                window.location.href = newUrl;
-              }}
-            >
-              <PodName>{task?.podName.slice(0, 15)}</PodName>
-            </PodWrapper>
-          )}
-          {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
-        </TaskContent>
-        <TaskFooter>
-          {task?.changeRequestedAt && (
-            <div style={flexDivStyle}>
-              <RejectIcon style={rejectIconStyle} />
-              <TaskStatusHeaderText>Change requested</TaskStatusHeaderText>
-            </div>
-          )}
-          {task?.approvedAt && (
-            <div style={flexDivStyle}>
-              <CompletedIcon style={rejectIconStyle} />
-              <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-            </div>
-          )}
-          <TaskSummaryAction>
-            Details
-            <Arrow
-              style={{
-                marginLeft: '4px',
-              }}
-            />
-          </TaskSummaryAction>
-        </TaskFooter>
-      </TaskListCardWrapper>
-    </>
   );
 }

@@ -27,6 +27,7 @@ import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import TaskActionsProvider from 'containers/TaskActionsProvider';
 import {
   DEFAULT_STATUSES,
   STATUS_OPEN,
@@ -595,13 +596,15 @@ function BoardsPage(props) {
         podIds={podIds}
         isAdmin={isAdmin}
       />
-      <Boards
-        columns={activeColumns}
-        onLoadMore={handleLoadMore}
-        hasMore={hasMoreTasks}
-        isAdmin={isAdmin}
-        setColumns={setContributorColumns}
-      />
+      <TaskActionsProvider>
+        <Boards
+          columns={activeColumns}
+          onLoadMore={handleLoadMore}
+          hasMore={hasMoreTasks}
+          isAdmin={isAdmin}
+          setColumns={setContributorColumns}
+        />
+      </TaskActionsProvider>
     </UserBoardContext.Provider>
   );
 }
