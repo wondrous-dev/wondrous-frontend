@@ -1,7 +1,7 @@
 import { SectionSubheader } from 'components/Explore/styles';
 import Link from 'next/link';
-import { ErrorWrapper, ErrorImage, ErrorHeader } from './styles';
 import { Button } from 'components/Button';
+import { ErrorWrapper, ErrorImage, ErrorHeader } from './styles';
 
 function CustomErrorComponent() {
   return (

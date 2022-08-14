@@ -11,16 +11,14 @@ type Props = TabsProps & {
   }>;
 };
 
-const Tabs = ({ tabs, ...props }: Props) => {
-  return (
-    <StyledTabs {...props}>
-      {tabs.map((tab) => (
-        <StyledTab key={tab.value} value={tab.value} label={tab.label}>
-          {tab.content}
-        </StyledTab>
-      ))}
-    </StyledTabs>
-  );
-};
+const Tabs = ({ tabs, ...props }: Props) => (
+  <StyledTabs {...props}>
+    {tabs.map((tab) => (
+      <StyledTab key={tab.value} value={tab.value} label={tab.label}>
+        {tab.content}
+      </StyledTab>
+    ))}
+  </StyledTabs>
+);
 
 export default Tabs;
