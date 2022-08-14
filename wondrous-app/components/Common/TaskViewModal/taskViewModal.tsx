@@ -607,7 +607,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             isSubtask ? fetchedTask?.parentTaskId : taskId
                           }`}
                         />
-                        <TaskModalHeaderOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+                        <TaskModalHeaderOpenInFullIcon
+                          isFullScreen={fullScreen}
+                          onClick={() => setFullScreen(!fullScreen)}
+                        />
                         <Menu
                           canArchive={canArchive}
                           canDelete={canDelete}
