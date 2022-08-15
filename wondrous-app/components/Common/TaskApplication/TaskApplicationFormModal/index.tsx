@@ -1,6 +1,12 @@
 import { useState } from 'react';
 import * as yup from 'yup';
 import { useFormik } from 'formik';
+import isUrl from 'is-url';
+import { ActionButton } from 'components/Common/Task/styles';
+import PlusIcon from 'components/Icons/plus';
+import RedXIcon from 'components/Icons/redx';
+import { ConfirmationModalFooter } from '../styles';
+import { RejectButton } from '../ApplicationList/styles';
 import {
   TaskApplicationForm,
   TaskApplicationFormModal,
@@ -18,12 +24,6 @@ import {
   TaskApplicationFormModalBody,
   IconWrapper,
 } from './styles';
-import isUrl from 'is-url';
-import { RejectButton } from '../ApplicationList/styles';
-import { ActionButton } from 'components/Common/Task/styles';
-import { ConfirmationModalFooter } from '../styles';
-import PlusIcon from 'components/Icons/plus';
-import RedXIcon from 'components/Icons/redx';
 
 const TEXT_AREA_LIMIT = 380;
 
@@ -50,13 +50,11 @@ const config = [
   },
 ];
 
-const LinksComponent = (props) => {
+function LinksComponent(props) {
   const { value: fields, onChange } = props;
   const [errors, setErrors] = useState([]);
 
-  const addField = (idx) => {
-    return onChange([...fields, EMPTY_LINK_FIELD]);
-  };
+  const addField = (idx) => onChange([...fields, EMPTY_LINK_FIELD]);
 
   const removeField = (idx) => {
     const newFields = fields.filter((field, i) => i !== idx);
@@ -84,7 +82,7 @@ const LinksComponent = (props) => {
   };
 
   const validateUrl = (e, idx) => {
-    const value = e.target.value;
+    const { value } = e.target;
     const isValidUrl = isUrl(value);
     const errorExists = !!errors[idx];
     const newErrors = [...errors];
@@ -102,38 +100,36 @@ const LinksComponent = (props) => {
 
   return (
     <LinksWrapper>
-      {fields.map((field, idx) => {
-        return (
-          <LinkContainer key={idx}>
-            <div style={{ width: '20%' }}>
-              <LinkTitleInput
-                placeholder={'Title of link'}
-                value={field[LINK_KEYS.DISPLAY_NAME]}
-                onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)}
-              />
-              <span />
-            </div>
-            <div style={{ flex: 1 }}>
-              <LinkUrlInput
-                placeholder={'URL link'}
-                value={field[LINK_KEYS.URL]}
-                onBlur={(e) => validateUrl(e, idx)}
-                onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.URL)}
-                error={!!errors[idx]}
-                type="url"
-              />
-            </div>
-            <IconWrapper type="button" onClick={(e) => handleField(e, idx)}>
-              {idx !== fields.length - 1 ? <RedXIcon strokeWidth={1} stroke={'#7A7A7A'} /> : <PlusIcon />}
-            </IconWrapper>
-          </LinkContainer>
-        );
-      })}
+      {fields.map((field, idx) => (
+        <LinkContainer key={idx}>
+          <div style={{ width: '20%' }}>
+            <LinkTitleInput
+              placeholder="Title of link"
+              value={field[LINK_KEYS.DISPLAY_NAME]}
+              onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.DISPLAY_NAME)}
+            />
+            <span />
+          </div>
+          <div style={{ flex: 1 }}>
+            <LinkUrlInput
+              placeholder="URL link"
+              value={field[LINK_KEYS.URL]}
+              onBlur={(e) => validateUrl(e, idx)}
+              onChange={(e) => handleInputChange(e.target.value, idx, LINK_KEYS.URL)}
+              error={!!errors[idx]}
+              type="url"
+            />
+          </div>
+          <IconWrapper type="button" onClick={(e) => handleField(e, idx)}>
+            {idx !== fields.length - 1 ? <RedXIcon strokeWidth={1} stroke="#7A7A7A" /> : <PlusIcon />}
+          </IconWrapper>
+        </LinkContainer>
+      ))}
     </LinksWrapper>
   );
-};
+}
 
-const TextArea = (props) => {
+function TextArea(props) {
   const { value, onChange } = props;
   return (
     <>
@@ -143,7 +139,7 @@ const TextArea = (props) => {
       </TaskApplicationTextAreaCount>
     </>
   );
-};
+}
 
 const COMPONENTS_MAP = {
   textarea: TextArea,

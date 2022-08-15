@@ -1,8 +1,12 @@
-import { selectTabsPerType } from './utils';
 import { useState, useEffect, forwardRef } from 'react';
 import { useRouter } from 'next/router';
-import { tabs } from './constants';
 import TaskSubtasks from 'components/Common/TaskSubtask';
+import { TaskApplicationList } from 'components/Common/TaskApplication';
+import TaskSubmission from 'components/Common/TaskSubmission';
+import { usePodBoard } from 'utils/hooks';
+import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
+import MilestoneTasks from 'components/Common/MilestoneTask';
+import { CommentList } from 'components/Comment';
 import {
   TaskModalFooter,
   TaskSectionFooterTitleDiv,
@@ -10,12 +14,8 @@ import {
   TaskTabText,
   TaskSectionContent,
 } from './styles';
-import { TaskApplicationList } from 'components/Common/TaskApplication';
-import TaskSubmission from 'components/Common/TaskSubmission';
-import { usePodBoard } from 'utils/hooks';
-import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
-import MilestoneTasks from 'components/Common/MilestoneTask';
-import { CommentList } from 'components/Comment';
+import { tabs } from './constants';
+import { selectTabsPerType } from './utils';
 
 interface Props {
   fullScreen: boolean;

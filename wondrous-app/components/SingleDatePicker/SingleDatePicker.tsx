@@ -25,9 +25,9 @@ import DatePickerRecurringUtilities from 'components/DatePickerRecurringUtilitie
 import DatePickerNavButton from 'components/DatePickerNavButton';
 import CalendarDay from 'components/CalendarDay';
 
-import styles from './SingleDatePickerStyles';
 import { Popper } from '@mui/material';
 import CloseModalIcon from 'components/Icons/closeModal';
+import styles from './SingleDatePickerStyles';
 
 interface SingleDatePickerProps {
   sx?: object;
@@ -43,7 +43,7 @@ interface SingleDatePickerProps {
   autoFocus?: boolean;
 }
 
-const SingleDatePicker = ({
+function SingleDatePicker({
   sx,
   setValue,
   value,
@@ -55,7 +55,7 @@ const SingleDatePicker = ({
   className,
   handleClose,
   autoFocus,
-}: SingleDatePickerProps) => {
+}: SingleDatePickerProps) {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [showOptions, setShowOptions] = useState(false);
   const [repeatType, setRepeatType] = useState();
@@ -234,8 +234,29 @@ const SingleDatePicker = ({
           sx={isOpen ? styles.mainTextfield : styles.mainTextfieldInactive}
         />
       </Box>
-      <ClickAwayListener onClickAway={handleClickAway} mouseEvent={'onMouseDown'}>
-        <Popper open={isOpen} anchorEl={anchorEl.current} placement="bottom" disablePortal={true}>
+      <ClickAwayListener onClickAway={handleClickAway} mouseEvent="onMouseDown">
+        <Popper
+          open={isOpen}
+          anchorEl={anchorEl.current}
+          placement="top"
+          disablePortal
+          modifiers={[
+            {
+              name: 'flip',
+              enabled: true,
+              options: {
+                altBoundary: true,
+                rootBoundary: 'document',
+                padding: 8,
+              },
+            },
+            {
+              name: 'preventOverflow',
+              enabled: true,
+              options: { altAxis: true, altBoundary: true, tether: true, rootBoundary: 'document', padding: 8 },
+            },
+          ]}
+        >
           <Box sx={styles.mainContainer}>
             <Box sx={{ ...styles.root, ...sx }}>
               <Box sx={styles.inputContainer}>
@@ -306,6 +327,6 @@ const SingleDatePicker = ({
       </ClickAwayListener>
     </>
   );
-};
+}
 
 export default SingleDatePicker;

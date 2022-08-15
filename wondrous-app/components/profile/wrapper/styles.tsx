@@ -205,9 +205,7 @@ export const HeaderActivityLinkText = styled.span`
   text-overflow: ellipsis;
 `;
 
-export const HeaderActivitySocialIcon = styled(({ Component, ...props }) => {
-  return <Component {...props} />;
-})`
+export const HeaderActivitySocialIcon = styled(({ Component, ...props }) => <Component {...props} />)`
   width: 20px;
   height: 20px;
 `;
@@ -264,7 +262,7 @@ export const HeaderOrgCountText = styled(HeaderOrgCount)`
   }
 `;
 
-//cardStyles
+// cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;
   margin: 0 auto;
@@ -272,7 +270,7 @@ export const PostsContainer = styled.div`
   flex-direction: column;
 `;
 
-//cardStyles
+// cardStyles
 export const PostComponent = styled(BaseCard)`
   margin-top: 22px;
   height: 540px;

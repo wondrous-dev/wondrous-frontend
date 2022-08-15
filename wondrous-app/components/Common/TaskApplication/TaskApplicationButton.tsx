@@ -2,9 +2,9 @@ import { useState, useContext } from 'react';
 import { ActionButton } from 'components/Common/Task/styles';
 import { Claim } from 'components/Icons/claimTask';
 import { useMutation } from '@apollo/client';
-import TaskApplicationModal from './TaskApplicationFormModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CREATE_TASK_APPLICATION } from 'graphql/mutations';
+import TaskApplicationModal from './TaskApplicationFormModal';
 
 interface Props {
   task: any;

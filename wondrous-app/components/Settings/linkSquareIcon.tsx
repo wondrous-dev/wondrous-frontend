@@ -1,7 +1,11 @@
-import React from 'react'
-import { LinkSquareIconWrapper } from './styles'
-import Tooltip from "components/Tooltip";
+import React from 'react';
+import Tooltip from 'components/Tooltip';
+import { LinkSquareIconWrapper } from './styles';
 
-export const LinkSquareIcon = ({ icon, title }) => {
-	return <Tooltip title={title} placement="top"><LinkSquareIconWrapper>{icon}</LinkSquareIconWrapper></Tooltip>
+export function LinkSquareIcon({ icon, title }) {
+  return (
+    <Tooltip title={title} placement="top">
+      <LinkSquareIconWrapper>{icon}</LinkSquareIconWrapper>
+    </Tooltip>
+  );
 }

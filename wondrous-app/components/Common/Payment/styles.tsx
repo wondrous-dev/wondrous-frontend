@@ -1,11 +1,10 @@
 import styled from 'styled-components';
-import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
 import palette from 'theme/palette';
-import { Button, Typography } from '@mui/material';
-import { BaseCard } from '../card';
+import { Button, Typography, Tabs, InputBase } from '@mui/material';
 import React from 'react';
-import { Tabs, InputBase } from '@mui/material';
 import { CreateFormCancelButton, CreateFormMainSelects, CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { BaseCard } from '../card';
+import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
 
 export const PodWrapper = styled.div`
   background: #363636;
@@ -128,7 +127,7 @@ export const StyledTabs = styled((props) => (
     position: 'relative',
     borderBottom: '2px solid #4B4B4B',
     flex: 1,
-    //text
+    // text
     fontWeight: 600,
     fontSize: '16px',
     lineHeight: '19px',

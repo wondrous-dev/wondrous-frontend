@@ -28,7 +28,7 @@ const LIMIT = 5;
 
 const TASK_LIST_VIEW_LIMIT = 5;
 
-export const TaskListViewModal = (props) => {
+export function TaskListViewModal(props) {
   const [fetchedList, setFetchedList] = useState([]);
   const { taskType, entityType, orgId, podId, loggedInUserId, open, handleClose, count } = props;
 
@@ -467,12 +467,12 @@ export const TaskListViewModal = (props) => {
           {count} {text}
         </TaskListModalHeader>
         <TaskListModalContentWrapper>
-          {fetchedList?.map((task, index) => {
-            return <TaskListCard key={task?.id} taskType={taskType} task={task} />;
-          })}
-          <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
+          {fetchedList?.map((task, index) => (
+            <TaskListCard key={task?.id} taskType={taskType} task={task} />
+          ))}
+          <LoadMore ref={ref} hasMore={hasMore} />
         </TaskListModalContentWrapper>
       </TaskModalCard>
     </CreateModalOverlay>
   );
-};
+}

@@ -1,4 +1,4 @@
-const BulletedListIcon = () => {
+function BulletedListIcon() {
   return (
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -12,6 +12,6 @@ const BulletedListIcon = () => {
       <path d="M10 13.75H18.75V15H10V13.75ZM10 5H18.75V6.25H10V5Z" fill="currentColor" />
     </svg>
   );
-};
+}
 
 export default BulletedListIcon;

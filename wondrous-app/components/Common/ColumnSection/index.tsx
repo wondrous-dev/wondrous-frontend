@@ -1,4 +1,14 @@
 import React, { useState, useEffect } from 'react';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import {
+  ENTITIES_TYPES,
+  TASK_STATUS_ARCHIVED,
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_REQUESTED,
+  PRIVACY_LEVEL,
+} from 'utils/constants';
+import { TaskListViewModal } from 'components/Common/TaskViewModal';
+import { useRouter } from 'next/router';
 import { TaskSummary } from '../TaskSummary';
 import { Requested, Chevron } from '../../Icons/sections';
 
@@ -12,19 +22,9 @@ import {
   SectionContainer,
 } from './styles';
 import { TaskSummaryFooter } from '../TaskSummary/styles';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import {
-  ENTITIES_TYPES,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-  PRIVACY_LEVEL,
-} from 'utils/constants';
-import { TaskListViewModal } from 'components/Common/TaskViewModal';
-import { useRouter } from 'next/router';
 
 let windowOffset;
-export const ColumnSection = ({ section, setSection }) => {
+export function ColumnSection({ section, setSection }) {
   const { icon = Requested, title = '', tasks = [], action = {} } = section;
   const [isOpen, setIsOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
@@ -131,4 +131,4 @@ export const ColumnSection = ({ section, setSection }) => {
       </SectionContainer>
     </SectionWrapper>
   );
-};
+}

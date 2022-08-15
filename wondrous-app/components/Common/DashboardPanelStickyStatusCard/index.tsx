@@ -1,6 +1,6 @@
 import { StyledBackground, Count, Status, CountStatusWrapper, StyledBorder } from './styles';
 
-const DashboardPanelStatusCardSticky = ({ status, selectedStatus, isAdmin, setSelectedStatus }) => {
+function DashboardPanelStatusCardSticky({ status, selectedStatus, isAdmin, setSelectedStatus }) {
   const { count = 0, label = '', Icon, color, status: panelStatus } = status;
   const handleOnClick = () => {
     if (selectedStatus === panelStatus) {
@@ -19,6 +19,6 @@ const DashboardPanelStatusCardSticky = ({ status, selectedStatus, isAdmin, setSe
       </StyledBackground>
     </StyledBorder>
   );
-};
+}
 
 export default DashboardPanelStatusCardSticky;

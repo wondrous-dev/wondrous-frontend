@@ -1,4 +1,4 @@
-export const TodoIcon = (props) => {
+export function TodoIcon(props) {
   const { style } = props;
   return (
     <svg
@@ -47,9 +47,9 @@ export const TodoIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const InProgressIcon = (props) => {
+export function InProgressIcon(props) {
   const { style, none } = props;
 
   return (
@@ -93,9 +93,9 @@ export const InProgressIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const InReviewIcon = (props) => {
+export function InReviewIcon(props) {
   const { style } = props;
 
   return (
@@ -180,9 +180,9 @@ export const InReviewIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const CompletedIcon = (props) => {
+export function CompletedIcon(props) {
   const { style, fill, stroke } = props;
 
   return (
@@ -228,9 +228,9 @@ export const CompletedIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const ArchivedIcon = (props) => {
+export function ArchivedIcon(props) {
   const { style } = props;
   return (
     <svg
@@ -279,13 +279,13 @@ export const ArchivedIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const MembershipRequestIcon = (props) => {
+export function MembershipRequestIcon(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
-      <circle cx="14.133" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
-      <circle cx="14.133" cy="14.801" r="8" fill="url(#paint0_linear_5030_47405)"></circle>
+      <circle cx="14.133" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747" />
+      <circle cx="14.133" cy="14.801" r="8" fill="url(#paint0_linear_5030_47405)" />
       <circle
         cx="14.135"
         cy="14.801"
@@ -294,9 +294,9 @@ export const MembershipRequestIcon = (props) => {
         strokeLinecap="round"
         strokeLinejoin="round"
         strokeWidth="1.4"
-      ></circle>
-      <circle cx="14.135" cy="9.159" r="0.846" fill="url(#paint2_linear_5030_47405)"></circle>
-      <circle cx="14.135" cy="20.443" r="0.846" fill="url(#paint3_linear_5030_47405)"></circle>
+      />
+      <circle cx="14.135" cy="9.159" r="0.846" fill="url(#paint2_linear_5030_47405)" />
+      <circle cx="14.135" cy="20.443" r="0.846" fill="url(#paint3_linear_5030_47405)" />
       <defs>
         <linearGradient
           id="paint0_linear_5030_47405"
@@ -306,8 +306,8 @@ export const MembershipRequestIcon = (props) => {
           y2="22.977"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#474747"></stop>
-          <stop offset="1" stopColor="#181818"></stop>
+          <stop stopColor="#474747" />
+          <stop offset="1" stopColor="#181818" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_5030_47405"
@@ -317,8 +317,8 @@ export const MembershipRequestIcon = (props) => {
           y2="17.654"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#FF6DD7"></stop>
+          <stop stopColor="#fff" />
+          <stop offset="1" stopColor="#FF6DD7" />
         </linearGradient>
         <linearGradient
           id="paint2_linear_5030_47405"
@@ -328,8 +328,8 @@ export const MembershipRequestIcon = (props) => {
           y2="10.024"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#FF6DD7"></stop>
+          <stop stopColor="#fff" />
+          <stop offset="1" stopColor="#FF6DD7" />
         </linearGradient>
         <linearGradient
           id="paint3_linear_5030_47405"
@@ -339,31 +339,31 @@ export const MembershipRequestIcon = (props) => {
           y2="21.308"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#FF6DD7"></stop>
+          <stop stopColor="#fff" />
+          <stop offset="1" stopColor="#FF6DD7" />
         </linearGradient>
       </defs>
     </svg>
   );
-};
+}
 
-export const ProposalsRemainingIcon = (props) => {
+export function ProposalsRemainingIcon(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
-      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
+      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747" />
       <circle
         cx="14.633"
         cy="14.802"
         r="8"
         fill="url(#paint0_linear_5030_47421)"
         transform="rotate(45 14.633 14.802)"
-      ></circle>
+      />
       <path
         fill="url(#paint1_linear_5030_47421)"
         fillRule="evenodd"
         d="M15.334 11.631a.7.7 0 10-1.4 0v1.125a.7.7 0 101.4 0V11.63zm0 5.215a.7.7 0 10-1.4 0v1.124a.7.7 0 101.4 0v-1.124zM11.47 14.1a.7.7 0 100 1.4h1.124a.7.7 0 100-1.4H11.47zm5.214 0a.7.7 0 100 1.4h1.125a.7.7 0 100-1.4h-1.125z"
         clipRule="evenodd"
-      ></path>
+      />
       <defs>
         <linearGradient
           id="paint0_linear_5030_47421"
@@ -373,8 +373,8 @@ export const ProposalsRemainingIcon = (props) => {
           y2="22.978"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#474747"></stop>
-          <stop offset="1" stopColor="#181818"></stop>
+          <stop stopColor="#474747" />
+          <stop offset="1" stopColor="#181818" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_5030_47421"
@@ -384,25 +384,25 @@ export const ProposalsRemainingIcon = (props) => {
           y2="11.352"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#B820FF"></stop>
-          <stop offset="1" stopColor="#fff"></stop>
+          <stop stopColor="#B820FF" />
+          <stop offset="1" stopColor="#fff" />
         </linearGradient>
       </defs>
     </svg>
   );
-};
+}
 
-export const AwaitingPaymentIcon = (props) => {
+export function AwaitingPaymentIcon(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
-      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
-      <circle cx="14.858" cy="14.8" r="7.999" fill="url(#paint0_linear_5030_47458)"></circle>
+      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747" />
+      <circle cx="14.858" cy="14.8" r="7.999" fill="url(#paint0_linear_5030_47458)" />
       <path
         fill="url(#paint1_linear_5030_47458)"
         fillRule="evenodd"
         d="M11.952 11.889a.99.99 0 11-1.401-1.401.99.99 0 011.401 1.4zm7.219 7.224a.991.991 0 11-1.401-1.401.991.991 0 011.4 1.401zm-1.396-8.624a.99.99 0 101.4 1.4.99.99 0 00-1.4-1.4zm-7.227 8.623a.991.991 0 111.402-1.4.991.991 0 01-1.402 1.4zm6.734-4.298c-.008.038-.038.069-.084.084a3.288 3.288 0 00-2.231 2.224.112.112 0 01-.107.083.112.112 0 01-.106-.083 3.259 3.259 0 00-2.231-2.224c-.046-.015-.077-.046-.084-.084h-.008v-.03h.008c.007-.038.038-.069.084-.084a3.259 3.259 0 002.23-2.223.112.112 0 01.107-.084c.046 0 .092.03.107.084a3.259 3.259 0 002.231 2.223c.046.015.076.046.084.084h.008v.03h-.008z"
         clipRule="evenodd"
-      ></path>
+      />
       <defs>
         <linearGradient
           id="paint0_linear_5030_47458"
@@ -412,8 +412,8 @@ export const AwaitingPaymentIcon = (props) => {
           y2="22.975"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#474747"></stop>
-          <stop offset="1" stopColor="#181818"></stop>
+          <stop stopColor="#474747" />
+          <stop offset="1" stopColor="#181818" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_5030_47458"
@@ -423,15 +423,15 @@ export const AwaitingPaymentIcon = (props) => {
           y2="19.404"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#06FFA5"></stop>
+          <stop stopColor="#fff" />
+          <stop offset="1" stopColor="#06FFA5" />
         </linearGradient>
       </defs>
     </svg>
   );
-};
+}
 
-export const StatusDefaultIcon = ({ stroke = '#CCBBFF', style = {}, width = '18', height = '18' }) => {
+export function StatusDefaultIcon({ stroke = '#CCBBFF', style = {}, width = '18', height = '18' }) {
   return (
     <svg style={style} width={width} height={height} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -454,9 +454,9 @@ export const StatusDefaultIcon = ({ stroke = '#CCBBFF', style = {}, width = '18'
       />
     </svg>
   );
-};
+}
 
-export const RejectedIcon = (props) => {
+export function RejectedIcon(props) {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -478,4 +478,4 @@ export const RejectedIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}

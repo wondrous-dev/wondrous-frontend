@@ -6,12 +6,13 @@ import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils';
 import { useOrgBoard, useSelectMembership } from 'utils/hooks';
-import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
+import { ENTITIES_TYPES } from 'utils/constants';
+import ListView from 'components/ListView';
+import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 import { ListViewIcon } from '../../Icons/ViewIcons/listView';
 import { Table } from '../../Table';
-import { ENTITIES_TYPES } from 'utils/constants';
 import { MembershipRequestTable } from '../../Table/MembershipRequests';
 import {
   BoardsContainer,
@@ -21,7 +22,6 @@ import {
   ShowAllButton,
   ShowAllSearchResults,
 } from './styles';
-import ListView from 'components/ListView';
 
 type Props = {
   columns: Array<any>;
@@ -41,7 +41,7 @@ type Props = {
 const LIST_VIEW_MAP = {
   [ENTITIES_TYPES.TASK]: ListView,
 };
-const Boards = (props: Props) => {
+function Boards(props: Props) {
   const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
   const router = useRouter();
   const [totalCount, setTotalCount] = useState(0);
@@ -141,6 +141,6 @@ const Boards = (props: Props) => {
       </BoardsContainer>
     </ColumnsContext.Provider>
   );
-};
+}
 
 export default Boards;

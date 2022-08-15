@@ -20,11 +20,11 @@ class MyDocument extends Document {
       return {
         ...initialProps,
         styles: (
-          <React.Fragment>
+          <>
             {initialProps.styles}
             {materialSheets.getStyleElement()}
             {styledComponentsSheet.getStyleElement()}
-          </React.Fragment>
+          </>
         ),
       };
     } finally {
@@ -60,7 +60,7 @@ class MyDocument extends Document {
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Pacifico&display=swap"
             rel="stylesheet"
-          ></link>
+          />
         </Head>
         <body>
           <script>0</script>

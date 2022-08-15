@@ -1,13 +1,5 @@
 import { useState } from 'react';
 import {
-  Accordion,
-  AccordionDetails,
-  ListViewItemHeader,
-  ListViewItemCount,
-  ListViewItemStatus,
-  IconWrapper,
-} from './styles';
-import {
   TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
@@ -19,12 +11,20 @@ import { ChevronFilled } from 'components/Icons/sections';
 import { ToDo, InProgress, Done, InReview } from 'components/Icons';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
-import Item from './Item';
 import { Draggable } from 'react-beautiful-dnd';
 import { LIMIT } from 'services/board';
-import { ShowMoreButton } from './styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import {
+  ShowMoreButton,
+  Accordion,
+  AccordionDetails,
+  ListViewItemHeader,
+  ListViewItemCount,
+  ListViewItemStatus,
+  IconWrapper,
+} from './styles';
+import Item from './Item';
 
 const HEADER_ICONS = {
   [TASK_STATUS_TODO]: ToDo,
@@ -92,25 +92,23 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         </ListViewItemHeader>
         <AccordionDetails>
           {tasks?.length ? (
-            tasks.map((task, idx) => {
-              return (
-                <Draggable key={task.id} draggableId={task.id} index={idx}>
-                  {(provided, snapshot) => (
-                    <div
-                      style={{
-                        width: '100%',
-                      }}
-                      {...provided.draggableProps}
-                      {...provided.dragHandleProps}
-                      ref={provided.innerRef}
-                      isDragging={snapshot.isDragging}
-                    >
-                      <Item entityType={entityType} task={task} />
-                    </div>
-                  )}
-                </Draggable>
-              );
-            })
+            tasks.map((task, idx) => (
+              <Draggable key={task.id} draggableId={task.id} index={idx}>
+                {(provided, snapshot) => (
+                  <div
+                    style={{
+                      width: '100%',
+                    }}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    ref={provided.innerRef}
+                    isDragging={snapshot.isDragging}
+                  >
+                    <Item entityType={entityType} task={task} />
+                  </div>
+                )}
+              </Draggable>
+            ))
           ) : (
             <EmptyStateBoards hidePlaceholder status={status} />
           )}

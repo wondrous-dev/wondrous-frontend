@@ -39,7 +39,7 @@ export default function useInjectedProviderListener({
         console.log("Handling 'networkChanged' event with payload", networkId);
         activate(connector);
       };
-      
+
       provider.addListener('connect', handleConnect);
       provider.addListener('chainChanged', handleChainChanged);
       provider.addListener('accountsChanged', handleAccountsChanged);

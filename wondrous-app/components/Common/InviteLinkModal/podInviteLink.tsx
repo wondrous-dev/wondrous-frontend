@@ -1,4 +1,13 @@
 import { useEffect, useState } from 'react';
+import { useMutation, useLazyQuery } from '@apollo/client';
+import { CREATE_POD_INVITE_LINK } from 'graphql/mutations/pod';
+import { GET_POD_ROLES } from 'graphql/queries/pod';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { LINK } from 'utils/constants';
+import { putDefaultRoleOnTop } from './OrgInviteLink';
+import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
+import PersonAddIcon from '../../Icons/personAdd';
 import {
   StyledModal,
   StyledBox,
@@ -27,17 +36,8 @@ import {
   InviteThruLinkButtonSuccessLabel,
   LinkSwitch,
 } from './styles';
-import PersonAddIcon from '../../Icons/personAdd';
-import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_POD_INVITE_LINK } from 'graphql/mutations/pod';
-import { GET_POD_ROLES } from 'graphql/queries/pod';
-import { putDefaultRoleOnTop } from './OrgInviteLink';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK } from 'utils/constants';
 
-export const PodInviteLinkModal = (props) => {
+export function PodInviteLinkModal(props) {
   const { podId, open, onClose } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
@@ -99,7 +99,7 @@ export const PodInviteLinkModal = (props) => {
     if (!role && podId) {
       getPodRoles({
         variables: {
-          podId: podId,
+          podId,
         },
       });
     }
@@ -109,7 +109,7 @@ export const PodInviteLinkModal = (props) => {
           input: {
             invitorId: '',
             type: linkOneTimeUse ? 'one_time' : 'public',
-            podId: podId,
+            podId,
             podRoleId: role,
           },
         },
@@ -185,4 +185,4 @@ export const PodInviteLinkModal = (props) => {
       </StyledBox>
     </StyledModal>
   );
-};
+}

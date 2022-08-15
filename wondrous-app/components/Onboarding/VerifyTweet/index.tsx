@@ -3,9 +3,7 @@ import { useRouter } from 'next/router';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { VERIFY_USER_TWEET } from 'graphql/mutations';
-import { WalletConnected, Label } from '../styles';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
-import TwitterBlue from '../../../public/images/twitterBlue.svg';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import {
   ContinueButton,
@@ -13,15 +11,16 @@ import {
   Later,
   SecretCodeContainer,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
-import { useMe } from '../../Auth/withAuth';
-import { InviteWelcomeBoxParagraph, QRCodeTwitter } from '../styles';
-import TwitterLogo from '../../../public/images/twitter.svg';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import { Button } from 'components/Common/button';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
 import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
+import TwitterLogo from '../../../public/images/twitter.svg';
+import { InviteWelcomeBoxParagraph, QRCodeTwitter, WalletConnected, Label } from '../styles';
+import { useMe } from '../../Auth/withAuth';
+import TwitterBlue from '../../../public/images/twitterBlue.svg';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -29,7 +28,7 @@ import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectCondi
 //   alignItems: 'center',
 // };
 
-const VerifyTweet = ({ firstOrg, firstPod }) => {
+function VerifyTweet({ firstOrg, firstPod }) {
   const router = useRouter();
   const user = useMe();
   const wonderWeb3 = useWonderWeb3();
@@ -97,9 +96,8 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
         return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0AENS%3A%20${wonderWeb3.ensName}&in_reply_to=1536797296263737345`;
       }
       return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A${user?.activeEthAddress}&in_reply_to=1536797296263737345`;
-    } else {
-      return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1536797296263737345`;
     }
+    return `https://twitter.com/intent/tweet?text=gm%20-%20I%E2%80%99m%20reserving%20my%20Launch%20Pass%20NFT%20as%20a%20contributor%20%40wonderverse_xyz%20%E2%9C%A8%0A&in_reply_to=1536797296263737345`;
   };
 
   return (
@@ -177,10 +175,8 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
                   >
                     Step 1:
                   </div>
-                  <>
-                    Tweet
-                    <TwitterLogo style={{ marginLeft: '10px' }} />
-                  </>
+                  Tweet
+                  <TwitterLogo style={{ marginLeft: '10px' }} />
                 </div>
               </ContinueButton>
             </a>
@@ -252,6 +248,6 @@ const VerifyTweet = ({ firstOrg, firstPod }) => {
       </div>
     </Layout>
   );
-};
+}
 
 export default VerifyTweet;

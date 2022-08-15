@@ -11,7 +11,7 @@ import {
   LabelBlock,
 } from './styles';
 
-export const ImageUpload = (props) => {
+export function ImageUpload(props) {
   const { image, imageWidth, imageHeight, imageName, updateFilesCb, LabelComponent, ...otherProps } = props;
 
   const imageInputField = useRef(null);
@@ -28,7 +28,7 @@ export const ImageUpload = (props) => {
   };
 
   const addNewFiles = (newFiles) => {
-    for (let file of newFiles) {
+    for (const file of newFiles) {
       // if (file.size <= maxFileSizeInBytes) {
       if (!otherProps.multiple) {
         return { file };
@@ -104,4 +104,4 @@ export const ImageUpload = (props) => {
       </ImageUploadBlockActivitySection>
     </ImageUploadBlock>
   );
-};
+}

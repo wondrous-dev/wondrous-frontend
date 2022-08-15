@@ -68,7 +68,7 @@ export const RightArrow = styled((props) => (
   }
 `;
 
-export const ButtonImport = ({ Icon = () => null, children, className = '', ...props }) => {
+export function ButtonImport({ Icon = () => null, children, className = '', ...props }) {
   return (
     <ButtonImportWrapper {...props} className={className}>
       <ButtonIconTextWrapper>
@@ -78,6 +78,6 @@ export const ButtonImport = ({ Icon = () => null, children, className = '', ...p
       <RightArrow />
     </ButtonImportWrapper>
   );
-};
+}
 
 export default ButtonImport;

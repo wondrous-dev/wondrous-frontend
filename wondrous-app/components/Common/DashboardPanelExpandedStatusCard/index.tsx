@@ -2,7 +2,7 @@ import React from 'react';
 import { useSelectMembership } from 'utils/hooks';
 import { StyledBackground, Count, Status, CountIconWrapper, StyledBorder } from './styles';
 
-const DashboardPanelStatusCard = ({ status, selectedStatus, isAdmin, setSelectedStatus }) => {
+function DashboardPanelStatusCard({ status, selectedStatus, isAdmin, setSelectedStatus }) {
   const { count = 0, label = '', Icon, color, status: panelStatus } = status;
   const selectMembership = useSelectMembership();
   const handleOnClick = () => {
@@ -31,6 +31,6 @@ const DashboardPanelStatusCard = ({ status, selectedStatus, isAdmin, setSelected
       </StyledBackground>
     </StyledBorder>
   );
-};
+}
 
 export default DashboardPanelStatusCard;

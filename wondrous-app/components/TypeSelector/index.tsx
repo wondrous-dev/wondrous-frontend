@@ -1,9 +1,10 @@
-import { Wrapper, StatItem, IconWrapper, StatValue, StatTitle } from './styles';
 import { CheckedBoxIcon } from 'components/Icons/checkedBox';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import FlagIcon from 'components/Icons/createMilestone';
 import BountyIcon from 'components/Icons/TaskTypes/bounty';
+import { Wrapper, StatItem, IconWrapper, StatValue, StatTitle } from './styles';
+
 interface TasksPerType {
   taskCount: number;
   milestoneCount: number;
@@ -33,15 +34,13 @@ export default function TaskTypeSelector({ tasksPerTypeData }: Props) {
         const isActive = entityType === stat.type;
         const Icon = stat.icon;
         return (
-          <>
-            <StatItem key={stat.key} onClick={() => setEntityType(stat.type)} isActive={isActive}>
-              <IconWrapper isActive={isActive}>
-                <Icon displayBackground={false} fill={'transparent'} stroke={'white'} width="25" height="25" />
-              </IconWrapper>
-              <StatValue>{tasksPerTypeData?.[stat.key] || 0}</StatValue>
-              <StatTitle isActive={isActive}>{stat.title}</StatTitle>
-            </StatItem>
-          </>
+          <StatItem key={stat.key} onClick={() => setEntityType(stat.type)} isActive={isActive}>
+            <IconWrapper isActive={isActive}>
+              <Icon displayBackground={false} fill="transparent" stroke="white" width="25" height="25" />
+            </IconWrapper>
+            <StatValue>{tasksPerTypeData?.[stat.key] || 0}</StatValue>
+            <StatTitle isActive={isActive}>{stat.title}</StatTitle>
+          </StatItem>
         );
       })}
     </Wrapper>

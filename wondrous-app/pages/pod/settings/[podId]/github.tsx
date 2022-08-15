@@ -5,7 +5,7 @@ import { withAuth } from 'components/Auth/withAuth';
 import { useQuery } from '@apollo/client';
 import { GET_POD_BY_ID } from 'graphql/queries';
 
-const GithubIntegrationPage = () => {
+function GithubIntegrationPage() {
   const router = useRouter();
 
   const { podId } = router.query;
@@ -16,6 +16,6 @@ const GithubIntegrationPage = () => {
   });
 
   return <GithubIntegration orgId={podData?.getPodById?.orgId} podId={podId} />;
-};
+}
 
 export default withAuth(GithubIntegrationPage);

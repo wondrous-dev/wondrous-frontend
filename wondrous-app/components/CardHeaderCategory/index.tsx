@@ -28,7 +28,7 @@ const STATUS_ICONS = {
   [TASK_STATUS_TODO]: CardCategoryToDoIcon,
 };
 
-export const CardHeaderCategory = (props) => {
+export function CardHeaderCategory(props) {
   const { compensation, status } = props;
 
   const { amount } = compensation || {};
@@ -47,4 +47,4 @@ export const CardHeaderCategory = (props) => {
       </CardCategoryInfoBlock>
     </CardCategoryBlock>
   );
-};
+}

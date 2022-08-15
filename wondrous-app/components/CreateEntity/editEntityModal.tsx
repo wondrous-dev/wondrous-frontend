@@ -3,12 +3,34 @@ import { CircularProgress } from '@mui/material';
 import { ReactEditor } from 'slate-react';
 
 import { ENTITIES_TYPES } from 'utils/constants';
-import CloseModalIcon from '../Icons/closeModal';
-import CreateDaoIcon from '../Icons/createDao';
-import CreatePodIcon from '../Icons/createPod';
-import InputForm from '../Common/InputForm/inputForm';
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
-import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
+
+import { handleAddFile } from 'utils/media';
+
+import apollo from 'services/apollo';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_USER_ORGS } from 'graphql/queries';
+import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
+import { transformTaskProposalToTaskProposalCard, transformMediaFormat } from 'utils/helpers';
+import { GET_ORG_USERS } from 'graphql/queries/org';
+import { ATTACH_MEDIA_TO_TASK, REMOVE_MEDIA_FROM_TASK } from 'graphql/mutations/task';
+import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import {
+  ATTACH_MEDIA_TO_TASK_PROPOSAL,
+  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
+  UPDATE_TASK_PROPOSAL,
+} from 'graphql/mutations/taskProposal';
+import { getProposalStatus } from 'utils/board';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { RichTextEditor, useEditor, countCharacters, deserializeRichText, extractMentions } from 'components/RichText';
+import { useSnapshot } from 'services/snapshot';
+import { useMe } from '../Auth/withAuth';
+import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './CreatePodModal';
+import { ErrorText } from '../Common';
+import { FileLoading } from '../Common/FileUpload/FileUpload';
+import { AddFileUpload } from '../Icons/addFileUpload';
+import { MediaItem } from './MediaItem';
+import UploadImageIcon from '../Icons/uploadImage';
 import {
   CreateFormBaseModal,
   CreateFormBaseModalCloseBtn,
@@ -35,37 +57,14 @@ import {
   SnapshotButton,
   SnapshotErrorText,
 } from './styles';
+import { ENTITIES_UI_ELEMENTS } from './chooseEntityToCreateModal';
+import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
+import InputForm from '../Common/InputForm/inputForm';
+import CreatePodIcon from '../Icons/createPod';
+import CreateDaoIcon from '../Icons/createDao';
+import CloseModalIcon from '../Icons/closeModal';
 
-import UploadImageIcon from '../Icons/uploadImage';
-import { handleAddFile } from 'utils/media';
-
-import { MediaItem } from './MediaItem';
-import { AddFileUpload } from '../Icons/addFileUpload';
-import apollo from 'services/apollo';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_USER_ORGS } from 'graphql/queries';
-import { GET_USER_AVAILABLE_PODS } from 'graphql/queries/pod';
-import { transformTaskProposalToTaskProposalCard } from 'utils/helpers';
-import { GET_ORG_USERS } from 'graphql/queries/org';
-import { ATTACH_MEDIA_TO_TASK, REMOVE_MEDIA_FROM_TASK } from 'graphql/mutations/task';
-import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import {
-  ATTACH_MEDIA_TO_TASK_PROPOSAL,
-  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
-  UPDATE_TASK_PROPOSAL,
-} from 'graphql/mutations/taskProposal';
-import { useMe } from '../Auth/withAuth';
-import { getProposalStatus } from 'utils/board';
-import { filterOrgUsersForAutocomplete, filterPaymentMethods } from './CreatePodModal';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { ErrorText } from '../Common';
-import { FileLoading } from '../Common/FileUpload/FileUpload';
-import { RichTextEditor, useEditor, countCharacters, deserializeRichText, extractMentions } from 'components/RichText';
-import { useSnapshot } from 'services/snapshot';
-import { transformMediaFormat } from 'utils/helpers';
-
-const EditLayoutBaseModal = (props) => {
+function EditLayoutBaseModal(props) {
   const { entityType, handleClose, cancel, existingTask, isTaskProposal, open } = props;
   const user = useMe();
 
@@ -149,13 +148,14 @@ const EditLayoutBaseModal = (props) => {
 
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
-  const { showBountySwitchSection } = useMemo(() => {
-    return {
+  const { showBountySwitchSection } = useMemo(
+    () => ({
       showBountySwitchSection: isTask || isProposal,
       showAppearSection: isTask,
       showDueDateSection: isTask,
-    };
-  }, [entityType]);
+    }),
+    [entityType]
+  );
   const { icon: TitleIcon, label: titleText } = ENTITIES_UI_ELEMENTS[entityType];
   const inputRef: any = useRef();
 
@@ -240,7 +240,7 @@ const EditLayoutBaseModal = (props) => {
         const columns = [...boardColumns?.columns];
 
         if (board?.entityType === ENTITIES_TYPES.PROPOSAL) {
-          let proposalStatus = getProposalStatus(taskProposal);
+          const proposalStatus = getProposalStatus(taskProposal);
           const statusColumnIndex = columns.findIndex((column) => column.status === proposalStatus);
           if (statusColumnIndex) {
             columns[statusColumnIndex].tasks = columns[statusColumnIndex].tasks.map((task) => {
@@ -578,7 +578,7 @@ const EditLayoutBaseModal = (props) => {
                 style={{
                   marginTop: '37px',
                 }}
-                type={'number'}
+                type="number"
                 min="0"
                 placeholder="Enter reward amount"
                 search={false}
@@ -614,6 +614,6 @@ const EditLayoutBaseModal = (props) => {
       </CreateFormFooterButtons>
     </CreateFormBaseModal>
   );
-};
+}
 
 export default EditLayoutBaseModal;

@@ -15,6 +15,13 @@ import {
   TASK_STATUS_TODO,
 } from 'utils/constants';
 import { cutString, groupBy, parseUserPermissionContext, shrinkNumber } from 'utils/helpers';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { delQuery } from 'utils';
+import { useRouter } from 'next/router';
+import * as Constants from 'utils/constants';
+import { OrgBoardContext } from 'utils/contexts';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import SmartLink from 'components/Common/SmartLink';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton/MembershipRequest';
@@ -44,18 +51,11 @@ import {
   TaskDescription,
   TaskTitle,
 } from './styles';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { delQuery } from 'utils';
-import { useRouter } from 'next/router';
-import * as Constants from 'utils/constants';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
-import { OrgBoardContext } from 'utils/contexts';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { LoadMore } from '../Common/KanbanBoard/styles';
 import { SafeImage } from '../Common/Image';
 import { useMe } from '../Auth/withAuth';
-import SmartLink from 'components/Common/SmartLink';
 
 const DELIVERABLES_ICONS = {
   audio: <AudioIcon />,
@@ -69,8 +69,8 @@ const STATUS_BY_TYPENAME = {
   TaskProposalCard: TASK_STATUS_REQUESTED,
 };
 
-let windowOffset = 0;
-export const MembershipRequestTable = (props) => {
+const windowOffset = 0;
+export function MembershipRequestTable(props) {
   const { onLoadMore, hasMore, allTasks, limit, isAdmin } = props;
   const router = useRouter();
 
@@ -118,52 +118,33 @@ export const MembershipRequestTable = (props) => {
                 Decision
               </StyledTableCell>
             )}
-            <StyledTableCell width="54px"></StyledTableCell>
+            <StyledTableCell width="54px" />
           </StyledTableRow>
         </StyledTableHead>
         <StyledTableBody>
-          {requests?.map((request, index) => {
-            return (
-              <StyledTableRow key={request.id}>
-                <StyledTableCell align="center">
-                  {(request.orgProfilePicture || request.orgUsername) && (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <div
+          {requests?.map((request, index) => (
+            <StyledTableRow key={request.id}>
+              <StyledTableCell align="center">
+                {(request.orgProfilePicture || request.orgUsername) && (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <div
+                    style={{
+                      alignItems: 'center',
+                      display: 'flex',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <SafeImage
+                      useNextImage={false}
+                      src={request?.orgProfilePicture}
                       style={{
-                        alignItems: 'center',
-                        display: 'flex',
-                        justifyContent: 'center',
+                        width: '17px',
+                        height: '17px',
+                        borderRadius: '17px',
+                        marginRight: '4px',
                       }}
-                    >
-                      <SafeImage
-                        useNextImage={false}
-                        src={request?.orgProfilePicture}
-                        style={{
-                          width: '17px',
-                          height: '17px',
-                          borderRadius: '17px',
-                          marginRight: '4px',
-                        }}
-                      />
-                      <Link passHref={true} href={`/organization/${request?.orgUsername}/boards`}>
-                        <a target="_blank" rel="noopener noreferrer">
-                          <TaskDescription
-                            style={{
-                              textDecoration: 'underline',
-                              cursor: 'pointer',
-                            }}
-                          >
-                            {request?.orgUsername}
-                          </TaskDescription>
-                        </a>
-                      </Link>
-                    </div>
-                  )}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  {request?.podName ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <Link passHref={true} href={`/pod/${request?.podId}/boards`}>
+                    />
+                    <Link passHref href={`/organization/${request?.orgUsername}/boards`}>
                       <a target="_blank" rel="noopener noreferrer">
                         <TaskDescription
                           style={{
@@ -171,65 +152,83 @@ export const MembershipRequestTable = (props) => {
                             cursor: 'pointer',
                           }}
                         >
-                          {request?.podName}
+                          {request?.orgUsername}
                         </TaskDescription>
                       </a>
                     </Link>
-                  ) : null}
-                </StyledTableCell>
-                <StyledTableCell align="center">
-                  <SmartLink href={`/profile/${request?.userUsername}/about`} asLink>
-                    <div
-                      style={{
-                        display: 'flex',
-                        alignItems: 'center',
-                      }}
-                    >
-                      {request?.userProfilePicture && (
-                        <SafeImage
-                          useNextImage={false}
-                          style={{
-                            width: '17px',
-                            height: '17px',
-                            borderRadius: '17px',
-                            marginRight: '8px',
-                          }}
-                          src={request?.userProfilePicture}
-                        />
-                      )}
-
-                      <Initials>{request?.userUsername}</Initials>
-                    </div>
-                  </SmartLink>
-                </StyledTableCell>
-                <StyledTableCell className="clickable">
-                  <TaskDescription
+                  </div>
+                )}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                {request?.podName ? (
+                  // eslint-disable-next-line @next/next/no-img-element
+                  <Link passHref href={`/pod/${request?.podId}/boards`}>
+                    <a target="_blank" rel="noopener noreferrer">
+                      <TaskDescription
+                        style={{
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {request?.podName}
+                      </TaskDescription>
+                    </a>
+                  </Link>
+                ) : null}
+              </StyledTableCell>
+              <StyledTableCell align="center">
+                <SmartLink href={`/profile/${request?.userUsername}/about`} asLink>
+                  <div
                     style={{
-                      maxWidth: '600px',
+                      display: 'flex',
+                      alignItems: 'center',
                     }}
                   >
-                    {request?.message}
-                  </TaskDescription>
+                    {request?.userProfilePicture && (
+                      <SafeImage
+                        useNextImage={false}
+                        style={{
+                          width: '17px',
+                          height: '17px',
+                          borderRadius: '17px',
+                          marginRight: '8px',
+                        }}
+                        src={request?.userProfilePicture}
+                      />
+                    )}
+
+                    <Initials>{request?.userUsername}</Initials>
+                  </div>
+                </SmartLink>
+              </StyledTableCell>
+              <StyledTableCell className="clickable">
+                <TaskDescription
+                  style={{
+                    maxWidth: '600px',
+                  }}
+                >
+                  {request?.message}
+                </TaskDescription>
+              </StyledTableCell>
+              {/* <StyledTableCell> */}
+              {/*  <DeliverableContainer> */}
+              {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => { */}
+              {/*      return ( */}
+              {/*        <DeliverableItem key={index}> */}
+              {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer> */}
+              {/*          {value?.length} */}
+              {/*        </DeliverableItem> */}
+              {/*      ); */}
+              {/*    })} */}
+              {/*  </DeliverableContainer> */}
+              {/* </StyledTableCell> */}
+              {isAdmin && (
+                <StyledTableCell align="center">
+                  {/* TODO: change the design for disabled button */}
+                  <DropDownButtonDecision userId={request?.userId} orgId={request?.orgId} podId={request?.podId} />
                 </StyledTableCell>
-                {/*<StyledTableCell>*/}
-                {/*  <DeliverableContainer>*/}
-                {/*    {Object.entries(groupBy(task?.media || [], 'type')).map(([key, value]: [string, any], index) => {*/}
-                {/*      return (*/}
-                {/*        <DeliverableItem key={index}>*/}
-                {/*          <DeliverablesIconContainer>{DELIVERABLES_ICONS[key]}</DeliverablesIconContainer>*/}
-                {/*          {value?.length}*/}
-                {/*        </DeliverableItem>*/}
-                {/*      );*/}
-                {/*    })}*/}
-                {/*  </DeliverableContainer>*/}
-                {/*</StyledTableCell>*/}
-                {isAdmin && (
-                  <StyledTableCell align="center">
-                    {/* TODO: change the design for disabled button */}
-                    <DropDownButtonDecision userId={request?.userId} orgId={request?.orgId} podId={request?.podId} />
-                  </StyledTableCell>
-                )}
-                {/* <StyledTableCell align="center">
+              )}
+              {/* <StyledTableCell align="center">
                     <MoreOptions disabled={!canManageTask}>
                       <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                         <DropDownItem
@@ -259,13 +258,12 @@ export const MembershipRequestTable = (props) => {
                       </DropDown>
                     </MoreOptions>
                   </StyledTableCell> */}
-              </StyledTableRow>
-            );
-          })}
+            </StyledTableRow>
+          ))}
         </StyledTableBody>
       </StyledTable>
 
       <LoadMore ref={ref} hasMore={hasMore} />
     </StyledTableContainer>
   );
-};
+}

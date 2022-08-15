@@ -3,6 +3,8 @@ import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
+import { DeleteButton } from 'components/Settings/Roles/styles';
+import { SafeImage } from 'components/Common/Image';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -21,7 +23,6 @@ import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import { SettingsWrapper } from './settingsWrapper';
-import { DeleteButton } from 'components/Settings/Roles/styles';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -40,7 +41,6 @@ import {
   Snackbar,
   SettingsHeaderText,
 } from './styles';
-import { SafeImage } from 'components/Common/Image';
 
 const LIMIT = 200;
 
@@ -74,7 +74,7 @@ const LINKS_DATA = [
   },
 ];
 
-const GeneralSettingsComponent = (props) => {
+function GeneralSettingsComponent(props) {
   const {
     toast,
     setToast,
@@ -230,12 +230,10 @@ const GeneralSettingsComponent = (props) => {
                 </GeneralSettingsSocialsBlockRow>
               ))
             ) : (
-              <>
-                <GeneralSettingsSocialsBlockRow key={newLink.type}>
-                  <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
-                  <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
-                </GeneralSettingsSocialsBlockRow>
-              </>
+              <GeneralSettingsSocialsBlockRow key={newLink.type}>
+                <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
+                <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
+              </GeneralSettingsSocialsBlockRow>
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
@@ -311,7 +309,7 @@ const GeneralSettingsComponent = (props) => {
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 const reduceLinks = (existingLinks) => {
   const links = (existingLinks || []).reduce((acc, link) => {
@@ -328,7 +326,7 @@ const reduceLinks = (existingLinks) => {
 
 const handleLinkChange = (event, item, existingLinks, setLinks) => {
   const links = { ...existingLinks };
-  let url = event.currentTarget.value;
+  const url = event.currentTarget.value;
   // Case when value doesn't contain domain name
   links[item.type] = {
     url,
@@ -339,7 +337,7 @@ const handleLinkChange = (event, item, existingLinks, setLinks) => {
   setLinks(links);
 };
 
-export const PodGeneralSettings = () => {
+export function PodGeneralSettings() {
   const router = useRouter();
   const { podId } = router.query;
   const [podProfile, setPodProfile] = useState(null);
@@ -403,7 +401,7 @@ export const PodGeneralSettings = () => {
     const fileName = file?.name;
     // get image preview
     const { fileType, filename } = getFilenameAndType(fileName);
-    const imageFile = `tmp/${podId}/` + filename;
+    const imageFile = `tmp/${podId}/${filename}`;
     return { filename: imageFile, fileType, file };
   }
 
@@ -454,7 +452,7 @@ export const PodGeneralSettings = () => {
           privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: podProfile.headerPicture,
           profilePicture: podProfile.profilePicture,
-          color: color,
+          color,
         },
       },
     });
@@ -511,9 +509,9 @@ export const PodGeneralSettings = () => {
       handleUnarchivePodClick={handleUnarchivePodClick}
     />
   );
-};
+}
 
-const GeneralSettings = () => {
+function GeneralSettings() {
   const [logoImage, setLogoImage] = useState('');
   const [orgProfile, setOrgProfile] = useState(null);
   const [headerImage, setHeaderImage] = useState('');
@@ -556,7 +554,7 @@ const GeneralSettings = () => {
     const fileName = file?.name;
     // get image preview
     const { fileType, filename } = getFilenameAndType(fileName);
-    const imageFile = `tmp/${orgId}/` + filename;
+    const imageFile = `tmp/${orgId}/${filename}`;
     return { filename: imageFile, fileType, file };
   }
 
@@ -640,6 +638,6 @@ const GeneralSettings = () => {
       handleImageChange={handleImageChange}
     />
   );
-};
+}
 
 export default GeneralSettings;

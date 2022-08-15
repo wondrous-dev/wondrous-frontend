@@ -1,4 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useMutation, useLazyQuery } from '@apollo/client';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { LINK, PERMISSIONS } from 'utils/constants';
+import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
+import PersonAddIcon from '../../Icons/personAdd';
 import {
   StyledModal,
   StyledBox,
@@ -27,14 +35,6 @@ import {
   InviteThruLinkButtonSuccessLabel,
   LinkSwitch,
 } from './styles';
-import PersonAddIcon from '../../Icons/personAdd';
-import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK, PERMISSIONS } from 'utils/constants';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
   if (!roles) return [];
@@ -61,7 +61,7 @@ export const putDefaultRoleOnTop = (roles, permissions) => {
   return roles;
 };
 
-export const OrgInviteLinkModal = (props) => {
+export function OrgInviteLinkModal(props) {
   const { orgId, open, onClose } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
@@ -124,7 +124,7 @@ export const OrgInviteLinkModal = (props) => {
     if (!role && open) {
       getOrgRoles({
         variables: {
-          orgId: orgId,
+          orgId,
         },
       });
     }
@@ -134,7 +134,7 @@ export const OrgInviteLinkModal = (props) => {
           input: {
             invitorId: '',
             type: linkOneTimeUse ? 'one_time' : 'public',
-            orgId: orgId,
+            orgId,
             orgRoleId: role,
           },
         },
@@ -210,4 +210,4 @@ export const OrgInviteLinkModal = (props) => {
       </StyledBox>
     </StyledModal>
   );
-};
+}
