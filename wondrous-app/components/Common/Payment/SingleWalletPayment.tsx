@@ -15,7 +15,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { useGnosisSdk } from 'services/payment';
+import useGnosisSdk from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
