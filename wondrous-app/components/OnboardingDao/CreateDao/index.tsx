@@ -11,7 +11,7 @@ const Name = ({ label, tempState, setTempState, ...props }) => {
   const debouncedHelpersSetValue = useMemo(() => debounce(helpers.setValue, 500), []);
 
   const handleOnChange = (e) => {
-    const value = e.target.value;
+    const { value } = e.target;
     setTempState({ ...tempState, [name]: value });
     debouncedHelpersSetValue(value);
   };
