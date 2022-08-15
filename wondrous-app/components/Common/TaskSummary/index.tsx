@@ -32,7 +32,6 @@ import {
   OrgProfilePicture,
   SmallerCardActionButtons,
 } from './styles';
-import { TASK_ICONS } from '../Task/index';
 import {
   TaskHeader,
   TaskContent,
@@ -49,6 +48,7 @@ import {
 import { Compensation } from '../Compensation';
 import { AvatarList } from '../AvatarList';
 import { LogoButton } from '../logo';
+import TASK_ICONS from '../Task/constants';
 
 let windowOffset;
 
