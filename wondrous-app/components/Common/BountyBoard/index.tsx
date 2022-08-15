@@ -16,7 +16,7 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
-import { TASK_ICONS } from 'components/Common/Task/index';
+import TASK_ICONS from 'components/Common/Task/constants';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
