@@ -27,17 +27,6 @@ import DndErrorModal from './DndErrorModal';
 import TaskColumn from './TaskColumn';
 import { KanbanBoardContainer, LoadMore } from './styles';
 
-export const getBoardType = ({ orgBoard, podBoard, userBoard }) => {
-  if (orgBoard) {
-    return BOARD_TYPE.org;
-  }
-  if (podBoard) {
-    return BOARD_TYPE.pod;
-  }
-  if (userBoard) {
-    return BOARD_TYPE.assignee;
-  }
-};
 export const populateOrder = (index, tasks, field) => {
   let aboveOrder = null;
   let belowOrder = null;

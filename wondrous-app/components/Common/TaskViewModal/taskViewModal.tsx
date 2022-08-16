@@ -149,7 +149,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const createEntityContext = useCreateEntityContext();
-  const getUserPermissionContext = useCallback(() => createEntityContext?.userPermissionsContext, [createEntityContext]);
+  const getUserPermissionContext = useCallback(
+    () => createEntityContext?.userPermissionsContext,
+    [createEntityContext]
+  );
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
   const {
@@ -612,7 +615,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             isSubtask ? fetchedTask?.parentTaskId : taskId
                           }`}
                         />
-                        <TaskModalHeaderOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+                        <TaskModalHeaderOpenInFullIcon
+                          isFullScreen={fullScreen}
+                          onClick={() => setFullScreen(!fullScreen)}
+                        />
                         <Menu
                           canArchive={canArchive}
                           canDelete={canDelete}

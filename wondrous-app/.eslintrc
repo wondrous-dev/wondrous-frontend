@@ -25,7 +25,6 @@
     "react/jsx-props-no-spreading": "off",
     "react/no-unescaped-entities": "warn",
     "no-console": ["warn", { "allow": ["error"] }],
-    // TODO: set to error
 
     // import rules
     "import/prefer-default-export": "warn",

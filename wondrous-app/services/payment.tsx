@@ -21,7 +21,7 @@ const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   BOBA: 'boba',
 };
 
-export const useGnosisSdk = () => {
+const useGnosisSdk = () => {
   const wonderWeb3 = useWonderWeb3();
   const [connected, setConnected] = useState(false);
   const [safeSdk, setSafeSdk] = useState<Safe>(null);
@@ -73,3 +73,5 @@ export const useGnosisSdk = () => {
     isConnected,
   };
 };
+
+export default useGnosisSdk;

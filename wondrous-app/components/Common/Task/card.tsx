@@ -74,17 +74,8 @@ import MilestoneIcon from '../../Icons/milestone';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
-
-export const TASK_ICONS = {
-  [Constants.TASK_STATUS_TODO]: TodoWithBorder,
-  [Constants.TASK_STATUS_IN_PROGRESS]: InProgressWithBorder,
-  [Constants.TASK_STATUS_DONE]: DoneWithBorder,
-  [Constants.TASK_STATUS_IN_REVIEW]: InReview,
-  [Constants.TASK_STATUS_REQUESTED]: Requested,
-  [Constants.TASK_STATUS_ARCHIVED]: Archived,
-  [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
-  [Constants.TASK_STATUS_PAID]: Paid,
-};
+import { ButtonPrimary } from '../button';
+import TASK_ICONS from './constants';
 
 let windowOffset = 0;
 
@@ -246,10 +237,8 @@ export function TaskCard({
                     Claimed
                   </ActionButton>
                 ) : (
-                  <ActionButton
-                    style={{
-                      marginRight: '8px',
-                    }}
+                  <ButtonPrimary
+                    startIcon={<Claim />}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -275,15 +264,8 @@ export function TaskCard({
                       });
                     }}
                   >
-                    <Claim />
-                    <span
-                      style={{
-                        marginLeft: '4px',
-                      }}
-                    >
-                      Claim
-                    </span>
-                  </ActionButton>
+                    Claim
+                  </ButtonPrimary>
                 )}
               </>
             ) : (
