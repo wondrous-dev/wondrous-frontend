@@ -11,6 +11,7 @@ function useTaskActions() {
     editTask,
     deleteTask,
     archiveTask,
+    completeTask,
     resetTaskAction,
   } = useContext(TaskActionsContext);
 
@@ -23,6 +24,7 @@ function useTaskActions() {
     editTask,
     deleteTask,
     archiveTask,
+    completeTask,
     resetTaskAction,
   };
 }
