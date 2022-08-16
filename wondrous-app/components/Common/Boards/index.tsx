@@ -9,7 +9,6 @@ import ListView from 'components/ListView';
 import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import { Table } from '../../Table';
-import MembershipRequestTable from '../../Table/MembershipRequests';
 import {
   BoardsContainer,
   ResultsCount,
