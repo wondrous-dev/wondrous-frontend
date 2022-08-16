@@ -1,3 +1,5 @@
+import { CompleteModal } from 'components/Common/CompleteModal';
+import * as Constants from 'constants';
 import React, { useCallback, useContext, useEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 
@@ -6,16 +8,26 @@ import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { ArchivedTaskUndo } from 'components/Common/Task/styles';
 import { CreateEntity } from 'components/CreateEntity';
-import { ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations';
+import { ARCHIVE_TASK, COMPLETE_BOUNTY, COMPLETE_MILESTONE, UNARCHIVE_TASK } from 'graphql/mutations';
 import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_STATUS_REQUESTED } from 'utils/constants';
 import useTaskActions from '../../hooks/useTaskActions';
 
-function TaskModals() {
-  const { isEditAction, isDeleteAction, isArchiveAction, taskInAction, resetTaskAction } = useTaskActions();
+function TaskActionModals() {
+  const { isEditAction, isCompleteAction, isDeleteAction, isArchiveAction, taskInAction, resetTaskAction } =
+    useTaskActions();
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+
+  const isBounty = taskInAction?.type === BOUNTY_TYPE;
+  const isMilestone = taskInAction?.type === MILESTONE_TYPE;
+  const taskTypes = {
+    TaskProposalCard: 'task proposal',
+    TaskSubmissionCard: 'task',
+  };
+  const taskType = taskTypes[taskInAction?.__typename] ?? taskInAction?.type;
 
   useEffect(() => {
     if (isEditAction && !reviewerData?.getTaskReviewers?.length) {
@@ -26,6 +38,51 @@ function TaskModals() {
       });
     }
   }, [isEditAction, getReviewers, reviewerData?.getTaskReviewers?.length, taskInAction?.id]);
+
+  const [completeMilestone] = useMutation(COMPLETE_MILESTONE, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+
+  const [completeBounty] = useMutation(COMPLETE_BOUNTY, {
+    refetchQueries: () => [
+      'getTaskById',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+    ],
+  });
+
+  const completeCallback = useCallback(() => {
+    const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    if (isMilestone) {
+      completeMilestone({
+        variables: {
+          milestoneId: taskInAction?.id,
+          timezone,
+        },
+      }).then(() => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Milestone marked as complete :)</>);
+      });
+    } else if (isBounty) {
+      completeBounty({
+        variables: {
+          bountyId: taskInAction?.id,
+          timezone,
+        },
+      }).then(() => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>Bounty marked as complete :)</>);
+      });
+    }
+  }, [taskInAction, isMilestone, isBounty, setSnackbarAlertOpen, setSnackbarAlertMessage]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -96,10 +153,17 @@ function TaskModals() {
 
   return (
     <>
+      <CompleteModal
+        open={isCompleteAction}
+        onClose={resetTaskAction}
+        taskType={taskType}
+        taskId={taskInAction?.id}
+        onComplete={completeCallback}
+      />
       <CreateEntity
         open={isEditAction}
         handleCloseModal={resetTaskAction}
-        entityType={taskInAction?.type}
+        entityType={taskType}
         handleClose={resetTaskAction}
         cancel={resetTaskAction}
         existingTask={
@@ -108,19 +172,19 @@ function TaskModals() {
             reviewers: reviewerData?.getTaskReviewers || [],
           } as any
         }
-        isTaskProposal={false}
+        isTaskProposal={taskInAction?.type === TASK_STATUS_REQUESTED}
       />
       <ArchiveTaskModal
         open={isArchiveAction}
         onClose={resetTaskAction}
         onArchive={handleOnArchive}
-        taskType={taskInAction?.type}
+        taskType={taskType}
         taskId={taskInAction?.id}
       />
       <DeleteTaskModal
         open={isDeleteAction}
         onClose={resetTaskAction}
-        taskType={taskInAction?.type}
+        taskType={taskType}
         taskId={taskInAction?.id}
         onDelete={() => {
           setSnackbarAlertOpen(true);
@@ -131,4 +195,4 @@ function TaskModals() {
   );
 }
 
-export default TaskModals;
+export default TaskActionModals;
