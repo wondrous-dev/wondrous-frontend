@@ -13,7 +13,7 @@ import { Chevron } from '../../Icons/sections';
 import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
 import { ListViewIcon } from '../../Icons/ViewIcons/listView';
 import { Table } from '../../Table';
-import { MembershipRequestTable } from '../../Table/MembershipRequests';
+import MembershipRequestTable from '../../Table/MembershipRequests';
 import {
   BoardsContainer,
   ResultsCount,

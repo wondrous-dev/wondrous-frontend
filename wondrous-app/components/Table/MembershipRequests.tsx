@@ -4,7 +4,9 @@ import Link from 'next/link';
 
 import { useUserBoard } from 'utils/hooks';
 import SmartLink from 'components/Common/SmartLink';
-import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton/MembershipRequest';
+import { DropDownButtonDecision } from 'components/DropDownDecision/DropDownButton/MembershipRequest';
+import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import { SafeImage } from 'components/Common/Image';
 
 import {
   Initials,
@@ -16,11 +18,8 @@ import {
   StyledTableRow,
   TaskDescription,
 } from './styles';
-import { LoadMore } from '../Common/KanbanBoard/styles';
-import { SafeImage } from '../Common/Image';
 
-// eslint-disable-next-line import/prefer-default-export
-export function MembershipRequestTable(props) {
+export default function MembershipRequestTable(props) {
   const { onLoadMore, hasMore, isAdmin } = props;
 
   const [ref, inView] = useInView({});
@@ -88,7 +87,6 @@ export function MembershipRequestTable(props) {
                       }}
                     />
                     <Link passHref href={`/organization/${request?.orgUsername}/boards`}>
-                      {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                       <a target="_blank" rel="noopener noreferrer">
                         <TaskDescription
                           style={{
@@ -107,7 +105,6 @@ export function MembershipRequestTable(props) {
                 {request?.podName ? (
                   // eslint-disable-next-line @next/next/no-img-element
                   <Link passHref href={`/pod/${request?.podId}/boards`}>
-                    {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
                     <a target="_blank" rel="noopener noreferrer">
                       <TaskDescription
                         style={{
