@@ -33,13 +33,16 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
   && {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 8px;
-    padding: 8px 0px 8px;
+    padding: 8px 0 8px;
     border-bottom: 0.5px dashed #2b2b2b;
     border-radius: 6px;
     border-top: 0.5px dashed #2b2b2b;
   }
+
+  .rbd-draggable {
+    margin-top: 8px;
+  }
+
   ${EmptyStateWrapper} {
     width: fit-content;
     min-width: 10%;
@@ -47,6 +50,11 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
       flex-direction: row;
     }
   }
+`;
+
+export const DraggableItem = styled.div`
+  margin-top: 8px;
+  width: 100%;
 `;
 
 export const ListViewItemHeader = styled.div`

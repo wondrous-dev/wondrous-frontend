@@ -23,6 +23,7 @@ import {
   ListViewItemCount,
   ListViewItemStatus,
   IconWrapper,
+  DraggableItem,
 } from './styles';
 import Item from './Item';
 
@@ -95,17 +96,14 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
             tasks.map((task, idx) => (
               <Draggable key={task.id} draggableId={task.id} index={idx}>
                 {(provided, snapshot) => (
-                  <div
-                    style={{
-                      width: '100%',
-                    }}
+                  <DraggableItem
                     {...provided.draggableProps}
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                     isDragging={snapshot.isDragging}
                   >
                     <Item entityType={entityType} task={task} />
-                  </div>
+                  </DraggableItem>
                 )}
               </Draggable>
             ))

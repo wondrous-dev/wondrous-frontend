@@ -34,7 +34,17 @@ export const TaskListContainer = styled.div`
   width: 100%;
   height: 100%;
   min-height: 100vh;
+
+  > div[data-rbd-draggable-context-id] {
+    margin: 1em 0 0;
+  }
 `;
+
+export const DraggableItem = styled.div`
+  margin-top: 1em;
+  width: 100%;
+`;
+
 export const TaskColumnContainer = styled.div`
   display: flex;
   flex-direction: column;

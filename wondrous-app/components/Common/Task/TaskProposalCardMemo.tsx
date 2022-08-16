@@ -46,7 +46,7 @@ export function TaskProposalCardMemo({
 
   return (
     <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
-      <ProposalCardWrapper>
+      <ProposalCardWrapper wrapped>
         <BoardsCardHeader>
           <BoardsCardSubheader>
             <ProposalCardIcon />

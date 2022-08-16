@@ -65,8 +65,6 @@ export const TASK_ICONS = {
   [Constants.TASK_STATUS_PAID]: Paid,
 };
 
-let windowOffset = 0;
-
 function TaskCardMemo({
   approvedSubmission,
   boardColumns,
@@ -116,6 +114,7 @@ function TaskCardMemo({
     <ProposalCardWrapper
       onMouseEnter={() => canArchive && setDisplayActions(true)}
       onMouseLeave={() => canArchive && setDisplayActions(false)}
+      wrapped
     >
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
@@ -415,127 +414,6 @@ function TaskCardMemo({
     </ProposalCardWrapper>
   );
 }
-//
-// const STATUS_ICONS = {
-//   [Constants.STATUS_APPROVED]: Approved,
-//   [Constants.STATUS_CLOSED]: Rejected,
-// };
-//
-// export function ProposalCard({ openModal, title, description, task, goToPod, proposalRequestChange, viewUrl }) {
-//   const router = useRouter();
-//   const coverMedia = task?.media?.find((media) => media.type === 'image');
-//
-//   const proposalStatus = getProposalStatus(task);
-//   const PROPOSAL_STATUS_MAP = {
-//     [Constants.STATUS_APPROVED]: {
-//       labelsAndActions: [
-//         {
-//           title: 'Approved',
-//           borderColor: palette.green800,
-//           color: palette.green800,
-//         },
-//       ],
-//     },
-//     // [Constants.STATUS_OPEN]: {
-//     //   labelsAndActions: [
-//     //     {
-//     //       title: 'Reject',
-//     //       action: () => {
-//     //         if (proposalRequestChange) {
-//     //           proposalRequestChange(task.id, proposalStatus);
-//     //         }
-//     //       },
-//     //     },
-//     //   ],
-//     // },
-//     [Constants.STATUS_CLOSED]: {
-//       labelsAndActions: [
-//         {
-//           title: 'Rejected',
-//           borderColor: palette.red300,
-//           color: palette.red300,
-//         },
-//       ],
-//     },
-//   };
-//   const labelsAndActions = PROPOSAL_STATUS_MAP[proposalStatus]?.labelsAndActions;
-//   const HeaderIcon = STATUS_ICONS[proposalStatus];
-//   const location = useLocation();
-//   return (
-//     <SmartLink
-//       href={viewUrl}
-//       preventLinkNavigation
-//       onNavigate={() => {
-//         location.push(viewUrl);
-//         windowOffset = window.scrollY;
-//         document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
-//       }}
-//     >
-//       <ProposalCardWrapper>
-//         <BoardsCardHeader>
-//           <BoardsCardSubheader>
-//             <ProposalCardIcon />
-//             <ProposalCardType>Proposal</ProposalCardType>
-//             <BoardsPrivacyLabel>
-//               {task?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-//             </BoardsPrivacyLabel>
-//           </BoardsCardSubheader>
-//           {HeaderIcon ? <HeaderIcon /> : null}
-//         </BoardsCardHeader>
-//         <BoardsCardBody>
-//           <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
-//           <BoardsCardBodyDescription>
-//             <RichTextViewer text={description} />
-//           </BoardsCardBodyDescription>
-//           {coverMedia ? (
-//             <BoardsCardMedia>
-//               <SafeImage
-//                 useNextImage={false}
-//                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-//                 src={coverMedia.slug}
-//               />
-//             </BoardsCardMedia>
-//           ) : null}
-//           {task?.podName && (
-//             <PodWrapper
-//               onClick={(e) => {
-//                 e.preventDefault();
-//                 e.stopPropagation();
-//                 goToPod(task?.podId);
-//               }}
-//             >
-//               <PodIcon
-//                 color={task?.podColor}
-//                 style={{
-//                   width: '26px',
-//                   height: '26px',
-//                   marginRight: '8px',
-//                 }}
-//               />
-//               <PodName style={{}}>{task?.podName}</PodName>
-//             </PodWrapper>
-//           )}
-//         </BoardsCardBody>
-//         <BoardsCardFooter style={{ paddingBottom: '7px' }}>
-//           {labelsAndActions?.map((label, idx) => (
-//             <ProposalFooterButton
-//               isAction={!!label.action}
-//               onClick={(e) => {
-//                 e.stopPropagation();
-//                 label.action && label.action();
-//               }}
-//               borderColor={label?.borderColor}
-//               key={idx}
-//               color={label?.color}
-//             >
-//               {label?.title}
-//             </ProposalFooterButton>
-//           ))}
-//         </BoardsCardFooter>
-//       </ProposalCardWrapper>
-//     </SmartLink>
-//   );
-// }
 
 TaskCardMemo.displayName = 'TaskCardMemo';
 

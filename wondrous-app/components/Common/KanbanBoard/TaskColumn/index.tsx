@@ -29,6 +29,7 @@ import {
   TaskColumnContainerHeaderTitle,
   TaskColumnContainerCount,
   TaskListContainer,
+  DraggableItem,
 } from './styles';
 import { ColumnSection } from '../../ColumnSection';
 import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
@@ -171,9 +172,15 @@ function TaskColumn(props: ITaskColumn) {
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
             {cardsList?.length ? (
               cardsList.map((card, index) => (
-                <Draggable key={card.id} draggableId={card.id} index={index}>
+                <Draggable
+                  key={card.id}
+                  draggableId={card.id}
+                  index={index}
+                  className="efa"
+                  style={{ background: 'red' }}
+                >
                   {(provided, snapshot) => (
-                    <div
+                    <DraggableItem
                       style={{
                         width: '100%',
                       }}
@@ -189,7 +196,7 @@ function TaskColumn(props: ITaskColumn) {
                       ) : (
                         <Task task={card} setTask={() => {}} />
                       )}
-                    </div>
+                    </DraggableItem>
                   )}
                 </Draggable>
               ))
