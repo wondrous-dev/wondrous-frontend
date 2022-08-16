@@ -2,7 +2,7 @@ import React from 'react';
 
 import { useRouter } from 'next/router';
 import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
-import { SettingsWrapper } from '../settingsWrapper';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 
 import { IntegrationsContainer } from './styles';

@@ -1,8 +1,8 @@
 import NotionTaskImportSection from 'components/Settings/TaskImport/NotionTaskImport';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
+import { HeaderBlock } from 'components/Settings/headerBlock';
 import { TaskImportContainer } from './styles';
 
 function TaskImport(props) {
