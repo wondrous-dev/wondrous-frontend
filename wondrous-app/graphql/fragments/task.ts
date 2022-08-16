@@ -227,9 +227,19 @@ export const TaskSubmissionCardFragment = gql`
       displayName
       type
     }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+      chain
+    }
+    taskDueDate
     media {
       ...MediaFragment
     }
+    taskStatus
   }
   ${MediaFragment}
 `;

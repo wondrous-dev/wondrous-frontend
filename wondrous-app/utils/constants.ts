@@ -18,6 +18,8 @@ export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
 export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
 
 export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
+export const POD_MEMBERSHIP_REQUESTS = 'pod_membership_requests';
+
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
@@ -33,6 +35,7 @@ export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
 export const STATUS_APPROVED = 'approved';
 export const STATUS_REJECTED = 'rejected';
 export const STATUS_CLOSED = 'closed';
+export const STATUS_CHANGE_REQUESTED = 'change_requested';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';
@@ -235,6 +238,7 @@ export const ENTITIES_TYPES = {
   ORG: 'org',
   BOUNTY: 'bounty',
   PROPOSAL: 'proposal',
+  SUBMISSION: 'submission',
 };
 
 export const MODAL_TABS_MAP = {
@@ -565,6 +569,12 @@ export const PAGES_WITH_NO_SIDEBAR = [
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
 
+export const ADMIN_COLUMNS_TYPES = {
+  [TASK_STATUS_SUBMISSION_REQUEST]: 'Submissions to review',
+  [TASK_STATUS_PROPOSAL_REQUEST]: 'Proposals to review',
+  [ORG_MEMBERSHIP_REQUESTS]: 'Org membership requests',
+  [POD_MEMBERSHIP_REQUESTS]: 'Pod membership requests',
+};
 export const GLOBAL_SEARCH_TYPES = {
   ORGS: 'orgs',
   PODS: 'pods',
@@ -583,3 +593,13 @@ export const DAO_CATEGORIES = {
   fun_memeable: '💀 Fun and memeable',
   building_products: '‍🏗️ Building products',
 } as const;
+
+export const SORT_BY = {
+  DESC: 'desc',
+  ASC: 'asc',
+};
+
+export const USER_BOARD_PAGE_TYPES = {
+  CONTRIBUTOR: 'contributor',
+  ADMIN: 'admin',
+};

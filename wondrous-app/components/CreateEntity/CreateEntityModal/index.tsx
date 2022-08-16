@@ -756,6 +756,7 @@ const useCreateTaskProposal = () => {
       'getPerTypeTaskCountForPodBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForOrgBoard',
+      'getUserTaskBoardProposals',
     ],
   });
 
@@ -796,6 +797,7 @@ const useUpdateTaskProposal = () => {
       'getPodTaskBoardProposals',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
+      'getUserTaskBoardProposals',
     ],
   });
 
