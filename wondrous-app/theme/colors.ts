@@ -85,6 +85,7 @@ export const yellowColors = {
   yellow200: '#FFD78C',
   yellow400: '#FCCD3F',
   yellow700: '#F8A811',
+  yellow800: '#ffd653',
 };
 
 export const violetColors = {
@@ -93,6 +94,8 @@ export const violetColors = {
   violet300: '#CCDDFF',
   violet400: '#815DFF',
   violet700: '#690DFF',
+  violet800: '#360097',
+  violet900: '#700097',
 };
 
 export const orangeColors = {

@@ -6,8 +6,9 @@ import { DAO_CATEGORIES } from 'utils/constants';
 import { CategoriesWrapper, Divider, Label } from './styles';
 
 function CategoryItem(props) {
+  const { value } = props;
   const radioGroup = useRadioGroup();
-  return <Label checked={radioGroup?.value === props.value} {...props} />;
+  return <Label checked={radioGroup?.value === value} {...props} />;
 }
 
 function CategoryItemOther(props) {
@@ -16,7 +17,8 @@ function CategoryItemOther(props) {
 }
 
 function DaoCategories(props) {
-  const [field] = useField(props.name);
+  const { name } = props;
+  const [field] = useField(name);
   return (
     <CategoriesWrapper {...field} {...props}>
       {map(DAO_CATEGORIES, (value, key) => (
@@ -43,9 +45,12 @@ function OtherField({ label, ...props }) {
 }
 
 function DaoCategory(props) {
+  const {
+    fields: { category },
+  } = props;
   return (
     <ComponentFieldWrapper>
-      <DaoCategories {...props.fields.category} />
+      <DaoCategories {...category} />
       {/* NOTE: hide for now <OtherField {...props.fields.category} /> */}
     </ComponentFieldWrapper>
   );

@@ -12,7 +12,6 @@
   "rules": {
     "no-octal-escape": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
-
     "no-unused-vars": "warn",
     "import/extensions": [
       "error",
@@ -26,7 +25,6 @@
     "react/jsx-props-no-spreading": "off",
     "react/no-unescaped-entities": "warn",
     "no-console": ["warn", { "allow": ["error"] }],
-    // TODO: set to error
 
     // import rules
     "import/prefer-default-export": "warn",
@@ -70,6 +68,7 @@
     "radix": "warn",
     "camelcase": "warn",
     "prefer-rest-params": "warn",
+    "prefer-spread": "warn",
 
     // React rules:
     "react/display-name": "warn",

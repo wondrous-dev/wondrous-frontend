@@ -43,7 +43,7 @@ export default function useInjectedProviderListener({
       provider.addListener('connect', handleConnect);
       provider.addListener('chainChanged', handleChainChanged);
       provider.addListener('accountsChanged', handleAccountsChanged);
-      provider.addListener('networkChanged', handleNetworkChanged);
+      provider.addListener('chainChanged', handleNetworkChanged);
       setIsSubscribed(true);
 
       return () => {
@@ -51,7 +51,7 @@ export default function useInjectedProviderListener({
           provider.removeListener('connect', handleConnect);
           provider.removeListener('chainChanged', handleChainChanged);
           provider.removeListener('accountsChanged', handleAccountsChanged);
-          provider.removeListener('networkChanged', handleNetworkChanged);
+          provider.removeListener('chainChanged', handleNetworkChanged);
         }
         setIsSubscribed(false);
       };
