@@ -60,11 +60,12 @@ const ProposalsBoard = () => {
   }, [hasMore, fetchMore, data, variables, setHasMore]);
 
   const onFilterChange = (filtersToApply) => {
-    const { privacyLevel, statuses, ...rest } = filtersToApply;
+    const { privacyLevel, statuses, podIds, ...rest } = filtersToApply;
     const filters = {
       ...rest,
       limit: variables.limit,
       offset: variables.offset,
+      podIds: podIds?.length ? podIds : null,
       statuses: [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED].some((status) => statuses?.includes(status))
         ? statuses
         : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED],
