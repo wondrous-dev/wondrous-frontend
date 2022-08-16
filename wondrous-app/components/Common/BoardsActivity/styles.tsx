@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { BoardFiltersContainer } from 'components/Common/BoardFilters/styles';
 
 export const BoardsActivityWrapper = styled.div`
   display: flex;
@@ -23,4 +24,8 @@ export const BoardsActivityInlineViewWrapper = styled.div`
   align-items: center;
   gap: 18px;
   height: 34px;
+
+  ${BoardFiltersContainer} {
+    width: ${({ displaySingleViewFilter }) => (displaySingleViewFilter ? 'auto' : '100%')};
+  }
 `;

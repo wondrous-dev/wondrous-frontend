@@ -88,9 +88,9 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
         <StyledDivider />
         <StyledButtonsContainer>
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-          <StyledDeleteTaskButton>
+          <StyledDeleteTaskButton onClick={() => handleDelete()}>
             <ArchivedIcon />
-            <StyledDeleteLabel onClick={() => handleDelete()}>Delete {taskType}</StyledDeleteLabel>
+            <StyledDeleteLabel>Delete {taskType}</StyledDeleteLabel>
           </StyledDeleteTaskButton>
         </StyledButtonsContainer>
       </StyledBox>

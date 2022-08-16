@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import Masonry from '@mui/lab/Masonry';
-import { ShowMoreButton } from 'components/ListView/styles';
+import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
 import { device } from 'utils/device';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import WheelSvg from './wheel.svg';

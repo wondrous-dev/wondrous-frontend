@@ -3,9 +3,13 @@ import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from 'graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from 'graphql/queries/workflowBoards';
-import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from 'utils/constants';
+import {
+  TASK_STATUS_AWAITING_PAYMENT,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_SUBMISSION_REQUEST,
+} from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { DoneWithBorder } from '../../Icons';
+import { AwaitingPayment, DoneWithBorder } from '../../Icons';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
 import DashboardPanelExpanded from '../DashboardPanelExpanded';
 // import DashboardPanelSticky from '../DashboardPanelSticky'; NOTE: hide for now
@@ -130,14 +134,6 @@ function DashboardPanel(props) {
 
   return (
     <DashboardPanelWrapper>
-      {/* {!inView && (
-        <DashboardPanelSticky
-          activePanelStatusCards={activePanelStatusCards}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          isAdmin={isAdmin}
-        />
-      )} NOTE: hide for now */}
       <DashboardPanelExpanded
         activePanel={activePanel}
         activePanelStatusCards={activePanelStatusCards}

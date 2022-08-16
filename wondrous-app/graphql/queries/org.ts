@@ -161,8 +161,8 @@ export const SEARCH_ORG_USERS = gql`
   }
 `;
 export const GET_JOIN_ORG_REQUESTS = gql`
-  query getJoinOrgRequests($limit: Int, $offset: Int) {
-    getJoinOrgRequests(limit: $limit, offset: $offset) {
+  query getJoinOrgRequests($limit: Int, $offset: Int, $sortOrder: String, $orgId: ID, $podIds: [ID]) {
+    getJoinOrgRequests(limit: $limit, offset: $offset, sortOrder: $sortOrder, orgId: $orgId, podIds: $podIds) {
       id
       userId
       orgId

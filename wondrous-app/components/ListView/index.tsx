@@ -47,7 +47,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const router = useRouter();
-  const { taskCount, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
+  const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
   const location = useLocation();
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
