@@ -6,7 +6,7 @@ import { SubtaskLightIcon } from 'components/Icons/subtask';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { Compensation } from 'components/Common/Compensation';
 import { format } from 'date-fns';
-import { DueDateText, ActionButton } from 'components/Common/Task/styles';
+import { DueDateText } from 'components/Common/Task/styles';
 import Tooltip from 'components/Tooltip';
 import palette from 'theme/palette';
 import { Claim } from 'components/Icons/claimTask';
@@ -15,6 +15,7 @@ import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
+import { ButtonPrimary } from 'components/Common/button';
 import {
   ListViewItemBodyWrapper,
   ListViewItemDataContainer,
@@ -104,51 +105,42 @@ function ItemMemo({
           {dueDate && <DueDateText>{format(new Date(dueDate), 'MMM d')}</DueDateText>}
           {rewards && rewards?.length > 0 && <Compensation pillStyle={{ padding: '10px' }} rewards={rewards} />}
           {displayPayButton && (
-            <ActionButton
+            <ButtonPrimary
               onClick={(e) => {
                 e.stopPropagation();
                 handlePaymentModal();
               }}
             >
               Pay
-            </ActionButton>
+            </ButtonPrimary>
           )}
           {!assigneeId && status !== TASK_STATUS_DONE && (
             <>
               {claimed ? (
-                <ActionButton
+                <ButtonPrimary
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                   }}
                 >
                   Claimed
-                </ActionButton>
+                </ButtonPrimary>
               ) : (
-                <ActionButton
-                  style={{
-                    marginRight: '8px',
-                  }}
+                <ButtonPrimary
                   onClick={(e) => {
                     e.preventDefault();
                     e.stopPropagation();
                     claimAction(id);
                     setClaimed(true);
                   }}
+                  startIcon={<Claim />}
                 >
-                  <Claim />
-                  <span
-                    style={{
-                      marginLeft: '4px',
-                    }}
-                  >
-                    Claim
-                  </span>
-                </ActionButton>
+                  Claim
+                </ButtonPrimary>
               )}
             </>
           )}
-          {status === TASK_STATUS_IN_REVIEW && <ActionButton type="button">Review</ActionButton>}
+          {status === TASK_STATUS_IN_REVIEW && <ButtonPrimary type="button">Review</ButtonPrimary>}
           {canArchive && (
             <MoreOptions>
               <Tooltip title="More actions" placement="top">

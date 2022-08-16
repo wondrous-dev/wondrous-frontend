@@ -12,6 +12,7 @@ import SmartLink from 'components/Common/SmartLink';
 import Tooltip from 'components/Tooltip';
 import { DAOIcon } from 'components/Icons/dao';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
+import { ButtonPrimary } from '../button';
 import {
   ProposalCardWrapper,
   TaskHeader,
@@ -29,16 +30,6 @@ import {
   ActionButton,
   DueDateText,
 } from './styles';
-import { Archived } from '../../Icons/sections';
-import {
-  TodoWithBorder,
-  InProgressWithBorder,
-  DoneWithBorder,
-  InReview,
-  Requested,
-  AwaitingPayment,
-  Paid,
-} from '../../Icons';
 import { AvatarList } from '../AvatarList';
 import { SafeImage } from '../Image';
 import { TaskBountyOverview } from '../TaskBountyOverview';
@@ -53,17 +44,7 @@ import MilestoneIcon from '../../Icons/milestone';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
-
-export const TASK_ICONS = {
-  [Constants.TASK_STATUS_TODO]: TodoWithBorder,
-  [Constants.TASK_STATUS_IN_PROGRESS]: InProgressWithBorder,
-  [Constants.TASK_STATUS_DONE]: DoneWithBorder,
-  [Constants.TASK_STATUS_IN_REVIEW]: InReview,
-  [Constants.TASK_STATUS_REQUESTED]: Requested,
-  [Constants.TASK_STATUS_ARCHIVED]: Archived,
-  [Constants.TASK_STATUS_AWAITING_PAYMENT]: AwaitingPayment,
-  [Constants.TASK_STATUS_PAID]: Paid,
-};
+import TASK_ICONS from './constants';
 
 function TaskCardMemo({
   approvedSubmission,
@@ -156,10 +137,8 @@ function TaskCardMemo({
                     Claimed
                   </ActionButton>
                 ) : (
-                  <ActionButton
-                    style={{
-                      marginRight: '8px',
-                    }}
+                  <ButtonPrimary
+                    startIcon={<Claim />}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -185,15 +164,8 @@ function TaskCardMemo({
                       });
                     }}
                   >
-                    <Claim />
-                    <span
-                      style={{
-                        marginLeft: '4px',
-                      }}
-                    >
-                      Claim
-                    </span>
-                  </ActionButton>
+                    Claim
+                  </ButtonPrimary>
                 )}
               </>
             ) : (
