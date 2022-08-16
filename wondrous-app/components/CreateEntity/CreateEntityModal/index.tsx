@@ -1060,8 +1060,14 @@ interface ICreateEntityModal {
   cancel: Function;
   existingTask?: {
     id: string;
+    reviewers?: { username: string; id: string }[] | null;
     claimPolicyRoles?: [string] | null;
     claimPolicy?: string | null;
+    shouldUnclaimOnDueDateExpiry?: boolean;
+    points?: number;
+    rewards?: { rewardAmount: string; paymentMethodId: string }[] | null;
+    milestoneId?: string | null;
+    labels?: { id: string }[] | null;
     githubIssue?: {
       id: string;
       url: string;
@@ -1118,7 +1124,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   });
   const inputRef: any = useRef();
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
-  const [getReviewers] = useLazyQuery(GET_TASK_REVIEWERS);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -1287,32 +1292,26 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   );
 
   useEffect(() => {
-    if (existingTask?.id) {
-      getTaskById({
-        variables: {
-          taskId: existingTask.id,
-        },
-      }).then((data) => {
-        const task = data?.data?.getTaskById;
-        form.setFieldValue('points', task?.points);
-        form.setFieldValue('labelIds', isEmpty(task?.labels) ? null : task?.labels?.map((label) => label.id));
-        form.setFieldValue('milestoneId', task?.milestoneId);
-        form.setFieldValue('claimPolicy', task?.claimPolicy);
-      });
-
-      getReviewers({
-        variables: {
-          taskId: existingTask.id,
-        },
-      }).then((data) => {
-        const reviewers = data?.data?.getTaskReviewers;
-        form.setFieldValue(
-          'reviewerIds',
-          reviewers?.map((reviewer) => reviewer.id)
-        );
-      });
-    }
-  }, [existingTask?.id]);
+    form.setFieldValue(
+      'reviewerIds',
+      existingTask?.reviewers?.map((reviewer) => reviewer.id)
+    );
+    form.setFieldValue('claimPolicy', existingTask?.claimPolicy);
+    form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
+    form.setFieldValue('points', existingTask?.points);
+    form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
+    form.setFieldValue(
+      'labelIds',
+      isEmpty(existingTask?.labels) ? null : existingTask?.labels?.map((label) => label.id)
+    );
+  }, [
+    existingTask?.reviewers?.length,
+    existingTask?.claimPolicy,
+    existingTask?.shouldUnclaimOnDueDateExpiry,
+    existingTask?.points,
+    existingTask?.milestoneId,
+    existingTask?.labels,
+  ]);
 
   useEffect(() => {
     if (isSubtask) {
@@ -2030,7 +2029,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {form.values.claimPolicy !== null && entityTypeData[entityType].fields.includes(Fields.claimPolicy) && (
             <ApplicationInputUnassignContainer>
               <Checkbox
-                checked={form.values.shouldUnclaimOnDueDateExpiry}
+                checked={!!form.values.shouldUnclaimOnDueDateExpiry}
                 onChange={() =>
                   form.setFieldValue('shouldUnclaimOnDueDateExpiry', !form.values.shouldUnclaimOnDueDateExpiry)
                 }

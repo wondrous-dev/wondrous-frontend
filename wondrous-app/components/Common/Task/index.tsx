@@ -12,7 +12,7 @@ import palette from 'theme/palette';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery } from 'utils';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { GET_TASK_REVIEWERS } from 'graphql/queries';
+import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
 import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { CreateEntity } from 'components/CreateEntity';
 import { LogoButton } from '../logo';
@@ -79,6 +79,20 @@ const useGetReviewers = (editTask, task) => {
     }
   }, [editTask, getReviewers, reviewerData?.getTaskReviewers?.length, task?.id]);
   return reviewerData?.getTaskReviewers;
+};
+
+const useGetTaskById = (editTask, task) => {
+  const [getTaskById, { data: taskData }] = useLazyQuery(GET_TASK_BY_ID);
+  useEffect(() => {
+    if (editTask && task?.id) {
+      getTaskById({
+        variables: {
+          taskId: task?.id,
+        },
+      });
+    }
+  }, [editTask, getTaskById, task?.id]);
+  return taskData?.getTaskById;
 };
 
 export function Task(props) {
@@ -173,6 +187,7 @@ export function Task(props) {
     },
   });
 
+  const taskData = useGetTaskById(editTask, task);
   const reviewerData = useGetReviewers(editTask, task);
 
   const closeProposal = (id, status) => {
@@ -306,6 +321,8 @@ export function Task(props) {
         cancel={() => setEditTask(false)}
         existingTask={{
           ...task,
+          ...taskData,
+          reviewers: reviewerData || [],
         }}
         isTaskProposal={false}
       />
