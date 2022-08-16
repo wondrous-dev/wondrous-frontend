@@ -65,6 +65,7 @@ const BountiesDashboard = ({ isAdmin }) => {
         offset: 0,
         statuses: TASKS_DEFAULT_STATUSES,
         searchString,
+        types: [ENTITIES_TYPES.BOUNTY],
       },
     };
 
