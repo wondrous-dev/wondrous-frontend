@@ -1,21 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import EditIcon from 'components/Icons/edit.svg';
-import {
-  GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
-  GET_DISCORD_GUILD_FROM_INVITE_CODE,
-  CHECK_DISCORD_BOT_ADDED,
-  GET_CHANNELS_FROM_DISCORD,
-} from 'graphql/queries';
+import EditIcon from 'components/Icons/editIcon';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_CHANNELS_FROM_DISCORD } from 'graphql/queries';
+import palette from 'theme/palette';
 import {
   DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
   ENABLE_ORG_DISCORD_NOTIFICATION_CONFIG,
   MANUAL_DISCORD_ORG_SETUP,
 } from 'graphql/mutations';
 
-import { BOT_URL } from 'components/DiscordNotificationSetup';
-import palette from 'theme/palette';
-import InputForm from 'components/Common/InputForm/inputForm';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import SettingsWrapper from 'components/Settings/settingsWrapper';
@@ -31,15 +24,9 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from 'components/Table/styles';
-import {
-  AddGuildButton,
-  DiscordText,
-  GeneralSettingsContainer,
-  GeneralSettingsIntegrationsBlock,
-  LabelBlock,
-} from 'components/Settings/styles';
+import { DiscordText, GeneralSettingsIntegrationsBlock, LabelBlock } from 'components/Settings/styles';
 import AddWonderBotToDiscordConfig from 'components/Settings/Notifications/AddWonderBotToDiscordConfig';
-import { DiscordCardElementDiv, TableValueText } from './styles';
+import { DiscordCardElementDiv, TableValueText, DiscordChannelInfoDiv } from './styles';
 
 function CurrentNotificationSetting({ discordNotificationConfigData, orgId, filteredDiscordChannels }) {
   const notificationEnabled = discordNotificationConfigData?.disabledAt === null;
@@ -118,9 +105,6 @@ function CurrentNotificationSetting({ discordNotificationConfigData, orgId, filt
         <StyledTable>
           <StyledTableHead>
             <StyledTableRow>
-              {/* <StyledTableCell align="center" width={'10%'}>
-                active
-              </StyledTableCell> */}
               <StyledTableCell align="center" width="45%">
                 Connected Server
               </StyledTableCell>
@@ -151,10 +135,13 @@ function CurrentNotificationSetting({ discordNotificationConfigData, orgId, filt
                 <>
                   {' '}
                   {!editChannel && discordNotificationConfigData?.channelInfo?.channelName && (
-                    <div style={{ display: 'flex' }}>
+                    <DiscordChannelInfoDiv>
                       <TableValueText>{discordNotificationConfigData?.channelInfo?.channelName}</TableValueText>
-                      <EditIcon style={{ marginLeft: '30px' }} onClick={handleEditClick} />
-                    </div>
+                      <EditIcon
+                        style={{ marginLeft: '15px', cursor: 'pointer', height: '15px' }}
+                        onClick={handleEditClick}
+                      />
+                    </DiscordChannelInfoDiv>
                   )}
                   {(!discordNotificationConfigData?.channelInfo?.channelName || editChannel) && (
                     <DiscordCardElementDiv>
@@ -166,7 +153,7 @@ function CurrentNotificationSetting({ discordNotificationConfigData, orgId, filt
                         }}
                         innerStyle={{
                           marginTop: '0',
-                          background: '#272729',
+                          background: palette.grey1000,
                         }}
                         options={filteredDiscordChannels}
                       />

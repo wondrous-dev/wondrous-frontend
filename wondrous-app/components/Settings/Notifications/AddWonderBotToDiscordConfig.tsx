@@ -101,7 +101,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
             <DiscordText>1. Paste invite link</DiscordText>
             <InputForm
               style={{
-                background: '#272729',
+                background: palette.grey1000,
               }}
               value={discordInviteLink}
               onChange={(e) => setDiscordInviteLink(e.target.value)}
@@ -116,7 +116,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
               <AddGuildButton
                 style={{
                   border: '1px solid deepskyblue',
-                  backgroundColor: '#272729',
+                  backgroundColor: palette.grey1000,
                 }}
                 href={`${BOT_URL}&guild_id=${guildId}`}
                 target="_blank"
@@ -157,7 +157,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
               }}
               innerStyle={{
                 marginTop: '0',
-                background: '#272729',
+                background: palette.grey1000,
               }}
               options={filteredDiscordChannels}
             />

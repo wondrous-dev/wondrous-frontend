@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import Link from 'next/link';
-import EditIcon from 'components/Icons/edit.svg';
+import EditIcon from 'components/Icons/editIcon';
+import palette from 'theme/palette';
 import {
   GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
   GET_POD_DISCORD_NOTIFICATION_CONFIGS,
@@ -18,7 +19,7 @@ import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
 import { HeaderBlock } from '../headerBlock';
-import { DiscordCardElementDiv, TableValueText } from './styles';
+import { DiscordCardElementDiv, TableValueText, DiscordChannelInfoDiv } from './styles';
 import Switch from '../../Common/Switch';
 import {
   StyledTable,
@@ -216,10 +217,13 @@ function PodNotification(props) {
                     </StyledTableCell>
                     <StyledTableCell>
                       {!editChannel && discordNotificationConfigData?.channelInfo?.channelName && (
-                        <div style={{ display: 'flex' }}>
+                        <DiscordChannelInfoDiv>
                           <TableValueText>{discordNotificationConfigData?.channelInfo?.channelName}</TableValueText>
-                          <EditIcon style={{ marginLeft: '30px' }} onClick={handleEditClick} />
-                        </div>
+                          <EditIcon
+                            style={{ marginLeft: '15px', cursor: 'pointer', height: '15px' }}
+                            onClick={handleEditClick}
+                          />
+                        </DiscordChannelInfoDiv>
                       )}
                       {(!discordNotificationConfigData?.channelInfo?.channelName || editChannel) && (
                         <DiscordCardElementDiv>
@@ -231,7 +235,7 @@ function PodNotification(props) {
                             }}
                             innerStyle={{
                               marginTop: '0',
-                              background: '#272729',
+                              background: palette.grey1000,
                             }}
                             options={filteredDiscordChannels}
                           />
