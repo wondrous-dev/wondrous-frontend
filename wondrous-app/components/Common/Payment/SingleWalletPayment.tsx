@@ -208,6 +208,7 @@ export function SingleWalletPayment(props) {
     console.log('gnosisSdk, ', gnosisSdk);
     if (!gnosisSdk) {
       setSafeConnectionError('Error connecting to gnosis safe please try again');
+      setGnosisTransactionLoading(false);
       return;
     }
 

@@ -178,6 +178,7 @@ export function BatchWalletPayment(props) {
     const gnosisSdk = wonderGnosis?.safeSdk;
     if (!gnosisSdk) {
       setSafeConnectionError('Error connecting to gnosis safe please try again');
+      setGnosisTransactionLoading(false);
       return;
     }
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
