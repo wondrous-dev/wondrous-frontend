@@ -124,14 +124,14 @@ const refetchTaskProposalQueries = [
   GET_USER_TASK_BOARD_PROPOSALS,
 ];
 
-const statusesProposal = ({ task, entityType }) => {
+const getStatusesProposal = ({ task, entityType }) => {
   const filterStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
   const status = getProposalStatus(task);
   const currentStatus = filterStatus?.find((i) => i.id === status);
   return { filterStatus, currentStatus };
 };
 
-const statusesNonProposal = ({ task, entityType, canArchive }) => {
+const getStatusesNonProposalEntity = ({ task, entityType, canArchive }) => {
   const entityStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
   const filterStatus = canArchive ? entityStatus : entityStatus?.filter((i) => i.id !== TASK_STATUS_ARCHIVED);
   const currentStatus = entityStatus?.find((i) => i.id === task?.status);
@@ -180,7 +180,7 @@ const useTaskMenuStatusProposal = ({ task, entityType }) => {
       closeTaskProposal({ variables: { proposalId } });
     }
   };
-  const { filterStatus, currentStatus } = statusesProposal({ task, entityType });
+  const { filterStatus, currentStatus } = getStatusesProposal({ task, entityType });
   const disableMenu = !canApproveProposal;
   return { handleOnChange, filterStatus, currentStatus, disableMenu };
 };
@@ -212,7 +212,7 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
       },
     });
   };
-  const { filterStatus, currentStatus } = statusesNonProposal({ task, entityType, canArchive });
+  const { filterStatus, currentStatus } = getStatusesNonProposalEntity({ task, entityType, canArchive });
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
 
