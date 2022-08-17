@@ -176,6 +176,10 @@ export function BatchWalletPayment(props) {
     // includes the pending nonce, better than keeping it empty which would ignore pending txs
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
+    if (!gnosisSdk) {
+      setSafeConnectionError('Error connecting to gnosis safe please try again');
+      return;
+    }
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     // first create a safe tx object for gas estimate purposes, then recreate it wit the esimated gas
     let safeTransaction = await gnosisSdk.createTransaction(transactions); // create tx object

@@ -206,6 +206,10 @@ export function SingleWalletPayment(props) {
     console.log('safeServiceClient, ', gnosisClient);
     const gnosisSdk = wonderGnosis?.safeSdk;
     console.log('gnosisSdk, ', gnosisSdk);
+    if (!gnosisSdk) {
+      setSafeConnectionError('Error connecting to gnosis safe please try again');
+      return;
+    }
 
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     t2 = performance.now();
@@ -239,11 +243,11 @@ export function SingleWalletPayment(props) {
       safeTxGas: safeTxGas ? Number(safeTxGas) : 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
-    const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    const computedSafeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
     t2 = performance.now();
     console.log(`createTransaction and getTransactionHash took ${t2 - t1} milliseconds`);
     t1 = performance.now();
-    setSafeTxHash(safeTxHash);
+    setSafeTxHash(computedSafeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
