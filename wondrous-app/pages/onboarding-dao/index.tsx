@@ -4,7 +4,7 @@ import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper
 import { STEP_ACTIONS } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
 import { CREATE_ORG } from 'graphql/mutations';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useReducer, useState } from 'react';
 import * as Yup from 'yup';
@@ -100,18 +100,18 @@ const handleStep = (step, { action, hasError = false }) => {
 
 const useCreateOrg = () => {
   const router = useRouter();
-  const [createOrg, { loading }] = useMutation(CREATE_ORG, {
-    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
+  const [mutation, { loading }] = useMutation(CREATE_ORG, {
+    refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
     onCompleted: ({ createOrg }) => {
       const { username } = createOrg;
       router.push(`organization/${username}/boards`);
     },
   });
-  const handleCreateOrg = (values) => {
+  const handleMutation = async (values) => {
     const { addBot, ...rest } = values;
-    createOrg({ variables: { input: rest } });
+    await mutation({ variables: { input: rest } });
   };
-  return { handleCreateOrg, loading };
+  return { handleCreateOrg: handleMutation, loading };
 };
 
 const useIsOrgUsernameTaken = () => {

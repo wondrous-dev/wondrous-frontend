@@ -12,12 +12,12 @@ import {
   REJECT_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
 import isEmpty from 'lodash/isEmpty';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BOUNTY_TYPE, PAYMENT_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
-import { useBoards, useColumns } from 'utils/hooks';
+import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
+import { useLocation } from 'utils/useLocation';
 
-import palette from 'theme/palette';
 import { CompletedIcon, InReviewIcon, RejectedIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import { KudosForm } from '../KudosForm';
@@ -179,8 +179,8 @@ const useRejectTaskSubmission = ({ submission, handleBountyTypeCompletion }) => 
   return rejectTaskSubmission;
 };
 
-const SubmissionItemStatus = (props) => {
-  const { submission } = props;
+export const SubmissionItemStatus = (props) => {
+  const { submission, hideTitle = false } = props;
   const awaitingReview = !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt;
   const changesRequested = submission?.changeRequestedAt;
   const rejected = submission?.rejectedAt;
@@ -192,7 +192,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <InReviewIcon />
-        <SubmissionItemStatusTextAwaitingReview>Awaiting review</SubmissionItemStatusTextAwaitingReview>
+        {!hideTitle && <SubmissionItemStatusTextAwaitingReview>Awaiting review</SubmissionItemStatusTextAwaitingReview>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -200,7 +200,9 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <SubmissionItemStatusChangesRequestedIcon />
-        <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
+        {!hideTitle && (
+          <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
+        )}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -208,7 +210,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <RejectedIcon />
-        <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>
+        {!hideTitle && <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -216,7 +218,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
-        <SubmissionItemStatusTextCompleted>Approved and Paid</SubmissionItemStatusTextCompleted>
+        {!hideTitle && <SubmissionItemStatusTextCompleted>Approved and Paid</SubmissionItemStatusTextCompleted>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -224,7 +226,9 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
-        <SubmissionItemStatusTextCompleted>Approved and Processing Payment</SubmissionItemStatusTextCompleted>
+        {!hideTitle && (
+          <SubmissionItemStatusTextCompleted>Approved and Processing Payment</SubmissionItemStatusTextCompleted>
+        )}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -232,7 +236,7 @@ const SubmissionItemStatus = (props) => {
     return (
       <SubmissionItemStatusWrapper>
         <CompletedIcon />
-        <SubmissionItemStatusTextCompleted>Approved</SubmissionItemStatusTextCompleted>
+        {!hideTitle && <SubmissionItemStatusTextCompleted>Approved</SubmissionItemStatusTextCompleted>}
       </SubmissionItemStatusWrapper>
     );
   }
@@ -362,6 +366,7 @@ export function SubmissionItem({
   const handleEdit = () => {
     setSubmissionToEdit(submission);
   };
+  const location = useLocation();
   const mediaUploads = submission?.media;
   const isCreator = user?.id === submission?.createdBy;
   const canComment = user?.id === submission?.createdBy || canReview;
@@ -372,6 +377,21 @@ export function SubmissionItem({
   const handleNonBountyTypeCompletion = () =>
     nonBountyTypeCompletion({ fetchedTask, completeTask, setIsKudosForm, boardColumns, submission });
   const handleBountyTypeCompletion = () => bountyTypeCompletion({ fetchedTask, orgBoard, podBoard, board, submission });
+  const isFocused = location?.params?.taskSubmissionId === submission.id;
+  const submissionRef = useScrollIntoView(isFocused);
+
+  useEffect(
+    () => () => {
+      if (isFocused) {
+        const { taskSubmissionId, ...rest } = location?.params;
+        const params = new URLSearchParams(rest);
+        const newUrl = `${location.pathname}&${params.toString()}`;
+        location.replace(newUrl);
+      }
+    },
+    []
+  );
+
   const approveSubmission = useApproveSubmission({
     submission,
     handleNonBountyTypeCompletion,
@@ -389,10 +409,11 @@ export function SubmissionItem({
     submission,
     handleBountyTypeCompletion,
   });
+
   return (
     <>
       <KudosForm onClose={handleClose} open={isKudosModalOpen} submission={submission} />
-      <SubmissionItemWrapper>
+      <SubmissionItemWrapper ref={submissionRef} highlight={isFocused}>
         <SubmissionItemHeader>
           <SubmissionItemHeaderContent>
             <SubmissionItemUserWrapper

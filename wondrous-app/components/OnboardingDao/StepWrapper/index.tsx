@@ -1,8 +1,9 @@
 import { CircularProgress } from '@mui/material';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { useFormikContext } from 'formik';
-import { mapKeys, mapValues, some } from 'lodash';
+import { mapValues, some } from 'lodash';
 import { useRouter } from 'next/router';
+import WonderLogo from 'public/images/onboarding/wonder-logo-solid.svg';
 import { STEP_ACTIONS } from '../constants';
 import { MainButton } from '../styles';
 import {
@@ -11,6 +12,11 @@ import {
   CloseButton,
   CloseButtonIcon,
   ComponentWrapper,
+  CreateDaoText,
+  CreateDaoTextLogoWrapper,
+  CreateDaoTextWrapperRotated,
+  Ellipses1,
+  Ellipses2,
   FooterWrapper,
   FormWrapper,
   HeaderWrapper,
@@ -97,6 +103,16 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, f
   return <MainButton onClick={handleOnClick}>Continue</MainButton>;
 };
 
+const CreateDaoTextWrapper = ({ left }) => {
+  const createDaoElements = Array.from({ length: 14 }, () => (
+    <CreateDaoTextLogoWrapper>
+      <CreateDaoText>Create DAO</CreateDaoText>
+      <WonderLogo />
+    </CreateDaoTextLogoWrapper>
+  ));
+  return <CreateDaoTextWrapperRotated left={left}>{createDaoElements}</CreateDaoTextWrapperRotated>;
+};
+
 function WrapperLoading({ loading, children }) {
   return (
     <Wrapper>
@@ -108,6 +124,10 @@ function WrapperLoading({ loading, children }) {
       ) : (
         children
       )}
+      <Ellipses1 />
+      <Ellipses2 />
+      <CreateDaoTextWrapper left />
+      <CreateDaoTextWrapper left={false} />
     </Wrapper>
   );
 }
@@ -125,7 +145,7 @@ function StepWrapper({
   ...props
 }) {
   const router = useRouter();
-  const handleOnClick = () => router.push('/dashboard');
+  const handleOnClick = () => router.back();
   const handleClearFields = useClearFields(props);
   return (
     <WrapperLoading loading={loading}>

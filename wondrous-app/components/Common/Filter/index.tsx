@@ -74,9 +74,7 @@ function Filter(props: IFilterProps) {
     }
     if (item.id === selected?.id) {
       handleChange(null);
-      return;
-    }
-    handleChange(item);
+    } else handleChange(item);
   };
 
   const filterExists = typeof selected !== 'undefined';

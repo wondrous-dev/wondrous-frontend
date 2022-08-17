@@ -19,6 +19,19 @@ export default function StarIcon({ stroke = 'url(#open)', ...rest }) {
           <stop offset="1" stopColor="#06FFA5" />
         </linearGradient>
       </defs>
+      <defs>
+        <linearGradient
+          id="submission-bounty"
+          x1="12.457"
+          y1="5.76855"
+          x2="12.457"
+          y2="19.7686"
+          gradientUnits="userSpaceOnUse"
+        >
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#00BAFF" />
+        </linearGradient>
+      </defs>
     </svg>
   );
 }

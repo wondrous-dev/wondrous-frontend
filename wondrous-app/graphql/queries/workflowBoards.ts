@@ -14,9 +14,23 @@ export const GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT = gql`
 `;
 
 export const GET_PROPOSALS_USER_CAN_REVIEW = gql`
-  query getProposalsUserCanReview($searchString: String, $orgId: String, $podIds: [String], $limit: Int, $offset: Int) {
+  query getProposalsUserCanReview(
+    $searchString: String
+    $orgId: ID
+    $podIds: [ID]
+    $limit: Int
+    $offset: Int
+    $sortOrder: String
+  ) {
     getProposalsUserCanReview(
-      input: { searchString: $searchString, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
+      input: {
+        searchString: $searchString
+        orgId: $orgId
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        sortOrder: $sortOrder
+      }
     ) {
       ...TaskProposalCardFragment
     }
@@ -27,13 +41,21 @@ export const GET_PROPOSALS_USER_CAN_REVIEW = gql`
 export const GET_SUBMISSIONS_USER_CAN_REVIEW = gql`
   query getSubmissionsUserCanReview(
     $searchString: String
-    $orgId: String
-    $podIds: [String]
+    $orgId: ID
+    $podIds: [ID]
     $limit: Int
     $offset: Int
+    $sortOrder: String
   ) {
     getSubmissionsUserCanReview(
-      input: { searchString: $searchString, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
+      input: {
+        searchString: $searchString
+        orgId: $orgId
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        sortOrder: $sortOrder
+      }
     ) {
       ...TaskSubmissionCardFragment
     }

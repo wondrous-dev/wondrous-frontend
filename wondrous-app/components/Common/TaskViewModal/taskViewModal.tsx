@@ -1,7 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
-import VoteResults from 'components/Common/Votes';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
 import { formatDistance } from 'date-fns';
@@ -41,7 +40,17 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useUserProfile } from 'utils/hooks';
+import {
+  useColumns,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useCanViewTask,
+  useUserProfile,
+  useCreateEntityContext,
+} from 'utils/hooks';
+
+import VoteResults from 'components/Common/Votes';
 import { useMe } from '../../Auth/withAuth';
 import {
   CreateFormButtonsBlock,
@@ -139,10 +148,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const userProfile = useUserProfile();
+  const createEntityContext = useCreateEntityContext();
   const getUserPermissionContext = useCallback(
-    () => orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext,
-    [orgBoard, userBoard, podBoard]
+    () => createEntityContext?.userPermissionsContext,
+    [createEntityContext]
   );
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
@@ -464,7 +473,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
         );
         boardColumns?.setColumns(columns);
       },
-      refetchQueries: ['GetOrgTaskBoardProposals'],
+      refetchQueries: ['GetOrgTaskBoardProposals', 'getUserTaskBoardProposals'],
     });
     document.body.setAttribute('style', `position: relative;`);
     handleClose();
@@ -606,7 +615,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             isSubtask ? fetchedTask?.parentTaskId : taskId
                           }`}
                         />
-                        <TaskModalHeaderOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+                        <TaskModalHeaderOpenInFullIcon
+                          isFullScreen={fullScreen}
+                          onClick={() => setFullScreen(!fullScreen)}
+                        />
                         <Menu
                           canArchive={canArchive}
                           canDelete={canDelete}

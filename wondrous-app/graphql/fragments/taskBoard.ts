@@ -5,9 +5,11 @@ export const PerStatusTaskCountFragment = gql`
     created
     inProgress
     completed
-    proposal
     submission
     inReview
     archived
+    proposalApproved
+    proposalClosed
+    proposalOpen
   }
 `;
