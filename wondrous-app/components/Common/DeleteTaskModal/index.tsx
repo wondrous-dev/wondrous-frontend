@@ -24,7 +24,7 @@ interface IArchiveTaskModalProps {
   onDelete: () => void;
 }
 
-export function DeleteTaskModal(props: IArchiveTaskModalProps) {
+function DeleteTaskModal(props: IArchiveTaskModalProps) {
   const { open, onClose, onDelete, taskType, taskId } = props;
   const refetchQueries = [
     'getPerStatusTaskCountForUserBoard',
@@ -33,7 +33,6 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
     'getSubtasksForTask',
     'getPerTypeTaskCountForOrgBoard',
     'getPerTypeTaskCountForPodBoard',
-    ,
   ];
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },
@@ -96,7 +95,7 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
         <StyledDivider />
         <StyledButtonsContainer>
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-          <StyledDeleteTaskButton onClick={() => handleDelete()}>
+          <StyledDeleteTaskButton data-cy="button-delete" onClick={() => handleDelete()}>
             <ArchivedIcon />
             <StyledDeleteLabel>Delete {taskType}</StyledDeleteLabel>
           </StyledDeleteTaskButton>
@@ -105,3 +104,5 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
     </StyledDialog>
   );
 }
+
+export default DeleteTaskModal;

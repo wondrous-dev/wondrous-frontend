@@ -18,7 +18,7 @@ import LeftArrowIcon from 'components/Icons/leftArrow';
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import WalletIcon from '../../../public/images/onboarding/union.svg';
 
-export function SetupWallet() {
+function SetupWallet() {
   const router = useRouter();
   const isMobile = useIsMobile();
 
@@ -113,7 +113,11 @@ export function SetupWallet() {
         {!isMobile && <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />}
         <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
         <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
-        <LaterButton onClick={handleLaterClick} style={{ ...buttonStyles, background: '#454545', marginRight: 0 }}>
+        <LaterButton
+          onClick={handleLaterClick}
+          style={{ ...buttonStyles, background: '#454545', marginRight: 0 }}
+          data-cy="button-connect-later"
+        >
           I&apos;ll connect it later
         </LaterButton>
       </Connectors>
@@ -125,3 +129,5 @@ export function SetupWallet() {
     </OnboardingLayout>
   );
 }
+
+export default SetupWallet;

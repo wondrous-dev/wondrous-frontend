@@ -1,11 +1,13 @@
+import { memo } from 'react';
+
+import { User } from 'types/User';
+
 import { Button } from 'components/Common/button';
 import Wallet from 'components/Common/Wallet';
 import GlobalSearch from 'components/GlobalSearch';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
-import { memo } from 'react';
-import { Notification } from 'types/Notification';
-import { User } from 'types/User';
+
 import { HeaderBar, HeaderCreateButton } from './styles';
 
 type Props = {
@@ -25,7 +27,12 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
         <NotificationsBoard />
 
         {showCreateButton && (
-          <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+          <HeaderCreateButton
+            highlighted="true"
+            onClick={openCreateFormModal}
+            visibility={showCreateButton}
+            data-cy="header-button-create"
+          >
             <CreateIconOutlined id="tour-header-create-btn" />
           </HeaderCreateButton>
         )}

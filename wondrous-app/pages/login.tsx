@@ -136,6 +136,7 @@ function Login({ csrfToken }) {
           style={{
             textAlign: 'center',
           }}
+          data-cy="test"
         >
           Log in with email
         </OnboardingTitle>
@@ -165,7 +166,7 @@ function Login({ csrfToken }) {
               required
               rightIcon
             />
-            <Button marginTop="37px" height={50} fullWidth>
+            <Button marginTop="37px" height={50} fullWidth data-cy="button-login">
               Log me in
             </Button>
           </Form>
