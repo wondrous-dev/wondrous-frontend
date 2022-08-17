@@ -187,7 +187,7 @@ export const MilestoneTaskStatusLabel = styled(Typography)`
 
 export const MilestoneEmpty = styled.div`
   align-items: center;
-  background-color: #171717;
+  background-color: ${({ theme }) => theme.palette.grey910};
   border-radius: 6px;
   color: ${({ theme }) => theme.palette.grey250};
   display: flex;
