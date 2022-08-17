@@ -13,6 +13,7 @@ import Checkbox from 'components/Checkbox';
 import { getDiscordUrl } from 'utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import {
   UserDiscordNotificationSettingsDiv,
   UserDiscordNotificationSettingsText,
@@ -42,7 +43,6 @@ import {
 } from '../styles';
 import { ImageUpload } from '../imageUpload';
 import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({

@@ -7,7 +7,7 @@ import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations/wallet';
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
-import { SettingsWrapper } from '../settingsWrapper';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import {
   StyledTable,
