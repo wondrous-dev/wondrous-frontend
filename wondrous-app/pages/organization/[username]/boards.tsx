@@ -25,14 +25,12 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam } from 'utils';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import {  sectionOpeningReducer } from 'utils/board';
 import {
   STATUSES_ON_ENTITY_TYPES,
   PRIVACY_LEVEL,
   STATUS_OPEN,
   TASK_STATUSES,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
   STATUS_APPROVED,
   STATUS_CLOSED,

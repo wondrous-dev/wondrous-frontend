@@ -48,7 +48,7 @@ const ItemWithEdit = ({ value, field, EditComponent }) => {
   );
 };
 
-const Edit = ({ onClick }) => (
+export const Edit = ({ onClick }) => (
   <EditButton onClick={onClick}>
     <EditIcon /> <EditButtonText>Edit</EditButtonText>
   </EditButton>

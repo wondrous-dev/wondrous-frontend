@@ -176,7 +176,7 @@ function TaskColumn(props: ITaskColumn) {
           <TaskListContainer ref={provided.innerRef} {...provided.droppableProps}>
             {cardsList?.length ? (
               cardsList.map((card, index) => (
-                <Draggable key={card.id} draggableId={card.id} index={index}>
+                <Draggable key={card.id} draggableId={card.id} index={index} isDragDisabled={board?.isDragDisabled}>
                   {(provided, snapshot) => (
                     <div
                       style={{

@@ -15,7 +15,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { useGnosisSdk } from 'services/payment';
+import useGnosisSdk from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
@@ -206,6 +206,11 @@ export function SingleWalletPayment(props) {
     console.log('safeServiceClient, ', gnosisClient);
     const gnosisSdk = wonderGnosis?.safeSdk;
     console.log('gnosisSdk, ', gnosisSdk);
+    if (!gnosisSdk) {
+      setSafeConnectionError('Error connecting to gnosis safe please try again');
+      setGnosisTransactionLoading(false);
+      return;
+    }
 
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     t2 = performance.now();
@@ -239,11 +244,11 @@ export function SingleWalletPayment(props) {
       safeTxGas: safeTxGas ? Number(safeTxGas) : 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
-    const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    const computedSafeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
     t2 = performance.now();
     console.log(`createTransaction and getTransactionHash took ${t2 - t1} milliseconds`);
     t1 = performance.now();
-    setSafeTxHash(safeTxHash);
+    setSafeTxHash(computedSafeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {

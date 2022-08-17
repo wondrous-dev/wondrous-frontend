@@ -5,7 +5,7 @@ import { CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { PROPOSE_GNOSIS_MULTISEND_FOR_SUBMISSIONS } from 'graphql/mutations/payment';
-import { useGnosisSdk } from 'services/payment';
+import useGnosisSdk from 'services/payment';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import {
   SafeTransactionDataPartial,
@@ -176,6 +176,11 @@ export function BatchWalletPayment(props) {
     // includes the pending nonce, better than keeping it empty which would ignore pending txs
     const gnosisClient = wonderGnosis?.safeServiceClient;
     const gnosisSdk = wonderGnosis?.safeSdk;
+    if (!gnosisSdk) {
+      setSafeConnectionError('Error connecting to gnosis safe please try again');
+      setGnosisTransactionLoading(false);
+      return;
+    }
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     // first create a safe tx object for gas estimate purposes, then recreate it wit the esimated gas
     let safeTransaction = await gnosisSdk.createTransaction(transactions); // create tx object

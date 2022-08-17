@@ -11,8 +11,24 @@ export const GET_NOTIFICATIONS = gql`
 `;
 
 export const GET_ORG_DISCORD_NOTIFICATION_CONFIGS = gql`
-  query getOrgDiscordNotificationConfig($orgId: ID) {
+  query getOrgDiscordNotificationConfig($orgId: ID!) {
     getOrgDiscordNotificationConfig(orgId: $orgId) {
+      id
+      orgId
+      channelId
+      guildId
+      disabledAt
+      channelInfo {
+        channelName
+        guildName
+      }
+    }
+  }
+`;
+
+export const GET_POD_DISCORD_NOTIFICATION_CONFIGS = gql`
+  query getPodDiscordNotificationConfig($podId: ID!) {
+    getPodDiscordNotificationConfig(podId: $podId) {
       id
       orgId
       podId

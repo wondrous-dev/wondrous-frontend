@@ -16,7 +16,7 @@ import {
 
 export function FiltersTriggerButton({ onClick, isOpen }) {
   return (
-    <Button className={isOpen ? 'active' : ''} reversed onClick={onClick}>
+    <Button className={`FiltersTrigger-button ${isOpen ? 'active' : ''}`} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
       Add filters
     </Button>
