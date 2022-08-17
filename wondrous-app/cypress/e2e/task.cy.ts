@@ -43,7 +43,6 @@ describe('Task Spec', () => {
     cy.dataCy('task-header-option-Edit').click();
     cy.dataCy('create-entity-input-title').clear().type(`edit-${TASK_TITLE}`);
     cy.dataCy('create-entity-button-submit').click();
-    cy.dataCy(`task-card-item-edit-${TASK_TITLE}`);
   });
 });
 
