@@ -34,6 +34,11 @@ export const DiscordCardElementDiv = styled.div`
   padding: 12px;
 `;
 
+export const DiscordChannelInfoDiv = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
 export const DiscordCardText = styled(Typography)`
   && {
     font-family: Space Grotesk;

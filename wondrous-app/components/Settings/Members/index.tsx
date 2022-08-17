@@ -17,6 +17,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import MemberRoles from '../MemberRoles';
 import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
@@ -33,7 +34,6 @@ import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow 
 import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
 import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
 
 const LIMIT = 10;
 

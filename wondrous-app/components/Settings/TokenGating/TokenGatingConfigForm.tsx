@@ -11,7 +11,6 @@ import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
-import { SettingsWrapper } from '../settingsWrapper';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import {
   TokenGatingConfigModal,

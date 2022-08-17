@@ -21,9 +21,9 @@ import { SafeImage } from 'components/Common/Image';
 import { ADD_POD_GITHUB_REPO, DELETE_POD_GITHUB_REPO_INTEGRATION } from 'graphql/mutations/pod';
 import { GRAPHQL_ERRORS } from 'utils/constants';
 import { ErrorText } from 'components/Common';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { ImportTaskModal } from './confirmImportTaskModal';
 import { AddRepoDiv, GithubLink, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
-import { SettingsWrapper } from '../settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 
 const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/installations/new`;
