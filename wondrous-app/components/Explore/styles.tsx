@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
+import MasonryCSS from 'react-masonry-css';
 import styled from 'styled-components';
-import Masonry from '@mui/lab/Masonry';
 import { ShowMoreButton } from 'components/ListView/styles';
 import { device } from 'utils/device';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
@@ -107,9 +107,8 @@ export const BackgroundTextSubHeader = styled(Typography)`
   }
 `;
 
-export const StyledGridContainer = styled(Masonry)``;
-
 export const StyledGridItem = styled.div`
+  margin: 0 0 24px 24px;
   background-color: #1e1e1e;
   border-radius: 12px;
   text-align: center;
@@ -415,5 +414,28 @@ export const ShowMoreButtonWrapper = styled.div`
   ${ShowMoreButton} {
     margin-top: 0px;
     width: fit-content;
+  }
+`;
+
+export const Masonry = styled(MasonryCSS).attrs({
+  breakpointCols: {
+    default: 3,
+    1199: 2,
+    599: 1,
+  },
+  columns: { xs: 1, sm: 2, md: 2, lg: 3 },
+  columnClassName: 'masonry-grid-column',
+})`
+  display: flex;
+  margin: -24px 12px 0 -12px;
+
+  .masonry-grid-column > div {
+    margin: 24px 12px 0;
+  }
+  
+  @media (max-width: 600px) {
+    width: 100%;
+    max-width: 100vw;
+    margin-left: 0;
   }
 `;

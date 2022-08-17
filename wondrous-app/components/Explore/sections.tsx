@@ -11,13 +11,13 @@ import { SafeImage } from '../Common/Image';
 import {
   OrgDescription,
   OrgName,
-  StyledGridContainer,
   StyledGridItem,
   OrgsSectionHeader,
   SectionSubheader,
   SectionWrapper,
   BountySectionHeader,
   ShowMoreButtonWrapper,
+  Masonry,
 } from './styles';
 import { FeaturedList, gridMobileStyles } from './constants';
 
@@ -61,27 +61,23 @@ function OrgItem({ org }) {
   );
 }
 
-export function DaoSection({ isMobile }) {
+export function DaoSection() {
   return (
     <SectionWrapper>
       <OrgsSectionHeader>Our Alpha Partners</OrgsSectionHeader>
       <SectionSubheader>Work with the best DAO partners in the space.</SectionSubheader>
-      <StyledGridContainer
-        spacing={3}
-        columns={{ xs: 1, sm: 2, md: 2, lg: 3 }}
-        style={isMobile ? gridMobileStyles : {}}
-      >
+      <Masonry>
         {FeaturedList.map((org, index) => (
           <OrgItem key={index} org={org} />
         ))}
-      </StyledGridContainer>
+      </Masonry>
     </SectionWrapper>
   );
 }
 
 let windowOffset = 0;
 
-export function BountySection({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) {
+export function BountySection({ bounties = [], fetchMore = () => {}, hasMore }) {
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
   const location = useLocation();
@@ -117,22 +113,15 @@ export function BountySection({ isMobile, bounties = [], fetchMore = () => {}, h
       <BountySectionHeader>Discover work</BountySectionHeader>
       <SectionSubheader>Make crypto while contributing to your favorite DAOs</SectionSubheader>
 
-      <StyledGridContainer
-        container
-        spacing={3}
-        columns={{ xs: 1, sm: 2, lg: 3 }}
-        style={isMobile ? gridMobileStyles : {}}
-      >
-        <TaskViewModal
-          disableEnforceFocus
-          open={openModal}
-          shouldFocusAfterRender={false}
-          handleClose={handleModalClose}
-          taskId={location?.params?.task?.toString()}
-        />
+      <TaskViewModal
+        disableEnforceFocus
+        open={openModal}
+        shouldFocusAfterRender={false}
+        handleClose={handleModalClose}
+        taskId={location?.params?.task?.toString()}
+      />
 
-        <BountyBoard tasks={bounties} displayOrg handleCardClick={handleCardClick} />
-      </StyledGridContainer>
+      <BountyBoard Container={Masonry} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>
