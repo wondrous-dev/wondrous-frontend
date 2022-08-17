@@ -20,14 +20,8 @@ import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import { useState } from 'react';
 import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
 import styled from 'styled-components';
-import {
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  STATUS_APPROVED,
-  STATUS_CLOSED,
-  STATUS_OPEN,
-  TASK_STATUS_ARCHIVED,
-} from 'utils/constants';
+import { getProposalStatus } from 'utils/board';
+import { ENTITIES_TYPES, PERMISSIONS, STATUS_APPROVED, STATUS_CLOSED, TASK_STATUS_ARCHIVED } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
@@ -129,15 +123,10 @@ const refetchTaskProposalQueries = [
   GET_TASK_PROPOSAL_BY_ID,
   GET_USER_TASK_BOARD_PROPOSALS,
 ];
-const taskProposalStatus = (task) => {
-  if (task?.approvedAt) return STATUS_APPROVED;
-  if (task?.closedAt) return STATUS_CLOSED;
-  return STATUS_OPEN;
-};
 
 const statusesProposal = ({ task, entityType }) => {
   const filterStatus = ENTITIES_TYPES_FILTER_STATUSES({ orgId: task?.orgId })[entityType]?.filters[0].items;
-  const status = taskProposalStatus(task);
+  const status = getProposalStatus(task);
   const currentStatus = filterStatus?.find((i) => i.id === status);
   return { filterStatus, currentStatus };
 };
