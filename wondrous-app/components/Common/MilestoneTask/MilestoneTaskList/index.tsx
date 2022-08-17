@@ -2,7 +2,10 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
 import { format } from 'date-fns';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
+import { delQuery } from 'utils';
 import * as Constants from 'utils/constants';
+
 import {
   MilestoneEmpty,
   MilestoneTaskCommentCount,
@@ -63,15 +66,16 @@ function MilestoneTaskReward({ rewards }) {
 }
 
 export default function MilestoneTaskList({ data }) {
+  const { asPath } = useRouter();
+  const taskUrl = (id) => `${delQuery(asPath)}?task=${id}&view=grid&entity=milestone`;
   if (isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
   return (
     <MilestoneTaskListWrapper>
       {data?.map((task) => {
-        const { id, title, assignee, orgUsername, org, privacyLevel, dueDate, rewards, commentCount } = task;
+        const { id, title, assignee, privacyLevel, dueDate, rewards, commentCount } = task;
         const isPrivate = privacyLevel !== Constants.PRIVACY_LEVEL.public;
-        const viewUrl = `/organization/${orgUsername || org?.username}/boards?task=${id}`;
         return (
-          <SmartLink href={viewUrl} key={id} asLink>
+          <SmartLink href={taskUrl(id)} key={id} asLink>
             <MilestoneTaskItem>
               <MilestoneUserImage assignee={assignee} />
               <MilestoneTaskTitleAndInfo>
