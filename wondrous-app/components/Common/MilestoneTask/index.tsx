@@ -2,6 +2,7 @@ import { useQuery } from '@apollo/client';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { LIMIT } from 'services/board';
 import styled from 'styled-components';
 import MilestoneTaskFilter from './MilestoneTaskFilter';
 import MilestoneTaskList from './MilestoneTaskList';
@@ -16,18 +17,17 @@ const getDataLength = (data) => data?.getTasksForMilestone?.length;
 
 const useGetTasksForMilestone = ({ milestone, status }) => {
   const { id } = milestone;
-  const limit = 10;
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const { fetchMore, data } = useQuery(GET_TASKS_FOR_MILESTONE, {
     fetchPolicy: 'cache-and-network',
     variables: {
       milestoneId: id,
-      limit,
+      limit: LIMIT,
       offset: 0,
       status: status ?? '',
     },
-    onCompleted: (tasksForMilestoneData) => setHasMore(getDataLength(tasksForMilestoneData) >= limit),
+    onCompleted: (tasksForMilestoneData) => setHasMore(getDataLength(tasksForMilestoneData) >= LIMIT),
     onError: (err) => console.error(err),
   });
   useEffect(() => {
@@ -36,7 +36,7 @@ const useGetTasksForMilestone = ({ milestone, status }) => {
         variables: {
           offset: getDataLength(data),
         },
-      }).then(({ data: tasksForMilestoneData }) => setHasMore(getDataLength(tasksForMilestoneData) >= limit));
+      }).then(({ data: tasksForMilestoneData }) => setHasMore(getDataLength(tasksForMilestoneData) >= LIMIT));
     }
   }, [inView, fetchMore, hasMore, data]);
   return { data: data?.getTasksForMilestone, ref, hasMore };
