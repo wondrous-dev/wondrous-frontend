@@ -5,15 +5,15 @@ import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, PERMISSIONS, ROLELIST, validateEmail } from 'utils/constants';
-import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
-import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
-import palette from 'theme/palette';
 import Checkbox from '@mui/material/Checkbox';
 import ArrowFillIcon from 'components/Icons/arrowfill';
 import { Avatar } from '@mui/material';
 import DeleteBasketIcon from 'components/Icons/DeleteBasketIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { Button } from 'components/Button';
+import palette from 'theme/palette';
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import SearchIcon from 'components/Icons/search';
 import PersonAddIcon from '../../Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
@@ -72,6 +72,8 @@ import {
   DisplaySearchedUserContainer,
   DisplaySearchedUser,
   EmptySearch,
+  DefaultProfilePicture,
+  UserProfilePicture,
 } from './styles';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
@@ -110,13 +112,14 @@ export function OrgInviteLinkModal(props) {
   const board = orgBoard || podBoard;
   const userPermissionsContext = board?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
-  const [activeRole, setActiveRole] = useState('✨ Contributor');
+  const [activeRole, setActiveRole] = useState<any>({});
   const [inviteLink, setInviteLink] = useState('');
   const [dropRoleBox, setDropRoleBox] = useState(false);
   const [isUniversal, setIsUniversal] = useState(false);
   const [userSearchValue, setUserSearchValue] = useState<string>('');
   const [userSearchList, setUserSearchList] = useState([]);
   const [listLoading, setListLoading] = useState(false);
+
   // final list to be displayed and sent to BE
   const [selectedUsersList, setSelectedUsersList] = useState([]);
 
@@ -150,6 +153,7 @@ export function OrgInviteLinkModal(props) {
         data?.getOrgRoles?.forEach((role) => {
           if (role?.default) {
             setRole(role?.id);
+            setActiveRole(role);
           }
         });
     },
@@ -160,8 +164,26 @@ export function OrgInviteLinkModal(props) {
   });
 
   const handleRemoveFromUsersList = (item) => {
-    const holdingList = selectedUsersList.filter((user) => item.name !== user.name || item.email !== user.email);
+    const holdingList = selectedUsersList.filter(
+      (user) => item.username !== user.username || item.email !== user.email
+    );
     setSelectedUsersList(holdingList);
+  };
+
+  const handleAddUserToList = (item, type) => {
+    const itemIndex = selectedUsersList.findIndex((user) => {
+      if (type === 'name') {
+        return item.username === user.username;
+      }
+      return item === user.email;
+    });
+    console.log(item, itemIndex);
+    if (itemIndex >= 0) {
+    } else if (type === 'email') {
+      setSelectedUsersList((prev) => [...prev, { email: item, role: activeRole.name, type: 'email' }]);
+    } else {
+      setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole.name, type }]);
+    }
   };
 
   const handleOnClose = () => {
@@ -199,13 +221,13 @@ export function OrgInviteLinkModal(props) {
             invitorId: '',
             type: linkOneTimeUse ? 'one_time' : 'public',
             orgId,
-            orgRoleId: role,
+            orgRoleId: activeRole.id,
           },
         },
       });
     }
     setCopy(false);
-  }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
+  }, [role, createOrgInviteLink, activeRole.id, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
   const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions);
 
   useEffect(() => {
@@ -284,10 +306,7 @@ export function OrgInviteLinkModal(props) {
                     <DisplaySearchedUser
                       type="email"
                       onClick={() => {
-                        setSelectedUsersList((prev) => [
-                          ...prev,
-                          { email: userSearchValue, role: activeRole, type: 'email' },
-                        ]);
+                        handleAddUserToList(userSearchValue, 'email');
                         setUserSearchValue('');
                       }}
                     >
@@ -301,11 +320,15 @@ export function OrgInviteLinkModal(props) {
                         <DisplaySearchedUser
                           key={i}
                           onClick={() => {
-                            setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole, type: 'name' }]);
+                            handleAddUserToList(item, 'name');
                             setUserSearchValue('');
                           }}
                         >
-                          <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
+                          {item?.profilePicture ? (
+                            <UserProfilePicture src={item?.thumbnailPicture || item?.profilePicture} />
+                          ) : (
+                            <DefaultProfilePicture />
+                          )}
                           <p>{item.username}</p>
                         </DisplaySearchedUser>
                       ))
@@ -325,27 +348,28 @@ export function OrgInviteLinkModal(props) {
                 }}
                 dropActive={dropRoleBox}
               >
-                <RoleText role_type={activeRole}>{activeRole}</RoleText>
+                <RoleText role_type={activeRole.name}>{activeRole.name}</RoleText>
                 <ArrowFillIcon />
               </SelectRoleContainer>
               <SelectRoleBox show={dropRoleBox}>
-                {ROLELIST.map((item, i) => (
-                  <IndividualRoleBox
-                    onClick={() => {
-                      setActiveRole(item.displayText);
-                      setDropRoleBox(false);
-                    }}
-                    key={i}
-                    active={item.displayText === activeRole}
-                  >
-                    <RoleText role_type={item.displayText}>{item.displayText}</RoleText>
-                    <Checkbox
-                      icon={<RadioButtonUncheckedIcon />}
-                      checkedIcon={<CheckCircleOutlineIcon />}
-                      checked={item.displayText === activeRole}
-                    />
-                  </IndividualRoleBox>
-                ))}
+                {roles &&
+                  roles.map((item, i) => (
+                    <IndividualRoleBox
+                      onClick={() => {
+                        setActiveRole(item);
+                        setDropRoleBox(false);
+                      }}
+                      key={i}
+                      active={item.id === activeRole?.id}
+                    >
+                      <RoleText role_type={item.name}>{item.name}</RoleText>
+                      <Checkbox
+                        icon={<RadioButtonUncheckedIcon />}
+                        checkedIcon={<CheckCircleOutlineIcon />}
+                        checked={item.id === activeRole?.id}
+                      />
+                    </IndividualRoleBox>
+                  ))}
               </SelectRoleBox>
             </RoleContainer>
           </SelectUserContainer>
@@ -358,8 +382,10 @@ export function OrgInviteLinkModal(props) {
                     <NameContainer>
                       {item.type === 'email' ? (
                         ''
+                      ) : item?.profilePicture ? (
+                        <UserProfilePicture src={item?.thumbnailPicture || item?.profilePicture} />
                       ) : (
-                        <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
+                        <DefaultProfilePicture />
                       )}
                       <p>{item.type === 'email' ? item.email : item.username}</p>
                     </NameContainer>
