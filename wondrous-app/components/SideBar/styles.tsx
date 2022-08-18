@@ -1,7 +1,8 @@
-import { ButtonBase, Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
+import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import AddIcon from 'components/Icons/add.svg';
-import SettingsIcon from 'components/Icons/settings';
-import { ExplorePageIcon, PodsIcon, TutorialsIcon } from 'components/Icons/sidebar';
+import { DAOIcon } from 'components/Icons/dao';
+import SettingsIcon from 'components/Icons/settings.svg';
+import { PodsIcon } from 'components/Icons/sidebar';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { SIDEBAR_WIDTH } from 'utils/constants';
@@ -17,10 +18,12 @@ export const DrawerComponent = styled(Drawer)`
     -ms-overflow-style: none; /* IE and Edge */
     scrollbar-width: none; /* Firefox */
     & .MuiDrawer-paperAnchorDockedLeft {
-      background-color: ${palette.black99};
+      height: 100vh;
+      background-color: ${palette.black97};
       z-index: 199;
-      margin-top: 50px;
       transition: 0.3s;
+      padding-top: 72px;
+      padding-bottom: 72px;
       &::-webkit-scrollbar {
         display: none;
         width: 0;
@@ -39,12 +42,12 @@ export const DrawerComponent = styled(Drawer)`
 
 export const DrawerContainer = styled.div`
   width: ${SIDEBAR_WIDTH};
+  height: 100%;
   display: flex;
-  flex-grow: 1;
-  flex-direction: column;
-  justify-content: space-between;
   align-items: center;
-  padding-top: 50px;
+  justify-content: space-between;
+  flex-direction: column;
+  padding-top: 24px;
 `;
 
 export const DrawerTopBlock = styled.div`
@@ -62,55 +65,67 @@ export const DrawerUserImage = styled.img`
   height: 48px;
 `;
 
-export const DrawerTopBlockItem = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  position: relative;
-  cursor: pointer;
-  margin: 0px auto 12px;
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 180px;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
-  }
-  &:hover {
-    &::before {
-      background: linear-gradient(180deg, #ccbbff 0%, #7427ff 47.4%, #00baff 100%);
+export const Profile = styled(({ children, ...props }) => (
+  <ButtonBase {...props}>
+    <div>{children}</div>
+  </ButtonBase>
+))`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    background: transparent;
+    border-radius: 50%;
+    :hover {
+      ${({ theme }) =>
+        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
+    }
+    > div {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 36px;
+      width: 36px;
+      border-radius: 50%;
+      cursor: pointer;
     }
   }
 `;
 
 export const DrawerList = styled(List)`
   && {
-    min-height: 152px;
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-content: center;
-    justify-content: flex-start;
     padding: 0;
-    margin: 1em auto;
-    gap: 14px;
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 12px;
   }
 `;
-export const DrawerListItem = styled(ListItem)`
-  &&.MuiListItem-root {
+export const DrawerListItem = styled(({ children, ...props }) => (
+  <ListItemButton {...props}>
+    <div>{children}</div>
+  </ListItemButton>
+))`
+  && {
     display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
-    min-height: 36px;
-    padding: 6px;
-    border-radius: 10px;
-    ${({ isActive }) => isActive && `border: 1px solid white;`};
-    &:hover {
-      outline: 1px solid rgba(54, 54, 54, 1);
+    height: 40px;
+    width: 40px;
+    border-radius: 4px;
+    background: transparent;
+    background: ${({ isActive }) => isActive && `linear-gradient(180deg, #787878 0%, #464646 100%);`};
+    :hover {
+      background: linear-gradient(180deg, #787878 0%, #464646 100%);
+    }
+    > div {
+      height: 36px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 `;
@@ -136,21 +151,20 @@ export const DrawerListCreateDao = styled((props) => (
   </DrawerListCreateDaoWrapper>
 ))`
   && {
-    width: 30px;
-    height: 30px;
-    border-radius: 60px;
-    padding: 1px;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    padding: 2px;
     background: transparent;
     :hover {
       ${({ theme }) =>
         `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
     }
     div {
-      width: 100%;
-      height: 100%;
+      width: 36px;
+      height: 36px;
       border-radius: inherit;
-      ${({ theme }) =>
-        `background: linear-gradient(180deg, ${theme.palette.grey78} 0%, ${theme.palette.grey87} 43.61%);`}
+      background: #313131;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -158,23 +172,37 @@ export const DrawerListCreateDao = styled((props) => (
   }
 `;
 
-export const DrawerBottomBlock = styled.div`
+export const DrawerBlockWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  margin-bottom: 120px;
+  gap: 12px;
 `;
-export const DrawerBottomButton = styled(IconButton)`
+
+export const DrawerBottomButton = styled(({ children, ...props }) => (
+  <ButtonBase {...props}>
+    <div>{children}</div>
+  </ButtonBase>
+))`
   && {
-    width: 45px;
-    height: 45px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0;
+    background: #232323;
     &.active {
       background: linear-gradient(283.63deg, rgba(75, 75, 75, 0.6) 11.03%, rgba(35, 35, 35, 0.6) 92.07%);
+    }
+    > * {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
   }
 `;
@@ -182,48 +210,37 @@ export const DrawerBottomButton = styled(IconButton)`
 export const DrawerBackButton = styled(DrawerBottomButton)`
   && {
     position: fixed;
-    bottom: 20px;
-    left: 20px;
-    width: 45px;
-    height: 45px;
+    bottom: 24px;
+    left: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-
-    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
-
     transition: transform 0.2s;
-
     &.active {
       transform: rotate(180deg);
     }
   }
 `;
 
-export const NoLogoDAO = styled.div`
+export const NoLogoDAO = styled((props) => (
+  <div {...props}>
+    <DAOIcon
+      stroke="#787878"
+      encircled={false}
+      style={{
+        width: '36px',
+        height: '36px',
+      }}
+    />
+  </div>
+))`
   display: flex;
   width: 36px;
   height: 36px;
-  border-radius: 36px;
-  flex-direction: column;
+  border-radius: 3px;
   align-items: center;
   justify-content: center;
-
-  background: linear-gradient(0deg, #141414 0%, #474747 219.88%, rgba(20, 20, 20, 0) 219.9%);
-`;
-
-export const StyledDivider = styled(Divider)`
-  && {
-    border: 1px solid #4b4b4b;
-    width: 36px;
-  }
-`;
-
-export const StyledDividerDiv = styled.div`
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-  margin-bottom: 20px;
+  background: #232323;
 `;
 
 export const PodButtonDiv = styled.div`
@@ -251,35 +268,43 @@ export const PodModalFooterInfoWrapperText = styled(Typography)`
   }
 `;
 
-export const StyledSettingsIcon = styled(SettingsIcon)`
-  &:hover {
-    path {
-      stroke: url(#settings-gradient);
-    }
-    rect {
-      fill: #0f0f0f;
-    }
-  }
+export const StyledSettingsIcon = styled((props) => (
+  <div {...props}>
+    <SettingsIcon />
+  </div>
+))`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  width: 100%;
 `;
 
-export const StyledTutorialsIcon = styled(TutorialsIcon)`
-  &:hover {
-    path {
-      fill: url(#tutorials-icon-gradient);
+export const HighlightedButton = styled(({ children, ...props }) => (
+  <ButtonBase {...props}>
+    <div>{children}</div>
+  </ButtonBase>
+))`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    width: 40px;
+    background: transparent;
+    border-radius: 50%;
+    :hover {
+      ${({ theme }) =>
+        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
     }
-    rect {
-      fill: #0f0f0f;
-    }
-  }
-`;
-
-export const StyledExplorePageIcon = styled(ExplorePageIcon)`
-  &:hover {
-    path {
-      stroke: url(#explore-page-gradient);
-    }
-    rect {
-      fill: #0f0f0f;
+    > div {
+      height: 36px;
+      width: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 100%;
+      background: #313131;
     }
   }
 `;
