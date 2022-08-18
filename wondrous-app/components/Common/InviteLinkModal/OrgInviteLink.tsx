@@ -4,7 +4,7 @@ import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK, PERMISSIONS, ROLELIST, validateEmail } from 'utils/constants';
+import { LINK, PERMISSIONS, validateEmail } from 'utils/constants';
 import Checkbox from '@mui/material/Checkbox';
 import ArrowFillIcon from 'components/Icons/arrowfill';
 import { Avatar } from '@mui/material';
@@ -177,12 +177,14 @@ export function OrgInviteLinkModal(props) {
       }
       return item === user.email;
     });
-    console.log(item, itemIndex);
     if (itemIndex >= 0) {
-    } else if (type === 'email') {
-      setSelectedUsersList((prev) => [...prev, { email: item, role: activeRole.name, type: 'email' }]);
     } else {
-      setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole.name, type }]);
+      if (type === 'email') {
+        setSelectedUsersList((prev) => [...prev, { email: item, role: activeRole.name, type: 'email' }]);
+      } else {
+        setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole.name, type }]);
+      }
+      setUserSearchValue('');
     }
   };
 
@@ -307,7 +309,6 @@ export function OrgInviteLinkModal(props) {
                       type="email"
                       onClick={() => {
                         handleAddUserToList(userSearchValue, 'email');
-                        setUserSearchValue('');
                       }}
                     >
                       <p>{userSearchValue}</p>
@@ -321,7 +322,6 @@ export function OrgInviteLinkModal(props) {
                           key={i}
                           onClick={() => {
                             handleAddUserToList(item, 'name');
-                            setUserSearchValue('');
                           }}
                         >
                           {item?.profilePicture ? (

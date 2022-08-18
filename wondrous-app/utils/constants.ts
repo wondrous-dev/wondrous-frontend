@@ -613,9 +613,3 @@ export const USER_BOARD_PAGE_TYPES = {
   CONTRIBUTOR: 'contributor',
   ADMIN: 'admin',
 };
-
-export const ROLELIST = [
-  { displayText: '✨ Contributor' },
-  { displayText: '🔮 Core member' },
-  { displayText: '🔑 Owner' },
-];
