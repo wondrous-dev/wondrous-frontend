@@ -233,7 +233,7 @@ export const SUPPORTED_CURRENCIES = [
   },
 ];
 
-export const SIDEBAR_WIDTH = '80px';
+export const SIDEBAR_WIDTH = '84px';
 export const HEADER_HEIGHT = '68px';
 
 export const PROFILE_CARD_WIDTH = 310;

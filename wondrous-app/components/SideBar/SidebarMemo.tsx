@@ -1,36 +1,30 @@
-/* eslint-disable import/extensions */
-import React, { useState, memo } from 'react';
-import Link from 'next/link';
-
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import AddIcon from 'components/Icons/add.svg';
+import BackArrowIcon from 'components/Icons/backArrow';
+import ExploreIcon from 'components/Icons/explore.svg';
+import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import Tooltip from 'components/Tooltip';
-import { User } from 'types/User';
+import Link from 'next/link';
+import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
+import { User } from 'types/User';
+
+import AddDaoModal from './AddDaoModal';
+import HelpModal from './HelpModal.jsx';
+import { PodModal } from './PodModal';
 import {
   DrawerBackButton,
-  DrawerBottomBlock,
+  DrawerBlockWrapper,
   DrawerBottomButton,
   DrawerComponent,
   DrawerContainer,
   DrawerList,
   DrawerListItem,
-  DrawerTopBlock,
-  DrawerTopBlockItem,
+  HighlightedButton,
   NoLogoDAO,
-  StyledDivider,
-  StyledDividerDiv,
   StyledSettingsIcon,
-  StyledTutorialsIcon,
-  StyledExplorePageIcon,
-  StyledPodsIcon,
-  DrawerListCreateDao,
 } from './styles';
-import BackArrowIcon from '../Icons/backArrow';
-import { SafeImage } from '../Common/Image';
-import DefaultUserImage from '../Common/Image/DefaultUserImage';
-import { DAOIcon } from '../Icons/dao';
-import { PodModal } from './PodModal';
-import HelpModal from './HelpModal';
-import AddDaoModal from './AddDaoModal';
 
 type Props = {
   isMobile: boolean;
@@ -47,71 +41,60 @@ type Props = {
   };
 };
 
+const isExternal = (url) => url.includes('https://');
+
 const useCreateDaoModalState = () => {
   const [openCreateDaoModal, setCreateDaoModal] = useState<boolean>(false);
   const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
   return { openCreateDaoModal, handleCreateDaoModal };
 };
 
+const toolTipStyle = {
+  fontFamily: 'Space Grotesk',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '12px',
+  lineHeight: '20px',
+  letterSpacing: '0.01em',
+  color: '#C4C4C4',
+};
+
+const SidebarTooltip = ({ children, ...props }) => (
+  <Tooltip style={toolTipStyle} {...props} placement="right">
+    <span>{children}</span>
+  </Tooltip>
+);
+
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: Props) => {
-  const minimized = sidebar?.minimized;
-  const setMinimized = sidebar?.setMinimized;
+  const { minimized, setMinimized } = sidebar;
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
 
-  const handleMinimize = (event) => {
-    if (setMinimized) {
-      setMinimized(!minimized);
-    }
-  };
-
-  const TOP_LINKS_CONFIG = [
-    {
-      key: 'explore',
-      icon: StyledExplorePageIcon,
-      url: '/explore',
-      tooltipLabel: 'Explore',
-      id: 'tour-sidebar-explore-top',
-    },
-    {
-      key: 'pods',
-      icon: StyledPodsIcon,
-      tooltipLabel: 'Pods',
-      action: () => setOpenPodModal(true),
-    },
-  ];
+  const handleMinimize = () => setMinimized(!minimized);
 
   const BOTTOM_LINKS_CONFIG = [
     {
       key: 'tutorials',
-      icon: StyledTutorialsIcon,
+      icon: QuestionMarkIcon,
       url: 'https://linktr.ee/wonderverse',
-      tooltipLabel: 'Wonder help desk',
+      tooltipLabel: 'Tutorials',
+      id: 'wonder-tutorials',
     },
     {
       key: 'settings',
       icon: StyledSettingsIcon,
       url: '/profile/settings',
       tooltipLabel: 'Settings',
+      id: 'wonder-settings',
     },
   ];
 
   const profilePictureStyle = {
     display: 'flex',
-    width: '32px',
-    height: '32px',
-    borderRadius: '24px',
-  };
-
-  const toolTipStyle = {
-    fontFamily: 'Space Grotesk',
-    fontStyle: 'normal',
-    fontWeight: 500,
-    fontSize: '12px',
-    lineHeight: '20px',
-    letterSpacing: '0.01em',
-    color: '#C4C4C4',
+    width: '36px',
+    height: '36px',
+    borderRadius: '50%',
   };
 
   if (isMobile) {
@@ -124,136 +107,91 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
       <DrawerContainer>
-        <DrawerTopBlock>
-          <Tooltip title="Profile" style={toolTipStyle}>
-            <DrawerTopBlockItem id="tour-user-profile" onClick={handleProfileClick}>
+        <DrawerBlockWrapper>
+          <SidebarTooltip title="Profile">
+            <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
               <SafeImage
                 src={user?.thumbnailPicture || user?.profilePicture}
                 placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-                width={32}
-                height={32}
+                width={36}
+                height={36}
                 objectFit="cover"
                 useNextImage
                 style={profilePictureStyle}
               />
-            </DrawerTopBlockItem>
-          </Tooltip>
+            </HighlightedButton>
+          </SidebarTooltip>
 
-          {TOP_LINKS_CONFIG.map((link, idx) => {
-            const Icon = link?.icon;
-            const isExternal = link?.url?.includes('https://');
-            const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
-            const actionProps = link?.action ? { onClick: link?.action } : {};
-            if (link.key === 'explore') {
-              return (
-                <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
-                  <DrawerBottomButton type="button" {...actionProps}>
-                    {!!link?.url && (
-                      <Link href="/explore">
-                        <Icon id={link?.id} />
-                      </Link>
-                    )}
-                    {link?.action && <Icon />}
-                  </DrawerBottomButton>
-                </Tooltip>
-              );
-            }
-            return (
-              <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
-                <DrawerBottomButton type="button" {...actionProps}>
-                  {!!link?.url && (
-                    <Link href={link.url} passHref>
-                      <a href={link.url} {...externalProps}>
-                        <Icon id={link?.id} />
-                      </a>
-                    </Link>
-                  )}
-                  {link?.action && <Icon />}
-                </DrawerBottomButton>
-              </Tooltip>
-            );
-          })}
-
-          <StyledDividerDiv>
-            <StyledDivider />
-          </StyledDividerDiv>
+          <SidebarTooltip title="Explore">
+            <Link href="/explore" passHref>
+              <HighlightedButton id="tour-sidebar-explore-top">
+                <ExploreIcon />
+              </HighlightedButton>
+            </Link>
+          </SidebarTooltip>
 
           <DrawerList id="tour-sidebar-daos">
-            {orgsList.map((item) => (
-              <Tooltip key={item.id} title={`${item?.name}`} style={toolTipStyle}>
-                <div>
-                  <Link
-                    key={item.id}
-                    href="/organization/[username]/boards"
-                    as={`/organization/${item?.username}/boards`}
-                    passHref
-                  >
-                    <DrawerListItem button key={item.id} isActive={item.isActive}>
-                      {item?.profilePicture ? (
-                        <SafeImage
-                          useNextImage={false}
-                          src={item?.thumbnailPicture || item?.profilePicture}
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '6px',
-                          }}
-                        />
-                      ) : (
-                        <NoLogoDAO>
-                          <DAOIcon />
-                        </NoLogoDAO>
-                      )}
-                    </DrawerListItem>
-                  </Link>
-                </div>
-              </Tooltip>
+            {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
+              <SidebarTooltip key={id} title={name}>
+                <Link key={id} href={`/organization/${username}/boards`} passHref>
+                  <DrawerListItem button key={id} isActive={isActive}>
+                    {profilePicture ? (
+                      <SafeImage
+                        useNextImage={false}
+                        src={thumbnailPicture || profilePicture}
+                        width={36}
+                        height={36}
+                        objectFit="cover"
+                        style={{
+                          borderRadius: '2px',
+                        }}
+                      />
+                    ) : (
+                      <NoLogoDAO />
+                    )}
+                  </DrawerListItem>
+                </Link>
+              </SidebarTooltip>
             ))}
-            <Tooltip title="New DAO" style={toolTipStyle}>
-              <DrawerListCreateDao onClick={handleCreateDaoModal(true)} />
-            </Tooltip>
+            <SidebarTooltip title="Create DAO">
+              <HighlightedButton onClick={handleCreateDaoModal(true)}>
+                <AddIcon />
+              </HighlightedButton>
+            </SidebarTooltip>
           </DrawerList>
-        </DrawerTopBlock>
-        <DrawerBottomBlock>
-          {BOTTOM_LINKS_CONFIG.map((link, idx) => {
-            const Icon = link?.icon;
-            const isExternal = link?.url?.includes('https://');
-            const externalProps = isExternal ? { target: '__blank', rel: 'noreferrer' } : {};
-            if (link.key === 'tutorials') {
+        </DrawerBlockWrapper>
+        <DrawerBlockWrapper>
+          {BOTTOM_LINKS_CONFIG.map(({ icon: Icon, url, id, tooltipLabel, key }) => {
+            const externalProps = isExternal(url) ? { target: '__blank', rel: 'noreferrer' } : {};
+            if (key === 'tutorials') {
               // Open up modal instead
               return (
-                <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
-                  <DrawerBottomButton type="button">
-                    {!!link?.url && (
-                      <div onClick={() => setOpenHelpModal(true)}>
-                        <Icon />
-                      </div>
-                    )}
+                <SidebarTooltip key={id} title={tooltipLabel}>
+                  <DrawerBottomButton onClick={() => setOpenHelpModal(true)}>
+                    <Icon />
                   </DrawerBottomButton>
-                </Tooltip>
+                </SidebarTooltip>
               );
             }
             return (
-              <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
-                <DrawerBottomButton type="button">
-                  {!!link?.url && (
-                    <Link href={link.url} passHref>
-                      <a href={link.url} {...externalProps}>
-                        <Icon />
-                      </a>
-                    </Link>
-                  )}
+              <SidebarTooltip key={id} title={tooltipLabel}>
+                <DrawerBottomButton>
+                  <Link href={url} passHref>
+                    <a href={url} {...externalProps}>
+                      <Icon />
+                    </a>
+                  </Link>
                 </DrawerBottomButton>
-              </Tooltip>
+              </SidebarTooltip>
             );
           })}
-        </DrawerBottomBlock>
+          <Tooltip style={toolTipStyle} title={minimized ? 'Expand Sidebar' : 'Collapse Sidebar'} placement="right">
+            <DrawerBackButton onClick={handleMinimize} className={minimized && 'active'}>
+              <BackArrowIcon />
+            </DrawerBackButton>
+          </Tooltip>
+        </DrawerBlockWrapper>
       </DrawerContainer>
-      <Tooltip style={toolTipStyle} title={minimized ? 'Open panel' : 'Close panel'} placement="top">
-        <DrawerBackButton onClick={handleMinimize} className={minimized ? 'active' : ''}>
-          <BackArrowIcon />
-        </DrawerBackButton>
-      </Tooltip>
     </DrawerComponent>
   );
 };
