@@ -27,6 +27,17 @@ function NotionTaskImportSection(props) {
     refetchQueries: ['getOrgNotionWorkspace'],
   });
 
+  const handleDisconnect = () => {
+    disconnectNotionFromOrg({
+      variables: {
+        orgId,
+        notionWorkspaceId: getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id,
+      },
+    }).then(() => {
+      setToast({ ...toast, message: `Disconnected successfully.`, show: true });
+    });
+  };
+
   const redirectToNotionAuth = () => {
     const state = JSON.stringify({
       orgId,
@@ -64,9 +75,15 @@ function NotionTaskImportSection(props) {
           <NotionInButtonIcon /> Import from workspace {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.name}
         </ConnectToNotionButton>
       )}
+
       {!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
         <ConnectToNotionButton onClick={redirectToNotionAuth}>
           <NotionInButtonIcon /> Connect to notion
+        </ConnectToNotionButton>
+      )}
+      {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+        <ConnectToNotionButton onClick={handleDisconnect}>
+          <NotionInButtonIcon /> Disconnect from notion
         </ConnectToNotionButton>
       )}
     </TaskImportMethodBlock>
