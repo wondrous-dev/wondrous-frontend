@@ -3,51 +3,48 @@ import AddIcon from 'components/Icons/add.svg';
 import { DAOIcon } from 'components/Icons/dao';
 import SettingsIcon from 'components/Icons/settings.svg';
 import { PodsIcon } from 'components/Icons/sidebar';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 import { SIDEBAR_WIDTH } from 'utils/constants';
 
+const hideScrollbar = css`
+  &::-webkit-scrollbar {
+    display: none;
+    width: 0;
+    height: 0;
+  }
+  /* Hide scrollbar for IE, Edge and Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+`;
+
 export const DrawerComponent = styled(Drawer)`
   && {
-    &::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
+    ${hideScrollbar}
     & .MuiDrawer-paperAnchorDockedLeft {
-      height: 100vh;
       background-color: ${palette.black97};
-      z-index: 199;
-      transition: 0.3s;
+      height: 100vh;
       padding-top: 72px;
-      padding-bottom: 72px;
-      &::-webkit-scrollbar {
-        display: none;
-        width: 0;
-        height: 0;
-      }
-      /* Hide scrollbar for IE, Edge and Firefox */
-      -ms-overflow-style: none; /* IE and Edge */
-      scrollbar-width: none; /* Firefox */
+      transition: 0.3s;
+      z-index: 199;
+      max-width: 500px;
+      ${hideScrollbar}
     }
-
     &.active .MuiDrawer-paperAnchorDockedLeft {
-      left: -80px;
+      left: -100%;
     }
   }
 `;
 
 export const DrawerContainer = styled.div`
-  width: ${SIDEBAR_WIDTH};
+  width: 84px;
   height: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
   padding-top: 24px;
+  padding-bottom: 72px;
 `;
 
 export const DrawerTopBlock = styled.div`
@@ -318,4 +315,9 @@ export const StyledPodsIcon = styled(PodsIcon)`
       fill: #0f0f0f;
     }
   }
+`;
+
+export const Wrapper = styled.div`
+  display: flex;
+  height: 100%;
 `;

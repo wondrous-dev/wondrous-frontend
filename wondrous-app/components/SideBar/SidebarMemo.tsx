@@ -11,6 +11,7 @@ import { Org } from 'types/Org';
 import { User } from 'types/User';
 
 import AddDaoModal from './AddDaoModal';
+import DaoSidebar from './DaoSidebar';
 import HelpModal from './HelpModal.jsx';
 import { PodModal } from './PodModal';
 import {
@@ -24,6 +25,7 @@ import {
   HighlightedButton,
   NoLogoDAO,
   StyledSettingsIcon,
+  Wrapper,
 } from './styles';
 
 type Props = {
@@ -70,7 +72,6 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
-
   const handleMinimize = () => setMinimized(!minimized);
 
   const BOTTOM_LINKS_CONFIG = [
@@ -106,92 +107,95 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
-      <DrawerContainer>
-        <DrawerBlockWrapper>
-          <SidebarTooltip title="Profile">
-            <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
-              <SafeImage
-                src={user?.thumbnailPicture || user?.profilePicture}
-                placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-                width={36}
-                height={36}
-                objectFit="cover"
-                useNextImage
-                style={profilePictureStyle}
-              />
-            </HighlightedButton>
-          </SidebarTooltip>
-
-          <SidebarTooltip title="Explore">
-            <Link href="/explore" passHref>
-              <HighlightedButton id="tour-sidebar-explore-top">
-                <ExploreIcon />
-              </HighlightedButton>
-            </Link>
-          </SidebarTooltip>
-
-          <DrawerList id="tour-sidebar-daos">
-            {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
-              <SidebarTooltip key={id} title={name}>
-                <Link key={id} href={`/organization/${username}/boards`} passHref>
-                  <DrawerListItem button key={id} isActive={isActive}>
-                    {profilePicture ? (
-                      <SafeImage
-                        useNextImage={false}
-                        src={thumbnailPicture || profilePicture}
-                        width={36}
-                        height={36}
-                        objectFit="cover"
-                        style={{
-                          borderRadius: '2px',
-                        }}
-                      />
-                    ) : (
-                      <NoLogoDAO />
-                    )}
-                  </DrawerListItem>
-                </Link>
-              </SidebarTooltip>
-            ))}
-            <SidebarTooltip title="Create DAO">
-              <HighlightedButton onClick={handleCreateDaoModal(true)}>
-                <AddIcon />
+      <Wrapper>
+        <DrawerContainer>
+          <DrawerBlockWrapper>
+            <SidebarTooltip title="Profile">
+              <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
+                <SafeImage
+                  src={user?.thumbnailPicture || user?.profilePicture}
+                  placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
+                  width={36}
+                  height={36}
+                  objectFit="cover"
+                  useNextImage
+                  style={profilePictureStyle}
+                />
               </HighlightedButton>
             </SidebarTooltip>
-          </DrawerList>
-        </DrawerBlockWrapper>
-        <DrawerBlockWrapper>
-          {BOTTOM_LINKS_CONFIG.map(({ icon: Icon, url, id, tooltipLabel, key }) => {
-            const externalProps = isExternal(url) ? { target: '__blank', rel: 'noreferrer' } : {};
-            if (key === 'tutorials') {
-              // Open up modal instead
+
+            <SidebarTooltip title="Explore">
+              <Link href="/explore" passHref>
+                <HighlightedButton id="tour-sidebar-explore-top">
+                  <ExploreIcon />
+                </HighlightedButton>
+              </Link>
+            </SidebarTooltip>
+
+            <DrawerList id="tour-sidebar-daos">
+              {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
+                <SidebarTooltip key={id} title={name}>
+                  <Link key={id} href={`/organization/${username}/boards`} passHref>
+                    <DrawerListItem button key={id} isActive={isActive}>
+                      {profilePicture ? (
+                        <SafeImage
+                          useNextImage={false}
+                          src={thumbnailPicture || profilePicture}
+                          width={36}
+                          height={36}
+                          objectFit="cover"
+                          style={{
+                            borderRadius: '2px',
+                          }}
+                        />
+                      ) : (
+                        <NoLogoDAO />
+                      )}
+                    </DrawerListItem>
+                  </Link>
+                </SidebarTooltip>
+              ))}
+              <SidebarTooltip title="Create DAO">
+                <HighlightedButton onClick={handleCreateDaoModal(true)}>
+                  <AddIcon />
+                </HighlightedButton>
+              </SidebarTooltip>
+            </DrawerList>
+          </DrawerBlockWrapper>
+          <DrawerBlockWrapper>
+            {BOTTOM_LINKS_CONFIG.map(({ icon: Icon, url, id, tooltipLabel, key }) => {
+              const externalProps = isExternal(url) ? { target: '__blank', rel: 'noreferrer' } : {};
+              if (key === 'tutorials') {
+                // Open up modal instead
+                return (
+                  <SidebarTooltip key={id} title={tooltipLabel}>
+                    <DrawerBottomButton onClick={() => setOpenHelpModal(true)}>
+                      <Icon />
+                    </DrawerBottomButton>
+                  </SidebarTooltip>
+                );
+              }
               return (
                 <SidebarTooltip key={id} title={tooltipLabel}>
-                  <DrawerBottomButton onClick={() => setOpenHelpModal(true)}>
-                    <Icon />
+                  <DrawerBottomButton>
+                    <Link href={url} passHref>
+                      <a href={url} {...externalProps}>
+                        <Icon />
+                      </a>
+                    </Link>
                   </DrawerBottomButton>
                 </SidebarTooltip>
               );
-            }
-            return (
-              <SidebarTooltip key={id} title={tooltipLabel}>
-                <DrawerBottomButton>
-                  <Link href={url} passHref>
-                    <a href={url} {...externalProps}>
-                      <Icon />
-                    </a>
-                  </Link>
-                </DrawerBottomButton>
-              </SidebarTooltip>
-            );
-          })}
-          <Tooltip style={toolTipStyle} title={minimized ? 'Expand Sidebar' : 'Collapse Sidebar'} placement="right">
-            <DrawerBackButton onClick={handleMinimize} className={minimized && 'active'}>
-              <BackArrowIcon />
-            </DrawerBackButton>
-          </Tooltip>
-        </DrawerBlockWrapper>
-      </DrawerContainer>
+            })}
+            <Tooltip style={toolTipStyle} title={minimized ? 'Expand Sidebar' : 'Collapse Sidebar'} placement="right">
+              <DrawerBackButton onClick={handleMinimize} className={minimized && 'active'}>
+                <BackArrowIcon />
+              </DrawerBackButton>
+            </Tooltip>
+          </DrawerBlockWrapper>
+        </DrawerContainer>
+        <DaoSidebar />
+      </Wrapper>
     </DrawerComponent>
   );
 };
