@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, PERMISSIONS, ROLELIST, validateEmail } from 'utils/constants';
@@ -15,42 +15,63 @@ import DeleteBasketIcon from 'components/Icons/DeleteBasketIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { Button } from 'components/Button';
 import SearchIcon from 'components/Icons/search';
+import PersonAddIcon from '../../Icons/personAdd';
+import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
 import {
-  BottomBox,
-  CancelButton,
+  StyledModal,
+  StyledBox,
+  TextHeading,
+  TextSubheading,
   CloseButton,
-  CopyLinkBox,
-  DashedLine,
-  DeleteBox,
-  DisplaySearchedUser,
-  DisplaySearchedUserContainer,
-  EmptySearch,
+  PersonAddIconWrapper,
+  TextHeadingWrapper,
   HeadingWrapper,
   IconTextWrapper,
-  IndividualRoleBox,
-  IndividualUserBox,
-  InvitedText,
-  LinkFlex,
-  LinkIconBox,
+  InviteThruLinkLabel,
+  InviteThruLinkTextField,
+  InviteThruLinkButton,
+  InviteThruLinkButtonLabel,
+  InviteThruLinkInputWrapper,
+  StyledDivider,
+  InviteThruEmailLabel,
+  InviteThruEmailTextFieldButtonWrapper,
+  InviteThruEmailTextField,
+  InviteThruLinkSelect,
+  InviteThruLinkMenuItem,
+  InviteThruLinkFormControlSelect,
+  InviteThruEmailTextFieldSelectWrapper,
+  InviteThruEmailButtonLabel,
+  InviteThruEmailButton,
+  InviteThruLinkButtonSuccessLabel,
   LinkSwitch,
-  NameContainer,
-  RoleContainer,
-  RoleDeleteContainer,
-  RoleText,
-  SearchUserBox,
-  SearchUserContainer,
-  SelectRoleBox,
-  SelectRoleContainer,
-  SelectUserContainer,
-  StyledBox,
-  StyledModal,
-  TextHeading,
-  TextHeadingWrapper,
+  DashedLine,
   TopDivider,
+  SelectUserContainer,
+  SearchUserContainer,
+  SelectRoleContainer,
+  RoleText,
+  SelectRoleBox,
+  IndividualRoleBox,
+  RoleContainer,
+  UserBox,
+  InvitedText,
+  IndividualUserBox,
+  NameContainer,
+  UsersDetailsBox,
+  RoleDeleteContainer,
+  DeleteBox,
+  BottomBox,
+  CopyLinkBox,
+  LinkFlex,
+  CancelButton,
+  SendInviteButton,
   UniversalBox,
   UniversalLinkButton,
-  UserBox,
-  UsersDetailsBox,
+  LinkIconBox,
+  SearchUserBox,
+  DisplaySearchedUserContainer,
+  DisplaySearchedUser,
+  EmptySearch,
 } from './styles';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
@@ -88,22 +109,26 @@ export function OrgInviteLinkModal(props) {
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
   const userPermissionsContext = board?.userPermissionsContext;
+  const [userList, setUserList] = useState([]);
   const [activeRole, setActiveRole] = useState('✨ Contributor');
   const [inviteLink, setInviteLink] = useState('');
   const [dropRoleBox, setDropRoleBox] = useState(false);
   const [isUniversal, setIsUniversal] = useState(false);
   const [userSearchValue, setUserSearchValue] = useState<string>('');
   const [userSearchList, setUserSearchList] = useState([]);
+  const [listLoading, setListLoading] = useState(false);
   // final list to be displayed and sent to BE
   const [selectedUsersList, setSelectedUsersList] = useState([]);
 
-  const userList = [
-    { name: 'Tiana raji', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana eni', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana saka', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana shola', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana oluwo', role: '✨ Contributor', avatar: '' },
-  ];
+  const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
+    onCompleted: (data) => {
+      const userData = data.getOrgUsers;
+      const filteredData = userData?.map((userRole) => userRole.user);
+      setUserList(filteredData || []);
+      setListLoading(false);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -185,9 +210,11 @@ export function OrgInviteLinkModal(props) {
 
   useEffect(() => {
     if (userSearchValue) {
-      const filteredList = userList.filter((item) =>
-        item.name.toLocaleLowerCase().includes(userSearchValue.toLocaleLowerCase())
-      );
+      const filteredList =
+        userList &&
+        userList.filter(
+          (item) => item.username && item.username.toLocaleLowerCase().includes(userSearchValue.toLocaleLowerCase())
+        );
 
       setUserSearchList(filteredList);
     } else {
@@ -206,6 +233,19 @@ export function OrgInviteLinkModal(props) {
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
   }, [dropRoleBox]);
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: 1000, // TODO: paginate
+        },
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId]);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
@@ -242,6 +282,7 @@ export function OrgInviteLinkModal(props) {
                 validateEmail(userSearchValue) ? (
                   <DisplaySearchedUserContainer>
                     <DisplaySearchedUser
+                      type="email"
                       onClick={() => {
                         setSelectedUsersList((prev) => [
                           ...prev,
@@ -265,7 +306,7 @@ export function OrgInviteLinkModal(props) {
                           }}
                         >
                           <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
-                          <p>{item.name}</p>
+                          <p>{item.username}</p>
                         </DisplaySearchedUser>
                       ))
                     ) : (
@@ -320,7 +361,7 @@ export function OrgInviteLinkModal(props) {
                       ) : (
                         <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
                       )}
-                      <p>{item.type === 'email' ? item.email : item.name}</p>
+                      <p>{item.type === 'email' ? item.email : item.username}</p>
                     </NameContainer>
                     <RoleDeleteContainer>
                       <RoleText role_type={item.role}>{item.role}</RoleText>

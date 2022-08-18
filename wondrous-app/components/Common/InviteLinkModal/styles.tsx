@@ -359,6 +359,24 @@ export const DisplaySearchedUserContainer = styled.div`
   padding: 12px;
   top: 50px;
   left: 0;
+  max-height: 400px;
+  overflow-y: auto;
+  -ms-overflow-style: none;
+  &::-webkit-scrollbar-track {
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: #606060;
+  }
+
+  &::-webkit-scrollbar {
+    height: 0;
+    width: 10px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+    background: #c4c4c4;
+  }
 `;
 
 export const DisplaySearchedUser = styled.div`
@@ -366,7 +384,7 @@ export const DisplaySearchedUser = styled.div`
   background: #121212;
   border-radius: 4px;
   cursor: pointer;
-  padding: 8px;
+  padding: ${(props) => (props.type === 'email' ? '15px' : '8px')};
   align-items: center;
   margin-bottom: 8px;
   p {
