@@ -530,7 +530,7 @@ export const NameContainer = styled.div`
     color: #ffffff;
   }
 `;
-export const RoleDelecteContainer = styled.div`
+export const RoleDeleteContainer = styled.div`
   display: flex;
   align-items: center;
 `;
