@@ -21,6 +21,9 @@ import {
   CommentItemContainer,
   CommentListContainer,
   CommentListWrapper,
+  CommentListEmptyStateContainer,
+  CommentListEmptyStateIcon,
+  CommentListEmptyStateText,
   CommentProfilePicture,
   CommentText,
   CommentTopFlexDiv,
@@ -247,6 +250,15 @@ function CommentItem(props) {
   );
 }
 
+function CommentListEmptyState() {
+  return (
+    <CommentListEmptyStateContainer>
+      <CommentListEmptyStateIcon />
+      <CommentListEmptyStateText>No comments yet</CommentListEmptyStateText>
+    </CommentListEmptyStateContainer>
+  );
+}
+
 export function CommentList(props) {
   const { taskType, task, submission } = props;
   const [comments, setComments] = useState([]);
@@ -312,10 +324,13 @@ export function CommentList(props) {
         submission={submission}
       />
       <CommentListContainer>
-        {comments?.length > 0 &&
+        {comments?.length > 0 ? (
           comments.map((comment) => (
             <CommentItem key={comment?.id} comment={comment} taskType={taskType} task={task} submission={submission} />
-          ))}
+          ))
+        ) : (
+          <CommentListEmptyState />
+        )}
       </CommentListContainer>
     </CommentListWrapper>
   );
