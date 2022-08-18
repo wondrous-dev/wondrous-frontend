@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
@@ -7,7 +7,6 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, PERMISSIONS, validateEmail } from 'utils/constants';
 import Checkbox from '@mui/material/Checkbox';
 import ArrowFillIcon from 'components/Icons/arrowfill';
-import { Avatar } from '@mui/material';
 import DeleteBasketIcon from 'components/Icons/DeleteBasketIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { Button } from 'components/Button';
@@ -15,65 +14,44 @@ import palette from 'theme/palette';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import SearchIcon from 'components/Icons/search';
-import PersonAddIcon from '../../Icons/personAdd';
-import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
 import {
-  StyledModal,
-  StyledBox,
-  TextHeading,
-  TextSubheading,
+  BottomBox,
+  CancelButton,
   CloseButton,
-  PersonAddIconWrapper,
-  TextHeadingWrapper,
+  CopyLinkBox,
+  DashedLine,
+  DefaultProfilePicture,
+  DeleteBox,
+  DisplaySearchedUser,
+  DisplaySearchedUserContainer,
+  EmptySearch,
   HeadingWrapper,
   IconTextWrapper,
-  InviteThruLinkLabel,
-  InviteThruLinkTextField,
-  InviteThruLinkButton,
-  InviteThruLinkButtonLabel,
-  InviteThruLinkInputWrapper,
-  StyledDivider,
-  InviteThruEmailLabel,
-  InviteThruEmailTextFieldButtonWrapper,
-  InviteThruEmailTextField,
-  InviteThruLinkSelect,
-  InviteThruLinkMenuItem,
-  InviteThruLinkFormControlSelect,
-  InviteThruEmailTextFieldSelectWrapper,
-  InviteThruEmailButtonLabel,
-  InviteThruEmailButton,
-  InviteThruLinkButtonSuccessLabel,
-  LinkSwitch,
-  DashedLine,
-  TopDivider,
-  SelectUserContainer,
-  SearchUserContainer,
-  SelectRoleContainer,
-  RoleText,
-  SelectRoleBox,
   IndividualRoleBox,
-  RoleContainer,
-  UserBox,
-  InvitedText,
   IndividualUserBox,
-  NameContainer,
-  UsersDetailsBox,
-  RoleDeleteContainer,
-  DeleteBox,
-  BottomBox,
-  CopyLinkBox,
+  InvitedText,
   LinkFlex,
-  CancelButton,
-  SendInviteButton,
+  LinkIconBox,
+  LinkSwitch,
+  NameContainer,
+  RoleContainer,
+  RoleDeleteContainer,
+  RoleText,
+  SearchUserBox,
+  SearchUserContainer,
+  SelectRoleBox,
+  SelectRoleContainer,
+  SelectUserContainer,
+  StyledBox,
+  StyledModal,
+  TextHeading,
+  TextHeadingWrapper,
+  TopDivider,
   UniversalBox,
   UniversalLinkButton,
-  LinkIconBox,
-  SearchUserBox,
-  DisplaySearchedUserContainer,
-  DisplaySearchedUser,
-  EmptySearch,
-  DefaultProfilePicture,
+  UserBox,
   UserProfilePicture,
+  UsersDetailsBox,
 } from './styles';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
@@ -102,7 +80,7 @@ export const putDefaultRoleOnTop = (roles, permissions) => {
 };
 
 export function OrgInviteLinkModal(props) {
-  const dropref = useRef<HTMLDivElement>(null);
+  const roleContainerRef = useRef<HTMLDivElement>(null);
   const { orgId, open, onClose } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
@@ -248,7 +226,7 @@ export function OrgInviteLinkModal(props) {
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
-      if (dropRoleBox && dropref?.current && !dropref?.current.contains(e.target)) {
+      if (dropRoleBox && roleContainerRef?.current && !roleContainerRef?.current.contains(e.target)) {
         setDropRoleBox(false);
       }
     };
@@ -341,10 +319,10 @@ export function OrgInviteLinkModal(props) {
                 ''
               )}
             </SearchUserBox>
-            <RoleContainer ref={dropref}>
+            <RoleContainer ref={roleContainerRef}>
               <SelectRoleContainer
                 onClick={() => {
-                  setDropRoleBox(true);
+                  setDropRoleBox(!dropRoleBox);
                 }}
                 dropActive={dropRoleBox}
               >
