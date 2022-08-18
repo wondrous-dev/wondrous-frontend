@@ -3,6 +3,7 @@ import MasonryCSS from 'react-masonry-css';
 import styled from 'styled-components';
 import { ShowMoreButton } from 'components/ListView/styles';
 import { device } from 'utils/device';
+import palette from 'theme/palette';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import WheelSvg from './wheel.svg';
 import Metheor from './metheor.svg';
@@ -387,6 +388,15 @@ export const PartnershipRequestHeader = styled(Typography)`
   }
 `;
 
+export const LogoContainer = styled.div`
+  border-radius: 5px;
+  border: 4px solid ${palette.black95};
+  margin-top: -32px;
+  margin-bottom: 24px;
+  z-index: 1;
+  display: flex;
+`;
+
 export const PartnershipRequestSubheader = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
@@ -432,7 +442,7 @@ export const Masonry = styled(MasonryCSS).attrs({
   .masonry-grid-column > div {
     margin: 24px 12px 0;
   }
-  
+
   @media (max-width: 600px) {
     width: 100%;
     max-width: 100vw;

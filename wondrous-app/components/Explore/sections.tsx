@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
 import { useState, useEffect } from 'react';
-import palette from 'theme/palette';
 import { SafeImage } from '../Common/Image';
 import {
   OrgDescription,
@@ -18,42 +17,21 @@ import {
   BountySectionHeader,
   ShowMoreButtonWrapper,
   Masonry,
+  LogoContainer,
 } from './styles';
-import { FeaturedList, gridMobileStyles } from './constants';
+import { FeaturedList } from './constants';
 
 function OrgItem({ org }) {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
+
   return (
     <Link href={`/organization/${username}/boards`}>
       <StyledGridItem>
-        {headerImage && <>{headerImage}</>}
-        {headerUrl && (
-          <SafeImage
-            useNextImage={false}
-            style={{
-              width: '100%',
-              borderRadius: '12px 12px 0px 0px',
-              objectFit: 'cover',
-            }}
-            src={headerUrl}
-          />
-        )}
-        <div>
-          <SafeImage
-            useNextImage={false}
-            src={imageUrl}
-            style={{
-              borderRadius: '5px',
-              width: '64px',
-              border: '4px solid #1E1E1E',
-              height: '64px',
-              marginTop: '-32px',
-              marginBottom: '16px',
-              objectFit: 'cover',
-              background: palette.black,
-            }}
-          />
-        </div>
+        {headerImage}
+        {headerUrl && <SafeImage useNextImage height={148} width={443} objectFit="fill" src={headerUrl} />}
+        <LogoContainer>
+          <SafeImage useNextImage width={56} height={56} src={imageUrl} />
+        </LogoContainer>
         <OrgName>{name}</OrgName>
         <OrgDescription>{bio}</OrgDescription>
       </StyledGridItem>
