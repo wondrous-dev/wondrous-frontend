@@ -1,19 +1,16 @@
 import {
-  Modal,
   Box,
-  Typography,
-  TextField,
   Button,
   Divider,
-  Select,
-  Menu,
-  MenuItem,
   FormControl,
   FormControlLabel,
-  InputLabel,
+  MenuItem,
+  Modal,
+  Select,
+  TextField,
+  Typography,
 } from '@mui/material';
 import styled from 'styled-components';
-import palette from 'theme/palette';
 import { ModalCloseButton } from '../ModalCloseButton';
 import { Button as ButtonComponent } from '../button';
 import { AndroidSwitch } from '../../CreateEntity/CreatePodModal';
@@ -147,9 +144,11 @@ export const StyledSelect = styled(Select)`
   & .MuiInput-underline {
     :hover:not(.Mui-disabled)::before {
       border: none;
+
       ::before {
         border: none;
       }
+
       ::before {
         border: none;
       }
@@ -165,6 +164,7 @@ export const InviteThruLinkSelect = styled(({ className, ...props }) => (
     width: 141px;
     color: #fff;
   }
+
   &.MuiPaper-root > .MuiList-padding {
     padding: 0;
   }
@@ -320,7 +320,7 @@ const ProfilePictureStyles = {
 };
 export const UserProfilePicture = (props) => <SafeImage src={props?.src} style={ProfilePictureStyles} />;
 
-export const DefaultProfilePicture = (props) => <DefaultUserImage style={ProfilePictureStyles} />;
+export const DefaultProfilePicture = () => <DefaultUserImage style={ProfilePictureStyles} />;
 
 export const SelectUserContainer = styled.div`
   width: 100%;
@@ -341,6 +341,7 @@ export const SearchUserContainer = styled.div`
   padding: 10px 14px;
   border-radius: 6px;
   align-items: center;
+
   input {
     flex: auto;
     border: none;
@@ -350,6 +351,7 @@ export const SearchUserContainer = styled.div`
     background: inherit;
     font-size: 16px;
     line-height: 16px;
+
     &::placeholder {
       font-size: 15px;
       line-height: 19px;
@@ -372,6 +374,7 @@ export const DisplaySearchedUserContainer = styled.div`
   max-height: 400px;
   overflow-y: auto;
   -ms-overflow-style: none;
+
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background: #606060;
@@ -397,6 +400,7 @@ export const DisplaySearchedUser = styled.div`
   padding: ${(props) => (props.type === 'email' ? '15px' : '8px')};
   align-items: center;
   margin-bottom: 8px;
+
   p {
     margin: 0;
     color: #ffffff;
@@ -405,9 +409,11 @@ export const DisplaySearchedUser = styled.div`
     line-height: 16px;
     margin-left: 14px;
   }
+
   &:last-child {
     margin-bottom: 0;
   }
+
   &:hover {
     background: linear-gradient(269.74deg, #232323 8.24%, #161616 72.13%);
   }
@@ -481,12 +487,15 @@ export const IndividualRoleBox = styled.div`
   border: 1px solid;
   position: relative;
   background-clip: padding-box;
+
   svg {
     color: ${(props) => (props.active ? '#7427ff' : '#474747')};
   }
+
   &:last-child {
     margin-bottom: 0;
   }
+
   &:before {
     content: '';
     position: absolute;
@@ -512,6 +521,7 @@ export const UsersDetailsBox = styled.div`
   margin-bottom: 24px;
   height: 330px;
   overflow-y: auto;
+
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background: #606060;
@@ -544,6 +554,7 @@ export const IndividualUserBox = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 18px;
+
   &:last-child {
     margin-bottom: 0;
   }
@@ -551,6 +562,7 @@ export const IndividualUserBox = styled.div`
 export const NameContainer = styled.div`
   display: flex;
   align-items: center;
+
   p {
     font-weight: 600;
     font-size: 16px;
@@ -602,8 +614,10 @@ export const LinkFlex = styled.div`
   display: flex;
   align-items: center;
   position: relative;
+
   button {
     padding: 8px 24px !important;
+
     &:last-child {
       background: black !important;
     }
@@ -654,12 +668,15 @@ export const SendInviteButton = styled.div`
   position: relative;
   border-radius: 35px;
   background-clip: padding-box;
+
   p {
     color: white;
     margin: 0;
     position: relative;
   }
+
   border: 1px solid;
+
   &:before {
     content: '';
     position: absolute;
