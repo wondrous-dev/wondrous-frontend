@@ -281,7 +281,7 @@ export function OrgInviteLinkModal(props) {
               <PersonAddIcon />
             </PersonAddIconWrapper> */}
               <TextHeadingWrapper>
-                <TextHeading>{!isUniversal ? 'Invite' : 'Invite through universal link'}</TextHeading>
+                <TextHeading>{!isUniversal ? 'Invite' : 'Share with people and groups'}</TextHeading>
               </TextHeadingWrapper>
             </IconTextWrapper>
             <CloseButton onClick={handleOnClose} />
