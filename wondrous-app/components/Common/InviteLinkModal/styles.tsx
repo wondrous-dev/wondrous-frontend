@@ -17,6 +17,8 @@ import palette from 'theme/palette';
 import { ModalCloseButton } from '../ModalCloseButton';
 import { Button as ButtonComponent } from '../button';
 import { AndroidSwitch } from '../../CreateEntity/CreatePodModal';
+import { SafeImage } from '../Image';
+import DefaultUserImage from '../Image/DefaultUserImage';
 
 export const StyledModal = styled(Modal)``;
 
@@ -311,6 +313,14 @@ export const DashedLine = styled.div`
   border-bottom: 0.5px dashed #4b4b4b;
   margin: 19px 0;
 `;
+const ProfilePictureStyles = {
+  width: '24px',
+  height: '24px',
+  borderRadius: '50%',
+};
+export const UserProfilePicture = (props) => <SafeImage src={props?.src} style={ProfilePictureStyles} />;
+
+export const DefaultProfilePicture = (props) => <DefaultUserImage style={ProfilePictureStyles} />;
 
 export const SelectUserContainer = styled.div`
   width: 100%;
@@ -425,6 +435,7 @@ export const SelectRoleContainer = styled.div`
 `;
 export const RoleText = styled.p`
   width: max-content;
+  min-width: 80px;
   color: white;
   display: flex;
   align-items: center;
@@ -435,9 +446,9 @@ export const RoleText = styled.p`
   border-radius: 56px;
   height: 24px;
   border: ${(props) =>
-    props.role_type === '✨ Contributor'
+    props.role_type === 'contributor' || props.role_type === 'engineering'
       ? '1px solid #FF9933;'
-      : props.role_type === '🔮 Core member'
+      : props.role_type === 'core team' || props.role_type === 'terry_role'
       ? '1px solid #EB96EB;'
       : '1px solid #7ECC49;'};
 `;
