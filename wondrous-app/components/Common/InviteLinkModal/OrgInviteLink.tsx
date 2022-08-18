@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { useMutation, useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
@@ -14,59 +14,43 @@ import { Avatar } from '@mui/material';
 import DeleteBasketIcon from 'components/Icons/DeleteBasketIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { Button } from 'components/Button';
-import { CopyIcon, CopySuccessIcon } from '../../Icons/copy';
-import PersonAddIcon from '../../Icons/personAdd';
+import SearchIcon from 'components/Icons/search';
 import {
-  StyledModal,
-  StyledBox,
-  TextHeading,
-  TextSubheading,
+  BottomBox,
+  CancelButton,
   CloseButton,
-  PersonAddIconWrapper,
-  TextHeadingWrapper,
+  CopyLinkBox,
+  DashedLine,
+  DeleteBox,
+  DisplaySearchedUser,
+  DisplaySearchedUserContainer,
+  EmptySearch,
   HeadingWrapper,
   IconTextWrapper,
-  InviteThruLinkLabel,
-  InviteThruLinkTextField,
-  InviteThruLinkButton,
-  InviteThruLinkButtonLabel,
-  InviteThruLinkInputWrapper,
-  StyledDivider,
-  InviteThruEmailLabel,
-  InviteThruEmailTextFieldButtonWrapper,
-  InviteThruEmailTextField,
-  InviteThruLinkSelect,
-  InviteThruLinkMenuItem,
-  InviteThruLinkFormControlSelect,
-  InviteThruEmailTextFieldSelectWrapper,
-  InviteThruEmailButtonLabel,
-  InviteThruEmailButton,
-  InviteThruLinkButtonSuccessLabel,
-  LinkSwitch,
-  DashedLine,
-  TopDivider,
-  SelectUserContainer,
-  SearchUserContainer,
-  SelectRoleContainer,
-  RoleText,
-  SelectRoleBox,
   IndividualRoleBox,
-  RoleContainer,
-  UserBox,
-  InvitedText,
   IndividualUserBox,
-  NameContainer,
-  UsersDetailsBox,
-  RoleDelecteContainer,
-  DeleteBox,
-  BottomBox,
-  CopyLinkBox,
+  InvitedText,
   LinkFlex,
-  CancelButton,
-  SendInviteButton,
+  LinkIconBox,
+  LinkSwitch,
+  NameContainer,
+  RoleContainer,
+  RoleDelecteContainer,
+  RoleText,
+  SearchUserBox,
+  SearchUserContainer,
+  SelectRoleBox,
+  SelectRoleContainer,
+  SelectUserContainer,
+  StyledBox,
+  StyledModal,
+  TextHeading,
+  TextHeadingWrapper,
+  TopDivider,
   UniversalBox,
   UniversalLinkButton,
-  LinkIconBox,
+  UserBox,
+  UsersDetailsBox,
 } from './styles';
 
 export const putDefaultRoleOnTop = (roles, permissions) => {
@@ -107,13 +91,17 @@ export function OrgInviteLinkModal(props) {
   const [inviteLink, setInviteLink] = useState('');
   const [dropRoleBox, setDropRoleBox] = useState(false);
   const [isUniversal, setIsUniversal] = useState(false);
+  const [userSearchValue, setUserSearchValue] = useState<string>('');
+  const [userSearchList, setUserSearchList] = useState([]);
+  const [selectedUser, setSelectedUser] = useState({});
+
   const roleList = [{ displayText: '✨ Contributor' }, { displayText: '🔮 Core member' }, { displayText: '🔑 Owner' }];
   const userList = [
-    { name: 'Tiana Baptista', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana Baptista', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana Baptista', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana Baptista', role: '✨ Contributor', avatar: '' },
-    { name: 'Tiana Baptista', role: '✨ Contributor', avatar: '' },
+    { name: 'Tiana raji', role: '✨ Contributor', avatar: '' },
+    { name: 'Tiana eni', role: '✨ Contributor', avatar: '' },
+    { name: 'Tiana saka', role: '✨ Contributor', avatar: '' },
+    { name: 'Tiana shola', role: '✨ Contributor', avatar: '' },
+    { name: 'Tiana oluwo', role: '✨ Contributor', avatar: '' },
   ];
 
   const permissions = parseUserPermissionContext({
@@ -189,6 +177,18 @@ export function OrgInviteLinkModal(props) {
   }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
   const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions);
 
+  useEffect(() => {
+    if (userSearchValue) {
+      const filteredList = userList.filter((item) =>
+        item.name.toLocaleLowerCase().includes(userSearchValue.toLocaleLowerCase())
+      );
+
+      setUserSearchList(filteredList);
+    } else {
+      setUserSearchList(userList);
+    }
+  }, [userSearchValue]);
+
   return (
     <StyledModal open={open} onClose={handleOnClose}>
       <StyledBox isUniversal={isUniversal}>
@@ -207,12 +207,46 @@ export function OrgInviteLinkModal(props) {
           <DashedLine />
 
           <SelectUserContainer isUniversal={isUniversal}>
-            <SearchUserContainer />
+            <SearchUserBox>
+              <SearchUserContainer>
+                <input
+                  onChange={(e) => {
+                    setUserSearchValue(e.target.value);
+                  }}
+                  readOnly={isUniversal}
+                  type="text"
+                  value={isUniversal ? 'https://app.wonderverse.xyz/invite/093j9fd4i' : userSearchValue}
+                  placeholder="Search for usernames or email..."
+                />
+                {!isUniversal && <SearchIcon />}
+              </SearchUserContainer>
+              {userSearchValue && (
+                <DisplaySearchedUserContainer>
+                  {userSearchList.length ? (
+                    userSearchList.map((item, i) => (
+                      <DisplaySearchedUser
+                        key={i}
+                        onClick={() => {
+                          setSelectedUser(item);
+                          setUserSearchValue('');
+                        }}
+                      >
+                        <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
+                        <p>{item.name}</p>
+                      </DisplaySearchedUser>
+                    ))
+                  ) : (
+                    <EmptySearch>Empty Search</EmptySearch>
+                  )}
+                </DisplaySearchedUserContainer>
+              )}
+            </SearchUserBox>
             <RoleContainer>
               <SelectRoleContainer
                 onClick={() => {
                   setDropRoleBox(!dropRoleBox);
                 }}
+                dropActive={dropRoleBox}
               >
                 <RoleText role_type={activeRole}>{activeRole}</RoleText>
                 <ArrowFillIcon />
