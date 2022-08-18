@@ -1,10 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
 import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK, PERMISSIONS } from 'utils/constants';
+import { LINK, PERMISSIONS, ROLELIST, validateEmail } from 'utils/constants';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import palette from 'theme/palette';
@@ -35,7 +35,7 @@ import {
   LinkSwitch,
   NameContainer,
   RoleContainer,
-  RoleDelecteContainer,
+  RoleDeleteContainer,
   RoleText,
   SearchUserBox,
   SearchUserContainer,
@@ -79,6 +79,7 @@ export const putDefaultRoleOnTop = (roles, permissions) => {
 };
 
 export function OrgInviteLinkModal(props) {
+  const dropref = useRef<HTMLDivElement>(null);
   const { orgId, open, onClose } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
@@ -93,9 +94,9 @@ export function OrgInviteLinkModal(props) {
   const [isUniversal, setIsUniversal] = useState(false);
   const [userSearchValue, setUserSearchValue] = useState<string>('');
   const [userSearchList, setUserSearchList] = useState([]);
-  const [selectedUser, setSelectedUser] = useState({});
+  // final list to be displayed and sent to BE
+  const [selectedUsersList, setSelectedUsersList] = useState([]);
 
-  const roleList = [{ displayText: '✨ Contributor' }, { displayText: '🔮 Core member' }, { displayText: '🔑 Owner' }];
   const userList = [
     { name: 'Tiana raji', role: '✨ Contributor', avatar: '' },
     { name: 'Tiana eni', role: '✨ Contributor', avatar: '' },
@@ -132,6 +133,11 @@ export function OrgInviteLinkModal(props) {
     },
     fetchPolicy: 'cache-and-network',
   });
+
+  const handleRemoveFromUsersList = (item) => {
+    const holdingList = selectedUsersList.filter((user) => item.name !== user.name || item.email !== user.email);
+    setSelectedUsersList(holdingList);
+  };
 
   const handleOnClose = () => {
     onClose();
@@ -189,6 +195,18 @@ export function OrgInviteLinkModal(props) {
     }
   }, [userSearchValue]);
 
+  useEffect(() => {
+    const checkIfClickedOutside = (e) => {
+      if (dropRoleBox && dropref?.current && !dropref?.current.contains(e.target)) {
+        setDropRoleBox(false);
+      }
+    };
+    document.addEventListener('mousedown', checkIfClickedOutside);
+    return () => {
+      document.removeEventListener('mousedown', checkIfClickedOutside);
+    };
+  }, [dropRoleBox]);
+
   return (
     <StyledModal open={open} onClose={handleOnClose}>
       <StyledBox isUniversal={isUniversal}>
@@ -215,36 +233,54 @@ export function OrgInviteLinkModal(props) {
                   }}
                   readOnly={isUniversal}
                   type="text"
-                  value={isUniversal ? 'https://app.wonderverse.xyz/invite/093j9fd4i' : userSearchValue}
+                  value={isUniversal ? inviteLink : userSearchValue}
                   placeholder="Search for usernames or email..."
                 />
                 {!isUniversal && <SearchIcon />}
               </SearchUserContainer>
-              {userSearchValue && (
-                <DisplaySearchedUserContainer>
-                  {userSearchList.length ? (
-                    userSearchList.map((item, i) => (
-                      <DisplaySearchedUser
-                        key={i}
-                        onClick={() => {
-                          setSelectedUser(item);
-                          setUserSearchValue('');
-                        }}
-                      >
-                        <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
-                        <p>{item.name}</p>
-                      </DisplaySearchedUser>
-                    ))
-                  ) : (
-                    <EmptySearch>Empty Search</EmptySearch>
-                  )}
-                </DisplaySearchedUserContainer>
+              {userSearchValue ? (
+                validateEmail(userSearchValue) ? (
+                  <DisplaySearchedUserContainer>
+                    <DisplaySearchedUser
+                      onClick={() => {
+                        setSelectedUsersList((prev) => [
+                          ...prev,
+                          { email: userSearchValue, role: activeRole, type: 'email' },
+                        ]);
+                        setUserSearchValue('');
+                      }}
+                    >
+                      <p>{userSearchValue}</p>
+                    </DisplaySearchedUser>
+                  </DisplaySearchedUserContainer>
+                ) : (
+                  <DisplaySearchedUserContainer>
+                    {userSearchList.length ? (
+                      userSearchList.map((item, i) => (
+                        <DisplaySearchedUser
+                          key={i}
+                          onClick={() => {
+                            setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole, type: 'name' }]);
+                            setUserSearchValue('');
+                          }}
+                        >
+                          <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
+                          <p>{item.name}</p>
+                        </DisplaySearchedUser>
+                      ))
+                    ) : (
+                      <EmptySearch>Empty Search</EmptySearch>
+                    )}
+                  </DisplaySearchedUserContainer>
+                )
+              ) : (
+                ''
               )}
             </SearchUserBox>
-            <RoleContainer>
+            <RoleContainer ref={dropref}>
               <SelectRoleContainer
                 onClick={() => {
-                  setDropRoleBox(!dropRoleBox);
+                  setDropRoleBox(true);
                 }}
                 dropActive={dropRoleBox}
               >
@@ -252,10 +288,11 @@ export function OrgInviteLinkModal(props) {
                 <ArrowFillIcon />
               </SelectRoleContainer>
               <SelectRoleBox show={dropRoleBox}>
-                {roleList.map((item, i) => (
+                {ROLELIST.map((item, i) => (
                   <IndividualRoleBox
                     onClick={() => {
                       setActiveRole(item.displayText);
+                      setDropRoleBox(false);
                     }}
                     key={i}
                     active={item.displayText === activeRole}
@@ -273,20 +310,24 @@ export function OrgInviteLinkModal(props) {
           </SelectUserContainer>
           {!isUniversal && (
             <UserBox>
-              <InvitedText>Invited 7 users to 3 roles</InvitedText>
+              <InvitedText>Invite {selectedUsersList.length} user(s)</InvitedText>
               <UsersDetailsBox>
-                {userList.map((item, i) => (
-                  <IndividualUserBox>
+                {selectedUsersList.map((item, i) => (
+                  <IndividualUserBox key={i}>
                     <NameContainer>
-                      <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
-                      <p>{item.name}</p>
+                      {item.type === 'email' ? (
+                        ''
+                      ) : (
+                        <Avatar sx={{ width: 28, height: 28 }} alt="Remy Sharp" src={item.avatar} />
+                      )}
+                      <p>{item.type === 'email' ? item.email : item.name}</p>
                     </NameContainer>
-                    <RoleDelecteContainer>
-                      <RoleText role_type={activeRole}>{activeRole}</RoleText>
-                      <DeleteBox>
+                    <RoleDeleteContainer>
+                      <RoleText role_type={item.role}>{item.role}</RoleText>
+                      <DeleteBox onClick={() => handleRemoveFromUsersList(item)}>
                         <DeleteBasketIcon />
                       </DeleteBox>
-                    </RoleDelecteContainer>
+                    </RoleDeleteContainer>
                   </IndividualUserBox>
                 ))}{' '}
               </UsersDetailsBox>
@@ -307,12 +348,13 @@ export function OrgInviteLinkModal(props) {
                   Cancel
                 </CancelButton>
                 <Button
+                  onClick={handleOnCopy}
                   style={{
                     textDecoration: 'none',
                     color: palette.white,
                   }}
                 >
-                  Copy Link
+                  {copy ? 'Copied' : 'Copy Link'}
                 </Button>
               </LinkFlex>
             </CopyLinkBox>
