@@ -12,7 +12,7 @@ import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import { formatDistance } from 'date-fns';
 import { renderMentionString } from 'utils/common';
 import { useRouter } from 'next/router';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
 import { updateTask } from 'utils/board';
 import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
@@ -137,16 +137,6 @@ export function CommentBox(props) {
     </AddCommentContainer>
   );
 }
-
-const useScrollIntoView = (isElementToScroll) => {
-  const elementRef = useRef(null);
-  useEffect(() => {
-    if (isElementToScroll) {
-      elementRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [elementRef, isElementToScroll]);
-  return elementRef;
-};
 
 function CommentItem(props) {
   const { comment, task, taskType, list, setList, submission } = props;

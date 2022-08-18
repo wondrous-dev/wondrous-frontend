@@ -42,7 +42,7 @@ import {
   ArchivedPodIndicatorText,
 } from './styles';
 
-export function SettingsWrapper(props) {
+function SettingsWrapper(props) {
   const { children, showPodIcon = true } = props;
 
   const router = useRouter();
@@ -128,8 +128,8 @@ export function SettingsWrapper(props) {
       icon: <NotificationOutlineSettings />,
       label: 'Notifications',
       value: 'notifications',
-      href: `/organization/settings/${orgId}/notifications`,
-      page: [SettingsPage.Org],
+      href: orgId ? `/organization/settings/${orgId}/notifications` : `/pod/settings/${podId}/notifications`,
+      page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
       icon: <TaskImportIcon />, // need a another icon
@@ -299,3 +299,5 @@ export function SettingsWrapper(props) {
     </SettingsBoardContext.Provider>
   );
 }
+
+export default SettingsWrapper;

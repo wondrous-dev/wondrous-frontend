@@ -22,6 +22,7 @@ import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import CloseModalIcon from 'components/Icons/closeModal';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { ErrorText } from '../Common';
@@ -31,7 +32,6 @@ import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
-import { SettingsWrapper } from './settingsWrapper';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,

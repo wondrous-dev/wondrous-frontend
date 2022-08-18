@@ -45,6 +45,7 @@ import styles, {
 
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -78,7 +79,6 @@ import Switch from '../../Common/Switch';
 import Accordion from '../../Common/Accordion';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
 
 type Props = {
   orgId: any;

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import BountyBoard from 'components/Common/BountyBoard';
-import { ShowMoreButton } from 'components/ListView/styles';
+import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { delQuery } from 'utils';

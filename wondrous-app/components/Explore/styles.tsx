@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
-import MasonryCSS from 'react-masonry-css';
 import styled from 'styled-components';
-import { ShowMoreButton } from 'components/ListView/styles';
+import MasonryCSS from 'react-masonry-css';
+import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
 import { device } from 'utils/device';
 import palette from 'theme/palette';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';

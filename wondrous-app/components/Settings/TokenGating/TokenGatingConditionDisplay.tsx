@@ -52,11 +52,9 @@ const CHAIN_NAME_TO_CHAIN_ID = {
 
 function TokenGatingConditionDisplay(props) {
   const router = useRouter();
-  const [showDetails, setShowDetails] = useState(false);
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
   const [deleteError, setDeleteError] = useState(null);
-  const wonderWeb3 = useWonderWeb3();
   const editTokenGatingCondition = useEditTokenGatingCondition();
 
   const { tokenGatingCondition } = props;
