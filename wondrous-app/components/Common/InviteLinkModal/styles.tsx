@@ -319,12 +319,77 @@ export const SelectUserContainer = styled.div`
   flex-direction: ${(props) => (props.isUniversal ? 'row-reverse' : 'row')};
   justify-content: space-between;
 `;
-
+export const SearchUserBox = styled.div`
+  width: 69%;
+  position: relative;
+`;
 export const SearchUserContainer = styled.div`
-  width: 68%;
+  width: 100%;
   height: 42px;
   background: black;
+  display: flex;
+  padding: 10px 14px;
+  border-radius: 6px;
+  align-items: center;
+  input {
+    flex: auto;
+    border: none;
+    outline: none;
+    height: 100%;
+    color: #ffffff;
+    background: inherit;
+    font-size: 16px;
+    line-height: 16px;
+    &::placeholder {
+      font-size: 15px;
+      line-height: 19px;
+      color: #7a7a7a;
+    }
+  }
 `;
+
+export const DisplaySearchedUserContainer = styled.div`
+  background: #1d1d1d;
+  border: 1px solid #424242;
+  box-shadow: 0px 34px 84px rgba(0, 0, 0, 0.75);
+  border-radius: 6px;
+  position: absolute;
+  width: 100%;
+  z-index: 2;
+  padding: 12px;
+  top: 50px;
+  left: 0;
+`;
+
+export const DisplaySearchedUser = styled.div`
+  display: flex;
+  background: #121212;
+  border-radius: 4px;
+  cursor: pointer;
+  padding: 8px;
+  align-items: center;
+  margin-bottom: 8px;
+  p {
+    margin: 0;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 16px;
+    margin-left: 14px;
+  }
+  &:last-child {
+    margin-bottom: 0;
+  }
+  &:hover {
+    background: linear-gradient(269.74deg, #232323 8.24%, #161616 72.13%);
+  }
+`;
+
+export const EmptySearch = styled.div`
+  color: white;
+  margin: 0;
+`;
+
 export const RoleContainer = styled.div`
   position: relative;
   width: 28%;
@@ -338,8 +403,8 @@ export const SelectRoleContainer = styled.div`
   padding: 9px 12px;
   justify-content: space-between;
   cursor: pointer;
+  border: ${(props) => (props.dropActive ? '1px solid #4b4b4b' : '1px solid black')};
 `;
-
 export const RoleText = styled.p`
   width: max-content;
   color: white;
@@ -361,7 +426,7 @@ export const RoleText = styled.p`
 
 export const SelectRoleBox = styled.div`
   position: absolute;
-  top: 60px;
+  top: 50px;
   left: 0;
   width: 250px;
   background: #1d1d1d;
