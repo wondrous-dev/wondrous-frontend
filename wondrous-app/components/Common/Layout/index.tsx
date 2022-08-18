@@ -1,15 +1,30 @@
-import React, { useState } from 'react';
-import { SIDEBAR_WIDTH, PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
+import { useQuery } from '@apollo/client';
 import HeaderComponent from 'components/Header';
 import SideBarComponent from 'components/SideBar';
-import { toggleHtmlOverflow } from 'utils/helpers';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import { useRouter } from 'next/router';
-import { useQuery } from '@apollo/client';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { SideBarContext, CreateEntityContext } from 'utils/contexts';
+import { useRouter } from 'next/router';
+import React, { useMemo, useState } from 'react';
+import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH, SIDEBAR_WIDTH_WITH_DAO } from 'utils/constants';
+import { CreateEntityContext, SideBarContext } from 'utils/contexts';
+import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
+
 import { SectionWrapper } from './styles';
+
+const getOrgsList = (userOrgs, router) => {
+  if (!userOrgs?.getUserOrgs) return [];
+  const { getUserOrgs } = userOrgs;
+  return getUserOrgs.map((item) => {
+    const isActive = router.pathname.includes('/organization/[username]') && router.query?.username === item.username;
+    return { ...item, isActive };
+  });
+};
+
+const setWidth = ({ minimized, isMobile, orgsList }) => {
+  if (minimized || isMobile) return '0px';
+  if (orgsList.find(({ isActive }) => isActive)) return SIDEBAR_WIDTH_WITH_DAO;
+  return SIDEBAR_WIDTH;
+};
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
@@ -31,20 +46,23 @@ export default function SidebarLayout({ children }) {
     setCreateFormModal((prevState) => !prevState);
   };
 
+  const orgsList = getOrgsList(userOrgs, router);
+  const width = setWidth({ minimized, isMobile, orgsList });
+  const sidebarValue = useMemo(
+    () => ({
+      minimized,
+      setMinimized,
+      orgsList,
+    }),
+    [minimized, orgsList]
+  );
+
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
-
-  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
-
   return (
-    <SideBarContext.Provider
-      value={{
-        minimized,
-        setMinimized,
-      }}
-    >
-      <SideBarComponent userOrgs={userOrgs} />
+    <SideBarContext.Provider value={sidebarValue}>
+      <SideBarComponent />
       <CreateEntityContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,
