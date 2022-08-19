@@ -74,7 +74,6 @@ function Filter(props: IFilterProps) {
     }
     if (item.id === selected?.id) {
       handleChange(null);
-      
     } else handleChange(item);
   };
 
