@@ -104,6 +104,41 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
+export const GET_ORG_TASK_BOARD_CALENDAR = gql`
+  query getOrgTaskBoardCalendar(
+    $orgId: ID!
+    $statuses: [String]
+    $searchString: String
+    $podIds: [String]
+    $offset: Int
+    $onlyPublic: Boolean
+    $types: [String]
+    $labelId: String
+    $date: String
+    $fromDate: String
+    $toDate: String
+  ) {
+    getOrgTaskBoardCalendar(
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        searchString: $searchString
+        podIds: $podIds
+        offset: $offset
+        onlyPublic: $onlyPublic
+        types: $types
+        labelId: $labelId
+        date: $date
+        fromDate: $fromDate
+        toDate: $toDate
+      }
+    ) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const GET_USER_TASK_BOARD_PROPOSALS = gql`
   query getUserTaskBoardProposals(
     $userId: ID

@@ -10,6 +10,8 @@ export type Role = {
 export enum ViewType {
   List = 'list',
   Grid = 'grid',
+  Calendar = 'calendar',
+
   Admin = 'admin',
 }
 

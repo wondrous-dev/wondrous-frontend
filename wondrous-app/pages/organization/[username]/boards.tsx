@@ -4,6 +4,7 @@ import Boards from 'components/organization/boards/boards';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
+  GET_ORG_TASK_BOARD_CALENDAR,
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
   GET_PER_STATUS_TASK_COUNT_FOR_ORG_BOARD,
@@ -25,6 +26,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
+import { format } from 'date-fns';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
   STATUSES_ON_ENTITY_TYPES,
@@ -43,17 +45,80 @@ import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
-const useGetOrgTaskBoardTasks = ({
+const useGetOrgTaskBoardCalendar = ({
   columns,
   setColumns,
   setOrgTaskHasMore,
   orgId,
-
   userId,
   entityType,
   setIsLoading,
   search,
   filters,
+  calendarView,
+  fromDate,
+  toDate,
+}) => {
+  const [getOrgTaskBoardCalendar, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ getOrgTaskBoardCalendar }) => {
+      console.log('HELLOOOO WE ARE HERE ', getOrgTaskBoardCalendar);
+      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY || calendarView) {
+        setColumns(getOrgTaskBoardCalendar);
+        setIsLoading(false);
+        return;
+      }
+      const newColumns = populateTaskColumns(getOrgTaskBoardCalendar, ORG_POD_COLUMNS);
+      setColumns(dedupeColumns(newColumns));
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      setIsLoading(false);
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && calendarView) {
+      const taskBoardStatuses =
+        filters?.statuses?.length > 0
+          ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+          : //double check in case we add new stuff and have no valid entityType.
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+      getOrgTaskBoardCalendar({
+        variables: {
+          orgId,
+          podIds: filters?.podIds,
+          offset: 0,
+          statuses: taskBoardStatuses,
+          labelId: filters?.labelId,
+          date: filters?.date,
+          fromDate: format(fromDate, 'yyyy-MM-dd'),
+          toDate: format(toDate, 'yyyy-MM-dd'),
+          types: [entityType],
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
+        },
+      });
+    }
+  }, [getOrgTaskBoardCalendar, orgId, filters, userId, entityType]);
+};
+
+const useGetOrgTaskBoardTasks = ({
+  columns,
+  setColumns,
+  setOrgTaskHasMore,
+  orgId,
+  userId,
+  entityType,
+  setIsLoading,
+  search,
+  filters,
+  calendarView,
 }) => {
   const [getOrgTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -93,7 +158,7 @@ const useGetOrgTaskBoardTasks = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId) {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && !calendarView) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
@@ -151,6 +216,7 @@ const useGetTaskRelatedToUser = ({
   setIsLoading,
   search,
   filters,
+  calendarView,
 }) => {
   const [getTasksRelatedToUserInOrg, { fetchMore }] = useLazyQuery(GET_TASKS_RELATED_TO_USER_IN_ORG, {
     fetchPolicy: 'cache-and-network',
@@ -196,7 +262,7 @@ const useGetTaskRelatedToUser = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId) {
+    if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && !calendarView) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
@@ -235,6 +301,7 @@ const useGetOrgTaskBoardProposals = ({
   setOrgTaskHasMore,
   search,
   filters,
+  calendarView,
 }) => {
   const [getOrgTaskProposals, { data, fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -272,7 +339,7 @@ const useGetOrgTaskBoardProposals = ({
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
   useEffect(() => {
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && orgId) {
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && orgId && !calendarView) {
       const proposalBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
@@ -297,7 +364,6 @@ const useGetOrgTaskBoard = ({
   columns,
   setColumns,
   setOrgTaskHasMore,
-
   orgId,
   userId,
   view,
@@ -305,8 +371,13 @@ const useGetOrgTaskBoard = ({
   setIsLoading,
   search,
   filters,
+  fromDate,
+  toDate,
 }) => {
+  console.log(filters);
   const listView = view === ViewType.List;
+  const calendarView = view === ViewType.Calendar;
+  console.log(calendarView);
   const board = {
     [userId]: useGetTaskRelatedToUser({
       columns,
@@ -318,6 +389,7 @@ const useGetOrgTaskBoard = ({
       entityType,
       setIsLoading,
       search,
+      calendarView,
     }),
     withoutUserId: useGetOrgTaskBoardTasks({
       columns,
@@ -329,6 +401,7 @@ const useGetOrgTaskBoard = ({
       setIsLoading,
       search,
       filters,
+      calendarView,
     }),
     proposals: useGetOrgTaskBoardProposals({
       listView,
@@ -341,6 +414,21 @@ const useGetOrgTaskBoard = ({
       setIsLoading,
       search,
       filters,
+      calendarView,
+    }),
+    calendarTasks: useGetOrgTaskBoardCalendar({
+      columns,
+      setColumns,
+      setOrgTaskHasMore,
+      orgId,
+      userId,
+      entityType,
+      setIsLoading,
+      search,
+      filters,
+      calendarView,
+      fromDate,
+      toDate,
     }),
   };
   const { fetchMore, fetchPerStatus }: any =
@@ -370,6 +458,12 @@ const BoardsPage = () => {
   const [activeView, setActiveView] = useState(view);
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const [fromDate, setFromDate] = useState(firstDay);
+  const [toDate, setToDate] = useState(lastDay);
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -382,13 +476,14 @@ const BoardsPage = () => {
     columns,
     setColumns,
     setOrgTaskHasMore,
-
     orgId: orgId ?? orgData?.id,
     userId,
     entityType,
     setIsLoading,
     search,
     filters,
+    fromDate,
+    toDate,
   });
 
   useEffect(() => {
@@ -578,6 +673,11 @@ const BoardsPage = () => {
     }));
   }
 
+  const handleCalendarDatesChange = (date) => {
+    setFromDate(date);
+    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+  };
+
   const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
     setFilters(filtersToApply);
 
@@ -667,6 +767,7 @@ const BoardsPage = () => {
         onLoadMore={fetchMore}
         onSearch={handleSearch}
         onFilterChange={handleFilterChange}
+        onCalendarDateChange={handleCalendarDatesChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
         statuses={filters?.statuses}

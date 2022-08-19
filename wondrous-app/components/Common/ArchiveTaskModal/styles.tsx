@@ -17,7 +17,7 @@ export const StyledChildren = styled.div``;
 export const StyledBox = styled(Box)`
   width: 488px;
   height: 224px;
-  background: linear-gradient(180deg, #262626 0%, #141414 100%);
+  background: linear-gradient(180deg, #141414 100%, #141414 100%);
   border-radius: 6px;
 `;
 

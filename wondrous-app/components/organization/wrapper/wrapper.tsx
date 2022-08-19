@@ -69,6 +69,8 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
+import { StyledModal } from 'components/Common/InviteLinkModal/styles';
+import { CalendarViewModal } from './CalendarViewModal';
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
@@ -281,6 +283,7 @@ const Wrapper = (props) => {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
       />
+      {/* <CalendarViewModal open={true} onClose={() => setOpenJoinRequestModal(false)} /> */}
       <ChooseEntityToCreate />
       <TokenGatedAndClaimableRoleModal
         open={claimableRoleModalOpen}

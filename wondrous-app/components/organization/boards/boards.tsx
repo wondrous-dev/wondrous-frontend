@@ -19,6 +19,7 @@ const BOARDS_MAP = {
 type Props = {
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: ({}) => any;
+  onCalendarDateChange: ({}) => any;
   columns: Array<any>;
   onLoadMore: any;
   orgData: any;
@@ -41,6 +42,7 @@ const OrgBoards = (props: Props) => {
     orgData,
     onSearch,
     onFilterChange,
+    onCalendarDateChange,
     statuses,
     podIds,
     setColumns,
@@ -71,6 +73,7 @@ const OrgBoards = (props: Props) => {
             activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
             columns={columns}
             onLoadMore={onLoadMore}
+            onCalendarDateChange={onCalendarDateChange}
             hasMore={hasMore}
             setColumns={setColumns}
             entityType={entityType}

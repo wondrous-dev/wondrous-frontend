@@ -13,6 +13,7 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
+import { CalendarViewIcon } from 'components/Icons/ViewIcons/calendarView';
 
 export const BoardsActivityInlineView = ({
   onSearch,
@@ -80,6 +81,22 @@ export default function BoardsActivity(props) {
         } else {
           router.replace(
             `${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`
+          );
+        }
+      },
+    },
+    {
+      name: 'Calendar',
+      icon: <CalendarViewIcon color={view === ViewType.Calendar ? palette.blue20 : 'white'} />,
+      active: view === ViewType.Calendar,
+      action: () => {
+        if (setActiveView) {
+          // change only boards page instead of triggering changes on all router connected components while still shallow changing the url
+          setActiveView(ViewType.Calendar);
+          insertUrlParam('view', ViewType.Calendar);
+        } else {
+          router.replace(
+            `${delQuery(router.asPath)}?view=${ViewType.Calendar}${statusesQuery}${podIdsQuery}${userIdQuery}`
           );
         }
       },

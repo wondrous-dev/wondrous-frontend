@@ -22,6 +22,7 @@ import {
   ShowAllSearchResults,
 } from './styles';
 import ListView from 'components/ListView';
+import CalendarView from 'components/CalendarView';
 
 type Props = {
   columns: Array<any>;
@@ -32,6 +33,7 @@ type Props = {
   activeView?: string;
   onSearch?: any;
   onFilterChange?: any;
+  onCalendarDateChange?: any;
   statuses?: any;
   filterSchema?: any;
   userId?: string;
@@ -42,7 +44,16 @@ const LIST_VIEW_MAP = {
   [ENTITIES_TYPES.TASK]: ListView,
 };
 const Boards = (props: Props) => {
-  const { columns, onLoadMore, hasMore, isAdmin, setColumns, activeView, entityType = ENTITIES_TYPES.TASK } = props;
+  const {
+    columns,
+    onLoadMore,
+    hasMore,
+    isAdmin,
+    setColumns,
+    onCalendarDateChange,
+    activeView,
+    entityType = ENTITIES_TYPES.TASK,
+  } = props;
   const router = useRouter();
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
@@ -71,6 +82,14 @@ const Boards = (props: Props) => {
         {/* TEMPORARY until we come up with a list view for proposals */}
         {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
+        ) : view === ViewType.Calendar ? (
+          <CalendarView
+            columns={columns}
+            onLoadMore={onLoadMore}
+            hasMore={hasMore}
+            isAdmin={isAdmin}
+            onCalendarDateChange={onCalendarDateChange}
+          />
         ) : (
           <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}
