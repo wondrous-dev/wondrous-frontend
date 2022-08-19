@@ -11,7 +11,6 @@ import { Org } from 'types/Org';
 import { User } from 'types/User';
 
 import AddDaoModal from './AddDaoModal';
-import DaoSidebar from './DaoSidebar';
 import HelpModal from './HelpModal.jsx';
 import { PodModal } from './PodModal';
 import {
