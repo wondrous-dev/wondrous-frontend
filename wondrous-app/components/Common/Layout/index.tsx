@@ -4,7 +4,7 @@ import SideBarComponent from 'components/SideBar';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
-import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH, SIDEBAR_WIDTH_WITH_DAO } from 'utils/constants';
+import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
 import { CreateEntityContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
@@ -18,12 +18,6 @@ const getOrgsList = (userOrgs, router) => {
     const isActive = router.pathname.includes('/organization/[username]') && router.query?.username === item.username;
     return { ...item, isActive };
   });
-};
-
-const setWidth = ({ minimized, isMobile, orgsList }) => {
-  if (minimized || isMobile) return '0px';
-  if (orgsList.find(({ isActive }) => isActive)) return SIDEBAR_WIDTH_WITH_DAO;
-  return SIDEBAR_WIDTH;
 };
 
 export default function SidebarLayout({ children }) {
@@ -47,7 +41,7 @@ export default function SidebarLayout({ children }) {
   };
 
   const orgsList = getOrgsList(userOrgs, router);
-  const width = setWidth({ minimized, isMobile, orgsList });
+  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
   const sidebarValue = useMemo(
     () => ({
       minimized,

@@ -5,6 +5,7 @@ import { withAuth } from 'components/Auth/withAuth';
 import Activities from 'components/organization/activities/activities';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
+import DaoSidebar from 'components/organization/sidebar';
 
 const useGetOrgFromUsername = (username) => {
   const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
@@ -36,7 +37,9 @@ function ActivitiesPage() {
         orgId: org?.id,
       }}
     >
-      <Activities orgData={org} />
+      <DaoSidebar>
+        <Activities orgData={org} />
+      </DaoSidebar>
     </OrgBoardContext.Provider>
   );
 }

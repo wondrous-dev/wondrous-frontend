@@ -25,7 +25,7 @@ export const DrawerComponent = styled(Drawer)`
       background-color: ${palette.black97};
       height: 100vh;
       padding-top: 72px;
-      transition: 0.3s;
+
       z-index: 199;
       max-width: 500px;
       ${hideScrollbar}
