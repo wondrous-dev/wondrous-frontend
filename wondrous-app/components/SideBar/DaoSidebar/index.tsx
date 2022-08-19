@@ -31,7 +31,7 @@ const useDaoSidebarData = ({ username }) => [
       {
         text: 'Dashboard',
         Icon: HomeIcon,
-        // link: new page,
+        link: null, // to new project page
       },
       {
         text: 'Activity',
@@ -51,7 +51,7 @@ const useDaoSidebarData = ({ username }) => [
       {
         text: 'Pods',
         Icon: PodIcon,
-        // link: new page,
+        link: null, // link: not sure yet
       },
     ],
   },
@@ -91,7 +91,7 @@ const useDaoSidebarData = ({ username }) => [
       {
         text: 'Roles',
         Icon: StackIcon,
-        // link: new page,
+        link: null, // link: new page,
       },
     ],
   },
@@ -106,7 +106,7 @@ const ItemButton = styled(ButtonBase)`
     background: transparent;
     background: ${({ isActive }) => isActive && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
     :hover {
-      background: linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%);
+      background: #313131;
     }
   }
 `;
@@ -149,11 +149,11 @@ const ItemButtonIcon = styled.div`
   svg {
     ${ItemButton}:hover & 
     path {
-      stroke: #00baff;
+      stroke: #8fe1ff;
     }
     ${ItemButton}:hover & 
     rect {
-      stroke: #00baff;
+      stroke: #8fe1ff;
     }
   }
 `;
@@ -166,7 +166,7 @@ const ItemButtonText = styled(Typography)`
     font-size: 13px;
     color: ${({ isActive }) => (isActive ? '#00baff' : '#fff')};
     ${ItemButton}:hover & {
-      color: #00baff;
+      color: #8fe1ff;
     }
   }
 `;
