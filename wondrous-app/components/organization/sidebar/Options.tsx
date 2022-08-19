@@ -12,6 +12,7 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   gap: 12px;
+  padding-top: 70px;
 `;
 
 const StatusWrapper = styled.div`
@@ -145,14 +146,6 @@ export const ArrowIcon = styled((props) => (
     }
   }
 `;
-
-const OrgButton = () => (
-  <Button disableRipple>
-    <ButtonIcon />
-    <Text>Radicle</Text>
-    <ArrowIcon />
-  </Button>
-);
 
 const MenuStyled = styled(Menu)`
   && {

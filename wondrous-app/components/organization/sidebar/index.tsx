@@ -1,3 +1,4 @@
+import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import useSideBar from 'hooks/useSideBar';
 import styled from 'styled-components';
 
@@ -5,23 +6,27 @@ import List from './List';
 import Options from './Options';
 
 const Wrapper = styled.div`
-  width: 260px;
-  height: 100%;
   background: #232323;
-  display: ${({ isActive }) => (isActive ? 'block' : 'none')};
-  padding: 24px;
-  display: flex;
   flex-direction: column;
   gap: 28px;
-  display: ${({ minimized }) => (minimized ? 'none' : 'block')};
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  position: fixed;
+  width: 260px;
+  display: flex;
+  ${({ isActive, minimized }) => isActive && minimized && `left: -100%`};
+  ${ScrollBarStyles}
 `;
 
 const DaoSidebarWrapper = styled.div`
   display: flex;
-  height: 100%;
-  min-height: 100vh;
-  padding-top: 70px;
-  transition: 0.3s;
+  width: 100%;
+  position: relative;
+`;
+
+const ChildrenWrapper = styled.div`
+  margin-left: ${({ minimized }) => (minimized ? '0px' : '280px')};
   width: 100%;
 `;
 
@@ -36,7 +41,7 @@ const DaoSidebar = ({ children }) => {
         <Options />
         <List username={username} />
       </Wrapper>
-      <div>{children}</div>
+      <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </DaoSidebarWrapper>
   );
 };
