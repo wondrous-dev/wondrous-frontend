@@ -44,10 +44,9 @@ function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText
 }
 
 const inProgressMoveCompleted =
-  ({ handleClose, boardColumns, board }) =>
+  ({ boardColumns, board }) =>
   (data) => {
     const task = data?.updateTaskStatus;
-    handleClose();
     if (boardColumns?.setColumns) {
       const transformedTask = transformTaskToTaskCard(task, {});
       if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
@@ -190,7 +189,7 @@ export function TaskSubmissions(props) {
   } = props;
   const router = useRouter();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
-    onCompleted: inProgressMoveCompleted({ handleClose, boardColumns, board }),
+    onCompleted: inProgressMoveCompleted({ boardColumns, board }),
   });
   const [makeSubmission, setMakeSubmission] = useState(false);
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
@@ -207,7 +206,6 @@ export function TaskSubmissions(props) {
         },
       },
     });
-    handleClose();
   };
 
   const handleCancelSubmission = () => {

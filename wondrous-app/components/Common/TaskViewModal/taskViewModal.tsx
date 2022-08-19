@@ -2,7 +2,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
-import { format, formatDistance } from 'date-fns';
+import { formatDistance } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS } from 'graphql/queries';
@@ -39,7 +39,15 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard, useCanViewTask, useUserProfile } from 'utils/hooks';
+import {
+  useColumns,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useCanViewTask,
+  useUserProfile,
+  useCreateEntityContext,
+} from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 import { useMe } from '../../Auth/withAuth';
@@ -140,10 +148,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const userProfile = useUserProfile();
+  const createEntityContext = useCreateEntityContext();
   const getUserPermissionContext = useCallback(
-    () => orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext,
-    [orgBoard, userBoard, podBoard]
+    () => createEntityContext?.userPermissionsContext,
+    [createEntityContext]
   );
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
@@ -465,7 +473,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
         );
         boardColumns?.setColumns(columns);
       },
-      refetchQueries: ['GetOrgTaskBoardProposals'],
+      refetchQueries: ['GetOrgTaskBoardProposals', 'getUserTaskBoardProposals'],
     });
     document.body.setAttribute('style', `position: relative;`);
     handleClose();

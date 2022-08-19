@@ -74,6 +74,7 @@ import MilestoneIcon from '../../Icons/milestone';
 import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
+import { ButtonPrimary } from '../button';
 import TASK_ICONS from './constants';
 
 let windowOffset = 0;
@@ -236,10 +237,8 @@ export function TaskCard({
                     Claimed
                   </ActionButton>
                 ) : (
-                  <ActionButton
-                    style={{
-                      marginRight: '8px',
-                    }}
+                  <ButtonPrimary
+                    startIcon={<Claim />}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -265,15 +264,8 @@ export function TaskCard({
                       });
                     }}
                   >
-                    <Claim />
-                    <span
-                      style={{
-                        marginLeft: '4px',
-                      }}
-                    >
-                      Claim
-                    </span>
-                  </ActionButton>
+                    Claim
+                  </ButtonPrimary>
                 )}
               </>
             ) : (
