@@ -479,7 +479,28 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
     width: 50px;
     padding: 0 !important;
     min-width: 0 !important;
+    text-decoration: underline;
   }
+`;
+export const CloseButton = styled.button`
+  position: absolute;
+  right: -8px;
+  top: 12px;
+  cursor: pointer;
+  background: #1c1c1c;
+  border-radius: 50%;
+  display: flex;
+  padding: 3px;
+  border: 1px solid #363636;
+
+  &:hover {
+    background: #363636;
+  }
+`;
+
+export const UploadedImage = styled.div`
+  position: relative;
+  width: fit-content;
 `;
 
 // LinkSquareIcon.tsx

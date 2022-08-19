@@ -27,7 +27,7 @@ import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
-import { LogoWrapper, OrgLogoWrapper } from './styles';
+import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MoreInfoModal } from '../../profile/modals';
@@ -301,14 +301,18 @@ function Wrapper(props) {
                     </OrgLogoWrapper>
 
                     <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
-                    <PodIcon
-                      color={podProfile?.color}
-                      style={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: 50,
-                      }}
-                    />
+                    {podProfile?.profilePicture ? (
+                      <PodProfileImage src={podProfile?.profilePicture} />
+                    ) : (
+                      <PodIcon
+                        color={podProfile?.color}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          borderRadius: 50,
+                        }}
+                      />
+                    )}
                   </LogoWrapper>
                 )}
 
