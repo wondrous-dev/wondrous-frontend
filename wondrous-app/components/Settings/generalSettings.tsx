@@ -5,6 +5,7 @@ import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -22,7 +23,6 @@ import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
-import { SettingsWrapper } from './settingsWrapper';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,

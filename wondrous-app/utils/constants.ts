@@ -91,6 +91,7 @@ const SUPPORTED_CHAINS = {
   56: 'BSC',
   288: 'BOBA',
   10: 'OPTIMISM',
+  8217: 'KLAYTN',
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -102,6 +103,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   56: 'BNB',
   288: 'ETH',
   10: 'OP',
+  8217: 'KLAY',
 };
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -158,6 +160,7 @@ export const CHAIN_IDS = {
   BSC: 56,
   BOBA: 288,
   OPTIMISM: 10,
+  KLAYTN: 8217,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -169,6 +172,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   bsc: 'BNB smart chain',
   boba: 'Boba Mainnet',
   optimism: 'Optimism Mainnet',
+  klaytn: 'Klaytn Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -197,8 +201,12 @@ export const SUPPORTED_CURRENCIES = [
     chains: [10],
   },
   {
+    symbol: 'KLAY',
+    chains: [8217],
+  },
+  {
     symbol: 'WONDER',
-    chains: [1, 137, 1666600000, 42161, 56, 288, 10],
+    chains: [1, 137, 1666600000, 42161, 56, 288, 10, 8127],
     contracts: {
       1: '',
       137: '',
@@ -207,6 +215,7 @@ export const SUPPORTED_CURRENCIES = [
       56: '',
       288: '',
       10: '',
+      8127: '',
     },
   },
   {

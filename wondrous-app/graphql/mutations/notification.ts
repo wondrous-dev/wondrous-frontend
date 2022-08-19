@@ -32,6 +32,22 @@ export const DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
   }
 `;
 
+export const ENABLE_POD_DISCORD_NOTIFICATION_CONFIG = gql`
+  mutation enablePodDiscordNotificationConfig($podId: ID!) {
+    enablePodDiscordNotificationConfig(podId: $podId) {
+      success
+    }
+  }
+`;
+
+export const DISABLE_POD_DISCORD_NOTIFICATION_CONFIG = gql`
+  mutation disablePodDiscordNotificationConfig($podId: ID!) {
+    disablePodDiscordNotificationConfig(podId: $podId) {
+      success
+    }
+  }
+`;
+
 export const ENABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
   mutation enableUserDiscordNotification {
     enableUserDiscordNotification {
@@ -51,6 +67,14 @@ export const DISABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
 export const MANUAL_DISCORD_ORG_SETUP = gql`
   mutation manualDiscordOrgSetup($orgId: ID!, $guildId: String!, $channelId: String!) {
     manualDiscordOrgSetup(orgId: $orgId, guildId: $guildId, channelId: $channelId) {
+      success
+    }
+  }
+`;
+
+export const MANUAL_DISCORD_POD_SETUP = gql`
+  mutation manualDiscordPodSetup($podId: ID!, $guildId: String!, $channelId: String!) {
+    manualDiscordPodSetup(podId: $podId, guildId: $guildId, channelId: $channelId) {
       success
     }
   }
