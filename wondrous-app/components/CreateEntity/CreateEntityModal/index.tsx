@@ -996,6 +996,7 @@ const entityTypeData = {
       reviewerIds: null,
       rewards: [],
       dueDate: null,
+      points: null,
       labelIds: null,
       milestoneId: null,
       privacyLevel: privacyOptions.public.value,
