@@ -187,25 +187,25 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
           return content;
         }}
         renderInput={(params) => (
-            <Input
-              sx={{ height: '40px' }}
-              {...params}
-              placeholder={`${isExpanded || !isExpandable ? searchLabel : 'Search'}`}
-              InputProps={{
-                ...params.InputProps,
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIconWrapped />
-                  </InputAdornment>
-                ),
-                endAdornment: (
-                  <InputAdornment position="end">
-                    {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-                  </InputAdornment>
-                ),
-              }}
-            />
-          )}
+          <Input
+            sx={{ height: '40px' }}
+            {...params}
+            placeholder={`${isExpanded || !isExpandable ? searchLabel : 'Search'}`}
+            InputProps={{
+              ...params.InputProps,
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIconWrapped />
+                </InputAdornment>
+              ),
+              endAdornment: (
+                <InputAdornment position="end">
+                  {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+                </InputAdornment>
+              ),
+            }}
+          />
+        )}
       />
     </>
   );

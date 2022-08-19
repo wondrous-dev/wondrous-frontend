@@ -1,30 +1,30 @@
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
+import { cloneDeep } from 'lodash';
 import { useMe } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { AvatarList } from 'components/Common/AvatarList';
 import { Compensation } from 'components/Common/Compensation';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { SafeImage } from 'components/Common/Image';
 import { TaskMedia } from 'components/Common/MediaPlayer';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import { TaskSummaryAction } from 'components/Common/TaskSummary/styles';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { CreateEntity } from 'components/CreateEntity';
 import { Arrow } from 'components/Icons/sections';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
-import { ARCHIVE_TASK, UNARCHIVE_TASK, UPDATE_TASK_ASSIGNEE } from 'graphql/mutations/task';
-import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_TASK_REVIEWERS } from 'graphql/queries';
-import { cloneDeep } from 'lodash';
-import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useEffect, useState } from 'react';
-import { delQuery } from 'utils';
+import { CreateEntity } from 'components/CreateEntity';
 import { renderMentionString } from 'utils/common';
 import * as Constants from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { delQuery } from 'utils';
+import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 
 import Card from './card';
 import TASK_ICONS from './constants';
@@ -61,6 +61,20 @@ const useGetReviewers = (editTask, task) => {
     }
   }, [editTask, getReviewers, reviewerData?.getTaskReviewers?.length, task?.id]);
   return reviewerData?.getTaskReviewers;
+};
+
+const useGetTaskById = (editTask, task) => {
+  const [getTaskById, { data: taskData }] = useLazyQuery(GET_TASK_BY_ID);
+  useEffect(() => {
+    if (editTask && task?.id) {
+      getTaskById({
+        variables: {
+          taskId: task?.id,
+        },
+      });
+    }
+  }, [editTask, getTaskById, task?.id]);
+  return taskData?.getTaskById;
 };
 
 export function Task(props) {
@@ -144,6 +158,7 @@ export function Task(props) {
     },
   });
 
+  const taskData = useGetTaskById(editTask, task);
   const reviewerData = useGetReviewers(editTask, task);
 
   const closeProposal = (proposalId, columnStatus) => {
@@ -264,6 +279,7 @@ export function Task(props) {
         cancel={() => setEditTask(false)}
         existingTask={{
           ...task,
+          ...taskData,
           reviewers: reviewerData || [],
         }}
         isTaskProposal={false}

@@ -10,13 +10,13 @@ interface Item {
   isActive: boolean;
 }
 const Toggle = ({ items }: Props) => (
-    <ToggleWrapper>
-      {items.map((item: Item, idx) => (
-        <ToggleItem key={idx} onClick={item.onChange} isActive={item.isActive}>
-          {item.label}
-        </ToggleItem>
-      ))}
-    </ToggleWrapper>
-  );
+  <ToggleWrapper>
+    {items.map((item: Item, idx) => (
+      <ToggleItem key={idx} onClick={item.onChange} isActive={item.isActive}>
+        {item.label}
+      </ToggleItem>
+    ))}
+  </ToggleWrapper>
+);
 
 export default Toggle;

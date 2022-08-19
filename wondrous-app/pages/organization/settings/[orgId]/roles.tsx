@@ -38,7 +38,6 @@ function RolesPage() {
         orgId,
       },
       onCompleted: (data) => {
-        console.log('hmmm', data?.getOrgRoles);
         setRoles(JSON.parse(JSON.stringify(data?.getOrgRoles)) || []);
       },
     }
