@@ -38,19 +38,6 @@ const MilestoneTaskFilterStatusIcon = styled(({ className }) => (
   }
 `;
 
-const MilestoneEmpty = styled.div`
-  height: 68px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  /* background-color: #171717; */
-  font-weight: 500;
-  color: ${({ theme }) => theme.palette.grey250};
-  display: flex;
-  font-family: 'Space Grotesk';
-`;
-
 export const TASK_ICONS_LABELS = {
   '': { Icon: MilestoneTaskFilterStatusIcon, label: 'All Tasks' },
   [Constants.TASK_STATUS_TODO]: { Icon: ToDo, label: 'To Do' },
