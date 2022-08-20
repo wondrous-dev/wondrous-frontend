@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
@@ -24,6 +23,7 @@ import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import WrenchIcon from '../../Icons/wrench';
 import { ErrorText } from '../../Common';
+import { WalletSetupModal } from './WalletSetupModal';
 import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
 
 const LIMIT = 20;
@@ -71,12 +71,17 @@ function Wallets(props) {
   };
   const [errors, setErrors] = useState(emptyError);
 
+  console.log({ userAddress });
+
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
       wonderWeb3.onConnect();
     }
-    setUserAddress(wonderWeb3.address);
   }, []);
+
+  useEffect(() => {
+    if (wonderWeb3?.address) setUserAddress(wonderWeb3.address);
+  }, [wonderWeb3?.address]);
 
   const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
@@ -186,6 +191,7 @@ function Wallets(props) {
 
   return (
     <SettingsWrapper>
+      <WalletSetupModal />
       <WalletsContainer>
         <HeaderBlock
           // icon={<WrenchIcon circle />}
