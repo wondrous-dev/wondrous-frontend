@@ -135,7 +135,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
               <SidebarTooltip key={id} title={name}>
                 <Link key={id} href={`/organization/${username}/boards`} passHref>
                   <DrawerListItem button key={id} isActive={isActive}>
-                    {profilePicture ? (
+                    {thumbnailPicture || profilePicture ? (
                       <SafeImage
                         useNextImage={false}
                         src={thumbnailPicture || profilePicture}
