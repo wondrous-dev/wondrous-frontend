@@ -35,6 +35,7 @@ function ActivitiesPage() {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         orgId: org?.id,
+        orgData: org,
       }}
     >
       <DaoSidebar>
