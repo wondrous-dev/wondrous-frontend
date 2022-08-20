@@ -2,8 +2,8 @@ import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import useSideBar from 'hooks/useSideBar';
 import styled from 'styled-components';
 
+import AboutEntity from './AboutEntity';
 import List from './List';
-import Options from './Options';
 
 const Wrapper = styled.div`
   background: #232323;
@@ -15,7 +15,7 @@ const Wrapper = styled.div`
   position: fixed;
   width: 260px;
   display: flex;
-  ${({ isActive, minimized }) => isActive && minimized && `left: -100%`};
+  ${({ minimized }) => minimized && `left: -100%`};
   ${ScrollBarStyles}
 `;
 
@@ -31,15 +31,12 @@ const ChildrenWrapper = styled.div`
 `;
 
 const DaoSidebar = ({ children }) => {
-  const { orgsList, minimized } = useSideBar();
-  const activeOrg = orgsList.find(({ isActive }) => isActive);
-  if (!activeOrg) return null;
-  const { isActive, username } = activeOrg;
+  const { minimized } = useSideBar();
   return (
     <DaoSidebarWrapper>
-      <Wrapper isActive={isActive} minimized={minimized}>
-        <Options />
-        <List username={username} />
+      <Wrapper minimized={minimized}>
+        <AboutEntity />
+        <List />
       </Wrapper>
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </DaoSidebarWrapper>

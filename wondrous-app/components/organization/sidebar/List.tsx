@@ -2,6 +2,7 @@ import { ButtonBase, Typography } from '@mui/material';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useOrgBoard } from 'utils/hooks';
 
 import CheckBoxIcon from './icons/checkBox.svg';
 import ContentPaste from './icons/contentPaste.svg';
@@ -15,78 +16,82 @@ import ShowChartIcon from './icons/showChart.svg';
 import StackIcon from './icons/stack.svg';
 import StartIcon from './icons/star.svg';
 
-const useDaoSidebarData = ({ username }) => [
-  {
-    label: '',
-    items: [
-      {
-        text: 'Dashboard',
-        Icon: HomeIcon,
-        link: null, // to new project page
-      },
-      {
-        text: 'Activity',
-        Icon: ShowChartIcon,
-        link: `/organization/${username}/activities`,
-      },
-      {
-        text: 'Analytics',
-        Icon: PieChartIcon,
-        link: `/organization/${username}/analytics`,
-      },
-      {
-        text: 'Resources',
-        Icon: FolderIcon,
-        link: `/organization/${username}/docs`,
-      },
-      {
-        text: 'Pods',
-        Icon: PodIcon,
-        link: null, // link: not sure yet
-      },
-    ],
-  },
-  {
-    label: 'Workspaces',
-    items: [
-      {
-        text: 'Tasks',
-        Icon: CheckBoxIcon,
-        link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.TASK}`,
-      },
-      {
-        text: 'Bounties',
-        Icon: StartIcon,
-        link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
-      },
-      {
-        text: 'Milestones',
-        Icon: FlagIcon,
-        link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
-      },
-      {
-        text: 'Proposals',
-        Icon: ContentPaste,
-        link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-      },
-    ],
-  },
-  {
-    label: 'Community',
-    items: [
-      {
-        text: 'Members',
-        Icon: GroupIcon,
-        link: `/organization/${username}/members`,
-      },
-      {
-        text: 'Roles',
-        Icon: StackIcon,
-        link: null, // link: new page,
-      },
-    ],
-  },
-];
+const useDaoSidebarData = () => {
+  const { orgData } = useOrgBoard();
+  const username = orgData?.username;
+  return [
+    {
+      label: '',
+      items: [
+        {
+          text: 'Dashboard',
+          Icon: HomeIcon,
+          link: null, // to new project page
+        },
+        {
+          text: 'Activity',
+          Icon: ShowChartIcon,
+          link: `/organization/${username}/activities`,
+        },
+        {
+          text: 'Analytics',
+          Icon: PieChartIcon,
+          link: `/organization/${username}/analytics`,
+        },
+        {
+          text: 'Resources',
+          Icon: FolderIcon,
+          link: `/organization/${username}/docs`,
+        },
+        {
+          text: 'Pods',
+          Icon: PodIcon,
+          link: null, // link: not sure yet
+        },
+      ],
+    },
+    {
+      label: 'Workspaces',
+      items: [
+        {
+          text: 'Tasks',
+          Icon: CheckBoxIcon,
+          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.TASK}`,
+        },
+        {
+          text: 'Bounties',
+          Icon: StartIcon,
+          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+        },
+        {
+          text: 'Milestones',
+          Icon: FlagIcon,
+          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
+        },
+        {
+          text: 'Proposals',
+          Icon: ContentPaste,
+          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+        },
+      ],
+    },
+    {
+      label: 'Community',
+      items: [
+        {
+          text: 'Members',
+          Icon: GroupIcon,
+          link: `/organization/${username}/members`,
+        },
+        {
+          text: 'Roles',
+          Icon: StackIcon,
+          link: null, // link: new page,
+        },
+      ],
+    },
+  ];
+};
 
 const ItemButton = styled(ButtonBase)`
   && {
@@ -195,8 +200,8 @@ const Item = ({ children, Icon, isActive, ...props }) => (
   </ItemButton>
 );
 
-const List = ({ username }) => {
-  const daoSidebarData = useDaoSidebarData({ username });
+const List = () => {
+  const daoSidebarData = useDaoSidebarData();
   const router = useRouter();
   const routerPush = (params) => () => router.push(params);
   const isActive = (link) => router.asPath.includes(link);
