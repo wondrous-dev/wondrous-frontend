@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import {
   MissionControlWorkspaceCardWrapper,
   WorkspaceCardContainer,
@@ -8,6 +9,7 @@ import {
   WorkspaceCardStat,
   WorkspaceCardStatCount,
   WorkspaceCardStatLabel,
+  WorkspaceCardLabelWrapper,
 } from './styles';
 
 const MissionControlWorkspaceCard: React.FC<{ label: string; labelGradient: string; img: string; stats: any[] }> = ({
@@ -20,15 +22,19 @@ const MissionControlWorkspaceCard: React.FC<{ label: string; labelGradient: stri
     <WorkspaceCardContainer>
       <WorkspaceCardBannerContainer>
         <WorkspaceCardBannerImage src={img} />
-        <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
+        <WorkspaceCardLabelWrapper>
+          <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
+        </WorkspaceCardLabelWrapper>
       </WorkspaceCardBannerContainer>
       <WorkspaceCardStatsContainer>
         {stats.map((stat, idx) => (
-          <WorkspaceCardStat key={idx}>
-            <stat.icon />
-            <WorkspaceCardStatCount gradient={stat.countGradient}>{stat.count}</WorkspaceCardStatCount>
-            <WorkspaceCardStatLabel>{stat.label}</WorkspaceCardStatLabel>
-          </WorkspaceCardStat>
+          <Link href={stat.url} key={idx}>
+            <WorkspaceCardStat>
+              <stat.icon />
+              <WorkspaceCardStatCount gradient={stat.countGradient}>{stat.count}</WorkspaceCardStatCount>
+              <WorkspaceCardStatLabel>{stat.label}</WorkspaceCardStatLabel>
+            </WorkspaceCardStat>
+          </Link>
         ))}
       </WorkspaceCardStatsContainer>
     </WorkspaceCardContainer>

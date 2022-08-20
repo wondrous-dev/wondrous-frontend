@@ -11,7 +11,6 @@ import HomeIcon from 'components/Icons/home';
 
 import GlobalSearch from 'components/GlobalSearch';
 import { User } from 'types/User';
-import { Notification } from 'types/Notification';
 import {
   HeaderBar,
   HeaderContainer,
@@ -25,28 +24,15 @@ import {
 } from './styles';
 
 type Props = {
-  fetchMoreNotifications: (fetchData, fetchVars) => unknown;
   isMobile: boolean;
-  notifications: Notification[];
   onLogoClick: () => unknown;
   onSignInClick: () => unknown;
   openCreateFormModal: () => unknown;
-  setNotifications: () => unknown;
   showCreateButton: boolean;
   user: User | null;
 };
 
-const HeaderMemo = ({
-  fetchMoreNotifications,
-  isMobile,
-  notifications,
-  onLogoClick,
-  onSignInClick,
-  openCreateFormModal,
-  setNotifications,
-  showCreateButton,
-  user,
-}: Props) => (
+const HeaderMemo = ({ isMobile, onLogoClick, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => (
   <HeaderBar>
     <HeaderContainer>
       <HeaderLeftBlock>
@@ -74,11 +60,7 @@ const HeaderMemo = ({
         {user && (
           <>
             {!isMobile && <Wallet />}
-            <NotificationsBoard
-              fetchMoreNotifications={fetchMoreNotifications}
-              notifications={notifications}
-              setNotifications={setNotifications}
-            />
+            <NotificationsBoard />
             <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
               <CreateIconOutlined id="tour-header-create-btn" />
             </HeaderCreateButton>
@@ -107,11 +89,5 @@ export default memo(
   (prevProps, nextProps) =>
     prevProps.isMobile === nextProps.isMobile &&
     prevProps.showCreateButton === nextProps.showCreateButton &&
-    prevProps.user?.id === nextProps.user?.id &&
-    prevProps.notifications.length === nextProps.notifications.length &&
-    prevProps.notifications.every(
-      (notification, index) =>
-        notification.id === nextProps.notifications[index]?.id &&
-        notification.viewedAt === nextProps.notifications[index]?.viewedAt
-    )
+    prevProps.user?.id === nextProps.user?.id
 );

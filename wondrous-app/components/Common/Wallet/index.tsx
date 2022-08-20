@@ -7,6 +7,7 @@ import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 import Tooltip from 'components/Tooltip';
 import { FilterCheckbox } from 'components/Common/Filter/styles';
 import { ChevronFilled } from 'components/Icons/sections';
+import { RequestApproveButton } from 'components/organization/members/styles';
 import { Button } from '../button';
 import Ethereum from '../../Icons/ethereum';
 import { Metamask } from '../../Icons/metamask';
@@ -46,7 +47,7 @@ const CHAIN_LOGO = {
   '288': <Boba />,
 };
 
-const CHAIN_TOOLTIP = {
+export const CHAIN_TOOLTIP = {
   '1': 'Ethereum',
   '4': 'Ethereum',
   '137': 'Matic',
@@ -210,19 +211,9 @@ function Wallet() {
   if (!connected) {
     return (
       <WalletWrapper>
-        <Button
-          highlighted="true"
-          onClick={() => setWalletModalOpen(true)}
-          style={{ width: '270px', minHeight: '40px' }}
-        >
-          <PaddedParagraph
-            style={{
-              marginLeft: '8px',
-            }}
-          >
-            {!user?.activeEthAddress ? 'Link Wallet to Account' : 'Connect Wallet'}
-          </PaddedParagraph>
-        </Button>
+        <RequestApproveButton onClick={() => setWalletModalOpen(true)}>
+          {!user?.activeEthAddress ? 'Link Wallet to Account' : 'Connect wallet now'}
+        </RequestApproveButton>
         <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
       </WalletWrapper>
     );

@@ -40,14 +40,15 @@ export const WorkspaceCardBannerImage = styled.img`
 
 export const WorkspaceCardBannerLabel = styled(Typography)`
   && {
-    text-align: center;
-    font-weight: 900;
-    font-size: 40px;
-    transform: scale(1.1, 1);
     font-family: ${typography.fontFamily};
+    font-style: normal;
+    font-weight: 700;
+    font-size: 36px;
+    line-height: 36px;
+
+    text-align: center;
+    letter-spacing: 0.0025em;
     margin-bottom: 18%;
-    position: absolute;
-    padding: 50px;
     background: ${({ gradient }) => gradient};
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -66,6 +67,7 @@ export const WorkspaceCardStatsContainer = styled.div`
 export const WorkspaceCardStat = styled.div`
   display: flex;
   gap: 10px;
+  cursor: pointer;
   background: ${palette.grey950};
   border-radius: 4px;
   padding: 2px 4px;
@@ -100,4 +102,9 @@ export const WorkspaceCardStatLabel = styled(Typography)`
     font-size: 15px;
     color: ${palette.white};
   }
+`;
+
+export const WorkspaceCardLabelWrapper = styled.div`
+  position: absolute;
+  width: min-content;
 `;

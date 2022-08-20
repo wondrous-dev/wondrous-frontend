@@ -210,7 +210,7 @@ const privacyOptions = {
   public: {
     label: 'Public',
     value: PRIVACY_LEVEL.public,
-    Icon: CreateEntityPrivacyPublicIcon,
+    Icon: null,
   },
   private: {
     label: 'Members',

@@ -10,7 +10,7 @@ export const MissionControlWrapper = styled.div`
 
 export const MissionControlWidgetsWrapper = styled.div`
   flex: 3;
-  background: linear-gradient(180deg, #7427ff 0%, #292153 87.74%);
+  background: linear-gradient(180deg, #7427ff 12.22%, #292153 100%);
   mix-blend-mode: normal;
   box-shadow: 10px 4px 54px rgba(0, 0, 0, 0.45);
   backdrop-filter: blur(34px);
@@ -26,6 +26,9 @@ export const MissionControlSidebarWrapper = styled.div`
   background-image: url(/images/missionControl/sidebar-mission.webp);
   background-size: cover;
   padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 `;
 
 export const MissionControlWorkspaceCard = styled.div`
@@ -35,16 +38,10 @@ export const MissionControlWorkspaceCard = styled.div`
   height: 500px;
 `;
 
-export const MissionControlWidgetCard = styled.div`
-  border: 1px solid white;
-  height: 250px;
-  flex: 1;
-`;
-
 export const MissionControlWidgetsContainer = styled.div`
   flex-basis: 100%;
   display: flex;
   gap: 14px;
-  justify-content: center;
-  align-items: center;
+  justify-content: flex-start;
+  align-items: baseline;
 `;

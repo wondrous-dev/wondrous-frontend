@@ -114,6 +114,7 @@ const cache = new InMemoryCache({
             return merged;
           },
         },
+        getNotifications: offsetLimitPagination(),
       },
     },
   },
