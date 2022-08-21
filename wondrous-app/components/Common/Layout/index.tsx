@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
 import HeaderComponent from 'components/Header';
-import SideBarComponent from 'components/Common/Sidebar/Permanent';
+import SideBarComponent from 'components/Common/Sidebar/Main';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
