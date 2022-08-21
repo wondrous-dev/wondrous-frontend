@@ -2,7 +2,7 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import Boards from 'components/organization/boards/boards';
-import DaoSidebar from 'components/organization/sidebar';
+import DaoSidebar from 'components/Common/Sidebar/Organization';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {

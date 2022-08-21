@@ -6,7 +6,7 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
 import Analytics from 'components/organization/analytics';
 import { useGetOrgFromUsername } from 'utils/hooks';
-import DaoSidebar from 'components/organization/sidebar';
+import DaoSidebar from 'components/Common/Sidebar/Organization';
 
 function ActivitiesPage() {
   const router = useRouter();

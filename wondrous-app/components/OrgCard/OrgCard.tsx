@@ -1,6 +1,6 @@
 import SmartLink from 'components/Common/SmartLink';
 import { DAOIcon } from 'components/Icons/dao';
-import { NoLogoDAO } from 'components/Common/Sidebar/SidebarPermanent/styles';
+import { NoLogoDAO } from 'components/Common/Sidebar/Permanent/styles';
 import { format } from 'date-fns';
 import { LINK } from 'utils/constants';
 
