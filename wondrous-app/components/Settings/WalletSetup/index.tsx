@@ -4,7 +4,7 @@ import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { useWonderWeb3 } from 'services/web3';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import { SettingsWrapper } from 'components/Common/Sidebar';
 import WalletSetupModal from 'components/Settings/WalletSetup/WalletSetupModal';
 import { HeaderBlock } from 'components/Settings/headerBlock';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
