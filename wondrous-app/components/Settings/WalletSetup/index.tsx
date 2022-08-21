@@ -60,9 +60,12 @@ if (!process.env.NEXT_PUBLIC_PRODUCTION) {
 function Wallets(props) {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
-  const { orgId, podId } = router.query;
+  const { orgId, podId } = router.query as { orgId: string; podId: string };
   const [wallets, setWallets] = useState([]);
   const [selectedChain, setSelectedChain] = useState('ethereum');
+
+  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
+
   const [walletName, setWalletName] = useState('');
   const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
@@ -70,8 +73,6 @@ function Wallets(props) {
     safeAddressError: null,
   };
   const [errors, setErrors] = useState(emptyError);
-
-  console.log({ userAddress });
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
@@ -123,6 +124,10 @@ function Wallets(props) {
     },
     refetchQueries: ['getPodWallet'],
   });
+
+  const handleOpenAddWalletModal = () => {
+    setIsAddWalletModalOpen(true);
+  };
 
   const handleCreateWalletClick = async () => {
     const newError = emptyError;
@@ -191,7 +196,13 @@ function Wallets(props) {
 
   return (
     <SettingsWrapper>
-      <WalletSetupModal />
+      <WalletSetupModal
+        isOpen={isAddWalletModalOpen}
+        handleClose={() => setIsAddWalletModalOpen(false)}
+        userMetamaskAddress={userAddress}
+        orgId={orgId}
+        podId={podId}
+      />
       <WalletsContainer>
         <HeaderBlock
           // icon={<WrenchIcon circle />}
@@ -238,7 +249,7 @@ function Wallets(props) {
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>
-        <div
+        {/* <div
           style={{
             display: 'flex',
             alignItems: 'center',
@@ -263,14 +274,14 @@ function Wallets(props) {
               height: 'auto',
             }}
           />
-        </div>
+        </div> */}
         {errors.safeAddressError && <ErrorText> {errors.safeAddressError} </ErrorText>}
         <CreateFormPreviewButton
           style={{
             marginLeft: 0,
             marginTop: '32px',
           }}
-          onClick={handleCreateWalletClick}
+          onClick={handleOpenAddWalletModal}
         >
           Add wallet
         </CreateFormPreviewButton>
