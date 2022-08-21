@@ -16,7 +16,7 @@ import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSu
 import { PayModal } from 'components/Settings/Payouts/modal';
 import { BatchPayoutButton, LedgerHeaderButtonsContainer, TableCellText } from 'components/Settings/Payouts/styles';
 import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import { SettingsWrapper } from 'components/Common/Sidebar';
 import { GeneralSettingsContainer } from 'components/Settings/styles';
 import {
   StyledTable,
