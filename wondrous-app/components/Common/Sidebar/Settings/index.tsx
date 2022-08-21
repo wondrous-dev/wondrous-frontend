@@ -7,8 +7,12 @@ import ExitIcon from 'components/Icons/exit';
 import GeneralSettingsIcon from 'components/Icons/generalSettings';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import MembersIcon from 'components/Icons/members';
+import { NotificationOutlineSettings } from 'components/Icons/notifications';
 import PodIcon from 'components/Icons/podIcon';
 import RolesIcon from 'components/Icons/roles';
+import { TaskImportIcon } from 'components/Icons/taskImporticon';
+import TokenGatingIcon from 'components/Icons/tokenGating.svg';
+import WrenchIcon from 'components/Icons/wrench';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
@@ -19,10 +23,6 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { NotificationOutlineSettings } from '../Icons/notifications';
-import { TaskImportIcon } from '../Icons/taskImporticon';
-import TokenGatingIcon from '../Icons/tokenGating.svg';
-import WrenchIcon from '../Icons/wrench';
 import {
   ArchivedPodIndicatorText,
   ItemButtonInner,
