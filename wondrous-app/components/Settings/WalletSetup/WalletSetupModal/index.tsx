@@ -3,10 +3,10 @@ import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useMutation } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
 import { useWonderWeb3 } from 'services/web3';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import useAlerts from 'hooks/useAlerts';
 import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations';
 import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from 'utils/constants';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   DEFAULT_WALLET_NETWORK,
   DEFAULT_WALLET_TYPE,

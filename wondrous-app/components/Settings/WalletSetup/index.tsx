@@ -1,10 +1,8 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations/wallet';
-import SafeServiceClient from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
 import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
@@ -16,17 +14,10 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import { TableValueText, WalletAddressInput, WalletsContainer } from './styles';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import { TableValueText, WalletsContainer } from './styles';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import WrenchIcon from '../../Icons/wrench';
-import { ErrorText } from '../../Common';
 import { WalletSetupModal } from './WalletSetupModal';
-import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
-
-const LIMIT = 20;
 
 const SUPPORTED_PAYMENT_CHAINS = [
   {
@@ -62,17 +53,8 @@ function Wallets(props) {
   const wonderWeb3 = useWonderWeb3();
   const { orgId, podId } = router.query as { orgId: string; podId: string };
   const [wallets, setWallets] = useState([]);
-  const [selectedChain, setSelectedChain] = useState('ethereum');
-
   const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
-
-  const [walletName, setWalletName] = useState('');
-  const [safeAddress, setSafeAddress] = useState('');
   const [userAddress, setUserAddress] = useState('');
-  const emptyError = {
-    safeAddressError: null,
-  };
-  const [errors, setErrors] = useState(emptyError);
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
@@ -97,86 +79,10 @@ function Wallets(props) {
     fetchPolicy: 'network-only',
   });
 
-  const [createOrgWallet] = useMutation(CREATE_ORG_WALLET, {
-    onCompleted: (data) => {
-      setErrors(emptyError);
-      setSafeAddress('');
-      setWalletName('');
-      // wallets.push(data?.createOrgWallet);
-      // setWallets(wallets);
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-    refetchQueries: ['getOrgWallet'],
-  });
-
-  const [createPodWallet] = useMutation(CREATE_POD_WALLET, {
-    onCompleted: (data) => {
-      setErrors(emptyError);
-      setSafeAddress('');
-      setWalletName('');
-      // wallets.push(data?.createPodWallet);
-      // setWallets(wallets);
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-    refetchQueries: ['getPodWallet'],
-  });
-
   const handleOpenAddWalletModal = () => {
     setIsAddWalletModalOpen(true);
   };
 
-  const handleCreateWalletClick = async () => {
-    const newError = emptyError;
-    const safeServiceUrl = CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL[selectedChain];
-    const safeService = new SafeServiceClient(safeServiceUrl);
-    let checksumAddress;
-    try {
-      checksumAddress = wonderWeb3.toChecksumAddress(safeAddress);
-    } catch (e) {
-      newError.safeAddressError = `Must be valid EVM address`;
-      setErrors(newError);
-      return;
-    }
-    try {
-      const safe = await safeService.getSafeInfo(checksumAddress);
-    } catch (e) {
-      if (String(e).includes('Not Found')) {
-        newError.safeAddressError = `Safe address not deployed on ${selectedChain}`;
-      } else {
-        newError.safeAddressError = 'unknown gnosis network error';
-      }
-      setErrors(newError);
-      return;
-    }
-    if (orgId) {
-      createOrgWallet({
-        variables: {
-          input: {
-            orgId,
-            name: walletName,
-            address: checksumAddress,
-            chain: selectedChain,
-          },
-        },
-      });
-    } else if (podId) {
-      createPodWallet({
-        variables: {
-          input: {
-            podId,
-            name: walletName,
-            address: checksumAddress,
-            chain: selectedChain,
-          },
-        },
-      });
-    }
-    setErrors(newError);
-  };
   useEffect(() => {
     if (orgId) {
       getOrgWallet({
@@ -249,33 +155,6 @@ function Wallets(props) {
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>
-        {/* <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <WalletAddressInput placeholder="Name" value={walletName} onChange={(e) => setWalletName(e.target.value)} />
-          <WalletAddressInput
-            placeholder="Safe Address"
-            value={safeAddress}
-            onChange={(e) => setSafeAddress(e.target.value)}
-          />
-          <DropdownSelect
-            value={selectedChain}
-            options={SUPPORTED_PAYMENT_CHAINS}
-            setValue={setSelectedChain}
-            onChange={(e) => {}}
-            innerStyle={{
-              marginTop: 0,
-            }}
-            formSelectStyle={{
-              height: 'auto',
-            }}
-          />
-        </div> */}
-        {errors.safeAddressError && <ErrorText> {errors.safeAddressError} </ErrorText>}
         <CreateFormPreviewButton
           style={{
             marginLeft: 0,
