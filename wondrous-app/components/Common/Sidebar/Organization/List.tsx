@@ -1,20 +1,19 @@
 import { ButtonBase, Typography } from '@mui/material';
+import CheckBoxIcon from 'components/Common/Sidebar/Common/icons/checkBox.svg';
+import ContentPaste from 'components/Common/Sidebar/Common/icons/contentPaste.svg';
+import FlagIcon from 'components/Common/Sidebar/Common/icons/flag.svg';
+import FolderIcon from 'components/Common/Sidebar/Common/icons/folder.svg';
+import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
+import HomeIcon from 'components/Common/Sidebar/Common/icons/home.svg';
+import PieChartIcon from 'components/Common/Sidebar/Common/icons/pieChart.svg';
+import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
+import ShowChartIcon from 'components/Common/Sidebar/Common/icons/showChart.svg';
+import StackIcon from 'components/Common/Sidebar/Common/icons/stack.svg';
+import StartIcon from 'components/Common/Sidebar/Common/icons/star.svg';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-
-import CheckBoxIcon from './icons/checkBox.svg';
-import ContentPaste from './icons/contentPaste.svg';
-import FlagIcon from './icons/flag.svg';
-import FolderIcon from './icons/folder.svg';
-import GroupIcon from './icons/group.svg';
-import HomeIcon from './icons/home.svg';
-import PieChartIcon from './icons/pieChart.svg';
-import PodIcon from './icons/pods.svg';
-import ShowChartIcon from './icons/showChart.svg';
-import StackIcon from './icons/stack.svg';
-import StartIcon from './icons/star.svg';
 
 const useDaoSidebarData = () => {
   const { orgData } = useOrgBoard();
