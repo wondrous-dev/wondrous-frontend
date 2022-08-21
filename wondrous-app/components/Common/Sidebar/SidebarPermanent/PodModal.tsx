@@ -6,8 +6,8 @@ import { useInView } from 'react-intersection-observer';
 import { GET_USER_PODS } from 'graphql/queries';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
-import { useMe } from '../Auth/withAuth';
-import { SafeImage } from '../Common/Image';
+import { useMe } from '../../../Auth/withAuth';
+import { SafeImage } from '../../Image';
 import {
   TaskListModalHeader,
   TaskModalBaseCard,
@@ -16,9 +16,9 @@ import {
   TaskContent,
   TaskTitle,
   LoadMore,
-} from '../Common/Task/styles';
-import { CreateModalOverlay } from '../CreateEntity/styles';
-import PodIcon from '../Icons/podIcon';
+} from '../../Task/styles';
+import { CreateModalOverlay } from '../../../CreateEntity/styles';
+import PodIcon from '../../../Icons/podIcon';
 import { PodModalFooter, PodModalFooterInfoWrapper, PodModalFooterInfoWrapperText } from './styles';
 
 function PodListCard(props) {
