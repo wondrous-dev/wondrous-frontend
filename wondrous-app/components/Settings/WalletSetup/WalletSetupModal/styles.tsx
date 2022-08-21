@@ -123,6 +123,17 @@ export const WalletSetupModalInput = styled(InputBase)`
   }
 `;
 
+export const WalletSetupModalError = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 14px;
+    color: ${palette.red400};
+    padding-left: 4px;
+  }
+`;
+
 const StyledSelect = styled(Select)`
   && {
     background: ${palette.background.default};
@@ -139,6 +150,7 @@ const StyledSelect = styled(Select)`
 
     svg {
       color: ${(props) => (props.isActive ? palette.white : palette.grey58)};
+      transition: transform 0.2s ease-out;
     }
 
     p {
@@ -148,7 +160,12 @@ const StyledSelect = styled(Select)`
 `;
 
 export const WalletSetupModalSelect = styled(({ className, ...props }) => (
-  <StyledSelect {...props} {...className} MenuProps={{ classes: { paper: className } }} isActive={!!props.value} />
+  <StyledSelect
+    {...props}
+    {...className}
+    MenuProps={{ classes: { paper: className } }}
+    isActive={!!props.value?.value}
+  />
 ))`
   &.MuiPaper-root {
     background: ${palette.grey76};
@@ -217,6 +234,11 @@ export const WalletSetupModalBodyExpandedViewWrapper = styled(Accordion)`
       display: flex;
       flex-direction: column;
       gap: 26px;
+      box-shadow: none;
+    }
+
+    &.MuiPaper-root.MuiAccordion-root {
+      box-shadow: none;
     }
 
     &.MuiPaper-root::before {

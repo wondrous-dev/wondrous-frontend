@@ -18,6 +18,11 @@ export const WALLET_TYPES = [
   { label: 'Metamask', value: 'metamask', icon: <MetamaskWalletTypeIcon /> },
 ];
 
+export const WALLET_TYPE_STRINGS = {
+  GNOSIS: 'gnosis',
+  METAMASK: 'metamask',
+};
+
 export const DEFAULT_WALLET_NETWORK = { label: 'Ethereum', value: 'ethereum', icon: <EthereumIcon /> };
 
 export const WALLET_NETWORKS = [
@@ -35,3 +40,9 @@ if (!isInProduction) {
     icon: <EthereumIcon />,
   });
 }
+
+export const EMPTY_ERROR = {
+  safeAddressError: null,
+};
+
+export const WALLET_ALREADY_EXISTS_ERROR_MESSAGE = 'wallet already exist';
