@@ -23,9 +23,10 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
+
+import Item from '../Common/Item';
 import {
   ArchivedPodIndicatorText,
-  ItemButtonInner,
   SettingsContainer,
   SettingsContentBlock,
   SettingsDaoPodIndicator,
@@ -36,12 +37,109 @@ import {
   SettingsSidebarContainer,
   SettingsSidebarHeader,
   SettingsSidebarTabsListContainer,
-  SettingsSidebarTabsListItem,
-  SettingsSidebarTabsListItemIcon,
-  SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
 } from './styles';
+
+const createListItems = ({ orgId, podId }) => [
+  {
+    Icon: () => <GeneralSettingsIcon width={12} height={12} />,
+    label: 'Profile Page Settings',
+    value: 'general',
+    href: `/profile/settings`,
+    page: [SettingsPage.Profile],
+  },
+  {
+    Icon: () => <GeneralSettingsIcon width={12} height={12} />,
+    label: 'General Settings',
+    value: 'general',
+    href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: () => <WrenchIcon width={12} height={12} />,
+    label: 'Configure Wallet',
+    value: 'wallet',
+    href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: TokenGatingIcon,
+    label: 'Token Gating',
+    value: 'token-gating',
+    href: `/organization/settings/${orgId}/token-gating`,
+    page: [SettingsPage.Org],
+  },
+  {
+    Icon: () => <GeneralSettingsIcon width={12} height={12} />,
+    label: 'Integrations Settings',
+    value: 'integrations',
+    href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
+    page: [SettingsPage.Org],
+  },
+  {
+    Icon: () => <CardIcon width={12} height={12} />,
+    label: 'Payments Ledger',
+    value: 'payouts',
+    href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: () => <CardIcon width={12} height={12} />,
+    label: 'Payment Method',
+    value: 'payment-method',
+    href: `/organization/settings/${orgId}/payment-method`,
+    page: [SettingsPage.Org],
+  },
+  {
+    Icon: () => <MembersIcon />,
+    label: 'Members',
+    value: 'members',
+    href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: () => <RolesIcon />,
+    label: 'Roles',
+    value: 'roles',
+    href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: () => <NotificationOutlineSettings />,
+    label: 'Notifications',
+    value: 'notifications',
+    href: orgId ? `/organization/settings/${orgId}/notifications` : `/pod/settings/${podId}/notifications`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: TaskImportIcon, // need a another icon
+    label: 'Task Import',
+    value: 'import',
+    href: `/organization/settings/${orgId}/task-import`,
+    page: [SettingsPage.Org],
+  },
+  {
+    Icon: () => <NotificationOutlineSettings />,
+    label: 'Notifications',
+    value: 'notifications',
+    href: `/profile/notifications`,
+    page: [SettingsPage.Profile],
+  },
+  {
+    Icon: () => (
+      <GitHubIcon
+        style={{
+          color: '#525252',
+        }}
+      />
+    ),
+    label: 'Github',
+    value: 'github',
+    href: orgId ? `/organization/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
+    page: [SettingsPage.Pod],
+  },
+];
 
 function SettingsWrapper(props) {
   const { children, showPodIcon = true } = props;
@@ -60,106 +158,6 @@ function SettingsWrapper(props) {
 
   const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
-
-  const SETTINGS_SIDEBAR_LIST_ITEMS = [
-    {
-      icon: <GeneralSettingsIcon width={12} height={12} />,
-      label: 'Profile Page Settings',
-      value: 'general',
-      href: `/profile/settings`,
-      page: [SettingsPage.Profile],
-    },
-    {
-      icon: <GeneralSettingsIcon width={12} height={12} />,
-      label: 'General Settings',
-      value: 'general',
-      href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
-    },
-    {
-      icon: <WrenchIcon width={12} height={12} />,
-      label: 'Configure Wallet',
-      value: 'wallet',
-      href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
-    },
-    {
-      icon: <TokenGatingIcon />,
-      label: 'Token Gating',
-      value: 'token-gating',
-      href: `/organization/settings/${orgId}/token-gating`,
-      page: [SettingsPage.Org],
-    },
-    {
-      icon: <GeneralSettingsIcon width={12} height={12} />,
-      label: 'Integrations Settings',
-      value: 'integrations',
-      href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
-      page: [SettingsPage.Org],
-    },
-    {
-      icon: <CardIcon width={12} height={12} />,
-      label: 'Payments Ledger',
-      value: 'payouts',
-      href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
-    },
-    {
-      icon: <CardIcon width={12} height={12} />,
-      label: 'Payment Method',
-      value: 'payment-method',
-      href: `/organization/settings/${orgId}/payment-method`,
-      page: [SettingsPage.Org],
-    },
-    {
-      icon: <MembersIcon />,
-      label: 'Members',
-      value: 'members',
-      href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
-    },
-    {
-      icon: <RolesIcon />,
-      label: 'Roles',
-      value: 'roles',
-      href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
-    },
-    {
-      icon: <NotificationOutlineSettings />,
-      label: 'Notifications',
-      value: 'notifications',
-      href: orgId ? `/organization/settings/${orgId}/notifications` : `/pod/settings/${podId}/notifications`,
-      page: [SettingsPage.Org, SettingsPage.Pod],
-    },
-    {
-      icon: <TaskImportIcon />, // need a another icon
-      label: 'Task Import',
-      value: 'import',
-      href: `/organization/settings/${orgId}/task-import`,
-      page: [SettingsPage.Org],
-    },
-    {
-      icon: <NotificationOutlineSettings />,
-      label: 'Notifications',
-      value: 'notifications',
-      href: `/profile/notifications`,
-      page: [SettingsPage.Profile],
-    },
-    {
-      icon: (
-        <GitHubIcon
-          style={{
-            color: '#525252',
-          }}
-        />
-      ),
-      label: 'Github',
-      value: 'github',
-      href: orgId ? `/organization/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
-      page: [SettingsPage.Pod],
-    },
-  ];
 
   const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
@@ -244,20 +242,15 @@ function SettingsWrapper(props) {
           <SettingsSidebarContainer>
             <SettingsSidebarHeader>
               <Link href={activeSettingsPage?.path} passHref>
-                <SettingsSidebarTabsListItem>
-                  <SettingsSidebarTabsListItemIcon>
-                    <LeftArrowIcon />
-                  </SettingsSidebarTabsListItemIcon>
-                  <SettingsSidebarTabsListItemText>Back to {activeSettingsPage.label}</SettingsSidebarTabsListItemText>
-                </SettingsSidebarTabsListItem>
+                <Item Icon={LeftArrowIcon}>Back to {activeSettingsPage.label}</Item>
               </Link>
             </SettingsSidebarHeader>
             <SettingsSidebarTabsSection>
               <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
               <SettingsSidebarTabsListContainer>
-                {SETTINGS_SIDEBAR_LIST_ITEMS.map((item) => {
+                {createListItems({ orgId, podId }).map((item) => {
                   if (!item.page?.includes(activeSettingsPage.page)) return null;
-                  const { href, icon, label } = item;
+                  const { href, Icon, label } = item;
                   const pathnameSplit = pathname.split('/');
                   const hrefSplit = href.split('/');
                   const endPathName = pathnameSplit[pathnameSplit.length - 1];
@@ -265,21 +258,15 @@ function SettingsWrapper(props) {
                   const active = endHref === endPathName;
                   return (
                     <Link key={href} href={href} passHref>
-                      <SettingsSidebarTabsListItem active={active}>
-                        <ItemButtonInner active={active}>
-                          <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
-                          <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
-                        </ItemButtonInner>
-                      </SettingsSidebarTabsListItem>
+                      <Item key={label} Icon={Icon} isActive={active}>
+                        {label}
+                      </Item>
                     </Link>
                   );
                 })}
-                <SettingsSidebarTabsListItem onClick={signOut}>
-                  <SettingsSidebarTabsListItemIcon>
-                    <ExitIcon />
-                  </SettingsSidebarTabsListItemIcon>
-                  <SettingsSidebarTabsListItemText>Log out</SettingsSidebarTabsListItemText>
-                </SettingsSidebarTabsListItem>
+                <Item Icon={ExitIcon} onClick={signOut}>
+                  Log out
+                </Item>
               </SettingsSidebarTabsListContainer>
             </SettingsSidebarTabsSection>
           </SettingsSidebarContainer>
