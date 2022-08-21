@@ -331,6 +331,8 @@ export function TaskSubmissionForm(props) {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getUserTaskBoardTasks',
+      'getUserTaskBoardSubmissions',
+      'getTaskById',
     ],
   };
   const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, refetchQueries);

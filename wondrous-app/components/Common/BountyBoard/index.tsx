@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -16,7 +17,7 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
-import { TASK_ICONS } from 'components/Common/Task/index';
+import TASK_ICONS from 'components/Common/Task/constants';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
@@ -58,7 +59,7 @@ export function SubmissionsCount({ total, approved }) {
     </BountyCardSubmissionsCountWrapper>
   );
 }
-export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false }) {
+export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container = Fragment }) {
   const router = useRouter();
   const goToPod = (podId) => {
     router.push(`/pod/${podId}/boards`, undefined, {
@@ -66,10 +67,10 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
     });
   };
 
-  const goToOrg = (orgId) => router.push(`/org/${orgId}/boards`, undefined, { shallow: true });
+  const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
 
   return (
-    <>
+    <Container>
       {tasks?.length ? (
         tasks.map((bounty) => {
           const BountyStatusIcon = TASK_ICONS[bounty?.status];
@@ -133,7 +134,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      goToOrg(bounty?.orgId);
+                      goToOrg(bounty?.orgUsername);
                     }}
                   >
                     {bounty?.orgProfilePicture ? (
@@ -176,6 +177,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
       ) : (
         <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
       )}
-    </>
+    </Container>
   );
 }

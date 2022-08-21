@@ -50,6 +50,7 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
   GET_MILESTONES,
   GET_TASK_BY_ID,
+  GET_TASK_REVIEWERS,
 } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
@@ -756,6 +757,7 @@ const useCreateTaskProposal = () => {
       'getPerTypeTaskCountForPodBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForOrgBoard',
+      'getUserTaskBoardProposals',
     ],
   });
 
@@ -796,6 +798,7 @@ const useUpdateTaskProposal = () => {
       'getPodTaskBoardProposals',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
+      'getUserTaskBoardProposals',
     ],
   });
 
@@ -996,6 +999,7 @@ const entityTypeData = {
       reviewerIds: null,
       rewards: [],
       dueDate: null,
+      points: null,
       labelIds: null,
       milestoneId: null,
       privacyLevel: privacyOptions.public.value,
@@ -1059,8 +1063,14 @@ interface ICreateEntityModal {
   cancel: Function;
   existingTask?: {
     id: string;
+    reviewers?: { username: string; id: string }[] | null;
     claimPolicyRoles?: [string] | null;
     claimPolicy?: string | null;
+    shouldUnclaimOnDueDateExpiry?: boolean;
+    points?: number;
+    rewards?: { rewardAmount: string; paymentMethodId: string }[] | null;
+    milestoneId?: string | null;
+    labels?: { id: string }[] | null;
     githubIssue?: {
       id: string;
       url: string;
@@ -1285,6 +1295,28 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   );
 
   useEffect(() => {
+    form.setFieldValue(
+      'reviewerIds',
+      existingTask?.reviewers?.map((reviewer) => reviewer.id)
+    );
+    form.setFieldValue('claimPolicy', existingTask?.claimPolicy);
+    form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
+    form.setFieldValue('points', existingTask?.points);
+    form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
+    form.setFieldValue(
+      'labelIds',
+      isEmpty(existingTask?.labels) ? null : existingTask?.labels?.map((label) => label.id)
+    );
+  }, [
+    existingTask?.reviewers?.length,
+    existingTask?.claimPolicy,
+    existingTask?.shouldUnclaimOnDueDateExpiry,
+    existingTask?.points,
+    existingTask?.milestoneId,
+    existingTask?.labels,
+  ]);
+
+  useEffect(() => {
     if (isSubtask) {
       form.setFieldValue('parentTaskId', parentTaskId);
       getTaskById({
@@ -1314,8 +1346,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     form.setFieldValue('points', template?.points);
     form.setFieldValue('orgId', template?.orgId);
     form.setFieldValue('podId', template?.podId);
-
-    form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    if (template?.rewards?.[0]) {
+      form.setFieldValue('rewards', [{ ...template?.rewards?.[0], rewardAmount: template?.rewards?.[0].rewardAmount }]);
+    }
     form.setFieldValue('assigneeId', template?.assignee);
     form.setFieldValue(
       'reviewerIds',
@@ -2000,7 +2033,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {form.values.claimPolicy !== null && entityTypeData[entityType].fields.includes(Fields.claimPolicy) && (
             <ApplicationInputUnassignContainer>
               <Checkbox
-                checked={form.values.shouldUnclaimOnDueDateExpiry}
+                checked={!!form.values.shouldUnclaimOnDueDateExpiry}
                 onChange={() =>
                   form.setFieldValue('shouldUnclaimOnDueDateExpiry', !form.values.shouldUnclaimOnDueDateExpiry)
                 }
@@ -2495,7 +2528,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
               <CreateEntitySelectErrorWrapper>
                 <CreateEntityCreateTaskButton type="submit">
-                  {existingTask ? `Edit` : `Create`} {entityType}
+                  {existingTask ? 'Save changes' : `Create ${entityType}`}
                 </CreateEntityCreateTaskButton>
                 {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>

@@ -44,6 +44,7 @@ export const greyColors = {
   grey800: '#2D333A',
   grey850: '#787878',
   grey900: '#1D1D1D',
+  grey1000: '#272729',
 };
 
 export const redColors = {
@@ -88,6 +89,7 @@ export const yellowColors = {
   yellow200: '#FFD78C',
   yellow400: '#FCCD3F',
   yellow700: '#F8A811',
+  yellow800: '#ffd653',
 };
 
 export const violetColors = {
