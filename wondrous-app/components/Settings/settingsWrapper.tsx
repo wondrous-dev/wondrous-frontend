@@ -1,6 +1,12 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import LeftArrowIcon from 'components/Icons/leftArrow';
 import GitHubIcon from '@mui/icons-material/GitHub';
+import { logout, useMe } from 'components/Auth/withAuth';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import CardIcon from 'components/Icons/card';
+import ExitIcon from 'components/Icons/exit';
+import GeneralSettingsIcon from 'components/Icons/generalSettings';
+import LeftArrowIcon from 'components/Icons/leftArrow';
+import MembersIcon from 'components/Icons/members';
 import PodIcon from 'components/Icons/podIcon';
 import RolesIcon from 'components/Icons/roles';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -8,22 +14,18 @@ import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
-import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import ExitIcon from 'components/Icons/exit';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import { logout, useMe } from '../Auth/withAuth';
-import CardIcon from '../Icons/card';
-import GeneralSettingsIcon from '../Icons/generalSettings';
-import MembersIcon from '../Icons/members';
-import { TaskImportIcon } from '../Icons/taskImporticon';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { NotificationOutlineSettings } from '../Icons/notifications';
+import { TaskImportIcon } from '../Icons/taskImporticon';
 import TokenGatingIcon from '../Icons/tokenGating.svg';
 import WrenchIcon from '../Icons/wrench';
 import {
+  ArchivedPodIndicatorText,
+  ItemButtonInner,
   SettingsContainer,
   SettingsContentBlock,
   SettingsDaoPodIndicator,
@@ -39,7 +41,6 @@ import {
   SettingsSidebarTabsListItemText,
   SettingsSidebarTabsSection,
   SettingsSidebarTabsSectionLabel,
-  ArchivedPodIndicatorText,
 } from './styles';
 
 function SettingsWrapper(props) {
@@ -62,21 +63,21 @@ function SettingsWrapper(props) {
 
   const SETTINGS_SIDEBAR_LIST_ITEMS = [
     {
-      icon: <GeneralSettingsIcon width={40} height={40} />,
+      icon: <GeneralSettingsIcon width={12} height={12} />,
       label: 'Profile Page Settings',
       value: 'general',
       href: `/profile/settings`,
       page: [SettingsPage.Profile],
     },
     {
-      icon: <GeneralSettingsIcon width={40} height={40} />,
+      icon: <GeneralSettingsIcon width={12} height={12} />,
       label: 'General Settings',
       value: 'general',
       href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
       page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
-      icon: <WrenchIcon width={40} height={40} />,
+      icon: <WrenchIcon width={12} height={12} />,
       label: 'Configure Wallet',
       value: 'wallet',
       href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
@@ -90,21 +91,21 @@ function SettingsWrapper(props) {
       page: [SettingsPage.Org],
     },
     {
-      icon: <GeneralSettingsIcon width={40} height={40} />,
+      icon: <GeneralSettingsIcon width={12} height={12} />,
       label: 'Integrations Settings',
       value: 'integrations',
       href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
       page: [SettingsPage.Org],
     },
     {
-      icon: <CardIcon width={40} height={40} />,
+      icon: <CardIcon width={12} height={12} />,
       label: 'Payments Ledger',
       value: 'payouts',
       href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
       page: [SettingsPage.Org, SettingsPage.Pod],
     },
     {
-      icon: <CardIcon width={40} height={40} />,
+      icon: <CardIcon width={12} height={12} />,
       label: 'Payment Method',
       value: 'payment-method',
       href: `/organization/settings/${orgId}/payment-method`,
@@ -265,8 +266,10 @@ function SettingsWrapper(props) {
                   return (
                     <Link key={href} href={href} passHref>
                       <SettingsSidebarTabsListItem active={active}>
-                        <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
-                        <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                        <ItemButtonInner active={active}>
+                          <SettingsSidebarTabsListItemIcon active={active}>{icon}</SettingsSidebarTabsListItemIcon>
+                          <SettingsSidebarTabsListItemText active={active}>{label}</SettingsSidebarTabsListItemText>
+                        </ItemButtonInner>
                       </SettingsSidebarTabsListItem>
                     </Link>
                   );
