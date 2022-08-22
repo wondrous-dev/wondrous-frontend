@@ -7,12 +7,6 @@ export const SettingsChildrenWrapper = styled.div`
   padding: 0 24px;
 `;
 
-export const SettingsSidebarHeader = styled.div`
-  width: 100%;
-  display: flex;
-  align-items: center;
-`;
-
 export const SettingsSidebarTabsSection = styled.div`
   height: 100%;
 `;

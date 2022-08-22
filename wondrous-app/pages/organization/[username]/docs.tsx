@@ -6,6 +6,7 @@ import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/quer
 import { OrgBoardContext } from 'utils/contexts';
 import Docs from 'components/organization/docs/docs';
 import DaoSidebar from 'components/Common/Sidebar/Organization';
+import { ResourcesSidebar } from 'components/Common/Sidebar';
 
 const useGetOrgFromUsername = (username) => {
   const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
@@ -41,9 +42,7 @@ function DocsPage() {
         orgData: org,
       }}
     >
-      <DaoSidebar>
-        <Docs orgData={org} />
-      </DaoSidebar>
+      <Docs orgData={org} />
     </OrgBoardContext.Provider>
   );
 }

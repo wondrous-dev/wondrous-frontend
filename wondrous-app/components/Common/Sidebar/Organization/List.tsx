@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import CheckBoxIcon from 'components/Common/Sidebar/Common/icons/checkBox.svg';
 import ContentPaste from 'components/Common/Sidebar/Common/icons/contentPaste.svg';
 import FlagIcon from 'components/Common/Sidebar/Common/icons/flag.svg';
@@ -15,7 +14,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-import { Label } from '../Common/styles';
+import { Label, ListWrapper } from '../Common/styles';
 
 const useDaoSidebarData = () => {
   const { orgData } = useOrgBoard();
@@ -94,12 +93,6 @@ const useDaoSidebarData = () => {
   ];
 };
 
-const ItemWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-`;
-
 const ListItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -114,16 +107,16 @@ const List = () => {
   return (
     <ListItemWrapper>
       {daoSidebarData?.map(({ label, items }) => (
-        <ItemWrapper key={label}>
+        <ListWrapper key={label}>
           <Label>{label}</Label>
-          <ItemWrapper>
+          <ListWrapper>
             {items.map(({ text, link, Icon }) => (
               <Item key={text} onClick={routerPush(link)} Icon={Icon} isActive={isActive(link)}>
                 {text}
               </Item>
             ))}
-          </ItemWrapper>
-        </ItemWrapper>
+          </ListWrapper>
+        </ListWrapper>
       ))}
     </ListItemWrapper>
   );
