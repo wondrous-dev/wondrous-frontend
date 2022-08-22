@@ -61,7 +61,7 @@ const AboutEntity = () => {
       <ButtonWrapper>
         <Settings onClick={handleOnClickSettings}>Settings</Settings>
         <PrivacyIcon privacyLevel={privacyLevel} />
-        <TokenGatingIcon orgId={id} />
+        <TokenGatingIcon orgId={board?.orgId} />
         <InviteButton id={id} />
       </ButtonWrapper>
     </Wrapper>

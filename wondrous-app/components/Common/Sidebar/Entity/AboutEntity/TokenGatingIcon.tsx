@@ -1,7 +1,7 @@
-import Tooltip from 'components/Tooltip';
-import { useTokenGating } from 'utils/hooks';
 import { LockedIconOutline, LockIconOutline } from 'components/Icons/userpass';
+import Tooltip from 'components/Tooltip';
 import styled from 'styled-components';
+import { useTokenGating } from 'utils/hooks';
 
 const IconWrapper = styled.div`
   display: flex;
