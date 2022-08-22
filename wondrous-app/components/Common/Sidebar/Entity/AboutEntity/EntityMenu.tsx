@@ -12,7 +12,6 @@ const ButtonIcon = styled.div`
   height: 28px;
   background: #474747;
   border-radius: 6px;
-  background: red;
 `;
 
 const Text = styled(Typography)`
