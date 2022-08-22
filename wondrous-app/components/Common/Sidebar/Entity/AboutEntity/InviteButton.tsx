@@ -1,7 +1,9 @@
 import { ButtonBase } from '@mui/material';
 import { OrgInviteLinkModal } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import { PodInviteLinkModal } from 'components/Common/InviteLinkModal/podInviteLink';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useOrgBoard } from 'utils/hooks';
 
 const Invite = styled(ButtonBase)`
   && {
@@ -26,12 +28,17 @@ const Invite = styled(ButtonBase)`
   }
 `;
 
-const InviteButton = ({ orgId }) => {
+const InviteButton = ({ id }) => {
+  const orgBoard = useOrgBoard();
   const [openInvite, setOpenInvite] = useState(false);
   const handleOnClickInvite = () => setOpenInvite(true);
   return (
     <>
-      <OrgInviteLinkModal orgId={orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      {orgBoard ? (
+        <OrgInviteLinkModal orgId={id} open={openInvite} onClose={() => setOpenInvite(false)} />
+      ) : (
+        <PodInviteLinkModal podId={id} open={openInvite} onClose={() => setOpenInvite(false)} />
+      )}
       <Invite onClick={handleOnClickInvite}>Invite</Invite>
     </>
   );

@@ -1,7 +1,7 @@
 import { ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useBoards } from 'utils/hooks';
 
 import EntityMenu from './EntityMenu';
 import InviteButton from './InviteButton';
@@ -44,11 +44,9 @@ const Settings = styled(ButtonBase)`
 
 const AboutEntity = () => {
   const router = useRouter();
-  const podBoard = usePodBoard();
-  const orgBoard = useOrgBoard();
-  const board = orgBoard || podBoard;
-  if (!(board?.orgData || podBoard?.pod)) return null;
-  const { privacyLevel, id, name, thumbnailPicture, profilePicture } = board.orgData || podBoard.pod;
+  const { board } = useBoards();
+  if (!(board?.orgData || board?.pod)) return null;
+  const { privacyLevel, id, name, thumbnailPicture, profilePicture } = board.orgData || board.pod;
   const handleOnClickSettings = () =>
     router.push(board.orgData ? `/organization/settings/${id}/general` : `/pod/settings/${id}/general`);
   return (
@@ -64,7 +62,7 @@ const AboutEntity = () => {
         <Settings onClick={handleOnClickSettings}>Settings</Settings>
         <PrivacyIcon privacyLevel={privacyLevel} />
         <TokenGatingIcon orgId={id} />
-        <InviteButton orgId={id} />
+        <InviteButton id={id} />
       </ButtonWrapper>
     </Wrapper>
   );
