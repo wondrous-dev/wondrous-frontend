@@ -13,7 +13,6 @@ const Wrapper = styled.div`
   flex-direction: column;
   justify-content: flex-start;
   gap: 12px;
-  padding-top: 70px;
 `;
 
 const ButtonWrapper = styled.div`

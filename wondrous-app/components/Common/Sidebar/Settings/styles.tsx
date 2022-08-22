@@ -3,36 +3,11 @@ import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
-export const SettingsContainer = styled.div`
-  position: relative;
-  width: 100%;
-  height: 100%;
-  min-height: 100vh;
-  display: flex;
-  background: #0f0f0f;
-`;
-
-export const SettingsSidebar = styled.div`
-  background: #232323;
-  flex-direction: column;
-  gap: 28px;
-  height: 100%;
-  overflow-y: auto;
-  padding: 24px;
-  padding-top: 94px;
-  position: fixed;
-  width: 260px;
-  display: flex;
-  ${({ minimized }) => minimized && `left: -100%`};
-`;
-
-export const SettingsSidebarContainer = styled.div`
-  height: 670px;
-  width: 100%;
+export const SettingsChildrenWrapper = styled.div`
+  padding: 0 24px;
 `;
 
 export const SettingsSidebarHeader = styled.div`
-  height: 44px;
   width: 100%;
   display: flex;
   align-items: center;
@@ -40,17 +15,6 @@ export const SettingsSidebarHeader = styled.div`
 
 export const SettingsSidebarTabsSection = styled.div`
   height: 100%;
-  padding-top: 50px;
-`;
-
-export const SettingsSidebarTabsSectionLabel = styled(Typography)`
-  && {
-    font-weight: 500;
-    font-size: 14px;
-    line-height: 18px;
-    letter-spacing: 0.01em;
-    color: #ccbbff;
-  }
 `;
 
 export const SettingsSidebarTabsListContainer = styled(List)`

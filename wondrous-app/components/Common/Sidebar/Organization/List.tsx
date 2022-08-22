@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
+import { Label } from '../Common/styles';
 
 const useDaoSidebarData = () => {
   const { orgData } = useOrgBoard();
@@ -92,15 +93,6 @@ const useDaoSidebarData = () => {
     },
   ];
 };
-
-const Label = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  display: flex;
-  color: #ccbbff;
-`;
 
 const ItemWrapper = styled.div`
   display: flex;
