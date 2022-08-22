@@ -4,6 +4,7 @@ import Arrow from 'components/Icons/arrow.svg';
 import { DAOIcon } from 'components/Icons/dao';
 import { useState } from 'react';
 import styled from 'styled-components';
+import { useBoards } from 'utils/hooks';
 
 const ButtonIcon = styled.div`
   width: 28px;
@@ -117,11 +118,13 @@ export const NoLogoDAO = styled((props) => (
 `;
 
 const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture }) => {
+  const { orgBoard } = useBoards();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
-  const handleOnClickNotifications = () => router.push(`/organization/settings/${id}/notifications`);
+  const handleOnClickNotifications = () =>
+    router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
   return (
     <>
       <Button onClick={handleClick} open={open}>
