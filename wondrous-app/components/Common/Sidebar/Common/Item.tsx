@@ -39,19 +39,13 @@ const ItemButtonIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  ${({ isActive }) =>
-    isActive &&
-    `
-    svg {
-   path {
-      stroke: #00baff;
+  svg {
+    path {
+      stroke: #ffffff;
     }
     rect {
-      stroke: #00baff;
+      stroke: #ffffff;
     }
-  }
-  `}
-  svg {
     ${ItemButton}:hover & 
     path {
       stroke: #8fe1ff;
@@ -61,6 +55,18 @@ const ItemButtonIcon = styled.div`
       stroke: #8fe1ff;
     }
   }
+  ${({ isActive }) =>
+    isActive &&
+    `
+    svg {
+      path {
+        stroke: #00baff;
+      }
+      rect {
+        stroke: #00baff;
+      }
+  }
+  `}
 `;
 
 const ItemButtonText = styled(Typography)`
