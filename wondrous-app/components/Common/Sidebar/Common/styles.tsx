@@ -31,12 +31,14 @@ export const ChildrenWrapper = styled.div`
 `;
 
 export const Label = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 13px;
-  display: flex;
-  color: #ccbbff;
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    color: #ccbbff;
+  }
 `;
 
 export const ListWrapper = styled(List)`
