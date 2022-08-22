@@ -101,3 +101,19 @@ export const DISCONNECT_NOTION_FROM_ORG = gql`
     }
   }
 `;
+
+export const CONNECT_GUILD_TO_ORG = gql`
+  mutation connectGuildToOrg($orgId: ID!, $guildId: String!) {
+    connectGuildToOrg(orgId: $orgId, guildId: $guildId) {
+      success
+    }
+  }
+`;
+
+export const DISCONNECT_GUILD_FROM_ORG = gql`
+  mutation disconnectGuildFromOrg($orgId: ID!, $guildId: String!) {
+    disconnectGuildFromOrg(orgId: $orgId, guildId: $guildId) {
+      success
+    }
+  }
+`;
