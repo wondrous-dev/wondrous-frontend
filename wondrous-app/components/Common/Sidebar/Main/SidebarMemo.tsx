@@ -10,6 +10,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 
+import { toolTipStyle } from '../Common/styles';
 import AddDaoModal from './AddDaoModal';
 import HelpModal from './HelpModal.jsx';
 import { PodModal } from './PodModal';
@@ -24,7 +25,6 @@ import {
   HighlightedButton,
   NoLogoDAO,
   StyledSettingsIcon,
-  Wrapper,
 } from './styles';
 
 type Props = {
@@ -48,16 +48,6 @@ const useCreateDaoModalState = () => {
   const [openCreateDaoModal, setCreateDaoModal] = useState<boolean>(false);
   const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
   return { openCreateDaoModal, handleCreateDaoModal };
-};
-
-const toolTipStyle = {
-  fontFamily: 'Space Grotesk',
-  fontStyle: 'normal',
-  fontWeight: 500,
-  fontSize: '12px',
-  lineHeight: '20px',
-  letterSpacing: '0.01em',
-  color: '#C4C4C4',
 };
 
 const SidebarTooltip = ({ children, ...props }) => (
