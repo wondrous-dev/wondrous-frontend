@@ -13,10 +13,12 @@ import Item from 'components/Common/Sidebar/Common/Item';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
+
 import { Label, ListWrapper } from '../Common/styles';
 
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
+  const router = useRouter();
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   return [
     {
@@ -85,7 +87,13 @@ const useSidebarData = () => {
         {
           text: 'Roles',
           Icon: StackIcon,
-          link: null, // link: new page,
+          link: {
+            pathname: router.pathname,
+            query: {
+              ...router.query,
+              roles: true,
+            },
+          },
         },
       ],
     },
