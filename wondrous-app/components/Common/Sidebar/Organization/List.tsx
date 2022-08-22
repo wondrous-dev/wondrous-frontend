@@ -93,19 +93,13 @@ const useDaoSidebarData = () => {
   ];
 };
 
-const ListItemWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 36px;
-`;
-
 const List = () => {
   const daoSidebarData = useDaoSidebarData();
   const router = useRouter();
   const routerPush = (params) => () => router.push(params);
   const isActive = (link) => router.asPath.includes(link);
   return (
-    <ListItemWrapper>
+    <ListWrapper>
       {daoSidebarData?.map(({ label, items }) => (
         <ListWrapper key={label}>
           <Label>{label}</Label>
@@ -118,7 +112,7 @@ const List = () => {
           </ListWrapper>
         </ListWrapper>
       ))}
-    </ListItemWrapper>
+    </ListWrapper>
   );
 };
 
