@@ -180,10 +180,7 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
         if (String(e).includes('Not Found')) {
           newError = { ...newError, safeAddressError: `Safe address not deployed on ${walletType?.label}` };
         } else {
-          const errorMessage =
-            walletType?.value === WALLET_TYPE_STRINGS.GNOSIS
-              ? 'unknown gnosis network error'
-              : 'unknown metamask network error';
+          const errorMessage = 'unknown gnosis network error';
           newError = { ...newError, safeAddressError: errorMessage };
         }
         setErrors((_) => newError);

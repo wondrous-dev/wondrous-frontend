@@ -3,11 +3,8 @@ import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import ArbitrumIcon from 'components/Icons/arbitrum';
 import HarmonyIcon from 'components/Icons/harmony';
 import BobaIcon from 'components/Icons/Boba';
-import {
-  DefaultWalletTypeIcon,
-  GnosisWalletTypeIcon,
-  MetamaskWalletTypeIcon,
-} from 'components/Icons/walletSetupModalIcons';
+import { Metamask } from 'components/Icons/metamask';
+import { DefaultWalletTypeIcon, GnosisWalletTypeIcon } from 'components/Icons/walletSetupModalIcons';
 
 const isInProduction = process.env.NEXT_PUBLIC_PRODUCTION;
 
@@ -15,7 +12,7 @@ export const DEFAULT_WALLET_TYPE = { label: 'Select Wallet Type', value: '', ico
 
 export const WALLET_TYPES = [
   { label: 'Gnosis multi-sig', value: 'gnosis', icon: <GnosisWalletTypeIcon /> },
-  { label: 'Metamask', value: 'metamask', icon: <MetamaskWalletTypeIcon /> },
+  { label: 'Metamask', value: 'metamask', icon: <Metamask /> },
 ];
 
 export const WALLET_TYPE_STRINGS = {
