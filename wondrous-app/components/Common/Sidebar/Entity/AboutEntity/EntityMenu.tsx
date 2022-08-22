@@ -1,5 +1,6 @@
 import { ButtonBase, Menu, MenuItem, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
+import PodsIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import Arrow from 'components/Icons/arrow.svg';
 import { DAOIcon } from 'components/Icons/dao';
 import { useState } from 'react';
@@ -117,7 +118,21 @@ export const NoLogoDAO = styled((props) => (
   background: #313131;
 `;
 
-const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture }) => {
+export const NoLogoPod = styled((props) => (
+  <div {...props}>
+    <PodsIcon />
+  </div>
+))`
+  display: flex;
+  width: 28px;
+  height: 28px;
+  border-radius: 3px;
+  align-items: center;
+  justify-content: center;
+  background: #313131;
+`;
+
+const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
@@ -125,9 +140,10 @@ const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture }) => {
   const handleClose = () => setAnchorEl(null);
   const handleOnClickNotifications = () =>
     router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
+  const NoLogo = orgBoard ? NoLogoDAO : NoLogoPod;
   return (
     <>
-      <Button onClick={handleClick} open={open}>
+      <Button onClick={handleClick} open={open} disabled={!canManage}>
         <ButtonIcon>
           {thumbnailPicture || profilePicture ? (
             <SafeImage
@@ -141,11 +157,11 @@ const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture }) => {
               }}
             />
           ) : (
-            <NoLogoDAO />
+            <NoLogo />
           )}
         </ButtonIcon>
         <Text>{name}</Text>
-        <ArrowIcon open={open} />
+        {canManage && <ArrowIcon open={open} />}
       </Button>
       <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>
         <Item onClick={handleOnClickNotifications}>Notification Settings</Item>
