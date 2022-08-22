@@ -12,13 +12,11 @@ import StartIcon from 'components/Common/Sidebar/Common/icons/star.svg';
 import Item from 'components/Common/Sidebar/Common/Item';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useBoards } from 'utils/hooks';
 import { Label, ListWrapper } from '../Common/styles';
 
 const useSidebarData = () => {
-  const orgBoard = useOrgBoard();
-  const podBoard = usePodBoard();
-  const board = orgBoard || podBoard;
+  const { board, orgBoard } = useBoards();
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   return [
     {
