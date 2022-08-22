@@ -11,7 +11,6 @@ import { ChildrenWrapper, Label, SidebarWrapper, Wrapper } from 'components/Comm
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import LeftArrowIcon from 'components/Icons/leftArrow';
-import { NotificationOutlineSettings } from 'components/Icons/notifications';
 import RolesIcon from 'components/Icons/roles';
 import { LockIconOutline } from 'components/Icons/userpass';
 import WrenchIcon from 'components/Icons/wrench';
@@ -25,7 +24,6 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-
 import Item from '../Common/Item';
 import {
   ArchivedPodIndicatorText,
@@ -41,7 +39,7 @@ import {
 
 const createListItems = ({ orgId, podId }) => [
   {
-    Icon: PodIcon,
+    Icon: HexagonIcon,
     label: 'Profile Page Settings',
     value: 'general',
     href: `/profile/settings`,
@@ -118,7 +116,7 @@ const createListItems = ({ orgId, podId }) => [
     page: [SettingsPage.Org],
   },
   {
-    Icon: NotificationOutlineSettings,
+    Icon: NotificationsIcon,
     label: 'Notifications',
     value: 'notifications',
     href: `/profile/notifications`,
