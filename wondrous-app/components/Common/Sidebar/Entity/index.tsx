@@ -4,7 +4,7 @@ import useSideBar from 'hooks/useSideBar';
 import AboutEntity from './AboutEntity';
 import List from './List';
 
-const DaoSidebar = ({ children }) => {
+const EntitySidebar = ({ children }) => {
   const { minimized } = useSideBar();
   return (
     <Wrapper>
@@ -17,4 +17,4 @@ const DaoSidebar = ({ children }) => {
   );
 };
 
-export default DaoSidebar;
+export default EntitySidebar;

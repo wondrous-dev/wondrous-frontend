@@ -4,7 +4,7 @@ import useSideBar from 'hooks/useSideBar';
 import { shuffle } from 'lodash';
 import styled from 'styled-components';
 import { ColorTypes } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 
 import BackButton from './Common/BackButton';
 import FolderIcon from './Common/icons/folder.svg';
@@ -39,11 +39,14 @@ const AddIconWrapper = styled((props) => (
 
 const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelectCategory, selectedCategory }) => {
   const { minimized } = useSideBar();
-  const { orgData } = useOrgBoard();
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
+  const href = orgBoard ? `/organization/${board?.orgData?.username}/boards` : `/pod/${board?.podId}/boards`;
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
-        <BackButton href={`/organization/${orgData?.username}/boards`} />
+        <BackButton href={href} />
         <ListWrapper>
           <Label>Resources</Label>
           <ListWrapper>
