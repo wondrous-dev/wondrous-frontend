@@ -1,11 +1,13 @@
-import { ButtonBase } from '@mui/material';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
+import { PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
 import { useBoards } from 'utils/hooks';
 
 import EntityMenu from './EntityMenu';
 import InviteButton from './InviteButton';
 import PrivacyIcon from './PrivacyIcon';
+import SettingsButton from './SettingsButton';
 import TokenGatingIcon from './TokenGatingIcon';
 
 const Wrapper = styled.div`
@@ -18,28 +20,7 @@ const Wrapper = styled.div`
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  justify-content: space-between;
-`;
-
-const Settings = styled(ButtonBase)`
-  && {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 6px;
-    width: 70px;
-    height: 28px;
-    background: #313131;
-    border-radius: 6px;
-    font-family: 'Space Grotesk';
-    font-weight: 500;
-    font-size: 14px;
-    color: #ffffff;
-    :hover {
-      background: #707070;
-      filter: drop-shadow(0px 6px 14px rgba(0, 0, 0, 0.5));
-    }
-  }
+  gap: 12px;
 `;
 
 const AboutEntity = () => {
@@ -47,8 +28,15 @@ const AboutEntity = () => {
   const { board } = useBoards();
   if (!(board?.orgData || board?.pod)) return null;
   const { privacyLevel, id, name, thumbnailPicture, profilePicture } = board.orgData || board.pod;
-  const handleOnClickSettings = () =>
-    router.push(board.orgData ? `/organization/settings/${id}/general` : `/pod/settings/${id}/general`);
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: board?.userPermissionsContext,
+    orgId: board?.orgId,
+    podId: board?.podId,
+  });
+  const canManage =
+    permissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.APPROVE_PAYMENT);
   return (
     <Wrapper>
       <EntityMenu
@@ -57,12 +45,13 @@ const AboutEntity = () => {
         router={router}
         thumbnailPicture={thumbnailPicture}
         profilePicture={profilePicture}
+        canManage={canManage}
       />
       <ButtonWrapper>
-        <Settings onClick={handleOnClickSettings}>Settings</Settings>
+        <SettingsButton router={router} board={board} id={id} canManage={canManage} />
         <PrivacyIcon privacyLevel={privacyLevel} />
         <TokenGatingIcon orgId={board?.orgId} />
-        <InviteButton id={id} />
+        <InviteButton id={id} canManage={canManage} />
       </ButtonWrapper>
     </Wrapper>
   );
