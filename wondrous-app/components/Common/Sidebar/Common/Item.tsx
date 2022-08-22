@@ -34,11 +34,14 @@ const ItemButtonInner = styled.div`
 const ItemButtonIcon = styled.div`
   width: 22px;
   height: 22px;
-  background: #313131;
-  border-radius: 4px;
+  background: ${({ bgColor }) => bgColor || `#313131`};
+  border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
   display: flex;
   align-items: center;
   justify-content: center;
+  ${ItemButton}:hover & {
+    background: #313131;
+  }
   svg {
     path {
       stroke: #ffffff;
@@ -58,6 +61,7 @@ const ItemButtonIcon = styled.div`
   ${({ isActive }) =>
     isActive &&
     `
+    background: #313131;
     svg {
       path {
         stroke: #00baff;
@@ -75,6 +79,9 @@ const ItemButtonText = styled(Typography)`
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     color: ${({ isActive }) => (isActive ? '#00baff' : '#fff')};
     ${ItemButton}:hover & {
       color: #8fe1ff;
@@ -82,12 +89,14 @@ const ItemButtonText = styled(Typography)`
   }
 `;
 
-const Item = ({ children, Icon, isActive = false, ...props }) => (
+const Item = ({ children, Icon = null, isActive = false, roundedBg = false, bgColor = '', ...props }) => (
   <ItemButton {...props} disableRipple isActive={isActive}>
     <ItemButtonInner isActive={isActive}>
-      <ItemButtonIcon isActive={isActive}>
-        <Icon />
-      </ItemButtonIcon>
+      {Icon && (
+        <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor}>
+          <Icon />
+        </ItemButtonIcon>
+      )}
       <ItemButtonText isActive={isActive}>{children}</ItemButtonText>
     </ItemButtonInner>
   </ItemButton>

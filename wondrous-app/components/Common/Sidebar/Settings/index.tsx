@@ -7,10 +7,9 @@ import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
 import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
 import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
-import { ChildrenWrapper, Label, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
+import { ChildrenWrapper, Label, ListWrapper, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
-import LeftArrowIcon from 'components/Icons/leftArrow';
 import RolesIcon from 'components/Icons/roles';
 import { LockIconOutline } from 'components/Icons/userpass';
 import WrenchIcon from 'components/Icons/wrench';
@@ -24,6 +23,8 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
+
+import BackButton from '../Common/BackButton';
 import Item from '../Common/Item';
 import {
   ArchivedPodIndicatorText,
@@ -32,9 +33,6 @@ import {
   SettingsDaoPodIndicatorIconWrapper,
   SettingsDaoPodIndicatorOrgProfile,
   SettingsDaoPodIndicatorText,
-  SettingsSidebarHeader,
-  SettingsSidebarTabsListContainer,
-  SettingsSidebarTabsSection,
 } from './styles';
 
 const createListItems = ({ orgId, podId }) => [
@@ -235,14 +233,10 @@ function SettingsWrapper(props) {
       <ChooseEntityToCreate />
       <Wrapper>
         <SidebarWrapper>
-          <SettingsSidebarHeader>
-            <Link href={activeSettingsPage?.path} passHref>
-              <Item Icon={LeftArrowIcon}>Back to {activeSettingsPage.label}</Item>
-            </Link>
-          </SettingsSidebarHeader>
-          <SettingsSidebarTabsSection>
+          <BackButton href={activeSettingsPage?.path} />
+          <ListWrapper>
             <Label>{activeSettingsPage.label} Settings</Label>
-            <SettingsSidebarTabsListContainer>
+            <ListWrapper>
               {createListItems({ orgId, podId }).map((item) => {
                 if (!item.page?.includes(activeSettingsPage.page)) return null;
                 const { href, Icon, label } = item;
@@ -262,8 +256,8 @@ function SettingsWrapper(props) {
               <Item Icon={ExitIcon} onClick={signOut}>
                 Log out
               </Item>
-            </SettingsSidebarTabsListContainer>
-          </SettingsSidebarTabsSection>
+            </ListWrapper>
+          </ListWrapper>
         </SidebarWrapper>
 
         <ChildrenWrapper>
