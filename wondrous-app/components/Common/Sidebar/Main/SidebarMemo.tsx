@@ -133,7 +133,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
           <DrawerList id="tour-sidebar-daos">
             {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
               <SidebarTooltip key={id} title={name}>
-                <Link key={id} href={`/organization/${username}/boards`} passHref>
+                <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
                   <DrawerListItem button key={id} isActive={isActive}>
                     {thumbnailPicture || profilePicture ? (
                       <SafeImage
