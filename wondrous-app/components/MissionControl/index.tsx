@@ -25,8 +25,9 @@ const CARDS_CONFIG = {
   workspace: [
     {
       label: 'Contributor \n Workspace',
-      labelGradient: 'linear-gradient(88.95deg, #F93701 1.8%, #FFD653 35.94%, #00BAFF 66.57%, #06FFA5 93.68%)',
-      img: 'https://images.unsplash.com/photo-1660517955652-43820f5723d5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=814&q=80',
+      labelGradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
+      img: '/images/mission-control/contributor-card.png',
+      hoverImg: '/images/mission-control/contributor-card-hover.png',
       stats: [
         {
           icon: TodoIcon,
@@ -60,8 +61,9 @@ const CARDS_CONFIG = {
     },
     {
       label: 'Operator \n Workspace',
-      labelGradient: 'linear-gradient(88.95deg, #FF6ED8 1.8%, #BD2FFF 35.94%, #00BAFF 66.57%, #06FFA5 93.68%)',
-      img: 'https://images.unsplash.com/photo-1660517955652-43820f5723d5?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=814&q=80',
+      labelGradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
+      img: '/images/mission-control/operator-card.png',
+      hoverImg: '/images/mission-control/operator-card-hover.png',
       stats: [
         {
           icon: TodoIcon,
@@ -121,11 +123,12 @@ const MissionControl = () => {
   return (
     <MissionControlWrapper>
       <MissionControlWidgetsWrapper>
-        {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats }, idx) => (
+        {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg }, idx) => (
           <MissionControlWorkspaceCard
             key={idx}
             label={label}
             labelGradient={labelGradient}
+            hoverImg={hoverImg}
             img={img}
             stats={generateCountForStats(stats)}
           />

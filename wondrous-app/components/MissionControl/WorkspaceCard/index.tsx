@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import { RequestApproveButton } from 'components/organization/members/styles';
 import {
   MissionControlWorkspaceCardWrapper,
   WorkspaceCardContainer,
@@ -12,16 +13,19 @@ import {
   WorkspaceCardLabelWrapper,
 } from './styles';
 
-const MissionControlWorkspaceCard: React.FC<{ label: string; labelGradient: string; img: string; stats: any[] }> = ({
-  label,
-  labelGradient,
-  img,
-  stats,
-}) => (
-  <MissionControlWorkspaceCardWrapper>
+const MissionControlWorkspaceCard: React.FC<{
+  label: string;
+  labelGradient: string;
+  img: string;
+  stats: any[];
+  hoverImg: string;
+}> = ({ label, labelGradient, img, stats, hoverImg }) => (
+  <MissionControlWorkspaceCardWrapper hoverImg={hoverImg}>
     <WorkspaceCardContainer>
       <WorkspaceCardBannerContainer>
-        <WorkspaceCardBannerImage src={img} />
+        <WorkspaceCardBannerImage src={img}>
+          <img src={img} />
+        </WorkspaceCardBannerImage>
         <WorkspaceCardLabelWrapper>
           <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
         </WorkspaceCardLabelWrapper>

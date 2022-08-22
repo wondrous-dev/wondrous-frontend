@@ -95,7 +95,7 @@ export function InReviewIcon(props) {
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="12" cy="12.8008" r="12" fill="#0F0F0F" />
+      <circle cx="12" cy="12.8008" r="12" fill="#0F0F0F" className="blackCircle" />
       <circle cx="8.88928" cy="12.7994" r="0.990845" fill="url(#paint0_linear_14630_214356)" />
       <circle cx="11.9987" cy="12.7994" r="0.990845" fill="url(#paint1_linear_14630_214356)" />
       <circle cx="15.108" cy="12.7994" r="0.990845" fill="url(#paint2_linear_14630_214356)" />

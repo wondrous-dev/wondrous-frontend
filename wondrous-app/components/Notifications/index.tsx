@@ -54,7 +54,6 @@ function NotificationsBoard({ onlyBoard = false }) {
     return <SmallAvatar initials={initials} avatar={avatar} />;
   };
 
-  console.log(inView, hasMore);
   useEffect(() => {
     if (inView && hasMore && notifications?.length) {
       fetchMore();

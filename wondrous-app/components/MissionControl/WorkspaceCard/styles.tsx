@@ -3,13 +3,62 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 
+export const WorkspaceCardBannerImage = styled.div`
+  border-radius: 6px;
+  position: relative;
+  background: ${({ src }) => `url(${src})`};
+  background-size: cover;
+  background-position: center;
+  width: 100%;
+  transition: background 0.4s;
+  img {
+    visibility: hidden;
+    height: 100%;
+    width: 100%;
+  }
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 6px;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+  }
+`;
+
 export const MissionControlWorkspaceCardWrapper = styled.div`
-  border: 1px solid black;
-  width: 49%;
+  width: fit-content;
+  max-width: 49%;
   flex-grow: 1;
-  height: 500px;
   background: ${palette.grey900};
   border-radius: 6px;
+  height: fit-content;
+  position: relative;
+  transition: box-shadow 0.1s ease-in;
+  &:hover {
+    box-shadow: -8px 18px 25px 3px rgba(16, 16, 16, 0.5);
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 6px;
+      background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      padding: 1px;
+    }
+    ${WorkspaceCardBannerImage} {
+      background: ${({ hoverImg }) => `url(${hoverImg})`};
+      background-size: cover;
+      background-position: center;
+      &::after {
+        background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+      }
+    }
+  }
 `;
 
 export const WorkspaceCardContainer = styled.div`
@@ -24,18 +73,13 @@ export const WorkspaceCardContainer = styled.div`
 
 export const WorkspaceCardBannerContainer = styled.div`
   height: 100%;
+  width: 100%;
   overflow: hidden;
   border-radius: 6px;
   display: flex;
   justify-content: center;
   align-items: center;
   position: relative;
-`;
-
-export const WorkspaceCardBannerImage = styled.img`
-  width: 100%;
-  object-fit: cover;
-  border-radius: 6px;
 `;
 
 export const WorkspaceCardBannerLabel = styled(Typography)`
@@ -64,20 +108,25 @@ export const WorkspaceCardStatsContainer = styled.div`
   width: 100%;
 `;
 
-export const WorkspaceCardStat = styled.div`
+export const WorkspaceCardStat = styled.button`
   display: flex;
   gap: 10px;
   cursor: pointer;
   background: ${palette.grey950};
   border-radius: 4px;
+  border: 0;
   padding: 2px 4px;
   color: white;
   width: 100%;
   height: 40px;
+  z-index: 10;
   align-items: center;
   svg {
     flex-basis: 10%;
     height: 100%;
+    .blackCircle {
+      display: none;
+    }
   }
 `;
 
@@ -107,4 +156,5 @@ export const WorkspaceCardStatLabel = styled(Typography)`
 export const WorkspaceCardLabelWrapper = styled.div`
   position: absolute;
   width: min-content;
+  top: 20%;
 `;

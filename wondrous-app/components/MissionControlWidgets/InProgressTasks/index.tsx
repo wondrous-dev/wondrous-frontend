@@ -23,13 +23,13 @@ import {
 
 const limit = 5;
 
-const DEFAULT_ORG_VALUE = { id: '', name: 'All orgs' };
+const DEFAULT_ORG_VALUE = { id: null, name: 'All orgs' };
 const InProgressTasksWidget = () => {
   const globalContext = useGlobalContext();
   const { userOrgs } = globalContext;
   const user = useMe();
 
-  const { data, fetchMore, loading, error } = useQuery(GET_USER_TASK_BOARD_TASKS, {
+  const { data, fetchMore, loading, error, refetch } = useQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
@@ -39,6 +39,7 @@ const InProgressTasksWidget = () => {
       offset: 0,
       userId: user?.id,
       statuses: [TASK_STATUS_IN_PROGRESS],
+      orgId: null,
     },
     onError: (error) => {
       console.error(error);
@@ -47,7 +48,16 @@ const InProgressTasksWidget = () => {
 
   const options = userOrgs?.getUserOrgs;
 
-  const handleOrgChange = (org) => console.log(org);
+  const handleOrgChange = (e, org) => refetch({ orgId: org?.id });
+
+  // onInputChange={(event, searchString) => {
+  //   handleInputChange(event, searchString);
+  //   if (searchString === 'undefined') {
+  //     setInputValue('');
+  //   } else {
+  //     setInputValue(searchString || '');
+  //   }
+  // }}
 
   return (
     <WidgetLayout title="In-Progress tasks">
@@ -62,12 +72,15 @@ const InProgressTasksWidget = () => {
               options={[DEFAULT_ORG_VALUE, ...options]}
               getOptionLabel={(option) => option.name}
               defaultValue={DEFAULT_ORG_VALUE}
+              onChange={handleOrgChange}
+              clearOnBlur={false}
               PaperComponent={PodSearchPaper}
+              keepMounted
               ListboxComponent={PodSearchList}
-              PopperComponent={(params) => <PodSearchAutocompletePopper {...params} />}
+              PopperComponent={(params) => <PodSearchAutocompletePopper {...params} keepMounted />}
               renderInput={(params) => <Input {...params} fullWidth />}
               renderOption={(props, org) => (
-                <TaskContainer>
+                <TaskContainer {...props}>
                   {org?.profilePicture ? <OrgProfilePicture profilePicture={org?.profilePicture} /> : null}
                   <TaskTitle>{org.name}</TaskTitle>
                 </TaskContainer>

@@ -109,6 +109,7 @@ export const NotificationItemBody = styled.div`
   flex-grow: 1;
   align-items: center;
   justify-content: ${(props) => (props.emptyNotifications ? 'center' : 'flex-start')};
+  color: ${palette.white};
 `;
 
 export const NotificationItemTimeline = styled.span`

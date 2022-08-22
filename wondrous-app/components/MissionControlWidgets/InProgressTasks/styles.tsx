@@ -78,6 +78,21 @@ export const OrgSearchWrapper = styled.div`
   .MuiAutocomplete-popper {
     flex: 1;
     flex-basis: 100%;
+    border: 1px solid ${palette.grey70};
+    border-radius: 4px;
+    overflow: hidden;
+    .MuiAutocomplete-listbox {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      .MuiAutocomplete-option {
+        padding: 10px;
+        border-radius: 0;
+        &:hover {
+          background: ${palette.grey87};
+        }
+      }
+    }
   }
 `;
 
