@@ -11,14 +11,15 @@ import StackIcon from 'components/Common/Sidebar/Common/icons/stack.svg';
 import StartIcon from 'components/Common/Sidebar/Common/icons/star.svg';
 import Item from 'components/Common/Sidebar/Common/Item';
 import { useRouter } from 'next/router';
-import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { Label, ListWrapper } from '../Common/styles';
 
-const useDaoSidebarData = () => {
-  const { orgData } = useOrgBoard();
-  const username = orgData?.username;
+const useSidebarData = () => {
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+  const board = orgBoard || podBoard;
+  const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   return [
     {
       label: '',
@@ -31,17 +32,17 @@ const useDaoSidebarData = () => {
         {
           text: 'Activity',
           Icon: ShowChartIcon,
-          link: `/organization/${username}/activities`,
+          link: `${link}/activities`,
         },
         {
           text: 'Analytics',
           Icon: PieChartIcon,
-          link: `/organization/${username}/analytics`,
+          link: `${link}/analytics`,
         },
         {
           text: 'Resources',
           Icon: FolderIcon,
-          link: `/organization/${username}/docs`,
+          link: `${link}/docs`,
         },
         {
           text: 'Pods',
@@ -56,22 +57,22 @@ const useDaoSidebarData = () => {
         {
           text: 'Tasks',
           Icon: CheckBoxIcon,
-          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.TASK}`,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
         },
         {
           text: 'Bounties',
           Icon: StartIcon,
-          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
         },
         {
           text: 'Milestones',
           Icon: FlagIcon,
-          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
         },
         {
           text: 'Proposals',
           Icon: ContentPaste,
-          link: `/organization/${username}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
+          link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
         },
       ],
     },
@@ -81,7 +82,7 @@ const useDaoSidebarData = () => {
         {
           text: 'Members',
           Icon: GroupIcon,
-          link: `/organization/${username}/members`,
+          link: `${link}/members`,
         },
         {
           text: 'Roles',
@@ -94,13 +95,13 @@ const useDaoSidebarData = () => {
 };
 
 const List = () => {
-  const daoSidebarData = useDaoSidebarData();
+  const sidebarData = useSidebarData();
   const router = useRouter();
   const routerPush = (params) => () => router.push(params);
   const isActive = (link) => router.asPath.includes(link);
   return (
     <ListWrapper>
-      {daoSidebarData?.map(({ label, items }) => (
+      {sidebarData?.map(({ label, items }) => (
         <ListWrapper key={label}>
           <Label>{label}</Label>
           <ListWrapper>
