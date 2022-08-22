@@ -24,11 +24,11 @@ const useSidebarData = () => {
     {
       label: '',
       items: [
-        {
-          text: 'Dashboard',
-          Icon: HomeIcon,
-          link: null, // to new project page
-        },
+        // {
+        //   text: 'Dashboard',
+        //   Icon: HomeIcon,
+        //   link: null, // to new project page
+        // },
         {
           text: 'Activity',
           Icon: ShowChartIcon,
@@ -44,11 +44,11 @@ const useSidebarData = () => {
           Icon: FolderIcon,
           link: `${link}/docs`,
         },
-        {
-          text: 'Pods',
-          Icon: PodIcon,
-          link: null, // link: not sure yet
-        },
+        // {
+        //   text: 'Pods',
+        //   Icon: PodIcon,
+        //   link: null, // link: not sure yet
+        // },
       ],
     },
     {
