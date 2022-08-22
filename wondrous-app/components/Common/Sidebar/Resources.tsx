@@ -12,6 +12,7 @@ import { ColorTypes } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
 import BackButton from './Common/BackButton';
+import { useCanEdit } from './Common/hooks';
 import FolderIcon from './Common/icons/folder.svg';
 import Item from './Common/Item';
 
@@ -21,6 +22,7 @@ const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelec
   const { minimized } = useSideBar();
   const { board, orgBoard } = useBoards();
   const href = orgBoard ? `/organization/${board?.orgData?.username}/boards` : `/pod/${board?.podId}/boards`;
+  const canEdit = useCanEdit();
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
@@ -28,9 +30,11 @@ const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelec
         <ListWrapper>
           <Label>Resources</Label>
           <ListWrapper>
-            <Item roundedBg bgColor={randomColors[randomColors.length - 1]} onClick={handleCreateNewCategory}>
-              <AddIconWrapper /> New Category
-            </Item>
+            {canEdit && (
+              <Item roundedBg bgColor={randomColors[randomColors.length - 1]} onClick={handleCreateNewCategory}>
+                <AddIconWrapper /> New Category
+              </Item>
+            )}
             <Item
               Icon={FolderIcon}
               roundedBg

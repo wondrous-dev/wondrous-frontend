@@ -15,3 +15,14 @@ export const useCanManage = () => {
     permissions?.includes(PERMISSIONS.APPROVE_PAYMENT);
   return canManage;
 };
+
+export const useCanEdit = () => {
+  const { board } = useBoards();
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: board?.userPermissionsContext,
+    orgId: board?.orgId,
+    podId: board?.podId,
+  });
+  const canEdit = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  return canEdit;
+};
