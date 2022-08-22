@@ -28,10 +28,11 @@ const Invite = styled(ButtonBase)`
   }
 `;
 
-const InviteButton = ({ id }) => {
+const InviteButton = ({ id, canManage }) => {
   const orgBoard = useOrgBoard();
   const [openInvite, setOpenInvite] = useState(false);
   const handleOnClickInvite = () => setOpenInvite(true);
+  if (!canManage) return null;
   return (
     <>
       {orgBoard ? (
