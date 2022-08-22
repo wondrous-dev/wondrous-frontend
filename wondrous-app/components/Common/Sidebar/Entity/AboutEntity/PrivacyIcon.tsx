@@ -2,6 +2,7 @@ import Tooltip from 'components/Tooltip';
 import styled from 'styled-components';
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
+import { toolTipStyle } from '../../Common/styles';
 
 const IconWrapper = styled.div`
   display: flex;
@@ -32,7 +33,7 @@ const PrivacyIconWrapper = styled.div`
 `;
 
 const PrivacyIcon = ({ privacyLevel }) => (
-  <Tooltip title={privacyLevel === 'public' ? 'Public' : 'Private'} placement="top">
+  <Tooltip title={privacyLevel === 'public' ? 'Public' : 'Private'} placement="top" style={toolTipStyle}>
     <IconWrapper>
       <PrivacyIconWrapper>
         {privacyLevel === 'public' ? <PrivacyPublicIcon /> : <PrivacyMembersIcon />}
