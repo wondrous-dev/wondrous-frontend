@@ -11,6 +11,7 @@ const ItemButton = styled(ButtonBase)`
     background: ${({ isActive }) => isActive && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
     :hover {
       background: #313131;
+      background: ${({ isActive }) => isActive && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
     }
   }
 `;
@@ -45,17 +46,15 @@ const ItemButtonIcon = styled.div`
   svg {
     path {
       stroke: #ffffff;
+      ${ItemButton}:hover & {
+        stroke: ${({ isActive }) => (isActive ? `#00baff` : `#8fe1ff`)};
+      }
     }
     rect {
       stroke: #ffffff;
-    }
-    ${ItemButton}:hover & 
-    path {
-      stroke: #8fe1ff;
-    }
-    ${ItemButton}:hover & 
-    rect {
-      stroke: #8fe1ff;
+      ${ItemButton}:hover & {
+        stroke: ${({ isActive }) => (isActive ? `#00baff` : `#8fe1ff`)};
+      }
     }
   }
   ${({ isActive }) =>
@@ -69,7 +68,9 @@ const ItemButtonIcon = styled.div`
       rect {
         stroke: #00baff;
       }
-  }
+      
+    }
+  
   `}
 `;
 
@@ -85,6 +86,7 @@ const ItemButtonText = styled(Typography)`
     color: ${({ isActive }) => (isActive ? '#00baff' : '#fff')};
     ${ItemButton}:hover & {
       color: #8fe1ff;
+      color: ${({ isActive }) => isActive && '#00baff'};
     }
   }
 `;
