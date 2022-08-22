@@ -1,12 +1,13 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
+import FileDownloadIcon from 'components/Common/Sidebar/Common/icons/fileDownload.svg';
 import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
 import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
+import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
 import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
-import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
-import FileDownloadIcon from 'components/Common/Sidebar/Common/icons/fileDownload.svg';
+import { ChildrenWrapper, Label, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import LeftArrowIcon from 'components/Icons/leftArrow';
@@ -28,18 +29,14 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import Item from '../Common/Item';
 import {
   ArchivedPodIndicatorText,
-  SettingsContainer,
-  SettingsContentBlock,
+  SettingsChildrenWrapper,
   SettingsDaoPodIndicator,
   SettingsDaoPodIndicatorIconWrapper,
   SettingsDaoPodIndicatorOrgProfile,
   SettingsDaoPodIndicatorText,
-  SettingsSidebar,
-  SettingsSidebarContainer,
   SettingsSidebarHeader,
   SettingsSidebarTabsListContainer,
   SettingsSidebarTabsSection,
-  SettingsSidebarTabsSectionLabel,
 } from './styles';
 
 const createListItems = ({ orgId, podId }) => [
@@ -238,59 +235,55 @@ function SettingsWrapper(props) {
       }}
     >
       <ChooseEntityToCreate />
-      <SettingsContainer>
-        <SettingsSidebar>
-          <SettingsSidebarContainer>
-            <SettingsSidebarHeader>
-              <Link href={activeSettingsPage?.path} passHref>
-                <Item Icon={LeftArrowIcon}>Back to {activeSettingsPage.label}</Item>
-              </Link>
-            </SettingsSidebarHeader>
-            <SettingsSidebarTabsSection>
-              <SettingsSidebarTabsSectionLabel>{activeSettingsPage.label} Settings</SettingsSidebarTabsSectionLabel>
-              <SettingsSidebarTabsListContainer>
-                {createListItems({ orgId, podId }).map((item) => {
-                  if (!item.page?.includes(activeSettingsPage.page)) return null;
-                  const { href, Icon, label } = item;
-                  const pathnameSplit = pathname.split('/');
-                  const hrefSplit = href.split('/');
-                  const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                  const endHref = hrefSplit[hrefSplit.length - 1];
-                  const active = endHref === endPathName;
-                  return (
-                    <Link key={href} href={href} passHref>
-                      <Item key={label} Icon={Icon} isActive={active}>
-                        {label}
-                      </Item>
-                    </Link>
-                  );
-                })}
-                <Item Icon={ExitIcon} onClick={signOut}>
-                  Log out
-                </Item>
-              </SettingsSidebarTabsListContainer>
-            </SettingsSidebarTabsSection>
-          </SettingsSidebarContainer>
-        </SettingsSidebar>
+      <Wrapper>
+        <SidebarWrapper>
+          <SettingsSidebarHeader>
+            <Link href={activeSettingsPage?.path} passHref>
+              <Item Icon={LeftArrowIcon}>Back to {activeSettingsPage.label}</Item>
+            </Link>
+          </SettingsSidebarHeader>
+          <SettingsSidebarTabsSection>
+            <Label>{activeSettingsPage.label} Settings</Label>
+            <SettingsSidebarTabsListContainer>
+              {createListItems({ orgId, podId }).map((item) => {
+                if (!item.page?.includes(activeSettingsPage.page)) return null;
+                const { href, Icon, label } = item;
+                const pathnameSplit = pathname.split('/');
+                const hrefSplit = href.split('/');
+                const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                const endHref = hrefSplit[hrefSplit.length - 1];
+                const active = endHref === endPathName;
+                return (
+                  <Link key={href} href={href} passHref>
+                    <Item key={label} Icon={Icon} isActive={active}>
+                      {label}
+                    </Item>
+                  </Link>
+                );
+              })}
+              <Item Icon={ExitIcon} onClick={signOut}>
+                Log out
+              </Item>
+            </SettingsSidebarTabsListContainer>
+          </SettingsSidebarTabsSection>
+        </SidebarWrapper>
 
-        <SettingsContentBlock>
-          {showPodIcon ? (
-            <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
-              <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-              {podData?.getPodById?.profilePicture ? (
-                <SettingsDaoPodIndicatorOrgProfile src={podData?.getPodById?.profilePicture} />
-              ) : (
+        <ChildrenWrapper>
+          <SettingsChildrenWrapper>
+            {showPodIcon ? (
+              <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+                <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
                 <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
                   <PodIcon />
                 </SettingsDaoPodIndicatorIconWrapper>
-              )}
-              <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-              {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
-            </SettingsDaoPodIndicator>
-          ) : null}
-          {children}
-        </SettingsContentBlock>
-      </SettingsContainer>
+                <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+                {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
+              </SettingsDaoPodIndicator>
+            ) : null}
+            {children}
+          </SettingsChildrenWrapper>
+        </ChildrenWrapper>
+      </Wrapper>
     </SettingsBoardContext.Provider>
   );
 }
