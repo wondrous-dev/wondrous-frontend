@@ -2,6 +2,7 @@ import { LockedIconOutline, LockIconOutline } from 'components/Icons/userpass';
 import Tooltip from 'components/Tooltip';
 import styled from 'styled-components';
 import { useTokenGating } from 'utils/hooks';
+import { toolTipStyle } from '../../Common/styles';
 
 const IconWrapper = styled.div`
   display: flex;
@@ -23,7 +24,7 @@ const IconWrapper = styled.div`
 const TokenGatingIcon = ({ orgId }) => {
   const [tokenGatingConditions] = useTokenGating(orgId);
   return (
-    <Tooltip title="Token Gating" placement="top">
+    <Tooltip title="Token Gating" placement="top" style={toolTipStyle}>
       <IconWrapper>
         {tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0 ? (
           <LockIconOutline />

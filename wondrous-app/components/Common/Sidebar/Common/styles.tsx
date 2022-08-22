@@ -74,3 +74,13 @@ export const AddIconWrapper = styled((props) => (
     width: 21px;
   }
 `;
+
+export const toolTipStyle = {
+  fontFamily: 'Space Grotesk',
+  fontStyle: 'normal',
+  fontWeight: 500,
+  fontSize: '12px',
+  lineHeight: '20px',
+  letterSpacing: '0.01em',
+  color: '#C4C4C4',
+};
