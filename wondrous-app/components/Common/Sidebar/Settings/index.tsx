@@ -1,17 +1,18 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
+import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
+import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
+import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
+import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
+import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
+import FileDownloadIcon from 'components/Common/Sidebar/Common/icons/fileDownload.svg';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import CardIcon from 'components/Icons/card';
 import ExitIcon from 'components/Icons/exit';
-import GeneralSettingsIcon from 'components/Icons/generalSettings';
 import LeftArrowIcon from 'components/Icons/leftArrow';
-import MembersIcon from 'components/Icons/members';
 import { NotificationOutlineSettings } from 'components/Icons/notifications';
-import PodIcon from 'components/Icons/podIcon';
 import RolesIcon from 'components/Icons/roles';
-import { TaskImportIcon } from 'components/Icons/taskImporticon';
-import TokenGatingIcon from 'components/Icons/tokenGating.svg';
+import { LockIconOutline } from 'components/Icons/userpass';
 import WrenchIcon from 'components/Icons/wrench';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
@@ -43,84 +44,84 @@ import {
 
 const createListItems = ({ orgId, podId }) => [
   {
-    Icon: () => <GeneralSettingsIcon width={12} height={12} />,
+    Icon: PodIcon,
     label: 'Profile Page Settings',
     value: 'general',
     href: `/profile/settings`,
     page: [SettingsPage.Profile],
   },
   {
-    Icon: () => <GeneralSettingsIcon width={12} height={12} />,
+    Icon: HexagonIcon,
     label: 'General Settings',
     value: 'general',
     href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
-    Icon: () => <WrenchIcon width={12} height={12} />,
+    Icon: WrenchIcon,
     label: 'Configure Wallet',
     value: 'wallet',
     href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
-    Icon: TokenGatingIcon,
+    Icon: LockIconOutline,
     label: 'Token Gating',
     value: 'token-gating',
     href: `/organization/settings/${orgId}/token-gating`,
     page: [SettingsPage.Org],
   },
   {
-    Icon: () => <GeneralSettingsIcon width={12} height={12} />,
+    Icon: HexagonIcon, // need icon
     label: 'Integrations Settings',
     value: 'integrations',
     href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
     page: [SettingsPage.Org],
   },
   {
-    Icon: () => <CardIcon width={12} height={12} />,
+    Icon: ReceiptIcon,
     label: 'Payments Ledger',
     value: 'payouts',
     href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
-    Icon: () => <CardIcon width={12} height={12} />,
+    Icon: ReceiptIcon,
     label: 'Payment Method',
     value: 'payment-method',
     href: `/organization/settings/${orgId}/payment-method`,
     page: [SettingsPage.Org],
   },
   {
-    Icon: () => <MembersIcon />,
+    Icon: GroupIcon,
     label: 'Members',
     value: 'members',
     href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
-    Icon: () => <RolesIcon />,
+    Icon: RolesIcon,
     label: 'Roles',
     value: 'roles',
     href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
-    Icon: () => <NotificationOutlineSettings />,
+    Icon: NotificationsIcon,
     label: 'Notifications',
     value: 'notifications',
     href: orgId ? `/organization/settings/${orgId}/notifications` : `/pod/settings/${podId}/notifications`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
-    Icon: TaskImportIcon, // need a another icon
+    Icon: FileDownloadIcon,
     label: 'Task Import',
     value: 'import',
     href: `/organization/settings/${orgId}/task-import`,
     page: [SettingsPage.Org],
   },
   {
-    Icon: () => <NotificationOutlineSettings />,
+    Icon: NotificationOutlineSettings,
     label: 'Notifications',
     value: 'notifications',
     href: `/profile/notifications`,
