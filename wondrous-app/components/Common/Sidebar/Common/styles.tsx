@@ -1,4 +1,4 @@
-import { Typography } from '@mui/material';
+import { List, Typography } from '@mui/material';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
 
@@ -27,6 +27,7 @@ export const ChildrenWrapper = styled.div`
   margin-left: ${({ minimized }) => (minimized ? '0px' : '280px')};
   width: 100%;
   padding-top: 94px;
+  padding-bottom: 24px;
 `;
 
 export const Label = styled(Typography)`
@@ -36,4 +37,12 @@ export const Label = styled(Typography)`
   font-size: 13px;
   display: flex;
   color: #ccbbff;
+`;
+
+export const ListWrapper = styled(List)`
+  && {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
 `;
