@@ -238,7 +238,9 @@ export function TaskSubmissions(props) {
           fetchedTaskSubmissions={fetchedTaskSubmissions}
           setFilteredSubmissions={setFilteredSubmissions}
         />
-        {isBounty && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
+        {isBounty && !!loggedInUser && (
+          <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />
+        )}
         {!isBounty && (
           <>
             <TaskSubmissionsTaskToDo
