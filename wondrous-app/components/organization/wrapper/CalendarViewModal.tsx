@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-key */
 import { useMutation } from '@apollo/client';
 import { useState } from 'react';
 import { CHAR_LIMIT_PROFILE_BIO } from 'utils/constants';
@@ -13,18 +14,32 @@ import {
   StyledCancelButton,
   StyledCloseButton,
   StyledDialog,
+  StyledDialogTopBar,
   StyledDivider,
   StyledHeader,
   StyledWarningMessage,
 } from '../../Common/ArchiveTaskModal/styles';
 import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
 import { ErrorText } from 'components/Common';
+import { CalendarViewTaskContainer, CalendarViewTaskIcon, CalendarViewTaskLabel } from 'components/CalendarView/styles';
+
+const monthsOfYear = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
 
 export const CalendarViewModal = (props) => {
-  const { open, onClose } = props;
-  const board = useOrgBoard();
-  const [requestMessage, setRequestMessage] = useState('');
-  const [error, setError] = useState(null);
+  const { open, onClose, day, handleSelectTask } = props;
   return (
     <>
       <StyledDialog
@@ -33,57 +48,34 @@ export const CalendarViewModal = (props) => {
         aria-labelledby="archive-task-modal"
         aria-describedby="modal-modal-description"
       >
-        <StyledBox
-          style={{
-            width: 'auto',
-            height: 'auto',
-            padding: '20px',
-          }}
-        >
-          <StyledCloseButton onClick={onClose}>
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            Aug 18
-          </StyledHeader>
-          <StyledBody
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            <GeneralSettingsDAODescriptionInput
-              multiline
-              rows={3}
-              value={requestMessage}
-              placeholder="Send message to admin: Explain your skills, who you are, etc"
-              onChange={(e) => {
-                if (e.target.value?.length < CHAR_LIMIT_PROFILE_BIO) {
-                  setRequestMessage(e.target.value);
-                }
+        <StyledBox>
+          <StyledDialogTopBar>
+            <StyledHeader
+              style={{
+                marginLeft: 0,
               }}
-            />
-            {error && <ErrorText>{error}</ErrorText>}
-          </StyledBody>
-          <StyledDivider
-            style={{
-              marginLeft: 0,
-              width: 'auto',
-            }}
-          />
-          <StyledButtonsContainer
-            style={{
-              marginRight: 0,
-            }}
-          >
-            <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-            <StyledArchiveTaskButton>
-              <ArchivedIcon />
-            </StyledArchiveTaskButton>
-          </StyledButtonsContainer>
+            >
+              {`${monthsOfYear[day?.day.getMonth()]} ${day?.day.getDate()}`}
+            </StyledHeader>
+            <StyledCloseButton onClick={onClose}>
+              <CloseModalIcon />
+            </StyledCloseButton>
+          </StyledDialogTopBar>
+          {day?.tasks?.length !== 0 ? (
+            day?.tasks?.map((task, index) => (
+              <CalendarViewTaskContainer
+                style={{ marginLeft: '0px', marginBottom: '6px' }}
+                onClick={() => {
+                  handleSelectTask(task?.id);
+                }}
+              >
+                <CalendarViewTaskIcon status={task?.status} />
+                <CalendarViewTaskLabel style={{ fontSize: '14px' }}>{task.title}</CalendarViewTaskLabel>
+              </CalendarViewTaskContainer>
+            ))
+          ) : (
+            <CalendarViewTaskLabel>No Tasks Are Due Today</CalendarViewTaskLabel>
+          )}
         </StyledBox>
       </StyledDialog>
     </>

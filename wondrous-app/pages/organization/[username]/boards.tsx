@@ -65,14 +65,11 @@ const useGetOrgTaskBoardCalendar = ({
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getOrgTaskBoardCalendar }) => {
-      console.log('HELLOOOO WE ARE HERE ', getOrgTaskBoardCalendar);
       if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY || calendarView) {
         setColumns(getOrgTaskBoardCalendar);
         setIsLoading(false);
         return;
       }
-      const newColumns = populateTaskColumns(getOrgTaskBoardCalendar, ORG_POD_COLUMNS);
-      setColumns(dedupeColumns(newColumns));
       setIsLoading(false);
     },
     onError: (error) => {
@@ -105,7 +102,7 @@ const useGetOrgTaskBoardCalendar = ({
         },
       });
     }
-  }, [getOrgTaskBoardCalendar, orgId, filters, userId, entityType]);
+  }, [getOrgTaskBoardCalendar, orgId, filters, userId, entityType, calendarView]);
 };
 
 const useGetOrgTaskBoardTasks = ({
@@ -182,7 +179,7 @@ const useGetOrgTaskBoardTasks = ({
       });
       setOrgTaskHasMore(true);
     }
-  }, [getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType]);
+  }, [getOrgTaskBoardTasks, orgId, filters, setOrgTaskHasMore, userId, entityType, calendarView]);
 
   const fetchPerStatus = async (status, limit) => {
     const columnIdx = columns?.findIndex((column) => column.status === status);
@@ -374,10 +371,8 @@ const useGetOrgTaskBoard = ({
   fromDate,
   toDate,
 }) => {
-  console.log(filters);
   const listView = view === ViewType.List;
   const calendarView = view === ViewType.Calendar;
-  console.log(calendarView);
   const board = {
     [userId]: useGetTaskRelatedToUser({
       columns,
@@ -727,15 +722,6 @@ const BoardsPage = () => {
       }
     }
   };
-
-  if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-    console.log(
-      'user permissions context',
-      userPermissionsContext?.getUserPermissionContext
-        ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-        : null
-    );
-  }
   return (
     <OrgBoardContext.Provider
       value={{
@@ -770,6 +756,7 @@ const BoardsPage = () => {
         onCalendarDateChange={handleCalendarDatesChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
+        calendarFilters={filters}
         statuses={filters?.statuses}
         podIds={filters?.podIds}
         setColumns={setColumns}

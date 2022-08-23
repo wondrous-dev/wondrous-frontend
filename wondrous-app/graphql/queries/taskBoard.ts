@@ -390,6 +390,15 @@ export const GET_POD_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
+export const GET_POD_TASK_BOARD_CALENDAR = gql`
+  query getPodTaskBoardCalendar($input: PodTaskBoardCalendarQueryInput) {
+    getPodTaskBoardCalendar(input: $input) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const SEARCH_TASKS_FOR_POD_BOARD_VIEW = gql`
   query searchTasksForPodBoardView($input: PodTaskBoardQueryInput) {
     searchTasksForPodBoardView(input: $input) {

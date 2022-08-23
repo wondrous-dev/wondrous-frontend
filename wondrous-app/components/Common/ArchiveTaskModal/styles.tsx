@@ -1,41 +1,82 @@
 import { Box, Button, Dialog, Divider, Typography } from '@mui/material';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import { Button as ButtonComponent } from '../button';
 import palette from 'theme/palette';
+import { greyColors } from 'theme/colors';
+import CloseModalIcon from 'components/Icons/closeModal';
+
+export const scrollBarStyles = css`
+  :hover {
+    &::-webkit-scrollbar {
+      display: block;
+    }
+  }
+  &::-webkit-scrollbar {
+    display: none;
+    position: absolute;
+    z-index: 999;
+    width: 20px;
+    background: transparent;
+    border-radius: 0 4px 4px 0;
+    outline: none;
+  }
+  &::-webkit-scrollbar-track {
+    background: #606060;
+    background-clip: padding-box;
+    border: 8px solid rgba(0, 0, 0, 0);
+    border-radius: 50px;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: 50px;
+    border: 8px solid rgba(0, 0, 0, 0);
+    background: #c4c4c4;
+    background-clip: padding-box;
+  }
+`;
 
 export const StyledDialog = styled(Dialog)`
+  display: inline-block;
+  flex-direction: column;
   border-radius: 6px;
-  .MuiPaper-root {
-    padding: 1px;
-    background: linear-gradient(169.47deg, #4b4b4b 7.84%, #232323 108.71%);
-    border-radius: 6px;
-  }
+  background-color: rgba(0, 0, 0, 0);
 `;
 
 export const StyledChildren = styled.div``;
 
-export const StyledBox = styled(Box)`
-  width: 488px;
-  height: 224px;
-  background: linear-gradient(180deg, #141414 100%, #141414 100%);
-  border-radius: 6px;
+export const StyledDialogTopBar = styled.div`
+  flex-direction: row;
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  padding-bottom: 16px;
+  border-bottom: 0.5px dashed ${greyColors.grey75};
+  ${(props) => props.style}
 `;
 
-export const StyledCloseButton = styled(Button)`
+export const StyledBox = styled(Box)`
   && {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-width: 0px;
-    width: 34.9px;
-    height: 34.9px;
-    background: rgba(0, 0, 0, 1);
-    margin-top: 20px;
-    margin-left: 432px;
+    width: 488px;
+    background: ${greyColors.grey100};
+    border-radius: 6px;
+    padding: 24px;
+    ${scrollBarStyles}
+  }
+`;
 
-    :hover {
-      background: rgba(0, 0, 0, 0.5);
-    }
+export const StyledCloseButton = styled(CloseModalIcon)`
+  transform: rotate(90deg);
+  background: black;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: 6px;
+  path {
+    fill: ${greyColors.grey57};
+  }
+  :hover {
+    background: rgba(122, 122, 122, 0.2);
   }
 `;
 
@@ -48,7 +89,8 @@ export const StyledHeader = styled(Typography)`
     text-align: left;
     color: #ffffff;
     margin-left: 24px;
-    margin-top: -10px;
+    align-items: center;
+    justify-content: center;
   }
 `;
 

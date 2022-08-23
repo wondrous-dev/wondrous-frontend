@@ -80,7 +80,7 @@ const TaskColumn = (props: ITaskColumn) => {
   let number;
 
   useEffect(() => {
-    if (inView && board?.hasMore && LIMIT <= cardsList.length) {
+    if (inView && board?.hasMore && LIMIT <= cardsList?.length) {
       board?.onLoadMore();
     }
   }, [inView, board?.hasMore]);

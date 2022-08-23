@@ -20,6 +20,7 @@ const BOARDS_MAP = {
 type Props = {
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: ({}) => any;
+  onCalendarDateChange: ({}) => any;
   columns: Array<any>;
   onLoadMore: any;
   hasMore: any;
@@ -40,6 +41,7 @@ const PodBoards = (props: Props) => {
     hasMore,
     onSearch,
     onFilterChange,
+    onCalendarDateChange,
     setColumns,
     userId,
     entityType,
@@ -63,6 +65,7 @@ const PodBoards = (props: Props) => {
             activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
             columns={columns}
             onLoadMore={onLoadMore}
+            onCalendarDateChange={onCalendarDateChange}
             hasMore={hasMore}
             setColumns={setColumns}
             entityType={entityType}

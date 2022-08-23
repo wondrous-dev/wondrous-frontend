@@ -1,6 +1,8 @@
 /* eslint-disable react/jsx-key */
+import { useLazyQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { StyledModal } from 'components/Common/InviteLinkModal/styles';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   TaskTemplateArrowIcon,
   TaskTemplateLabelWrapper,
@@ -16,15 +18,33 @@ import {
 import RightArrowIcon from 'components/Icons/rightArrow';
 import { Arrow } from 'components/Icons/sections';
 import TaskStatus from 'components/Icons/TaskStatus';
+import { CalendarViewModal } from 'components/organization/wrapper/CalendarViewModal';
+import { format } from 'date-fns';
 import { UPDATE_TASK_STATUS } from 'graphql/mutations';
+import {
+  GET_ORG_BY_ID,
+  GET_ORG_FROM_USERNAME,
+  GET_ORG_TASK_BOARD_CALENDAR,
+  GET_POD_TASK_BOARD_CALENDAR,
+} from 'graphql/queries';
+import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
-import { ENTITIES_TYPES, PERMISSIONS, TASK_STATUS_IN_REVIEW } from 'utils/constants';
+import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
+import {
+  ENTITIES_TYPES,
+  PERMISSIONS,
+  PRIVACY_LEVEL,
+  STATUSES_ON_ENTITY_TYPES,
+  TASK_STATUS_IN_REVIEW,
+} from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   CalendaListItem,
+  CalendarDayOfMonthLabel,
   CalendarDayOfWeekBar,
+  CalendarDayOfWeekLabel,
   CalendarLeftArrowIcon,
   CalendarRightArrowIcon,
   CalendarTopBar,
@@ -65,41 +85,88 @@ const calendarViews = { MONTH: 'MONTH', WEEK: 'WEEK' };
 
 const CalendarView = (props) => {
   //   const getCurrDay = new Date().getDate();
-  const { columns, onLoadMore, hasMore, setColumns, onCalendarDateChange } = props;
+  const router = useRouter();
+  const { orgId, username, podId } = router.query;
+  const [orgData, setOrgData] = useState(null);
+  const { columns, onLoadMore, hasMore, setColumns, onCalendarDateChange, entityType, calendarFilters } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [calendarView, setCalendarView] = useState('MONTH');
   const [tasks, setTasks] = useState([]);
-
-  const [open, setOpen] = useState(Boolean(anchorEl));
+  const [openCalendarModal, setOpenCalendarModal] = useState(false);
+  const [dateSelected, setDateSelected] = useState();
+  const open = Boolean(anchorEl);
   const [trackDate, setTrackDate] = useState(new Date());
   const [day, setDay] = useState(new Date().getDate());
   const [currentDaysOfMonth, setCurrentDaysOfMonth] = useState([]);
   const [week, setWeek] = useState([]);
+  const [openTaskModal, setOpenTaskModal] = useState(false);
+  const [taskId, setTaskId] = useState(null);
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
   const user = useMe();
+  const [getOrg] = useLazyQuery(GET_ORG_BY_ID, {
+    onCompleted: (data) => {
+      setOrgData(data?.getOrgById);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+  const [calendarData, setCalendarData] = useState(columns);
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || userBoard || podBoard;
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
+  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId: orgId, enablePodFilter: true });
+  const [getOrgCalendarTasks] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
+    onCompleted: (data) => {
+      setCalendarData(data?.getOrgTaskBoardCalendar);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+  const [getPodCalendarTasks] = useLazyQuery(GET_POD_TASK_BOARD_CALENDAR, {
+    onCompleted: (data) => {
+      setCalendarData(data?.getPodTaskBoardCalendar);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+  useEffect(() => {
+    const taskBoardStatuses =
+      calendarFilters.statuses?.length > 0
+        ? calendarFilters.statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+        : //double check in case we add new stuff and have no valid entityType.
+          STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+
+    if (podId) {
+      getPodCalendarTasks({
+        variables: {
+          input: {
+            podId,
+            statuses: taskBoardStatuses,
+            offset: 0,
+            fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
+            toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
+          },
+        },
+      });
+    } else {
+      getOrgCalendarTasks({
+        variables: {
+          orgId: orgData?.id,
+          podIds: calendarFilters?.podIds,
+          offset: 0,
+          statuses: taskBoardStatuses,
+
+          labelId: calendarFilters?.labelId,
+          date: calendarFilters?.date,
+          fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
+          toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
+        },
+      });
+    }
+  }, [month, day, orgId, orgData, calendarFilters]);
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-  const checkPermissions = (task) => {
-    const permissions = parseUserPermissionContext({
-      userPermissionsContext,
-      orgId: task?.orgId,
-      podId: task?.podId,
-    });
-    const canEdit =
-      permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
-      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-      task?.createdBy === user?.id ||
-      (task?.assigneeId && task?.assigneeId === user?.id);
-
-    return canEdit && user && task;
-  };
 
   const prevColumnState = usePrevious(columns);
   const updateTaskStatus = async (taskToBeUpdated, aboveOrder, belowOrder) => {
@@ -129,6 +196,7 @@ const CalendarView = (props) => {
         },
         refetchQueries: () => [
           'getUserTaskBoardTasks',
+          'getOrgTaskBoardCalendar',
           'getOrgTaskBoardTasks',
           'getPodTaskBoardTasks',
           'getPerStatusTaskCountForMilestone',
@@ -147,6 +215,36 @@ const CalendarView = (props) => {
         }
       }
     }
+  };
+  const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
+    onCompleted: (data) => {
+      if (data?.getOrgFromUsername) {
+        setOrgData(data?.getOrgFromUsername);
+      }
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  useEffect(() => {
+    if (orgId && !orgData) {
+      getOrg({
+        variables: {
+          orgId,
+        },
+      });
+      // get user task board tasks immediately
+    } else if (!orgId && username && !orgData) {
+      // Get orgId from username
+      getOrgFromUsername({
+        variables: {
+          username,
+        },
+      });
+    }
+  }, [username, orgId, orgData, getOrg, getOrgFromUsername]);
+
+  const handleTaskClose = () => {
+    setOpenTaskModal(false);
   };
 
   const getDaysOfWeek = () => {
@@ -189,61 +287,84 @@ const CalendarView = (props) => {
       const numDate = new Date(year, month + 1, 1 + i);
       daysOfMonth.push({ date: numDay, tasks: [], day: numDate });
     }
-    console.log(daysOfMonth);
     setCurrentDaysOfMonth(daysOfMonth);
     getTasks(daysOfMonth);
   };
 
   const getTasks = (days) => {
     let holdTasks = [];
-    if (columns) {
+    if (calendarData) {
       if (calendarView === 'WEEK') {
-        for (let i = 0; i < columns.length; i++) {
+        for (let i = 0; i < calendarData.length; i++) {
           for (let j = 0; j < days.length; j++) {
-            const holdDate = new Date(columns[i].dueDate);
+            const holdDate = new Date(calendarData[i].dueDate);
             if (
               days?.[j]?.day.getDate() === holdDate.getDate() &&
               days?.[j]?.day.getMonth() === holdDate.getMonth() &&
               days?.[j]?.day.getFullYear() === holdDate.getFullYear()
             ) {
-              days[j].tasks.push(columns[i]);
+              days[j].tasks.push(calendarData[i]);
             }
           }
         }
       } else {
         let holdCurrentDaysOfMonth = days;
-        console.log(days);
-        for (let i = 0; i < columns.length; i++) {
+        for (let i = 0; i < calendarData.length; i++) {
           for (let j = 0; j < days.length; j++) {
-            const holdDate = new Date(columns[i].dueDate);
+            const holdDate = new Date(calendarData[i].dueDate);
             if (
               days?.[j]?.day.getDate() === holdDate.getDate() &&
               days?.[j]?.day.getMonth() === holdDate.getMonth() &&
               days?.[j]?.day.getFullYear() === holdDate.getFullYear()
             ) {
-              holdCurrentDaysOfMonth[j].tasks.push(columns[i]);
+              holdCurrentDaysOfMonth[j].tasks.push(calendarData[i]);
             }
           }
         }
-        console.log('I AM CURRENT DAYS OF MONTH, ', holdCurrentDaysOfMonth);
         setCurrentDaysOfMonth(holdCurrentDaysOfMonth);
       }
     }
   };
 
+  const handleSelectTask = (taskID) => {
+    setTaskId(taskID);
+    setOpenCalendarModal(false);
+    setOpenTaskModal(true);
+  };
+
   useEffect(() => {
+    setWeek(null);
+    setCurrentDaysOfMonth(null);
     if (calendarView === 'WEEK') {
       getDaysOfWeek();
     } else if (calendarView === 'MONTH') {
       getDaysOfMonth();
     }
-  }, [day, month, calendarView]);
+  }, [day, month, calendarView, calendarData]);
 
   return (
     <div style={{ width: '100%', marginBottom: '50px' }}>
+      <CalendarViewModal
+        open={openCalendarModal}
+        onClose={() => {
+          setOpenCalendarModal(false);
+        }}
+        handleSelectTask={handleSelectTask}
+        day={dateSelected}
+      />
+      <TaskViewModal
+        disableEnforceFocus
+        open={openTaskModal}
+        shouldFocusAfterRender={false}
+        handleClose={handleTaskClose}
+        taskId={taskId}
+        isTaskProposal={false}
+        key={taskId}
+      />
+
       <CalendarTopBar>
         <CalendarTopBarLeftSide>
-          <CalendarViewLabel>{`${monthsOfYear[month]} ${year}`}</CalendarViewLabel>
+          <CalendarViewLabel style={{ width: '125px' }}>{`${monthsOfYear[month]} ${year}`}</CalendarViewLabel>
           <CalendarLeftArrowIcon
             onClick={() => {
               const holdDate = new Date(trackDate).setDate(new Date(trackDate).getDate() - 7);
@@ -253,11 +374,14 @@ const CalendarView = (props) => {
                 setMonth(new Date(holdDate).getMonth());
                 setYear(new Date(holdDate).getFullYear());
                 setDay(new Date(holdDate).getDate());
+                setWeek(null);
+                setCurrentDaysOfMonth(null);
               }
               if (calendarView === 'MONTH') {
                 setMonth(month === 0 ? 11 : month - 1);
                 setYear(month === 0 ? year - 1 : year);
                 onCalendarDateChange(new Date(year, month, 1));
+                setWeek(null);
                 setCurrentDaysOfMonth(null);
               }
             }}
@@ -270,11 +394,14 @@ const CalendarView = (props) => {
                 setMonth(new Date(holdDate).getMonth());
                 setYear(new Date(holdDate).getFullYear());
                 setDay(new Date(holdDate).getDate());
+                setWeek(null);
+                setCurrentDaysOfMonth(null);
               }
               if (calendarView === 'MONTH') {
                 setMonth(month === 11 ? 0 : month + 1);
                 setYear(month === 11 ? year + 1 : year);
                 onCalendarDateChange(new Date(year, month, 1));
+                setWeek(null);
                 setCurrentDaysOfMonth(null);
               }
             }}
@@ -288,7 +415,6 @@ const CalendarView = (props) => {
           </CalendarViewMonthDayToggle>
           <StyledPopper
             open={open}
-            onClose={() => setOpen(false)}
             anchorEl={anchorEl}
             placement="bottom-start"
             modifiers={{
@@ -339,15 +465,26 @@ const CalendarView = (props) => {
           </CalendarViewContainer>
           <CalendarViewDMonthContainer view={calendarView}>
             {currentDaysOfMonth?.map((taskObject, index) => {
-              console.log(taskObject);
+              const todayDate = new Date();
               return (
                 <CalendarViewDayContainer key={taskObject?.date}>
                   <CalendarViewDayTopBar>
-                    <CalendarViewLabel>{taskObject?.date}</CalendarViewLabel>
+                    {taskObject.day.getMonth() === todayDate.getMonth() &&
+                    taskObject.day.getDate() === todayDate.getDate() &&
+                    taskObject.day.getFullYear() === todayDate.getFullYear() ? (
+                      <CalendarDayOfMonthLabel>{taskObject?.date}</CalendarDayOfMonthLabel>
+                    ) : (
+                      <CalendarViewLabel>{taskObject?.date}</CalendarViewLabel>
+                    )}
                   </CalendarViewDayTopBar>
                   {taskObject?.tasks?.map((task, index) => {
                     const content = (
-                      <CalendarViewTaskContainer>
+                      <CalendarViewTaskContainer
+                        onClick={() => {
+                          setOpenTaskModal(true);
+                          setTaskId(task?.id);
+                        }}
+                      >
                         <CalendarViewTaskIcon
                           status={task?.status}
                           //   style={{ width: '20px', height: '20px', marginRight: '8px' }}
@@ -355,7 +492,16 @@ const CalendarView = (props) => {
                         <CalendarViewTaskLabel>{task.title}</CalendarViewTaskLabel>
                       </CalendarViewTaskContainer>
                     );
-                    const showMore = <CalendarViewTaskShowMore>Show more...</CalendarViewTaskShowMore>;
+                    const showMore = (
+                      <CalendarViewTaskShowMore
+                        onClick={() => {
+                          setDateSelected(taskObject);
+                          setOpenCalendarModal(true);
+                        }}
+                      >
+                        {`${taskObject?.tasks.length - 3} more...`}
+                      </CalendarViewTaskShowMore>
+                    );
                     if (index < 3) {
                       return content;
                     } else if (index === 3) {
@@ -373,9 +519,19 @@ const CalendarView = (props) => {
         <div>
           <CalendarViewContainer>
             <CalendarDayOfWeekBar>
-              {daysOfWeek.map((day, i) => (
-                <CalendarViewLabel key={day}>{`${day} ${week?.[i]?.date}`}</CalendarViewLabel>
-              ))}
+              {daysOfWeek.map((day, i) => {
+                const todayDate = new Date();
+                return week?.[i]?.day.getMonth() === todayDate.getMonth() &&
+                  week?.[i]?.day.getDate() === todayDate.getDate() &&
+                  week?.[i]?.day.getFullYear() === todayDate.getFullYear() ? (
+                  <CalendarDayOfWeekLabel key={day}>{`${day} ${week?.[i]?.date}`}</CalendarDayOfWeekLabel>
+                ) : (
+                  <CalendarDayOfWeekLabel
+                    style={{ backgroundColor: '#161616' }}
+                    key={day}
+                  >{`${day} ${week?.[i]?.date}`}</CalendarDayOfWeekLabel>
+                );
+              })}
             </CalendarDayOfWeekBar>
           </CalendarViewContainer>
           <CalendarViewDMonthContainer view={calendarView}>
@@ -385,18 +541,28 @@ const CalendarView = (props) => {
                   {dayOfWeek?.tasks?.map((task, index) => {
                     const content = (
                       <CalendarViewTaskContainer
-                      // onClick={() => {
-                      //   console.log(task);
-                      // }}
+                        style={{ marginBottom: calendarView === 'WEEK' ? '8px' : '2px' }}
+                        onClick={() => {
+                          setOpenTaskModal(true);
+                          setTaskId(task?.id);
+                        }}
                       >
-                        <CalendarViewTaskIcon
-                          status={task?.status}
-                          //   style={{ width: '20px', height: '20px', marginRight: '8px' }}
-                        />
-                        <CalendarViewTaskLabel>{task.title}</CalendarViewTaskLabel>
+                        <CalendarViewTaskIcon status={task?.status} />
+                        <CalendarViewTaskLabel style={{ fontSize: calendarView === 'WEEK' ? '14px' : '12px' }}>
+                          {task.title}
+                        </CalendarViewTaskLabel>
                       </CalendarViewTaskContainer>
                     );
-                    const showMore = <CalendarViewTaskShowMore>Show more...</CalendarViewTaskShowMore>;
+                    const showMore = (
+                      <CalendarViewTaskShowMore
+                        onClick={() => {
+                          setDateSelected(dayOfWeek);
+                          setOpenCalendarModal(true);
+                        }}
+                      >
+                        Show more...
+                      </CalendarViewTaskShowMore>
+                    );
                     if (index < 30) {
                       return content;
                     } else if (index === 30) {

@@ -12,6 +12,7 @@ import { GET_USER } from 'graphql/queries/user';
 
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_POD_BOARD,
+  GET_POD_TASK_BOARD_CALENDAR,
   GET_POD_TASK_BOARD_PROPOSALS,
   GET_POD_TASK_BOARD_TASKS,
   GET_TASKS_RELATED_TO_USER_IN_POD,
@@ -43,6 +44,64 @@ import uniqBy from 'lodash/uniqBy';
 import { insertUrlParam } from 'utils';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
+import { format } from 'date-fns';
+
+const useGetPodTaskBoardCalendar = ({
+  setColumns,
+  podId,
+  userId,
+  entityType,
+  setIsLoading,
+  search,
+  statuses,
+  privacyLevel,
+  calendarView,
+  fromDate,
+  toDate,
+}) => {
+  const [getPodTaskBoardCalendar] = useLazyQuery(GET_POD_TASK_BOARD_CALENDAR, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    onCompleted: (data) => {
+      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY || calendarView) {
+        setColumns(data?.getPodTaskBoardCalendar);
+        setIsLoading(false);
+        return;
+      }
+      setIsLoading(false);
+    },
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  useEffect(() => {
+    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && !userId && calendarView) {
+      const taskBoardStatuses =
+        statuses?.length > 0
+          ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
+          : //double check in case we add new stuff and have no valid entityType.
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+
+      getPodTaskBoardCalendar({
+        variables: {
+          input: {
+            podId,
+            statuses: taskBoardStatuses,
+            offset: 0,
+            fromDate: format(fromDate, 'yyyy-MM-dd'),
+            toDate: format(toDate, 'yyyy-MM-dd'),
+            types: [entityType],
+            ...(privacyLevel === PRIVACY_LEVEL.public && {
+              onlyPublic: true,
+            }),
+          },
+        },
+      });
+    }
+  }, [getPodTaskBoardCalendar, podId, statuses, entityType, privacyLevel, calendarView]);
+};
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -57,6 +116,7 @@ const useGetPodTaskBoardTasks = ({
   date,
   privacyLevel,
   userId,
+  calendarView,
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -125,7 +185,7 @@ const useGetPodTaskBoardTasks = ({
   };
 
   useEffect(() => {
-    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && !userId) {
+    if (entityType !== ENTITIES_TYPES.PROPOSAL && podId && !search && !userId && !calendarView) {
       const taskBoardStatuses =
         statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
@@ -151,7 +211,7 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-  }, [getPodTaskBoardTasks, podId, statuses, setPodTaskHasMore, entityType, labelId, date, privacyLevel]);
+  }, [getPodTaskBoardTasks, podId, statuses, setPodTaskHasMore, entityType, labelId, date, privacyLevel, calendarView]);
   return { fetchMore: getPodTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
@@ -169,6 +229,7 @@ const useGetPodTaskProposals = ({
   labelId,
   date,
   privacyLevel,
+  calendarView,
 }) => {
   const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
@@ -209,7 +270,7 @@ const useGetPodTaskProposals = ({
       statuses?.length > 0
         ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
         : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED];
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId)
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId && !calendarView)
       getPodTaskProposals({
         variables: {
           input: {
@@ -221,7 +282,7 @@ const useGetPodTaskProposals = ({
           },
         },
       });
-  }, [getPodTaskProposals, podId, statuses, entityType, labelId]);
+  }, [getPodTaskProposals, podId, statuses, entityType, labelId, calendarView]);
   return { fetchMore: getProposalsFetchMore };
 };
 
@@ -240,8 +301,11 @@ const useGetPodTaskBoard = ({
   date,
   privacyLevel,
   userId,
+  fromDate,
+  toDate,
 }) => {
   const listView = view === ViewType.List;
+  const calendarView = view === ViewType.Calendar;
   const board = {
     tasks: useGetPodTaskBoardTasks({
       columns,
@@ -256,6 +320,7 @@ const useGetPodTaskBoard = ({
       date,
       privacyLevel,
       userId,
+      calendarView,
     }),
     proposals: useGetPodTaskProposals({
       listView,
@@ -271,6 +336,20 @@ const useGetPodTaskBoard = ({
       labelId,
       date,
       privacyLevel,
+      calendarView,
+    }),
+    calendarTasks: useGetPodTaskBoardCalendar({
+      setColumns,
+      podId,
+      userId,
+      entityType,
+      setIsLoading,
+      search,
+      statuses,
+      privacyLevel,
+      calendarView,
+      fromDate,
+      toDate,
     }),
   };
   const { fetchMore, fetchPerStatus }: any = entityType === ENTITIES_TYPES.PROPOSAL ? board.proposals : board.tasks;
@@ -292,6 +371,11 @@ const BoardsPage = () => {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const [fromDate, setFromDate] = useState(firstDay);
+  const [toDate, setToDate] = useState(lastDay);
 
   const [filters, setFilters] = useState<TaskFilter>({
     statuses: [],
@@ -299,6 +383,10 @@ const BoardsPage = () => {
     date: null,
     privacyLevel: null,
   });
+  const handleCalendarDatesChange = (date) => {
+    setFromDate(date);
+    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+  };
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
@@ -322,6 +410,8 @@ const BoardsPage = () => {
     labelId,
     date,
     privacyLevel,
+    fromDate,
+    toDate,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -619,6 +709,7 @@ const BoardsPage = () => {
         onSearch={handleSearch}
         searchString={searchString}
         onFilterChange={handleFilterChange}
+        onCalendarDateChange={handleCalendarDatesChange}
         setColumns={setColumns}
         loading={isLoading}
         entityType={entityType}

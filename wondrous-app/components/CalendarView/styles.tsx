@@ -33,6 +33,28 @@ export const CalendarViewLabel = styled(Typography)`
   max-lines: 1;
 `;
 
+export const CalendarDayOfMonthLabel = styled(Typography)`
+  font-family: Space Grotesk;
+  font-size: 14px;
+  color: white;
+  background-color: #7427ff;
+  border-radius: 4px;
+  max-lines: 1;
+  align-self: center;
+`;
+export const CalendarDayOfWeekLabel = styled(Typography)`
+  font-family: Space Grotesk;
+  font-size: 14px;
+  color: white;
+  background-color: #7427ff;
+  border-radius: 4px;
+  margin-right: 20px;
+  margin-left: 20px;
+  padding: 4px;
+  max-lines: 1;
+  align-self: center;
+`;
+
 export const CalendarTopBar = styled.div`
   margin-bottom: 8px;
   width: 100%;
@@ -180,6 +202,8 @@ export const CalendarViewDayTopBar = styled.div`
 
 export const CalendarViewDayContainer = styled.div`
   background-color: #1d1d1d;
+  justify-content: center;
+  align-items: center;
   border-bottom: 1px solid #343434;
   border-left: 0.5px solid #343434;
   border-right: 0.5px solid #343434;
@@ -199,7 +223,7 @@ export const CalendarViewDMonthContainer = styled.div`
 `;
 
 export const CalendarViewTaskIcon = styled((props) => (
-  <TaskStatus status={props.status} style={{ width: '16px', height: '16px', marginRight: '8px' }} />
+  <TaskStatus status={props.status} style={{ width: '20px', height: '20px', marginRight: '8px' }} />
 ))``;
 
 export const CalendarViewTaskContainer = styled.div`
@@ -209,17 +233,18 @@ export const CalendarViewTaskContainer = styled.div`
   flex-direction: row;
   align-items: center;
   align-content: center;
-  margin-bottom: 2px;
   &:hover {
     cursor: pointer;
   }
 `;
 
 export const CalendarViewTaskLabel = styled(Typography)`
+  width: 100%;
   font-family: Space Grotesk;
   font-size: 12px;
   color: white;
-  max-lines: 1;
+  align-self: center;
+  justify-self: center;
 `;
 
 export const CalendarViewTaskShowMore = styled(Typography)`

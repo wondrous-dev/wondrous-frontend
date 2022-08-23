@@ -27,6 +27,7 @@ type Props = {
   searchString: string;
   statuses: string[];
   podIds: string[];
+  calendarFilters: any;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
   entityType: string;
@@ -44,6 +45,7 @@ const OrgBoards = (props: Props) => {
     onFilterChange,
     onCalendarDateChange,
     statuses,
+    calendarFilters,
     podIds,
     setColumns,
     userId,
@@ -73,6 +75,7 @@ const OrgBoards = (props: Props) => {
             activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
             columns={columns}
             onLoadMore={onLoadMore}
+            calendarFilters={calendarFilters}
             onCalendarDateChange={onCalendarDateChange}
             hasMore={hasMore}
             setColumns={setColumns}

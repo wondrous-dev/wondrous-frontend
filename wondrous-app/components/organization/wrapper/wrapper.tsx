@@ -283,7 +283,6 @@ const Wrapper = (props) => {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
       />
-      {/* <CalendarViewModal open={true} onClose={() => setOpenJoinRequestModal(false)} /> */}
       <ChooseEntityToCreate />
       <TokenGatedAndClaimableRoleModal
         open={claimableRoleModalOpen}

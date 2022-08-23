@@ -33,8 +33,8 @@ type Props = {
   activeView?: string;
   onSearch?: any;
   onFilterChange?: any;
+  calendarFilters?: any;
   onCalendarDateChange?: any;
-  statuses?: any;
   filterSchema?: any;
   userId?: string;
   entityType?: string;
@@ -52,6 +52,7 @@ const Boards = (props: Props) => {
     setColumns,
     onCalendarDateChange,
     activeView,
+    calendarFilters,
     entityType = ENTITIES_TYPES.TASK,
   } = props;
   const router = useRouter();
@@ -88,6 +89,7 @@ const Boards = (props: Props) => {
             onLoadMore={onLoadMore}
             hasMore={hasMore}
             isAdmin={isAdmin}
+            calendarFilters={calendarFilters}
             onCalendarDateChange={onCalendarDateChange}
           />
         ) : (
