@@ -735,6 +735,7 @@ const useUpdateBounty = () => {
     ],
   });
   const handleMutation = ({ input, existingTask, handleClose }) => {
+    // this should filter out fields that are not in bountyinput
     updateBounty({
       variables: {
         bountyId: existingTask?.id,
@@ -1815,7 +1816,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               <CreateEntityLabelAddButton
                 onClick={() => {
                   if (isEmpty(filteredEligibleReviewers)) return;
-                  if (form.values.reviewerIds === null) {
+                  if (!form.values.reviewerIds) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
                   }
