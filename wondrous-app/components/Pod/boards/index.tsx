@@ -67,6 +67,7 @@ function PodBoards(props: Props) {
             onLoadMore={onLoadMore}
             onCalendarDateChange={onCalendarDateChange}
             hasMore={hasMore}
+            statuses={statuses}
             setColumns={setColumns}
             entityType={entityType}
           />

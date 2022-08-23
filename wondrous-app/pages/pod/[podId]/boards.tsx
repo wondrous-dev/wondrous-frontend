@@ -42,7 +42,6 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { useIsMobile } from 'utils/hooks';
 import { format } from 'date-fns';
 
 const useGetPodTaskBoardCalendar = ({
@@ -80,7 +79,7 @@ const useGetPodTaskBoardCalendar = ({
       const taskBoardStatuses =
         statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
-          : //double check in case we add new stuff and have no valid entityType.
+          : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
       getPodTaskBoardCalendar({

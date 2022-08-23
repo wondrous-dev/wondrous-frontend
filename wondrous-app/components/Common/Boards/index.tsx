@@ -6,6 +6,7 @@ import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ListView from 'components/ListView';
+import CalendarView from 'components/CalendarView';
 import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import { Table } from '../../Table';
@@ -17,8 +18,6 @@ import {
   ShowAllButton,
   ShowAllSearchResults,
 } from './styles';
-import ListView from 'components/ListView';
-import CalendarView from 'components/CalendarView';
 
 type Props = {
   columns: Array<any>;
@@ -31,6 +30,7 @@ type Props = {
   onFilterChange?: any;
   calendarFilters?: any;
   onCalendarDateChange?: any;
+  statuses?: string[];
   filterSchema?: any;
   userId?: string;
   entityType?: string;
@@ -47,6 +47,7 @@ const Boards = (props: Props) => {
     isAdmin,
     setColumns,
     onCalendarDateChange,
+    statuses,
     activeView,
     calendarFilters,
     entityType = ENTITIES_TYPES.TASK,
@@ -80,6 +81,7 @@ const Boards = (props: Props) => {
             onLoadMore={onLoadMore}
             hasMore={hasMore}
             isAdmin={isAdmin}
+            statuses={statuses}
             calendarFilters={calendarFilters}
             onCalendarDateChange={onCalendarDateChange}
           />
@@ -148,6 +150,6 @@ const Boards = (props: Props) => {
       <BoardsContainer>{searchQuery ? renderSearchResults() : renderBoard()}</BoardsContainer>
     </ColumnsContext.Provider>
   );
-}
+};
 
 export default Boards;

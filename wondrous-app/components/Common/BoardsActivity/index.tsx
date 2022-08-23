@@ -14,6 +14,7 @@ import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
 import { CalendarViewIcon } from 'components/Icons/ViewIcons/calendarView';
+import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
   onSearch,

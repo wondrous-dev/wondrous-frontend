@@ -88,7 +88,8 @@ const CalendarView = (props) => {
   const router = useRouter();
   const { orgId, username, podId } = router.query;
   const [orgData, setOrgData] = useState(null);
-  const { columns, onLoadMore, hasMore, setColumns, onCalendarDateChange, entityType, calendarFilters } = props;
+  const { columns, onLoadMore, hasMore, setColumns, onCalendarDateChange, entityType, calendarFilters, statuses } =
+    props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [calendarView, setCalendarView] = useState('MONTH');
   const [tasks, setTasks] = useState([]);
@@ -117,7 +118,7 @@ const CalendarView = (props) => {
   const podBoard = usePodBoard();
   const board = orgBoard || userBoard || podBoard;
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
-  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId: orgId, enablePodFilter: true });
+  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId, enablePodFilter: true });
   const [getOrgCalendarTasks] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
     onCompleted: (data) => {
       setCalendarData(data?.getOrgTaskBoardCalendar);
@@ -131,13 +132,13 @@ const CalendarView = (props) => {
     fetchPolicy: 'cache-and-network',
   });
   useEffect(() => {
-    const taskBoardStatuses =
-      calendarFilters.statuses?.length > 0
-        ? calendarFilters.statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-        : //double check in case we add new stuff and have no valid entityType.
-          STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
-
     if (podId) {
+      const taskBoardStatuses =
+        statuses?.length > 0
+          ? statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+          : // double check in case we add new stuff and have no valid entityType.
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+
       getPodCalendarTasks({
         variables: {
           input: {
@@ -150,13 +151,18 @@ const CalendarView = (props) => {
         },
       });
     } else {
+      const taskBoardStatuses =
+        calendarFilters.statuses?.length > 0
+          ? calendarFilters.statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+          : // double check in case we add new stuff and have no valid entityType.
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+
       getOrgCalendarTasks({
         variables: {
           orgId: orgData?.id,
           podIds: calendarFilters?.podIds,
           offset: 0,
           statuses: taskBoardStatuses,
-
           labelId: calendarFilters?.labelId,
           date: calendarFilters?.date,
           fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
@@ -164,7 +170,7 @@ const CalendarView = (props) => {
         },
       });
     }
-  }, [month, day, orgId, orgData, calendarFilters]);
+  }, [month, day, orgId, orgData, calendarFilters, statuses]);
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
@@ -249,11 +255,11 @@ const CalendarView = (props) => {
 
   const getDaysOfWeek = () => {
     const daysOfWeek = [];
-    let trackedDate = trackDate;
+    const trackedDate = trackDate;
 
     const dayOfWeek = trackDate.getDay();
     for (let i = dayOfWeek; i >= 0; i--) {
-      let holdDay = new Date(trackedDate);
+      const holdDay = new Date(trackedDate);
       holdDay.setDate(holdDay.getDate() - i);
       daysOfWeek.push({ date: holdDay.getDate(), tasks: [], day: holdDay });
     }
@@ -276,7 +282,7 @@ const CalendarView = (props) => {
 
       daysOfMonth.push({ date: numDay - i, tasks: [], day: numDate });
     }
-    let lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+    const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
     for (let i = 1; i <= lastDateOfMonth; i++) {
       const currentMonthDay = new Date(year, month, i);
       daysOfMonth.push({ date: i, tasks: [], day: currentMonthDay });
@@ -292,7 +298,7 @@ const CalendarView = (props) => {
   };
 
   const getTasks = (days) => {
-    let holdTasks = [];
+    const holdTasks = [];
     if (calendarData) {
       if (calendarView === 'WEEK') {
         for (let i = 0; i < calendarData.length; i++) {
@@ -308,7 +314,7 @@ const CalendarView = (props) => {
           }
         }
       } else {
-        let holdCurrentDaysOfMonth = days;
+        const holdCurrentDaysOfMonth = days;
         for (let i = 0; i < calendarData.length; i++) {
           for (let j = 0; j < days.length; j++) {
             const holdDate = new Date(calendarData[i].dueDate);
@@ -504,11 +510,11 @@ const CalendarView = (props) => {
                     );
                     if (index < 3) {
                       return content;
-                    } else if (index === 3) {
-                      return showMore;
-                    } else {
-                      return null;
                     }
+                    if (index === 3) {
+                      return showMore;
+                    }
+                    return null;
                   })}
                 </CalendarViewDayContainer>
               );
@@ -535,45 +541,43 @@ const CalendarView = (props) => {
             </CalendarDayOfWeekBar>
           </CalendarViewContainer>
           <CalendarViewDMonthContainer view={calendarView}>
-            {week?.map((dayOfWeek, index) => {
-              return (
-                <CalendarViewDayContainer view={calendarView}>
-                  {dayOfWeek?.tasks?.map((task, index) => {
-                    const content = (
-                      <CalendarViewTaskContainer
-                        style={{ marginBottom: calendarView === 'WEEK' ? '8px' : '2px' }}
-                        onClick={() => {
-                          setOpenTaskModal(true);
-                          setTaskId(task?.id);
-                        }}
-                      >
-                        <CalendarViewTaskIcon status={task?.status} />
-                        <CalendarViewTaskLabel style={{ fontSize: calendarView === 'WEEK' ? '14px' : '12px' }}>
-                          {task.title}
-                        </CalendarViewTaskLabel>
-                      </CalendarViewTaskContainer>
-                    );
-                    const showMore = (
-                      <CalendarViewTaskShowMore
-                        onClick={() => {
-                          setDateSelected(dayOfWeek);
-                          setOpenCalendarModal(true);
-                        }}
-                      >
-                        Show more...
-                      </CalendarViewTaskShowMore>
-                    );
-                    if (index < 30) {
-                      return content;
-                    } else if (index === 30) {
-                      return showMore;
-                    } else {
-                      return null;
-                    }
-                  })}
-                </CalendarViewDayContainer>
-              );
-            })}
+            {week?.map((dayOfWeek, index) => (
+              <CalendarViewDayContainer view={calendarView}>
+                {dayOfWeek?.tasks?.map((task, index) => {
+                  const content = (
+                    <CalendarViewTaskContainer
+                      style={{ marginBottom: calendarView === 'WEEK' ? '8px' : '2px' }}
+                      onClick={() => {
+                        setOpenTaskModal(true);
+                        setTaskId(task?.id);
+                      }}
+                    >
+                      <CalendarViewTaskIcon status={task?.status} />
+                      <CalendarViewTaskLabel style={{ fontSize: calendarView === 'WEEK' ? '14px' : '12px' }}>
+                        {task.title}
+                      </CalendarViewTaskLabel>
+                    </CalendarViewTaskContainer>
+                  );
+                  const showMore = (
+                    <CalendarViewTaskShowMore
+                      onClick={() => {
+                        setDateSelected(dayOfWeek);
+                        setOpenCalendarModal(true);
+                      }}
+                    >
+                      Show more...
+                    </CalendarViewTaskShowMore>
+                  );
+                  if (index < 30) {
+                    return content;
+                  }
+                  if (index === 30) {
+                    return showMore;
+                  }
+                  return null;
+                })}
+              </CalendarViewDayContainer>
+            ))}
           </CalendarViewDMonthContainer>
         </div>
       )}
