@@ -157,21 +157,21 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
               // Open up modal instead
               return (
                 <SidebarTooltip key={id} title={tooltipLabel}>
-                  <DrawerBottomButton onClick={() => setOpenHelpModal(true)}>
+                  <HighlightedButton onClick={() => setOpenHelpModal(true)}>
                     <Icon />
-                  </DrawerBottomButton>
+                  </HighlightedButton>
                 </SidebarTooltip>
               );
             }
             return (
               <SidebarTooltip key={id} title={tooltipLabel}>
-                <DrawerBottomButton>
+                <HighlightedButton>
                   <Link href={url} passHref>
                     <a href={url} {...externalProps}>
                       <Icon />
                     </a>
                   </Link>
-                </DrawerBottomButton>
+                </HighlightedButton>
               </SidebarTooltip>
             );
           })}
