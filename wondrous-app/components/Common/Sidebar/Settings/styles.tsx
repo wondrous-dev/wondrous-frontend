@@ -5,6 +5,10 @@ import palette from 'theme/palette';
 
 export const SettingsChildrenWrapper = styled.div`
   padding: 0 24px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
 `;
 
 export const SettingsSidebarTabsSection = styled.div`
