@@ -26,8 +26,7 @@ const AboutEntity = () => {
   const router = useRouter();
   const { board } = useBoards();
   const canManage = useCanManage();
-  if (!(board?.orgData || board?.pod)) return null;
-  const { privacyLevel, id, name, thumbnailPicture, profilePicture } = board.orgData || board.pod;
+  const { privacyLevel, id, name, thumbnailPicture, profilePicture } = board.orgData || board.pod || {};
   return (
     <Wrapper>
       <EntityMenu
