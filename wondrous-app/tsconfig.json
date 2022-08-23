@@ -21,7 +21,8 @@
       "services/*": ["services/*"],
       "utils/*": ["utils/*"],
       "types/*": ["types/*"],
-      "graphql/*": ["graphql/*"]
+      "graphql/*": ["graphql/*"],
+      "images/*": ["public/images/*"]
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],

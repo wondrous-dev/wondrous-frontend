@@ -28,7 +28,7 @@ function OrgItem({ org }) {
     <Link href={`/organization/${username}/boards`}>
       <StyledGridItem>
         {headerImage}
-        {headerUrl && <SafeImage useNextImage height={148} width={443} objectFit="fill" src={headerUrl} />}
+        {headerUrl && <SafeImage useNextImage src={headerUrl} />}
         <LogoContainer>
           <SafeImage useNextImage width={56} height={56} src={imageUrl} />
         </LogoContainer>
