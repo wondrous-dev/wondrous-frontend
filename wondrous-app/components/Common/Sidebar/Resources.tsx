@@ -21,7 +21,9 @@ const randomColors = shuffle(Object.values(ColorTypes));
 const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelectCategory, selectedCategory }) => {
   const { minimized } = useSideBar();
   const { board, orgBoard } = useBoards();
-  const href = orgBoard ? `/organization/${board?.orgData?.username}/boards` : `/pod/${board?.podId}/boards`;
+  const href = orgBoard
+    ? `/organization/${board?.orgData?.username}/boards?entity=task`
+    : `/pod/${board?.podId}/boards?entity=task`;
   const canEdit = useCanEdit();
   return (
     <Wrapper>
