@@ -49,6 +49,7 @@ function RolesPage() {
       setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
       getOrgRolesWithTokenGate();
     },
+    refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
   });
 
   const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
