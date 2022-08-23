@@ -12,20 +12,6 @@ import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
-import { BatchWalletPayment } from '../../Common/Payment/BatchWalletPayment';
-import { BatchOfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
-import { useMe } from '../../Auth/withAuth';
-import { StyledCheckbox, TableCellText } from './styles';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { SafeImage } from '../../Common/Image';
-import {
-  StyledTable,
-  StyledTableBody,
-  StyledTableCell,
-  StyledTableContainer,
-  StyledTableHead,
-  StyledTableRow,
-} from '../../Table/styles';
 import {
   PodNameTypography,
   PaymentModal,
@@ -37,7 +23,20 @@ import {
   StyledTabs,
   PaymentMethodWrapper,
   WarningTypography,
-} from '../../Common/Payment/styles';
+} from 'components/Common/Payment/styles';
+import { BatchWalletPayment } from 'components/Common/Payment/BatchWalletPayment';
+import { BatchOfflinePayment } from 'components/Common/Payment/OfflinePayment/OfflinePayment';
+import { TableCellText } from './styles';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
+import { SafeImage } from '../../Common/Image';
+import {
+  StyledTable,
+  StyledTableBody,
+  StyledTableCell,
+  StyledTableContainer,
+  StyledTableHead,
+  StyledTableRow,
+} from '../../Table/styles';
 import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
 
 enum ViewType {
