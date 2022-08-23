@@ -5,7 +5,6 @@ import SettingsIcon from 'components/Icons/settings.svg';
 import { PodsIcon } from 'components/Icons/sidebar';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
-import { SIDEBAR_WIDTH } from 'utils/constants';
 
 const hideScrollbar = css`
   &::-webkit-scrollbar {

@@ -1,15 +1,14 @@
 import { useQuery } from '@apollo/client';
+import BackButton from 'components/Common/Sidebar/Common/BackButton';
 import { useCanManage } from 'components/Common/Sidebar/Common/hooks';
+import Item from 'components/Common/Sidebar/Common/Item';
+import { AddIconWrapper, Label, ListWrapper } from 'components/Common/Sidebar/Common/styles';
 import SettingsIcon from 'components/Icons/settings.svg';
 import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import { pickBy } from 'lodash';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { useBoards } from 'utils/hooks';
-
-import BackButton from '../Common/BackButton';
-import Item from '../Common/Item';
-import { AddIconWrapper, Label, ListWrapper } from '../Common/styles';
 
 const useBackHref = ({ router }) => {
   const query = pickBy(router.query, (_v, key) => key !== 'roles');

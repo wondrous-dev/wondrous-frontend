@@ -1,8 +1,8 @@
-import Tooltip from 'components/Tooltip';
-import styled from 'styled-components';
+import { toolTipStyle } from 'components/Common/Sidebar/Common/styles';
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
-import { toolTipStyle } from '../../Common/styles';
+import Tooltip from 'components/Tooltip';
+import styled from 'styled-components';
 
 const IconWrapper = styled.div`
   display: flex;

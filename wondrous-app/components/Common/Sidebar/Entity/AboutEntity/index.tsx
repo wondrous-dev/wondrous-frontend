@@ -1,8 +1,8 @@
+import { useCanManage } from 'components/Common/Sidebar/Common/hooks';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { useBoards } from 'utils/hooks';
 
-import { useCanManage } from '../../Common/hooks';
 import EntityMenu from './EntityMenu';
 import InviteButton from './InviteButton';
 import PrivacyIcon from './PrivacyIcon';
