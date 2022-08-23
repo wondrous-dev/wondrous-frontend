@@ -83,6 +83,7 @@ function GeneralSettingsComponent(props) {
     color,
     setColor,
     logoImage,
+    orgProfile,
     typeText,
     descriptionText,
     handleDescriptionChange,
@@ -140,7 +141,11 @@ function GeneralSettingsComponent(props) {
           message={toast.message}
         />
 
-        <HeaderBlock title="General settings" description="Update profile page settings." />
+        <HeaderBlock
+          title="General settings"
+          description="Update profile page settings."
+          icon={orgProfile?.profilePicture}
+        />
         <GeneralSettingsInputsBlock>
           <GeneralSettingsDAONameBlock>
             <LabelBlock>{typeText} Name</LabelBlock>
@@ -175,6 +180,7 @@ function GeneralSettingsComponent(props) {
           imageHeight={52}
           imageName="Logo"
           updateFilesCb={(file) => handleImageChange(file, 'profile')}
+          profileImage={newProfile?.profilePicture}
         />
 
         {newProfile?.headerPicture && !headerImage && (
@@ -189,6 +195,7 @@ function GeneralSettingsComponent(props) {
           imageHeight="200"
           imageName="Header"
           updateFilesCb={(file) => handleImageChange(file, 'header')}
+          profileImage={newProfile?.headerPicture}
         />
 
         {isPod && (
@@ -346,8 +353,11 @@ export function PodGeneralSettings() {
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
-  const [getPod] = useLazyQuery(GET_POD_BY_ID, {
+  const [getPod, { data: getPodByIdData }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => setPod(getPodById),
+    fetchPolicy: 'cache-and-network',
+  });
+  const [getOrg, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
     fetchPolicy: 'cache-and-network',
   });
   const [headerImage, setHeaderImage] = useState('');
@@ -372,7 +382,15 @@ export function PodGeneralSettings() {
     if (podId) {
       getPod({ variables: { podId } });
     }
-  }, [podId]);
+
+    if (podProfile?.orgId) {
+      getOrg({
+        variables: {
+          orgId: podProfile?.orgId,
+        },
+      });
+    }
+  }, [podId, podProfile?.orgId]);
 
   const [updatePod] = useMutation(UPDATE_POD, {
     onCompleted: ({ updatePod: pod }) => {
@@ -421,7 +439,7 @@ export function PodGeneralSettings() {
     const imageFile = handleImageFile(file);
     setPodProfile({
       ...podProfile,
-      [podProfileKey]: imageFile.filename ?? podProfile[podProfileKey],
+      [podProfileKey]: file === '' ? getPodByIdData.getPodById[podProfileKey] : imageFile.filename ?? null,
     });
     imageFile.filename && (await uploadMedia(imageFile));
   }
@@ -494,6 +512,7 @@ export function PodGeneralSettings() {
       handleLogoChange={handleLogoChange}
       headerImage={headerImage}
       handleImageChange={handleImageChange}
+      orgProfile={getOrgByIdData?.getOrgById}
       logoImage={logoImage}
       newProfile={podProfile}
       resetChanges={resetChanges}
@@ -574,7 +593,7 @@ function GeneralSettings() {
     const imageFile = handleImageFile(file);
     setOrgProfile({
       ...orgProfile,
-      [orgProfileKey]: imageFile.filename ?? getOrgByIdData?.getOrgById[orgProfileKey],
+      [orgProfileKey]: file === '' ? getOrgByIdData.getOrgById[orgProfileKey] : imageFile.filename ?? null,
     });
     imageFile.filename && (await uploadMedia(imageFile));
   }
@@ -627,6 +646,7 @@ function GeneralSettings() {
       descriptionText={descriptionText}
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
+      orgProfile={getOrgByIdData?.getOrgById}
       links={orgLinks}
       logoImage={logoImage}
       newProfile={orgProfile}
