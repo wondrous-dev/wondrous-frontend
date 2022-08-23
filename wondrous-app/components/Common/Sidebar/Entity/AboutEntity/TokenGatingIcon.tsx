@@ -1,8 +1,8 @@
+import { toolTipStyle } from 'components/Common/Sidebar/Common/styles';
 import { LockedIconOutline, LockIconOutline } from 'components/Icons/userpass';
 import Tooltip from 'components/Tooltip';
 import styled from 'styled-components';
 import { useTokenGating } from 'utils/hooks';
-import { toolTipStyle } from '../../Common/styles';
 
 const IconWrapper = styled.div`
   display: flex;

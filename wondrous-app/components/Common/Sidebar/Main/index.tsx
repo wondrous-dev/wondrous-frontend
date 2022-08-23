@@ -1,9 +1,8 @@
-import React from 'react';
-import { useRouter } from 'next/router';
-
-import useSideBar from 'hooks/useSideBar';
-import { useIsMobile } from 'utils/hooks';
 import { useMe, withAuth } from 'components/Auth/withAuth';
+import useSideBar from 'hooks/useSideBar';
+import { useRouter } from 'next/router';
+import React from 'react';
+import { useIsMobile } from 'utils/hooks';
 
 import SidebarMemo from './SidebarMemo';
 
