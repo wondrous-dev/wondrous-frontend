@@ -70,9 +70,9 @@ export const AddIconWrapper = styled((props) => (
     align-items: center;
     background: ${({ theme }) => theme.palette.background.default};
     display: flex;
-    height: 21px;
+    height: 20px;
     justify-content: center;
-    width: 21px;
+    width: 20px;
   }
 `;
 
