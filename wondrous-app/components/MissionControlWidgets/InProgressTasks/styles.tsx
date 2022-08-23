@@ -4,7 +4,6 @@ import palette from 'theme/palette';
 import Typography from '@mui/material/Typography';
 import MuiAutocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { PopperUnstyled } from '@mui/base';
 
 export const TaskContainer = styled.div`
   background: ${palette.grey950};
@@ -13,6 +12,9 @@ export const TaskContainer = styled.div`
   display: flex;
   gap: 10px;
   cursor: pointer;
+  &:hover {
+    background: ${palette.grey87};
+  }
 `;
 
 export const TasksWrapper = styled.div`
@@ -96,4 +98,10 @@ export const OrgSearchWrapper = styled.div`
   }
 `;
 
-export const OrgSearchPopper = styled(PopperUnstyled)``;
+export const EmptyStateText = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+  }
+`;

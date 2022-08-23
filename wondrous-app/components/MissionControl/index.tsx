@@ -13,11 +13,13 @@ import {
 import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import { KudosWidget, InProgressTasksWidget } from 'components/MissionControlWidgets';
 import { ConnectWallet, Notifications } from 'components/MissionControlSidebarWidgets';
+import HighlightedCone from 'components/Icons/HighlightedCone';
 import {
   MissionControlWrapper,
   MissionControlSidebarWrapper,
   MissionControlWidgetsWrapper,
   MissionControlWidgetsContainer,
+  MissionControlSidebarIconWrapper,
 } from './styles';
 import MissionControlWorkspaceCard from './WorkspaceCard';
 
@@ -141,6 +143,9 @@ const MissionControl = () => {
       <MissionControlSidebarWrapper>
         <ConnectWallet />
         <Notifications />
+        <MissionControlSidebarIconWrapper>
+          <HighlightedCone />
+        </MissionControlSidebarIconWrapper>
       </MissionControlSidebarWrapper>
     </MissionControlWrapper>
   );

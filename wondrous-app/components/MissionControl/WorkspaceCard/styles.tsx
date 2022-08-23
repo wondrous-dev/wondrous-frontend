@@ -28,6 +28,32 @@ export const WorkspaceCardBannerImage = styled.div`
   }
 `;
 
+export const WorkspaceCardStat = styled.button`
+  display: flex;
+  gap: 10px;
+  cursor: pointer;
+  background: ${palette.grey950};
+  border-radius: 4px;
+  border: 0;
+  padding: 2px 4px;
+  color: white;
+  width: 100%;
+  height: 40px;
+  z-index: 10;
+  align-items: center;
+  &:hover {
+    background: ${palette.grey87};
+  }
+
+  svg {
+    flex-basis: 10%;
+    height: 100%;
+    .blackCircle {
+      display: none;
+    }
+  }
+`;
+
 export const MissionControlWorkspaceCardWrapper = styled.div`
   width: fit-content;
   max-width: 49%;
@@ -39,6 +65,7 @@ export const MissionControlWorkspaceCardWrapper = styled.div`
   transition: box-shadow 0.1s ease-in;
   &:hover {
     box-shadow: -8px 18px 25px 3px rgba(16, 16, 16, 0.5);
+    background: ${palette.grey1000};
     &::before {
       content: '';
       position: absolute;
@@ -106,28 +133,6 @@ export const WorkspaceCardStatsContainer = styled.div`
   flex-direction: column;
   gap: 8px;
   width: 100%;
-`;
-
-export const WorkspaceCardStat = styled.button`
-  display: flex;
-  gap: 10px;
-  cursor: pointer;
-  background: ${palette.grey950};
-  border-radius: 4px;
-  border: 0;
-  padding: 2px 4px;
-  color: white;
-  width: 100%;
-  height: 40px;
-  z-index: 10;
-  align-items: center;
-  svg {
-    flex-basis: 10%;
-    height: 100%;
-    .blackCircle {
-      display: none;
-    }
-  }
 `;
 
 export const WorkspaceCardStatCount = styled(Typography)`

@@ -11,6 +11,7 @@ import HomeIcon from 'components/Icons/home';
 
 import GlobalSearch from 'components/GlobalSearch';
 import { User } from 'types/User';
+import MissionControlIcon from 'components/Icons/MissionControlIcon';
 import {
   HeaderBar,
   HeaderContainer,
@@ -21,6 +22,7 @@ import {
   HeaderRightBlock,
   HeaderHomeButtonWrapper,
   HeaderLogoWrapper,
+  MissionControlIconWrapper,
 } from './styles';
 
 type Props = {
@@ -54,6 +56,16 @@ const HeaderMemo = ({ isMobile, onLogoClick, onSignInClick, openCreateFormModal,
             </Link>
           </Box>
         </Tooltip>
+        <Tooltip title="Mission Control">
+          <Box>
+            <Link passHref href="/mission-control">
+              <MissionControlIconWrapper>
+                <MissionControlIcon />
+              </MissionControlIconWrapper>
+            </Link>
+          </Box>
+        </Tooltip>
+
         {!isMobile && <GlobalSearch />}
       </HeaderLeftBlock>
       <HeaderRightBlock>

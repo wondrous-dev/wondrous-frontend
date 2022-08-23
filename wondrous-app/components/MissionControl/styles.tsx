@@ -5,7 +5,8 @@ export const MissionControlWrapper = styled.div`
   display: flex;
   height: 100%;
   min-height: 100vh;
-  margin-top: ${HEADER_HEIGHT};
+  padding-top: ${HEADER_HEIGHT};
+  overflow: hidden;
 `;
 
 export const MissionControlWidgetsWrapper = styled.div`
@@ -23,12 +24,13 @@ export const MissionControlWidgetsWrapper = styled.div`
 
 export const MissionControlSidebarWrapper = styled.div`
   flex: 1;
-  background-image: url(/images/mission-control/sidebar-mission.webp);
+  background-image: url(/images/mission-control/sidebar-bg.png);
   background-size: cover;
   padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 24px;
+  position: relative;
 `;
 
 export const MissionControlWorkspaceCard = styled.div`
@@ -43,4 +45,48 @@ export const MissionControlWidgetsContainer = styled.div`
   gap: 14px;
   justify-content: flex-start;
   align-items: baseline;
+  flex-wrap: wrap;
+`;
+
+export const MissionControlSidebarIconWrapper = styled.div`
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: flex-end;
+  bottom: 0;
+  position: absolute;
+  width: 100%;
+  @-moz-keyframes spin {
+    from {
+      -moz-transform: rotate(0deg);
+    }
+    to {
+      -moz-transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes spin {
+    from {
+      -webkit-transform: rotate(0deg);
+    }
+    to {
+      -webkit-transform: rotate(360deg);
+    }
+  }
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  svg {
+    height: auto;
+    width: 20rem;
+    animation-name: spin;
+    animation-duration: 12000ms;
+    animation-iteration-count: infinite;
+    animation-timing-function: linear;
+  }
 `;

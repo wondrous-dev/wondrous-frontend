@@ -8,7 +8,8 @@ export const Wrapper = styled.div`
   flex-direction: column;
   background: ${palette.grey900};
   border-radius: 6px;
-  width: 30%;
+  min-width: 30%;
+  flex: 1;
   padding: 10px;
   overflow: hidden;
 `;

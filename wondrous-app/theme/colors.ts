@@ -94,6 +94,7 @@ export const yellowColors = {
 };
 
 export const violetColors = {
+  violet50: '#5001DF',
   violet100: '#4f00de',
   violet200: '#FB7A75',
   violet300: '#CCDDFF',
