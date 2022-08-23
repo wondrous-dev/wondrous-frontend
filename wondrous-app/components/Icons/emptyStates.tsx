@@ -47,3 +47,115 @@ export function EmptyStateCompletedIcon() {
     </svg>
   );
 }
+
+export function EmptyStateSubtasksIcon({ color = '#7A7A7A' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="53" height="47" fill="none" viewBox="0 0 53 47">
+      <rect
+        width="25.565"
+        height="25.565"
+        x="20.504"
+        y="17.33"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        rx="2.333"
+        transform="rotate(-15 20.504 17.33)"
+      />
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M23.166 30.514L12.7 33.318a1.167 1.167 0 01-1.428-.825L8.469 22.027"
+      />
+      <circle
+        cx="7.209"
+        cy="16.151"
+        r="5.855"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        transform="rotate(-15 7.21 16.15)"
+      />
+    </svg>
+  );
+}
+
+export function EmptyStateSubmissionsIcon({ color = '#7A7A7A' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="53" height="37" fill="none" viewBox="0 0 53 37">
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M25.484 24.089l.83 3.652 1.589 5.929a3.069 3.069 0 003.759 2.17l17.787-4.766a3.07 3.07 0 002.17-3.759l-4.64-17.32a1.167 1.167 0 00-.544-.709L35.995 3.26a1.166 1.166 0 00-.885-.117L23.718 6.195a3.069 3.069 0 00-2.17 3.759l.795 2.964"
+      />
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M35.57 3.018l2.081 7.766c.167.623.807.992 1.43.825l7.766-2.08M25.362 14.335L9.37 9.942a2.37 2.37 0 00-2.912 1.656L2.065 27.59a2.37 2.37 0 001.657 2.912l15.992 4.393a2.37 2.37 0 002.912-1.657l4.393-15.991a2.37 2.37 0 00-1.657-2.912z"
+      />
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M11.178 19.036a1.777 1.777 0 10.942-3.427 1.777 1.777 0 00-.942 3.427zM23.883 28.669l-3.566-6.266a1.167 1.167 0 00-1.59-.437L3.724 30.502"
+      />
+    </svg>
+  );
+}
+
+export function EmptyStateCommentsIcon({ color = '#7A7A7A' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="50" height="39" fill="none" viewBox="0 0 50 39">
+      <path
+        fill={color}
+        d="M5.803 37.072l-.593-.804-.005.003.598.801zm4.562-3.364l-.594-.804.594.804zm13.59-1.227H11.058v2h12.899v-2zm3.003-3.178c0 1.796-1.384 3.178-3.002 3.178v2c2.803 0 5.002-2.36 5.002-5.178h-2zm0-13.927v13.927h2V15.376h-2zm-3.002-3.178c1.618 0 3.002 1.381 3.002 3.178h2c0-2.82-2.2-5.178-5.002-5.178v2zm-18.68 0h18.68v-2H5.276v2zm-3.003 3.178c0-1.797 1.385-3.178 3.003-3.178v-2c-2.803 0-5.003 2.358-5.003 5.178h2zm0 16.718V15.375h-2v16.718h2zm-2 0v1.387h2v-1.388h-2zm0 1.387v1.158h2v-1.158h-2zm0 1.158c0 3.171 3.506 5.19 6.128 3.235l-1.196-1.603c-1.17.872-2.932.06-2.932-1.632h-2zm6.124 3.238l4.561-3.364-1.187-1.61-4.561 3.365 1.187 1.61zm4.66-5.396c-.463 0-.913.148-1.286.423l1.187 1.61a.167.167 0 01.1-.033v-2z"
+      />
+      <path
+        fill={color}
+        d="M44.044 27.509l.594-.805.004.003-.598.802zm-4.56-3.364l.593-.805-.593.805zm10.09-18.333V22.53h-2V5.812h2zM44.572.634c2.803 0 5.002 2.36 5.002 5.178h-2c0-1.796-1.384-3.178-3.002-3.178v-2zm-18.68 0h18.68v2h-18.68v-2zm-5.003 5.178c0-2.819 2.2-5.178 5.003-5.178v2c-1.619 0-3.003 1.382-3.003 3.178h-2zm0 13.927V5.812h2V19.74h-2zm5.003 5.178c-2.803 0-5.003-2.359-5.003-5.178h2c0 1.797 1.384 3.178 3.003 3.178v2zm2.835 0h-2.835v-2h2.835v2zm2.836 0h-2.836v-2h2.836v2zm5.67 0h-5.67v-2h5.67v2zm1.558 0h-1.558v-2h1.558v2zm4.66 3.396l-4.56-3.363 1.186-1.61 4.561 3.364-1.187 1.61zm6.123-3.237c0 3.17-3.506 5.189-6.127 3.234l1.195-1.603c1.17.873 2.932.061 2.932-1.631h2zm0-1.159v1.159h-2v-1.159h2zm0-1.387v1.387h-2V22.53h2zm-10.783.387c.463 0 .914.149 1.286.423l-1.187 1.61a.167.167 0 00-.099-.032v-2z"
+      />
+    </svg>
+  );
+}
+
+export function EmptyStateTasksIcon({ color = '#7A7A7A' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="48" height="38" fill="none" viewBox="0 0 48 38">
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M9.643 15.59l3.222 1.861a1.167 1.167 0 001.594-.426L18.803 9.5"
+      />
+      <path
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M19.705 24.036l-11.532 3.09a1.167 1.167 0 01-1.43-.825L1.764 7.71a1.167 1.167 0 01.825-1.428l18.589-4.98a1.167 1.167 0 011.429.824l2.49 9.295M27.49 20.553l1.296 3.488c.225.604.896.912 1.5.687l8.144-3.027"
+      />
+      <rect
+        width="21.578"
+        height="21.578"
+        x="26.922"
+        y="8.396"
+        stroke={color}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        rx="1.167"
+        transform="rotate(24.61 26.922 8.396)"
+      />
+    </svg>
+  );
+}
