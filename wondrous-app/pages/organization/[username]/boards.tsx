@@ -25,7 +25,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns } from 'utils';
+import { dedupeColumns, insertUrlParam } from 'utils';
 import { format } from 'date-fns';
 import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import {
@@ -80,7 +80,7 @@ const useGetOrgTaskBoardCalendar = ({
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-          : //double check in case we add new stuff and have no valid entityType.
+          : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       getOrgTaskBoardCalendar({
         variables: {

@@ -24,23 +24,18 @@ import { useRouter } from 'next/router';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { useWonderWeb3 } from 'services/web3';
 import {
+  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
   GET_TOKEN_GATED_ROLES_FOR_ORG,
   LIT_SIGNATURE_EXIST,
-  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
 } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
-import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { MembershipRequestModal } from './RequestModal';
-import { DiscordIcon } from '../../Icons/discord';
-import OpenSeaIcon from '../../Icons/openSea';
-import LinkedInIcon from '../../Icons/linkedIn';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
+import { ToggleBoardPrivacyIcon, TokenGatedBoard } from 'components/Common/PrivateBoardIcon';
+import { RichTextViewer } from 'components/RichText';
+import { DiscordIcon } from 'components/Icons/discord';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { MoreInfoModal } from '../../profile/modals';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
@@ -78,24 +73,10 @@ import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import LinkedInIcon from '../../Icons/linkedIn';
 import OpenSeaIcon from '../../Icons/openSea';
-import { DiscordIcon } from '../../Icons/discord';
-import { MembershipRequestModal } from './RequestModal';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import {
-  GET_TOKEN_GATED_ROLES_FOR_ORG,
-  LIT_SIGNATURE_EXIST,
-  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
-} from 'graphql/queries';
-import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
-import { RichTextViewer } from 'components/RichText';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { CreateEntityModal } from 'components/CreateEntity/CreateEntityModal/index';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
-import { StyledModal } from 'components/Common/InviteLinkModal/styles';
 import { CalendarViewModal } from './CalendarViewModal';
+import { MembershipRequestModal } from './RequestModal';
+import { TokenGatedAndClaimableRoleModal } from './TokenGatedAndClaimableRoleModal';
+
 const Wrapper = (props) => {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
   const wonderWeb3 = useWonderWeb3();
@@ -527,6 +508,6 @@ const Wrapper = (props) => {
       </Content>
     </>
   );
-}
+};
 
 export default Wrapper;
