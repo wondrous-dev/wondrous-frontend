@@ -1,9 +1,9 @@
 const MuiInputBase = {
   styleOverrides: {
     input: {
-      '&.Mui-disabled' : {
+      '&.Mui-disabled': {
         WebkitTextFillColor: 'inherit',
-      }
+      },
     },
   },
 };

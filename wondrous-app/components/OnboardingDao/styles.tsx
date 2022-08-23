@@ -1,5 +1,5 @@
 import { InputUnstyled } from '@mui/base';
-import { Typography } from '@mui/material';
+import { ButtonBase, Typography } from '@mui/material';
 import styled from 'styled-components';
 
 export const FieldLabel = styled(Typography)`
@@ -28,18 +28,21 @@ export const ComponentFieldWrapper = styled.div`
 
 export const FieldInput = styled(InputUnstyled)`
   && {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    background: ${({ theme }) => theme.palette.background.default};
+    height: 42px;
+    padding: 12px;
+    border-radius: 6px;
     .MuiInput-input {
-      background: ${({ theme }) => theme.palette.black97};
-      border-radius: 6px;
-      border-radius: 6px;
+      background: inherit;
       border: none;
       color: ${({ theme }) => theme.palette.white};
       font-family: ${({ theme }) => theme.typography.fontFamily};
       font-size: 15px;
       font-style: normal;
       font-weight: 400;
-      height: 42px;
-      padding: 12px;
       width: 100%;
       :focus-visible {
         outline: none;
@@ -67,5 +70,38 @@ export const Error = styled(Typography)`
     font-weight: 400;
     font-size: 15px;
     color: ${({ theme }) => theme.palette.red800};
+  }
+`;
+
+export const MainButton = styled(({ children, ...props }) => (
+  <ButtonBase {...props}>
+    <div>{children}</div>
+  </ButtonBase>
+))`
+  && {
+    align-items: center;
+    background: ${({ theme }) =>
+      `linear-gradient(270deg, ${theme.palette.blue20} -5.62%, ${theme.palette.highlightPurple} 45.92%, ${theme.palette.highlightBlue} 103.12%);`};
+    border-radius: 35px;
+    color: ${({ theme }) => theme.palette.white};
+    display: flex;
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-size: 15px;
+    font-weight: 600;
+    height: 38px;
+    justify-content: space-between;
+    padding: 1px;
+    text-align: center;
+    width: fit-content;
+    > div {
+      align-items: center;
+      background: ${({ theme }) => theme.palette.background.default};
+      border-radius: inherit;
+      display: flex;
+      height: 100%;
+      justify-content: center;
+      width: 100%;
+      padding: 8px 24px;
+    }
   }
 `;

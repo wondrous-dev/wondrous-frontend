@@ -1,7 +1,13 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 
-import { SettingsWrapper } from '../settingsWrapper';
+import { CircularProgress } from '@mui/material';
+import { useRouter } from 'next/router';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations/wallet';
+import SafeServiceClient from '@gnosis.pm/safe-service-client';
+import { useWonderWeb3 } from 'services/web3';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import { HeaderBlock } from '../headerBlock';
 import {
   StyledTable,
@@ -11,22 +17,15 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import { TableValueText, WalletAddressInput } from './styles';
+import { TableValueText, WalletAddressInput, WalletsContainer } from './styles';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 
-import { CircularProgress } from '@mui/material';
 import UserCheckIcon from '../../Icons/userCheckIcon';
-import { useRouter } from 'next/router';
-import { useLazyQuery } from '@apollo/client';
-import { WalletsContainer } from './styles';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations/wallet';
 import WrenchIcon from '../../Icons/wrench';
-import SafeServiceClient from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from 'services/web3';
 import { ErrorText } from '../../Common';
 import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
+
 const LIMIT = 20;
 
 const SUPPORTED_PAYMENT_CHAINS = [
@@ -58,7 +57,7 @@ if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   });
 }
 
-const Wallets = (props) => {
+function Wallets(props) {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const { orgId, podId } = router.query;
@@ -217,21 +216,19 @@ const Wallets = (props) => {
             </div>
             <StyledTableBody>
               {wallets &&
-                wallets.map((wallet) => {
-                  return (
-                    <StyledTableRow key={wallet?.id}>
-                      <StyledTableCell>
-                        <TableValueText>{wallet.name}</TableValueText>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <TableValueText>{wallet.address}</TableValueText>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <TableValueText>{wallet.chain}</TableValueText>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
+                wallets.map((wallet) => (
+                  <StyledTableRow key={wallet?.id}>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.name}</TableValueText>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.address}</TableValueText>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.chain}</TableValueText>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>
@@ -274,6 +271,6 @@ const Wallets = (props) => {
       </WalletsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default Wallets;

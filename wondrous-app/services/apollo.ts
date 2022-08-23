@@ -1,7 +1,8 @@
-import { ApolloClient, InMemoryCache, HttpLink, split, defaultDataIdFromObject } from '@apollo/client';
+import { ApolloClient, InMemoryCache, HttpLink } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { getMainDefinition, offsetLimitPagination } from '@apollo/client/utilities';
+import { offsetLimitPagination } from '@apollo/client/utilities';
 import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuth';
+import offsetLimitPaginationInput from 'utils/offsetLimitPaginationInput';
 
 // Staging is http://34.135.9.199/graphql
 const graphqlUri = !process.env.NEXT_PUBLIC_STAGING
@@ -24,7 +25,7 @@ const getWaitlistAuth = () => {
 };
 
 const authLink = setContext((_, { headers }) => {
-  let auth = getAuth() || getWaitlistAuth();
+  const auth = getAuth() || getWaitlistAuth();
 
   return {
     headers: {
@@ -49,12 +50,70 @@ const cache = new InMemoryCache({
         },
         getOrgFeed: offsetLimitPagination(), // NOTE: https://www.apollographql.com/docs/react/pagination/core-api/#non-paginated-read-functions
         getPodFeed: offsetLimitPagination(),
-        getOrgMembershipRequest: offsetLimitPagination(),
-        getPodMembershipRequest: offsetLimitPagination(),
+        getOrgMembershipRequest: offsetLimitPagination(['orgId']),
+        getPodMembershipRequest: offsetLimitPagination(['podId']),
         getTasksForMilestone: offsetLimitPagination(['milestoneId', 'status']),
-        getProposalsUserCanReview: offsetLimitPagination(),
-        getSubmissionsUserCanReview: offsetLimitPagination(),
+        getProposalsUserCanReview: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date']],
+          merge: offsetLimitPaginationInput,
+        },
+        getSubmissionsUserCanReview: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date']],
+          merge: offsetLimitPaginationInput,
+        },
         getSubtasksForTask: offsetLimitPagination(['taskId', 'status']),
+        getUserTaskBoardProposals: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
+          merge: offsetLimitPaginationInput,
+        },
+        getJoinOrgRequests: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
+          merge: (existing, incoming, { args }) => {
+            const merged = existing ? existing.slice(0) : [];
+            if (incoming) {
+              if (args) {
+                // Assume an offset of 0 if args.offset omitted.
+                const { offset = 0 } = args;
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+              } else {
+                // It's unusual (probably a mistake) for a paginated field not
+                // to receive any arguments, so you might prefer to throw an
+                // exception here, instead of recovering by appending incoming
+                // onto the existing array.
+                merged.push.apply(merged, incoming);
+              }
+            }
+            return merged;
+          },
+        },
+        getUserTaskBoardSubmissions: {
+          keyArgs: ['input', ['status']],
+          merge: offsetLimitPaginationInput,
+        },
+        getJoinPodRequests: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
+          merge: (existing, incoming, { args }) => {
+            const merged = existing ? existing.slice(0) : [];
+            if (incoming) {
+              if (args) {
+                // Assume an offset of 0 if args.offset omitted.
+                const { offset = 0 } = args;
+                for (let i = 0; i < incoming.length; ++i) {
+                  merged[offset + i] = incoming[i];
+                }
+              } else {
+                // It's unusual (probably a mistake) for a paginated field not
+                // to receive any arguments, so you might prefer to throw an
+                // exception here, instead of recovering by appending incoming
+                // onto the existing array.
+                merged.push.apply(merged, incoming);
+              }
+            }
+            return merged;
+          },
+        },
       },
     },
   },

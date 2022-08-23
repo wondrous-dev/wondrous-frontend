@@ -1,4 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
+import { TaskFilter } from 'types/task';
+import uniqBy from 'lodash/uniqBy';
 import FilterIcon from '../../Icons/filter';
 import { ChevronFilled } from '../../Icons/sections';
 import {
@@ -19,9 +22,7 @@ import {
   FilterBoxPortal,
   FilterCheckbox,
 } from './styles';
-import { useOutsideAlerter, useFilterQuery } from 'utils/hooks';
-import { TaskFilter } from 'types/task';
-import uniqBy from 'lodash/uniqBy';
+
 interface IFilterProps {
   filterSchema: any;
   onChange: ({}: TaskFilter) => void;
@@ -32,7 +33,7 @@ interface IFilterProps {
   key?: number;
 }
 
-const Filter = (props: IFilterProps) => {
+function Filter(props: IFilterProps) {
   const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected } = props;
   const { query, variables } = filterSchema;
   const [items, setItems] = useState(filterSchema?.items || []);
@@ -53,7 +54,7 @@ const Filter = (props: IFilterProps) => {
   useEffect(() => {
     if (!isLoading && data) {
       const queriedItems = [...data, ...items];
-      let mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
+      const mutatedItems = filterSchema?.mutate ? filterSchema.mutate(queriedItems) : queriedItems;
       setItems(uniqBy(mutatedItems, 'id'));
     }
   }, [isLoading]);
@@ -73,9 +74,7 @@ const Filter = (props: IFilterProps) => {
     }
     if (item.id === selected?.id) {
       handleChange(null);
-      return;
-    }
-    handleChange(item);
+    } else handleChange(item);
   };
 
   const filterExists = typeof selected !== 'undefined';
@@ -101,7 +100,6 @@ const Filter = (props: IFilterProps) => {
     }
     if (selected) {
       handleChange(selected, false);
-      return;
     }
   };
 
@@ -116,7 +114,6 @@ const Filter = (props: IFilterProps) => {
     }
     if (!selected && filterExists) {
       handleRemove(filterSchema.name);
-      return;
     }
   }, [selected]);
 
@@ -190,6 +187,6 @@ const Filter = (props: IFilterProps) => {
       )}
     </FilterHandle>
   );
-};
+}
 
 export default Filter;

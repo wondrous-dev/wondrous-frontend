@@ -8,7 +8,7 @@ import { UPDATE_USER } from 'graphql/mutations';
 import { GET_PRESIGNED_IMAGE_URL } from 'graphql/queries/media';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 
-const ConnectDiscordPage = () => {
+function ConnectDiscordPage() {
   const router = useRouter();
   const user = useMe();
 
@@ -35,6 +35,6 @@ const ConnectDiscordPage = () => {
       <ConnectDiscord updateUser={updateUser} />
     </MainWrapper>
   );
-};
+}
 
 export default withAuth(ConnectDiscordPage);

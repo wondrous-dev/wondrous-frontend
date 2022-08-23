@@ -1,11 +1,11 @@
 import { TourProvider } from '@reactour/tour';
 import { useMutation } from '@apollo/client';
 import { SET_USER_COMPLETED_GUIDE } from 'graphql/mutations/user';
-import { guideConfig } from './guide';
 import { useRouter } from 'next/router';
-import { NextButton, PrevButton, NavigationWrapper } from './styles';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
+import { NextButton, PrevButton, NavigationWrapper } from './styles';
+import { guideConfig } from './guide';
 
 export default function OnboardingGuide({ children }) {
   const [setUserCompletedGuide] = useMutation(SET_USER_COMPLETED_GUIDE, {
@@ -31,21 +31,17 @@ export default function OnboardingGuide({ children }) {
   };
 
   const styles = {
-    popover: (base) => {
-      return {
-        ...base,
-        borderRadius: '6px',
-        background: '#1D1D1D',
-        padding: '35px',
-        border: '0.5px solid rgba(75, 75, 75, 1)',
-      };
-    },
-    navigation: (base) => {
-      return {
-        ...base,
-        counterReset: null,
-      };
-    },
+    popover: (base) => ({
+      ...base,
+      borderRadius: '6px',
+      background: '#1D1D1D',
+      padding: '35px',
+      border: '0.5px solid rgba(75, 75, 75, 1)',
+    }),
+    navigation: (base) => ({
+      ...base,
+      counterReset: null,
+    }),
   };
 
   if (!guide?.id) return <>{children}</>;
@@ -54,7 +50,7 @@ export default function OnboardingGuide({ children }) {
       afterOpen={disableBody}
       beforeClose={beforeClose}
       showCloseButton={false}
-      disableInteraction={true}
+      disableInteraction
       onClickMask={() => {}}
       steps={steps}
       disableDotsNavigation

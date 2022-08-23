@@ -4,15 +4,11 @@ import pluralize from 'pluralize';
 import React, { useEffect, useState } from 'react';
 import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
-import { delQuery } from 'utils';
-import { useOrgBoard, useSelectMembership } from 'utils/hooks';
-import KanbanBoard from '../../Common/KanbanBoard/kanbanBoard';
-import { Chevron } from '../../Icons/sections';
-import { GridViewIcon } from '../../Icons/ViewIcons/gridView';
-import { ListViewIcon } from '../../Icons/ViewIcons/listView';
-import { Table } from '../../Table';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { MembershipRequestTable } from '../../Table/MembershipRequests';
+import ListView from 'components/ListView';
+import KanbanBoard from '../KanbanBoard/kanbanBoard';
+import { Chevron } from '../../Icons/sections';
+import { Table } from '../../Table';
 import {
   BoardsContainer,
   ResultsCount,
@@ -29,7 +25,7 @@ type Props = {
   onLoadMore: any;
   hasMore: any;
   isAdmin?: boolean;
-  setColumns: React.Dispatch<React.SetStateAction<{}>>;
+  setColumns?: React.Dispatch<React.SetStateAction<{}>>;
   activeView?: string;
   onSearch?: any;
   onFilterChange?: any;
@@ -59,8 +55,6 @@ const Boards = (props: Props) => {
   const [totalCount, setTotalCount] = useState(0);
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
-  const selectMembershipHook = useSelectMembership();
-  const selectMembershipRequests = selectMembershipHook?.selectMembershipRequests;
   const view = activeView || String(router.query.view ?? ViewType.Grid);
 
   useEffect(() => {
@@ -75,9 +69,6 @@ const Boards = (props: Props) => {
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 
-    if (isAdmin) {
-      return <Table columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} isAdmin={isAdmin} />;
-    }
     return view ? (
       <>
         {/* TEMPORARY until we come up with a list view for proposals */}
@@ -154,14 +145,9 @@ const Boards = (props: Props) => {
 
   return (
     <ColumnsContext.Provider value={{ columns, setColumns }}>
-      <BoardsContainer>
-        {selectMembershipRequests && (
-          <MembershipRequestTable isAdmin={isAdmin} requests={selectMembershipHook?.requests} />
-        )}
-        {!selectMembershipRequests && <>{searchQuery ? renderSearchResults() : renderBoard()}</>}
-      </BoardsContainer>
+      <BoardsContainer>{searchQuery ? renderSearchResults() : renderBoard()}</BoardsContainer>
     </ColumnsContext.Provider>
   );
-};
+}
 
 export default Boards;

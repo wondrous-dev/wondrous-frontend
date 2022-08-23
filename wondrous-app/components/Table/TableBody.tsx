@@ -16,6 +16,13 @@ import {
 } from 'utils/constants';
 import { parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import palette from 'theme/palette';
+import SmartLink from 'components/Common/SmartLink';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
+import Tooltip from 'components/Tooltip';
+import { RichTextViewer } from 'components/RichText';
 import { useMe } from '../Auth/withAuth';
 import { AvatarList } from '../Common/AvatarList';
 import { DropDown, DropDownItem } from '../Common/dropdown';
@@ -26,13 +33,6 @@ import { Claim } from '../Icons/claimTask';
 import { TaskMenuIcon } from '../Icons/taskMenu';
 import TaskStatus from '../Icons/TaskStatus';
 
-import palette from 'theme/palette';
-import SmartLink from 'components/Common/SmartLink';
-import { ViewType } from 'types/common';
-import { delQuery } from 'utils/index';
-import { useLocation } from 'utils/useLocation';
-import Tooltip from 'components/Tooltip';
-import { RichTextViewer } from 'components/RichText';
 import {
   Box,
   Initials,
@@ -81,7 +81,7 @@ export default function TableBody({
         const status = task?.status;
         const isTaskProposal = task?.__typename === 'TaskProposalCard';
         const isTaskSubmission = task?.__typename === 'TaskSubmissionCard';
-        let dropdownItemLabel = isTaskProposal ? 'Proposal' : task.type;
+        const dropdownItemLabel = isTaskProposal ? 'Proposal' : task.type;
 
         const permissions = parseUserPermissionContext({
           userPermissionsContext,
@@ -152,53 +152,51 @@ export default function TableBody({
                       ]}
                     />
                   )}
-                  <Link passHref={true} href={`/profile/${username}/about`}>
+                  <Link passHref href={`/profile/${username}/about`}>
                     <Initials>{username}</Initials>
                   </Link>
                 </div>
                 {!task?.assigneeId &&
                   (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&
                   task?.type === 'task' && (
-                    <>
-                      <ClaimButton
-                        onClick={(e) => {
-                          e.preventDefault();
-                          e.stopPropagation();
-                          updateTaskAssignee({
-                            variables: {
-                              taskId: task?.id,
-                              assigneeId: user?.id,
-                            },
-                            onCompleted: (data) => {
-                              const task = data?.updateTaskAssignee;
-                              const transformedTask = transformTaskToTaskCard(task, {});
-                              if (board?.setColumns) {
-                                let columns = [...board?.columns];
-                                if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
-                                  columns = updateInReviewItem(transformedTask, columns);
-                                } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                                  columns = updateInProgressTask(transformedTask, columns);
-                                } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                                  columns = updateTaskItem(transformedTask, columns);
-                                } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
-                                  columns = updateCompletedItem(transformedTask, columns);
-                                }
-                                board.setColumns(columns);
+                    <ClaimButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        updateTaskAssignee({
+                          variables: {
+                            taskId: task?.id,
+                            assigneeId: user?.id,
+                          },
+                          onCompleted: (data) => {
+                            const task = data?.updateTaskAssignee;
+                            const transformedTask = transformTaskToTaskCard(task, {});
+                            if (board?.setColumns) {
+                              let columns = [...board?.columns];
+                              if (transformedTask.status === Constants.TASK_STATUS_IN_REVIEW) {
+                                columns = updateInReviewItem(transformedTask, columns);
+                              } else if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                                columns = updateInProgressTask(transformedTask, columns);
+                              } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                                columns = updateTaskItem(transformedTask, columns);
+                              } else if (transformedTask.status === Constants.TASK_STATUS_DONE) {
+                                columns = updateCompletedItem(transformedTask, columns);
                               }
-                            },
-                          });
+                              board.setColumns(columns);
+                            }
+                          },
+                        });
+                      }}
+                    >
+                      <Claim />
+                      <span
+                        style={{
+                          marginLeft: '4px',
                         }}
                       >
-                        <Claim />
-                        <span
-                          style={{
-                            marginLeft: '4px',
-                          }}
-                        >
-                          Claim
-                        </span>
-                      </ClaimButton>
-                    </>
+                        Claim
+                      </span>
+                    </ClaimButton>
                   )}
               </StyledTableCell>
             )}
@@ -256,7 +254,7 @@ export default function TableBody({
                     {!isTaskSubmission && (
                       <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                         <DropDownItem
-                          key={'task-menu-edit-' + task.id + index}
+                          key={`task-menu-edit-${task.id}${index}`}
                           onClick={() => editTask(task, status)}
                           color="#C4C4C4"
                           fontSize="13px"
@@ -266,7 +264,7 @@ export default function TableBody({
                           Edit {dropdownItemLabel}
                         </DropDownItem>
                         <DropDownItem
-                          key={'task-menu-report-' + task.id}
+                          key={`task-menu-report-${task.id}`}
                           onClick={() => {
                             setSelectedTask(task);
                             setArchiveModalOpen(true);
@@ -281,7 +279,7 @@ export default function TableBody({
                         {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
                           !task?.isProposal && (
                             <DropDownItem
-                              key={'task-menu-delete-' + task.id}
+                              key={`task-menu-delete-${task.id}`}
                               onClick={() => {
                                 setSelectedTask(task);
                                 setDeleteModalOpen(true);

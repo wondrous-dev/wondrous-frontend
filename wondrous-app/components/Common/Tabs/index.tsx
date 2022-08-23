@@ -9,7 +9,7 @@ import { StyledTabs } from './styles';
  * @returns
  */
 
-const Tabs = ({ selected, tabs = [], onSelect }) => {
+function Tabs({ selected, tabs = [], onSelect }) {
   return (
     <StyledTabs value={selected}>
       {tabs.map((tab) => (
@@ -17,6 +17,6 @@ const Tabs = ({ selected, tabs = [], onSelect }) => {
       ))}
     </StyledTabs>
   );
-};
+}
 
 export default Tabs;

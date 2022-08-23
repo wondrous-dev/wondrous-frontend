@@ -1,5 +1,4 @@
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import ItemsContainer from './ItemsContainer';
 import {
   TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
@@ -17,8 +16,7 @@ import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery, dedupeColumns } from 'utils';
 import { useRouter } from 'next/router';
-import { DragDropContext } from 'react-beautiful-dnd';
-import { Droppable } from 'react-beautiful-dnd';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
 import { useMe } from 'components/Auth/withAuth';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
@@ -27,6 +25,8 @@ import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import apollo from 'services/apollo';
 import BoardLock from 'components/BoardLock';
+import ItemsContainer from './ItemsContainer';
+
 interface Props {
   columns: any[];
   onLoadMore: any;
@@ -47,7 +47,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const router = useRouter();
-  const { taskCount, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
+  const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
   const location = useLocation();
   const isProposalEntity = entityType === ENTITIES_TYPES.PROPOSAL;
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -58,7 +58,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const user = useMe();
 
   useEffect(() => {
-    const params = location.params;
+    const { params } = location;
     if (params.task || params.taskProposal) {
       setOpenModal(true);
     }
@@ -71,7 +71,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
     if (top?.length > 0) {
       window?.scrollTo(0, Number(top[0]));
     }
-    let newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}&entity=${
+    const newUrl = `${delQuery(router.asPath)}?view=${location?.params?.view || 'grid'}&entity=${
       location?.params?.entity || ENTITIES_TYPES.TASK
     }`;
     location.push(newUrl);
@@ -188,7 +188,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   };
 
   const moveCard = async (id, status, index, source) => {
-    //TODO get rid of nested loop
+    // TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
       const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
       // Only allow when permissions are OK
@@ -203,7 +203,8 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
         if (checkPermissions(task)) {
           const filteredColumn = column.tasks.filter((task) => task.id !== id);
           const newTasks = [...filteredColumn.slice(0, index), updatedTask, ...filteredColumn.slice(index)];
-          let aboveOrder, belowOrder;
+          let aboveOrder;
+          let belowOrder;
           let board = null;
           if (orgBoard) {
             board = BOARD_TYPE.org;
@@ -239,15 +240,13 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
             ...column,
             tasks: newTasks,
           };
-        } else {
-          return {
-            ...column,
-            tasks: [updatedTask, ...column.tasks],
-          };
         }
-      } else {
-        return column;
+        return {
+          ...column,
+          tasks: [updatedTask, ...column.tasks],
+        };
       }
+      return column;
     });
     setColumns(dedupeColumns(updatedColumns));
   };
@@ -274,23 +273,19 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
           if (!column) return null;
           const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || 0;
           return (
-            <>
-              <Droppable droppableId={column?.status}>
-                {(provided) => {
-                  return (
-                    <div ref={provided.innerRef} {...provided.droppableProps}>
-                      <ItemsContainer
-                        entityType={entityType}
-                        data={column}
-                        taskCount={count}
-                        fetchPerStatus={fetchPerStatus}
-                        handleShowAll={handleShowAll}
-                      />
-                    </div>
-                  );
-                }}
-              </Droppable>
-            </>
+            <Droppable droppableId={column?.status}>
+              {(provided) => (
+                <div ref={provided.innerRef} {...provided.droppableProps}>
+                  <ItemsContainer
+                    entityType={entityType}
+                    data={column}
+                    taskCount={count}
+                    fetchPerStatus={fetchPerStatus}
+                    handleShowAll={handleShowAll}
+                  />
+                </div>
+              )}
+            </Droppable>
           );
         })}
       </DragDropContext>

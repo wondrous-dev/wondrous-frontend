@@ -15,27 +15,31 @@ export const PostHeaderImageTextWrapper = styled.div`
   z-index: 2;
 `;
 
-export const PostHeaderImage = (props) => (
-  <SafeImage
-    {...props}
-    useNextImage={false}
-    style={{
-      width: '28px',
-      height: '28px',
-      'border-radius': '50%',
-    }}
-  />
-);
+export function PostHeaderImage(props) {
+  return (
+    <SafeImage
+      {...props}
+      useNextImage={false}
+      style={{
+        width: '28px',
+        height: '28px',
+        'border-radius': '50%',
+      }}
+    />
+  );
+}
 
-export const PostHeaderDefaultUserImage = (props) => (
-  <DefaultUserImage
-    {...props}
-    style={{
-      width: '28px',
-      height: '28px',
-    }}
-  />
-);
+export function PostHeaderDefaultUserImage(props) {
+  return (
+    <DefaultUserImage
+      {...props}
+      style={{
+        width: '28px',
+        height: '28px',
+      }}
+    />
+  );
+}
 
 export const PostHeaderText = styled(Typography)`
   && {

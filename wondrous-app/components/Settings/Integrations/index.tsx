@@ -1,15 +1,16 @@
 import React from 'react';
 
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
-
 import { useRouter } from 'next/router';
+import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
+import { HeaderBlock } from 'components/Settings/headerBlock';
+
+import { GithubIntegration } from 'components/Settings/Github';
+import GuildIntegration from 'components/Settings/Guild';
+
 import { IntegrationsContainer } from './styles';
 
-import SnapshotConfigSection from 'components/Settings/Integrations/SnapshotConfig';
-import { GithubIntegration } from '../Github';
-
-const Integrations = (props) => {
+function Integrations(props) {
   const router = useRouter();
   const { orgId, podId } = router.query;
 
@@ -22,9 +23,10 @@ const Integrations = (props) => {
         />
         <SnapshotConfigSection orgId={orgId} podId={podId} />
         <GithubIntegration orgId={orgId} />
+        <GuildIntegration orgId={orgId} />
       </IntegrationsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default Integrations;

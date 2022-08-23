@@ -1,23 +1,33 @@
-import React, { useState } from 'react';
-import Image from 'next/image';
-import { Banner, Content, ContentContainer, OverviewComponent } from './styles';
+import React from 'react';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader } from './styles';
+
+const CONFIG_MAP = {
+  ADMIN: {
+    label: 'My Operator Workspace',
+    img: '/images/operator.png',
+  },
+  CONTRIBUTOR: {
+    label: 'My Contributor Workspace',
+    img: '/images/contrib.png',
+  },
+};
 
 const Wrapper = (props) => {
-  const { children } = props;
+  const { children, isAdmin } = props;
+
+  const config = isAdmin ? CONFIG_MAP.ADMIN : CONFIG_MAP.CONTRIBUTOR;
 
   return (
-    <>
-      <OverviewComponent>
-        <ChooseEntityToCreate />
-        <Banner>
-          <Image alt="Dashboard" src="/images/dashboard-banner.png" layout="fill" objectFit="cover" quality={80} />
-        </Banner>
-        <Content>
-          <ContentContainer>{children}</ContentContainer>
-        </Content>
-      </OverviewComponent>
-    </>
+    <OverviewComponent>
+      <ChooseEntityToCreate />
+      <Banner img={config.img}>
+        <DashboardHeader>{config.label}</DashboardHeader>
+      </Banner>
+      <Content>
+        <ContentContainer>{children}</ContentContainer>
+      </Content>
+    </OverviewComponent>
   );
 };
 

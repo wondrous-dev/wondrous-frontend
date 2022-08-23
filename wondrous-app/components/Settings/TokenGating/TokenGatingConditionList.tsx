@@ -1,14 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-
-import { HeaderBlock } from '../headerBlock';
+import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 
 import { CircularProgress } from '@mui/material';
-import UserCheckIcon from '../../Icons/userCheckIcon';
 import { useRouter } from 'next/router';
-import { useLazyQuery } from '@apollo/client';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
 import { useWonderWeb3 } from 'services/web3';
+import UserCheckIcon from '../../Icons/userCheckIcon';
+import { HeaderBlock } from '../headerBlock';
 import { ErrorText } from '../../Common';
 import TokenGatingConditionDisplay from './TokenGatingConditionDisplay';
 
@@ -29,7 +27,7 @@ interface AccessCondition {
   type: string;
 }
 
-const TokenGatingConditionList = (props) => {
+function TokenGatingConditionList(props) {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const { orgId } = props;
@@ -56,13 +54,11 @@ const TokenGatingConditionList = (props) => {
 
   return (
     <div>
-      {tokenGatingConditions.map((tokenGatingCondition) => {
-        return (
-          <TokenGatingConditionDisplay key={tokenGatingCondition.id} tokenGatingCondition={tokenGatingCondition} />
-        );
-      })}
+      {tokenGatingConditions.map((tokenGatingCondition) => (
+        <TokenGatingConditionDisplay key={tokenGatingCondition.id} tokenGatingCondition={tokenGatingCondition} />
+      ))}
     </div>
   );
-};
+}
 
 export default TokenGatingConditionList;

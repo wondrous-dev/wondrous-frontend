@@ -2,10 +2,12 @@ import { FormControlLabel, RadioGroup } from '@mui/material';
 import styled from 'styled-components';
 
 export const CategoriesWrapper = styled(RadioGroup)`
-  display: flex;
-  flex-wrap: wrap;
-  flex-direction: row;
-  gap: 14px;
+  && {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    gap: 14px;
+  }
 `;
 
 export const Divider = styled.div`

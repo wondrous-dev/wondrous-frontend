@@ -2,11 +2,11 @@ import { useCallback, useRef, useState } from 'react';
 import { SafeImage } from 'components/Common/Image';
 import Portal from 'components/RichText/components/Portal';
 
-import { MentionItem, MentionItemText, MentionsContainer } from './styles';
 import { useSlate } from 'slate-react';
 import { Range, Transforms } from 'slate';
 import EditorHelpers from 'components/RichText/helpers';
 import { getRangeBoundingClientRect, usePopperPosition, virtualReference } from 'components/RichText/popper';
+import { MentionItem, MentionItemText, MentionsContainer } from './styles';
 import useMentions from './useMentions';
 
 const Mentions: React.FC<

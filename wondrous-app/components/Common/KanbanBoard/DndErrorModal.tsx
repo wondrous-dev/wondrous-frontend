@@ -9,13 +9,13 @@ import {
 } from 'components/CreateEntity/styles';
 import { ModalBody } from './styles';
 
-const DndErrorModal = (props) => {
+function DndErrorModal(props) {
   const { handleClose, setEntityType, open } = props;
 
   return (
     <CreateModalOverlay open={open} onClose={handleClose}>
       <ModalBody>
-        <CreateLayoutsModalHeader></CreateLayoutsModalHeader>
+        <CreateLayoutsModalHeader />
         <CreateLayoutsModalItemContainer>
           <CreateLayoutsModalItemTitle>
             Cannot drag task with rewards to completed without a submission.
@@ -35,6 +35,6 @@ const DndErrorModal = (props) => {
       </ModalBody>
     </CreateModalOverlay>
   );
-};
+}
 
 export default DndErrorModal;

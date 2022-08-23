@@ -1,10 +1,10 @@
 import { useState, useContext } from 'react';
-import { ActionButton } from 'components/Common/Task/styles';
 import { Claim } from 'components/Icons/claimTask';
 import { useMutation } from '@apollo/client';
-import TaskApplicationModal from './TaskApplicationFormModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CREATE_TASK_APPLICATION } from 'graphql/mutations';
+import TaskApplicationModal from './TaskApplicationFormModal';
+import { ButtonPrimary } from '../button';
 
 interface Props {
   task: any;
@@ -67,10 +67,13 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
       {isConfirmationModalOpen && (
         <TaskApplicationModal open={isConfirmationModalOpen} onClose={handleClose} handleSubmit={handleSubmit} />
       )}
-      <ActionButton onClick={handleButtonClick} disabled={task?.taskApplicationPermissions?.hasUserApplied}>
-        <Claim />
+      <ButtonPrimary
+        startIcon={<Claim />}
+        onClick={handleButtonClick}
+        disabled={task?.taskApplicationPermissions?.hasUserApplied}
+      >
         <span>{btnTitle}</span>
-      </ActionButton>
+      </ButtonPrimary>
     </>
   );
 }

@@ -48,12 +48,12 @@ const useCanPayPermission = ({ fetchedTask }) => {
   return canPay;
 };
 
-const SubmissionPaymentButtonCheck = ({ fetchedTask, approvedSubmission, canPay, children }) => {
+function SubmissionPaymentButtonCheck({ fetchedTask, approvedSubmission, canPay, children }) {
   if (canPay && approvedSubmission && fetchedTask?.rewards.length > 0 && fetchedTask?.assigneeUsername) return children;
   return null;
-};
+}
 
-export const SubmissionPayment = (props) => {
+export function SubmissionPayment(props) {
   const { fetchedTask, taskSubmissions, setShowPaymentModal } = props;
   const { assigneeUsername, assigneeProfilePicture } = fetchedTask;
   const approvedSubmissions = useApprovedSubmissions({ taskSubmissions });
@@ -72,4 +72,4 @@ export const SubmissionPayment = (props) => {
       </SubmissionButtonWrapperGradient>
     </SubmissionPaymentButtonCheck>
   );
-};
+}

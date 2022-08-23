@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import Image from 'next/image';
 
 import { useRouter } from 'next/router';
@@ -10,11 +10,10 @@ import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
 import { StyledLink } from 'components/Common/text';
 import { SmallLogo, LoginWrapper, TopBubble, LoginError } from 'components/Pages/login';
-import { useState } from 'react';
 import { CenteredFlexRow } from 'components/Common/index';
 import { EmailIcon } from 'components/Icons/userpass';
 
-const ForgotPassword = () => {
+function ForgotPassword() {
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const router = useRouter();
@@ -73,6 +72,6 @@ const ForgotPassword = () => {
       </LoginWrapper>
     </AuthLayout>
   );
-};
+}
 
 export default ForgotPassword;

@@ -12,12 +12,14 @@ export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
 
-//Task date types
+// Task date types
 export const TASK_DATE_OVERDUE = 'overdue';
 export const TASK_DATE_DUE_NEXT_WEEK = 'due_next_week';
 export const TASK_DATE_DUE_THIS_WEEK = 'due_this_week';
 
 export const ORG_MEMBERSHIP_REQUESTS = 'org_membership_request';
+export const POD_MEMBERSHIP_REQUESTS = 'pod_membership_requests';
+
 export const TASK_STATUSES = [
   TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
@@ -33,6 +35,7 @@ export const STATUS_WAITING_FOR_REVIEW = 'waiting_for_review';
 export const STATUS_APPROVED = 'approved';
 export const STATUS_REJECTED = 'rejected';
 export const STATUS_CLOSED = 'closed';
+export const STATUS_CHANGE_REQUESTED = 'change_requested';
 // Task types
 export const TASK_TYPE = 'task';
 export const BOUNTY_TYPE = 'bounty';
@@ -88,6 +91,7 @@ const SUPPORTED_CHAINS = {
   56: 'BSC',
   288: 'BOBA',
   10: 'OPTIMISM',
+  8217: 'KLAYTN',
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -99,6 +103,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   56: 'BNB',
   288: 'ETH',
   10: 'OP',
+  8217: 'KLAY',
 };
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -144,7 +149,7 @@ export const NOTION_CONNECT_TYPES = {
   TASK_IMPORT: 'taskImport',
 };
 
-export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId));
+export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId, 10));
 
 export const CHAIN_IDS = {
   ETH: 1,
@@ -155,6 +160,7 @@ export const CHAIN_IDS = {
   BSC: 56,
   BOBA: 288,
   OPTIMISM: 10,
+  KLAYTN: 8217,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -166,6 +172,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   bsc: 'BNB smart chain',
   boba: 'Boba Mainnet',
   optimism: 'Optimism Mainnet',
+  klaytn: 'Klaytn Mainnet',
 };
 
 export const SUPPORTED_CURRENCIES = [
@@ -194,8 +201,12 @@ export const SUPPORTED_CURRENCIES = [
     chains: [10],
   },
   {
+    symbol: 'KLAY',
+    chains: [8217],
+  },
+  {
     symbol: 'WONDER',
-    chains: [1, 137, 1666600000, 42161, 56, 288, 10],
+    chains: [1, 137, 1666600000, 42161, 56, 288, 10, 8127],
     contracts: {
       1: '',
       137: '',
@@ -204,6 +215,7 @@ export const SUPPORTED_CURRENCIES = [
       56: '',
       288: '',
       10: '',
+      8127: '',
     },
   },
   {
@@ -235,6 +247,7 @@ export const ENTITIES_TYPES = {
   ORG: 'org',
   BOUNTY: 'bounty',
   PROPOSAL: 'proposal',
+  SUBMISSION: 'submission',
 };
 
 export const MODAL_TABS_MAP = {
@@ -312,7 +325,7 @@ export const PERMISSIONS = {
   CAN_COMMENT: 'can_comment',
   FULL_ACCESS: 'full_access',
   MANAGE_MEMBER: 'manage_member',
-  REVIEW_TASK: 'review_task', //can be set as reviewer, once approved, it' automatically done
+  REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
@@ -388,9 +401,7 @@ export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const URL_REGEX =
   /[(http(s)?):\/\/(www\.)?a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/gi;
-export const validateEmail = (email) => {
-  return email.match(EMAIL_REGEX);
-};
+export const validateEmail = (email) => email.match(EMAIL_REGEX);
 
 export const GRAPHQL_ERRORS = {
   WEB3_ADDRESS_ALREADY_EXISTS: 'web3_address_already_exist',
@@ -567,6 +578,12 @@ export const PAGES_WITH_NO_SIDEBAR = [
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
 
+export const ADMIN_COLUMNS_TYPES = {
+  [TASK_STATUS_SUBMISSION_REQUEST]: 'Submissions to review',
+  [TASK_STATUS_PROPOSAL_REQUEST]: 'Proposals to review',
+  [ORG_MEMBERSHIP_REQUESTS]: 'Org membership requests',
+  [POD_MEMBERSHIP_REQUESTS]: 'Pod membership requests',
+};
 export const GLOBAL_SEARCH_TYPES = {
   ORGS: 'orgs',
   PODS: 'pods',
@@ -585,3 +602,13 @@ export const DAO_CATEGORIES = {
   fun_memeable: '💀 Fun and memeable',
   building_products: '‍🏗️ Building products',
 } as const;
+
+export const SORT_BY = {
+  DESC: 'desc',
+  ASC: 'asc',
+};
+
+export const USER_BOARD_PAGE_TYPES = {
+  CONTRIBUTOR: 'contributor',
+  ADMIN: 'admin',
+};

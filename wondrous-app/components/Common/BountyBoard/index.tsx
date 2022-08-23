@@ -1,13 +1,4 @@
-import {
-  BountyCardWrapper,
-  BountyIcon,
-  BountyCardType,
-  BountyCardSubmissionsCountWrapper,
-  BountyCardSubmissionsCount,
-  SubmissionCount,
-  SubtasksWrapper,
-  BountyCommentsIcon,
-} from './styles';
+import { Fragment } from 'react';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -19,7 +10,6 @@ import {
   BoardsCardBodyDescription,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-import { Compensation } from '../Compensation';
 import { PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
@@ -27,13 +17,24 @@ import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
-import { TASK_ICONS } from 'components/Common/Task/index';
+import TASK_ICONS from 'components/Common/Task/constants';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import { Compensation } from '../Compensation';
+import {
+  BountyCardWrapper,
+  BountyIcon,
+  BountyCardType,
+  BountyCardSubmissionsCountWrapper,
+  BountyCardSubmissionsCount,
+  SubmissionCount,
+  SubtasksWrapper,
+  BountyCommentsIcon,
+} from './styles';
 
-export const SubmissionsCount = ({ total, approved }) => {
+export function SubmissionsCount({ total, approved }) {
   const config = [
     {
       label: 'submissions',
@@ -57,8 +58,8 @@ export const SubmissionsCount = ({ total, approved }) => {
       ))}
     </BountyCardSubmissionsCountWrapper>
   );
-};
-export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false }) {
+}
+export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container = Fragment }) {
   const router = useRouter();
   const goToPod = (podId) => {
     router.push(`/pod/${podId}/boards`, undefined, {
@@ -66,10 +67,10 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
     });
   };
 
-  const goToOrg = (orgId) => router.push(`/org/${orgId}/boards`, undefined, { shallow: true });
+  const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
 
   return (
-    <>
+    <Container>
       {tasks?.length ? (
         tasks.map((bounty) => {
           const BountyStatusIcon = TASK_ICONS[bounty?.status];
@@ -133,7 +134,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
-                      goToOrg(bounty?.orgId);
+                      goToOrg(bounty?.orgUsername);
                     }}
                   >
                     {bounty?.orgProfilePicture ? (
@@ -176,6 +177,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
       ) : (
         <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
       )}
-    </>
+    </Container>
   );
 }

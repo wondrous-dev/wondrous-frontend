@@ -1,6 +1,5 @@
 import * as Constants from 'utils/constants';
 import CloseModalIcon from 'components/Icons/closeModal';
-import { CompletedIcon } from '../../Icons/statusIcons';
 import {
   StyledArchivedLabel,
   StyledArchiveTaskButton,
@@ -13,6 +12,7 @@ import {
   StyledDivider,
   StyledHeader,
 } from 'components/Common/ArchiveTaskModal/styles';
+import { CompletedIcon } from '../../Icons/statusIcons';
 
 interface ICompleteMilestoneModalProps {
   open: boolean;
@@ -22,7 +22,7 @@ interface ICompleteMilestoneModalProps {
   taskId: string;
 }
 
-export const CompleteModal = (props: ICompleteMilestoneModalProps) => {
+export function CompleteModal(props: ICompleteMilestoneModalProps) {
   const { open, onClose, onComplete, taskType, taskId = '' } = props;
 
   const handleComplete = () => {
@@ -32,29 +32,27 @@ export const CompleteModal = (props: ICompleteMilestoneModalProps) => {
   };
 
   return (
-    <>
-      <StyledDialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="archive-task-modal"
-        aria-describedby="modal-modal-description"
-      >
-        <StyledBox>
-          <StyledCloseButton onClick={onClose}>
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader>Complete this {taskType}?</StyledHeader>
-          <StyledBody>You cannot undo this action.</StyledBody>
-          <StyledDivider />
-          <StyledButtonsContainer>
-            <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-            <StyledArchiveTaskButton>
-              <CompletedIcon />
-              <StyledArchivedLabel onClick={handleComplete}>Complete {taskType}</StyledArchivedLabel>
-            </StyledArchiveTaskButton>
-          </StyledButtonsContainer>
-        </StyledBox>
-      </StyledDialog>
-    </>
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="archive-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <StyledBox>
+        <StyledCloseButton onClick={onClose}>
+          <CloseModalIcon />
+        </StyledCloseButton>
+        <StyledHeader>Complete this {taskType}?</StyledHeader>
+        <StyledBody>You cannot undo this action.</StyledBody>
+        <StyledDivider />
+        <StyledButtonsContainer>
+          <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
+          <StyledArchiveTaskButton>
+            <CompletedIcon />
+            <StyledArchivedLabel onClick={handleComplete}>Complete {taskType}</StyledArchivedLabel>
+          </StyledArchiveTaskButton>
+        </StyledButtonsContainer>
+      </StyledBox>
+    </StyledDialog>
   );
-};
+}

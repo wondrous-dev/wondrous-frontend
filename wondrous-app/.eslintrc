@@ -1,13 +1,102 @@
 {
-  "extends": [
-    "next",
-    "next/core-web-vitals",
-    "prettier"
-  ],
+  "parserOptions": {
+    "ecmaVersion": 2022
+  },
+  "env": {
+    "browser": true,
+    "es2021": true
+  },
+  "root": true,
+  "extends": ["airbnb", "next", "next/core-web-vitals", "prettier"],
+
   "rules": {
-    "max-lines": [
-      "warn",
-      1000
-    ]
+    "no-octal-escape": "off",
+    "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
+    "no-unused-vars": "warn",
+    "import/extensions": [
+      "error",
+      "ignorePackages",
+      {
+        "ts": "never",
+        "tsx": "never",
+        "js": "never"
+      }
+    ],
+    "react/jsx-props-no-spreading": "off",
+    "react/no-unescaped-entities": "warn",
+    "no-console": ["warn", { "allow": ["error"] }],
+
+    // import rules
+    "import/prefer-default-export": "warn",
+    "import/no-cycle": "warn",
+    "import/export": "warn",
+    "import/no-named-as-default": "warn",
+
+    "no-shadow": "warn",
+    "consistent-return": "warn",
+    "no-plusplus": "warn",
+    "no-restricted-globals": "warn",
+    "no-use-before-define": "warn",
+    "no-param-reassign": "warn",
+    "no-nested-ternary": "warn",
+    "no-useless-escape": "warn",
+    "no-restricted-syntax": "warn",
+    "no-void": "warn",
+    "no-unused-expressions": "warn",
+    "no-return-await": "warn",
+    "no-unsafe-optional-chaining": "warn",
+    "no-return-assign": "warn",
+    "no-sparse-arrays": "warn",
+    "no-empty": "warn",
+    "no-restricted-exports": "warn",
+    "no-empty-pattern": "warn",
+    "no-undef": "warn",
+    "no-sequences": "warn",
+    "no-underscore-dangle": "warn",
+    "no-continue": "warn",
+    "no-case-declarations": "warn",
+    "no-lone-blocks": "warn",
+    "no-unreachable": "warn",
+    "no-multi-assign": "warn",
+    "no-useless-catch": "warn",
+    "eqeqeq": "warn",
+    "prefer-destructuring": "warn",
+    "prefer-const": "warn",
+    "array-callback-return": "warn",
+    "default-case": "warn",
+    "default-param-last": "warn",
+    "radix": "warn",
+    "camelcase": "warn",
+    "prefer-rest-params": "warn",
+    "prefer-spread": "warn",
+
+    // React rules:
+    "react/display-name": "warn",
+    "react/require-default-props": "warn",
+    "react/jsx-no-duplicate-props": "warn",
+    "react/no-unused-prop-types": "warn",
+    "react/forbid-prop-types": "warn",
+    "react/static-property-placement": "warn",
+    "react/jsx-no-bind": "warn",
+    "react/jsx-no-useless-fragment": "warn",
+    "react/no-array-index-key": "warn",
+    "react/destructuring-assignment": "warn",
+    "react/function-component-definition": "off",
+
+    // Next rules:
+    "@next/next/no-img-element": "warn",
+
+    //jsx-ally:
+    "jsx-a11y/click-events-have-key-events": "warn",
+    "jsx-a11y/anchor-is-valid": "warn",
+    "jsx-a11y/no-static-element-interactions": "warn",
+
+    // SEVERE:
+    "vars-on-top": "warn",
+    "no-var": "warn",
+    "react/jsx-no-constructed-context-values": "warn",
+    "import/no-extraneous-dependencies": "warn",
+    "react/no-unstable-nested-components": "warn",
+    "react/jsx-key": "warn"
   }
 }

@@ -1,4 +1,4 @@
-export const TodoIcon = (props) => {
+export function TodoIcon(props) {
   const { style } = props;
   return (
     <svg
@@ -47,9 +47,9 @@ export const TodoIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const InProgressIcon = (props) => {
+export function InProgressIcon(props) {
   const { style, none } = props;
 
   return (
@@ -93,85 +93,71 @@ export const InProgressIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const InReviewIcon = (props) => {
+export function InReviewIcon(props) {
   const { style } = props;
-
   return (
     <svg
       style={style}
-      width={style?.width || '29'}
-      height={style?.height || '29'}
-      viewBox="0 0 29 29"
+      width={style?.width || '24'}
+      height={style?.height || '25'}
+      viewBox="0 0 24 25"
       fill="none"
       xmlns="http://www.w3.org/2000/svg"
     >
-      <circle cx="14.269" cy="14.8662" r="13.5" fill="#0F0F0F" stroke="#474747" />
-      <circle cx="14.4946" cy="14.8653" r="7.99904" fill="url(#paint0_linear_3171_44328)" />
-      <circle cx="11.1583" cy="14.8663" r="0.990845" fill="url(#paint1_linear_3171_44328)" />
-      <circle cx="14.2677" cy="14.8663" r="0.990845" fill="url(#paint2_linear_3171_44328)" />
-      <circle cx="17.3771" cy="14.8663" r="0.990845" fill="url(#paint3_linear_3171_44328)" />
+      <circle cx="12" cy="12.8008" r="12" fill="#0F0F0F" />
+      <circle cx="8.88928" cy="12.7994" r="0.990845" fill="url(#paint0_linear_14630_214356)" />
+      <circle cx="11.9987" cy="12.7994" r="0.990845" fill="url(#paint1_linear_14630_214356)" />
+      <circle cx="15.108" cy="12.7994" r="0.990845" fill="url(#paint2_linear_14630_214356)" />
       <circle
-        cx="14.269"
-        cy="14.8662"
+        cx="12"
+        cy="12.8008"
         r="8"
-        stroke="url(#paint4_linear_3171_44328)"
+        stroke="url(#paint3_linear_14630_214356)"
         strokeWidth="1.4"
         strokeLinecap="round"
-        strokeDasharray="3.2 3.2"
       />
       <defs>
         <linearGradient
-          id="paint0_linear_3171_44328"
-          x1="21.6574"
-          y1="-3.52397"
-          x2="13.6584"
-          y2="23.0405"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#474747" />
-          <stop offset="1" stopColor="#181818" />
-        </linearGradient>
-        <linearGradient
-          id="paint1_linear_3171_44328"
-          x1="11.1583"
-          y1="13.8755"
-          x2="11.1583"
-          y2="15.8572"
+          id="paint0_linear_14630_214356"
+          x1="8.88928"
+          y1="11.8086"
+          x2="8.88928"
+          y2="13.7903"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="white" />
           <stop offset="1" stopColor="#00BAFF" />
         </linearGradient>
         <linearGradient
-          id="paint2_linear_3171_44328"
-          x1="14.2677"
-          y1="13.8755"
-          x2="14.2677"
-          y2="15.8572"
+          id="paint1_linear_14630_214356"
+          x1="11.9987"
+          y1="11.8086"
+          x2="11.9987"
+          y2="13.7903"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="white" />
           <stop offset="1" stopColor="#00BAFF" />
         </linearGradient>
         <linearGradient
-          id="paint3_linear_3171_44328"
-          x1="17.3771"
-          y1="13.8755"
-          x2="17.3771"
-          y2="15.8572"
+          id="paint2_linear_14630_214356"
+          x1="15.108"
+          y1="11.8086"
+          x2="15.108"
+          y2="13.7903"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="white" />
           <stop offset="1" stopColor="#00BAFF" />
         </linearGradient>
         <linearGradient
-          id="paint4_linear_3171_44328"
-          x1="14.269"
-          y1="6.86621"
-          x2="14.269"
-          y2="22.8662"
+          id="paint3_linear_14630_214356"
+          x1="12"
+          y1="4.80078"
+          x2="12"
+          y2="20.8008"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="white" />
@@ -180,9 +166,9 @@ export const InReviewIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const CompletedIcon = (props) => {
+export function CompletedIcon(props) {
   const { style, fill, stroke } = props;
 
   return (
@@ -228,9 +214,9 @@ export const CompletedIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const ArchivedIcon = (props) => {
+export function ArchivedIcon(props) {
   const { style } = props;
   return (
     <svg
@@ -279,91 +265,72 @@ export const ArchivedIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}
 
-export const MembershipRequestIcon = (props) => {
+export function MembershipRequestIcon(props) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
-      <circle cx="14.133" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
-      <circle cx="14.133" cy="14.801" r="8" fill="url(#paint0_linear_5030_47405)"></circle>
+    <svg width="28" height="29" viewBox="0 0 28 29" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="14" cy="14.9033" r="14" fill="#282828" />
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M14.5311 11.5701C14.5311 11.1835 14.2177 10.8701 13.8311 10.8701C13.4445 10.8701 13.1311 11.1835 13.1311 11.5701V12.6948C13.1311 13.0814 13.4445 13.3948 13.8311 13.3948C14.2177 13.3948 14.5311 13.0814 14.5311 12.6948V11.5701ZM14.5311 16.7845C14.5311 16.3979 14.2177 16.0845 13.8311 16.0845C13.4445 16.0845 13.1311 16.3979 13.1311 16.7845V17.9092C13.1311 18.2958 13.4445 18.6092 13.8311 18.6092C14.2177 18.6092 14.5311 18.2958 14.5311 17.9092V16.7845ZM10.6668 14.042C10.2802 14.042 9.9668 14.3554 9.9668 14.742C9.9668 15.1286 10.2802 15.442 10.6668 15.442H11.7915C12.1781 15.442 12.4915 15.1286 12.4915 14.742C12.4915 14.3554 12.1781 14.042 11.7915 14.042H10.6668ZM15.8812 14.042C15.4946 14.042 15.1812 14.3554 15.1812 14.742C15.1812 15.1286 15.4946 15.442 15.8812 15.442H17.0059C17.3925 15.442 17.7059 15.1286 17.7059 14.742C17.7059 14.3554 17.3925 14.042 17.0059 14.042H15.8812Z"
+        fill="url(#paint0_linear_13854_284888)"
+      />
       <circle
-        cx="14.135"
-        cy="14.801"
-        r="2.791"
-        stroke="url(#paint1_linear_5030_47405)"
+        cx="14"
+        cy="14.9033"
+        r="8"
+        stroke="url(#paint1_linear_13854_284888)"
+        strokeWidth="1.4"
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="1.4"
-      ></circle>
-      <circle cx="14.135" cy="9.159" r="0.846" fill="url(#paint2_linear_5030_47405)"></circle>
-      <circle cx="14.135" cy="20.443" r="0.846" fill="url(#paint3_linear_5030_47405)"></circle>
+      />
       <defs>
         <linearGradient
-          id="paint0_linear_5030_47405"
-          x1="21.296"
-          x2="13.296"
-          y1="-3.59"
-          y2="22.977"
+          id="paint0_linear_13854_284888"
+          x1="17.3013"
+          y1="5.84385"
+          x2="13.4318"
+          y2="18.6944"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#474747"></stop>
-          <stop offset="1" stopColor="#181818"></stop>
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#FF6DD7" />
         </linearGradient>
         <linearGradient
-          id="paint1_linear_5030_47405"
-          x1="16.635"
-          x2="13.843"
-          y1="8.383"
-          y2="17.654"
+          id="paint1_linear_13854_284888"
+          x1="21.1636"
+          y1="-3.48811"
+          x2="13.1636"
+          y2="23.0795"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#FF6DD7"></stop>
-        </linearGradient>
-        <linearGradient
-          id="paint2_linear_5030_47405"
-          x1="14.893"
-          x2="14.047"
-          y1="7.214"
-          y2="10.024"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#FF6DD7"></stop>
-        </linearGradient>
-        <linearGradient
-          id="paint3_linear_5030_47405"
-          x1="14.893"
-          x2="14.047"
-          y1="18.497"
-          y2="21.308"
-          gradientUnits="userSpaceOnUse"
-        >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#FF6DD7"></stop>
+          <stop stopColor="white" />
+          <stop offset="1" stopColor="#FF6DD7" />
         </linearGradient>
       </defs>
     </svg>
   );
-};
+}
 
-export const ProposalsRemainingIcon = (props) => {
+export function ProposalsRemainingIcon(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
-      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
+      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747" />
       <circle
         cx="14.633"
         cy="14.802"
         r="8"
         fill="url(#paint0_linear_5030_47421)"
         transform="rotate(45 14.633 14.802)"
-      ></circle>
+      />
       <path
         fill="url(#paint1_linear_5030_47421)"
         fillRule="evenodd"
         d="M15.334 11.631a.7.7 0 10-1.4 0v1.125a.7.7 0 101.4 0V11.63zm0 5.215a.7.7 0 10-1.4 0v1.124a.7.7 0 101.4 0v-1.124zM11.47 14.1a.7.7 0 100 1.4h1.124a.7.7 0 100-1.4H11.47zm5.214 0a.7.7 0 100 1.4h1.125a.7.7 0 100-1.4h-1.125z"
         clipRule="evenodd"
-      ></path>
+      />
       <defs>
         <linearGradient
           id="paint0_linear_5030_47421"
@@ -373,8 +340,8 @@ export const ProposalsRemainingIcon = (props) => {
           y2="22.978"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#474747"></stop>
-          <stop offset="1" stopColor="#181818"></stop>
+          <stop stopColor="#474747" />
+          <stop offset="1" stopColor="#181818" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_5030_47421"
@@ -384,25 +351,25 @@ export const ProposalsRemainingIcon = (props) => {
           y2="11.352"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#B820FF"></stop>
-          <stop offset="1" stopColor="#fff"></stop>
+          <stop stopColor="#B820FF" />
+          <stop offset="1" stopColor="#fff" />
         </linearGradient>
       </defs>
     </svg>
   );
-};
+}
 
-export const AwaitingPaymentIcon = (props) => {
+export function AwaitingPaymentIcon(props) {
   return (
     <svg xmlns="http://www.w3.org/2000/svg" width="29" height="29" fill="none" viewBox="0 0 29 29">
-      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747"></circle>
-      <circle cx="14.858" cy="14.8" r="7.999" fill="url(#paint0_linear_5030_47458)"></circle>
+      <circle cx="14.633" cy="14.801" r="13.5" fill="#0F0F0F" stroke="#474747" />
+      <circle cx="14.858" cy="14.8" r="7.999" fill="url(#paint0_linear_5030_47458)" />
       <path
         fill="url(#paint1_linear_5030_47458)"
         fillRule="evenodd"
         d="M11.952 11.889a.99.99 0 11-1.401-1.401.99.99 0 011.401 1.4zm7.219 7.224a.991.991 0 11-1.401-1.401.991.991 0 011.4 1.401zm-1.396-8.624a.99.99 0 101.4 1.4.99.99 0 00-1.4-1.4zm-7.227 8.623a.991.991 0 111.402-1.4.991.991 0 01-1.402 1.4zm6.734-4.298c-.008.038-.038.069-.084.084a3.288 3.288 0 00-2.231 2.224.112.112 0 01-.107.083.112.112 0 01-.106-.083 3.259 3.259 0 00-2.231-2.224c-.046-.015-.077-.046-.084-.084h-.008v-.03h.008c.007-.038.038-.069.084-.084a3.259 3.259 0 002.23-2.223.112.112 0 01.107-.084c.046 0 .092.03.107.084a3.259 3.259 0 002.231 2.223c.046.015.076.046.084.084h.008v.03h-.008z"
         clipRule="evenodd"
-      ></path>
+      />
       <defs>
         <linearGradient
           id="paint0_linear_5030_47458"
@@ -412,8 +379,8 @@ export const AwaitingPaymentIcon = (props) => {
           y2="22.975"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#474747"></stop>
-          <stop offset="1" stopColor="#181818"></stop>
+          <stop stopColor="#474747" />
+          <stop offset="1" stopColor="#181818" />
         </linearGradient>
         <linearGradient
           id="paint1_linear_5030_47458"
@@ -423,15 +390,15 @@ export const AwaitingPaymentIcon = (props) => {
           y2="19.404"
           gradientUnits="userSpaceOnUse"
         >
-          <stop stopColor="#fff"></stop>
-          <stop offset="1" stopColor="#06FFA5"></stop>
+          <stop stopColor="#fff" />
+          <stop offset="1" stopColor="#06FFA5" />
         </linearGradient>
       </defs>
     </svg>
   );
-};
+}
 
-export const StatusDefaultIcon = ({ stroke = '#CCBBFF', style = {}, width = '18', height = '18' }) => {
+export function StatusDefaultIcon({ stroke = '#CCBBFF', style = {}, width = '18', height = '18' }) {
   return (
     <svg style={style} width={width} height={height} viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <path
@@ -454,22 +421,23 @@ export const StatusDefaultIcon = ({ stroke = '#CCBBFF', style = {}, width = '18'
       />
     </svg>
   );
-};
+}
 
-export const RejectedIcon = (props) => {
+export function RejectedIcon(props) {
   return (
-    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="24" height="25" viewBox="0 0 24 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="12" cy="12.8008" r="12" fill="#0F0F0F" />
       <path
-        d="M7.00167 0.140625C5.24174 0.140625 3.48228 0.809011 2.14718 2.14411C-0.523018 4.81431 -0.523018 9.1829 2.14718 11.8531C4.81738 14.5233 9.18597 14.5233 11.8562 11.8531C14.5264 9.1829 14.5264 4.81431 11.8562 2.14411C10.5211 0.809011 8.76161 0.140625 7.00167 0.140625ZM7.00167 1.51249C8.40964 1.51249 9.81726 2.047 10.8853 3.11501C13.0213 5.25103 13.0213 8.74618 10.8853 10.8822C8.74856 13.0182 5.2541 13.0182 3.11808 10.8822C0.982058 8.74549 0.982058 5.25103 3.11808 3.11501C4.18643 2.047 5.59371 1.51249 7.00167 1.51249ZM4.6227 3.9156C4.45277 3.9156 4.28281 3.98862 4.13725 4.13418C3.84613 4.4253 3.84613 4.81396 4.13725 5.10508L6.03078 6.9986L4.13725 8.89213C3.84613 9.18325 3.84613 9.57191 4.13725 9.86302C4.42837 10.1541 4.81703 10.1541 5.10815 9.86302L7.00167 7.9695L8.8952 9.86302C9.18632 10.1541 9.57498 10.1541 9.8661 9.86302C10.1572 9.57191 10.1572 9.18324 9.8661 8.89213L7.97257 6.9986L9.8661 5.10508C10.1572 4.81396 10.1572 4.4253 9.8661 4.13418C9.57498 3.84306 9.18632 3.84306 8.8952 4.13418L7.00167 6.02771L5.10815 4.13418C4.96259 3.98862 4.79264 3.9156 4.6227 3.9156Z"
-        fill="url(#paint0_linear_13977_182693)"
+        d="M11.9997 5.94336C10.2398 5.94336 8.48032 6.61175 7.14523 7.94684C4.47503 10.617 4.47503 14.9856 7.14523 17.6558C9.81542 20.326 14.184 20.326 16.8542 17.6558C19.5244 14.9856 19.5244 10.617 16.8542 7.94684C15.5191 6.61175 13.7597 5.94336 11.9997 5.94336ZM11.9997 7.31522C13.4077 7.31522 14.8153 7.84973 15.8833 8.91774C18.0193 11.0538 18.0193 14.5489 15.8833 16.6849C13.7466 18.821 10.2521 18.821 8.11613 16.6849C5.9801 14.5482 5.9801 11.0538 8.11613 8.91774C9.18448 7.84973 10.5918 7.31522 11.9997 7.31522ZM9.62075 9.71833C9.45082 9.71833 9.28086 9.79136 9.1353 9.93692C8.84418 10.228 8.84418 10.6167 9.1353 10.9078L11.0288 12.8013L9.1353 14.6949C8.84418 14.986 8.84418 15.3746 9.1353 15.6658C9.42642 15.9569 9.81508 15.9569 10.1062 15.6658L11.9997 13.7722L13.8932 15.6658C14.1844 15.9569 14.573 15.9569 14.8641 15.6658C15.1553 15.3746 15.1553 14.986 14.8641 14.6949L12.9706 12.8013L14.8641 10.9078C15.1553 10.6167 15.1553 10.228 14.8641 9.93692C14.573 9.6458 14.1844 9.6458 13.8932 9.93692L11.9997 11.8304L10.1062 9.93692C9.96064 9.79136 9.79069 9.71833 9.62075 9.71833Z"
+        fill="url(#paint0_linear_14630_214280)"
       />
       <defs>
         <linearGradient
-          id="paint0_linear_13977_182693"
-          x1="13.1419"
-          y1="-8.76686"
-          x2="6.28401"
-          y2="14.0066"
+          id="paint0_linear_14630_214280"
+          x1="18.14"
+          y1="-2.96413"
+          x2="11.2821"
+          y2="19.8093"
           gradientUnits="userSpaceOnUse"
         >
           <stop stopColor="white" />
@@ -478,4 +446,4 @@ export const RejectedIcon = (props) => {
       </defs>
     </svg>
   );
-};
+}

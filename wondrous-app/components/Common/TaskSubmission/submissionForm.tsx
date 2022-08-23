@@ -48,9 +48,7 @@ import {
   SubmissionFormWrapper,
 } from './styles';
 
-const removeLinkType = ({ displayName, url }) => {
-  return { displayName, url };
-};
+const removeLinkType = ({ displayName, url }) => ({ displayName, url });
 
 const newLinkValue = ({ value, index, links }) => {
   const copiedLinks = [...links];
@@ -58,8 +56,9 @@ const newLinkValue = ({ value, index, links }) => {
   return copiedLinks;
 };
 
-const clearErrorOnFocus = ({ formik, index }) => {
-  return () => {
+const clearErrorOnFocus =
+  ({ formik, index }) =>
+  () => {
     formik.setFieldError('descriptionText', '');
     if (formik.errors?.link && formik.errors?.link[index]) {
       const errors = [...formik.errors?.link];
@@ -67,16 +66,15 @@ const clearErrorOnFocus = ({ formik, index }) => {
       formik.setFieldError('link', errors);
     }
   };
-};
 
-const removeLinkField = ({ formik, indexToRemove }) => {
-  return () => {
+const removeLinkField =
+  ({ formik, indexToRemove }) =>
+  () => {
     const copiedLinks = [...formik.values.link];
     const newLinks = copiedLinks.filter((link, index) => index !== indexToRemove);
     formik.setFieldValue('link', newLinks);
     clearErrorOnFocus({ formik, index: indexToRemove })();
   };
-};
 
 const handleInputOnChange = async ({
   event,
@@ -155,7 +153,7 @@ const handleSubmit = ({
   }
 };
 
-const SubmissionFormDescriptionField = ({ formik, orgId }) => {
+function SubmissionFormDescriptionField({ formik, orgId }) {
   const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
     variables: {
       orgId,
@@ -176,7 +174,7 @@ const SubmissionFormDescriptionField = ({ formik, orgId }) => {
           editor={editor}
           initialValue={formik.values.descriptionText}
           mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
-          placeholder={'Enter a description'}
+          placeholder="Enter a description"
           toolbarNode={editorToolbarNode}
           onChange={(text) => formik.setFieldValue('descriptionText', text)}
           editorContainerNode={document.querySelector('#modal-scrolling-container')}
@@ -184,65 +182,63 @@ const SubmissionFormDescriptionField = ({ formik, orgId }) => {
       </SubmissionDescriptionEditor>
     </SubmissionFormDescription>
   );
-};
+}
 
-const SubmissionFormLinkNewField = ({ formik, links }) => {
+function SubmissionFormLinkNewField({ formik, links }) {
   const handleOnClick = () => formik.setFieldValue('link', newLinkValue({ value: '', index: links.length, links }));
   return (
     <SubmissionFormNewLink onClick={handleOnClick}>
       <PlusIcon />
     </SubmissionFormNewLink>
   );
-};
+}
 
-const SubmissionFormFieldErrorText = ({ children }) => {
+function SubmissionFormFieldErrorText({ children }) {
   if (!children) return null;
   return <SubmissionFormError>{children}</SubmissionFormError>;
-};
+}
 
-const SubmissionFormLinkField = ({ formik }) => {
+function SubmissionFormLinkField({ formik }) {
   const links = [...formik.values.link];
   return (
     <SubmissionFormField>
       <SubmissionDisplayText>Link</SubmissionDisplayText>
       <SubmissionFormLinksWrapper>
-        {links?.map((link, index) => {
-          return (
-            <SubmissionFormLinkWrapper key={index}>
-              <SubmissionFormLink
-                value={link?.url}
-                onChange={(e) => formik.setFieldValue('link', newLinkValue({ value: e.target.value, index, links }))}
-                placeholder="Enter link"
-                onFocus={clearErrorOnFocus({ formik, index })}
-                startAdornment={
-                  <SubmissionFormLinkStartAdornment position="start">
-                    <SubmissionFormLinkIcon />
-                  </SubmissionFormLinkStartAdornment>
-                }
-                endAdornment={
-                  <>
-                    {index > 0 && (
-                      <SubmissionFormLinkEndAdornment
-                        position="end"
-                        onClick={removeLinkField({ formik, indexToRemove: index })}
-                      >
-                        <SubmissionFormLinkCloseIcon />
-                      </SubmissionFormLinkEndAdornment>
-                    )}
-                  </>
-                }
-              />
-              <SubmissionFormFieldErrorText>{formik.errors?.link?.[index]?.url}</SubmissionFormFieldErrorText>
-            </SubmissionFormLinkWrapper>
-          );
-        })}
+        {links?.map((link, index) => (
+          <SubmissionFormLinkWrapper key={index}>
+            <SubmissionFormLink
+              value={link?.url}
+              onChange={(e) => formik.setFieldValue('link', newLinkValue({ value: e.target.value, index, links }))}
+              placeholder="Enter link"
+              onFocus={clearErrorOnFocus({ formik, index })}
+              startAdornment={
+                <SubmissionFormLinkStartAdornment position="start">
+                  <SubmissionFormLinkIcon />
+                </SubmissionFormLinkStartAdornment>
+              }
+              endAdornment={
+                <>
+                  {index > 0 && (
+                    <SubmissionFormLinkEndAdornment
+                      position="end"
+                      onClick={removeLinkField({ formik, indexToRemove: index })}
+                    >
+                      <SubmissionFormLinkCloseIcon />
+                    </SubmissionFormLinkEndAdornment>
+                  )}
+                </>
+              }
+            />
+            <SubmissionFormFieldErrorText>{formik.errors?.link?.[index]?.url}</SubmissionFormFieldErrorText>
+          </SubmissionFormLinkWrapper>
+        ))}
         <SubmissionFormLinkNewField formik={formik} links={links} />
       </SubmissionFormLinksWrapper>
     </SubmissionFormField>
   );
-};
+}
 
-const SubmissionsFilesList = ({ formik, submissionToEdit }) => {
+function SubmissionsFilesList({ formik, submissionToEdit }) {
   const [removeTaskSubmissionMedia] = useMutation(REMOVE_SUBMISSION_MEDIA);
   return (
     <>
@@ -261,9 +257,9 @@ const SubmissionsFilesList = ({ formik, submissionToEdit }) => {
       ))}
     </>
   );
-};
+}
 
-const SubmissionFormUploadFileButtonWrapper = ({ onClick, loading, files }) => {
+function SubmissionFormUploadFileButtonWrapper({ onClick, loading, files }) {
   if (loading) return <SubmissionFormUploadFileLoading />;
   const buttonText = files.length > 0 ? <PlusIcon /> : `Upload a file`;
   return (
@@ -271,9 +267,9 @@ const SubmissionFormUploadFileButtonWrapper = ({ onClick, loading, files }) => {
       <SubmissionFormUploadFileButtonText>{buttonText}</SubmissionFormUploadFileButtonText>
     </SubmissionFormUploadFileButton>
   );
-};
+}
 
-const SubmissionFormFilesField = ({ formik, submissionToEdit }) => {
+function SubmissionFormFilesField({ formik, submissionToEdit }) {
   const [attachTaskSubmissionMedia] = useMutation(ATTACH_SUBMISSION_MEDIA);
   const [loading, setLoading] = useState(false);
   const inputRef = useRef(null);
@@ -309,7 +305,7 @@ const SubmissionFormFilesField = ({ formik, submissionToEdit }) => {
       </SubmissionFormMediaItemWrapper>
     </SubmissionFormField>
   );
-};
+}
 
 const SubmissionFormSchema = Yup.object().shape({
   descriptionText: Yup.string()
@@ -327,7 +323,7 @@ const SubmissionFormSchema = Yup.object().shape({
   ),
 });
 
-export const TaskSubmissionForm = (props) => {
+export function TaskSubmissionForm(props) {
   const { cancelSubmissionForm, orgId, taskId, submissionToEdit } = props;
   const refetchQueries = {
     refetchQueries: [
@@ -335,6 +331,8 @@ export const TaskSubmissionForm = (props) => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getUserTaskBoardTasks',
+      'getUserTaskBoardSubmissions',
+      'getTaskById',
     ],
   };
   const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, refetchQueries);
@@ -388,4 +386,4 @@ export const TaskSubmissionForm = (props) => {
       </Formik>
     </SubmissionFormWrapper>
   );
-};
+}

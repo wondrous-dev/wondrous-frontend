@@ -31,7 +31,7 @@ export const IntegrationsSnapshotSubBlock = styled.div`
   justify-content: space-between;
 `;
 
-// same as IntegrationsSnapshotButton
+// same as IntegrationsConnectButton
 export const ConnectToNotionButton = styled(MuiButton)`
   && {
     white-space: nowrap;

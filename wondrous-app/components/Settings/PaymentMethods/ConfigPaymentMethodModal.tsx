@@ -7,6 +7,11 @@ import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
+import { CREATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
+import { TokenLogoDisplay } from 'components/Settings/TokenGating/styles';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import {
   PaymentConfigModal,
@@ -27,12 +32,7 @@ import Binance from '../../Icons/binace';
 import Boba from '../../Icons/Boba';
 import Optimism from '../../Icons/Optimism';
 import PlusIcon from '../../Icons/plus';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
-import { CREATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
 import { ErrorText } from '../../Common';
-import { TokenLogoDisplay } from 'components/Settings/TokenGating/styles';
-import { GRAPHQL_ERRORS } from 'utils/constants';
 
 const chainOptions = [
   {
@@ -214,7 +214,7 @@ const CHAIN_TO_DAI_ADDR = {
   optimism: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
 };
 
-const ConfigPaymentMethodModal = (props) => {
+function ConfigPaymentMethodModal(props) {
   const router = useRouter();
   const { orgId, org, open, setShowConfigModal } = props;
   const [chain, setChain] = useState(chainOptions[0].value);
@@ -248,7 +248,7 @@ const ConfigPaymentMethodModal = (props) => {
       getTokenInfo({
         variables: {
           contractAddress: customTokenAddress,
-          chain: chain,
+          chain,
         },
       }).catch((e) => {
         setTokenNotFoundError('Token not found');
@@ -267,7 +267,11 @@ const ConfigPaymentMethodModal = (props) => {
   };
 
   const handleAddPaymentMethodClick = async () => {
-    let tokenAddress, tokenName, symbol, icon, decimals;
+    let tokenAddress;
+    let tokenName;
+    let symbol;
+    let icon;
+    let decimals;
     if (selectedToken === 'USDC') {
       tokenAddress = CHAIN_TO_USDC_ADDR[chain];
       tokenName = 'USD Coin';
@@ -395,6 +399,6 @@ const ConfigPaymentMethodModal = (props) => {
       </PaymentConfigModal>
     </Modal>
   );
-};
+}
 
 export default ConfigPaymentMethodModal;

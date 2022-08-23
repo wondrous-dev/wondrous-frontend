@@ -5,7 +5,7 @@ import { GET_TASK_BY_ID, GET_TASK_COMMENT_BY_ID } from 'graphql/queries/task';
 import AppLayout from 'components/Common/Layout/App';
 import { CircularProgress } from '@mui/material';
 
-const TaskRedirect = () => {
+function TaskRedirect() {
   // TODO use getTaskForTaskComment
   const router = useRouter();
   const { taskCommentId } = router.query;
@@ -47,6 +47,6 @@ const TaskRedirect = () => {
       <CircularProgress />
     </AppLayout>
   );
-};
+}
 
 export default TaskRedirect;

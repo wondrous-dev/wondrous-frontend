@@ -21,11 +21,11 @@ import { CreateModalOverlay } from '../CreateEntity/styles';
 import PodIcon from '../Icons/podIcon';
 import { PodModalFooter, PodModalFooterInfoWrapper, PodModalFooterInfoWrapperText } from './styles';
 
-const PodListCard = (props) => {
+function PodListCard(props) {
   const { pod, handleClose } = props;
   const router = useRouter();
   return (
-    <Link href={`/pod/${pod?.id}/boards`} passHref={true}>
+    <Link href={`/pod/${pod?.id}/boards`} passHref>
       <TaskListCardWrapper
         onClick={() => {
           if (handleClose) {
@@ -101,8 +101,8 @@ const PodListCard = (props) => {
       </TaskListCardWrapper>
     </Link>
   );
-};
-export const PodModal = (props) => {
+}
+export function PodModal(props) {
   const { open, handleClose } = props;
   const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS, {
     fetchPolicy: 'network-only',
@@ -144,12 +144,12 @@ export const PodModal = (props) => {
             paddingBottom: '30px',
           }}
         >
-          {pods?.map((pod, index) => {
-            return <PodListCard key={pod?.id} pod={pod} handleClose={handleClose} />;
-          })}
-          <LoadMore ref={ref} hasMore={hasMore}></LoadMore>
+          {pods?.map((pod, index) => (
+            <PodListCard key={pod?.id} pod={pod} handleClose={handleClose} />
+          ))}
+          <LoadMore ref={ref} hasMore={hasMore} />
         </div>
       </TaskModalBaseCard>
     </CreateModalOverlay>
   );
-};
+}

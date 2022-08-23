@@ -147,13 +147,11 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
   }
 `;
 
-export const SubmissionFilterButtonIcon = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const SubmissionFilterButtonIcon = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
     display: flex;
@@ -588,9 +586,21 @@ export const SubmissionItemWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 14px;
-  ${({ theme }) => `
-    background: #1d1d1d;
-  `}
+  background: #1d1d1d;
+  ${({ highlight }) =>
+    highlight &&
+    `
+  @keyframes highlightSubmission {
+  from {
+    background: ${palette.grey250};
+ }
+  to {
+    background: transparent;
+  }
+}
+  animation-name: highlightSubmission;
+  animation-duration: 2s;
+`}
 `;
 
 export const SubmissionItemHeader = styled.div`

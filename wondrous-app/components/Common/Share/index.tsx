@@ -1,21 +1,19 @@
-import { TaskShareIcon } from 'components/Icons/taskShare';
-import Tooltip from 'components/Tooltip';
 import { useContext } from 'react';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import { TASK_TYPE } from 'utils/constants';
+import { ENTITIES_TYPES, TASK_TYPE } from 'utils/constants';
 import { capitalize } from 'utils/common';
+import Tooltip from 'components/Tooltip';
+import { TaskShareIcon } from 'components/Icons/taskShare';
+import { SnackbarAlertContext } from '../SnackbarAlert';
 import { StyledShare } from './styles';
 
 interface IShareProps {
   url: string;
-  className?: string;
   entityType?: string;
 }
 
-export const Share = (props: IShareProps) => {
-  const { url, className, entityType = TASK_TYPE } = props;
+const Share = ({ url, entityType = TASK_TYPE }: IShareProps) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
-  const snackbarAlertMessage = capitalize(entityType) + ' link copied';
+  const snackbarAlertMessage = `${capitalize(entityType)} link copied`;
   const handleOnClick = (e) => {
     e.preventDefault();
     e.stopPropagation();
@@ -23,11 +21,21 @@ export const Share = (props: IShareProps) => {
     setSnackbarAlertMessage(snackbarAlertMessage);
     setSnackbarAlertOpen(true);
   };
+
+  const getTitle = (type) => {
+    if (type === ENTITIES_TYPES.PROPOSAL) return 'Share Proposal';
+    if (type === ENTITIES_TYPES.BOUNTY) return 'Share Bounty';
+
+    return 'Share Task';
+  };
+
   return (
-    <Tooltip title="Share task" placement="top">
+    <Tooltip title={getTitle(entityType)} placement="top">
       <StyledShare onClick={handleOnClick}>
         <TaskShareIcon />
       </StyledShare>
     </Tooltip>
   );
 };
+
+export default Share;

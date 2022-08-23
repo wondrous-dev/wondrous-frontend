@@ -1,4 +1,3 @@
-import { ModalBody } from './styles';
 import {
   CreateFormPreviewButton,
   CreateLayoutsModalHeader,
@@ -6,8 +5,9 @@ import {
   CreateLayoutsModalItemTitle,
   CreateModalOverlay,
 } from 'components/CreateEntity/styles';
+import { ModalBody } from './styles';
 
-export const ErrorModal = (props) => {
+export function ErrorModal(props) {
   const { open, onClose, text, buttonText, buttonAction } = props;
   const handleOnClose = () => {
     onClose();
@@ -16,7 +16,7 @@ export const ErrorModal = (props) => {
   return (
     <CreateModalOverlay open={open} onClose={handleOnClose}>
       <ModalBody>
-        <CreateLayoutsModalHeader></CreateLayoutsModalHeader>
+        <CreateLayoutsModalHeader />
         <CreateLayoutsModalItemContainer>
           <CreateLayoutsModalItemTitle>{text}</CreateLayoutsModalItemTitle>
           <CreateFormPreviewButton
@@ -31,7 +31,7 @@ export const ErrorModal = (props) => {
       </ModalBody>
     </CreateModalOverlay>
   );
-};
+}
 
 // <KudosFormModal open={open} fullWidth={true} maxWidth={'sm'} onClose={handleOnClose}>
 //   <KudosFormBorder>

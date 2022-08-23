@@ -5,8 +5,6 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
 import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
-import { Post } from '../../Common/Post';
-import Wrapper from '../wrapper';
 import {
   ContributorRow,
   ContributorDiv,
@@ -46,6 +44,8 @@ import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
 import { exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
 import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import Wrapper from '../wrapper';
+import { Post } from '../../Common/Post';
 
 const UserRowPictureStyles = {
   width: '30px',
@@ -62,13 +62,13 @@ const calculatePoints = (tasks) => {
   let points = 0;
   tasks.forEach((task) => {
     if (task?.points) {
-      points = points + Number(task?.points);
+      points += Number(task?.points);
     }
   });
   return points;
 };
 
-const UserRow = ({ contributorTask }) => {
+function UserRow({ contributorTask }) {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
@@ -103,8 +103,12 @@ const UserRow = ({ contributorTask }) => {
           {clicked ? <BottomArrowCaret style={CaretStyle} /> : <RightArrowCaret style={CaretStyle} />}
           {contributorTask?.assigneeId ? (
             <>
-              {contributorTask?.profilePicture ? (
-                <SafeImage useNextImage={false} src={contributorTask?.profilePicture} style={UserRowPictureStyles} />
+              {contributorTask?.assigneeProfilePicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={contributorTask?.assigneeProfilePicture}
+                  style={UserRowPictureStyles}
+                />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
               )}
@@ -190,7 +194,7 @@ const UserRow = ({ contributorTask }) => {
                     <Reward>
                       <SafeImage
                         useNextImage={false}
-                        src={'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018'}
+                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018"
                         style={{
                           width: '16px',
                           height: '16px',
@@ -236,7 +240,7 @@ const UserRow = ({ contributorTask }) => {
       )}
     </ContributorDiv>
   );
-};
+}
 
 const filterUsers = (users) => {
   if (!users) {
@@ -249,7 +253,7 @@ const filterUsers = (users) => {
     value: user?.id,
   }));
 };
-const Analytics = (props) => {
+function Analytics(props) {
   const { podData = {} } = props;
   const { id: podId, orgId } = podData;
   const [ref, inView] = useInView({});
@@ -310,7 +314,7 @@ const Analytics = (props) => {
           toTime={toTime}
           exportContributorTaskCSV={exportContributorTaskCSV}
           contributorTaskData={contributorTaskData}
-          isPod={true}
+          isPod
         />
       </CreateModalOverlay>
       <HeaderWrapper>
@@ -409,29 +413,27 @@ const Analytics = (props) => {
               });
             }
           }}
-          renderOption={(props, option, state) => {
-            return (
-              <OptionDiv
-                onClick={(event) => {
-                  setAssignee(option);
-                  props?.onClick(event);
-                }}
-              >
-                {option?.profilePicture && (
-                  <SafeImage
-                    useNextImage={false}
-                    src={option?.profilePicture}
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '15px',
-                    }}
-                  />
-                )}
-                <OptionTypography>{option?.label}</OptionTypography>
-              </OptionDiv>
-            );
-          }}
+          renderOption={(props, option, state) => (
+            <OptionDiv
+              onClick={(event) => {
+                setAssignee(option);
+                props?.onClick(event);
+              }}
+            >
+              {option?.profilePicture && (
+                <SafeImage
+                  useNextImage={false}
+                  src={option?.profilePicture}
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '15px',
+                  }}
+                />
+              )}
+              <OptionTypography>{option?.label}</OptionTypography>
+            </OptionDiv>
+          )}
         />
         <ExportCSVButton
           style={{
@@ -469,6 +471,6 @@ const Analytics = (props) => {
       ))}
     </Wrapper>
   );
-};
+}
 
 export default Analytics;

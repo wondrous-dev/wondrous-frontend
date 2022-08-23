@@ -5,26 +5,9 @@ import pluralize from 'pluralize';
 
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
-import MembersIcon from '../../Icons/membersSettings';
-import { RolesContainer } from '../Roles/styles';
-import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { useRouter } from 'next/router';
-import {
-  DefaultProfilePicture,
-  PodsCount,
-  SeeMoreText,
-  StyledTable,
-  StyledTableBody,
-  StyledTableHeaderCell,
-} from './styles';
 import { CircularProgress } from '@mui/material';
 import palette from 'theme/palette';
-import { SafeImage } from '../../Common/Image';
-import InviteMember from './InviteMember';
-import MemberRoleDropdown from './MemberRoleDropdown';
-import MemberRoles from '../MemberRoles';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
@@ -34,6 +17,23 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
+import MemberRoles from '../MemberRoles';
+import MemberRoleDropdown from './MemberRoleDropdown';
+import InviteMember from './InviteMember';
+import { SafeImage } from '../../Common/Image';
+import {
+  DefaultProfilePicture,
+  PodsCount,
+  SeeMoreText,
+  StyledTable,
+  StyledTableBody,
+  StyledTableHeaderCell,
+} from './styles';
+import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
+import { RolesContainer } from '../Roles/styles';
+import MembersIcon from '../../Icons/membersSettings';
+import { HeaderBlock } from '../headerBlock';
 
 const LIMIT = 10;
 
@@ -71,7 +71,7 @@ const useKickMember = (orgId, podId, users, setUsers) => {
   return handleKickMember;
 };
 
-const Members = (props) => {
+function Members(props) {
   const router = useRouter();
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
@@ -334,6 +334,6 @@ const Members = (props) => {
       </RolesContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default Members;

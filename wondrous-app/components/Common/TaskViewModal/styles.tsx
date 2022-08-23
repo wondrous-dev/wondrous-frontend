@@ -3,21 +3,23 @@ import { Button, ButtonBase, Menu, MenuItem, Modal, Typography } from '@mui/mate
 import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
-import { Share } from 'components/Common/Share';
+import Share from 'components/Common/Share';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import Arrow from 'components/Icons/arrow.svg';
 import CalendarIcon from 'components/Icons/calendar';
 import CloseModalIcon from 'components/Icons/closeModal';
 import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import OpenInFullIcon from 'components/Icons/openInFull.svg';
+import OpenInMinimizedViewIcon from 'components/Icons/openInMinimizedView.svg';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
+import { EmptyStateGenericWrapper } from 'components/EmptyStateGeneric/styles';
 import { GradientHighlightHorizontal } from '../gradients';
 import TaskMedia from '../TaskMedia';
-import { EmptyStateGenericWrapper } from 'components/EmptyStateGeneric/styles';
+
 export const TaskModal = styled(Modal)`
   height: 100vh;
   display: flex;
@@ -80,13 +82,11 @@ export const TaskModalHeaderPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
   }
 `;
 
-export const TaskModalHeaderArrow = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const TaskModalHeaderArrow = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     display: flex;
     height: 32px;
@@ -114,9 +114,7 @@ export const TaskModalHeaderBackToList = styled(TaskModalHeaderTypography)`
 `;
 
 export const TaskModalHeaderOpenInFullIcon = styled((props) => (
-  <div {...props}>
-    <OpenInFullIcon />
-  </div>
+  <div {...props}>{props.isFullScreen ? <OpenInMinimizedViewIcon /> : <OpenInFullIcon />}</div>
 ))`
   width: 32px;
   height: 32px;

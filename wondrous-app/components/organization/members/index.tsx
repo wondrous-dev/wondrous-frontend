@@ -1,3 +1,4 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_ORG_FROM_USERNAME, GET_ORG_MEMBERSHIP_REQUEST } from 'graphql/queries';
@@ -8,12 +9,12 @@ import { SmallAvatar } from 'components/Common/AvatarList';
 import {
   MemberRequestsList,
   MemberRequestCard,
-  RequestCount,
   RequestCountWrapper,
   RequestCountEmptyState,
   RequestHeader,
   RequestsContainer,
   ShowMoreButton,
+  MemberProfileLink,
   MemberName,
   MemberMessage,
   RequestActionButtons,
@@ -23,24 +24,28 @@ import {
   EmptyMemberRequestsListMessage,
 } from './styles';
 
-const QUERY_LIMIT = 3;
-const REFETCH_QUERY_LIMIT = 20;
+const QUERY_LIMIT = 20;
 
 const useGetOrgMemberRequests = (orgId) => {
   const [hasMore, setHasMore] = useState(false);
+  const [isInitialFetchForThePage, setIsInitialFetchForThePage] = useState(true); // this state is used to determine if the fetch is from a fetchMore or from route change
   const [getOrgUserMembershipRequests, { data, fetchMore, previousData }] = useLazyQuery(GET_ORG_MEMBERSHIP_REQUEST, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
     notifyOnNetworkStatusChange: true,
     onCompleted: ({ getOrgMembershipRequest }) => {
-      // if previousData is undefined, it means this is the initial fetch
-      const limitToRefer = previousData ? REFETCH_QUERY_LIMIT : QUERY_LIMIT;
-      const updatedDataLength = previousData
-        ? getOrgMembershipRequest?.length - previousData?.getOrgMembershipRequest?.length
-        : getOrgMembershipRequest?.length;
-      // updatedDataLength >= 0 means it's not a refetch
-      updatedDataLength >= 0 && setHasMore(updatedDataLength >= limitToRefer);
+      const isPreviousDataValid = previousData && previousData?.getOrgMembershipRequest?.length > 1; // if length of previous data is 1, it is likely a refetch;
+
+      const limitToRefer = QUERY_LIMIT;
+      const previousDataLength = previousData?.getOrgMembershipRequest?.length;
+      const currentDataLength = getOrgMembershipRequest?.length;
+      const updatedDataLength = isPreviousDataValid ? currentDataLength - previousDataLength : currentDataLength;
+      if (isInitialFetchForThePage) {
+        setHasMore(currentDataLength >= limitToRefer);
+      } else {
+        updatedDataLength >= 0 && setHasMore(updatedDataLength >= limitToRefer); // updatedDataLength >= 0 means it's not a refetch
+      }
     },
   });
   useEffect(() => {
@@ -50,13 +55,16 @@ const useGetOrgMemberRequests = (orgId) => {
           orgId,
           limit: QUERY_LIMIT,
         },
+      }).then(({ data }) => {
+        const requestData = data?.getOrgMembershipRequest;
+        if (requestData) setIsInitialFetchForThePage(false);
       });
     }
   }, [orgId, getOrgUserMembershipRequests]);
   return { data: data?.getOrgMembershipRequest, fetchMore, hasMore };
 };
 
-const MemberRequests = (props) => {
+function MemberRequests(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
@@ -68,7 +76,7 @@ const MemberRequests = (props) => {
       query: GET_ORG_MEMBERSHIP_REQUEST,
       variables: {
         orgId,
-        limit: orgUserMembershipRequests?.length - 1,
+        limit: orgUserMembershipRequests?.length - 1 ? orgUserMembershipRequests.length - 1 : QUERY_LIMIT,
       },
     },
   ];
@@ -99,7 +107,6 @@ const MemberRequests = (props) => {
       variables: {
         orgId,
         offset: orgUserMembershipRequests?.length,
-        limit: REFETCH_QUERY_LIMIT,
       },
     });
   };
@@ -133,24 +140,27 @@ const MemberRequests = (props) => {
             <MemberRequestsList>
               {orgUserMembershipRequests?.map((request) => (
                 <MemberRequestCard key={request.id}>
-                  {request.userProfilePicture ? (
-                    <SafeImage
-                      width={28}
-                      height={28}
-                      style={{ width: '28px', height: '28px', borderRadius: '50%' }}
-                      src={request.userProfilePicture}
-                      useNextImage
-                    />
-                  ) : (
-                    <SmallAvatar
-                      id={request.id}
-                      username={request.userUsername}
-                      initials={getUserInitials(request.userUsername)}
-                      style={{ width: '28px', height: '28px' }}
-                    />
-                  )}
-
-                  <MemberName>{request.userUsername}</MemberName>
+                  <Link href={`/profile/${request.userUsername}/about`} passHref>
+                    <MemberProfileLink>
+                      {request.userProfilePicture ? (
+                        <SafeImage
+                          width={28}
+                          height={28}
+                          style={{ width: '28px', height: '28px', borderRadius: '50%' }}
+                          src={request.userProfilePicture}
+                          useNextImage
+                        />
+                      ) : (
+                        <SmallAvatar
+                          id={request.id}
+                          username={request.userUsername}
+                          initials={getUserInitials(request.userUsername)}
+                          style={{ width: '28px', height: '28px' }}
+                        />
+                      )}
+                      <MemberName>{request.userUsername}</MemberName>
+                    </MemberProfileLink>
+                  </Link>
                   <MemberMessage>“{request.message}”</MemberMessage>
                   <RequestActionButtons>
                     <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId)}>
@@ -176,6 +186,6 @@ const MemberRequests = (props) => {
       </RequestsContainer>
     </Wrapper>
   );
-};
+}
 
 export default MemberRequests;

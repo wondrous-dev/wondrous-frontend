@@ -3,7 +3,6 @@ import { useRouter } from 'next/router';
 import Image from 'next/image';
 import { useQuery } from '@apollo/client';
 import { useIsMobile } from 'utils/hooks';
-import { WalletConnected, Label } from '../styles';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import OnboardingLayout from 'components/Onboarding/OnboardingLayout';
 import { CompletedIcon } from 'components/Icons/statusIcons';
@@ -18,9 +17,10 @@ import {
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
+import { WalletConnected, Label } from '../styles';
 import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg';
 
-export const ConnectTwitter = ({ firstOrg, firstPod }) => {
+export function ConnectTwitter({ firstOrg, firstPod }) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
@@ -128,4 +128,4 @@ export const ConnectTwitter = ({ firstOrg, firstPod }) => {
       </div>
     </OnboardingLayout>
   );
-};
+}

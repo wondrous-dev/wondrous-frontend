@@ -1,10 +1,37 @@
 import React, { useState } from 'react';
-import { LogoButton } from '../logo';
-import { AvatarList } from '../AvatarList';
-import { Compensation } from '../Compensation';
 import { delQuery } from 'utils';
 import Link from 'next/link';
 
+import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useRouter } from 'next/router';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useMutation } from '@apollo/client';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from 'graphql/mutations/taskSubmission';
+import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from 'utils/board';
+import { renderMentionString } from 'utils/common';
+import { ViewType } from 'types/common';
+import { useLocation } from 'utils/useLocation';
+import { skipForCommandKey } from 'utils/links';
+import { RichTextViewer } from 'components/RichText';
+import { RejectIcon } from '../../Icons/taskModalIcons';
+import { CompletedIcon } from '../../Icons/statusIcons';
+import { TaskCommentIcon } from '../../Icons/taskComment';
+import { TaskMedia } from '../MediaPlayer';
+import { useMe } from '../../Auth/withAuth';
+import PodIcon from '../../Icons/podIcon';
+import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { Arrow, Media } from '../../Icons/sections';
+import {
+  TaskSummaryWrapper,
+  TaskSummaryMedia,
+  TaskSummaryInner,
+  TaskSummaryAction,
+  OrgProfilePicture,
+  SmallerCardActionButtons,
+} from './styles';
 import {
   TaskHeader,
   TaskContent,
@@ -18,39 +45,10 @@ import {
   TaskSeparator,
   TaskCardDescriptionText,
 } from '../Task/styles';
-
-import { TASK_ICONS } from '../Task/index';
-
-import {
-  TaskSummaryWrapper,
-  TaskSummaryMedia,
-  TaskSummaryInner,
-  TaskSummaryAction,
-  OrgProfilePicture,
-  SmallerCardActionButtons,
-} from './styles';
-import { Arrow, Media } from '../../Icons/sections';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { useRouter } from 'next/router';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { APPROVE_SUBMISSION, REQUEST_CHANGE_SUBMISSION } from 'graphql/mutations/taskSubmission';
-import { RejectIcon } from '../../Icons/taskModalIcons';
-import { CompletedIcon } from '../../Icons/statusIcons';
-import { addTaskItem, removeProposalItem, updateProposalItem, updateSubmissionItem } from 'utils/board';
-import { TaskCommentIcon } from '../../Icons/taskComment';
-import { renderMentionString } from 'utils/common';
-import { TaskMedia } from '../MediaPlayer';
-import { useMe } from '../../Auth/withAuth';
-import PodIcon from '../../Icons/podIcon';
-import { ViewType } from 'types/common';
-import { useLocation } from 'utils/useLocation';
-import { skipForCommandKey } from 'utils/links';
-import { RichTextViewer } from 'components/RichText';
+import { Compensation } from '../Compensation';
+import { AvatarList } from '../AvatarList';
+import { LogoButton } from '../logo';
+import TASK_ICONS from '../Task/constants';
 
 let windowOffset;
 
@@ -73,10 +71,10 @@ export const rejectIconStyle = {
   marginRight: '4px',
 };
 
-export const TaskSummary = ({ task, setTask, action, taskType }) => {
+export function TaskSummary({ task, setTask, action, taskType }) {
   const { compensation = {}, description = '', id, media, status, title = '', users = [] } = task;
 
-  let TaskIcon = TASK_ICONS[status];
+  const TaskIcon = TASK_ICONS[status];
   const [modalOpen, setModalOpen] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
@@ -209,106 +207,102 @@ export const TaskSummary = ({ task, setTask, action, taskType }) => {
   }
 
   return (
-    <>
-      <TaskSummaryWrapper key={id} onClick={skipForCommandKey(() => openModal(viewUrl))}>
-        <TaskSummaryInner>
-          <TaskHeader>
-            <OrgProfilePicture src={task?.orgProfilePicture} />
-            <AvatarList
-              id={id}
-              users={[
-                {
-                  id: task?.createdBy,
-                  name: task?.creatorUsername,
-                  initials: task?.creatorUsername && task?.creatorUsername[0].toUpperCase(),
-                  avatar: {
-                    url: task?.creatorProfilePicture,
-                    isOwnerOfPod: false,
-                    color: null,
-                  },
+    <TaskSummaryWrapper key={id} onClick={skipForCommandKey(() => openModal(viewUrl))}>
+      <TaskSummaryInner>
+        <TaskHeader>
+          <OrgProfilePicture src={task?.orgProfilePicture} />
+          <AvatarList
+            id={id}
+            users={[
+              {
+                id: task?.createdBy,
+                name: task?.creatorUsername,
+                initials: task?.creatorUsername && task?.creatorUsername[0].toUpperCase(),
+                avatar: {
+                  url: task?.creatorProfilePicture,
+                  isOwnerOfPod: false,
+                  color: null,
                 },
-              ]}
-            />
-            {task?.rewards && task?.rewards > 0 && <Compensation compensation={task?.rewards[0]} />}
-          </TaskHeader>
+              },
+            ]}
+          />
+          {task?.rewards && task?.rewards > 0 && <Compensation compensation={task?.rewards[0]} />}
+        </TaskHeader>
 
-          <TaskContent>
-            <TaskTitle>
-              <Link href={viewUrl}>{title}</Link>
-            </TaskTitle>
-            <RichTextViewer text={task?.description} />
-            {task?.podName && (
-              <div
+        <TaskContent>
+          <TaskTitle>
+            <Link href={viewUrl}>{title}</Link>
+          </TaskTitle>
+          <RichTextViewer text={task?.description} />
+          {task?.podName && (
+            <div
+              style={{
+                alignItems: 'center',
+                display: 'flex',
+                marginTop: '16px',
+              }}
+            >
+              <PodIcon
+                color={task?.podColor}
                 style={{
-                  alignItems: 'center',
-                  display: 'flex',
-                  marginTop: '16px',
+                  width: '26px',
+                  height: '26px',
+                  marginRight: '8px',
+                }}
+              />
+              <PodWrapper
+                style={{
+                  marginTop: '0',
+                }}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  goToPod(task?.podId);
                 }}
               >
-                <PodIcon
-                  color={task?.podColor}
-                  style={{
-                    width: '26px',
-                    height: '26px',
-                    marginRight: '8px',
-                  }}
-                />
-                <PodWrapper
-                  style={{
-                    marginTop: '0',
-                  }}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    goToPod(task?.podId);
-                  }}
-                >
-                  <PodName>{task?.podName.slice(0, 15)}</PodName>
-                </PodWrapper>
+                <PodName>{task?.podName.slice(0, 15)}</PodName>
+              </PodWrapper>
+            </div>
+          )}
+          {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
+        </TaskContent>
+        <TaskFooter>
+          <TaskAction
+            style={{
+              marginRight: '0',
+            }}
+            key={`task-comment-${id}`}
+          >
+            <TaskCommentIcon />
+            <TaskActionAmount>{task?.commentCount || 0}</TaskActionAmount>
+          </TaskAction>
+          {task?.approvedAt && (
+            <TaskSummaryAction>
+              <div style={flexDivStyle}>
+                <CompletedIcon style={iconStyle} />
+                <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
               </div>
-            )}
-            {task?.media?.length > 0 ? <TaskMedia media={task?.media[0]} /> : <TaskSeparator />}
-          </TaskContent>
-          <TaskFooter>
-            {
-              <TaskAction
-                style={{
-                  marginRight: '0',
-                }}
-                key={'task-comment-' + id}
-              >
-                <TaskCommentIcon />
-                <TaskActionAmount>{task?.commentCount || 0}</TaskActionAmount>
-              </TaskAction>
-            }
-            {task?.approvedAt && (
-              <TaskSummaryAction>
-                <div style={flexDivStyle}>
-                  <CompletedIcon style={iconStyle} />
-                  <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-                </div>
-              </TaskSummaryAction>
-            )}
+            </TaskSummaryAction>
+          )}
 
-            {action && !task?.approvedAt ? (
-              <TaskSummaryAction>
-                {task?.changeRequestedAt ? (
-                  <div style={flexDivStyle} onClick={requestChange}>
-                    <RejectIcon style={rejectIconStyle} />
-                    Change requested
-                  </div>
-                ) : (
-                  action.text
-                )}
-                &nbsp;
-                <Arrow />
-              </TaskSummaryAction>
-            ) : (
-              ''
-            )}
-          </TaskFooter>
-        </TaskSummaryInner>
-      </TaskSummaryWrapper>
-    </>
+          {action && !task?.approvedAt ? (
+            <TaskSummaryAction>
+              {task?.changeRequestedAt ? (
+                <div style={flexDivStyle} onClick={requestChange}>
+                  <RejectIcon style={rejectIconStyle} />
+                  Change requested
+                </div>
+              ) : (
+                action.text
+              )}
+              &nbsp;
+              <Arrow />
+            </TaskSummaryAction>
+          ) : (
+            ''
+          )}
+        </TaskFooter>
+      </TaskSummaryInner>
+    </TaskSummaryWrapper>
   );
-};
+}

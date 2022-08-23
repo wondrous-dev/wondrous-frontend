@@ -2,12 +2,12 @@ import { Typography } from '@mui/material';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Table from '@mui/material/Table';
 
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
+import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
 export const InviteDiv = styled.div`
   display: flex;
@@ -23,9 +23,9 @@ const ProfilePictureStyles = {
   borderRadius: '16px',
 };
 
-export const DefaultProfilePicture = (props) => {
+export function DefaultProfilePicture(props) {
   return <DefaultUserImage style={ProfilePictureStyles} />;
-};
+}
 
 export const UsernameText = styled(Typography)`
   && {
