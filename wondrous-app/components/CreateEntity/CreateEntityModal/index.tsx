@@ -1301,7 +1301,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'reviewerIds',
       existingTask?.reviewers?.map((reviewer) => reviewer.id)
     );
-    form.setFieldValue('claimPolicy', existingTask?.claimPolicy);
+    form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
     form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);

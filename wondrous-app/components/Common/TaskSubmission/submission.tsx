@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { delQuery } from 'utils';
 import {
   ENTITIES_TYPES,
+  TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
@@ -238,7 +239,9 @@ export function TaskSubmissions(props) {
           fetchedTaskSubmissions={fetchedTaskSubmissions}
           setFilteredSubmissions={setFilteredSubmissions}
         />
-        {isBounty && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
+        {isBounty && fetchedTask?.status !== TASK_STATUS_DONE && fetchedTask?.status !== TASK_STATUS_ARCHIVED && (
+          <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />
+        )}
         {!isBounty && (
           <>
             <TaskSubmissionsTaskToDo
