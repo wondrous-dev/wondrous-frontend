@@ -14,6 +14,9 @@ import {
   midnight,
   highlightBlue,
   highlightPurple,
+  electricViolet,
+  tundora,
+  mineShaft,
 } from 'theme/colors';
 
 const palette = {
@@ -37,6 +40,9 @@ const palette = {
   midnight,
   highlightBlue,
   highlightPurple,
+  electricViolet,
+  tundora,
+  mineShaft,
   ...greyColors,
   ...redColors,
   ...blueColors,

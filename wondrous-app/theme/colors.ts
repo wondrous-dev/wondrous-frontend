@@ -4,6 +4,9 @@ export const midnight = '#141414';
 export const background = '#0F0F0F';
 export const white = '#FFFFFF';
 export const black = '#000000';
+export const electricViolet = '#7427FF';
+export const mineShaft = '#242424';
+export const tundora = '#454545';
 
 export const greyColors = {
   grey10: '#F4F4F4',
