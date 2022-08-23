@@ -25,6 +25,7 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
+import { useSideBar } from 'utils/hooks';
 
 import {
   ArchivedPodIndicatorText,
@@ -140,6 +141,7 @@ function SettingsWrapper(props) {
 
   const router = useRouter();
   const user = useMe();
+  const { minimized } = useSideBar();
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
@@ -232,7 +234,7 @@ function SettingsWrapper(props) {
     >
       <ChooseEntityToCreate />
       <Wrapper>
-        <SidebarWrapper>
+        <SidebarWrapper minimized={minimized}>
           <BackButton href={activeSettingsPage?.path} />
           <ListWrapper>
             <Label>{activeSettingsPage.label} Settings</Label>
@@ -260,7 +262,7 @@ function SettingsWrapper(props) {
           </ListWrapper>
         </SidebarWrapper>
 
-        <ChildrenWrapper>
+        <ChildrenWrapper minimized={minimized}>
           <SettingsChildrenWrapper>
             {showPodIcon ? (
               <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
