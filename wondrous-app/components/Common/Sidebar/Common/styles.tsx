@@ -10,7 +10,7 @@ export const Wrapper = styled.div`
 `;
 
 export const SidebarWrapper = styled.div`
-  background: #232323;
+  background: ${({ theme }) => theme.palette.black92};
   flex-direction: column;
   gap: 28px;
   height: 100%;
@@ -33,12 +33,12 @@ export const ChildrenWrapper = styled.div`
 
 export const Label = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
     display: flex;
-    color: #ccbbff;
+    color: ${({ theme }) => theme.palette.blue20};
   }
 `;
 
@@ -58,7 +58,8 @@ export const AddIconWrapper = styled((props) => (
   </div>
 ))`
   align-items: center;
-  background: linear-gradient(270deg, #00baff -5.62%, #7427ff 45.92%, #ccbbff 103.12%);
+  background: ${({ theme }) =>
+    `linear-gradient(270deg, ${theme.palette.highlightBlue} -5.62%, ${theme.palette.highlightPurple} 45.92%, ${theme.palette.blue20} 103.12%)`};
   display: flex;
   height: 22px;
   justify-content: center;
@@ -67,7 +68,7 @@ export const AddIconWrapper = styled((props) => (
   > div {
     border-radius: 50px;
     align-items: center;
-    background: #0f0f0f;
+    background: ${({ theme }) => theme.palette.background.default};
     display: flex;
     height: 21px;
     justify-content: center;

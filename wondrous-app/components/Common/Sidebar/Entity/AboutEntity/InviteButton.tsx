@@ -15,14 +15,15 @@ const Invite = styled(ButtonBase)`
     gap: 10px;
     width: 51px;
     height: 28px;
-    background: #7427ff;
+    background: ${({ theme }) => theme.palette.highlightPurple};
     border-radius: 6px;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 14px;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
     :hover {
-      background: linear-gradient(90deg, #7427ff 2.68%, #00baff 100%);
+      background: ${({ theme }) =>
+        `linear-gradient(90deg, ${theme.palette.highlightBlue} 2.68%, ${theme.palette.highlightPurple} 100%)`};
       filter: drop-shadow(0px 6px 14px rgba(0, 0, 0, 0.5));
     }
   }

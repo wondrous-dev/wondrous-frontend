@@ -10,19 +10,19 @@ import { useBoards } from 'utils/hooks';
 const ButtonIcon = styled.div`
   width: 28px;
   height: 28px;
-  background: #474747;
+  background: ${({ theme }) => theme.palette.grey78};
   border-radius: 6px;
 `;
 
 const Text = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 16px;
     line-height: 21px;
     display: flex;
     align-items: center;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
   }
 `;
 
@@ -37,9 +37,9 @@ const Button = styled(ButtonBase)`
     display: flex;
     align-items: center;
     gap: 10px;
-    background: ${({ open }) => open && '#474747'};
+    background: ${({ open, theme }) => open && `${theme.palette.grey78}`};
     :hover {
-      background: #474747;
+      background: ${({ theme }) => theme.palette.grey78};
     }
   }
 `;
@@ -57,7 +57,7 @@ export const ArrowIcon = styled((props) => (
     justify-content: center;
     svg {
       path {
-        fill: #fff;
+        fill: ${({ theme }) => theme.palette.white};
       }
     }
   }
@@ -67,10 +67,10 @@ const MenuStyled = styled(Menu)`
   && {
     margin-top: 6px;
     .MuiMenu-paper {
-      background-color: #444444;
+      background-color: ${({ theme }) => theme.palette.grey77};
     }
     .MuiList-root {
-      background-color: #444444;
+      background-color: ${({ theme }) => theme.palette.grey77};
       min-width: 173px;
       border-radius: 6px;
       display: flex;
@@ -83,15 +83,15 @@ const MenuStyled = styled(Menu)`
 
 const Item = styled(MenuItem)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 14px;
-    color: #ffffff;
-    background: #313131;
+    color: ${({ theme }) => theme.palette.white};
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 2px;
     padding: 4px 9px;
     :hover {
-      background: #707070;
+      background: ${({ theme }) => theme.palette.grey58};
     }
   }
 `;
@@ -114,7 +114,7 @@ export const NoLogoDAO = styled((props) => (
   border-radius: 3px;
   align-items: center;
   justify-content: center;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87};
 `;
 
 export const NoLogoPod = styled((props) => (
@@ -128,7 +128,7 @@ export const NoLogoPod = styled((props) => (
   border-radius: 3px;
   align-items: center;
   justify-content: center;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87}; ;
 `;
 
 const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canManage }) => {
