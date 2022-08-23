@@ -286,9 +286,13 @@ function SettingsWrapper(props) {
           {showPodIcon ? (
             <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
               <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-              <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
-                <PodIcon />
-              </SettingsDaoPodIndicatorIconWrapper>
+              {podData?.getPodById?.profilePicture ? (
+                <SettingsDaoPodIndicatorOrgProfile src={podData?.getPodById?.profilePicture} />
+              ) : (
+                <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                  <PodIcon />
+                </SettingsDaoPodIndicatorIconWrapper>
+              )}
               <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
               {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
             </SettingsDaoPodIndicator>
