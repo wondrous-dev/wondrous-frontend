@@ -12,11 +12,11 @@ const IconWrapper = styled.div`
   gap: 10px;
   width: 28px;
   height: 28px;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87};
   border-radius: 4px;
   cursor: pointer;
   :hover {
-    background: #707070;
+    background: ${({ theme }) => theme.palette.grey58};
     filter: drop-shadow(0px 7px 7px rgba(0, 0, 0, 0.5));
   }
 `;
