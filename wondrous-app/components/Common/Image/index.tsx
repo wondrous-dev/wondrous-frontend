@@ -7,10 +7,28 @@ import Image, { ImageProps } from 'next/image';
 type SafeImageArgs = ImageProps & {
   alt?: string;
   className?: string;
-  placeholderSrc?: string; // Image src to display while the image is not visible or loaded.
-  placeholderComp?: JSX.Element; // React element to use as a placeholder.
+  /**
+   * Image src to display while the image is not visible or loaded.
+   */
+  placeholderSrc?: string;
+  /**
+   * React element to use as a placeholder.
+   */
+  placeholderComp?: JSX.Element;
+  /**
+   * Set `true` to use `next/image` instead of `img` tag.
+   *
+   * https://nextjs.org/docs/api-reference/next/image
+   */
   useNextImage?: boolean;
+  /**
+   * Inline styles
+   */
   style?: React.CSSProperties;
+  /**
+   * Action called when preview file is loaded
+   * @param url
+   */
   onPreviewLoaded?(url: string): unknown;
 };
 
@@ -29,8 +47,9 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
     objectPosition = 'center',
     ...props
   } = safeImageArgs;
+
   const [imgUrl, setImageUrl] = useState(null);
-  const hasProtocol = typeof src === 'string' && (src?.startsWith('https') || src?.startsWith('file://'));
+  const hasProtocol = typeof src === 'string' && (src?.startsWith('http') || src?.startsWith('file://'));
   let safeImageUrl = (hasProtocol ? src : imgUrl) || placeholderSrc;
 
   // In case if image was imported

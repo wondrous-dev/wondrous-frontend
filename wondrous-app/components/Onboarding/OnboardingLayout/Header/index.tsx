@@ -36,7 +36,9 @@ function OnboardingHeader({ children, withLoginButton = false, withSignupButton 
       </Wonder>
       {withLoginButton || withSignupButton ? (
         <Link href={withSignupButton ? '/signup' : `/login`} passHref>
-          <Button>{withSignupButton ? 'Sign up' : 'Login'}</Button>
+          <div>
+            <Button>{withSignupButton ? 'Sign up' : 'Login'}</Button>
+          </div>
         </Link>
       ) : (
         children
