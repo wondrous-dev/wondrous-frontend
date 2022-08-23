@@ -735,6 +735,7 @@ const useUpdateBounty = () => {
     ],
   });
   const handleMutation = ({ input, existingTask, handleClose }) => {
+    // this should filter out fields that are not in bountyinput
     updateBounty({
       variables: {
         bountyId: existingTask?.id,
@@ -1300,7 +1301,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'reviewerIds',
       existingTask?.reviewers?.map((reviewer) => reviewer.id)
     );
-    form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
+    form.setFieldValue('claimPolicy', existingTask?.claimPolicy);
     form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
@@ -1815,7 +1816,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               <CreateEntityLabelAddButton
                 onClick={() => {
                   if (isEmpty(filteredEligibleReviewers)) return;
-                  if (form.values.reviewerIds === null) {
+                  if (!form.values.reviewerIds) {
                     form.setFieldValue('reviewerIds', [null]);
                     return;
                   }
