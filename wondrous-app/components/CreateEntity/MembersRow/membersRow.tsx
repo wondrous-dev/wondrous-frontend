@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DeleteIcon from '../../Icons/delete';
+import DeleteIcon from '../../Icons/DeleteIcon';
 
 import {
   CreateFormMembersListActivityButtons,
