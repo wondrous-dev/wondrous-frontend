@@ -20,6 +20,9 @@ import {
   SubmissionButtonTextHelper,
   SubmissionButtonWrapperBackground,
   SubmissionButtonWrapperGradient,
+  TaskSubmissionEmptyStateIcon,
+  TaskSubmissionEmptyStateText,
+  TaskSubmissionEmptyStateContainer,
   TaskSubmissionItemsWrapper,
   TaskSubmissionsFormInactiveWrapper,
 } from './styles';
@@ -71,6 +74,15 @@ function TaskSubmissionsLoading({ loading }) {
   return <CircularProgress />;
 }
 
+function TaskSubmissionsEmptyState() {
+  return (
+    <TaskSubmissionEmptyStateContainer>
+      <TaskSubmissionEmptyStateIcon />
+      <TaskSubmissionEmptyStateText>No submissions yet</TaskSubmissionEmptyStateText>
+    </TaskSubmissionEmptyStateContainer>
+  );
+}
+
 function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) {
   if (taskStatus === TASK_STATUS_TODO) {
     if (canSubmit || canMoveProgress) {
@@ -82,22 +94,19 @@ function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveP
         />
       );
     }
-    return <SubmissionButtonWrapper helperText="No submissions yet." />;
   }
   return null;
 }
 
-function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) {
+function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission }) {
   if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
     if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText="No submissions yet." />;
   }
   return null;
 }
 
 function TaskSubmissionMakePayment({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) {
   if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK) {
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText="No submissions" />;
     return (
       <SubmissionPayment
         fetchedTask={fetchedTask}
@@ -240,7 +249,6 @@ export function TaskSubmissions(props) {
             />
             <TaskSubmissionsTaskInProgress
               canSubmit={canSubmit}
-              fetchedTaskSubmissions={fetchedTaskSubmissions}
               setMakeSubmission={setMakeSubmission}
               taskStatus={taskStatus}
             />
@@ -252,6 +260,7 @@ export function TaskSubmissions(props) {
             />
           </>
         )}
+        {isEmpty(fetchedTaskSubmissions) && <TaskSubmissionsEmptyState />}
         <TaskSubmissionList
           fetchedTaskSubmissions={listSubmissions}
           setSubmissionToEdit={setSubmissionToEdit}
