@@ -1,4 +1,5 @@
 import { ButtonBase, Typography } from '@mui/material';
+import { isNumber } from 'lodash';
 import styled, { css } from 'styled-components';
 
 const itemButtonGradient = css`
@@ -33,6 +34,7 @@ const ItemButtonInner = styled.div`
   padding: 8px;
   padding-left: 0px;
   background: ${({ isActive, theme }) => isActive && `${theme.palette.grey87}`};
+  justify-content: space-between;
   ${ItemButton}:hover & {
     background: ${({ theme }) => theme.palette.grey87};
   }
@@ -89,7 +91,7 @@ const ItemButtonText = styled(Typography)`
     display: flex;
     align-items: center;
     gap: 8px;
-    color: ${({ isActive, theme }) => (isActive ? `${theme.palette.white}` : `${theme.palette.white}`)};
+    color: ${({ isActive, theme }) => (isActive ? `${theme.palette.blue30}` : `${theme.palette.white}`)};
     ${ItemButton}:hover & {
       color: ${({ theme }) => theme.palette.blue30};
       color: ${({ isActive, theme }) => isActive && `${theme.palette.white}`};
@@ -97,15 +99,41 @@ const ItemButtonText = styled(Typography)`
   }
 `;
 
-const Item = ({ children, Icon = null, isActive = false, roundedBg = false, bgColor = '', ...props }) => (
+const ItemCountText = styled(Typography)`
+  && {
+    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-style: normal;
+    font-weight: 500;
+    font-size: 13px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: ${({ theme }) => theme.palette.white};
+  }
+`;
+
+const IconTextWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 8px;
+`;
+
+const Item = ({ children, Icon = null, isActive = false, roundedBg = false, bgColor = '', count = null, ...props }) => (
   <ItemButton {...props} disableRipple isActive={isActive}>
     <ItemButtonInner isActive={isActive}>
-      {Icon && (
+      <IconTextWrapper>
+        {Icon && (
+          <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor}>
+            <Icon />
+          </ItemButtonIcon>
+        )}
+        <ItemButtonText isActive={isActive}>{children}</ItemButtonText>
+      </IconTextWrapper>
+      {isNumber(count) && (
         <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor}>
-          <Icon />
+          <ItemCountText>{count}</ItemCountText>
         </ItemButtonIcon>
       )}
-      <ItemButtonText isActive={isActive}>{children}</ItemButtonText>
     </ItemButtonInner>
   </ItemButton>
 );
