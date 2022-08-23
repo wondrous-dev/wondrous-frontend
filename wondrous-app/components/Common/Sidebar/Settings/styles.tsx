@@ -27,10 +27,12 @@ export const SettingsSidebarTabsListItem = styled(ListItem)`
     padding: 1px;
     border-radius: 4px;
     background: transparent;
-    background: ${({ active }) => active && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
+    background: ${({ active, theme }) =>
+      active &&
+      `linear-gradient(90.03deg, ${theme.palette.highlightBlue} 0.03%, ${theme.palette.highlightPurple} 98.82%)`};
     cursor: pointer;
     :hover {
-      background: #313131;
+      background: ${({ theme }) => theme.palette.grey87};
     }
   }
 `;
@@ -45,9 +47,9 @@ export const ItemButtonInner = styled.div`
   gap: 9px;
   padding: 8px;
   padding-left: 0px;
-  background: ${({ active }) => active && '#313131'};
+  background: ${({ active, theme }) => active && theme.palette.grey87};
   ${SettingsSidebarTabsListItem}:hover & {
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
   }
 `;
 
@@ -56,7 +58,7 @@ export const SettingsSidebarTabsListItemIcon = styled.div`
     min-width: 0;
     width: 22px;
     height: 22px;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 4px;
     display: flex;
     align-items: center;
@@ -67,19 +69,19 @@ export const SettingsSidebarTabsListItemIcon = styled.div`
     }
   }
   & path {
-    stroke: #ffffff;
-    stroke: ${(props) => props.active && '#30c7ff'};
+    stroke: ${({ theme }) => theme.palette.white};
+    stroke: ${({ active, theme }) => active && theme.palette.blue90};
   }
   ${SettingsSidebarTabsListItem}:hover & {
     path {
-      stroke: #30c7ff;
+      stroke: ${({ theme }) => theme.palette.blue90};
     }
   }
 `;
 
 export const SettingsSidebarTabsListItemText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     color: ${palette.white};
     text-decoration: none;
     font-size: 15px;
@@ -88,7 +90,7 @@ export const SettingsSidebarTabsListItemText = styled(Typography)`
 `;
 
 export const SettingsContentBlock = styled.div`
-  background-color: #0f0f0f;
+  background-color: ${({ theme }) => theme.palette.background.default};
   height: 100%;
   overflow-y: auto;
   padding-left: 380px;
@@ -100,7 +102,7 @@ export const SettingsContentBlock = styled.div`
 export const SettingsDaoPodIndicator = styled(Box)`
   && {
     display: ${({ pod }) => (pod ? 'flex' : 'none')};
-    background: #1c1c1c;
+    background: ${({ theme }) => theme.palette.grey98};
     max-width: fit-content;
     align-items: center;
     padding: 8px;
@@ -128,15 +130,15 @@ export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
 
 export const SettingsDaoPodIndicatorText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 16px;
     font-weight: 400;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
   }
 `;
 export const ArchivedPodIndicatorText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 16px;
     font-weight: 400;
     color: ${palette.red200};
@@ -148,7 +150,7 @@ export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: ${({ color }) => color || '#0f0f0f'};
+  background: ${({ color, theme }) => color || theme.palette.background.default};
   width: 24px;
   height: 24px;
 `;

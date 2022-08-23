@@ -1,5 +1,11 @@
 import { ButtonBase, Typography } from '@mui/material';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
+
+const itemButtonGradient = css`
+  background: ${({ isActive, theme }) =>
+    isActive &&
+    `linear-gradient(90.03deg, ${theme.palette.highlightBlue} 0.03%, ${theme.palette.highlightPurple} 98.82%)`};
+`;
 
 const ItemButton = styled(ButtonBase)`
   && {
@@ -8,10 +14,10 @@ const ItemButton = styled(ButtonBase)`
     padding: 1px;
     border-radius: 4px;
     background: transparent;
-    background: ${({ isActive }) => isActive && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
+    ${itemButtonGradient};
     :hover {
-      background: #313131;
-      background: ${({ isActive }) => isActive && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
+      background: ${({ theme }) => theme.palette.grey87};
+      ${itemButtonGradient};
     }
   }
 `;
@@ -26,47 +32,47 @@ const ItemButtonInner = styled.div`
   gap: 9px;
   padding: 8px;
   padding-left: 0px;
-  background: ${({ isActive }) => isActive && '#313131'};
+  background: ${({ isActive, theme }) => isActive && `${theme.palette.grey87}`};
   ${ItemButton}:hover & {
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
   }
 `;
 
 const ItemButtonIcon = styled.div`
   width: 22px;
   height: 22px;
-  background: ${({ bgColor }) => bgColor || `#313131`};
+  background: ${({ bgColor, theme }) => bgColor || `${theme.palette.grey87}`};
   border-radius: ${({ roundedBg }) => (roundedBg ? '50%' : '4px')};
   display: flex;
   align-items: center;
   justify-content: center;
   ${ItemButton}:hover & {
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
   }
   svg {
     path {
-      stroke: #ffffff;
+      stroke: ${({ theme }) => theme.palette.white};
       ${ItemButton}:hover & {
-        stroke: ${({ isActive }) => (isActive ? `#00baff` : `#8fe1ff`)};
+        stroke: ${({ isActive, theme }) => (isActive ? `${theme.palette.highlightBlue}` : `${theme.palette.blue30}`)};
       }
     }
     rect {
-      stroke: #ffffff;
+      stroke: ${({ theme }) => theme.palette.white};
       ${ItemButton}:hover & {
-        stroke: ${({ isActive }) => (isActive ? `#00baff` : `#8fe1ff`)};
+        stroke: ${({ isActive, theme }) => (isActive ? `${theme.palette.highlightBlue}` : `${theme.palette.blue30}`)};
       }
     }
   }
-  ${({ isActive }) =>
+  ${({ isActive, theme }) =>
     isActive &&
     `
-    background: #313131;
+    background: ${theme.palette.grey87};
     svg {
       path {
-        stroke: #00baff;
+        stroke: ${theme.palette.highlightBlue};
       }
       rect {
-        stroke: #00baff;
+        stroke: ${theme.palette.highlightBlue};
       }
       
     }
@@ -76,17 +82,17 @@ const ItemButtonIcon = styled.div`
 
 const ItemButtonText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
     display: flex;
     align-items: center;
     gap: 8px;
-    color: ${({ isActive }) => (isActive ? '#00baff' : '#fff')};
+    color: ${({ isActive, theme }) => (isActive ? `${theme.palette.white}` : `${theme.palette.white}`)};
     ${ItemButton}:hover & {
-      color: #8fe1ff;
-      color: ${({ isActive }) => isActive && '#00baff'};
+      color: ${({ theme }) => theme.palette.blue30};
+      color: ${({ isActive, theme }) => isActive && `${theme.palette.white}`};
     }
   }
 `;

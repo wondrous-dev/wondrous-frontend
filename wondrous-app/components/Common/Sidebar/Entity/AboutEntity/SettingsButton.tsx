@@ -9,14 +9,14 @@ const Settings = styled(ButtonBase)`
     padding: 6px;
     width: 70px;
     height: 28px;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 6px;
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 14px;
-    color: #ffffff;
+    color: ${({ theme }) => theme.palette.white};
     :hover {
-      background: #707070;
+      background: ${({ theme }) => theme.palette.grey58};
       filter: drop-shadow(0px 6px 14px rgba(0, 0, 0, 0.5));
     }
   }

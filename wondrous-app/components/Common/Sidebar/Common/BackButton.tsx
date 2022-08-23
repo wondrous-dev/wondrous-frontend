@@ -11,14 +11,14 @@ const Wrapper = styled.div`
 
 const Button = styled(ButtonBase)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
     font-weight: 500;
     font-size: 13px;
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    color: #fff;
+    color: ${({ theme }) => theme.palette.white};
     gap: 8px;
     width: 100%;
   }
@@ -37,13 +37,13 @@ const LeftArrowIconWrapper = styled((props) => (
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #454545;
+  background: ${({ theme }) => theme.palette.grey76};
   ${Button}:hover & {
-    background: #7a7a7a;
+    background: ${({ theme }) => theme.palette.grey57};
     filter: drop-shadow(-1px 5px 7px rgba(0, 0, 0, 0.7));
     svg {
       path {
-        stroke: #fff;
+        stroke: ${({ theme }) => theme.palette.white};
       }
     }
   }

@@ -113,9 +113,11 @@ export const DrawerListItem = styled(({ children, ...props }) => (
     width: 40px;
     border-radius: 4px;
     background: transparent;
-    background: ${({ isActive }) => isActive && `linear-gradient(180deg, #787878 0%, #464646 100%);`};
+    background: ${({ isActive, theme }) =>
+      isActive && `linear-gradient(180deg, ${theme.palette.grey850} 0%, ${theme.palette.grey74} 100%)`};
     :hover {
-      background: linear-gradient(180deg, #787878 0%, #464646 100%);
+      background: ${({ theme }) =>
+        `linear-gradient(180deg, ${theme.palette.grey850} 0%, ${theme.palette.grey74} 100%)`};
     }
     > div {
       height: 36px;
@@ -161,7 +163,7 @@ export const DrawerListCreateDao = styled((props) => (
       width: 36px;
       height: 36px;
       border-radius: inherit;
-      background: #313131;
+      background: ${({ theme }) => theme.palette.grey87};
       display: flex;
       align-items: center;
       justify-content: center;
@@ -190,7 +192,7 @@ export const DrawerBottomButton = styled(({ children, ...props }) => (
     align-items: center;
     justify-content: center;
     padding: 0;
-    background: #232323;
+    background: ${({ theme }) => theme.palette.black92};
     &.active {
       background: linear-gradient(283.63deg, rgba(75, 75, 75, 0.6) 11.03%, rgba(35, 35, 35, 0.6) 92.07%);
     }
@@ -237,7 +239,7 @@ export const NoLogoDAO = styled((props) => (
   border-radius: 3px;
   align-items: center;
   justify-content: center;
-  background: #232323;
+  background: ${({ theme }) => theme.palette.black92};
 `;
 
 export const PodButtonDiv = styled.div`
@@ -252,7 +254,8 @@ export const PodModalFooter = styled.div`
 `;
 
 export const PodModalFooterInfoWrapper = styled.div`
-  background: linear-gradient(0deg, rgba(196, 196, 196, 0.07), rgba(196, 196, 196, 0.07)), #0f0f0f;
+  background: ${({ theme }) =>
+    `linear-gradient(0deg, ${theme.palette.grey250}, ${theme.palette.grey250}), ${theme.palette.background.default}`};
   border-radius: 4px;
   padding: 4px 8px;
   margin-right: 8px;
@@ -292,7 +295,7 @@ export const HighlightedButton = styled(({ children, ...props }) => (
     border-radius: 50%;
     :hover {
       ${({ theme }) =>
-        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
+        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%)`}
     }
     > div {
       height: 36px;
@@ -301,7 +304,7 @@ export const HighlightedButton = styled(({ children, ...props }) => (
       align-items: center;
       justify-content: center;
       border-radius: 100%;
-      background: #313131;
+      background: ${({ theme }) => theme.palette.grey87};
     }
   }
 `;
@@ -312,7 +315,7 @@ export const StyledPodsIcon = styled(PodsIcon)`
       fill: url(#pods-icon-gradient);
     }
     rect {
-      fill: #0f0f0f;
+      fill: ${({ theme }) => theme.palette.background.default};
     }
   }
 `;
