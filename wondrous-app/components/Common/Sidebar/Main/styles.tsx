@@ -205,21 +205,6 @@ export const DrawerBottomButton = styled(({ children, ...props }) => (
   }
 `;
 
-export const DrawerBackButton = styled(DrawerBottomButton)`
-  && {
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.2s;
-    &.active {
-      transform: rotate(180deg);
-    }
-  }
-`;
-
 export const NoLogoDAO = styled((props) => (
   <div {...props}>
     <DAOIcon
@@ -304,6 +289,25 @@ export const HighlightedButton = styled(({ children, ...props }) => (
       justify-content: center;
       border-radius: 100%;
       background: ${({ theme }) => theme.palette.grey87};
+      :hover {
+        ${({ theme }) =>
+          `background: linear-gradient(180deg, ${theme.palette.grey78} 0%, ${theme.palette.grey87} 43.61%)`}
+      }
+    }
+  }
+`;
+
+export const DrawerBackButton = styled(HighlightedButton)`
+  && {
+    position: fixed;
+    bottom: 24px;
+    left: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s;
+    &.active {
+      transform: rotate(180deg);
     }
   }
 `;
