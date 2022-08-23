@@ -3,18 +3,15 @@ import ContentPaste from 'components/Common/Sidebar/Common/icons/contentPaste.sv
 import FlagIcon from 'components/Common/Sidebar/Common/icons/flag.svg';
 import FolderIcon from 'components/Common/Sidebar/Common/icons/folder.svg';
 import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
-import HomeIcon from 'components/Common/Sidebar/Common/icons/home.svg';
 import PieChartIcon from 'components/Common/Sidebar/Common/icons/pieChart.svg';
-import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import ShowChartIcon from 'components/Common/Sidebar/Common/icons/showChart.svg';
 import StackIcon from 'components/Common/Sidebar/Common/icons/stack.svg';
 import StartIcon from 'components/Common/Sidebar/Common/icons/star.svg';
 import Item from 'components/Common/Sidebar/Common/Item';
+import { Label, ListWrapper } from 'components/Common/Sidebar/Common/styles';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
-
-import { Label, ListWrapper } from '../Common/styles';
 
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();

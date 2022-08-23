@@ -1,12 +1,14 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
+import BackButton from 'components/Common/Sidebar/Common/BackButton';
 import FileDownloadIcon from 'components/Common/Sidebar/Common/icons/fileDownload.svg';
 import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
 import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
 import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
 import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
+import Item from 'components/Common/Sidebar/Common/Item';
 import { ChildrenWrapper, Label, ListWrapper, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
@@ -24,8 +26,6 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 
-import BackButton from '../Common/BackButton';
-import Item from '../Common/Item';
 import {
   ArchivedPodIndicatorText,
   SettingsChildrenWrapper,
