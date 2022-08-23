@@ -20,6 +20,7 @@ import {
   MissionControlWidgetsWrapper,
   MissionControlWidgetsContainer,
   MissionControlSidebarIconWrapper,
+  FocusWrapper,
 } from './styles';
 import MissionControlWorkspaceCard from './WorkspaceCard';
 
@@ -142,7 +143,9 @@ const MissionControl = () => {
       </MissionControlWidgetsWrapper>
       <MissionControlSidebarWrapper>
         <ConnectWallet />
-        <Notifications />
+        <FocusWrapper>
+          <Notifications />
+        </FocusWrapper>
         <MissionControlSidebarIconWrapper>
           <HighlightedCone />
         </MissionControlSidebarIconWrapper>

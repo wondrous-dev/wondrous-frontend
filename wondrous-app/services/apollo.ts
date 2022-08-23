@@ -115,6 +115,7 @@ const cache = new InMemoryCache({
           },
         },
         getNotifications: offsetLimitPagination(),
+        getUserKudos: offsetLimitPagination(),
       },
     },
   },

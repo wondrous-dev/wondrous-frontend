@@ -17,6 +17,9 @@ export const ConnectWalletWidgetWrapper = styled.div`
 export const ConnectWalletHeader = styled.div`
   display: flex;
   gap: 12px;
+  flex-basis: 100%;
+  align-items: center;
+  width: 100%;
 `;
 
 export const ConnectWalletHeaderLabel = styled(Typography)`
@@ -44,4 +47,14 @@ export const ConnectWalletMessage = styled(Typography)`
     line-height: 17px;
     letter-spacing: 0.0025em;
   }
+`;
+
+export const DismissButton = styled.button`
+  border: 0;
+  background: ${palette.violet50};
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  border-radius: 6px;
+  cursor: pointer;
 `;

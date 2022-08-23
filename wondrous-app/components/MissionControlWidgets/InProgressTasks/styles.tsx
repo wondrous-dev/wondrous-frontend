@@ -12,6 +12,7 @@ export const TaskContainer = styled.div`
   display: flex;
   gap: 10px;
   cursor: pointer;
+  align-items: center;
   &:hover {
     background: ${palette.grey87};
   }

@@ -8,6 +8,7 @@ import {
   ConnectWalletHeader,
   ConnectWalletHeaderLabel,
   ConnectWalletMessage,
+  DismissButton,
 } from './styles';
 
 const DISMISSED_VALUE = '0';
@@ -35,9 +36,9 @@ const ConnectWallet = () => {
         <ConnectWalletHeaderLabel>
           {wonderWeb3.address ? `Connected to ${CHAIN_TOOLTIP[wonderWeb3.chain]} chain` : 'No wallet connected'}
         </ConnectWalletHeaderLabel>
-        <button type="button" onClick={dismissWidget}>
+        <DismissButton type="button" onClick={dismissWidget}>
           <CloseModalIcon />
-        </button>
+        </DismissButton>
       </ConnectWalletHeader>
       <ConnectWalletMessage>
         {wonderWeb3?.address

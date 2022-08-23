@@ -31,6 +31,7 @@ export const MissionControlSidebarWrapper = styled.div`
   flex-direction: column;
   gap: 24px;
   position: relative;
+  z-index: 1;
 `;
 
 export const MissionControlWorkspaceCard = styled.div`
@@ -56,6 +57,7 @@ export const MissionControlSidebarIconWrapper = styled.div`
   bottom: 0;
   position: absolute;
   width: 100%;
+  z-index: 0;
   @-moz-keyframes spin {
     from {
       -moz-transform: rotate(0deg);
@@ -89,4 +91,8 @@ export const MissionControlSidebarIconWrapper = styled.div`
     animation-iteration-count: infinite;
     animation-timing-function: linear;
   }
+`;
+
+export const FocusWrapper = styled.div`
+  z-index: 1;
 `;
