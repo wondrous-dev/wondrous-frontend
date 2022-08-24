@@ -239,9 +239,10 @@ export function TaskSubmissions(props) {
           fetchedTaskSubmissions={fetchedTaskSubmissions}
           setFilteredSubmissions={setFilteredSubmissions}
         />
-        {isBounty && fetchedTask?.status !== TASK_STATUS_DONE && fetchedTask?.status !== TASK_STATUS_ARCHIVED && (
-          <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />
-        )}
+        {isBounty &&
+          fetchedTask?.status !== TASK_STATUS_DONE &&
+          fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
+          !!loggedInUser && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
         {!isBounty && (
           <>
             <TaskSubmissionsTaskToDo

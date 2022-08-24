@@ -176,7 +176,8 @@ function TaskSubtaskEmptyState() {
 export function TaskSubtaskList({ taskId, status }) {
   const { hasMore, data, loading, ref } = useGetSubtasksForTask({ taskId, status });
   const router = useRouter();
-  const { id: userId } = useMe();
+  const loggedInUser = useMe();
+  const userId = loggedInUser?.id;
   if (isEmpty(data)) return <TaskSubtaskEmptyState />;
   return (
     <TaskSubtaskWrapper>

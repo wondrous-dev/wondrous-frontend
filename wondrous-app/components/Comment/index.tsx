@@ -115,6 +115,8 @@ export function CommentBox(props) {
     }
   }, [taskCommentData]);
 
+  if (!user) return null;
+
   return (
     <AddCommentContainer>
       <TextInputDiv>
