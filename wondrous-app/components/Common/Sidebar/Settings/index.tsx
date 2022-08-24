@@ -176,10 +176,6 @@ function SettingsWrapper(props) {
     }
   }, [getOrgById, getPodById, org, orgId, podId]);
 
-  const signOut = () => {
-    logout();
-  };
-
   const permissions = parseUserPermissionContext({
     userPermissionsContext: parsedUserPermissionsContext,
     orgId: orgId || pod?.orgId,
@@ -255,7 +251,7 @@ function SettingsWrapper(props) {
                   </Link>
                 );
               })}
-              <Item Icon={ExitIcon} onClick={signOut}>
+              <Item Icon={ExitIcon} onClick={() => logout()}>
                 Log out
               </Item>
             </ListWrapper>
