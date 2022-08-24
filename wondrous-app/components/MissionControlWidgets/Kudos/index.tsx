@@ -12,7 +12,16 @@ import { KudosWrapper } from './styles';
 
 const KudosWidget = () => {
   const [hasMore, setHasMore] = useState(true);
-  const { data, loading, fetchMore: fetchMoreKudos } = useQuery(GET_USER_KUDOS);
+  const {
+    data,
+    loading,
+    fetchMore: fetchMoreKudos,
+  } = useQuery(GET_USER_KUDOS, {
+    variables: {
+      offset: 0,
+      limit: LIMIT,
+    },
+  });
   const [ref, inView] = useInView({});
 
   const fetchMore = () => {
@@ -35,8 +44,10 @@ const KudosWidget = () => {
         )}
         {data?.getUserKudos?.map((kudos, idx) => (
           <TaskContainer key={idx}>
-            <Link href={`/profile/${kudos.creator.username}`}>
-              <UserProfilePicture avatar={kudos.creator.profilePicture} />
+            <Link href={`/profile/${kudos.creator.username}/about`}>
+              <div>
+                <UserProfilePicture avatar={kudos.creator.profilePicture} />
+              </div>
             </Link>
             <TaskTitle>{kudos.content}</TaskTitle>
           </TaskContainer>

@@ -71,7 +71,7 @@ export const MissionControlWorkspaceCardWrapper = styled.div`
       position: absolute;
       inset: 0;
       border-radius: 6px;
-      background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+      background: ${({ gradient }) => gradient};
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
       mask-composite: exclude;
@@ -82,7 +82,7 @@ export const MissionControlWorkspaceCardWrapper = styled.div`
       background-size: cover;
       background-position: center;
       &::after {
-        background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+        background: ${({ gradient }) => gradient};
       }
     }
   }

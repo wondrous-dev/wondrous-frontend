@@ -1,6 +1,15 @@
 import { useQuery } from '@apollo/client';
 import { useMe, withAuth } from 'components/Auth/withAuth';
-import { TodoIcon, InProgressIcon, InReviewIcon, CompletedIcon } from 'components/Icons/statusIcons';
+import {
+  TodoIcon,
+  InProgressIcon,
+  InReviewIcon,
+  CompletedIcon,
+  AwaitingReview,
+  OrgMemberships,
+  PodMembershipsIcon,
+  ProposalIcon,
+} from 'components/Icons/statusIcons';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from 'graphql/queries/workflowBoards';
 import {
   ORG_MEMBERSHIP_REQUESTS,
@@ -21,6 +30,8 @@ import {
   MissionControlWidgetsContainer,
   MissionControlSidebarIconWrapper,
   FocusWrapper,
+  ContributorGradient,
+  OperatorGradient,
 } from './styles';
 import MissionControlWorkspaceCard from './WorkspaceCard';
 
@@ -31,6 +42,7 @@ const CARDS_CONFIG = {
       labelGradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
       img: '/images/mission-control/contributor-card.png',
       hoverImg: '/images/mission-control/contributor-card-hover.png',
+      gradient: ContributorGradient,
       stats: [
         {
           icon: TodoIcon,
@@ -67,34 +79,35 @@ const CARDS_CONFIG = {
       labelGradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
       img: '/images/mission-control/operator-card.png',
       hoverImg: '/images/mission-control/operator-card-hover.png',
+      gradient: OperatorGradient,
       stats: [
         {
-          icon: TodoIcon,
+          icon: OrgMemberships,
           key: 'orgMembershipRequestCount',
           label: 'Org Membership requests',
-          countGradient: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #F93701 90.48%)',
-          url: `/dashboard/admin/${ORG_MEMBERSHIP_REQUESTS}`,
+          countGradient: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
+          url: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
         },
         {
-          icon: TodoIcon,
+          icon: PodMembershipsIcon,
           key: 'podMembershipRequestCount',
           label: 'Pod Membership requests',
-          countGradient: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #F93701 90.48%)',
-          url: `/dashboard/admin/${POD_MEMBERSHIP_REQUESTS}`,
+          countGradient: 'linear-gradient(196.76deg, #FFFFFF -48.71%, #FF6DD7 90.48%)',
+          url: `/dashboard/admin?boardType=${POD_MEMBERSHIP_REQUESTS}`,
         },
         {
-          icon: InProgressIcon,
+          icon: ProposalIcon,
           key: 'proposalRequestCount',
           label: 'Proposals',
-          countGradient: 'linear-gradient(180deg, #FFFFFF 0%, #FFD653 100%)',
-          url: `/dashboard/admin/${TASK_STATUS_PROPOSAL_REQUEST}`,
+          countGradient: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
+          url: `/dashboard/admin?boardType=${TASK_STATUS_PROPOSAL_REQUEST}`,
         },
         {
-          icon: InReviewIcon,
+          icon: AwaitingReview,
           key: 'submissionRequestCount',
           label: 'Awaiting review',
           countGradient: 'linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)',
-          url: `/dashboard/admin/${TASK_STATUS_SUBMISSION_REQUEST}`,
+          url: `/dashboard/admin?boardType=${TASK_STATUS_SUBMISSION_REQUEST}`,
         },
       ],
     },
@@ -126,13 +139,14 @@ const MissionControl = () => {
   return (
     <MissionControlWrapper>
       <MissionControlWidgetsWrapper>
-        {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg }, idx) => (
+        {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg, gradient }, idx) => (
           <MissionControlWorkspaceCard
             key={idx}
             label={label}
             labelGradient={labelGradient}
             hoverImg={hoverImg}
             img={img}
+            gradient={gradient}
             stats={generateCountForStats(stats)}
           />
         ))}

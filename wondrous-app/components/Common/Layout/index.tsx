@@ -26,7 +26,7 @@ export default function SidebarLayout({ children }) {
   } = useQuery(GET_NOTIFICATIONS, {
     variables: {
       offset: 0,
-      limit: 1,
+      limit: LIMIT,
     },
   });
   const [minimized, setMinimized] = useState(false);

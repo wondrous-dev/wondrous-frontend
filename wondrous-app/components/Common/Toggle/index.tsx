@@ -8,6 +8,7 @@ interface Item {
   onChange: (e) => any;
   label: string;
   isActive: boolean;
+  gradient?: string;
 }
 const Toggle = ({ items }: Props) => (
   <ToggleWrapper>

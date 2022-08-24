@@ -102,11 +102,8 @@ const InProgressTasksWidget = () => {
         taskId={(location?.params?.task || location?.params?.taskProposal)?.toString()}
         isTaskProposal={!!location?.params?.taskProposal}
       />
-      {!data?.getUserTaskBoardTasks?.length && !loading && (
-        <EmptyStateText>Once you mark tasks as in-progress, they will appear here.</EmptyStateText>
-      )}
       <TasksWrapper>
-        {!!userOrgs && !!data?.getUserTaskBoardTasks?.length && (
+        {!!userOrgs && (
           <OrgSearchWrapper>
             <SearchIconContainer>
               <SearchIcon />
@@ -131,6 +128,10 @@ const InProgressTasksWidget = () => {
             />
           </OrgSearchWrapper>
         )}
+        {!data?.getUserTaskBoardTasks?.length && !loading && (
+          <EmptyStateText>Once you mark tasks as in-progress, they will appear here.</EmptyStateText>
+        )}
+
         {data?.getUserTaskBoardTasks?.map((task, idx) => (
           <TaskContainer key={idx} onClick={() => handleCardClick(task)}>
             <OrgProfilePicture profilePicture={task?.orgProfilePicture} />

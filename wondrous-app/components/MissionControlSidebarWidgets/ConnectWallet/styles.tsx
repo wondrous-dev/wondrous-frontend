@@ -58,3 +58,9 @@ export const DismissButton = styled.button`
   border-radius: 6px;
   cursor: pointer;
 `;
+
+export const DismissButtonWrapper = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+`;

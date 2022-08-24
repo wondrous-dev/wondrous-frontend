@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette from 'theme/palette';
 import { HEADER_HEIGHT } from 'utils/constants';
 
 export const MissionControlWrapper = styled.div`
@@ -96,3 +97,7 @@ export const MissionControlSidebarIconWrapper = styled.div`
 export const FocusWrapper = styled.div`
   z-index: 1;
 `;
+
+export const ContributorGradient = `linear-gradient(180deg, ${palette.highlightPurple} 0%, #F2C678 100%)`;
+
+export const OperatorGradient = `linear-gradient(180deg, ${palette.highlightBlue} 0%, #F2C678 100%)`;
