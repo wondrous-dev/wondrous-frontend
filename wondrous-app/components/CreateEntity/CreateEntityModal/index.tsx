@@ -1117,6 +1117,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask = parentTaskId !== undefined;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
+  const isTask = entityType === ENTITIES_TYPES.TASK;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -1301,7 +1302,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'reviewerIds',
       existingTask?.reviewers?.map((reviewer) => reviewer.id)
     );
-    form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
+    if (isTask) {
+      form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
+    }
     form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
@@ -1316,6 +1319,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     existingTask?.points,
     existingTask?.milestoneId,
     existingTask?.labels,
+    isTask,
   ]);
 
   useEffect(() => {
