@@ -1,4 +1,4 @@
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
 import BackButton from 'components/Common/Sidebar/Common/BackButton';
@@ -15,7 +15,6 @@ import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
 import { LockIconOutline } from 'components/Icons/userpass';
 import WrenchIcon from 'components/Icons/wrench';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { GET_POD_BY_ID } from 'graphql/queries/pod';
 import Link from 'next/link';
@@ -25,7 +24,7 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useSideBar } from 'utils/hooks';
+import { useCreateEntityContext, useSideBar } from 'utils/hooks';
 
 import {
   ArchivedPodIndicatorText,
@@ -142,12 +141,10 @@ function SettingsWrapper(props) {
   const router = useRouter();
   const user = useMe();
   const { minimized } = useSideBar();
+  const { userPermissionsContext } = useCreateEntityContext();
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
-  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
 
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
