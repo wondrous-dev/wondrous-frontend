@@ -42,7 +42,7 @@ import {
 import palette from 'theme/palette';
 import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
-import { exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
+import { calculateCount, exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE } from 'utils/constants';
 import Wrapper from '../wrapper';
 import { Post } from '../../Common/Post';
@@ -72,6 +72,10 @@ function UserRow({ contributorTask }) {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
+
+  const contributionCount = calculateCount(contributorTask?.tasks);
+  const bountyCount = contributionCount?.bountyCount;
+  const taskCount = contributionCount?.taskCount;
 
   return (
     <ContributorDiv>
@@ -130,17 +134,36 @@ function UserRow({ contributorTask }) {
           />
           <TaskCountWrapper>
             <TaskCountText>
-              {contributorTask?.tasks?.length}
+              {taskCount}
               <span
                 style={{
                   color: 'rgba(108, 108, 108, 1)',
                   marginLeft: '4px',
                 }}
               >
-                {contributorTask?.tasks?.length === 1 ? 'task' : 'tasks'}
+                {taskCount === 1 ? 'task' : 'tasks'}
               </span>
             </TaskCountText>
           </TaskCountWrapper>
+          {bountyCount > 0 && (
+            <TaskCountWrapper
+              style={{
+                marginLeft: '12px',
+              }}
+            >
+              <TaskCountText>
+                {bountyCount}
+                <span
+                  style={{
+                    color: 'rgba(108, 108, 108, 1)',
+                    marginLeft: '4px',
+                  }}
+                >
+                  {bountyCount === 1 ? 'bounty' : 'bounties'}
+                </span>
+              </TaskCountText>
+            </TaskCountWrapper>
+          )}
           <TaskCountWrapper
             style={{
               background: 'none',
