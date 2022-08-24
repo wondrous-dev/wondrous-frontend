@@ -103,8 +103,12 @@ function UserRow({ contributorTask }) {
           {clicked ? <BottomArrowCaret style={CaretStyle} /> : <RightArrowCaret style={CaretStyle} />}
           {contributorTask?.assigneeId ? (
             <>
-              {contributorTask?.profilePicture ? (
-                <SafeImage useNextImage={false} src={contributorTask?.profilePicture} style={UserRowPictureStyles} />
+              {contributorTask?.assigneeProfilePicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={contributorTask?.assigneeProfilePicture}
+                  style={UserRowPictureStyles}
+                />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
               )}

@@ -3,6 +3,7 @@ import { Claim } from 'components/Icons/claimTask';
 import { useMutation } from '@apollo/client';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CREATE_TASK_APPLICATION } from 'graphql/mutations';
+import { white } from 'theme/colors';
 import TaskApplicationModal from './TaskApplicationFormModal';
 import { ButtonPrimary } from '../button';
 
@@ -72,7 +73,13 @@ export default function TaskApplicationButton({ task, title = 'Apply', setIsAppl
         onClick={handleButtonClick}
         disabled={task?.taskApplicationPermissions?.hasUserApplied}
       >
-        <span>{btnTitle}</span>
+        <span
+          style={{
+            color: white,
+          }}
+        >
+          {btnTitle}
+        </span>
       </ButtonPrimary>
     </>
   );

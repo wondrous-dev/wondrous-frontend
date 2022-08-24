@@ -1,5 +1,6 @@
 import { useQuery } from '@apollo/client';
 import { GET_TASKS_FOR_MILESTONE } from 'graphql/queries';
+import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
@@ -7,6 +8,11 @@ import styled from 'styled-components';
 import MilestoneTaskFilter from './MilestoneTaskFilter';
 import MilestoneTaskList from './MilestoneTaskList';
 import MilestoneTasksCreate from './MilestoneTasksCreate';
+import {
+  MilestoneTasksEmptyStateContainer,
+  MilestoneTasksEmptyStateIcon,
+  MilestoneTasksEmptyStateText,
+} from './styles';
 
 export const LoadMore = styled.div`
   height: 10px;
@@ -42,15 +48,30 @@ const useGetTasksForMilestone = ({ milestone, status }) => {
   return { data: data?.getTasksForMilestone, ref, hasMore };
 };
 
+function MilestoneTasksEmptyState() {
+  return (
+    <MilestoneTasksEmptyStateContainer>
+      <MilestoneTasksEmptyStateIcon />
+      <MilestoneTasksEmptyStateText>No tasks yet</MilestoneTasksEmptyStateText>
+    </MilestoneTasksEmptyStateContainer>
+  );
+}
+
 function MilestoneTasks({ milestone, canCreate }) {
   const [status, setStatus] = useState('');
   const { data, ref, hasMore } = useGetTasksForMilestone({ milestone, status });
   return (
     <>
-      <MilestoneTaskFilter status={status} setStatus={setStatus} />
+      {!!canCreate && <MilestoneTaskFilter status={status} setStatus={setStatus} />}
       <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
-      <MilestoneTaskList data={data} />
-      <LoadMore ref={ref} hasMore={hasMore} />
+      {isEmpty(data) ? (
+        <MilestoneTasksEmptyState />
+      ) : (
+        <>
+          <MilestoneTaskList data={data} />
+          <LoadMore ref={ref} hasMore={hasMore} />
+        </>
+      )}
     </>
   );
 }

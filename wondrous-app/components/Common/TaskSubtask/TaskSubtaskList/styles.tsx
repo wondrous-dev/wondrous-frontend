@@ -2,6 +2,7 @@ import { Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
+import { EmptyStateSubtasksIcon } from 'components/Icons/emptyStates';
 import styled from 'styled-components';
 
 export const TaskSubtaskWrapper = styled.div`
@@ -102,18 +103,26 @@ export const TaskSubtaskTitle = styled(Typography)`
   }
 `;
 
-export const TaskSubTaskEmpty = styled(Typography)`
+export const TaskSubtaskEmptyStateContainer = styled.div`
+  width: 100%;
+  padding: 14px 0;
+  margin-top: 18px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const TaskSubtaskEmptyStateIcon = styled(EmptyStateSubtasksIcon)``;
+
+export const TaskSubTaskEmptyStateText = styled(Typography)`
   && {
-    margin-top: 18px;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 400;
-    color: ${({ theme }) => theme.palette.grey250};
-    align-items: center;
-    background: #171717;
-    border-radius: 6px;
-    display: flex;
-    height: 68px;
-    justify-content: center;
+    color: ${({ theme }) => theme.palette.grey57};
+    text-align: center;
   }
 `;
 

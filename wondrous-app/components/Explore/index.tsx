@@ -129,10 +129,9 @@ function ExploreComponent() {
             </Tab>
           ))}
         </TabsWrapper>
-        {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+        {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection />}
         {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
           <BountySection
-            isMobile={isMobile}
             bounties={bounties?.getBountiesToExplore}
             fetchMore={getBountiesToExploreFetchMore}
             hasMore={hasMoreBounties}
@@ -145,14 +144,7 @@ function ExploreComponent() {
         <PartnershipRequest>
           <PartnershipRequestHeader>Become a partner.</PartnershipRequestHeader>
           <PartnershipRequestSubheader>Want your organization to use Wonder?</PartnershipRequestSubheader>
-          <Button
-            style={{
-              textDecoration: 'none',
-              color: palette.white,
-              alignSelf: 'center',
-              marginTop: '28px',
-            }}
-          >
+          <Button marginTop="28px">
             <a
               style={{
                 textDecoration: 'none',

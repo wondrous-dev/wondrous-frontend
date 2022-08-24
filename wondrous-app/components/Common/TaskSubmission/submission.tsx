@@ -8,6 +8,7 @@ import { useState } from 'react';
 import { delQuery } from 'utils';
 import {
   ENTITIES_TYPES,
+  TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
@@ -20,6 +21,9 @@ import {
   SubmissionButtonTextHelper,
   SubmissionButtonWrapperBackground,
   SubmissionButtonWrapperGradient,
+  TaskSubmissionEmptyStateIcon,
+  TaskSubmissionEmptyStateText,
+  TaskSubmissionEmptyStateContainer,
   TaskSubmissionItemsWrapper,
   TaskSubmissionsFormInactiveWrapper,
 } from './styles';
@@ -44,10 +48,9 @@ function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText
 }
 
 const inProgressMoveCompleted =
-  ({ handleClose, boardColumns, board }) =>
+  ({ boardColumns, board }) =>
   (data) => {
     const task = data?.updateTaskStatus;
-    handleClose();
     if (boardColumns?.setColumns) {
       const transformedTask = transformTaskToTaskCard(task, {});
       if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
@@ -72,6 +75,15 @@ function TaskSubmissionsLoading({ loading }) {
   return <CircularProgress />;
 }
 
+function TaskSubmissionsEmptyState() {
+  return (
+    <TaskSubmissionEmptyStateContainer>
+      <TaskSubmissionEmptyStateIcon />
+      <TaskSubmissionEmptyStateText>No submissions yet</TaskSubmissionEmptyStateText>
+    </TaskSubmissionEmptyStateContainer>
+  );
+}
+
 function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) {
   if (taskStatus === TASK_STATUS_TODO) {
     if (canSubmit || canMoveProgress) {
@@ -83,22 +95,19 @@ function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveP
         />
       );
     }
-    return <SubmissionButtonWrapper helperText="No submissions yet." />;
   }
   return null;
 }
 
-function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) {
+function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission }) {
   if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
     if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText="No submissions yet." />;
   }
   return null;
 }
 
 function TaskSubmissionMakePayment({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) {
   if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK) {
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText="No submissions" />;
     return (
       <SubmissionPayment
         fetchedTask={fetchedTask}
@@ -190,7 +199,7 @@ export function TaskSubmissions(props) {
   } = props;
   const router = useRouter();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
-    onCompleted: inProgressMoveCompleted({ handleClose, boardColumns, board }),
+    onCompleted: inProgressMoveCompleted({ boardColumns, board }),
   });
   const [makeSubmission, setMakeSubmission] = useState(false);
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
@@ -207,7 +216,6 @@ export function TaskSubmissions(props) {
         },
       },
     });
-    handleClose();
   };
 
   const handleCancelSubmission = () => {
@@ -231,7 +239,10 @@ export function TaskSubmissions(props) {
           fetchedTaskSubmissions={fetchedTaskSubmissions}
           setFilteredSubmissions={setFilteredSubmissions}
         />
-        {isBounty && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
+        {isBounty &&
+          fetchedTask?.status !== TASK_STATUS_DONE &&
+          fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
+          !!loggedInUser && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
         {!isBounty && (
           <>
             <TaskSubmissionsTaskToDo
@@ -242,7 +253,6 @@ export function TaskSubmissions(props) {
             />
             <TaskSubmissionsTaskInProgress
               canSubmit={canSubmit}
-              fetchedTaskSubmissions={fetchedTaskSubmissions}
               setMakeSubmission={setMakeSubmission}
               taskStatus={taskStatus}
             />
@@ -254,6 +264,7 @@ export function TaskSubmissions(props) {
             />
           </>
         )}
+        {isEmpty(fetchedTaskSubmissions) && <TaskSubmissionsEmptyState />}
         <TaskSubmissionList
           fetchedTaskSubmissions={listSubmissions}
           setSubmissionToEdit={setSubmissionToEdit}

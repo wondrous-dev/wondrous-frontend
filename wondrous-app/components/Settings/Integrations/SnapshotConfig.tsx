@@ -9,10 +9,10 @@ import {
   IntegrationsSnapshotENSInput,
   IntegrationsSnapshotSubBlock,
   IntegrationsSnapshotInputSubBlock,
-  IntegrationsSnapshotHelperText,
-  IntegrationsSnapshotButton,
+  IntegrationsHelperText,
+  IntegrationsConnectButton,
+  IntegrationsDisconnectButton,
   LabelBlock,
-  LabelBlockText,
 } from './styles';
 
 import { useWonderWeb3 } from '../../../services/web3';
@@ -92,7 +92,7 @@ function SnapshotConfigSection(props) {
         <LabelBlock>Snapshot Settings</LabelBlock>
         {!snapshotConnected && !(isSnapshotAdmin && snapshotSpace?.id) && (
           <>
-            <IntegrationsSnapshotHelperText>Enter ENS Domain to connect</IntegrationsSnapshotHelperText>
+            <IntegrationsHelperText>Enter ENS Domain to connect</IntegrationsHelperText>
             <IntegrationsSnapshotSubBlock>
               <IntegrationsSnapshotInputSubBlock>
                 <IntegrationsSnapshotENSInput
@@ -102,18 +102,18 @@ function SnapshotConfigSection(props) {
                 />
                 {getSnapshotSpaceError && <ErrorText>{getSnapshotSpaceError}</ErrorText>}
               </IntegrationsSnapshotInputSubBlock>
-              <IntegrationsSnapshotButton onClick={handleCheckSnapshotClick}>Check Snapshot</IntegrationsSnapshotButton>
+              <IntegrationsConnectButton onClick={handleCheckSnapshotClick}>Check Snapshot</IntegrationsConnectButton>
             </IntegrationsSnapshotSubBlock>
           </>
         )}
         {!snapshotConnected && isSnapshotAdmin && snapshotSpace?.id && (
-          <IntegrationsSnapshotButton onClick={handleConnectSnapshotSpace}>
+          <IntegrationsConnectButton onClick={handleConnectSnapshotSpace}>
             Connect Snapshot {snapshotSpace?.name}
-          </IntegrationsSnapshotButton>
+          </IntegrationsConnectButton>
         )}
         {snapshotConnected && (
           <>
-            <IntegrationsSnapshotHelperText>Snapshot connected:</IntegrationsSnapshotHelperText>
+            <IntegrationsHelperText>Snapshot connected:</IntegrationsHelperText>
             <IntegrationsSnapshotSubBlock>
               <IntegrationsSnapshotInputSubBlock>
                 <IntegrationsSnapshotENSInput
@@ -121,9 +121,9 @@ function SnapshotConfigSection(props) {
                   // disabled
                 />
               </IntegrationsSnapshotInputSubBlock>
-              <IntegrationsSnapshotButton onClick={handlDisconnectSnapshotSpace} disabled={!!podId}>
+              <IntegrationsDisconnectButton onClick={handlDisconnectSnapshotSpace} disabled={!!podId}>
                 Disconnect Snapshot
-              </IntegrationsSnapshotButton>
+              </IntegrationsDisconnectButton>
             </IntegrationsSnapshotSubBlock>
           </>
         )}

@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -58,7 +59,7 @@ export function SubmissionsCount({ total, approved }) {
     </BountyCardSubmissionsCountWrapper>
   );
 }
-export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false }) {
+export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container = Fragment }) {
   const router = useRouter();
   const goToPod = (podId) => {
     router.push(`/pod/${podId}/boards`, undefined, {
@@ -69,7 +70,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
   const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
 
   return (
-    <>
+    <Container>
       {tasks?.length ? (
         tasks.map((bounty) => {
           const BountyStatusIcon = TASK_ICONS[bounty?.status];
@@ -176,6 +177,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
       ) : (
         <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
       )}
-    </>
+    </Container>
   );
 }
