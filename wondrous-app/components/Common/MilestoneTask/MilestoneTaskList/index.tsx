@@ -30,7 +30,7 @@ import {
 } from './styles';
 
 function MilestoneUserImage({ assignee }) {
-  const hasProfileImage = assignee && assignee.profilePicture;
+  const hasProfileImage = assignee?.profilePicture;
   return (
     <MilestoneTaskImageWrapper>
       {hasProfileImage ? <MilestoneTaskImageSafeImage src={hasProfileImage} /> : <DefaultUserImage />}
