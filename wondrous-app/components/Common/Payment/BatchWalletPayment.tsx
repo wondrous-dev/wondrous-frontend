@@ -223,6 +223,7 @@ export function BatchWalletPayment(props) {
       } else {
         setSigningError(`Error signing transaction`);
       }
+      setGnosisTransactionLoading(false);
       return;
     }
     setGnosisTransactionLoading(false);

@@ -36,6 +36,13 @@ To setup [Husky](https://typicode.github.io/husky), run:
 yarn prepare
 ```
 
+## Storybook 📖
+Run `yarn storybook` to start Storybook locally and output the address. Depending on your system configuration, it will automatically open the address in a new browser tab, and you'll be greeted by a welcome screen.
+
+[Introduction to Storybook for React](https://storybook.js.org/docs/react/get-started/introduction)
+
+[How to mock applo client](https://storybook.js.org/addons/storybook-addon-apollo-client)
+
 ## Learn More
 
 To learn more about Next.js, take a look at the following resources:

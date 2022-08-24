@@ -11,6 +11,11 @@ import * as Constants from 'utils/constants';
 import MilestoneTaskFilter from './MilestoneTaskFilter';
 import MilestoneTaskList from './MilestoneTaskList';
 import MilestoneTasksCreate from './MilestoneTasksCreate';
+import {
+  MilestoneTasksEmptyStateContainer,
+  MilestoneTasksEmptyStateIcon,
+  MilestoneTasksEmptyStateText,
+} from './styles';
 
 export const LoadMore = styled.div`
   height: 10px;
@@ -31,19 +36,6 @@ const MilestoneTaskFilterStatusIcon = styled(({ className }) => (
     justify-content: center;
     border-radius: 6px;
   }
-`;
-
-const MilestoneEmpty = styled.div`
-  height: 68px;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: #171717;
-  font-weight: 500;
-  color: ${({ theme }) => theme.palette.grey250};
-  display: flex;
-  font-family: 'Space Grotesk';
 `;
 
 export const TASK_ICONS_LABELS = {
@@ -85,16 +77,30 @@ const useGetTasksForMilestone = ({ milestone, status }) => {
   return { data: data?.getTasksForMilestone, ref, hasMore };
 };
 
+function MilestoneTasksEmptyState() {
+  return (
+    <MilestoneTasksEmptyStateContainer>
+      <MilestoneTasksEmptyStateIcon />
+      <MilestoneTasksEmptyStateText>No tasks yet</MilestoneTasksEmptyStateText>
+    </MilestoneTasksEmptyStateContainer>
+  );
+}
+
 function MilestoneTasks({ milestone, canCreate }) {
   const [status, setStatus] = useState('');
   const { data, ref, hasMore } = useGetTasksForMilestone({ milestone, status });
-  if (!canCreate && isEmpty(data)) return <MilestoneEmpty>No tasks yet.</MilestoneEmpty>;
   return (
     <>
-      <MilestoneTaskFilter status={status} setStatus={setStatus} />
+      {!!canCreate && <MilestoneTaskFilter status={status} setStatus={setStatus} />}
       <MilestoneTasksCreate canCreate={canCreate} milestone={milestone} />
-      <MilestoneTaskList data={data} />
-      <LoadMore ref={ref} hasMore={hasMore} />
+      {isEmpty(data) ? (
+        <MilestoneTasksEmptyState />
+      ) : (
+        <>
+          <MilestoneTaskList data={data} />
+          <LoadMore ref={ref} hasMore={hasMore} />
+        </>
+      )}
     </>
   );
 }
