@@ -253,17 +253,19 @@ function SettingsWrapper(props) {
 
         <ChildrenWrapper minimized={minimized}>
           <SettingsChildrenWrapper>
-            {showPodIcon ? (
-              <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
-                <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
-                <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
-                  <PodIcon />
-                </SettingsDaoPodIndicatorIconWrapper>
-                <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
-                {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
-              </SettingsDaoPodIndicator>
-            ) : null}
-            {children}
+            <div>
+              {showPodIcon ? (
+                <SettingsDaoPodIndicator pod={podData?.getPodById?.name}>
+                  <SettingsDaoPodIndicatorOrgProfile src={orgData?.getOrgById?.profilePicture} />
+                  <SettingsDaoPodIndicatorIconWrapper color={podData?.getPodById.color}>
+                    <PodIcon />
+                  </SettingsDaoPodIndicatorIconWrapper>
+                  <SettingsDaoPodIndicatorText>{podData?.getPodById?.name} Pod</SettingsDaoPodIndicatorText>
+                  {podIsArchived && <ArchivedPodIndicatorText>ARCHIVED</ArchivedPodIndicatorText>}
+                </SettingsDaoPodIndicator>
+              ) : null}
+              {children}
+            </div>
           </SettingsChildrenWrapper>
         </ChildrenWrapper>
       </Wrapper>
