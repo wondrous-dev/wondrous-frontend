@@ -31,6 +31,8 @@ import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
+import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
+import cloneDeep from 'lodash/cloneDeep';
 import {
   BoldName,
   Description,
@@ -134,8 +136,19 @@ function ColumnEntry(props: Props) {
     refetchQueries: orgRequestsRefetchQueries,
     onError,
   });
-  const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST, {
-    refetchQueries: orgRequestsRefetchQueries,
+  const [rejectJoinOrgRequest, variables] = useMutation(REJECT_JOIN_ORG_REQUEST, {
+    update: (cache, { data }) => {
+      const isSuccess = data?.rejectJoinOrgRequest?.success;
+      if (isSuccess) {
+        cache.modify({
+          fields: {
+            getJoinOrgRequests(existingItems = []) {
+              return existingItems?.filter((i) => i.id !== id);
+            },
+          },
+        });
+      }
+    },
     onError,
   });
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST, {

@@ -110,8 +110,8 @@ export const useGetOrgMembershipRequestsToReview = () => {
     refetch: refetchJoinOrgRequests,
     variables: orgRequestsVariables,
   } = useQuery(GET_JOIN_ORG_REQUESTS, {
-    fetchPolicy: 'cache-and-network',
-    nextFetchPolicy: 'cache-first',
+    // fetchPolicy: 'cache-and-network',
+    // nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
     variables: {
       limit: LIMIT,
@@ -119,6 +119,7 @@ export const useGetOrgMembershipRequestsToReview = () => {
     },
   });
 
+  console.log(getJoinOrgRequestsData);
   const onFilterChange = (filtersToApply) => {
     const filters = {
       orgId: filtersToApply?.orgId,
