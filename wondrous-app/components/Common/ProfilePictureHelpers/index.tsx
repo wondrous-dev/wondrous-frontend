@@ -1,6 +1,6 @@
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
-import { NoLogoDAO } from 'components/SideBar/styles';
+import { NoLogoDAO } from 'components/Common/Sidebar/Main/styles';
 import { SafeImage } from '../Image';
 import { PodName, PodWrapper } from '../Task/styles';
 

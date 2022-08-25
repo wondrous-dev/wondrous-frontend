@@ -1,13 +1,8 @@
 import { css } from 'styled-components';
 
 const ScrollBarStyles = css`
-  :hover {
-    &::-webkit-scrollbar {
-      display: block;
-    }
-  }
   &::-webkit-scrollbar {
-    display: none;
+    display: block;
     position: absolute;
     z-index: 999;
     width: 20px;
@@ -16,10 +11,7 @@ const ScrollBarStyles = css`
     outline: none;
   }
   &::-webkit-scrollbar-track {
-    background: #606060;
-    background-clip: padding-box;
-    border: 8px solid rgba(0, 0, 0, 0);
-    border-radius: 50px;
+    background: transparent;
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 50px;
