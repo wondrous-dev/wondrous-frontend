@@ -424,6 +424,7 @@ const useGetEligibleReviewers = (org, pod) => {
           podId: pod,
           searchString: '',
         },
+        fetchPolicy: 'cache-and-network',
       });
     } else if (org) {
       getEligibleReviewersForOrg({
@@ -431,6 +432,7 @@ const useGetEligibleReviewers = (org, pod) => {
           orgId: org,
           searchString: '',
         },
+        fetchPolicy: 'cache-and-network',
       });
     }
   }, [org, pod, getEligibleReviewersForOrg, getEligibleReviewersForPod]);
@@ -554,6 +556,7 @@ const useCreateTask = () => {
       'getPerStatusTaskCountForPodBoard',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
+      'getTasksForMilestone',
     ],
   });
 
