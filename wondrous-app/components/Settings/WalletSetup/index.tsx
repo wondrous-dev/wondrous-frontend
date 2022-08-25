@@ -5,7 +5,9 @@ import { useRouter } from 'next/router';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { useWonderWeb3 } from 'services/web3';
 import SettingsWrapper from 'components/Settings/settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
+import WalletSetupModal from 'components/Settings/WalletSetup/WalletSetupModal';
+import { HeaderBlock } from 'components/Settings/headerBlock';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import {
   StyledTable,
   StyledTableBody,
@@ -13,11 +15,8 @@ import {
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-} from '../../Table/styles';
+} from 'components/Table/styles';
 import { TableValueText, WalletsContainer } from './styles';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-
-import { WalletSetupModal } from './WalletSetupModal';
 
 const SUPPORTED_PAYMENT_CHAINS = [
   {
@@ -126,6 +125,9 @@ function Wallets(props) {
                   Address
                 </StyledTableCell>
                 <StyledTableCell align="center" width="40%">
+                  Type
+                </StyledTableCell>
+                <StyledTableCell align="center" width="40%">
                   Chain
                 </StyledTableCell>
               </StyledTableRow>
@@ -146,6 +148,9 @@ function Wallets(props) {
                     </StyledTableCell>
                     <StyledTableCell>
                       <TableValueText>{wallet.address}</TableValueText>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.type}</TableValueText>
                     </StyledTableCell>
                     <StyledTableCell>
                       <TableValueText>{wallet.chain}</TableValueText>

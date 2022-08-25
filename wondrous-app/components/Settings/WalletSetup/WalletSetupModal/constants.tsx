@@ -10,12 +10,12 @@ const isInProduction = process.env.NEXT_PUBLIC_PRODUCTION;
 
 export const DEFAULT_WALLET_TYPE = { label: 'Select Wallet Type', value: '', icon: <DefaultWalletTypeIcon /> };
 
-export const WALLET_TYPES = [
+export const WALLET_TYPE_OPTIONS = [
   { label: 'Gnosis multi-sig', value: 'gnosis', icon: <GnosisWalletTypeIcon /> },
   { label: 'Metamask', value: 'metamask', icon: <Metamask /> },
 ];
 
-export const WALLET_TYPE_STRINGS = {
+export const WALLET_TYPE = {
   GNOSIS: 'gnosis',
   METAMASK: 'metamask',
 };

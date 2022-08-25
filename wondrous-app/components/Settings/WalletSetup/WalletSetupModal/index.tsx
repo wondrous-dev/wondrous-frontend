@@ -13,9 +13,9 @@ import {
   EMPTY_ERROR,
   WALLET_ALREADY_EXISTS_ERROR_MESSAGE,
   WALLET_NETWORKS,
-  WALLET_TYPES,
-  WALLET_TYPE_STRINGS,
-} from './constants';
+  WALLET_TYPE_OPTIONS,
+  WALLET_TYPE,
+} from 'components/Settings/WalletSetup/WalletSetupModal/constants';
 import {
   WalletSetupModalBody,
   WalletSetupModalBodyExpandedViewInvisibleState,
@@ -46,7 +46,7 @@ interface IWalletSetupModalProps {
   podId?: string;
 }
 
-export function WalletSetupModal(props: IWalletSetupModalProps) {
+function WalletSetupModal(props: IWalletSetupModalProps) {
   const { isOpen = false, handleClose = () => {}, userMetamaskAddress, orgId, podId } = props;
 
   const [walletName, setWalletName] = useState('');
@@ -123,17 +123,17 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
   }, [isOpen]);
 
   useEffect(() => {
-    if (walletType?.value === WALLET_TYPE_STRINGS.METAMASK && !walletAddress) {
+    if (walletType?.value === WALLET_TYPE.METAMASK && !walletAddress) {
       setWalletAddress(userMetamaskAddress || '');
     }
   }, [walletType?.value]);
 
   const handleWalletTypeChange = useCallback(
     (ev) => {
-      const selectedWalletType = WALLET_TYPES.find((walletType) => walletType.value === ev.target.value);
+      const selectedWalletType = WALLET_TYPE_OPTIONS.find((walletType) => walletType.value === ev.target.value);
       setWalletType(selectedWalletType);
     },
-    [WALLET_TYPES]
+    [WALLET_TYPE_OPTIONS]
   );
 
   const handleWalletNetworkChange = useCallback(
@@ -172,7 +172,7 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
     }
     if (newError.safeAddressError) return true;
 
-    if (walletType?.value === WALLET_TYPE_STRINGS.GNOSIS) {
+    if (walletType?.value === WALLET_TYPE.GNOSIS) {
       // validating if the address is already registered
       try {
         await safeService.getSafeInfo(checksumAddress);
@@ -200,7 +200,7 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
       name: walletName,
       address: walletAddress,
       type: walletType?.value,
-      chain: walletNetwork?.value,
+      chain: walletType?.value === WALLET_TYPE.METAMASK ? null : walletNetwork?.value,
     };
 
     if (isOrgWalletSetupPage) {
@@ -253,7 +253,7 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
               renderValue={renderWalletTypeValue}
               onChange={handleWalletTypeChange}
             >
-              {WALLET_TYPES.map((walletType) => (
+              {WALLET_TYPE_OPTIONS.map((walletType) => (
                 <WalletSetupModalSelectMenuItem key={walletType.value} value={walletType.value}>
                   {walletType.icon}
                   {walletType.label}
@@ -267,22 +267,24 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
           >
             <WalletSetupModalBodyExpandedViewInvisibleState />
             <WalletSetupModalBodySeperator />
-            <WalletSetupModalInputWrapper>
-              <WalletSetupModalLabel htmlFor="wallet-network">Network</WalletSetupModalLabel>
-              <WalletSetupModalSelect
-                id="wallet-network"
-                value={walletNetwork}
-                renderValue={renderWalletNetworkValue}
-                onChange={handleWalletNetworkChange}
-              >
-                {WALLET_NETWORKS.map((walletNetwork) => (
-                  <WalletSetupModalSelectMenuItem key={walletNetwork.value} value={walletNetwork.value}>
-                    {walletNetwork.icon}
-                    {walletNetwork.label}
-                  </WalletSetupModalSelectMenuItem>
-                ))}
-              </WalletSetupModalSelect>
-            </WalletSetupModalInputWrapper>
+            {walletType?.value !== WALLET_TYPE.METAMASK && (
+              <WalletSetupModalInputWrapper>
+                <WalletSetupModalLabel htmlFor="wallet-network">Network</WalletSetupModalLabel>
+                <WalletSetupModalSelect
+                  id="wallet-network"
+                  value={walletNetwork}
+                  renderValue={renderWalletNetworkValue}
+                  onChange={handleWalletNetworkChange}
+                >
+                  {WALLET_NETWORKS.map((walletNetwork) => (
+                    <WalletSetupModalSelectMenuItem key={walletNetwork.value} value={walletNetwork.value}>
+                      {walletNetwork.icon}
+                      {walletNetwork.label}
+                    </WalletSetupModalSelectMenuItem>
+                  ))}
+                </WalletSetupModalSelect>
+              </WalletSetupModalInputWrapper>
+            )}
             <WalletSetupModalInputWrapper>
               <WalletSetupModalLabel for="wallet-address">Address</WalletSetupModalLabel>
               <WalletSetupModalInput
@@ -307,3 +309,5 @@ export function WalletSetupModal(props: IWalletSetupModalProps) {
     </WalletSetupModalWrapper>
   );
 }
+
+export default WalletSetupModal;
