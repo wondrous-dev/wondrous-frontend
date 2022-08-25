@@ -1,16 +1,15 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 
-import { CircularProgress } from '@mui/material';
 import { useRouter } from 'next/router';
 import { TokenLogoDisplay } from 'components/Settings/TokenGating/styles';
 import palette from 'theme/palette';
-import { HeaderBlock } from '../headerBlock';
+import { DEACTIVATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import { DropDown, DropDownItem } from '../../Common/dropdown';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { PaymentMethodDisplayWrapper, PaymentMethodNameHeader, PaymentMethodActionMenu } from './styles';
-import { TaskMenuIcon } from '../../Icons/taskMenu';
 
 const dropdownItemStyle = {
   marginRight: '12px',
@@ -19,6 +18,16 @@ const dropdownItemStyle = {
 
 function PaymentMethodDisplay(props) {
   const { paymentMethod } = props;
+  const [deactivatePaymentMethod] = useMutation(DEACTIVATE_PAYMENT_METHOD, {
+    refetchQueries: [GET_PAYMENT_METHODS_FOR_ORG],
+  });
+  const handleDeactivate = () => {
+    deactivatePaymentMethod({
+      variables: {
+        paymentMethodId: paymentMethod.id,
+      },
+    });
+  };
   return (
     <PaymentMethodDisplayWrapper>
       <div style={{ display: 'flex' }}>
@@ -43,7 +52,11 @@ function PaymentMethodDisplay(props) {
               </DropDownItem>
             )}
             {!paymentMethod?.deactivatedAt && (
-              <DropDownItem key={`payment-method-deactivate${paymentMethod?.id}`} style={dropdownItemStyle}>
+              <DropDownItem
+                key={`payment-method-deactivate${paymentMethod?.id}`}
+                style={dropdownItemStyle}
+                onClick={handleDeactivate}
+              >
                 Deactivate
               </DropDownItem>
             )}
