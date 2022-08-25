@@ -7,7 +7,7 @@ import {
   POD_MEMBERSHIP_REQUESTS,
   TASK_STATUS_PROPOSAL_REQUEST,
 } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext, deleteFromCache } from 'utils/helpers';
 import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import {
@@ -31,8 +31,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
-import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
-import cloneDeep from 'lodash/cloneDeep';
+import { GET_JOIN_ORG_REQUESTS } from 'graphql/queries';
 import {
   BoldName,
   Description,
@@ -122,61 +121,59 @@ function ColumnEntry(props: Props) {
   } = props;
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
-  const commonRefetchQueries = ['getWorkFlowBoardReviewableItemsCount'];
-  const orgRequestsRefetchQueries = [...commonRefetchQueries, 'getJoinOrgRequests'];
-  const podRequestsRefetchQueries = [...commonRefetchQueries, 'getJoinPodRequests'];
-  const proposalRefetchQueries = [...commonRefetchQueries, 'getProposalsUserCanReview'];
-  const submissionsRefetchQueries = [...commonRefetchQueries, 'getSubmissionsUserCanReview'];
+  const refetchQueries = ['getWorkFlowBoardReviewableItemsCount'];
 
   const onError = (e) => {
     setSnackbarAlertOpen(true);
     setSnackbarAlertMessage('Woops! Something went wrong');
   };
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST, {
-    refetchQueries: orgRequestsRefetchQueries,
+    update: (cache, { data }) => deleteFromCache(cache, data, 'approveJoinOrgRequest', 'getJoinOrgRequests', id),
+    refetchQueries,
     onError,
   });
-  const [rejectJoinOrgRequest, variables] = useMutation(REJECT_JOIN_ORG_REQUEST, {
-    update: (cache, { data }) => {
-      const isSuccess = data?.rejectJoinOrgRequest?.success;
-      if (isSuccess) {
-        cache.modify({
-          fields: {
-            getJoinOrgRequests(existingItems = []) {
-              return existingItems?.filter((i) => i.id !== id);
-            },
-          },
-        });
-      }
-    },
+  const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST, {
+    update: (cache, { data }) => deleteFromCache(cache, data, 'rejectJoinOrgRequest', 'getJoinOrgRequests', id),
+    refetchQueries,
     onError,
   });
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST, {
-    refetchQueries: podRequestsRefetchQueries,
+    update: (cache, { data }) => deleteFromCache(cache, data, 'approveJoinPodRequest', 'getJoinPodRequests', id),
+    refetchQueries,
     onError,
   });
   const [rejectJoinPodRequest] = useMutation(REJECT_JOIN_POD_REQUEST, {
-    refetchQueries: podRequestsRefetchQueries,
+    update: (cache, { data }) => deleteFromCache(cache, data, 'rejectJoinPodRequest', 'getJoinPodRequests', id),
+    refetchQueries,
     onError,
   });
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL, {
-    refetchQueries: proposalRefetchQueries,
+    update: (cache, { data }) => deleteFromCache(cache, data, 'approveProposal', 'getProposalsUserCanReview', id, true),
+    refetchQueries,
     onError,
   });
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL, {
-    refetchQueries: proposalRefetchQueries,
+    update: (cache, { data }) =>
+      deleteFromCache(cache, data, 'closeTaskProposal', 'getProposalsUserCanReview', id, true),
+    refetchQueries,
     onError,
   });
   const [approveTaskSubmission] = useMutation(APPROVE_SUBMISSION, {
-    refetchQueries: submissionsRefetchQueries,
+    update: (cache, { data }) =>
+      deleteFromCache(cache, data, 'approveTaskSubmission', 'getSubmissionsUserCanReview', id, true),
+    refetchQueries,
     onError,
   });
   const [requestChangeTaskSubmission] = useMutation(REQUEST_CHANGE_SUBMISSION, {
-    refetchQueries: submissionsRefetchQueries,
+    update: (cache, { data }) =>
+      deleteFromCache(cache, data, 'requestChangeTaskSubmission', 'getSubmissionsUserCanReview', id, true),
+    refetchQueries,
     onError,
   });
   const [rejectTaskSubmission] = useMutation(REJECT_SUBMISSION, {
-    refetchQueries: submissionsRefetchQueries,
+    update: (cache, { data }) =>
+      deleteFromCache(cache, data, 'rejectTaskSubmission', 'getSubmissionsUserCanReview', id, true),
+    refetchQueries,
     onError,
   });
   const permissions = parseUserPermissionContext({

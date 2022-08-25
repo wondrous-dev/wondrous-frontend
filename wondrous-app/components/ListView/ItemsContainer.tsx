@@ -77,7 +77,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         title={itemTitle}
         count={taskCount}
         headerAddons={HeaderAddons}
-        displayShowMore={taskCount > LIMIT && tasks.length <= LIMIT}
+        hasMore={taskCount > LIMIT && tasks.length <= LIMIT}
         onShowMore={() => handleShowAll(status, taskCount)}
         showMoreTitle="Show all"
       >
