@@ -152,10 +152,6 @@ function SettingsWrapper(props) {
   const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
 
-  const parsedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
-    : null;
-
   useEffect(() => {
     if (orgId || org) {
       getOrgById({
@@ -174,7 +170,7 @@ function SettingsWrapper(props) {
   }, [getOrgById, getPodById, org, orgId, podId]);
 
   const permissions = parseUserPermissionContext({
-    userPermissionsContext: parsedUserPermissionsContext,
+    userPermissionsContext,
     orgId: orgId || pod?.orgId,
     podId,
   });
@@ -220,7 +216,7 @@ function SettingsWrapper(props) {
   return (
     <SettingsBoardContext.Provider
       value={{
-        userPermissionsContext: parsedUserPermissionsContext,
+        userPermissionsContext,
         org,
         pod,
       }}
