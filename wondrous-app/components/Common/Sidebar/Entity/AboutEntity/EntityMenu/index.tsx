@@ -1,8 +1,9 @@
-import { SafeImage } from 'components/Common/Image';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { useState } from 'react';
+import palette from 'theme/palette';
 import { useBoards } from 'utils/hooks';
 
-import { ArrowIcon, Button, ButtonIcon, Item, MenuStyled, NoLogoDAO, NoLogoPod, Text } from './styles';
+import { ArrowIcon, Button, ButtonIcon, Item, MenuStyled, NoLogoPod, Text } from './styles';
 
 const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();
@@ -12,24 +13,22 @@ const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canMan
   const handleClose = () => setAnchorEl(null);
   const handleOnClickNotifications = () =>
     router.push(orgBoard ? `/organization/settings/${id}/notifications` : `/pod/settings/${id}/notifications`);
-  const NoLogo = orgBoard ? NoLogoDAO : NoLogoPod;
   return (
     <>
       <Button onClick={handleClick} open={open} disabled={!canManage}>
         <ButtonIcon>
-          {thumbnailPicture || profilePicture ? (
-            <SafeImage
-              useNextImage={false}
-              src={thumbnailPicture || profilePicture}
-              width={28}
-              height={28}
-              objectFit="cover"
+          {orgBoard ? (
+            <OrgProfilePicture
+              profilePicture={thumbnailPicture || profilePicture}
               style={{
-                borderRadius: '2px',
+                borderRadius: '3px',
+                width: '28px',
+                height: '28px',
+                background: palette.grey87,
               }}
             />
           ) : (
-            <NoLogo />
+            <NoLogoPod />
           )}
         </ButtonIcon>
         <Text>{name}</Text>
