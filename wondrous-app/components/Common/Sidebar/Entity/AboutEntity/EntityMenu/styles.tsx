@@ -93,27 +93,6 @@ export const Item = styled(MenuItem)`
   }
 `;
 
-export const NoLogoDAO = styled((props) => (
-  <div {...props}>
-    <DAOIcon
-      stroke="#fff"
-      encircled={false}
-      style={{
-        width: '28px',
-        height: '28px',
-      }}
-    />
-  </div>
-))`
-  display: flex;
-  width: 28px;
-  height: 28px;
-  border-radius: 3px;
-  align-items: center;
-  justify-content: center;
-  background: ${({ theme }) => theme.palette.grey87};
-`;
-
 export const NoLogoPod = styled((props) => (
   <div {...props}>
     <PodsIcon />

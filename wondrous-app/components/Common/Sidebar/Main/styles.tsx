@@ -46,50 +46,6 @@ export const DrawerContainer = styled.div`
   padding-bottom: 72px;
 `;
 
-export const DrawerTopBlock = styled.div`
-  min-height: 250px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-`;
-
-export const DrawerUserImage = styled.img`
-  display: flex;
-  margin: 0 auto;
-  width: 48px;
-  height: 48px;
-`;
-
-export const Profile = styled(({ children, ...props }) => (
-  <ButtonBase {...props}>
-    <div>{children}</div>
-  </ButtonBase>
-))`
-  && {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 40px;
-    width: 40px;
-    background: transparent;
-    border-radius: 50%;
-    :hover {
-      ${({ theme }) =>
-        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
-    }
-    > div {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      height: 36px;
-      width: 36px;
-      border-radius: 50%;
-      cursor: pointer;
-    }
-  }
-`;
-
 export const DrawerList = styled(List)`
   && {
     padding: 0;
@@ -128,46 +84,10 @@ export const DrawerListItem = styled(({ children, ...props }) => (
   }
 `;
 
-export const DrawerListItemIcon = styled.img`
-  width: 36px;
-  height: 36px;
-`;
-
 const DrawerListCreateDaoWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`;
-
-export const DrawerListCreateDao = styled((props) => (
-  <DrawerListCreateDaoWrapper>
-    <ButtonBase {...props}>
-      <div>
-        <AddIcon />
-      </div>
-    </ButtonBase>
-  </DrawerListCreateDaoWrapper>
-))`
-  && {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    padding: 2px;
-    background: transparent;
-    :hover {
-      ${({ theme }) =>
-        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%);`}
-    }
-    div {
-      width: 36px;
-      height: 36px;
-      border-radius: inherit;
-      background: ${({ theme }) => theme.palette.grey87};
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
 `;
 
 export const DrawerBlockWrapper = styled.div`
@@ -224,11 +144,6 @@ export const NoLogoDAO = styled((props) => (
   align-items: center;
   justify-content: center;
   background: ${({ theme }) => theme.palette.black92};
-`;
-
-export const PodButtonDiv = styled.div`
-  display: flex;
-  justify-content: center;
 `;
 
 export const PodModalFooter = styled.div`
@@ -310,20 +225,4 @@ export const DrawerBackButton = styled(HighlightedButton)`
       transform: rotate(180deg);
     }
   }
-`;
-
-export const StyledPodsIcon = styled(PodsIcon)`
-  &:hover {
-    path {
-      fill: url(#pods-icon-gradient);
-    }
-    rect {
-      fill: ${({ theme }) => theme.palette.background.default};
-    }
-  }
-`;
-
-export const Wrapper = styled.div`
-  display: flex;
-  height: 100%;
 `;
