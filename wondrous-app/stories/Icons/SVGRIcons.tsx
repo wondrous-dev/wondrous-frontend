@@ -1,10 +1,10 @@
-import * as icons from './SVGRIconsList';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import React from 'react';
+import * as icons from './SVGRIconsList';
 
-const SVGRIcons = (props) => {
-  return Object.keys(icons).map((key) => {
+const SVGRIcons = (props) =>
+  Object.keys(icons).map((key) => {
     const Icon = icons[key];
 
     return (
@@ -27,6 +27,5 @@ const SVGRIcons = (props) => {
       </Grid>
     );
   });
-};
 
 export default SVGRIcons as any;

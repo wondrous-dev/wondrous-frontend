@@ -62,11 +62,11 @@ export const CloseModalBtn = styled((props) => (
   align-items: center;
   justify-content: center;
   cursor: pointer;
-  
+
   &:hover {
     background-color: #454545;
   }
-  
+
   svg {
     transform: scale(88%);
   }
@@ -84,7 +84,7 @@ export const ModalHeader = styled.div`
 export const ModalBody = styled.div`
   position: relative;
   flex: 1 1 auto;
-  padding: 24px
+  padding: 24px;
 `;
 
 export const ModalFooter = styled.div`
