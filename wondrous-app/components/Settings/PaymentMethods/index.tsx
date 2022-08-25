@@ -21,6 +21,7 @@ function PaymentMethods(props) {
   const [showConfigModal, setShowConfigModal] = useState(null);
 
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   useEffect(() => {
     if (orgId) {
       getPaymentMethods({
@@ -29,13 +30,14 @@ function PaymentMethods(props) {
           includeDeactivated: true,
         },
       });
+      getOrgById({
+        variables: {
+          orgId,
+        },
+      });
     }
   }, [orgId, getPaymentMethods]);
-  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
-    variables: {
-      orgId,
-    },
-  });
+
   const org = orgData?.getOrgById;
 
   return (

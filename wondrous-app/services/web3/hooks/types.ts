@@ -108,6 +108,11 @@ export interface WonderWeb3 {
    */
   toChecksumAddress: (string) => string;
 
+  /**
+   * Checks validity of a given address.
+   */
+  isValidAddress: (string) => boolean;
+
   connector: AbstractConnector;
   error: Error;
 

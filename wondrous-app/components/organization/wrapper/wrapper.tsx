@@ -164,8 +164,8 @@ function Wrapper(props) {
     if (!roles || roles?.length === 0) {
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
+        return;
       }
-      return;
     }
     if (
       wonderWeb3.address &&
@@ -174,9 +174,9 @@ function Wrapper(props) {
     ) {
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
+        setNotLinkedWalletError(true);
+        return;
       }
-      setNotLinkedWalletError(true);
-      return;
     }
     let litSignatureExistResult;
     try {
@@ -187,8 +187,8 @@ function Wrapper(props) {
       console.error(e);
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
+        return;
       }
-      return;
     }
     const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
     if (!litSignatureExist?.exist) {

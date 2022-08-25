@@ -51,6 +51,8 @@ export default function useWonderWeb3(): WonderWeb3 {
 
   const toChecksumAddress = (address: string) => ethers.utils.getAddress(address);
 
+  const isValidAddress = (address: string) => ethers.utils.isAddress(address);
+
   const wallet = useMemo(
     () => ({
       account,
@@ -233,6 +235,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     signMessage,
     web3Provider: provider,
     toChecksumAddress,
+    isValidAddress,
     connector,
     error,
     isActivating,
