@@ -5,6 +5,7 @@ import { withAuth } from 'components/Auth/withAuth';
 import Activities from 'components/organization/activities/activities';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
+import { EntitySidebar } from 'components/Common/Sidebar';
 
 const useGetOrgFromUsername = (username) => {
   const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);
@@ -34,9 +35,12 @@ function ActivitiesPage() {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         orgId: org?.id,
+        orgData: org,
       }}
     >
-      <Activities orgData={org} />
+      <EntitySidebar>
+        <Activities orgData={org} />
+      </EntitySidebar>
     </OrgBoardContext.Provider>
   );
 }

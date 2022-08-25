@@ -62,28 +62,26 @@ const Template: ComponentStory<typeof AutocompleteComponent> = (props) => {
       onInputChange={(event, searchString) => {
         setIsLoading(true);
       }}
-      renderInput={(params) => {
-        return (
-          <Input
-            sx={{ height: '40px' }}
-            {...params}
-            placeholder="Search"
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: (
-                <InputAdornment position="start">
-                  <SearchIconWrapped />
-                </InputAdornment>
-              ),
-              endAdornment: (
-                <InputAdornment position="end">
-                  {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-                </InputAdornment>
-              ),
-            }}
-          />
-        );
-      }}
+      renderInput={(params) => (
+        <Input
+          sx={{ height: '40px' }}
+          {...params}
+          placeholder="Search"
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: (
+              <InputAdornment position="start">
+                <SearchIconWrapped />
+              </InputAdornment>
+            ),
+            endAdornment: (
+              <InputAdornment position="end">
+                {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+              </InputAdornment>
+            ),
+          }}
+        />
+      )}
     />
   );
 };

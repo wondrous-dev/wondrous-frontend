@@ -17,7 +17,9 @@ import {
   TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
   TaskSubtaskCoverImageWrapper,
-  TaskSubTaskEmpty,
+  TaskSubtaskEmptyStateContainer,
+  TaskSubTaskEmptyStateText,
+  TaskSubtaskEmptyStateIcon,
   TaskSubtaskImageWrapper,
   TaskSubtaskItemContent,
   TaskSubtaskItemHeader,
@@ -162,11 +164,21 @@ function TaskSubtaskClaimButton({ id, userId, assignee, taskApplicationPermissio
   );
 }
 
+function TaskSubtaskEmptyState() {
+  return (
+    <TaskSubtaskEmptyStateContainer>
+      <TaskSubtaskEmptyStateIcon />
+      <TaskSubTaskEmptyStateText>No subtasks yet</TaskSubTaskEmptyStateText>
+    </TaskSubtaskEmptyStateContainer>
+  );
+}
+
 export function TaskSubtaskList({ taskId, status }) {
   const { hasMore, data, loading, ref } = useGetSubtasksForTask({ taskId, status });
   const router = useRouter();
-  const { id: userId } = useMe();
-  if (isEmpty(data)) return <TaskSubTaskEmpty>No subtask yet</TaskSubTaskEmpty>;
+  const loggedInUser = useMe();
+  const userId = loggedInUser?.id;
+  if (isEmpty(data)) return <TaskSubtaskEmptyState />;
   return (
     <TaskSubtaskWrapper>
       {data.map((subtask) => {

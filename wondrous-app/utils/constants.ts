@@ -233,7 +233,8 @@ export const SUPPORTED_CURRENCIES = [
   },
 ];
 
-export const SIDEBAR_WIDTH = '80px';
+export const SIDEBAR_WIDTH = '84px';
+export const SIDEBAR_WIDTH_WITH_DAO = '344px';
 export const HEADER_HEIGHT = '68px';
 
 export const PROFILE_CARD_WIDTH = 310;
@@ -574,6 +575,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/forgot-password',
   '/reset-password',
   '/onboarding-dao',
+  '/new-task',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'

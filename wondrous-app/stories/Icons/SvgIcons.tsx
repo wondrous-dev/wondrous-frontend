@@ -45,26 +45,23 @@ const images = [
   createBounty,
 ];
 
-const SVGIcons = () => {
-  return images.map((image) => {
-    return (
-      <Grid item key={image.src} sx={{ color: 'white', textAlign: 'center' }} xs={4}>
-        <Box
-          sx={{
-            height: '40px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            marginBottom: '10px',
-          }}
-        >
-          <img src={image.src} style={{ height: '100%' }} />
-        </Box>
+const SVGIcons = () =>
+  images.map((image) => (
+    <Grid item key={image.src} sx={{ color: 'white', textAlign: 'center' }} xs={4}>
+      <Box
+        sx={{
+          height: '40px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          marginBottom: '10px',
+        }}
+      >
+        <img src={image.src} style={{ height: '100%' }} />
+      </Box>
 
-        <Box sx={{ wordBreak: 'break-all' }}>{image.src.replace('static/media/', '')}</Box>
-      </Grid>
-    );
-  });
-};
+      <Box sx={{ wordBreak: 'break-all' }}>{image.src.replace('static/media/', '')}</Box>
+    </Grid>
+  ));
 
 export default SVGIcons as any;

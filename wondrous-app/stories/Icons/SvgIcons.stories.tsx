@@ -9,13 +9,11 @@ export default {
   component: SVGIcons,
 } as ComponentMeta<typeof SVGIcons>;
 
-const Template: ComponentStory<typeof SVGIcons> = (args) => {
-  return (
-    <Grid container spacing={5} sx={{ backgroundColor: '#0f0f0f' }}>
-      <SVGIcons {...args} />
-    </Grid>
-  );
-};
+const Template: ComponentStory<typeof SVGIcons> = (args) => (
+  <Grid container spacing={5} sx={{ backgroundColor: '#0f0f0f' }}>
+    <SVGIcons {...args} />
+  </Grid>
+);
 
 export const SVG = Template.bind({});
 
