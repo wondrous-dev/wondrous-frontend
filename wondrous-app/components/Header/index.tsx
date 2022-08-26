@@ -1,5 +1,6 @@
 import { useRouter } from 'next/router';
 import { useMutation, useQuery } from '@apollo/client';
+import { useState } from 'react';
 
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
@@ -15,6 +16,7 @@ const HeaderComponent = () => {
   const { data: notifications, refetch, fetchMore: fetchMoreNotifications } = useQuery(GET_NOTIFICATIONS);
   const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ);
   const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
+  const [openPodModal, setOpenPodModal] = useState(false);
   const createEntityContext = useCreateEntityContext();
   const { toggleCreateFormModal: openCreateFormModal } = createEntityContext;
   const setNotifications = async (newNotifications = null) => {
@@ -33,7 +35,6 @@ const HeaderComponent = () => {
   const router = useRouter();
   const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
-
   return (
     <HeaderMemo
       fetchMoreNotifications={fetchMoreNotifications}
@@ -45,6 +46,9 @@ const HeaderComponent = () => {
       setNotifications={setNotifications}
       showCreateButton={showCreateButton}
       user={user}
+      handlePodModalClose={() => setOpenPodModal(false)}
+      handlePodModalOpen={() => setOpenPodModal(true)}
+      openPodModal={openPodModal}
     />
   );
 };

@@ -1,13 +1,14 @@
 import Link from 'next/link';
 import { memo } from 'react';
-import Box from '@mui/material/Box';
 
 import Wallet from 'components/Common/Wallet';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import { Button } from 'components/Common/button';
+import PodModal from 'components/Header/PodModal';
 import NotificationsBoard from 'components/Notifications';
 import Tooltip from 'components/Tooltip';
 import HomeIcon from 'components/Icons/home';
+import PodIcon from 'components/Icons/podIcon';
 
 import GlobalSearch from 'components/GlobalSearch';
 import { User } from 'types/User';
@@ -16,11 +17,10 @@ import {
   HeaderBar,
   HeaderContainer,
   HeaderCreateButton,
-  HeaderHomeButton,
   HeaderLeftBlock,
   HeaderLogo,
   HeaderRightBlock,
-  HeaderHomeButtonWrapper,
+  HeaderButtonWrapper,
   HeaderLogoWrapper,
 } from './styles';
 
@@ -34,6 +34,9 @@ type Props = {
   setNotifications: () => unknown;
   showCreateButton: boolean;
   user: User | null;
+  handlePodModalClose: Function;
+  handlePodModalOpen: Function;
+  openPodModal: boolean;
 };
 
 const HeaderMemo = ({
@@ -46,8 +49,12 @@ const HeaderMemo = ({
   setNotifications,
   showCreateButton,
   user,
+  handlePodModalClose,
+  handlePodModalOpen,
+  openPodModal,
 }: Props) => (
   <HeaderBar>
+    <PodModal open={openPodModal} handleClose={handlePodModalClose} />
     <HeaderContainer>
       <HeaderLeftBlock>
         <Tooltip title="Explore page">
@@ -58,15 +65,16 @@ const HeaderMemo = ({
           </HeaderLogoWrapper>
         </Tooltip>
         <Tooltip title="Dashboard">
-          <Box>
-            <Link passHref href="/dashboard">
-              <HeaderHomeButtonWrapper>
-                <HeaderHomeButton>
-                  <HomeIcon id="tour-header-dashboard-icon" />
-                </HeaderHomeButton>
-              </HeaderHomeButtonWrapper>
-            </Link>
-          </Box>
+          <Link passHref href="/dashboard">
+            <HeaderButtonWrapper>
+              <HomeIcon id="tour-header-dashboard-icon" />
+            </HeaderButtonWrapper>
+          </Link>
+        </Tooltip>
+        <Tooltip title="Pods">
+          <HeaderButtonWrapper onClick={handlePodModalOpen}>
+            <PodIcon />
+          </HeaderButtonWrapper>
         </Tooltip>
         {!isMobile && <GlobalSearch />}
       </HeaderLeftBlock>
@@ -109,6 +117,7 @@ export default memo(
     prevProps.showCreateButton === nextProps.showCreateButton &&
     prevProps.user?.id === nextProps.user?.id &&
     prevProps.notifications.length === nextProps.notifications.length &&
+    prevProps.openPodModal === nextProps.openPodModal &&
     prevProps.notifications.every(
       (notification, index) =>
         notification.id === nextProps.notifications[index]?.id &&

@@ -1,6 +1,6 @@
-import { AppBar, IconButton, TextField } from '@mui/material';
+import { AppBar, IconButton, Typography } from '@mui/material';
 import styled from 'styled-components';
-import { Button } from '../Common/button';
+import palette from 'theme/palette';
 import { Logo } from '../Common/ci';
 
 export const HeaderBar = styled(AppBar)`
@@ -101,8 +101,16 @@ export const HeaderHomeButton = styled(IconButton)`
   }
 `;
 
-export const HeaderHomeButtonWrapper = styled.div`
+export const HeaderButtonWrapper = styled.div`
   position: relative;
+  cursor: pointer;
+  background: ${palette.background.default};
+  height: 40px;
+  width: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
   &::before {
     content: '';
     position: absolute;
@@ -118,28 +126,6 @@ export const HeaderHomeButtonWrapper = styled.div`
     }
   }
 `;
-
-export const HeaderInput = styled(TextField)({
-  '&.MuiTextField-root': {
-    width: 310,
-    maxWidth: '100%',
-    height: 40,
-    backgroundColor: '#0F0F0F',
-    borderRadius: 6,
-    padding: 10,
-    display: 'flex',
-    justifyContent: 'center',
-  },
-  '& .MuiInputBase-input': {
-    fontSize: 14,
-    lineHeight: 19,
-    letterSpacing: '0.01em',
-    color: '#C4C4C4',
-  },
-  '& .MuiInput-underline:after': {
-    borderBottom: '2px solid violet',
-  },
-});
 
 export const HeaderRightBlock = styled.div`
   max-width: 480px;
@@ -216,14 +202,23 @@ export const HeaderCreateButton = styled.button`
   }
 `;
 
-export const TutorialButton = styled(Button)`
+export const PodModalFooterInfoWrapperText = styled(Typography)`
   && {
-    min-height: 40px;
-    margin-right: 16px;
-    width: 160px;
+    color: ${({ theme }) => theme.palette.white};
+    font-size: 13px;
   }
 `;
 
-export const TutorialText = styled.span`
-  font-family: Space Grotesk;
+export const PodModalFooter = styled.div`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+`;
+
+export const PodModalFooterInfoWrapper = styled.div`
+  background: ${({ theme }) =>
+    `linear-gradient(0deg, ${theme.palette.grey250}, ${theme.palette.grey250}), ${theme.palette.background.default}`};
+  border-radius: 4px;
+  padding: 4px 8px;
+  margin-right: 8px;
 `;

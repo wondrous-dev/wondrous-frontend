@@ -103,14 +103,14 @@ function PodListCard(props) {
     </Link>
   );
 }
-export function PodModal(props) {
+export default function PodModal(props) {
   const { open, handleClose } = props;
-  const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS, {
+  const [getUserPods, { data: podData }] = useLazyQuery(GET_USER_PODS, {
     fetchPolicy: 'network-only',
   });
   const [pods, setPods] = useState([]);
-  const [ref, inView] = useInView({});
-  const [hasMore, setHasMore] = useState(false);
+  const [ref] = useInView({});
+  const [hasMore] = useState(false);
   const user = useMe();
 
   useEffect(() => {
@@ -127,7 +127,7 @@ export function PodModal(props) {
         },
       });
     }
-  }, [user, open]);
+  }, [user, open, getUserPods]);
 
   return (
     <CreateModalOverlay
@@ -145,7 +145,7 @@ export function PodModal(props) {
             paddingBottom: '30px',
           }}
         >
-          {pods?.map((pod, index) => (
+          {pods?.map((pod) => (
             <PodListCard key={pod?.id} pod={pod} handleClose={handleClose} />
           ))}
           <LoadMore ref={ref} hasMore={hasMore} />

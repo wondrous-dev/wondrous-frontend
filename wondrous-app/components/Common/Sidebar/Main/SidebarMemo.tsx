@@ -13,11 +13,9 @@ import { User } from 'types/User';
 import { toolTipStyle } from '../Common/styles';
 import AddDaoModal from './AddDaoModal';
 import HelpModal from './HelpModal.jsx';
-import { PodModal } from './PodModal';
 import {
   DrawerBackButton,
   DrawerBlockWrapper,
-  DrawerBottomButton,
   DrawerComponent,
   DrawerContainer,
   DrawerList,
@@ -93,7 +91,6 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
 
   return (
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
-      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
       <DrawerContainer>
