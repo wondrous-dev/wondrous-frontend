@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
+import TaskMenuStatus from 'components/Common/TaskMenuStatus';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
 import { formatDistance } from 'date-fns';
@@ -28,10 +29,10 @@ import {
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
+  ProposalVoteType,
   STATUS_APPROVED,
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
-  ProposalVoteType,
 } from 'utils/constants';
 import { ApprovedSubmissionContext } from 'utils/contexts';
 import {
@@ -67,6 +68,16 @@ import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+import ActionModals from './actionModals';
+import { tabs } from './constants';
+import {
+  GithubButtons,
+  LockedTaskMessage,
+  Menu,
+  Rewards,
+  TaskDescriptionTextWrapper,
+  TaskSectionImageContent,
+} from './helpers';
 import {
   SubtaskIconWrapper,
   TaskBorder,
@@ -102,30 +113,19 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import { TaskMenuStatus } from './taskMenuStatus';
 import {
-  TaskDescriptionTextWrapper,
-  TaskSectionImageContent,
-  Rewards,
-  GithubButtons,
-  Menu,
-  LockedTaskMessage,
-} from './helpers';
-import { openSnapshot } from './utils';
-import { tabs } from './constants';
-import ActionModals from './actionModals';
-import TaskViewModalFooter from './taskViewModalFooter';
-import {
-  ReviewerField,
-  AssigneeField,
   ApplicationField,
-  ProposerField,
-  VotesField,
+  AssigneeField,
   DueDateField,
-  PointsField,
   MilestoneField,
+  PointsField,
+  ProposerField,
+  ReviewerField,
   TagsField,
+  VotesField,
 } from './taskViewModalFields';
+import TaskViewModalFooter from './taskViewModalFooter';
+import { openSnapshot } from './utils';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -648,14 +648,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                             </TaskModalSnapshot>
                           )}
-                          <TaskMenuStatus
-                            task={fetchedTask}
-                            entityType={entityType}
-                            archiveTaskMutation={archiveTaskMutation}
-                            canArchive={canArchive}
-                            canApproveProposal={canApproveProposal}
-                            isTaskProposal={isTaskProposal}
-                          />
+                          <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
                           <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                         </TaskModalTaskStatusMoreInfo>
                         <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />

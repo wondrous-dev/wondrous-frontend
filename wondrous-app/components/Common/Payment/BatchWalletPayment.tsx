@@ -24,6 +24,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
+import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
@@ -49,7 +50,7 @@ interface PaymentData {
   chain: string;
 }
 
-export function BatchWalletPayment(props) {
+function BatchWalletPayment(props) {
   const { open, handleClose, podId, orgId, unpaidSubmissions, submissionIds, wallets, submissionsPaymentInfo, chain } =
     props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
@@ -104,7 +105,7 @@ export function BatchWalletPayment(props) {
     setIncompatibleWalletError(null);
     const corrctChainWallets = [];
     wallets.map((wallet) => {
-      if (wallet.chain === chain) {
+      if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
@@ -346,3 +347,5 @@ export function BatchWalletPayment(props) {
     </div>
   );
 }
+
+export default BatchWalletPayment;

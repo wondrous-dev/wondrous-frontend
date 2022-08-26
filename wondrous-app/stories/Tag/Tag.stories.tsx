@@ -8,10 +8,12 @@ export default {
   component: TagComponent,
 } as ComponentMeta<typeof TagComponent>;
 
-const Template: ComponentStory<typeof TagComponent> = (args) => <>
-  <TagComponent {...args}>Engineering</TagComponent>
-  <TagComponent {...args}>QA</TagComponent>
-  <TagComponent {...args}>Design</TagComponent>
-</>;
+const Template: ComponentStory<typeof TagComponent> = (args) => (
+  <>
+    <TagComponent {...args}>Engineering</TagComponent>
+    <TagComponent {...args}>QA</TagComponent>
+    <TagComponent {...args}>Design</TagComponent>
+  </>
+);
 
 export const Tag = Template.bind({});

@@ -24,11 +24,12 @@ import {
   PaymentMethodWrapper,
   WarningTypography,
 } from 'components/Common/Payment/styles';
-import { BatchWalletPayment } from 'components/Common/Payment/BatchWalletPayment';
+import BatchWalletPayment from 'components/Common/Payment/BatchWalletPayment';
 import { BatchOfflinePayment } from 'components/Common/Payment/OfflinePayment/OfflinePayment';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { SafeImage } from 'components/Common/Image';
+import { CompensationAmount, CompensationPill, IconContainer } from 'components/Common/Compensation/styles';
 import { TableCellText } from './styles';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
-import { SafeImage } from '../../Common/Image';
 import {
   StyledTable,
   StyledTableBody,
@@ -37,7 +38,6 @@ import {
   StyledTableHead,
   StyledTableRow,
 } from '../../Table/styles';
-import { CompensationAmount, CompensationPill, IconContainer } from '../../Common/Compensation/styles';
 
 enum ViewType {
   Paid = 'paid',

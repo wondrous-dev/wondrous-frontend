@@ -85,8 +85,8 @@ export const REMOVE_TOKEN_GATING_FROM_ORG_ROLE = gql`
 `;
 
 export const REMOVE_TOKEN_GATING_FROM_POD_ROLE = gql`
-  mutation removeTokenGatingFromOrgRole($podRoleId: ID!) {
-    removeTokenGatingFromOrgRole(podRoleId: $podRoleId) {
+  mutation removeTokenGatingFromPodRole($podRoleId: ID!) {
+    removeTokenGatingFromPodRole(podRoleId: $podRoleId) {
       id # these returns probably not needed
       name
       default
