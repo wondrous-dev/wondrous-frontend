@@ -6,6 +6,9 @@ import {
   ConnectToNotionButton,
   LabelBlock,
   TaskImportMethodBlock,
+  DisconnectFromNotionButton,
+  DisconnectFromNotionButtonIcon,
+  NotionActionsContainer,
 } from 'components/Settings/TaskImport/styles';
 import { GET_ORG_NOTION_WORKSPACE } from 'graphql/queries';
 import { DISCONNECT_NOTION_FROM_ORG } from 'graphql/mutations';
@@ -70,22 +73,25 @@ function NotionTaskImportSection(props) {
         setToast={setToast}
       />
       <LabelBlock>Import from Notion</LabelBlock>
-      {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
-        <ConnectToNotionButton onClick={() => setOpenImportModal(true)}>
-          <NotionInButtonIcon /> Import from workspace {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.name}
-        </ConnectToNotionButton>
-      )}
+      <NotionActionsContainer>
+        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+          <ConnectToNotionButton onClick={() => setOpenImportModal(true)}>
+            <NotionInButtonIcon /> Import from workspace {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.name}
+          </ConnectToNotionButton>
+        )}
 
-      {!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
-        <ConnectToNotionButton onClick={redirectToNotionAuth}>
-          <NotionInButtonIcon /> Connect to notion
-        </ConnectToNotionButton>
-      )}
-      {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
-        <ConnectToNotionButton onClick={handleDisconnect}>
-          <NotionInButtonIcon /> Disconnect from notion
-        </ConnectToNotionButton>
-      )}
+        {!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+          <ConnectToNotionButton onClick={redirectToNotionAuth}>
+            <NotionInButtonIcon /> Connect to notion
+          </ConnectToNotionButton>
+        )}
+        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+          <DisconnectFromNotionButton onClick={handleDisconnect}>
+            <DisconnectFromNotionButtonIcon />
+            &nbsp;Disconnect from notion
+          </DisconnectFromNotionButton>
+        )}
+      </NotionActionsContainer>
     </TaskImportMethodBlock>
   );
 }
