@@ -223,7 +223,6 @@ export const SettingsHeaderContent = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-left: 27px;
 `;
 
 export const SettingsHeaderTitle = styled.div`
