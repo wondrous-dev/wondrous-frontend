@@ -151,11 +151,6 @@ function Docs(props) {
   console.log(orgData);
   return (
     <Wrapper orgData={orgData}>
-      {isEmpty(docData) && (
-        <EmptyStateGeneric
-          content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
-        />
-      )}
       {canEdit && (
         <Tooltip title="Create new doc category" placement="top">
           <Box sx={styles.categoryButtonContainer}>
@@ -164,6 +159,11 @@ function Docs(props) {
             </Box>
           </Box>
         </Tooltip>
+      )}
+      {isEmpty(docData) && isEmpty(categoriesData) && (
+        <EmptyStateGeneric
+          content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+        />
       )}
       {!isEmpty(pinnedDocs) && (
         <PinnedDocsSection

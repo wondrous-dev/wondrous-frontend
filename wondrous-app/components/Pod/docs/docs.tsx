@@ -29,6 +29,7 @@ const useGetPodDocs = (podId) => {
     variables: {
       podId,
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const [getPodDocsCategories, { data: categoriesData, loading: loadingCategories }] = useLazyQuery(
@@ -37,6 +38,7 @@ const useGetPodDocs = (podId) => {
       variables: {
         podId,
       },
+      fetchPolicy: 'network-only',
     }
   );
 
@@ -53,7 +55,6 @@ const useGetPodDocs = (podId) => {
       getPodDocsCategories();
     }
   }, [loadingCategories, podId, getPodDocsCategories, categoriesData]);
-
   return {
     docData: docData?.getPodDocuments,
     categoriesData: categoriesData?.getPodDocumentCategories,
@@ -75,7 +76,6 @@ function Docs(props) {
   const [pinned, setPinned] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const openMenu = Boolean(menuAnchor);
-
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -159,7 +159,7 @@ function Docs(props) {
         </Tooltip>
       )}
 
-      {isEmpty(docData) && (
+      {isEmpty(docData) && isEmpty(categoriesData) && (
         <EmptyStateGeneric
           content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
         />
