@@ -24,17 +24,15 @@ export default {
   },
 } as ComponentMeta<typeof Button>;
 
-const Template: ComponentStory<typeof Button> = (args) => {
-  return (
-    <Box sx={{ padding: '20px', background: '#1d1d1d' }}>
-      <StyledBadge {...args}>
-        <Tooltip title="Notifications">
-          <NotificationsIcon />
-        </Tooltip>
-      </StyledBadge>
-    </Box>
-  );
-};
+const Template: ComponentStory<typeof Button> = (args) => (
+  <Box sx={{ padding: '20px', background: '#1d1d1d' }}>
+    <StyledBadge {...args}>
+      <Tooltip title="Notifications">
+        <NotificationsIcon />
+      </Tooltip>
+    </StyledBadge>
+  </Box>
+);
 export const NotificationsButton = Template.bind({});
 
 NotificationsButton.args = {

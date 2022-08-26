@@ -18,7 +18,7 @@ export const StyledTableCell = styled(TableCell)`
   && {
     color: white;
   }
-  
+
   &.clickable {
     cursor: pointer;
   }

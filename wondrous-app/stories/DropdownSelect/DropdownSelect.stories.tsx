@@ -129,7 +129,7 @@ const Template: ComponentStory<typeof DropdownSelect> = (props) => {
     <GreyDropdownSelect
       {...props}
       formSelectStyle={{
-        height: 'auto'
+        height: 'auto',
       }}
       value={value}
       setValue={setValue}
