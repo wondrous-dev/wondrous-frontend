@@ -22,18 +22,12 @@ import MemberRoles from '../MemberRoles';
 import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
 import { SafeImage } from '../../Common/Image';
-import {
-  DefaultProfilePicture,
-  PodsCount,
-  SeeMoreText,
-  StyledTable,
-  StyledTableBody,
-  StyledTableHeaderCell,
-} from './styles';
+import { PodsCount, SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell, MembersTable } from './styles';
 import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
 import { HeaderBlock } from '../headerBlock';
+import MemberTableRow from './MembersTableRow';
 
 const LIMIT = 10;
 
@@ -208,7 +202,6 @@ function Members(props) {
         </ConfirmModal>
 
         <HeaderBlock
-          icon={<MembersIcon circle />}
           title={
             <>
               Members&nbsp;
@@ -233,7 +226,15 @@ function Members(props) {
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
         ) : null}
 
-        <StyledTableContainer>
+        {users.length > 0 && (
+          <MembersTable>
+            {users.map(({ user, role }) => (
+              <MemberTableRow user={user} role={role} key={user?.id} orgId={orgId} podId={podId} roleList={roleList} />
+            ))}
+          </MembersTable>
+        )}
+
+        {/* <StyledTableContainer>
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
@@ -320,7 +321,7 @@ function Members(props) {
               )}
             </StyledTableBody>
           </StyledTable>
-        </StyledTableContainer>
+        </StyledTableContainer> */}
         {hasMore && (
           <div
             style={{
