@@ -223,6 +223,10 @@ export const DrawerBackButton = styled(HighlightedButton)`
     transition: transform 0.2s;
     &.active {
       transform: rotate(180deg);
+      opacity: 0.5;
+      :hover {
+        opacity: 1;
+      }
     }
   }
 `;
