@@ -277,8 +277,8 @@ const filterOrgUsers = ({ orgUsersData, existingTask = null }) => {
   }));
   const availableUsers = existingTask?.assigneeId
     ? users.concat({
-        label: existingTask?.assignee.username,
-        profilePicture: existingTask?.assignee.profilePicture,
+        label: existingTask?.assignee?.username,
+        profilePicture: existingTask?.assignee?.profilePicture,
         value: existingTask?.assigneeId,
       })
     : users;

@@ -185,7 +185,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+  });
   const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
     fetchPolicy: 'cache-and-network',
   });
