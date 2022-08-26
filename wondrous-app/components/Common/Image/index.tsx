@@ -70,14 +70,14 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
   });
 
   useEffect(() => {
-    if (!src || hasProtocol) {
+    if (!src || hasProtocol || typeof src === 'object') {
       return;
     }
 
     try {
       const cachedPreviewUrl = localStorage.getItem(`safeImage.${src}`);
 
-      if (cachedPreviewUrl && false) {
+      if (cachedPreviewUrl) {
         // parse query params to get
         // X-Goog-Date: The date and time the signed URL became usable, in the ISO 8601 basic format YYYYMMDD'T'HHMMSS'Z'.
         // X-Goog-Expires: The length of time the signed URL remained valid, measured in seconds from the value in X-Goog-Date.
