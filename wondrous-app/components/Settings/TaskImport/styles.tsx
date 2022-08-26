@@ -3,6 +3,7 @@ import palette from 'theme/palette';
 import { Button as MuiButton, Typography, InputBase } from '@mui/material';
 import { CreateLayoutsModal, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import NotionIcon from 'components/Icons/Notion';
+import CloseIcon from '@mui/icons-material/Close';
 
 export const TaskImportContainer = styled.div`
   height: 100vh;
@@ -56,6 +57,31 @@ export const ConnectToNotionButton = styled(MuiButton)`
       margin-top: 10px;
       margin-left: 0;
     }
+  }
+`;
+export const NotionActionsContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
+export const DisconnectFromNotionButton = styled(MuiButton)`
+  && {
+    border: none;
+    background: none;
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    margin-left: 8px;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 150%;
+    color: ${palette.white};
+  }
+`;
+
+export const DisconnectFromNotionButtonIcon = styled(CloseIcon)`
+  && {
+    width: 18px;
+    height: 18px;
   }
 `;
 
