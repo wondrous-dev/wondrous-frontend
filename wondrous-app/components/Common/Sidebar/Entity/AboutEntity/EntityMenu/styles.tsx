@@ -16,10 +16,10 @@ export const Text = styled(Typography)`
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 16px;
-    line-height: 21px;
-    display: flex;
-    align-items: center;
     color: ${({ theme }) => theme.palette.white};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
