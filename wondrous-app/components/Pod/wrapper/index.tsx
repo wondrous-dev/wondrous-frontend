@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box } from '@mui/system';
 import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -21,7 +20,6 @@ import { MembershipRequestModal } from 'components/organization/wrapper/RequestM
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
-import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
@@ -49,14 +47,13 @@ import {
   RoleButton,
   OverviewComponent,
   TokenHeader,
-  HeaderImage,
   HeaderTitleIcon,
   HeaderImageWrapper,
   TokenEmptyLogo,
   HeaderButton,
   BoardsSubheaderWrapper,
+  ChildrenWrapper,
 } from '../../organization/wrapper/styles';
-import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import { useMe } from '../../Auth/withAuth';
@@ -399,11 +396,8 @@ function Wrapper(props) {
               </HeaderActivity>
             </TokenHeader>
 
-            <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+            <ChildrenWrapper>
               <BoardsSubheaderWrapper>
-                {podBoard?.setEntityType && !search && (
-                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
-                )}
                 {showFilters && (
                   <BoardsActivity
                     onSearch={onSearch}
@@ -416,7 +410,7 @@ function Wrapper(props) {
               </BoardsSubheaderWrapper>
 
               {children}
-            </Tabs>
+            </ChildrenWrapper>
           </ContentContainer>
         </Content>
       </OverviewComponent>

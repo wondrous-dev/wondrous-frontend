@@ -11,7 +11,6 @@ import {
 import apollo from 'services/apollo';
 import { Box } from '@mui/system';
 
-import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
@@ -35,7 +34,6 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MembershipRequestModal } from './RequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -65,15 +63,14 @@ import {
   TokenHeader,
   TokenEmptyLogo,
   HeaderTitleIcon,
-  HeaderImage,
   HeaderImageWrapper,
   HeaderTag,
   BoardsSubheaderWrapper,
   RoleButtonWrapper,
   RoleText,
   RoleButton,
+  ChildrenWrapper,
 } from './styles';
-import Tabs from '../tabs/tabs';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
@@ -486,11 +483,8 @@ function Wrapper(props) {
               </div>
             </HeaderActivity>
           </TokenHeader>
-          <Tabs showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+          <ChildrenWrapper>
             <BoardsSubheaderWrapper>
-              {orgBoard?.setEntityType && !search && (
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
-              )}
               {!!filterSchema && (
                 <BoardsActivity
                   onSearch={onSearch}
@@ -503,7 +497,7 @@ function Wrapper(props) {
               )}
             </BoardsSubheaderWrapper>
             {children}
-          </Tabs>
+          </ChildrenWrapper>
         </ContentContainer>
       </Content>
     </>

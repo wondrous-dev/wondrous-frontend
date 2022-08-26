@@ -709,8 +709,12 @@ export const RoleActionWrapper = styled.div`
 `;
 
 export const BoardsSubheaderWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-row-gap: 20px;
+  display: flex;
   align-items: center;
+  width: 100%;
+`;
+
+export const ChildrenWrapper = styled.div`
+  width: 95%;
+  margin-top: 28px;
 `;
