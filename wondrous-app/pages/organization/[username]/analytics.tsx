@@ -6,7 +6,6 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
 import Analytics from 'components/organization/analytics';
 import { useGetOrgFromUsername } from 'utils/hooks';
-import { EntitySidebar } from 'components/Common/Sidebar';
 
 function ActivitiesPage() {
   const router = useRouter();
@@ -22,12 +21,9 @@ function ActivitiesPage() {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         orgId: org?.id,
-        orgData: org,
       }}
     >
-      <EntitySidebar>
-        <Analytics orgData={org} />
-      </EntitySidebar>
+      <Analytics orgData={org} />
     </OrgBoardContext.Provider>
   );
 }

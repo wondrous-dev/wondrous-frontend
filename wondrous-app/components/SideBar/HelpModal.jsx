@@ -1,6 +1,5 @@
 /* eslint-disable */
-import { useMe } from 'components/Auth/withAuth';
-import { ModalBody } from 'components/Common/KanbanBoard/styles';
+import React, { useEffect } from 'react';
 import {
   CreateFormPreviewButton,
   CreateLayoutsModalHeader,
@@ -8,7 +7,9 @@ import {
   CreateLayoutsModalItemTitle,
   CreateModalOverlay,
 } from 'components/CreateEntity/styles';
-import React, { useEffect } from 'react';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { ModalBody } from 'components/Common/KanbanBoard/styles';
+import { useMe } from 'components/Auth/withAuth';
 
 function HelpModal(props) {
   const { handleClose, setEntityType, open } = props;

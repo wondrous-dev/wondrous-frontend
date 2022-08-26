@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
 import { EditTokenGatingConditionContext } from 'utils/contexts';
-import { SettingsWrapper } from 'components/Common/Sidebar';
+import SettingsWrapper from 'components/Settings/settingsWrapper';
 import {
   TokenGatingHeader,
   TokenGatingDescription,
