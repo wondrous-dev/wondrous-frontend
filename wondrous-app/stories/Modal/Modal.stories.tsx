@@ -50,39 +50,3 @@ const BasicModalTemplate: ComponentStory<typeof ModalComponent> = (props) => {
 };
 
 export const BasicModal = BasicModalTemplate.bind({});
-
-const CreateProjectCollaborationTemplate: ComponentStory<typeof ModalComponent> = (props) => {
-  const [open, setOpen] = useState(false);
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
-
-  const footerRight = (
-    <>
-      <Button color="grey" onClick={handleClose}>
-        Cancel
-      </Button>
-      <Button color="primary">Next</Button>
-    </>
-  );
-
-  return (
-    <StyledComponentProvider theme={theme}>
-      <ThemeProvider theme={theme}>
-        <Box sx={{ display: 'flex' }}>
-          <Button onClick={handleOpen}>Create Collaboration</Button>
-        </Box>
-
-        <ModalComponent
-          title="Create Project Collaboration"
-          footerRight={footerRight}
-          open={open}
-          onClose={handleClose}
-        >
-          <Typography sx={{ color: "Woohoo, you're reading this text in a modal!" }} />
-        </ModalComponent>
-      </ThemeProvider>
-    </StyledComponentProvider>
-  );
-};
-
-export const CreateProjectCollaboration = CreateProjectCollaborationTemplate.bind({});

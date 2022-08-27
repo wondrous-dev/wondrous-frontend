@@ -97,6 +97,7 @@ export const FilterBoxInner = styled.div`
   height: fit-content;
   overflow: hidden;
   background: ${palette.black95};
+  border: 1px solid ${palette.grey75};
 `;
 
 export const FilterStatus = styled.div`

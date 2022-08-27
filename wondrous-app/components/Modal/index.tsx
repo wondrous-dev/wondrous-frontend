@@ -32,6 +32,11 @@ type Props = {
    * Modal title
    */
   title?: string;
+
+  /**
+   * Modal width
+   */
+  maxWidth?: number;
   /**
    * Footer left part
    */
@@ -42,11 +47,11 @@ type Props = {
   footerRight?: React.ReactNode;
 };
 
-export function Modal({ open, onClose, title, footerLeft, footerRight, children }: Props) {
+export function Modal({ open, onClose, title, footerLeft, footerRight, maxWidth, children }: Props) {
   return (
     <ModalComponent open={open} onClose={onClose}>
       <ModalContainer tabIndex={-1}>
-        <ModalDialog>
+        <ModalDialog maxWidth={maxWidth}>
           <ModalContent>
             <ModalHeader>
               {title && <ModalTitle>{title}</ModalTitle>}

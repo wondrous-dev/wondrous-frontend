@@ -1,7 +1,9 @@
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import AddIcon from 'components/Icons/add.svg';
 import BackArrowIcon from 'components/Icons/backArrow';
+import Dao2DaoIcon from 'components/Icons/Dao2Dao';
 import ExploreIcon from 'components/Icons/explore.svg';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import Tooltip from 'components/Tooltip';
@@ -60,6 +62,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
   const { minimized, setMinimized } = sidebar;
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
+  const [openDao2DaoModal, setOpenDao2DaoModal] = useState(false);
   const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
   const handleMinimize = () => setMinimized(!minimized);
 
@@ -96,6 +99,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
+      <CreateCollaborationModal open={openDao2DaoModal} onCancel={() => setOpenDao2DaoModal(false)} />
       <DrawerContainer>
         <DrawerBlockWrapper>
           <SidebarTooltip title="Profile">
@@ -146,6 +150,12 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
             <SidebarTooltip title="Create DAO">
               <HighlightedButton onClick={handleCreateDaoModal(true)}>
                 <AddIcon />
+              </HighlightedButton>
+            </SidebarTooltip>
+
+            <SidebarTooltip title="Create Project Collaboration">
+              <HighlightedButton onClick={() => setOpenDao2DaoModal(true)}>
+                <Dao2DaoIcon />
               </HighlightedButton>
             </SidebarTooltip>
           </DrawerList>
