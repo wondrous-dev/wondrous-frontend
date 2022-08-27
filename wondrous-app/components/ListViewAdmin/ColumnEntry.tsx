@@ -24,7 +24,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { LinkIcon, DueDateIcon } from 'components/Icons/taskModalIcons';
 import { Rewards } from 'components/Common/TaskViewModal/helpers';
 import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
-import { NoLogoDAO } from 'components/SideBar/styles';
+import { NoLogoDAO } from 'components/Common/Sidebar/Main/styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { DAOIcon } from 'components/Icons/dao';
