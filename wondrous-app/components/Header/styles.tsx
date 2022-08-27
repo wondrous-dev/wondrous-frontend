@@ -12,8 +12,10 @@ export const HeaderBar = styled(AppBar)`
     z-index: 200;
     width: 100%;
     flex-direction: row;
+    gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
+    padding: 0 4px;
   }
 `;
 
@@ -170,38 +172,40 @@ export const StyledBadge = styled(ButtonBase)`
   }
 `;
 
-export const HeaderCreateButton = styled.button`
-  visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 20px;
-  background: transparent;
-  border: 0;
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: -1;
-    background: none;
-    filter: blur(8px);
-    border-radius: 100%;
-    left: 0;
-    top: 0;
-  }
-  &:hover {
-    cursor: pointer;
+export const HeaderCreateButton = styled(ButtonBase)`
+  && {
+    visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
+    display: flex;
+    justify-content: flex-end;
+    background: transparent;
+    border: 0;
+    position: relative;
+    filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
     &::before {
-      background: linear-gradient(
-        212.53deg,
-        #ff6dd7 -79.63%,
-        #b820ff -41.63%,
-        #f93701 -9.97%,
-        #ffd653 22.6%,
-        #00baff 56.07%,
-        #06ffa5 85.93%
-      );
+      content: '';
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+      background: none;
+      filter: blur(8px);
+      border-radius: 100%;
+      left: 0;
+      top: 0;
+    }
+    &:hover {
+      cursor: pointer;
+      &::before {
+        background: linear-gradient(
+          212.53deg,
+          #ff6dd7 -79.63%,
+          #b820ff -41.63%,
+          #f93701 -9.97%,
+          #ffd653 22.6%,
+          #00baff 56.07%,
+          #06ffa5 85.93%
+        );
+      }
     }
   }
 `;
