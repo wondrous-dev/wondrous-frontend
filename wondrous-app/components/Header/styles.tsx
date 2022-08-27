@@ -1,4 +1,4 @@
-import { AppBar, IconButton, TextField } from '@mui/material';
+import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
 import styled from 'styled-components';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
@@ -149,32 +149,22 @@ export const HeaderRightBlock = styled.div`
   justify-content: flex-end;
 `;
 
-export const StyledBadge = styled.button`
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 100;
-  svg {
-    circle {
-      display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
-      ${({ isOpen }) => (isOpen ? `fill: url(#open-notif-gradient);` : ``)};
-    }
-    rect {
-      ${({ isOpen }) => (isOpen ? `stroke: url(#open-notif-gradient); fill: transparent;` : ``)}
-    }
-  }
-  &:hover {
+export const StyledBadge = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: #313131;
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    position: relative;
+    width: 40px;
+    filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
     svg {
       circle {
-        fill: url(#outline-hover-color);
-      }
-      rect {
-        stroke: url(#outline-hover-color);
-        fill: black;
+        display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
       }
     }
   }
