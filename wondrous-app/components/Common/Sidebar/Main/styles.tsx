@@ -1,8 +1,7 @@
 import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
-import AddIcon from 'components/Icons/add.svg';
+import { Logo } from 'components/Common/ci';
 import { DAOIcon } from 'components/Icons/dao';
 import SettingsIcon from 'components/Icons/settings.svg';
-import { PodsIcon } from 'components/Icons/sidebar';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 
@@ -23,9 +22,8 @@ export const DrawerComponent = styled(Drawer)`
     & .MuiDrawer-paperAnchorDockedLeft {
       background-color: ${palette.black97};
       height: 100vh;
-      padding-top: 72px;
-
-      z-index: 199;
+      padding-top: 18px;
+      z-index: 500;
       max-width: 500px;
       ${hideScrollbar}
     }
@@ -42,7 +40,6 @@ export const DrawerContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  padding-top: 24px;
   padding-bottom: 72px;
 `;
 
@@ -224,5 +221,19 @@ export const DrawerBackButton = styled(HighlightedButton)`
     &.active {
       transform: rotate(180deg);
     }
+  }
+`;
+
+export const LogoButton = styled(ButtonBase)`
+  && {
+    cursor: pointer;
+  }
+`;
+
+export const HeaderLogo = styled(Logo)`
+  width: 41px;
+  height: 31px;
+  path {
+    fill: white;
   }
 `;

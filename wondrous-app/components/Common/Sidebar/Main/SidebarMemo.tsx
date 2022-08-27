@@ -17,12 +17,13 @@ import { PodModal } from './PodModal';
 import {
   DrawerBackButton,
   DrawerBlockWrapper,
-  DrawerBottomButton,
   DrawerComponent,
   DrawerContainer,
   DrawerList,
   DrawerListItem,
+  HeaderLogo,
   HighlightedButton,
+  LogoButton,
   NoLogoDAO,
   StyledSettingsIcon,
 } from './styles';
@@ -40,6 +41,7 @@ type Props = {
     minimized: boolean;
     setMinimized: (minimized: boolean) => unknown;
   };
+  onLogoClick: Function;
 };
 
 const isExternal = (url) => url.includes('https://');
@@ -56,7 +58,7 @@ const SidebarTooltip = ({ children, ...props }) => (
   </Tooltip>
 );
 
-const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: Props) => {
+const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
@@ -98,6 +100,11 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
       <DrawerContainer>
         <DrawerBlockWrapper>
+          <SidebarTooltip title="Dashboard">
+            <LogoButton onClick={onLogoClick}>
+              <HeaderLogo />
+            </LogoButton>
+          </SidebarTooltip>
           <SidebarTooltip title="Profile">
             <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
               <SafeImage
