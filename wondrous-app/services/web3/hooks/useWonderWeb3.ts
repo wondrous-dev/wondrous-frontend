@@ -192,10 +192,7 @@ export default function useWonderWeb3(): WonderWeb3 {
 
   const getENSNameFromEthAddress = async (address: string) => {
     try {
-      const mainnetProvider = process.env.NEXT_PUBLIC_RPC_URL_ETH;
-      const testnetProvider = process.env.NEXT_PUBLIC_RPC_URL_RINKEBY;
-      const jsonRpcProvider = isInProduction ? mainnetProvider : testnetProvider;
-      const prov = new ethers.providers.JsonRpcProvider(jsonRpcProvider);
+      const prov = new ethers.providers.Web3Provider(provider);
       const name = await prov.lookupAddress(address);
       return name;
     } catch (err) {
