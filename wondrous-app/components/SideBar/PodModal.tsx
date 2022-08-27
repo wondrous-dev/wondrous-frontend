@@ -1,25 +1,24 @@
 import { useLazyQuery } from '@apollo/client';
-import { useMe } from 'components/Auth/withAuth';
-import { SafeImage } from 'components/Common/Image';
-import {
-  LoadMore,
-  TaskContent,
-  TaskHeader,
-  TaskListCardWrapper,
-  TaskListModalHeader,
-  TaskModalBaseCard,
-  TaskTitle,
-} from 'components/Common/Task/styles';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import PodIcon from 'components/Icons/podIcon';
-import { GET_USER_PODS } from 'graphql/queries';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { GET_USER_PODS } from 'graphql/queries';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
-
+import { useMe } from '../Auth/withAuth';
+import { SafeImage } from '../Common/Image';
+import {
+  TaskListModalHeader,
+  TaskModalBaseCard,
+  TaskListCardWrapper,
+  TaskHeader,
+  TaskContent,
+  TaskTitle,
+  LoadMore,
+} from '../Common/Task/styles';
+import { CreateModalOverlay } from '../CreateEntity/styles';
+import PodIcon from '../Icons/podIcon';
 import { PodModalFooter, PodModalFooterInfoWrapper, PodModalFooterInfoWrapperText } from './styles';
 
 function PodListCard(props) {

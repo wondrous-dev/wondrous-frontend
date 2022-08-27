@@ -22,6 +22,7 @@ export const OverviewComponent = styled.section`
 export const HeaderImageWrapper = styled.div`
   width: 100%;
   height: 100px;
+  margin-top: 70px;
   overflow: hidden;
   position: relative;
 `;
@@ -69,6 +70,7 @@ export const TokenEmptyLogo = styled.div`
 
 export const Content = styled.div`
   width: 100%;
+  height: 100%;
   display: flex;
   justify-content: center;
 `;

@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ChevronFilled } from 'components/Icons/sections';
+import { useInView } from 'react-intersection-observer';
+import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import {
   AccordionComponent,
   AccordionDetails,
@@ -16,10 +18,11 @@ interface Props {
   count: number;
   children: unknown[];
   headerAddons?: any;
-  displayShowMore: boolean;
+  hasMore: boolean;
   onShowMore: () => any;
   showMoreTitle?: string;
   loading?: boolean;
+  enableInfiniteLoading?: boolean;
 }
 
 const Accordion = ({
@@ -29,13 +32,22 @@ const Accordion = ({
   count,
   children,
   headerAddons,
-  displayShowMore,
+  hasMore,
   onShowMore,
   showMoreTitle = 'Show more',
   loading,
+  enableInfiniteLoading = false,
 }: Props) => {
   const [isOpen, setIsOpen] = useState(isExpanded);
   const handleExpansion = () => setIsOpen(!isOpen);
+
+  const [ref, inView] = useInView({});
+
+  useEffect(() => {
+    if (inView && hasMore && enableInfiniteLoading) {
+      onShowMore();
+    }
+  }, [inView, hasMore, onShowMore, enableInfiniteLoading]);
 
   useEffect(() => {
     if (typeof loading === 'boolean' && !loading && isExpanded !== isOpen) {
@@ -54,7 +66,8 @@ const Accordion = ({
         {headerAddons || null}
       </ListViewItemHeader>
       <AccordionDetails>{children}</AccordionDetails>
-      {displayShowMore ? (
+      {enableInfiniteLoading && <LoadMore ref={ref} hasMore={hasMore} />}
+      {hasMore && !enableInfiniteLoading ? (
         <ShowMoreButton type="button" onClick={onShowMore}>
           {showMoreTitle}
         </ShowMoreButton>

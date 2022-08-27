@@ -6,7 +6,6 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import { useGetPodById } from 'utils/hooks';
 import MemberRequests from 'components/Pod/members';
-import { EntitySidebar } from 'components/Common/Sidebar';
 
 function PodMembersPage() {
   const router = useRouter();
@@ -26,9 +25,7 @@ function PodMembersPage() {
           : null,
       }}
     >
-      <EntitySidebar>
-        <MemberRequests podId={podId} podData={getPodById} />
-      </EntitySidebar>
+      <MemberRequests podId={podId} podData={getPodById} />
     </PodBoardContext.Provider>
   );
 }

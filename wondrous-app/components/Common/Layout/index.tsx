@@ -1,24 +1,15 @@
-import { useQuery } from '@apollo/client';
+import React, { useState } from 'react';
+import { SIDEBAR_WIDTH, PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
 import HeaderComponent from 'components/Header';
-import { SideBarComponent } from 'components/Common/Sidebar';
-import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
-import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
-import { CreateEntityContext, SideBarContext } from 'utils/contexts';
+import SideBarComponent from 'components/SideBar';
 import { toggleHtmlOverflow } from 'utils/helpers';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import { useRouter } from 'next/router';
+import { useQuery } from '@apollo/client';
+import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { SideBarContext, CreateEntityContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
-
 import { SectionWrapper } from './styles';
-
-const getOrgsList = (userOrgs, router) => {
-  if (!userOrgs?.getUserOrgs) return [];
-  const { getUserOrgs } = userOrgs;
-  return getUserOrgs.map((item) => {
-    const isActive = router.pathname.includes('/organization/[username]') && router.query?.username === item.username;
-    return { ...item, isActive };
-  });
-};
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
@@ -40,23 +31,20 @@ export default function SidebarLayout({ children }) {
     setCreateFormModal((prevState) => !prevState);
   };
 
-  const orgsList = getOrgsList(userOrgs, router);
-  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
-  const sidebarValue = useMemo(
-    () => ({
-      minimized,
-      setMinimized,
-      orgsList,
-    }),
-    [minimized, orgsList]
-  );
-
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
+
+  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
+
   return (
-    <SideBarContext.Provider value={sidebarValue}>
-      <SideBarComponent />
+    <SideBarContext.Provider
+      value={{
+        minimized,
+        setMinimized,
+      }}
+    >
+      <SideBarComponent userOrgs={userOrgs} />
       <CreateEntityContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,

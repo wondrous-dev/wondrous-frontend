@@ -41,7 +41,6 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { EntitySidebar } from 'components/Common/Sidebar';
 
 const useGetPodTaskBoardTasks = ({
   columns,
@@ -608,24 +607,22 @@ function BoardsPage() {
         hasMore: podTaskHasMore,
       }}
     >
-      <EntitySidebar>
-        {isMobile ? <MobileComingSoonModal /> : null}
-        <Boards
-          columns={columns}
-          onLoadMore={fetchMore}
-          hasMore={podTaskHasMore}
-          onSearch={handleSearch}
-          searchString={searchString}
-          onFilterChange={handleFilterChange}
-          setColumns={setColumns}
-          loading={isLoading}
-          entityType={entityType}
-          userId={userId?.toString()}
-          orgId={pod?.orgId}
-          statuses={statuses}
-          activeView={activeView}
-        />
-      </EntitySidebar>
+      {isMobile ? <MobileComingSoonModal /> : null}
+      <Boards
+        columns={columns}
+        onLoadMore={fetchMore}
+        hasMore={podTaskHasMore}
+        onSearch={handleSearch}
+        searchString={searchString}
+        onFilterChange={handleFilterChange}
+        setColumns={setColumns}
+        loading={isLoading}
+        entityType={entityType}
+        userId={userId?.toString()}
+        orgId={pod?.orgId}
+        statuses={statuses}
+        activeView={activeView}
+      />
     </PodBoardContext.Provider>
   );
 }
