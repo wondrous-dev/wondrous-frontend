@@ -5,15 +5,15 @@ import { Logo } from '../Common/ci';
 
 export const HeaderBar = styled(AppBar)`
   && {
-    height: 70px;
-    background: #1d1d1d;
+    margin-top: 18px;
+    background: transparent;
     display: flex;
     align-items: center;
-    //padding: 15px 20px;
-    //display: flex;
-    //justify-content: space-between;
-    //align-items: center;
     z-index: 200;
+    width: 100%;
+    flex-direction: row;
+    justify-content: flex-end;
+    box-shadow: none;
   }
 `;
 

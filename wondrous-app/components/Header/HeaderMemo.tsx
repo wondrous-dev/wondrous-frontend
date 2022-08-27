@@ -1,34 +1,16 @@
-import Link from 'next/link';
-import { memo } from 'react';
-import Box from '@mui/material/Box';
-
+import { Button } from 'components/Common/button';
 import Wallet from 'components/Common/Wallet';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
-import { Button } from 'components/Common/button';
 import NotificationsBoard from 'components/Notifications';
-import Tooltip from 'components/Tooltip';
-import HomeIcon from 'components/Icons/home';
-
-import GlobalSearch from 'components/GlobalSearch';
-import { User } from 'types/User';
+import { memo } from 'react';
 import { Notification } from 'types/Notification';
-import {
-  HeaderBar,
-  HeaderContainer,
-  HeaderCreateButton,
-  HeaderHomeButton,
-  HeaderLeftBlock,
-  HeaderLogo,
-  HeaderRightBlock,
-  HeaderHomeButtonWrapper,
-  HeaderLogoWrapper,
-} from './styles';
+import { User } from 'types/User';
+import { HeaderBar, HeaderCreateButton } from './styles';
 
 type Props = {
   fetchMoreNotifications: (fetchData, fetchVars) => unknown;
   isMobile: boolean;
   notifications: Notification[];
-  onLogoClick: () => unknown;
   onSignInClick: () => unknown;
   openCreateFormModal: () => unknown;
   setNotifications: () => unknown;
@@ -40,7 +22,6 @@ const HeaderMemo = ({
   fetchMoreNotifications,
   isMobile,
   notifications,
-  onLogoClick,
   onSignInClick,
   openCreateFormModal,
   setNotifications,
@@ -48,56 +29,31 @@ const HeaderMemo = ({
   user,
 }: Props) => (
   <HeaderBar>
-    <HeaderContainer>
-      <HeaderLeftBlock>
-        <Tooltip title="Explore page">
-          <HeaderLogoWrapper>
-            <div onClick={onLogoClick}>
-              <HeaderLogo />
-            </div>
-          </HeaderLogoWrapper>
-        </Tooltip>
-        <Tooltip title="Dashboard">
-          <Box>
-            <Link passHref href="/dashboard">
-              <HeaderHomeButtonWrapper>
-                <HeaderHomeButton>
-                  <HomeIcon id="tour-header-dashboard-icon" />
-                </HeaderHomeButton>
-              </HeaderHomeButtonWrapper>
-            </Link>
-          </Box>
-        </Tooltip>
-        {!isMobile && <GlobalSearch />}
-      </HeaderLeftBlock>
-      <HeaderRightBlock>
-        {user && (
-          <>
-            {!isMobile && <Wallet />}
-            <NotificationsBoard
-              fetchMoreNotifications={fetchMoreNotifications}
-              notifications={notifications}
-              setNotifications={setNotifications}
-            />
-            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-              <CreateIconOutlined id="tour-header-create-btn" />
-            </HeaderCreateButton>
-          </>
-        )}
-        {!user && (
-          <Button
-            highlighted
-            type="submit"
-            style={{
-              width: '100px',
-            }}
-            onClick={onSignInClick}
-          >
-            Sign in
-          </Button>
-        )}
-      </HeaderRightBlock>
-    </HeaderContainer>
+    {user && (
+      <>
+        {!isMobile && <Wallet />}
+        <NotificationsBoard
+          fetchMoreNotifications={fetchMoreNotifications}
+          notifications={notifications}
+          setNotifications={setNotifications}
+        />
+        <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+          <CreateIconOutlined id="tour-header-create-btn" />
+        </HeaderCreateButton>
+      </>
+    )}
+    {!user && (
+      <Button
+        highlighted
+        type="submit"
+        style={{
+          width: '100px',
+        }}
+        onClick={onSignInClick}
+      >
+        Sign in
+      </Button>
+    )}
   </HeaderBar>
 );
 
