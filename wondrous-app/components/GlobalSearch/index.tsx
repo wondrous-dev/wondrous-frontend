@@ -10,7 +10,7 @@ import { SafeImage } from 'components/Common/Image';
 import { useOutsideAlerter } from 'utils/hooks';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodIcon from 'components/Icons/podIcon';
-import { SearchIconWrapped } from 'components/SearchTasks/styles';
+import SearchIcon from 'components/Icons/search';
 import { DAOIcon } from 'components/Icons/dao';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
 
@@ -125,7 +125,7 @@ function GlobalSearch() {
   return (
     <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
       <SearchIconWrapper isExpanded={isExpanded}>
-        <SearchIconWrapped />
+        <SearchIcon />
       </SearchIconWrapper>
 
       <SearchInputWrapper isExpanded={isExpanded}>

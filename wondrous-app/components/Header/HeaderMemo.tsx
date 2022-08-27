@@ -1,5 +1,6 @@
 import { Button } from 'components/Common/button';
 import Wallet from 'components/Common/Wallet';
+import GlobalSearch from 'components/GlobalSearch';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
 import { memo } from 'react';
@@ -32,6 +33,7 @@ const HeaderMemo = ({
     {user && (
       <>
         {!isMobile && <Wallet />}
+        {!isMobile && <GlobalSearch />}
         <NotificationsBoard
           fetchMoreNotifications={fetchMoreNotifications}
           notifications={notifications}
