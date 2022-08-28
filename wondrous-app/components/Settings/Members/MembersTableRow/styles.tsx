@@ -121,7 +121,6 @@ export const UserPodCount = styled.div`
 
 export const UserPodIconContainer = styled.div`
   background: ${palette.background.default};
-  padding: 7px 5.65px;
   border-radius: 6px;
   display: flex;
   align-items: center;
@@ -130,9 +129,14 @@ export const UserPodIconContainer = styled.div`
 
 export const UserOptions = styled.div`
   background: ${palette.black101};
-  padding: 13px;
+  padding: 9px;
   border-radius: 6px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  & > div {
+    display: flex;
+    align-items: center;
+  }
 `;
