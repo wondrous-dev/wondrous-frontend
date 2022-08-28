@@ -1,7 +1,7 @@
 import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import { Logo } from 'components/Common/ci';
 import { DAOIcon } from 'components/Icons/dao';
-import SettingsIcon from 'components/Icons/settings.svg';
+import SettingsIcon from 'components/Common/Sidebar/Common/icons/settings.svg';
 import PodsIcon from 'components/Common/Sidebar/Common/icons/podsGradient.svg';
 import GridViewIcon from 'components/Common/Sidebar/Common/icons/gridView.svg';
 import styled, { css } from 'styled-components';
@@ -63,20 +63,16 @@ export const DrawerListItem = styled(({ children, ...props }) => (
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    width: 40px;
-    border-radius: 4px;
-    background: transparent;
-    background: ${({ isActive, theme }) =>
-      isActive && `linear-gradient(180deg, ${theme.palette.grey850} 0%, ${theme.palette.grey74} 100%)`};
-    :hover {
-      background: ${({ theme }) =>
-        `linear-gradient(180deg, ${theme.palette.grey850} 0%, ${theme.palette.grey74} 100%)`};
-    }
+    height: 36px;
+    width: 36px;
+    border-radius: 50%;
+    background: #313131;
+    filter: drop-shadow(0 3px 3px #0f0f0f);
     > div {
-      height: 36px;
-      width: 36px;
+      height: 34px;
+      width: 34px;
       display: flex;
+      border-radius: 50%;
       align-items: center;
       justify-content: center;
     }
@@ -142,7 +138,7 @@ export const NoLogoDAO = styled((props) => (
   border-radius: 3px;
   align-items: center;
   justify-content: center;
-  background: ${({ theme }) => theme.palette.black92};
+  background: transparent;
 `;
 
 export const PodModalFooter = styled.div`

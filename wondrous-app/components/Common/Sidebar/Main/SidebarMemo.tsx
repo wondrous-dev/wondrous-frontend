@@ -158,7 +158,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                           height={36}
                           objectFit="cover"
                           style={{
-                            borderRadius: '2px',
+                            borderRadius: '50%',
                           }}
                         />
                       ) : (
