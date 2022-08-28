@@ -15,11 +15,11 @@ import {
   NewTokenGatingButton,
 } from './styles';
 import TokenGatingConditionList from './TokenGatingConditionList';
-import TokenGatingConfigForm from './TokenGatingConfigForm';
+import TokenGatingModal from './TokenGatingModal';
 
 function TokenGatingSettings(props) {
   const { orgId } = props;
-  const [showConfigModal, setShowConfigModal] = useState(null);
+  const [openTokenGatingModal, setOpenTokenGatingModal] = useState(null);
   const [selectedTokenGatingCondition, setSelectedTokenGatingCondition] = useState(null);
 
   const { data: orgData } = useQuery(GET_ORG_BY_ID, {
@@ -39,19 +39,19 @@ function TokenGatingSettings(props) {
             Define token gates by specifying acess criteria for different levels of the org. Go to the roles settings
             page to apply them to a role.
           </TokenGatingDescription>
-          <NewTokenGatingButton onClick={() => setShowConfigModal(true)}>New Token gate </NewTokenGatingButton>
+          <NewTokenGatingButton onClick={() => setOpenTokenGatingModal(true)}>New Token gate </NewTokenGatingButton>
         </TokenGatingElementWrapper>
         <EditTokenGatingConditionContext.Provider
           value={{
             setSelectedTokenGatingCondition,
-            setShowConfigModal,
+            setOpenTokenGatingModal,
           }}
         >
-          <TokenGatingConfigForm
+          <TokenGatingModal
             org={org}
             orgId={orgId}
-            open={showConfigModal}
-            setShowConfigModal={setShowConfigModal}
+            open={openTokenGatingModal}
+            onClose={() => setOpenTokenGatingModal(false)}
             selectedTokenGatingCondition={selectedTokenGatingCondition}
             setSelectedTokenGatingCondition={setSelectedTokenGatingCondition}
           />
