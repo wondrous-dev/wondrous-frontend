@@ -4,6 +4,7 @@ import AddIcon from 'components/Icons/add.svg';
 import BackArrowIcon from 'components/Icons/backArrow';
 import ExploreIcon from 'components/Icons/explore.svg';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
+import { PodsIcon } from 'components/Icons/sidebar';
 import Tooltip from 'components/Tooltip';
 import Link from 'next/link';
 import React, { memo, useState } from 'react';
@@ -26,6 +27,7 @@ import {
   HighlightedButton,
   LogoButton,
   NoLogoDAO,
+  PodsButton,
   StyledSettingsIcon,
 } from './styles';
 
@@ -101,7 +103,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
       <DrawerContainer>
         <DrawerBlockWrapper>
-          <SidebarTooltip title="Dashboard">
+          <SidebarTooltip title="Dashboard" id="tour-header-dashboard-icon">
             <LogoButton onClick={onLogoClick}>
               <HeaderLogo />
             </LogoButton>
@@ -119,6 +121,10 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                   style={profilePictureStyle}
                 />
               </HighlightedButton>
+            </SidebarTooltip>
+            {/* TODO: mission control */}
+            <SidebarTooltip title="Pods">
+              <PodsButton onClick={() => setOpenPodModal(true)} />
             </SidebarTooltip>
           </ButtonWrapper>
           <ButtonWrapper>
