@@ -1,46 +1,36 @@
+import React, { useEffect, useState } from 'react';
+import { Autocomplete } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 import { useRouter } from 'next/router';
+import { FixedSizeList, ListChildComponentProps } from 'react-window';
 
-import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import Harmony from 'components/Icons/harmony';
 import Optimism from 'components/Icons/Optimism';
+import Modal from 'components/Modal';
+import Button from 'components/Button';
+import CustomField from 'components/FormField/CustomField';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
-import React, { useEffect, useState } from 'react';
-import Modal from '@mui/material/Modal';
-import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
+import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
+import { NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import {
-  TokenGatingConfigModal,
-  TokenGatingAutocomplete,
-  TokenGatingAutocompleteLabel,
   TokenGatingAutocompleteList,
   TokenGatingAutocompleteListItem,
   TokenGatingAutocompletePopper,
   TokenGatingAutocompleteTextfieldButton,
   TokenGatingAutocompleteTextfieldDownIcon,
   TokenGatingAutocompleteTextfieldWrapper,
-  TokenGatingButton,
-  TokenGatingFormHeader,
   TokenGatingFormHeaderSecondary,
-  TokenGatingFormWrapper,
   TokenGatingInputImage,
   TokenGatingTextfieldButtonDown,
   TokenGatingTextfieldButtonUp,
   TokenGatingTextfieldButtonWrapper,
   TokenGatingTextfieldInput,
-  TokenGatingTextfieldInputWrapper,
-  TokenGatingTextfieldTextHelper,
-  TokenGatingTextfieldTextHelperWrapper,
-  TokenGatingTokenAmountWrapper,
 } from './styles';
-import {
-  CREATE_TOKEN_GATING_CONDITION_FOR_ORG,
-  UPDATE_TOKEN_GATING_CONDITION,
-} from '../../../graphql/mutations/tokenGating';
-import { NFT_LIST, HARMONY_TOKEN_LIST } from '../../../utils/tokenList';
 
 const chainOptions = [
   {
@@ -382,56 +372,37 @@ function TokenGatingConfigForm(props) {
     }
   }, [accessConditionType, chain]);
 
+  // {selectedTokenGatingCondition ? (
+  //   <TokenGatingButton onClick={handleUpdateTokenGate}>Update Token Gate </TokenGatingButton>
+  // ) : (
+  //   <TokenGatingButton onClick={handleCreateTokenGate}>Create Token Gate </TokenGatingButton>
+  // )}
+
   return (
     <Modal
       open={open}
+      maxWidth={680}
+      title={
+        <>
+          <span>Token gating for </span>
+          <TokenGatingFormHeaderSecondary as="span">{org?.username || ''}</TokenGatingFormHeaderSecondary>
+        </>
+      }
       onClose={() => {
         clearErrors();
         clearSelection();
         setShowConfigModal(false);
       }}
+      footerRight={
+        selectedTokenGatingCondition ? (
+          <Button onClick={handleUpdateTokenGate}>Update Token Gate</Button>
+        ) : (
+          <Button onClick={handleCreateTokenGate}>Create Token Gate</Button>
+        )
+      }
     >
-      <TokenGatingConfigModal>
-        <TokenGatingFormWrapper>
-          <TokenGatingFormHeader>
-            Token gating for{' '}
-            <TokenGatingFormHeaderSecondary as="span">{org?.username || ''}</TokenGatingFormHeaderSecondary>
-          </TokenGatingFormHeader>
-          <TokenGatingAutocompleteLabel>Chain</TokenGatingAutocompleteLabel>
-          {/* <TokenGatingAutocomplete
-            options={chainOptions}
-            value={chain}
-            open={openChainSelection}
-            onChange={(event, newValue) => setChain(newValue.value)}
-            renderInput={(params) => {
-              return (
-                <TokenGatingAutocompleteTextfieldWrapper ref={params.InputProps.ref}>
-                  <TokenGatingTextfieldInput
-                    {...params.inputProps}
-                    endAdornment={
-                      <TokenGatingAutocompleteTextfieldButton
-                        onClick={() => setOpenChainSelection(!openChainSelection)}
-                      >
-                        <TokenGatingAutocompleteTextfieldDownIcon />
-                      </TokenGatingAutocompleteTextfieldButton>
-                    }
-                  ></TokenGatingTextfieldInput>
-                </TokenGatingAutocompleteTextfieldWrapper>
-              );
-            }}
-            renderOption={(props, option) => (
-              <TokenGatingAutocompleteListItem
-                value={option.value}
-                {...props}
-              >
-                {option?.icon}
-                {option.label}
-              </TokenGatingAutocompleteListItem>
-            )}
-            ListboxComponent={TokenGatingAutocompleteList}
-            PopperComponent={TokenGatingAutocompletePopper}
-            openOnFocus
-          /> */}
+      <div>
+        <CustomField label="Chain">
           <DropdownSelect
             value={chain}
             setValue={setChain}
@@ -444,7 +415,9 @@ function TokenGatingConfigForm(props) {
             options={chainOptions}
             name="chain"
           />
-          <TokenGatingAutocompleteLabel>Token Type</TokenGatingAutocompleteLabel>
+        </CustomField>
+
+        <CustomField label="Token Type">
           <DropdownSelect
             value={accessConditionType}
             options={SUPPORTED_ACCESS_CONDITION_TYPES}
@@ -456,10 +429,12 @@ function TokenGatingConfigForm(props) {
               height: 'auto',
             }}
           />
-          <TokenGatingTokenAmountWrapper>
-            <div>
-              <TokenGatingAutocompleteLabel>Token</TokenGatingAutocompleteLabel>
-              <TokenGatingAutocomplete
+        </CustomField>
+
+        <Grid container marginBottom="18px">
+          <Grid item xs={5}>
+            <CustomField label="Token">
+              <Autocomplete
                 disablePortal
                 options={accessConditionType === 'ERC20' ? tokenList : nftList}
                 value={selectedToken}
@@ -482,56 +457,36 @@ function TokenGatingConfigForm(props) {
                 renderOption={(props, option) => [props, option]}
                 renderGroup={(params) => params}
               />
-            </div>
+            </CustomField>
+          </Grid>
+          <Grid item xs={2} />
+          <Grid item xs={5}>
+            <CustomField label="Min. amount to hold" error={minAmountError ? 'Please enter an amount' : null}>
+              <TokenGatingTextfieldInput
+                type="number"
+                value={minAmount.toString()}
+                onChange={handleMinAmountOnChange}
+                open={openChainSelection}
+                onWheel={(e) => e.target.blur()}
+                endAdornment={
+                  <TokenGatingTextfieldButtonWrapper>
+                    <TokenGatingTextfieldButtonUp onClick={() => handleMinAmountOnClick(1)}>
+                      <TokenGatingAutocompleteTextfieldDownIcon />
+                    </TokenGatingTextfieldButtonUp>
+                    <TokenGatingTextfieldButtonDown onClick={() => handleMinAmountOnClick(-1)}>
+                      <TokenGatingAutocompleteTextfieldDownIcon />
+                    </TokenGatingTextfieldButtonDown>
+                  </TokenGatingTextfieldButtonWrapper>
+                }
+              />
+            </CustomField>
+          </Grid>
+        </Grid>
 
-            <div>
-              <TokenGatingAutocompleteLabel>Min. amount to hold</TokenGatingAutocompleteLabel>
-              <TokenGatingTextfieldInputWrapper>
-                <TokenGatingTextfieldInput
-                  type="number"
-                  value={minAmount.toString()}
-                  onChange={handleMinAmountOnChange}
-                  open={openChainSelection}
-                  onWheel={(e) => e.target.blur()}
-                  endAdornment={
-                    <TokenGatingTextfieldButtonWrapper>
-                      <TokenGatingTextfieldButtonUp onClick={() => handleMinAmountOnClick(1)}>
-                        <TokenGatingAutocompleteTextfieldDownIcon />
-                      </TokenGatingTextfieldButtonUp>
-                      <TokenGatingTextfieldButtonDown onClick={() => handleMinAmountOnClick(-1)}>
-                        <TokenGatingAutocompleteTextfieldDownIcon />
-                      </TokenGatingTextfieldButtonDown>
-                    </TokenGatingTextfieldButtonWrapper>
-                  }
-                />
-                <TokenGatingTextfieldTextHelperWrapper visibility={minAmountError}>
-                  <ErrorFieldIcon />
-                  <TokenGatingTextfieldTextHelper>Please enter an amount</TokenGatingTextfieldTextHelper>
-                </TokenGatingTextfieldTextHelperWrapper>
-              </TokenGatingTextfieldInputWrapper>
-            </div>
-          </TokenGatingTokenAmountWrapper>
-          <TokenGatingAutocompleteLabel
-            style={{
-              marginTop: 0,
-            }}
-          >
-            Name
-          </TokenGatingAutocompleteLabel>
-          <TokenGatingTextfieldInput
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            style={{
-              marginTop: 12,
-            }}
-          />
-          {selectedTokenGatingCondition ? (
-            <TokenGatingButton onClick={handleUpdateTokenGate}>Update Token Gate </TokenGatingButton>
-          ) : (
-            <TokenGatingButton onClick={handleCreateTokenGate}>Create Token Gate </TokenGatingButton>
-          )}
-        </TokenGatingFormWrapper>
-      </TokenGatingConfigModal>
+        <CustomField label="Name">
+          <TokenGatingTextfieldInput value={name} onChange={(e) => setName(e.target.value)} />
+        </CustomField>
+      </div>
     </Modal>
   );
 }

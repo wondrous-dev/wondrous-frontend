@@ -61,14 +61,6 @@ export const TokenGatingDescription = styled(Typography)`
   }
 `;
 
-export const TokenGatingFormWrapper = styled(Box)`
-  && {
-    background: #1b1b1b;
-    border-radius: 6px;
-    margin-top: 48px;
-  }
-`;
-
 export const TokenGatingElementWrapper = styled(Box)`
   && {
     background: ${palette.black90};
@@ -82,35 +74,9 @@ export const TokenGatingElementWrapper = styled(Box)`
   }
 `;
 
-export const TokenGatingFormHeader = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 18px;
-    font-weight: 700;
-    color: ${palette.white};
-  }
-`;
-
 export const TokenGatingFormHeaderSecondary = styled(Typography)`
   && {
     color: #c2b2f3;
-  }
-`;
-
-export const TokenGatingAutocompleteLabel = styled(InputLabel)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 14px;
-    font-weight: 500;
-    color: ${palette.blue20};
-    margin-left: 8px;
-    margin-top: 28px;
-  }
-`;
-
-export const TokenGatingAutocomplete = styled(Autocomplete)`
-  && {
-    margin-top: 12px;
   }
 `;
 
@@ -118,26 +84,6 @@ export const TokenGatingAutocompleteTextfieldWrapper = styled(Box)`
   && {
     display: flex;
     align-items: center;
-  }
-`;
-
-export const TokenGatingTextfieldInputWrapper = styled.div`
-  margin-top: 12px;
-`;
-
-export const TokenGatingTextfieldTextHelperWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  margin-top: 4px;
-  visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
-`;
-
-export const TokenGatingTextfieldTextHelper = styled(FormHelperText)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 12px;
-    font-weight: 400;
-    color: #f93701;
   }
 `;
 
@@ -272,25 +218,6 @@ export const TokenGatingInputImage = styled((props) => (
   />
 ))``;
 
-export const TokenGatingTokenAmountWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
-export const TokenGatingButton = styled(Button)`
-  && {
-    width: 100%;
-    margin-top: 28px;
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-    button {
-      background: ${palette.background.default};
-      font-family: 'Space Grotesk';
-      font-size: 16px;
-      font-weight: 500;
-    }
-  }
-`;
-
 export const TokenGatingDisabledButton = styled(Button)`
   && {
     width: 100%;
@@ -324,33 +251,6 @@ export const TableValueText = styled(Typography)`
     color: #c4c4c4;
     font-size: 14px;
     font-height: 22px;
-  }
-`;
-
-export const TokenGatingConfigModal = styled(BaseCard)`
-  && {
-    width: 680px;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: 90%;
-    transform: translate(-50%, -50%);
-    overflow-y: scroll;
-    z-index: 2100;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    background: rgb(20, 20, 20) !important;
-    padding-bottom: 32px;
-    &::-webkit-scrollbar {
-      display: none;
-      width: 0;
-      height: 0;
-    }
-    /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none; /* IE and Edge */
-    scrollbar-width: none; /* Firefox */
   }
 `;
 
