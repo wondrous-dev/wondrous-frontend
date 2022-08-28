@@ -237,3 +237,13 @@ export const HeaderLogo = styled(Logo)`
     fill: white;
   }
 `;
+
+export const ButtonWrapper = styled.div`
+  background: #232323;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 16px;
+  padding: 6px;
+  border-radius: 150px;
+`;

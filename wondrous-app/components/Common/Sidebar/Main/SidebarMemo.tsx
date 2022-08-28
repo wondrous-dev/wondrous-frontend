@@ -15,6 +15,7 @@ import AddDaoModal from './AddDaoModal';
 import HelpModal from './HelpModal.jsx';
 import { PodModal } from './PodModal';
 import {
+  ButtonWrapper,
   DrawerBackButton,
   DrawerBlockWrapper,
   DrawerComponent,
@@ -105,57 +106,59 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
               <HeaderLogo />
             </LogoButton>
           </SidebarTooltip>
-          <SidebarTooltip title="Profile">
-            <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
-              <SafeImage
-                src={user?.thumbnailPicture || user?.profilePicture}
-                placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-                width={36}
-                height={36}
-                objectFit="cover"
-                useNextImage
-                style={profilePictureStyle}
-              />
-            </HighlightedButton>
-          </SidebarTooltip>
-
-          <SidebarTooltip title="Explore">
-            <Link href="/explore" passHref>
-              <HighlightedButton id="tour-sidebar-explore-top">
-                <ExploreIcon />
-              </HighlightedButton>
-            </Link>
-          </SidebarTooltip>
-
-          <DrawerList id="tour-sidebar-daos">
-            {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
-              <SidebarTooltip key={id} title={name}>
-                <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
-                  <DrawerListItem button key={id} isActive={isActive}>
-                    {thumbnailPicture || profilePicture ? (
-                      <SafeImage
-                        useNextImage={false}
-                        src={thumbnailPicture || profilePicture}
-                        width={36}
-                        height={36}
-                        objectFit="cover"
-                        style={{
-                          borderRadius: '2px',
-                        }}
-                      />
-                    ) : (
-                      <NoLogoDAO />
-                    )}
-                  </DrawerListItem>
-                </Link>
-              </SidebarTooltip>
-            ))}
-            <SidebarTooltip title="Create DAO">
-              <HighlightedButton onClick={handleCreateDaoModal(true)}>
-                <AddIcon />
+          <ButtonWrapper>
+            <SidebarTooltip title="Profile">
+              <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
+                <SafeImage
+                  src={user?.thumbnailPicture || user?.profilePicture}
+                  placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
+                  width={36}
+                  height={36}
+                  objectFit="cover"
+                  useNextImage
+                  style={profilePictureStyle}
+                />
               </HighlightedButton>
             </SidebarTooltip>
-          </DrawerList>
+          </ButtonWrapper>
+          <ButtonWrapper>
+            <SidebarTooltip title="Explore">
+              <Link href="/explore" passHref>
+                <HighlightedButton id="tour-sidebar-explore-top">
+                  <ExploreIcon />
+                </HighlightedButton>
+              </Link>
+            </SidebarTooltip>
+            <DrawerList id="tour-sidebar-daos">
+              {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
+                <SidebarTooltip key={id} title={name}>
+                  <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
+                    <DrawerListItem button key={id} isActive={isActive}>
+                      {thumbnailPicture || profilePicture ? (
+                        <SafeImage
+                          useNextImage={false}
+                          src={thumbnailPicture || profilePicture}
+                          width={36}
+                          height={36}
+                          objectFit="cover"
+                          style={{
+                            borderRadius: '2px',
+                          }}
+                        />
+                      ) : (
+                        <NoLogoDAO />
+                      )}
+                    </DrawerListItem>
+                  </Link>
+                </SidebarTooltip>
+              ))}
+              <SidebarTooltip title="Create DAO">
+                <HighlightedButton onClick={handleCreateDaoModal(true)}>
+                  <AddIcon />
+                </HighlightedButton>
+              </SidebarTooltip>
+            </DrawerList>
+          </ButtonWrapper>
         </DrawerBlockWrapper>
         <DrawerBlockWrapper>
           {BOTTOM_LINKS_CONFIG.map(({ icon: Icon, url, id, tooltipLabel, key }) => {
