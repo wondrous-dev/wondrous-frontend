@@ -178,6 +178,19 @@ export const StyledSettingsIcon = styled((props) => (
   width: 100%;
 `;
 
+export const ButtonIcon = styled(ButtonBase)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    background: transparent;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.palette.grey87};
+  }
+`;
+
 export const HighlightedButton = styled(({ children, ...props }) => (
   <ButtonBase {...props}>
     <div>{children}</div>
@@ -187,17 +200,15 @@ export const HighlightedButton = styled(({ children, ...props }) => (
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 40px;
-    width: 40px;
+    height: 36px;
+    width: 36px;
     background: transparent;
     border-radius: 50%;
-    :hover {
-      ${({ theme }) =>
-        `background: linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%)`}
-    }
+    background: ${({ theme }) =>
+      `linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%)`};
     > div {
-      height: 36px;
-      width: 36px;
+      height: 34px;
+      width: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -211,7 +222,7 @@ export const HighlightedButton = styled(({ children, ...props }) => (
   }
 `;
 
-export const DrawerBackButton = styled(HighlightedButton)`
+export const DrawerBackButton = styled(ButtonIcon)`
   && {
     position: fixed;
     bottom: 24px;
@@ -270,8 +281,8 @@ export const MissionControlButton = styled((props) => (
     div {
       background-color: #313131;
       border-radius: inherit;
-      width: 35px;
-      height: 35px;
+      width: 34px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -297,8 +308,8 @@ export const PodsButton = styled((props) => (
     div {
       background-color: #313131;
       border-radius: inherit;
-      width: 35px;
-      height: 35px;
+      width: 34px;
+      height: 34px;
       display: flex;
       align-items: center;
       justify-content: center;

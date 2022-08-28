@@ -2,7 +2,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import AddIcon from 'components/Icons/add.svg';
 import BackArrowIcon from 'components/Icons/backArrow';
-import ExploreIcon from 'components/Icons/explore.svg';
+import ExploreIcon from 'components/Common/Sidebar/Common/icons/explore.svg';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import { PodsIcon } from 'components/Icons/sidebar';
 import Tooltip from 'components/Tooltip';
@@ -24,12 +24,13 @@ import {
   DrawerList,
   DrawerListItem,
   HeaderLogo,
-  HighlightedButton,
+  ButtonIcon,
   LogoButton,
   MissionControlButton,
   NoLogoDAO,
   PodsButton,
   StyledSettingsIcon,
+  HighlightedButton,
 } from './styles';
 
 type Props = {
@@ -111,7 +112,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
           </SidebarTooltip>
           <ButtonWrapper>
             <SidebarTooltip title="Profile">
-              <HighlightedButton id="tour-user-profile" onClick={handleProfileClick}>
+              <ButtonIcon id="tour-user-profile" onClick={handleProfileClick}>
                 <SafeImage
                   src={user?.thumbnailPicture || user?.profilePicture}
                   placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
@@ -121,7 +122,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                   useNextImage
                   style={profilePictureStyle}
                 />
-              </HighlightedButton>
+              </ButtonIcon>
             </SidebarTooltip>
             {/* 
             
@@ -168,9 +169,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                 </SidebarTooltip>
               ))}
               <SidebarTooltip title="Create DAO">
-                <HighlightedButton onClick={handleCreateDaoModal(true)}>
+                <ButtonIcon onClick={handleCreateDaoModal(true)}>
                   <AddIcon />
-                </HighlightedButton>
+                </ButtonIcon>
               </SidebarTooltip>
             </DrawerList>
           </ButtonWrapper>
@@ -182,21 +183,21 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
               // Open up modal instead
               return (
                 <SidebarTooltip key={id} title={tooltipLabel}>
-                  <HighlightedButton onClick={() => setOpenHelpModal(true)}>
+                  <ButtonIcon onClick={() => setOpenHelpModal(true)}>
                     <Icon />
-                  </HighlightedButton>
+                  </ButtonIcon>
                 </SidebarTooltip>
               );
             }
             return (
               <SidebarTooltip key={id} title={tooltipLabel}>
-                <HighlightedButton>
+                <ButtonIcon>
                   <Link href={url} passHref>
                     <a href={url} {...externalProps}>
                       <Icon />
                     </a>
                   </Link>
-                </HighlightedButton>
+                </ButtonIcon>
               </SidebarTooltip>
             );
           })}
