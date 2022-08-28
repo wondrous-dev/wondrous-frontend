@@ -82,7 +82,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
       key: 'settings',
       icon: StyledSettingsIcon,
       url: '/profile/settings',
-      tooltipLabel: 'Settings',
+      tooltipLabel: 'Profile Settings',
       id: 'wonder-settings',
     },
   ];
