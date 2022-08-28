@@ -1,9 +1,9 @@
 import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import { Logo } from 'components/Common/ci';
 import { DAOIcon } from 'components/Icons/dao';
-import PodIcon from 'components/Icons/podIcon';
 import SettingsIcon from 'components/Icons/settings.svg';
 import PodsIcon from 'components/Common/Sidebar/Common/icons/podsGradient.svg';
+import GridViewIcon from 'components/Common/Sidebar/Common/icons/gridView.svg';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 
@@ -249,6 +249,34 @@ export const ButtonWrapper = styled.div`
   gap: 16px;
   padding: 6px;
   border-radius: 150px;
+`;
+
+export const MissionControlButton = styled((props) => (
+  // NOTE: not yet in used, remove this comment when Mission Control page is implemented
+  <ButtonBase {...props}>
+    <div>
+      <GridViewIcon />
+    </div>
+  </ButtonBase>
+))`
+  && {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    div {
+      background-color: #313131;
+      border-radius: inherit;
+      width: 35px;
+      height: 35px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+  }
 `;
 
 export const PodsButton = styled((props) => (

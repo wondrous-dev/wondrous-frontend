@@ -26,6 +26,7 @@ import {
   HeaderLogo,
   HighlightedButton,
   LogoButton,
+  MissionControlButton,
   NoLogoDAO,
   PodsButton,
   StyledSettingsIcon,
@@ -122,7 +123,15 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                 />
               </HighlightedButton>
             </SidebarTooltip>
-            {/* TODO: mission control */}
+            {/* 
+            
+            TODO: uncomment when the page is implemented
+            
+            <SidebarTooltip title="Mission Control">
+              <MissionControlButton onClick={() => null} />
+            </SidebarTooltip>
+            
+            */}
             <SidebarTooltip title="Pods">
               <PodsButton onClick={() => setOpenPodModal(true)} />
             </SidebarTooltip>
