@@ -10,10 +10,11 @@ export const UserRowWrapper = styled.div`
   gap: 80px;
 `;
 
-export const UserProfile = styled.div`
+export const UserProfile = styled.a`
   display: flex;
   align-items: center;
   gap: 9px;
+  text-decoration: none;
 `;
 
 const ProfilePictureStyles = {

@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react';
+import Link from 'next/link';
 import MemberRoleDropdown from 'components/Settings/Members/MemberRoleDropdown';
 import { SafeImage } from 'components/Common/Image';
 import CopyIcon from 'components/Icons/copy';
 import { useWonderWeb3 } from 'services/web3';
-import PodIconWithoutBg from 'components/Icons/podIconWithoutBg';
 import PodIcon from 'components/Icons/podIcon';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
@@ -61,25 +61,27 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
 
   return (
     <UserRowWrapper>
-      <UserProfile>
-        {userProfilePicture ? (
-          <SafeImage
-            useNextImage={false}
-            src={userProfilePicture}
-            style={{
-              width: '40px',
-              height: '40px',
-              borderRadius: '50%',
-            }}
-          />
-        ) : (
-          <DefaultProfilePicture />
-        )}
-        <UserProfileNameContainer>
-          {!!userFullName && <UserProfileName>{userFullName}</UserProfileName>}
-          <UserProfileUsername>{username}</UserProfileUsername>
-        </UserProfileNameContainer>
-      </UserProfile>
+      <Link href={`/profile/${user?.username}/about`} passHref>
+        <UserProfile>
+          {userProfilePicture ? (
+            <SafeImage
+              useNextImage={false}
+              src={userProfilePicture}
+              style={{
+                width: '40px',
+                height: '40px',
+                borderRadius: '50%',
+              }}
+            />
+          ) : (
+            <DefaultProfilePicture />
+          )}
+          <UserProfileNameContainer>
+            {!!userFullName && <UserProfileName>{userFullName}</UserProfileName>}
+            <UserProfileUsername>{username}</UserProfileUsername>
+          </UserProfileNameContainer>
+        </UserProfile>
+      </Link>
       <UserProfileDetailsContainer>
         {userWalletAddressTag ? (
           <UserWalletAddressContainer hasAddressBeenCopied={hasAddressBeenCopied} onClick={handleAddressCopy}>
