@@ -7,6 +7,7 @@ import { useWonderWeb3 } from 'services/web3';
 import PodIcon from 'components/Icons/podIcon';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import MemberRoleSelectionDropdown from './MemberRoleSelectionDropdown';
 import {
   DefaultProfilePicture,
   UserOptions,
@@ -22,7 +23,7 @@ import {
   UserWalletAddressContainer,
   WalletAddressEmptyState,
 } from './styles';
-import { addressTag } from './utils';
+import { addressTag } from './helpers';
 
 const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
@@ -93,16 +94,14 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
         ) : (
           <WalletAddressEmptyState>No wallet added</WalletAddressEmptyState>
         )}
-        <div style={{ minWidth: '180px' }}>
-          <MemberRoleDropdown
-            userId={userId}
-            orgId={orgId}
-            podId={podId}
-            existingRole={role}
-            roleList={roleList}
-            username={user?.username}
-          />
-        </div>
+        <MemberRoleSelectionDropdown
+          userId={userId}
+          orgId={orgId}
+          podId={podId}
+          existingRole={role}
+          roleList={roleList}
+          username={user?.username}
+        />
         <UserPodCount>
           <UserPodIconContainer>
             <PodIcon strokeColor="#CCBBFF" />
@@ -110,7 +109,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
           {userPodCount || 0} {userPodCount ? 'Pods' : 'Pod'}
         </UserPodCount>
         <UserOptions>
-          <DropDown DropdownHandler={TaskMenuIcon}>
+          <DropDown DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke="#fff" />}>
             <DropDownItem
               onClick={() => {}}
               style={{
