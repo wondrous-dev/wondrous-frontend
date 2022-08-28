@@ -25,16 +25,15 @@ export const Text = styled(Typography)`
 
 export const Button = styled(ButtonBase)`
   && {
-    max-width: fit-content;
-    padding: 2px;
-    padding-right: 6px;
-    height: 32px;
+    padding: 6px;
+    width: 100%;
+    height: 42px;
     cursor: pointer;
     border-radius: 6px;
     display: flex;
     align-items: center;
     gap: 10px;
-    background: ${({ open, theme }) => open && `${theme.palette.grey78}`};
+    background: ${({ theme }) => theme.palette.black101};
     :hover {
       background: ${({ theme }) => theme.palette.grey78};
     }

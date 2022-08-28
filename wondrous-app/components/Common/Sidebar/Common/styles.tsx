@@ -15,11 +15,11 @@ export const SidebarWrapper = styled.div`
   gap: 28px;
   height: 100%;
   overflow-y: auto;
-  padding: 24px;
-  padding-top: 94px;
+  padding: 24px 14px;
   position: fixed;
-  width: 260px;
+  width: 200px;
   display: flex;
+  z-index: 500;
   ${({ minimized }) => minimized && `left: -100%`};
   ${ScrollBarStyles}
 `;

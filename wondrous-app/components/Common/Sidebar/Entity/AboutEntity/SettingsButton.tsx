@@ -4,13 +4,14 @@ import styled from 'styled-components';
 const Settings = styled(ButtonBase)`
   && {
     display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 6px;
-    width: 70px;
-    height: 28px;
-    background: ${({ theme }) => theme.palette.grey87};
-    border-radius: 6px;
+    padding: 10px 6px;
+    width: 79px;
+    height: 36px;
+    background: #313131;
+    border-radius: 216px;
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 14px;

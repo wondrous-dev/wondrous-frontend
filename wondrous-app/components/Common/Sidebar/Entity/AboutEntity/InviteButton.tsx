@@ -11,19 +11,17 @@ const Invite = styled(ButtonBase)`
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    padding: 6px;
-    gap: 10px;
-    width: 51px;
-    height: 28px;
-    background: ${({ theme }) => theme.palette.highlightPurple};
-    border-radius: 6px;
+    padding: 10px 6px;
+    width: 79px;
+    height: 36px;
+    background: #313131;
+    border-radius: 216px;
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
     font-size: 14px;
     color: ${({ theme }) => theme.palette.white};
     :hover {
-      background: ${({ theme }) =>
-        `linear-gradient(90deg, ${theme.palette.highlightBlue} 2.68%, ${theme.palette.highlightPurple} 100%)`};
+      background: ${({ theme }) => theme.palette.grey58};
       filter: drop-shadow(0px 6px 14px rgba(0, 0, 0, 0.5));
     }
   }

@@ -5,28 +5,28 @@ import { useBoards } from 'utils/hooks';
 
 import EntityMenu from './EntityMenu';
 import InviteButton from './InviteButton';
-import PrivacyIcon from './PrivacyIcon';
 import SettingsButton from './SettingsButton';
-import TokenGatingIcon from './TokenGatingIcon';
 
 const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 12px;
+  gap: 24px;
+  width: 100%;
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   align-items: center;
-  gap: 12px;
+  justify-content: space-between;
+  width: 100%;
 `;
 
 const AboutEntity = () => {
   const router = useRouter();
   const { board } = useBoards();
   const canManage = useCanManage();
-  const { privacyLevel, id, name, thumbnailPicture, profilePicture } = board.orgData || board.pod || {};
+  const { id, name, thumbnailPicture, profilePicture } = board.orgData || board.pod || {};
   return (
     <Wrapper>
       <EntityMenu
@@ -39,8 +39,6 @@ const AboutEntity = () => {
       />
       <ButtonWrapper>
         <SettingsButton router={router} board={board} id={id} canManage={canManage} />
-        <PrivacyIcon privacyLevel={privacyLevel} />
-        <TokenGatingIcon orgId={board?.orgId} />
         <InviteButton id={id} canManage={canManage} />
       </ButtonWrapper>
     </Wrapper>
