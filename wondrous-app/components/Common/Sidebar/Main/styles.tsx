@@ -1,9 +1,10 @@
 import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import { Logo } from 'components/Common/ci';
-import { DAOIcon } from 'components/Icons/dao';
-import SettingsIcon from 'components/Common/Sidebar/Common/icons/settings.svg';
-import PodsIcon from 'components/Common/Sidebar/Common/icons/podsGradient.svg';
 import GridViewIcon from 'components/Common/Sidebar/Common/icons/gridView.svg';
+import PodsIcon from 'components/Common/Sidebar/Common/icons/podsGradient.svg';
+import SettingsIcon from 'components/Common/Sidebar/Common/icons/settings.svg';
+import { mainSidebarWidth } from 'components/Common/Sidebar/Common/styles';
+import { DAOIcon } from 'components/Icons/dao';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 
@@ -26,14 +27,13 @@ export const DrawerComponent = styled(Drawer)`
       height: 100vh;
       padding: 24px 0;
       z-index: 500;
-      max-width: 500px;
       ${hideScrollbar}
     }
   }
 `;
 
 export const DrawerContainer = styled.div`
-  width: 84px;
+  width: ${mainSidebarWidth};
   height: 100%;
   display: flex;
   align-items: center;

@@ -3,6 +3,10 @@ import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import AddIcon from 'components/Icons/add.svg';
 import styled from 'styled-components';
 
+export const mainSidebarWidth = '84px';
+
+export const entitySidebarWidth = '200px';
+
 export const Wrapper = styled.div`
   display: flex;
   width: 100%;
@@ -17,7 +21,7 @@ export const SidebarWrapper = styled.div`
   overflow-y: auto;
   padding: 24px 14px;
   position: fixed;
-  width: 200px;
+  width: ${entitySidebarWidth};
   display: flex;
   z-index: 500;
   justify-content: space-between;
@@ -32,10 +36,9 @@ export const SidebarContent = styled.div`
 `;
 
 export const ChildrenWrapper = styled.div`
-  margin-left: ${({ minimized }) => (minimized ? '0px' : '280px')};
+  margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   width: 100%;
-  padding-top: 94px;
-  padding-bottom: 24px;
+  padding: 14px 0;
 `;
 
 export const Label = styled(Typography)`

@@ -714,3 +714,8 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-row-gap: 20px;
   align-items: center;
 `;
+
+export const Container = styled.div`
+  width: 95%;
+  margin-top: 22px;
+`;
