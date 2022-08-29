@@ -1,6 +1,7 @@
 import { MenuItem, Modal, Typography } from '@mui/material';
 import ProposalIcon from 'components/Icons/proposalIcon';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { BaseCard } from '../card';
@@ -165,7 +166,7 @@ export const PodWrapper = styled.div`
 
 export const BountySignifier = styled.div`
   && {
-    background: #363636;
+    background: ${palette.grey85};
     font-size: 13px;
     color: ${({ theme }) => theme.palette.white};
     padding: 1px 8px;
