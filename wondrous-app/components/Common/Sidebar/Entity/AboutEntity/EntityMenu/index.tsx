@@ -3,7 +3,7 @@ import { useState } from 'react';
 import palette from 'theme/palette';
 import { useBoards } from 'utils/hooks';
 
-import { ArrowIcon, Button, ButtonIcon, Item, MenuStyled, NoLogoPod, Text } from './styles';
+import { ArrowIcon, Button, ButtonIcon, IconText, Item, MenuStyled, NoLogoPod, Text } from './styles';
 
 const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();
@@ -16,22 +16,24 @@ const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canMan
   return (
     <>
       <Button onClick={handleClick} open={open} disabled={!canManage}>
-        <ButtonIcon>
-          {orgBoard ? (
-            <OrgProfilePicture
-              profilePicture={thumbnailPicture || profilePicture}
-              style={{
-                borderRadius: '3px',
-                width: '28px',
-                height: '28px',
-                background: palette.grey87,
-              }}
-            />
-          ) : (
-            <NoLogoPod />
-          )}
-        </ButtonIcon>
-        <Text>{name}</Text>
+        <IconText>
+          <ButtonIcon>
+            {orgBoard ? (
+              <OrgProfilePicture
+                profilePicture={thumbnailPicture || profilePicture}
+                style={{
+                  borderRadius: '3px',
+                  width: '28px',
+                  height: '28px',
+                  background: palette.grey87,
+                }}
+              />
+            ) : (
+              <NoLogoPod />
+            )}
+          </ButtonIcon>
+          <Text>{name}</Text>
+        </IconText>
         {canManage && <ArrowIcon open={open} />}
       </Button>
       <MenuStyled anchorEl={anchorEl} open={open} onClose={handleClose}>

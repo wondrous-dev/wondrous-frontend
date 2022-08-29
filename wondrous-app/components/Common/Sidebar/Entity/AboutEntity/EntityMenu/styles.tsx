@@ -15,11 +15,11 @@ export const Text = styled(Typography)`
   && {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;
-    font-size: 16px;
-    line-height: 21px;
-    display: flex;
-    align-items: center;
+    font-size: 15px;
     color: ${({ theme }) => theme.palette.white};
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 `;
 
@@ -32,12 +32,19 @@ export const Button = styled(ButtonBase)`
     border-radius: 6px;
     display: flex;
     align-items: center;
-    gap: 10px;
+    justify-content: space-between;
     background: ${({ theme }) => theme.palette.black101};
     :hover {
       background: ${({ theme }) => theme.palette.grey78};
     }
   }
+`;
+
+export const IconText = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 95%;
 `;
 
 export const ArrowIcon = styled((props) => (
