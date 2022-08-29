@@ -33,6 +33,7 @@ export const SidebarContent = styled.div`
   display: flex;
   flex-direction: column;
   gap: 28px;
+  flex-grow: 1;
 `;
 
 export const ChildrenWrapper = styled.div`
