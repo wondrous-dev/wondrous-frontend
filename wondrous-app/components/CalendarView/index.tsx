@@ -65,7 +65,7 @@ import {
   CalendarViewWeekendIconCheckmark,
 } from './styles';
 
-const daysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const nameDaysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const monthsOfYear = [
   'January',
   'February',
@@ -105,7 +105,6 @@ const CalendarView = (props) => {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
-  const user = useMe();
   const [getOrg] = useLazyQuery(GET_ORG_BY_ID, {
     onCompleted: (data) => {
       setOrgData(data?.getOrgById);
@@ -116,9 +115,6 @@ const CalendarView = (props) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const board = orgBoard || userBoard || podBoard;
-  const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
-  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId, enablePodFilter: true });
   const [getOrgCalendarTasks] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
     onCompleted: (data) => {
       setCalendarData(data?.getOrgTaskBoardCalendar);
@@ -175,53 +171,7 @@ const CalendarView = (props) => {
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
   const prevColumnState = usePrevious(columns);
-  const updateTaskStatus = async (taskToBeUpdated, aboveOrder, belowOrder) => {
-    let currentBoard: String;
-    if (orgBoard) {
-      currentBoard = 'org';
-    }
-    if (podBoard) {
-      currentBoard = 'pod';
-    }
-    if (userBoard) {
-      currentBoard = 'assignee';
-    }
-    try {
-      const {
-        data: { updateTask: task },
-      } = await apollo.mutate({
-        mutation: UPDATE_TASK_STATUS,
-        variables: {
-          taskId: taskToBeUpdated.id,
-          input: {
-            newStatus: taskToBeUpdated.status,
-            board: currentBoard,
-            aboveOrder,
-            belowOrder,
-          },
-        },
-        refetchQueries: () => [
-          'getUserTaskBoardTasks',
-          'getOrgTaskBoardCalendar',
-          'getOrgTaskBoardTasks',
-          'getPodTaskBoardTasks',
-          'getPerStatusTaskCountForMilestone',
-          'getPerStatusTaskCountForUserBoard',
-          'getPerStatusTaskCountForOrgBoard',
-          'getPerStatusTaskCountForPodBoard',
-        ],
-      });
 
-      return true;
-    } catch (err) {
-      if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
-        if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
-          //   setDndErrorModal(true);
-          setColumns(prevColumnState);
-        }
-      }
-    }
-  };
   const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
     onCompleted: (data) => {
       if (data?.getOrgFromUsername) {
@@ -251,50 +201,6 @@ const CalendarView = (props) => {
 
   const handleTaskClose = () => {
     setOpenTaskModal(false);
-  };
-
-  const getDaysOfWeek = () => {
-    const daysOfWeek = [];
-    const trackedDate = trackDate;
-
-    const dayOfWeek = trackDate.getDay();
-    for (let i = dayOfWeek; i >= 0; i--) {
-      const holdDay = new Date(trackedDate);
-      holdDay.setDate(holdDay.getDate() - i);
-      daysOfWeek.push({ date: holdDay.getDate(), tasks: [], day: holdDay });
-    }
-    for (let i = 0; i < 6 - dayOfWeek; i++) {
-      let holdDay = new Date(trackedDate);
-      holdDay = new Date(holdDay.setDate(holdDay.getDate() + 1 + i));
-      daysOfWeek.push({ date: holdDay.getDate(), tasks: [], day: holdDay });
-    }
-    setWeek(daysOfWeek);
-    getTasks(daysOfWeek);
-  };
-
-  const getDaysOfMonth = () => {
-    const daysOfMonth = [];
-    const dayOfWeek = new Date(year, month, 1).getDay();
-
-    for (let i = dayOfWeek - 1; i >= 0; i--) {
-      const numDay = new Date(year, month, 0).getDate();
-      const numDate = new Date(year, month - 1, numDay - i);
-
-      daysOfMonth.push({ date: numDay - i, tasks: [], day: numDate });
-    }
-    const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
-    for (let i = 1; i <= lastDateOfMonth; i++) {
-      const currentMonthDay = new Date(year, month, i);
-      daysOfMonth.push({ date: i, tasks: [], day: currentMonthDay });
-    }
-    const lastDayOfMonth = new Date(year, month + 1, 0).getDay();
-    for (let i = 0; i < 6 - lastDayOfMonth; i++) {
-      const numDay = new Date(year, month + 1, 1 + i).getDate();
-      const numDate = new Date(year, month + 1, 1 + i);
-      daysOfMonth.push({ date: numDay, tasks: [], day: numDate });
-    }
-    setCurrentDaysOfMonth(daysOfMonth);
-    getTasks(daysOfMonth);
   };
 
   const getTasks = (days) => {
@@ -330,6 +236,50 @@ const CalendarView = (props) => {
         setCurrentDaysOfMonth(holdCurrentDaysOfMonth);
       }
     }
+  };
+
+  const getDaysOfWeek = () => {
+    const daysOfWeek = [];
+    const trackedDate = trackDate;
+
+    const dayOfWeek = trackDate.getDay();
+    for (let i = dayOfWeek; i >= 0; i -= 1) {
+      const holdDay = new Date(trackedDate);
+      holdDay.setDate(holdDay.getDate() - i);
+      daysOfWeek.push({ date: holdDay.getDate(), tasks: [], day: holdDay });
+    }
+    for (let i = 0; i < 6 - dayOfWeek; i += 1) {
+      let holdDay = new Date(trackedDate);
+      holdDay = new Date(holdDay.setDate(holdDay.getDate() + 1 + i));
+      daysOfWeek.push({ date: holdDay.getDate(), tasks: [], day: holdDay });
+    }
+    setWeek(daysOfWeek);
+    getTasks(daysOfWeek);
+  };
+
+  const getDaysOfMonth = () => {
+    const daysOfMonth = [];
+    const dayOfWeek = new Date(year, month, 1).getDay();
+
+    for (let i = dayOfWeek - 1; i >= 0; i--) {
+      const numDay = new Date(year, month, 0).getDate();
+      const numDate = new Date(year, month - 1, numDay - i);
+
+      daysOfMonth.push({ date: numDay - i, tasks: [], day: numDate });
+    }
+    const lastDateOfMonth = new Date(year, month + 1, 0).getDate();
+    for (let i = 1; i <= lastDateOfMonth; i++) {
+      const currentMonthDay = new Date(year, month, i);
+      daysOfMonth.push({ date: i, tasks: [], day: currentMonthDay });
+    }
+    const lastDayOfMonth = new Date(year, month + 1, 0).getDay();
+    for (let i = 0; i < 6 - lastDayOfMonth; i++) {
+      const numDay = new Date(year, month + 1, 1 + i).getDate();
+      const numDate = new Date(year, month + 1, 1 + i);
+      daysOfMonth.push({ date: numDay, tasks: [], day: numDate });
+    }
+    setCurrentDaysOfMonth(daysOfMonth);
+    getTasks(daysOfMonth);
   };
 
   const handleSelectTask = (taskID) => {
@@ -464,7 +414,7 @@ const CalendarView = (props) => {
         <div>
           <CalendarViewContainer>
             <CalendarDayOfWeekBar>
-              {daysOfWeek.map((day) => (
+              {nameDaysOfWeek.map((day) => (
                 <CalendarViewLabel key={day}>{day}</CalendarViewLabel>
               ))}
             </CalendarDayOfWeekBar>
@@ -525,7 +475,7 @@ const CalendarView = (props) => {
         <div>
           <CalendarViewContainer>
             <CalendarDayOfWeekBar>
-              {daysOfWeek.map((day, i) => {
+              {nameDaysOfWeek.map((day, i) => {
                 const todayDate = new Date();
                 return week?.[i]?.day.getMonth() === todayDate.getMonth() &&
                   week?.[i]?.day.getDate() === todayDate.getDate() &&
