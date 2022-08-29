@@ -574,6 +574,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/forgot-password',
   '/reset-password',
   '/onboarding-dao',
+  '/new-task',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'

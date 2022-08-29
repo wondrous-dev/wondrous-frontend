@@ -59,6 +59,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import pick from 'lodash/pick';
 import isUndefined from 'lodash/isUndefined';
 import assignWith from 'lodash/assignWith';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
 
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -264,16 +266,26 @@ const filterPaymentMethods = (paymentMethods) => {
   }));
 };
 
-const filterOrgUsers = (orgUsers) => {
-  if (!orgUsers) {
+const filterOrgUsers = ({ orgUsersData, existingTask = null }) => {
+  if (!orgUsersData) {
     return [];
   }
-
-  return orgUsers.map((orgUser) => ({
+  const users = orgUsersData.map((orgUser) => ({
     profilePicture: orgUser?.user?.profilePicture,
     label: orgUser?.user?.username,
     value: orgUser?.user?.id,
   }));
+  const availableUsers = existingTask?.assigneeId
+    ? users.concat({
+        label: existingTask?.assignee?.username,
+        profilePicture: existingTask?.assignee?.profilePicture,
+        value: existingTask?.assigneeId,
+      })
+    : users;
+  return sortBy(
+    uniqBy(availableUsers, ({ value }) => value),
+    ({ label }) => label
+  );
 };
 
 const filterOptionsWithPermission = (
@@ -412,6 +424,7 @@ const useGetEligibleReviewers = (org, pod) => {
           podId: pod,
           searchString: '',
         },
+        fetchPolicy: 'cache-and-network',
       });
     } else if (org) {
       getEligibleReviewersForOrg({
@@ -419,6 +432,7 @@ const useGetEligibleReviewers = (org, pod) => {
           orgId: org,
           searchString: '',
         },
+        fetchPolicy: 'cache-and-network',
       });
     }
   }, [org, pod, getEligibleReviewersForOrg, getEligibleReviewersForPod]);
@@ -542,6 +556,7 @@ const useCreateTask = () => {
       'getPerStatusTaskCountForPodBoard',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
+      'getTasksForMilestone',
     ],
   });
 
@@ -1085,6 +1100,11 @@ interface ICreateEntityModal {
     type?: string;
     orgId: string;
     snapshotId?: string;
+    assignee?: {
+      username?: string;
+      profilePicture?: string;
+    };
+    assigneeId?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1117,6 +1137,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask = parentTaskId !== undefined;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
+  const isTask = entityType === ENTITIES_TYPES.TASK;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -1205,7 +1226,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   });
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
   const orgUsersData = useGetOrgUsers(form.values.orgId);
-  const filteredOrgUsersData = filterOrgUsers(orgUsersData);
+  const filteredOrgUsersData = filterOrgUsers({ orgUsersData, existingTask });
   const orgLabelsData = useGetOrgLabels(form.values.orgId);
   const handleCreateLabel = useCreateLabel(form.values.orgId, (newLabelId) =>
     form.setFieldValue('labelIds', [...form.values.labelIds, newLabelId])
@@ -1301,7 +1322,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'reviewerIds',
       existingTask?.reviewers?.map((reviewer) => reviewer.id)
     );
-    form.setFieldValue('claimPolicy', existingTask?.claimPolicy);
+    if (isTask) {
+      form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
+    }
     form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
@@ -1316,6 +1339,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     existingTask?.points,
     existingTask?.milestoneId,
     existingTask?.labels,
+    isTask,
   ]);
 
   useEffect(() => {
@@ -1847,7 +1871,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   value={form.values.assigneeId}
                   isOptionEqualToValue={(option, value) => option.value === value}
                   renderInput={(params) => {
-                    const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
+                    const assignee: any = filteredOrgUsersData.find(
+                      (user: any) => user.value === params.inputProps.value
+                    );
                     return (
                       <CreateEntityAutocompletePopperRenderInput
                         {...params}

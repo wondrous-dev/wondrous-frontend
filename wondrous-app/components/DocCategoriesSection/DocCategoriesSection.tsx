@@ -14,7 +14,7 @@ function DocCategoriesSection({ onItemClick, onOpenDocDialog, docs, category, on
 
   return (
     <Box>
-      <Box display="flex" alignItems="center" mb={2.5} mt={8}>
+      <Box display="flex" alignItems="center" mb={2.5} mt={4}>
         <Box mr={1}>
           <Image src="/images/icons/folder.png" alt="folder icon" width={16} height={14} />
         </Box>
