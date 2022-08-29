@@ -129,29 +129,32 @@ const useSidebarData = () => {
   };
 };
 
+const location = () => {
+  if (typeof window !== 'undefined') return window.location.pathname + window.location.search;
+  return '';
+};
+
 const List = () => {
   const { data, handleOnClick } = useSidebarData();
   const router = useRouter();
+  const isActive = (entityType, link) => (entityType ? location().includes(link) : router.asPath.includes(link));
   return (
     <ListWrapper>
       {data?.map(({ label, items }) => (
         <ListWrapper key={label}>
           <Label>{label}</Label>
           <ListWrapper>
-            {items.map(({ text, link, Icon, count, entityType = null }) => {
-              const isActive = entityType ? window.location.toString().includes(link) : router.asPath.includes(link);
-              return (
-                <Item
-                  key={text}
-                  onClick={handleOnClick(link, entityType)}
-                  Icon={Icon}
-                  isActive={isActive}
-                  count={count}
-                >
-                  {text}
-                </Item>
-              );
-            })}
+            {items.map(({ text, link, Icon, count, entityType = null }) => (
+              <Item
+                key={text}
+                onClick={handleOnClick(link, entityType)}
+                Icon={Icon}
+                isActive={isActive(entityType, link)}
+                count={count}
+              >
+                {text}
+              </Item>
+            ))}
           </ListWrapper>
         </ListWrapper>
       ))}
