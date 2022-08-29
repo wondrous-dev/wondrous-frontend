@@ -84,6 +84,10 @@ export const UserWalletAddressContainer = styled(WalletAddressEmptyState)`
     cursor: pointer;
     transition: border-color 0.2s ease-in-out;
 
+    :hover {
+      border: 1px solid ${palette.grey79};
+    }
+
     svg {
       width: 14px;
       height: 14px;
