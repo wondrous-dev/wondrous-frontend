@@ -163,3 +163,14 @@ export const deleteFromCache = (cache, data, mutationQuery, queryToModify, id, s
     });
   }
 };
+
+export const deleteTaskFromCache = (cache, id, keys = []) => {
+  const fields = keys.reduce((acc, next) => {
+    acc[next] = (existingItems = [], { readField }) => existingItems?.filter((item) => readField('id', item) !== id);
+    return acc;
+  }, {});
+
+  return cache.modify({
+    fields,
+  });
+};
