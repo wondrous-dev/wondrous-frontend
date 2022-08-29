@@ -14,7 +14,7 @@ const Invite = styled(ButtonBase)`
     padding: 10px 6px;
     width: 79px;
     height: 36px;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 216px;
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 500;

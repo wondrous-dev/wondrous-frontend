@@ -62,8 +62,8 @@ export const DrawerListItem = styled(({ children, ...props }) => (
     height: 36px;
     width: 36px;
     border-radius: 50%;
-    background: #313131;
-    filter: drop-shadow(0 3px 3px #0f0f0f);
+    background: ${({ theme }) => theme.palette.grey87};
+    filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.background.default})`};
     > div {
       height: 34px;
       width: 34px;
@@ -252,7 +252,7 @@ export const HeaderLogo = styled(Logo)`
 `;
 
 export const ButtonWrapper = styled.div`
-  background: #232323;
+  background: ${({ theme }) => theme.palette.black92};
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -274,12 +274,13 @@ export const MissionControlButton = styled((props) => (
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+    background: ${({ theme }) =>
+      `linear-gradient(180deg, ${theme.palette.highlightPurple} 0%, ${theme.palette.orange90} 100%)`};
     display: flex;
     align-items: center;
     justify-content: center;
     div {
-      background-color: #313131;
+      background-color: ${({ theme }) => theme.palette.grey87};
       border-radius: inherit;
       width: 34px;
       height: 34px;
@@ -301,12 +302,13 @@ export const PodsButton = styled((props) => (
     width: 36px;
     height: 36px;
     border-radius: 50%;
-    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
+    background: ${({ theme }) =>
+      `linear-gradient(180deg, ${theme.palette.highlightPurple} 0%, ${theme.palette.orange90} 100%)`};
     display: flex;
     align-items: center;
     justify-content: center;
     div {
-      background-color: #313131;
+      background-color: ${({ theme }) => theme.palette.grey87};
       border-radius: inherit;
       width: 34px;
       height: 34px;

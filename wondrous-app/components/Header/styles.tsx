@@ -154,7 +154,7 @@ export const HeaderRightBlock = styled.div`
 export const StyledBadge = styled(ButtonBase)`
   && {
     align-items: center;
-    background: #313131;
+    background: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
     border: none;
     cursor: pointer;

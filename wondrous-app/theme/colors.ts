@@ -112,6 +112,7 @@ export const violetColors = {
 
 export const orangeColors = {
   orange: '#F0905A',
+  orange90: '#f2c678',
   orange100: '#F2994A',
   orange200: '#FF901F',
   orange600: '#E28855',

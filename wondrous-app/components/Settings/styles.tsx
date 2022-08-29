@@ -26,7 +26,7 @@ export const SettingsContainer = styled.div`
 `;
 
 export const SettingsSidebar = styled.div`
-  background: #232323;
+  background: ${({ theme }) => theme.palette.black92};
   flex-direction: column;
   gap: 28px;
   height: 100%;

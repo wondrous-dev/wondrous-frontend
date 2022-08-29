@@ -21,7 +21,7 @@ export const SearchInput = styled(Input)`
   && {
     .MuiOutlinedInput-root {
       width: 100%;
-      background: #313131;
+      background: ${({ theme }) => theme.palette.grey87};
       border-top-right-radius: 150px;
       border-bottom-right-radius: 150px;
       border-top-left-radius: 0px;
@@ -90,7 +90,7 @@ export const SearchInputWrapper = styled.div`
 
 export const SearchIconWrapper = styled.div`
   align-items: center;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87};
   border-bottom-left-radius: 150px;
   border-bottom-right-radius: 0;
   border-top-left-radius: 150px;
@@ -102,7 +102,7 @@ export const SearchIconWrapper = styled.div`
   ${({ isExpanded }) => !isExpanded && 'border-radius: 50%;'};
   svg {
     path {
-      stroke: #fff;
+      stroke: ${({ theme }) => theme.palette.white};
     }
   }
 `;
