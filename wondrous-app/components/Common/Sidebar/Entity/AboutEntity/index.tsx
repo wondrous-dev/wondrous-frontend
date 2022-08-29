@@ -20,6 +20,7 @@ const ButtonWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   width: 100%;
+  gap: 4px;
 `;
 
 const AboutEntity = () => {
