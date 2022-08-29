@@ -3,6 +3,7 @@ import {
   ChildrenWrapper,
   Label,
   ListWrapper,
+  SidebarContent,
   SidebarWrapper,
   Wrapper,
 } from 'components/Common/Sidebar/Common/styles';
@@ -12,6 +13,7 @@ import { ColorTypes } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
 import BackButton from './Common/BackButton';
+import CollapseExpandButton from './Common/CollapseButton';
 import { useCanEdit } from './Common/hooks';
 import FolderIcon from './Common/icons/folder.svg';
 import Item from './Common/Item';
@@ -28,38 +30,41 @@ const ResourcesSidebar = ({ children, docs, handleCreateNewCategory, handleSelec
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
-        <BackButton href={href} />
-        <ListWrapper>
-          <Label>Resources</Label>
+        <SidebarContent>
+          <BackButton href={href} />
           <ListWrapper>
-            {canEdit && (
-              <Item roundedBg bgColor={randomColors[randomColors.length - 1]} onClick={handleCreateNewCategory}>
-                <AddIconWrapper /> New Category
-              </Item>
-            )}
-            <Item
-              Icon={FolderIcon}
-              roundedBg
-              bgColor={randomColors[randomColors.length - 1]}
-              onClick={handleSelectCategory(null)}
-              isActive={selectedCategory === null}
-            >
-              Show all
-            </Item>
-            {docs?.map(({ name, id }, index) => (
+            <Label>Resources</Label>
+            <ListWrapper>
+              {canEdit && (
+                <Item roundedBg bgColor={randomColors[randomColors.length - 1]} onClick={handleCreateNewCategory}>
+                  <AddIconWrapper /> New Category
+                </Item>
+              )}
               <Item
-                key={id}
                 Icon={FolderIcon}
                 roundedBg
-                bgColor={randomColors[index]}
-                onClick={handleSelectCategory(id)}
-                isActive={selectedCategory === id}
+                bgColor={randomColors[randomColors.length - 1]}
+                onClick={handleSelectCategory(null)}
+                isActive={selectedCategory === null}
               >
-                {name}
+                Show all
               </Item>
-            ))}
+              {docs?.map(({ name, id }, index) => (
+                <Item
+                  key={id}
+                  Icon={FolderIcon}
+                  roundedBg
+                  bgColor={randomColors[index]}
+                  onClick={handleSelectCategory(id)}
+                  isActive={selectedCategory === id}
+                >
+                  {name}
+                </Item>
+              ))}
+            </ListWrapper>
           </ListWrapper>
-        </ListWrapper>
+        </SidebarContent>
+        <CollapseExpandButton />
       </SidebarWrapper>
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </Wrapper>

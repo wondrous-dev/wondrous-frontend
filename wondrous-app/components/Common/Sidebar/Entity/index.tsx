@@ -1,6 +1,7 @@
-import { ChildrenWrapper, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
+import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
 import useSideBar from 'hooks/useSideBar';
 import { useRouter } from 'next/router';
+import CollapseExpandButton from '../Common/CollapseButton';
 
 import AboutEntity from './AboutEntity';
 import List from './List';
@@ -12,14 +13,17 @@ const EntitySidebar = ({ children }) => {
   return (
     <Wrapper>
       <SidebarWrapper minimized={minimized}>
-        {query.roles ? (
-          <RolesSidebar />
-        ) : (
-          <>
-            <AboutEntity />
-            <List />
-          </>
-        )}
+        <SidebarContent>
+          {query.roles ? (
+            <RolesSidebar />
+          ) : (
+            <>
+              <AboutEntity />
+              <List />
+            </>
+          )}
+        </SidebarContent>
+        <CollapseExpandButton />
       </SidebarWrapper>
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </Wrapper>

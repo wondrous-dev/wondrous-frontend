@@ -31,6 +31,7 @@ import {
   PodsButton,
   StyledSettingsIcon,
   HighlightedButton,
+  BottomButtonIcon,
 } from './styles';
 
 type Props = {
@@ -68,7 +69,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
-  const handleMinimize = () => setMinimized(!minimized);
+  const handleMinimize = () => setMinimized(false);
 
   const BOTTOM_LINKS_CONFIG = [
     {
@@ -99,7 +100,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
   }
 
   return (
-    <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
+    <DrawerComponent variant="permanent" anchor="left">
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
@@ -183,29 +184,31 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
               // Open up modal instead
               return (
                 <SidebarTooltip key={id} title={tooltipLabel}>
-                  <ButtonIcon onClick={() => setOpenHelpModal(true)}>
+                  <BottomButtonIcon onClick={() => setOpenHelpModal(true)}>
                     <Icon />
-                  </ButtonIcon>
+                  </BottomButtonIcon>
                 </SidebarTooltip>
               );
             }
             return (
               <SidebarTooltip key={id} title={tooltipLabel}>
-                <ButtonIcon>
+                <BottomButtonIcon>
                   <Link href={url} passHref>
                     <a href={url} {...externalProps}>
                       <Icon />
                     </a>
                   </Link>
-                </ButtonIcon>
+                </BottomButtonIcon>
               </SidebarTooltip>
             );
           })}
-          <Tooltip style={toolTipStyle} title={minimized ? 'Expand Sidebar' : 'Collapse Sidebar'} placement="right">
-            <DrawerBackButton onClick={handleMinimize} className={minimized && 'active'}>
-              <BackArrowIcon />
-            </DrawerBackButton>
-          </Tooltip>
+          {minimized && (
+            <Tooltip style={toolTipStyle} title="Expand Sidebar" placement="right">
+              <DrawerBackButton onClick={handleMinimize}>
+                <BackArrowIcon />
+              </DrawerBackButton>
+            </Tooltip>
+          )}
         </DrawerBlockWrapper>
       </DrawerContainer>
     </DrawerComponent>

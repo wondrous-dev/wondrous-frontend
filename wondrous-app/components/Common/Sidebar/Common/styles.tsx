@@ -20,8 +20,15 @@ export const SidebarWrapper = styled.div`
   width: 200px;
   display: flex;
   z-index: 500;
+  justify-content: space-between;
   ${({ minimized }) => minimized && `left: -100%`};
   ${ScrollBarStyles}
+`;
+
+export const SidebarContent = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
 `;
 
 export const ChildrenWrapper = styled.div`

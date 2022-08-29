@@ -24,13 +24,10 @@ export const DrawerComponent = styled(Drawer)`
     & .MuiDrawer-paperAnchorDockedLeft {
       background-color: ${palette.black97};
       height: 100vh;
-      padding-top: 18px;
+      padding: 24px 0;
       z-index: 500;
       max-width: 500px;
       ${hideScrollbar}
-    }
-    &.active .MuiDrawer-paperAnchorDockedLeft {
-      left: -100%;
     }
   }
 `;
@@ -42,7 +39,6 @@ export const DrawerContainer = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  padding-bottom: 72px;
 `;
 
 export const DrawerList = styled(List)`
@@ -187,6 +183,19 @@ export const ButtonIcon = styled(ButtonBase)`
   }
 `;
 
+export const BottomButtonIcon = styled(ButtonBase)`
+  && {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 36px;
+    width: 36px;
+    background: transparent;
+    border-radius: 50%;
+    background: ${({ theme }) => theme.palette.black92};
+  }
+`;
+
 export const HighlightedButton = styled(({ children, ...props }) => (
   <ButtonBase {...props}>
     <div>{children}</div>
@@ -218,18 +227,13 @@ export const HighlightedButton = styled(({ children, ...props }) => (
   }
 `;
 
-export const DrawerBackButton = styled(ButtonIcon)`
+export const DrawerBackButton = styled(BottomButtonIcon)`
   && {
-    position: fixed;
-    bottom: 24px;
-    left: 24px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: transform 0.2s;
-    &.active {
-      transform: rotate(180deg);
-    }
+    transform: rotate(180deg);
   }
 `;
 

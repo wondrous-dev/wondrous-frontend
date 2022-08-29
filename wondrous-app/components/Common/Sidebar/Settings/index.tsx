@@ -9,7 +9,14 @@ import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notificati
 import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
 import Item from 'components/Common/Sidebar/Common/Item';
-import { ChildrenWrapper, Label, ListWrapper, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
+import {
+  ChildrenWrapper,
+  Label,
+  ListWrapper,
+  SidebarContent,
+  SidebarWrapper,
+  Wrapper,
+} from 'components/Common/Sidebar/Common/styles';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
@@ -25,6 +32,7 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useCreateEntityContext, useSideBar } from 'utils/hooks';
+import CollapseExpandButton from '../Common/CollapseButton';
 
 import {
   ArchivedPodIndicatorText,
@@ -224,31 +232,34 @@ function SettingsWrapper(props) {
       <ChooseEntityToCreate />
       <Wrapper>
         <SidebarWrapper minimized={minimized}>
-          <BackButton href={activeSettingsPage?.path} />
-          <ListWrapper>
-            <Label>{activeSettingsPage.label} Settings</Label>
+          <SidebarContent>
+            <BackButton href={activeSettingsPage?.path} />
             <ListWrapper>
-              {createListItems({ orgId, podId }).map((item) => {
-                if (!item.page?.includes(activeSettingsPage.page)) return null;
-                const { href, Icon, label } = item;
-                const pathnameSplit = pathname.split('/');
-                const hrefSplit = href.split('/');
-                const endPathName = pathnameSplit[pathnameSplit.length - 1];
-                const endHref = hrefSplit[hrefSplit.length - 1];
-                const active = endHref === endPathName;
-                return (
-                  <Link key={href} href={href} passHref>
-                    <Item key={label} Icon={Icon} isActive={active}>
-                      {label}
-                    </Item>
-                  </Link>
-                );
-              })}
-              <Item Icon={ExitIcon} onClick={() => logout()}>
-                Log out
-              </Item>
+              <Label>{activeSettingsPage.label} Settings</Label>
+              <ListWrapper>
+                {createListItems({ orgId, podId }).map((item) => {
+                  if (!item.page?.includes(activeSettingsPage.page)) return null;
+                  const { href, Icon, label } = item;
+                  const pathnameSplit = pathname.split('/');
+                  const hrefSplit = href.split('/');
+                  const endPathName = pathnameSplit[pathnameSplit.length - 1];
+                  const endHref = hrefSplit[hrefSplit.length - 1];
+                  const active = endHref === endPathName;
+                  return (
+                    <Link key={href} href={href} passHref>
+                      <Item key={label} Icon={Icon} isActive={active}>
+                        {label}
+                      </Item>
+                    </Link>
+                  );
+                })}
+                <Item Icon={ExitIcon} onClick={() => logout()}>
+                  Log out
+                </Item>
+              </ListWrapper>
             </ListWrapper>
-          </ListWrapper>
+          </SidebarContent>
+          <CollapseExpandButton />
         </SidebarWrapper>
 
         <ChildrenWrapper minimized={minimized}>
