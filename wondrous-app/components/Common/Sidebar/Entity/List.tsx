@@ -21,13 +21,13 @@ const usePerTypeTaskCountForBoard = () => {
     variables: {
       orgId: board?.orgId,
     },
-    skip: podBoard,
+    skip: !(orgBoard && board.orgId),
   });
   const { data: podData } = useQuery(GET_TASKS_PER_TYPE_FOR_POD, {
     variables: {
       podId: board?.podId,
     },
-    skip: orgBoard,
+    skip: !(podBoard && board.podId),
   });
   return orgData?.getPerTypeTaskCountForOrgBoard || podData?.getPerTypeTaskCountForPodBoard || {};
 };
