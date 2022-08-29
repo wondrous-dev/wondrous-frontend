@@ -39,36 +39,6 @@ const useSidebarData = () => {
   const taskCount = usePerTypeTaskCountForBoard();
   return [
     {
-      label: '',
-      items: [
-        // {
-        //   text: 'Dashboard',
-        //   Icon: HomeIcon,
-        //   link: null, // to new project page
-        // },
-        {
-          text: 'Activity',
-          Icon: ShowChartIcon,
-          link: `${link}/activities`,
-        },
-        {
-          text: 'Analytics',
-          Icon: PieChartIcon,
-          link: `${link}/analytics`,
-        },
-        {
-          text: 'Resources',
-          Icon: FolderIcon,
-          link: `${link}/docs`,
-        },
-        // {
-        //   text: 'Pods',
-        //   Icon: PodIcon,
-        //   link: null, // link: not sure yet
-        // },
-      ],
-    },
-    {
       label: 'Workspaces',
       items: [
         {
@@ -95,11 +65,26 @@ const useSidebarData = () => {
           link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
           count: taskCount.proposalCount,
         },
+        // {
+        //   text: 'Pods',
+        //   Icon: PodIcon,
+        //   link: null, // link: not sure yet
+        // },
       ],
     },
     {
       label: 'Community',
       items: [
+        {
+          text: 'Analytics',
+          Icon: PieChartIcon,
+          link: `${link}/analytics`,
+        },
+        {
+          text: 'Activity',
+          Icon: ShowChartIcon,
+          link: `${link}/activities`,
+        },
         {
           text: 'Members',
           Icon: GroupIcon,
@@ -115,6 +100,12 @@ const useSidebarData = () => {
               roles: true,
             },
           },
+        },
+
+        {
+          text: 'Resources',
+          Icon: FolderIcon,
+          link: `${link}/docs`,
         },
       ],
     },
