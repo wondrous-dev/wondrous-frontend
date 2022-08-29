@@ -13,12 +13,13 @@ import '../styles/globals.css';
 
 import apollo from 'services/apollo';
 import theme from 'theme';
-import { IsMobileContext, SideBarContext } from 'utils/contexts';
+import { HotkeyContext, IsMobileContext } from 'utils/contexts';
 import { initHotjar } from 'utils/hotjar';
 import { Web3ReactProvider } from '@web3-react/core';
 import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
 import OnboardingTour from 'components/Guide';
 import SidebarLayout from 'components/Common/Layout';
+import { useHotkeys } from 'react-hotkeys-hook';
 
 declare global {
   interface Window {
@@ -44,6 +45,15 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
   // be server-side rendered.
   const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const [showHotkeys, setShowHotkeys] = useState(false);
+
+  useHotkeys(
+    'shift+s',
+    () => {
+      setShowHotkeys(!showHotkeys);
+    },
+    [showHotkeys]
+  );
 
   useEffect(() => {
     initHotjar();
@@ -80,17 +90,19 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
               <SnackbarAlertProvider>
                 <Web3ReactProvider getLibrary={getLibrary}>
                   <WonderWeb3Provider>
-                    <SidebarLayout>
-                      <OnboardingTour>
-                        <Component
-                          {...pageProps}
-                          query={context?.query}
-                          user={user}
-                          isAuthenticated={isAuthenticated}
-                          key={router.asPath}
-                        />
-                      </OnboardingTour>
-                    </SidebarLayout>
+                    <HotkeyContext.Provider value={showHotkeys}>
+                      <SidebarLayout>
+                        <OnboardingTour>
+                          <Component
+                            {...pageProps}
+                            query={context?.query}
+                            user={user}
+                            isAuthenticated={isAuthenticated}
+                            key={router.asPath}
+                          />
+                        </OnboardingTour>
+                      </SidebarLayout>
+                    </HotkeyContext.Provider>
                   </WonderWeb3Provider>
                 </Web3ReactProvider>
               </SnackbarAlertProvider>

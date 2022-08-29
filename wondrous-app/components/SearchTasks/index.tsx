@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { InputAdornment } from '@mui/material';
+import React, { useRef, useState } from 'react';
+import { Badge, InputAdornment } from '@mui/material';
 import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
 
@@ -9,7 +9,8 @@ import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { ViewType } from 'types/common';
-import { useUserBoard } from 'utils/hooks';
+import { useHotkey, useUserBoard } from 'utils/hooks';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { Autocomplete as DefaultAutocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
 import TaskIcon from '../Icons/TaskTypes/task';
 import MilestoneIcon from '../Icons/TaskTypes/milestone';
@@ -34,7 +35,6 @@ let timeout;
 export default function SearchTasks({ onSearch, isExpandable, autocompleteComponent }: Props) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
-  const [isPreviewModalOpen, setPreviewModalOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTask, setSelectedTask] = useState(null);
   const [inputValue, setInputValue] = useState(router.query.search);
@@ -42,6 +42,18 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const [hasMore, setHasMore] = useState(false);
   const [isExpanded, setIsExpanded] = useState(false);
   const board = useUserBoard() || {};
+  const autocompleteRef = useRef<HTMLInputElement>();
+
+  useHotkeys(
+    'enter',
+    () => {
+      setIsExpanded(!isExpanded);
+      autocompleteRef.current.focus();
+      setInputValue('');
+    },
+    [isExpanded]
+  );
+  const showBadge = useHotkey();
 
   const { searchLabel = 'Search tasks or people...' } = board;
   const LIMIT = 5;
@@ -98,7 +110,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   }
 
   const Autocomplete = autocompleteComponent || DefaultAutocomplete;
-  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '17%') : '100%';
+  const autocompleteWidth = isExpandable ? (isExpanded ? '100%' : '30%') : '100%';
 
   const handleBlur = (e) => setIsExpanded(false);
   const handleFocus = () => setIsExpanded(true);
@@ -113,7 +125,6 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
         isTaskProposal={selectedTask?.__typename === 'TaskProposalCard'}
         taskId={selectedTask?.id}
       />
-
       <Autocomplete
         open={open}
         onOpen={() => setOpen(true)}
@@ -190,12 +201,15 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
           <Input
             sx={{ height: '40px' }}
             {...params}
+            inputRef={autocompleteRef}
             placeholder={`${isExpanded || !isExpandable ? searchLabel : 'Search'}`}
             InputProps={{
               ...params.InputProps,
               startAdornment: (
                 <InputAdornment position="start">
-                  <SearchIconWrapped />
+                  <Badge badgeContent="enter" color="primary" invisible={!showBadge}>
+                    <SearchIconWrapped />
+                  </Badge>
                 </InputAdornment>
               ),
               endAdornment: (

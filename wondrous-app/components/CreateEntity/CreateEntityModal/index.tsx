@@ -99,6 +99,7 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
@@ -1203,6 +1204,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
+
+  useHotkeys('enter', () => {
+    form.handleSubmit();
+  });
+
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
   const orgUsersData = useGetOrgUsers(form.values.orgId);
   const filteredOrgUsersData = filterOrgUsers(orgUsersData);

@@ -38,7 +38,7 @@ import {
   ListViewItemActions,
 } from './styles';
 
-export default function ListViewItem({ task, entityType }) {
+export default function ListViewItem({ task, entityType, handleStatusPicked }) {
   let windowOffset = 0;
   const router = useRouter();
   const [data, setData] = useState(task);
@@ -265,6 +265,7 @@ export default function ListViewItem({ task, entityType }) {
         href={viewUrl}
         preventLinkNavigation
         onNavigate={() => {
+          handleStatusPicked(task.status);
           if (!showPaymentModal) {
             location.push(viewUrl);
             windowOffset = window.scrollY;

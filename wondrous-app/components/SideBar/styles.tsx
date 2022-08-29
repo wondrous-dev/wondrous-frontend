@@ -1,4 +1,4 @@
-import { ButtonBase, Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
+import { Badge, ButtonBase, Divider, Drawer, IconButton, List, ListItem, Typography } from '@mui/material';
 import AddIcon from 'components/Icons/add.svg';
 import SettingsIcon from 'components/Icons/settings';
 import { ExplorePageIcon, PodsIcon, TutorialsIcon } from 'components/Icons/sidebar';
@@ -128,17 +128,19 @@ const DrawerListCreateDaoWrapper = styled.div`
 
 export const DrawerListCreateDao = styled((props) => (
   <DrawerListCreateDaoWrapper>
-    <ButtonBase {...props}>
-      <div>
-        <AddIcon />
-      </div>
-    </ButtonBase>
+    <Badge badgeContent="shift+D" color="primary" invisible={!props.showBadge}>
+      <ButtonBase {...props}>
+        <div>
+          <AddIcon />
+        </div>
+      </ButtonBase>
+    </Badge>
   </DrawerListCreateDaoWrapper>
 ))`
   && {
-    width: 30px;
-    height: 30px;
-    border-radius: 60px;
+    width: 40px;
+    height: 40px;
+    border-radius: 4px;
     padding: 1px;
     background: transparent;
     :hover {

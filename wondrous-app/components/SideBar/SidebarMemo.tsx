@@ -5,6 +5,10 @@ import Link from 'next/link';
 import Tooltip from 'components/Tooltip';
 import { User } from 'types/User';
 import { Org } from 'types/Org';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Badge } from '@mui/material';
+import { useRouter } from 'next/router';
+import { useHotkey } from 'utils/hooks';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -58,7 +62,46 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
   const setMinimized = sidebar?.setMinimized;
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
-  const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
+  const [openCreateDaoModal, setOpenCreateDaoModal] = useState(false);
+  const router = useRouter();
+  const showBadge = useHotkey();
+
+  useHotkeys(
+    'p',
+    () => {
+      router.push(`/profile/${user?.username}/about`);
+    },
+    [user]
+  );
+  useHotkeys(
+    '*',
+    (event) => {
+      if (Number(event.key) <= orgsList.length) {
+        router.push(`/organization/${orgsList[Number(event.key) - 1]?.username}/boards`);
+      }
+    },
+    [orgsList]
+  );
+
+  useHotkeys('e', () => {
+    router.push('/explore');
+  });
+
+  useHotkeys(
+    'l',
+    () => {
+      setOpenPodModal(!openPodModal);
+    },
+    [openPodModal]
+  );
+
+  useHotkeys(
+    'shift+d',
+    () => {
+      setOpenCreateDaoModal(!openCreateDaoModal);
+    },
+    [openCreateDaoModal]
+  );
 
   const handleMinimize = (event) => {
     if (setMinimized) {
@@ -122,20 +165,27 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
     <DrawerComponent variant="permanent" anchor="left" className={minimized ? 'active' : ''}>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
-      <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
+      <AddDaoModal
+        open={openCreateDaoModal}
+        handleClose={() => {
+          setOpenCreateDaoModal(false);
+        }}
+      />
       <DrawerContainer>
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
             <DrawerTopBlockItem id="tour-user-profile" onClick={handleProfileClick}>
-              <SafeImage
-                src={user?.thumbnailPicture || user?.profilePicture}
-                placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-                width={32}
-                height={32}
-                objectFit="cover"
-                useNextImage
-                style={profilePictureStyle}
-              />
+              <Badge badgeContent="P" color="primary" invisible={!showBadge}>
+                <SafeImage
+                  src={user?.thumbnailPicture || user?.profilePicture}
+                  placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
+                  width={32}
+                  height={32}
+                  objectFit="cover"
+                  useNextImage
+                  style={profilePictureStyle}
+                />
+              </Badge>
             </DrawerTopBlockItem>
           </Tooltip>
 
@@ -150,7 +200,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
                   <DrawerBottomButton type="button" {...actionProps}>
                     {!!link?.url && (
                       <Link href="/explore">
-                        <Icon id={link?.id} />
+                        <Badge badgeContent="E" color="primary" invisible={!showBadge}>
+                          <Icon id={link?.id} />
+                        </Badge>
                       </Link>
                     )}
                     {link?.action && <Icon />}
@@ -161,14 +213,16 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                 <DrawerBottomButton type="button" {...actionProps}>
-                  {!!link?.url && (
-                    <Link href={link.url} passHref>
-                      <a href={link.url} {...externalProps}>
-                        <Icon id={link?.id} />
-                      </a>
-                    </Link>
-                  )}
-                  {link?.action && <Icon />}
+                  <Badge badgeContent="L" color="primary" invisible={!showBadge}>
+                    {!!link?.url && (
+                      <Link href={link.url} passHref>
+                        <a href={link.url} {...externalProps}>
+                          <Icon id={link?.id} />
+                        </a>
+                      </Link>
+                    )}
+                    {link?.action && <Icon />}
+                  </Badge>
                 </DrawerBottomButton>
               </Tooltip>
             );
@@ -179,7 +233,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
           </StyledDividerDiv>
 
           <DrawerList id="tour-sidebar-daos">
-            {orgsList.map((item) => (
+            {orgsList.map((item, index) => (
               <Tooltip key={item.id} title={`${item?.name}`} style={toolTipStyle}>
                 <div>
                   <Link
@@ -188,29 +242,36 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
                     as={`/organization/${item?.username}/boards`}
                     passHref
                   >
-                    <DrawerListItem button key={item.id} isActive={item.isActive}>
-                      {item?.profilePicture ? (
-                        <SafeImage
-                          useNextImage={false}
-                          src={item?.thumbnailPicture || item?.profilePicture}
-                          style={{
-                            width: '36px',
-                            height: '36px',
-                            borderRadius: '6px',
-                          }}
-                        />
-                      ) : (
-                        <NoLogoDAO>
-                          <DAOIcon />
-                        </NoLogoDAO>
-                      )}
-                    </DrawerListItem>
+                    <Badge badgeContent={index + 1} color="primary" invisible={!showBadge}>
+                      <DrawerListItem button key={item.id} isActive={item.isActive}>
+                        {item?.profilePicture ? (
+                          <SafeImage
+                            useNextImage={false}
+                            src={item?.thumbnailPicture || item?.profilePicture}
+                            style={{
+                              width: '36px',
+                              height: '36px',
+                              borderRadius: '6px',
+                            }}
+                          />
+                        ) : (
+                          <NoLogoDAO>
+                            <DAOIcon />
+                          </NoLogoDAO>
+                        )}
+                      </DrawerListItem>
+                    </Badge>
                   </Link>
                 </div>
               </Tooltip>
             ))}
             <Tooltip title="New DAO" style={toolTipStyle}>
-              <DrawerListCreateDao onClick={handleCreateDaoModal(true)} />
+              <DrawerListCreateDao
+                showBadge={showBadge}
+                onClick={() => {
+                  setOpenCreateDaoModal(true);
+                }}
+              />
             </Tooltip>
           </DrawerList>
         </DrawerTopBlock>

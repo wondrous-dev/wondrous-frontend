@@ -24,7 +24,13 @@ import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/ta
 import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import apollo from 'services/apollo';
-import BoardLock from 'components/BoardLock';
+import { useHotkeys } from 'react-hotkeys-hook';
+import {
+  hotkeyDownArrowHelper,
+  hotkeyLeftArrowHelper,
+  hotkeyRightArrowHelper,
+  hotkeyUpArrowHelper,
+} from 'utils/hotkeyHelper';
 import ItemsContainer from './ItemsContainer';
 
 interface Props {
@@ -53,18 +59,37 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
-  const [dndErrorModal, setDndErrorModal] = useState(false);
-
+  const [taskIndex, setTaskIndex] = useState(null);
+  const [statusIndex, setStatusIndex] = useState(null);
+  const [taskId, setTaskId] = useState(null);
+  const [statusPicked, setStatusPicked] = useState(null);
+  const [byLinkOrHot, setByLinkOrHot] = useState('link');
   const user = useMe();
+
+  const handleStatusPicked = (status) => {
+    setByLinkOrHot('link');
+    setStatusPicked(status);
+  };
+
+  const arrowKeys = ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'];
 
   useEffect(() => {
     const { params } = location;
     if (params.task || params.taskProposal) {
+      if (location.params.task && byLinkOrHot === 'link') {
+        const holdTaskId = location.params.task;
+        const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
+        const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
+        setTaskIndex(holdTaskIndex);
+        setStatusIndex(holdStatusIndex);
+      }
       setOpenModal(true);
     }
   }, [location]);
 
   const handleModalClose = () => {
+    setTaskIndex(null);
+    setStatusIndex(null);
     const style = document.body.getAttribute('style');
     const top = style.match(/(?<=top: -)(.*?)(?=px)/);
     document.body.setAttribute('style', '');
@@ -77,6 +102,32 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
     location.push(newUrl);
     setOpenModal(false);
   };
+
+  const pickHotkeyFunction = (key) => {
+    if (key === 'ArrowRight') return hotkeyRightArrowHelper(taskIndex, statusIndex, columns);
+    if (key === 'ArrowLeft') return hotkeyLeftArrowHelper(taskIndex, statusIndex, columns);
+    if (key === 'ArrowUp') return hotkeyUpArrowHelper(taskIndex, statusIndex, columns);
+    if (key === 'ArrowDown') return hotkeyDownArrowHelper(taskIndex, statusIndex, columns);
+  };
+
+  useHotkeys(
+    '*',
+    (event) => {
+      if (arrowKeys.includes(event.key) && entityType === ENTITIES_TYPES.TASK) {
+        setOpenModal(true);
+
+        setByLinkOrHot('hot');
+        const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key);
+        setStatusIndex(holdStatusIndex);
+        setTaskIndex(holdTaskIndex);
+        if (holdStatusIndex === null) {
+          setOpenModal(false);
+        }
+        setTaskId(columns?.[holdStatusIndex]?.tasks?.[holdTaskIndex]?.id);
+      }
+    },
+    [taskIndex, statusIndex, isModalOpen, columns]
+  );
 
   const handleShowAll = (status, limit) => fetchPerStatus(status, limit);
 
@@ -179,8 +230,6 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
     } catch (err) {
       if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
         if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
-          setDndErrorModal(true);
-
           setColumns(prevColumnState);
         }
       }
@@ -266,9 +315,9 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
         open={isModalOpen}
         handleClose={handleModalClose}
         isTaskProposal={!!location.params.taskProposal}
-        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
+        taskId={byLinkOrHot === 'link' ? (location.params.taskProposal ?? location.params.task)?.toString() : taskId}
       />
-      <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
+      <DragDropContext onDragEnd={onDragEnd}>
         {columns.map((column) => {
           if (!column) return null;
           const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || 0;
@@ -277,6 +326,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   <ItemsContainer
+                    handleStatusPicked={handleStatusPicked}
                     entityType={entityType}
                     data={column}
                     taskCount={count}

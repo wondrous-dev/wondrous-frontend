@@ -3,10 +3,11 @@ import { useRouter } from 'next/router';
 import TaskSubtasks from 'components/Common/TaskSubtask';
 import { TaskApplicationList } from 'components/Common/TaskApplication';
 import TaskSubmission from 'components/Common/TaskSubmission';
-import { usePodBoard } from 'utils/hooks';
+import { useHotkey, usePodBoard } from 'utils/hooks';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import MilestoneTasks from 'components/Common/MilestoneTask';
 import { CommentList } from 'components/Comment';
+import { Badge } from '@mui/material';
 import {
   TaskModalFooter,
   TaskSectionFooterTitleDiv,
@@ -79,7 +80,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
       setActiveTab(tabs.submissions);
     }
   }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
-
+  const showBadge = useHotkey();
   const canCreate =
     permissions.includes(PERMISSIONS.CREATE_TASK) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -108,7 +109,9 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
           const active = tab === activeTab;
           return (
             <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-              <TaskTabText isActive={active}>{tab}</TaskTabText>
+              <Badge badgeContent="W" color="primary" invisible={!showBadge || tab !== 'Discussion'}>
+                <TaskTabText isActive={active}>{tab}</TaskTabText>
+              </Badge>
             </TaskSubmissionTab>
           );
         })}

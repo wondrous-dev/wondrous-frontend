@@ -32,7 +32,15 @@ const LABELS_MAP = {
   [TASK_STATUS_DONE]: 'Done',
 };
 
-export default function ItemsContainer({ data, taskCount, fetchPerStatus, entityType, handleShowAll, ...props }) {
+export default function ItemsContainer({
+  data,
+  taskCount,
+  fetchPerStatus,
+  entityType,
+  handleShowAll,
+  handleStatusPicked,
+  ...props
+}) {
   const { status, tasks } = data;
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
 
@@ -94,7 +102,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
                   ref={provided.innerRef}
                   isDragging={snapshot.isDragging}
                 >
-                  <Item entityType={entityType} task={task} />
+                  <Item entityType={entityType} task={task} handleStatusPicked={handleStatusPicked} />
                 </div>
               )}
             </Draggable>

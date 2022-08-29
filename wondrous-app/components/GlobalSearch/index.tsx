@@ -1,19 +1,20 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { InputAdornment } from '@mui/material';
+import { Badge, InputAdornment } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
 
 import { SEARCH_GLOBAL } from 'graphql/queries';
 import apollo from 'services/apollo';
 
 import { SafeImage } from 'components/Common/Image';
-import { useOutsideAlerter } from 'utils/hooks';
+import { useHotkey, useOutsideAlerter } from 'utils/hooks';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodIcon from 'components/Icons/podIcon';
 import { SearchIconWrapped } from 'components/SearchTasks/styles';
 import { DAOIcon } from 'components/Icons/dao';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
 
+import { useHotkeys } from 'react-hotkeys-hook';
 import {
   GlobalSearchWrapper,
   SearchInput,
@@ -54,7 +55,6 @@ function GlobalSearch() {
   const router = useRouter();
   const inputRef = useRef(null);
   const wrapperRef = useRef(null);
-
   const handleClose = () => {
     setIsExpanded(false);
 
@@ -110,6 +110,7 @@ function GlobalSearch() {
     }, 200);
   };
 
+  const showBadge = useHotkey();
   const handleInputExpand = () => (isExpanded ? false : setIsExpanded(true));
 
   const handleRedirect = (type, entity) => {
@@ -122,11 +123,17 @@ function GlobalSearch() {
       return router.push(`/profile/${entity.username}/about`, undefined, { shallow: true });
   };
 
+  useHotkeys('shift+enter', () => {
+    setIsExpanded((prevState) => !prevState);
+  });
+
   return (
     <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
-      <SearchIconWrapper isExpanded={isExpanded}>
-        <SearchIconWrapped />
-      </SearchIconWrapper>
+      <Badge badgeContent="shift+enter" color="primary" invisible={!showBadge}>
+        <SearchIconWrapper isExpanded={isExpanded}>
+          <SearchIconWrapped />
+        </SearchIconWrapper>
+      </Badge>
 
       <SearchInputWrapper isExpanded={isExpanded}>
         <SearchInput

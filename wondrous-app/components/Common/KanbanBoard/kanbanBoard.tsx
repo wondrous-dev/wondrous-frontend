@@ -22,6 +22,13 @@ import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpe
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import ConfirmModal from 'components/Common/ConfirmModal';
+import {
+  hotkeyDownArrowHelper,
+  hotkeyLeftArrowHelper,
+  hotkeyRightArrowHelper,
+  hotkeyUpArrowHelper,
+} from 'utils/hotkeyHelper';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { useMe } from '../../Auth/withAuth';
 import DndErrorModal from './DndErrorModal';
 import TaskColumn from './TaskColumn';
@@ -52,6 +59,18 @@ function KanbanBoard(props) {
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [taskToConfirm, setTaskToConfirm] = useState<any>(null);
+  const [taskIndex, setTaskIndex] = useState(null);
+  const [statusIndex, setStatusIndex] = useState(null);
+  const [taskId, setTaskId] = useState(null);
+  const [statusPicked, setStatusPicked] = useState(null);
+  const [byLinkOrHot, setByLinkOrHot] = useState('link');
+
+  const handleStatusPicked = (status) => {
+    setByLinkOrHot('link');
+    setStatusPicked(status);
+  };
+
+  const arrowKeys = ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'];
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -190,6 +209,31 @@ function KanbanBoard(props) {
     });
     setColumns(dedupeColumns(updatedColumns));
   };
+  const pickHotkeyFunction = (key) => {
+    if (key === 'ArrowRight') return hotkeyRightArrowHelper(taskIndex, statusIndex, columns);
+    if (key === 'ArrowLeft') return hotkeyLeftArrowHelper(taskIndex, statusIndex, columns);
+    if (key === 'ArrowUp') return hotkeyUpArrowHelper(taskIndex, statusIndex, columns);
+    if (key === 'ArrowDown') return hotkeyDownArrowHelper(taskIndex, statusIndex, columns);
+  };
+
+  useHotkeys(
+    '*',
+    (event) => {
+      if (arrowKeys.includes(event.key) && board?.entityType === ENTITIES_TYPES.TASK) {
+        setOpenModal(true);
+
+        setByLinkOrHot('hot');
+        const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key);
+        setStatusIndex(holdStatusIndex);
+        setTaskIndex(holdTaskIndex);
+        if (holdStatusIndex === null) {
+          setOpenModal(false);
+        }
+        setTaskId(columns?.[holdStatusIndex]?.tasks?.[holdTaskIndex]?.id);
+      }
+    },
+    [taskIndex, statusIndex, openModal, columns]
+  );
 
   const moveProposal = async (id, destinationStatus, destinationIndex, { index, droppableId }) => {
     const boardColumns = [...columns];
@@ -274,6 +318,13 @@ function KanbanBoard(props) {
   useEffect(() => {
     const { params } = location;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
+      if (location.params.task && byLinkOrHot === 'link') {
+        const holdTaskId = location.params.task;
+        const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
+        const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
+        setTaskIndex(holdTaskIndex);
+        setStatusIndex(holdStatusIndex);
+      }
       setOpenModal(true);
     }
   }, [orgBoard, podBoard, userBoard, location]);
@@ -288,6 +339,8 @@ function KanbanBoard(props) {
   };
 
   const handleClose = () => {
+    setTaskIndex(null);
+    setStatusIndex(null);
     const style = document.body.getAttribute('style');
     const top = style.match(/(top: -)(.*?)(?=px)/);
     document.body.setAttribute('style', '');
@@ -303,7 +356,10 @@ function KanbanBoard(props) {
     setOpenModal(false);
   };
 
-  const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
+  const getTaskId =
+    byLinkOrHot === 'link'
+      ? (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id
+      : taskId;
   return (
     <KanbanBoardContainer>
       <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
@@ -327,7 +383,7 @@ function KanbanBoard(props) {
         open={openModal}
         shouldFocusAfterRender={false}
         handleClose={handleClose}
-        taskId={taskId}
+        taskId={getTaskId}
         isTaskProposal={!!location?.params?.taskProposal}
         key={taskId}
       />
@@ -335,7 +391,16 @@ function KanbanBoard(props) {
         {columns.map((column) => {
           const { status, section, tasks } = column;
 
-          return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
+          return (
+            <TaskColumn
+              key={status}
+              cardsList={tasks}
+              moveCard={moveCard}
+              status={status}
+              section={section}
+              handleStatusPicked={handleStatusPicked}
+            />
+          );
         })}
       </DragDropContext>
     </KanbanBoardContainer>

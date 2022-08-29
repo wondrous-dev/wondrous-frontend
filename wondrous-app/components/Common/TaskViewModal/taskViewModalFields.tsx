@@ -11,6 +11,9 @@ import Box from '@mui/material/Box';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Badge } from '@mui/material';
+import { useHotkey } from 'utils/hooks';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
@@ -93,8 +96,61 @@ export function AssigneeField({
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
-
+  const showBadge = useHotkey();
   const router = useRouter();
+
+  const claimTask = () => {
+    if (!user) {
+      router.push('/signup', undefined, {
+        shallow: true,
+      });
+    } else if (isTaskProposal) {
+      updateTaskProposalAssignee({
+        variables: {
+          proposalId: fetchedTask?.id,
+          assigneeId: user?.id,
+        },
+        onCompleted: (data) => {
+          const taskProposal = data?.updateTaskProposalAssignee;
+          if (boardColumns?.setColumns && onCorrectPage) {
+            const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
+            let columns = [...boardColumns?.columns];
+            columns = updateProposalItem(transformedTaskProposal, columns);
+            boardColumns?.setColumns(columns);
+          }
+        },
+      });
+    } else {
+      updateTaskAssignee({
+        variables: {
+          taskId: fetchedTask?.id,
+          assigneeId: user?.id,
+        },
+        onCompleted: (data) => {
+          const task = data?.updateTaskAssignee;
+          const transformedTask = transformTaskToTaskCard(task, {});
+          setFetchedTask(transformedTask);
+          if (boardColumns?.setColumns && onCorrectPage) {
+            let columns = [...boardColumns?.columns];
+            if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+              columns = updateInReviewItem(transformedTask, columns);
+            } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+              columns = updateInProgressTask(transformedTask, columns);
+            } else if (transformedTask.status === TASK_STATUS_TODO) {
+              columns = updateTaskItem(transformedTask, columns);
+            } else if (transformedTask.status === TASK_STATUS_DONE) {
+              columns = updateCompletedItem(transformedTask, columns);
+            }
+            boardColumns.setColumns(columns);
+          }
+        },
+      });
+    }
+  };
+
+  useHotkeys('shift+c', () => {
+    claimTask();
+  });
   if (!shouldDisplay) return null;
 
   const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
@@ -154,59 +210,16 @@ export function AssigneeField({
           DefaultContent={() => (
             <>
               {canClaim ? (
-                <TaskSectionInfoTakeTask
-                  onClick={() => {
-                    if (!user) {
-                      router.push('/signup', undefined, {
-                        shallow: true,
-                      });
-                    } else if (isTaskProposal) {
-                      updateTaskProposalAssignee({
-                        variables: {
-                          proposalId: fetchedTask?.id,
-                          assigneeId: user?.id,
-                        },
-                        onCompleted: (data) => {
-                          const taskProposal = data?.updateTaskProposalAssignee;
-                          if (boardColumns?.setColumns && onCorrectPage) {
-                            const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
-                            let columns = [...boardColumns?.columns];
-                            columns = updateProposalItem(transformedTaskProposal, columns);
-                            boardColumns?.setColumns(columns);
-                          }
-                        },
-                      });
-                    } else {
-                      updateTaskAssignee({
-                        variables: {
-                          taskId: fetchedTask?.id,
-                          assigneeId: user?.id,
-                        },
-                        onCompleted: (data) => {
-                          const task = data?.updateTaskAssignee;
-                          const transformedTask = transformTaskToTaskCard(task, {});
-                          setFetchedTask(transformedTask);
-                          if (boardColumns?.setColumns && onCorrectPage) {
-                            let columns = [...boardColumns?.columns];
-                            if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                              columns = updateInReviewItem(transformedTask, columns);
-                            } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                              columns = updateInProgressTask(transformedTask, columns);
-                            } else if (transformedTask.status === TASK_STATUS_TODO) {
-                              columns = updateTaskItem(transformedTask, columns);
-                            } else if (transformedTask.status === TASK_STATUS_DONE) {
-                              columns = updateCompletedItem(transformedTask, columns);
-                            }
-                            boardColumns.setColumns(columns);
-                          }
-                        },
-                      });
-                    }
-                  }}
-                >
-                  <Claim />
-                  <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
-                </TaskSectionInfoTakeTask>
+                <Badge badgeContent="shift+c" color="primary" invisible={!showBadge}>
+                  <TaskSectionInfoTakeTask
+                    onClick={() => {
+                      claimTask();
+                    }}
+                  >
+                    <Claim />
+                    <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
+                  </TaskSectionInfoTakeTask>
+                </Badge>
               ) : (
                 <>
                   {canApply ? (

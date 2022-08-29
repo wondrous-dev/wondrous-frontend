@@ -105,6 +105,7 @@ export function TaskCard({
   canDelete,
   setDeleteTask,
   boardType,
+  handleStatusPicked,
 }) {
   const location = useLocation();
   const TaskIcon = TASK_ICONS[task.status];
@@ -184,6 +185,7 @@ export function TaskCard({
 
   const onNavigate = (e) => {
     // TODO refactor this
+    handleStatusPicked(task.status);
     if (!showPaymentModal && !isApplicationModalOpen) {
       location.push(viewUrl);
       windowOffset = window.scrollY;

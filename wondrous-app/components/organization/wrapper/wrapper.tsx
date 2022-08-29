@@ -90,6 +90,7 @@ function Wrapper(props) {
     CONTRIBUTOR: 'contributor',
   };
 
+  const [typeEntity, setTypeEntity] = useState(ENTITIES_TYPES.TASK);
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -273,7 +274,20 @@ function Wrapper(props) {
     }
   }, [orgBoard?.orgId]);
 
-  useHotkeys('tab+t', () => {
+  useHotkeys('shift+t', () => {
+    setTypeEntity(ENTITIES_TYPES.TASK);
+    setCreateTaskModalOpen((prevState) => !prevState);
+  });
+  useHotkeys('shift+b', () => {
+    setTypeEntity(ENTITIES_TYPES.BOUNTY);
+    setCreateTaskModalOpen((prevState) => !prevState);
+  });
+  useHotkeys('shift+m', () => {
+    setTypeEntity(ENTITIES_TYPES.MILESTONE);
+    setCreateTaskModalOpen((prevState) => !prevState);
+  });
+  useHotkeys('shift+p', () => {
+    setTypeEntity(ENTITIES_TYPES.PROPOSAL);
     setCreateTaskModalOpen((prevState) => !prevState);
   });
 
@@ -319,7 +333,7 @@ function Wrapper(props) {
         onClose={() => setCreateTaskModalOpen(false)}
       >
         <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
+          entityType={typeEntity}
           handleClose={() => setCreateTaskModalOpen(false)}
           resetEntityType={() => {}}
           setEntityType={() => {}}

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import SearchTasks from 'components/SearchTasks';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useHotkey, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
@@ -13,6 +13,8 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Badge } from '@mui/material';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -32,7 +34,15 @@ export function BoardsActivityInlineView({
   const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
+  const showBadge = useHotkey();
 
+  useHotkeys(
+    'o',
+    () => {
+      setDisplayFilters(!displayFilters);
+    },
+    [displayFilters]
+  );
   return (
     <>
       <BoardsActivityInlineViewWrapper displaySingleViewFilter={displaySingleViewFilter}>
@@ -47,7 +57,14 @@ export function BoardsActivityInlineView({
         {withAdminToggle ? <Toggle items={toggleItems} /> : null}
         {view && !searchQuery && !isAdmin && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
         {!displaySingleViewFilter ? (
-          <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
+          <Badge badgeContent="Õ" color="primary" invisible={!showBadge}>
+            <FiltersTriggerButton
+              onClick={() => {
+                handleFilterDisplay();
+              }}
+              isOpen={displayFilters}
+            />
+          </Badge>
         ) : null}
       </BoardsActivityInlineViewWrapper>
       {displayFilters && !displaySingleViewFilter && (
@@ -115,6 +132,41 @@ export default function BoardsActivity(props) {
       },
     },
   ];
+
+  useHotkeys(
+    ',',
+    () => {
+      if (setActiveView) {
+        setActiveView(ViewType.List);
+        insertUrlParam('view', ViewType.List);
+      } else {
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+      }
+    },
+    [view]
+  );
+
+  useHotkeys(
+    '.',
+    () => {
+      if (setActiveView) {
+        setActiveView(ViewType.Grid);
+        insertUrlParam('view', ViewType.Grid);
+      } else {
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+      }
+    },
+    [view]
+  );
+
+  // useHotkeys('/', () => {
+  // if (setActiveView) {
+  //   setActiveView(ViewType.Calendar);
+  //   insertUrlParam('view', ViewType.Calendar);
+  // } else {
+  //   router.replace(`${delQuery(router.asPath)}?view=${ViewType.Calendar}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+  // }
+  // }, [view])
 
   return (
     <BoardsActivityInlineView

@@ -12,6 +12,8 @@ import HomeIcon from 'components/Icons/home';
 import GlobalSearch from 'components/GlobalSearch';
 import { User } from 'types/User';
 import { Notification } from 'types/Notification';
+import { Badge } from '@mui/material';
+import { useHotkey } from 'utils/hooks';
 import {
   HeaderBar,
   HeaderContainer,
@@ -46,60 +48,68 @@ const HeaderMemo = ({
   setNotifications,
   showCreateButton,
   user,
-}: Props) => (
-  <HeaderBar>
-    <HeaderContainer>
-      <HeaderLeftBlock>
-        <Tooltip title="Explore page">
-          <HeaderLogoWrapper>
-            <div onClick={onLogoClick}>
-              <HeaderLogo />
-            </div>
-          </HeaderLogoWrapper>
-        </Tooltip>
-        <Tooltip title="Dashboard">
-          <Box>
-            <Link passHref href="/dashboard">
-              <HeaderHomeButtonWrapper>
-                <HeaderHomeButton>
-                  <HomeIcon id="tour-header-dashboard-icon" />
-                </HeaderHomeButton>
-              </HeaderHomeButtonWrapper>
-            </Link>
-          </Box>
-        </Tooltip>
-        {!isMobile && <GlobalSearch />}
-      </HeaderLeftBlock>
-      <HeaderRightBlock>
-        {user && (
-          <>
-            {!isMobile && <Wallet />}
-            <NotificationsBoard
-              fetchMoreNotifications={fetchMoreNotifications}
-              notifications={notifications}
-              setNotifications={setNotifications}
-            />
-            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-              <CreateIconOutlined id="tour-header-create-btn" />
-            </HeaderCreateButton>
-          </>
-        )}
-        {!user && (
-          <Button
-            highlighted
-            type="submit"
-            style={{
-              width: '100px',
-            }}
-            onClick={onSignInClick}
-          >
-            Sign in
-          </Button>
-        )}
-      </HeaderRightBlock>
-    </HeaderContainer>
-  </HeaderBar>
-);
+}: Props) => {
+  const showBadge = useHotkey();
+
+  return (
+    <HeaderBar>
+      <HeaderContainer>
+        <HeaderLeftBlock>
+          <Tooltip title="Explore page">
+            <HeaderLogoWrapper>
+              <div onClick={onLogoClick}>
+                <HeaderLogo />
+              </div>
+            </HeaderLogoWrapper>
+          </Tooltip>
+          <Badge badgeContent="D" color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
+            <Tooltip title="Dashboard">
+              <Box>
+                <Link passHref href="/dashboard">
+                  <HeaderHomeButtonWrapper>
+                    <HeaderHomeButton style={{ zIndex: 1 }}>
+                      <HomeIcon id="tour-header-dashboard-icon" />
+                    </HeaderHomeButton>
+                  </HeaderHomeButtonWrapper>
+                </Link>
+              </Box>
+            </Tooltip>
+          </Badge>
+          {!isMobile && <GlobalSearch />}
+        </HeaderLeftBlock>
+        <HeaderRightBlock>
+          {user && (
+            <>
+              {!isMobile && <Wallet />}
+              <NotificationsBoard
+                fetchMoreNotifications={fetchMoreNotifications}
+                notifications={notifications}
+                setNotifications={setNotifications}
+              />
+              <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+                <Badge badgeContent="C" color="primary" invisible={!showBadge}>
+                  <CreateIconOutlined id="tour-header-create-btn" />
+                </Badge>
+              </HeaderCreateButton>
+            </>
+          )}
+          {!user && (
+            <Button
+              highlighted
+              type="submit"
+              style={{
+                width: '100px',
+              }}
+              onClick={onSignInClick}
+            >
+              Sign in
+            </Button>
+          )}
+        </HeaderRightBlock>
+      </HeaderContainer>
+    </HeaderBar>
+  );
+};
 
 // eslint-disable-next-line react/display-name
 export default memo(

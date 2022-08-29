@@ -10,6 +10,9 @@ import { GET_NOTIFICATIONS } from 'graphql/queries';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
 import SmartLink from 'components/Common/SmartLink';
 import Tooltip from 'components/Tooltip';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Badge } from '@mui/material';
+import { useHotkey } from 'utils/hooks';
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -40,14 +43,11 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
   const toggleNotifications = () => {
     setIsOpen(!isOpen);
   };
+  const showBadge = useHotkey();
 
   const handleMarkAllRead = async () => {
     // Mark all read (empty arg)
     setNotifications();
-  };
-
-  const handleNotificationsSettings = () => {
-    // console.log('Tap on Notifications Settings');
   };
 
   const getNotificationActorIcon = (notification) => {
@@ -115,6 +115,10 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
 
   const display = isOpen ? 'block' : 'none';
 
+  useHotkeys('n', () => {
+    setIsOpen((prevState) => !prevState);
+  });
+
   return (
     <>
       <NotificationsOverlay onClick={toggleNotifications} style={{ display }} />
@@ -125,9 +129,11 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
           isOpen={isOpen}
           onClick={toggleNotifications}
         >
-          <Tooltip title="Notifications">
-            <NotificationsIcon />
-          </Tooltip>
+          <Badge badgeContent="N" color="primary" invisible={!showBadge}>
+            <Tooltip title="Notifications">
+              <NotificationsIcon />
+            </Tooltip>
+          </Badge>
         </StyledBadge>
         <NotificationsBoardWrapper style={{ display }}>
           <NotificationsBoardHeader>

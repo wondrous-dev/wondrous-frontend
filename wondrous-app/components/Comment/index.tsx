@@ -127,6 +127,7 @@ export function CommentBox(props) {
         >
           <TextInput
             placeholder="Write a comment"
+            autoFocus
             // rows={5}
             // maxRows={5}
           />
