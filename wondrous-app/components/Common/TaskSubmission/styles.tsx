@@ -516,6 +516,22 @@ export const SubmissionFormCancel = styled(ButtonBase)`
   }
 `;
 
+export const HideSubmissionsCheckBoxDiv = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: -12px;
+`;
+
+export const HideSubmissionsHelperText = styled(Typography)`
+  && {
+    font-size: 12px;
+    ${({ theme }) => `
+      color: ${theme.palette.white};
+      font-weight: ${theme.typography.fontWeightMedium};
+    `}
+  }
+`;
 export const SubmissionFormSubmit = styled(ButtonGradient)`
   && {
     ${GradientHighlightHorizontal}
