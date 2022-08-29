@@ -315,6 +315,7 @@ function Analytics(props) {
           podId,
           toTime: format(toTime, 'yyyy-MM-dd'),
           fromTime: format(fromTime, 'yyyy-MM-dd'),
+          includeBounties: true,
           ...(assignee && {
             assigneeId: assignee?.value,
           }),
@@ -433,6 +434,7 @@ function Analytics(props) {
                   orgId,
                   toTime: format(toTime, 'yyyy-MM-dd'),
                   fromTime: format(fromTime, 'yyyy-MM-dd'),
+                  includeBounties: true,
                 },
               });
             }
