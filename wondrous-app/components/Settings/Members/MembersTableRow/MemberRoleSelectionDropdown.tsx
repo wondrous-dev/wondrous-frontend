@@ -1,11 +1,14 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
+import * as Sentry from '@sentry/nextjs';
 import CheckMarkIcon from 'components/Icons/checkMark';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
 import { UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
 import { useSettings } from 'utils/hooks';
+import useAlerts from 'hooks/useAlerts';
 import {
   MemberRole,
   MemberRoleEmoji,
@@ -20,8 +23,34 @@ import { filterRoles, getRoleColor, getRoleEmoji } from './helpers';
 const MemberRoleSelectionDropdown = (props) => {
   const { existingRole, roleList, userId, podId } = props;
   const [role, setRole] = useState(existingRole?.id);
-  const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE);
-  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE);
+
+  const { showError } = useAlerts();
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
+
+  const showSuccessToast = (message: string) => {
+    setSnackbarAlertSeverity('success');
+    setSnackbarAlertMessage(message);
+    setSnackbarAlertOpen(true);
+  };
+
+  const [updateUserOrgRole] = useMutation(UPDATE_USER_ORG_ROLE, {
+    onCompleted: () => {
+      showSuccessToast('User role updated successfully');
+    },
+    onError: (error) => {
+      showError('We faced some error while changing the user role. Please try again later.', true);
+      Sentry.captureException(error);
+    },
+  });
+  const [updateUserPodRole] = useMutation(UPDATE_USER_POD_ROLE, {
+    onCompleted: () => {
+      showSuccessToast('User role updated successfully');
+    },
+    onError: (error) => {
+      showError('We faced some error while changing the user role. Please try again later.', true);
+      Sentry.captureException(error);
+    },
+  });
   const isOwner = existingRole?.permissions.includes(PERMISSIONS.FULL_ACCESS);
   const settings = useSettings();
   const orgId = props?.orgId || settings?.pod?.orgId;
