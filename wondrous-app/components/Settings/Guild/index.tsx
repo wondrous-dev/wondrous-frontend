@@ -121,7 +121,7 @@ export default function GuildIntegration({ orgId }) {
           <IntegrationsHelperText>Connected Guild:</IntegrationsHelperText>
           <IntegrationsSnapshotSubBlock>
             <IntegrationsSnapshotInputSubBlock>
-              <IntegrationsSnapshotENSInput value={connectedGuild?.name} disabled />
+              <IntegrationsSnapshotENSInput value={connectedGuild?.name} />
             </IntegrationsSnapshotInputSubBlock>
             <IntegrationsDisconnectButton onClick={handleGuildDisonnect}>Disconnect Guild</IntegrationsDisconnectButton>
           </IntegrationsSnapshotSubBlock>
