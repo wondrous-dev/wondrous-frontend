@@ -40,9 +40,7 @@ export default {
   },
 } as ComponentMeta<typeof AvatarListComp>;
 
-const Template: ComponentStory<typeof AvatarListComp> = (props) => {
-  return <AvatarListComp {...props} />;
-};
+const Template: ComponentStory<typeof AvatarListComp> = (props) => <AvatarListComp {...props} />;
 export const AvatarList = Template.bind({});
 
 AvatarList.args = {

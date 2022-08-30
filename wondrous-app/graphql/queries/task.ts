@@ -138,13 +138,21 @@ export const GET_SUBTASKS_FOR_TASK = gql`
 `;
 
 export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
-  query getCompletedTasksBetweenPeriods($fromTime: String!, $toTime: String!, $orgId: ID, $podId: ID, $assigneeId: ID) {
+  query getCompletedTasksBetweenPeriods(
+    $fromTime: String!
+    $toTime: String!
+    $orgId: ID
+    $podId: ID
+    $assigneeId: ID
+    $includeBounties: Boolean
+  ) {
     getCompletedTasksBetweenPeriods(
       fromTime: $fromTime
       toTime: $toTime
       orgId: $orgId
       podId: $podId
       assigneeId: $assigneeId
+      includeBounties: $includeBounties
     ) {
       assigneeId
       assigneeUsername
@@ -156,9 +164,7 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
         status
         description
         completedAt
-        org {
-          username
-        }
+        orgId
         pod {
           id
           name
@@ -172,6 +178,7 @@ export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`
           tokenName
         }
         points
+        type
       }
     }
   }

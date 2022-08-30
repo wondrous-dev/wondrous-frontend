@@ -29,7 +29,7 @@ const ButtonInner = styled.button`
   flex: 1 1 auto;
   font-size: 16px;
   justify-content: center;
-  padding: 0 ${props => props.paddingX || 30}px;
+  padding: 0 ${(props) => props.paddingX || 30}px;
 
   &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};

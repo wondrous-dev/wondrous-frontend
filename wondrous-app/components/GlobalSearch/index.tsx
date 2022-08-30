@@ -30,15 +30,15 @@ let timeout;
 const LABELS_DEFAULT_IMAGES_MAP = {
   [GLOBAL_SEARCH_TYPES.ORGS]: {
     label: 'Organizations',
-    defaultImg: DAOIcon,
+    defaultImg: () => <DAOIcon />,
   },
   [GLOBAL_SEARCH_TYPES.PODS]: {
     label: 'Pods',
-    defaultImg: PodIcon,
+    defaultImg: () => <PodIcon />,
   },
   [GLOBAL_SEARCH_TYPES.USERS]: {
     label: 'Users',
-    defaultImg: DefaultUserImage,
+    defaultImg: () => <DefaultUserImage />,
   },
 };
 

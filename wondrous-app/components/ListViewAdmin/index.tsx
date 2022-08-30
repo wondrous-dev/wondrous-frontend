@@ -117,7 +117,8 @@ function ListViewAdmin({ column }: Props) {
           count={count}
           Icon={Icon}
           headerAddons={null}
-          displayShowMore={column.hasMore}
+          hasMore={column.hasMore}
+          enableInfiniteLoading
           onShowMore={column.handleFetchMore}
         >
           {column?.items?.map((item, idx) => (

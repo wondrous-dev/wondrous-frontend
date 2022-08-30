@@ -59,31 +59,28 @@ const palette = {
   ...blackColors,
 };
 
-const ColorComponent = () => {
-  return (
-    <Grid container spacing={5} sx={{ backgroundColor: '#eae8e8' }}>
-      {Object.keys(palette).map((key) => {
-        return (
-          <>
-            <Grid key={key} item>
-              <Box sx={{ height: '30px', backgroundColor: palette[key] }} />
-              <div><strong>{key}</strong></div>
-              <div><strong>hex: </strong>{palette[key]}</div>
-            </Grid>
-          </>
-        );
-      })}
-    </Grid>
-  );
-};
+const ColorComponent = () => (
+  <Grid container spacing={5} sx={{ backgroundColor: '#eae8e8' }}>
+    {Object.keys(palette).map((key) => (
+      <Grid key={key} item>
+        <Box sx={{ height: '30px', backgroundColor: palette[key] }} />
+        <div>
+          <strong>{key}</strong>
+        </div>
+        <div>
+          <strong>hex: </strong>
+          {palette[key]}
+        </div>
+      </Grid>
+    ))}
+  </Grid>
+);
 
 export default {
   title: 'Data Display/Colors',
   component: ColorComponent,
 } as ComponentMeta<typeof ColorComponent>;
 
-const Template: ComponentStory<typeof ColorComponent> = (args) => {
-  return <ColorComponent />;
-};
+const Template: ComponentStory<typeof ColorComponent> = (args) => <ColorComponent />;
 
 export const Colors = Template.bind({});

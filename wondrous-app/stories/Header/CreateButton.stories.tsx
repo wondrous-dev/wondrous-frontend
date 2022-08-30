@@ -20,17 +20,15 @@ export default {
       control: {
         type: 'boolean',
       },
-    }
+    },
   },
 } as ComponentMeta<typeof Button>;
 
-const Template: ComponentStory<typeof Button> = (args) => {
-  return (
-    <HeaderCreateButton {...args}>
-      <CreateIconOutlined id="tour-header-create-btn" />
-    </HeaderCreateButton>
-  );
-};
+const Template: ComponentStory<typeof Button> = (args) => (
+  <HeaderCreateButton {...args}>
+    <CreateIconOutlined id="tour-header-create-btn" />
+  </HeaderCreateButton>
+);
 export const CreateEntityButton = Template.bind({});
 
 CreateEntityButton.args = {

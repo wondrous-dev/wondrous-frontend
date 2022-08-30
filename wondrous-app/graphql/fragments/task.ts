@@ -95,6 +95,7 @@ export const TaskFragment = gql`
     claimPolicy
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
+    hideSubmissions
   }
 
   ${MediaFragment}
@@ -110,6 +111,7 @@ export const TaskCardFragment = gql`
     orgId
     orgProfilePicture
     orgName
+    orgUsername
     podId
     podProfilePicture
     podName
@@ -156,6 +158,7 @@ export const TaskCardFragment = gql`
       canApply
       hasUserApplied
     }
+    hideSubmissions
   }
   ${MediaFragment}
 `;
@@ -171,6 +174,7 @@ export const TaskProposalCardFragment = gql`
     orgId
     orgProfilePicture
     orgName
+    orgUsername
     podId
     podProfilePicture
     podName
