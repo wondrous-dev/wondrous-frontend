@@ -240,7 +240,7 @@ export const SettingsHeaderText = styled(Typography)`
     font-size: 15px;
     line-height: 23px;
     letter-spacing: 0.01em;
-    color: #ffffff;
+    color: ${palette.grey57};
     display: flex;
     justify-content: space-between;
   }
