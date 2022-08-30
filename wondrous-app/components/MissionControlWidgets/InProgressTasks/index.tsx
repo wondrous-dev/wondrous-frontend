@@ -29,8 +29,6 @@ import {
   EmptyStateText,
 } from './styles';
 
-let windowOffset;
-
 const DEFAULT_ORG_VALUE = { id: null, name: 'All orgs' };
 const InProgressTasksWidget = () => {
   const globalContext = useGlobalContext();
@@ -64,13 +62,9 @@ const InProgressTasksWidget = () => {
   const [openModal, setOpenModal] = useState(false);
 
   const handleCardClick = (task, query = '') => {
-    let newUrl = `${delQuery(router.asPath)}?task=${task?.id}`;
-    if (query) {
-      newUrl += query;
-    }
+    const newUrl = `${delQuery(router.asPath)}?task=${task?.id}${query}`;
     location.push(newUrl);
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
   };
 
   useEffect(() => {
@@ -85,7 +79,7 @@ const InProgressTasksWidget = () => {
     const top = style.match(/(top: -)(.*?)(?=px)/);
     document.body.setAttribute('style', '');
     if (top?.length > 0) {
-      window?.scrollTo(0, Number(top[2]));
+      window.scrollTo(0, Number(top[2]));
     }
     const newUrl = `${delQuery(router.asPath)}`;
     location.push(newUrl);

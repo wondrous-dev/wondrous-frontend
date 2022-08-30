@@ -14,7 +14,7 @@ import {
 
 const DISMISSED_VALUE = '0';
 
-const localStorageKey = 'wonder-address-widget';
+const localStorageKey = 'WONDER_ADDRESS_WIDGET';
 
 const ConnectWallet = () => {
   const [isDismissed, setIsDismissed] = useState(true);
