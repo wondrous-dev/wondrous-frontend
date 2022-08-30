@@ -1,8 +1,7 @@
 import { ButtonBase } from '@mui/material';
+import ArrowBackIcon from 'components/Common/Sidebar/Common/icons/arrowBack.svg';
 import Link from 'next/link';
 import styled from 'styled-components';
-
-import ArrowBackIcon from './icons/arrowBack.svg';
 
 const Wrapper = styled.div`
   width: 100%;
