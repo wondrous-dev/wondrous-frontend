@@ -195,7 +195,7 @@ function Members(props) {
           <Text color="#C4C4C4" fontSize="16px">
             This will remove the user ‘
             <Text color="white" as="strong">
-              {userToRemove?.firstName} {userToRemove?.lastName}
+              {userToRemove?.username}
             </Text>
             ‘ from this DAO. This action cannot be undone.
           </Text>
@@ -229,7 +229,15 @@ function Members(props) {
         {users.length > 0 && (
           <MembersTable>
             {users.map(({ user, role }) => (
-              <MemberTableRow user={user} role={role} key={user?.id} orgId={orgId} podId={podId} roleList={roleList} />
+              <MemberTableRow
+                user={user}
+                role={role}
+                key={user?.id}
+                orgId={orgId}
+                podId={podId}
+                roleList={roleList}
+                promptRemoveUser={setUserToRemove}
+              />
             ))}
           </MembersTable>
         )}

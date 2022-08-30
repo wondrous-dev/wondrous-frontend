@@ -25,7 +25,7 @@ import {
 } from './styles';
 import { addressTag } from './helpers';
 
-const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
+const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }) => {
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
   const [userWalletAddressTag, setUserWalletAddressTag] = useState('');
 
@@ -48,7 +48,6 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
   const userFullName = user?.firstName && `${user?.firstName} ${user?.lastName}` && user?.lastName;
   const username = `@${user?.username}`;
 
-  // const userWalletAddress = user?.activeEthAddress;
   const userPodCount = +user?.additionalInfo?.podCount;
 
   const handleAddressCopy = () => {
@@ -111,7 +110,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList }) => {
         <UserOptions>
           <DropDown DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke="#fff" />}>
             <DropDownItem
-              onClick={() => {}}
+              onClick={() => promptRemoveUser(user)}
               style={{
                 color: '#fff',
                 zIndex: 120,
