@@ -7,6 +7,7 @@ import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ListView from 'components/ListView';
 import CalendarView from 'components/CalendarView';
+import { TaskFilter } from 'types/task';
 import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import { Table } from '../../Table';
@@ -28,8 +29,8 @@ type Props = {
   activeView?: string;
   onSearch?: any;
   onFilterChange?: any;
-  calendarFilters?: any;
-  onCalendarDateChange?: any;
+  calendarFilters?: TaskFilter;
+  onCalendarDateChange?: Function;
   statuses?: string[];
   filterSchema?: any;
   userId?: string;
@@ -57,7 +58,7 @@ const Boards = (props: Props) => {
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
   const view = activeView || String(router.query.view ?? ViewType.Grid);
-
+  console.log(calendarFilters);
   useEffect(() => {
     if (!searchQuery) {
       return;
@@ -66,7 +67,7 @@ const Boards = (props: Props) => {
     setTotalCount(totalCount);
     setSearchResults(splitCols);
   }, [columns]);
-
+  // console.log(columns);
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 

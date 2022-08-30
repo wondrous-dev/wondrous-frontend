@@ -1,52 +1,51 @@
 import styled from 'styled-components';
-import MuiAccordionSummary from '@mui/material/AccordionSummary';
-import MuiAccordionDetails from '@mui/material/AccordionDetails';
-import MuiAccordion from '@mui/material/Accordion';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import LeftArrowIcon from 'components/Icons/leftArrow';
-import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
-import { greyColors } from 'theme/colors';
-import { ButtonGroupStyled, ButtonStyled } from 'components/Common/ButtonGroup/styles';
-import { ErrorOutline, WarningOutlined } from '@mui/icons-material';
+import { greyColors, violetColors } from 'theme/colors';
+import { ButtonGroupStyled } from 'components/Common/ButtonGroup/styles';
+import { ErrorOutline } from '@mui/icons-material';
 import { ListItem } from '@mui/material';
 import CheckMarkIcon from 'components/Icons/checkMark';
-import { InProgressCircleIcon, ToDoCircleIcon } from 'components/Icons/taskTypes';
-import { CompletedIcon, InReviewIcon } from 'components/Icons/statusIcons';
 import TaskStatus from 'components/Icons/TaskStatus';
 
 export const CalendarViewContainer = styled.div`
   width: 100%;
   display: flex;
-  border-top: 1px solid #343434;
-  border-left: 1px solid #343434;
-  border-right: 1px solid #343434;
-
-  border-radius: 8px 8px 0px 0px;
-  background-color: #161616;
+  border: 1px 1px 0px 1px solid #343434;
+  border-radius: 8px 8px 0 0px;
+  background-color: ${greyColors.grey100};
 `;
 
 export const CalendarViewLabel = styled(Typography)`
-  font-family: Space Grotesk;
+  font-family: 'Space Grotesk';
   font-size: 14px;
+  color: white;
+  max-lines: 1;
+`;
+
+export const CalendarViewShowDate = styled(Typography)`
+  font-family: 'Space Grotesk';
+  font-size: 14px;
+  width: 125px;
   color: white;
   max-lines: 1;
 `;
 
 export const CalendarDayOfMonthLabel = styled(Typography)`
-  font-family: Space Grotesk;
+  font-family: 'Space Grotesk';
   font-size: 14px;
   color: white;
-  background-color: #7427ff;
+  background-color: ${violetColors.violet950};
   border-radius: 4px;
   max-lines: 1;
   align-self: center;
 `;
 export const CalendarDayOfWeekLabel = styled(Typography)`
-  font-family: Space Grotesk;
+  font-family: 'Space Grotesk';
   font-size: 14px;
   color: white;
-  background-color: #7427ff;
+  background-color: ${violetColors.violet950};
   border-radius: 4px;
   margin-right: 20px;
   margin-left: 20px;
@@ -67,7 +66,6 @@ export const CalendarTopBar = styled.div`
 export const CalendarTopBarLeftSide = styled.div`
   display: flex;
   flex-direction: row;
-
   justify-content: flex-start;
   align-items: center;
 `;
@@ -86,7 +84,7 @@ export const CalendarViewStatusNotifier = styled.div`
   align-items: center;
   justify-content: flex-start;
   background-color: #250069;
-  border: 1px #4f00de solid;
+  border: 1px solid #4f00de;
   border-radius: 4px;
   padding: 8px;
   height: 36px;
@@ -102,7 +100,7 @@ export const CalendarViewMonthDayToggle = styled(ButtonGroupStyled)`
   justify-content: space-between;
   text-align: left;
   height: 36px;
-  :hover {
+  &:hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
 `;
@@ -149,7 +147,6 @@ export const CalendaListItem = styled(ListItem)`
   margin-top: 3px;
   border-radius: 4px;
   background-color: black;
-
   &:first-child {
     margin-top: 0;
   }
@@ -204,10 +201,10 @@ export const CalendarViewDayContainer = styled.div`
   background-color: #1d1d1d;
   justify-content: center;
   align-items: center;
-  border-bottom: 1px solid #343434;
-  border-left: 0.5px solid #343434;
-  border-right: 0.5px solid #343434;
-  padding-top: ${(props) => (props.view === 'WEEK' ? '8px' : '0px')};
+  border-style: solid;
+  border-width: 0 0.5px 1px 0.5px;
+  border-color: #343434;
+  padding-top: ${(props) => (props.view === 'WEEK' ? '8px' : '0')};
   margin-bottom: 0;
 `;
 
@@ -240,7 +237,7 @@ export const CalendarViewTaskContainer = styled.div`
 
 export const CalendarViewTaskLabel = styled(Typography)`
   width: 100%;
-  font-family: Space Grotesk;
+  font-family: 'Space Grotesk';
   font-size: 12px;
   color: white;
   align-self: center;
@@ -248,7 +245,7 @@ export const CalendarViewTaskLabel = styled(Typography)`
 `;
 
 export const CalendarViewTaskShowMore = styled(Typography)`
-  font-family: Space Grotesk;
+  font-family: 'Space Grotesk';
   font-size: 12px;
   color: ${palette.blue100};
   max-lines: 1;

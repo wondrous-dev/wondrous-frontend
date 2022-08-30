@@ -1,26 +1,12 @@
-/* eslint-disable react/jsx-key */
 import { useLazyQuery } from '@apollo/client';
-import { useMe } from 'components/Auth/withAuth';
-import { StyledModal } from 'components/Common/InviteLinkModal/styles';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   TaskTemplateArrowIcon,
   TaskTemplateLabelWrapper,
 } from 'components/CreateEntity/CreateEntityModal/TaskTemplatePicker/styles';
-import { DropDownPopper } from 'components/DropDownDecision/DropDownPopper';
-import {
-  StyledList,
-  StyledListItem,
-  StyledListItemIcon,
-  StyledListItemText,
-  StyledPopper,
-} from 'components/DropDownDecision/DropDownPopper/styles';
-import RightArrowIcon from 'components/Icons/rightArrow';
-import { Arrow } from 'components/Icons/sections';
-import TaskStatus from 'components/Icons/TaskStatus';
-import { CalendarViewModal } from 'components/organization/wrapper/CalendarViewModal';
+import { StyledList, StyledPopper } from 'components/DropDownDecision/DropDownPopper/styles';
+import CalendarViewModal from 'components/CalendarView/CalendarViewModal/CalendarViewModal';
 import { format } from 'date-fns';
-import { UPDATE_TASK_STATUS } from 'graphql/mutations';
 import {
   GET_ORG_BY_ID,
   GET_ORG_FROM_USERNAME,
@@ -29,16 +15,7 @@ import {
 } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import apollo from 'services/apollo';
-import { ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import {
-  ENTITIES_TYPES,
-  PERMISSIONS,
-  PRIVACY_LEVEL,
-  STATUSES_ON_ENTITY_TYPES,
-  TASK_STATUS_IN_REVIEW,
-} from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { DAYS_OF_WEEK, MONTHS_OF_YEAR, STATUSES_ON_ENTITY_TYPES } from 'utils/constants';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   CalendaListItem,
@@ -55,6 +32,7 @@ import {
   CalendarViewDMonthContainer,
   CalendarViewLabel,
   CalendarViewMonthDayToggle,
+  CalendarViewShowDate,
   CalendarViewStatusNotifier,
   CalendarViewTaskContainer,
   CalendarViewTaskIcon,
@@ -65,34 +43,15 @@ import {
   CalendarViewWeekendIconCheckmark,
 } from './styles';
 
-const nameDaysOfWeek = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-const monthsOfYear = [
-  'January',
-  'February',
-  'March',
-  'April',
-  'May',
-  'June',
-  'July',
-  'August',
-  'September',
-  'October',
-  'November',
-  'December',
-];
-
 const calendarViews = { MONTH: 'MONTH', WEEK: 'WEEK' };
 
 const CalendarView = (props) => {
-  //   const getCurrDay = new Date().getDate();
   const router = useRouter();
   const { orgId, username, podId } = router.query;
   const [orgData, setOrgData] = useState(null);
-  const { columns, onLoadMore, hasMore, setColumns, onCalendarDateChange, entityType, calendarFilters, statuses } =
-    props;
+  const { columns, onCalendarDateChange, entityType, calendarFilters, statuses } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [calendarView, setCalendarView] = useState('MONTH');
-  const [tasks, setTasks] = useState([]);
   const [openCalendarModal, setOpenCalendarModal] = useState(false);
   const [dateSelected, setDateSelected] = useState();
   const open = Boolean(anchorEl);
@@ -117,6 +76,7 @@ const CalendarView = (props) => {
   const podBoard = usePodBoard();
   const [getOrgCalendarTasks] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
     onCompleted: (data) => {
+      console.log(data?.getOrgTaskBoardCalendar);
       setCalendarData(data?.getOrgTaskBoardCalendar);
     },
     fetchPolicy: 'cache-and-network',
@@ -128,43 +88,44 @@ const CalendarView = (props) => {
     fetchPolicy: 'cache-and-network',
   });
   useEffect(() => {
-    if (podId) {
-      const taskBoardStatuses =
-        statuses?.length > 0
-          ? statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-          : // double check in case we add new stuff and have no valid entityType.
-            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+    if (!router.asPath.includes('/dashboard')) {
+      if (podId) {
+        const taskBoardStatuses =
+          statuses?.length > 0
+            ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
-      getPodCalendarTasks({
-        variables: {
-          input: {
-            podId,
-            statuses: taskBoardStatuses,
+        getPodCalendarTasks({
+          variables: {
+            input: {
+              podId,
+              statuses: taskBoardStatuses,
+              offset: 0,
+              fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
+              toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
+            },
+          },
+        });
+      } else {
+        console.log(orgId);
+        const taskBoardStatuses =
+          calendarFilters?.statuses?.length > 0
+            ? calendarFilters?.statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+
+        getOrgCalendarTasks({
+          variables: {
+            orgId: orgData?.id,
+            podIds: calendarFilters?.podIds,
             offset: 0,
+            statuses: taskBoardStatuses,
+            labelId: calendarFilters?.labelId,
+            date: calendarFilters?.date,
             fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
             toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
           },
-        },
-      });
-    } else {
-      const taskBoardStatuses =
-        calendarFilters.statuses?.length > 0
-          ? calendarFilters.statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-          : // double check in case we add new stuff and have no valid entityType.
-            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
-
-      getOrgCalendarTasks({
-        variables: {
-          orgId: orgData?.id,
-          podIds: calendarFilters?.podIds,
-          offset: 0,
-          statuses: taskBoardStatuses,
-          labelId: calendarFilters?.labelId,
-          date: calendarFilters?.date,
-          fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
-          toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
-        },
-      });
+        });
+      }
     }
   }, [month, day, orgId, orgData, calendarFilters, statuses]);
   const userPermissionsContext =
@@ -188,9 +149,7 @@ const CalendarView = (props) => {
           orgId,
         },
       });
-      // get user task board tasks immediately
     } else if (!orgId && username && !orgData) {
-      // Get orgId from username
       getOrgFromUsername({
         variables: {
           username,
@@ -203,33 +162,34 @@ const CalendarView = (props) => {
     setOpenTaskModal(false);
   };
 
-  const getTasks = (days) => {
+  const getTasks = (days, tasks) => {
     const holdTasks = [];
-    if (calendarData) {
+    if (tasks) {
       if (calendarView === 'WEEK') {
-        for (let i = 0; i < calendarData.length; i++) {
+        for (let i = 0; i < tasks.length; i++) {
           for (let j = 0; j < days.length; j++) {
-            const holdDate = new Date(calendarData[i].dueDate);
+            const holdDate = new Date(tasks[i].dueDate);
             if (
               days?.[j]?.day.getDate() === holdDate.getDate() &&
               days?.[j]?.day.getMonth() === holdDate.getMonth() &&
               days?.[j]?.day.getFullYear() === holdDate.getFullYear()
             ) {
-              days[j].tasks.push(calendarData[i]);
+              days[j].tasks.push(tasks[i]);
             }
           }
         }
       } else {
         const holdCurrentDaysOfMonth = days;
-        for (let i = 0; i < calendarData.length; i++) {
+        console.log(tasks);
+        for (let i = 0; i < tasks.length; i++) {
           for (let j = 0; j < days.length; j++) {
-            const holdDate = new Date(calendarData[i].dueDate);
+            const holdDate = new Date(tasks[i].dueDate);
             if (
               days?.[j]?.day.getDate() === holdDate.getDate() &&
               days?.[j]?.day.getMonth() === holdDate.getMonth() &&
               days?.[j]?.day.getFullYear() === holdDate.getFullYear()
             ) {
-              holdCurrentDaysOfMonth[j].tasks.push(calendarData[i]);
+              holdCurrentDaysOfMonth[j].tasks.push(tasks[i]);
             }
           }
         }
@@ -238,7 +198,7 @@ const CalendarView = (props) => {
     }
   };
 
-  const getDaysOfWeek = () => {
+  const getDaysOfWeek = (tasks) => {
     const daysOfWeek = [];
     const trackedDate = trackDate;
 
@@ -254,10 +214,10 @@ const CalendarView = (props) => {
       daysOfWeek.push({ date: holdDay.getDate(), tasks: [], day: holdDay });
     }
     setWeek(daysOfWeek);
-    getTasks(daysOfWeek);
+    getTasks(daysOfWeek, tasks);
   };
 
-  const getDaysOfMonth = () => {
+  const getDaysOfMonth = (tasks) => {
     const daysOfMonth = [];
     const dayOfWeek = new Date(year, month, 1).getDay();
 
@@ -279,7 +239,7 @@ const CalendarView = (props) => {
       daysOfMonth.push({ date: numDay, tasks: [], day: numDate });
     }
     setCurrentDaysOfMonth(daysOfMonth);
-    getTasks(daysOfMonth);
+    getTasks(daysOfMonth, tasks);
   };
 
   const handleSelectTask = (taskID) => {
@@ -292,11 +252,11 @@ const CalendarView = (props) => {
     setWeek(null);
     setCurrentDaysOfMonth(null);
     if (calendarView === 'WEEK') {
-      getDaysOfWeek();
+      getDaysOfWeek(columns);
     } else if (calendarView === 'MONTH') {
-      getDaysOfMonth();
+      getDaysOfMonth(columns);
     }
-  }, [day, month, calendarView, calendarData]);
+  }, [day, month, calendarView, columns]);
 
   return (
     <div style={{ width: '100%', marginBottom: '50px' }}>
@@ -320,25 +280,30 @@ const CalendarView = (props) => {
 
       <CalendarTopBar>
         <CalendarTopBarLeftSide>
-          <CalendarViewLabel style={{ width: '125px' }}>{`${monthsOfYear[month]} ${year}`}</CalendarViewLabel>
+          <CalendarViewShowDate>{`${MONTHS_OF_YEAR[month]} ${year}`}</CalendarViewShowDate>
           <CalendarLeftArrowIcon
             onClick={() => {
               const holdDate = new Date(trackDate).setDate(new Date(trackDate).getDate() - 7);
 
               if (calendarView === 'WEEK') {
+                const compareDates = new Date(holdDate);
+                if (compareDates.getMonth() !== trackDate.getMonth()) {
+                  onCalendarDateChange(new Date(compareDates.getFullYear(), compareDates.getMonth(), 1));
+                }
+                setWeek(null);
+                setCurrentDaysOfMonth(null);
                 setTrackDate(new Date(holdDate));
                 setMonth(new Date(holdDate).getMonth());
                 setYear(new Date(holdDate).getFullYear());
                 setDay(new Date(holdDate).getDate());
-                setWeek(null);
-                setCurrentDaysOfMonth(null);
               }
               if (calendarView === 'MONTH') {
-                setMonth(month === 0 ? 11 : month - 1);
-                setYear(month === 0 ? year - 1 : year);
-                onCalendarDateChange(new Date(year, month, 1));
                 setWeek(null);
                 setCurrentDaysOfMonth(null);
+                onCalendarDateChange(new Date(month === 0 ? year - 1 : year, month === 0 ? 11 : month - 1, 1));
+
+                setMonth(month === 0 ? 11 : month - 1);
+                setYear(month === 0 ? year - 1 : year);
               }
             }}
           />
@@ -346,19 +311,23 @@ const CalendarView = (props) => {
             onClick={() => {
               const holdDate = new Date(trackDate).setDate(new Date(trackDate).getDate() + 7);
               if (calendarView === 'WEEK') {
+                const compareDates = new Date(holdDate);
+                if (compareDates.getMonth() !== trackDate.getMonth()) {
+                  onCalendarDateChange(new Date(compareDates.getFullYear(), compareDates.getMonth(), 1));
+                }
+                setWeek(null);
+                setCurrentDaysOfMonth(null);
                 setTrackDate(new Date(holdDate));
                 setMonth(new Date(holdDate).getMonth());
                 setYear(new Date(holdDate).getFullYear());
                 setDay(new Date(holdDate).getDate());
-                setWeek(null);
-                setCurrentDaysOfMonth(null);
               }
               if (calendarView === 'MONTH') {
-                setMonth(month === 11 ? 0 : month + 1);
-                setYear(month === 11 ? year + 1 : year);
-                onCalendarDateChange(new Date(year, month, 1));
                 setWeek(null);
                 setCurrentDaysOfMonth(null);
+                onCalendarDateChange(new Date(month === 11 ? year + 1 : year, month === 11 ? 0 : month + 1, 1));
+                setMonth(month === 11 ? 0 : month + 1);
+                setYear(month === 11 ? year + 1 : year);
               }
             }}
           />
@@ -414,7 +383,7 @@ const CalendarView = (props) => {
         <div>
           <CalendarViewContainer>
             <CalendarDayOfWeekBar>
-              {nameDaysOfWeek.map((day) => (
+              {DAYS_OF_WEEK.map((day) => (
                 <CalendarViewLabel key={day}>{day}</CalendarViewLabel>
               ))}
             </CalendarDayOfWeekBar>
@@ -475,7 +444,7 @@ const CalendarView = (props) => {
         <div>
           <CalendarViewContainer>
             <CalendarDayOfWeekBar>
-              {nameDaysOfWeek.map((day, i) => {
+              {DAYS_OF_WEEK.map((day, i) => {
                 const todayDate = new Date();
                 return week?.[i]?.day.getMonth() === todayDate.getMonth() &&
                   week?.[i]?.day.getDate() === todayDate.getDate() &&

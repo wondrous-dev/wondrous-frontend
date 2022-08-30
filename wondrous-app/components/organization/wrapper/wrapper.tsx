@@ -36,10 +36,15 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import { ToggleBoardPrivacyIcon, TokenGatedBoard } from 'components/Common/PrivateBoardIcon';
 import { RichTextViewer } from 'components/RichText';
 import { DiscordIcon } from 'components/Icons/discord';
-import { DAOEmptyIcon } from '../../Icons/dao';
-import { MoreInfoModal } from '../../profile/modals';
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
-import { SafeImage } from '../../Common/Image';
+import { DAOEmptyIcon } from 'components/Icons/dao';
+import { MoreInfoModal } from 'components/profile/modals';
+import { OrgInviteLinkModal } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import { SafeImage } from 'components/Common/Image';
+import { useMe } from 'components/Auth/withAuth';
+import TwitterPurpleIcon from 'components/Icons/twitterPurple';
+import LinkedInIcon from 'components/Icons/linkedIn';
+import OpenSeaIcon from 'components/Icons/openSea';
+import Tabs from 'components/organization/tabs/tabs';
 import {
   Content,
   ContentContainer,
@@ -60,7 +65,6 @@ import {
   TokenHeader,
   TokenEmptyLogo,
   HeaderTitleIcon,
-  HeaderImage,
   HeaderImageWrapper,
   HeaderTag,
   BoardsSubheaderWrapper,
@@ -68,12 +72,6 @@ import {
   RoleText,
   RoleButton,
 } from './styles';
-import Tabs from '../tabs/tabs';
-import { useMe } from '../../Auth/withAuth';
-import TwitterPurpleIcon from '../../Icons/twitterPurple';
-import LinkedInIcon from '../../Icons/linkedIn';
-import OpenSeaIcon from '../../Icons/openSea';
-import { CalendarViewModal } from './CalendarViewModal';
 import { MembershipRequestModal } from './RequestModal';
 import { TokenGatedAndClaimableRoleModal } from './TokenGatedAndClaimableRoleModal';
 

@@ -577,6 +577,22 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/new-task',
 ];
 
+export const DAYS_OF_WEEK = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+export const MONTHS_OF_YEAR = [
+  'January',
+  'February',
+  'March',
+  'April',
+  'May',
+  'June',
+  'July',
+  'August',
+  'September',
+  'October',
+  'November',
+  'December',
+];
+
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
 
 export const ADMIN_COLUMNS_TYPES = {

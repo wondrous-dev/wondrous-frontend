@@ -344,6 +344,39 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
+export const GET_USER_TASK_BOARD_TASKS_CALENDAR = gql`
+  query getUserTaskBoardTasksCalendar(
+    $userId: ID
+    $statuses: [String]
+    $orgId: String
+    $podIds: [String]
+    $limit: Int
+    $offset: Int
+    $date: String
+    $onlyPublic: Boolean
+    $fromDate: String
+    $toDate: String
+  ) {
+    getUserTaskBoardTasksCalendar(
+      input: {
+        userId: $userId
+        statuses: $statuses
+        orgId: $orgId
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        date: $date
+        onlyPublic: $onlyPublic
+        fromDate: $fromDate
+        toDate: $toDate
+      }
+    ) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
   query getUserTaskBoardSubmissions(
     $userId: ID

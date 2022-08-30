@@ -27,7 +27,7 @@ import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam } from 'utils';
 import { format } from 'date-fns';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import { sectionOpeningReducer } from 'utils/board';
 import {
   STATUSES_ON_ENTITY_TYPES,
   PRIVACY_LEVEL,
@@ -43,9 +43,7 @@ import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
 const useGetOrgTaskBoardCalendar = ({
-  columns,
   setColumns,
-  setOrgTaskHasMore,
   orgId,
   userId,
   entityType,
@@ -55,28 +53,25 @@ const useGetOrgTaskBoardCalendar = ({
   calendarView,
   fromDate,
   toDate,
+  isDashboard,
 }) => {
   const [getOrgTaskBoardCalendar, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
     notifyOnNetworkStatusChange: true,
-    onCompleted: ({ getOrgTaskBoardCalendar }) => {
-      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY || calendarView) {
-        setColumns(getOrgTaskBoardCalendar);
-        setIsLoading(false);
-        return;
-      }
+    onCompleted: (data) => {
+      setColumns(data?.getOrgTaskBoardCalendar);
       setIsLoading(false);
     },
     onError: (error) => {
       setIsLoading(false);
-      console.log(error);
+      console.error(error);
     },
   });
 
   useEffect(() => {
-    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && calendarView) {
+    if ((!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && calendarView, !isDashboard)) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
@@ -99,7 +94,7 @@ const useGetOrgTaskBoardCalendar = ({
         },
       });
     }
-  }, [getOrgTaskBoardCalendar, orgId, filters, userId, entityType, calendarView]);
+  }, [getOrgTaskBoardCalendar, orgId, filters, userId, entityType, calendarView, fromDate]);
 };
 
 const useGetOrgTaskBoardTasks = ({
@@ -131,7 +126,7 @@ const useGetOrgTaskBoardTasks = ({
     },
     onError: (error) => {
       setIsLoading(false);
-      console.log(error);
+      console.error(error);
     },
   });
   const getOrgTaskBoardTasksFetchMore = useCallback(() => {
@@ -147,7 +142,7 @@ const useGetOrgTaskBoardTasks = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
@@ -193,7 +188,7 @@ const useGetOrgTaskBoardTasks = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   };
 
@@ -227,7 +222,7 @@ const useGetTaskRelatedToUser = ({
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
     },
   });
@@ -251,7 +246,7 @@ const useGetTaskRelatedToUser = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
@@ -307,7 +302,7 @@ const useGetOrgTaskBoardProposals = ({
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error, 'err=');
+      console.error(error, 'err=');
       setIsLoading(false);
     },
   });
@@ -328,7 +323,7 @@ const useGetOrgTaskBoardProposals = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [columns, fetchMore, setOrgTaskHasMore]);
 
@@ -370,6 +365,8 @@ const useGetOrgTaskBoard = ({
 }) => {
   const listView = view === ViewType.List;
   const calendarView = view === ViewType.Calendar;
+  const router = useRouter();
+  const isDashboard = router.asPath.includes('/dashboard');
   const board = {
     [userId]: useGetTaskRelatedToUser({
       columns,
@@ -409,9 +406,8 @@ const useGetOrgTaskBoard = ({
       calendarView,
     }),
     calendarTasks: useGetOrgTaskBoardCalendar({
-      columns,
+      isDashboard,
       setColumns,
-      setOrgTaskHasMore,
       orgId,
       userId,
       entityType,
@@ -518,7 +514,7 @@ function BoardsPage() {
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
       setIsLoading(false);
     },
     fetchPolicy: 'cache-and-network',

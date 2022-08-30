@@ -119,10 +119,7 @@ export default function BoardsActivity(props) {
       name: 'Calendar',
       icon: <CalendarViewIcon color={view === ViewType.Calendar ? palette.blue20 : 'white'} />,
       active: view === ViewType.Calendar,
-      disabled:
-        board?.entityType === ENTITIES_TYPES.PROPOSAL ||
-        board?.entityType === ENTITIES_TYPES.MILESTONE ||
-        board?.entityType === ENTITIES_TYPES.BOUNTY,
+      disabled: [ENTITIES_TYPES.PROPOSAL, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(board?.entityType),
       action: () => {
         if (setActiveView) {
           // change only boards page instead of triggering changes on all router connected components while still shallow changing the url

@@ -1,9 +1,11 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import Boards from 'components/Common/Boards';
+import { format } from 'date-fns';
 import {
   GET_USER_PERMISSION_CONTEXT,
   GET_USER_TASK_BOARD_TASKS,
+  GET_USER_TASK_BOARD_TASKS_CALENDAR,
   SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW,
   SEARCH_TASKS_FOR_USER_BOARD_VIEW,
 } from 'graphql/queries';
@@ -12,6 +14,7 @@ import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import { LIMIT, USER_COLUMNS, populateTaskColumns, generateUserDashboardFilters } from 'services/board';
+import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
@@ -32,6 +35,7 @@ const useGetUserTaskBoardTasks = ({
   setHasMoreTasks,
   loggedInUser,
   filters,
+  calendarView,
 }) => {
   const [getUserTaskBoardTasks, { fetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -79,7 +83,8 @@ const useGetUserTaskBoardTasks = ({
   };
 
   useEffect(() => {
-    if (loggedInUser?.id) {
+    if (loggedInUser?.id && !calendarView) {
+      console.log(calendarView);
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
@@ -105,6 +110,56 @@ const useGetUserTaskBoardTasks = ({
   return { getUserTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
+const useGetUserTaskBoardTasksCalendar = ({
+  contributorColumns,
+  setContributorColumns,
+  setHasMoreTasks,
+  loggedInUser,
+  fromDate,
+  toDate,
+  filters,
+  calendarView,
+}) => {
+  const [getUserTaskBoardTasksCalendar] = useLazyQuery(GET_USER_TASK_BOARD_TASKS_CALENDAR, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    onCompleted: (data) => {
+      const tasks = data?.getUserTaskBoardTasksCalendar ?? [];
+      setContributorColumns(tasks);
+    },
+    onError: (error) => {
+      console.error(error);
+    },
+  });
+
+  useEffect(() => {
+    if (loggedInUser?.id && calendarView) {
+      const taskBoardStatuses =
+        filters?.statuses?.length > 0
+          ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
+          : TASKS_DEFAULT_STATUSES;
+      const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
+      getUserTaskBoardTasksCalendar({
+        variables: {
+          podIds: filters?.podIds,
+          userId: loggedInUser?.id,
+          statuses: taskBoardStatuses,
+          limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
+          offset: 0,
+          orgId: filters?.orgId,
+          date: filters?.date,
+          fromDate: format(fromDate, 'yyyy-MM-dd'),
+          toDate: format(toDate, 'yyyy-MM-dd'),
+          ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
+            onlyPublic: true,
+          }),
+        },
+      });
+      setHasMoreTasks(true);
+    }
+  }, [getUserTaskBoardTasksCalendar, loggedInUser?.id, filters, fromDate]);
+};
+
 const useGetUserTaskBoard = ({
   view,
   section,
@@ -113,6 +168,7 @@ const useGetUserTaskBoard = ({
   contributorColumns,
   setContributorColumns,
   filters,
+  calendarView,
 }) => {
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus } = useGetUserTaskBoardTasks({
     contributorColumns,
@@ -120,6 +176,7 @@ const useGetUserTaskBoard = ({
     setHasMoreTasks,
     loggedInUser,
     filters,
+    calendarView,
   });
   return {
     getUserTaskBoardTasksFetchMore,
@@ -142,7 +199,7 @@ const BoardsPage = (props) => {
   const { search, view } = router.query;
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
-
+  const calendarView = view === ViewType.Calendar;
   const [filters, setFilters] = useState<TaskFilter>({
     podIds: [],
     statuses: [],
@@ -152,12 +209,24 @@ const BoardsPage = (props) => {
     orgId: null,
   });
 
+  const now = new Date();
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+  const [fromDate, setFromDate] = useState(firstDay);
+  const [toDate, setToDate] = useState(lastDay);
+
   const [section, setSection] = useReducer(sectionOpeningReducer, '');
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(loggedInUser?.id);
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
+
+  const handleCalendarDatesChange = (date) => {
+    setFromDate(date);
+    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+  };
 
   const filterSchema = useFilterSchema(loggedInUser);
 
@@ -169,6 +238,7 @@ const BoardsPage = (props) => {
     setContributorColumns,
     view,
     filters,
+    calendarView,
   });
 
   const bindProposalsToCols = (taskProposals) => {
@@ -211,6 +281,17 @@ const BoardsPage = (props) => {
   const [searchProposals] = useLazyQuery(SEARCH_PROPOSALS_FOR_USER_BOARD_VIEW, {
     onCompleted: (data) => bindProposalsToCols(data?.searchProposalsForUserBoardView),
     fetchPolicy: 'cache-and-network',
+  });
+
+  useGetUserTaskBoardTasksCalendar({
+    contributorColumns,
+    setContributorColumns,
+    setHasMoreTasks,
+    loggedInUser,
+    filters,
+    fromDate,
+    toDate,
+    calendarView,
   });
 
   useEffect(() => {
@@ -372,6 +453,7 @@ const BoardsPage = (props) => {
           hasMore={hasMoreTasks}
           isAdmin={isAdmin}
           setColumns={setContributorColumns}
+          onCalendarDateChange={handleCalendarDatesChange}
         />
       </BoardWrapper>
     </UserBoardContext.Provider>

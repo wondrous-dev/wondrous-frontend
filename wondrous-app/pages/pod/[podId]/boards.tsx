@@ -42,7 +42,7 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { format } from 'date-fns';
+import { endOfMonth, format, startOfMonth } from 'date-fns';
 
 const useGetPodTaskBoardCalendar = ({
   setColumns,
@@ -62,15 +62,11 @@ const useGetPodTaskBoardCalendar = ({
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
     onCompleted: (data) => {
-      if (entityType === ENTITIES_TYPES.MILESTONE || entityType === ENTITIES_TYPES.BOUNTY || calendarView) {
-        setColumns(data?.getPodTaskBoardCalendar);
-        setIsLoading(false);
-        return;
-      }
+      setColumns(data?.getPodTaskBoardCalendar);
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
 
@@ -98,7 +94,7 @@ const useGetPodTaskBoardCalendar = ({
         },
       });
     }
-  }, [getPodTaskBoardCalendar, podId, statuses, entityType, privacyLevel, calendarView]);
+  }, [getPodTaskBoardCalendar, podId, statuses, entityType, privacyLevel, calendarView, fromDate]);
 };
 
 const useGetPodTaskBoardTasks = ({
@@ -131,7 +127,7 @@ const useGetPodTaskBoardTasks = ({
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
   const getPodTaskBoardTasksFetchMore = useCallback(() => {
@@ -154,7 +150,7 @@ const useGetPodTaskBoardTasks = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [columns, fetchMore, setPodTaskHasMore, variables]);
 
@@ -176,7 +172,7 @@ const useGetPodTaskBoardTasks = ({
         getPodTaskBoardTasks: [...prev.getPodTaskBoardTasks, ...fetchMoreResult.getPodTaskBoardTasks],
       }),
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   };
 
@@ -237,7 +233,7 @@ const useGetPodTaskProposals = ({
       setIsLoading(false);
     },
     onError: (error) => {
-      console.log(error);
+      console.error(error);
     },
   });
 
@@ -257,7 +253,7 @@ const useGetPodTaskProposals = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [columns, fetchMore, setPodTaskHasMore]);
 
@@ -368,8 +364,8 @@ function BoardsPage() {
     fetchPolicy: 'cache-and-network',
   });
   const now = new Date();
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  const firstDay = startOfMonth(now);
+  const lastDay = endOfMonth(now);
   const [fromDate, setFromDate] = useState(firstDay);
   const [toDate, setToDate] = useState(lastDay);
 

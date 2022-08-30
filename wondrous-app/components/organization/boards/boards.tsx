@@ -6,6 +6,7 @@ import MilestoneBoard from 'components/Common/MilestoneBoard';
 import BountyBoard from 'components/Common/BountyBoard';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
 import { ColumnsContext } from 'utils/contexts';
+import { TaskFilter } from 'types/task';
 import Boards from '../../Common/Boards';
 import Wrapper from '../wrapper/wrapper';
 
@@ -19,7 +20,7 @@ const BOARDS_MAP = {
 type Props = {
   onSearch: (searchString: string) => Promise<any>;
   onFilterChange: ({}) => any;
-  onCalendarDateChange: ({}) => any;
+  onCalendarDateChange: Function;
   columns: Array<any>;
   onLoadMore: any;
   orgData: any;
@@ -27,7 +28,7 @@ type Props = {
   searchString: string;
   statuses: string[];
   podIds: string[];
-  calendarFilters: any;
+  calendarFilters: TaskFilter;
   setColumns: React.Dispatch<React.SetStateAction<{}>>;
   userId?: string;
   entityType: string;
