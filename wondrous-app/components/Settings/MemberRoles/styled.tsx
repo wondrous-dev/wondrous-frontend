@@ -67,6 +67,7 @@ export const AvailableRolesLabel = styled(Typography)`
     font-size: 14px;
     font-weight: 500;
     color: ${palette.grey60};
+    min-width: fit-content;
   }
 `;
 
@@ -83,6 +84,7 @@ export const MemberRolesList = styled.div`
 `;
 
 export const MemberRole = styled.div`
+  min-width: fit-content;
   display: flex;
   align-items: center;
   justify-content: center;

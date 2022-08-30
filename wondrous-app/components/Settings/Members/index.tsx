@@ -28,6 +28,7 @@ import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
 import { HeaderBlock } from '../headerBlock';
 import MemberTableRow from './MembersTableRow';
+import { exportMembersDataToCSV } from './helpers';
 
 const LIMIT = 10;
 
@@ -172,6 +173,30 @@ function Members(props) {
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
 
+  const handleDownloadToCSV = () => {
+    const isOrg = !!orgId;
+
+    if (isOrg) {
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: Number.POSITIVE_INFINITY,
+        },
+      }).then(({ data }) => {
+        exportMembersDataToCSV(orgOrPodName, data?.getOrgUsers);
+      });
+    } else {
+      getPodUsers({
+        variables: {
+          podId,
+          limit: Number.POSITIVE_INFINITY,
+        },
+      }).then(({ data }) => {
+        exportMembersDataToCSV(orgOrPodName, data?.getPodUsers);
+      });
+    }
+  };
+
   return (
     <SettingsWrapper showPodIcon={false}>
       <NewOrgInviteLinkModal
@@ -218,6 +243,7 @@ function Members(props) {
           }
           description="Use roles to organize contributors and admins"
           onInvite={() => setOpenInvite(true)}
+          handleDownloadToCSV={handleDownloadToCSV}
         />
 
         <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />

@@ -7,10 +7,12 @@ import {
   SettingsHeaderTitle,
   SettingsHeaderInviteButton,
   SettingsHeaderInviteButtonIcon,
+  SettingsHeaderAction,
+  SettingsHeaderActionText,
 } from './styles';
 
 export function HeaderBlock(props) {
-  const { title, description, icon, onInvite } = props;
+  const { title, description, icon, onInvite, handleDownloadToCSV } = props;
 
   return (
     <SettingsHeaderBlock>
@@ -18,14 +20,12 @@ export function HeaderBlock(props) {
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
-      {onInvite && (
-        <SettingsHeaderInviteButton onClick={onInvite}>
-          Invite
-          <SettingsHeaderInviteButtonIcon>
-            <PlusIcon fill="#FFFFFF" />
-          </SettingsHeaderInviteButtonIcon>
-        </SettingsHeaderInviteButton>
-      )}
+      <SettingsHeaderAction>
+        {!!onInvite && <SettingsHeaderInviteButton onClick={onInvite}>Invite</SettingsHeaderInviteButton>}
+        {!!handleDownloadToCSV && (
+          <SettingsHeaderActionText onClick={handleDownloadToCSV}>Download to CSV</SettingsHeaderActionText>
+        )}
+      </SettingsHeaderAction>
     </SettingsHeaderBlock>
   );
 }
