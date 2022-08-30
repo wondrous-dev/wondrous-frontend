@@ -15,15 +15,17 @@ export const Wrapper = styled.div`
 `;
 
 export const Title = styled(Typography)`
-  font-family: ${typography.fontFamily};
-  font-style: normal;
-  font-weight: 600;
-  font-size: 15px;
-  line-height: 23px;
-  margin-bottom: 12px;
-  letter-spacing: 0.0025em;
+  && {
+    font-family: ${typography.fontFamily};
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 23px;
+    margin-bottom: 12px;
+    letter-spacing: 0.0025em;
 
-  color: ${palette.blue20};
+    color: ${palette.blue20};
+  }
 `;
 
 export const ChildrenWrapper = styled.div``;

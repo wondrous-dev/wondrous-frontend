@@ -11,11 +11,6 @@ export const PostFragment = gql`
     additionalData {
       userMentions
     }
-    creator {
-      username
-      profilePicture
-    }
-    createdBy
     media {
       ...MediaFragment
     }
