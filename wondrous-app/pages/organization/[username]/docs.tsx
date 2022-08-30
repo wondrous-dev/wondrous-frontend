@@ -37,7 +37,6 @@ function DocsPage() {
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
         orgId: org?.id,
-        orgData: org,
       }}
     >
       <Docs orgData={org} />

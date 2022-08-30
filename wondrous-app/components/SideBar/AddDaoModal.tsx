@@ -51,7 +51,7 @@ const HeaderText = styled(Typography)`
     align-items: center;
     color: ${({ theme }) => theme.palette.white};
     display: flex;
-    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-family: 'Space Grotesk';
     font-size: 24px;
     font-style: normal;
     font-weight: 700;
@@ -122,7 +122,7 @@ const ButtonStyled = styled(({ children, ...props }) => (
 
 const ButtonText = styled(Typography)`
   && {
-    font-family: ${({ theme }) => theme.typography.fontFamily};
+    font-family: 'Space Grotesk';
     font-weight: 600;
     font-size: 16px;
     color: ${({ theme }) => theme.palette.white};

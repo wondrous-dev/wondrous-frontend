@@ -277,8 +277,8 @@ const filterOrgUsers = ({ orgUsersData, existingTask = null }) => {
   }));
   const availableUsers = existingTask?.assigneeId
     ? users.concat({
-        label: existingTask?.assignee.username,
-        profilePicture: existingTask?.assignee.profilePicture,
+        label: existingTask?.assignee?.username,
+        profilePicture: existingTask?.assignee?.profilePicture,
         value: existingTask?.assigneeId,
       })
     : users;
@@ -1324,8 +1324,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     );
     if (isTask) {
       form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
+      form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
-    form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
     form.setFieldValue(

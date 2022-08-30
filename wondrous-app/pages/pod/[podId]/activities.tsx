@@ -6,7 +6,6 @@ import Activities from 'components/Pod/activities';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import { useGetPodById } from 'utils/hooks';
-import { EntitySidebar } from 'components/Common/Sidebar';
 
 function ActivitiesPage() {
   const router = useRouter();
@@ -27,9 +26,7 @@ function ActivitiesPage() {
           : null,
       }}
     >
-      <EntitySidebar>
-        <Activities podId={podId} />
-      </EntitySidebar>
+      <Activities podId={podId} />
     </PodBoardContext.Provider>
   );
 }
