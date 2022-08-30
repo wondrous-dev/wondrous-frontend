@@ -557,6 +557,9 @@ const useCreateTask = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getTasksForMilestone',
+      'getOrgTaskBoardCalendar',
+      'getPodTaskBoardCalendar',
+      'getUserTaskBoardTasksCalendar',
     ],
   });
 
@@ -569,7 +572,7 @@ const useCreateTask = () => {
       .then(() => {
         handleClose();
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
 
   return { handleMutation, loading };
 };
@@ -801,7 +804,7 @@ const useCreateTaskProposal = () => {
       .then(() => {
         handleClose();
       })
-      .catch((e) => console.log(e));
+      .catch((e) => console.error(e));
 
   return { handleMutation, loading };
 };
@@ -1409,7 +1412,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         },
       },
     }).catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   };
 

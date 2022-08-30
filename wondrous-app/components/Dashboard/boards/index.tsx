@@ -61,7 +61,7 @@ const useGetUserTaskBoardTasks = ({
         };
       },
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   }, [contributorColumns, fetchMore, setHasMoreTasks]);
 
@@ -78,13 +78,12 @@ const useGetUserTaskBoardTasks = ({
         getUserTaskBoardTasks: [...prev.getUserTaskBoardTasks, ...fetchMoreResult.getUserTaskBoardTasks],
       }),
     }).catch((error) => {
-      console.log(error);
+      console.error(error);
     });
   };
 
   useEffect(() => {
     if (loggedInUser?.id && !calendarView) {
-      console.log(calendarView);
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
@@ -210,8 +209,9 @@ const BoardsPage = (props) => {
   });
 
   const now = new Date();
-  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+  // so that if there are previous days on the calendar not in the month then it will get those tasks as well
+  const firstDay = new Date(now.getFullYear(), now.getMonth() - 1, 24);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 6);
 
   const [fromDate, setFromDate] = useState(firstDay);
   const [toDate, setToDate] = useState(lastDay);
@@ -224,10 +224,12 @@ const BoardsPage = (props) => {
   });
 
   const handleCalendarDatesChange = (date) => {
-    setFromDate(date);
-    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+    const holdFromDate = new Date(date);
+    // so that if there are previous days on the calendar not in the month then it will get those tasks as well
+    holdFromDate.setDate(holdFromDate.getDate() - 6);
+    setFromDate(holdFromDate);
+    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 6));
   };
-
   const filterSchema = useFilterSchema(loggedInUser);
 
   const { getUserTaskBoardTasksFetchMore, fetchPerStatus = () => {} } = useGetUserTaskBoard({

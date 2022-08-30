@@ -74,60 +74,6 @@ const CalendarView = (props) => {
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const [getOrgCalendarTasks] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
-    onCompleted: (data) => {
-      console.log(data?.getOrgTaskBoardCalendar);
-      setCalendarData(data?.getOrgTaskBoardCalendar);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-  const [getPodCalendarTasks] = useLazyQuery(GET_POD_TASK_BOARD_CALENDAR, {
-    onCompleted: (data) => {
-      setCalendarData(data?.getPodTaskBoardCalendar);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-  useEffect(() => {
-    if (!router.asPath.includes('/dashboard')) {
-      if (podId) {
-        const taskBoardStatuses =
-          statuses?.length > 0
-            ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
-
-        getPodCalendarTasks({
-          variables: {
-            input: {
-              podId,
-              statuses: taskBoardStatuses,
-              offset: 0,
-              fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
-              toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
-            },
-          },
-        });
-      } else {
-        console.log(orgId);
-        const taskBoardStatuses =
-          calendarFilters?.statuses?.length > 0
-            ? calendarFilters?.statuses.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
-
-        getOrgCalendarTasks({
-          variables: {
-            orgId: orgData?.id,
-            podIds: calendarFilters?.podIds,
-            offset: 0,
-            statuses: taskBoardStatuses,
-            labelId: calendarFilters?.labelId,
-            date: calendarFilters?.date,
-            fromDate: format(new Date(year, month, 1), 'yyyy-MM-dd'),
-            toDate: format(new Date(year, month + 1, 1), 'yyyy-MM-dd'),
-          },
-        });
-      }
-    }
-  }, [month, day, orgId, orgData, calendarFilters, statuses]);
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
@@ -180,7 +126,6 @@ const CalendarView = (props) => {
         }
       } else {
         const holdCurrentDaysOfMonth = days;
-        console.log(tasks);
         for (let i = 0; i < tasks.length; i++) {
           for (let j = 0; j < days.length; j++) {
             const holdDate = new Date(tasks[i].dueDate);
