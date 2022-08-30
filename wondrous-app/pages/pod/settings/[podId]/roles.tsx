@@ -109,7 +109,6 @@ function RolesPage() {
       onPermissionsChange={updateRolePermissions}
       toast={toast}
       onToastClose={() => setToast({ ...toast, show: false })}
-      getPodRolesWithTokenGate={getPodRolesWithTokenGate}
     />
   );
 }
