@@ -116,6 +116,11 @@ const cache = new InMemoryCache({
         },
         getNotifications: offsetLimitPagination(),
         getUserFeed: offsetLimitPagination(),
+
+        getUserTaskBoardTasks: {
+          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
+          merge: offsetLimitPaginationInput,
+        },
       },
     },
   },

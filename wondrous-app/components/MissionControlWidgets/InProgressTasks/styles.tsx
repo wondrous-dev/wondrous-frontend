@@ -4,6 +4,7 @@ import palette from 'theme/palette';
 import Typography from '@mui/material/Typography';
 import MuiAutocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
+import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 
 export const TaskContainer = styled.div`
   background: ${palette.grey950};
@@ -105,4 +106,13 @@ export const EmptyStateText = styled(Typography)`
     font-family: ${typography.fontFamily};
     font-size: 13px;
   }
+`;
+
+export const TasksContainer = styled.div`
+  max-height: 200px;
+  overflow: auto;
+  ${ScrollBarStyles};
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 `;

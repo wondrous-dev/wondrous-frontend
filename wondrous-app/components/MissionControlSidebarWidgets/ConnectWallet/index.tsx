@@ -14,19 +14,19 @@ import {
 
 const DISMISSED_VALUE = '0';
 
-const localStorageKey = 'WONDER_ADDRESS_WIDGET';
+const LOCAL_STORAGE_KEY = 'wonder-address-widget';
 
 const ConnectWallet = () => {
   const [isDismissed, setIsDismissed] = useState(true);
   const wonderWeb3 = useWonderWeb3();
 
   useEffect(() => {
-    setIsDismissed(localStorage.getItem(localStorageKey) === DISMISSED_VALUE);
+    setIsDismissed(localStorage.getItem(LOCAL_STORAGE_KEY) === DISMISSED_VALUE);
   }, []);
 
   const dismissWidget = () => {
     setIsDismissed(true);
-    localStorage.setItem(localStorageKey, DISMISSED_VALUE);
+    localStorage.setItem(LOCAL_STORAGE_KEY, DISMISSED_VALUE);
   };
 
   if (isDismissed || wonderWeb3.address) return null;

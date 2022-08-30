@@ -4,7 +4,7 @@ import { GET_USER_TASK_BOARD_TASKS } from 'graphql/queries';
 import { useGlobalContext } from 'utils/hooks';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { useMe } from 'components/Auth/withAuth';
-import { ENTITIES_TYPES, TASK_STATUS_IN_PROGRESS } from 'utils/constants';
+import { TASK_STATUS_IN_PROGRESS } from 'utils/constants';
 import SearchIcon from 'components/Icons/search';
 import {
   PodSearchAutocompletePopper,
@@ -18,6 +18,7 @@ import { useInView } from 'react-intersection-observer';
 import { useLocation } from 'utils/useLocation';
 import { useEffect, useState } from 'react';
 import { delQuery } from 'utils';
+import { LoadMore } from 'components/SearchTasks/styles';
 import {
   TaskContainer,
   TasksWrapper,
@@ -27,6 +28,7 @@ import {
   Autocomplete,
   Input,
   EmptyStateText,
+  TasksContainer,
 } from './styles';
 
 const DEFAULT_ORG_VALUE = { id: null, name: 'All orgs' };
@@ -35,7 +37,12 @@ const InProgressTasksWidget = () => {
   const { userOrgs } = globalContext;
   const user = useMe();
 
-  const { data, loading, refetch } = useQuery(GET_USER_TASK_BOARD_TASKS, {
+  const {
+    data,
+    loading,
+    refetch,
+    fetchMore: fetchMoreTasks,
+  } = useQuery(GET_USER_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
@@ -54,12 +61,27 @@ const InProgressTasksWidget = () => {
 
   const options = userOrgs?.getUserOrgs;
 
-  const handleOrgChange = (e, org) => refetch({ orgId: org?.id });
+  const handleOrgChange = (e, org) => {
+    refetch({ orgId: org?.id }).then((response) => setHasMore(response?.data?.getUserTaskBoardTasks?.length >= LIMIT));
+  };
 
   const router = useRouter();
-  const [ref, inView] = useInView({});
+  const [ref, inView] = useInView({ initialInView: true });
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const fetchMore = () => {
+    fetchMoreTasks({ variables: { offset: data?.getUserTaskBoardTasks?.length, limit: LIMIT } }).then((response) => {
+      setHasMore(response?.data?.getUserTaskBoardTasks?.length >= LIMIT);
+    });
+  };
+
+  useEffect(() => {
+    if (inView && hasMore && data?.getUserTaskBoardTasks?.length) {
+      fetchMore();
+    }
+  }, [inView, hasMore, data?.getUserTaskBoardTasks?.length]);
 
   const handleCardClick = (task, query = '') => {
     const newUrl = `${delQuery(router.asPath)}?task=${task?.id}${query}`;
@@ -126,12 +148,21 @@ const InProgressTasksWidget = () => {
           <EmptyStateText>Once you mark tasks as in-progress, they will appear here.</EmptyStateText>
         )}
 
-        {data?.getUserTaskBoardTasks?.map((task, idx) => (
-          <TaskContainer key={idx} onClick={() => handleCardClick(task)}>
-            <OrgProfilePicture profilePicture={task?.orgProfilePicture} />
-            <TaskTitle>{task.title}</TaskTitle>
-          </TaskContainer>
-        ))}
+        <TasksContainer>
+          {data?.getUserTaskBoardTasks?.map((task, idx) => (
+            <TaskContainer key={idx} onClick={() => handleCardClick(task)}>
+              <OrgProfilePicture profilePicture={task?.orgProfilePicture} />
+              <TaskTitle>{task.title}</TaskTitle>
+            </TaskContainer>
+          ))}
+          <LoadMore
+            style={{
+              height: '20px',
+            }}
+            hasMore
+            ref={ref}
+          />
+        </TasksContainer>
       </TasksWrapper>
     </WidgetLayout>
   );
