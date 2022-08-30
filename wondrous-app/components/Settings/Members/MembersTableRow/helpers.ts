@@ -39,7 +39,7 @@ export const getRoleEmoji = (role) => {
   if (!role) {
     return '';
   }
-  const roleLabel = role.label;
+  const roleLabel = role.label || role.name;
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
 
   if (correspondingRoleKey) {
@@ -53,7 +53,7 @@ export const getRoleColor = (role) => {
   if (!role) {
     return '';
   }
-  const roleLabel = role.label;
+  const roleLabel = role.label || role.name;
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
 
   if (correspondingRoleKey) {

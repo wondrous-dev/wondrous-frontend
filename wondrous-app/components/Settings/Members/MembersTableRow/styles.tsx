@@ -261,4 +261,6 @@ export const MemberRole = styled.div`
 `;
 
 export const MemberRoleEmoji = styled.span``;
-export const MemberRoleLabel = styled.span``;
+export const MemberRoleLabel = styled.span`
+  text-transform: capitalize;
+`;

@@ -1,12 +1,25 @@
 import React from 'react';
 import pluralize from 'pluralize';
 
-import { Tag, Text } from 'components/styled';
+import { Text } from 'components/styled';
 import { Role } from 'types/common';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodIconWithoutBg from 'components/Icons/podIconWithoutBg';
-import { Avatars, Container, PodMembers } from './styled';
+import {
+  AvailableRoles,
+  AvailableRolesCount,
+  AvailableRolesLabel,
+  AvailableRolesLabelWrapper,
+  Avatars,
+  Container,
+  MemberRole,
+  MemberRoleEmoji,
+  MemberRoleLabel,
+  MemberRolesList,
+  PodMembers,
+} from './styled';
+import { getRoleColor, getRoleEmoji } from '../Members/MembersTableRow/helpers';
 
 type Props = {
   roleList: Role[];
@@ -52,15 +65,22 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
         </PodMembers>
       ) : null}
 
-      <div>
-        {`${roleList.length} `}
-        <Text as="span" color="#6C6C6C" marginRight="8px">
-          {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
-        </Text>
-        {roleList.map((role) => (
-          <Tag key={role.name}>{role.name}</Tag>
-        ))}
-      </div>
+      <AvailableRoles>
+        <AvailableRolesLabelWrapper>
+          <AvailableRolesCount>{roleList.length}</AvailableRolesCount>
+          <AvailableRolesLabel>
+            {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
+          </AvailableRolesLabel>
+        </AvailableRolesLabelWrapper>
+        <MemberRolesList>
+          {roleList.map((role) => (
+            <MemberRole key={role.name} borderColor={getRoleColor(role)}>
+              <MemberRoleEmoji>{getRoleEmoji(role)}</MemberRoleEmoji>
+              <MemberRoleLabel>{role.name}</MemberRoleLabel>
+            </MemberRole>
+          ))}
+        </MemberRolesList>
+      </AvailableRoles>
     </Container>
   );
 }
