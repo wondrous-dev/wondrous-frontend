@@ -145,7 +145,7 @@ export const PodModalFooter = styled.div`
 
 export const PodModalFooterInfoWrapper = styled.div`
   background: ${({ theme }) =>
-    `linear-gradient(0deg, ${theme.palette.grey250}, ${theme.palette.grey250}), ${theme.palette.background.default}`};
+    `linear-gradient(0deg, ${theme.palette.black101}, ${theme.palette.black101}), ${theme.palette.background.default}`};
   border-radius: 4px;
   padding: 4px 8px;
   margin-right: 8px;
