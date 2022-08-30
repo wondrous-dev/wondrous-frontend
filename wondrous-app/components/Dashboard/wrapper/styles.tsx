@@ -28,7 +28,6 @@ export const Banner = styled.div`
   height: 149px;
   background: url(${({ img }) => `${img}`});
   position: relative;
-  margin-top: 70px;
   background-size: cover;
   display: flex;
   justify-content: center;
