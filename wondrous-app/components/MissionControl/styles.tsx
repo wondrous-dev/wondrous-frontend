@@ -6,7 +6,6 @@ export const MissionControlWrapper = styled.div`
   display: flex;
   height: 100%;
   min-height: 100vh;
-  padding-top: ${HEADER_HEIGHT};
   overflow: hidden;
 `;
 
@@ -31,6 +30,7 @@ export const MissionControlSidebarWrapper = styled.div`
   padding: 14px;
   display: flex;
   flex-direction: column;
+  padding-top: ${HEADER_HEIGHT};
   gap: 24px;
   position: relative;
   z-index: 1;
