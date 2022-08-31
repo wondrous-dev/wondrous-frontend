@@ -1,11 +1,13 @@
+import React, { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
+import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GlobalContext, SideBarContext } from 'utils/contexts';
+import { LIMIT } from 'services/board';
+
 import SideBarComponent from 'components/Common/SidebarMain';
 import HeaderComponent from 'components/Header';
-import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import React, { useMemo, useState } from 'react';
 import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
-import { CreateEntityContext, SideBarContext } from 'utils/contexts';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
 
@@ -27,7 +29,17 @@ export default function SidebarLayout({ children }) {
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-
+  const {
+    data: notifications,
+    refetch,
+    fetchMore: fetchMoreNotifications,
+    loading: notificationsLoading,
+  } = useQuery(GET_NOTIFICATIONS, {
+    variables: {
+      offset: 0,
+      limit: LIMIT,
+    },
+  });
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
@@ -56,8 +68,8 @@ export default function SidebarLayout({ children }) {
   }
   return (
     <SideBarContext.Provider value={sidebarValue}>
-      <SideBarComponent />
-      <CreateEntityContext.Provider
+      <SideBarComponent userOrgs={userOrgs} />
+      <GlobalContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,
           toggleCreateFormModal,
@@ -65,11 +77,15 @@ export default function SidebarLayout({ children }) {
           userPermissionsContext: userPermissionsContext?.getUserPermissionContext
             ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
             : null,
+          notifications: notifications?.getNotifications,
+          refetchNotifications: refetch,
+          fetchMoreNotifications,
+          notificationsLoading,
         }}
       >
         <HeaderComponent />
         <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
-      </CreateEntityContext.Provider>
+      </GlobalContext.Provider>
     </SideBarContext.Provider>
   );
 }

@@ -1,5 +1,6 @@
 import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
@@ -220,4 +221,17 @@ export const TutorialButton = styled(Button)`
 
 export const TutorialText = styled.span`
   font-family: Space Grotesk;
+`;
+
+export const MissionControlIconWrapper = styled(HeaderHomeButton)`
+  && {
+    &:hover {
+      svg {
+        path {
+          stroke: ${palette.white};
+        }
+      }
+      background: ${palette.violet50};
+    }
+  }
 `;

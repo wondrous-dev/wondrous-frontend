@@ -40,7 +40,7 @@ import { SettingsPage } from 'types/common';
 import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useCreateEntityContext, useSideBar } from 'utils/hooks';
+import { useGlobalContext, useSideBar } from 'utils/hooks';
 
 const createListItems = ({ orgId, podId }) => [
   {
@@ -148,7 +148,7 @@ function SettingsWrapper(props) {
   const router = useRouter();
   const user = useMe();
   const { minimized } = useSideBar();
-  const { userPermissionsContext } = useCreateEntityContext();
+  const { userPermissionsContext } = useGlobalContext();
 
   const { pathname } = router;
   const { orgId, podId } = router.query;
