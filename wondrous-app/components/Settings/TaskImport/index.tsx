@@ -1,7 +1,7 @@
 import NotionTaskImportSection from 'components/Settings/TaskImport/NotionTaskImport';
 import { useRouter } from 'next/router';
 import React from 'react';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { HeaderBlock } from 'components/Settings/headerBlock';
 import { TaskImportContainer } from './styles';
 
