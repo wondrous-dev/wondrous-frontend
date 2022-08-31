@@ -1,10 +1,18 @@
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import {
+  ArrowIcon,
+  Button,
+  ButtonIcon,
+  IconText,
+  Item,
+  MenuStyled,
+  NoLogoPod,
+  Text,
+} from 'components/Common/SidebarEntityMenu/styles';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import { useBoards } from 'utils/hooks';
-
-import { ArrowIcon, Button, ButtonIcon, IconText, Item, MenuStyled, NoLogoPod, Text } from './styles';
 
 const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();

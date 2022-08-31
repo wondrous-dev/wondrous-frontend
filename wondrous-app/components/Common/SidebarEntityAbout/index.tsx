@@ -1,27 +1,10 @@
+import { ButtonWrapper, Wrapper } from 'components/Common/SidebarEntityAbout/styles';
+import InviteButton from 'components/Common/SidebarEntityInviteButton';
+import EntityMenu from 'components/Common/SidebarEntityMenu';
+import SettingsButton from 'components/Common/SidebarEntitySettingsButton';
 import useCanManage from 'hooks/useCanManage';
 import { useRouter } from 'next/router';
-import styled from 'styled-components';
 import { useBoards } from 'utils/hooks';
-
-import EntityMenu from './EntityMenu';
-import InviteButton from './InviteButton';
-import SettingsButton from './SettingsButton';
-
-const Wrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  gap: 24px;
-  width: 100%;
-`;
-
-const ButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  gap: 4px;
-`;
 
 const AboutEntity = () => {
   const router = useRouter();

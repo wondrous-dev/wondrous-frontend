@@ -1,7 +1,6 @@
 import { ButtonBase, Menu, MenuItem, Typography } from '@mui/material';
-import PodsIcon from 'components/Icons/Sidebar/pods.svg';
 import Arrow from 'components/Icons/arrow.svg';
-import { DAOIcon } from 'components/Icons/dao';
+import PodsIcon from 'components/Icons/Sidebar/pods.svg';
 import styled from 'styled-components';
 
 export const ButtonIcon = styled.div`
