@@ -36,7 +36,7 @@ const Step2TeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
 
   return (
     <div>
-      <GradientHeading fontSize={24} mb="20px">
+      <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%">
         Add your team members
       </GradientHeading>
 

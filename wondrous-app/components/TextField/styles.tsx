@@ -64,7 +64,7 @@ export const FieldWrapper = styled.div`
   flex-direction: column;
   gap: 12px;
   width: 100%;
-  
+
   &:not(:last-child) {
     margin-bottom: 18px;
   }
@@ -73,9 +73,9 @@ export const FieldWrapper = styled.div`
     props.labelType === 'highlighted' &&
     css`
       flex-direction: row;
-      border-radius: 4px;
 
       ${FieldLabel} {
+        border-radius: 4px;
         padding: 11px 8px;
         background-color: ${greyColors.grey99};
         display: inline-block;

@@ -23,6 +23,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
     step: 1,
   });
 
+  console.log(state);
   const footerRef = useRef(null);
   const steps = [
     () => (

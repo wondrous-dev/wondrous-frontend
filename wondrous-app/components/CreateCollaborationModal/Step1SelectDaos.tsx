@@ -135,6 +135,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
             <OrgSearch
               value={selectedOrg1}
               options={org1Schema.items}
+              label="Select your project"
               onChange={(orgId: any) => setSelectedOrg1(orgId)}
             />
             {console.log(selectedOrg1, org1Schema)}
@@ -143,6 +144,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
             </Grid>
             <OrgSearch
               value={selectedOrg2}
+              label="Select collaborator"
               options={org2Schema.items}
               onChange={(orgId: any) => setSelectedOrg2(orgId)}
             />

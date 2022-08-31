@@ -1,26 +1,28 @@
+import { useState } from 'react';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import {
   PodSearchClickAway,
-  PodSearchWrapper,
-  PodSearchButton,
-  PodSearchImageLabelWrapper,
-  PodSearchDefaultImage,
-  PodSearchLabel,
   PodSearchButtonDeleteIcon,
   PodSearchButtonArrowIcon,
   PodSearchPopper,
   PodSearchAutocomplete,
-  PodSearchInput,
   PodSearchInputAdornment,
   PodSearchInputIcon,
-  PodSearchListItem,
   PodSearchPaper,
-  PodSearchList,
   PodSearchAutocompletePopper,
 } from 'components/CreateEntity/CreateEntityModal/PodSearch/styles';
-import { useState } from 'react';
+import {
+  OrgSearchButton,
+  OrgSearchWrapper,
+  LabelWrapper,
+  OrgSearchInput,
+  OrgSearchListItem,
+  OrgSearchList,
+  OrgSearchInputIcon,
+} from './styles';
 
 function OrgSearch(props) {
-  const { options, onChange, value, disabled } = props;
+  const { options, onChange, value, disabled, label } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
   const handleClickAway = () => setAnchorEl(null);
@@ -28,12 +30,17 @@ function OrgSearch(props) {
   const selectedValue = options?.find((option) => option?.id === value);
   return (
     <PodSearchClickAway onClickAway={handleClickAway}>
-      <PodSearchWrapper>
-        <PodSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
-          <PodSearchImageLabelWrapper>
-            <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} />
-            <PodSearchLabel>{selectedValue?.name ?? `Select a Pod`}</PodSearchLabel>
-          </PodSearchImageLabelWrapper>
+      <OrgSearchWrapper>
+        <OrgSearchButton open={open} disabled={!options || disabled} onClick={handleClick}>
+          <LabelWrapper>
+            {/* <PodSearchDefaultImage color={selectedValue?.color ?? `#474747`} /> */}
+            <OrgProfilePicture
+              style={{ width: '42px', height: '42px' }}
+              profilePicture={selectedValue?.profilePicture}
+            />
+            {/* <PodSearchLabel>{selectedValue?.name ?? label}</PodSearchLabel> */}
+            <span>{selectedValue?.name ?? label}</span>
+          </LabelWrapper>
           {selectedValue && !disabled ? (
             <PodSearchButtonDeleteIcon
               onClick={(e) => {
@@ -45,21 +52,22 @@ function OrgSearch(props) {
           ) : (
             <PodSearchButtonArrowIcon />
           )}
-        </PodSearchButton>
+        </OrgSearchButton>
         <PodSearchPopper open={open} anchorEl={anchorEl} placement="bottom-start" disablePortal>
           <PodSearchAutocomplete
             value={selectedValue}
             renderInput={(params) => (
-              <PodSearchInput
+              <OrgSearchInput
                 {...params}
                 ref={params.InputProps.ref}
                 disableUnderline
+                placeholder="Search for any Org"
                 fullWidth
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
                     <PodSearchInputAdornment position="end">
-                      <PodSearchInputIcon />
+                      <OrgSearchInputIcon />
                     </PodSearchInputAdornment>
                   ),
                 }}
@@ -69,14 +77,16 @@ function OrgSearch(props) {
             isOptionEqualToValue={(option, value) => option.name === value?.name}
             getOptionLabel={(option) => option.name}
             renderOption={(props, option) => (
-              <PodSearchListItem {...props}>
+              <OrgSearchListItem {...props}>
+                <OrgProfilePicture style={{ width: '26px', height: '26px' }} profilePicture={option?.profilePicture} />
+
                 <span>{option.name}</span>
                 {/* <PodSearchDefaultImage color={option?.color ?? '#474747'} />
                 <PodSearchLabel>{option?.label}</PodSearchLabel> */}
-              </PodSearchListItem>
+              </OrgSearchListItem>
             )}
             PaperComponent={PodSearchPaper}
-            ListboxComponent={PodSearchList}
+            ListboxComponent={OrgSearchList}
             PopperComponent={(params) => <PodSearchAutocompletePopper {...params} />}
             open={open}
             options={options}
@@ -90,7 +100,7 @@ function OrgSearch(props) {
             blurOnSelect
           />
         </PodSearchPopper>
-      </PodSearchWrapper>
+      </OrgSearchWrapper>
     </PodSearchClickAway>
   );
 }

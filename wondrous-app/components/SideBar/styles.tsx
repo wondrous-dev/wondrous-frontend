@@ -209,7 +209,7 @@ export const NoLogoDAO = styled.div`
   align-items: center;
   justify-content: center;
 
-  background: linear-gradient(0deg, #141414 0%, #474747 219.88%, rgba(20, 20, 20, 0) 219.9%);
+  background: ${palette.grey99};
 `;
 
 export const StyledDivider = styled(Divider)`
