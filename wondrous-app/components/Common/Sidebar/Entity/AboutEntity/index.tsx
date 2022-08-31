@@ -33,7 +33,6 @@ const AboutEntity = () => {
       <EntityMenu
         name={name}
         id={id}
-        router={router}
         thumbnailPicture={thumbnailPicture}
         profilePicture={profilePicture}
         canManage={canManage}

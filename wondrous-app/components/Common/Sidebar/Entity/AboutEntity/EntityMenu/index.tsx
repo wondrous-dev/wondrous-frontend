@@ -1,12 +1,14 @@
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { useRouter } from 'next/router';
 import { useState } from 'react';
 import palette from 'theme/palette';
 import { useBoards } from 'utils/hooks';
 
 import { ArrowIcon, Button, ButtonIcon, IconText, Item, MenuStyled, NoLogoPod, Text } from './styles';
 
-const EntityMenu = ({ name, id, router, thumbnailPicture, profilePicture, canManage }) => {
+const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();
+  const router = useRouter();
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
