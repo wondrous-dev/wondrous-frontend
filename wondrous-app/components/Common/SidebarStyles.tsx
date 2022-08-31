@@ -39,7 +39,6 @@ export const SidebarContent = styled.div`
 export const ChildrenWrapper = styled.div`
   margin-left: ${({ minimized }) => (minimized ? mainSidebarWidth : entitySidebarWidth)};
   width: 100%;
-  padding: 14px 0;
 `;
 
 export const Label = styled(Typography)`

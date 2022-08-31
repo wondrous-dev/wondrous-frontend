@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 
 export const SettingsChildrenWrapper = styled.div`
-  padding: 0 24px;
+  padding: 100px 24px 0px 24px;
   display: flex;
   justify-content: center;
   flex-direction: column;

@@ -15,7 +15,7 @@ export const HeaderBar = styled(AppBar)`
     gap: 14px;
     justify-content: flex-end;
     box-shadow: none;
-    padding: 0 4px;
+    padding: 0 30px;
   }
 `;
 
