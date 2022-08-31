@@ -4,7 +4,7 @@ import { useHotkey, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
-import { ToggleViewButton } from 'components/Common/ToggleViewButton';
+import ToggleViewButton from 'components/Common/ToggleViewButton';
 import Toggle from 'components/Common/Toggle';
 import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
@@ -159,6 +159,7 @@ export default function BoardsActivity(props) {
     [view]
   );
 
+  // TODO: When calendar PR is merged
   // useHotkeys('/', () => {
   // if (setActiveView) {
   //   setActiveView(ViewType.Calendar);

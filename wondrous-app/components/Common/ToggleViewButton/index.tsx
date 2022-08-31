@@ -16,21 +16,25 @@ interface IToggleViewButtonProps {
 }
 
 // Toggler between views (i.e. grid vs list)
-export function ToggleViewButton(props: IToggleViewButtonProps) {
+function ToggleViewButton(props: IToggleViewButtonProps) {
   const { options } = props;
   const showBadge = useHotkey();
   const hotkeyLetters = { List: ',', Grid: '.', Calendar: '/' };
 
   return (
     <ToggleViewWrapper {...props}>
-      {options.map((opt, key) => {
+      {options.map((opt) => {
         let className = opt.active && !opt?.disabled ? 'active' : '';
         if (opt?.disabled) className = `${className} disabled`;
         return (
-          <Badge badgeContent={hotkeyLetters[opt.name]} color="primary" invisible={!showBadge}>
-            <Tooltip key={`toggle-option-${opt.name}`} title={`${opt.name} view`} placement="top">
+          <Badge
+            badgeContent={hotkeyLetters[opt.name]}
+            color="primary"
+            invisible={!showBadge}
+            key={`toggle-option-${opt.name}`}
+          >
+            <Tooltip title={`${opt.name} view`} placement="top">
               <ToggleViewOption
-                key={`toggle-option-${opt.name}`}
                 className={className}
                 onClick={() => {
                   opt.action();
@@ -45,3 +49,5 @@ export function ToggleViewButton(props: IToggleViewButtonProps) {
     </ToggleViewWrapper>
   );
 }
+
+export default ToggleViewButton;

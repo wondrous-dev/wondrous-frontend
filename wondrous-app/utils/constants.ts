@@ -366,6 +366,11 @@ export const BOARD_TYPE = {
   assignee: 'assignee',
 };
 
+export const OPEN_TASK_METHOD = {
+  link: 'link',
+  hot: 'hot',
+};
+
 export const snakeToCamel = (str) =>
   str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
 

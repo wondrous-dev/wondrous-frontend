@@ -99,6 +99,7 @@ export function AssigneeField({
   const showBadge = useHotkey();
   const router = useRouter();
 
+  // TODO: refactor code to make more sense
   const claimTask = () => {
     if (!user) {
       router.push('/signup', undefined, {

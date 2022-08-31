@@ -1,13 +1,10 @@
 // put in to rerun vercel upload
 const findNextAvailableStatus = (direction, statusIndex, columns) => {
   let holdStatusIndex = statusIndex;
-  let notFound = true;
-  let counter = 0;
-  while (notFound) {
+  for (let i = 0; i <= columns.length; i += 1) {
     if (direction === 'down') {
       holdStatusIndex += 1;
       if (columns.length > holdStatusIndex && columns[holdStatusIndex]?.tasks.length !== 0) {
-        notFound = false;
         return holdStatusIndex;
       }
 
@@ -18,7 +15,6 @@ const findNextAvailableStatus = (direction, statusIndex, columns) => {
     if (direction === 'left') {
       holdStatusIndex -= 1;
       if (holdStatusIndex >= 0 && columns[holdStatusIndex]?.tasks.length !== 0) {
-        notFound = false;
         return holdStatusIndex;
       }
       if (holdStatusIndex <= 0) {
@@ -28,7 +24,6 @@ const findNextAvailableStatus = (direction, statusIndex, columns) => {
     if (direction === 'right') {
       holdStatusIndex += 1;
       if (columns.length > holdStatusIndex && columns[holdStatusIndex]?.tasks.length !== 0) {
-        notFound = false;
         return holdStatusIndex;
       }
       if (holdStatusIndex === columns.length) {
@@ -41,17 +36,12 @@ const findNextAvailableStatus = (direction, statusIndex, columns) => {
       }
       holdStatusIndex -= 1;
       if (holdStatusIndex >= 0 && columns[holdStatusIndex]?.tasks.length !== 0) {
-        notFound = false;
         return holdStatusIndex;
       }
       if (holdStatusIndex <= 0) {
         holdStatusIndex = columns.length;
       }
     }
-    if (counter === 5) {
-      return null;
-    }
-    counter += 1;
   }
 };
 

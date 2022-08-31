@@ -10,6 +10,7 @@ import {
   PAYMENT_STATUS,
   BOARD_TYPE,
   STATUS_CLOSED,
+  OPEN_TASK_METHOD,
 } from 'utils/constants';
 import { useState, useEffect } from 'react';
 import { useLocation } from 'utils/useLocation';
@@ -63,11 +64,11 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const [statusIndex, setStatusIndex] = useState(null);
   const [taskId, setTaskId] = useState(null);
   const [statusPicked, setStatusPicked] = useState(null);
-  const [byLinkOrHot, setByLinkOrHot] = useState('link');
+  const [byLinkOrHot, setByLinkOrHot] = useState(OPEN_TASK_METHOD.link);
   const user = useMe();
 
   const handleStatusPicked = (status) => {
-    setByLinkOrHot('link');
+    setByLinkOrHot(OPEN_TASK_METHOD.link);
     setStatusPicked(status);
   };
 
@@ -76,7 +77,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   useEffect(() => {
     const { params } = location;
     if (params.task || params.taskProposal) {
-      if (location.params.task && byLinkOrHot === 'link') {
+      if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
         const holdTaskId = location.params.task;
         const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
         const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
@@ -116,7 +117,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
       if (arrowKeys.includes(event.key) && entityType === ENTITIES_TYPES.TASK) {
         setOpenModal(true);
 
-        setByLinkOrHot('hot');
+        setByLinkOrHot(OPEN_TASK_METHOD.hot);
         const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key);
         setStatusIndex(holdStatusIndex);
         setTaskIndex(holdTaskIndex);
@@ -315,7 +316,11 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
         open={isModalOpen}
         handleClose={handleModalClose}
         isTaskProposal={!!location.params.taskProposal}
-        taskId={byLinkOrHot === 'link' ? (location.params.taskProposal ?? location.params.task)?.toString() : taskId}
+        taskId={
+          byLinkOrHot === OPEN_TASK_METHOD.link
+            ? (location.params.taskProposal ?? location.params.task)?.toString()
+            : taskId
+        }
       />
       <DragDropContext onDragEnd={onDragEnd}>
         {columns.map((column) => {

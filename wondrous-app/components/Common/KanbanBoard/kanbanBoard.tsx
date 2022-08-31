@@ -13,6 +13,7 @@ import {
   STATUS_CLOSED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_REVIEW,
+  OPEN_TASK_METHOD,
 } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
@@ -48,7 +49,6 @@ export const populateOrder = (index, tasks, field) => {
     belowOrder,
   };
 };
-
 function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
@@ -63,14 +63,19 @@ function KanbanBoard(props) {
   const [statusIndex, setStatusIndex] = useState(null);
   const [taskId, setTaskId] = useState(null);
   const [statusPicked, setStatusPicked] = useState(null);
-  const [byLinkOrHot, setByLinkOrHot] = useState('link');
+  const [byLinkOrHot, setByLinkOrHot] = useState(OPEN_TASK_METHOD.link);
 
   const handleStatusPicked = (status) => {
-    setByLinkOrHot('link');
+    setByLinkOrHot(OPEN_TASK_METHOD.link);
     setStatusPicked(status);
   };
 
-  const arrowKeys = ['ArrowDown', 'ArrowUp', 'ArrowRight', 'ArrowLeft'];
+  const ARROW_KEYS = {
+    ARROW_DOWN: 'ArrowDown',
+    ARROW_UP: 'ArrowUp',
+    ARROW_RIGHT: 'ArrowRight',
+    ARROW_LEFT: 'ArrowLeft',
+  };
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
@@ -210,19 +215,20 @@ function KanbanBoard(props) {
     setColumns(dedupeColumns(updatedColumns));
   };
   const pickHotkeyFunction = (key) => {
-    if (key === 'ArrowRight') return hotkeyRightArrowHelper(taskIndex, statusIndex, columns);
-    if (key === 'ArrowLeft') return hotkeyLeftArrowHelper(taskIndex, statusIndex, columns);
-    if (key === 'ArrowUp') return hotkeyUpArrowHelper(taskIndex, statusIndex, columns);
-    if (key === 'ArrowDown') return hotkeyDownArrowHelper(taskIndex, statusIndex, columns);
+    if (key === ARROW_KEYS.ARROW_RIGHT) return hotkeyRightArrowHelper(taskIndex, statusIndex, columns);
+    if (key === ARROW_KEYS.ARROW_LEFT) return hotkeyLeftArrowHelper(taskIndex, statusIndex, columns);
+    if (key === ARROW_KEYS.ARROW_UP) return hotkeyUpArrowHelper(taskIndex, statusIndex, columns);
+    if (key === ARROW_KEYS.ARROW_DOWN) return hotkeyDownArrowHelper(taskIndex, statusIndex, columns);
+    return null;
   };
 
   useHotkeys(
     '*',
     (event) => {
-      if (arrowKeys.includes(event.key) && board?.entityType === ENTITIES_TYPES.TASK) {
+      if (ARROW_KEYS[event.key] && board?.entityType === ENTITIES_TYPES.TASK) {
         setOpenModal(true);
 
-        setByLinkOrHot('hot');
+        setByLinkOrHot(OPEN_TASK_METHOD.hot);
         const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key);
         setStatusIndex(holdStatusIndex);
         setTaskIndex(holdTaskIndex);
@@ -318,7 +324,7 @@ function KanbanBoard(props) {
   useEffect(() => {
     const { params } = location;
     if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
-      if (location.params.task && byLinkOrHot === 'link') {
+      if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
         const holdTaskId = location.params.task;
         const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
         const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
@@ -357,7 +363,7 @@ function KanbanBoard(props) {
   };
 
   const getTaskId =
-    byLinkOrHot === 'link'
+    byLinkOrHot === OPEN_TASK_METHOD.link
       ? (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id
       : taskId;
   return (

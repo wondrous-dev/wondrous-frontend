@@ -6,7 +6,7 @@ import { CompensationAmount, CompensationPill, IconContainer } from 'components/
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
-import { ToggleViewButton } from 'components/Common/ToggleViewButton';
+import ToggleViewButton from 'components/Common/ToggleViewButton';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
 import { HeaderBlock } from 'components/Settings/headerBlock';
