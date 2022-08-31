@@ -40,7 +40,7 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { useIsMobile } from 'utils/hooks';
+import { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 
 const useGetOrgTaskBoardCalendar = ({
   setColumns,
@@ -71,7 +71,7 @@ const useGetOrgTaskBoardCalendar = ({
   });
 
   useEffect(() => {
-    if ((!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && calendarView, !isDashboard)) {
+    if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && calendarView && !isDashboard) {
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))

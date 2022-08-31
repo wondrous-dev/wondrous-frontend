@@ -1,9 +1,9 @@
 import { Box, Button, Dialog, Divider, Typography } from '@mui/material';
 import styled, { css } from 'styled-components';
-import { Button as ButtonComponent } from '../button';
 import palette from 'theme/palette';
 import { greyColors } from 'theme/colors';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { Button as ButtonComponent } from '../button';
 
 export const scrollBarStyles = css`
   :hover {
