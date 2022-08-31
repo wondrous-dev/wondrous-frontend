@@ -13,8 +13,6 @@ import {
   DrawerList,
   HeaderLogo,
   LogoButton,
-  MissionControlButton,
-  MissionControlIconWrapper,
   NoLogoDAO,
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
@@ -25,7 +23,6 @@ import SidebarTooltip from 'components/Common/SidebarMainTooltip';
 import { toolTipStyle } from 'components/Common/SidebarStyles';
 import BackArrowIcon from 'components/Icons/backArrow';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
-import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import Tooltip from 'components/Tooltip';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -51,16 +48,6 @@ type Props = {
 };
 
 const isExternal = (url) => url.includes('https://');
-
-const MissionControlIconButton = ({ isActive = false }) => (
-  <SidebarTooltip title="Mission Control">
-    <MissionControlButton onClick={() => null} isActive={isActive}>
-      <MissionControlIconWrapper>
-        <GridViewIcon />
-      </MissionControlIconWrapper>
-    </MissionControlButton>
-  </SidebarTooltip>
-);
 
 const BOTTOM_LINKS_CONFIG = [
   {
