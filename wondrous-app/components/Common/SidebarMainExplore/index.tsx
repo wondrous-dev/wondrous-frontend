@@ -1,8 +1,8 @@
 import { ExploreButton, ExploreIconWrapper } from 'components/Common/SidebarMainExplore/styles';
+import SidebarTooltip from 'components/Common/SidebarMainTooltip';
 import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
 import Link from 'next/link';
 import React from 'react';
-import SidebarTooltip from '../SidebarMainTooltip';
 
 const ExploreIconButton = ({ isActive = false }) => (
   <SidebarTooltip title="Explore">

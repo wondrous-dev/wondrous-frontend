@@ -1,6 +1,17 @@
 import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
+import BackButton from 'components/Common/SidebarBackButton';
+import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
+import Item from 'components/Common/SidebarItem';
+import {
+  ArchivedPodIndicatorText,
+  SettingsChildrenWrapper,
+  SettingsDaoPodIndicator,
+  SettingsDaoPodIndicatorIconWrapper,
+  SettingsDaoPodIndicatorOrgProfile,
+  SettingsDaoPodIndicatorText,
+} from 'components/Common/SidebarSettings/styles';
 import {
   ChildrenWrapper,
   Label,
@@ -9,9 +20,6 @@ import {
   SidebarWrapper,
   Wrapper,
 } from 'components/Common/SidebarStyles';
-import BackButton from 'components/Common/SidebarBackButton';
-import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
-import Item from 'components/Common/SidebarItem';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
@@ -33,15 +41,6 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useCreateEntityContext, useSideBar } from 'utils/hooks';
-
-import {
-  ArchivedPodIndicatorText,
-  SettingsChildrenWrapper,
-  SettingsDaoPodIndicator,
-  SettingsDaoPodIndicatorIconWrapper,
-  SettingsDaoPodIndicatorOrgProfile,
-  SettingsDaoPodIndicatorText,
-} from './styles';
 
 const createListItems = ({ orgId, podId }) => [
   {

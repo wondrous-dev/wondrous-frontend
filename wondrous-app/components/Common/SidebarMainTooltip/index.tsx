@@ -1,5 +1,5 @@
+import { toolTipStyle } from 'components/Common/SidebarStyles';
 import Tooltip from 'components/Tooltip';
-import { toolTipStyle } from '../SidebarStyles';
 
 const SidebarTooltip = ({ children, ...props }) => (
   <Tooltip style={toolTipStyle} {...props} placement="right">
