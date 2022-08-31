@@ -1,10 +1,18 @@
 /* eslint-disable import/extensions */
 import React, { useState, memo } from 'react';
 import Link from 'next/link';
-
+import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import Tooltip from 'components/Tooltip';
 import { User } from 'types/User';
 import { Org } from 'types/Org';
+import Dao2DaoIcon from 'components/Icons/Dao2Dao';
+import BackArrowIcon from '../Icons/backArrow';
+import { SafeImage } from '../Common/Image';
+import DefaultUserImage from '../Common/Image/DefaultUserImage';
+import { DAOIcon } from '../Icons/dao';
+import { PodModal } from './PodModal';
+import HelpModal from './HelpModal';
+import AddDaoModal from './AddDaoModal';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -24,13 +32,6 @@ import {
   StyledPodsIcon,
   DrawerListCreateDao,
 } from './styles';
-import BackArrowIcon from '../Icons/backArrow';
-import { SafeImage } from '../Common/Image';
-import DefaultUserImage from '../Common/Image/DefaultUserImage';
-import { DAOIcon } from '../Icons/dao';
-import { PodModal } from './PodModal';
-import HelpModal from './HelpModal';
-import AddDaoModal from './AddDaoModal';
 
 type Props = {
   isMobile: boolean;
@@ -59,7 +60,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
   const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
-
+  const [openDao2DaoModal, setOpenDao2DaoModal] = useState(false);
   const handleMinimize = (event) => {
     if (setMinimized) {
       setMinimized(!minimized);
@@ -123,6 +124,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
+      <CreateCollaborationModal open={openDao2DaoModal} onCancel={() => setOpenDao2DaoModal(false)} />
       <DrawerContainer>
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
@@ -213,6 +215,11 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
               <DrawerListCreateDao onClick={handleCreateDaoModal(true)} />
             </Tooltip>
           </DrawerList>
+          <Tooltip title="Create Project Collaboration">
+            <button type="button" onClick={() => setOpenDao2DaoModal(true)}>
+              <Dao2DaoIcon />
+            </button>
+          </Tooltip>
         </DrawerTopBlock>
         <DrawerBottomBlock>
           {BOTTOM_LINKS_CONFIG.map((link, idx) => {

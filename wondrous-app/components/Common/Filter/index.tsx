@@ -31,10 +31,11 @@ interface IFilterProps {
   onRemove?: ({}: TaskFilter) => void;
   selected?: any;
   key?: number;
+  withSearch?: boolean;
 }
 
 function Filter(props: IFilterProps) {
-  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected } = props;
+  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected, withSearch = false } = props;
   const { query, variables } = filterSchema;
   const [items, setItems] = useState(filterSchema?.items || []);
   const [open, setOpen] = useState(false);

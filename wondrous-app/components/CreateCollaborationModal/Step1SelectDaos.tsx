@@ -17,6 +17,7 @@ import { GET_USER_ORGS } from 'graphql/queries';
 import FilterItem from 'components/Common/Filter';
 import TextField from 'components/TextField';
 import palette from 'theme/palette';
+import OrgSearch from 'components/OrgSearch';
 
 type Props = {
   onCancel: () => void;
@@ -31,7 +32,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
 
   const DROPDOWN_PACEHOLDER = {
     DAO1: 'Select your project',
-    DAO2: 'Select collaborators',
+    DAO2: 'Select collaborator',
   };
 
   const fields = {
@@ -75,7 +76,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
   const org1Schema = useMemo(
     () => ({
       ...orgsSchema,
-      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg2?.id),
+      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg2),
       label: selectedOrg1 ? null : DROPDOWN_PACEHOLDER.DAO1,
     }),
     [userOrgs, selectedOrg1, selectedOrg2]
@@ -85,7 +86,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
   const org2Schema = useMemo(
     () => ({
       ...orgsSchema,
-      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg1?.id),
+      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg1),
       label: selectedOrg2 ? null : DROPDOWN_PACEHOLDER.DAO2,
     }),
     [userOrgs, selectedOrg1, selectedOrg2]
@@ -131,19 +132,19 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
               },
             }}
           >
-            <FilterItem
-              selected={selectedOrg1}
-              filterSchema={org1Schema}
-              onChange={(filter: any) => setSelectedOrg1(filter.org)}
+            <OrgSearch
+              value={selectedOrg1}
+              options={org1Schema.items}
+              onChange={(orgId: any) => setSelectedOrg1(orgId)}
             />
-
+            {console.log(selectedOrg1, org1Schema)}
             <Grid container sx={{ flex: '0 0 42px' }} justifyContent="center">
               <Dao2Dao />
             </Grid>
-            <FilterItem
-              selected={selectedOrg2}
-              filterSchema={org2Schema}
-              onChange={(filter: any) => setSelectedOrg2(filter.org)}
+            <OrgSearch
+              value={selectedOrg2}
+              options={org2Schema.items}
+              onChange={(orgId: any) => setSelectedOrg2(orgId)}
             />
           </Grid>
 
