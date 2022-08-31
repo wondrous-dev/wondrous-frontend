@@ -1,15 +1,14 @@
 import { ButtonBase } from '@mui/material';
 import ArrowBackIcon from 'components/Common/Sidebar/Common/icons/arrowBack.svg';
-import Link from 'next/link';
 import styled from 'styled-components';
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: 100%;
   display: flex;
   align-items: center;
 `;
 
-const Button = styled(ButtonBase)`
+export const Button = styled(ButtonBase)`
   && {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
@@ -24,7 +23,7 @@ const Button = styled(ButtonBase)`
   }
 `;
 
-const LeftArrowIconWrapper = styled((props) => (
+export const LeftArrowIconWrapper = styled((props) => (
   <div {...props}>
     <div>
       <ArrowBackIcon />
@@ -53,16 +52,3 @@ const LeftArrowIconWrapper = styled((props) => (
     justify-content: center;
   }
 `;
-
-const BackButton = ({ href }) => (
-  <Wrapper>
-    <Link href={href} passHref>
-      <Button disableRipple>
-        <LeftArrowIconWrapper />
-        Back
-      </Button>
-    </Link>
-  </Wrapper>
-);
-
-export default BackButton;

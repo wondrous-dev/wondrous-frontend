@@ -1,7 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
-import BackButton from 'components/Common/Sidebar/Common/BackButton';
 import FileDownloadIcon from 'components/Common/Sidebar/Common/icons/fileDownload.svg';
 import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
 import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
@@ -17,6 +16,7 @@ import {
   SidebarWrapper,
   Wrapper,
 } from 'components/Common/Sidebar/Common/styles';
+import BackButton from 'components/Common/SidebarBackButton';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
@@ -32,8 +32,8 @@ import { PERMISSIONS } from 'utils/constants';
 import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useCreateEntityContext, useSideBar } from 'utils/hooks';
-import CollapseExpandButton from '../Common/CollapseButton';
 
+import CollapseExpandButton from '../Common/CollapseButton';
 import {
   ArchivedPodIndicatorText,
   SettingsChildrenWrapper,

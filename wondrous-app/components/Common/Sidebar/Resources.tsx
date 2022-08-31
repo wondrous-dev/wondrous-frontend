@@ -7,12 +7,12 @@ import {
   SidebarWrapper,
   Wrapper,
 } from 'components/Common/Sidebar/Common/styles';
+import BackButton from 'components/Common/SidebarBackButton';
 import useSideBar from 'hooks/useSideBar';
 import { shuffle } from 'lodash';
 import { ColorTypes } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
-import BackButton from './Common/BackButton';
 import CollapseExpandButton from './Common/CollapseButton';
 import { useCanEdit } from './Common/hooks';
 import FolderIcon from './Common/icons/folder.svg';
