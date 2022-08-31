@@ -43,6 +43,7 @@ import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { endOfMonth, format, startOfMonth } from 'date-fns';
+import EntitySidebar from 'components/Common/SidebarEntity';
 
 const useGetPodTaskBoardCalendar = ({
   setColumns,
@@ -697,23 +698,25 @@ function BoardsPage() {
         hasMore: podTaskHasMore,
       }}
     >
-      {isMobile ? <MobileComingSoonModal /> : null}
-      <Boards
-        columns={columns}
-        onLoadMore={fetchMore}
-        hasMore={podTaskHasMore}
-        onSearch={handleSearch}
-        searchString={searchString}
-        onFilterChange={handleFilterChange}
-        onCalendarDateChange={handleCalendarDatesChange}
-        setColumns={setColumns}
-        loading={isLoading}
-        entityType={entityType}
-        userId={userId?.toString()}
-        orgId={pod?.orgId}
-        statuses={statuses}
-        activeView={activeView}
-      />
+      <EntitySidebar>
+        {isMobile ? <MobileComingSoonModal /> : null}
+        <Boards
+          columns={columns}
+          onLoadMore={fetchMore}
+          hasMore={podTaskHasMore}
+          onSearch={handleSearch}
+          searchString={searchString}
+          onFilterChange={handleFilterChange}
+          onCalendarDateChange={handleCalendarDatesChange}
+          setColumns={setColumns}
+          loading={isLoading}
+          entityType={entityType}
+          userId={userId?.toString()}
+          orgId={pod?.orgId}
+          statuses={statuses}
+          activeView={activeView}
+        />
+      </EntitySidebar>
     </PodBoardContext.Provider>
   );
 }

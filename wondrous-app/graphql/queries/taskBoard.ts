@@ -485,3 +485,31 @@ export const GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD = gql`
   }
   ${PerStatusTaskCountFragment}
 `;
+
+// export const GET_ORG_SIDEBAR_COUNT = gql`
+//   query getOrgSidebarCount($orgId: ID!) {
+//     getOrgSidebarCount(orgId: $orgId) {
+//       bountyCount
+//       taskCount
+//       proposalCount
+//       milestoneCount
+//       membersCount
+//       rolesCount
+//       resourcesCount
+//     }
+//   }
+// `;
+
+// export const GET_POD_SIDEBAR_COUNT = gql`
+//   query getPodSidebarCount($podId: ID!) {
+//     getPodSidebarCount(podId: $podId) {
+//       bountyCount
+//       taskCount
+//       proposalCount
+//       milestoneCount
+//       membersCount
+//       rolesCount
+//       resourcesCount
+//     }
+//   }
+// `;

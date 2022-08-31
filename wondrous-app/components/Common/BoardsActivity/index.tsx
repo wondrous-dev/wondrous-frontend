@@ -46,7 +46,7 @@ export function BoardsActivityInlineView({
           />
         )}
         {withAdminToggle ? <Toggle items={toggleItems} /> : null}
-        {view && !searchQuery && !isAdmin && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
+        {view && !searchQuery && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
         {!displaySingleViewFilter ? (
           <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
         ) : null}
@@ -87,7 +87,7 @@ export default function BoardsActivity(props) {
       name: 'List',
       icon: <ListViewIcon color={view === ViewType.List ? palette.blue20 : 'white'} />,
       active: view === ViewType.List,
-      disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL,
+      disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL || isAdmin,
       action: () => {
         if (setActiveView) {
           setActiveView(ViewType.List);
@@ -103,6 +103,7 @@ export default function BoardsActivity(props) {
       name: 'Grid',
       icon: <GridViewIcon color={view === ViewType.Grid ? palette.blue20 : 'white'} />,
       active: view === ViewType.Grid,
+      disabled: isAdmin,
       action: () => {
         if (setActiveView) {
           // change only boards page instead of triggering changes on all router connected components while still shallow changing the url

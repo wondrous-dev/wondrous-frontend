@@ -22,7 +22,7 @@ import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import CloseModalIcon from 'components/Icons/closeModal';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { ErrorText } from '../Common';

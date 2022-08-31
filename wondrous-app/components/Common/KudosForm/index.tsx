@@ -121,6 +121,7 @@ export function KudosForm(props) {
                   podId: submission?.podId,
                   intent: PostVerbType.KUDOS,
                   objectType: ObjectType.TASK_SUBMISSION,
+                  userMentions: [submission?.createdBy],
                 })
               }
             >

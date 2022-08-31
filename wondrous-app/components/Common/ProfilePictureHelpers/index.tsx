@@ -1,7 +1,8 @@
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
-import { NoLogoDAO } from 'components/SideBar/styles';
+import { NoLogoDAO } from 'components/Common/SidebarMain/styles';
 import { SafeImage } from '../Image';
+import DefaultUserImage from '../Image/DefaultUserImage';
 import { PodName, PodWrapper } from '../Task/styles';
 
 export const OrgProfilePicture = ({ profilePicture, style = {} }) => {
@@ -48,3 +49,13 @@ export const PodProfilePicture = ({ style = {}, goToPod, podId, podColor, podNam
     ) : null}
   </PodWrapper>
 );
+
+export const UserProfilePicture = ({
+  avatar,
+  style = {
+    width: '26px',
+    height: '26px',
+    borderRadius: '13px',
+    marginRight: '4px',
+  },
+}) => (avatar ? <SafeImage useNextImage={false} style={style} src={avatar} /> : <DefaultUserImage style={style} />);

@@ -71,6 +71,7 @@ import {
   RoleButtonWrapper,
   RoleText,
   RoleButton,
+  Container,
 } from './styles';
 import { MembershipRequestModal } from './RequestModal';
 import { TokenGatedAndClaimableRoleModal } from './TokenGatedAndClaimableRoleModal';
@@ -484,7 +485,7 @@ const Wrapper = (props) => {
               </div>
             </HeaderActivity>
           </TokenHeader>
-          <Tabs showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+          <Container>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
@@ -501,7 +502,7 @@ const Wrapper = (props) => {
               )}
             </BoardsSubheaderWrapper>
             {children}
-          </Tabs>
+          </Container>
         </ContentContainer>
       </Content>
     </>

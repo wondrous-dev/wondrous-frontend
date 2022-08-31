@@ -21,8 +21,10 @@ export const greyColors = {
   grey60: '#6F6F6F',
   grey65: '#5E5E5E',
   grey70: '#525252',
+  grey74: '#464646',
   grey75: '#4B4B4B',
-  grey76: '#444444',
+  grey76: '#454545',
+  grey77: '#444444',
   grey78: '#474747',
   grey79: '#424242',
   grey80: '#393939',
@@ -32,6 +34,7 @@ export const greyColors = {
   grey90: '#262626',
   grey95: '#1f1f1f',
   grey97: '#2c2c2c',
+  grey98: '#1c1c1c',
   grey99: '#282828',
   grey100: '#161616',
   grey150: '#E3E5E9',
@@ -46,6 +49,7 @@ export const greyColors = {
   grey800: '#2D333A',
   grey850: '#787878',
   grey900: '#1D1D1D',
+  grey950: '#212121',
   grey910: '#171717',
   grey920: '#2D2D2D',
   grey1000: '#272729',
@@ -66,6 +70,8 @@ export const blueColors = {
   blue3: '#0F72E5',
   blue10: '#D8EEFC',
   blue20: '#CCBBFF',
+  blue30: '#8fe1ff',
+  blue90: '#30c7ff',
   blue100: '#00a2ff',
   blue200: '#00B7FF',
   blue300: '#0D122A',
@@ -97,6 +103,7 @@ export const yellowColors = {
 };
 
 export const violetColors = {
+  violet50: '#5001DF',
   violet100: '#4f00de',
   violet150: '#250069',
   violet200: '#FB7A75',
@@ -107,10 +114,12 @@ export const violetColors = {
   violet800: '#360097',
   violet900: '#700097',
   violet950: '#7427ff',
+  violet970: '#250069',
 };
 
 export const orangeColors = {
   orange: '#F0905A',
+  orange90: '#f2c678',
   orange100: '#F2994A',
   orange200: '#FF901F',
   orange600: '#E28855',
