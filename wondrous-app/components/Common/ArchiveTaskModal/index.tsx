@@ -14,6 +14,7 @@ import {
   StyledCancelButton,
   StyledCloseButton,
   StyledDialog,
+  StyledDialogTopBar,
   StyledDivider,
   StyledHeader,
 } from './styles';
@@ -78,10 +79,18 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
       aria-describedby="modal-modal-description"
     >
       <StyledBox>
-        <StyledCloseButton onClick={onClose}>
-          <CloseModalIcon />
-        </StyledCloseButton>
-        <StyledHeader>Archive this {taskType}?</StyledHeader>
+        <StyledDialogTopBar>
+          <StyledHeader
+            style={{
+              marginLeft: 0,
+            }}
+          >
+            Archive this {taskType}?
+          </StyledHeader>
+          <StyledCloseButton onClick={onClose}>
+            <CloseModalIcon />
+          </StyledCloseButton>
+        </StyledDialogTopBar>
         <StyledBody>
           {isTaskProposal ? 'You cannot undo this action.' : 'You can undo this in the archived section in the board.'}
         </StyledBody>

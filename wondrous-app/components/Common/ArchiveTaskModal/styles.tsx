@@ -112,7 +112,6 @@ export const StyledBody = styled(Typography)`
     font-size: 16px;
     letter-spacing: 0.01em;
     color: #c4c4c4;
-    margin-left: 24px;
     margin-top: 14px;
   }
 `;

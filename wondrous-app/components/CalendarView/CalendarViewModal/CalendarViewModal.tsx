@@ -1,5 +1,3 @@
-/* eslint-disable react/jsx-key */
-
 import CloseModalIcon from 'components/Icons/closeModal';
 import { CalendarViewTaskContainer, CalendarViewTaskIcon, CalendarViewTaskLabel } from 'components/CalendarView/styles';
 import {
@@ -52,6 +50,7 @@ const CalendarViewModal = ({ open, onClose, day, handleSelectTask }) => (
             onClick={() => {
               handleSelectTask(task?.id);
             }}
+            key={task?.id}
           >
             <CalendarViewTaskIcon status={task?.status} />
             <CalendarViewTaskLabel style={{ fontSize: '14px' }}>{task.title}</CalendarViewTaskLabel>

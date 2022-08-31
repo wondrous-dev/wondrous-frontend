@@ -29,7 +29,6 @@ type Props = {
   activeView?: string;
   onSearch?: any;
   onFilterChange?: any;
-  calendarFilters?: TaskFilter;
   onCalendarDateChange?: Function;
   statuses?: string[];
   filterSchema?: any;
@@ -45,12 +44,9 @@ const Boards = (props: Props) => {
     columns,
     onLoadMore,
     hasMore,
-    isAdmin,
     setColumns,
     onCalendarDateChange,
-    statuses,
     activeView,
-    calendarFilters,
     entityType = ENTITIES_TYPES.TASK,
   } = props;
   const router = useRouter();
@@ -75,15 +71,7 @@ const Boards = (props: Props) => {
         {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
           <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
         ) : view === ViewType.Calendar ? (
-          <CalendarView
-            columns={columns}
-            onLoadMore={onLoadMore}
-            hasMore={hasMore}
-            isAdmin={isAdmin}
-            statuses={statuses}
-            calendarFilters={calendarFilters}
-            onCalendarDateChange={onCalendarDateChange}
-          />
+          <CalendarView columns={columns} onCalendarDateChange={onCalendarDateChange} />
         ) : (
           <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
         )}

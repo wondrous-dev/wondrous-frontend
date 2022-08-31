@@ -364,8 +364,9 @@ function BoardsPage() {
     fetchPolicy: 'cache-and-network',
   });
   const now = new Date();
-  const firstDay = startOfMonth(now);
-  const lastDay = endOfMonth(now);
+  const firstDay = new Date(now.getFullYear(), now.getMonth() - 1, 24);
+  const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 6);
+
   const [fromDate, setFromDate] = useState(firstDay);
   const [toDate, setToDate] = useState(lastDay);
 
@@ -376,8 +377,11 @@ function BoardsPage() {
     privacyLevel: null,
   });
   const handleCalendarDatesChange = (date) => {
-    setFromDate(date);
-    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 0));
+    const holdFromDate = new Date(date);
+    // so that if there are previous days on the calendar not in the month then it will get those tasks as well
+    holdFromDate.setDate(holdFromDate.getDate() - 6);
+    setFromDate(holdFromDate);
+    setToDate(new Date(date.getFullYear(), date.getMonth() + 1, 6));
   };
 
   const [podTaskHasMore, setPodTaskHasMore] = useState(true);

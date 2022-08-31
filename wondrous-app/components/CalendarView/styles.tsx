@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import LeftArrowIcon from 'components/Icons/leftArrow';
-import { greyColors, violetColors } from 'theme/colors';
+import { greyColors, highlightBlue, violetColors } from 'theme/colors';
 import { ButtonGroupStyled } from 'components/Common/ButtonGroup/styles';
 import { ErrorOutline } from '@mui/icons-material';
 import { ListItem } from '@mui/material';
@@ -62,6 +62,11 @@ export const CalendarDayOfWeekLabel = styled(Typography)`
   }
 `;
 
+export const CalendarViewModalContainer = styled.div`
+  width: 100%;
+  margin-bottom: 50px;
+`;
+
 export const CalendarTopBar = styled.div`
   margin-bottom: 8px;
   width: 100%;
@@ -91,8 +96,8 @@ export const CalendarViewStatusNotifier = styled.div`
   display: flex;
   align-items: center;
   justify-content: flex-start;
-  background-color: #250069;
-  border: 1px solid #4f00de;
+  background-color: ${violetColors.violet150};
+  border: 1px solid ${violetColors.violet100};
   border-radius: 4px;
   padding: 8px;
   height: 36px;
@@ -114,7 +119,7 @@ export const CalendarViewMonthDayToggle = styled(ButtonGroupStyled)`
 `;
 
 export const CalendarViewWarningIcon = styled(ErrorOutline)`
-  color: #ccbbff;
+  color: ${violetColors.violet350};
   margin-right: 10px;
 `;
 
@@ -147,7 +152,7 @@ export const CalendarDayOfWeekBar = styled.div`
   justify-content: space-around;
   padding-top: 8px;
   padding-bottom: 8px;
-  border-bottom: 0.5px solid #343434;
+  border-bottom: 0.5px solid ${greyColors.grey86};
 `;
 
 export const CalendaListItem = styled(ListItem)`
@@ -171,7 +176,7 @@ export const CalendaListItem = styled(ListItem)`
     position: absolute;
     inset: 0;
     border-radius: 4px;
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    background: linear-gradient(270deg, ${violetColors.violet350} -5.62%, ${violetColors.violet950} 45.92%, ${highlightBlue} 103.12%);
     -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
@@ -184,7 +189,7 @@ export const CalendarViewWeekendIconCheckmark = styled(CheckMarkIcon)`
   width: 16px;
   height: 16px;
   padding: 2px;
-  background-color: #7427ff;
+  background-color: ${violetColors.violet950};
   border-radius: 4px;
   margin-right: 16px;
   color: white;
@@ -206,12 +211,12 @@ export const CalendarViewDayTopBar = styled.div`
 `;
 
 export const CalendarViewDayContainer = styled.div`
-  background-color: #1d1d1d;
+  background-color: ${greyColors.grey900};
   justify-content: center;
   align-items: center;
   border-style: solid;
   border-width: 0 0.5px 1px 0.5px;
-  border-color: #343434;
+  border-color: ${greyColors.grey86};
   padding-top: ${(props) => (props.view === 'WEEK' ? '8px' : '0')};
   margin-bottom: 0;
 `;

@@ -40,7 +40,7 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { useIsMobile, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useIsMobile } from 'utils/hooks';
 
 const useGetOrgTaskBoardCalendar = ({
   setColumns,
@@ -55,7 +55,7 @@ const useGetOrgTaskBoardCalendar = ({
   toDate,
   isDashboard,
 }) => {
-  const [getOrgTaskBoardCalendar, { fetchMore }] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
+  const [getOrgTaskBoardCalendar] = useLazyQuery(GET_ORG_TASK_BOARD_CALENDAR, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     // set notifyOnNetworkStatusChange to true if you want to trigger a rerender whenever the request status updates
@@ -757,7 +757,6 @@ function BoardsPage() {
         onCalendarDateChange={handleCalendarDatesChange}
         hasMore={orgTaskHasMore}
         orgData={orgData}
-        calendarFilters={filters}
         statuses={filters?.statuses}
         podIds={filters?.podIds}
         setColumns={setColumns}

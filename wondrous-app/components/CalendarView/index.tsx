@@ -1,4 +1,3 @@
-import { useLazyQuery } from '@apollo/client';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   TaskTemplateArrowIcon,
@@ -6,17 +5,8 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/TaskTemplatePicker/styles';
 import { StyledList, StyledPopper } from 'components/DropDownDecision/DropDownPopper/styles';
 import CalendarViewModal from 'components/CalendarView/CalendarViewModal/CalendarViewModal';
-import { format } from 'date-fns';
-import {
-  GET_ORG_BY_ID,
-  GET_ORG_FROM_USERNAME,
-  GET_ORG_TASK_BOARD_CALENDAR,
-  GET_POD_TASK_BOARD_CALENDAR,
-} from 'graphql/queries';
-import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
-import { DAYS_OF_WEEK, MONTHS_OF_YEAR, STATUSES_ON_ENTITY_TYPES } from 'utils/constants';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { DAYS_OF_WEEK, MONTHS_OF_YEAR } from 'utils/constants';
 import {
   CalendaListItem,
   CalendarDayOfMonthLabel,
@@ -31,6 +21,7 @@ import {
   CalendarViewDayTopBar,
   CalendarViewDMonthContainer,
   CalendarViewLabel,
+  CalendarViewModalContainer,
   CalendarViewMonthDayToggle,
   CalendarViewShowDate,
   CalendarViewStatusNotifier,
@@ -43,13 +34,8 @@ import {
   CalendarViewWeekendIconCheckmark,
 } from './styles';
 
-const calendarViews = { MONTH: 'MONTH', WEEK: 'WEEK' };
-
 const CalendarView = (props) => {
-  const router = useRouter();
-  const { orgId, username, podId } = router.query;
-  const [orgData, setOrgData] = useState(null);
-  const { columns, onCalendarDateChange, entityType, calendarFilters, statuses } = props;
+  const { columns, onCalendarDateChange } = props;
   const [anchorEl, setAnchorEl] = useState(null);
   const [calendarView, setCalendarView] = useState('MONTH');
   const [openCalendarModal, setOpenCalendarModal] = useState(false);
@@ -64,46 +50,8 @@ const CalendarView = (props) => {
   const [month, setMonth] = useState(new Date().getMonth());
   const [year, setYear] = useState(new Date().getFullYear());
   const handleClick = (event) => setAnchorEl(anchorEl ? null : event.currentTarget);
-  const [getOrg] = useLazyQuery(GET_ORG_BY_ID, {
-    onCompleted: (data) => {
-      setOrgData(data?.getOrgById);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-  const [calendarData, setCalendarData] = useState(columns);
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
-  const userPermissionsContext =
-    orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
 
-  const prevColumnState = usePrevious(columns);
-
-  const [getOrgFromUsername] = useLazyQuery(GET_ORG_FROM_USERNAME, {
-    onCompleted: (data) => {
-      if (data?.getOrgFromUsername) {
-        setOrgData(data?.getOrgFromUsername);
-      }
-    },
-    fetchPolicy: 'cache-and-network',
-  });
-
-  useEffect(() => {
-    if (orgId && !orgData) {
-      getOrg({
-        variables: {
-          orgId,
-        },
-      });
-    } else if (!orgId && username && !orgData) {
-      getOrgFromUsername({
-        variables: {
-          username,
-        },
-      });
-    }
-  }, [username, orgId, orgData, getOrg, getOrgFromUsername]);
-
+  const CALENDAR_VIEWS = { MONTH: 'MONTH', WEEK: 'WEEK' };
   const handleTaskClose = () => {
     setOpenTaskModal(false);
   };
@@ -203,7 +151,7 @@ const CalendarView = (props) => {
   }, [day, month, calendarView, columns]);
 
   return (
-    <div style={{ width: '100%', marginBottom: '50px' }}>
+    <CalendarViewModalContainer>
       <CalendarViewModal
         open={openCalendarModal}
         onClose={() => {
@@ -297,7 +245,7 @@ const CalendarView = (props) => {
             }}
           >
             <StyledList>
-              {Object.keys(calendarViews).map((decision, i) => (
+              {Object.keys(CALENDAR_VIEWS).map((decision, i) => (
                 <CalendaListItem
                   key={i}
                   toggle={decision === calendarView}
@@ -449,7 +397,7 @@ const CalendarView = (props) => {
           </CalendarViewDMonthContainer>
         </div>
       )}
-    </div>
+    </CalendarViewModalContainer>
   );
 };
 
