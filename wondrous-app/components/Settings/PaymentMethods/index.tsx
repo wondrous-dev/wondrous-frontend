@@ -3,7 +3,7 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_BY_ID } from 'graphql/queries';
-import { SettingsWrapper } from 'components/Common/Sidebar';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { HeaderBlock } from 'components/Settings/headerBlock';
 import {
   PaymentMethodDescription,

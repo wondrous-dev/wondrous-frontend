@@ -7,7 +7,7 @@ import { useWonderWeb3 } from 'services/web3';
 import WalletSetupModal from 'components/Settings/WalletSetup/WalletSetupModal';
 import { HeaderBlock } from 'components/Settings/headerBlock';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
-import { SettingsWrapper } from 'components/Common/Sidebar';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import {
   StyledTable,
   StyledTableBody,
