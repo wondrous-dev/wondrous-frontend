@@ -11,8 +11,6 @@ import {
   DrawerComponent,
   DrawerContainer,
   DrawerList,
-  ExploreButton,
-  ExploreIconWrapper,
   HeaderLogo,
   LogoButton,
   MissionControlButton,
@@ -20,10 +18,13 @@ import {
   NoLogoDAO,
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
+import AddDaoButton from 'components/Common/SidebarMainAddDao';
+import ExploreIconButton from 'components/Common/SidebarMainExplore';
+import PodsIconButton from 'components/Common/SidebarMainPods';
+import SidebarTooltip from 'components/Common/SidebarMainTooltip';
 import { toolTipStyle } from 'components/Common/SidebarStyles';
 import BackArrowIcon from 'components/Icons/backArrow';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
-import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import Tooltip from 'components/Tooltip';
 import Link from 'next/link';
@@ -32,9 +33,6 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
-import AddDaoButton from '../SidebarMainAddDao';
-import PodsIconButton from '../SidebarMainPods';
-import SidebarTooltip from '../SidebarMainTooltip';
 
 type Props = {
   isMobile: boolean;
@@ -61,18 +59,6 @@ const MissionControlIconButton = ({ isActive = false }) => (
         <GridViewIcon />
       </MissionControlIconWrapper>
     </MissionControlButton>
-  </SidebarTooltip>
-);
-
-const ExploreIconButton = ({ isActive = false }) => (
-  <SidebarTooltip title="Explore">
-    <Link href="/explore" passHref>
-      <ExploreButton id="tour-sidebar-explore-top" isActive={isActive}>
-        <ExploreIconWrapper isActive={isActive}>
-          <ExploreIcon />
-        </ExploreIconWrapper>
-      </ExploreButton>
-    </Link>
   </SidebarTooltip>
 );
 
