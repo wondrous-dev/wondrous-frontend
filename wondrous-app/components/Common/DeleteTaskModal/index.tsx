@@ -40,12 +40,12 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
     refetchQueries,
     update: (cache) =>
       deleteTaskFromCache(cache, taskId, [
-        'getUserTaskBoardTasks',
-        'getOrgTaskBoardTasks',
-        'getPodTaskBoardTasks',
         'getOrgTaskBoardCalendar',
         'getUserTaskBoardTasksCalendar',
         'getPodTaskBoardCalendar',
+        'getUserTaskBoardTasks',
+        'getOrgTaskBoardTasks',
+        'getPodTaskBoardTasks',
       ]),
   });
   const [deleteMilestone] = useMutation(DELETE_MILESTONE, {

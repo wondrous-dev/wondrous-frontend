@@ -554,12 +554,12 @@ const useCreateTask = () => {
       'getPerTypeTaskCountForPodBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      'getUserTaskBoardTasksCalendar',
+      'getOrgTaskBoardCalendar',
+      'getPodTaskBoardCalendar',
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getTasksForMilestone',
-      'getOrgTaskBoardCalendar',
-      'getPodTaskBoardCalendar',
-      'getUserTaskBoardTasksCalendar',
     ],
   });
 
