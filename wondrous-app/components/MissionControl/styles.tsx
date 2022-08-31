@@ -21,6 +21,7 @@ export const MissionControlWidgetsWrapper = styled.div`
   gap: 14px;
   justify-content: center;
   padding: 14px;
+  align-content: baseline;
 `;
 
 export const MissionControlSidebarWrapper = styled.div`
