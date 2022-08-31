@@ -1,5 +1,4 @@
-import { PERMISSIONS } from 'utils/constants';
-import { RoleColorsAndEmojis, ROLES } from './constants';
+import { PERMISSIONS, RoleColorsAndEmojis, ROLES } from 'utils/constants';
 
 export const addressTag = (address: string): string => {
   const isENSName = address.endsWith('.eth');
