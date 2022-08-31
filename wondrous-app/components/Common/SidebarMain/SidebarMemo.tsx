@@ -2,7 +2,6 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import AddDaoModal from 'components/Common/SidebarMain/AddDaoModal';
 import HelpModal from 'components/Common/SidebarMain/HelpModal.jsx';
-import { PodModal } from 'components/Common/SidebarMain/PodModal';
 import {
   AddIconWrapper,
   BottomButtonIcon,
@@ -21,8 +20,6 @@ import {
   MissionControlButton,
   MissionControlIconWrapper,
   NoLogoDAO,
-  PodsButton,
-  PodsIconWrapper,
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
 import { toolTipStyle } from 'components/Common/SidebarStyles';
@@ -31,7 +28,6 @@ import BackArrowIcon from 'components/Icons/backArrow';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
-import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
 import Tooltip from 'components/Tooltip';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -39,6 +35,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
+import PodsIconButton from '../SidebarMainPods';
 import SidebarTooltip from '../SidebarMainTooltip';
 
 type Props = {
@@ -80,22 +77,6 @@ const ExploreIconButton = ({ isActive = false }) => (
     </Link>
   </SidebarTooltip>
 );
-
-const PodsIconButton = () => {
-  const [openPodModal, setOpenPodModal] = useState(false);
-  return (
-    <>
-      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
-      <SidebarTooltip title="Pods">
-        <PodsButton onClick={() => setOpenPodModal(true)} isActive={openPodModal}>
-          <PodsIconWrapper>
-            <PodsIcon />
-          </PodsIconWrapper>
-        </PodsButton>
-      </SidebarTooltip>
-    </>
-  );
-};
 
 const CreateModalButton = () => {
   const [openCreateDaoModal, setCreateDaoModal] = useState(false);

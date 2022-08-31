@@ -12,6 +12,11 @@ import {
 } from 'components/Common/Task/styles';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import PodIcon from 'components/Icons/podIcon';
+import {
+  PodModalFooter,
+  PodModalFooterInfoWrapper,
+  PodModalFooterInfoWrapperText,
+} from 'components/Common/SidebarMainPods/styles';
 import { GET_USER_PODS } from 'graphql/queries';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -19,8 +24,6 @@ import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
-
-import { PodModalFooter, PodModalFooterInfoWrapper, PodModalFooterInfoWrapperText } from './styles';
 
 function PodListCard(props) {
   const { pod, handleClose } = props;

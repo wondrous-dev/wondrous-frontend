@@ -1,4 +1,4 @@
-import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
+import { ButtonBase, Drawer, List, ListItemButton } from '@mui/material';
 import { Logo } from 'components/Common/ci';
 import { mainSidebarWidth } from 'components/Common/SidebarStyles';
 import { DAOIcon } from 'components/Icons/dao';
@@ -133,27 +133,6 @@ export const NoLogoDAO = styled((props) => (
   align-items: center;
   justify-content: center;
   background: transparent;
-`;
-
-export const PodModalFooter = styled.div`
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-`;
-
-export const PodModalFooterInfoWrapper = styled.div`
-  background: ${({ theme }) =>
-    `linear-gradient(0deg, ${theme.palette.black101}, ${theme.palette.black101}), ${theme.palette.background.default}`};
-  border-radius: 4px;
-  padding: 4px 8px;
-  margin-right: 8px;
-`;
-
-export const PodModalFooterInfoWrapperText = styled(Typography)`
-  && {
-    color: ${palette.white};
-    font-size: 13px;
-  }
 `;
 
 export const StyledSettingsIcon = styled((props) => (
