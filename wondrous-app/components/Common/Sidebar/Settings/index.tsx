@@ -17,6 +17,7 @@ import {
   Wrapper,
 } from 'components/Common/Sidebar/Common/styles';
 import BackButton from 'components/Common/SidebarBackButton';
+import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
@@ -33,7 +34,6 @@ import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useCreateEntityContext, useSideBar } from 'utils/hooks';
 
-import CollapseExpandButton from '../Common/CollapseButton';
 import {
   ArchivedPodIndicatorText,
   SettingsChildrenWrapper,
