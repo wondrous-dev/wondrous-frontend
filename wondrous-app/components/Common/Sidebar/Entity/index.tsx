@@ -1,4 +1,4 @@
-import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/Common/styles';
+import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/Sidebar/styles';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import useSideBar from 'hooks/useSideBar';
 import { useRouter } from 'next/router';

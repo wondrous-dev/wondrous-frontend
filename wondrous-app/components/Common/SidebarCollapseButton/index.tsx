@@ -2,7 +2,7 @@ import { Button, Wrapper } from 'components/Common/SidebarCollapseButton/styles'
 import BackArrowIcon from 'components/Icons/backArrow';
 import Tooltip from 'components/Tooltip';
 import { useSideBar } from 'utils/hooks';
-import { toolTipStyle } from '../Sidebar/Common/styles';
+import { toolTipStyle } from 'components/Common/Sidebar/styles';
 
 const CollapseExpandButton = () => {
   const { setMinimized } = useSideBar();

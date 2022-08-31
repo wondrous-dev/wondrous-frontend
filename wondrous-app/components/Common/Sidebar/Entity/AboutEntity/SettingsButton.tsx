@@ -1,4 +1,4 @@
-import { GreyButton } from 'components/Common/Sidebar/Common/styles';
+import { GreyButton } from 'components/Common/Sidebar/styles';
 
 const SettingsButton = ({ router, board, id, canManage }) => {
   const handleOnClickSettings = () =>

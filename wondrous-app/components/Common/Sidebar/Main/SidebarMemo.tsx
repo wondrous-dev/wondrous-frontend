@@ -11,7 +11,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 
-import { toolTipStyle } from '../Common/styles';
+import { toolTipStyle } from '../styles';
 import AddDaoModal from './AddDaoModal';
 import HelpModal from './HelpModal.jsx';
 import { PodModal } from './PodModal';

@@ -1,4 +1,6 @@
 import { useQuery } from '@apollo/client';
+import { Label, ListWrapper } from 'components/Common/Sidebar/styles';
+import Item from 'components/Common/SidebarItem';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
@@ -8,8 +10,6 @@ import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
 import ShowChartIcon from 'components/Icons/Sidebar/showChart.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
-import { Label, ListWrapper } from 'components/Common/Sidebar/Common/styles';
-import Item from 'components/Common/SidebarItem';
 import { GET_ORG_SIDEBAR_COUNT, GET_POD_SIDEBAR_COUNT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
