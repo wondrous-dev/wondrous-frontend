@@ -6,7 +6,7 @@ import {
   SidebarContent,
   SidebarWrapper,
   Wrapper,
-} from 'components/Common/Sidebar/styles';
+} from 'components/Common/SidebarStyles';
 import BackButton from 'components/Common/SidebarBackButton';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import Item from 'components/Common/SidebarItem';

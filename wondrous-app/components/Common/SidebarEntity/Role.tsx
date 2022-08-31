@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { AddIconWrapper, Label, ListWrapper } from 'components/Common/Sidebar/styles';
+import { AddIconWrapper, Label, ListWrapper } from 'components/Common/SidebarStyles';
 import BackButton from 'components/Common/SidebarBackButton';
 import Item from 'components/Common/SidebarItem';
 import SettingsIcon from 'components/Icons/settings.svg';

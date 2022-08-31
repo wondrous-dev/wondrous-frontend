@@ -3,7 +3,7 @@ import { Logo } from 'components/Common/ci';
 import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
 import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
 import SettingsIcon from 'components/Icons/Sidebar/settings.svg';
-import { mainSidebarWidth } from 'components/Common/Sidebar/styles';
+import { mainSidebarWidth } from 'components/Common/SidebarStyles';
 import { DAOIcon } from 'components/Icons/dao';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';

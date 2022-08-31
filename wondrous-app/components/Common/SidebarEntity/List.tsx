@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { Label, ListWrapper } from 'components/Common/Sidebar/styles';
+import { Label, ListWrapper } from 'components/Common/SidebarStyles';
 import Item from 'components/Common/SidebarItem';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';

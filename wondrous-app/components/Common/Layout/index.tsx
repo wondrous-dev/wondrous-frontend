@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client';
-import { SideBarComponent } from 'components/Common/Sidebar';
+import SideBarComponent from 'components/Common/SidebarMain';
 import HeaderComponent from 'components/Header';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
