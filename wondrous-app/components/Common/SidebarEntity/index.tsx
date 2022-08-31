@@ -1,11 +1,10 @@
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
+import AboutEntity from 'components/Common/SidebarEntityAbout';
+import List from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
 import useSideBar from 'hooks/useSideBar';
 import { useRouter } from 'next/router';
-
-import AboutEntity from './AboutEntity';
-import List from './List';
 
 const EntitySidebar = ({ children }) => {
   const { minimized } = useSideBar();
