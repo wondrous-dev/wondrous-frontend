@@ -18,21 +18,21 @@ import {
   UserWalletAddressContainer,
   WalletAddressEmptyState,
 } from './styles';
-import { addressTag } from './helpers';
+import { getAddressToDisplay } from './helpers';
 
 const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }) => {
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
-  const [userWalletAddressTag, setUserWalletAddressTag] = useState('');
+  const [userENSNameOrWalletAddress, setUserENSNameOrWalletAddress] = useState('');
 
   const wonderWeb3 = useWonderWeb3();
 
   useEffect(() => {
     if (user?.activeEthAddress) {
-      setUserWalletAddressTag(user.activeEthAddress);
+      setUserENSNameOrWalletAddress(user.activeEthAddress);
 
       wonderWeb3.getENSNameFromEthAddress(user.activeEthAddress).then((ensName) => {
         if (ensName) {
-          setUserWalletAddressTag(ensName);
+          setUserENSNameOrWalletAddress(ensName);
         }
       });
     }
@@ -46,7 +46,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
   const userPodCount = user?.additionalInfo?.podCount;
 
   const handleAddressCopy = () => {
-    navigator.clipboard.writeText(userWalletAddressTag);
+    navigator.clipboard.writeText(userENSNameOrWalletAddress);
     setHasAddressBeenCopied(true);
 
     setTimeout(() => {
@@ -88,10 +88,10 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
         </UserProfile>
       </Link>
       <Grid display="flex" alignItems="center" gap="14px" flex={1}>
-        {userWalletAddressTag ? (
+        {userENSNameOrWalletAddress ? (
           <UserWalletAddressContainer hasAddressBeenCopied={hasAddressBeenCopied} onClick={handleAddressCopy}>
             <UserWalletAddress hasAddressBeenCopied={hasAddressBeenCopied}>
-              {hasAddressBeenCopied ? 'Text copied!' : addressTag(userWalletAddressTag)}
+              {hasAddressBeenCopied ? 'Text copied!' : getAddressToDisplay(userENSNameOrWalletAddress)}
             </UserWalletAddress>
             <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
           </UserWalletAddressContainer>

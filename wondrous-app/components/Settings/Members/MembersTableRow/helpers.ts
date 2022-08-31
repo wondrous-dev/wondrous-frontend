@@ -1,6 +1,6 @@
 import { PERMISSIONS, RoleColorsAndEmojis, ROLES } from 'utils/constants';
 
-export const addressTag = (address: string): string => {
+export const getAddressToDisplay = (address: string): string => {
   const isENSName = address.endsWith('.eth');
 
   if (isENSName) {
