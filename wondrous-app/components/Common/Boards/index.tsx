@@ -58,7 +58,6 @@ const Boards = (props: Props) => {
   const [searchResults, setSearchResults] = useState({});
   const { search: searchQuery } = router.query;
   const view = activeView || String(router.query.view ?? ViewType.Grid);
-  console.log(columns);
   useEffect(() => {
     if (!searchQuery) {
       return;
@@ -67,7 +66,6 @@ const Boards = (props: Props) => {
     setTotalCount(totalCount);
     setSearchResults(splitCols);
   }, [columns]);
-  // console.log(columns);
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 
