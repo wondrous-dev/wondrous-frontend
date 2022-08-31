@@ -109,11 +109,10 @@ const CalendarView = (props) => {
   };
 
   const getTasks = (days, tasks) => {
-    const holdTasks = [];
     if (tasks) {
       if (calendarView === 'WEEK') {
-        for (let i = 0; i < tasks.length; i++) {
-          for (let j = 0; j < days.length; j++) {
+        for (let i = 0; i < tasks.length; i += 1) {
+          for (let j = 0; j < days.length; j += 1) {
             const holdDate = new Date(tasks[i].dueDate);
             if (
               days?.[j]?.day.getDate() === holdDate.getDate() &&
@@ -126,8 +125,8 @@ const CalendarView = (props) => {
         }
       } else {
         const holdCurrentDaysOfMonth = days;
-        for (let i = 0; i < tasks.length; i++) {
-          for (let j = 0; j < days.length; j++) {
+        for (let i = 0; i < tasks.length; i += 1) {
+          for (let j = 0; j < days.length; j += 1) {
             const holdDate = new Date(tasks[i].dueDate);
             if (
               days?.[j]?.day.getDate() === holdDate.getDate() &&
