@@ -6,7 +6,7 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import { useGetPodById } from 'utils/hooks';
 import MemberRequests from 'components/Pod/members';
-import { EntitySidebar } from 'components/Common/Sidebar';
+import EntitySidebar from 'components/Common/SidebarEntity';
 
 function PodMembersPage() {
   const router = useRouter();

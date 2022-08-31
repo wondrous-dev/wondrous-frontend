@@ -1,11 +1,11 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
-import React, { useEffect } from 'react';
 import { withAuth } from 'components/Auth/withAuth';
+import EntitySidebar from 'components/Common/SidebarEntity';
 import Activities from 'components/organization/activities/activities';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { useRouter } from 'next/router';
+import React, { useEffect } from 'react';
 import { OrgBoardContext } from 'utils/contexts';
-import { EntitySidebar } from 'components/Common/Sidebar';
 
 const useGetOrgFromUsername = (username) => {
   const [getOrgFromUsername, { data }] = useLazyQuery(GET_ORG_FROM_USERNAME);

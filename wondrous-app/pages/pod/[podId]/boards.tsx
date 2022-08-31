@@ -41,7 +41,7 @@ import {
 import { PodBoardContext } from 'utils/contexts';
 import uniqBy from 'lodash/uniqBy';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { EntitySidebar } from 'components/Common/Sidebar';
+import EntitySidebar from 'components/Common/SidebarEntity';
 
 const useGetPodTaskBoardTasks = ({
   columns,
