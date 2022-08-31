@@ -1,8 +1,8 @@
 import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import { Logo } from 'components/Common/ci';
-import GridViewIcon from 'components/Common/Sidebar/Common/icons/gridView.svg';
-import PodsIcon from 'components/Common/Sidebar/Common/icons/podsGradient.svg';
-import SettingsIcon from 'components/Common/Sidebar/Common/icons/settings.svg';
+import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
+import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
+import SettingsIcon from 'components/Icons/Sidebar/settings.svg';
 import { mainSidebarWidth } from 'components/Common/Sidebar/Common/styles';
 import { DAOIcon } from 'components/Icons/dao';
 import styled, { css } from 'styled-components';

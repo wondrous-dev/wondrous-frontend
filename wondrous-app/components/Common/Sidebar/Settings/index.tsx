@@ -1,12 +1,12 @@
 import { useLazyQuery } from '@apollo/client';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import { logout, useMe } from 'components/Auth/withAuth';
-import FileDownloadIcon from 'components/Common/Sidebar/Common/icons/fileDownload.svg';
-import GroupIcon from 'components/Common/Sidebar/Common/icons/group.svg';
-import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
-import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
-import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
-import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
+import FileDownloadIcon from 'components/Icons/Sidebar/fileDownload.svg';
+import GroupIcon from 'components/Icons/Sidebar/group.svg';
+import HexagonIcon from 'components/Icons/Sidebar/hexagon.svg';
+import NotificationsIcon from 'components/Icons/Sidebar/notifications.svg';
+import PodIcon from 'components/Icons/Sidebar/pods.svg';
+import ReceiptIcon from 'components/Icons/Sidebar/receipt.svg';
 import {
   ChildrenWrapper,
   Label,

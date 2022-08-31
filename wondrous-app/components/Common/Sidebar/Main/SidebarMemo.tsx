@@ -2,7 +2,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import AddIcon from 'components/Icons/add.svg';
 import BackArrowIcon from 'components/Icons/backArrow';
-import ExploreIcon from 'components/Common/Sidebar/Common/icons/explore.svg';
+import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import { PodsIcon } from 'components/Icons/sidebar';
 import Tooltip from 'components/Tooltip';
