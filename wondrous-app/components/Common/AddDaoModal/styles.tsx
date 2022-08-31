@@ -4,7 +4,7 @@ import ArrowIcon from 'components/Icons/arrow.svg';
 import CloseModal from 'components/Icons/closeModal';
 import styled, { css } from 'styled-components';
 
-export const TransitionStyle = css`
+const TransitionStyle = css`
   transition: all 0.5s ease-in-out;
 `;
 

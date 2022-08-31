@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 export const mainSidebarWidth = '84px';
 
-export const entitySidebarWidth = '200px';
+const entitySidebarWidth = '200px';
 
 export const Wrapper = styled.div`
   display: flex;

@@ -17,24 +17,6 @@ const ButtonIconBefore = css`
   }
 `;
 
-export const ButtonIcon = styled(ButtonBase)`
-  && {
-    align-items: center;
-    background-color: ${({ theme }) => theme.palette.grey87};
-    border-radius: 50%;
-    display: flex;
-    height: 36px;
-    justify-content: center;
-    position: relative;
-    width: 36px;
-    z-index: 2;
-    :hover {
-      ${ButtonIconBefore}
-    }
-    ${({ isActive }) => isActive && ButtonIconBefore}
-  }
-`;
-
 export const ExploreButton = styled(ButtonBase)`
   && {
     align-items: center;

@@ -1,4 +1,4 @@
-import { ButtonBase, Drawer, List, ListItemButton } from '@mui/material';
+import { ButtonBase, Drawer, List } from '@mui/material';
 import { Logo } from 'components/Common/ci';
 import { mainSidebarWidth } from 'components/Common/SidebarStyles';
 import { DAOIcon } from 'components/Icons/dao';
@@ -48,36 +48,6 @@ export const DrawerList = styled(List)`
     gap: 12px;
   }
 `;
-export const DrawerListItem = styled(({ children, ...props }) => (
-  <ListItemButton {...props}>
-    <div>{children}</div>
-  </ListItemButton>
-))`
-  && {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 36px;
-    width: 36px;
-    border-radius: 50%;
-    background: ${({ theme }) => theme.palette.grey87};
-    filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.background.default})`};
-    > div {
-      height: 34px;
-      width: 34px;
-      display: flex;
-      border-radius: 50%;
-      align-items: center;
-      justify-content: center;
-    }
-  }
-`;
-
-const DrawerListCreateDaoWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
 
 export const DrawerBlockWrapper = styled.div`
   display: flex;
@@ -85,33 +55,6 @@ export const DrawerBlockWrapper = styled.div`
   justify-content: space-between;
   flex-direction: column;
   gap: 12px;
-`;
-
-export const DrawerBottomButton = styled(({ children, ...props }) => (
-  <ButtonBase {...props}>
-    <div>{children}</div>
-  </ButtonBase>
-))`
-  && {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-    background: ${({ theme }) => theme.palette.black92};
-    &.active {
-      background: linear-gradient(283.63deg, rgba(75, 75, 75, 0.6) 11.03%, rgba(35, 35, 35, 0.6) 92.07%);
-    }
-    > * {
-      width: 36px;
-      height: 36px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  }
 `;
 
 export const NoLogoDAO = styled((props) => (
@@ -181,33 +124,6 @@ export const ButtonIcon = styled(ButtonBase)`
   }
 `;
 
-const AddIconActive = css`
-  background: ${({ theme }) => theme.palette.violet100};
-  svg {
-    defs {
-      linearGradient {
-        stop {
-          stop-color: ${({ theme }) => theme.palette.white};
-        }
-      }
-    }
-  }
-`;
-
-export const AddIconWrapper = styled.div`
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.palette.grey87};
-  border-radius: 50%;
-  ${ButtonIcon}:hover & {
-    ${AddIconActive}
-  }
-  ${({ isActive }) => isActive && AddIconActive}
-`;
-
 export const DaoIconWrapper = styled.div`
   width: 36px;
   height: 36px;
@@ -229,51 +145,6 @@ export const BottomButtonIcon = styled(ButtonBase)`
     border-radius: 50%;
     background: ${({ theme }) => theme.palette.black92};
   }
-`;
-
-export const ExploreButton = styled(ButtonBase)`
-  && {
-    align-items: center;
-    background-color: ${({ theme }) => theme.palette.grey87};
-    border-radius: 50%;
-    display: flex;
-    height: 36px;
-    justify-content: center;
-    position: relative;
-    width: 36px;
-    z-index: 2;
-    :hover {
-      ${ButtonIconBefore}
-    }
-    ${({ isActive }) => isActive && ButtonIconBefore}
-  }
-`;
-
-const ExplorerIconActive = css`
-  background: linear-gradient(206.66deg, #ccbbff -18.49%, #7427ff 109.85%, #00baff 252.3%);
-  svg {
-    defs {
-      linearGradient {
-        stop {
-          stop-color: ${({ theme }) => theme.palette.white};
-        }
-      }
-    }
-  }
-`;
-
-export const ExploreIconWrapper = styled.div`
-  width: 36px;
-  height: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: ${({ theme }) => theme.palette.grey87};
-  border-radius: 50%;
-  ${ExploreButton}:hover & {
-    ${ExplorerIconActive}
-  }
-  ${({ isActive }) => isActive && ExplorerIconActive}
 `;
 
 export const DrawerBackButton = styled(BottomButtonIcon)`
@@ -309,84 +180,6 @@ export const ButtonWrapper = styled.div`
   gap: 16px;
   padding: 6px;
   border-radius: 150px;
-`;
-
-const PodsButtonBeforeHover = css`
-  :before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(-2px, -2px);
-    height: 40px;
-    width: 40px;
-    outline: ${({ theme }) => `2px solid ${theme.palette.highlightPurple}`};
-    border-radius: 50%;
-    z-index: -1;
-    background: transparent;
-  }
-`;
-
-const PodsButtonBefore = css`
-  :before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    transform: translate(-2px, -2px);
-    height: 40px;
-    width: 40px;
-    border-radius: 50%;
-    z-index: -1;
-    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
-  }
-`;
-
-export const PodsIconWrapper = styled.div`
-  align-items: center;
-  border-radius: 50%;
-  display: flex;
-  height: 36px;
-  justify-content: center;
-  position: relative;
-  width: 36px;
-  z-index: 2;
-  background: ${({ theme }) => theme.palette.grey87};
-`;
-
-const PodIconHighlight = css`
-  ${PodsIconWrapper} {
-    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
-    svg {
-      defs {
-        linearGradient {
-          stop {
-            stop-color: ${({ theme }) => theme.palette.white};
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const PodsButton = styled(ButtonBase)`
-  && {
-    align-items: center;
-    border-radius: 50%;
-    display: flex;
-    height: 36px;
-    justify-content: center;
-    position: relative;
-    width: 36px;
-    z-index: 2;
-    ${PodsButtonBefore}
-    :hover {
-      ${PodsButtonBeforeHover}
-      ${PodIconHighlight}
-    }
-    ${({ isActive }) => isActive && PodsButtonBeforeHover}
-    ${({ isActive }) => isActive && PodIconHighlight}
-  }
 `;
 
 const MissionControlButtonBeforeHover = css`
