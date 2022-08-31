@@ -39,6 +39,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
+import SidebarTooltip from '../SidebarMainTooltip';
 
 type Props = {
   isMobile: boolean;
@@ -57,12 +58,6 @@ type Props = {
 };
 
 const isExternal = (url) => url.includes('https://');
-
-const SidebarTooltip = ({ children, ...props }) => (
-  <Tooltip style={toolTipStyle} {...props} placement="right">
-    <span>{children}</span>
-  </Tooltip>
-);
 
 const MissionControlIconButton = ({ isActive = false }) => (
   <SidebarTooltip title="Mission Control">
