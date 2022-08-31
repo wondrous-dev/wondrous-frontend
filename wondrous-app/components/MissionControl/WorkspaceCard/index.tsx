@@ -20,7 +20,8 @@ const MissionControlWorkspaceCard: React.FC<{
   stats: any[];
   hoverImg: string;
   gradient: string;
-}> = ({ label, labelGradient, img, stats, hoverImg, gradient }) => (
+  url: string;
+}> = ({ label, labelGradient, img, stats, hoverImg, gradient, url }) => (
   <MissionControlWorkspaceCardWrapper hoverImg={hoverImg} gradient={gradient}>
     <WorkspaceCardContainer>
       <WorkspaceCardBannerContainer>
@@ -28,7 +29,9 @@ const MissionControlWorkspaceCard: React.FC<{
           <img src={img} />
         </WorkspaceCardBannerImage>
         <WorkspaceCardLabelWrapper>
-          <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
+          <Link href={url}>
+            <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
+          </Link>
         </WorkspaceCardLabelWrapper>
       </WorkspaceCardBannerContainer>
       <WorkspaceCardStatsContainer>

@@ -116,7 +116,7 @@ export const WorkspaceCardBannerLabel = styled(Typography)`
     font-weight: 700;
     font-size: 36px;
     line-height: 36px;
-
+    cursor: pointer;
     text-align: center;
     letter-spacing: 0.0025em;
     margin-bottom: 18%;

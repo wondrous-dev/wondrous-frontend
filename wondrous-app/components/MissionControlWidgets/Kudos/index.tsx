@@ -37,7 +37,7 @@ const KudosWidget = () => {
   };
 
   useEffect(() => {
-    if (inView && hasMore && data?.getUserFeed?.length) {
+    if (inView && hasMore && data?.getUserFeed?.length >= LIMIT) {
       fetchMore();
     }
   }, [inView, hasMore, data?.getUserFeed?.length]);

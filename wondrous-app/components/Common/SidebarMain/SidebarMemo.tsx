@@ -30,6 +30,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
+import MissionControlIconButton from '../SidebarMainMissionControl';
 
 type Props = {
   isMobile: boolean;
@@ -112,13 +113,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                 />
               </ButtonIcon>
             </SidebarTooltip>
-            {/* 
-            
-            NOTE: not yet in used 
-            
+
             <MissionControlIconButton />
-            
-            */}
+
             <PodsIconButton />
           </ButtonWrapper>
           <ButtonWrapper>

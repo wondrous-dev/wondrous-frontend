@@ -39,6 +39,7 @@ const CARDS_CONFIG = {
   workspace: [
     {
       label: 'Contributor \n Workspace',
+      url: '/dashboard',
       labelGradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
       img: '/images/mission-control/contributor-card.png',
       hoverImg: '/images/mission-control/contributor-card-hover.png',
@@ -80,6 +81,7 @@ const CARDS_CONFIG = {
       img: '/images/mission-control/operator-card.png',
       hoverImg: '/images/mission-control/operator-card-hover.png',
       gradient: OperatorGradient,
+      url: `/dashboard/admin?boardType=${ORG_MEMBERSHIP_REQUESTS}`,
       stats: [
         {
           icon: OrgMemberships,
@@ -139,10 +141,11 @@ const MissionControl = () => {
   return (
     <MissionControlWrapper>
       <MissionControlWidgetsWrapper>
-        {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg, gradient }, idx) => (
+        {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg, gradient, url }, idx) => (
           <MissionControlWorkspaceCard
             key={idx}
             label={label}
+            url={url}
             labelGradient={labelGradient}
             hoverImg={hoverImg}
             img={img}
