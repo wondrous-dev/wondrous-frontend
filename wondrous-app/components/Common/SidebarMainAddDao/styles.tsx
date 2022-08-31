@@ -10,8 +10,8 @@ const ButtonIconBefore = css`
     transform: translate(-2px, -2px);
     height: 40px;
     width: 40px;
-    background: #232323;
-    outline: 2px solid #7427ff;
+    background: ${({ theme }) => theme.palette.black92};
+    outline: ${({ theme }) => `2px solid ${theme.palette.highlightPurple}`};
     border-radius: 50%;
     z-index: -1;
   }
@@ -20,7 +20,7 @@ const ButtonIconBefore = css`
 export const ButtonIcon = styled(ButtonBase)`
   && {
     align-items: center;
-    background-color: #313131;
+    background-color: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
     display: flex;
     height: 36px;
@@ -36,12 +36,12 @@ export const ButtonIcon = styled(ButtonBase)`
 `;
 
 const AddIconActive = css`
-  background: #4f00de;
+  background: ${({ theme }) => theme.palette.violet100};
   svg {
     defs {
       linearGradient {
         stop {
-          stop-color: #ffffff;
+          stop-color: ${({ theme }) => theme.palette.white};
         }
       }
     }
@@ -54,7 +54,7 @@ export const AddIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #313131;
+  background-color: ${({ theme }) => theme.palette.grey87};
   border-radius: 50%;
   ${ButtonIcon}:hover & {
     ${AddIconActive}

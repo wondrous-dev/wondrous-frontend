@@ -2,6 +2,11 @@ import { ButtonBase, Typography } from '@mui/material';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 
+const backgroundColor = css`
+  background: ${({ theme }) =>
+    `linear-gradient(180deg, ${theme.palette.highlightBlue} 0%, ${theme.palette.orange90} 100%)`};
+`;
+
 const PodsButtonBeforeHover = css`
   :before {
     content: '';
@@ -11,7 +16,7 @@ const PodsButtonBeforeHover = css`
     transform: translate(-2px, -2px);
     height: 40px;
     width: 40px;
-    outline: 2px solid #7427ff;
+    outline: ${({ theme }) => `2px solid ${theme.palette.highlightPurple}`};
     border-radius: 50%;
     z-index: -1;
     background: transparent;
@@ -29,7 +34,7 @@ const PodsButtonBefore = css`
     width: 40px;
     border-radius: 50%;
     z-index: -1;
-    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
+    ${backgroundColor};
   }
 `;
 
@@ -42,17 +47,17 @@ export const PodsIconWrapper = styled.div`
   position: relative;
   width: 36px;
   z-index: 2;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87};
 `;
 
 const PodIconHighlight = css`
   ${PodsIconWrapper} {
-    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
+    ${backgroundColor};
     svg {
       defs {
         linearGradient {
           stop {
-            stop-color: #ffffff;
+            stop-color: ${({ theme }) => theme.palette.white};
           }
         }
       }

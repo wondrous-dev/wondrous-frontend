@@ -156,8 +156,8 @@ const ButtonIconBefore = css`
     transform: translate(-2px, -2px);
     height: 40px;
     width: 40px;
-    background: #232323;
-    outline: 2px solid #7427ff;
+    background: ${({ theme }) => theme.palette.black92};
+    outline: ${({ theme }) => `2px solid ${theme.palette.highlightPurple}`};
     border-radius: 50%;
     z-index: -1;
   }
@@ -166,7 +166,7 @@ const ButtonIconBefore = css`
 export const ButtonIcon = styled(ButtonBase)`
   && {
     align-items: center;
-    background-color: #313131;
+    background-color: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
     display: flex;
     height: 36px;
@@ -182,12 +182,12 @@ export const ButtonIcon = styled(ButtonBase)`
 `;
 
 const AddIconActive = css`
-  background: #4f00de;
+  background: ${({ theme }) => theme.palette.violet100};
   svg {
     defs {
       linearGradient {
         stop {
-          stop-color: #ffffff;
+          stop-color: ${({ theme }) => theme.palette.white};
         }
       }
     }
@@ -200,7 +200,7 @@ export const AddIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #313131;
+  background-color: ${({ theme }) => theme.palette.grey87};
   border-radius: 50%;
   ${ButtonIcon}:hover & {
     ${AddIconActive}
@@ -214,7 +214,7 @@ export const DaoIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #313131;
+  background-color: ${({ theme }) => theme.palette.grey87};
   border-radius: 50%;
 `;
 
@@ -234,7 +234,7 @@ export const BottomButtonIcon = styled(ButtonBase)`
 export const ExploreButton = styled(ButtonBase)`
   && {
     align-items: center;
-    background-color: #313131;
+    background-color: ${({ theme }) => theme.palette.grey87};
     border-radius: 50%;
     display: flex;
     height: 36px;
@@ -255,7 +255,7 @@ const ExplorerIconActive = css`
     defs {
       linearGradient {
         stop {
-          stop-color: #ffffff;
+          stop-color: ${({ theme }) => theme.palette.white};
         }
       }
     }
@@ -268,7 +268,7 @@ export const ExploreIconWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #313131;
+  background-color: ${({ theme }) => theme.palette.grey87};
   border-radius: 50%;
   ${ExploreButton}:hover & {
     ${ExplorerIconActive}
@@ -320,7 +320,7 @@ const PodsButtonBeforeHover = css`
     transform: translate(-2px, -2px);
     height: 40px;
     width: 40px;
-    outline: 2px solid #7427ff;
+    outline: ${({ theme }) => `2px solid ${theme.palette.highlightPurple}`};
     border-radius: 50%;
     z-index: -1;
     background: transparent;
@@ -351,7 +351,7 @@ export const PodsIconWrapper = styled.div`
   position: relative;
   width: 36px;
   z-index: 2;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87};
 `;
 
 const PodIconHighlight = css`
@@ -361,7 +361,7 @@ const PodIconHighlight = css`
       defs {
         linearGradient {
           stop {
-            stop-color: #ffffff;
+            stop-color: ${({ theme }) => theme.palette.white};
           }
         }
       }
@@ -398,7 +398,7 @@ const MissionControlButtonBeforeHover = css`
     transform: translate(-2px, -2px);
     height: 40px;
     width: 40px;
-    outline: 2px solid #7427ff;
+    outline: ${({ theme }) => `2px solid ${theme.palette.highlightPurple}`};
     border-radius: 50%;
     z-index: -1;
     background: transparent;
@@ -429,7 +429,7 @@ export const MissionControlIconWrapper = styled.div`
   position: relative;
   width: 36px;
   z-index: 2;
-  background: #313131;
+  background: ${({ theme }) => theme.palette.grey87};
 `;
 
 const MissionControlIconHighlight = css`
@@ -439,7 +439,7 @@ const MissionControlIconHighlight = css`
       defs {
         linearGradient {
           stop {
-            stop-color: #ffffff;
+            stop-color: ${({ theme }) => theme.palette.white};
           }
         }
       }
