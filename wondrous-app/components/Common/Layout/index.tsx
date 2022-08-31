@@ -1,6 +1,6 @@
 import { useQuery } from '@apollo/client';
-import HeaderComponent from 'components/Header';
 import { SideBarComponent } from 'components/Common/Sidebar';
+import HeaderComponent from 'components/Header';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import React, { useMemo, useState } from 'react';
@@ -14,10 +14,10 @@ import { SectionWrapper } from './styles';
 const getOrgsList = (userOrgs, router) => {
   if (!userOrgs?.getUserOrgs) return [];
   const { getUserOrgs } = userOrgs;
-  return getUserOrgs.map((item) => {
-    const isActive = router.pathname.includes('/organization/[username]') && router.query?.username === item.username;
-    return { ...item, isActive };
-  });
+  return getUserOrgs.map((item) => ({
+    ...item,
+    isActive: router.pathname.includes('/organization/[username]') && router.query?.username === item.username,
+  }));
 };
 
 export default function SidebarLayout({ children }) {
