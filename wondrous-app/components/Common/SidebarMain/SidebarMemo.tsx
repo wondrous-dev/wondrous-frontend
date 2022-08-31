@@ -1,6 +1,6 @@
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import HelpModal from 'components/Common/SidebarMain/HelpModal.jsx';
+import HelpModal from 'components/Common/HelpModal.jsx';
 import {
   BottomButtonIcon,
   ButtonIcon,
