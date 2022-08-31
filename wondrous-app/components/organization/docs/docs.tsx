@@ -1,7 +1,7 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import AddDocumentDialog from 'components/AddDocumentDialog';
-import { ResourcesSidebar } from 'components/Common/Sidebar';
+import ResourcesSidebar from 'components/Common/SidebarResources';
 import DeleteDocDialog from 'components/DeleteDocDialog';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import DocCategoriesSection from 'components/DocCategoriesSection';
@@ -17,6 +17,7 @@ import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
+
 import Wrapper from '../wrapper/wrapper';
 import styles from './docsStyles';
 
