@@ -189,7 +189,7 @@ const TaskHeaderMenu = ({ canEdit, children }) => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-
+  console.log('canEdit', canEdit);
   if (!canEdit) return null;
 
   return (

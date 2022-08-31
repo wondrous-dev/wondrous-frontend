@@ -25,3 +25,9 @@ export const GradientMidnightDiagonalOposite = css`
   background: ${palette.black90};
   background: linear-gradient(170deg, ${palette.grey75}FF, ${palette.black90}FF);
 `;
+
+export const GradientGR15Horizontal = css`
+  background: ${palette.black90};
+  background: linear-gradient(90deg, #c1adfe 0%, #83ccb9 35.66%, #fba3b8 74.41%, #ffe98a 99.22%),
+    linear-gradient(0deg, #e2fffa, #e2fffa);
+`;
