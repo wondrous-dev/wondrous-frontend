@@ -52,7 +52,7 @@ export const NotificationsBoardOverArrow = styled.div`
 
   /* drop shadow */
   box-shadow: 0px 34px 84px rgba(0, 0, 0, 0.55);
-  background:${palette.black92}
+  background: ${palette.black92};
   border-radius: 4px;
   transform: rotate(45deg);
 

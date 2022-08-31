@@ -26,6 +26,13 @@ export const ContentContainer = styled.div`
 export const Banner = styled.img`
   margin-top: ${HEADER_HEIGHT};
   width: 100%;
+  height: 149px;
+  background: url(${({ img }) => `${img}`});
+  position: relative;
+  background-size: cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 export const DashboardHeader = styled(Typography)`

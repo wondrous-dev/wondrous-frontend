@@ -85,7 +85,7 @@ export function NotificationOutlineSettings(props) {
 export default function NotificationsIcon(props) {
   return (
     <svg width="41" height="41" viewBox="0 0 41 41" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <rect x="0.148438" y="0.291016" width="40" height="40" rx="20" fill="#0F0F0F" stroke="none" />
+      <rect x="0.148438" y="0.291016" width="40" height="40" rx="20" fill="" stroke="none" />
       <path
         d="M25.6499 16.69C25.6499 15.2581 25.0811 13.8849 24.0686 12.8724C23.0561 11.8598 21.6828 11.291 20.2509 11.291C18.819 11.291 17.4457 11.8598 16.4332 12.8724C15.4207 13.8849 14.8519 15.2581 14.8519 16.69C14.8519 22.9889 12.1523 24.7886 12.1523 24.7886H28.3494C28.3494 24.7886 25.6499 22.9889 25.6499 16.69Z"
         stroke="white"
@@ -98,7 +98,7 @@ export default function NotificationsIcon(props) {
         strokeLinecap="round"
         strokeLinejoin="round"
       />
-      <circle cx="21.5938" cy="10.5801" r="3.5" fill="#F93701" stroke="#0F0F0F" strokeWidth="2" />
+      <circle cx="20.5" cy="10.5801" r="3.5" fill="#F93701" stroke="" strokeWidth="2" />
 
       <defs>
         <linearGradient

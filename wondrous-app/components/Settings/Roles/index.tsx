@@ -45,7 +45,7 @@ import styles, {
 
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';

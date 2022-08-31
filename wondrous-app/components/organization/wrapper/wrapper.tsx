@@ -72,8 +72,8 @@ import {
   RoleButtonWrapper,
   RoleText,
   RoleButton,
+  Container,
 } from './styles';
-import Tabs from '../tabs/tabs';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
@@ -486,7 +486,7 @@ function Wrapper(props) {
               </div>
             </HeaderActivity>
           </TokenHeader>
-          <Tabs showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+          <Container>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
@@ -503,7 +503,7 @@ function Wrapper(props) {
               )}
             </BoardsSubheaderWrapper>
             {children}
-          </Tabs>
+          </Container>
         </ContentContainer>
       </Content>
     </>

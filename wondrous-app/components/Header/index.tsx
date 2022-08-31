@@ -19,7 +19,6 @@ const HeaderComponent = () => {
   return (
     <HeaderMemo
       isMobile={isMobile}
-      onLogoClick={() => router.push('/explore')}
       onSignInClick={() => router.push('/login')}
       openCreateFormModal={openCreateFormModal}
       showCreateButton={showCreateButton}

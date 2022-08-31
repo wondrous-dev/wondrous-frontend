@@ -1,15 +1,26 @@
-import React, { useState } from 'react';
-import { SIDEBAR_WIDTH, PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
-import HeaderComponent from 'components/Header';
-import SideBarComponent from 'components/SideBar';
-import { toggleHtmlOverflow } from 'utils/helpers';
-import { useRouter } from 'next/router';
+import React, { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { SideBarContext, GlobalContext } from 'utils/contexts';
-import { useIsMobile } from 'utils/hooks';
+import { GlobalContext, SideBarContext } from 'utils/contexts';
 import { LIMIT } from 'services/board';
+
+import SideBarComponent from 'components/Common/SidebarMain';
+import HeaderComponent from 'components/Header';
+import { useRouter } from 'next/router';
+import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
+import { toggleHtmlOverflow } from 'utils/helpers';
+import { useIsMobile } from 'utils/hooks';
+
 import { SectionWrapper } from './styles';
+
+const getOrgsList = (userOrgs, router) => {
+  if (!userOrgs?.getUserOrgs) return [];
+  const { getUserOrgs } = userOrgs;
+  return getUserOrgs.map((item) => ({
+    ...item,
+    isActive: router.pathname.includes('/organization/[username]') && router.query?.username === item.username,
+  }));
+};
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
@@ -41,19 +52,22 @@ export default function SidebarLayout({ children }) {
     setCreateFormModal((prevState) => !prevState);
   };
 
+  const orgsList = getOrgsList(userOrgs, router);
+  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
+  const sidebarValue = useMemo(
+    () => ({
+      minimized,
+      setMinimized,
+      orgsList,
+    }),
+    [minimized, orgsList]
+  );
+
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
-
-  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
-
   return (
-    <SideBarContext.Provider
-      value={{
-        minimized,
-        setMinimized,
-      }}
-    >
+    <SideBarContext.Provider value={sidebarValue}>
       <SideBarComponent userOrgs={userOrgs} />
       <GlobalContext.Provider
         value={{

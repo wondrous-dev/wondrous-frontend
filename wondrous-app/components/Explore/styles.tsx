@@ -38,7 +38,6 @@ export const BackgroundImg = styled.img`
 
 export const BackgroundContainer = styled.div`
   width: 100%;
-  padding-top: 2rem;
   border-radius: 6px;
   display: flex;
   justify-content: center;
