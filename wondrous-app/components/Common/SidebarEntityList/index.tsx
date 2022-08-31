@@ -10,26 +10,26 @@ import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
 import ShowChartIcon from 'components/Icons/Sidebar/showChart.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
-import { GET_ORG_SIDEBAR_COUNT, GET_POD_SIDEBAR_COUNT } from 'graphql/queries';
+import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 
-const useSidebarCount = () => {
+const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
-  const { data: orgData } = useQuery(GET_ORG_SIDEBAR_COUNT, {
+  const { data: orgData } = useQuery(GET_TASKS_PER_TYPE, {
     variables: {
       orgId: board?.orgId,
     },
     skip: !(orgBoard && board.orgId),
   });
-  const { data: podData } = useQuery(GET_POD_SIDEBAR_COUNT, {
+  const { data: podData } = useQuery(GET_TASKS_PER_TYPE_FOR_POD, {
     variables: {
       podId: board?.podId,
     },
     skip: !(podBoard && board.podId),
   });
-  return orgData?.getOrgSidebarCount || podData?.getPodSidebarCount || {};
+  return orgData?.getPerTypeTaskCountForOrgBoard || podData?.getPerTypeTaskCountForPodBoard || {};
 };
 
 const useSidebarData = () => {
@@ -46,7 +46,7 @@ const useSidebarData = () => {
       router.push(link);
     };
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
-  const sidebarCount = useSidebarCount();
+  const taskCount = usePerTypeTaskCountForBoard();
   return {
     handleOnClick,
     data: [
@@ -57,28 +57,28 @@ const useSidebarData = () => {
             text: 'Tasks',
             Icon: CheckBoxIcon,
             link: `${link}/boards?entity=${ENTITIES_TYPES.TASK}`,
-            count: sidebarCount.taskCount,
+            count: taskCount.taskCount,
             entityType: ENTITIES_TYPES.TASK,
           },
           {
             text: 'Bounties',
             Icon: StartIcon,
             link: `${link}/boards?entity=${ENTITIES_TYPES.BOUNTY}`,
-            count: sidebarCount.bountyCount,
+            count: taskCount.bountyCount,
             entityType: ENTITIES_TYPES.BOUNTY,
           },
           {
             text: 'Milestones',
             Icon: FlagIcon,
             link: `${link}/boards?entity=${ENTITIES_TYPES.MILESTONE}`,
-            count: sidebarCount.milestoneCount,
+            count: taskCount.milestoneCount,
             entityType: ENTITIES_TYPES.MILESTONE,
           },
           {
             text: 'Proposals',
             Icon: ContentPaste,
             link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
-            count: sidebarCount.proposalCount,
+            count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
           // {
@@ -105,7 +105,6 @@ const useSidebarData = () => {
             text: 'Members',
             Icon: GroupIcon,
             link: `${link}/members`,
-            count: sidebarCount.membersCount,
           },
           {
             text: 'Roles',
@@ -117,14 +116,12 @@ const useSidebarData = () => {
                 roles: true,
               },
             },
-            count: sidebarCount.rolesCount,
           },
 
           {
             text: 'Resources',
             Icon: FolderIcon,
             link: `${link}/docs`,
-            count: sidebarCount.resourcesCount,
           },
         ],
       },
