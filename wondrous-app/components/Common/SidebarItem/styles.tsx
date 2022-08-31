@@ -1,8 +1,7 @@
 import { ButtonBase, Typography } from '@mui/material';
-import { isNumber } from 'lodash';
 import styled from 'styled-components';
 
-const ItemButton = styled(ButtonBase)`
+export const ItemButton = styled(ButtonBase)`
   && {
     border-radius: 3px;
     background: transparent;
@@ -19,7 +18,7 @@ const ItemButton = styled(ButtonBase)`
   }
 `;
 
-const ItemButtonIcon = styled.div`
+export const ItemButtonIcon = styled.div`
   width: 22px;
   height: 22px;
   background: ${({ bgColor, theme, isActive }) =>
@@ -41,7 +40,7 @@ const ItemButtonIcon = styled.div`
   }
 `;
 
-const ItemButtonText = styled(Typography)`
+export const ItemButtonText = styled(Typography)`
   && {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-style: normal;
@@ -54,13 +53,13 @@ const ItemButtonText = styled(Typography)`
   }
 `;
 
-const IconTextWrapper = styled.div`
+export const IconTextWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
 `;
 
-const Count = styled.div`
+export const Count = styled.div`
   width: 22px;
   height: 22px;
   background: ${({ theme }) => theme.palette.grey87};
@@ -75,23 +74,3 @@ const Count = styled.div`
     }
   }
 `;
-
-const Item = ({ children, Icon = null, isActive = false, roundedBg = false, bgColor = '', count = null, ...props }) => (
-  <ItemButton {...props} disableRipple isActive={isActive}>
-    <IconTextWrapper>
-      {Icon && (
-        <ItemButtonIcon isActive={isActive} roundedBg={roundedBg} bgColor={bgColor}>
-          <Icon />
-        </ItemButtonIcon>
-      )}
-      <ItemButtonText>{children}</ItemButtonText>
-    </IconTextWrapper>
-    {isNumber(count) && (
-      <Count isActive={isActive}>
-        <ItemButtonText>{count}</ItemButtonText>
-      </Count>
-    )}
-  </ItemButton>
-);
-
-export default Item;

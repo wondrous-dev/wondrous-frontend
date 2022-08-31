@@ -1,8 +1,8 @@
 import { useQuery } from '@apollo/client';
-import BackButton from 'components/Common/SidebarBackButton';
 import { useCanManage } from 'components/Common/Sidebar/Common/hooks';
-import Item from 'components/Common/Sidebar/Common/Item';
 import { AddIconWrapper, Label, ListWrapper } from 'components/Common/Sidebar/Common/styles';
+import BackButton from 'components/Common/SidebarBackButton';
+import Item from 'components/Common/SidebarItem';
 import SettingsIcon from 'components/Icons/settings.svg';
 import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import { pickBy } from 'lodash';

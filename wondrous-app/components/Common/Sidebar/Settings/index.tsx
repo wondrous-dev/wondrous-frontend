@@ -7,7 +7,6 @@ import HexagonIcon from 'components/Common/Sidebar/Common/icons/hexagon.svg';
 import NotificationsIcon from 'components/Common/Sidebar/Common/icons/notifications.svg';
 import PodIcon from 'components/Common/Sidebar/Common/icons/pods.svg';
 import ReceiptIcon from 'components/Common/Sidebar/Common/icons/receipt.svg';
-import Item from 'components/Common/Sidebar/Common/Item';
 import {
   ChildrenWrapper,
   Label,
@@ -18,6 +17,7 @@ import {
 } from 'components/Common/Sidebar/Common/styles';
 import BackButton from 'components/Common/SidebarBackButton';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
+import Item from 'components/Common/SidebarItem';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import ExitIcon from 'components/Icons/exit';
 import RolesIcon from 'components/Icons/roles';
