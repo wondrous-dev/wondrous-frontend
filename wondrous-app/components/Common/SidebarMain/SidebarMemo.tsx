@@ -1,9 +1,7 @@
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import AddDaoModal from 'components/Common/SidebarMain/AddDaoModal';
 import HelpModal from 'components/Common/SidebarMain/HelpModal.jsx';
 import {
-  AddIconWrapper,
   BottomButtonIcon,
   ButtonIcon,
   ButtonWrapper,
@@ -23,7 +21,6 @@ import {
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
 import { toolTipStyle } from 'components/Common/SidebarStyles';
-import AddIcon from 'components/Icons/add.svg';
 import BackArrowIcon from 'components/Icons/backArrow';
 import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
@@ -35,6 +32,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
+import AddDaoButton from '../SidebarMainAddDao';
 import PodsIconButton from '../SidebarMainPods';
 import SidebarTooltip from '../SidebarMainTooltip';
 
@@ -77,23 +75,6 @@ const ExploreIconButton = ({ isActive = false }) => (
     </Link>
   </SidebarTooltip>
 );
-
-const CreateModalButton = () => {
-  const [openCreateDaoModal, setCreateDaoModal] = useState(false);
-  const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
-  return (
-    <>
-      <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
-      <SidebarTooltip title="Create DAO">
-        <ButtonIcon onClick={handleCreateDaoModal(true)} isActive={openCreateDaoModal}>
-          <AddIconWrapper isActive={openCreateDaoModal}>
-            <AddIcon />
-          </AddIconWrapper>
-        </ButtonIcon>
-      </SidebarTooltip>
-    </>
-  );
-};
 
 const BOTTOM_LINKS_CONFIG = [
   {
@@ -194,7 +175,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                   </Link>
                 </SidebarTooltip>
               ))}
-              <CreateModalButton />
+              <AddDaoButton />
             </DrawerList>
           </ButtonWrapper>
         </DrawerBlockWrapper>

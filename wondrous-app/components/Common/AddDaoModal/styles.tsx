@@ -2,16 +2,13 @@ import { ButtonBase, Modal, Typography } from '@mui/material';
 import AddIcon from 'components/Icons/add.svg';
 import ArrowIcon from 'components/Icons/arrow.svg';
 import CloseModal from 'components/Icons/closeModal';
-import { ExplorePageIcon } from 'components/Icons/sidebar';
-import { useRouter } from 'next/router';
-import { useState } from 'react';
 import styled, { css } from 'styled-components';
 
-const TransitionStyle = css`
+export const TransitionStyle = css`
   transition: all 0.5s ease-in-out;
 `;
 
-const StyledModal = styled(Modal)`
+export const StyledModal = styled(Modal)`
   && {
     display: flex;
     align-items: center;
@@ -19,7 +16,7 @@ const StyledModal = styled(Modal)`
   }
 `;
 
-const ModalWrapper = styled.div`
+export const ModalWrapper = styled.div`
   height: 100%;
   width: 100%;
   display: flex;
@@ -29,7 +26,7 @@ const ModalWrapper = styled.div`
   background: transparent;
 `;
 
-const DialogWrapper = styled.div`
+export const DialogWrapper = styled.div`
   background: ${({ theme }) => theme.palette.grey900};
   width: 520px;
   min-height: 260px;
@@ -40,13 +37,13 @@ const DialogWrapper = styled.div`
   z-index: 100;
 `;
 
-const Header = styled.div`
+export const Header = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
 `;
 
-const HeaderText = styled(Typography)`
+export const HeaderText = styled(Typography)`
   && {
     align-items: center;
     color: ${({ theme }) => theme.palette.white};
@@ -58,7 +55,7 @@ const HeaderText = styled(Typography)`
   }
 `;
 
-const HeaderIcon = styled((props) => (
+export const HeaderIcon = styled((props) => (
   <ButtonBase {...props}>
     <CloseModal />
   </ButtonBase>
@@ -74,14 +71,14 @@ const HeaderIcon = styled((props) => (
   }
 `;
 
-const Divider = styled.div`
+export const Divider = styled.div`
   border-top: 1px dashed ${({ theme }) => theme.palette.grey75};
   border-radius: 6px;
   height: 5px;
   width: 100%;
 `;
 
-const ButtonStyled = styled(({ children, ...props }) => (
+export const ButtonStyled = styled(({ children, ...props }) => (
   <ButtonBase {...props}>
     <div>
       <div>{children}</div>
@@ -120,7 +117,7 @@ const ButtonStyled = styled(({ children, ...props }) => (
   }
 `;
 
-const ButtonText = styled(Typography)`
+export const ButtonText = styled(Typography)`
   && {
     font-family: ${({ theme }) => theme.typography.fontFamily};
     font-weight: 600;
@@ -129,13 +126,13 @@ const ButtonText = styled(Typography)`
   }
 `;
 
-const ButtonArrowIcon = styled(ArrowIcon)`
+export const ButtonArrowIcon = styled(ArrowIcon)`
   path {
     fill: ${({ theme }) => theme.palette.white};
   }
 `;
 
-const CreateDaoIcon = styled(({ children, ...props }) => (
+export const CreateDaoIcon = styled(({ children, ...props }) => (
   <div {...props}>
     <div>
       <AddIcon />
@@ -168,26 +165,26 @@ const CreateDaoIcon = styled(({ children, ...props }) => (
   }
 `;
 
-const IconTextWrapper = styled.div`
+export const IconTextWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 14px;
 `;
 
-const Options = styled.div`
+export const Options = styled.div`
   display: flex;
   flex-direction: column;
   gap: 18px;
 `;
 
-const ButtonsWrapper = styled.div`
+export const ButtonsWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 24px;
   margin-top: 19px;
 `;
 
-const ModalEllipse1 = styled.div`
+export const ModalEllipse1 = styled.div`
   position: absolute;
   width: 558px;
   height: 558px;
@@ -199,7 +196,7 @@ const ModalEllipse1 = styled.div`
   ${TransitionStyle};
 `;
 
-const ModalEllipse2 = styled.div`
+export const ModalEllipse2 = styled.div`
   position: absolute;
   width: 558px;
   height: 558px;
@@ -210,66 +207,3 @@ const ModalEllipse2 = styled.div`
   opacity: ${({ showEllipse }) => (showEllipse ? 1 : 0)};
   ${TransitionStyle};
 `;
-
-const useEllipseState = () => {
-  const [showEllipse, setShowEllipse] = useState<Boolean>(false);
-  const handleSetShowEllipse = (a) => () => setShowEllipse(a);
-  return { showEllipse, handleSetShowEllipse };
-};
-
-const ButtonOption = ({ Icon, children, ...props }) => (
-  <Options>
-    <Divider />
-    <ButtonStyled {...props}>
-      <IconTextWrapper>
-        <Icon />
-        <ButtonText>{children}</ButtonText>
-      </IconTextWrapper>
-      <ButtonArrowIcon />
-    </ButtonStyled>
-  </Options>
-);
-
-const AddDaoModal = ({ open, handleClose }) => {
-  const { showEllipse, handleSetShowEllipse } = useEllipseState();
-  const router = useRouter();
-  const handleOnClick = (link) => () => {
-    handleSetShowEllipse(false)();
-    handleClose();
-    router.push(link);
-  };
-  return (
-    <StyledModal open={open} onClose={handleClose}>
-      <ModalWrapper onClick={handleClose}>
-        <DialogWrapper>
-          <Header>
-            <HeaderText>Add DAO</HeaderText>
-            <HeaderIcon />
-          </Header>
-          <ButtonsWrapper>
-            <ButtonOption
-              Icon={CreateDaoIcon}
-              onClick={handleOnClick('/onboarding-dao')}
-              onMouseEnter={handleSetShowEllipse(true)}
-              onMouseLeave={handleSetShowEllipse(false)}
-            >
-              Create new DAO
-            </ButtonOption>
-            <ButtonOption
-              Icon={ExplorePageIcon}
-              onClick={handleOnClick('/explore')}
-              onMouseEnter={handleSetShowEllipse(true)}
-              onMouseLeave={handleSetShowEllipse(false)}
-            >
-              Explore existing DAOs
-            </ButtonOption>
-          </ButtonsWrapper>
-        </DialogWrapper>
-        <ModalEllipse1 showEllipse={showEllipse} />
-        <ModalEllipse2 showEllipse={showEllipse} />
-      </ModalWrapper>
-    </StyledModal>
-  );
-};
-
-export default AddDaoModal;
