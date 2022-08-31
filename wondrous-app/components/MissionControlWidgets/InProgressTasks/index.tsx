@@ -78,7 +78,7 @@ const InProgressTasksWidget = () => {
   };
 
   useEffect(() => {
-    if (inView && hasMore && data?.getUserTaskBoardTasks?.length) {
+    if (inView && hasMore && data?.getUserTaskBoardTasks?.length >= LIMIT) {
       fetchMore();
     }
   }, [inView, hasMore, data?.getUserTaskBoardTasks?.length]);

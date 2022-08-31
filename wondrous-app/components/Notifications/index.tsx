@@ -9,6 +9,7 @@ import calculateTimeLapse from 'utils/calculateTimeLapse';
 import SmartLink from 'components/Common/SmartLink';
 import Tooltip from 'components/Tooltip';
 import { useNotifications } from 'utils/hooks';
+import { LIMIT } from 'services/board';
 import {
   NotificationItemBody,
   NotificationItemIcon,
@@ -55,7 +56,7 @@ function NotificationsBoard({ onlyBoard = false }) {
   };
 
   useEffect(() => {
-    if (inView && hasMore && notifications?.length) {
+    if (inView && hasMore && notifications?.length >= LIMIT) {
       fetchMore();
     }
   }, [inView, hasMore, notifications?.length]);
