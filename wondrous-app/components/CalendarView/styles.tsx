@@ -18,40 +18,48 @@ export const CalendarViewContainer = styled.div`
 `;
 
 export const CalendarViewLabel = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-size: 14px;
-  color: white;
-  max-lines: 1;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    color: white;
+    max-lines: 1;
+  }
 `;
 
 export const CalendarViewShowDate = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-size: 14px;
-  width: 125px;
-  color: white;
-  max-lines: 1;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    width: 125px;
+    color: white;
+    max-lines: 1;
+  }
 `;
 
 export const CalendarDayOfMonthLabel = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-size: 14px;
-  color: white;
-  background-color: ${violetColors.violet950};
-  border-radius: 4px;
-  max-lines: 1;
-  align-self: center;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    color: white;
+    background-color: ${violetColors.violet950};
+    border-radius: 4px;
+    max-lines: 1;
+    align-self: center;
+  }
 `;
 export const CalendarDayOfWeekLabel = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-size: 14px;
-  color: white;
-  background-color: ${violetColors.violet950};
-  border-radius: 4px;
-  margin-right: 20px;
-  margin-left: 20px;
-  padding: 4px;
-  max-lines: 1;
-  align-self: center;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 14px;
+    color: white;
+    background-color: ${violetColors.violet950};
+    border-radius: 4px;
+    margin-right: 20px;
+    margin-left: 20px;
+    padding: 4px;
+    max-lines: 1;
+    align-self: center;
+  }
 `;
 
 export const CalendarTopBar = styled.div`
@@ -236,21 +244,25 @@ export const CalendarViewTaskContainer = styled.div`
 `;
 
 export const CalendarViewTaskLabel = styled(Typography)`
-  width: 100%;
-  font-family: 'Space Grotesk';
-  font-size: 12px;
-  color: white;
-  align-self: center;
-  justify-self: center;
+  && {
+    width: 100%;
+    font-family: 'Space Grotesk';
+    font-size: 12px;
+    color: white;
+    align-self: center;
+    justify-self: center;
+  }
 `;
 
 export const CalendarViewTaskShowMore = styled(Typography)`
-  font-family: 'Space Grotesk';
-  font-size: 12px;
-  color: ${palette.blue100};
-  max-lines: 1;
-  margin-left: 8px;
-  &:hover {
-    cursor: pointer;
+  && {
+    font-family: 'Space Grotesk';
+    font-size: 12px;
+    color: ${palette.blue100};
+    max-lines: 1;
+    margin-left: 8px;
+    &:hover {
+      cursor: pointer;
+    }
   }
 `;

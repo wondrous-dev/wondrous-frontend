@@ -148,6 +148,7 @@ const useGetOrgTaskBoardTasks = ({
 
   useEffect(() => {
     if (!userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && !calendarView) {
+      setIsLoading(true);
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
@@ -252,6 +253,8 @@ const useGetTaskRelatedToUser = ({
 
   useEffect(() => {
     if (userId && entityType !== ENTITIES_TYPES.PROPOSAL && !search && orgId && !calendarView) {
+      setIsLoading(true);
+
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
@@ -329,6 +332,8 @@ const useGetOrgTaskBoardProposals = ({
 
   useEffect(() => {
     if (entityType === ENTITIES_TYPES.PROPOSAL && !search && orgId && !calendarView) {
+      setIsLoading(true);
+
       const proposalBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))

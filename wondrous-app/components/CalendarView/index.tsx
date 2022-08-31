@@ -337,7 +337,7 @@ const CalendarView = (props) => {
             {currentDaysOfMonth?.map((taskObject, index) => {
               const todayDate = new Date();
               return (
-                <CalendarViewDayContainer key={taskObject?.date}>
+                <CalendarViewDayContainer key={`${taskObject.day.getMonth()} ${taskObject.day.getDate()}`}>
                   <CalendarViewDayTopBar>
                     {taskObject.day.getMonth() === todayDate.getMonth() &&
                     taskObject.day.getDate() === todayDate.getDate() &&
@@ -406,8 +406,11 @@ const CalendarView = (props) => {
           </CalendarViewContainer>
           <CalendarViewDMonthContainer view={calendarView}>
             {week?.map((dayOfWeek, index) => (
-              <CalendarViewDayContainer view={calendarView}>
-                {dayOfWeek?.tasks?.map((task, index) => {
+              <CalendarViewDayContainer
+                view={calendarView}
+                key={`${dayOfWeek.day.getMonth()} ${dayOfWeek.day.getDate()}`}
+              >
+                {dayOfWeek?.tasks?.map((task, i) => {
                   const content = (
                     <CalendarViewTaskContainer
                       style={{ marginBottom: calendarView === 'WEEK' ? '8px' : '2px' }}
@@ -417,7 +420,9 @@ const CalendarView = (props) => {
                       }}
                     >
                       <CalendarViewTaskIcon status={task?.status} />
-                      <CalendarViewTaskLabel style={{ fontSize: calendarView === 'WEEK' ? '14px' : '12px' }}>
+                      <CalendarViewTaskLabel
+                        style={{ fontSize: calendarView === 'WEEK' ? '14px' : '100px', color: 'white' }}
+                      >
                         {task.title}
                       </CalendarViewTaskLabel>
                     </CalendarViewTaskContainer>
@@ -432,10 +437,10 @@ const CalendarView = (props) => {
                       Show more...
                     </CalendarViewTaskShowMore>
                   );
-                  if (index < 30) {
+                  if (i < 30) {
                     return content;
                   }
-                  if (index === 30) {
+                  if (i === 30) {
                     return showMore;
                   }
                   return null;
