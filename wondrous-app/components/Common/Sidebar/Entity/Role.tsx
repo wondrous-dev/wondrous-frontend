@@ -1,10 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { useCanManage } from 'components/Common/Sidebar/Common/hooks';
 import { AddIconWrapper, Label, ListWrapper } from 'components/Common/Sidebar/Common/styles';
 import BackButton from 'components/Common/SidebarBackButton';
 import Item from 'components/Common/SidebarItem';
 import SettingsIcon from 'components/Icons/settings.svg';
 import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
+import useCanManage from 'hooks/useCanManage';
 import { pickBy } from 'lodash';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';

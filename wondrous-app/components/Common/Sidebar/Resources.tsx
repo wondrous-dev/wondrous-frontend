@@ -10,13 +10,12 @@ import {
 import BackButton from 'components/Common/SidebarBackButton';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import Item from 'components/Common/SidebarItem';
+import FolderIcon from 'components/Icons/Sidebar/folder.svg';
+import useCanEdit from 'hooks/useCanEdit';
 import useSideBar from 'hooks/useSideBar';
 import { shuffle } from 'lodash';
 import { ColorTypes } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
-
-import { useCanEdit } from './Common/hooks';
-import FolderIcon from './Common/icons/folder.svg';
 
 const randomColors = shuffle(Object.values(ColorTypes));
 

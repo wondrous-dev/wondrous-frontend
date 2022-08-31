@@ -1,4 +1,4 @@
-import { useCanManage } from 'components/Common/Sidebar/Common/hooks';
+import useCanManage from 'hooks/useCanManage';
 import { useRouter } from 'next/router';
 import styled from 'styled-components';
 import { useBoards } from 'utils/hooks';
