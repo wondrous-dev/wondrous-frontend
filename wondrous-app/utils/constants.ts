@@ -614,3 +614,8 @@ export const USER_BOARD_PAGE_TYPES = {
   CONTRIBUTOR: 'contributor',
   ADMIN: 'admin',
 };
+
+export const PAGE_PATHNAME = {
+  profile_username_about: '/profile/[username]/about',
+  explore: '/explore',
+};

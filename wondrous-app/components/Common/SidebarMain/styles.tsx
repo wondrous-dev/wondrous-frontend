@@ -1,10 +1,8 @@
 import { ButtonBase, Drawer, List, ListItemButton, Typography } from '@mui/material';
 import { Logo } from 'components/Common/ci';
-import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
-import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
-import SettingsIcon from 'components/Icons/Sidebar/settings.svg';
 import { mainSidebarWidth } from 'components/Common/SidebarStyles';
 import { DAOIcon } from 'components/Icons/dao';
+import SettingsIcon from 'components/Icons/Sidebar/settings.svg';
 import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 
@@ -170,17 +168,75 @@ export const StyledSettingsIcon = styled((props) => (
   width: 100%;
 `;
 
+const ButtonIconBefore = css`
+  :before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-2px, -2px);
+    height: 40px;
+    width: 40px;
+    background: #232323;
+    outline: 2px solid #7427ff;
+    border-radius: 50%;
+    z-index: -1;
+  }
+`;
+
 export const ButtonIcon = styled(ButtonBase)`
   && {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    height: 36px;
-    width: 36px;
-    background: transparent;
+    background-color: #313131;
     border-radius: 50%;
-    background: ${({ theme }) => theme.palette.grey87};
+    display: flex;
+    height: 36px;
+    justify-content: center;
+    position: relative;
+    width: 36px;
+    z-index: 2;
+    :hover {
+      ${ButtonIconBefore}
+    }
+    ${({ isActive }) => isActive && ButtonIconBefore}
   }
+`;
+
+const AddIconActive = css`
+  background: #4f00de;
+  svg {
+    defs {
+      linearGradient {
+        stop {
+          stop-color: #ffffff;
+        }
+      }
+    }
+  }
+`;
+
+export const AddIconWrapper = styled.div`
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #313131;
+  border-radius: 50%;
+  ${ButtonIcon}:hover & {
+    ${AddIconActive}
+  }
+  ${({ isActive }) => isActive && AddIconActive}
+`;
+
+export const DaoIconWrapper = styled.div`
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #313131;
+  border-radius: 50%;
 `;
 
 export const BottomButtonIcon = styled(ButtonBase)`
@@ -196,35 +252,49 @@ export const BottomButtonIcon = styled(ButtonBase)`
   }
 `;
 
-export const HighlightedButton = styled(({ children, ...props }) => (
-  <ButtonBase {...props}>
-    <div>{children}</div>
-  </ButtonBase>
-))`
+export const ExploreButton = styled(ButtonBase)`
   && {
-    display: flex;
     align-items: center;
-    justify-content: center;
-    height: 36px;
-    width: 36px;
-    background: transparent;
+    background-color: #313131;
     border-radius: 50%;
-    background: ${({ theme }) =>
-      `linear-gradient(206.66deg, ${theme.palette.blue20} -18.49%, ${theme.palette.highlightPurple} 109.85%, ${theme.palette.highlightBlue} 252.3%)`};
-    > div {
-      height: 34px;
-      width: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 100%;
-      background: ${({ theme }) => theme.palette.grey87};
-      :hover {
-        ${({ theme }) =>
-          `background: linear-gradient(180deg, ${theme.palette.grey78} 0%, ${theme.palette.grey87} 43.61%)`}
+    display: flex;
+    height: 36px;
+    justify-content: center;
+    position: relative;
+    width: 36px;
+    z-index: 2;
+    :hover {
+      ${ButtonIconBefore}
+    }
+    ${({ isActive }) => isActive && ButtonIconBefore}
+  }
+`;
+
+const ExplorerIconActive = css`
+  background: linear-gradient(206.66deg, #ccbbff -18.49%, #7427ff 109.85%, #00baff 252.3%);
+  svg {
+    defs {
+      linearGradient {
+        stop {
+          stop-color: #ffffff;
+        }
       }
     }
   }
+`;
+
+export const ExploreIconWrapper = styled.div`
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #313131;
+  border-radius: 50%;
+  ${ExploreButton}:hover & {
+    ${ExplorerIconActive}
+  }
+  ${({ isActive }) => isActive && ExplorerIconActive}
 `;
 
 export const DrawerBackButton = styled(BottomButtonIcon)`
@@ -262,59 +332,158 @@ export const ButtonWrapper = styled.div`
   border-radius: 150px;
 `;
 
-export const MissionControlButton = styled((props) => (
-  // NOTE: not yet in used, remove this comment when Mission Control page is implemented
-  <ButtonBase {...props}>
-    <div>
-      <GridViewIcon />
-    </div>
-  </ButtonBase>
-))`
-  && {
-    width: 36px;
-    height: 36px;
+const PodsButtonBeforeHover = css`
+  :before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-2px, -2px);
+    height: 40px;
+    width: 40px;
+    outline: 2px solid #7427ff;
     border-radius: 50%;
-    background: ${({ theme }) =>
-      `linear-gradient(180deg, ${theme.palette.highlightPurple} 0%, ${theme.palette.orange90} 100%)`};
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    div {
-      background-color: ${({ theme }) => theme.palette.grey87};
-      border-radius: inherit;
-      width: 34px;
-      height: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    z-index: -1;
+    background: transparent;
+  }
+`;
+
+const PodsButtonBefore = css`
+  :before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-2px, -2px);
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    z-index: -1;
+    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
+  }
+`;
+
+export const PodsIconWrapper = styled.div`
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  height: 36px;
+  justify-content: center;
+  position: relative;
+  width: 36px;
+  z-index: 2;
+  background: #313131;
+`;
+
+const PodIconHighlight = css`
+  ${PodsIconWrapper} {
+    background: linear-gradient(180deg, #00baff 0%, #f2c678 100%);
+    svg {
+      defs {
+        linearGradient {
+          stop {
+            stop-color: #ffffff;
+          }
+        }
+      }
     }
   }
 `;
 
-export const PodsButton = styled((props) => (
-  <ButtonBase {...props}>
-    <div>
-      <PodsIcon />
-    </div>
-  </ButtonBase>
-))`
+export const PodsButton = styled(ButtonBase)`
   && {
-    width: 36px;
-    height: 36px;
-    border-radius: 50%;
-    background: ${({ theme }) =>
-      `linear-gradient(180deg, ${theme.palette.highlightPurple} 0%, ${theme.palette.orange90} 100%)`};
-    display: flex;
     align-items: center;
+    border-radius: 50%;
+    display: flex;
+    height: 36px;
     justify-content: center;
-    div {
-      background-color: ${({ theme }) => theme.palette.grey87};
-      border-radius: inherit;
-      width: 34px;
-      height: 34px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+    position: relative;
+    width: 36px;
+    z-index: 2;
+    ${PodsButtonBefore}
+    :hover {
+      ${PodsButtonBeforeHover}
+      ${PodIconHighlight}
     }
+    ${({ isActive }) => isActive && PodsButtonBeforeHover}
+    ${({ isActive }) => isActive && PodIconHighlight}
+  }
+`;
+
+const MissionControlButtonBeforeHover = css`
+  :before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-2px, -2px);
+    height: 40px;
+    width: 40px;
+    outline: 2px solid #7427ff;
+    border-radius: 50%;
+    z-index: -1;
+    background: transparent;
+  }
+`;
+
+const MissionControlButtonBefore = css`
+  :before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    transform: translate(-2px, -2px);
+    height: 40px;
+    width: 40px;
+    border-radius: 50%;
+    z-index: -1;
+    background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+  }
+`;
+
+export const MissionControlIconWrapper = styled.div`
+  align-items: center;
+  border-radius: 50%;
+  display: flex;
+  height: 36px;
+  justify-content: center;
+  position: relative;
+  width: 36px;
+  z-index: 2;
+  background: #313131;
+`;
+
+const MissionControlIconHighlight = css`
+  ${MissionControlIconWrapper} {
+    background: linear-gradient(180deg, #7427ff 0%, #f2c678 100%);
+    svg {
+      defs {
+        linearGradient {
+          stop {
+            stop-color: #ffffff;
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const MissionControlButton = styled(ButtonBase)`
+  && {
+    align-items: center;
+    border-radius: 50%;
+    display: flex;
+    height: 36px;
+    justify-content: center;
+    position: relative;
+    width: 36px;
+    z-index: 2;
+    ${MissionControlButtonBefore}
+    :hover {
+      ${MissionControlButtonBeforeHover}
+      ${MissionControlIconHighlight}
+    }
+    ${({ isActive }) => isActive && MissionControlButtonBeforeHover}
+    ${({ isActive }) => isActive && MissionControlIconHighlight}
   }
 `;

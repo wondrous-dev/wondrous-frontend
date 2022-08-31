@@ -1,38 +1,44 @@
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import AddIcon from 'components/Icons/add.svg';
-import BackArrowIcon from 'components/Icons/backArrow';
-import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
-import QuestionMarkIcon from 'components/Icons/questionMark.svg';
-import { PodsIcon } from 'components/Icons/sidebar';
-import Tooltip from 'components/Tooltip';
-import Link from 'next/link';
-import React, { memo, useState } from 'react';
-import { Org } from 'types/Org';
-import { User } from 'types/User';
-
-import { toolTipStyle } from '../SidebarStyles';
-import AddDaoModal from './AddDaoModal';
-import HelpModal from './HelpModal.jsx';
-import { PodModal } from './PodModal';
+import AddDaoModal from 'components/Common/SidebarMain/AddDaoModal';
+import HelpModal from 'components/Common/SidebarMain/HelpModal.jsx';
+import { PodModal } from 'components/Common/SidebarMain/PodModal';
 import {
+  AddIconWrapper,
+  BottomButtonIcon,
+  ButtonIcon,
   ButtonWrapper,
+  DaoIconWrapper,
   DrawerBackButton,
   DrawerBlockWrapper,
   DrawerComponent,
   DrawerContainer,
   DrawerList,
-  DrawerListItem,
+  ExploreButton,
+  ExploreIconWrapper,
   HeaderLogo,
-  ButtonIcon,
   LogoButton,
   MissionControlButton,
+  MissionControlIconWrapper,
   NoLogoDAO,
   PodsButton,
+  PodsIconWrapper,
   StyledSettingsIcon,
-  HighlightedButton,
-  BottomButtonIcon,
-} from './styles';
+} from 'components/Common/SidebarMain/styles';
+import { toolTipStyle } from 'components/Common/SidebarStyles';
+import AddIcon from 'components/Icons/add.svg';
+import BackArrowIcon from 'components/Icons/backArrow';
+import QuestionMarkIcon from 'components/Icons/questionMark.svg';
+import ExploreIcon from 'components/Icons/Sidebar/explore.svg';
+import GridViewIcon from 'components/Icons/Sidebar/gridView.svg';
+import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
+import Tooltip from 'components/Tooltip';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React, { memo, useState } from 'react';
+import { Org } from 'types/Org';
+import { User } from 'types/User';
+import { PAGE_PATHNAME } from 'utils/constants';
 
 type Props = {
   isMobile: boolean;
@@ -52,48 +58,97 @@ type Props = {
 
 const isExternal = (url) => url.includes('https://');
 
-const useCreateDaoModalState = () => {
-  const [openCreateDaoModal, setCreateDaoModal] = useState<boolean>(false);
-  const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
-  return { openCreateDaoModal, handleCreateDaoModal };
-};
-
 const SidebarTooltip = ({ children, ...props }) => (
   <Tooltip style={toolTipStyle} {...props} placement="right">
     <span>{children}</span>
   </Tooltip>
 );
 
+const MissionControlIconButton = ({ isActive = false }) => (
+  <SidebarTooltip title="Mission Control">
+    <MissionControlButton onClick={() => null} isActive={isActive}>
+      <MissionControlIconWrapper>
+        <GridViewIcon />
+      </MissionControlIconWrapper>
+    </MissionControlButton>
+  </SidebarTooltip>
+);
+
+const ExploreIconButton = ({ isActive = false }) => (
+  <SidebarTooltip title="Explore">
+    <Link href="/explore" passHref>
+      <ExploreButton id="tour-sidebar-explore-top" isActive={isActive}>
+        <ExploreIconWrapper isActive={isActive}>
+          <ExploreIcon />
+        </ExploreIconWrapper>
+      </ExploreButton>
+    </Link>
+  </SidebarTooltip>
+);
+
+const PodsIconButton = () => {
+  const [openPodModal, setOpenPodModal] = useState(false);
+  return (
+    <>
+      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
+      <SidebarTooltip title="Pods">
+        <PodsButton onClick={() => setOpenPodModal(true)} isActive={openPodModal}>
+          <PodsIconWrapper>
+            <PodsIcon />
+          </PodsIconWrapper>
+        </PodsButton>
+      </SidebarTooltip>
+    </>
+  );
+};
+
+const CreateModalButton = () => {
+  const [openCreateDaoModal, setCreateDaoModal] = useState(false);
+  const handleCreateDaoModal = (a) => () => setCreateDaoModal(a);
+  return (
+    <>
+      <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
+      <SidebarTooltip title="Create DAO">
+        <ButtonIcon onClick={handleCreateDaoModal(true)} isActive={openCreateDaoModal}>
+          <AddIconWrapper isActive={openCreateDaoModal}>
+            <AddIcon />
+          </AddIconWrapper>
+        </ButtonIcon>
+      </SidebarTooltip>
+    </>
+  );
+};
+
+const BOTTOM_LINKS_CONFIG = [
+  {
+    key: 'tutorials',
+    icon: QuestionMarkIcon,
+    url: 'https://linktr.ee/wonderverse',
+    tooltipLabel: 'Tutorials',
+    id: 'wonder-tutorials',
+  },
+  {
+    key: 'settings',
+    icon: StyledSettingsIcon,
+    url: '/profile/settings',
+    tooltipLabel: 'Profile Settings',
+    id: 'wonder-settings',
+  },
+];
+
+const profilePictureStyle = {
+  display: 'flex',
+  width: '36px',
+  height: '36px',
+  borderRadius: '50%',
+};
+
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
-  const [openPodModal, setOpenPodModal] = useState(false);
   const [openHelpModal, setOpenHelpModal] = useState(false);
-  const { openCreateDaoModal, handleCreateDaoModal } = useCreateDaoModalState();
   const handleMinimize = () => setMinimized(false);
-
-  const BOTTOM_LINKS_CONFIG = [
-    {
-      key: 'tutorials',
-      icon: QuestionMarkIcon,
-      url: 'https://linktr.ee/wonderverse',
-      tooltipLabel: 'Tutorials',
-      id: 'wonder-tutorials',
-    },
-    {
-      key: 'settings',
-      icon: StyledSettingsIcon,
-      url: '/profile/settings',
-      tooltipLabel: 'Profile Settings',
-      id: 'wonder-settings',
-    },
-  ];
-
-  const profilePictureStyle = {
-    display: 'flex',
-    width: '36px',
-    height: '36px',
-    borderRadius: '50%',
-  };
+  const router = useRouter();
+  const isPageActive = (str) => router.pathname.includes(str);
 
   if (isMobile) {
     return null;
@@ -101,9 +156,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
 
   return (
     <DrawerComponent variant="permanent" anchor="left">
-      <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
-      <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
       <DrawerContainer>
         <DrawerBlockWrapper>
           <SidebarTooltip title="Dashboard" id="tour-header-dashboard-icon">
@@ -113,7 +166,11 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
           </SidebarTooltip>
           <ButtonWrapper>
             <SidebarTooltip title="Profile">
-              <ButtonIcon id="tour-user-profile" onClick={handleProfileClick}>
+              <ButtonIcon
+                id="tour-user-profile"
+                onClick={handleProfileClick}
+                isActive={isPageActive(PAGE_PATHNAME.profile_username_about)}
+              >
                 <SafeImage
                   src={user?.thumbnailPicture || user?.profilePicture}
                   placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
@@ -127,53 +184,41 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
             </SidebarTooltip>
             {/* 
             
-            TODO: uncomment when the page is implemented
+            NOTE: not yet in used 
             
-            <SidebarTooltip title="Mission Control">
-              <MissionControlButton onClick={() => null} />
-            </SidebarTooltip>
+            <MissionControlIconButton />
             
             */}
-            <SidebarTooltip title="Pods">
-              <PodsButton onClick={() => setOpenPodModal(true)} />
-            </SidebarTooltip>
+            <PodsIconButton />
           </ButtonWrapper>
           <ButtonWrapper>
-            <SidebarTooltip title="Explore">
-              <Link href="/explore" passHref>
-                <HighlightedButton id="tour-sidebar-explore-top">
-                  <ExploreIcon />
-                </HighlightedButton>
-              </Link>
-            </SidebarTooltip>
+            <ExploreIconButton isActive={isPageActive(PAGE_PATHNAME.explore)} />
             <DrawerList id="tour-sidebar-daos">
-              {orgsList.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
+              {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
                 <SidebarTooltip key={id} title={name}>
                   <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
-                    <DrawerListItem button key={id} isActive={isActive}>
-                      {thumbnailPicture || profilePicture ? (
-                        <SafeImage
-                          useNextImage={false}
-                          src={thumbnailPicture || profilePicture}
-                          width={36}
-                          height={36}
-                          objectFit="cover"
-                          style={{
-                            borderRadius: '50%',
-                          }}
-                        />
-                      ) : (
-                        <NoLogoDAO />
-                      )}
-                    </DrawerListItem>
+                    <ButtonIcon button key={id} isActive={isActive}>
+                      <DaoIconWrapper>
+                        {thumbnailPicture || profilePicture ? (
+                          <SafeImage
+                            useNextImage={false}
+                            src={thumbnailPicture || profilePicture}
+                            width={36}
+                            height={36}
+                            objectFit="cover"
+                            style={{
+                              borderRadius: '50%',
+                            }}
+                          />
+                        ) : (
+                          <NoLogoDAO />
+                        )}
+                      </DaoIconWrapper>
+                    </ButtonIcon>
                   </Link>
                 </SidebarTooltip>
               ))}
-              <SidebarTooltip title="Create DAO">
-                <ButtonIcon onClick={handleCreateDaoModal(true)}>
-                  <AddIcon />
-                </ButtonIcon>
-              </SidebarTooltip>
+              <CreateModalButton />
             </DrawerList>
           </ButtonWrapper>
         </DrawerBlockWrapper>
