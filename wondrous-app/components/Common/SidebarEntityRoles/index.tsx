@@ -1,13 +1,12 @@
 import { useQuery } from '@apollo/client';
-import { AddIconWrapper, Label, ListWrapper } from 'components/Common/SidebarStyles';
 import BackButton from 'components/Common/SidebarBackButton';
+import { SectionWrapper, StyledSettingsIcon } from 'components/Common/SidebarEntityRoles/styles';
 import Item from 'components/Common/SidebarItem';
-import SettingsIcon from 'components/Icons/settings.svg';
+import { AddIconWrapper, Label, ListWrapper } from 'components/Common/SidebarStyles';
 import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import useCanManage from 'hooks/useCanManage';
 import { pickBy } from 'lodash';
 import { useRouter } from 'next/router';
-import styled from 'styled-components';
 import { useBoards } from 'utils/hooks';
 
 const useBackHref = ({ router }) => {
@@ -18,19 +17,6 @@ const useBackHref = ({ router }) => {
   };
   return href;
 };
-
-const StyledSettingsIcon = styled(SettingsIcon)`
-  && {
-    transform: scale(70%);
-  }
-`;
-
-const SectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  height: 100%;
-`;
 
 const RolesSidebar = () => {
   const router = useRouter();

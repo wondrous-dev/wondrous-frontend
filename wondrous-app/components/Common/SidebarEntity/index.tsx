@@ -1,11 +1,11 @@
-import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
+import RolesSidebar from 'components/Common/SidebarEntityRoles';
+import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
 import useSideBar from 'hooks/useSideBar';
 import { useRouter } from 'next/router';
 
 import AboutEntity from './AboutEntity';
 import List from './List';
-import RolesSidebar from './Role';
 
 const EntitySidebar = ({ children }) => {
   const { minimized } = useSideBar();
