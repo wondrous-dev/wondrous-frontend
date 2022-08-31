@@ -106,6 +106,7 @@ export const WorkspaceCardBannerContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  cursor: pointer;
   position: relative;
 `;
 
@@ -116,7 +117,6 @@ export const WorkspaceCardBannerLabel = styled(Typography)`
     font-weight: 700;
     font-size: 36px;
     line-height: 36px;
-    cursor: pointer;
     text-align: center;
     letter-spacing: 0.0025em;
     margin-bottom: 18%;
@@ -161,5 +161,5 @@ export const WorkspaceCardStatLabel = styled(Typography)`
 export const WorkspaceCardLabelWrapper = styled.div`
   position: absolute;
   width: min-content;
-  top: 20%;
+  top: 16%;
 `;
