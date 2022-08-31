@@ -114,7 +114,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
               </ButtonIcon>
             </SidebarTooltip>
 
-            <MissionControlIconButton />
+            <MissionControlIconButton isActive={isPageActive(PAGE_PATHNAME.mission_control)} />
 
             <PodsIconButton />
           </ButtonWrapper>

@@ -620,4 +620,5 @@ export const USER_BOARD_PAGE_TYPES = {
 export const PAGE_PATHNAME = {
   profile_username_about: '/profile/[username]/about',
   explore: '/explore',
+  mission_control: '/mission-control',
 };
