@@ -1,5 +1,6 @@
 import React from 'react';
 import PlusIcon from 'components/Icons/plus';
+import { Grid } from '@mui/material';
 import {
   SettingsHeaderBlock,
   SettingsHeaderContent,
@@ -7,7 +8,6 @@ import {
   SettingsHeaderTitle,
   SettingsHeaderInviteButton,
   SettingsHeaderInviteButtonIcon,
-  SettingsHeaderAction,
   SettingsHeaderActionText,
 } from './styles';
 
@@ -20,12 +20,12 @@ export function HeaderBlock(props) {
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
-      <SettingsHeaderAction>
+      <Grid display="flex" flexDirection="column" alignItems="flex-end" gap="17px">
         {!!onInvite && <SettingsHeaderInviteButton onClick={onInvite}>Invite</SettingsHeaderInviteButton>}
         {!!handleDownloadToCSV && (
           <SettingsHeaderActionText onClick={handleDownloadToCSV}>Download to CSV</SettingsHeaderActionText>
         )}
-      </SettingsHeaderAction>
+      </Grid>
     </SettingsHeaderBlock>
   );
 }

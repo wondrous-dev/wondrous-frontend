@@ -4,12 +4,6 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
 
-export const UserRowWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 80px;
-`;
-
 export const UserProfile = styled.a`
   display: flex;
   align-items: center;
@@ -17,49 +11,15 @@ export const UserProfile = styled.a`
   text-decoration: none;
 `;
 
-const ProfilePictureStyles = {
+const profilePictureStyles = {
   width: '40px',
   height: '40px',
   borderRadius: '1000px',
 };
 
 export function DefaultProfilePicture(props) {
-  return <DefaultUserImage style={ProfilePictureStyles} />;
+  return <DefaultUserImage style={profilePictureStyles} />;
 }
-
-export const UserProfileNameContainer = styled.div`
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-`;
-
-export const UserProfileName = styled(Typography)`
-  && {
-    color: ${palette.white};
-    font-family: ${typography.fontFamily};
-    font-size: 15px;
-    font-weight: 700;
-  }
-`;
-
-export const UserProfileUsername = styled(Typography)`
-  && {
-    color: ${palette.grey250};
-    font-family: ${typography.fontFamily};
-    font-size: 12px;
-    width: 18ch;
-    max-width: 18ch;
-    text-overflow: ellipsis;
-    overflow: hidden;
-  }
-`;
-
-export const UserProfileDetailsContainer = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex: 1;
-`;
 
 export const WalletAddressEmptyState = styled.div`
   padding: 8.5px 14.5px;
@@ -121,14 +81,6 @@ export const UserPodCount = styled.div`
   color: ${palette.white};
   font-family: ${typography.fontFamily};
   font-size: 15px;
-`;
-
-export const UserPodIconContainer = styled.div`
-  background: ${palette.background.default};
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
 `;
 
 export const UserOptions = styled.div`
@@ -258,9 +210,4 @@ export const MemberRole = styled.div`
   padding: 2px 7px;
   border: 1px solid ${(props) => (props.borderColor ? props.borderColor : palette.white)};
   border-radius: 1000px;
-`;
-
-export const MemberRoleEmoji = styled.span``;
-export const MemberRoleLabel = styled.span`
-  text-transform: capitalize;
 `;

@@ -22,7 +22,7 @@ import MemberRoles from '../MemberRoles';
 import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
 import { SafeImage } from '../../Common/Image';
-import { PodsCount, SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell, MembersTable } from './styles';
+import { SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell } from './styles';
 import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
@@ -253,7 +253,7 @@ function Members(props) {
         ) : null}
 
         {users.length > 0 && (
-          <MembersTable>
+          <Grid display="flex" flexDirection="column" gap="25px" width="100%" maxWidth="770px">
             {users.map(({ user, role }) => (
               <MemberTableRow
                 user={user}
@@ -265,7 +265,7 @@ function Members(props) {
                 promptRemoveUser={setUserToRemove}
               />
             ))}
-          </MembersTable>
+          </Grid>
         )}
 
         {/* <StyledTableContainer>

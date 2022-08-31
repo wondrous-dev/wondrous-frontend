@@ -247,13 +247,6 @@ export const SettingsHeaderText = styled(Typography)`
   }
 `;
 
-export const SettingsHeaderAction = styled.div`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 17px;
-`;
-
 export const SettingsHeaderInviteButton = styled.button`
   display: flex;
   align-items: center;

@@ -1,6 +1,7 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
+import { Typography } from '@mui/material';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { UPDATE_USER_ORG_ROLE } from 'graphql/mutations/org';
@@ -9,10 +10,9 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS } from 'utils/constants';
 import { useSettings } from 'utils/hooks';
 import useAlerts from 'hooks/useAlerts';
+import palette from 'theme/palette';
 import {
   MemberRole,
-  MemberRoleEmoji,
-  MemberRoleLabel,
   MemberRoleSelect,
   MemberRoleSelectMenuIconWrapper,
   MemberRoleSelectMenuItem,
@@ -22,7 +22,7 @@ import { filterRoles, getRoleColor, getRoleEmoji } from './helpers';
 
 const MemberRoleSelectionDropdown = (props) => {
   const { existingRole, roleList, userId, podId } = props;
-  const [role, setRole] = useState(existingRole?.id);
+  const [roleId, setRoleId] = useState(existingRole?.id);
 
   const { showError } = useAlerts();
   const { setSnackbarAlertMessage, setSnackbarAlertOpen, setSnackbarAlertSeverity } = useContext(SnackbarAlertContext);
@@ -64,7 +64,7 @@ const MemberRoleSelectionDropdown = (props) => {
 
   useEffect(() => {
     if (existingRole?.id) {
-      setRole(existingRole?.id);
+      setRoleId(existingRole?.id);
     }
   }, [existingRole?.id]);
 
@@ -96,48 +96,52 @@ const MemberRoleSelectionDropdown = (props) => {
         },
       });
     },
-    [orgId, role, userId]
+    [orgId, roleId, userId]
   );
 
   const handleRoleChange = useCallback(
     (ev) => {
-      const roleValue = ev.target.value;
+      const roleId = ev.target.value;
 
-      setRole(roleValue);
+      setRoleId(roleId);
 
       if (podId) {
-        handleUserRoleChangeInPod(roleValue);
+        handleUserRoleChangeInPod(roleId);
       } else {
-        handleUserRoleChangeInOrg(roleValue);
+        handleUserRoleChangeInOrg(roleId);
       }
     },
     [options]
   );
 
   const renderMemberRoleSelection = () => {
-    const correspondingRole = options.find((r) => r.value === role);
+    const correspondingRole = options.find((r) => r.value === roleId);
 
     return (
       <MemberRoleSelectValueDisplay>
         <MemberRole borderColor={getRoleColor(correspondingRole)}>
-          <MemberRoleEmoji>{getRoleEmoji(correspondingRole)}</MemberRoleEmoji>
-          <MemberRoleLabel>{correspondingRole?.label}</MemberRoleLabel>
+          <span>{getRoleEmoji(correspondingRole)}</span>
+          <Typography color={palette.white} textTransform="capitalize" fontSize={13} fontWeight={500}>
+            {correspondingRole?.label}
+          </Typography>
         </MemberRole>
       </MemberRoleSelectValueDisplay>
     );
   };
 
   return (
-    <MemberRoleSelect renderValue={renderMemberRoleSelection} value={role} onChange={handleRoleChange}>
+    <MemberRoleSelect renderValue={renderMemberRoleSelection} value={roleId} onChange={handleRoleChange}>
       {options.map((option) => (
-        <MemberRoleSelectMenuItem key={option.label} value={option.value} isSelected={option.value === role}>
+        <MemberRoleSelectMenuItem key={option.label} value={option.value} isSelected={option.value === roleId}>
           <MemberRole borderColor={getRoleColor(option)}>
-            <MemberRoleEmoji>{getRoleEmoji(option)}</MemberRoleEmoji>
-            <MemberRoleLabel>{option.label}</MemberRoleLabel>
+            <span>{getRoleEmoji(option)}</span>
+            <Typography color={palette.white} textTransform="capitalize" fontSize={13} fontWeight={500}>
+              {option.label}
+            </Typography>
           </MemberRole>
-          {option.value === role ? (
+          {option.value === roleId ? (
             <MemberRoleSelectMenuIconWrapper isSelected>
-              <CheckMarkIcon fillColor="#7427FF" />
+              <CheckMarkIcon fillColor={palette.highlightPurple} />
             </MemberRoleSelectMenuIconWrapper>
           ) : (
             <MemberRoleSelectMenuIconWrapper />

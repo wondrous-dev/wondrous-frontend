@@ -1,24 +1,19 @@
 import { useEffect, useState } from 'react';
 import Link from 'next/link';
-import MemberRoleDropdown from 'components/Settings/Members/MemberRoleDropdown';
+import { Grid, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import CopyIcon from 'components/Icons/copy';
 import { useWonderWeb3 } from 'services/web3';
 import PodIcon from 'components/Icons/podIcon';
 import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import palette from 'theme/palette';
 import MemberRoleSelectionDropdown from './MemberRoleSelectionDropdown';
 import {
   DefaultProfilePicture,
   UserOptions,
   UserPodCount,
-  UserPodIconContainer,
   UserProfile,
-  UserProfileDetailsContainer,
-  UserProfileName,
-  UserProfileNameContainer,
-  UserProfileUsername,
-  UserRowWrapper,
   UserWalletAddress,
   UserWalletAddressContainer,
   WalletAddressEmptyState,
@@ -48,7 +43,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
   const userFullName = user?.firstName && `${user?.firstName} ${user?.lastName}` && user?.lastName;
   const username = `@${user?.username}`;
 
-  const userPodCount = +user?.additionalInfo?.podCount;
+  const userPodCount = user?.additionalInfo?.podCount;
 
   const handleAddressCopy = () => {
     navigator.clipboard.writeText(userWalletAddressTag);
@@ -60,35 +55,45 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
   };
 
   return (
-    <UserRowWrapper>
+    <Grid display="flex" alignItems="center" gap="80px">
       <Link href={`/profile/${user?.username}/about`} passHref>
         <UserProfile>
-          {userProfilePicture ? (
-            <SafeImage
-              useNextImage={false}
-              src={userProfilePicture}
-              style={{
-                width: '40px',
-                height: '40px',
-                borderRadius: '50%',
-              }}
-            />
-          ) : (
-            <DefaultProfilePicture />
-          )}
-          <UserProfileNameContainer>
-            {!!userFullName && <UserProfileName>{userFullName}</UserProfileName>}
-            <UserProfileUsername>{username}</UserProfileUsername>
-          </UserProfileNameContainer>
+          <SafeImage
+            useNextImage
+            src={userProfilePicture}
+            placeholderComp={<DefaultProfilePicture />}
+            width="40px"
+            height="40px"
+            style={{
+              borderRadius: '50%',
+            }}
+          />
+          <Grid display="flex" flexDirection="column" gap="2px">
+            {!!userFullName && (
+              <Typography fontSize={15} fontWeight={700}>
+                {userFullName}
+              </Typography>
+            )}
+            <Typography
+              color={palette.grey250}
+              fontSize={12}
+              width="18ch"
+              maxWidth="18ch"
+              textOverflow="ellipsis"
+              overflow="hidden"
+            >
+              {username}
+            </Typography>
+          </Grid>
         </UserProfile>
       </Link>
-      <UserProfileDetailsContainer>
+      <Grid display="flex" alignItems="center" gap="14px" flex={1}>
         {userWalletAddressTag ? (
           <UserWalletAddressContainer hasAddressBeenCopied={hasAddressBeenCopied} onClick={handleAddressCopy}>
             <UserWalletAddress hasAddressBeenCopied={hasAddressBeenCopied}>
               {hasAddressBeenCopied ? 'Text copied!' : addressTag(userWalletAddressTag)}
             </UserWalletAddress>
-            <CopyIcon color={hasAddressBeenCopied ? '#06FFA5' : '#CCBBFF'} />
+            <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
           </UserWalletAddressContainer>
         ) : (
           <WalletAddressEmptyState>No wallet added</WalletAddressEmptyState>
@@ -102,17 +107,25 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
           username={user?.username}
         />
         <UserPodCount>
-          <UserPodIconContainer>
-            <PodIcon strokeColor="#CCBBFF" />
-          </UserPodIconContainer>
+          <Grid
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            borderRadius="6px"
+            bgcolor={palette.background.default}
+          >
+            <PodIcon strokeColor={palette.blue20} />
+          </Grid>
           {userPodCount || 0} {userPodCount ? 'Pods' : 'Pod'}
         </UserPodCount>
         <UserOptions>
-          <DropDown DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke="#fff" />}>
+          <DropDown
+            DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke={palette.white} />}
+          >
             <DropDownItem
               onClick={() => promptRemoveUser(user)}
               style={{
-                color: '#fff',
+                color: palette.white,
                 zIndex: 120,
               }}
             >
@@ -120,8 +133,8 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
             </DropDownItem>
           </DropDown>
         </UserOptions>
-      </UserProfileDetailsContainer>
-    </UserRowWrapper>
+      </Grid>
+    </Grid>
   );
 };
 

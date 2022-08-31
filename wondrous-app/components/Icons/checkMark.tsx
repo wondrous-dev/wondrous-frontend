@@ -1,7 +1,8 @@
 import React from 'react';
+import palette from 'theme/palette';
 
 export default function CheckMarkIcon(props) {
-  const { fillColor = '#06FFA5' } = props;
+  const { fillColor = palette.green30 } = props;
   return (
     <svg width="13" height="10" viewBox="0 0 13 10" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path

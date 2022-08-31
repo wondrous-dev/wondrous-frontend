@@ -23,14 +23,10 @@ export const filterRoles = (roles, isOwner, userIsOwner) => {
       if (isOwner) {
         return true;
       }
+
       const hasOwnerPermissions = role?.permissions?.includes(PERMISSIONS.FULL_ACCESS);
-      if (hasOwnerPermissions) {
-        if (userIsOwner) {
-          return true;
-        }
-        return false;
-      }
-      return true;
+
+      return !hasOwnerPermissions || (hasOwnerPermissions && userIsOwner);
     })
     .map((role) => ({ label: role?.name, value: role?.id }));
 };

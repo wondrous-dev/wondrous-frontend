@@ -1,24 +1,14 @@
 import React from 'react';
 import pluralize from 'pluralize';
 
+import { Grid, Typography } from '@mui/material';
 import { Text } from 'components/styled';
 import { Role } from 'types/common';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodIconWithoutBg from 'components/Icons/podIconWithoutBg';
-import {
-  AvailableRoles,
-  AvailableRolesCount,
-  AvailableRolesLabel,
-  AvailableRolesLabelWrapper,
-  Avatars,
-  Container,
-  MemberRole,
-  MemberRoleEmoji,
-  MemberRoleLabel,
-  MemberRolesList,
-  PodMembers,
-} from './styled';
+import palette from 'theme/palette';
+import { Avatars, Container, MemberRole, PodMembers } from './styled';
 import { getRoleColor, getRoleEmoji } from '../Members/MembersTableRow/helpers';
 
 type Props = {
@@ -65,22 +55,26 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
         </PodMembers>
       ) : null}
 
-      <AvailableRoles>
-        <AvailableRolesLabelWrapper>
-          <AvailableRolesCount>{roleList.length}</AvailableRolesCount>
-          <AvailableRolesLabel>
+      <Grid display="flex" alignItems="center" gap="30px">
+        <Grid display="flex" alignItems="center" gap="4px">
+          <Typography color={palette.white} fontSize={14} fontWeight={500} minWidth="fit-content">
+            {roleList.length}
+          </Typography>
+          <Typography color={palette.grey60} fontSize={14} fontWeight={500} minWidth="fit-content">
             {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
-          </AvailableRolesLabel>
-        </AvailableRolesLabelWrapper>
-        <MemberRolesList>
+          </Typography>
+        </Grid>
+        <Grid display="flex" alignItems="center" gap="10px">
           {roleList.map((role) => (
             <MemberRole key={role.name} borderColor={getRoleColor(role)}>
-              <MemberRoleEmoji>{getRoleEmoji(role)}</MemberRoleEmoji>
-              <MemberRoleLabel>{role.name}</MemberRoleLabel>
+              <span>{getRoleEmoji(role)}</span>
+              <Typography color={palette.white} textTransform="capitalize" fontSize={13} fontWeight={500}>
+                {role.name}
+              </Typography>
             </MemberRole>
           ))}
-        </MemberRolesList>
-      </AvailableRoles>
+        </Grid>
+      </Grid>
     </Container>
   );
 }

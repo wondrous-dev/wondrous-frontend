@@ -49,40 +49,6 @@ export const Avatars = styled.div`
   }
 `;
 
-export const AvailableRoles = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 30px;
-`;
-
-export const AvailableRolesLabelWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
-export const AvailableRolesLabel = styled(Typography)`
-  && {
-    font-family: ${typography.fontFamily};
-    font-size: 14px;
-    font-weight: 500;
-    color: ${palette.grey60};
-    min-width: fit-content;
-  }
-`;
-
-export const AvailableRolesCount = styled(AvailableRolesLabel)`
-  && {
-    color: ${palette.white};
-  }
-`;
-
-export const MemberRolesList = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 10px;
-`;
-
 export const MemberRole = styled.div`
   min-width: fit-content;
   display: flex;
@@ -96,9 +62,4 @@ export const MemberRole = styled.div`
   padding: 2px 7px;
   border: 1px solid ${(props) => (props.borderColor ? props.borderColor : palette.white)};
   border-radius: 1000px;
-`;
-
-export const MemberRoleEmoji = styled.span``;
-export const MemberRoleLabel = styled.span`
-  text-transform: capitalize;
 `;
