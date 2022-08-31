@@ -54,7 +54,7 @@ export const DrawerBlockWrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   flex-direction: column;
-  gap: 12px;
+  gap: 22px;
 `;
 
 export const NoLogoDAO = styled((props) => (
