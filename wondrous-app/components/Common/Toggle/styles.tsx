@@ -12,8 +12,8 @@ export const ToggleWrapper = styled.div`
 `;
 
 export const ToggleItem = styled.button`
-  background: ${({ isActive }) =>
-    isActive ? 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)' : 'transparent'};
+  background: ${({ isActive, gradient = 'linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%)' }) =>
+    isActive ? gradient : 'transparent'};
   border-radius: 6px;
   border: 0px;
   color: ${palette.white};
@@ -29,6 +29,7 @@ export const ToggleItem = styled.button`
   position: relative;
   padding: 8px;
   margin-left: 6px;
+  min-width: 100px;
   &::before {
     content: '';
     position: absolute;
@@ -48,7 +49,6 @@ export const ToggleItem = styled.button`
   ${({ isActive }) =>
     isActive &&
     `
-  transform: scale(1.1);
   animation-duration: 0.5s;
   &::before {
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);

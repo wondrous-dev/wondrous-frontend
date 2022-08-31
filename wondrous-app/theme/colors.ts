@@ -48,6 +48,7 @@ export const greyColors = {
   grey800: '#2D333A',
   grey850: '#787878',
   grey900: '#1D1D1D',
+  grey950: '#212121',
   grey910: '#171717',
   grey920: '#2D2D2D',
   grey1000: '#272729',
@@ -101,6 +102,7 @@ export const yellowColors = {
 };
 
 export const violetColors = {
+  violet50: '#5001DF',
   violet100: '#4f00de',
   violet200: '#FB7A75',
   violet300: '#CCDDFF',
@@ -108,6 +110,7 @@ export const violetColors = {
   violet700: '#690DFF',
   violet800: '#360097',
   violet900: '#700097',
+  violet950: '#250069',
 };
 
 export const orangeColors = {

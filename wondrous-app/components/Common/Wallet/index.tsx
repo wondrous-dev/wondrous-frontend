@@ -40,7 +40,7 @@ const CHAIN_LOGO = {
   '288': <Boba />,
 };
 
-const CHAIN_TOOLTIP = {
+export const CHAIN_TOOLTIP = {
   '1': 'Ethereum',
   '4': 'Ethereum',
   '137': 'Matic',

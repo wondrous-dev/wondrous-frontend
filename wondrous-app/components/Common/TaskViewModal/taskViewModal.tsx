@@ -47,7 +47,7 @@ import {
   useUserBoard,
   useCanViewTask,
   useUserProfile,
-  useCreateEntityContext,
+  useGlobalContext,
 } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
@@ -148,11 +148,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const createEntityContext = useCreateEntityContext();
-  const getUserPermissionContext = useCallback(
-    () => createEntityContext?.userPermissionsContext,
-    [createEntityContext]
-  );
+  const globalContext = useGlobalContext();
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
   const {

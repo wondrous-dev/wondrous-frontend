@@ -354,6 +354,8 @@ export const NOTIFICATION_OBJECT_TYPES = {
   task_proposal_comment: 'task proposal',
   task_submission: 'submission',
   comment: 'comment',
+  post: 'post',
+  kudos: 'kudos',
 };
 
 export const PRIVACY_LEVEL = {
