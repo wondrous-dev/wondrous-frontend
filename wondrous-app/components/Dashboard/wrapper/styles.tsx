@@ -26,6 +26,7 @@ export const ContentContainer = styled.div`
 export const Banner = styled.img`
   width: 100%;
   height: 149px;
+  object-fit: cover;
   background: url(${({ img }) => `${img}`});
   position: relative;
   background-size: cover;
