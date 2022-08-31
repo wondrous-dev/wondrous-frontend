@@ -26,11 +26,17 @@ export const SettingsContainer = styled.div`
 `;
 
 export const SettingsSidebar = styled.div`
-  margin: 70px 0 0 0px;
-  min-width: 350px;
-  width: 350px;
-  padding: 55px 20px 50px 35px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  background: ${({ theme }) => theme.palette.black92};
+  flex-direction: column;
+  gap: 28px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  padding-top: 94px;
+  position: fixed;
+  width: 260px;
+  display: flex;
+  ${({ minimized }) => minimized && `left: -100%`};
 `;
 
 export const SettingsSidebarContainer = styled.div`
@@ -62,49 +68,61 @@ export const SettingsSidebarTabsSectionLabel = styled(Typography)`
 
 export const SettingsSidebarTabsListContainer = styled(List)`
   && {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 20px;
-  }
-  & > li {
-    margin-top: 2px;
   }
 `;
 
 export const SettingsSidebarTabsListItem = styled(ListItem)`
   && {
-    background: ${(props) => props.active && '#313131'};
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 4px;
     width: 100%;
-    height: 40px;
-    padding: 4px;
+    height: 32px;
+    padding: 1px;
+    border-radius: 4px;
+    background: transparent;
+    background: ${({ active }) => active && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
+    cursor: pointer;
     :hover {
-      cursor: pointer;
-      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
-      outline: 1px solid #313131;
-    }
-    > * {
-      margin-left: 10px;
-    }
-    > :first-child {
-      margin-left: 0;
+      background: #313131;
     }
   }
 `;
 
-export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
+export const ItemButtonInner = styled.div`
+  border-radius: 3px;
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  padding-left: 0px;
+  background: ${({ active }) => active && '#313131'};
+  ${SettingsSidebarTabsListItem}:hover & {
+    background: #313131;
+  }
+`;
+
+export const SettingsSidebarTabsListItemIcon = styled.div`
   && {
     min-width: 0;
-    width: 32px;
-    height: 32px;
-    background: #0f0f0f;
+    width: 22px;
+    height: 22px;
+    background: #313131;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+    svg {
+      width: 12px;
+      height: auto;
+    }
   }
   & path {
+    stroke: #ffffff;
     stroke: ${(props) => props.active && '#30c7ff'};
   }
   ${SettingsSidebarTabsListItem}:hover & {
@@ -125,12 +143,13 @@ export const SettingsSidebarTabsListItemText = styled(Typography)`
 `;
 
 export const SettingsContentBlock = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 140px 120px;
   background-color: #0f0f0f;
+  height: 100%;
   overflow-y: auto;
-  min-height: 100vh;
+  padding-left: 380px;
+  padding-top: 140px;
+  padding-right: 120px;
+  width: 100%;
 `;
 
 export const SettingsDaoPodIndicator = styled(Box)`

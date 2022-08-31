@@ -39,7 +39,6 @@ const HeaderComponent = () => {
       fetchMoreNotifications={fetchMoreNotifications}
       isMobile={isMobile}
       notifications={notifications?.getNotifications || []}
-      onLogoClick={() => router.push('/explore')}
       onSignInClick={() => router.push('/login')}
       openCreateFormModal={openCreateFormModal}
       setNotifications={setNotifications}
