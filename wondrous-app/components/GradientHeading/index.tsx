@@ -5,7 +5,6 @@ const GradientHeading = styled(Typography)`
   && {
     font-weight: bold;
     font-size: ${(props) => props.fontSize || 18}px;
-    line-height: 23px;
     color: white;
     background: -webkit-linear-gradient(
       ${(props) => props.gradient || '180deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%'}

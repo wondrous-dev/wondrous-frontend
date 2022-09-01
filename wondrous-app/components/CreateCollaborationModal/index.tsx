@@ -1,9 +1,9 @@
 import React, { useRef, useState } from 'react';
 
 import { Modal as ModalComponent } from 'components/Modal';
-import Step1SelectDaos from 'components/CreateCollaborationModal/Step1SelectDaos';
-import Step2TeamMembers from 'components/CreateCollaborationModal/Step2TeamMembers';
-import Step3TeamMembers from 'components/CreateCollaborationModal/Step3Confirmation';
+import SelectOrgs from 'components/CreateCollaborationModal/Steps/SelectOrgs';
+import AddTeamMembers from 'components/CreateCollaborationModal/Steps/AddTeamMembers';
+import Confirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { Org } from 'types/Org';
 
 type Props = {
@@ -27,7 +27,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
   const footerRef = useRef(null);
   const steps = [
     () => (
-      <Step1SelectDaos
+      <SelectOrgs
         footerRef={footerRef}
         onCancel={onCancel}
         onSubmit={(values) => {
@@ -36,7 +36,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       />
     ),
     () => (
-      <Step2TeamMembers
+      <AddTeamMembers
         org={state.org1}
         footerRef={footerRef}
         onCancel={onCancel}
@@ -46,7 +46,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       />
     ),
     () => (
-      <Step3TeamMembers
+      <Confirmation
         footerRef={footerRef}
         onCancel={onCancel}
         onSubmit={() => {

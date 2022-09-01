@@ -1,10 +1,8 @@
 import styled from 'styled-components';
-import { ButtonUnstyled, PopperUnstyled } from '@mui/base';
-import Typography from '@mui/material/Typography';
+import { ButtonUnstyled } from '@mui/base';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
 import TextField from '@mui/material/TextField';
-import { scrollBarStyles } from 'components/CreateEntity/CreateEntityModal/styles';
 import SearchIcon from 'components/Icons/search';
 
 export const OrgSearchButton = styled(ButtonUnstyled)`
@@ -111,7 +109,6 @@ export const OrgSearchList = styled.ul`
     display: flex;
     flex-direction: column;
     gap: 8px;
-    ${scrollBarStyles}
   }
 `;
 

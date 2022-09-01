@@ -7,7 +7,6 @@ import {
   PodSearchPopper,
   PodSearchAutocomplete,
   PodSearchInputAdornment,
-  PodSearchInputIcon,
   PodSearchPaper,
   PodSearchAutocompletePopper,
 } from 'components/CreateEntity/CreateEntityModal/PodSearch/styles';
