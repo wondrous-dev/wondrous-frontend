@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
@@ -25,6 +25,7 @@ import {
   populateTaskColumns,
   ORG_POD_PROPOSAL_COLUMNS,
   populateProposalColumns,
+  DEFAULT_ENTITY_STATUS_FILTER,
 } from 'services/board';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam } from 'utils';
@@ -291,7 +292,7 @@ function BoardsPage() {
   });
 
   const [filters, setFilters] = useState<TaskFilter>({
-    statuses: [],
+    statuses: DEFAULT_ENTITY_STATUS_FILTER[activeEntityFromQuery],
     labelId: null,
     date: null,
     privacyLevel: null,
@@ -327,7 +328,9 @@ function BoardsPage() {
     }
     insertUrlParam('entity', type);
     setEntityType(type);
-    setFilters({});
+    setFilters({
+      statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
+    });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
       insertUrlParam('view', ViewType.Grid);
@@ -583,6 +586,11 @@ function BoardsPage() {
     }
   };
 
+  const hasActiveFilters = useMemo(
+    () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
+    [filters]
+  );
+
   return (
     <PodBoardContext.Provider
       value={{
@@ -606,6 +614,8 @@ function BoardsPage() {
         setActiveView,
         onLoadMore: fetchMore,
         hasMore: podTaskHasMore,
+        hasActiveFilters,
+        filters,
       }}
     >
       <EntitySidebar>
