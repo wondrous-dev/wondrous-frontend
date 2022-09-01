@@ -46,10 +46,12 @@ export const TaskFragment = gql`
       profilePicture
       name
       username
+      privacyLevel
     }
     pod {
       name
       color
+      privacyLevel
     }
     milestone {
       title
@@ -93,6 +95,7 @@ export const TaskFragment = gql`
     claimPolicy
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
+    hideSubmissions
   }
 
   ${MediaFragment}
@@ -108,6 +111,7 @@ export const TaskCardFragment = gql`
     orgId
     orgProfilePicture
     orgName
+    orgUsername
     podId
     podProfilePicture
     podName
@@ -154,6 +158,7 @@ export const TaskCardFragment = gql`
       canApply
       hasUserApplied
     }
+    hideSubmissions
   }
   ${MediaFragment}
 `;
@@ -169,6 +174,7 @@ export const TaskProposalCardFragment = gql`
     orgId
     orgProfilePicture
     orgName
+    orgUsername
     podId
     podProfilePicture
     podName
@@ -225,9 +231,19 @@ export const TaskSubmissionCardFragment = gql`
       displayName
       type
     }
+    rewards {
+      rewardAmount
+      paymentMethodId
+      symbol
+      icon
+      tokenName
+      chain
+    }
+    taskDueDate
     media {
       ...MediaFragment
     }
+    taskStatus
   }
   ${MediaFragment}
 `;
@@ -248,6 +264,7 @@ export const TaskSubmissionFragment = gql`
     }
     approvedAt
     rejectedAt
+    changeRequestedAt
     lastReviewedBy
     paymentStatus
     commentCount
@@ -317,10 +334,12 @@ export const TaskProposalFragment = gql`
       profilePicture
       name
       username
+      privacyLevel
     }
     pod {
       name
       color
+      privacyLevel
     }
     snapshotId
     votes {

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client'
+import { gql } from '@apollo/client';
 
 export const NotificationFragment = gql`
   fragment NotificationFragment on NotificationItem {
@@ -19,4 +19,4 @@ export const NotificationFragment = gql`
       contentPreview
     }
   }
-`
+`;

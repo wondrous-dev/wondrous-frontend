@@ -1,4 +1,4 @@
-export const NoLogo = (props = {}) => {
+export function NoLogo(props = {}) {
   return (
     <svg width="78" height="78" viewBox="0 0 78 78" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <circle cx="38.7656" cy="39.0532" r="38.5" fill="#141414" />
@@ -11,6 +11,6 @@ export const NoLogo = (props = {}) => {
       />
     </svg>
   );
-};
+}
 
 export default NoLogo;

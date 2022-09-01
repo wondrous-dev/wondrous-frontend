@@ -5,39 +5,11 @@ import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { useMe } from '../../Auth/withAuth';
 import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
-import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
-import PodIcon from '../../Icons/podIcon';
-import Tabs from '../../organization/tabs/tabs';
 import { useWonderWeb3 } from 'services/web3';
-import {
-  Content,
-  ContentContainer,
-  HeaderActivity,
-  HeaderActivityLink,
-  HeaderActivityLinkIcon,
-  HeaderButtons,
-  HeaderContributors,
-  HeaderContributorsAmount,
-  HeaderContributorsText,
-  HeaderMainBlock,
-  HeaderText,
-  HeaderTitle,
-  OverviewComponent,
-  TokenHeader,
-  HeaderImage,
-  HeaderTitleIcon,
-  HeaderImageWrapper,
-  TokenEmptyLogo,
-  HeaderButton,
-  BoardsSubheaderWrapper,
-} from '../../organization/wrapper/styles';
-import { MoreInfoModal } from '../../profile/modals';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   GET_USER_JOIN_POD_REQUEST,
   GET_TOKEN_GATED_ROLES_FOR_POD,
@@ -51,15 +23,46 @@ import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
-import { DAOEmptyIcon } from '../../Icons/dao';
-import { LogoWrapper, OrgLogoWrapper } from './styles';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
+import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
+import { DAOEmptyIcon } from '../../Icons/dao';
+import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import { MoreInfoModal } from '../../profile/modals';
+import {
+  Content,
+  ContentContainer,
+  HeaderActivity,
+  HeaderActivityLink,
+  HeaderActivityLinkIcon,
+  HeaderButtons,
+  HeaderContributors,
+  HeaderContributorsAmount,
+  HeaderContributorsText,
+  HeaderMainBlock,
+  HeaderText,
+  HeaderTitle,
+  RoleButtonWrapper,
+  RoleText,
+  RoleButton,
+  OverviewComponent,
+  TokenHeader,
+  HeaderImage,
+  HeaderTitleIcon,
+  HeaderImageWrapper,
+  TokenEmptyLogo,
+  HeaderButton,
+  BoardsSubheaderWrapper,
+} from '../../organization/wrapper/styles';
+import Tabs from '../../organization/tabs/tabs';
+import PodIcon from '../../Icons/podIcon';
+import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
+import { useMe } from '../../Auth/withAuth';
 import DefaultBg from '../../../public/images/overview/background.png';
 
-const Wrapper = (props) => {
+function Wrapper(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
 
   const router = useRouter();
@@ -298,14 +301,18 @@ const Wrapper = (props) => {
                     </OrgLogoWrapper>
 
                     <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
-                    <PodIcon
-                      color={podProfile?.color}
-                      style={{
-                        width: 60,
-                        height: 60,
-                        borderRadius: 50,
-                      }}
-                    />
+                    {podProfile?.profilePicture ? (
+                      <PodProfileImage src={podProfile?.profilePicture} />
+                    ) : (
+                      <PodIcon
+                        color={podProfile?.color}
+                        style={{
+                          width: 60,
+                          height: 60,
+                          borderRadius: 50,
+                        }}
+                      />
+                    )}
                   </LogoWrapper>
                 )}
 
@@ -313,12 +320,17 @@ const Wrapper = (props) => {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
-                  {permissions && podRole && <HeaderButton>your role: {podRole}</HeaderButton>}
+                  {permissions && podRole && (
+                    <RoleButtonWrapper>
+                      <RoleText>Your Role:</RoleText>
+                      <RoleButton>🔑 {podRole}</RoleButton>
+                    </RoleButtonWrapper>
+                  )}
 
                   {!isTokenGatingInfoLoading && (
                     <TokenGatedBoard
                       isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                      tooltipTitle={'Token gating'}
+                      tooltipTitle="Token gating"
                     />
                   )}
                   <ToggleBoardPrivacyIcon
@@ -402,18 +414,14 @@ const Wrapper = (props) => {
                   />
                 )}
               </BoardsSubheaderWrapper>
-              <BoardLock
-                handleJoinClick={handleJoinPodButtonClick}
-                requestSent={joinRequestSent || userJoinRequest?.id}
-              >
-                {children}
-              </BoardLock>
+
+              {children}
             </Tabs>
           </ContentContainer>
         </Content>
       </OverviewComponent>
     </>
   );
-};
+}
 
 export default Wrapper;

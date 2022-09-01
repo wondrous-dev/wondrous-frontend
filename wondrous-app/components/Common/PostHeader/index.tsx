@@ -5,9 +5,10 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { ObjectType, PostVerbType } from 'types/post';
 import * as Constants from 'utils/constants';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import SmartLink from 'components/Common/SmartLink';
 import { useMe } from '../../Auth/withAuth';
 import { KudosForm } from '../KudosForm';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import {
   PostHeaderDefaultUserImage,
   PostHeaderImage,
@@ -21,14 +22,13 @@ import {
   PostHeaderUsername,
   PostHeaderWrapper,
 } from './styles';
-import SmartLink from 'components/Common/SmartLink';
 
 const objectTypeText = {
   [ObjectType.TASK_SUBMISSION]: 'task',
   [ObjectType.TASK]: 'task',
 };
 
-export const PostHeader = (props) => {
+export function PostHeader(props) {
   const { post } = props;
   const router = useRouter();
   const { id, postId, verb, taskStatus, objectType, content, referencedObject, objectId, actor = {} } = post;
@@ -132,7 +132,7 @@ export const PostHeader = (props) => {
           <ClickAwayListener onClickAway={handleMenuOnClose}>
             <PostHeaderMoreMenuWrapper>
               <PostHeaderMore aria-describedby={id} type="button" onClick={handleMenuOnClick} />
-              <PostHeaderMenu disablePortal={true} id={id} open={menu} anchorEl={menu} placement="bottom-end">
+              <PostHeaderMenu disablePortal id={id} open={menu} anchorEl={menu} placement="bottom-end">
                 <PostHeaderMenuItem onClick={handlePostEdit}>Edit Kudos</PostHeaderMenuItem>
               </PostHeaderMenu>
             </PostHeaderMoreMenuWrapper>
@@ -141,4 +141,4 @@ export const PostHeader = (props) => {
       </PostHeaderWrapper>
     </>
   );
-};
+}

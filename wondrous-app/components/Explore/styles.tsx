@@ -1,11 +1,12 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
+import MasonryCSS from 'react-masonry-css';
+import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
+import { device } from 'utils/device';
+import palette from 'theme/palette';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
-import Masonry from '@mui/lab/Masonry';
 import WheelSvg from './wheel.svg';
 import Metheor from './metheor.svg';
-import { ShowMoreButton } from 'components/ListView/styles';
-import { device } from 'utils/device';
 
 export const Wheel = styled(WheelSvg)`
   && {
@@ -37,7 +38,6 @@ export const BackgroundImg = styled.img`
 
 export const BackgroundContainer = styled.div`
   width: 100%;
-  padding-top: 2rem;
   border-radius: 6px;
   display: flex;
   justify-content: center;
@@ -107,9 +107,8 @@ export const BackgroundTextSubHeader = styled(Typography)`
   }
 `;
 
-export const StyledGridContainer = styled(Masonry)``;
-
 export const StyledGridItem = styled.div`
+  margin: 0 0 24px 24px;
   background-color: #1e1e1e;
   border-radius: 12px;
   text-align: center;
@@ -388,6 +387,15 @@ export const PartnershipRequestHeader = styled(Typography)`
   }
 `;
 
+export const LogoContainer = styled.div`
+  border-radius: 5px;
+  border: 4px solid ${palette.black95};
+  margin-top: -32px;
+  margin-bottom: 24px;
+  z-index: 1;
+  display: flex;
+`;
+
 export const PartnershipRequestSubheader = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
@@ -415,5 +423,28 @@ export const ShowMoreButtonWrapper = styled.div`
   ${ShowMoreButton} {
     margin-top: 0px;
     width: fit-content;
+  }
+`;
+
+export const Masonry = styled(MasonryCSS).attrs({
+  breakpointCols: {
+    default: 3,
+    1199: 2,
+    599: 1,
+  },
+  columns: { xs: 1, sm: 2, md: 2, lg: 3 },
+  columnClassName: 'masonry-grid-column',
+})`
+  display: flex;
+  margin: -24px 12px 0 -12px;
+
+  .masonry-grid-column > div {
+    margin: 24px 12px 0;
+  }
+
+  @media (max-width: 600px) {
+    width: 100%;
+    max-width: 100vw;
+    margin-left: 0;
   }
 `;

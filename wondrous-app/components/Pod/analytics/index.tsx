@@ -5,8 +5,6 @@ import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
 import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
-import { Post } from '../../Common/Post';
-import Wrapper from '../wrapper';
 import {
   ContributorRow,
   ContributorDiv,
@@ -29,7 +27,7 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
@@ -44,8 +42,10 @@ import {
 import palette from 'theme/palette';
 import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
-import { exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
-import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { calculateCount, exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
+import { BOUNTY_TYPE, PRIVATE_TASK_TITLE } from 'utils/constants';
+import Wrapper from '../wrapper';
+import { Post } from '../../Common/Post';
 
 const UserRowPictureStyles = {
   width: '30px',
@@ -62,16 +62,20 @@ const calculatePoints = (tasks) => {
   let points = 0;
   tasks.forEach((task) => {
     if (task?.points) {
-      points = points + Number(task?.points);
+      points += Number(task?.points);
     }
   });
   return points;
 };
 
-const UserRow = ({ contributorTask }) => {
+function UserRow({ contributorTask }) {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
+
+  const contributionCount = calculateCount(contributorTask?.tasks);
+  const bountyCount = contributionCount?.bountyCount;
+  const taskCount = contributionCount?.taskCount;
 
   return (
     <ContributorDiv>
@@ -103,8 +107,12 @@ const UserRow = ({ contributorTask }) => {
           {clicked ? <BottomArrowCaret style={CaretStyle} /> : <RightArrowCaret style={CaretStyle} />}
           {contributorTask?.assigneeId ? (
             <>
-              {contributorTask?.profilePicture ? (
-                <SafeImage useNextImage={false} src={contributorTask?.profilePicture} style={UserRowPictureStyles} />
+              {contributorTask?.assigneeProfilePicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={contributorTask?.assigneeProfilePicture}
+                  style={UserRowPictureStyles}
+                />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
               )}
@@ -126,17 +134,36 @@ const UserRow = ({ contributorTask }) => {
           />
           <TaskCountWrapper>
             <TaskCountText>
-              {contributorTask?.tasks?.length}
+              {taskCount}
               <span
                 style={{
                   color: 'rgba(108, 108, 108, 1)',
                   marginLeft: '4px',
                 }}
               >
-                {contributorTask?.tasks?.length === 1 ? 'task' : 'tasks'}
+                {taskCount === 1 ? 'task' : 'tasks'}
               </span>
             </TaskCountText>
           </TaskCountWrapper>
+          {bountyCount > 0 && (
+            <TaskCountWrapper
+              style={{
+                marginLeft: '12px',
+              }}
+            >
+              <TaskCountText>
+                {bountyCount}
+                <span
+                  style={{
+                    color: 'rgba(108, 108, 108, 1)',
+                    marginLeft: '4px',
+                  }}
+                >
+                  {bountyCount === 1 ? 'bounty' : 'bounties'}
+                </span>
+              </TaskCountText>
+            </TaskCountWrapper>
+          )}
           <TaskCountWrapper
             style={{
               background: 'none',
@@ -180,6 +207,7 @@ const UserRow = ({ contributorTask }) => {
                 >
                   {cutString(task?.title === PRIVATE_TASK_TITLE ? 'Private Task' : task?.title)}
                 </TaskTitle>
+                {task?.type === BOUNTY_TYPE && <BountySignifier>bounty</BountySignifier>}
                 <div
                   style={{
                     flex: 1,
@@ -190,7 +218,7 @@ const UserRow = ({ contributorTask }) => {
                     <Reward>
                       <SafeImage
                         useNextImage={false}
-                        src={'https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018'}
+                        src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png?v=018"
                         style={{
                           width: '16px',
                           height: '16px',
@@ -236,7 +264,7 @@ const UserRow = ({ contributorTask }) => {
       )}
     </ContributorDiv>
   );
-};
+}
 
 const filterUsers = (users) => {
   if (!users) {
@@ -249,7 +277,7 @@ const filterUsers = (users) => {
     value: user?.id,
   }));
 };
-const Analytics = (props) => {
+function Analytics(props) {
   const { podData = {} } = props;
   const { id: podId, orgId } = podData;
   const [ref, inView] = useInView({});
@@ -287,6 +315,7 @@ const Analytics = (props) => {
           podId,
           toTime: format(toTime, 'yyyy-MM-dd'),
           fromTime: format(fromTime, 'yyyy-MM-dd'),
+          includeBounties: true,
           ...(assignee && {
             assigneeId: assignee?.value,
           }),
@@ -310,7 +339,7 @@ const Analytics = (props) => {
           toTime={toTime}
           exportContributorTaskCSV={exportContributorTaskCSV}
           contributorTaskData={contributorTaskData}
-          isPod={true}
+          isPod
         />
       </CreateModalOverlay>
       <HeaderWrapper>
@@ -405,33 +434,32 @@ const Analytics = (props) => {
                   orgId,
                   toTime: format(toTime, 'yyyy-MM-dd'),
                   fromTime: format(fromTime, 'yyyy-MM-dd'),
+                  includeBounties: true,
                 },
               });
             }
           }}
-          renderOption={(props, option, state) => {
-            return (
-              <OptionDiv
-                onClick={(event) => {
-                  setAssignee(option);
-                  props?.onClick(event);
-                }}
-              >
-                {option?.profilePicture && (
-                  <SafeImage
-                    useNextImage={false}
-                    src={option?.profilePicture}
-                    style={{
-                      width: '30px',
-                      height: '30px',
-                      borderRadius: '15px',
-                    }}
-                  />
-                )}
-                <OptionTypography>{option?.label}</OptionTypography>
-              </OptionDiv>
-            );
-          }}
+          renderOption={(props, option, state) => (
+            <OptionDiv
+              onClick={(event) => {
+                setAssignee(option);
+                props?.onClick(event);
+              }}
+            >
+              {option?.profilePicture && (
+                <SafeImage
+                  useNextImage={false}
+                  src={option?.profilePicture}
+                  style={{
+                    width: '30px',
+                    height: '30px',
+                    borderRadius: '15px',
+                  }}
+                />
+              )}
+              <OptionTypography>{option?.label}</OptionTypography>
+            </OptionDiv>
+          )}
         />
         <ExportCSVButton
           style={{
@@ -469,6 +497,6 @@ const Analytics = (props) => {
       ))}
     </Wrapper>
   );
-};
+}
 
 export default Analytics;

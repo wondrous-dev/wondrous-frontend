@@ -1,5 +1,8 @@
 import React, { useRef, useState } from 'react';
+import CloseIcon from 'components/Icons/closeModal';
 import {
+  CloseButton,
+  UploadedImage,
   ImageUploadBlock,
   ImageUploadBlockActivitySection,
   ImageUploadBlockInputButton,
@@ -11,8 +14,9 @@ import {
   LabelBlock,
 } from './styles';
 
-export const ImageUpload = (props) => {
-  const { image, imageWidth, imageHeight, imageName, updateFilesCb, ...otherProps } = props;
+export function ImageUpload(props) {
+  const { image, imageWidth, imageHeight, profileImage, imageName, updateFilesCb, LabelComponent, ...otherProps } =
+    props;
 
   const imageInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
@@ -28,7 +32,7 @@ export const ImageUpload = (props) => {
   };
 
   const addNewFiles = (newFiles) => {
-    for (let file of newFiles) {
+    for (const file of newFiles) {
       // if (file.size <= maxFileSizeInBytes) {
       if (!otherProps.multiple) {
         return { file };
@@ -62,6 +66,24 @@ export const ImageUpload = (props) => {
     updateFilesCb('');
   };
 
+  const handleRemove = () => {
+    updateFilesCb(null);
+  };
+
+  if (LabelComponent) {
+    return (
+      <ImageUploadBlockInputWrapper>
+        <ImageUploadBlockInputButton
+          id={imageInputId}
+          type="file"
+          ref={imageInputField}
+          onChange={handleNewFileUpload}
+        />
+        <LabelComponent for={imageInputId} />
+      </ImageUploadBlockInputWrapper>
+    );
+  }
+
   return (
     <ImageUploadBlock>
       <LabelBlock>{imageName}</LabelBlock>
@@ -82,12 +104,23 @@ export const ImageUpload = (props) => {
         </ImageUploadBlockInputWrapper>
 
         {image && (
-          <>
+          <UploadedImage>
             <ImageUploadBlockUploadedImg style={uploadedImageSize} src={URL.createObjectURL(image)} />
-            <ImageUploadBlockRemoveButton onClick={handleRemoveFile}>Remove</ImageUploadBlockRemoveButton>
-          </>
+            <CloseButton onClick={handleRemoveFile}>
+              <CloseIcon
+                style={{
+                  width: '10px',
+                  height: '10px',
+                }}
+              />
+            </CloseButton>
+          </UploadedImage>
         )}
       </ImageUploadBlockActivitySection>
+
+      {profileImage && !image && (
+        <ImageUploadBlockRemoveButton onClick={handleRemove}>Remove</ImageUploadBlockRemoveButton>
+      )}
     </ImageUploadBlock>
   );
-};
+}

@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
+
 export const VoteResultsWrapper = styled.div`
   display: flex;
   flex-direction: column;
@@ -17,8 +18,8 @@ export const VoteButtonLabel = styled(Typography)`
     font-family: 'Space Grotesk';
     font-style: normal;
     font-weight: 600;
-    font-size: 15px;
-    line-height: 150%;
+    font-size: 12px;
+    line-height: 100%;
     color: ${palette.white};
     ${({ isVoted, color }) =>
       isVoted &&

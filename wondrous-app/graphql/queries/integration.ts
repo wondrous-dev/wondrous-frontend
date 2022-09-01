@@ -63,3 +63,11 @@ export const GET_ORG_NOTION_WORKSPACE = gql`
     }
   }
 `;
+
+export const GET_ORG_GUILD = gql`
+  query getOrgGuild($orgId: ID!) {
+    getOrgGuild(orgId: $orgId) {
+      guildId
+    }
+  }
+`;

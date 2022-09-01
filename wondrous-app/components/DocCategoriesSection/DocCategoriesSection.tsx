@@ -7,14 +7,14 @@ import DocumentListItem from 'components/DocumentListItem';
 import ListLayout from 'components/ListLayout';
 import { SectionTitleTypography, DocsButton } from './DocCategoriesSectionStyles';
 
-const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, onCategoryDialogOpen, canEdit }) => {
+function DocCategoriesSection({ onItemClick, onOpenDocDialog, docs, category, onCategoryDialogOpen, canEdit }) {
   const router = useRouter();
 
   const docsByCategory = docs?.filter((doc) => doc.documentCategory?.id === category.id);
 
   return (
     <Box>
-      <Box display="flex" alignItems="center" mb={2.5} mt={8}>
+      <Box display="flex" alignItems="center" mb={2.5} mt={4}>
         <Box mr={1}>
           <Image src="/images/icons/folder.png" alt="folder icon" width={16} height={14} />
         </Box>
@@ -59,6 +59,6 @@ const DocCategoriesSection = ({ onItemClick, onOpenDocDialog, docs, category, on
       </ListLayout>
     </Box>
   );
-};
+}
 
 export default DocCategoriesSection;

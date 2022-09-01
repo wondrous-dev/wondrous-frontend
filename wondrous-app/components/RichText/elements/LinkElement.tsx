@@ -8,7 +8,7 @@ const StyledLink = styled.span`
   box-shadow: ${({ selected, focused }) => (selected && focused ? '0 1px 0 0 deepskyblue' : 'none')};
 `;
 
-const LinkElement = ({ attributes, element, children }) => {
+function LinkElement({ attributes, element, children }) {
   const selected = useSelected();
   const focused = useFocused();
 
@@ -19,6 +19,6 @@ const LinkElement = ({ attributes, element, children }) => {
       </StyledLink>
     </span>
   );
-};
+}
 
 export default LinkElement;

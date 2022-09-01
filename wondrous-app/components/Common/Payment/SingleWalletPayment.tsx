@@ -15,21 +15,21 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { useGnosisSdk } from 'services/payment';
+import useGnosisSdk from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
-
+import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
 
 const generateReadablePreviewForAddress = (address: String) => {
   if (address && address.length > 10) {
-    return address.substring(0, 4) + '...' + address.substring(address.length - 3);
+    return `${address.substring(0, 4)}...${address.substring(address.length - 3)}`;
   }
 };
 
@@ -57,7 +57,7 @@ interface PaymentData {
   decimal: number;
 }
 
-export const SingleWalletPayment = (props) => {
+export function SingleWalletPayment(props) {
   const {
     open,
     handleClose,
@@ -124,7 +124,7 @@ export const SingleWalletPayment = (props) => {
     const corrctChainWallets = [];
     wallets.map((wallet) => {
       const chain = submissionPaymentInfo?.paymentData[0].chain;
-      if (wallet.chain === chain) {
+      if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
@@ -173,7 +173,7 @@ export const SingleWalletPayment = (props) => {
     setSigningError(null);
     setGnosisTransactionLoading(true);
     let t1 = performance.now();
-    let iface = new ethers.utils.Interface(ERC20abi);
+    const iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     let transactionData;
     let finalAmount = paymentData.amount;
@@ -206,6 +206,11 @@ export const SingleWalletPayment = (props) => {
     console.log('safeServiceClient, ', gnosisClient);
     const gnosisSdk = wonderGnosis?.safeSdk;
     console.log('gnosisSdk, ', gnosisSdk);
+    if (!gnosisSdk) {
+      setSafeConnectionError('Error connecting to gnosis safe please try again');
+      setGnosisTransactionLoading(false);
+      return;
+    }
 
     const nextNonce = await gnosisClient?.getNextNonce(selectedWallet?.address);
     t2 = performance.now();
@@ -239,11 +244,11 @@ export const SingleWalletPayment = (props) => {
       safeTxGas: safeTxGas ? Number(safeTxGas) : 0,
     };
     const safeTransaction = await gnosisSdk.createTransaction(transaction);
-    const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    const computedSafeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
     t2 = performance.now();
     console.log(`createTransaction and getTransactionHash took ${t2 - t1} milliseconds`);
     t1 = performance.now();
-    setSafeTxHash(safeTxHash);
+    setSafeTxHash(computedSafeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
@@ -293,6 +298,7 @@ export const SingleWalletPayment = (props) => {
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
     setGnosisTransactionLoading(false);
   };
+  const sendTransactionFromMetamask = async () => {};
   const handleCreateNewWalletClick = () => {
     if (podId) {
       const newUrl = `/pod/settings/${podId}/wallet`;
@@ -310,7 +316,12 @@ export const SingleWalletPayment = (props) => {
     if (!wonderGnosis.isConnected()) {
       console.log('gnosis wallet not yet connected');
     }
-    constructAndSignTransactionData();
+    if (selectedWallet.type !== WALLET_TYPE.METAMASK) {
+      // we use !== metamask because we didn't backfill wallet data, and only other type right now is gnosis
+      constructAndSignTransactionData();
+    } else if (selectedWallet.type === WALLET_TYPE.METAMASK) {
+      sendTransactionFromMetamask();
+    }
   };
   if (walletOptions && walletOptions.length > 0) {
     return (
@@ -371,44 +382,43 @@ export const SingleWalletPayment = (props) => {
         )}
       </>
     );
-  } else {
-    return (
-      <div
-        style={{
-          marginTop: '16px',
-        }}
-      >
-        {parentError ? (
-          <ErrorText
-            style={{
-              marginBottom: '16px',
-            }}
-          >
-            {parentError}
-          </ErrorText>
-        ) : (
-          <>
-            {incompatibleWalletError && (
-              <ErrorText
-                style={{
-                  marginBottom: '16px',
-                }}
-              >
-                {incompatibleWalletError}
-              </ErrorText>
-            )}
-          </>
-        )}
-
-        <CreateFormPreviewButton
-          style={{
-            marginLeft: 0,
-          }}
-          onClick={handleCreateNewWalletClick}
-        >
-          Create new wallets
-        </CreateFormPreviewButton>
-      </div>
-    );
   }
-};
+  return (
+    <div
+      style={{
+        marginTop: '16px',
+      }}
+    >
+      {parentError ? (
+        <ErrorText
+          style={{
+            marginBottom: '16px',
+          }}
+        >
+          {parentError}
+        </ErrorText>
+      ) : (
+        <>
+          {incompatibleWalletError && (
+            <ErrorText
+              style={{
+                marginBottom: '16px',
+              }}
+            >
+              {incompatibleWalletError}
+            </ErrorText>
+          )}
+        </>
+      )}
+
+      <CreateFormPreviewButton
+        style={{
+          marginLeft: 0,
+        }}
+        onClick={handleCreateNewWalletClick}
+      >
+        Create new wallets
+      </CreateFormPreviewButton>
+    </div>
+  );
+}

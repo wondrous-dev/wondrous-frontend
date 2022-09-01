@@ -1,7 +1,7 @@
 import { AVATAR_LIST_LARGE_OVERFLOW_MAX } from 'utils/constants';
 import { AvatarContainer, AvatarListWrapper, AvatarWrapper } from './styles';
 
-export const Avatar = (props) => {
+export function Avatar(props) {
   const { avatar = {}, id, initials = '', style = {} } = props;
 
   return (
@@ -11,9 +11,9 @@ export const Avatar = (props) => {
       </AvatarWrapper>
     </AvatarContainer>
   );
-};
+}
 
-export const AvatarOverflow = (props) => {
+export function AvatarOverflow(props) {
   const { index = 0, overflow = 0 } = props;
 
   return (
@@ -21,31 +21,31 @@ export const AvatarOverflow = (props) => {
       <AvatarWrapper avatarURL="/images/avatar-overflow.png">+{overflow}</AvatarWrapper>
     </AvatarContainer>
   );
-};
+}
 
-export const AvatarList = (props) => {
+export function AvatarList(props) {
   const { id = '', users = [] } = props;
 
   // Siege User List to max of AVATAR_LIST_OVERFLOW_MAX
-  let usersSieged = users.slice(0, AVATAR_LIST_LARGE_OVERFLOW_MAX);
-  let overflow = users.length - usersSieged.length;
+  const usersSieged = users.slice(0, AVATAR_LIST_LARGE_OVERFLOW_MAX);
+  const overflow = users.length - usersSieged.length;
 
   return (
-    <AvatarListWrapper key={id + '-list'}>
+    <AvatarListWrapper key={`${id}-list`}>
       {usersSieged.map((user, index) => (
         <Avatar
           id={user.id}
-          key={'avatar-' + user.id}
+          key={`avatar-${user.id}`}
           avatar={user.avatar}
           initials={user.initials}
           style={{ zIndex: index }}
         />
       ))}
       {overflow > 0 && users.length > AVATAR_LIST_LARGE_OVERFLOW_MAX ? (
-        <AvatarOverflow id={'avatar-overflow-' + id} overflow={overflow} />
+        <AvatarOverflow id={`avatar-overflow-${id}`} overflow={overflow} />
       ) : (
         ''
       )}
     </AvatarListWrapper>
   );
-};
+}

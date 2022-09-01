@@ -1,7 +1,16 @@
-import { NextRouter } from 'next/router';
-import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import { NextRouter, useRouter } from 'next/router';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo } from 'react';
 import apollo from 'services/apollo';
-
+import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
+  GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
+  GET_POD_BY_ID,
+  GET_ORG_FROM_USERNAME,
+} from 'graphql/queries';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
+import { LIMIT } from 'services/board';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -16,15 +25,8 @@ import {
   SelectMembershipContext,
   EditTokenGatingConditionContext,
   UserProfileContext,
-  CreateEntityContext,
+  GlobalContext,
 } from './contexts';
-import {
-  GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
-  GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
-  GET_POD_BY_ID,
-  GET_ORG_FROM_USERNAME,
-} from 'graphql/queries';
-import { useLazyQuery } from '@apollo/client';
 
 export const useIsMobile = () => useContext(IsMobileContext);
 
@@ -81,13 +83,11 @@ export const useBoards = () => {
   return { orgBoard, podBoard, userBoard, board };
 };
 
-export const useUserProfile = () => {
-  return useContext(UserProfileContext);
-  // if (!context) {
-  //   console.log('useUserProfile must be used within a UserProfileContext Provider');
-  // }
-  // return context;
-};
+export const useUserProfile = () => useContext(UserProfileContext);
+// if (!context) {
+//   console.log('useUserProfile must be used within a UserProfileContext Provider');
+// }
+// return context;
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
@@ -132,9 +132,9 @@ export const useOutsideAlerter = (ref, callback) => {
 function usePrevious(value) {
   const ref = useRef();
   useEffect(() => {
-    ref.current = value; //assign the value of ref to the argument
-  }, [value]); //this code will run when the value of 'value' changes
-  return ref.current; //in the end, return the current ref value.
+    ref.current = value; // assign the value of ref to the argument
+  }, [value]); // this code will run when the value of 'value' changes
+  return ref.current; // in the end, return the current ref value.
 }
 export default usePrevious;
 
@@ -195,19 +195,19 @@ export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
 };
 
 export const useGetPerStatusTaskCountForUserBoard = (userId) => {
-  const [getPerStatusTaskCountForUserBoard, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+  const [getPerStatusTaskCountForUserBoard, { data, loading }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
 
   useEffect(() => {
     if (userId) {
       getPerStatusTaskCountForUserBoard({
         variables: {
-          userId: userId,
+          userId,
         },
       });
     }
   }, [userId, getPerStatusTaskCountForUserBoard]);
 
-  return { data };
+  return { data, loading };
 };
 
 export const useGetPodById = (podId) => {
@@ -238,4 +238,72 @@ export const useGetOrgFromUsername = (username) => {
   return data?.getOrgFromUsername;
 };
 
-export const useCreateEntityContext = () => useContext(CreateEntityContext);
+export const useGlobalContext = () => useContext(GlobalContext);
+
+export const useCanViewTask = (task, userPermissionsContext, permissions) => {
+  const [canViewTask, setCanViewTask] = useState(null);
+  // if a pod exists we should check it's permissions else fallback to org permissions
+  const hasPermissionToPod = task?.podId
+    ? userPermissionsContext?.podPermissions[task?.podId] ||
+      permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+      task?.pod?.privacyLevel === PRIVACY_LEVEL.public
+    : true;
+
+  const hasPermissionToViewTask =
+    task?.privacyLevel === PRIVACY_LEVEL.public ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    (userPermissionsContext?.orgPermissions[task?.orgId] && hasPermissionToPod);
+
+  // there is no privacy level on proposal level / milestones so we will refer to org / pod policy
+  const hasPermissionToViewProposalAndMilestones =
+    (task?.org?.privacyLevel === PRIVACY_LEVEL.public && hasPermissionToPod) ||
+    (userPermissionsContext?.orgPermissions[task?.orgId] && hasPermissionToPod) ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS);
+
+  useEffect(() => {
+    if (task) {
+      if (task.type === TASK_TYPE || task.type === BOUNTY_TYPE) return setCanViewTask(hasPermissionToViewTask);
+      if (task.type === MILESTONE_TYPE || task.isProposal)
+        return setCanViewTask(hasPermissionToViewProposalAndMilestones);
+      return setCanViewTask(true);
+    }
+  }, [task]);
+
+  return { canViewTask };
+};
+
+export const useScrollIntoView = (isElementToScroll, cb = null) => {
+  const elementRef = useRef(null);
+  useEffect(() => {
+    if (isElementToScroll) {
+      elementRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [elementRef, isElementToScroll]);
+  return elementRef;
+};
+
+export const useNotifications = () => {
+  const [hasMore, setHasMore] = useState(true);
+  const { notifications, refetchNotifications, fetchMoreNotifications } = useGlobalContext();
+  const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ, {
+    refetchQueries: ['getNotifications'],
+  });
+  const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
+
+  const fetchMore = () => {
+    fetchMoreNotifications({ variables: { offset: notifications?.length, limit: LIMIT } }).then(({ data }) =>
+      setHasMore(data?.getNotifications?.length >= LIMIT)
+    );
+  };
+
+  const unreadCount = useMemo(() => notifications?.filter((n) => !n.viewedAt).length, [notifications]);
+
+  return {
+    notifications,
+    markAllNotificationsRead,
+    unreadCount,
+    markNotificationRead,
+    fetchMore,
+    hasMore,
+  };
+};

@@ -61,7 +61,7 @@ export function useLocation() {
    * @param {string} url
    */
   function replace(url) {
-    window.history.replaceState({ ...window.history.state, as: url, url: url }, '', url);
+    window.history.replaceState({ ...window.history.state, as: url, url }, '', url);
     notify();
   }
 

@@ -1,7 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
+import { useLazyQuery, useQuery } from '@apollo/client';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_ORG_BY_ID } from 'graphql/queries';
+import SettingsWrapper from 'components/Common/SidebarSettings';
+import { HeaderBlock } from 'components/Settings/headerBlock';
 import {
   PaymentMethodDescription,
   PaymentMethodSettingWrapper,
@@ -10,17 +13,15 @@ import {
   NewPaymentMethodButton,
 } from './styles';
 import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { GET_ORG_BY_ID } from 'graphql/queries';
 import PaymentMethodList from './PaymentMethodList';
 import ConfigPaymentMethodModal from './ConfigPaymentMethodModal';
 
-const PaymentMethods = (props) => {
+function PaymentMethods(props) {
   const { orgId } = props;
   const [showConfigModal, setShowConfigModal] = useState(null);
 
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
   useEffect(() => {
     if (orgId) {
       getPaymentMethods({
@@ -29,13 +30,14 @@ const PaymentMethods = (props) => {
           includeDeactivated: true,
         },
       });
+      getOrgById({
+        variables: {
+          orgId,
+        },
+      });
     }
   }, [orgId, getPaymentMethods]);
-  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
-    variables: {
-      orgId: orgId,
-    },
-  });
+
   const org = orgData?.getOrgById;
 
   return (
@@ -57,6 +59,6 @@ const PaymentMethods = (props) => {
       </PaymentMethodSettingWrapper>
     </SettingsWrapper>
   );
-};
+}
 
 export default PaymentMethods;

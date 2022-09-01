@@ -4,15 +4,16 @@ import { useEffect, useCallback, useState, useContext } from 'react';
 import { GET_TASK_APPLICATIONS } from 'graphql/queries/taskApplication';
 import { APPROVE_TASK_APPLICATION, DECLINE_TASK_APPLICATION } from 'graphql/mutations/taskApplication';
 import { TASK_APPLICATION_STATUS } from 'utils/constants';
-import ApplicationCard from './ApplicationCard';
-import { LoadMore, FiltersWrapper, SectionWrapper, ItemsWrapper, EmptyStateWrapper, EmptyStateText } from './styles';
 import { CircularProgress } from '@mui/material';
-import ConfirmationModal from '../ConfirmationModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import BoardFilters from 'components/Common/BoardFilters';
 import { Approved, Rejected, PendingApplication } from 'components/Icons';
 import { StatusDefaultIcon } from 'components/Icons/statusIcons';
+import ConfirmationModal from '../ConfirmationModal';
+import { LoadMore, FiltersWrapper, SectionWrapper, ItemsWrapper, EmptyStateWrapper, EmptyStateText } from './styles';
+import ApplicationCard from './ApplicationCard';
 import TaskApplicationButton from '../TaskApplicationButton';
+
 interface Props {
   task: any;
   count: number;
@@ -64,10 +65,10 @@ const getEmptyStateContent = (task, canApply, count) => {
   return <EmptyStateText>You cannot apply to this task</EmptyStateText>;
 };
 
-const ApplicationsEmptyState = ({ task, canApply, count, canClaim }) => {
+function ApplicationsEmptyState({ task, canApply, count, canClaim }) {
   if (canClaim) return null;
   return <EmptyStateWrapper>{getEmptyStateContent(task, canApply, count)}</EmptyStateWrapper>;
-};
+}
 
 export default function ApplicationList({ task, count, canViewApplications = true, canApply, canClaim }: Props) {
   const [activeApplication, setActiveApplication] = useState(null);
@@ -79,9 +80,7 @@ export default function ApplicationList({ task, count, canViewApplications = tru
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
     notifyOnNetworkStatusChange: true,
-    onCompleted: ({ getTaskApplications }) => {
-      return getTaskApplications;
-    },
+    onCompleted: ({ getTaskApplications }) => getTaskApplications,
   });
 
   const hasMore = data?.getTaskApplications?.length < count && data?.getTaskApplications?.length >= LIMIT;

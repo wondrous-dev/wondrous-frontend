@@ -93,3 +93,27 @@ export const IMPORT_NOTION_TASK_TO_ORG = gql`
     }
   }
 `;
+
+export const DISCONNECT_NOTION_FROM_ORG = gql`
+  mutation disconnectNotionFromOrg($orgId: ID!, $notionWorkspaceId: String!) {
+    disconnectNotionFromOrg(orgId: $orgId, notionWorkspaceId: $notionWorkspaceId) {
+      success
+    }
+  }
+`;
+
+export const CONNECT_GUILD_TO_ORG = gql`
+  mutation connectGuildToOrg($orgId: ID!, $guildId: String!) {
+    connectGuildToOrg(orgId: $orgId, guildId: $guildId) {
+      success
+    }
+  }
+`;
+
+export const DISCONNECT_GUILD_FROM_ORG = gql`
+  mutation disconnectGuildFromOrg($orgId: ID!, $guildId: String!) {
+    disconnectGuildFromOrg(orgId: $orgId, guildId: $guildId) {
+      success
+    }
+  }
+`;

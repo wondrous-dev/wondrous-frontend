@@ -1,175 +1,205 @@
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_PROPOSALS_USER_CAN_REVIEW, GET_SUBMISSIONS_USER_CAN_REVIEW } from 'graphql/queries/workflowBoards';
-import uniqBy from 'lodash/uniqBy';
-import isEmpty from 'lodash/isEmpty';
-import cloneDeep from 'lodash/cloneDeep';
-import { useCallback, useEffect, useReducer, useState } from 'react';
+import { useState } from 'react';
 import { LIMIT } from 'services/board';
-import {
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_SUBMISSION_REQUEST,
-} from 'utils/constants';
+import { GET_JOIN_ORG_REQUESTS, GET_JOIN_POD_REQUESTS } from 'graphql/queries';
 
-const proposal = {
-  status: TASK_STATUS_PROPOSAL_REQUEST,
-  tasks: [],
-};
+export const useGetProposalsUserCanReview = () => {
+  const [hasMore, setHasMore] = useState(true);
+  const {
+    data,
+    fetchMore: getProposalsUserCanReviewFetchMore,
+    loading,
+    refetch,
+    variables,
+  } = useQuery(GET_PROPOSALS_USER_CAN_REVIEW, {
+    variables: {
+      limit: LIMIT,
+      offset: 0,
+    },
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+  });
 
-const submissions = {
-  status: TASK_STATUS_SUBMISSION_REQUEST,
-  tasks: [],
-};
+  const onFilterChange = (filtersToApply) => {
+    const filters = {
+      ...variables,
+      podIds: filtersToApply?.podIds,
+      orgId: filtersToApply?.orgId,
+      sortOrder: filtersToApply?.sortOrder,
+    };
+    refetch(filters).then(({ data }) => setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT));
+  };
 
-const baseColumnsAdmin = [proposal, submissions];
-
-const statusIncludedOrEmpty = ({ status, statuses }) => {
-  return statuses.includes(status) || isEmpty(statuses);
-};
-
-const setStatus = ({ statuses, setSelectedStatus }) => {
-  if (statuses.length > 0) {
-    const status =
-      statuses[0] === TASK_STATUS_REQUESTED ? TASK_STATUS_PROPOSAL_REQUEST : TASK_STATUS_SUBMISSION_REQUEST;
-    setSelectedStatus(status);
-  } else {
-    setSelectedStatus(null);
-  }
-};
-
-const status = {
-  [TASK_STATUS_PROPOSAL_REQUEST]: TASK_STATUS_REQUESTED,
-  [TASK_STATUS_SUBMISSION_REQUEST]: TASK_STATUS_IN_REVIEW,
-};
-
-const useUpdateAdminStatus = ({ isAdmin, selectedStatus, setStatuses }) => {
-  useEffect(() => {
-    if (isAdmin) {
-      if (selectedStatus) {
-        const selected = status[selectedStatus];
-        setStatuses([selected]);
-      } else {
-        setStatuses([]);
-      }
-    }
-  }, [setStatuses, selectedStatus, isAdmin]);
-};
-
-const useGetProposalsUserCanReview = ({ adminColumns, isAdmin, podIds, statuses }) => {
-  const [dataLength, setDataLength] = useState(LIMIT);
-  const [getProposalsUserCanReview, { data, fetchMore: getProposalsUserCanReviewFetchMore }] = useLazyQuery(
-    GET_PROPOSALS_USER_CAN_REVIEW,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  );
-
-  useEffect(() => {
-    if (isAdmin) {
-      getProposalsUserCanReview({
-        variables: {
-          podIds,
-          limit: LIMIT,
-          offset: 0,
-        },
-      });
-    }
-  }, [getProposalsUserCanReview, isAdmin, podIds, statuses]);
-
-  const handleFetchMore = useCallback(() => {
-    if (statusIncludedOrEmpty({ status: TASK_STATUS_REQUESTED, statuses }) && dataLength >= LIMIT) {
+  const handleFetchMore = () => {
+    if (hasMore) {
       getProposalsUserCanReviewFetchMore({
         variables: {
-          offset: adminColumns?.[0]?.tasks?.length,
+          offset: data?.getProposalsUserCanReview.length,
         },
-      }).then(({ data }) => setDataLength(data.getProposalsUserCanReview.length));
-    }
-  }, [adminColumns, dataLength, getProposalsUserCanReviewFetchMore, statuses]);
-
-  return {
-    getProposalsUserCanReviewData: data?.getProposalsUserCanReview,
-    getProposalsUserCanReviewFetchMore: handleFetchMore,
-  };
-};
-
-const useGetSubmissionsUserCanReview = ({ isAdmin, statuses, podIds, adminColumns }) => {
-  const [dataLength, setDataLength] = useState(LIMIT);
-  const [getSubmissionsUserCanReview, { data, fetchMore: getSubmissionsUserCanReviewFetchMore }] = useLazyQuery(
-    GET_SUBMISSIONS_USER_CAN_REVIEW,
-    {
-      fetchPolicy: 'cache-and-network',
-    }
-  );
-
-  useEffect(() => {
-    if (isAdmin) {
-      getSubmissionsUserCanReview({
-        variables: {
-          podIds,
-          limit: LIMIT,
-          offset: 0,
-        },
+      }).then(({ data }) => {
+        setHasMore(data?.getProposalsUserCanReview?.length >= LIMIT);
       });
     }
-  }, [getSubmissionsUserCanReview, isAdmin, podIds, statuses]);
-
-  const handleFetchMore = useCallback(() => {
-    if (statusIncludedOrEmpty({ status: TASK_STATUS_IN_REVIEW, statuses }) && dataLength >= LIMIT) {
-      getSubmissionsUserCanReviewFetchMore({
-        variables: {
-          offset: adminColumns?.[1]?.tasks?.length,
-          limit: LIMIT,
-        },
-      }).then(({ data }) => setDataLength(data.getSubmissionsUserCanReview.length));
-    }
-  }, [adminColumns, dataLength, getSubmissionsUserCanReviewFetchMore, statuses]);
-
+  };
   return {
-    getSubmissionsUserCanReviewData: data?.getSubmissionsUserCanReview,
-    getSubmissionsUserCanReviewFetchMore: handleFetchMore,
+    items: data?.getProposalsUserCanReview,
+    handleFetchMore,
+    hasMore,
+    loading,
+    onFilterChange,
   };
 };
 
-const updateAdminColumns = (adminColumns, { tasks = [], column, included }) => {
-  const copyAdminColumns = cloneDeep(isEmpty(adminColumns) ? baseColumnsAdmin : adminColumns);
-  const newColumns = copyAdminColumns.map((col, index) =>
-    index === column ? { ...col, tasks: included ? uniqBy([...col.tasks, ...tasks], (i) => i.id) : [] } : col
-  );
-  return newColumns;
+export const useGetSubmissionsUserCanReview = () => {
+  const [hasMore, setHasMore] = useState(true);
+  const {
+    data,
+    fetchMore: getSubmissionsUserCanReviewFetchMore,
+    refetch,
+    loading,
+    variables,
+  } = useQuery(GET_SUBMISSIONS_USER_CAN_REVIEW, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      limit: LIMIT,
+      offset: 0,
+    },
+  });
+
+  const onFilterChange = (filtersToApply) => {
+    const filters = {
+      ...variables,
+      orgId: filtersToApply?.orgId,
+      podIds: filtersToApply?.podIds,
+      sortOrder: filtersToApply?.sortOrder,
+    };
+    refetch(filters).then(({ data }) => setHasMore(data?.getSubmissionsUserCanReview?.length >= LIMIT));
+  };
+
+  const handleFetchMore = () => {
+    if (hasMore) {
+      getSubmissionsUserCanReviewFetchMore({
+        variables: {
+          offset: data?.getSubmissionsUserCanReview?.length,
+        },
+      }).then(({ data }) => {
+        setHasMore(data?.getSubmissionsUserCanReview?.length >= LIMIT);
+      });
+    }
+  };
+
+  return {
+    items: data?.getSubmissionsUserCanReview,
+    handleFetchMore,
+    hasMore,
+    loading,
+    onFilterChange,
+  };
 };
 
-export const useAdminColumns = (args) => {
-  const { statuses, setSelectedStatus } = args;
-  const [adminColumns, setAdminColumns] = useReducer(updateAdminColumns, []);
-  const { getProposalsUserCanReviewData, getProposalsUserCanReviewFetchMore } = useGetProposalsUserCanReview({
-    adminColumns,
-    ...args,
+export const useGetOrgMembershipRequestsToReview = () => {
+  const [hasMore, setHasMore] = useState(true);
+  const {
+    data: getJoinOrgRequestsData = { getJoinOrgRequests: [] },
+    fetchMore: fetchMoreJoinOrgRequests,
+    loading: orgRequestsLoading,
+    refetch: refetchJoinOrgRequests,
+    variables: orgRequestsVariables,
+  } = useQuery(GET_JOIN_ORG_REQUESTS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      limit: LIMIT,
+      offset: 0,
+    },
   });
 
-  const { getSubmissionsUserCanReviewData, getSubmissionsUserCanReviewFetchMore } = useGetSubmissionsUserCanReview({
-    adminColumns,
-    ...args,
+  const onFilterChange = (filtersToApply) => {
+    const filters = {
+      orgId: filtersToApply?.orgId,
+      podIds: filtersToApply?.podIds,
+      sortOrder: filtersToApply?.sortOrder,
+    };
+    refetchJoinOrgRequests({ ...orgRequestsVariables, ...filters }).then(({ data }) =>
+      setHasMore(data?.getJoinOrgRequests?.length >= LIMIT)
+    );
+  };
+
+  const handleFetchMore = () => {
+    if (hasMore) {
+      fetchMoreJoinOrgRequests({
+        variables: {
+          offset: getJoinOrgRequestsData?.getJoinOrgRequests?.length,
+          limit: LIMIT,
+        },
+      }).then(({ data }) => {
+        setHasMore(data?.getJoinOrgRequests?.length >= LIMIT);
+      });
+    }
+  };
+
+  return {
+    items: getJoinOrgRequestsData?.getJoinOrgRequests,
+    handleFetchMore,
+    hasMore,
+    loading: orgRequestsLoading,
+    onFilterChange,
+  };
+};
+
+export const useGetPodmembershipRequestsToReview = () => {
+  const [hasMore, setHasMore] = useState(true);
+
+  const {
+    data: getJoinPodRequestsData = { getJoinPodRequests: [] },
+    fetchMore: fetchMoreJoinPodRequests,
+    loading: podRequestsLoading,
+    refetch: refetchJoinPodRequests,
+    variables: podRequestsVariables,
+  } = useQuery(GET_JOIN_POD_REQUESTS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      limit: LIMIT,
+      offset: 0,
+    },
   });
 
-  const handleLoadMore = useCallback(() => {
-    getProposalsUserCanReviewFetchMore();
-    getSubmissionsUserCanReviewFetchMore();
-  }, [getProposalsUserCanReviewFetchMore, getSubmissionsUserCanReviewFetchMore]);
+  const onFilterChange = (filtersToApply) => {
+    const filters = {
+      orgId: filtersToApply?.orgId,
+      podIds: filtersToApply?.podIds,
+      sortOrder: filtersToApply?.sortOrder,
+    };
+    refetchJoinPodRequests({ ...podRequestsVariables, ...filters }).then(({ data }) =>
+      setHasMore(data?.getJoinPodRequestsData?.length >= LIMIT)
+    );
+  };
 
-  useEffect(() => {
-    setAdminColumns({
-      tasks: getProposalsUserCanReviewData,
-      column: 0,
-      included: statusIncludedOrEmpty({ status: TASK_STATUS_REQUESTED, statuses }),
-    });
-    setAdminColumns({
-      tasks: getSubmissionsUserCanReviewData,
-      column: 1,
-      included: statusIncludedOrEmpty({ status: TASK_STATUS_IN_REVIEW, statuses }),
-    });
-    setStatus({ statuses, setSelectedStatus });
-  }, [getProposalsUserCanReviewData, getSubmissionsUserCanReviewData, setSelectedStatus, statuses]);
-  useUpdateAdminStatus(args);
-  return { adminColumns, handleAdminColumnsLoadMore: handleLoadMore };
+  const handleFetchMore = () => {
+    if (hasMore) {
+      fetchMoreJoinPodRequests({
+        variables: {
+          offset: getJoinPodRequestsData?.getJoinOrgRequests?.length,
+          limit: LIMIT,
+        },
+      }).then(({ data }) => {
+        setHasMore(data?.getJoinOrgRequests?.length >= LIMIT);
+      });
+    }
+  };
+
+  return {
+    items: getJoinPodRequestsData?.getJoinPodRequests,
+    handleFetchMore,
+    hasMore,
+    loading: podRequestsLoading,
+    onFilterChange,
+  };
 };

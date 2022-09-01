@@ -3,9 +3,13 @@ import React, { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD } from 'graphql/queries';
 import { GET_WORKFLOW_BOARD_REVIEWABLE_ITEMS_COUNT } from 'graphql/queries/workflowBoards';
-import { TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from 'utils/constants';
+import {
+  TASK_STATUS_AWAITING_PAYMENT,
+  TASK_STATUS_PROPOSAL_REQUEST,
+  TASK_STATUS_SUBMISSION_REQUEST,
+} from 'utils/constants';
 import { useMe } from '../../Auth/withAuth';
-import { DoneWithBorder } from '../../Icons';
+import { AwaitingPayment, DoneWithBorder } from '../../Icons';
 import { InReviewIcon, MembershipRequestIcon, ProposalsRemainingIcon, TodoIcon } from '../../Icons/statusIcons';
 import DashboardPanelExpanded from '../DashboardPanelExpanded';
 // import DashboardPanelSticky from '../DashboardPanelSticky'; NOTE: hide for now
@@ -77,21 +81,21 @@ const statusCardsBase = [
   // },
 ];
 
-const updateStatusCards = (data, statusData, panel) => {
-  return statusData
+const updateStatusCards = (data, statusData, panel) =>
+  statusData
     .filter((i) => panel === i.panel)
     .map((status) => {
       if (status?.dataKey === MEMBERSHIP_REQUEST_COUNT) {
         let count = 0;
         if (data?.orgMembershipRequestCount) {
-          count = count + Number(data?.orgMembershipRequestCount);
+          count += Number(data?.orgMembershipRequestCount);
         }
         if (data?.podMembershipRequestCount) {
-          count = count + Number(data?.podMembershipRequestCount);
+          count += Number(data?.podMembershipRequestCount);
         }
         return {
           ...status,
-          count: count,
+          count,
         };
       }
       return {
@@ -100,9 +104,8 @@ const updateStatusCards = (data, statusData, panel) => {
       };
     })
     .sort((a, b) => a.panelPosition - b.panelPosition);
-};
 
-const DashboardPanel = (props) => {
+function DashboardPanel(props) {
   const { isAdmin, selectedStatus, setSelectedStatus } = props;
   const [ref, inView] = useInView({});
   const loggedInUser = useMe();
@@ -131,14 +134,6 @@ const DashboardPanel = (props) => {
 
   return (
     <DashboardPanelWrapper>
-      {/* {!inView && (
-        <DashboardPanelSticky
-          activePanelStatusCards={activePanelStatusCards}
-          selectedStatus={selectedStatus}
-          setSelectedStatus={setSelectedStatus}
-          isAdmin={isAdmin}
-        />
-      )} NOTE: hide for now */}
       <DashboardPanelExpanded
         activePanel={activePanel}
         activePanelStatusCards={activePanelStatusCards}
@@ -150,6 +145,6 @@ const DashboardPanel = (props) => {
       <span ref={ref} />
     </DashboardPanelWrapper>
   );
-};
+}
 
 export default React.memo(DashboardPanel);

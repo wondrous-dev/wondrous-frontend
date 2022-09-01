@@ -1,5 +1,5 @@
-import { TabsVisibilityButton, TabsVisibilityWrapper } from './styles';
 import Tooltip from 'components/Tooltip';
+import { TabsVisibilityButton, TabsVisibilityWrapper } from './styles';
 
 interface ITabsVisibilityProps {
   selected: { title: string; tooltip: string };
@@ -8,7 +8,7 @@ interface ITabsVisibilityProps {
   variant?: boolean;
 }
 
-export const TabsVisibility = (props: ITabsVisibilityProps) => {
+export function TabsVisibility(props: ITabsVisibilityProps) {
   const { selected, options, onChange, variant } = props;
   return (
     <TabsVisibilityWrapper variant={variant}>
@@ -26,4 +26,4 @@ export const TabsVisibility = (props: ITabsVisibilityProps) => {
       ))}
     </TabsVisibilityWrapper>
   );
-};
+}

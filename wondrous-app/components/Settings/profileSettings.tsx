@@ -1,3 +1,4 @@
+/* eslint-disable dot-notation */
 import { useMutation } from '@apollo/client';
 import { DiscordIcon } from 'components/Icons/discord';
 import LinkBigIcon from 'components/Icons/link';
@@ -6,11 +7,24 @@ import TwitterPurpleIcon from 'components/Icons/twitterPurple';
 import cloneDeep from 'lodash/cloneDeep';
 import React, { useContext, useEffect, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import useAlerts from 'hooks/useAlerts';
 import { UPDATE_USER, USER_DISCORD_DISCONNECT } from 'graphql/mutations';
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { getDiscordUrl } from 'utils';
-import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
+import {
+  CHAR_LIMIT_PROFILE_BIO,
+  DISCORD_CONNECT_TYPES,
+  USERNAME_REGEX,
+  validateEmail,
+  TWITTER_CHALLENGE_CODE,
+} from 'utils/constants';
 import { getFilenameAndType, uploadMedia } from 'utils/media';
+import Tooltip from 'components/Tooltip';
+import { useRouter } from 'next/router';
+import { buildTwitterAuthUrl } from 'components/Twitter/utils';
+import CloseModalIcon from 'components/Icons/closeModal';
+import SettingsWrapper from 'components/Common/SidebarSettings';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
+import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
 import { ErrorText } from '../Common';
 import { SafeImage } from '../Common/Image';
 import { ProfilePictureDiv } from '../Onboarding/styles';
@@ -18,7 +32,6 @@ import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
-import { SettingsWrapper } from './settingsWrapper';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -39,12 +52,6 @@ import {
   GeneralSettingsSocialsBlockWrapper,
   LabelBlock,
 } from './styles';
-import Tooltip from 'components/Tooltip';
-import { useRouter } from 'next/router';
-import { buildTwitterAuthUrl } from 'components/Twitter/utils';
-import { TWITTER_CHALLENGE_CODE } from 'utils/constants';
-import CloseModalIcon from 'components/Icons/closeModal';
-import { GET_LOGGED_IN_USER } from 'graphql/queries';
 
 const discordUrl = getDiscordUrl();
 
@@ -95,15 +102,13 @@ const useLoggedInUserLinks = (userLinks) => {
   useEffect(() => {
     setLinks(
       // NOTE: __typename needs to be removed from the links because it will cause an error during the mutation
-      userLinks?.map(({ __typename, ...userLinks }) => {
-        return { ...userLinks };
-      })
+      userLinks?.map(({ __typename, ...userLinks }) => ({ ...userLinks }))
     );
   }, [userLinks]);
   return [links, setLinks];
 };
 
-const SettingsLinks = ({ links, setLinks }) => {
+function SettingsLinks({ links, setLinks }) {
   const linkTypeWebsite = setLinkTypeWebsite(links);
   const handleLinkChange = (event, item) => {
     const url = event.currentTarget.value;
@@ -138,9 +143,9 @@ const SettingsLinks = ({ links, setLinks }) => {
       </GeneralSettingsSocialsBlock>
     </>
   );
-};
+}
 
-const ProfileSettings = (props) => {
+function ProfileSettings(props) {
   const { loggedInUser } = props;
   const router = useRouter();
   const { discordUserExists, discordError } = router.query;
@@ -155,9 +160,11 @@ const ProfileSettings = (props) => {
   const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
     refetchQueries: [GET_LOGGED_IN_USER],
   });
+  const { showError } = useAlerts();
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const setSnackbarAlertSeverity = snackbarContext?.setSnackbarAlertSeverity;
   const [errors, setErrors] = useState({
     username: null,
     email: null,
@@ -197,71 +204,86 @@ const ProfileSettings = (props) => {
         ...errors,
         username: 'Please enter a valid username with 3-15 alphanumeric characters',
       });
-    } else if (email && !validateEmail(email)) {
+      return;
+    }
+
+    if (email && !validateEmail(email)) {
       setErrors({
         ...errors,
         email: 'Please enter a valid email',
       });
-    } else if (profileBio && profileBio.length > 200) {
+      return;
+    }
+
+    if (profileBio && profileBio.length > 200) {
       setErrors({
         ...errors,
         description: 'The description should not exceed 200 characters',
       });
-    } else {
-      if (username) {
-        let input = {
-          ...(username && {
-            username,
-          }),
-          ...(profileBio && {
-            bio: profileBio,
-          }),
-          links,
-        };
-        if (email !== loggedInUser?.email) {
-          input['email'] = email;
-        }
-        if (profilePicture) {
-          const file = profilePicture;
-          const fileName = profilePicture.name;
-          // get image preview
-          const { fileType, filename } = getFilenameAndType(fileName);
-
-          const imagePrefix = `tmp/${loggedInUser?.id}/`;
-          const imageUrl = imagePrefix + filename;
-
-          await uploadMedia({ filename: imageUrl, fileType, file });
-          input['profilePicture'] = imageUrl;
-        }
-
-        // ----> Backend not Ready yet...
-        //   if(profileBanner) {
-        //     const file = profileBanner;
-        //     const fileName = profileBanner.name;
-
-        //     // get image preview
-        //     const { fileType, filename } = getFilenameAndType(fileName);
-        //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
-        //     const imageUrl = imagePrefix + filename;
-
-        //     await uploadMedia({ filename: imageUrl, fileType, file });
-        //     input['headerPicture'] = imageUrl;
-        //   }
-
-        updateUserProfile({
-          variables: {
-            input,
-          },
-          onCompleted: (data) => {
-            if (data?.updateUser?.profilePicture) {
-              setProfilePictureUrl(data?.updateUser?.profilePicture);
-            }
-            setSnackbarAlertOpen(true);
-            setSnackbarAlertMessage(<>User profile updated successfully</>);
-          },
-        });
-      }
+      return;
     }
+
+    if (!username) {
+      return;
+    }
+
+    const input = {
+      ...(profileBio && {
+        bio: profileBio,
+      }),
+      links,
+    };
+
+    if (username !== loggedInUser?.username) {
+      input['username'] = username;
+    }
+    if (email !== loggedInUser?.email) {
+      input['email'] = email;
+    }
+
+    if (profilePicture) {
+      const file = profilePicture;
+      const fileName = profilePicture.name;
+      // get image preview
+      const { fileType, filename } = getFilenameAndType(fileName);
+
+      const imagePrefix = `tmp/${loggedInUser?.id}/`;
+      const imageUrl = imagePrefix + filename;
+
+      await uploadMedia({ filename: imageUrl, fileType, file });
+      input['profilePicture'] = imageUrl;
+    }
+
+    // ----> Backend not Ready yet...
+    //   if(profileBanner) {
+    //     const file = profileBanner;
+    //     const fileName = profileBanner.name;
+
+    //     // get image preview
+    //     const { fileType, filename } = getFilenameAndType(fileName);
+    //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
+    //     const imageUrl = imagePrefix + filename;
+
+    //     await uploadMedia({ filename: imageUrl, fileType, file });
+    //     input['headerPicture'] = imageUrl;
+    //   }
+
+    updateUserProfile({
+      variables: {
+        input,
+      },
+      onCompleted: (data) => {
+        if (data?.updateUser?.profilePicture) {
+          setProfilePictureUrl(data?.updateUser?.profilePicture);
+        }
+        setSnackbarAlertSeverity('success');
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(<>User profile updated successfully</>);
+      },
+      onError: (error) => {
+        showError(error?.message, true);
+      },
+    });
   };
 
   const redirectToTwitterAuth = () => {
@@ -481,6 +503,6 @@ const ProfileSettings = (props) => {
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default ProfileSettings;

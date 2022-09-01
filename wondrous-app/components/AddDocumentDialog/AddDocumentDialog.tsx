@@ -21,7 +21,7 @@ import styles, { labelStyles, inputStyles } from './AddDocumentDialogStyles';
 const LabelTypography = styled(Typography)(labelStyles);
 const StyledTextField = styled(TextField)(inputStyles);
 
-const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, document, pinned }) => {
+function AddDocumentDialog({ open, onClose, title, orgId, podId, category, document, pinned }) {
   const {
     register,
     handleSubmit,
@@ -74,10 +74,10 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
         variables: {
           input: {
             ...data,
-            orgId: orgId,
+            orgId,
             podId,
             ...(category?.id && { categoryId: category.id }),
-            ...(pinned && { pinned: pinned }),
+            ...(pinned && { pinned }),
           },
         },
       });
@@ -86,9 +86,9 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
         variables: {
           input: {
             ...data,
-            orgId: orgId,
+            orgId,
             ...(category?.id && { categoryId: category.id }),
-            ...(pinned && { pinned: pinned }),
+            ...(pinned && { pinned }),
           },
         },
       });
@@ -172,6 +172,6 @@ const AddDocumentDialog = ({ open, onClose, title, orgId, podId, category, docum
       </form>
     </DocModal>
   );
-};
+}
 
 export default AddDocumentDialog;

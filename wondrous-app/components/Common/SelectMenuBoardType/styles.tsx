@@ -1,5 +1,4 @@
-import { MenuItem, Popper } from '@mui/material';
-import { ClickAwayListener, Typography } from '@mui/material';
+import { MenuItem, Popper, ClickAwayListener, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import styled from 'styled-components';
 import { greyColors } from 'theme/colors';
@@ -47,9 +46,7 @@ export const SelectMenuBoardTypeText = styled(Typography)`
   }
 `;
 
-export const SelectMenuBoardTypeIcon = styled((props) => {
-  return <Chevron width={24} fill={palette.white} />;
-})``;
+export const SelectMenuBoardTypeIcon = styled((props) => <Chevron width={24} fill={palette.white} />)``;
 
 export const SelectMenuBoardTypePopper = styled(Popper)``;
 

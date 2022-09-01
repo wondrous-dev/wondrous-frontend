@@ -4,15 +4,17 @@ import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as BorderButton } from '../../Common/button';
-import { BaseCard } from '../../Common/card';
-import { LogoCircle } from '../../Common/ci';
-import { LinkIcon } from '../../Icons/linkIcon';
-import { Button as ButtonComponent } from 'components/Common/button';
+import { Button as ButtonComponent, Button as BorderButton } from 'components/Common/button';
 import { greyColors } from 'theme/colors';
 import CloseModalIcon from 'components/Icons/closeModal';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import CloseModalIconRed from 'components/Icons/closeModalRed';
+import { BaseCard } from 'components/Common/card';
+import BackArrowIcon from 'components/Icons/backArrow';
+import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ActionButton } from 'components/Common/Task/styles';
+import { LogoCircle } from '../../Common/ci';
+import { LinkIcon } from '../../Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
   width: 100%;
@@ -24,7 +26,15 @@ export const OverviewComponent = styled.section`
   padding-bottom: 40px;
 `;
 
+export const RequestModalHorizontalAlign = styled.div`
+  flex-direction: 'row';
+  display: flex;
+  align-items: center;
+`;
+
 export const RequestModalContainer = styled(Dialog)`
+  width: 100%;
+  max-width: none;
   display: inline-block;
   flex-direction: column;
   border-radius: 6px;
@@ -47,12 +57,11 @@ export const RequestModalRolesAbilityContainer = styled.div`
   display: flex;
   flex-direction: row;
   width: 100%;
-  justify-content: flex-start;
+  justify-content: center;
+  align-self: center;
   flex: 1;
-  margin-bottom: 18px;
   margin-top: 18px;
   padding-bottom: 6px;
-  border-bottom: 0.5px dashed ${greyColors.grey75};
 `;
 
 export const RequestModalCustomPopper = styled.div`
@@ -139,6 +148,24 @@ export const RequestModalRolesAbilityColumns = styled.div`
   justify-content: flex-start;
 `;
 
+export const RequestModalExploreRolesAbilityColumns = styled.div`
+  display: inline-block;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  justify-content: flex-start;
+  background-color: #2d2d2d;
+  margin: 8px;
+  padding: 24px;
+  border-radius: 8px;
+`;
+
+export const RequestModalClaimButton = styled(ActionButton)`
+  text-align: center;
+  background-color: white;
+  display: flex;
+`;
+
 export const RequestModalRolesAbilityRows = styled.div`
   display: flex;
   flex-direction: row;
@@ -209,11 +236,41 @@ export const RequestModalCloseIcon = styled(CloseModalIcon)`
   }
 `;
 
+export const RequestModalBackButton = styled(ChevronLeft)`
+  background: black;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: 6px;
+  margin-right: 12px;
+  path {
+    fill: white;
+  }
+  :hover {
+    background: rgba(122, 122, 122, 0.2);
+  }
+`;
+export const RequestModalForwardButton = styled(ChevronRight)`
+  background: black;
+  width: 32px;
+  height: 32px;
+  padding: 8px;
+  border-radius: 6px;
+  margin-right: 12px;
+  path {
+    fill: white;
+  }
+  :hover {
+    background: rgba(122, 122, 122, 0.2);
+  }
+`;
+
 export const RequestModalBox = styled(Box)`
-  width: 488px;
-  height: 224px;
-  background-color: ${greyColors.grey98};
-  padding: 24px;
+  && {
+    /* width: 700px; */
+    background-color: ${greyColors.grey98};
+    padding: 24px;
+  }
 `;
 
 export const RequestModalLevelContainer = styled.div`
@@ -239,7 +296,6 @@ export const RequestModalLevelContainer = styled.div`
 export const HeaderImageWrapper = styled.div`
   width: 100%;
   height: 100px;
-  margin-top: 70px;
   overflow: hidden;
   position: relative;
 `;
@@ -287,7 +343,6 @@ export const TokenEmptyLogo = styled.div`
 
 export const Content = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
 `;
@@ -437,20 +492,22 @@ export const HeaderContributeButton = styled(Button)`
   }
 `;
 
-export const HeaderManageSettingsButton = (props) => (
-  <BorderButton
-    style={{
-      background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
-      borderRadius: '204px',
-      width: 'fit-content',
-      height: '40px',
-      minHeight: '0',
-    }}
-    onClick={props?.onClick}
-  >
-    {props.children}
-  </BorderButton>
-);
+export function HeaderManageSettingsButton(props) {
+  return (
+    <BorderButton
+      style={{
+        background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
+        borderRadius: '204px',
+        width: 'fit-content',
+        height: '40px',
+        minHeight: '0',
+      }}
+      onClick={props?.onClick}
+    >
+      {props.children}
+    </BorderButton>
+  );
+}
 
 export const HeaderButton = styled.button`
   border-radius: 6px;
@@ -501,27 +558,29 @@ export const RoleButton = styled(HeaderButton)`
   }
 `;
 
-export const HeaderSettingsLockedButton = (props) => (
-  <BorderButton
-    style={{
-      background: '#474747',
-      cursor: 'default',
-      borderRadius: '204px',
-      width: 'fit-content',
-      height: '40px',
-      minHeight: '0',
-      visibility: 'hidden',
-      ...props?.style,
-    }}
-    buttonInnerStyle={{
-      color: '#474747',
-      fontFamily: 'Space Grotesk',
-      padding: '8px',
-    }}
-  >
-    {props.children}
-  </BorderButton>
-);
+export function HeaderSettingsLockedButton(props) {
+  return (
+    <BorderButton
+      style={{
+        background: '#474747',
+        cursor: 'default',
+        borderRadius: '204px',
+        width: 'fit-content',
+        height: '40px',
+        minHeight: '0',
+        visibility: 'hidden',
+        ...props?.style,
+      }}
+      buttonInnerStyle={{
+        color: '#474747',
+        fontFamily: 'Space Grotesk',
+        padding: '8px',
+      }}
+    >
+      {props.children}
+    </BorderButton>
+  );
+}
 
 export const HeaderText = styled(Typography)`
   && {
@@ -595,7 +654,7 @@ export const HeaderPodsText = styled(HeaderContributorsAmount)`
   color: #6c6c6c;
 `;
 
-//cardStyles
+// cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;
   margin: 0 auto;
@@ -603,7 +662,7 @@ export const PostsContainer = styled.div`
   flex-direction: column;
 `;
 
-//cardStyles
+// cardStyles
 export const PostComponent = styled(BaseCard)`
   margin-top: 22px;
   height: 540px;
@@ -864,18 +923,20 @@ export const TokenGatedRoleDescription = styled(Typography)`
   }
 `;
 
-export const TokenLogoDisplay = (props) => (
-  <SafeImage
-    useNextImage={false}
-    src={props?.src}
-    style={{
-      width: '29px',
-      height: '28px',
-      borderRadius: '4px',
-      marginRight: '5px',
-    }}
-  />
-);
+export function TokenLogoDisplay(props) {
+  return (
+    <SafeImage
+      useNextImage={false}
+      src={props?.src}
+      style={{
+        width: '29px',
+        height: '28px',
+        borderRadius: '4px',
+        marginRight: '5px',
+      }}
+    />
+  );
+}
 
 export const ClaimRoleButton = styled(ButtonComponent)`
   && {
@@ -926,7 +987,9 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
   align-items: center;
-  &.searchView {
-    grid-template-columns: 1fr;
-  }
+`;
+
+export const Container = styled.div`
+  width: 95%;
+  margin-top: 22px;
 `;

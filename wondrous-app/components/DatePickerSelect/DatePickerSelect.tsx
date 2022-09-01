@@ -2,7 +2,7 @@ import TextField from '@mui/material/TextField';
 
 import styles from './DatePickerSelectStyles';
 
-const DatePickerSelect = (props) => {
+function DatePickerSelect(props) {
   return (
     <TextField
       {...props}
@@ -20,6 +20,6 @@ const DatePickerSelect = (props) => {
       }}
     />
   );
-};
+}
 
 export default DatePickerSelect;

@@ -1,13 +1,13 @@
+import { shrinkNumber } from 'utils/helpers';
 import { ToDo } from '../../Icons';
 import { WonderCoin } from '../../Icons/wonderCoin';
 import { SafeImage } from '../Image';
 import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
-import { shrinkNumber } from 'utils/helpers';
 import Ethereum from '../../Icons/ethereum';
 import { Matic } from '../../Icons/matic';
 import { USDCoin } from '../../Icons/USDCoin';
 
-export const Compensation = (props) => {
+export function Compensation(props) {
   const { rewards, taskIcon, style, pillStyle = {} } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
 
@@ -34,8 +34,8 @@ export const Compensation = (props) => {
             </CompensationAmount>
           </>
         )}
-        {taskIcon ? taskIcon : null}
+        {taskIcon || null}
       </CompensationPill>
     </CompensationWrapper>
   );
-};
+}

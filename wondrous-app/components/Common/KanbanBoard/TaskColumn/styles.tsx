@@ -2,13 +2,13 @@ import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 
+import palette from 'theme/palette';
+
 export const entityStyling = {
   [ENTITIES_TYPES.PROPOSAL]: {
     style: 'min-width: 31%',
   },
 };
-
-import palette from 'theme/palette';
 
 export const DropMeHere = styled.div`
   margin: 1em 0 0 0;

@@ -19,7 +19,7 @@ export const StyledMention = styled(Typography)`
   }
 `;
 
-export const TaskCreatedBy = (props) => {
+export function TaskCreatedBy(props) {
   const { router, type, createdBy } = props;
   const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
   const isShown = type === ENTITIES_TYPES.MILESTONE || type === ENTITIES_TYPES.BOUNTY;
@@ -42,7 +42,6 @@ export const TaskCreatedBy = (props) => {
         })}
       </StyledText>
     );
-  } else {
-    return null;
   }
-};
+  return null;
+}

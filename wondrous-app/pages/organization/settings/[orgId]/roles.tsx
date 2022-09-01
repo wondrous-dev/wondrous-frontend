@@ -10,7 +10,7 @@ import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
 import { withAuth } from 'components/Auth/withAuth';
 
-const RolesPage = () => {
+function RolesPage() {
   const [roles, setRoles] = useState([]);
   const [toast, setToast] = useState({ show: false, message: '' });
   // Get organization roles
@@ -38,7 +38,6 @@ const RolesPage = () => {
         orgId,
       },
       onCompleted: (data) => {
-        console.log('hmmm', data?.getOrgRoles);
         setRoles(JSON.parse(JSON.stringify(data?.getOrgRoles)) || []);
       },
     }
@@ -50,6 +49,7 @@ const RolesPage = () => {
       setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
       getOrgRolesWithTokenGate();
     },
+    refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
   });
 
   const [updateOrgRole] = useMutation(UPDATE_ORG_ROLE, {
@@ -132,6 +132,6 @@ const RolesPage = () => {
       onToastClose={() => setToast({ ...toast, show: false })}
     />
   );
-};
+}
 
 export default withAuth(RolesPage);

@@ -1,20 +1,22 @@
 import { ButtonUnstyled } from '@mui/base';
-import { Button, ButtonBase, Menu, MenuItem, Modal, Typography } from '@mui/material';
+import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
-import { Share } from 'components/Common/Share';
+import Share from 'components/Common/Share';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { EmptyStateGenericWrapper } from 'components/EmptyStateGeneric/styles';
 import Arrow from 'components/Icons/arrow.svg';
 import CalendarIcon from 'components/Icons/calendar';
 import CloseModalIcon from 'components/Icons/closeModal';
 import MilestoneIcon from 'components/Icons/milestoneField.svg';
 import OpenInFullIcon from 'components/Icons/openInFull.svg';
+import OpenInMinimizedViewIcon from 'components/Icons/openInMinimizedView.svg';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIcon from 'components/Icons/pointsIcon.svg';
 import SnapshotLogoIcon from 'components/Icons/snapshotLogo.svg';
 import styled, { css } from 'styled-components';
-
+import palette from 'theme/palette';
 import { GradientHighlightHorizontal } from '../gradients';
 import TaskMedia from '../TaskMedia';
 
@@ -80,13 +82,11 @@ export const TaskModalHeaderPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
   }
 `;
 
-export const TaskModalHeaderArrow = styled((props) => {
-  return (
-    <div {...props}>
-      <Arrow />
-    </div>
-  );
-})`
+export const TaskModalHeaderArrow = styled((props) => (
+  <div {...props}>
+    <Arrow />
+  </div>
+))`
   && {
     display: flex;
     height: 32px;
@@ -114,9 +114,7 @@ export const TaskModalHeaderBackToList = styled(TaskModalHeaderTypography)`
 `;
 
 export const TaskModalHeaderOpenInFullIcon = styled((props) => (
-  <div {...props}>
-    <OpenInFullIcon />
-  </div>
+  <div {...props}>{props.isFullScreen ? <OpenInMinimizedViewIcon /> : <OpenInFullIcon />}</div>
 ))`
   width: 32px;
   height: 32px;
@@ -302,85 +300,6 @@ export const TaskModalTaskStatusMoreInfo = styled.div`
   align-items: center;
   gap: 8px;
   margin-top: 12px;
-`;
-
-export const TaskStatusMenuButton = styled(ButtonBase)`
-  outline: ${({ open }) => open && `1px solid #424242`};
-  background-color: #141414;
-  max-width: fit-content;
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 6px;
-  gap: 8px;
-  height: 28px;
-  && {
-    > svg {
-      width: 18px !important;
-      height: 18px !important;
-    }
-  }
-`;
-
-export const TaskStatusMenuButtonArrow = styled((props) => (
-  <div {...props}>
-    <Arrow />
-  </div>
-))`
-  && {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 9px;
-    transform: rotate(${({ open }) => (open ? `-90` : `90`)}deg);
-    svg {
-      path {
-        fill: white;
-      }
-    }
-  }
-`;
-
-export const TaskStatusMenuWrapper = styled(Menu)`
-  && {
-    .MuiMenu-list,
-    .MuiMenu-paper {
-      padding: 0;
-      background-color: #141414;
-      min-width: 150px;
-      outline: 1px solid #424242;
-    }
-  }
-`;
-
-export const TaskStatusMenuItem = styled(MenuItem)`
-  background-color: #141414;
-  display: flex;
-  align-items: center;
-  padding: 6px;
-  gap: 8px;
-  height: 28px;
-  && {
-    > svg {
-      width: 18px !important;
-      height: 18px !important;
-    }
-  }
-  :hover {
-    background: #040404;
-  }
-`;
-
-export const TaskModalStatusLabel = styled(Typography)`
-  && {
-    font-size: 14px;
-    line-height: 0;
-    ${({ theme }) => `
-    font-weight: ${theme.typography.fontWeightRegular};
-    color: ${theme.palette.white};
-  `}
-  }
 `;
 
 export const TaskModalSnapshot = styled(Button)`
@@ -931,5 +850,21 @@ export const InfoPoint = styled(TaskSectionInfoCreatorDaysAgo)`
   && {
     padding-top: 6px;
     display: block;
+  }
+`;
+
+export const LockedTask = styled.div`
+  display: flex;
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  color: ${palette.white};
+  font-weight: 600;
+  flex-direction: column;
+  gap: 15px;
+  ${EmptyStateGenericWrapper} {
+    width: 100%;
+    height: 100%;
   }
 `;

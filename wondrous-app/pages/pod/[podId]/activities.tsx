@@ -6,7 +6,9 @@ import Activities from 'components/Pod/activities';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import { useGetPodById } from 'utils/hooks';
-const ActivitiesPage = () => {
+import EntitySidebar from 'components/Common/SidebarEntity';
+
+function ActivitiesPage() {
   const router = useRouter();
   const { podId } = router.query;
   const getPodById = useGetPodById(podId);
@@ -25,9 +27,11 @@ const ActivitiesPage = () => {
           : null,
       }}
     >
-      <Activities podId={podId} />
+      <EntitySidebar>
+        <Activities podId={podId} />
+      </EntitySidebar>
     </PodBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(ActivitiesPage);

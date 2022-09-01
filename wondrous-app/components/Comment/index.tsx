@@ -4,18 +4,26 @@ import { GET_ORG_USERS } from 'graphql/queries/org';
 import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
-import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
+import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard, cutString } from 'utils/helpers';
 import { TextInputContext } from 'utils/contexts';
-import { TextInput } from '../TextInput';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
-import { useMe } from '../Auth/withAuth';
 import { GET_COMMENTS_FOR_TASK, GET_TASK_SUBMISSION_COMMENTS } from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
+import { formatDistance } from 'date-fns';
+import { renderMentionString } from 'utils/common';
+import { useRouter } from 'next/router';
+import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
+import { updateTask } from 'utils/board';
+import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
+import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
 import {
   AddCommentButton,
   CommentItemContainer,
   CommentListContainer,
   CommentListWrapper,
+  CommentListEmptyStateContainer,
+  CommentListEmptyStateIcon,
+  CommentListEmptyStateText,
   CommentProfilePicture,
   CommentText,
   CommentTopFlexDiv,
@@ -24,17 +32,11 @@ import {
   DeleteText,
   TextInputDiv,
 } from './styles';
-import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
-import { formatDistance } from 'date-fns';
-import { renderMentionString } from 'utils/common';
-import { cutString } from 'utils/helpers';
-import { useRouter } from 'next/router';
-import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { updateTask } from 'utils/board';
+import { useMe } from '../Auth/withAuth';
+import { TextInput } from '../TextInput';
 import { ErrorText } from '../Common';
-import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
 
-export const CommentBox = (props) => {
+export function CommentBox(props) {
   const user = useMe();
   const { orgId, existingContent, taskType, task, previousCommenterIds, submission } = props;
   const orgBoard = useOrgBoard();
@@ -80,7 +82,7 @@ export const CommentBox = (props) => {
       }),
       content: comment.trim(),
       userMentions: mentionedUsers,
-      previousCommenterIds: previousCommenterIds,
+      previousCommenterIds,
     };
     if (taskType === TASK_STATUS_REQUESTED) {
       createTaskProposalComment({
@@ -113,6 +115,8 @@ export const CommentBox = (props) => {
     }
   }, [taskCommentData]);
 
+  if (!user) return null;
+
   return (
     <AddCommentContainer>
       <TextInputDiv>
@@ -137,19 +141,9 @@ export const CommentBox = (props) => {
       <AddCommentButton onClick={addComment}>Add comment</AddCommentButton>
     </AddCommentContainer>
   );
-};
+}
 
-const useScrollIntoView = (isElementToScroll) => {
-  const elementRef = useRef(null);
-  useEffect(() => {
-    if (isElementToScroll) {
-      elementRef.current.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [elementRef, isElementToScroll]);
-  return elementRef;
-};
-
-const CommentItem = (props) => {
+function CommentItem(props) {
   const { comment, task, taskType, list, setList, submission } = props;
   const loggedInUser = useMe();
   const router = useRouter();
@@ -256,9 +250,18 @@ const CommentItem = (props) => {
       </div>
     </CommentItemContainer>
   );
-};
+}
 
-export const CommentList = (props) => {
+function CommentListEmptyState() {
+  return (
+    <CommentListEmptyStateContainer>
+      <CommentListEmptyStateIcon />
+      <CommentListEmptyStateText>No comments yet</CommentListEmptyStateText>
+    </CommentListEmptyStateContainer>
+  );
+}
+
+export function CommentList(props) {
   const { taskType, task, submission } = props;
   const [comments, setComments] = useState([]);
   const [getTaskComments] = useLazyQuery(GET_COMMENTS_FOR_TASK, {
@@ -316,18 +319,21 @@ export const CommentList = (props) => {
     <CommentListWrapper>
       <CommentBox
         orgId={task?.orgId || submission?.orgId}
-        existingContent={''}
+        existingContent=""
         taskType={taskType}
         task={task}
         previousCommenterIds={Array.from(set)}
         submission={submission}
       />
       <CommentListContainer>
-        {comments?.length > 0 &&
+        {comments?.length > 0 ? (
           comments.map((comment) => (
             <CommentItem key={comment?.id} comment={comment} taskType={taskType} task={task} submission={submission} />
-          ))}
+          ))
+        ) : (
+          <CommentListEmptyState />
+        )}
       </CommentListContainer>
     </CommentListWrapper>
   );
-};
+}

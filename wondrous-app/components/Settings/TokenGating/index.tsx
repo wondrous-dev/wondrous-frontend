@@ -3,7 +3,9 @@ import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { SettingsWrapper } from '../settingsWrapper';
+import { GET_ORG_BY_ID } from 'graphql/queries/org';
+import { EditTokenGatingConditionContext } from 'utils/contexts';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import {
   TokenGatingHeader,
   TokenGatingDescription,
@@ -14,17 +16,15 @@ import {
 } from './styles';
 import TokenGatingConditionList from './TokenGatingConditionList';
 import TokenGatingConfigForm from './TokenGatingConfigForm';
-import { GET_ORG_BY_ID } from 'graphql/queries/org';
-import { EditTokenGatingConditionContext } from 'utils/contexts';
 
-const TokenGatingSettings = (props) => {
+function TokenGatingSettings(props) {
   const { orgId } = props;
   const [showConfigModal, setShowConfigModal] = useState(null);
   const [selectedTokenGatingCondition, setSelectedTokenGatingCondition] = useState(null);
 
   const { data: orgData } = useQuery(GET_ORG_BY_ID, {
     variables: {
-      orgId: orgId,
+      orgId,
     },
   });
   const org = orgData?.getOrgById;
@@ -60,6 +60,6 @@ const TokenGatingSettings = (props) => {
       </TokenGatingWrapper>
     </SettingsWrapper>
   );
-};
+}
 
 export default TokenGatingSettings;

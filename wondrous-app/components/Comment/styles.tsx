@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { SafeImage } from '../Common/Image';
@@ -11,6 +12,28 @@ export const CommentListWrapper = styled.div`
 
 export const CommentListContainer = styled.div`
   margin-top: 16px;
+`;
+
+export const CommentListEmptyStateContainer = styled.div`
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const CommentListEmptyStateIcon = styled(EmptyStateCommentsIcon)``;
+
+export const CommentListEmptyStateText = styled(Typography)`
+  && {
+    font-size: 13px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.palette.grey57};
+    text-align: center;
+  }
 `;
 
 export const CommentItemContainer = styled.div`
@@ -35,29 +58,33 @@ export const CommentItemContainer = styled.div`
   `}
 `;
 
-export const CommentProfilePicture = (props) => (
-  <SafeImage
-    src={props?.src}
-    useNextImage={false}
-    style={{
-      width: '32px',
-      height: '32px',
-      borderRadius: '16px',
-      marginRight: '12px',
-    }}
-  />
-);
+export function CommentProfilePicture(props) {
+  return (
+    <SafeImage
+      src={props?.src}
+      useNextImage={false}
+      style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '16px',
+        marginRight: '12px',
+      }}
+    />
+  );
+}
 
-export const DefaultCommentProfilePicture = (props) => (
-  <DefaultUserImage
-    style={{
-      width: '32px',
-      height: '32px',
-      borderRadius: '16px',
-      marginRight: '12px',
-    }}
-  />
-);
+export function DefaultCommentProfilePicture(props) {
+  return (
+    <DefaultUserImage
+      style={{
+        width: '32px',
+        height: '32px',
+        borderRadius: '16px',
+        marginRight: '12px',
+      }}
+    />
+  );
+}
 
 export const CommentTopFlexDiv = styled.div`
   display: flex;

@@ -1,4 +1,4 @@
-const ParcelIcon = (props) => {
+function ParcelIcon(props) {
   return (
     <svg
       width={props?.width || '96'}
@@ -28,6 +28,6 @@ const ParcelIcon = (props) => {
       />
     </svg>
   );
-};
+}
 
 export default ParcelIcon;

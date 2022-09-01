@@ -306,7 +306,7 @@ export const CreateFormMainTitleInput = styled(TextField)({
       width: '100%',
     },
 
-    //text
+    // text
     fontSize: 14,
     lineHeight: '19px',
     letterSpacing: '0.01em',
@@ -340,7 +340,7 @@ export const CreateFormMainDescriptionInputSymbolCounter = styled(Typography)`
   }
 `;
 
-//Task Requirements Block
+// Task Requirements Block
 export const CreateFormTaskRequirements = styled.div`
   width: 100%;
   padding: 35px 40px 55px;
@@ -388,7 +388,7 @@ export const CreateFormTaskRequirementsItemText = styled(Typography)`
   }
 `;
 
-//Add more details block
+// Add more details block
 export const CreateFormAddDetailsSection = styled.div`
   position: relative;
   width: 100%;
@@ -493,7 +493,7 @@ export const CreateFormAddDetailsTabLabel = styled(CreateFormAddDetailsInputLabe
   }
 `;
 
-//members section
+// members section
 export const CreateFormMembersSection = styled.div`
   width: 100%;
   height: 280px;
@@ -539,7 +539,7 @@ export const CreateFormLinkAttachmentInput = styled(CreateFormMainTitleInput)`
   width: 100%;
 `;
 
-//bottom buttons
+// bottom buttons
 export const CreateFormFooterButtons = styled.div`
   width: 100%;
   display: flex;
@@ -579,7 +579,6 @@ export const CreateFormPreviewButton = styled(Button)`
     background: #0f0f0f;
     border: 1px solid deepskyblue;
     margin-left: 25px;
-
     //text
     font-weight: 500;
     font-size: 16px;
@@ -687,9 +686,9 @@ export const AutocompleteList = styled(Popper).attrs((props) => ({
   }
 `;
 
-export const StyledAutocompletePopper = styled(({ className, ...props }) => {
-  return <StyledAutocomplete {...props} classes={{ paper: className }} />;
-})`
+export const StyledAutocompletePopper = styled(({ className, ...props }) => (
+  <StyledAutocomplete {...props} classes={{ paper: className }} />
+))`
   && {
     background: #0f0f0f;
   }

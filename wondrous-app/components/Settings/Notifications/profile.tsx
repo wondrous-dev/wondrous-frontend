@@ -1,32 +1,19 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
-import { ImageUpload } from '../imageUpload';
-import {
-  GeneralSettingsButtonsBlock,
-  GeneralSettingsContainer,
-  GeneralSettingsResetButton,
-  GeneralSettingsSaveChangesButton,
-  LabelBlock,
-  DiscordText,
-} from '../styles';
 import { useMutation, useQuery } from '@apollo/client';
-import { UPDATE_USER } from 'graphql/mutations';
-import { getFilenameAndType, uploadMedia } from 'utils/media';
-import { ProfilePictureDiv } from '../../Onboarding/styles';
-import { SafeImage } from '../../Common/Image';
-import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
-import { ErrorText } from '../../Common';
-import Switch from '../../Common/Switch';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import Checkbox from 'components/Checkbox';
-import { getDiscordUrl } from 'utils';
-import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import {
+  UPDATE_USER,
   ENABLE_USER_DISCORD_NOTIFICATION_CONFIG,
   DISABLE_USER_DISCORD_NOTIFICATION_CONFIG,
   SET_USER_NOTIFICATION_SETTINGS,
 } from 'graphql/mutations';
+import { getFilenameAndType, uploadMedia } from 'utils/media';
+import { CHAR_LIMIT_PROFILE_BIO, DISCORD_CONNECT_TYPES, USERNAME_REGEX, validateEmail } from 'utils/constants';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import Checkbox from 'components/Checkbox';
+import { getDiscordUrl } from 'utils';
+import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
+import isEqual from 'lodash/isEqual';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import {
   UserDiscordNotificationSettingsDiv,
   UserDiscordNotificationSettingsText,
@@ -42,7 +29,20 @@ import {
   UserDiscordNotificationSettingsContainer,
   NotificationSettingsButtonsBlock,
 } from './styles';
-import isEqual from 'lodash/isEqual';
+import Switch from '../../Common/Switch';
+import { ErrorText } from '../../Common';
+import { SafeImage } from '../../Common/Image';
+import { ProfilePictureDiv } from '../../Onboarding/styles';
+import {
+  GeneralSettingsButtonsBlock,
+  GeneralSettingsContainer,
+  GeneralSettingsResetButton,
+  GeneralSettingsSaveChangesButton,
+  LabelBlock,
+  DiscordText,
+} from '../styles';
+import { ImageUpload } from '../imageUpload';
+import { HeaderBlock } from '../headerBlock';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({
@@ -114,7 +114,7 @@ const notificationsConfig = [
   },
 ];
 
-const ProfileSettings = (props) => {
+function ProfileSettings(props) {
   const { loggedInUser } = props;
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
@@ -244,59 +244,57 @@ const ProfileSettings = (props) => {
         ...errors,
         email: 'Please enter a valid email',
       });
-    } else {
-      if (username) {
-        let input = {
-          ...(username && {
-            username,
-          }),
-          ...(profileBio && {
-            bio: profileBio,
-          }),
-        };
-        if (email !== loggedInUser?.email) {
-          input['email'] = email;
-        }
-        if (profilePicture) {
-          const file = profilePicture;
-          const fileName = profilePicture.name;
-
-          // get image preview
-          const { fileType, filename } = getFilenameAndType(fileName);
-          const imagePrefix = `tmp/${loggedInUser?.id}/`;
-          const imageUrl = imagePrefix + filename;
-
-          await uploadMedia({ filename: imageUrl, fileType, file });
-          input['profilePicture'] = imageUrl;
-        }
-
-        // ----> Backend not Ready yet...
-        //   if(profileBanner) {
-        //     const file = profileBanner;
-        //     const fileName = profileBanner.name;
-
-        //     // get image preview
-        //     const { fileType, filename } = getFilenameAndType(fileName);
-        //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
-        //     const imageUrl = imagePrefix + filename;
-
-        //     await uploadMedia({ filename: imageUrl, fileType, file });
-        //     input['headerPicture'] = imageUrl;
-        //   }
-
-        updateUserProfile({
-          variables: {
-            input,
-          },
-          onCompleted: (data) => {
-            if (data?.updateUser?.profilePicture) {
-              setProfilePictureUrl(data?.updateUser?.profilePicture);
-            }
-            setSnackbarAlertOpen(true);
-            setSnackbarAlertMessage(<>User profile updated successfully</>);
-          },
-        });
+    } else if (username) {
+      const input: any = {
+        ...(username && {
+          username,
+        }),
+        ...(profileBio && {
+          bio: profileBio,
+        }),
+      };
+      if (email !== loggedInUser?.email) {
+        input.email = email;
       }
+      if (profilePicture) {
+        const file = profilePicture;
+        const fileName = profilePicture.name;
+
+        // get image preview
+        const { fileType, filename } = getFilenameAndType(fileName);
+        const imagePrefix = `tmp/${loggedInUser?.id}/`;
+        const imageUrl = imagePrefix + filename;
+
+        await uploadMedia({ filename: imageUrl, fileType, file });
+        input.profilePicture = imageUrl;
+      }
+
+      // ----> Backend not Ready yet...
+      //   if(profileBanner) {
+      //     const file = profileBanner;
+      //     const fileName = profileBanner.name;
+
+      //     // get image preview
+      //     const { fileType, filename } = getFilenameAndType(fileName);
+      //     const imagePrefix = `tmp/${loggedInUser?.id}/`;
+      //     const imageUrl = imagePrefix + filename;
+
+      //     await uploadMedia({ filename: imageUrl, fileType, file });
+      //     input['headerPicture'] = imageUrl;
+      //   }
+
+      updateUserProfile({
+        variables: {
+          input,
+        },
+        onCompleted: (data) => {
+          if (data?.updateUser?.profilePicture) {
+            setProfilePictureUrl(data?.updateUser?.profilePicture);
+          }
+          setSnackbarAlertOpen(true);
+          setSnackbarAlertMessage(<>User profile updated successfully</>);
+        },
+      });
     }
   };
 
@@ -326,7 +324,7 @@ const ProfileSettings = (props) => {
         <NotificationSettingsHeaderWrapper>
           <NotificationSettingsHeader>Notifications</NotificationSettingsHeader>
           <NotificationSettingsHeaderText>
-            {"We'll always let you know about important changes, but you pick what else you want to hear about"}
+            We'll always let you know about important changes, but you pick what else you want to hear about
           </NotificationSettingsHeaderText>
         </NotificationSettingsHeaderWrapper>
         <UserDiscordNotificationSettingsContainer>
@@ -335,7 +333,7 @@ const ProfileSettings = (props) => {
             <Switch
               checked={!!(isDiscordConnected && notificationOn)}
               disabled={!isDiscordConnected}
-              onChange={(e) => handleEnableDisableSwitch()}
+              onChange={() => handleEnableDisableSwitch()}
             />
           </UserDiscordNotificationSettingsDiv>
           {isDiscordConnected ? (
@@ -418,6 +416,6 @@ const ProfileSettings = (props) => {
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default ProfileSettings;

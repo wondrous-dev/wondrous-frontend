@@ -10,7 +10,7 @@ import Checkbox from 'components/Checkbox';
 
 import styles from './WeekDaySelectorStyles';
 
-const WeekDaySelector = ({ onWeekDaysChange, weekDaysSelected }) => {
+function WeekDaySelector({ onWeekDaysChange, weekDaysSelected }) {
   const { monday, tuesday, wednesday, thursday, friday, saturday, sunday } = weekDaysSelected;
 
   return (
@@ -66,6 +66,6 @@ const WeekDaySelector = ({ onWeekDaysChange, weekDaysSelected }) => {
       </FormControl>
     </Box>
   );
-};
+}
 
 export default WeekDaySelector;

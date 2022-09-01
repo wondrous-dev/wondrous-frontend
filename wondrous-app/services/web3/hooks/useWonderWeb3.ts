@@ -1,6 +1,4 @@
 import { BigNumber, ethers } from 'ethers';
-import useStoredConnector from './useStoredConnector';
-import connectors, { ConnectorName } from '../connectors';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 
@@ -8,7 +6,9 @@ import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES, NATIVE_TOKEN_SYMBOL 
 
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
-import useWeb3 from '../hooks/useWeb3';
+import connectors, { ConnectorName } from '../connectors';
+import useStoredConnector from './useStoredConnector';
+import useWeb3 from './useWeb3';
 import { WonderWeb3, WonderWeb3AssetMap } from './types';
 import { WonderWeb3Context } from '../context/WonderWeb3Context';
 /**
@@ -35,13 +35,9 @@ export default function useWonderWeb3(): WonderWeb3 {
   const { connecting, setConnecting } = useContext(WonderWeb3Context);
   const [lastChainId, setLastChainId] = useState(chainId);
 
-  const chainName = useMemo(() => {
-    return SUPPORTED_CHAINS[chainId] || 'none';
-  }, [chainId]);
+  const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || 'none', [chainId]);
 
-  const address = useMemo(() => {
-    return account;
-  }, [account]);
+  const address = useMemo(() => account, [account]);
 
   const addressTag = useMemo(() => {
     if (!address) {
@@ -49,28 +45,26 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
     if (ensName) {
       return ensName;
-    } else {
-      return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
     }
+    return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
   }, [address, ensName]);
 
-  const toChecksumAddress = (address: string) => {
-    return ethers.utils.getAddress(address);
-  };
+  const toChecksumAddress = (address: string) => ethers.utils.getAddress(address);
 
-  const wallet = useMemo(() => {
-    return {
+  const isValidAddress = (address: string) => ethers.utils.isAddress(address);
+
+  const wallet = useMemo(
+    () => ({
       account,
       address,
       chain: chainId,
       addressTag,
       assets,
-    };
-  }, [account, address, addressTag, assets, chainId]);
+    }),
+    [account, address, addressTag, assets, chainId]
+  );
 
-  const nativeTokenSymbol = useMemo(() => {
-    return NATIVE_TOKEN_SYMBOL[chainId];
-  }, [chainId]);
+  const nativeTokenSymbol = useMemo(() => NATIVE_TOKEN_SYMBOL[chainId], [chainId]);
 
   const onConnect = () => {
     if (!connector) return;
@@ -119,14 +113,12 @@ export default function useWonderWeb3(): WonderWeb3 {
     return null;
   };
 
-  const getChainCurrencies = () => {
-    return chainId ? SUPPORTED_CURRENCIES.filter((c) => c.chains.includes(chainId)) : [];
-  };
+  const getChainCurrencies = () => (chainId ? SUPPORTED_CURRENCIES.filter((c) => c.chains.includes(chainId)) : []);
 
   const getNativeChainBalance = async () => {
     const ethersProvider = new ethers.providers.Web3Provider(provider);
     const balance = await ethersProvider.getBalance(address);
-    const balanceFormatted = parseFloat(formatEther(balance)).toPrecision(4) + ' ';
+    const balanceFormatted = `${parseFloat(formatEther(balance)).toPrecision(4)} `;
     return balanceFormatted;
   };
 
@@ -153,7 +145,7 @@ export default function useWonderWeb3(): WonderWeb3 {
 
       // Get supported currencies for this chain
       const currencies = await getChainCurrencies();
-    
+
       const chainAssets = await currencies.reduce(async (acc, currency) => {
         const { contracts, symbol } = currency;
         const balance = contracts ? await getTokenBalance(currency) : await getNativeChainBalance();
@@ -169,7 +161,7 @@ export default function useWonderWeb3(): WonderWeb3 {
           },
         };
       }, {});
-    
+
       // Reset Assets based on Chain
       setAssets(chainAssets);
       setFetching(false);
@@ -186,7 +178,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     // If chain supports ENS...
     try {
       const prov = new ethers.providers.Web3Provider(provider);
-      let name = await prov.lookupAddress(address);
+      const name = await prov.lookupAddress(address);
       setENSName(name);
     } catch (err) {
       // Chain not supported. No problem
@@ -216,7 +208,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
   }, [chainId]);
 
-  const chain = chainId ? chainId : lastChainId;
+  const chain = chainId || lastChainId;
 
   const { setStoredConnector } = useStoredConnector();
 
@@ -243,6 +235,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     signMessage,
     web3Provider: provider,
     toChecksumAddress,
+    isValidAddress,
     connector,
     error,
     isActivating,

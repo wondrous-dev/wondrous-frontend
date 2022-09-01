@@ -26,7 +26,7 @@ export default function TemplateEllipsesIcon({
 
   return (
     <div style={{ zIndex: 9999 }}>
-      <TaskTemplateEllipsesIcon onClick={handleClick}></TaskTemplateEllipsesIcon>
+      <TaskTemplateEllipsesIcon onClick={handleClick} />
       <TemplateOptionsPopper open={open} placement="bottom-end" anchorEl={anchorEl}>
         <TaskTemplateOptionsLabel
           onClick={(event) => {

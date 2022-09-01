@@ -19,6 +19,14 @@ export const GET_ORG_FROM_USERNAME = gql`
   ${OrgFragment}
 `;
 
+export const IS_ORG_USERNAME_TAKEN = gql`
+  query isOrgUsernameTaken($username: String!) {
+    isOrgUsernameTaken(username: $username) {
+      exist
+    }
+  }
+`;
+
 export const GET_ORG_INVITE_ORG_INFO = gql`
   query getInvitedOrgInfo($token: String!) {
     getInvitedOrgInfo(token: $token) {
@@ -49,9 +57,6 @@ export const GET_ORG_USERS = gql`
         username
         profilePicture
         thumbnailPicture
-        additionalInfo {
-          podCount
-        }
         firstName
         lastName
         bio
@@ -156,8 +161,8 @@ export const SEARCH_ORG_USERS = gql`
   }
 `;
 export const GET_JOIN_ORG_REQUESTS = gql`
-  query getJoinOrgRequests($limit: Int, $offset: Int) {
-    getJoinOrgRequests(limit: $limit, offset: $offset) {
+  query getJoinOrgRequests($limit: Int, $offset: Int, $sortOrder: String, $orgId: ID, $podIds: [ID]) {
+    getJoinOrgRequests(limit: $limit, offset: $offset, sortOrder: $sortOrder, orgId: $orgId, podIds: $podIds) {
       id
       userId
       orgId

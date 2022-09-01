@@ -1,21 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import {
-  InviteWelcomeBoxParagraph,
-  InviteWelcomeBoxTitle,
-  InviteWelcomeBoxWrapper,
-  Connectors,
-  Logo,
-  DataProtectBoxParagraph,
-  DataLink,
-} from './styles';
 import { useWonderWeb3 } from 'services/web3';
 import { useIsMobile } from 'utils/hooks';
-import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
 import { useRouter } from 'next/router';
 import { DISCORD_CONNECT_TYPES, GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
-import { Button } from '../Common/button';
-import { SafeImage } from '../Common/Image';
-import { ErrorText } from '../Common';
 import { SupportedChainType } from 'utils/web3Constants';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import MetaMaskConnector from 'components/WalletConnectors/MetaMask';
@@ -27,8 +14,21 @@ import { EmailIcon } from 'components/Icons/email';
 import NoLogo from 'components/Icons/noLogo';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
+import { ErrorText } from '../Common';
+import { SafeImage } from '../Common/Image';
+import { Button } from '../Common/button';
+import { getUserSigningMessage, walletSignup, walletSignin } from '../Auth/withAuth';
+import {
+  InviteWelcomeBoxParagraph,
+  InviteWelcomeBoxTitle,
+  InviteWelcomeBoxWrapper,
+  Connectors,
+  Logo,
+  DataProtectBoxParagraph,
+  DataLink,
+} from './styles';
 
-export const Invite = ({
+export function Invite({
   orgInfo = null,
   redeemOrgInviteLink = (data: any) => null,
   podInfo = null,
@@ -36,7 +36,7 @@ export const Invite = ({
   children = null,
   title = null,
   onAuthenticated = (user) => null,
-}) => {
+}) {
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
   const [noChainError, setNoChainError] = useState('');
@@ -284,4 +284,4 @@ export const Invite = ({
       </div>
     </InviteWelcomeBoxWrapper>
   );
-};
+}

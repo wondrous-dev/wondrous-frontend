@@ -6,8 +6,9 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { PodBoardContext } from 'utils/contexts';
 import Analytics from 'components/Pod/analytics';
 import { useGetPodById } from 'utils/hooks';
+import EntitySidebar from 'components/Common/SidebarEntity';
 
-const AnalyticsPage = () => {
+function AnalyticsPage() {
   const router = useRouter();
   const { podId } = router.query;
   const getPodById = useGetPodById(podId);
@@ -25,9 +26,11 @@ const AnalyticsPage = () => {
           : null,
       }}
     >
-      <Analytics podId={podId} podData={getPodById} />
+      <EntitySidebar>
+        <Analytics podId={podId} podData={getPodById} />
+      </EntitySidebar>
     </PodBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(AnalyticsPage);

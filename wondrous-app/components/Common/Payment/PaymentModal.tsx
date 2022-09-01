@@ -1,8 +1,27 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography } from '@mui/material';
 import { Tab } from '@mui/material';
 import { BigNumber } from 'bignumber.js';
+import { GRAPHQL_ERRORS, BOUNTY_TYPE, PERMISSIONS } from 'utils/constants';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useRouter } from 'next/router';
+import Link from 'next/link';
+import palette from 'theme/palette';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { ErrorText } from 'components/Onboarding/styles';
+import { SafeImage } from '../Image';
+import { useMe } from '../../Auth/withAuth';
+import { DAOIcon } from '../../Icons/dao';
+import { OrganisationsCardNoLogo } from '../../profile/about/styles';
+import { OfflinePayment } from './OfflinePayment/OfflinePayment';
+import { SingleWalletPayment } from './SingleWalletPayment';
+import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
+import InputForm from '../InputForm/inputForm';
 import {
   PodNameTypography,
   PaymentModal,
@@ -19,27 +38,6 @@ import {
   SaveNewRewardAmountButton,
   CancelNewRewardAmountButton,
 } from './styles';
-import { GRAPHQL_ERRORS } from 'utils/constants';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { SafeImage } from '../Image';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { BOUNTY_TYPE, PERMISSIONS } from 'utils/constants';
-import { useMe } from '../../Auth/withAuth';
-import { useRouter } from 'next/router';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from './OfflinePayment/OfflinePayment';
-import { SingleWalletPayment } from './SingleWalletPayment';
-import Link from 'next/link';
-import palette from 'theme/palette';
-import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';
-import InputForm from '../InputForm/inputForm';
-import CloseModalIcon from 'components/Icons/closeModal';
-import { ErrorText } from 'components/Onboarding/styles';
 
 const GoBackStyle = {
   color: palette.white,
@@ -50,7 +48,7 @@ const GoBackStyle = {
   cursor: 'pointer',
 };
 
-export const MakePaymentModal = (props) => {
+export function MakePaymentModal(props) {
   const { open, handleClose, setShowPaymentModal, approvedSubmission, fetchedTask, getTaskSubmissionsForTask } = props;
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
@@ -171,163 +169,161 @@ export const MakePaymentModal = (props) => {
   };
 
   return (
-    <>
-      <Modal open={open} onClose={handleCloseAll}>
-        <PaymentModal>
-          <PaymentModalHeader>
-            {fetchedTask?.orgProfilePicture ? (
-              <SafeImage
-                useNextImage={false}
-                src={fetchedTask?.orgProfilePicture}
-                style={{
-                  width: '29px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  marginRight: '8px',
-                }}
-              />
-            ) : (
-              <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
-                <DAOIcon />
-              </OrganisationsCardNoLogo>
-            )}
-            {fetchedTask?.podName && (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
-              </div>
-            )}
-            <>
-              <PodNameTypography style={GoBackStyle} onClick={handleGoBackToTask}>
-                Back to Task
-              </PodNameTypography>
-            </>
-          </PaymentModalHeader>
-          <PaymentTitleDiv>
-            <PaymentTitleTextDiv>
-              <PaymentTitleText>
-                Payout
-                <span style={{ color: palette.blue20 }}>
-                  {' '}
-                  {rewardAmount} {tokenName?.toUpperCase()}{' '}
-                </span>
-                to{' '}
-                <Link href={`/profile/${payee.userId}/about`}>
-                  <a
-                    style={{
-                      color: '#ffffff',
-                      textDecoration: 'underline',
-                      cursor: 'pointer',
-                    }}
-                    target="_blank"
-                  >
-                    {payee.username}
-                  </a>
-                </Link>{' '}
-              </PaymentTitleText>
-              <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
-              {fetchedTask?.type === BOUNTY_TYPE && (
-                <>
-                  {changeRewardAmount ? (
-                    <>
-                      <ChangePaymentAmountDiv>
-                        <InputForm
-                          style={{
-                            marginTop: '12px',
-                            width: 'fit-content',
-                            paddingRight: '12px',
-                          }}
-                          type={'number'}
-                          min="0"
-                          placeholder="Enter new reward amount"
-                          search={false}
-                          value={changedRewardAmount}
-                          onChange={(e) => setChangedRewardAmount(e.target.value)}
-                        />
-                        <PaymentDescriptionText
-                          style={{
-                            marginLeft: '12px',
-                            marginTop: '12px',
-                          }}
-                        >
-                          {tokenName?.toUpperCase()}{' '}
-                        </PaymentDescriptionText>
-                        <SaveNewRewardAmountButton
-                          onClick={() => {
-                            const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
-                            const initialBigRewardAmount = new BigNumber(fetchedTask?.rewards[0]?.rewardAmount);
-                            if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
-                              setChangeRewardErrorText('New reward must be greater than minimum');
-                            } else {
-                              setRewardAmount(changedRewardAmount);
-                              setChangeRewardAmount(false);
-                              setUseChangedRewardAmount(true);
-                            }
-                          }}
-                        >
-                          Save changes
-                        </SaveNewRewardAmountButton>
-                        <CancelNewRewardAmountButton
-                          onClick={() => {
+    <Modal open={open} onClose={handleCloseAll}>
+      <PaymentModal>
+        <PaymentModalHeader>
+          {fetchedTask?.orgProfilePicture ? (
+            <SafeImage
+              useNextImage={false}
+              src={fetchedTask?.orgProfilePicture}
+              style={{
+                width: '29px',
+                height: '28px',
+                borderRadius: '4px',
+                marginRight: '8px',
+              }}
+            />
+          ) : (
+            <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
+              <DAOIcon />
+            </OrganisationsCardNoLogo>
+          )}
+          {fetchedTask?.podName && (
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+              }}
+            >
+              <PodNameTypography>{fetchedTask?.podName}</PodNameTypography>
+            </div>
+          )}
+          <>
+            <PodNameTypography style={GoBackStyle} onClick={handleGoBackToTask}>
+              Back to Task
+            </PodNameTypography>
+          </>
+        </PaymentModalHeader>
+        <PaymentTitleDiv>
+          <PaymentTitleTextDiv>
+            <PaymentTitleText>
+              Payout
+              <span style={{ color: palette.blue20 }}>
+                {' '}
+                {rewardAmount} {tokenName?.toUpperCase()}{' '}
+              </span>
+              to{' '}
+              <Link href={`/profile/${payee.userId}/about`}>
+                <a
+                  style={{
+                    color: '#ffffff',
+                    textDecoration: 'underline',
+                    cursor: 'pointer',
+                  }}
+                  target="_blank"
+                >
+                  {payee.username}
+                </a>
+              </Link>{' '}
+            </PaymentTitleText>
+            <PaymentDescriptionText>Task: {fetchedTask.title}</PaymentDescriptionText>
+            {fetchedTask?.type === BOUNTY_TYPE && (
+              <>
+                {changeRewardAmount ? (
+                  <>
+                    <ChangePaymentAmountDiv>
+                      <InputForm
+                        style={{
+                          marginTop: '12px',
+                          width: 'fit-content',
+                          paddingRight: '12px',
+                        }}
+                        type="number"
+                        min="0"
+                        placeholder="Enter new reward amount"
+                        search={false}
+                        value={changedRewardAmount}
+                        onChange={(e) => setChangedRewardAmount(e.target.value)}
+                      />
+                      <PaymentDescriptionText
+                        style={{
+                          marginLeft: '12px',
+                          marginTop: '12px',
+                        }}
+                      >
+                        {tokenName?.toUpperCase()}{' '}
+                      </PaymentDescriptionText>
+                      <SaveNewRewardAmountButton
+                        onClick={() => {
+                          const bigChangedRewardAmount = new BigNumber(changedRewardAmount);
+                          const initialBigRewardAmount = new BigNumber(fetchedTask?.rewards[0]?.rewardAmount);
+                          if (bigChangedRewardAmount.isLessThan(initialBigRewardAmount)) {
+                            setChangeRewardErrorText('New reward must be greater than minimum');
+                          } else {
+                            setRewardAmount(changedRewardAmount);
                             setChangeRewardAmount(false);
-                          }}
-                        >
-                          Cancel
-                        </CancelNewRewardAmountButton>
-                      </ChangePaymentAmountDiv>
-                      <ErrorText>{changeRewardErrorText}</ErrorText>
-                    </>
-                  ) : (
-                    <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
-                      Change payment amount
-                    </ChangePaymentButton>
-                  )}
-                </>
-              )}
-            </PaymentTitleTextDiv>
-          </PaymentTitleDiv>
-          <StyledTabs value={selectedTab}>
-            {PAYMENT_TABS.map((tab) => (
-              <Tab
-                style={{
-                  color: 'white !important',
-                }}
-                value={tab.name}
-                key={tab.name}
-                label={tab.label}
-                onClick={tab.action}
-              />
-            ))}
-          </StyledTabs>
-          <PaymentMethodWrapper>
-            {selectedTab === 'off_platform' && (
-              <OfflinePayment
-                handleClose={handleCloseAll}
-                approvedSubmission={approvedSubmission}
-                fetchedTask={fetchedTask}
-                submissionPaymentInfo={submissionPaymentInfo}
-              />
+                            setUseChangedRewardAmount(true);
+                          }
+                        }}
+                      >
+                        Save changes
+                      </SaveNewRewardAmountButton>
+                      <CancelNewRewardAmountButton
+                        onClick={() => {
+                          setChangeRewardAmount(false);
+                        }}
+                      >
+                        Cancel
+                      </CancelNewRewardAmountButton>
+                    </ChangePaymentAmountDiv>
+                    <ErrorText>{changeRewardErrorText}</ErrorText>
+                  </>
+                ) : (
+                  <ChangePaymentButton onClick={() => setChangeRewardAmount(true)}>
+                    Change payment amount
+                  </ChangePaymentButton>
+                )}
+              </>
             )}
-            {selectedTab === 'wallet' && (
-              <SingleWalletPayment
-                setShowPaymentModal={setShowPaymentModal}
-                approvedSubmission={approvedSubmission}
-                fetchedTask={fetchedTask}
-                wallets={wallets}
-                submissionPaymentInfo={submissionPaymentInfo}
-                orgId={approvedSubmission?.orgId}
-                podId={approvedSubmission?.podId}
-                changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
-                parentError={submissionPaymentError}
-              />
-            )}
-          </PaymentMethodWrapper>
-        </PaymentModal>
-      </Modal>
-    </>
+          </PaymentTitleTextDiv>
+        </PaymentTitleDiv>
+        <StyledTabs value={selectedTab}>
+          {PAYMENT_TABS.map((tab) => (
+            <Tab
+              style={{
+                color: 'white !important',
+              }}
+              value={tab.name}
+              key={tab.name}
+              label={tab.label}
+              onClick={tab.action}
+            />
+          ))}
+        </StyledTabs>
+        <PaymentMethodWrapper>
+          {selectedTab === 'off_platform' && (
+            <OfflinePayment
+              handleClose={handleCloseAll}
+              approvedSubmission={approvedSubmission}
+              fetchedTask={fetchedTask}
+              submissionPaymentInfo={submissionPaymentInfo}
+            />
+          )}
+          {selectedTab === 'wallet' && (
+            <SingleWalletPayment
+              setShowPaymentModal={setShowPaymentModal}
+              approvedSubmission={approvedSubmission}
+              fetchedTask={fetchedTask}
+              wallets={wallets}
+              submissionPaymentInfo={submissionPaymentInfo}
+              orgId={approvedSubmission?.orgId}
+              podId={approvedSubmission?.podId}
+              changedRewardAmount={useChangedRewardAmount ? rewardAmount : null}
+              parentError={submissionPaymentError}
+            />
+          )}
+        </PaymentMethodWrapper>
+      </PaymentModal>
+    </Modal>
   );
-};
+}

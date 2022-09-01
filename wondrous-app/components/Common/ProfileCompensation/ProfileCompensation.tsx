@@ -1,7 +1,7 @@
 import { SafeImage } from '../Image';
 import { CompensationWrapper, IconContainer, CompensationPill } from './styles';
 
-const ProfileCompensation = ({ rewards, taskIcon, style, pillStyle = {} }) => {
+function ProfileCompensation({ rewards, taskIcon, style, pillStyle = {} }) {
   const { icon, rewardAmount, symbol } = rewards[0] || {};
 
   return (
@@ -27,10 +27,10 @@ const ProfileCompensation = ({ rewards, taskIcon, style, pillStyle = {} }) => {
             </p>
           </>
         )}
-        {taskIcon ? taskIcon : null}
+        {taskIcon || null}
       </CompensationPill>
     </CompensationWrapper>
   );
-};
+}
 
 export default ProfileCompensation;

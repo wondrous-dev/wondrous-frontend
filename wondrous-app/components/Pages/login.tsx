@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import { Logotype } from '../Common/ci';
 import palette from 'theme/palette';
+import { Logotype } from '../Common/ci';
 
 export const SmallLogo = styled(Logotype)`
   && {

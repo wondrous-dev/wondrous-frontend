@@ -54,44 +54,43 @@ export const CLAIM_POD_ROLE = gql`
 export const APPLY_TOKEN_GATING_TO_ORG_ROLE = gql`
   mutation applyTokenGatingToOrgRole($tokenGatingConditionId: ID!, $orgRoleId: ID!) {
     applyTokenGatingToOrgRole(tokenGatingConditionId: $tokenGatingConditionId, orgRoleId: $orgRoleId) {
-      id  # these returns probably not needed
+      id # these returns probably not needed
       name
       default
       permissions
     }
   }
-`
+`;
 
 export const APPLY_TOKEN_GATING_TO_POD_ROLE = gql`
   mutation applyTokenGatingToPodRole($tokenGatingConditionId: ID!, $podRoleId: ID!) {
     applyTokenGatingToPodRole(tokenGatingConditionId: $tokenGatingConditionId, podRoleId: $podRoleId) {
-      id  # these returns probably not needed
+      id # these returns probably not needed
       name
       default
       permissions
     }
   }
-`
-
+`;
 
 export const REMOVE_TOKEN_GATING_FROM_ORG_ROLE = gql`
   mutation removeTokenGatingFromOrgRole($orgRoleId: ID!) {
     removeTokenGatingFromOrgRole(orgRoleId: $orgRoleId) {
-      id  # these returns probably not needed
+      id # these returns probably not needed
       name
       default
       permissions
     }
   }
-`
+`;
 
 export const REMOVE_TOKEN_GATING_FROM_POD_ROLE = gql`
-  mutation removeTokenGatingFromOrgRole($podRoleId: ID!) {
-    removeTokenGatingFromOrgRole(podRoleId: $podRoleId) {
-      id  # these returns probably not needed
+  mutation removeTokenGatingFromPodRole($podRoleId: ID!) {
+    removeTokenGatingFromPodRole(podRoleId: $podRoleId) {
+      id # these returns probably not needed
       name
       default
       permissions
     }
   }
-`
+`;

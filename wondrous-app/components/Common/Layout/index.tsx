@@ -1,21 +1,45 @@
-import React, { useState } from 'react';
-import { SIDEBAR_WIDTH } from 'utils/constants';
-import HeaderComponent from 'components/Header';
-import SideBarComponent from 'components/SideBar';
-import { toggleHtmlOverflow } from 'utils/helpers';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import { useRouter } from 'next/router';
-import { SectionWrapper } from './styles';
+import React, { useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
-import { GET_USER_ORGS } from 'graphql/queries';
-import { SideBarContext, CreateEntityContext } from 'utils/contexts';
+import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GlobalContext, SideBarContext } from 'utils/contexts';
+import { LIMIT } from 'services/board';
+
+import SideBarComponent from 'components/Common/SidebarMain';
+import HeaderComponent from 'components/Header';
+import { useRouter } from 'next/router';
+import { PAGES_WITH_NO_SIDEBAR, SIDEBAR_WIDTH } from 'utils/constants';
+import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
-import { PAGES_WITH_NO_SIDEBAR } from 'utils/constants';
+
+import { SectionWrapper } from './styles';
+
+const getOrgsList = (userOrgs, router) => {
+  if (!userOrgs?.getUserOrgs) return [];
+  const { getUserOrgs } = userOrgs;
+  return getUserOrgs.map((item) => ({
+    ...item,
+    isActive: router.pathname.includes('/organization/[username]') && router.query?.username === item.username,
+  }));
+};
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
 
+  const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const {
+    data: notifications,
+    refetch,
+    fetchMore: fetchMoreNotifications,
+    loading: notificationsLoading,
+  } = useQuery(GET_NOTIFICATIONS, {
+    variables: {
+      offset: 0,
+      limit: LIMIT,
+    },
+  });
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
@@ -28,32 +52,40 @@ export default function SidebarLayout({ children }) {
     setCreateFormModal((prevState) => !prevState);
   };
 
+  const orgsList = getOrgsList(userOrgs, router);
+  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
+  const sidebarValue = useMemo(
+    () => ({
+      minimized,
+      setMinimized,
+      orgsList,
+    }),
+    [minimized, orgsList]
+  );
+
   if (PAGES_WITH_NO_SIDEBAR.includes(router.pathname)) {
     return children;
   }
-
-  const width = minimized || isMobile ? '0px' : SIDEBAR_WIDTH;
-
   return (
-    <>
-      <SideBarContext.Provider
+    <SideBarContext.Provider value={sidebarValue}>
+      <SideBarComponent userOrgs={userOrgs} />
+      <GlobalContext.Provider
         value={{
-          minimized,
-          setMinimized,
+          isCreateEntityModalOpen: createFormModal,
+          toggleCreateFormModal,
+          userOrgs,
+          userPermissionsContext: userPermissionsContext?.getUserPermissionContext
+            ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+            : null,
+          notifications: notifications?.getNotifications,
+          refetchNotifications: refetch,
+          fetchMoreNotifications,
+          notificationsLoading,
         }}
       >
-        <SideBarComponent userOrgs={userOrgs} />
-        <CreateEntityContext.Provider
-          value={{
-            isCreateEntityModalOpen: createFormModal,
-            toggleCreateFormModal: toggleCreateFormModal,
-            userOrgs: userOrgs,
-          }}
-        >
-          <HeaderComponent />
-          <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
-        </CreateEntityContext.Provider>
-      </SideBarContext.Provider>
-    </>
+        <HeaderComponent />
+        <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+      </GlobalContext.Provider>
+    </SideBarContext.Provider>
   );
 }

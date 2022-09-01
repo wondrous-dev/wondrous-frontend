@@ -10,6 +10,8 @@ import {
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityTextfieldInputTemplate,
 } from 'components/CreateEntity/CreateEntityModal/styles';
+import { MODAL_ACTIONS } from 'utils/constants';
+import { Typography } from '@mui/material';
 import {
   CreateEntityDefaultDaoImage,
   PodSearchLabel,
@@ -42,10 +44,8 @@ import {
   TaskTemplateActionContainer,
 } from './styles';
 import TemplateEllipsesIcon from './TemplateEllipsesIcon';
-import { MODAL_ACTIONS } from 'utils/constants';
-import { Typography } from '@mui/material';
 
-const TaskTemplatePicker = (props) => {
+function TaskTemplatePicker(props) {
   const {
     options,
     onChange,
@@ -93,19 +93,19 @@ const TaskTemplatePicker = (props) => {
   const handlePressDeleteTemplate = (templateId) => {
     handleDeleteTemplate(templateId);
   };
-  const TaskTemplateOpen = () => {
+  function TaskTemplateOpen() {
     return (
       <TaskTemplateActionPopper
         open={open}
         anchorEl={anchorEl}
         placement="top-start"
-        disablePortal={true}
+        disablePortal
         style={sizingForPopperContainer()}
       >
         <TaskTemplateTitleBar>
           <TaskTemplateTitle>Templates</TaskTemplateTitle>
           <TaskTemplateCloseIcon
-            color={'#FFFFFF'}
+            color="#FFFFFF"
             onClick={() => {
               setAnchorEl(false);
               setSaveOrOpen(MODAL_ACTIONS.NONE);
@@ -115,38 +115,37 @@ const TaskTemplatePicker = (props) => {
         {loading ? (
           <TaskTemplateLabelValue>loading!</TaskTemplateLabelValue>
         ) : data?.getTaskTemplatesByUserId.length > 0 ? (
-          data?.getTaskTemplatesByUserId.map((template, index) => {
-            return (
-              <TaskTemplateContainer
-                onClick={() => {
-                  handleSubmitTemplate(template);
-                  setUsedTemplate(template);
-                  setAnchorEl(false);
-                }}
-                key={index}
-              >
-                <TaskTemplateSpecificTitleBar>
-                  <PodSearchListItem>
-                    <TaskTemplateIcon color={template?.color} />
-                    <PodSearchLabel>{template?.name}</PodSearchLabel>
-                  </PodSearchListItem>
-                  <TemplateEllipsesIcon
-                    templateId={template?.id}
-                    handleEditTemplate={handlePressEditTemplate}
-                    handleDeleteTemplate={handlePressDeleteTemplate}
-                  />
-                </TaskTemplateSpecificTitleBar>
-                <TaskTemplateBorderLine />
+          data?.getTaskTemplatesByUserId.map((template, index) => (
+            <TaskTemplateContainer
+              onClick={() => {
+                handleSubmitTemplate(template);
+                setUsedTemplate(template);
+                setAnchorEl(false);
+              }}
+              key={index}
+            >
+              <TaskTemplateSpecificTitleBar>
+                <PodSearchListItem>
+                  <TaskTemplateIcon color={template?.color} />
+                  <PodSearchLabel>{template?.name}</PodSearchLabel>
+                </PodSearchListItem>
+                <TemplateEllipsesIcon
+                  templateId={template?.id}
+                  handleEditTemplate={handlePressEditTemplate}
+                  handleDeleteTemplate={handlePressDeleteTemplate}
+                />
+              </TaskTemplateSpecificTitleBar>
+              <TaskTemplateBorderLine />
 
-                <TaskTemplateListItems>
-                  <TaskTemplateLabelValue style={{ fontWeight: '500', color: '#FFFFFF' }}>
-                    {template?.title}
-                  </TaskTemplateLabelValue>
-                  <TaskTemplateLabelValue style={{ fontWeight: '400', color: '#FFFFFF' }}>
-                    <RichTextViewer text={template?.description} />
-                  </TaskTemplateLabelValue>
+              <TaskTemplateListItems>
+                <TaskTemplateLabelValue style={{ fontWeight: '500', color: '#FFFFFF' }}>
+                  {template?.title}
+                </TaskTemplateLabelValue>
+                <TaskTemplateLabelValue style={{ fontWeight: '400', color: '#FFFFFF' }}>
+                  <RichTextViewer text={template?.description} />
+                </TaskTemplateLabelValue>
 
-                  {/* 
+                {/* 
   
                     Just in case we want to add reviewer and assignee later on:
   
@@ -164,28 +163,27 @@ const TaskTemplatePicker = (props) => {
                     
                     */}
 
-                  <TaskTemplateRewardContainer>
-                    {template?.rewards?.[0] ? (
-                      <TaskTemplateRewardBox>
-                        <TaskTemplateEthereumIcon />
-                        <TaskTemplateRewardValue>
-                          {template?.rewards?.[0]?.rewardAmount}{' '}
-                          {getPaymentMethodData(template?.rewards?.[0]?.paymentMethodId)?.symbol}
-                        </TaskTemplateRewardValue>
-                      </TaskTemplateRewardBox>
-                    ) : null}
-                    {template?.points ? (
-                      <TaskTemplateRewardBox>
-                        <CreateEntityDefaultDaoImage onClick={handleEllipsesClick} />
+                <TaskTemplateRewardContainer>
+                  {template?.rewards?.[0] ? (
+                    <TaskTemplateRewardBox>
+                      <TaskTemplateEthereumIcon />
+                      <TaskTemplateRewardValue>
+                        {template?.rewards?.[0]?.rewardAmount}{' '}
+                        {getPaymentMethodData(template?.rewards?.[0]?.paymentMethodId)?.symbol}
+                      </TaskTemplateRewardValue>
+                    </TaskTemplateRewardBox>
+                  ) : null}
+                  {template?.points ? (
+                    <TaskTemplateRewardBox>
+                      <CreateEntityDefaultDaoImage onClick={handleEllipsesClick} />
 
-                        <TaskTemplatePointsValue>{template?.points} points</TaskTemplatePointsValue>
-                      </TaskTemplateRewardBox>
-                    ) : null}
-                  </TaskTemplateRewardContainer>
-                </TaskTemplateListItems>
-              </TaskTemplateContainer>
-            );
-          })
+                      <TaskTemplatePointsValue>{template?.points} points</TaskTemplatePointsValue>
+                    </TaskTemplateRewardBox>
+                  ) : null}
+                </TaskTemplateRewardContainer>
+              </TaskTemplateListItems>
+            </TaskTemplateContainer>
+          ))
         ) : (
           <TaskTemplateLabelValue
             style={{
@@ -197,7 +195,7 @@ const TaskTemplatePicker = (props) => {
         )}
       </TaskTemplateActionPopper>
     );
-  };
+  }
 
   const renderContainer = () => {
     if (saveOrOpen === MODAL_ACTIONS.OPEN) {
@@ -208,7 +206,7 @@ const TaskTemplatePicker = (props) => {
         open={open}
         anchorEl={anchorEl}
         placement="top-start"
-        disablePortal={true}
+        disablePortal
         style={sizingForPopperContainer()}
       >
         <TaskTemplateOptionsLabel
@@ -232,7 +230,8 @@ const TaskTemplatePicker = (props) => {
   const sizingForPopperContainer = () => {
     if (saveOrOpen === MODAL_ACTIONS.SAVE) {
       return { width: 500, padding: '0px' };
-    } else if (saveOrOpen === MODAL_ACTIONS.OPEN) {
+    }
+    if (saveOrOpen === MODAL_ACTIONS.OPEN) {
       return { height: 600, width: 500, padding: '24px' };
     }
     return null;
@@ -246,7 +245,7 @@ const TaskTemplatePicker = (props) => {
       <div>
         <TaskTemplateModal open={open} disabled={!options || disabled} onClick={handleClick}>
           <TaskTemplateLabelWrapper>
-            {usedTemplate ? <TaskTemplateIcon color={'474747'} /> : null}
+            {usedTemplate ? <TaskTemplateIcon color="474747" /> : null}
             <TaskTemplateLabel>{usedTemplate?.name ?? `Select Template`}</TaskTemplateLabel>
           </TaskTemplateLabelWrapper>
           {usedTemplate ? (
@@ -267,14 +266,14 @@ const TaskTemplatePicker = (props) => {
             open={open}
             anchorEl={anchorEl}
             placement="top-start"
-            disablePortal={true}
+            disablePortal
             style={sizingForPopperContainer()}
           >
             <TaskTemplateSaveTopContainer>
               <TaskTemplateTitleBar style={{ marginBottom: '18px' }}>
                 <TaskTemplateTitle>Save as preset?</TaskTemplateTitle>
                 <TaskTemplateCloseIcon
-                  color={'#FFFFFF'}
+                  color="#FFFFFF"
                   onClick={() => {
                     setAnchorEl(false);
                     setSaveOrOpen('none');
@@ -293,7 +292,7 @@ const TaskTemplatePicker = (props) => {
                 }}
                 placeholder="Enter name for template"
                 value={templateValue}
-                fullWidth={true}
+                fullWidth
                 InputProps={{
                   inputComponent: CreateEntityTextfieldInputTemplate,
                   endAdornment: (
@@ -336,6 +335,6 @@ const TaskTemplatePicker = (props) => {
       </div>
     </TaskTemplateClickAway>
   );
-};
+}
 
 export default TaskTemplatePicker;

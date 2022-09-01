@@ -10,7 +10,7 @@ import {
   TaskSubtasksFilterSelectWrapper,
 } from './styles';
 
-const MilestoneTaskFilterSelected = ({ status }) => {
+function MilestoneTaskFilterSelected({ status }) {
   const { Icon, label } = TASK_ICONS_LABELS[status];
   return (
     <TaskSubtasksFilterSelectWrapper>
@@ -20,7 +20,7 @@ const MilestoneTaskFilterSelected = ({ status }) => {
       {label}
     </TaskSubtasksFilterSelectWrapper>
   );
-};
+}
 
 const useAnchorEl = () => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -30,7 +30,7 @@ const useAnchorEl = () => {
   return { anchorEl, handleClick, handleClose, open };
 };
 
-export const TaskSubtaskFilter = ({ status, setStatus }) => {
+export function TaskSubtaskFilter({ status, setStatus }) {
   const { anchorEl, handleClick, handleClose, open } = useAnchorEl();
   const handleSelect = (item) => () => {
     setStatus(item);
@@ -58,4 +58,4 @@ export const TaskSubtaskFilter = ({ status, setStatus }) => {
       </TaskSubtasksFilterMenu>
     </>
   );
-};
+}

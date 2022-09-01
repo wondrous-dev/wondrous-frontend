@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { DELETE_MILESTONE, DELETE_TASK, DELETE_TASK_PROPOSAL } from 'graphql/mutations';
 import CloseModalIcon from 'components/Icons/closeModal';
-import { ArchivedIcon } from '../../Icons/statusIcons';
+import { deleteTaskFromCache } from 'utils/helpers';
+import { ArchivedIcon } from 'components/Icons/statusIcons';
 import {
   StyledBody,
   StyledBox,
@@ -23,12 +24,9 @@ interface IArchiveTaskModalProps {
   onDelete: () => void;
 }
 
-export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
+export function DeleteTaskModal(props: IArchiveTaskModalProps) {
   const { open, onClose, onDelete, taskType, taskId } = props;
   const refetchQueries = [
-    'getUserTaskBoardTasks',
-    'getOrgTaskBoardTasks',
-    'getPodTaskBoardTasks',
     'getPerStatusTaskCountForUserBoard',
     'getPerStatusTaskCountForOrgBoard',
     'getPerStatusTaskCountForPodBoard',
@@ -40,16 +38,26 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },
     refetchQueries,
+    update: (cache) =>
+      deleteTaskFromCache(cache, taskId, ['getUserTaskBoardTasks', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks']),
   });
   const [deleteMilestone] = useMutation(DELETE_MILESTONE, {
     variables: { milestoneId: taskId },
     refetchQueries,
+    update: (cache) =>
+      deleteTaskFromCache(cache, taskId, ['getUserTaskBoardTasks', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks']),
   });
 
   const [deleteProposal] = useMutation(DELETE_TASK_PROPOSAL, {
     variables: { proposalId: taskId },
+    update: (cache) =>
+      deleteTaskFromCache(cache, taskId, [
+        'getOrgTaskBoardProposals',
+        'getPodTaskBoardProposals',
+        'getUserTaskBoardProposals',
+        'getProposalsUserCanReview',
+      ]),
     refetchQueries: [
-      'GetOrgTaskBoardProposals',
       'getPerStatusTaskCountForUserBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
@@ -73,29 +81,27 @@ export const DeleteTaskModal = (props: IArchiveTaskModalProps) => {
   };
 
   return (
-    <>
-      <StyledDialog
-        open={open}
-        onClose={onClose}
-        aria-labelledby="delete-task-modal"
-        aria-describedby="modal-modal-description"
-      >
-        <StyledBox>
-          <StyledCloseButton onClick={onClose}>
-            <CloseModalIcon />
-          </StyledCloseButton>
-          <StyledHeader>Delete this {taskType}?</StyledHeader>
-          <StyledBody>You cannot undo this action.</StyledBody>
-          <StyledDivider />
-          <StyledButtonsContainer>
-            <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-            <StyledDeleteTaskButton>
-              <ArchivedIcon />
-              <StyledDeleteLabel onClick={() => handleDelete()}>Delete {taskType}</StyledDeleteLabel>
-            </StyledDeleteTaskButton>
-          </StyledButtonsContainer>
-        </StyledBox>
-      </StyledDialog>
-    </>
+    <StyledDialog
+      open={open}
+      onClose={onClose}
+      aria-labelledby="delete-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <StyledBox>
+        <StyledCloseButton onClick={onClose}>
+          <CloseModalIcon />
+        </StyledCloseButton>
+        <StyledHeader>Delete this {taskType}?</StyledHeader>
+        <StyledBody>You cannot undo this action.</StyledBody>
+        <StyledDivider />
+        <StyledButtonsContainer>
+          <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
+          <StyledDeleteTaskButton onClick={() => handleDelete()}>
+            <ArchivedIcon />
+            <StyledDeleteLabel>Delete {taskType}</StyledDeleteLabel>
+          </StyledDeleteTaskButton>
+        </StyledButtonsContainer>
+      </StyledBox>
+    </StyledDialog>
   );
-};
+}

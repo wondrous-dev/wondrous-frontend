@@ -1,8 +1,10 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
+import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import Boards from 'components/organization/boards/boards';
+import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from 'graphql/queries/org';
+import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
@@ -17,30 +19,26 @@ import React, { useCallback, useEffect, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import {
   LIMIT,
-  populateTaskColumns,
-  populateProposalColumns,
   ORG_POD_COLUMNS,
   ORG_POD_PROPOSAL_COLUMNS,
+  populateProposalColumns,
+  populateTaskColumns,
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns } from 'utils';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import { dedupeColumns, insertUrlParam } from 'utils';
+import { sectionOpeningReducer } from 'utils/board';
 import {
-  STATUSES_ON_ENTITY_TYPES,
-  PRIVACY_LEVEL,
-  STATUS_OPEN,
-  TASK_STATUSES,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
   ENTITIES_TYPES,
+  PRIVACY_LEVEL,
+  PROPOSAL_STATUS_LIST,
   STATUS_APPROVED,
   STATUS_CLOSED,
-  PROPOSAL_STATUS_LIST,
+  STATUS_OPEN,
+  STATUSES_ON_ENTITY_TYPES,
+  TASK_STATUSES,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import { insertUrlParam } from 'utils';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
@@ -97,7 +95,7 @@ const useGetOrgTaskBoardTasks = ({
       const taskBoardStatuses =
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
-          : //double check in case we add new stuff and have no valid entityType.
+          : // double check in case we add new stuff and have no valid entityType.
             STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
       const taskBoardLimit = taskBoardStatuses.length > 0 ? LIMIT : 0;
       getOrgTaskBoardTasks({
@@ -138,7 +136,7 @@ const useGetOrgTaskBoardTasks = ({
     });
   };
 
-  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus: fetchPerStatus };
+  return { fetchMore: getOrgTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
 const useGetTaskRelatedToUser = ({
@@ -177,7 +175,7 @@ const useGetTaskRelatedToUser = ({
       variables: {
         offset:
           entityType === ENTITIES_TYPES.TASK
-            ? columns.reduce((prev, next) => (prev = prev + next.tasks.length), 0)
+            ? columns.reduce((prev, next) => (prev += next.tasks.length), 0)
             : columns.length,
       },
       updateQuery: (prev, { fetchMoreResult }) => {
@@ -349,7 +347,7 @@ const useGetOrgTaskBoard = ({
   return { fetchMore, fetchPerStatus };
 };
 
-const BoardsPage = () => {
+function BoardsPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
@@ -661,24 +659,26 @@ const BoardsPage = () => {
       }}
     >
       {isMobile ? <MobileComingSoonModal /> : null}
-      <Boards
-        columns={columns}
-        searchString={searchString}
-        onLoadMore={fetchMore}
-        onSearch={handleSearch}
-        onFilterChange={handleFilterChange}
-        hasMore={orgTaskHasMore}
-        orgData={orgData}
-        statuses={filters?.statuses}
-        podIds={filters?.podIds}
-        setColumns={setColumns}
-        loading={isLoading}
-        entityType={entityType}
-        userId={userId?.toString()}
-        activeView={activeView}
-      />
+      <EntitySidebar>
+        <Boards
+          columns={columns}
+          searchString={searchString}
+          onLoadMore={fetchMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          hasMore={orgTaskHasMore}
+          orgData={orgData}
+          statuses={filters?.statuses}
+          podIds={filters?.podIds}
+          setColumns={setColumns}
+          loading={isLoading}
+          entityType={entityType}
+          userId={userId?.toString()}
+          activeView={activeView}
+        />
+      </EntitySidebar>
     </OrgBoardContext.Provider>
   );
-};
+}
 
 export default withAuth(BoardsPage);

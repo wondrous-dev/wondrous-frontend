@@ -26,11 +26,17 @@ export const SettingsContainer = styled.div`
 `;
 
 export const SettingsSidebar = styled.div`
-  margin: 70px 0 0 0px;
-  min-width: 350px;
-  width: 350px;
-  padding: 55px 20px 50px 35px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  background: ${({ theme }) => theme.palette.black92};
+  flex-direction: column;
+  gap: 28px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  padding-top: 94px;
+  position: fixed;
+  width: 260px;
+  display: flex;
+  ${({ minimized }) => minimized && `left: -100%`};
 `;
 
 export const SettingsSidebarContainer = styled.div`
@@ -62,49 +68,61 @@ export const SettingsSidebarTabsSectionLabel = styled(Typography)`
 
 export const SettingsSidebarTabsListContainer = styled(List)`
   && {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 20px;
-  }
-  & > li {
-    margin-top: 2px;
   }
 `;
 
 export const SettingsSidebarTabsListItem = styled(ListItem)`
   && {
-    background: ${(props) => props.active && '#313131'};
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 4px;
     width: 100%;
-    height: 40px;
-    padding: 4px;
+    height: 32px;
+    padding: 1px;
+    border-radius: 4px;
+    background: transparent;
+    background: ${({ active }) => active && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
+    cursor: pointer;
     :hover {
-      cursor: pointer;
-      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
-      outline: 1px solid #313131;
-    }
-    > * {
-      margin-left: 10px;
-    }
-    > :first-child {
-      margin-left: 0;
+      background: #313131;
     }
   }
 `;
 
-export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
+export const ItemButtonInner = styled.div`
+  border-radius: 3px;
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  padding-left: 0px;
+  background: ${({ active }) => active && '#313131'};
+  ${SettingsSidebarTabsListItem}:hover & {
+    background: #313131;
+  }
+`;
+
+export const SettingsSidebarTabsListItemIcon = styled.div`
   && {
     min-width: 0;
-    width: 32px;
-    height: 32px;
-    background: #0f0f0f;
+    width: 22px;
+    height: 22px;
+    background: #313131;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+    svg {
+      width: 12px;
+      height: auto;
+    }
   }
   & path {
+    stroke: #ffffff;
     stroke: ${(props) => props.active && '#30c7ff'};
   }
   ${SettingsSidebarTabsListItem}:hover & {
@@ -125,12 +143,13 @@ export const SettingsSidebarTabsListItemText = styled(Typography)`
 `;
 
 export const SettingsContentBlock = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 140px 120px;
   background-color: #0f0f0f;
+  height: 100%;
   overflow-y: auto;
-  min-height: 100vh;
+  padding-left: 380px;
+  padding-top: 140px;
+  padding-right: 120px;
+  width: 100%;
 `;
 
 export const SettingsDaoPodIndicator = styled(Box)`
@@ -184,12 +203,12 @@ export const SettingsDaoPodIndicatorIconWrapper = styled.div`
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  background: ${({ color }) => (color ? color : '#0f0f0f')};
+  background: ${({ color }) => color || '#0f0f0f'};
   width: 24px;
   height: 24px;
 `;
 
-//headerBlock.tsx styles
+// headerBlock.tsx styles
 export const SettingsHeaderBlock = styled.div`
   position: relative;
   width: 100%;
@@ -254,7 +273,7 @@ export const SettingsHeaderInviteButtonIcon = styled.div`
   border-radius: 1000px;
 `;
 
-//general settings styles
+// general settings styles
 export const GeneralSettingsContainer = styled.div`
   height: 100%;
   width: 555px;
@@ -331,7 +350,7 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
   }
 `;
 
-//socials block
+// socials block
 export const GeneralSettingsSocialsBlock = styled.div`
   padding: 30px 0 15px;
   border-bottom: 1px solid #363636;
@@ -359,7 +378,7 @@ export const GeneralSettingsSocialsBlockRowLabel = styled.div`
   margin-right: 10px;
 `;
 
-//integrations block
+// integrations block
 export const GeneralSettingsIntegrationsBlock = styled.div`
   width: 100%;
   padding: 28px 0;
@@ -390,7 +409,7 @@ export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   }
 `;
 
-//buttons block
+// buttons block
 export const GeneralSettingsButtonsBlock = styled.div`
   padding: 30px 0;
   display: flex;
@@ -423,7 +442,7 @@ export const GeneralSettingsSaveChangesButton = styled(Button)`
   }
 `;
 
-//imageUpload.tsx section
+// imageUpload.tsx section
 export const ImageUploadBlock = styled.div`
   width: 100%;
   padding: 30px 0;
@@ -476,13 +495,33 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
     font-size: 12px;
     line-height: 15px;
     color: #cb3340;
-    width: 50px;
     padding: 0 !important;
     min-width: 0 !important;
+    text-decoration: underline;
+  }
+`;
+export const CloseButton = styled.button`
+  position: absolute;
+  right: -8px;
+  top: 12px;
+  cursor: pointer;
+  background: #1c1c1c;
+  border-radius: 50%;
+  display: flex;
+  padding: 3px;
+  border: 1px solid #363636;
+
+  &:hover {
+    background: #363636;
   }
 `;
 
-//LinkSquareIcon.tsx
+export const UploadedImage = styled.div`
+  position: relative;
+  width: fit-content;
+`;
+
+// LinkSquareIcon.tsx
 export const LinkSquareIconWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -493,7 +532,7 @@ export const LinkSquareIconWrapper = styled.div`
   padding: 10px;
 `;
 
-//InputField.tsx
+// InputField.tsx
 export const LinkInputField = styled(InputBase)`
   && {
     width: 333px;

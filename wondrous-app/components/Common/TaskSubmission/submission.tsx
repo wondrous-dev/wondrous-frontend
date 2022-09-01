@@ -1,13 +1,14 @@
 import { useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
-import { UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { UPDATE_TASK, UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
-import { delQuery } from 'utils';
+import Checkbox from 'components/Checkbox';
+import { useState, useEffect } from 'react';
 import {
   ENTITIES_TYPES,
+  TASK_STATUS_ARCHIVED,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
@@ -20,15 +21,21 @@ import {
   SubmissionButtonTextHelper,
   SubmissionButtonWrapperBackground,
   SubmissionButtonWrapperGradient,
+  TaskSubmissionEmptyStateIcon,
+  TaskSubmissionEmptyStateText,
+  TaskSubmissionEmptyStateContainer,
   TaskSubmissionItemsWrapper,
   TaskSubmissionsFormInactiveWrapper,
+  SubmissionDisplayText,
+  HideSubmissionsCheckBoxDiv,
+  HideSubmissionsHelperText,
 } from './styles';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
 import { SubmissionPayment } from './submissionPayment';
 
-const SubmissionButtonWrapper = ({ onClick = null, buttonText = null, helperText = '' }) => {
+function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '' }) {
   return (
     <SubmissionButtonWrapperGradient>
       <SubmissionButtonWrapperBackground>
@@ -41,12 +48,12 @@ const SubmissionButtonWrapper = ({ onClick = null, buttonText = null, helperText
       </SubmissionButtonWrapperBackground>
     </SubmissionButtonWrapperGradient>
   );
-};
+}
 
-const inProgressMoveCompleted = ({ handleClose, boardColumns, board }) => {
-  return (data) => {
+const inProgressMoveCompleted =
+  ({ boardColumns, board }) =>
+  (data) => {
     const task = data?.updateTaskStatus;
-    handleClose();
     if (boardColumns?.setColumns) {
       const transformedTask = transformTaskToTaskCard(task, {});
       if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
@@ -65,14 +72,22 @@ const inProgressMoveCompleted = ({ handleClose, boardColumns, board }) => {
       boardColumns?.setColumns(columns);
     }
   };
-};
 
-const TaskSubmissionsLoading = ({ loading }) => {
+function TaskSubmissionsLoading({ loading }) {
   if (!loading) return null;
   return <CircularProgress />;
-};
+}
 
-const TaskSubmissionsTaskToDo = ({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) => {
+function TaskSubmissionsEmptyState() {
+  return (
+    <TaskSubmissionEmptyStateContainer>
+      <TaskSubmissionEmptyStateIcon />
+      <TaskSubmissionEmptyStateText>No submissions yet</TaskSubmissionEmptyStateText>
+    </TaskSubmissionEmptyStateContainer>
+  );
+}
+
+function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) {
   if (taskStatus === TASK_STATUS_TODO) {
     if (canSubmit || canMoveProgress) {
       return (
@@ -83,22 +98,19 @@ const TaskSubmissionsTaskToDo = ({ handleTaskProgressStatus, canSubmit, canMoveP
         />
       );
     }
-    return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
   }
   return null;
-};
+}
 
-const TaskSubmissionsTaskInProgress = ({ canSubmit, taskStatus, setMakeSubmission, fetchedTaskSubmissions }) => {
+function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission }) {
   if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
     if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText={`No submissions yet.`} />;
   }
   return null;
-};
+}
 
-const TaskSubmissionMakePayment = ({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) => {
+function TaskSubmissionMakePayment({ taskStatus, fetchedTask, setShowPaymentModal, fetchedTaskSubmissions }) {
   if (taskStatus === TASK_STATUS_DONE && fetchedTask?.type === ENTITIES_TYPES.TASK) {
-    if (isEmpty(fetchedTaskSubmissions)) return <SubmissionButtonWrapper helperText={`No submissions`} />;
     return (
       <SubmissionPayment
         fetchedTask={fetchedTask}
@@ -108,16 +120,16 @@ const TaskSubmissionMakePayment = ({ taskStatus, fetchedTask, setShowPaymentModa
     );
   }
   return null;
-};
+}
 
-const TaskSubmissionsForm = ({
+function TaskSubmissionsForm({
   makeSubmission,
   handleCancelSubmission,
   fetchedTaskSubmissions,
   orgId,
   fetchedTask,
   submissionToEdit,
-}) => {
+}) {
   if (makeSubmission)
     return (
       <TaskSubmissionForm
@@ -137,9 +149,9 @@ const TaskSubmissionsForm = ({
       />
     );
   return null;
-};
+}
 
-const TaskSubmissionList = ({
+function TaskSubmissionList({
   fetchedTaskSubmissions,
   setSubmissionToEdit,
   canReview,
@@ -147,34 +159,42 @@ const TaskSubmissionList = ({
   handleClose,
   loggedInUser,
   getTaskSubmissionsForTask,
-}) => {
+}) {
+  // If you can review you can see all submissions. Otherwise you can see none of just your own
+  let filteredFetchedTaskSubmissions = fetchedTaskSubmissions;
+  if (!canReview && fetchedTask?.hideSubmissions) {
+    filteredFetchedTaskSubmissions = filteredFetchedTaskSubmissions?.filter((submission) => {
+      if (submission?.createdBy === loggedInUser?.id) {
+        return true;
+      }
+      return false;
+    });
+  }
   return (
     <TaskSubmissionItemsWrapper>
-      {fetchedTaskSubmissions?.map((taskSubmission) => {
-        return (
-          <SubmissionItem
-            setSubmissionToEdit={setSubmissionToEdit}
-            key={taskSubmission?.id}
-            canReview={canReview}
-            fetchedTask={fetchedTask}
-            handleClose={handleClose}
-            fetchedTaskSubmissions={fetchedTaskSubmissions}
-            submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
-            user={loggedInUser}
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-          />
-        );
-      })}
+      {filteredFetchedTaskSubmissions?.map((taskSubmission) => (
+        <SubmissionItem
+          setSubmissionToEdit={setSubmissionToEdit}
+          key={taskSubmission?.id}
+          canReview={canReview}
+          fetchedTask={fetchedTask}
+          handleClose={handleClose}
+          fetchedTaskSubmissions={fetchedTaskSubmissions}
+          submission={transformTaskSubmissionToTaskSubmissionCard(taskSubmission, {})}
+          user={loggedInUser}
+          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+        />
+      ))}
     </TaskSubmissionItemsWrapper>
   );
-};
+}
 
-const TaskSubmissionsFormInactive = ({ makeSubmission, submissionToEdit, children }) => {
+function TaskSubmissionsFormInactive({ makeSubmission, submissionToEdit, children }) {
   if (makeSubmission || submissionToEdit) return null;
   return <TaskSubmissionsFormInactiveWrapper>{children}</TaskSubmissionsFormInactiveWrapper>;
-};
+}
 
-export const TaskSubmissions = (props) => {
+export function TaskSubmissions(props) {
   const {
     board,
     boardColumns,
@@ -192,9 +212,14 @@ export const TaskSubmissions = (props) => {
   } = props;
   const router = useRouter();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
-    onCompleted: inProgressMoveCompleted({ handleClose, boardColumns, board }),
+    onCompleted: inProgressMoveCompleted({ boardColumns, board }),
   });
+  const [updateTaskHideSubmissions] = useMutation(UPDATE_TASK_SHOW_SUBMISSIONS, {
+    refetchQueries: ['getTaskById'],
+  });
+
   const [makeSubmission, setMakeSubmission] = useState(false);
+  const [hideSubmissions, setHideSubmissions] = useState(false);
   const [submissionToEdit, setSubmissionToEdit] = useState(null);
   const [filteredSubmissions, setFilteredSubmissions] = useState();
   const listSubmissions = filteredSubmissions ?? fetchedTaskSubmissions;
@@ -209,13 +234,16 @@ export const TaskSubmissions = (props) => {
         },
       },
     });
-    handleClose();
   };
 
   const handleCancelSubmission = () => {
     setMakeSubmission(false);
     setSubmissionToEdit(null);
   };
+
+  useEffect(() => {
+    setHideSubmissions(fetchedTask?.hideSubmissions);
+  }, [fetchedTask]);
 
   return (
     <>
@@ -233,7 +261,10 @@ export const TaskSubmissions = (props) => {
           fetchedTaskSubmissions={fetchedTaskSubmissions}
           setFilteredSubmissions={setFilteredSubmissions}
         />
-        {isBounty && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
+        {isBounty &&
+          fetchedTask?.status !== TASK_STATUS_DONE &&
+          fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
+          !!loggedInUser && <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />}
         {!isBounty && (
           <>
             <TaskSubmissionsTaskToDo
@@ -244,7 +275,6 @@ export const TaskSubmissions = (props) => {
             />
             <TaskSubmissionsTaskInProgress
               canSubmit={canSubmit}
-              fetchedTaskSubmissions={fetchedTaskSubmissions}
               setMakeSubmission={setMakeSubmission}
               taskStatus={taskStatus}
             />
@@ -256,6 +286,35 @@ export const TaskSubmissions = (props) => {
             />
           </>
         )}
+        {canReview && (
+          <HideSubmissionsCheckBoxDiv>
+            <Checkbox
+              checked={!!hideSubmissions}
+              onChange={() => {
+                setHideSubmissions(!hideSubmissions);
+                updateTaskHideSubmissions({
+                  variables: {
+                    taskId: fetchedTask?.id,
+                    hideSubmissions: !hideSubmissions,
+                  },
+                });
+              }}
+              inputProps={{ 'aria-label': 'controlled' }}
+            />
+            <HideSubmissionsHelperText>
+              Hide submissions. Submitters will only be able to see their own submissions
+            </HideSubmissionsHelperText>
+          </HideSubmissionsCheckBoxDiv>
+        )}
+        {!canReview && (
+          <HideSubmissionsCheckBoxDiv>
+            <HideSubmissionsHelperText>
+              Submissions are hidden for this {isBounty ? 'bounty' : 'task'}. If you submitted you can only see your
+              submission
+            </HideSubmissionsHelperText>
+          </HideSubmissionsCheckBoxDiv>
+        )}
+        {isEmpty(fetchedTaskSubmissions) && <TaskSubmissionsEmptyState />}
         <TaskSubmissionList
           fetchedTaskSubmissions={listSubmissions}
           setSubmissionToEdit={setSubmissionToEdit}
@@ -268,4 +327,4 @@ export const TaskSubmissions = (props) => {
       </TaskSubmissionsFormInactive>
     </>
   );
-};
+}

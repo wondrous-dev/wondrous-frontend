@@ -1,5 +1,14 @@
 import { useEffect, useState } from 'react';
 import * as Sentry from '@sentry/nextjs';
+import PersonAddIcon from 'components/Icons/personAdd';
+import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
+import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
+import { useMutation, useLazyQuery } from '@apollo/client';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK } from 'utils/constants';
 import {
   StyledModal,
   StyledBox,
@@ -27,17 +36,8 @@ import {
   LinkSwitch,
   TextSubheading,
 } from './styles';
-import PersonAddIcon from 'components/Icons/personAdd';
-import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
-import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK } from 'utils/constants';
 
-export const NewOrgInviteLinkModal = (props) => {
+export function NewOrgInviteLinkModal(props) {
   const { orgOrPodName, orgId, open, onClose } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
@@ -102,7 +102,7 @@ export const NewOrgInviteLinkModal = (props) => {
     if (!role && open) {
       getOrgRoles({
         variables: {
-          orgId: orgId,
+          orgId,
         },
       });
     }
@@ -112,7 +112,7 @@ export const NewOrgInviteLinkModal = (props) => {
           input: {
             invitorId: '',
             type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
-            orgId: orgId,
+            orgId,
             orgRoleId: role,
           },
         },
@@ -135,7 +135,7 @@ export const NewOrgInviteLinkModal = (props) => {
               <TextSubheading>{orgOrPodName}</TextSubheading>
             </TextHeadingWrapper>
           </IconTextWrapper>
-          <CloseButton circle={true} onClick={handleOnClose} />
+          <CloseButton circle onClick={handleOnClose} />
         </HeadingWrapper>
         <InviteThruLinkLabel>Invite through universal link</InviteThruLinkLabel>
         <InviteThruLinkInputWrapper>
@@ -150,7 +150,7 @@ export const NewOrgInviteLinkModal = (props) => {
             </InviteThruLinkSelect>
           </InviteThruLinkFormControlSelect>
           <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
-          <InviteButton rightPadding={true} onClick={handleOnCopy}>
+          <InviteButton rightPadding onClick={handleOnCopy}>
             {copy ? (
               <>
                 <InviteThruLinkButtonSuccessLabel>Link copied!</InviteThruLinkButtonSuccessLabel> <CopySuccessIcon />
@@ -188,4 +188,4 @@ export const NewOrgInviteLinkModal = (props) => {
       </StyledBox>
     </StyledModal>
   );
-};
+}

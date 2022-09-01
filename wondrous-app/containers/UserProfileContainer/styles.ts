@@ -8,7 +8,6 @@ export const UserProfileContainerWrapper = styled(Box)`
   background-color: #0f0f0f;
   transition: 0.15s all ease;
   padding-bottom: 5px;
-  padding-top: 68px;
 `;
 
 export const UserProfileHeaderImageWrapper = styled(Box)`

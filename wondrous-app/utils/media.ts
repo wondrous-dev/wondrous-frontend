@@ -18,7 +18,7 @@ export const uploadMedia = async ({ filename, fileType, file }) => {
     });
     // console.log('uploadResponse', uploadResponse, apiUrl)
   } catch (error) {
-    console.log('error', JSON.stringify(error, null, 2));
+    console.error('error', JSON.stringify(error, null, 2));
   }
 };
 
@@ -68,4 +68,13 @@ export const handleAddFile = async (props) => {
     }
     return fileToAdd;
   }
+};
+
+export const handleImageFile = ({ file, id }) => {
+  if (!file) return { filename: null, fileType: null, file: null };
+  const fileName = file?.name;
+  // get image preview
+  const { fileType, filename } = getFilenameAndType(fileName);
+  const imageFile = `tmp/${id}/${filename}`;
+  return { filename: imageFile, fileType, file };
 };

@@ -30,6 +30,7 @@ type Props = {
   // Callback fired when the value changes
   onChange?: (ids: string[]) => unknown;
   onCreate?: (option: Option) => unknown;
+  autoFocus?: boolean;
 };
 
 const filter = createFilterOptions({
@@ -40,16 +41,21 @@ const filter = createFilterOptions({
 const colors = Object.values(ColorTypes);
 const randomColors = shuffle(colors);
 
-function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
+function Tags({ options, onChange, onCreate, limit, ids = [], autoFocus = false }: Props) {
   const [openTags, setOpenTags] = useState(false);
   const [randomColor, setRandomColor] = useState(randomColors[0]);
 
-  const generateRandomColor = () => {
-    return options.length < colors.length
+  useEffect(() => {
+    if (autoFocus) {
+      setOpenTags(true);
+    }
+  }, [autoFocus]);
+
+  const generateRandomColor = () =>
+    options.length < colors.length
       ? // pick random color that doesn't exist in the option
         colors.find((color) => !options.some((option) => option.color === color))
       : shuffle(colors)[0];
-  };
 
   useEffect(() => {
     setRandomColor(generateRandomColor());
@@ -61,7 +67,7 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
       multiple
       filterSelectedOptions
       freeSolo
-      fullWidth={true}
+      fullWidth
       open={openTags}
       onOpen={() => setOpenTags(true)}
       onClose={() => setOpenTags(false)}
@@ -131,8 +137,8 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
       disabled={ids.length === limit}
       value={ids.map((id) => options.find((label) => label.id === id)).filter((v) => !!v)}
       options={ids.length !== limit ? options : []}
-      renderTags={(value, getLabelProps) => {
-        return value?.map((option, index) => {
+      renderTags={(value, getLabelProps) =>
+        value?.map((option, index) => {
           const props = getLabelProps({ index });
 
           return (
@@ -146,22 +152,21 @@ function Tags({ options, onChange, onCreate, limit, ids = [] }: Props) {
               onDelete={props.onDelete}
             />
           );
-        });
-      }}
-      renderInput={(params) => {
-        return (
-          <TagsTextField
-            {...params}
-            fullWidth={true}
-            placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
-            InputProps={{
-              ...params.InputProps,
-              startAdornment: <TagsChipWrapper>{params.InputProps.startAdornment}</TagsChipWrapper>,
-              endAdornment: null,
-            }}
-          />
-        );
-      }}
+        })
+      }
+      renderInput={(params) => (
+        <TagsTextField
+          {...params}
+          autoFocus={autoFocus}
+          fullWidth
+          placeholder={ids.length !== limit ? `Add tags (max ${limit})` : ''}
+          InputProps={{
+            ...params.InputProps,
+            startAdornment: <TagsChipWrapper>{params.InputProps.startAdornment}</TagsChipWrapper>,
+            endAdornment: null,
+          }}
+        />
+      )}
     />
   );
 }

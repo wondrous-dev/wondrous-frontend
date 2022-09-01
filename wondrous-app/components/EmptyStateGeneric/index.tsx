@@ -3,15 +3,17 @@ import { EmptyStateGenericWrapper, EmptyStateGenericText } from './styles';
 
 interface Props {
   content: string;
+  children?: any;
 }
 
-const EmptyStateGeneric = ({ content = '' }: Props) => {
+function EmptyStateGeneric({ content = '', children }: Props) {
   return (
     <EmptyStateGenericWrapper>
       <EmptyStateGenericText>{content}</EmptyStateGenericText>
       <EmptyStateArt />
+      {children}
     </EmptyStateGenericWrapper>
   );
-};
+}
 
 export default EmptyStateGeneric;

@@ -4,6 +4,9 @@ export const midnight = '#141414';
 export const background = '#0F0F0F';
 export const white = '#FFFFFF';
 export const black = '#000000';
+export const electricViolet = '#7427FF';
+export const mineShaft = '#242424';
+export const tundora = '#454545';
 
 export const greyColors = {
   grey10: '#F4F4F4',
@@ -19,14 +22,20 @@ export const greyColors = {
   grey60: '#6F6F6F',
   grey65: '#5E5E5E',
   grey70: '#525252',
+  grey74: '#464646',
   grey75: '#4B4B4B',
+  grey76: '#454545',
+  grey77: '#444444',
   grey78: '#474747',
   grey79: '#424242',
   grey80: '#393939',
   grey85: '#363636',
+  grey87: '#313131',
   grey90: '#262626',
   grey95: '#1f1f1f',
-  grey98: '#1d1d1d',
+  grey97: '#2c2c2c',
+  grey98: '#1c1c1c',
+  grey99: '#282828',
   grey100: '#161616',
   grey105: '#141414',
   grey150: '#E3E5E9',
@@ -41,11 +50,16 @@ export const greyColors = {
   grey800: '#2D333A',
   grey850: '#787878',
   grey900: '#1D1D1D',
-  grey910: '#0f0f0f',
+  grey950: '#212121',
+  grey910: '#171717',
+  grey920: '#2D2D2D',
+  grey1000: '#272729',
+  grey960: '#0f0f0f',
 };
 
 export const redColors = {
   red10: '#FDDFE2',
+  red100: '#f06a6a',
   red200: '#FB7A75',
   red300: '#F93701',
   red400: '#EE4852',
@@ -58,6 +72,9 @@ export const blueColors = {
   blue3: '#0F72E5',
   blue10: '#D8EEFC',
   blue20: '#CCBBFF',
+  blue30: '#8fe1ff',
+  blue90: '#30c7ff',
+  blue100: '#00a2ff',
   blue200: '#00B7FF',
   blue300: '#0D122A',
   blue400: '#0D22D7',
@@ -70,8 +87,10 @@ export const blueColors = {
 export const greenColors = {
   green10: '#daefe9',
   green20: '#9F6666',
+  green30: '#06ffa5',
   green200: '#7fff31',
   green300: '#7ecc49',
+  green350: '#00cd83',
   green400: '#6ADAAB',
   green600: '#00bf9c',
   green700: '#219653',
@@ -82,17 +101,24 @@ export const yellowColors = {
   yellow200: '#FFD78C',
   yellow400: '#FCCD3F',
   yellow700: '#F8A811',
+  yellow800: '#ffd653',
 };
 
 export const violetColors = {
+  violet50: '#5001DF',
+  violet100: '#4f00de',
   violet200: '#FB7A75',
   violet300: '#CCDDFF',
   violet400: '#815DFF',
   violet700: '#690DFF',
+  violet800: '#360097',
+  violet900: '#700097',
+  violet950: '#250069',
 };
 
 export const orangeColors = {
   orange: '#F0905A',
+  orange90: '#f2c678',
   orange100: '#F2994A',
   orange200: '#FF901F',
   orange600: '#E28855',

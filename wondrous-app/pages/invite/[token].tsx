@@ -9,7 +9,7 @@ import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from 'graphql/mutation
 import { withAuth, useMe } from 'components/Auth/withAuth';
 import { GET_POD_INVITE_ORG_INFO } from 'graphql/queries';
 
-const ContributorOnboardingPage = () => {
+function ContributorOnboardingPage() {
   const router = useRouter();
 
   const { token, type } = router.query;
@@ -30,14 +30,12 @@ const ContributorOnboardingPage = () => {
           },
         });
       }
-    } else {
-      if (token) {
-        getOrgInviteOrgInfo({
-          variables: {
-            token,
-          },
-        });
-      }
+    } else if (token) {
+      getOrgInviteOrgInfo({
+        variables: {
+          token,
+        },
+      });
     }
 
     if (user && token) {
@@ -86,6 +84,6 @@ const ContributorOnboardingPage = () => {
       />
     </MainWrapper>
   );
-};
+}
 
 export default withAuth(ContributorOnboardingPage);

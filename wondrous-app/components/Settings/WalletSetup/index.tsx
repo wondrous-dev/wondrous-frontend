@@ -1,8 +1,13 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-
-import { SettingsWrapper } from '../settingsWrapper';
-import { HeaderBlock } from '../headerBlock';
+import React, { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
+import { CircularProgress } from '@mui/material';
+import { useRouter } from 'next/router';
+import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
+import { useWonderWeb3 } from 'services/web3';
+import WalletSetupModal from 'components/Settings/WalletSetup/WalletSetupModal';
+import { HeaderBlock } from 'components/Settings/headerBlock';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import {
   StyledTable,
   StyledTableBody,
@@ -10,24 +15,8 @@ import {
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-} from '../../Table/styles';
-import { TableValueText, WalletAddressInput } from './styles';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-
-import { CircularProgress } from '@mui/material';
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import { useRouter } from 'next/router';
-import { useLazyQuery } from '@apollo/client';
-import { WalletsContainer } from './styles';
-import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
-import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations/wallet';
-import WrenchIcon from '../../Icons/wrench';
-import SafeServiceClient from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from 'services/web3';
-import { ErrorText } from '../../Common';
-import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from '../../../utils/constants';
-const LIMIT = 20;
+} from 'components/Table/styles';
+import { TableValueText, WalletsContainer } from './styles';
 
 const SUPPORTED_PAYMENT_CHAINS = [
   {
@@ -58,26 +47,23 @@ if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   });
 }
 
-const Wallets = (props) => {
+function Wallets(props) {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
-  const { orgId, podId } = router.query;
+  const { orgId, podId } = router.query as { orgId: string; podId: string };
   const [wallets, setWallets] = useState([]);
-  const [selectedChain, setSelectedChain] = useState('ethereum');
-  const [walletName, setWalletName] = useState('');
-  const [safeAddress, setSafeAddress] = useState('');
+  const [isAddWalletModalOpen, setIsAddWalletModalOpen] = useState(false);
   const [userAddress, setUserAddress] = useState('');
-  const emptyError = {
-    safeAddressError: null,
-  };
-  const [errors, setErrors] = useState(emptyError);
 
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
       wonderWeb3.onConnect();
     }
-    setUserAddress(wonderWeb3.address);
   }, []);
+
+  useEffect(() => {
+    if (wonderWeb3?.address) setUserAddress(wonderWeb3.address);
+  }, [wonderWeb3?.address]);
 
   const [getOrgWallet, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_WALLET, {
     onCompleted: (data) => {
@@ -92,82 +78,10 @@ const Wallets = (props) => {
     fetchPolicy: 'network-only',
   });
 
-  const [createOrgWallet] = useMutation(CREATE_ORG_WALLET, {
-    onCompleted: (data) => {
-      setErrors(emptyError);
-      setSafeAddress('');
-      setWalletName('');
-      // wallets.push(data?.createOrgWallet);
-      // setWallets(wallets);
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-    refetchQueries: ['getOrgWallet'],
-  });
-
-  const [createPodWallet] = useMutation(CREATE_POD_WALLET, {
-    onCompleted: (data) => {
-      setErrors(emptyError);
-      setSafeAddress('');
-      setWalletName('');
-      // wallets.push(data?.createPodWallet);
-      // setWallets(wallets);
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-    refetchQueries: ['getPodWallet'],
-  });
-
-  const handleCreateWalletClick = async () => {
-    const newError = emptyError;
-    const safeServiceUrl = CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL[selectedChain];
-    const safeService = new SafeServiceClient(safeServiceUrl);
-    let checksumAddress;
-    try {
-      checksumAddress = wonderWeb3.toChecksumAddress(safeAddress);
-    } catch (e) {
-      newError.safeAddressError = `Must be valid EVM address`;
-      setErrors(newError);
-      return;
-    }
-    try {
-      const safe = await safeService.getSafeInfo(checksumAddress);
-    } catch (e) {
-      if (String(e).includes('Not Found')) {
-        newError.safeAddressError = `Safe address not deployed on ${selectedChain}`;
-      } else {
-        newError.safeAddressError = 'unknown gnosis network error';
-      }
-      setErrors(newError);
-      return;
-    }
-    if (orgId) {
-      createOrgWallet({
-        variables: {
-          input: {
-            orgId,
-            name: walletName,
-            address: checksumAddress,
-            chain: selectedChain,
-          },
-        },
-      });
-    } else if (podId) {
-      createPodWallet({
-        variables: {
-          input: {
-            podId,
-            name: walletName,
-            address: checksumAddress,
-            chain: selectedChain,
-          },
-        },
-      });
-    }
-    setErrors(newError);
+  const handleOpenAddWalletModal = () => {
+    setIsAddWalletModalOpen(true);
   };
+
   useEffect(() => {
     if (orgId) {
       getOrgWallet({
@@ -187,6 +101,13 @@ const Wallets = (props) => {
 
   return (
     <SettingsWrapper>
+      <WalletSetupModal
+        isOpen={isAddWalletModalOpen}
+        handleClose={() => setIsAddWalletModalOpen(false)}
+        userMetamaskAddress={userAddress}
+        orgId={orgId}
+        podId={podId}
+      />
       <WalletsContainer>
         <HeaderBlock
           // icon={<WrenchIcon circle />}
@@ -204,6 +125,9 @@ const Wallets = (props) => {
                   Address
                 </StyledTableCell>
                 <StyledTableCell align="center" width="40%">
+                  Type
+                </StyledTableCell>
+                <StyledTableCell align="center" width="40%">
                   Chain
                 </StyledTableCell>
               </StyledTableRow>
@@ -217,63 +141,37 @@ const Wallets = (props) => {
             </div>
             <StyledTableBody>
               {wallets &&
-                wallets.map((wallet) => {
-                  return (
-                    <StyledTableRow key={wallet?.id}>
-                      <StyledTableCell>
-                        <TableValueText>{wallet.name}</TableValueText>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <TableValueText>{wallet.address}</TableValueText>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <TableValueText>{wallet.chain}</TableValueText>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })}
+                wallets.map((wallet) => (
+                  <StyledTableRow key={wallet?.id}>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.name}</TableValueText>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.address}</TableValueText>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.type}</TableValueText>
+                    </StyledTableCell>
+                    <StyledTableCell>
+                      <TableValueText>{wallet.chain}</TableValueText>
+                    </StyledTableCell>
+                  </StyledTableRow>
+                ))}
             </StyledTableBody>
           </StyledTable>
         </StyledTableContainer>
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-          }}
-        >
-          <WalletAddressInput placeholder="Name" value={walletName} onChange={(e) => setWalletName(e.target.value)} />
-          <WalletAddressInput
-            placeholder="Safe Address"
-            value={safeAddress}
-            onChange={(e) => setSafeAddress(e.target.value)}
-          />
-          <DropdownSelect
-            value={selectedChain}
-            options={SUPPORTED_PAYMENT_CHAINS}
-            setValue={setSelectedChain}
-            onChange={(e) => {}}
-            innerStyle={{
-              marginTop: 0,
-            }}
-            formSelectStyle={{
-              height: 'auto',
-            }}
-          />
-        </div>
-        {errors.safeAddressError && <ErrorText> {errors.safeAddressError} </ErrorText>}
         <CreateFormPreviewButton
           style={{
             marginLeft: 0,
             marginTop: '32px',
           }}
-          onClick={handleCreateWalletClick}
+          onClick={handleOpenAddWalletModal}
         >
           Add wallet
         </CreateFormPreviewButton>
       </WalletsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default Wallets;

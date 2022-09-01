@@ -1,13 +1,14 @@
 import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useRouter } from 'next/router';
+import { useGlobalContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
-import { CreateEntityModal } from './CreateEntityModal/index';
+import CreateEntityModal from './CreateEntityModal/index';
 import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
-import { useRouter } from 'next/router';
-import { useCreateEntityContext } from 'utils/hooks';
+
 interface ICreateEntity {
   entityType: string;
   handleClose: Function;
@@ -36,7 +37,7 @@ interface ICreateEntity {
   parentTaskId?: string;
 }
 
-export const CreateEntity = (props: ICreateEntity) => {
+export function CreateEntity(props: ICreateEntity) {
   const { open, entityType, handleCloseModal, isTaskProposal } = props;
 
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
@@ -62,11 +63,11 @@ export const CreateEntity = (props: ICreateEntity) => {
       {forNewModal ? <CreateEntityModal {...props} /> : <CreatePodModal {...props} />}
     </CreateFormModalOverlay>
   );
-};
+}
 
-const ChooseEntityToCreate = (props) => {
-  const createEntityContext = useCreateEntityContext();
-  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
+function ChooseEntityToCreate(props) {
+  const globalContext = useGlobalContext();
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
     if (entityType) {
@@ -101,6 +102,6 @@ const ChooseEntityToCreate = (props) => {
       <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
     </CreateFormModalOverlay>
   );
-};
+}
 
 export default ChooseEntityToCreate;

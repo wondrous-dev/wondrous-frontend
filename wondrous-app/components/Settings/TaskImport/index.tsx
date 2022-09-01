@@ -1,11 +1,11 @@
 import NotionTaskImportSection from 'components/Settings/TaskImport/NotionTaskImport';
 import { useRouter } from 'next/router';
 import React from 'react';
-import { HeaderBlock } from '../headerBlock';
-import { SettingsWrapper } from '../settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
+import { HeaderBlock } from 'components/Settings/headerBlock';
 import { TaskImportContainer } from './styles';
 
-const TaskImport = (props) => {
+function TaskImport(props) {
   const router = useRouter();
   const { orgId, podId } = router.query;
 
@@ -17,6 +17,6 @@ const TaskImport = (props) => {
       </TaskImportContainer>
     </SettingsWrapper>
   );
-};
+}
 
 export default TaskImport;

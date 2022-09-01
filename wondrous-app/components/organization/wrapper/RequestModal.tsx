@@ -1,30 +1,17 @@
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { CHAR_LIMIT_PROFILE_BIO } from 'utils/constants';
+import { PERMISSIONS } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-import CloseModalIcon from 'components/Icons/closeModal';
-import { ArchivedIcon } from '../../Icons/statusIcons';
-import { PERMISSIONS } from '../../../utils/constants';
-import {
-  StyledArchivedLabel,
-  StyledArchiveTaskButton,
-  StyledBody,
-  StyledBox,
-  StyledButtonsContainer,
-  StyledCancelButton,
-  StyledCloseButton,
-  StyledDialog,
-  StyledDivider,
-  StyledHeader,
-  StyledWarningMessage,
-} from '../../Common/ArchiveTaskModal/styles';
-import { GeneralSettingsDAODescriptionInput } from '../../Settings/styles';
 import { ErrorText } from 'components/Common';
 import {
-  TaskTemplateCloseIcon,
-  TaskTemplateTitle,
-  TaskTemplateTitleBar,
-} from 'components/CreateEntity/CreateEntityModal/TaskTemplatePicker/styles';
+  SelectMenuBoardTypeClickAway,
+  SelectMenuBoardTypeIcon,
+  SelectMenuBoardTypeItem,
+  SelectMenuBoardTypeWrapper,
+} from 'components/Common/SelectMenuBoardType/styles';
+import { ActionButton } from 'components/Common/Task/styles';
+import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
+import { GET_ORG_ROLES } from 'graphql/queries';
 import {
   RequestModalBox,
   RequestModalButtonsContainer,
@@ -45,34 +32,7 @@ import {
   RequestModalTitleBar,
   RequestModalTypeText,
 } from './styles';
-import {
-  SelectMenuBoardTypeClickAway,
-  SelectMenuBoardTypeDiv,
-  SelectMenuBoardTypeIcon,
-  SelectMenuBoardTypeItem,
-  SelectMenuBoardTypePopper,
-  SelectMenuBoardTypePopperMenu,
-  SelectMenuBoardTypeText,
-  SelectMenuBoardTypeWrapper,
-} from 'components/Common/SelectMenuBoardType/styles';
-import { ActionButton } from 'components/Common/Task/styles';
-import {
-  KudosFormTextarea,
-  KudosFormTextareaCharacterCount,
-  KudosFormTextareaWrapper,
-} from 'components/Common/KudosForm/styles';
-import { Label } from 'components/Onboarding/styles';
-import { GET_ORG_ROLES } from 'graphql/queries';
-import { useMe } from 'components/Auth/withAuth';
-import { ClickAwayListener } from '@mui/material';
-
-const contributorLevels = ['Core member', 'Owner', 'Admin'];
-
-const ROLES_COLORS_AND_EMOJIS = [
-  { owner: { emoji: '🔑', color: '#7ECC49' } },
-  { contributor: { emoji: '✨', color: '#FF9933' } },
-  { core_team: { emoji: '🔮', color: '#EB96EB' } },
-];
+import { StyledCancelButton, StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
 
 export const MembershipRequestModal = (props) => {
   const [showPopper, setShowPopper] = useState(false);
@@ -80,30 +40,13 @@ export const MembershipRequestModal = (props) => {
     props;
 
   const [levelPicked, setLevelPicked] = useState('contributor');
+  const ROLES_COLORS_AND_EMOJIS = {
+    owner: { emoji: '🔑', color: '#7ECC49' },
+    contributor: { emoji: '✨', color: '#FF9933' },
+    core_team: { emoji: '🔮', color: '#EB96EB' },
+  };
 
   const [characterCount, setCharacterCount] = useState(0);
-
-  const getRoleColors = (role) => {
-    switch (role) {
-      case 'owner':
-        return '#7ECC49';
-      case 'contributor':
-        return '#FF9933';
-      case 'core team':
-        return '#EB96EB';
-    }
-  };
-
-  const getRoleIcon = (role) => {
-    switch (role) {
-      case 'owner':
-        return '🔑';
-      case 'contributor':
-        return '✨';
-      case 'core team':
-        return '🔮';
-    }
-  };
 
   const useGetOrgRoles = (org) => {
     const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
@@ -123,11 +66,7 @@ export const MembershipRequestModal = (props) => {
 
   const orgRoles = useGetOrgRoles(orgId);
 
-  const roleIndex = orgRoles
-    ? orgRoles.findIndex((object) => {
-        return object.name === levelPicked;
-      })
-    : null;
+  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === levelPicked) : null;
 
   const handleChange = (e) => {
     if (error) {
@@ -158,141 +97,138 @@ export const MembershipRequestModal = (props) => {
     setLevelPicked(orgRole);
   }, [orgRole]);
   return (
-    <>
-      <RequestModalContainer
-        open={open}
-        onClose={onClose}
-        aria-labelledby="archive-task-modal"
-        aria-describedby="modal-modal-description"
+    <RequestModalContainer
+      open={open}
+      onClose={onClose}
+      aria-labelledby="archive-task-modal"
+      aria-describedby="modal-modal-description"
+    >
+      <RequestModalBox
+        style={{
+          width: '600px',
+          height: 'auto',
+        }}
       >
-        <RequestModalBox
-          style={{
-            width: '600px',
-            height: 'auto',
-          }}
-        >
-          {notLinkedWalletError && (
-            <StyledWarningMessage
-              style={{
-                marginLeft: 0,
-              }}
-            >
-              {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
-            </StyledWarningMessage>
-          )}
-          <RequestModalTitleBar>
-            <RequestModalTitle> {orgId ? 'DAO' : 'Pod'} membership request message </RequestModalTitle>
-            <RequestModalCloseIcon
-              color={'#FFFFFF'}
-              onClick={() => {
-                onClose();
-              }}
-            />
-          </RequestModalTitleBar>
-          <SelectMenuBoardTypeClickAway onClickAway={handleOnClickAway}>
-            <SelectMenuBoardTypeWrapper>
-              <RequestModalLevelContainer open={openLevel} onClick={() => setShowPopper(!showPopper)}>
-                <RequestModalTypeText color={getRoleColors(levelPicked)} open={openLevel}>{`${getRoleIcon(
-                  levelPicked
-                )} ${levelPicked}`}</RequestModalTypeText>
-                <SelectMenuBoardTypeIcon open={openLevel} />
-              </RequestModalLevelContainer>
-              <RequestModalCustomPopper>
-                {showPopper
-                  ? orgRoles?.map((role) => {
-                      return (
-                        <SelectMenuBoardTypeItem
-                          picked={role.name === levelPicked}
-                          onClick={() => {
-                            setLevelPicked(role.name);
-                            setShowPopper(false);
-                          }}
-                          value={role.name}
-                          key={role.id}
-                        >
-                          {`${getRoleIcon(role.name)} ${role.name}`}
-                        </SelectMenuBoardTypeItem>
-                      );
-                    })
-                  : null}
-              </RequestModalCustomPopper>
-            </SelectMenuBoardTypeWrapper>
-          </SelectMenuBoardTypeClickAway>
-          <RequestModalRolesAbilityContainer>
-            <RequestModalRolesAbilityColumns>
-              <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-              {roleCanDo?.map((role) => (
-                <RequestModalRolesAbilityRows key={role}>
-                  <RequestModalRolesAbilityCheckIcon />
-                  <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                </RequestModalRolesAbilityRows>
-              ))}
-            </RequestModalRolesAbilityColumns>
-            <RequestModalRolesAbilityColumns>
-              <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-              {roleCannotDo?.map((role) => (
-                <RequestModalRolesAbilityRows key={role}>
-                  <RequestModalRolesAbilityCloseIcon />
-                  <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                </RequestModalRolesAbilityRows>
-              ))}
-            </RequestModalRolesAbilityColumns>
-          </RequestModalRolesAbilityContainer>
-          <RequestModalTextareaWrapper noValidate autoComplete="off">
-            <RequestModalTextarea
-              placeholder="What do you want admin to know about you!"
-              rows={4}
-              rowsMax={8}
-              onChange={handleChange}
-              value={requestMessage}
-            />
-            <KudosFormTextareaCharacterCount>
-              {characterCount}/{200} characters
-            </KudosFormTextareaCharacterCount>
-          </RequestModalTextareaWrapper>
-          {error && <ErrorText>{error}</ErrorText>}
-        </RequestModalBox>
-
-        <RequestModalButtonsContainer
-          style={{
-            marginRight: 0,
-          }}
-        >
-          <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-          <ActionButton
-            style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
-            onClick={() => {
-              if (!requestMessage) {
-                setError('Please enter a request message');
-              } else {
-                if (orgId) {
-                  sendRequest({
-                    variables: {
-                      orgId,
-                      ...(requestMessage && {
-                        message: `User requesting ${levelPicked} roles: ${requestMessage}`,
-                      }),
-                    },
-                  });
-                } else if (podId) {
-                  sendRequest({
-                    variables: {
-                      podId,
-                      ...(requestMessage && {
-                        message: requestMessage,
-                      }),
-                    },
-                  });
-                }
-                setJoinRequestSent(true);
-                handleOnClose();
-              }
+        {notLinkedWalletError && (
+          <StyledWarningMessage
+            style={{
+              marginLeft: 0,
             }}
           >
-            Apply
-          </ActionButton>
-        </RequestModalButtonsContainer>
-      </RequestModalContainer>
-    </>
+            {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
+          </StyledWarningMessage>
+        )}
+        <RequestModalTitleBar>
+          <RequestModalTitle> {orgId ? 'DAO' : 'Pod'} membership request message </RequestModalTitle>
+          <RequestModalCloseIcon
+            color="#FFFFFF"
+            onClick={() => {
+              onClose();
+            }}
+          />
+        </RequestModalTitleBar>
+        <SelectMenuBoardTypeClickAway onClickAway={handleOnClickAway}>
+          <SelectMenuBoardTypeWrapper>
+            <RequestModalLevelContainer open={openLevel} onClick={() => setShowPopper(!showPopper)}>
+              <RequestModalTypeText
+                color={ROLES_COLORS_AND_EMOJIS[levelPicked]?.color}
+                open={openLevel}
+              >{`${ROLES_COLORS_AND_EMOJIS[levelPicked]?.emoji} ${levelPicked}`}</RequestModalTypeText>
+              <SelectMenuBoardTypeIcon open={openLevel} />
+            </RequestModalLevelContainer>
+            <RequestModalCustomPopper>
+              {showPopper
+                ? orgRoles?.map((role) => (
+                    <SelectMenuBoardTypeItem
+                      picked={role.name === levelPicked}
+                      onClick={() => {
+                        setLevelPicked(role.name);
+                        setShowPopper(false);
+                      }}
+                      value={role.name}
+                      key={role.id}
+                    >
+                      {`${ROLES_COLORS_AND_EMOJIS[levelPicked]?.emoji} ${role.name}`}
+                    </SelectMenuBoardTypeItem>
+                  ))
+                : null}
+            </RequestModalCustomPopper>
+          </SelectMenuBoardTypeWrapper>
+        </SelectMenuBoardTypeClickAway>
+        <RequestModalRolesAbilityContainer>
+          <RequestModalRolesAbilityColumns>
+            <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
+            {roleCanDo?.map((role) => (
+              <RequestModalRolesAbilityRows key={role}>
+                <RequestModalRolesAbilityCheckIcon />
+                <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
+              </RequestModalRolesAbilityRows>
+            ))}
+          </RequestModalRolesAbilityColumns>
+          <RequestModalRolesAbilityColumns>
+            <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
+            {roleCannotDo?.map((role) => (
+              <RequestModalRolesAbilityRows key={role}>
+                <RequestModalRolesAbilityCloseIcon />
+                <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
+              </RequestModalRolesAbilityRows>
+            ))}
+          </RequestModalRolesAbilityColumns>
+        </RequestModalRolesAbilityContainer>
+        <RequestModalTextareaWrapper noValidate autoComplete="off">
+          <RequestModalTextarea
+            placeholder="What do you want admin to know about you!"
+            rows={4}
+            rowsMax={8}
+            onChange={handleChange}
+            value={requestMessage}
+          />
+          <KudosFormTextareaCharacterCount>
+            {characterCount}/{200} characters
+          </KudosFormTextareaCharacterCount>
+        </RequestModalTextareaWrapper>
+        {error && <ErrorText>{error}</ErrorText>}
+      </RequestModalBox>
+
+      <RequestModalButtonsContainer
+        style={{
+          marginRight: 0,
+        }}
+      >
+        <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
+        <ActionButton
+          style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
+          onClick={() => {
+            if (!requestMessage) {
+              setError('Please enter a request message');
+            } else {
+              if (orgId) {
+                sendRequest({
+                  variables: {
+                    orgId,
+                    ...(requestMessage && {
+                      message: `User requesting ${levelPicked} roles: ${requestMessage}`,
+                    }),
+                  },
+                });
+              } else if (podId) {
+                sendRequest({
+                  variables: {
+                    podId,
+                    ...(requestMessage && {
+                      message: requestMessage,
+                    }),
+                  },
+                });
+              }
+              setJoinRequestSent(true);
+              handleOnClose();
+            }
+          }}
+        >
+          Apply
+        </ActionButton>
+      </RequestModalButtonsContainer>
+    </RequestModalContainer>
   );
 };

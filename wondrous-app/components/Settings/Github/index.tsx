@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router';
 import GitHubIcon from '@mui/icons-material/GitHub';
 import palette from 'theme/palette';
-import { GithubLink, GithubButtonDiv } from './styles';
 import { useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { HAS_ORG_GITHUB_INTEGRATION } from 'graphql/queries';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DELETE_ORG_GITHUB } from 'graphql/mutations/org';
+import { GithubLink, GithubButtonDiv } from './styles';
 import { IntegrationsInputsBlock } from '../Integrations/styles';
 import { LabelBlock } from '../styles';
 
@@ -15,13 +15,14 @@ const GITHUB_BASE_URL = `https://github.com/apps/wonderverse-integration/install
 export const getGithubCallbackUrl = () => {
   if (process.env.NEXT_PUBLIC_PRODUCTION) {
     return 'https%3A%2F%2Fapp.wonderverse.xyz%2Fgithub%2Fcallback';
-  } else if (process.env.NEXT_PUBLIC_STAGING) {
+  }
+  if (process.env.NEXT_PUBLIC_STAGING) {
     return 'https://wondrous-app-git-staging-wonderverse.vercel.app/github/callback';
   }
   return 'http%3A%2F%2Flocalhost%3A3000%2Fgithub%2Fcallback';
 };
 
-export const GithubIntegration = ({ orgId }) => {
+export function GithubIntegration({ orgId }) {
   const router = useRouter();
   const [githubConnected, setGithubConnected] = useState(false);
   const [hasGithubIntegration, { data: hasGithubIntegrationData }] = useLazyQuery(HAS_ORG_GITHUB_INTEGRATION);
@@ -65,6 +66,7 @@ export const GithubIntegration = ({ orgId }) => {
             style={{
               backgroundColor: palette.green400,
               cursor: 'auto',
+              border: 'none',
             }}
           >
             <span
@@ -110,4 +112,4 @@ export const GithubIntegration = ({ orgId }) => {
       )}
     </IntegrationsInputsBlock>
   );
-};
+}

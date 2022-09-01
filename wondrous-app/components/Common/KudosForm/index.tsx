@@ -23,7 +23,7 @@ import {
 
 const maxLength = 380;
 
-export const KudosForm = (props) => {
+export function KudosForm(props) {
   const { open, onClose, submission, existingContent, id } = props;
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const [textarea, setTextarea] = useState('');
@@ -87,7 +87,7 @@ export const KudosForm = (props) => {
   }, [existingContent, open]);
 
   return (
-    <KudosFormModal open={open} fullWidth={true} maxWidth={'sm'} onClose={handleOnClose}>
+    <KudosFormModal open={open} fullWidth maxWidth="sm" onClose={handleOnClose}>
       <KudosFormBorder>
         <KudosFormBackground>
           <KudosFormHeader>
@@ -121,6 +121,7 @@ export const KudosForm = (props) => {
                   podId: submission?.podId,
                   intent: PostVerbType.KUDOS,
                   objectType: ObjectType.TASK_SUBMISSION,
+                  userMentions: [submission?.createdBy],
                 })
               }
             >
@@ -131,4 +132,4 @@ export const KudosForm = (props) => {
       </KudosFormBorder>
     </KudosFormModal>
   );
-};
+}

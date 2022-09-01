@@ -18,11 +18,13 @@ const SUB_BACKGROUND_MAP = {
   green: 'linear-gradient(180deg, #FFFFFF 0%, #06FFA5 100%);',
 };
 
-export const BountyIcon = () => (
-  <IconWrapper>
-    <StarIcon />
-  </IconWrapper>
-);
+export function BountyIcon() {
+  return (
+    <IconWrapper>
+      <StarIcon />
+    </IconWrapper>
+  );
+}
 
 export const BountyContainer = styled.div`
   ${({ isFullWidth }) =>
@@ -45,7 +47,7 @@ export const BountyCardWrapper = styled.div`
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   gap: 14px;
   border: 0px solid transparent;
-  border-radius: 5px;
+  border-radius: 6px;
   position: relative;
   height: fit-content;
   align-items: flex-start;

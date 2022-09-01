@@ -15,11 +15,8 @@ export const filterRoles = (roles, isOwner, userIsOwner) => {
           return true;
         }
         return false;
-      } else {
-        return true;
       }
+      return true;
     })
-    .map((role) => {
-      return { label: role?.name, value: role?.id };
-    });
+    .map((role) => ({ label: role?.name, value: role?.id }));
 };

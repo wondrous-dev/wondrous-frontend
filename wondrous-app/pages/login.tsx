@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import { useIsMobile } from 'utils/hooks';
@@ -7,7 +7,6 @@ import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
 import { PaddedParagraph } from 'components/Common/text';
 import { LoginError } from 'components/Pages/login';
-import { useState } from 'react';
 import palette from 'theme/palette';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
 import { DiscordIcon } from 'components/Icons/discord';
@@ -31,7 +30,7 @@ const state = JSON.stringify({
 });
 const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
-const Login = ({ csrfToken }) => {
+function Login({ csrfToken }) {
   const wonderWeb3 = useWonderWeb3();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -87,10 +86,8 @@ const Login = ({ csrfToken }) => {
             }
           }
           setLoading(false);
-        } else {
-          if (signedMessage !== undefined) {
-            setErrorMessage('You need to sign the message on your wallet');
-          }
+        } else if (signedMessage !== undefined) {
+          setErrorMessage('You need to sign the message on your wallet');
         }
       } else {
         setErrorMessage('Login failed - try again.');
@@ -104,7 +101,7 @@ const Login = ({ csrfToken }) => {
     }
   }, [discordConnectError]);
   useEffect(() => {
-    if (wonderWeb3.wallet['address'] && !wonderWeb3.isActivating) {
+    if (wonderWeb3.wallet.address && !wonderWeb3.isActivating) {
       // Wallet sign in
       loginWithWallet();
     } else {
@@ -145,9 +142,7 @@ const Login = ({ csrfToken }) => {
 
         <div style={{ width: '100%' }}>
           {!notSupportedChain && errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
-          {notSupportedChain && (
-            <LoginError>{'Unsupported network, changed to mainnet or a supported network'}</LoginError>
-          )}
+          {notSupportedChain && <LoginError>Unsupported network, changed to mainnet or a supported network</LoginError>}
           <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Field
@@ -170,14 +165,7 @@ const Login = ({ csrfToken }) => {
               required
               rightIcon
             />
-            <Button
-              type="submit"
-              style={{
-                marginTop: '37px',
-                minHeight: '50px',
-                width: '100%',
-              }}
-            >
+            <Button marginTop="37px" height={50} fullWidth>
               Log me in
             </Button>
           </Form>
@@ -196,9 +184,11 @@ const Login = ({ csrfToken }) => {
             {!isMobile && <MetaMaskConnector text="" style={buttonStyles} />}
             <WalletConnectConnector text="" style={buttonStyles} />
             <CoinbaseConnector text="" style={buttonStyles} />
-            <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
+
+            <Button height={40} minWidth={40} borderRadius={300} onClick={() => (window.location.href = discordUrl)}>
               <DiscordIcon />
             </Button>
+
             {/* <Button
               style={{
                 width: '40px',
@@ -226,6 +216,6 @@ const Login = ({ csrfToken }) => {
       </Layout>
     </MainWrapper>
   );
-};
+}
 
 export default Login;

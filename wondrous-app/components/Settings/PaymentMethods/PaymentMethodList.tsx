@@ -1,24 +1,33 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useQuery, useMutation } from '@apollo/client';
 
-import { HeaderBlock } from '../headerBlock';
-
-import { CircularProgress } from '@mui/material';
-import UserCheckIcon from '../../Icons/userCheckIcon';
-import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { useRouter } from 'next/router';
-import { PaymentMethodDisplayWrapper, PaymentMethodNameHeader, PaymentMethodActionMenu } from './styles';
 import { TokenLogoDisplay } from 'components/Settings/TokenGating/styles';
 import palette from 'theme/palette';
-import { TaskMenuIcon } from '../../Icons/taskMenu';
+import { DEACTIVATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import { PaymentMethodDisplayWrapper, PaymentMethodNameHeader, PaymentMethodActionMenu } from './styles';
 
 const dropdownItemStyle = {
   marginRight: '12px',
   color: palette.white,
 };
 
-const PaymentMethodDisplay = (props) => {
+function PaymentMethodDisplay(props) {
   const { paymentMethod } = props;
+  const [deactivatePaymentMethod] = useMutation(DEACTIVATE_PAYMENT_METHOD, {
+    refetchQueries: [GET_PAYMENT_METHODS_FOR_ORG],
+  });
+  const handleDeactivate = () => {
+    deactivatePaymentMethod({
+      variables: {
+        paymentMethodId: paymentMethod.id,
+      },
+    });
+  };
   return (
     <PaymentMethodDisplayWrapper>
       <div style={{ display: 'flex' }}>
@@ -35,7 +44,7 @@ const PaymentMethodDisplay = (props) => {
           <DropDown DropdownHandler={TaskMenuIcon}>
             {paymentMethod?.deactivatedAt && (
               <DropDownItem
-                key={'payment-method-activate' + paymentMethod?.id}
+                key={`payment-method-activate${paymentMethod?.id}`}
                 onClick={() => {}}
                 style={dropdownItemStyle}
               >
@@ -43,7 +52,11 @@ const PaymentMethodDisplay = (props) => {
               </DropDownItem>
             )}
             {!paymentMethod?.deactivatedAt && (
-              <DropDownItem key={'payment-method-deactivate' + paymentMethod?.id} style={dropdownItemStyle}>
+              <DropDownItem
+                key={`payment-method-deactivate${paymentMethod?.id}`}
+                style={dropdownItemStyle}
+                onClick={handleDeactivate}
+              >
                 Deactivate
               </DropDownItem>
             )}
@@ -55,20 +68,20 @@ const PaymentMethodDisplay = (props) => {
       )}
     </PaymentMethodDisplayWrapper>
   );
-};
+}
 
-const PaymentMethodList = (props) => {
+function PaymentMethodList(props) {
   const router = useRouter();
   const { paymentMethods } = props;
 
   return (
     <div>
       {paymentMethods &&
-        paymentMethods.map((paymentMethod) => {
-          return <PaymentMethodDisplay key={paymentMethod.id} paymentMethod={paymentMethod} />;
-        })}
+        paymentMethods.map((paymentMethod) => (
+          <PaymentMethodDisplay key={paymentMethod.id} paymentMethod={paymentMethod} />
+        ))}
     </div>
   );
-};
+}
 
 export default PaymentMethodList;

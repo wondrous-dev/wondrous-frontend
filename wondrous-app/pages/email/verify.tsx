@@ -1,32 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import { useMe, withAuth, withWaitlistAuth } from 'components/Auth/withAuth';
-import {
-  JoinWaitlistHeader,
-  ProfileWrapper,
-  FunkyText,
-  ExplanationText,
-  FunkyTextYellow,
-  LinkBox,
-  LinkText,
-  CopyText,
-  InviteButtonText,
-  ReferredText,
-  LinkRow,
-  CenteredDiv,
-  LogoNoTextImg,
-  ProfileText,
-  TokenEarnedDiv,
-  YouHaveText,
-  TokenEarnedInnerDiv,
-  WonderTokenSymbol,
-  InviteDiv,
-  InviteButton,
-  InviteButtonDiv,
-  ProfileCenteredDiv,
-} from 'components/profile/email/styles';
+import { JoinWaitlistHeader, ProfileWrapper, ProfileCenteredDiv } from 'components/profile/email/styles';
 
-import { ErrorText, NewCanvas } from 'components/Common';
+import { ErrorText } from 'components/Common';
 import { useIsMobile, useWindowSize } from 'utils/hooks';
 import { Logo } from 'components/Common/ci';
 import { useRouter } from 'next/router';
@@ -35,7 +11,7 @@ import { CONFIRM_EMAIL_ADDRESS } from 'graphql/mutations';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { CircularProgress } from '@mui/material';
 
-const EmailVerify = () => {
+function EmailVerify() {
   const router = useRouter();
   const [verificationError, setVerificationError] = useState(null);
   const { token, userid } = router.query; // it's userid here instead of userId since it'f from the redirect
@@ -95,6 +71,6 @@ const EmailVerify = () => {
       </ProfileCenteredDiv>
     </ProfileWrapper>
   );
-};
+}
 
 export default EmailVerify;

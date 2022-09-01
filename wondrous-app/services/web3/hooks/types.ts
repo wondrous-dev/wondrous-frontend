@@ -1,5 +1,6 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
 import { ethers } from 'ethers';
+
 export interface WonderWeb3Asset {
   balance: string;
   symbol: string;
@@ -106,6 +107,11 @@ export interface WonderWeb3 {
    * Returns the checksum address of the given address.
    */
   toChecksumAddress: (string) => string;
+
+  /**
+   * Checks validity of a given address.
+   */
+  isValidAddress: (string) => boolean;
 
   connector: AbstractConnector;
   error: Error;

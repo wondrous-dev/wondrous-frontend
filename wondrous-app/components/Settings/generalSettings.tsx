@@ -3,6 +3,9 @@ import { useRouter } from 'next/router';
 import apollo from 'services/apollo';
 import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
+import { DeleteButton } from 'components/Settings/Roles/styles';
+import { SafeImage } from 'components/Common/Image';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -20,8 +23,6 @@ import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
-import { SettingsWrapper } from './settingsWrapper';
-import { DeleteButton } from 'components/Settings/Roles/styles';
 import {
   GeneralSettingsButtonsBlock,
   GeneralSettingsContainer,
@@ -40,7 +41,6 @@ import {
   Snackbar,
   SettingsHeaderText,
 } from './styles';
-import { SafeImage } from 'components/Common/Image';
 
 const LIMIT = 200;
 
@@ -74,7 +74,7 @@ const LINKS_DATA = [
   },
 ];
 
-const GeneralSettingsComponent = (props) => {
+function GeneralSettingsComponent(props) {
   const {
     toast,
     setToast,
@@ -83,6 +83,7 @@ const GeneralSettingsComponent = (props) => {
     color,
     setColor,
     logoImage,
+    orgProfile,
     typeText,
     descriptionText,
     handleDescriptionChange,
@@ -120,7 +121,7 @@ const GeneralSettingsComponent = (props) => {
       tooltip: `Public means anyone can see this ${typeText?.toLowerCase()}`,
     },
     [PRIVACY_LEVEL.private]: {
-      title: 'Pod Members Only',
+      title: isPod ? 'Pod Members Only' : 'Org members Only',
       tooltip: `Private means only those with the proper permissions can see this ${typeText?.toLowerCase()}`,
     },
   };
@@ -140,7 +141,11 @@ const GeneralSettingsComponent = (props) => {
           message={toast.message}
         />
 
-        <HeaderBlock title="General settings" description="Update profile page settings." />
+        <HeaderBlock
+          title="General settings"
+          description="Update profile page settings."
+          icon={orgProfile?.profilePicture}
+        />
         <GeneralSettingsInputsBlock>
           <GeneralSettingsDAONameBlock>
             <LabelBlock>{typeText} Name</LabelBlock>
@@ -175,6 +180,7 @@ const GeneralSettingsComponent = (props) => {
           imageHeight={52}
           imageName="Logo"
           updateFilesCb={(file) => handleImageChange(file, 'profile')}
+          profileImage={newProfile?.profilePicture}
         />
 
         {newProfile?.headerPicture && !headerImage && (
@@ -189,6 +195,7 @@ const GeneralSettingsComponent = (props) => {
           imageHeight="200"
           imageName="Header"
           updateFilesCb={(file) => handleImageChange(file, 'header')}
+          profileImage={newProfile?.headerPicture}
         />
 
         {isPod && (
@@ -230,32 +237,28 @@ const GeneralSettingsComponent = (props) => {
                 </GeneralSettingsSocialsBlockRow>
               ))
             ) : (
-              <>
-                <GeneralSettingsSocialsBlockRow key={newLink.type}>
-                  <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
-                  <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
-                </GeneralSettingsSocialsBlockRow>
-              </>
+              <GeneralSettingsSocialsBlockRow key={newLink.type}>
+                <LinkSquareIcon title="Link" icon={<LinkBigIcon />} />
+                <InputField value={newLink.url} onChange={(e) => handleLinkChange(e, newLink)} />
+              </GeneralSettingsSocialsBlockRow>
             )}
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
 
-        {isPod && (
-          <div
-            style={{
-              marginTop: '32px',
-            }}
-          >
-            <CreateFormAddDetailsTab>
-              <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
-              <TabsVisibility
-                options={tabsVisibilityOptions}
-                selected={tabsVisibilitySelected}
-                onChange={tabsVisibilityHandleOnChange}
-              />
-            </CreateFormAddDetailsTab>
-          </div>
-        )}
+        <div
+          style={{
+            marginTop: '32px',
+          }}
+        >
+          <CreateFormAddDetailsTab>
+            <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
+            <TabsVisibility
+              options={tabsVisibilityOptions}
+              selected={tabsVisibilitySelected}
+              onChange={tabsVisibilityHandleOnChange}
+            />
+          </CreateFormAddDetailsTab>
+        </div>
 
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>
@@ -311,7 +314,7 @@ const GeneralSettingsComponent = (props) => {
       </GeneralSettingsContainer>
     </SettingsWrapper>
   );
-};
+}
 
 const reduceLinks = (existingLinks) => {
   const links = (existingLinks || []).reduce((acc, link) => {
@@ -328,7 +331,7 @@ const reduceLinks = (existingLinks) => {
 
 const handleLinkChange = (event, item, existingLinks, setLinks) => {
   const links = { ...existingLinks };
-  let url = event.currentTarget.value;
+  const url = event.currentTarget.value;
   // Case when value doesn't contain domain name
   links[item.type] = {
     url,
@@ -339,7 +342,7 @@ const handleLinkChange = (event, item, existingLinks, setLinks) => {
   setLinks(links);
 };
 
-export const PodGeneralSettings = () => {
+export function PodGeneralSettings() {
   const router = useRouter();
   const { podId } = router.query;
   const [podProfile, setPodProfile] = useState(null);
@@ -348,8 +351,11 @@ export const PodGeneralSettings = () => {
   const [originalPodProfile, setOriginalPodProfile] = useState(null);
   const [logoImage, setLogoImage] = useState('');
   const [color, setColor] = useState(null);
-  const [getPod] = useLazyQuery(GET_POD_BY_ID, {
+  const [getPod, { data: getPodByIdData }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: ({ getPodById }) => setPod(getPodById),
+    fetchPolicy: 'cache-and-network',
+  });
+  const [getOrg, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
     fetchPolicy: 'cache-and-network',
   });
   const [headerImage, setHeaderImage] = useState('');
@@ -374,7 +380,15 @@ export const PodGeneralSettings = () => {
     if (podId) {
       getPod({ variables: { podId } });
     }
-  }, [podId]);
+
+    if (podProfile?.orgId) {
+      getOrg({
+        variables: {
+          orgId: podProfile?.orgId,
+        },
+      });
+    }
+  }, [podId, podProfile?.orgId]);
 
   const [updatePod] = useMutation(UPDATE_POD, {
     onCompleted: ({ updatePod: pod }) => {
@@ -403,7 +417,7 @@ export const PodGeneralSettings = () => {
     const fileName = file?.name;
     // get image preview
     const { fileType, filename } = getFilenameAndType(fileName);
-    const imageFile = `tmp/${podId}/` + filename;
+    const imageFile = `tmp/${podId}/${filename}`;
     return { filename: imageFile, fileType, file };
   }
 
@@ -423,7 +437,7 @@ export const PodGeneralSettings = () => {
     const imageFile = handleImageFile(file);
     setPodProfile({
       ...podProfile,
-      [podProfileKey]: imageFile.filename ?? podProfile[podProfileKey],
+      [podProfileKey]: file === '' ? getPodByIdData.getPodById[podProfileKey] : imageFile.filename ?? null,
     });
     imageFile.filename && (await uploadMedia(imageFile));
   }
@@ -454,7 +468,7 @@ export const PodGeneralSettings = () => {
           privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: podProfile.headerPicture,
           profilePicture: podProfile.profilePicture,
-          color: color,
+          color,
         },
       },
     });
@@ -496,6 +510,7 @@ export const PodGeneralSettings = () => {
       handleLogoChange={handleLogoChange}
       headerImage={headerImage}
       handleImageChange={handleImageChange}
+      orgProfile={getOrgByIdData?.getOrgById}
       logoImage={logoImage}
       newProfile={podProfile}
       resetChanges={resetChanges}
@@ -511,15 +526,16 @@ export const PodGeneralSettings = () => {
       handleUnarchivePodClick={handleUnarchivePodClick}
     />
   );
-};
+}
 
-const GeneralSettings = () => {
+function GeneralSettings() {
   const [logoImage, setLogoImage] = useState('');
   const [orgProfile, setOrgProfile] = useState(null);
   const [headerImage, setHeaderImage] = useState('');
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
+  const [isPrivate, setIsPrivate] = useState(null);
   const router = useRouter();
   const { orgId } = router.query;
 
@@ -531,6 +547,7 @@ const GeneralSettings = () => {
     setDescriptionText(organization.description);
 
     setOrgProfile(organization);
+    setIsPrivate(organization.privacyLevel === PRIVACY_LEVEL.private);
   }
 
   const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
@@ -556,7 +573,7 @@ const GeneralSettings = () => {
     const fileName = file?.name;
     // get image preview
     const { fileType, filename } = getFilenameAndType(fileName);
-    const imageFile = `tmp/${orgId}/` + filename;
+    const imageFile = `tmp/${orgId}/${filename}`;
     return { filename: imageFile, fileType, file };
   }
 
@@ -576,7 +593,7 @@ const GeneralSettings = () => {
     const imageFile = handleImageFile(file);
     setOrgProfile({
       ...orgProfile,
-      [orgProfileKey]: imageFile.filename ?? getOrgByIdData?.getOrgById[orgProfileKey],
+      [orgProfileKey]: file === '' ? getOrgByIdData.getOrgById[orgProfileKey] : imageFile.filename ?? null,
     });
     imageFile.filename && (await uploadMedia(imageFile));
   }
@@ -604,7 +621,7 @@ const GeneralSettings = () => {
           links,
           name: orgProfile.name,
           description: orgProfile.description,
-          privacyLevel: orgProfile.privacyLevel,
+          privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
         },
@@ -629,10 +646,13 @@ const GeneralSettings = () => {
       descriptionText={descriptionText}
       handleDescriptionChange={handleDescriptionChange}
       handleLinkChange={(event, item) => handleLinkChange(event, item, { ...orgLinks }, setOrgLinks)}
+      orgProfile={getOrgByIdData?.getOrgById}
       links={orgLinks}
       logoImage={logoImage}
       newProfile={orgProfile}
       resetChanges={resetChanges}
+      isPrivate={isPrivate}
+      setIsPrivate={setIsPrivate}
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
@@ -640,6 +660,6 @@ const GeneralSettings = () => {
       handleImageChange={handleImageChange}
     />
   );
-};
+}
 
 export default GeneralSettings;

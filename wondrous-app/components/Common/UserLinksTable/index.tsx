@@ -26,7 +26,7 @@ import {
   UserLinksTableRowTitleText,
 } from './styles';
 
-export const UserLinksTable = (props) => {
+export function UserLinksTable(props) {
   const { parsedLinks } = props;
   const { social, websites } = parsedLinks;
   const userInfo = [
@@ -81,4 +81,4 @@ export const UserLinksTable = (props) => {
         ))}
     </UserLinksTableWrapper>
   );
-};
+}

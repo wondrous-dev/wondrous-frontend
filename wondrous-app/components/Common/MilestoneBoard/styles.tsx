@@ -13,11 +13,13 @@ const IconWrapper = styled.div`
   background: ${palette.background.default};
 `;
 
-export const MilestoneIcon = () => (
-  <IconWrapper>
-    <FlagIcon />
-  </IconWrapper>
-);
+export function MilestoneIcon() {
+  return (
+    <IconWrapper>
+      <FlagIcon />
+    </IconWrapper>
+  );
+}
 
 export const MilestonesContainer = styled.div`
   ${({ isFullWidth }) =>

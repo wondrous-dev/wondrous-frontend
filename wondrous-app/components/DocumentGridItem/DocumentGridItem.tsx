@@ -13,7 +13,7 @@ import PermissionTag from 'components/PermissionTag';
 
 import styles, { WhiteTypography, DescriptionTypography } from './DocumentGridItemStyles';
 
-const DocumentGridItem = ({ title, description, media, url, icon, permission, onItemClick }) => {
+function DocumentGridItem({ title, description, media, url, icon, permission, onItemClick }) {
   const [getPreviewFile, { data }] = useLazyQuery(GET_PREVIEW_FILE, {
     fetchPolicy: 'network-only',
   });
@@ -49,6 +49,6 @@ const DocumentGridItem = ({ title, description, media, url, icon, permission, on
       </Box>
     </Grid>
   );
-};
+}
 
 export default DocumentGridItem;

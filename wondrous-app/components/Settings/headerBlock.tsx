@@ -1,4 +1,6 @@
+import { SafeImage } from 'components/Common/Image';
 import React from 'react';
+import PlusIcon from 'components/Icons/plus';
 import {
   SettingsHeaderBlock,
   SettingsHeaderContent,
@@ -8,14 +10,13 @@ import {
   SettingsHeaderInviteButtonIcon,
 } from './styles';
 import GeneralSettings from '../Icons/generalSettings';
-import PlusIcon from 'components/Icons/plus';
 
-export const HeaderBlock = (props) => {
+export function HeaderBlock(props) {
   const { title, description, icon, onInvite } = props;
 
   return (
     <SettingsHeaderBlock>
-      {icon ? icon : <GeneralSettings circle />}
+      {icon ? <SafeImage src={icon} width={72} height={72} useNextImage /> : <GeneralSettings circle />}
       <SettingsHeaderContent>
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
@@ -30,4 +31,4 @@ export const HeaderBlock = (props) => {
       )}
     </SettingsHeaderBlock>
   );
-};
+}

@@ -47,7 +47,7 @@ interface DropdownSelectProps {
   labelStyle?: any;
 }
 
-const DropdownSelect = ({
+function DropdownSelect({
   title,
   className, // missing
   labelText,
@@ -65,7 +65,7 @@ const DropdownSelect = ({
   innerStyle,
   hideLabel,
   labelStyle,
-}: DropdownSelectProps) => {
+}: DropdownSelectProps) {
   const [open, setOpen] = useState(false);
 
   const handleChange = (event) => {
@@ -76,11 +76,7 @@ const DropdownSelect = ({
 
   return (
     <CreateFormSelectBlock style={formSelectStyle} className={className}>
-      {!hideLabel && (
-        <>
-          <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>
-        </>
-      )}
+      {!hideLabel && <CreateFormSelectBlockTitle style={titleStyle}>{title}</CreateFormSelectBlockTitle>}
       <FormControl>
         {!value && (
           <CreateFormInputLabel
@@ -138,6 +134,6 @@ const DropdownSelect = ({
       </FormControl>
     </CreateFormSelectBlock>
   );
-};
+}
 
 export default DropdownSelect;

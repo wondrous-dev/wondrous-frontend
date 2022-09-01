@@ -1,23 +1,45 @@
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import { Snackbar } from 'components/Settings/styles';
 import NotionDatabaseSelect from 'components/Settings/TaskImport/NotionDatabaseSelect';
-import { NotionInButtonIcon } from 'components/Settings/TaskImport/styles';
+import {
+  NotionInButtonIcon,
+  ConnectToNotionButton,
+  LabelBlock,
+  TaskImportMethodBlock,
+  DisconnectFromNotionButton,
+  DisconnectFromNotionButtonIcon,
+  NotionActionsContainer,
+} from 'components/Settings/TaskImport/styles';
 import { GET_ORG_NOTION_WORKSPACE } from 'graphql/queries';
+import { DISCONNECT_NOTION_FROM_ORG } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { LINK, NOTION_CONNECT_TYPES } from 'utils/constants';
-import { ConnectToNotionButton, LabelBlock, TaskImportMethodBlock } from './styles';
 
 const NOTION_CLIENT_ID = process.env.NEXT_PUBLIC_NOTION_CLIENT_ID;
 const REDIRECT_URL = `${LINK}/notion/callback`;
 
-const NotionTaskImportSection = (props) => {
+function NotionTaskImportSection(props) {
   const router = useRouter();
   const [openImportModal, setOpenImportModal] = useState(false);
   const { orgId, podId } = props;
   const [toast, setToast] = useState({ show: false, message: '' });
 
   const [getOrgNotionWorkspace, { data: getOrgNotionWorkspaceData }] = useLazyQuery(GET_ORG_NOTION_WORKSPACE, {});
+  const [disconnectNotionFromOrg] = useMutation(DISCONNECT_NOTION_FROM_ORG, {
+    refetchQueries: ['getOrgNotionWorkspace'],
+  });
+
+  const handleDisconnect = () => {
+    disconnectNotionFromOrg({
+      variables: {
+        orgId,
+        notionWorkspaceId: getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id,
+      },
+    }).then(() => {
+      setToast({ ...toast, message: `Disconnected successfully.`, show: true });
+    });
+  };
 
   const redirectToNotionAuth = () => {
     const state = JSON.stringify({
@@ -51,20 +73,27 @@ const NotionTaskImportSection = (props) => {
         setToast={setToast}
       />
       <LabelBlock>Import from Notion</LabelBlock>
-      {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
-        <>
+      <NotionActionsContainer>
+        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
           <ConnectToNotionButton onClick={() => setOpenImportModal(true)}>
             <NotionInButtonIcon /> Import from workspace {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.name}
           </ConnectToNotionButton>
-        </>
-      )}
-      {!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
-        <ConnectToNotionButton onClick={redirectToNotionAuth}>
-          <NotionInButtonIcon /> Connect to notion
-        </ConnectToNotionButton>
-      )}
+        )}
+
+        {!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+          <ConnectToNotionButton onClick={redirectToNotionAuth}>
+            <NotionInButtonIcon /> Connect to notion
+          </ConnectToNotionButton>
+        )}
+        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+          <DisconnectFromNotionButton onClick={handleDisconnect}>
+            <DisconnectFromNotionButtonIcon />
+            &nbsp;Disconnect from notion
+          </DisconnectFromNotionButton>
+        )}
+      </NotionActionsContainer>
     </TaskImportMethodBlock>
   );
-};
+}
 
 export default NotionTaskImportSection;

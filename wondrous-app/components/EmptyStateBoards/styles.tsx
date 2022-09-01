@@ -66,11 +66,13 @@ const PlusIconWrapper = styled.div`
     border-radius: 180px;
   }
 `;
-export const AddTaskPlusIcon = () => (
-  <PlusIconWrapper>
-    <PlusIcon />
-  </PlusIconWrapper>
-);
+export function AddTaskPlusIcon() {
+  return (
+    <PlusIconWrapper>
+      <PlusIcon />
+    </PlusIconWrapper>
+  );
+}
 
 export const NoPermissionToCreateWrapper = styled.div`
   background: ${palette.black101};

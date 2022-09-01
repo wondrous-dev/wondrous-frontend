@@ -74,13 +74,19 @@ export const MemberRequestCard = styled.div`
   width: 100%;
 `;
 
+export const MemberProfileLink = styled.a`
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  gap: 12px;
+`;
+
 export const MemberName = styled(Typography)`
   && {
     font-family: 'Space Grotesk';
     font-size: 16px;
     font-weight: 600;
     color: ${palette.white};
-    margin-left: 12px;
   }
 `;
 
@@ -112,6 +118,9 @@ export const RequestActionButton = styled(Button)`
     padding: 7px 16px;
     border-radius: 1000px;
     color: ${palette.white};
+    &.Mui-disabled {
+      color: ${palette.white};
+    }
   }
 `;
 
@@ -144,12 +153,17 @@ export const RequestApproveButton = styled(RequestActionButton)`
       border-radius: 1000px;
     }
     &:hover {
-      background: ${palette.background.default}b3;
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
     }
   }
 `;
 
-export const ShowAllButton = styled(RequestActionButton)`
+export const ShowMoreButton = styled(RequestActionButton)`
   && {
     line-height: 15px;
     letter-spacing: 0.01em;

@@ -1,10 +1,4 @@
 import { useState, useContext, useEffect } from 'react';
-import {
-  ListViewItemBodyWrapper,
-  ListViewItemDataContainer,
-  ListViewItemIconsWrapper,
-  ListViewItemActions,
-} from './styles';
 import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { SafeImage } from 'components/Common/Image';
@@ -13,24 +7,21 @@ import { SubtaskLightIcon } from 'components/Icons/subtask';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { Compensation } from 'components/Common/Compensation';
 import { format } from 'date-fns';
-import { DueDateText, ActionButton, ArchivedTaskUndo } from 'components/Common/Task/styles';
+import { DueDateText, ArchivedTaskUndo } from 'components/Common/Task/styles';
 import Tooltip from 'components/Tooltip';
 import palette from 'theme/palette';
 import { Claim } from 'components/Icons/claimTask';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
-import { useMutation } from '@apollo/client';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { transformTaskToTaskCard } from 'utils/helpers';
 import { useMe } from 'components/Auth/withAuth';
 import SmartLink from 'components/Common/SmartLink';
 import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
-import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -38,6 +29,13 @@ import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
 import { CreateEntity } from 'components/CreateEntity';
+import { ButtonPrimary } from 'components/Common/button';
+import {
+  ListViewItemBodyWrapper,
+  ListViewItemDataContainer,
+  ListViewItemIconsWrapper,
+  ListViewItemActions,
+} from './styles';
 
 export default function ListViewItem({ task, entityType }) {
   let windowOffset = 0;
@@ -118,8 +116,8 @@ export default function ListViewItem({ task, entityType }) {
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId: orgId,
-    podId: podId,
+    orgId,
+    podId,
   });
 
   const hasPermissionToPay =
@@ -175,7 +173,7 @@ export default function ListViewItem({ task, entityType }) {
   let viewUrl = `${delQuery(router.asPath)}?${taskType}=${task?.id}&view=${router.query.view || 'grid'}`;
 
   if (entityType) {
-    viewUrl = viewUrl + `&entity=${entityType}`;
+    viewUrl += `&entity=${entityType}`;
   }
 
   const [unarchiveTaskMutation, { data: unarchiveTaskData }] = useMutation(UNARCHIVE_TASK, {
@@ -258,7 +256,6 @@ export default function ListViewItem({ task, entityType }) {
         onDelete={() => {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage(`Deleted successfully!`);
-          setData(null);
         }}
       />
 
@@ -325,51 +322,42 @@ export default function ListViewItem({ task, entityType }) {
             {dueDate && <DueDateText>{format(new Date(dueDate), 'MMM d')}</DueDateText>}
             {rewards && rewards?.length > 0 && <Compensation pillStyle={{ padding: '10px' }} rewards={rewards} />}
             {displayPayButton && (
-              <ActionButton
+              <ButtonPrimary
                 onClick={(e) => {
                   e.stopPropagation();
                   handlePaymentModal();
                 }}
               >
                 Pay
-              </ActionButton>
+              </ButtonPrimary>
             )}
             {!assigneeId && status !== TASK_STATUS_DONE && (
               <>
                 {claimed ? (
-                  <ActionButton
+                  <ButtonPrimary
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                     }}
                   >
                     Claimed
-                  </ActionButton>
+                  </ButtonPrimary>
                 ) : (
-                  <ActionButton
-                    style={{
-                      marginRight: '8px',
-                    }}
+                  <ButtonPrimary
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
                       claimAction(id);
                       setClaimed(true);
                     }}
+                    startIcon={<Claim />}
                   >
-                    <Claim />
-                    <span
-                      style={{
-                        marginLeft: '4px',
-                      }}
-                    >
-                      Claim
-                    </span>
-                  </ActionButton>
+                    Claim
+                  </ButtonPrimary>
                 )}
               </>
             )}
-            {status === TASK_STATUS_IN_REVIEW && <ActionButton type="button">Review</ActionButton>}
+            {status === TASK_STATUS_IN_REVIEW && <ButtonPrimary>Review</ButtonPrimary>}
             {canArchive && (
               <MoreOptions>
                 <Tooltip title="More actions" placement="top">
@@ -399,7 +387,7 @@ export default function ListViewItem({ task, entityType }) {
                       </DropDownItem>
                       {canDelete && (
                         <DropDownItem
-                          key={'task-menu-delete-' + task.id}
+                          key={`task-menu-delete-${task.id}`}
                           onClick={() => {
                             setDeleteTask(true);
                           }}
