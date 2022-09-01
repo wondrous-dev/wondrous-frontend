@@ -4,6 +4,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useRouter } from 'next/router';
 import { useCreateEntityContext } from 'utils/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
 import CreateEntityModal from './CreateEntityModal/index';
@@ -81,32 +82,32 @@ function ChooseEntityToCreate(props) {
     toggleOpen();
   };
 
-  useHotkeys('shift+t', () => {
+  useHotkeys(HOTKEYS.CREATE_TASK, () => {
     setEntityType(ENTITIES_TYPES.TASK);
     setOpenChooseEntity(false);
 
     toggleOpen();
   });
-  useHotkeys('shift+b', () => {
+  useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
     setEntityType(ENTITIES_TYPES.BOUNTY);
     setOpenChooseEntity(false);
 
     toggleOpen();
   });
-  useHotkeys('shift+l', () => {
+  useHotkeys(HOTKEYS.CREATE_POD, () => {
     setEntityType(ENTITIES_TYPES.POD);
     setOpenChooseEntity(false);
 
     toggleOpen();
   });
-  useHotkeys('shift+p', () => {
+  useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
     setEntityType(ENTITIES_TYPES.PROPOSAL);
     setOpenChooseEntity(false);
 
     toggleOpen();
   });
   useHotkeys(
-    'c',
+    HOTKEYS.CHOOSE_ENTITY,
     () => {
       setOpenChooseEntity(!openChooseEntity);
     },

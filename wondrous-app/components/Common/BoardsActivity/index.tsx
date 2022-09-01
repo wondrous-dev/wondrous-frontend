@@ -15,6 +15,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -37,7 +38,7 @@ export function BoardsActivityInlineView({
   const showBadge = useHotkey();
 
   useHotkeys(
-    'o',
+    HOTKEYS.OPEN_FILTER,
     () => {
       setDisplayFilters(!displayFilters);
     },
@@ -57,7 +58,7 @@ export function BoardsActivityInlineView({
         {withAdminToggle ? <Toggle items={toggleItems} /> : null}
         {view && !searchQuery && !isAdmin && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
         {!displaySingleViewFilter ? (
-          <Badge badgeContent="Õ" color="primary" invisible={!showBadge}>
+          <Badge badgeContent={HOTKEYS.OPEN_FILTER} color="primary" invisible={!showBadge}>
             <FiltersTriggerButton
               onClick={() => {
                 handleFilterDisplay();
@@ -134,7 +135,7 @@ export default function BoardsActivity(props) {
   ];
 
   useHotkeys(
-    ',',
+    HOTKEYS.LIST_VIEW,
     () => {
       if (setActiveView) {
         setActiveView(ViewType.List);
@@ -147,7 +148,7 @@ export default function BoardsActivity(props) {
   );
 
   useHotkeys(
-    '.',
+    HOTKEYS.GRID_VIEW,
     () => {
       if (setActiveView) {
         setActiveView(ViewType.Grid);

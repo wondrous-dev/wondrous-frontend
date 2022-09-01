@@ -14,6 +14,7 @@ import Tooltip from 'components/Tooltip';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { useHotkey } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
@@ -115,8 +116,7 @@ export function AssigneeField({
           const taskProposal = data?.updateTaskProposalAssignee;
           if (boardColumns?.setColumns && onCorrectPage) {
             const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
-            let columns = [...boardColumns?.columns];
-            columns = updateProposalItem(transformedTaskProposal, columns);
+            const columns = updateProposalItem(transformedTaskProposal, [...boardColumns?.columns]);
             boardColumns?.setColumns(columns);
           }
         },
@@ -149,7 +149,7 @@ export function AssigneeField({
     }
   };
 
-  useHotkeys('shift+c', () => {
+  useHotkeys(HOTKEYS.CLAIM_TASK, () => {
     claimTask();
   });
   if (!shouldDisplay) return null;
@@ -211,7 +211,7 @@ export function AssigneeField({
           DefaultContent={() => (
             <>
               {canClaim ? (
-                <Badge badgeContent="shift+c" color="primary" invisible={!showBadge}>
+                <Badge badgeContent={HOTKEYS.CLAIM_TASK} color="primary" invisible={!showBadge}>
                   <TaskSectionInfoTakeTask
                     onClick={() => {
                       claimTask();

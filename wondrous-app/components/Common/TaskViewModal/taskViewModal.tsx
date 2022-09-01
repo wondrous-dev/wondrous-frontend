@@ -10,7 +10,7 @@ import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } fro
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
@@ -28,10 +28,10 @@ import {
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
+  ProposalVoteType,
   STATUS_APPROVED,
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
-  ProposalVoteType,
 } from 'utils/constants';
 import { ApprovedSubmissionContext } from 'utils/contexts';
 import {
@@ -40,17 +40,17 @@ import {
   transformTaskToTaskCard,
 } from 'utils/helpers';
 import {
+  useCanViewTask,
   useColumns,
+  useCreateEntityContext,
   useOrgBoard,
   usePodBoard,
   useUserBoard,
-  useCanViewTask,
-  useUserProfile,
-  useCreateEntityContext,
 } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useMe } from '../../Auth/withAuth';
 import {
   CreateFormButtonsBlock,
@@ -68,6 +68,16 @@ import { MilestoneProgressViewModal } from '../MilestoneProgress';
 import { MakePaymentModal } from '../Payment/PaymentModal';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+import ActionModals from './actionModals';
+import { tabs } from './constants';
+import {
+  GithubButtons,
+  LockedTaskMessage,
+  Menu,
+  Rewards,
+  TaskDescriptionTextWrapper,
+  TaskSectionImageContent,
+} from './helpers';
 import {
   SubtaskIconWrapper,
   TaskBorder,
@@ -105,28 +115,18 @@ import {
 } from './styles';
 import { TaskMenuStatus } from './taskMenuStatus';
 import {
-  TaskDescriptionTextWrapper,
-  TaskSectionImageContent,
-  Rewards,
-  GithubButtons,
-  Menu,
-  LockedTaskMessage,
-} from './helpers';
-import { openSnapshot } from './utils';
-import { tabs } from './constants';
-import ActionModals from './actionModals';
-import TaskViewModalFooter from './taskViewModalFooter';
-import {
-  ReviewerField,
-  AssigneeField,
   ApplicationField,
-  ProposerField,
-  VotesField,
+  AssigneeField,
   DueDateField,
-  PointsField,
   MilestoneField,
+  PointsField,
+  ProposerField,
+  ReviewerField,
   TagsField,
+  VotesField,
 } from './taskViewModalFields';
+import TaskViewModalFooter from './taskViewModalFooter';
+import { openSnapshot } from './utils';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -256,7 +256,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     },
   });
 
-  useHotkeys('w', () => {
+  useHotkeys(HOTKEYS.CREATE_COMMENT, () => {
     setActiveTab(tabs.discussion);
   });
 

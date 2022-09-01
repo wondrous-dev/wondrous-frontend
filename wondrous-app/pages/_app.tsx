@@ -20,6 +20,7 @@ import { WonderWeb3Provider } from 'services/web3/context/WonderWeb3Context';
 import OnboardingTour from 'components/Guide';
 import SidebarLayout from 'components/Common/Layout';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 
 declare global {
   interface Window {
@@ -48,7 +49,7 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
   const [showHotkeys, setShowHotkeys] = useState(false);
 
   useHotkeys(
-    'shift+s',
+    HOTKEYS.SHOW_SHORTCUTS,
     () => {
       setShowHotkeys(!showHotkeys);
     },

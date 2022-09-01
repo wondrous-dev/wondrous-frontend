@@ -1,29 +1,30 @@
-import React, { useState, useEffect, useRef } from 'react';
-import { useRouter } from 'next/router';
 import { Badge, InputAdornment } from '@mui/material';
 import CircularProgress from '@mui/material/CircularProgress';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 
 import { SEARCH_GLOBAL } from 'graphql/queries';
 import apollo from 'services/apollo';
 
 import { SafeImage } from 'components/Common/Image';
-import { useHotkey, useOutsideAlerter } from 'utils/hooks';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import { SearchIconWrapped } from 'components/SearchTasks/styles';
-import { DAOIcon } from 'components/Icons/dao';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
+import { useHotkey, useOutsideAlerter } from 'utils/hooks';
 
 import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import {
   GlobalSearchWrapper,
-  SearchInput,
-  SearchResults,
-  SearchResultCategory,
-  SearchResultItem,
-  SearchResultCategoryTitle,
-  SearchInputWrapper,
   SearchIconWrapper,
+  SearchInput,
+  SearchInputWrapper,
+  SearchResultCategory,
+  SearchResultCategoryTitle,
+  SearchResultItem,
+  SearchResults,
 } from './styles';
 
 let timeout;
@@ -123,13 +124,13 @@ function GlobalSearch() {
       return router.push(`/profile/${entity.username}/about`, undefined, { shallow: true });
   };
 
-  useHotkeys('shift+enter', () => {
+  useHotkeys(HOTKEYS.GLOBAL_SEARCH, () => {
     setIsExpanded((prevState) => !prevState);
   });
 
   return (
     <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
-      <Badge badgeContent="shift+enter" color="primary" invisible={!showBadge}>
+      <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge}>
         <SearchIconWrapper isExpanded={isExpanded}>
           <SearchIconWrapped />
         </SearchIconWrapper>

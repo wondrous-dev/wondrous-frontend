@@ -9,12 +9,13 @@ import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { SideBarContext, CreateEntityContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SectionWrapper } from './styles';
 
 export default function SidebarLayout({ children }) {
   const isMobile = useIsMobile();
   const router = useRouter();
-  useHotkeys('d', () => {
+  useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
     router.push(`/dashboard`);
   });
 

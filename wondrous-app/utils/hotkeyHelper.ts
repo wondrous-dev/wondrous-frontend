@@ -1,4 +1,3 @@
-// put in to rerun vercel upload
 const findNextAvailableStatus = (direction, statusIndex, columns) => {
   let holdStatusIndex = statusIndex;
   for (let i = 0; i <= columns.length; i += 1) {
@@ -45,6 +44,37 @@ const findNextAvailableStatus = (direction, statusIndex, columns) => {
   }
 };
 
+export const HOTKEYS = {
+  GLOBAL_SEARCH: 'enter+shift',
+  LOCAL_SEARCH: 'enter',
+  SHOW_SHORTCUTS: 'shift+S',
+  CREATE_TASK: 'shift+T',
+  CREATE_BOUNTY: 'shift+B',
+  CREATE_MILESTONE: 'shift+M',
+  CREATE_PROPOSAL: 'shift+P',
+  CREATE_DAO: 'shift+D',
+  CREATE_POD: 'shift+L',
+  CREATE_COMMENT: 'W',
+  OPEN_FILTER: 'O',
+  OPEN_PROFILE: 'P',
+  OPEN_EXPLORE: 'E',
+  OPEN_DASHBOARD: 'D',
+  OPEN_NOTIFICATION: 'N',
+  OPEN_POD: 'L',
+  CHOOSE_ENTITY: 'C',
+  LIST_VIEW: ',',
+  GRID_VIEW: '.',
+  ENTER_TASK: 'enter',
+  CLAIM_TASK: 'shift+C',
+};
+
+export const ARROW_KEYS = {
+  ARROW_DOWN: 'ArrowDown',
+  ARROW_UP: 'ArrowUp',
+  ARROW_RIGHT: 'ArrowRight',
+  ARROW_LEFT: 'ArrowLeft',
+};
+
 const findFirstAvailableTask = (columns) => {
   for (let statuses = 0; statuses < columns.length; statuses += 1) {
     if (columns[statuses]?.tasks.length > 0) {
@@ -57,18 +87,18 @@ const findFirstAvailableTask = (columns) => {
 export const hotkeyUpArrowHelper = (taskIndex, statusIndex, columns) => {
   let holdTaskIndex = taskIndex;
   let holdStatusIndex = statusIndex;
-  if (holdStatusIndex !== null && holdTaskIndex !== null) {
-    if (holdTaskIndex - 1 >= 0) {
-      holdTaskIndex -= 1;
-      return { holdTaskIndex, holdStatusIndex };
-    }
+
+  if (holdStatusIndex === null && holdTaskIndex === null) {
     holdStatusIndex = findNextAvailableStatus('up', statusIndex, columns);
     holdTaskIndex = columns[holdStatusIndex]?.tasks.length - 1;
     return { holdTaskIndex, holdStatusIndex };
   }
+  if (holdTaskIndex - 1 >= 0) {
+    holdTaskIndex -= 1;
+    return { holdTaskIndex, holdStatusIndex };
+  }
   holdStatusIndex = findNextAvailableStatus('up', statusIndex, columns);
   holdTaskIndex = columns[holdStatusIndex]?.tasks.length - 1;
-
   return { holdTaskIndex, holdStatusIndex };
 };
 
@@ -84,39 +114,23 @@ export const hotkeyLeftArrowHelper = (taskIndex, statusIndex, columns) => {
   }
   return { holdTaskIndex, holdStatusIndex };
 };
+
 export const hotkeyDownArrowHelper = (taskIndex, statusIndex, columns) => {
   let holdTaskIndex = taskIndex;
   let holdStatusIndex = statusIndex;
-  if (holdStatusIndex !== null && holdTaskIndex !== null) {
-    if (columns?.[holdStatusIndex]?.tasks?.length === 0) {
-      if (columns.length > holdStatusIndex - 1) {
-        holdStatusIndex = findNextAvailableStatus('down', statusIndex, columns);
-        holdTaskIndex = 0;
-        return { holdTaskIndex, holdStatusIndex };
-      }
-    } else if (columns.length === holdStatusIndex + 1 && columns[holdStatusIndex]?.tasks.length === holdTaskIndex + 1) {
-      holdTaskIndex = -1;
-      holdStatusIndex = 0;
-      return { holdTaskIndex, holdStatusIndex };
-    } else if (columns?.[holdStatusIndex]?.tasks?.length > holdTaskIndex + 1) {
-      holdTaskIndex += 1;
-      return { holdTaskIndex, holdStatusIndex };
-    } else if (columns.length > holdStatusIndex && columns?.[holdStatusIndex]?.tasks.length === holdTaskIndex + 1) {
-      if (columns.length > holdStatusIndex - 1) {
-        holdStatusIndex = findNextAvailableStatus('down', statusIndex, columns);
-        holdTaskIndex = 0;
-        return { holdTaskIndex, holdStatusIndex };
-      }
-    } else {
-      holdTaskIndex = -1;
-      holdStatusIndex = 0;
-      return { holdTaskIndex, holdStatusIndex };
-    }
-  } else {
+
+  if (holdStatusIndex === null && holdTaskIndex === null) {
     holdStatusIndex = findFirstAvailableTask(columns);
     holdTaskIndex = 0;
     return { holdTaskIndex, holdStatusIndex };
   }
+  if (holdTaskIndex + 1 < columns[holdStatusIndex]?.tasks?.length) {
+    holdTaskIndex += 1;
+    return { holdTaskIndex, holdStatusIndex };
+  }
+  holdStatusIndex = findNextAvailableStatus('down', statusIndex, columns);
+  holdTaskIndex = 0;
+  return { holdTaskIndex, holdStatusIndex };
 };
 
 export const hotkeyRightArrowHelper = (taskIndex, statusIndex, columns) => {
@@ -130,4 +144,12 @@ export const hotkeyRightArrowHelper = (taskIndex, statusIndex, columns) => {
     holdTaskIndex = 0;
   }
   return { holdTaskIndex, holdStatusIndex };
+};
+
+export const pickHotkeyFunction = (key, taskIndex, statusIndex, columns) => {
+  if (key === ARROW_KEYS.ARROW_RIGHT) return hotkeyRightArrowHelper(taskIndex, statusIndex, columns);
+  if (key === ARROW_KEYS.ARROW_LEFT) return hotkeyLeftArrowHelper(taskIndex, statusIndex, columns);
+  if (key === ARROW_KEYS.ARROW_UP) return hotkeyUpArrowHelper(taskIndex, statusIndex, columns);
+  if (key === ARROW_KEYS.ARROW_DOWN) return hotkeyDownArrowHelper(taskIndex, statusIndex, columns);
+  return null;
 };

@@ -1,14 +1,22 @@
 /* eslint-disable import/extensions */
-import React, { useState, memo } from 'react';
 import Link from 'next/link';
+import { memo, useState } from 'react';
 
-import Tooltip from 'components/Tooltip';
-import { User } from 'types/User';
-import { Org } from 'types/Org';
-import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
+import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Org } from 'types/Org';
+import { User } from 'types/User';
 import { useHotkey } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import { SafeImage } from '../Common/Image';
+import DefaultUserImage from '../Common/Image/DefaultUserImage';
+import BackArrowIcon from '../Icons/backArrow';
+import { DAOIcon } from '../Icons/dao';
+import AddDaoModal from './AddDaoModal';
+import HelpModal from './HelpModal';
+import { PodModal } from './PodModal';
 import {
   DrawerBackButton,
   DrawerBottomBlock,
@@ -16,25 +24,18 @@ import {
   DrawerComponent,
   DrawerContainer,
   DrawerList,
+  DrawerListCreateDao,
   DrawerListItem,
   DrawerTopBlock,
   DrawerTopBlockItem,
   NoLogoDAO,
   StyledDivider,
   StyledDividerDiv,
-  StyledSettingsIcon,
-  StyledTutorialsIcon,
   StyledExplorePageIcon,
   StyledPodsIcon,
-  DrawerListCreateDao,
+  StyledSettingsIcon,
+  StyledTutorialsIcon,
 } from './styles';
-import BackArrowIcon from '../Icons/backArrow';
-import { SafeImage } from '../Common/Image';
-import DefaultUserImage from '../Common/Image/DefaultUserImage';
-import { DAOIcon } from '../Icons/dao';
-import { PodModal } from './PodModal';
-import HelpModal from './HelpModal';
-import AddDaoModal from './AddDaoModal';
 
 type Props = {
   isMobile: boolean;
@@ -67,7 +68,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
   const showBadge = useHotkey();
 
   useHotkeys(
-    'p',
+    HOTKEYS.OPEN_PROFILE,
     () => {
       router.push(`/profile/${user?.username}/about`);
     },
@@ -83,12 +84,12 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
     [orgsList]
   );
 
-  useHotkeys('e', () => {
+  useHotkeys(HOTKEYS.OPEN_EXPLORE, () => {
     router.push('/explore');
   });
 
   useHotkeys(
-    'l',
+    HOTKEYS.OPEN_POD,
     () => {
       setOpenPodModal(!openPodModal);
     },
@@ -96,7 +97,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
   );
 
   useHotkeys(
-    'shift+d',
+    HOTKEYS.CREATE_DAO,
     () => {
       setOpenCreateDaoModal(!openCreateDaoModal);
     },
@@ -175,7 +176,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
         <DrawerTopBlock>
           <Tooltip title="Profile" style={toolTipStyle}>
             <DrawerTopBlockItem id="tour-user-profile" onClick={handleProfileClick}>
-              <Badge badgeContent="P" color="primary" invisible={!showBadge}>
+              <Badge badgeContent={HOTKEYS.OPEN_PROFILE} color="primary" invisible={!showBadge}>
                 <SafeImage
                   src={user?.thumbnailPicture || user?.profilePicture}
                   placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
@@ -200,7 +201,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
                   <DrawerBottomButton type="button" {...actionProps}>
                     {!!link?.url && (
                       <Link href="/explore">
-                        <Badge badgeContent="E" color="primary" invisible={!showBadge}>
+                        <Badge badgeContent={HOTKEYS.OPEN_EXPLORE} color="primary" invisible={!showBadge}>
                           <Icon id={link?.id} />
                         </Badge>
                       </Link>
@@ -213,7 +214,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user }: 
             return (
               <Tooltip key={idx} title={link?.tooltipLabel} placement="right" style={toolTipStyle}>
                 <DrawerBottomButton type="button" {...actionProps}>
-                  <Badge badgeContent="L" color="primary" invisible={!showBadge}>
+                  <Badge badgeContent={HOTKEYS.OPEN_POD} color="primary" invisible={!showBadge}>
                     {!!link?.url && (
                       <Link href={link.url} passHref>
                         <a href={link.url} {...externalProps}>

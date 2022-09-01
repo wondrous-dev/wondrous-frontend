@@ -5,6 +5,7 @@ import { ExplorePageIcon, PodsIcon, TutorialsIcon } from 'components/Icons/sideb
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { SIDEBAR_WIDTH } from 'utils/constants';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 
 export const DrawerComponent = styled(Drawer)`
   && {
@@ -128,7 +129,7 @@ const DrawerListCreateDaoWrapper = styled.div`
 
 export const DrawerListCreateDao = styled((props) => (
   <DrawerListCreateDaoWrapper>
-    <Badge badgeContent="shift+D" color="primary" invisible={!props.showBadge}>
+    <Badge badgeContent={HOTKEYS.CREATE_DAO} color="primary" invisible={!props.showBadge}>
       <ButtonBase {...props}>
         <div>
           <AddIcon />

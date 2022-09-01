@@ -1,21 +1,22 @@
-import { useState, useEffect, forwardRef } from 'react';
-import { useRouter } from 'next/router';
-import TaskSubtasks from 'components/Common/TaskSubtask';
+import { Badge } from '@mui/material';
+import { CommentList } from 'components/Comment';
+import MilestoneTasks from 'components/Common/MilestoneTask';
 import { TaskApplicationList } from 'components/Common/TaskApplication';
 import TaskSubmission from 'components/Common/TaskSubmission';
-import { useHotkey, usePodBoard } from 'utils/hooks';
+import TaskSubtasks from 'components/Common/TaskSubtask';
+import { useRouter } from 'next/router';
+import { forwardRef, useEffect } from 'react';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
-import MilestoneTasks from 'components/Common/MilestoneTask';
-import { CommentList } from 'components/Comment';
-import { Badge } from '@mui/material';
+import { useHotkey, usePodBoard } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import { tabs } from './constants';
 import {
   TaskModalFooter,
+  TaskSectionContent,
   TaskSectionFooterTitleDiv,
   TaskSubmissionTab,
   TaskTabText,
-  TaskSectionContent,
 } from './styles';
-import { tabs } from './constants';
 import { selectTabsPerType } from './utils';
 
 interface Props {
@@ -109,7 +110,11 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
           const active = tab === activeTab;
           return (
             <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
-              <Badge badgeContent="W" color="primary" invisible={!showBadge || tab !== 'Discussion'}>
+              <Badge
+                badgeContent={HOTKEYS.CREATE_COMMENT}
+                color="primary"
+                invisible={!showBadge || tab !== 'Discussion'}
+              >
                 <TaskTabText isActive={active}>{tab}</TaskTabText>
               </Badge>
             </TaskSubmissionTab>

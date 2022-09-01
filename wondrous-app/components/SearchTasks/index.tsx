@@ -1,22 +1,23 @@
-import React, { useRef, useState } from 'react';
 import { Badge, InputAdornment } from '@mui/material';
-import last from 'lodash/last';
 import CircularProgress from '@mui/material/CircularProgress';
+import last from 'lodash/last';
+import React, { useRef, useState } from 'react';
 
-import { TaskFragment } from 'types/task';
-import { TASK_TYPE, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
-import { delQuery } from 'utils';
-import { useRouter } from 'next/router';
 import TaskViewModal from 'components/Common/TaskViewModal';
-import { ViewType } from 'types/common';
-import { useHotkey, useUserBoard } from 'utils/hooks';
+import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { Autocomplete as DefaultAutocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
-import TaskIcon from '../Icons/TaskTypes/task';
-import MilestoneIcon from '../Icons/TaskTypes/milestone';
-import BountyIcon from '../Icons/TaskTypes/bounty';
+import { ViewType } from 'types/common';
+import { TaskFragment } from 'types/task';
+import { delQuery } from 'utils';
+import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
+import { useHotkey, useUserBoard } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
+import BountyIcon from '../Icons/TaskTypes/bounty';
+import MilestoneIcon from '../Icons/TaskTypes/milestone';
+import TaskIcon from '../Icons/TaskTypes/task';
+import { Autocomplete as DefaultAutocomplete, Input, LoadMore, Option, SearchIconWrapped } from './styles';
 
 const TaskTypeIcons = {
   [TASK_TYPE]: <TaskIcon />,
@@ -45,7 +46,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const autocompleteRef = useRef<HTMLInputElement>();
 
   useHotkeys(
-    'enter',
+    HOTKEYS.LOCAL_SEARCH,
     () => {
       setIsExpanded(!isExpanded);
       autocompleteRef.current.focus();
@@ -207,7 +208,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
               ...params.InputProps,
               startAdornment: (
                 <InputAdornment position="start">
-                  <Badge badgeContent="enter" color="primary" invisible={!showBadge}>
+                  <Badge badgeContent={HOTKEYS.LOCAL_SEARCH} color="primary" invisible={!showBadge}>
                     <SearchIconWrapped />
                   </Badge>
                 </InputAdornment>

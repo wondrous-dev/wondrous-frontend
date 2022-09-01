@@ -1,29 +1,30 @@
+import Box from '@mui/material/Box';
 import Link from 'next/link';
 import { memo } from 'react';
-import Box from '@mui/material/Box';
 
+import { Button } from 'components/Common/button';
 import Wallet from 'components/Common/Wallet';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
-import { Button } from 'components/Common/button';
+import HomeIcon from 'components/Icons/home';
 import NotificationsBoard from 'components/Notifications';
 import Tooltip from 'components/Tooltip';
-import HomeIcon from 'components/Icons/home';
 
-import GlobalSearch from 'components/GlobalSearch';
-import { User } from 'types/User';
-import { Notification } from 'types/Notification';
 import { Badge } from '@mui/material';
+import GlobalSearch from 'components/GlobalSearch';
+import { Notification } from 'types/Notification';
+import { User } from 'types/User';
 import { useHotkey } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import {
   HeaderBar,
   HeaderContainer,
   HeaderCreateButton,
   HeaderHomeButton,
+  HeaderHomeButtonWrapper,
   HeaderLeftBlock,
   HeaderLogo,
-  HeaderRightBlock,
-  HeaderHomeButtonWrapper,
   HeaderLogoWrapper,
+  HeaderRightBlock,
 } from './styles';
 
 type Props = {
@@ -62,7 +63,7 @@ const HeaderMemo = ({
               </div>
             </HeaderLogoWrapper>
           </Tooltip>
-          <Badge badgeContent="D" color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
+          <Badge badgeContent={HOTKEYS.OPEN_DASHBOARD} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
             <Tooltip title="Dashboard">
               <Box>
                 <Link passHref href="/dashboard">
@@ -87,7 +88,7 @@ const HeaderMemo = ({
                 setNotifications={setNotifications}
               />
               <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-                <Badge badgeContent="C" color="primary" invisible={!showBadge}>
+                <Badge badgeContent={HOTKEYS.CHOOSE_ENTITY} color="primary" invisible={!showBadge}>
                   <CreateIconOutlined id="tour-header-create-btn" />
                 </Badge>
               </HeaderCreateButton>
