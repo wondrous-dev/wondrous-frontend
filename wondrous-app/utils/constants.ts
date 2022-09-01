@@ -1,3 +1,5 @@
+import palette from 'theme/palette';
+
 export const spacingUnit = 8;
 
 // Task Status
@@ -636,4 +638,31 @@ export const USER_BOARD_PAGE_TYPES = {
 export const PAGE_PATHNAME = {
   profile_username_about: '/profile/[username]/about',
   explore: '/explore',
+  mission_control: '/mission-control',
+};
+
+export const ROLES = {
+  OWNER: 'owner',
+  CORE_TEAM: 'core team',
+  CONTRIBUTOR: 'contributor',
+  DEFAULT: 'default', // this is for any role other than the above
+};
+
+export const RoleColorsAndEmojis = {
+  [ROLES.OWNER]: {
+    color: palette.green300,
+    emoji: '🔑',
+  },
+  [ROLES.CORE_TEAM]: {
+    color: palette.violet210,
+    emoji: '🔮',
+  },
+  [ROLES.CONTRIBUTOR]: {
+    color: palette.highlightOrange,
+    emoji: '✨',
+  },
+  [ROLES.DEFAULT]: {
+    color: palette.highlightBlue,
+    emoji: '🐦',
+  },
 };

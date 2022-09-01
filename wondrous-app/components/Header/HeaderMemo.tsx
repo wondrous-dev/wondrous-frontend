@@ -23,9 +23,12 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
         {!isMobile && <Wallet />}
         {!isMobile && <GlobalSearch />}
         <NotificationsBoard />
-        <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-          <CreateIconOutlined id="tour-header-create-btn" />
-        </HeaderCreateButton>
+
+        {showCreateButton && (
+          <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+            <CreateIconOutlined id="tour-header-create-btn" />
+          </HeaderCreateButton>
+        )}
       </>
     )}
     {!user && (

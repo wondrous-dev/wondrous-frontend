@@ -12,6 +12,7 @@ import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 import { Twitter } from '../Icons/twitter';
@@ -218,12 +219,11 @@ export const SettingsHeaderBlock = styled.div`
 `;
 
 export const SettingsHeaderContent = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-left: 27px;
+  gap: 14px;
+  flex: 1;
 `;
 
 export const SettingsHeaderTitle = styled.div`
@@ -241,7 +241,7 @@ export const SettingsHeaderText = styled(Typography)`
     font-size: 15px;
     line-height: 23px;
     letter-spacing: 0.01em;
-    color: #ffffff;
+    color: ${palette.grey57};
     display: flex;
     justify-content: space-between;
   }
@@ -250,16 +250,15 @@ export const SettingsHeaderText = styled(Typography)`
 export const SettingsHeaderInviteButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #232323;
-  color: #ffffff;
+  background: ${palette.highlightPurple};
+  color: ${palette.white};
   font-size: 15px;
   font-weight: 700;
   line-height: 150%;
-  padding: 7px 7px 7px 14px;
+  padding: 10.5px 10px;
   outline: none;
   border: none;
-  border-radius: 1000px;
+  border-radius: 6px;
   cursor: pointer;
 `;
 
@@ -271,6 +270,16 @@ export const SettingsHeaderInviteButtonIcon = styled.div`
   justify-content: center;
   background: #3d3d3d;
   border-radius: 1000px;
+`;
+
+export const SettingsHeaderActionText = styled(ButtonBase)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+    color: ${palette.highlightBlue};
+  }
 `;
 
 // general settings styles
