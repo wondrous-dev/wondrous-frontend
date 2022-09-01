@@ -1,5 +1,6 @@
 export const highlightBlue = '#00BAFF';
 export const highlightPurple = '#7427FF';
+export const highlightOrange = '#ff9933';
 export const midnight = '#141414';
 export const background = '#0F0F0F';
 export const white = '#FFFFFF';
@@ -91,6 +92,7 @@ export const greenColors = {
   green400: '#6ADAAB',
   green600: '#00bf9c',
   green700: '#219653',
+  green710: '#004129',
   green800: '#06FFA5',
 };
 
@@ -105,6 +107,7 @@ export const violetColors = {
   violet50: '#5001DF',
   violet100: '#4f00de',
   violet200: '#FB7A75',
+  violet210: '#EB96EB',
   violet300: '#CCDDFF',
   violet400: '#815DFF',
   violet700: '#690DFF',
