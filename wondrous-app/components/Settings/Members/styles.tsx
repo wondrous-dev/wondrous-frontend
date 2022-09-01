@@ -7,7 +7,6 @@ import TableBody from '@mui/material/TableBody';
 import Table from '@mui/material/Table';
 
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
 export const InviteDiv = styled.div`
   display: flex;
@@ -16,23 +15,12 @@ export const InviteDiv = styled.div`
   ${newDropdownStyles}
 `;
 
-const ProfilePictureStyles = {
-  marginRight: '16px',
-  width: '32px',
-  height: '32px',
-  borderRadius: '16px',
-};
-
-export function DefaultProfilePicture(props) {
-  return <DefaultUserImage style={ProfilePictureStyles} />;
-}
-
-export const UsernameText = styled(Typography)`
-  && {
-    color: #c4c4c4;
-    font-size: 14px;
-    line-height: 22px;
-  }
+export const MembersTable = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  max-width: 770px;
 `;
 
 export const SeeMoreText = styled(Typography)`

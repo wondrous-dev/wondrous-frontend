@@ -22,7 +22,6 @@ import { delQuery } from 'utils';
 import { useRouter } from 'next/router';
 import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
-import EditLayoutBaseModal from 'components/CreateEntity/editEntityModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
@@ -257,7 +256,6 @@ export default function ListViewItem({ task, entityType }) {
         onDelete={() => {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage(`Deleted successfully!`);
-          setData(null);
         }}
       />
 

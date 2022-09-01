@@ -23,7 +23,7 @@ import {
   PRIVACY_LEVEL,
 } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
-import { useCreateEntityContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
+import { useGlobalContext, useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import BoardWrapper from './BoardWrapper';
 
 const useGetUserTaskBoardTasks = ({
@@ -128,7 +128,7 @@ const useGetUserTaskBoard = ({
 };
 
 const useFilterSchema = (loggedInUser) => {
-  const { userOrgs } = useCreateEntityContext();
+  const { userOrgs } = useGlobalContext();
 
   if (loggedInUser?.id) {
     return generateUserDashboardFilters({ userId: loggedInUser?.id, orgs: userOrgs?.getUserOrgs });

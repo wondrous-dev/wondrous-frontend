@@ -153,7 +153,12 @@ export const RequestApproveButton = styled(RequestActionButton)`
       border-radius: 1000px;
     }
     &:hover {
-      background: ${palette.background.default}b3;
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
     }
   }
 `;
