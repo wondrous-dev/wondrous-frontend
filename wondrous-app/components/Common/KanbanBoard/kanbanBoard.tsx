@@ -47,9 +47,7 @@ function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
-  console.log(openModal);
   const router = useRouter();
-  console.log(router);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -210,8 +208,6 @@ function KanbanBoard(props) {
   useHotkeys(
     '*',
     (event) => {
-      console.log(event.key);
-      console.log(board);
       if (
         Object.values(ARROW_KEYS).includes(event.key) &&
         (board?.entityType === ENTITIES_TYPES.TASK || onlyTaskRoutesForDashboard.includes(router.asPath))
@@ -222,7 +218,6 @@ function KanbanBoard(props) {
         const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key, taskIndex, statusIndex, columns);
         setStatusIndex(holdStatusIndex);
         setTaskIndex(holdTaskIndex);
-        console.log(holdStatusIndex);
         if (holdStatusIndex === null) {
           setOpenModal(false);
         }
