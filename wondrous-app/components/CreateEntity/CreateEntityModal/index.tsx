@@ -1159,7 +1159,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
-
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
@@ -1224,8 +1223,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, ...finalValues } = values;
-
+      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
+        values;
       const input = {
         ...finalValues,
         reviewerIds,
