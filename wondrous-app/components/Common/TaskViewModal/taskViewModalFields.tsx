@@ -11,6 +11,11 @@ import Box from '@mui/material/Box';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Badge } from '@mui/material';
+import { useHotkey } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import { useState } from 'react';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
@@ -31,8 +36,11 @@ import {
   TaskSectionInfoMilestoneIcon,
   TaskSectionTagWrapper,
   Tag,
+  TaskIntiativesContainer,
 } from './styles';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';
+import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
+import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
 
 export function ReviewerField({ reviewerData, handleClose, shouldDisplay }) {
   const router = useRouter();
@@ -379,3 +387,31 @@ export function TagsField({ shouldDisplay, labels }) {
     </TaskSectionDisplayDiv>
   );
 }
+
+export const InitativesField = ({ shouldDisplay }) => {
+  const [openModal, setOpenModal] = useState(false);
+  if (!shouldDisplay) return null;
+  return (
+    <>
+      <GR15DEIModal open={openModal} onClose={() => setOpenModal(false)} />
+      <TaskSectionDisplayDiv>
+        <TaskSectionLabel>Initiative</TaskSectionLabel>
+        <TaskSectionImageContent
+          hasContent={shouldDisplay}
+          ContentComponent={() => (
+            <TaskIntiativesContainer>
+              <GR15DEILogo
+                width="26"
+                height="26"
+                style={{
+                  marginRight: '8px',
+                }}
+              />
+              <TaskSectionInfoText>Gitcoin Grants R15 - DEI</TaskSectionInfoText>
+            </TaskIntiativesContainer>
+          )}
+        />
+      </TaskSectionDisplayDiv>
+    </>
+  );
+};

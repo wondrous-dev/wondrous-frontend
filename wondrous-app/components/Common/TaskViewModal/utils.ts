@@ -1,3 +1,4 @@
+import { GR15DEICategoryName } from 'utils/constants';
 import { tabsPerType } from './constants';
 
 export const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
@@ -19,4 +20,14 @@ export const openSnapshot = async (orgSnapshot, fetchedTask, isTest) => {
   } catch (error) {
     console.error(error);
   }
+};
+
+export const hasGR15DEIIntiative = (categories) => {
+  let hasInitiative = false;
+  categories.forEach((category) => {
+    if (category?.name === GR15DEICategoryName) {
+      hasInitiative = true;
+    }
+  });
+  return hasInitiative;
 };

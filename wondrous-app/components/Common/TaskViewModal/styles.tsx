@@ -880,3 +880,8 @@ export const LockedTask = styled.div`
     height: 100%;
   }
 `;
+
+export const TaskIntiativesContainer = styled.div`
+  display: flex;
+  align-items: center;
+`;
