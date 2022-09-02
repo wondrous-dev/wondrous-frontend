@@ -55,7 +55,7 @@ export const HOTKEYS = {
   CREATE_DAO: 'shift+D',
   CREATE_POD: 'shift+L',
   CREATE_COMMENT: 'W',
-  OPEN_FILTER: 'O',
+  OPEN_FILTER: 'A',
   OPEN_PROFILE: 'P',
   OPEN_EXPLORE: 'E',
   OPEN_DASHBOARD: 'D',

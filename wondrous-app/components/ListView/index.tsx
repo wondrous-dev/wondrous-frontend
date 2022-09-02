@@ -63,6 +63,8 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const [byLinkOrHot, setByLinkOrHot] = useState(OPEN_TASK_METHOD.link);
   const user = useMe();
 
+  const onlyTaskRoutesForDashboard = ['/dashboard', '/dashboard?view=list', '/dashboard?view=grid'];
+
   const handleStatusPicked = (status) => {
     setByLinkOrHot(OPEN_TASK_METHOD.link);
     setStatusPicked(status);
@@ -70,17 +72,16 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
 
   useEffect(() => {
     const { params } = location;
-    if (!(params.task || params.taskProposal || orgBoard || userBoard || podBoard)) {
-      return;
+    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
+      if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
+        const holdTaskId = location.params.task;
+        const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
+        const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
+        setTaskIndex(holdTaskIndex);
+        setStatusIndex(holdStatusIndex);
+      }
+      setOpenModal(true);
     }
-    if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
-      const holdTaskId = location.params.task;
-      const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
-      const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
-      setTaskIndex(holdTaskIndex);
-      setStatusIndex(holdStatusIndex);
-    }
-    setOpenModal(true);
   }, [orgBoard, podBoard, userBoard, location]);
 
   const handleModalClose = () => {
@@ -102,7 +103,10 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   useHotkeys(
     '*',
     (event) => {
-      if (Object.values(ARROW_KEYS).includes(event.key) && board?.entityType === ENTITIES_TYPES.TASK) {
+      if (
+        Object.values(ARROW_KEYS).includes(event.key) &&
+        (board?.entityType === ENTITIES_TYPES.TASK || onlyTaskRoutesForDashboard.includes(router.asPath))
+      ) {
         setOpenModal(true);
 
         setByLinkOrHot(OPEN_TASK_METHOD.hot);

@@ -47,7 +47,9 @@ function KanbanBoard(props) {
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
+  console.log(openModal);
   const router = useRouter();
+  console.log(router);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -63,6 +65,8 @@ function KanbanBoard(props) {
     setByLinkOrHot(OPEN_TASK_METHOD.link);
     setStatusPicked(status);
   };
+
+  const onlyTaskRoutesForDashboard = ['/dashboard', '/dashboard?view=list', '/dashboard?view=grid'];
 
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
@@ -207,13 +211,18 @@ function KanbanBoard(props) {
     '*',
     (event) => {
       console.log(event.key);
-      if (Object.values(ARROW_KEYS).includes(event.key) && board?.entityType === ENTITIES_TYPES.TASK) {
+      console.log(board);
+      if (
+        Object.values(ARROW_KEYS).includes(event.key) &&
+        (board?.entityType === ENTITIES_TYPES.TASK || onlyTaskRoutesForDashboard.includes(router.asPath))
+      ) {
         setOpenModal(true);
 
         setByLinkOrHot(OPEN_TASK_METHOD.hot);
         const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key, taskIndex, statusIndex, columns);
         setStatusIndex(holdStatusIndex);
         setTaskIndex(holdTaskIndex);
+        console.log(holdStatusIndex);
         if (holdStatusIndex === null) {
           setOpenModal(false);
         }
@@ -305,17 +314,16 @@ function KanbanBoard(props) {
 
   useEffect(() => {
     const { params } = location;
-    if (!(params.task || params.taskProposal || orgBoard || userBoard || podBoard)) {
-      return;
+    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
+      if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
+        const holdTaskId = location.params.task;
+        const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
+        const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
+        setTaskIndex(holdTaskIndex);
+        setStatusIndex(holdStatusIndex);
+      }
+      setOpenModal(true);
     }
-    if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
-      const holdTaskId = location.params.task;
-      const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
-      const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
-      setTaskIndex(holdTaskIndex);
-      setStatusIndex(holdStatusIndex);
-    }
-    setOpenModal(true);
   }, [orgBoard, podBoard, userBoard, location]);
 
   const onDragEnd = (result) => {
