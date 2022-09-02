@@ -2,7 +2,7 @@ import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useRouter } from 'next/router';
-import { useCreateEntityContext } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
@@ -68,9 +68,9 @@ export function CreateEntity(props: ICreateEntity) {
 }
 
 function ChooseEntityToCreate(props) {
-  const createEntityContext = useCreateEntityContext();
+  const globalContext = useGlobalContext();
   const [openChooseEntity, setOpenChooseEntity] = useState(false);
-  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
     if (entityType) {

@@ -433,6 +433,13 @@ export const ENTITY_TO_STATUS_MAP = {
   [ENTITIES_TYPES.SUBMISSION]: SUBMISSION_TYPE_STATUS_FILTERS,
 };
 
+export const DEFAULT_ENTITY_STATUS_FILTER = {
+  [ENTITIES_TYPES.TASK]: [],
+  [ENTITIES_TYPES.BOUNTY]: [TASK_STATUS_TODO],
+  [ENTITIES_TYPES.MILESTONE]: [TASK_STATUS_TODO],
+  [ENTITIES_TYPES.PROPOSAL]: [],
+};
+
 export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false }) => {
   const SHARED_FILTERS = [
     ...(enablePodFilter ? addPodFilter(orgId) : []),

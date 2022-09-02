@@ -108,6 +108,11 @@ export interface WonderWeb3 {
    */
   toChecksumAddress: (string) => string;
 
+  /**
+   * Checks validity of a given address.
+   */
+  isValidAddress: (string) => boolean;
+
   connector: AbstractConnector;
   error: Error;
 
@@ -131,4 +136,9 @@ export interface WonderWeb3 {
    * Activates a connector by name and stores it to local storage to be used on session reload.
    */
   activateAndStore: (connectorName: string) => void;
+
+  /**
+   * Activates a connector by name and stores it to local storage to be used on session reload.
+   */
+  getENSNameFromEthAddress: (address: string) => Promise<string | null>;
 }

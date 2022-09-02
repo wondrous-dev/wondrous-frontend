@@ -12,14 +12,14 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
 import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
-import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
 import { PayoutModal } from './PayoutModal';
 import {
   ContributorRow,
@@ -119,10 +119,36 @@ export const calculatePoints = (tasks) => {
   return points;
 };
 
+export const calculateCount = (tasks) => {
+  let taskCount = 0;
+  let bountyCount = 0;
+  if (!tasks)
+    return {
+      taskCount,
+      bountyCount,
+    };
+
+  tasks.forEach((task) => {
+    if (task?.type === BOUNTY_TYPE) {
+      bountyCount += 1;
+    } else if (task?.type === TASK_TYPE) {
+      taskCount += 1;
+    }
+  });
+  return {
+    taskCount,
+    bountyCount,
+  };
+};
+
 function UserRow({ contributorTask }) {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
+  const contributionCount = calculateCount(contributorTask?.tasks);
+  const bountyCount = contributionCount?.bountyCount;
+  const taskCount = contributionCount?.taskCount;
+
   return (
     <ContributorDiv>
       <TaskViewModal
@@ -180,17 +206,36 @@ function UserRow({ contributorTask }) {
           />
           <TaskCountWrapper>
             <TaskCountText>
-              {contributorTask?.tasks?.length}
+              {taskCount}
               <span
                 style={{
                   color: 'rgba(108, 108, 108, 1)',
                   marginLeft: '4px',
                 }}
               >
-                {contributorTask?.tasks?.length === 1 ? 'task' : 'tasks'}
+                {taskCount === 1 ? 'task' : 'tasks'}
               </span>
             </TaskCountText>
           </TaskCountWrapper>
+          {bountyCount > 0 && (
+            <TaskCountWrapper
+              style={{
+                marginLeft: '12px',
+              }}
+            >
+              <TaskCountText>
+                {bountyCount}
+                <span
+                  style={{
+                    color: 'rgba(108, 108, 108, 1)',
+                    marginLeft: '4px',
+                  }}
+                >
+                  {bountyCount === 1 ? 'bounty' : 'bounties'}
+                </span>
+              </TaskCountText>
+            </TaskCountWrapper>
+          )}
           <TaskCountWrapper
             style={{
               background: 'none',
@@ -236,6 +281,7 @@ function UserRow({ contributorTask }) {
                 >
                   {cutString(task.title === PRIVATE_TASK_TITLE ? 'Private Task' : task.title)}
                 </TaskTitle>
+                {task?.type === BOUNTY_TYPE && <BountySignifier>bounty</BountySignifier>}
                 <div
                   style={{
                     flex: 1,
@@ -264,6 +310,7 @@ function UserRow({ contributorTask }) {
                       style={{
                         marginTop: '0',
                         marginRight: '8px',
+                        alignItems: 'center',
                       }}
                     >
                       <PodIcon
@@ -411,6 +458,7 @@ function Analytics(props) {
           orgId,
           toTime: format(toTime, 'yyyy-MM-dd'),
           fromTime: format(fromTime, 'yyyy-MM-dd'),
+          includeBounties: true,
           ...(assignee && {
             assigneeId: assignee?.value,
           }),
@@ -512,6 +560,7 @@ function Analytics(props) {
                   orgId,
                   toTime: format(toTime, 'yyyy-MM-dd'),
                   fromTime: format(fromTime, 'yyyy-MM-dd'),
+                  includeBounties: true,
                 },
               });
             }

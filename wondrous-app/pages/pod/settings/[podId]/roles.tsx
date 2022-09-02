@@ -39,6 +39,7 @@ function RolesPage() {
       setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
       getPodRolesWithTokenGate();
     },
+    refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
   });
 
   const [updatePodRole] = useMutation(UPDATE_POD_ROLE, {
@@ -108,7 +109,6 @@ function RolesPage() {
       onPermissionsChange={updateRolePermissions}
       toast={toast}
       onToastClose={() => setToast({ ...toast, show: false })}
-      getPodRolesWithTokenGate={getPodRolesWithTokenGate}
     />
   );
 }

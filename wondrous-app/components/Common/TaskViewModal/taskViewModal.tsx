@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
+import TaskMenuStatus from 'components/Common/TaskMenuStatus';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
 import { formatDistance } from 'date-fns';
@@ -39,14 +40,7 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import {
-  useCanViewTask,
-  useColumns,
-  useCreateEntityContext,
-  useOrgBoard,
-  usePodBoard,
-  useUserBoard,
-} from 'utils/hooks';
+import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -113,7 +107,6 @@ import {
   TaskSectionInfoTextCreator,
   TaskStatusHeaderText,
 } from './styles';
-import { TaskMenuStatus } from './taskMenuStatus';
 import {
   ApplicationField,
   AssigneeField,
@@ -149,11 +142,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
-  const createEntityContext = useCreateEntityContext();
-  const getUserPermissionContext = useCallback(
-    () => createEntityContext?.userPermissionsContext,
-    [createEntityContext]
-  );
+  const globalContext = useGlobalContext();
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
   const {
@@ -186,7 +176,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS);
+  const [getReviewers, { data: reviewerData }] = useLazyQuery(GET_TASK_REVIEWERS, {
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
+  });
   const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
     fetchPolicy: 'cache-and-network',
   });
@@ -650,14 +643,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                             </TaskModalSnapshot>
                           )}
-                          <TaskMenuStatus
-                            task={fetchedTask}
-                            entityType={entityType}
-                            archiveTaskMutation={archiveTaskMutation}
-                            canArchive={canArchive}
-                            canApproveProposal={canApproveProposal}
-                            isTaskProposal={isTaskProposal}
-                          />
+                          {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
                           <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                         </TaskModalTaskStatusMoreInfo>
                         <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />

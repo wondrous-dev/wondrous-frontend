@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
+import TaskMenuStatus, { TaskStatusMenuButton } from 'components/Common/TaskMenuStatus';
 import CalendarIcon from 'components/Icons/calendar';
 import CommentsIcon from 'components/Icons/comments';
 import styled from 'styled-components';
@@ -11,8 +12,8 @@ export const MilestoneTaskListWrapper = styled.div`
 
 export const MilestoneTaskItem = styled.div`
   padding: 18px 0;
-  border-top: 1px dashed #2d2d2d;
-  border-bottom: 1px dashed #2d2d2d;
+  border-top: 1px dashed ${({ theme }) => theme.palette.grey900};
+  border-bottom: 1px dashed ${({ theme }) => theme.palette.grey900};
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -64,7 +65,7 @@ export const MilestoneTaskDueDateWrapper = styled.div`
   max-width: fit-content;
   border-radius: 4px;
   padding: 1px 8px;
-  background: #1d1d1d;
+  background: ${({ theme }) => theme.palette.grey900};
   display: flex;
   align-items: center;
   gap: 8px;
@@ -77,7 +78,7 @@ export const MilestoneTaskDueDateIcon = styled(CalendarIcon)`
 
 export const MilestoneTaskDueDateText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 13px;
     color: ${({ theme }) => theme.palette.white};
   }
@@ -167,7 +168,7 @@ export const MilestoneTaskStatus = styled.div`
   border-radius: 4px;
   padding: 1px 8px;
   gap: 8px;
-  background-color: #1d1d1d;
+  background-color: ${({ theme }) => theme.palette.grey900};
   svg {
     height: 18px;
     width: 18px;
@@ -176,10 +177,31 @@ export const MilestoneTaskStatus = styled.div`
 
 export const MilestoneTaskStatusLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: ${({ theme }) => theme.typography.fontFamily};
     font-size: 13px;
     ${({ theme }) => `
       color: ${theme.palette.white};
     `}
+  }
+`;
+
+export const MilestoneEmpty = styled.div`
+  align-items: center;
+  background-color: ${({ theme }) => theme.palette.grey910};
+  border-radius: 6px;
+  color: ${({ theme }) => theme.palette.grey250};
+  display: flex;
+  font-family: ${({ theme }) => theme.typography.fontFamily};
+  font-weight: 500;
+  height: 68px;
+  justify-content: center;
+  margin-top: 24px;
+`;
+
+export const MilestoneTaskMenuStatus = styled(TaskMenuStatus)`
+  &&& {
+    ${TaskStatusMenuButton} {
+      background: ${({ theme }) => theme.palette.grey900};
+    }
   }
 `;

@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import { OverviewComponent } from 'components/Wrapper/styles';
-import { Button } from 'components/Button';
 
 export const ErrorWrapper = styled(OverviewComponent)`
   && {
@@ -33,11 +32,5 @@ export const ErrorHeader = styled(Typography)`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
-  }
-`;
-
-export const EscapeButton = styled(Button)`
-  && {
-    align-self: auto;
   }
 `;

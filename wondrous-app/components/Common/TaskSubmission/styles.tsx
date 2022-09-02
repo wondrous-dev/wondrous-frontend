@@ -9,11 +9,34 @@ import { MediaItemWrapper } from 'components/CreateEntity/MediaItem/styles';
 import Arrow from 'components/Icons/arrow.svg';
 import ChangesRequestedIcon from 'components/Icons/changesRequestedIcon.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
+import { EmptyStateSubmissionsIcon } from 'components/Icons/emptyStates';
 import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import LinkIcon from 'components/Icons/linkSubmissionIcon.svg';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+
+export const TaskSubmissionEmptyStateContainer = styled.div`
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const TaskSubmissionEmptyStateIcon = styled(EmptyStateSubmissionsIcon)``;
+
+export const TaskSubmissionEmptyStateText = styled(Typography)`
+  && {
+    font-size: 13px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.palette.grey57};
+    text-align: center;
+  }
+`;
 
 export const SubmissionButtonWrapperGradient = styled.div`
   background: linear-gradient(94.19deg, #7427ff 10.13%, #232323 131.81%);
@@ -493,6 +516,22 @@ export const SubmissionFormCancel = styled(ButtonBase)`
   }
 `;
 
+export const HideSubmissionsCheckBoxDiv = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  margin-top: -12px;
+`;
+
+export const HideSubmissionsHelperText = styled(Typography)`
+  && {
+    font-size: 12px;
+    ${({ theme }) => `
+      color: ${theme.palette.white};
+      font-weight: ${theme.typography.fontWeightMedium};
+    `}
+  }
+`;
 export const SubmissionFormSubmit = styled(ButtonGradient)`
   && {
     ${GradientHighlightHorizontal}

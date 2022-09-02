@@ -32,15 +32,15 @@ let timeout;
 const LABELS_DEFAULT_IMAGES_MAP = {
   [GLOBAL_SEARCH_TYPES.ORGS]: {
     label: 'Organizations',
-    defaultImg: DAOIcon,
+    defaultImg: () => <DAOIcon />,
   },
   [GLOBAL_SEARCH_TYPES.PODS]: {
     label: 'Pods',
-    defaultImg: PodIcon,
+    defaultImg: () => <PodIcon />,
   },
   [GLOBAL_SEARCH_TYPES.USERS]: {
     label: 'Users',
-    defaultImg: DefaultUserImage,
+    defaultImg: () => <DefaultUserImage />,
   },
 };
 
@@ -124,13 +124,17 @@ function GlobalSearch() {
       return router.push(`/profile/${entity.username}/about`, undefined, { shallow: true });
   };
 
-  useHotkeys(HOTKEYS.GLOBAL_SEARCH, () => {
-    setIsExpanded((prevState) => !prevState);
-  });
+  useHotkeys(
+    HOTKEYS.GLOBAL_SEARCH,
+    () => {
+      setIsExpanded(!isExpanded);
+    },
+    [isExpanded]
+  );
 
   return (
     <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
-      <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge}>
+      <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
         <SearchIconWrapper isExpanded={isExpanded}>
           <SearchIconWrapped />
         </SearchIconWrapper>

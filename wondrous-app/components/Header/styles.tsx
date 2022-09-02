@@ -1,19 +1,22 @@
-import { AppBar, IconButton, TextField } from '@mui/material';
+import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
 
 export const HeaderBar = styled(AppBar)`
   && {
-    height: 70px;
-    background: #1d1d1d;
+    margin-top: 18px;
+    background: transparent;
     display: flex;
     align-items: center;
-    //padding: 15px 20px;
-    //display: flex;
-    //justify-content: space-between;
-    //align-items: center;
     z-index: 200;
+    width: 100%;
+    flex-direction: row;
+    gap: 14px;
+    justify-content: flex-end;
+    box-shadow: none;
+    padding: 0 30px;
   }
 `;
 
@@ -149,69 +152,61 @@ export const HeaderRightBlock = styled.div`
   justify-content: flex-end;
 `;
 
-export const StyledBadge = styled.button`
-  background: transparent;
-  border: 0;
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  z-index: 100;
-  svg {
-    circle {
-      display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
-      ${({ isOpen }) => (isOpen ? `fill: url(#open-notif-gradient);` : ``)};
-    }
-    rect {
-      ${({ isOpen }) => (isOpen ? `stroke: url(#open-notif-gradient); fill: transparent;` : ``)}
-    }
-  }
-  &:hover {
+export const StyledBadge = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: ${({ theme }) => theme.palette.grey87};
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    height: 40px;
+    justify-content: center;
+    position: relative;
+    width: 40px;
+    filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
     svg {
       circle {
-        fill: url(#outline-hover-color);
-      }
-      rect {
-        stroke: url(#outline-hover-color);
-        fill: black;
+        display: ${({ hasUnreadNotifications }) => (hasUnreadNotifications ? 'block' : 'none')};
       }
     }
   }
 `;
 
-export const HeaderCreateButton = styled.button`
-  visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
-  display: flex;
-  justify-content: flex-end;
-  margin-right: 20px;
-  background: transparent;
-  border: 0;
-  position: relative;
-  &::before {
-    content: '';
-    position: absolute;
-    height: 100%;
-    width: 100%;
-    z-index: -1;
-    background: none;
-    filter: blur(8px);
-    border-radius: 100%;
-    left: 0;
-    top: 0;
-  }
-  &:hover {
-    cursor: pointer;
+export const HeaderCreateButton = styled(ButtonBase)`
+  && {
+    visibility: ${({ visibility }) => (visibility ? 'visible' : 'hidden')};
+    display: flex;
+    justify-content: flex-end;
+    background: transparent;
+    border: 0;
+    position: relative;
+    filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
     &::before {
-      background: linear-gradient(
-        212.53deg,
-        #ff6dd7 -79.63%,
-        #b820ff -41.63%,
-        #f93701 -9.97%,
-        #ffd653 22.6%,
-        #00baff 56.07%,
-        #06ffa5 85.93%
-      );
+      content: '';
+      position: absolute;
+      height: 100%;
+      width: 100%;
+      z-index: -1;
+      background: none;
+      filter: blur(8px);
+      border-radius: 100%;
+      left: 0;
+      top: 0;
+    }
+    &:hover {
+      cursor: pointer;
+      &::before {
+        background: linear-gradient(
+          212.53deg,
+          #ff6dd7 -79.63%,
+          #b820ff -41.63%,
+          #f93701 -9.97%,
+          #ffd653 22.6%,
+          #00baff 56.07%,
+          #06ffa5 85.93%
+        );
+      }
     }
   }
 `;
@@ -226,4 +221,17 @@ export const TutorialButton = styled(Button)`
 
 export const TutorialText = styled.span`
   font-family: Space Grotesk;
+`;
+
+export const MissionControlIconWrapper = styled(HeaderHomeButton)`
+  && {
+    &:hover {
+      svg {
+        path {
+          stroke: ${palette.white};
+        }
+      }
+      background: ${palette.violet50};
+    }
+  }
 `;

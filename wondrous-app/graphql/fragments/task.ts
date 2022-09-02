@@ -95,6 +95,7 @@ export const TaskFragment = gql`
     claimPolicy
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
+    hideSubmissions
   }
 
   ${MediaFragment}
@@ -157,6 +158,7 @@ export const TaskCardFragment = gql`
       canApply
       hasUserApplied
     }
+    hideSubmissions
   }
   ${MediaFragment}
 `;

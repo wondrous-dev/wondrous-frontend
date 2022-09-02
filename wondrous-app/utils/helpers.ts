@@ -150,3 +150,27 @@ export const transformMediaFormat = (media) =>
     type: item?.type,
     name: item?.name,
   }));
+
+export const deleteFromCache = (cache, data, mutationQuery, queryToModify, id, skipSuccess = false) => {
+  const isSuccess = data?.[mutationQuery]?.success;
+  if (isSuccess || skipSuccess) {
+    cache.modify({
+      fields: {
+        [queryToModify](existingItems = [], { readField }) {
+          return existingItems?.filter((item) => readField('id', item) !== id);
+        },
+      },
+    });
+  }
+};
+
+export const deleteTaskFromCache = (cache, id, keys = []) => {
+  const fields = keys.reduce((acc, next) => {
+    acc[next] = (existingItems = [], { readField }) => existingItems?.filter((item) => readField('id', item) !== id);
+    return acc;
+  }, {});
+
+  return cache.modify({
+    fields,
+  });
+};

@@ -1,4 +1,5 @@
 import { Typography } from '@mui/material';
+import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { SafeImage } from '../Common/Image';
@@ -11,6 +12,28 @@ export const CommentListWrapper = styled.div`
 
 export const CommentListContainer = styled.div`
   margin-top: 16px;
+`;
+
+export const CommentListEmptyStateContainer = styled.div`
+  width: 100%;
+  padding: 14px 0;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+`;
+
+export const CommentListEmptyStateIcon = styled(EmptyStateCommentsIcon)``;
+
+export const CommentListEmptyStateText = styled(Typography)`
+  && {
+    font-size: 13px;
+    font-weight: 400;
+    color: ${({ theme }) => theme.palette.grey57};
+    text-align: center;
+  }
 `;
 
 export const CommentItemContainer = styled.div`

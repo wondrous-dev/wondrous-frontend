@@ -45,7 +45,7 @@ const findNextAvailableStatus = (direction, statusIndex, columns) => {
 };
 
 export const HOTKEYS = {
-  GLOBAL_SEARCH: 'enter+shift',
+  GLOBAL_SEARCH: 'shift+enter',
   LOCAL_SEARCH: 'enter',
   SHOW_SHORTCUTS: 'shift+S',
   CREATE_TASK: 'shift+T',
@@ -61,6 +61,7 @@ export const HOTKEYS = {
   OPEN_DASHBOARD: 'D',
   OPEN_NOTIFICATION: 'N',
   OPEN_POD: 'L',
+  OPEN_MISSION_CONTROL: 'M',
   CHOOSE_ENTITY: 'C',
   LIST_VIEW: ',',
   GRID_VIEW: '.',

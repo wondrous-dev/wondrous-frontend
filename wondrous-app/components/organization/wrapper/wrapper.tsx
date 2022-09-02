@@ -1,3 +1,4 @@
+/* eslint-disable import/no-named-as-default-member */
 import { Box } from '@mui/system';
 import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
@@ -74,6 +75,7 @@ import {
   RoleText,
   TokenEmptyLogo,
   TokenHeader,
+  Container,
 } from './styles';
 
 function Wrapper(props) {
@@ -164,8 +166,8 @@ function Wrapper(props) {
     if (!roles || roles?.length === 0) {
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
+        return;
       }
-      return;
     }
     if (
       wonderWeb3.address &&
@@ -174,9 +176,9 @@ function Wrapper(props) {
     ) {
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
+        setNotLinkedWalletError(true);
+        return;
       }
-      setNotLinkedWalletError(true);
-      return;
     }
     let litSignatureExistResult;
     try {
@@ -187,8 +189,8 @@ function Wrapper(props) {
       console.error(e);
       if (!claimableDiscordRoleFound && !permissions) {
         setOpenJoinRequestModal(true);
+        return;
       }
-      return;
     }
     const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
     if (!litSignatureExist?.exist) {
@@ -499,7 +501,7 @@ function Wrapper(props) {
               </div>
             </HeaderActivity>
           </TokenHeader>
-          <Tabs showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+          <Container>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
                 <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
@@ -516,7 +518,7 @@ function Wrapper(props) {
               )}
             </BoardsSubheaderWrapper>
             {children}
-          </Tabs>
+          </Container>
         </ContentContainer>
       </Content>
     </>

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SearchTasks from 'components/SearchTasks';
-import { useHotkey, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
@@ -32,7 +32,16 @@ export function BoardsActivityInlineView({
   enableViewSwitcher = true,
   displaySingleViewFilter = false,
 }) {
-  const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter);
+  const { orgBoard, podBoard, userBoard } = useBoards();
+
+  const board = orgBoard || podBoard || userBoard;
+
+  const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
+
+  useEffect(() => {
+    if (board?.hasActiveFilters && board.hasActiveFilters !== displayFilters)
+      setDisplayFilters(board?.hasActiveFilters);
+  }, [board?.entityType]);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
   const showBadge = useHotkey();
@@ -56,7 +65,7 @@ export function BoardsActivityInlineView({
           />
         )}
         {withAdminToggle ? <Toggle items={toggleItems} /> : null}
-        {view && !searchQuery && !isAdmin && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
+        {view && !searchQuery && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
         {!displaySingleViewFilter ? (
           <Badge badgeContent={HOTKEYS.OPEN_FILTER} color="primary" invisible={!showBadge}>
             <FiltersTriggerButton
@@ -104,7 +113,7 @@ export default function BoardsActivity(props) {
       name: 'List',
       icon: <ListViewIcon color={view === ViewType.List ? palette.blue20 : 'white'} />,
       active: view === ViewType.List,
-      disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL,
+      disabled: board?.entityType === ENTITIES_TYPES.PROPOSAL || isAdmin,
       action: () => {
         if (setActiveView) {
           setActiveView(ViewType.List);
@@ -120,6 +129,7 @@ export default function BoardsActivity(props) {
       name: 'Grid',
       icon: <GridViewIcon color={view === ViewType.Grid ? palette.blue20 : 'white'} />,
       active: view === ViewType.Grid,
+      disabled: isAdmin,
       action: () => {
         if (setActiveView) {
           // change only boards page instead of triggering changes on all router connected components while still shallow changing the url
