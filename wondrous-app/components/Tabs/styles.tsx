@@ -1,5 +1,4 @@
 import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 import styled from 'styled-components';
 
 export const StyledTabs = styled(Tabs)`
@@ -20,14 +19,16 @@ export const StyledTabs = styled(Tabs)`
   }
 `;
 
-export const StyledTab = styled(Tab)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 14px;
-    font-weight: 500;
-    min-width: fit-content;
-    padding: 3px;
-    margin-right: 20px;
-    color: white;
-  }
-`;
+export const styles = {
+  tab: {
+    fontSize: '14px',
+    fontWeight: '500',
+    minWidth: 'fit-content',
+    padding: '3px',
+    marginRight: '20px',
+    color: 'white',
+    '&.Mui-selected': {
+      color: '#1976d2',
+    },
+  },
+};
