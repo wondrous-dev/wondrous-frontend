@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import moment from 'moment';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -973,6 +974,7 @@ const entityTypeData = {
       reviewerIds: null,
       assigneeId: null,
       dueDate: null,
+      recurringSchema: null,
       rewards: [],
       points: null,
       milestoneId: null,
@@ -1015,6 +1017,7 @@ const entityTypeData = {
       reviewerIds: null,
       rewards: [],
       dueDate: null,
+      recurringSchema: null,
       points: null,
       labelIds: null,
       milestoneId: null,
@@ -1105,6 +1108,7 @@ interface ICreateEntityModal {
       profilePicture?: string;
     };
     assigneeId?: string;
+    recurringSchema?: any;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1132,8 +1136,7 @@ const handleRewardOnChange = (form) => (e) => {
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
-  const [recurrenceType, setRecurrenceType] = useState(null);
-  const [recurrenceValue, setRecurrenceValue] = useState(null);
+
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask = parentTaskId !== undefined;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
@@ -1142,6 +1145,21 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const initialRecurrenceValue =
+    existingTask?.recurringSchema?.daily ||
+    existingTask?.recurringSchema?.weekly ||
+    existingTask?.recurringSchema?.monthly ||
+    existingTask?.recurringSchema?.periodic;
+
+  const initialRecurrenceType =
+    existingTask?.recurringSchema &&
+    Object.keys(existingTask.recurringSchema)[
+      Object?.values(existingTask?.recurringSchema).indexOf(initialRecurrenceValue)
+    ];
+
+  const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
+  const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
+
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
@@ -1220,6 +1238,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           githubPullRequest,
         }),
         ...(status && entityType === ENTITIES_TYPES.TASK && { status }),
+        ...(recurrenceType &&
+          recurrenceValue && {
+            recurringSchema: {
+              [recurrenceType]: recurrenceValue,
+            },
+          }),
       };
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
@@ -1316,6 +1340,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       milestoneId: formValues.milestoneId,
     })
   );
+  useEffect(() => {
+    if (recurrenceType && !form.values.dueDate) {
+      form.setFieldValue('dueDate', moment().toDate());
+    }
+  }, [form.values.dueDate, recurrenceType]);
 
   useEffect(() => {
     form.setFieldValue(
@@ -1325,7 +1354,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     if (isTask) {
       form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
+      form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
+    // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
     form.setFieldValue(
