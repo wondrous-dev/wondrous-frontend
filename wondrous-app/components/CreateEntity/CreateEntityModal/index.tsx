@@ -2114,7 +2114,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 setRecurrenceType={setRecurrenceType}
                 setRecurrenceValue={setRecurrenceValue}
                 hideRecurring={false}
-                handleClose={() => form.setFieldValue('dueDate', null)}
+                handleClose={() => {
+                  form.setFieldValue('dueDate', null);
+                  setRecurrenceType(null);
+                  setRecurrenceValue(null);
+                }}
                 value={form.values.dueDate}
                 recurrenceType={recurrenceType}
                 recurrenceValue={recurrenceValue}
