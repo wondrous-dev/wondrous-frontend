@@ -5,7 +5,7 @@
 
 .MuiAutocomplete-paper .MuiAutocomplete-noOptions,
 .MuiAutocomplete-paper .MuiAutocomplete-listbox {
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%) !important;
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   border-radius: 6px;
   border: 1px solid #4b4b4b;
   color: #ffffff;

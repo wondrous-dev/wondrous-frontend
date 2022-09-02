@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-import { Typography, TextField, InputAdornment } from '@mui/material';
+import { Typography, TextField, InputAdornment, Grid } from '@mui/material';
 import { createPortal } from 'react-dom';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { useQuery } from '@apollo/client';
 import { LIMIT } from 'services/board';
-import { Autocomplete } from 'components/SearchTasks/styles';
 import GradientHeading from 'components/GradientHeading';
 import SearchIcon from 'components/Icons/search';
 import { Org } from 'types/Org';
@@ -13,28 +11,47 @@ import Divider from 'components/Divider';
 import { Button } from 'components/Button';
 import { GET_ORG_USERS } from 'graphql/queries';
 import palette from 'theme/palette';
+import { SafeImage } from 'components/Common/Image';
+import { Autocomplete, Option } from 'components/SearchTasks/styles';
+import {
+  CreateEntityAutocompleteOptionTypography,
+  CreateEntityDefaultUserImage,
+} from 'components/CreateEntity/CreateEntityModal/styles';
+import { StyledChip } from 'components/CreateEntity/styles';
+import ListBox from './Listbox';
+import { PaperComponent } from './styles';
 
 type Props = {
   org: Org;
   onCancel: () => void;
-  // TODO: Replace any
   onSubmit: ({ users }: any) => void | Promise<any>;
   footerRef: React.RefObject<HTMLDivElement>;
 };
 
 const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
   const [selectedUsers, setSelectedUsers] = useState([]);
-  const { data: { getOrgUsers } = {} } = useQuery(GET_ORG_USERS, {
+  const [hasMore, setHasMore] = useState(false);
+  const {
+    data: { getOrgUsers } = {},
+    fetchMore,
+    previousData,
+  } = useQuery(GET_ORG_USERS, {
     variables: {
       orgId: org.id,
-      // FIXME we need to implement search here
-      limit: LIMIT,
+      limit: 2,
+    },
+    onCompleted: ({ getOrgUsers }) => {
+      const hasMoreData = getOrgUsers?.length >= 2;
+      if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
   });
 
-  const handleChange = (event, users) => {
-    setSelectedUsers(users);
-  };
+  const handleChange = (event, users) => setSelectedUsers(users);
+
+  const handleFetchMore = () =>
+    fetchMore({ variables: { offset: getOrgUsers?.length } }).then(({ data }) =>
+      setHasMore(data?.getOrgUsers?.length >= 2)
+    );
 
   return (
     <div>
@@ -54,7 +71,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
             py="4px"
             px="8px"
             color="#CCBBFF"
-            sx={{ background: '#282828', display: 'inline-block' }}
+            sx={{ background: '#282828', display: 'inline-block', fontWeight: '600' }}
             borderRadius="4px"
           >
             Admin
@@ -63,7 +80,9 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
 
         <Autocomplete
           disablePortal
+          disableCloseOnSelect
           placeholder="Enter username..."
+          PaperComponent={PaperComponent}
           options={getOrgUsers || []}
           sx={{
             color: 'white',
@@ -77,8 +96,17 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
           }}
           multiple
           openOnFocus
+          limitTags={1}
+          ListboxComponent={ListBox}
+          ListboxProps={{
+            handleFetchMore,
+            hasMore,
+          }}
           onChange={handleChange}
           getOptionLabel={(option: any) => option?.user?.username}
+          renderTags={(tagValue, getTagProps) =>
+            tagValue.map((option, index) => <StyledChip label={option.user.username} {...getTagProps({ index })} />)
+          }
           renderInput={(params) => (
             <TextField
               {...params}
@@ -95,6 +123,27 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
               }}
             />
           )}
+          renderOption={(props, option) => (
+            <Option {...props}>
+              {option.profilePicture ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={option?.profilePicture}
+                  style={{
+                    width: '18px',
+                    height: '18px',
+                    borderRadius: '4px',
+                  }}
+                />
+              ) : (
+                <CreateEntityDefaultUserImage />
+              )}
+
+              <CreateEntityAutocompleteOptionTypography>
+                {option?.user?.username}
+              </CreateEntityAutocompleteOptionTypography>
+            </Option>
+          )}
         />
       </Grid>
 
@@ -105,7 +154,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
             py="4px"
             px="8px"
             color="#CCBBFF"
-            sx={{ background: '#282828', display: 'inline-block' }}
+            sx={{ background: '#282828', display: 'inline-block', fontWeight: '600' }}
             borderRadius="4px"
           >
             Members
@@ -115,6 +164,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
         <Autocomplete
           disablePortal
           placeholder="Enter username..."
+          PaperComponent={PaperComponent}
           options={getOrgUsers || []}
           sx={{
             color: 'white',
@@ -129,6 +179,11 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
           multiple
           openOnFocus
           onChange={handleChange}
+          ListboxComponent={ListBox}
+          ListboxProps={{
+            handleFetchMore,
+            hasMore,
+          }}
           getOptionLabel={(option: any) => option?.user?.username}
           renderInput={(params) => (
             <TextField
@@ -139,7 +194,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
                 endAdornment: (
                   <InputAdornment position="start">
                     {' '}
-                    <SearchIcon />
+                    <SearchIcon color={palette.highlightBlue} />
                   </InputAdornment>
                 ),
                 disableUnderline: true,

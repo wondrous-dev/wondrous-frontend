@@ -14,7 +14,6 @@ import { Button } from 'components/Button';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { DAOIcon } from 'components/Icons/dao';
 import { GET_USER_ORGS } from 'graphql/queries';
-import FilterItem from 'components/Common/Filter';
 import TextField from 'components/TextField';
 import palette from 'theme/palette';
 import OrgSearch from 'components/OrgSearch';
@@ -30,6 +29,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
   const [selectedOrg1, setSelectedOrg1] = useState(null);
   const [selectedOrg2, setSelectedOrg2] = useState(null);
 
+  console.log(selectedOrg2);
   const DROPDOWN_PACEHOLDER = {
     DAO1: 'Select your project',
     DAO2: 'Select collaborator',
@@ -76,7 +76,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
   const org1Schema = useMemo(
     () => ({
       ...orgsSchema,
-      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg2),
+      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg2?.id),
       label: selectedOrg1 ? null : DROPDOWN_PACEHOLDER.DAO1,
     }),
     [userOrgs, selectedOrg1, selectedOrg2]
@@ -86,7 +86,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
   const org2Schema = useMemo(
     () => ({
       ...orgsSchema,
-      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg1),
+      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg1?.id),
       label: selectedOrg2 ? null : DROPDOWN_PACEHOLDER.DAO2,
     }),
     [userOrgs, selectedOrg1, selectedOrg2]
@@ -136,9 +136,8 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
               value={selectedOrg1}
               options={org1Schema.items}
               label="Select your project"
-              onChange={(orgId: any) => setSelectedOrg1(orgId)}
+              onChange={(org: any) => setSelectedOrg1(org)}
             />
-            {console.log(selectedOrg1, org1Schema)}
             <Grid container sx={{ flex: '0 0 42px' }} justifyContent="center">
               <Dao2Dao />
             </Grid>
@@ -146,7 +145,8 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
               value={selectedOrg2}
               label="Select collaborator"
               options={org2Schema.items}
-              onChange={(orgId: any) => setSelectedOrg2(orgId)}
+              onChange={(org: any) => setSelectedOrg2(org)}
+              globalSearch
             />
           </Grid>
 

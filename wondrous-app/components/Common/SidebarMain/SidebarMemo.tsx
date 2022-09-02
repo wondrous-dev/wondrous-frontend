@@ -16,6 +16,8 @@ import {
   NoLogoDAO,
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
+import Dao2DaoIcon from 'components/Icons/Dao2Dao';
+import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import AddDaoButton from 'components/Common/SidebarMainAddDao';
 import ExploreIconButton from 'components/Common/SidebarMainExplore';
 import PodsIconButton from 'components/Common/SidebarMainPods';
@@ -77,6 +79,7 @@ const profilePictureStyle = {
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
   const [openHelpModal, setOpenHelpModal] = useState(false);
+  const [openDao2DaoModal, setOpenDao2DaoModal] = useState(false);
   const handleMinimize = () => setMinimized(false);
   const router = useRouter();
   const isPageActive = (str) => router.pathname.includes(str);
@@ -88,6 +91,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
   return (
     <DrawerComponent variant="permanent" anchor="left">
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
+      <CreateCollaborationModal open={openDao2DaoModal} onCancel={() => setOpenDao2DaoModal(false)} />
       <DrawerContainer>
         <DrawerBlockWrapper>
           <SidebarTooltip title="Dashboard" id="tour-header-dashboard-icon">
@@ -146,6 +150,11 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                 </SidebarTooltip>
               ))}
               <AddDaoButton />
+              <Tooltip title="Create Project Collaboration">
+                <button type="button" onClick={() => setOpenDao2DaoModal(true)}>
+                  <Dao2DaoIcon />
+                </button>
+              </Tooltip>
             </DrawerList>
           </ButtonWrapper>
         </DrawerBlockWrapper>

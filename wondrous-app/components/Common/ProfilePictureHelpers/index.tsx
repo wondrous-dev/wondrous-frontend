@@ -6,7 +6,6 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 import { PodName, PodWrapper } from '../Task/styles';
 
 export const OrgProfilePicture = ({ profilePicture, style = {} }) => {
-  console.log(style);
   if (profilePicture) {
     return <SafeImage src={profilePicture} style={{ height: '20px', width: '20px', borderRadius: '4px', ...style }} />;
   }
