@@ -1,11 +1,10 @@
-import { Box, Button, IconButton, Typography } from '@mui/material';
-import { Button as BorderButton, Button as ButtonComponent } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
+import { Button, IconButton, Typography, Box } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import typography from 'theme/typography';
+import { Button as ButtonComponent, Button as BorderButton } from 'components/Common/button';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
@@ -719,34 +718,4 @@ export const BoardsSubheaderWrapper = styled.div`
 export const Container = styled.div`
   width: 95%;
   margin-top: 22px;
-`;
-
-export const SettingsButton = styled.button`
-  align-items: center;
-  background: ${palette.grey75};
-  border-radius: 216px;
-  color: ${palette.white};
-  cursor: pointer;
-  display: flex;
-  font-family: ${typography.fontFamily};
-  font-size: 14px;
-  font-weight: 500;
-  height: 36px;
-  justify-content: center;
-  min-width: 110px;
-`;
-
-export const InviteButton = styled.button`
-  align-items: center;
-  background: linear-gradient(82.03deg, ${palette.highlightPurple} 50.7%, ${palette.highlightBlue} 107.99%);
-  border-radius: 216px;
-  color: ${palette.white};
-  cursor: pointer;
-  display: flex;
-  font-family: ${typography.fontFamily};
-  font-size: 14px;
-  font-weight: 500;
-  height: 36px;
-  justify-content: center;
-  min-width: 110px;
 `;
