@@ -103,6 +103,9 @@ export const TaskFragment = gql`
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
     hideSubmissions
+    categories {
+      name
+    }
   }
 
   ${MediaFragment}
@@ -166,6 +169,9 @@ export const TaskCardFragment = gql`
       hasUserApplied
     }
     hideSubmissions
+    categories {
+      name
+    }
   }
   ${MediaFragment}
 `;
@@ -356,6 +362,9 @@ export const TaskProposalFragment = gql`
       }
       userVote
     }
+    categories {
+      name
+    }
   }
   ${MediaFragment}
 `;
@@ -416,6 +425,9 @@ export const BountyFragment = gql`
     parentTaskId
     privacyLevel
     maxSubmissionCount
+    categories {
+      name
+    }
   }
   ${MediaFragment}
 `;
