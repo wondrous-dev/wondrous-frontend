@@ -1,6 +1,6 @@
 import styled from 'styled-components';
-import palette from 'theme/palette';
 import Typography from '@mui/material/Typography';
+import { HEADER_HEIGHT } from 'utils/constants';
 
 export const OverviewComponent = styled.section`
   width: 100%;
@@ -23,12 +23,12 @@ export const ContentContainer = styled.div`
   width: 100%;
 `;
 
-export const Banner = styled.div`
+export const Banner = styled.img`
   width: 100%;
   height: 149px;
+  object-fit: cover;
   background: url(${({ img }) => `${img}`});
   position: relative;
-  margin-top: 70px;
   background-size: cover;
   display: flex;
   justify-content: center;
@@ -37,9 +37,23 @@ export const Banner = styled.div`
 
 export const DashboardHeader = styled(Typography)`
   && {
-    color: ${palette.white};
+    background: ${({ gradient }) => gradient};
+    position: absolute;
     font-weight: 900;
     font-size: 40px;
     transform: scale(1.1, 1);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-fill-color: transparent;
   }
+`;
+
+export const BannerWrapper = styled.div`
+  width: 100%;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
 `;

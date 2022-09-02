@@ -4,7 +4,7 @@ import { createPortal } from 'react-dom';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import { useQuery } from '@apollo/client';
-
+import { LIMIT } from 'services/board';
 import { Autocomplete } from 'components/SearchTasks/styles';
 import GradientHeading from 'components/GradientHeading';
 import SearchIcon from 'components/Icons/search';
@@ -28,7 +28,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
     variables: {
       orgId: org.id,
       // FIXME we need to implement search here
-      limit: 1000,
+      limit: LIMIT,
     },
   });
 

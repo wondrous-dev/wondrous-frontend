@@ -98,7 +98,6 @@ function ExploreComponent() {
         justifyContent: 'center',
         alignItems: 'center',
         flexDirection: 'column',
-        paddingTop: '40px',
       }}
     >
       <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>

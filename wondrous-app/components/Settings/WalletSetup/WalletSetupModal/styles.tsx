@@ -168,7 +168,7 @@ export const WalletSetupModalSelect = styled(({ className, ...props }) => (
   />
 ))`
   &.MuiPaper-root {
-    background: ${palette.grey76};
+    background: ${palette.grey77};
     width: 100%;
     max-width: 510px;
     color: ${palette.white};
