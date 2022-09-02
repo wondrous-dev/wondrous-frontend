@@ -77,6 +77,9 @@ import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { ButtonPrimary } from '../button';
 import TASK_ICONS from './constants';
+import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
+import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
+import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
 
 let windowOffset = 0;
 
@@ -112,6 +115,7 @@ export function TaskCard({
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
@@ -181,6 +185,7 @@ export function TaskCard({
     task?.status !== Constants.TASK_STATUS_DONE;
   const canApply = !canClaim && task?.taskApplicationPermissions?.canApply;
 
+  const hasGR15 = hasGR15DEIIntiative(task?.categories);
   const onNavigate = (e) => {
     // TODO refactor this
     if (!showPaymentModal && !isApplicationModalOpen) {
@@ -226,6 +231,12 @@ export function TaskCard({
               ) : (
                 <DAOIcon />
               ))}
+            {hasGR15 && (
+              <>
+                <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
+              </>
+            )}
             {canClaim ? (
               <>
                 {claimed ? (

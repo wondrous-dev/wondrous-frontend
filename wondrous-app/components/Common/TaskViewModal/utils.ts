@@ -24,6 +24,7 @@ export const openSnapshot = async (orgSnapshot, fetchedTask, isTest) => {
 
 export const hasGR15DEIIntiative = (categories) => {
   let hasInitiative = false;
+  if (!categories) return false;
   categories.forEach((category) => {
     if (category?.name === GR15DEICategoryName) {
       hasInitiative = true;
