@@ -55,8 +55,6 @@ import {
   TokenEmptyLogo,
   HeaderButton,
   BoardsSubheaderWrapper,
-  InviteButton,
-  SettingsButton,
 } from '../../organization/wrapper/styles';
 import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
@@ -353,10 +351,18 @@ function Wrapper(props) {
                   )}
                   {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                     <>
-                      <SettingsButton onClick={() => router.push(`/pod/settings/${podBoard?.podId}/general`)}>
+                      <HeaderButton reversed onClick={() => setOpenInvite(true)}>
+                        Invite{' '}
+                      </HeaderButton>
+                      <HeaderButton
+                        onClick={() =>
+                          router.push(`/pod/settings/${podBoard?.podId}/general`, undefined, {
+                            shallow: true,
+                          })
+                        }
+                      >
                         Settings
-                      </SettingsButton>
-                      <InviteButton onClick={() => setOpenInvite(true)}>Invite</InviteButton>
+                      </HeaderButton>
                     </>
                   )}
                 </HeaderButtons>
