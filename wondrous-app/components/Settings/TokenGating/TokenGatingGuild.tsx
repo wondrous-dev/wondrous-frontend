@@ -1,9 +1,10 @@
+import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG } from 'graphql/mutations/tokenGating';
 import React, { MutableRefObject, useMemo, useState } from 'react';
 import Button from 'components/Button';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import SmartLink from 'components/Common/SmartLink';
 import CustomField from 'components/FormField/CustomField';
-import { useQuery } from '@apollo/client';
+import { ApolloError, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Avatar from '@mui/material/Avatar';
 import Typography from '@mui/material/Typography';
@@ -11,7 +12,7 @@ import Grid from '@mui/material/Grid';
 import Skeleton from '@mui/material/Skeleton';
 import { createPortal } from 'react-dom';
 
-import { GET_ORG_GUILD } from 'graphql/queries';
+import { GET_ORG_GUILD, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
 import useGuildXyz from 'services/guildxyz';
 import { Guild } from 'types/Guild';
 import { Org } from 'types/Org';
@@ -25,10 +26,11 @@ type Props = {
 
 const TokenGatingGuild = ({ org, footerRef, onClose }: Props) => {
   const [guild, setGuild] = useState<Guild>(null);
-  const [role, setRole] = useState(null);
+  const [roleId, setRoleId] = useState(null);
+  const [creationError, setCreationError] = useState(null);
   const { getGuildById } = useGuildXyz();
 
-  const { error } = useQuery(GET_ORG_GUILD, {
+  const { error: getOrgGuildError } = useQuery(GET_ORG_GUILD, {
     onCompleted: async (data) => {
       const guildId = data?.getOrgGuild?.guildId;
 
@@ -36,16 +38,29 @@ const TokenGatingGuild = ({ org, footerRef, onClose }: Props) => {
         const guildById = await getGuildById(guildId);
         // get guild info for all guilds that and address joined
         setGuild(guildById);
-        setRole(guildById.roles[0]?.id);
+        setRoleId(guildById.roles[0]?.id);
       }
     },
     fetchPolicy: 'network-only',
     variables: { orgId: org.id },
   });
 
+  const [createTokenGatingConditionForOrg] = useMutation(CREATE_TOKEN_GATING_CONDITION_FOR_ORG, {
+    onCompleted: (data) => {
+      debugger;
+      // clearErrors();
+      // clearSelection();
+      // onClose();
+    },
+    refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
+    onError: (error: ApolloError) => {
+      setCreationError('Error creating token gating condition');
+    },
+  });
+
   const rolesOptions = useMemo(() => guild?.roles.map((role) => ({ value: role.id, label: role.name })), [guild]);
 
-  if (error) {
+  if (getOrgGuildError) {
     return (
       <Typography color="white" sx={{ a: { color: palette.highlightBlue } }}>
         <SmartLink href={`/organization/settings/${org.id}/integrations`} asLink>
@@ -69,6 +84,25 @@ const TokenGatingGuild = ({ org, footerRef, onClose }: Props) => {
     );
   }
 
+  const handleCreateGuild = () => {
+    if (!roleId) {
+      return;
+    }
+
+    createTokenGatingConditionForOrg({
+      variables: {
+        input: {
+          orgId: org.id,
+          name: 'test',
+          accessCondition: {
+            roleId: String(roleId),
+            orgId: org.id,
+          },
+        },
+      },
+    });
+  };
+
   return (
     <Box>
       <Grid container alignItems="center" mb="20px">
@@ -80,9 +114,9 @@ const TokenGatingGuild = ({ org, footerRef, onClose }: Props) => {
 
       <CustomField label="Role">
         <DropdownSelect
-          value={role}
+          value={roleId}
           options={rolesOptions}
-          setValue={setRole}
+          setValue={setRoleId}
           innerStyle={{
             marginTop: 0,
           }}
@@ -92,13 +126,17 @@ const TokenGatingGuild = ({ org, footerRef, onClose }: Props) => {
         />
       </CustomField>
 
+      {creationError ? <Typography color={palette.red400}>{creationError}</Typography> : null}
+
       {footerRef.current
         ? createPortal(
             <Grid container gap="18px">
               <Button color="grey" onClick={onClose}>
                 Cancel
               </Button>
-              <Button onClick={onClose}>Create Guild</Button>
+              <Button onClick={handleCreateGuild} disabled={!roleId}>
+                Create Guild
+              </Button>
             </Grid>,
             footerRef.current
           )

@@ -1,7 +1,8 @@
+import Tab from '@mui/material/Tab';
 import React from 'react';
 import { TabsProps } from '@mui/material/Tabs/Tabs';
 
-import { StyledTab, StyledTabs } from './styles';
+import { StyledTabs, styles } from './styles';
 
 type Props = TabsProps & {
   tabs: Array<{
@@ -13,7 +14,12 @@ type Props = TabsProps & {
 const Tabs = ({ tabs, ...props }: Props) => (
   <StyledTabs {...props}>
     {tabs.map((tab) => (
-      <StyledTab key={tab.value} value={tab.value} label={tab.label} />
+      <Tab
+        sx={styles.tab}
+        key={tab.value}
+        value={tab.value}
+        label={tab.label}
+      />
     ))}
   </StyledTabs>
 );
