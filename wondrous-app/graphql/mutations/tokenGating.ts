@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { TokenGatingConditionFragment } from 'graphql/fragments/tokenGating';
+import { TokenGatingConditionFragment, GuildAccessConditionFragment } from 'graphql/fragments/tokenGating';
 
 export const CREATE_LIT_SIGNATURE = gql`
   mutation createLitSignature($input: LitSignatureCreateInput!) {
@@ -16,6 +16,15 @@ export const CREATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
     }
   }
   ${TokenGatingConditionFragment}
+`;
+
+export const CREATE_GUILD_ACCESS_CONDITION_FOR_ORG = gql`
+  mutation createGuildAccessConditionForOrg($input: GuildAccessConditionInput!) {
+      createGuildAccessConditionForOrg(input: $input) {
+      ...GuildAccessConditionFragment
+    }
+  }
+  ${GuildAccessConditionFragment}
 `;
 
 export const DELETE_TOKEN_GATING_CONDITION = gql`

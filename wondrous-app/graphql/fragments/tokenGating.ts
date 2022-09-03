@@ -17,3 +17,17 @@ export const TokenGatingConditionFragment = gql`
     }
   }
 `;
+
+export const GuildAccessConditionFragment = gql`
+    fragment GuildAccessConditionFragment on GuildAccessCondition {
+        id
+        orgId
+        podId
+        name
+        type
+        accessCondition {
+            guildId
+            roleId
+        }
+    }
+`;

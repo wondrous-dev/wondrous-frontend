@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { MutableRefObject, useEffect, useState } from 'react';
 import { Autocomplete } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { useMutation, useLazyQuery } from '@apollo/client';
@@ -14,6 +14,7 @@ import CustomField from 'components/FormField/CustomField';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
+import { useTokenGatingCondition } from 'utils/hooks';
 import { NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
 import {
@@ -111,8 +112,13 @@ const TokenListboxVirtualized = React.forwardRef<HTMLDivElement, React.HTMLAttri
   );
 });
 
-function TokenGatingConfigForm(props) {
-  const { orgId, footerRef, onClose, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
+type Props = {
+  orgId: string;
+  footerRef: MutableRefObject<HTMLDivElement>;
+};
+
+function TokenGatingConfigForm({ orgId, footerRef }: Props) {
+  const { selectedTokenGatingCondition, closeTokenGatingModal } = useTokenGatingCondition();
   const [chain, setChain] = useState(chainOptions[0].value);
   const [name, setName] = useState('');
   const [accessConditionType, setAccessConditionType] = useState('ERC20');
@@ -218,17 +224,17 @@ function TokenGatingConfigForm(props) {
     setAccessConditionType('ERC20');
     setSelectedToken(null);
     setMinAmount(0);
-    setSelectedTokenGatingCondition(null);
+    closeTokenGatingModal();
   };
   const handleMinAmountOnChange = (event) => {
     const { value } = event.target;
     setMinAmount(Number(value));
   };
-  const [createTokenGatingConditionForOrg] = useMutation(CREATE_TOKEN_GATING_CONDITION_FOR_ORG, {
+  const [createTokenGatingConditionForOrg, { loading: creating }] = useMutation(CREATE_TOKEN_GATING_CONDITION_FOR_ORG, {
     onCompleted: (data) => {
       clearErrors();
       clearSelection();
-      onClose();
+      closeTokenGatingModal();
     },
     refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
     onError: (e) => {
@@ -290,7 +296,7 @@ function TokenGatingConfigForm(props) {
     }
     clearErrors();
     clearSelection();
-    onClose();
+    closeTokenGatingModal();
   };
 
   const handleCreateTokenGate = () => {
@@ -459,13 +465,15 @@ function TokenGatingConfigForm(props) {
       {footerRef.current
         ? createPortal(
             <Grid container gap="18px">
-              <Button color="grey" onClick={onClose}>
+              <Button color="grey" onClick={closeTokenGatingModal}>
                 Cancel
               </Button>
               {selectedTokenGatingCondition ? (
                 <Button onClick={handleUpdateTokenGate}>Update Token Gate</Button>
               ) : (
-                <Button onClick={handleCreateTokenGate}>Create Token Gate</Button>
+                <Button onClick={handleCreateTokenGate} disabled={creating}>
+                  Create Token Gate
+                </Button>
               )}
             </Grid>,
             footerRef.current

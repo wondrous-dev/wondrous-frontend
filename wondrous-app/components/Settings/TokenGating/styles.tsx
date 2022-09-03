@@ -254,7 +254,7 @@ export const TableValueText = styled(Typography)`
   }
 `;
 
-export const TokenGateActionMenu = styled.div`
+export const TokenGateActionMenuContainer = styled.div`
   display: flex;
   flex-direction: row;
   flex-grow: 1;
