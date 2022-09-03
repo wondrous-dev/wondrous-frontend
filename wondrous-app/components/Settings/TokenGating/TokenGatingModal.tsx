@@ -1,20 +1,24 @@
-import TokenGatingGuild from 'components/Settings/TokenGating/TokenGatingGuild';
+import TokenGatingGuildForm from 'components/Settings/TokenGating/TokenGatingGuildForm';
 import React, { useRef, useState } from 'react';
 
 import Modal from 'components/Modal';
 import Tabs from 'components/Tabs';
+import { Org } from 'types/Org';
+import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
+import { useTokenGatingCondition } from 'utils/hooks';
 import TokenGatingConfigForm from './TokenGatingConfigForm';
 import { TokenGatingFormHeaderSecondary } from './styles';
 
-enum Tab {
-  TokenGating = 'tokenGating',
-  Guild = 'guild',
-}
+type Props = {
+  orgId: string;
+  org: Org;
+  open: boolean;
+};
 
-function TokenGatingModal(props) {
+function TokenGatingModal({ orgId, org, open }: Props) {
   const footerRef = useRef(null);
-  const { orgId, org, open, onClose, selectedTokenGatingCondition, setSelectedTokenGatingCondition } = props;
-  const [selectedTab, setSelectedTab] = useState(Tab.TokenGating);
+  const { selectedTokenGatingCondition, closeTokenGatingModal } = useTokenGatingCondition();
+  const [selectedTab, setSelectedTab] = useState(TOKEN_GATING_CONDITION_TYPE.GUILD);
 
   return (
     <Modal
@@ -26,29 +30,24 @@ function TokenGatingModal(props) {
           <TokenGatingFormHeaderSecondary as="span">{org?.username || ''}</TokenGatingFormHeaderSecondary>
         </>
       }
-      onClose={onClose}
+      onClose={closeTokenGatingModal}
       footerRight={<div ref={footerRef} />}
     >
-      <Tabs
-        value={selectedTab}
-        onChange={(e, tab) => setSelectedTab(tab)}
-        tabs={[
-          { label: 'Token gate', value: Tab.TokenGating },
-          { label: 'Guild.xyz', value: Tab.Guild },
-        ]}
-      />
-
-      {selectedTab === Tab.TokenGating ? (
-        <TokenGatingConfigForm
-          orgId={orgId}
-          org={org}
-          footerRef={footerRef}
-          onClose={onClose}
-          selectedTokenGatingCondition={selectedTokenGatingCondition}
-          setSelectedTokenGatingCondition={setSelectedTokenGatingCondition}
+      {!selectedTokenGatingCondition ? (
+        <Tabs
+          value={selectedTab}
+          onChange={(e, tab) => setSelectedTab(tab)}
+          tabs={[
+            { label: 'Token gate', value: TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE },
+            { label: 'Guild.xyz', value: TOKEN_GATING_CONDITION_TYPE.GUILD },
+          ]}
         />
+      ) : null}
+
+      {selectedTab === TOKEN_GATING_CONDITION_TYPE.GUILD ? (
+        <TokenGatingGuildForm orgId={orgId} footerRef={footerRef} />
       ) : (
-        <TokenGatingGuild org={org} footerRef={footerRef} onClose={onClose} />
+        <TokenGatingConfigForm orgId={orgId} footerRef={footerRef} />
       )}
     </Modal>
   );

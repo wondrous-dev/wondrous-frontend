@@ -1,11 +1,9 @@
-import ErrorFieldIcon from 'components/Icons/errorField.svg';
-import Ethereum from 'components/Icons/ethereum';
-import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
-import { EditTokenGatingConditionContext } from 'utils/contexts';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import { TokenGatingCondition } from 'types/TokenGating';
+import { TokenGatingContext } from 'utils/contexts';
 import {
   TokenGatingHeader,
   TokenGatingDescription,
@@ -17,47 +15,59 @@ import {
 import TokenGatingConditionList from './TokenGatingConditionList';
 import TokenGatingModal from './TokenGatingModal';
 
-function TokenGatingSettings(props) {
-  const { orgId } = props;
+type Props = {
+  orgId: string;
+};
+
+function TokenGatingSettings({ orgId }: Props) {
   const [openTokenGatingModal, setOpenTokenGatingModal] = useState(null);
   const [selectedTokenGatingCondition, setSelectedTokenGatingCondition] = useState(null);
 
-  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
-    variables: {
-      orgId,
-    },
-  });
-  const org = orgData?.getOrgById;
+  const [getOrgById, { data: { getOrgById: org } = { getOrgById: {} } }] = useLazyQuery(GET_ORG_BY_ID);
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgById({
+        variables: {
+          orgId,
+        },
+      });
+    }
+  }, [orgId, getOrgById]);
+
+  const closeTokenGatingModal = () => {
+    setOpenTokenGatingModal(false);
+    setSelectedTokenGatingCondition(null);
+  };
+
+  const editTokenGating = (tokenGatingCondition: TokenGatingCondition) => {
+    setOpenTokenGatingModal(true);
+    setSelectedTokenGatingCondition(tokenGatingCondition);
+  };
 
   return (
     <SettingsWrapper>
-      <TokenGatingWrapper>
-        <TokenGatingHeader>Token gating</TokenGatingHeader>
-        <TokenGatingElementWrapper>
-          <TokenGatingSubHeader>Create New</TokenGatingSubHeader>
-          <TokenGatingDescription>
-            Define token gates by specifying acess criteria for different levels of the org. Go to the roles settings
-            page to apply them to a role.
-          </TokenGatingDescription>
-          <NewTokenGatingButton onClick={() => setOpenTokenGatingModal(true)}>New Token gate </NewTokenGatingButton>
-        </TokenGatingElementWrapper>
-        <EditTokenGatingConditionContext.Provider
-          value={{
-            setSelectedTokenGatingCondition,
-            setOpenTokenGatingModal,
-          }}
-        >
-          <TokenGatingModal
-            org={org}
-            orgId={orgId}
-            open={openTokenGatingModal}
-            onClose={() => setOpenTokenGatingModal(false)}
-            selectedTokenGatingCondition={selectedTokenGatingCondition}
-            setSelectedTokenGatingCondition={setSelectedTokenGatingCondition}
-          />
-          <TokenGatingConditionList org={org} orgId={orgId} />
-        </EditTokenGatingConditionContext.Provider>
-      </TokenGatingWrapper>
+      <TokenGatingContext.Provider
+        value={{
+          editTokenGating,
+          closeTokenGatingModal,
+          selectedTokenGatingCondition,
+        }}
+      >
+        <TokenGatingWrapper>
+          <TokenGatingHeader>Token gating</TokenGatingHeader>
+          <TokenGatingElementWrapper>
+            <TokenGatingSubHeader>Create New</TokenGatingSubHeader>
+            <TokenGatingDescription>
+              Define token gates by specifying acess criteria for different levels of the org. Go to the roles settings
+              page to apply them to a role.
+            </TokenGatingDescription>
+            <NewTokenGatingButton onClick={() => setOpenTokenGatingModal(true)}>New Token gate </NewTokenGatingButton>
+          </TokenGatingElementWrapper>
+          <TokenGatingModal org={org} orgId={orgId} open={openTokenGatingModal} />
+          <TokenGatingConditionList orgId={orgId} />
+        </TokenGatingWrapper>
+      </TokenGatingContext.Provider>
     </SettingsWrapper>
   );
 }
