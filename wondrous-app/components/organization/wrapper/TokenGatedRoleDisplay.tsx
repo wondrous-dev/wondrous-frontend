@@ -13,7 +13,6 @@ import {
 import { useWonderWeb3 } from 'services/web3';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import palette from 'theme/palette';
-import { useEditTokenGatingCondition } from 'utils/hooks';
 import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
 import Tooltip from 'components/Tooltip';
 import { ErrorText } from '../../Common';
