@@ -71,7 +71,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
           />
           <Grid display="flex" flexDirection="column" gap="2px">
             {!!userFullName && (
-              <Typography fontSize={15} fontWeight={700}>
+              <Typography fontSize={15} fontWeight={700} color={palette.white}>
                 {userFullName}
               </Typography>
             )}
