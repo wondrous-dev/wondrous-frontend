@@ -1987,11 +1987,16 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                     style={{ width: '100%' }}
                     onChange={(value) => {
                       form.setFieldValue('claimPolicy', value);
-                      if (value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value)
+                      if (
+                        value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
+                        value === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value
+                      )
                         form.setFieldValue('claimPolicyRoles', [roles[0]?.id]);
                     }}
                     renderValue={() => {
-                      const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value;
+                      const isRolesSelected =
+                        form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
+                        form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value;
                       return (
                         <CreateEntityApplicationsSelectRender>
                           <span>
@@ -2013,7 +2018,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       );
                     })}
                   </CreateEntitySelect>
-                  {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
+                  {(form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
+                    form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value) && (
                     <CreateEntitySelect
                       name="task-applications-claim-roles"
                       value={form.values.claimPolicyRoles}
