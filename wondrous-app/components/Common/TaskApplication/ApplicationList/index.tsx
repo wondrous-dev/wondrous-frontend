@@ -9,6 +9,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import BoardFilters from 'components/Common/BoardFilters';
 import { Approved, Rejected, PendingApplication } from 'components/Icons';
 import { StatusDefaultIcon } from 'components/Icons/statusIcons';
+import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import ConfirmationModal from '../ConfirmationModal';
 import { LoadMore, FiltersWrapper, SectionWrapper, ItemsWrapper, EmptyStateWrapper, EmptyStateText } from './styles';
 import ApplicationCard from './ApplicationCard';
@@ -210,7 +211,9 @@ export default function ApplicationList({ task, count, canViewApplications = tru
                   key={idx}
                   avatar={creator.profilePicture}
                   username={creator.username}
-                  isGr15Contributor={creator?.checkIsGr15Contributor?.isGr15Contributor}
+                  isGr15Contributor={
+                    hasGR15DEIIntiative(task?.categories) && creator?.checkIsGr15Contributor?.isGr15Contributor
+                  }
                   timestamp={createdAt}
                   status={status}
                   links={links}

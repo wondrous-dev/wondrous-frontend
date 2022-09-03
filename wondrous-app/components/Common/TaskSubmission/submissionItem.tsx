@@ -54,6 +54,7 @@ import {
 } from './styles';
 import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
 
 const isBountyApprovedUnpaid = ({ fetchedTask, submission }) => {
   const { approvedAt, paymentStatus } = submission;
@@ -432,7 +433,10 @@ export function SubmissionItem({
             <SubmissionItemUserWrapper
               creatorUsername={submission?.creatorUsername}
               creatorProfilePicture={submission?.creatorProfilePicture}
-              isGr15Contributor={submission?.creator?.checkIsGr15Contributor?.isGr15Contributor}
+              isGr15Contributor={
+                hasGR15DEIIntiative(fetchedTask?.categories) &&
+                submission?.creator?.checkIsGr15Contributor?.isGr15Contributor
+              }
             />
             <SubmissionItemCreatedAt createdAt={submission.createdAt} />
           </SubmissionItemHeaderContent>
