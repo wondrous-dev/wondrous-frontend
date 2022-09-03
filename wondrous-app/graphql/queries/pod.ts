@@ -54,8 +54,8 @@ export const GET_USER_AVAILABLE_PODS = gql`
 `;
 
 export const GET_POD_USERS = gql`
-  query getPodUsers($podId: String!, $limit: Int, $offset: Int) {
-    getPodUsers(podId: $podId, limit: $limit, offset: $offset) {
+  query getPodUsers($podId: String!, $limit: Int, $offset: Int, $queryString: String) {
+    getPodUsers(podId: $podId, limit: $limit, offset: $offset, queryString: $queryString) {
       user {
         id
         username
