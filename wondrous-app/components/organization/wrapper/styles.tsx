@@ -1,4 +1,4 @@
-import { Box, Button, IconButton, Typography } from '@mui/material';
+import { Box, Button, ButtonBase, IconButton, Typography } from '@mui/material';
 import { Button as BorderButton, Button as ButtonComponent } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import Image from 'next/image';
@@ -133,7 +133,7 @@ export const HeaderButtons = styled.div`
   width: fit-content;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  gap: 4px;
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -721,32 +721,36 @@ export const Container = styled.div`
   margin-top: 22px;
 `;
 
-export const SettingsButton = styled.button`
-  align-items: center;
-  background: ${palette.grey75};
-  border-radius: 216px;
-  color: ${palette.white};
-  cursor: pointer;
-  display: flex;
-  font-family: ${typography.fontFamily};
-  font-size: 14px;
-  font-weight: 500;
-  height: 36px;
-  justify-content: center;
-  min-width: 110px;
+export const SettingsButton = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: ${palette.grey75};
+    border-radius: 216px;
+    color: ${palette.white};
+    cursor: pointer;
+    display: flex;
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    font-weight: 500;
+    height: 36px;
+    justify-content: center;
+    min-width: 110px;
+  }
 `;
 
-export const InviteButton = styled.button`
-  align-items: center;
-  background: linear-gradient(82.03deg, ${palette.highlightPurple} 50.7%, ${palette.highlightBlue} 107.99%);
-  border-radius: 216px;
-  color: ${palette.white};
-  cursor: pointer;
-  display: flex;
-  font-family: ${typography.fontFamily};
-  font-size: 14px;
-  font-weight: 500;
-  height: 36px;
-  justify-content: center;
-  min-width: 110px;
+export const InviteButton = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: linear-gradient(82.03deg, ${palette.highlightPurple} 50.7%, ${palette.highlightBlue} 107.99%);
+    border-radius: 216px;
+    color: ${palette.white};
+    cursor: pointer;
+    display: flex;
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    font-weight: 500;
+    height: 36px;
+    justify-content: center;
+    min-width: 110px;
+  }
 `;
