@@ -7,7 +7,7 @@ function TokenGatingPage() {
 
   const { orgId } = router.query;
 
-  return <TokenGatingSettings orgId={orgId} />;
+  return <TokenGatingSettings orgId={orgId as string} />;
 }
 
 export default withAuth(TokenGatingPage);
