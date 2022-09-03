@@ -51,3 +51,7 @@ export const InviteAllButton = styled.button`
     background: #7427ff;
   }
 `;
+
+export const SelectedUsersWrapper = styled.ul``;
+
+export const SelectedUserItem = styled.li``;

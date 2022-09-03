@@ -19,7 +19,7 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { StyledChip } from 'components/CreateEntity/styles';
 import ListBox from './Listbox';
-import { PaperComponent } from './styles';
+import { PaperComponent, SelectedUsersWrapper, SelectedUserItem } from './styles';
 
 type Props = {
   org: Org;
@@ -29,7 +29,7 @@ type Props = {
 };
 
 const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
-  const [selectedUsers, setSelectedUsers] = useState([]);
+  const [selectedUsers, setSelectedUsers] = useState({ admin: [], members: [] });
   const [hasMore, setHasMore] = useState(false);
   const {
     data: { getOrgUsers } = {},
@@ -46,12 +46,28 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
     },
   });
 
-  const handleChange = (event, users) => setSelectedUsers(users);
+  const handleChange = (key, event, users) => setSelectedUsers({ ...selectedUsers, [key]: users });
 
   const handleFetchMore = () =>
     fetchMore({ variables: { offset: getOrgUsers?.length } }).then(({ data }) =>
       setHasMore(data?.getOrgUsers?.length >= 2)
     );
+
+  const FIELDS_CONFIG = [
+    {
+      buttonLabel: 'Admin',
+      key: 'admin',
+      options: getOrgUsers || [],
+    },
+    {
+      buttonLabel: 'Members',
+      key: 'members',
+      options: getOrgUsers || [],
+    },
+  ];
+
+  const removeSelectedUser = (key, userId) =>
+    setSelectedUsers({ ...selectedUsers, [key]: selectedUsers[key].filter((item) => item?.user?.id !== userId) });
 
   return (
     <div>
@@ -65,156 +81,106 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
       </Typography>
 
       <Divider my="18px" />
-      <Grid container direction="row" wrap="nowrap">
-        <Box sx={{ flex: '0 0 94px' }}>
-          <Box
-            py="4px"
-            px="8px"
-            color="#CCBBFF"
-            sx={{ background: '#282828', display: 'inline-block', fontWeight: '600' }}
-            borderRadius="4px"
-          >
-            Admin
-          </Box>
-        </Box>
+      {FIELDS_CONFIG.map((field, idx) => (
+        <>
+          <Grid container direction="row" wrap="nowrap">
+            <Box sx={{ flex: '0 0 94px' }}>
+              <Box
+                py="4px"
+                px="8px"
+                color="#CCBBFF"
+                sx={{ background: '#282828', display: 'inline-block', fontWeight: '600' }}
+                borderRadius="4px"
+              >
+                {field.buttonLabel}
+              </Box>
+            </Box>
 
-        <Autocomplete
-          disablePortal
-          disableCloseOnSelect
-          placeholder="Enter username..."
-          PaperComponent={PaperComponent}
-          options={getOrgUsers || []}
-          sx={{
-            color: 'white',
-            flex: '1 1 auto',
-            '.MuiOutlinedInput-root': {
-              background: '#141414',
-            },
-            '*': {
-              color: 'white',
-            },
-          }}
-          multiple
-          openOnFocus
-          limitTags={1}
-          ListboxComponent={ListBox}
-          ListboxProps={{
-            handleFetchMore,
-            hasMore,
-          }}
-          onChange={handleChange}
-          getOptionLabel={(option: any) => option?.user?.username}
-          renderTags={(tagValue, getTagProps) =>
-            tagValue.map((option, index) => <StyledChip label={option.user.username} {...getTagProps({ index })} />)
-          }
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              fullWidth
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <InputAdornment position="start">
-                    {' '}
-                    <SearchIcon color={palette.highlightBlue} />
-                  </InputAdornment>
-                ),
-                disableUnderline: true,
+            <Autocomplete
+              disablePortal
+              disableCloseOnSelect
+              placeholder="Enter username..."
+              PaperComponent={PaperComponent}
+              options={field.options}
+              sx={{
+                color: 'white',
+                flex: '1 1 auto',
+                '.MuiOutlinedInput-root': {
+                  background: '#141414',
+                },
+                '*': {
+                  color: 'white',
+                },
               }}
-            />
-          )}
-          renderOption={(props, option) => (
-            <Option {...props}>
-              {option.profilePicture ? (
-                <SafeImage
-                  useNextImage={false}
-                  src={option?.profilePicture}
-                  style={{
-                    width: '18px',
-                    height: '18px',
-                    borderRadius: '4px',
+              multiple
+              openOnFocus
+              limitTags={1}
+              ListboxComponent={ListBox}
+              ListboxProps={{
+                handleFetchMore,
+                hasMore,
+              }}
+              onChange={(event, users) => handleChange(field.key, event, users)}
+              getOptionLabel={(option: any) => option?.user?.username}
+              renderTags={(tagValue, getTagProps) =>
+                tagValue.map((option, index) => <StyledChip label={option.user.username} {...getTagProps({ index })} />)
+              }
+              renderInput={(params) => (
+                <TextField
+                  {...params}
+                  fullWidth
+                  InputProps={{
+                    ...params.InputProps,
+                    endAdornment: (
+                      <InputAdornment position="start">
+                        {' '}
+                        <SearchIcon color={palette.highlightBlue} />
+                      </InputAdornment>
+                    ),
+                    disableUnderline: true,
                   }}
                 />
-              ) : (
-                <CreateEntityDefaultUserImage />
               )}
+              renderOption={(props, option) => (
+                <Option {...props}>
+                  {option.profilePicture ? (
+                    <SafeImage
+                      useNextImage={false}
+                      src={option?.profilePicture}
+                      style={{
+                        width: '18px',
+                        height: '18px',
+                        borderRadius: '4px',
+                      }}
+                    />
+                  ) : (
+                    <CreateEntityDefaultUserImage />
+                  )}
 
-              <CreateEntityAutocompleteOptionTypography>
-                {option?.user?.username}
-              </CreateEntityAutocompleteOptionTypography>
-            </Option>
-          )}
-        />
-      </Grid>
-
-      <Divider my="18px" />
-      <Grid container direction="row" wrap="nowrap">
-        <Box sx={{ flex: '0 0 94px' }}>
-          <Box
-            py="4px"
-            px="8px"
-            color="#CCBBFF"
-            sx={{ background: '#282828', display: 'inline-block', fontWeight: '600' }}
-            borderRadius="4px"
-          >
-            Members
-          </Box>
-        </Box>
-
-        <Autocomplete
-          disablePortal
-          placeholder="Enter username..."
-          PaperComponent={PaperComponent}
-          options={getOrgUsers || []}
-          sx={{
-            color: 'white',
-            flex: '1 1 auto',
-            '.MuiOutlinedInput-root': {
-              background: '#141414',
-            },
-            '*': {
-              color: 'white',
-            },
-          }}
-          multiple
-          openOnFocus
-          onChange={handleChange}
-          ListboxComponent={ListBox}
-          ListboxProps={{
-            handleFetchMore,
-            hasMore,
-          }}
-          getOptionLabel={(option: any) => option?.user?.username}
-          renderInput={(params) => (
-            <TextField
-              {...params}
-              fullWidth
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <InputAdornment position="start">
-                    {' '}
-                    <SearchIcon color={palette.highlightBlue} />
-                  </InputAdornment>
-                ),
-                disableUnderline: true,
-              }}
+                  <CreateEntityAutocompleteOptionTypography>
+                    {option?.user?.username}
+                  </CreateEntityAutocompleteOptionTypography>
+                </Option>
+              )}
             />
-          )}
-        />
-      </Grid>
+          </Grid>
+          <SelectedUsersWrapper>
+            {selectedUsers[field.key]?.map((selected, idx) => (
+              <SelectedUserItem onClick={() => removeSelectedUser(field.key, selected.user?.id)} key={idx}>
+                {selected?.user?.username}
+              </SelectedUserItem>
+            ))}
+          </SelectedUsersWrapper>
+          {idx !== FIELDS_CONFIG.length - 1 && <Divider my="18px" />}
+        </>
+      ))}
       {footerRef.current
         ? createPortal(
             <Grid container gap="18px">
               <Button color="grey" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button
-                color="primary"
-                type="submit"
-                onClick={() => onSubmit({ users: selectedUsers })}
-                disabled={!selectedUsers.length}
-              >
+              <Button color="primary" type="submit" onClick={() => onSubmit({ users: selectedUsers })} disabled>
                 Next
               </Button>
             </Grid>,
