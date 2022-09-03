@@ -192,7 +192,7 @@ export const removeCompletedItem = (itemId, columns) => {
 };
 
 export const updateTask = (updatedTask, columns) =>
-  columns.map((column) => {
+  columns?.map((column) => {
     if (column.section) {
       column.section.tasks = column.section.tasks.map((task) => {
         if (task.id === (updatedTask?.taskId ?? updatedTask.id)) {
