@@ -15,6 +15,7 @@ import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInt
 
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -49,6 +50,7 @@ function ProfileInfo({ userProfile }) {
   const { mainLink, social, websites } = parseLinks(links);
   const [createUserInterest] = useMutation(CREATE_USER_INTEREST, { refetchQueries: [GET_USER_INTERESTS] });
   const viewingSelf = user?.username === username;
+  const isGr15Contributor = user?.checkIsGr15Contributor?.isGr15Contributor;
 
   return (
     <ProfileInfoWrapper>
@@ -59,16 +61,47 @@ function ProfileInfo({ userProfile }) {
       />
 
       <ProfileInfoContainer>
-        <SafeImage
-          src={profilePicture || DefaultUserImage}
-          width={40}
-          height={40}
-          objectFit="cover"
-          useNextImage
+        <div
           style={{
-            borderRadius: '50%',
+            position: 'relative',
+            ...(isGr15Contributor && {
+              marginRight: '20px',
+            }),
           }}
-        />
+        >
+          {profilePicture ? (
+            <SafeImage
+              src={profilePicture}
+              width={62}
+              height={62}
+              objectFit="cover"
+              useNextImage
+              style={{
+                borderRadius: '50%',
+              }}
+            />
+          ) : (
+            <DefaultUserImage
+              style={{
+                width: '62',
+                height: '62',
+                borderRadius: '31px',
+              }}
+            />
+          )}
+          {isGr15Contributor && (
+            <GR15DEILogo
+              width="42"
+              height="42"
+              style={{
+                top: '0',
+                right: '-20px',
+                position: 'absolute',
+                zIndex: '20',
+              }}
+            />
+          )}
+        </div>
         <ProfileInfoFullName>{fullName || username}</ProfileInfoFullName>
         <ProfileInfoUsername>@{username}</ProfileInfoUsername>
       </ProfileInfoContainer>
