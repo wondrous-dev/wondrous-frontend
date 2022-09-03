@@ -16,6 +16,7 @@ import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInt
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -44,6 +45,7 @@ const SOCIAL_ICONS = {
 
 function ProfileInfo({ userProfile }) {
   const user = useMe();
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [openInterestModal, setOpenInterestModal] = useState(false);
   const { id, links, firstName, lastName, username, bio, profilePicture, interests } = userProfile;
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : username;
@@ -90,16 +92,20 @@ function ProfileInfo({ userProfile }) {
             />
           )}
           {isGr15Contributor && (
-            <GR15DEILogo
-              width="42"
-              height="42"
-              style={{
-                top: '0',
-                right: '-20px',
-                position: 'absolute',
-                zIndex: '20',
-              }}
-            />
+            <>
+              <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+              <GR15DEILogo
+                width="42"
+                height="42"
+                onClick={() => setOpenGR15Modal(true)}
+                style={{
+                  top: '0',
+                  right: '-20px',
+                  position: 'absolute',
+                  zIndex: '20',
+                }}
+              />
+            </>
           )}
         </div>
         <ProfileInfoFullName>{fullName || username}</ProfileInfoFullName>

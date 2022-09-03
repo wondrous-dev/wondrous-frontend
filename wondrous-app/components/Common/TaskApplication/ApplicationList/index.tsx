@@ -210,6 +210,7 @@ export default function ApplicationList({ task, count, canViewApplications = tru
                   key={idx}
                   avatar={creator.profilePicture}
                   username={creator.username}
+                  isGr15Contributor={creator?.checkIsGr15Contributor?.isGr15Contributor}
                   timestamp={createdAt}
                   status={status}
                   links={links}

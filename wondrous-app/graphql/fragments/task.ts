@@ -294,6 +294,9 @@ export const TaskSubmissionFragment = gql`
     creator {
       username
       profilePicture
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
     media {
       ...MediaFragment
@@ -331,6 +334,9 @@ export const TaskProposalFragment = gql`
     creator {
       username
       profilePicture
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
     media {
       ...MediaFragment
