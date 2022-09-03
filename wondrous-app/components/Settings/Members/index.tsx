@@ -1,12 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import Link from 'next/link';
-import pluralize from 'pluralize';
+import debounce from 'lodash/debounce';
 
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { useRouter } from 'next/router';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Typography } from '@mui/material';
 import palette from 'theme/palette';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
@@ -17,11 +16,12 @@ import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import { useWonderWeb3 } from 'services/web3';
 import MemberRoles from '../MemberRoles';
 import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
 import { SafeImage } from '../../Common/Image';
-import { SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell } from './styles';
+import { SearchMembers, SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell } from './styles';
 import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
@@ -71,8 +71,17 @@ function Members(props) {
   const [hasMore, setHasMore] = useState(true);
   const [userToRemove, setUserToRemove] = useState(null);
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
+
+  const wonderWeb3 = useWonderWeb3();
+
+  useEffect(() => {
+    if (users.length && !filteredUsers?.length && filteredUsers !== null) {
+      setFilteredUsers(users);
+    }
+  }, [users, filteredUsers]);
 
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
@@ -82,10 +91,6 @@ function Members(props) {
   const [getOrg, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
-    onCompleted: (data) => {
-      setUsers(data?.getPodUsers);
-      setHasMore(data?.hasMore || data?.getPodUsers.length >= LIMIT);
-    },
     fetchPolicy: 'network-only',
   });
 
@@ -129,6 +134,13 @@ function Members(props) {
           podId,
           limit: LIMIT,
         },
+      }).then((result) => {
+        if (!firstTimeFetch) {
+          const users = result?.data?.getPodUsers;
+          setUsers(users);
+          setHasMore(result?.data?.hasMore || result?.data?.getPodUsers.length >= LIMIT);
+          setFirstTimeFetch(true);
+        }
       });
       getPodRoles({
         variables: {
@@ -137,6 +149,8 @@ function Members(props) {
       });
     }
   }, [orgId, podId]);
+
+  const isOrg = !!orgId;
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
@@ -173,8 +187,6 @@ function Members(props) {
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
 
   const handleDownloadToCSV = () => {
-    const isOrg = !!orgId;
-
     if (isOrg) {
       getOrgUsers({
         variables: {
@@ -195,6 +207,45 @@ function Members(props) {
       });
     }
   };
+
+  const handleSearchMembers = useCallback(
+    debounce(async (ev: React.ChangeEvent) => {
+      const searchQuery = (ev.target as HTMLInputElement).value;
+
+      if (!searchQuery.length) {
+        setFilteredUsers(users);
+        return;
+      }
+
+      const isSearchQueryENS = searchQuery.endsWith('.eth');
+      let walletAddress = null;
+      if (isSearchQueryENS) {
+        walletAddress = await wonderWeb3.getAddressFromENS(searchQuery);
+      }
+      if (isOrg) {
+        getOrgUsers({
+          variables: {
+            orgId,
+            queryString: isSearchQueryENS ? walletAddress : searchQuery,
+          },
+        }).then(({ data }) => {
+          const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
+          setFilteredUsers(hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null);
+        });
+      } else {
+        getPodUsers({
+          variables: {
+            podId,
+            queryString: isSearchQueryENS ? walletAddress : searchQuery,
+          },
+        }).then(({ data }) => {
+          const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
+          setFilteredUsers(hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null);
+        });
+      }
+    }, 500),
+    [users]
+  );
 
   return (
     <SettingsWrapper showPodIcon={false}>
@@ -247,13 +298,16 @@ function Members(props) {
 
         <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
 
-        {podId ? (
+        {/* In case we decide to add this back later */}
+        {/* {podId ? (
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
-        ) : null}
+        ) : null} */}
 
-        {users.length > 0 && (
+        <SearchMembers placeholder="Search members..." orgId={orgId} onChange={handleSearchMembers} />
+
+        {filteredUsers?.length > 0 ? (
           <Grid display="flex" flexDirection="column" gap="25px" width="100%" maxWidth="770px">
-            {users.map(({ user, role }) => (
+            {filteredUsers.map(({ user, role }) => (
               <MemberTableRow
                 user={user}
                 role={role}
@@ -265,6 +319,10 @@ function Members(props) {
               />
             ))}
           </Grid>
+        ) : (
+          <Typography width="770px" color={palette.white} fontWeight={500} textAlign="center">
+            No users found corresponding to your search.
+          </Typography>
         )}
 
         {/* <StyledTableContainer>
