@@ -2,6 +2,20 @@ import styled from 'styled-components';
 import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import MuiGrid from '@mui/material/Grid';
+import MuiTextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+
+export const TextField = styled(MuiTextField)`
+  && {
+    .MuiOutlinedInput-root {
+      padding-left: 14px;
+      padding-right: 14px !important;
+    }
+  }
+`;
+
+export const Grid = styled(MuiGrid)``;
 
 export const ListboxWrapper = styled.ul`
   border-color: #7a7a7a;
@@ -52,6 +66,39 @@ export const InviteAllButton = styled.button`
   }
 `;
 
-export const SelectedUsersWrapper = styled.ul``;
+export const SelectedUsersWrapper = styled.ul`
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  gap: 10px;
+`;
 
-export const SelectedUserItem = styled.li``;
+export const SelectedUserItem = styled.li`
+  color: ${palette.white};
+  display: flex;
+  width: 100%;
+  gap: 10px;
+  align-items: center;
+  font-family: ${typography.fontFamily};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  line-height: 15px;
+`;
+
+export const CloseIconWrapper = styled.div`
+  flex: 1 1 auto;
+  display: flex;
+  justify-content: flex-end;
+  svg {
+    cursor: pointer;
+  }
+`;
+
+export const SelectedCount = styled(Typography)`
+  && {
+    color: ${palette.grey57};
+    font-weight: 400;
+    font-size: 13px;
+  }
+`;

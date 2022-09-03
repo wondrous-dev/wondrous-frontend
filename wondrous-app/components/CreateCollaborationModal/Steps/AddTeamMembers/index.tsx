@@ -1,15 +1,15 @@
-import React, { useState } from 'react';
-import { Typography, TextField, InputAdornment, Grid } from '@mui/material';
+import React, { useCallback, useState } from 'react';
+import { Typography, InputAdornment } from '@mui/material';
 import { createPortal } from 'react-dom';
 import Box from '@mui/material/Box';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { LIMIT } from 'services/board';
 import GradientHeading from 'components/GradientHeading';
 import SearchIcon from 'components/Icons/search';
 import { Org } from 'types/Org';
 import Divider from 'components/Divider';
 import { Button } from 'components/Button';
-import { GET_ORG_USERS } from 'graphql/queries';
+import { GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import { Autocomplete, Option } from 'components/SearchTasks/styles';
@@ -18,8 +18,21 @@ import {
   CreateEntityDefaultUserImage,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { StyledChip } from 'components/CreateEntity/styles';
+import CloseModalIcon from 'components/Icons/closeModal';
+import differenceWith from 'lodash/differenceWith';
+import omit from 'lodash/omit';
+import isEqual from 'lodash/isEqual';
+import debounce from 'lodash/debounce';
+import {
+  PaperComponent,
+  SelectedUsersWrapper,
+  SelectedUserItem,
+  CloseIconWrapper,
+  Grid,
+  TextField,
+  SelectedCount,
+} from './styles';
 import ListBox from './Listbox';
-import { PaperComponent, SelectedUsersWrapper, SelectedUserItem } from './styles';
 
 type Props = {
   org: Org;
@@ -29,8 +42,10 @@ type Props = {
 };
 
 const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
-  const [selectedUsers, setSelectedUsers] = useState({ admin: [], members: [] });
+  const [selectedUsers, setSelectedUsers] = useState({ admins: [], members: [] });
   const [hasMore, setHasMore] = useState(false);
+  const [inputValue, setInputValue] = useState('');
+  const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
   const {
     data: { getOrgUsers } = {},
     fetchMore,
@@ -38,36 +53,50 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
   } = useQuery(GET_ORG_USERS, {
     variables: {
       orgId: org.id,
-      limit: 2,
+      limit: LIMIT,
     },
     onCompleted: ({ getOrgUsers }) => {
-      const hasMoreData = getOrgUsers?.length >= 2;
+      const hasMoreData = getOrgUsers?.length >= LIMIT;
       if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
   });
 
+  const users = inputValue ? searchOrgUserResults?.searchOrgUsers : getOrgUsers?.map((i) => i.user);
+
+  const search = useCallback(debounce(searchOrgUsers, 1000), []);
+
+  const handleInputChange = (e) => {
+    setInputValue(e.target.value);
+    if (e.target.value) search({ variables: { queryString: e.target.value, orgId: org.id } });
+  };
+
   const handleChange = (key, event, users) => setSelectedUsers({ ...selectedUsers, [key]: users });
 
   const handleFetchMore = () =>
+    !inputValue &&
     fetchMore({ variables: { offset: getOrgUsers?.length } }).then(({ data }) =>
-      setHasMore(data?.getOrgUsers?.length >= 2)
+      setHasMore(data?.getOrgUsers?.length >= LIMIT)
     );
 
   const FIELDS_CONFIG = [
     {
       buttonLabel: 'Admin',
-      key: 'admin',
-      options: getOrgUsers || [],
+      key: 'admins',
+      options: differenceWith(users, [...selectedUsers.members, ...selectedUsers.admins], (a: any, b: any) =>
+        isEqual(omit(a, ['id']), omit(b, ['id']))
+      ),
     },
     {
       buttonLabel: 'Members',
       key: 'members',
-      options: getOrgUsers || [],
+      options: differenceWith(users, [...selectedUsers.members, ...selectedUsers.admins], (a: any, b: any) =>
+        isEqual(omit(a, ['id']), omit(b, ['id']))
+      ),
     },
   ];
 
   const removeSelectedUser = (key, userId) =>
-    setSelectedUsers({ ...selectedUsers, [key]: selectedUsers[key].filter((item) => item?.user?.id !== userId) });
+    setSelectedUsers({ ...selectedUsers, [key]: selectedUsers[key].filter((item) => item?.id !== userId) });
 
   return (
     <div>
@@ -83,6 +112,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
       <Divider my="18px" />
       {FIELDS_CONFIG.map((field, idx) => (
         <>
+          {console.log(field.options)}
           <Grid container direction="row" wrap="nowrap">
             <Box sx={{ flex: '0 0 94px' }}>
               <Box
@@ -95,82 +125,108 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
                 {field.buttonLabel}
               </Box>
             </Box>
-
-            <Autocomplete
-              disablePortal
-              disableCloseOnSelect
-              placeholder="Enter username..."
-              PaperComponent={PaperComponent}
-              options={field.options}
-              sx={{
-                color: 'white',
-                flex: '1 1 auto',
-                '.MuiOutlinedInput-root': {
-                  background: '#141414',
-                },
-                '*': {
+            <Box sx={{ width: '100%' }}>
+              <Autocomplete
+                disablePortal
+                disableCloseOnSelect
+                PaperComponent={PaperComponent}
+                clearOnBlur
+                options={field.options}
+                sx={{
                   color: 'white',
-                },
-              }}
-              multiple
-              openOnFocus
-              limitTags={1}
-              ListboxComponent={ListBox}
-              ListboxProps={{
-                handleFetchMore,
-                hasMore,
-              }}
-              onChange={(event, users) => handleChange(field.key, event, users)}
-              getOptionLabel={(option: any) => option?.user?.username}
-              renderTags={(tagValue, getTagProps) =>
-                tagValue.map((option, index) => <StyledChip label={option.user.username} {...getTagProps({ index })} />)
-              }
-              renderInput={(params) => (
-                <TextField
-                  {...params}
-                  fullWidth
-                  InputProps={{
-                    ...params.InputProps,
-                    endAdornment: (
-                      <InputAdornment position="start">
-                        {' '}
-                        <SearchIcon color={palette.highlightBlue} />
-                      </InputAdornment>
-                    ),
-                    disableUnderline: true,
-                  }}
-                />
-              )}
-              renderOption={(props, option) => (
-                <Option {...props}>
-                  {option.profilePicture ? (
-                    <SafeImage
-                      useNextImage={false}
-                      src={option?.profilePicture}
-                      style={{
-                        width: '18px',
-                        height: '18px',
-                        borderRadius: '4px',
-                      }}
-                    />
-                  ) : (
-                    <CreateEntityDefaultUserImage />
-                  )}
+                  flex: '1 1 auto',
+                  '.MuiOutlinedInput-root': {
+                    background: '#141414',
+                  },
+                  '*': {
+                    color: 'white',
+                  },
+                }}
+                multiple
+                openOnFocus
+                limitTags={1}
+                value={selectedUsers[field.key]}
+                ListboxComponent={ListBox}
+                ListboxProps={{
+                  handleFetchMore,
+                  hasMore,
+                }}
+                onChange={(event, options) => {
+                  handleChange(field.key, event, options);
+                }}
+                getOptionLabel={(option: any) => option?.username}
+                renderTags={(tagValue, getTagProps) =>
+                  tagValue.map((option, index) => <StyledChip label={option?.username} {...getTagProps({ index })} />)
+                }
+                renderInput={(params) => (
+                  <TextField
+                    {...params}
+                    fullWidth
+                    onChange={handleInputChange}
+                    placeholder="Search users"
+                    onBlur={() => {
+                      if (inputValue) setInputValue('');
+                    }}
+                    InputProps={{
+                      ...params.InputProps,
+                      endAdornment: (
+                        <InputAdornment position="start">
+                          {' '}
+                          <SearchIcon color={palette.highlightBlue} />
+                        </InputAdornment>
+                      ),
+                      disableUnderline: true,
+                    }}
+                  />
+                )}
+                renderOption={(props, option) => (
+                  <Option {...props}>
+                    {option?.profilePicture ? (
+                      <SafeImage
+                        useNextImage={false}
+                        src={option?.profilePicture}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '4px',
+                        }}
+                      />
+                    ) : (
+                      <CreateEntityDefaultUserImage />
+                    )}
 
-                  <CreateEntityAutocompleteOptionTypography>
-                    {option?.user?.username}
-                  </CreateEntityAutocompleteOptionTypography>
-                </Option>
-              )}
-            />
+                    <CreateEntityAutocompleteOptionTypography>
+                      {option?.username}
+                    </CreateEntityAutocompleteOptionTypography>
+                  </Option>
+                )}
+              />
+              <SelectedUsersWrapper>
+                {selectedUsers[field.key]?.map((selected, idx) => (
+                  <SelectedUserItem key={idx}>
+                    {selected?.profilePicture ? (
+                      <SafeImage
+                        useNextImage={false}
+                        src={selected?.user?.profilePicture}
+                        style={{
+                          width: '18px',
+                          height: '18px',
+                          borderRadius: '4px',
+                        }}
+                      />
+                    ) : (
+                      <CreateEntityDefaultUserImage />
+                    )}
+                    {selected?.username}
+                    <CloseIconWrapper>
+                      <CloseModalIcon onClick={() => removeSelectedUser(field.key, selected?.id)} />
+                    </CloseIconWrapper>
+                  </SelectedUserItem>
+                ))}
+              </SelectedUsersWrapper>
+              <SelectedCount>{`${selectedUsers[field.key].length} ${field.key}`}</SelectedCount>
+            </Box>
           </Grid>
-          <SelectedUsersWrapper>
-            {selectedUsers[field.key]?.map((selected, idx) => (
-              <SelectedUserItem onClick={() => removeSelectedUser(field.key, selected.user?.id)} key={idx}>
-                {selected?.user?.username}
-              </SelectedUserItem>
-            ))}
-          </SelectedUsersWrapper>
           {idx !== FIELDS_CONFIG.length - 1 && <Divider my="18px" />}
         </>
       ))}
