@@ -7,7 +7,7 @@ import apollo from 'services/apollo';
 import {
   TokenGatingNameHeader,
   TokenGatingElementWrapper,
-  TokenGateActionMenu,
+  TokenGateActionMenuContainer,
   TokenGateListDiv,
   TokenGateListItemDiv,
   TokenGatingHeaderLabel,
@@ -664,7 +664,7 @@ function TokenGatingModalElement(props) {
         }}
       >
         <TokenGatingNameHeader>{tokenGatingCondition?.name}</TokenGatingNameHeader>
-        <TokenGateActionMenu right="true">
+        <TokenGateActionMenuContainer right="true">
           <DropDown DropdownHandler={TaskMenuIcon}>
             <DropDownItem
               key={`token-gate-edit${tokenGatingCondition?.id}`}
@@ -678,7 +678,7 @@ function TokenGatingModalElement(props) {
               Edit
             </DropDownItem>
           </DropDown>
-        </TokenGateActionMenu>
+        </TokenGateActionMenuContainer>
       </div>
       <TokenGateListDiv>
         <TokenGateListItemDiv>
