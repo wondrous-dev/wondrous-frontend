@@ -41,16 +41,16 @@ function TokenGatingConditionItem({ tokenGatingCondition }: Props) {
     },
     fetchPolicy: 'network-only',
   });
-  const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
+  const contractAddress = tokenGatingCondition?.accessCondition.contractAddress;
 
   useEffect(() => {
     const getTokenDisplayInfo = async () => {
-      const type = tokenGatingCondition?.accessCondition[0].type;
+      const type = tokenGatingCondition?.accessCondition.type;
       if (type === 'ERC20') {
         getTokenInfo({
           variables: {
             contractAddress,
-            chain: tokenGatingCondition?.accessCondition[0].chain,
+            chain: tokenGatingCondition?.accessCondition.chain,
           },
         });
       }
@@ -64,7 +64,7 @@ function TokenGatingConditionItem({ tokenGatingCondition }: Props) {
     };
 
     getTokenDisplayInfo();
-  }, [tokenGatingCondition?.accessCondition[0].contractAddress]);
+  }, [tokenGatingCondition?.accessCondition.contractAddress]);
 
   return (
     <TokenGatingElementWrapper>
@@ -86,7 +86,7 @@ function TokenGatingConditionItem({ tokenGatingCondition }: Props) {
                 textTransform: 'capitalize',
               }}
             >
-              {tokenGatingCondition?.accessCondition[0].chain}
+              {tokenGatingCondition?.accessCondition.chain}
             </span>
           </TokenGatingNameHeader>
         </TokenGateListItemDiv>
@@ -94,12 +94,12 @@ function TokenGatingConditionItem({ tokenGatingCondition }: Props) {
           <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
           <TokenLogoDisplay src={tokenLogo} />
           <TokenGatingNameHeader>
-            <span>{tokenName || tokenGatingCondition?.accessCondition[0].contractAddress}</span>
+            <span>{tokenName || tokenGatingCondition?.accessCondition.contractAddress}</span>
           </TokenGatingNameHeader>
         </TokenGateListItemDiv>
         <TokenGateListItemDiv>
           <TokenGatingHeaderLabel>Min. amount to hold:</TokenGatingHeaderLabel>
-          <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].minValue}</TokenGatingNameHeader>
+          <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition.minValue}</TokenGatingNameHeader>
         </TokenGateListItemDiv>
       </TokenGateListDiv>
     </TokenGatingElementWrapper>

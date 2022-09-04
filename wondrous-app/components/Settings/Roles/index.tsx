@@ -594,7 +594,7 @@ function TokenGatingModalElement(props) {
     },
     fetchPolicy: 'network-only',
   });
-  const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
+  const contractAddress = tokenGatingCondition?.accessCondition.contractAddress;
   const dropdownItemStyle = {
     marginRight: '12px',
     color: palette.white,
