@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 import { Modal as ModalComponent } from 'components/Modal';
 import SelectOrgs from 'components/CreateCollaborationModal/Steps/SelectOrgs';
@@ -17,51 +17,59 @@ type Users = {
   members: Array<User>;
 };
 const CreateCollaborationModal = ({ open, onCancel }: Props) => {
-  const [state, setState] = useState<{
-    step: number;
+  const [step, setStep] = useState(1);
+  const [data, setData] = useState<{
     org1?: Org;
     org2?: Org;
     users?: Users;
     title?: string;
     mission?: string;
-  }>({
-    step: 1,
-  });
+  }>({});
 
   const footerRef = useRef(null);
+
+  const deleteMember = (userId) => {
+    setData((prevState) => ({
+      ...prevState,
+      users: { members: prevState.users.members.filter((user) => user.id !== userId), admins: prevState.users.admins },
+    }));
+  };
   const steps = [
     () => (
       <SelectOrgs
         footerRef={footerRef}
         onCancel={onCancel}
         onSubmit={(values) => {
-          setState({ ...state, ...values, step: 2 });
+          setData({ ...data, ...values });
+          setStep(2);
         }}
       />
     ),
     () => (
       <AddTeamMembers
-        org={state.org1}
+        org={data.org1}
         footerRef={footerRef}
         onCancel={onCancel}
         onSubmit={({ users }) => {
-          setState({ ...state, users, step: 3 });
+          setData({ ...data, users });
+          setStep(3);
         }}
       />
     ),
-    () => (
+    (props) => (
       <Confirmation
         footerRef={footerRef}
         onCancel={onCancel}
-        collabDetails={state}
+        deleteMember={deleteMember}
         onSubmit={() => {
           throw new Error('Not implemented');
         }}
+        {...props}
       />
     ),
   ];
 
-  const Component = steps[state.step - 1];
+  const Component = useMemo(() => steps[step - 1], [step]);
 
   return (
     <ModalComponent
@@ -71,7 +79,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       open={open}
       onClose={onCancel}
     >
-      <Component />
+      <Component collabDetails={data} />
     </ModalComponent>
   );
 };

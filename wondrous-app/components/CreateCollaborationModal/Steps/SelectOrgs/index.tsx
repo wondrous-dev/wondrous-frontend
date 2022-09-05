@@ -29,7 +29,6 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
   const [selectedOrg1, setSelectedOrg1] = useState(null);
   const [selectedOrg2, setSelectedOrg2] = useState(null);
 
-  console.log(selectedOrg2);
   const DROPDOWN_PACEHOLDER = {
     DAO1: 'Select your project',
     DAO2: 'Select collaborator',

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography } from '@mui/material';
 import { createPortal } from 'react-dom';
 import Grid from '@mui/material/Grid';
@@ -46,16 +46,22 @@ type Props = {
       members: Array<User>;
     };
   };
+  deleteMember: (userId: string) => void;
 };
 
-const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails }: Props) => {
+const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, deleteMember }: Props) => {
   const [isMembersModalOpen, setMembersModalOpen] = useState(false);
 
   const handleModal = () => setMembersModalOpen((prevState) => !prevState);
 
   return (
     <ConfirmationStepWrapper>
-      <MembersModal open={isMembersModalOpen} onClose={handleModal} members={collabDetails?.users?.members} />
+      <MembersModal
+        open={isMembersModalOpen}
+        onClose={handleModal}
+        members={collabDetails?.users?.members}
+        deleteMember={deleteMember}
+      />
       <GradientHeading fontSize={24} mb="20px">
         Confirm details
       </GradientHeading>
@@ -207,9 +213,11 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails }: Pro
                   )}
                 </SelectedMembersItem>
               ))}
-              <MembersDisplayAll withRightMargin onClick={handleModal}>
-                +{collabDetails?.users?.members?.length - MEMBER_DISPLAY_LIMIT} more
-              </MembersDisplayAll>
+              {collabDetails?.users?.members?.length > MEMBER_DISPLAY_LIMIT && (
+                <MembersDisplayAll withRightMargin onClick={handleModal}>
+                  +{collabDetails?.users?.members?.length - MEMBER_DISPLAY_LIMIT} more
+                </MembersDisplayAll>
+              )}
             </SelectedMembersWrapper>
           </Box>
         </Grid>

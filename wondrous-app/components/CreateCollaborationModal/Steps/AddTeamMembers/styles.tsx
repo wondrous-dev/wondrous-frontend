@@ -72,6 +72,7 @@ export const SelectedUsersWrapper = styled.ul`
   padding: 0;
   gap: 10px;
   margin: 0;
+  margin-top: 10px;
 `;
 
 export const SelectedUserItem = styled.li`

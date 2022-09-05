@@ -1,21 +1,29 @@
 import { useState } from 'react';
-import Box from '@mui/material/Box';
 import { Modal as ModalComponent } from 'components/Modal';
 import InputAdornment from '@mui/material/InputAdornment';
 import SearchIcon from 'components/Icons/search';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
+import MuiBox from '@mui/material/Box';
 import { CreateEntityDefaultUserImage } from 'components/CreateEntity/CreateEntityModal/styles';
-import { TextField } from '../AddTeamMembers/styles';
-import { InputWrapper } from './styles';
+import { TextField } from 'components/CreateCollaborationModal/Steps/AddTeamMembers/styles';
+import { InputWrapper, MembersItem, ButtonWrapper, MemberUsername, RemoveButton, Box } from './styles';
 
-const MembersModal = ({ open, onClose, members }) => {
+const MembersModal = ({ open, onClose, members, deleteMember }) => {
   const [inputValue, setInputValue] = useState('');
 
   const onChange = (e) => setInputValue(e.target.value);
+
+  const handleMemberDelete = (e, userId) => {
+    e.preventDefault();
+    deleteMember(userId);
+  };
+
+  const filteredMembers = members.filter((member) => member.username.includes(inputValue));
+
   return (
     <ModalComponent maxWidth={560} title="Member invites" open={open} onClose={onClose}>
-      <Box sx={{ width: '100%' }}>
+      <MuiBox sx={{ width: '100%' }}>
         <InputWrapper>
           <TextField
             fullWidth
@@ -34,30 +42,38 @@ const MembersModal = ({ open, onClose, members }) => {
           />
         </InputWrapper>
         <Box>
-          {members?.map((member, idx) => (
-            <div key={idx}>
+          {filteredMembers?.map((member, idx) => (
+            <MembersItem key={idx}>
               {member?.profilePicture ? (
                 <SafeImage
                   useNextImage={false}
                   src={member?.profilePicture}
                   style={{
-                    width: '18px',
-                    height: '18px',
+                    width: '55px',
+                    height: '55px',
                     borderRadius: '4px',
                   }}
                 />
               ) : (
-                <CreateEntityDefaultUserImage />
+                <CreateEntityDefaultUserImage
+                  style={{
+                    width: '55px',
+                    height: '55px',
+                    borderRadius: '4px',
+                  }}
+                />
               )}
 
-              <span>{member?.username}</span>
-              <div>
-                <button type="button">Remove</button>
-              </div>
-            </div>
+              <MemberUsername>{member?.username}</MemberUsername>
+              <ButtonWrapper>
+                <RemoveButton onClick={(e) => handleMemberDelete(e, member.id)} type="button">
+                  Remove
+                </RemoveButton>
+              </ButtonWrapper>
+            </MembersItem>
           ))}
         </Box>
-      </Box>
+      </MuiBox>
     </ModalComponent>
   );
 };
