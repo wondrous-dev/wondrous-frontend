@@ -102,6 +102,7 @@ export function AssigneeField({
 
   const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
 
+  // TODO: refactor this code
   const claimTask = () => {
     if (!user) {
       router.push('/signup', undefined, {
