@@ -18,7 +18,11 @@ type Props = {
 function TokenGatingModal({ orgId, org, open }: Props) {
   const footerRef = useRef(null);
   const { selectedTokenGatingCondition, closeTokenGatingModal } = useTokenGatingCondition();
-  const [selectedTab, setSelectedTab] = useState(TOKEN_GATING_CONDITION_TYPE.GUILD);
+  const [selectedTab, setSelectedTab] = useState(
+    selectedTokenGatingCondition?.type === TOKEN_GATING_CONDITION_TYPE.GUILD
+      ? TOKEN_GATING_CONDITION_TYPE.GUILD
+      : TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE
+  );
 
   return (
     <Modal
