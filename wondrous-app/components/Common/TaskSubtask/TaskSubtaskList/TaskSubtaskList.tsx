@@ -37,7 +37,7 @@ import {
 
 const LIMIT = 5;
 
-const useGetSubtasksForTask = ({ taskId, status }) => {
+export const useGetSubtasksForTask = ({ taskId, status }) => {
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const { data, fetchMore, loading } = useQuery(GET_SUBTASKS_FOR_TASK, {
