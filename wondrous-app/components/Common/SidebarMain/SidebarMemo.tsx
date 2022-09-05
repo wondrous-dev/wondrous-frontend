@@ -160,9 +160,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
             <DrawerList id="tour-sidebar-daos">
               {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }, index) => (
                 <SidebarTooltip key={id} title={name}>
-                  <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
+                  <Link href={`/organization/${username}/boards?entity=task`} passHref>
                     <Badge badgeContent={index + 1} color="primary" invisible={!showBadge}>
-                      <ButtonIcon button key={id} isActive={isActive}>
+                      <ButtonIcon button isActive={isActive}>
                         <DaoIconWrapper>
                           {thumbnailPicture || profilePicture ? (
                             <SafeImage

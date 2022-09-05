@@ -65,6 +65,7 @@ export const HOTKEYS = {
   CHOOSE_ENTITY: 'C',
   LIST_VIEW: ',',
   GRID_VIEW: '.',
+  CALENDAR_VIEW: '/',
   ENTER_TASK: 'enter',
   CLAIM_TASK: 'shift+C',
   ALL_KEYS: '*',
