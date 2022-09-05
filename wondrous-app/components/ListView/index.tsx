@@ -25,7 +25,7 @@ import {
 } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { ARROW_KEYS, pickHotkeyFunction } from 'utils/hotkeyHelper';
+import { ARROW_KEYS, HOTKEYS, pickHotkeyFunction } from 'utils/hotkeyHelper';
 import { useLocation } from 'utils/useLocation';
 import ItemsContainer from './ItemsContainer';
 
@@ -102,7 +102,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   };
 
   useHotkeys(
-    '*',
+    HOTKEYS.ALL_KEYS,
     (event) => {
       if (
         !Object.values(ARROW_KEYS).includes(event.key) ||

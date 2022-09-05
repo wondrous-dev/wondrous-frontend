@@ -100,7 +100,8 @@ export function AssigneeField({
   const showBadge = useHotkey();
   const router = useRouter();
 
-  // TODO: refactor code to make more sense
+  const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
+
   const claimTask = () => {
     if (!user) {
       router.push('/signup', undefined, {
@@ -131,19 +132,20 @@ export function AssigneeField({
           const task = data?.updateTaskAssignee;
           const transformedTask = transformTaskToTaskCard(task, {});
           setFetchedTask(transformedTask);
-          if (boardColumns?.setColumns && onCorrectPage) {
-            let columns = [...boardColumns?.columns];
-            if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-              columns = updateInReviewItem(transformedTask, columns);
-            } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-              columns = updateInProgressTask(transformedTask, columns);
-            } else if (transformedTask.status === TASK_STATUS_TODO) {
-              columns = updateTaskItem(transformedTask, columns);
-            } else if (transformedTask.status === TASK_STATUS_DONE) {
-              columns = updateCompletedItem(transformedTask, columns);
-            }
-            boardColumns.setColumns(columns);
+          if (!boardColumns?.setColumns || !onCorrectPage) {
+            return;
           }
+          let columns = [...boardColumns?.columns];
+          if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+            columns = updateInReviewItem(transformedTask, columns);
+          } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+            columns = updateInProgressTask(transformedTask, columns);
+          } else if (transformedTask.status === TASK_STATUS_TODO) {
+            columns = updateTaskItem(transformedTask, columns);
+          } else if (transformedTask.status === TASK_STATUS_DONE) {
+            columns = updateCompletedItem(transformedTask, columns);
+          }
+          boardColumns.setColumns(columns);
         },
       });
     }
@@ -153,8 +155,6 @@ export function AssigneeField({
     claimTask();
   });
   if (!shouldDisplay) return null;
-
-  const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
 
   return (
     <TaskSectionDisplayDiv>

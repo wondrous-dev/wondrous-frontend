@@ -99,7 +99,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
   );
 
   useHotkeys(
-    '*',
+    HOTKEYS.ALL_KEYS,
     (event) => {
       if (Number(event.key) <= orgsList.length) {
         router.push(`/organization/${orgsList[Number(event.key) - 1]?.username}/boards`);

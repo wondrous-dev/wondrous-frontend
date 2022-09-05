@@ -67,6 +67,7 @@ export const HOTKEYS = {
   GRID_VIEW: '.',
   ENTER_TASK: 'enter',
   CLAIM_TASK: 'shift+C',
+  ALL_KEYS: '*',
 };
 
 export const ARROW_KEYS = {
@@ -76,14 +77,7 @@ export const ARROW_KEYS = {
   ARROW_LEFT: 'ArrowLeft',
 };
 
-const findFirstAvailableTask = (columns) => {
-  for (let statuses = 0; statuses < columns.length; statuses += 1) {
-    if (columns[statuses]?.tasks.length > 0) {
-      return statuses;
-    }
-  }
-  return null;
-};
+const findFirstAvailableTask = (columns) => columns.findIndex((column) => column.tasks.length > 0);
 
 export const hotkeyUpArrowHelper = (taskIndex, statusIndex, columns) => {
   let holdTaskIndex = taskIndex;

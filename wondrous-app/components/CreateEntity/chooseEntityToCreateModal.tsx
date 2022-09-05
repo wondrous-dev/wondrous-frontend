@@ -8,6 +8,7 @@ import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useQuery } from '@apollo/client';
 import { useHotkey, useOrgBoard, usePodBoard } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import {
   CreateLayoutDaoIcon,
   CreateLayoutMilestoneIcon,
@@ -32,32 +33,32 @@ export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
     icon: CreateLayoutTaskIcon,
     label: 'Task',
-    hotkey: 'T',
+    hotkey: HOTKEYS.CREATE_TASK,
   },
   [ENTITIES_TYPES.MILESTONE]: {
     icon: CreateLayoutMilestoneIcon,
     label: 'Milestone',
-    hotkey: 'M',
+    hotkey: HOTKEYS.CREATE_MILESTONE,
   },
   [ENTITIES_TYPES.POD]: {
     icon: CreateLayoutPodsIcon,
     label: 'Pod',
-    hotkey: 'L',
+    hotkey: HOTKEYS.CREATE_POD,
   },
   [ENTITIES_TYPES.ORG]: {
     icon: CreateLayoutDaoIcon,
     label: 'DAO',
-    hotkey: 'D',
+    hotkey: HOTKEYS.CREATE_DAO,
   },
   [ENTITIES_TYPES.BOUNTY]: {
     icon: CreateLayoutBountyIcon,
     label: 'Bounty',
-    hotkey: 'B',
+    hotkey: HOTKEYS.CREATE_BOUNTY,
   },
   [ENTITIES_TYPES.PROPOSAL]: {
     icon: CreateLayoutProposalIcon,
     label: 'Proposal',
-    hotkey: 'P',
+    hotkey: HOTKEYS.CREATE_PROPOSAL,
   },
 };
 

@@ -206,7 +206,7 @@ function KanbanBoard(props) {
   };
 
   useHotkeys(
-    '*',
+    HOTKEYS.ALL_KEYS,
     (event) => {
       if (
         !Object.values(ARROW_KEYS).includes(event.key) ||
