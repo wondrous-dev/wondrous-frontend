@@ -5,7 +5,12 @@ const styles = {
     width: 0,
     minWidth: 0,
     opacity: 0,
+    position: 'relative',
     backgroundColor: (theme) => theme.palette.grey900,
+  },
+  filterRoot: {
+    position: 'sticky',
+    top: 0,
   },
   showFilters: {
     p: 1.25,

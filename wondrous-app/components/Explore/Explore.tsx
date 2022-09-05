@@ -6,7 +6,7 @@ import { Box, Typography, TextField } from '@mui/material';
 
 import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';
-import { GET_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
+import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
 import palette from 'theme/palette';
 import { GRID_MOBILE_STYLES, TABS_LABELS } from 'utils/constants';
 import BountySection from 'components/BountySection';
@@ -38,34 +38,52 @@ function ExploreComponent() {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
-  const { data: bounties, fetchMore } = useQuery(GET_BOUNTIES_TO_EXPLORE, {
+  const {
+    data: bounties,
+    fetchMore,
+    refetch,
+    variables,
+  } = useQuery(FILTER_BOUNTIES_TO_EXPLORE, {
     variables: {
-      limit: LIMIT,
-      offset: 0,
+      input: {
+        limit: LIMIT,
+        offset: 0,
+      },
     },
-    onCompleted: ({ getBountiesToExplore }) => {
-      if (getBountiesToExplore.length < LIMIT && hasMoreBounties) setHasMoreBounties(false);
+    onCompleted: ({ getTaskExplore }) => {
+      if (getTaskExplore.length < LIMIT && hasMoreBounties) setHasMoreBounties(false);
+      if (getTaskExplore.length === LIMIT) setHasMoreBounties(true);
     },
   });
 
   const [openFilters, setOpenFilters] = useState(false);
 
-  const getBountiesToExploreFetchMore = useCallback(() => {
+  const getTaskExploreFetchMore = useCallback(() => {
     fetchMore({
       variables: {
-        offset: bounties?.getBountiesToExplore.length,
+        input: {
+          ...variables.input,
+          offset: bounties?.getTaskExplore.length,
+        },
       },
       updateQuery: (prev, { fetchMoreResult }) => {
-        setHasMoreBounties(fetchMoreResult?.getBountiesToExplore?.length >= LIMIT);
-        const getBountiesToExplore = [...prev?.getBountiesToExplore, ...fetchMoreResult?.getBountiesToExplore];
+        setHasMoreBounties(fetchMoreResult?.getTaskExplore?.length >= LIMIT);
+        const getTaskExplore = [...prev?.getTaskExplore, ...fetchMoreResult?.getTaskExplore];
         return {
-          getBountiesToExplore,
+          getTaskExplore,
         };
       },
     }).catch((error) => {
       console.error(error);
     });
-  }, [bounties?.getBountiesToExplore, fetchMore]);
+  }, [bounties?.getTaskExplore, fetchMore, variables]);
+
+  const filterBounties = useCallback(
+    (filters) => {
+      refetch({ input: { ...variables.input, limit: LIMIT, offset: 0, ...filters } });
+    },
+    [refetch, variables]
+  );
 
   const handleTabClick = (key) => {
     if (key === activeTab) {
@@ -94,6 +112,7 @@ function ExploreComponent() {
       hoverColor: 'linear-gradient(88.88deg, #525252 24.45%, #FFD653 91.22%)',
     },
   ];
+
   return (
     <OverviewComponent
       style={{
@@ -114,7 +133,7 @@ function ExploreComponent() {
         </BackgroundTextWrapper>
       </BackgroundContainer>
       <Box sx={{ display: 'flex', width: '100%' }}>
-        <ExploreFilters open={openFilters} setOpen={setOpenFilters} />
+        <ExploreFilters open={openFilters} setOpen={setOpenFilters} updateFilter={filterBounties} />
         <ExplorePageContentWrapper>
           <TabsWrapper>
             <MuiButton sx={styles.filterButton} onClick={() => setOpenFilters(!openFilters)}>
@@ -138,15 +157,15 @@ function ExploreComponent() {
               ))}
             </Box>
           </TabsWrapper>
-          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
           {(activeTab === null || activeTab === TABS_LABELS.BOUNTY) && (
             <BountySection
               isMobile={isMobile}
-              bounties={bounties?.getBountiesToExplore}
-              fetchMore={getBountiesToExploreFetchMore}
+              bounties={bounties?.getTaskExplore}
+              fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}
             />
           )}
+          {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
         </ExplorePageContentWrapper>
       </Box>
 
