@@ -72,16 +72,17 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
 
   useEffect(() => {
     const { params } = location;
-    if ((params.task || params.taskProposal) && (orgBoard || userBoard || podBoard)) {
-      if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
-        const holdTaskId = location.params.task;
-        const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
-        const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
-        setTaskIndex(holdTaskIndex);
-        setStatusIndex(holdStatusIndex);
-      }
-      setOpenModal(true);
+    if (!(params.task || params.taskProposal) || !(orgBoard || userBoard || podBoard)) {
+      return;
     }
+    if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
+      const holdTaskId = location.params.task;
+      const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
+      const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
+      setTaskIndex(holdTaskIndex);
+      setStatusIndex(holdStatusIndex);
+    }
+    setOpenModal(true);
   }, [orgBoard, podBoard, userBoard, location]);
 
   const handleModalClose = () => {
@@ -104,20 +105,20 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
     '*',
     (event) => {
       if (
-        Object.values(ARROW_KEYS).includes(event.key) &&
-        (board?.entityType === ENTITIES_TYPES.TASK || onlyTaskRoutesForDashboard.includes(router.asPath))
+        !Object.values(ARROW_KEYS).includes(event.key) ||
+        !(board?.entityType === ENTITIES_TYPES.TASK || onlyTaskRoutesForDashboard.includes(router.asPath))
       ) {
-        setOpenModal(true);
-
-        setByLinkOrHot(OPEN_TASK_METHOD.hot);
-        const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key, taskIndex, statusIndex, columns);
-        setStatusIndex(holdStatusIndex);
-        setTaskIndex(holdTaskIndex);
-        if (holdStatusIndex === null) {
-          setOpenModal(false);
-        }
-        setTaskId(columns?.[holdStatusIndex]?.tasks?.[holdTaskIndex]?.id);
+        return;
       }
+      setOpenModal(true);
+      setByLinkOrHot(OPEN_TASK_METHOD.hot);
+      const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key, taskIndex, statusIndex, columns);
+      setStatusIndex(holdStatusIndex);
+      setTaskIndex(holdTaskIndex);
+      if (holdStatusIndex === null) {
+        setOpenModal(false);
+      }
+      setTaskId(columns?.[holdStatusIndex]?.tasks?.[holdTaskIndex]?.id);
     },
     [taskIndex, statusIndex, isModalOpen, columns]
   );
