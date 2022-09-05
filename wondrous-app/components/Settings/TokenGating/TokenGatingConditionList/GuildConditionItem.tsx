@@ -31,7 +31,7 @@ function GuildConditionItem({ tokenGatingCondition }: Props) {
     };
 
     populate();
-  }, []);
+  }, [tokenGatingCondition.accessCondition.roleId]);
 
   return (
     <TokenGatingElementWrapper>

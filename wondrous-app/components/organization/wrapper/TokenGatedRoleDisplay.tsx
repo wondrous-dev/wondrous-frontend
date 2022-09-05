@@ -88,7 +88,7 @@ function TokenGatedRoleDisplay(props) {
     },
     fetchPolicy: 'network-only',
   });
-  const contractAddress = role?.tokenGatingCondition?.accessCondition[0].contractAddress;
+  const contractAddress = role?.tokenGatingCondition?.accessCondition.contractAddress;
   const tokenGatingConditionName = role?.tokenGatingCondition?.name;
 
   useEffect(() => {
@@ -132,12 +132,12 @@ function TokenGatedRoleDisplay(props) {
 
   useEffect(() => {
     const getTokenDisplayInfo = async () => {
-      const type = role?.tokenGatingCondition?.accessCondition[0].type;
+      const type = role?.tokenGatingCondition?.accessCondition.type;
       if (type === 'ERC20') {
         getTokenInfo({
           variables: {
             contractAddress,
-            chain: role?.tokenGatingCondition?.accessCondition[0].chain,
+            chain: role?.tokenGatingCondition?.accessCondition.chain,
           },
         });
       }
@@ -151,7 +151,7 @@ function TokenGatedRoleDisplay(props) {
     };
 
     getTokenDisplayInfo();
-  }, [role?.tokenGatingCondition?.accessCondition[0].contractAddress]);
+  }, [role?.tokenGatingCondition?.accessCondition.contractAddress]);
 
   const handleClaimRoleClick = async () => {
     try {
@@ -209,7 +209,7 @@ function TokenGatedRoleDisplay(props) {
             Min. amount to hold:
           </TokenGatedRoleDescription>
           <TokenGatedRoleDescription>
-            {role?.tokenGatingCondition?.accessCondition[0].minValue}
+            {role?.tokenGatingCondition?.accessCondition.minValue}
           </TokenGatedRoleDescription>
         </div>
       </div>

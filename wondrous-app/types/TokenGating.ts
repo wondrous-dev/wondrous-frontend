@@ -24,5 +24,5 @@ export interface TokenGatingCondition {
   name: string;
   booleanLogic?: any;
   type: TOKEN_GATING_CONDITION_TYPE;
-  accessCondition: AccessCondition[] | GuildAccessCondition;
+  accessCondition: AccessCondition | GuildAccessCondition;
 }

@@ -9,7 +9,10 @@ import { createPortal } from 'react-dom';
 
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
-import { CREATE_GUILD_ACCESS_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
+import {
+  CREATE_GUILD_ACCESS_CONDITION_FOR_ORG,
+  UPDATE_GUILD_ACCESS_CONDITION,
+} from 'graphql/mutations/tokenGating';
 import Button from 'components/Button';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import SmartLink from 'components/Common/SmartLink';
@@ -76,15 +79,15 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
     },
   });
 
-  const [updateTokenGatingCondition, { loading: updating }] = useMutation(UPDATE_TOKEN_GATING_CONDITION, {
+  const [updateGuildAccessCondition, { loading: updating }] = useMutation(UPDATE_GUILD_ACCESS_CONDITION, {
     onCompleted: () => {
       setSnackbarAlertOpen(true);
-      setSnackbarAlertMessage('Token gating update successfully!');
+      setSnackbarAlertMessage('Guild access condition update successfully!');
       closeTokenGatingModal();
     },
     refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
     onError: () => {
-      setCreationError('Error updating token gating condition');
+      setCreationError('Error updating guild access condition');
     },
   });
 
@@ -114,33 +117,25 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
     );
   }
 
-  const handleCreateGuild = () => {
-    createGuildAccessConditionForOrg({
-      variables: {
-        input: {
-          name,
-          roleId,
-          orgId,
-          guildId: String(guild.id),
-        },
+  const saveGuild = () => {
+    const variables = {
+      tokenGatingConditionId: selectedTokenGatingCondition?.id,
+      input: {
+        name,
+        roleId,
+        orgId,
+        guildId: String(guild.id),
       },
-    });
+    };
+
+    if (selectedTokenGatingCondition?.id) {
+      updateGuildAccessCondition({ variables });
+    } else {
+      createGuildAccessConditionForOrg({ variables });
+    }
   };
 
-  const handleUpdateGuild = () => {
-    updateTokenGatingCondition({
-      variables: {
-        tokenGatingConditionId: selectedTokenGatingCondition?.id,
-        input: {
-          name,
-          accessCondition: {
-            roleId,
-            guildId: String(guild.id),
-          },
-        },
-      },
-    });
-  };
+  const handleUpdateGuild = () => {};
 
   return (
     <Box>
@@ -178,15 +173,9 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
                 Cancel
               </Button>
 
-              {selectedTokenGatingCondition ? (
-                <Button onClick={handleUpdateGuild} type="button" disabled={!(roleId && name) || updating}>
-                  Update Guild
-                </Button>
-              ) : (
-                <Button onClick={handleCreateGuild} type="button" disabled={!(roleId && name) || creating}>
-                  Create Guild
-                </Button>
-              )}
+              <Button onClick={saveGuild} type="button" disabled={!(roleId && name) || creating || updating}>
+                {selectedTokenGatingCondition ? 'Update' : 'Create'} Guild
+              </Button>
             </Grid>,
             footerRef.current
           )

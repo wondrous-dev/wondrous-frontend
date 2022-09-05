@@ -44,6 +44,15 @@ export const UPDATE_TOKEN_GATING_CONDITION = gql`
   ${TokenGatingConditionFragment}
 `;
 
+export const UPDATE_GUILD_ACCESS_CONDITION = gql`
+  mutation updateGuildAccessCondition($tokenGatingConditionId: ID!, $input: GuildAccessConditionInput!) {
+      updateGuildAccessCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
+      ...TokenGatingConditionFragment
+    }
+  }
+  ${TokenGatingConditionFragment}
+`;
+
 export const CLAIM_ORG_ROLE = gql`
   mutation claimOrgRole($orgRoleId: ID!) {
     claimOrgRole(orgRoleId: $orgRoleId) {

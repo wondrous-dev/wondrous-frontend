@@ -14,6 +14,7 @@ import CustomField from 'components/FormField/CustomField';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries/tokenGating';
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
+import { AccessCondition, TokenGatingCondition } from 'types/TokenGating';
 import { useTokenGatingCondition } from 'utils/hooks';
 import { NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
 import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
@@ -194,11 +195,13 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
   useEffect(() => {
     // this is for edit only, prepopulating
     if (selectedTokenGatingCondition && selectedTokenGatingCondition?.accessCondition) {
-      setAccessConditionType(selectedTokenGatingCondition.accessCondition[0]?.type);
+      const accessCondition = selectedTokenGatingCondition.accessCondition as AccessCondition;
+
+      setAccessConditionType(accessCondition?.type);
       setName(selectedTokenGatingCondition.name);
-      setChain(selectedTokenGatingCondition.accessCondition[0]?.chain);
-      setMinAmount(selectedTokenGatingCondition.accessCondition[0]?.minValue);
-      const selectedContractAddress = selectedTokenGatingCondition.accessCondition[0]?.contractAddress;
+      setChain(accessCondition?.chain);
+      setMinAmount(Number(accessCondition.minValue));
+      const selectedContractAddress = accessCondition.contractAddress;
       if (selectedContractAddress) {
         let selectedTokenInfo;
         if (accessConditionType === 'ERC20') {
