@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useMemo, useState } from 'react';
 import { Typography, InputAdornment } from '@mui/material';
 import { createPortal } from 'react-dom';
 import Box from '@mui/material/Box';
@@ -17,11 +17,9 @@ import {
   CreateEntityAutocompleteOptionTypography,
   CreateEntityDefaultUserImage,
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { StyledChip } from 'components/CreateEntity/styles';
 import CloseModalIcon from 'components/Icons/closeModal';
 import differenceWith from 'lodash/differenceWith';
-import omit from 'lodash/omit';
-import isEqual from 'lodash/isEqual';
+import eq from 'lodash/eq';
 import debounce from 'lodash/debounce';
 import {
   PaperComponent,
@@ -78,20 +76,21 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
       setHasMore(data?.getOrgUsers?.length >= LIMIT)
     );
 
+  const availableOptions = useMemo(
+    () => differenceWith(users, selectedUsers.members.concat(selectedUsers.admins), (a: any, b: any) => eq(a.id, b.id)),
+    [selectedUsers, users]
+  );
+
   const FIELDS_CONFIG = [
     {
       buttonLabel: 'Admin',
       key: 'admins',
-      options: differenceWith(users, [...selectedUsers.members, ...selectedUsers.admins], (a: any, b: any) =>
-        isEqual(omit(a, ['id']), omit(b, ['id']))
-      ),
+      options: availableOptions,
     },
     {
       buttonLabel: 'Members',
       key: 'members',
-      options: differenceWith(users, [...selectedUsers.members, ...selectedUsers.admins], (a: any, b: any) =>
-        isEqual(omit(a, ['id']), omit(b, ['id']))
-      ),
+      options: availableOptions,
     },
   ];
 
@@ -112,7 +111,6 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
       <Divider my="18px" />
       {FIELDS_CONFIG.map((field, idx) => (
         <>
-          {console.log(field.options)}
           <Grid container direction="row" wrap="nowrap">
             <Box sx={{ flex: '0 0 94px' }}>
               <Box
@@ -155,9 +153,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
                   handleChange(field.key, event, options);
                 }}
                 getOptionLabel={(option: any) => option?.username}
-                renderTags={(tagValue, getTagProps) =>
-                  tagValue.map((option, index) => <StyledChip label={option?.username} {...getTagProps({ index })} />)
-                }
+                renderTags={(tagValue, getTagProps) => null}
                 renderInput={(params) => (
                   <TextField
                     {...params}
@@ -207,7 +203,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
                     {selected?.profilePicture ? (
                       <SafeImage
                         useNextImage={false}
-                        src={selected?.user?.profilePicture}
+                        src={selected?.profilePicture}
                         style={{
                           width: '18px',
                           height: '18px',
@@ -236,7 +232,12 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
               <Button color="grey" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button color="primary" type="submit" onClick={() => onSubmit({ users: selectedUsers })} disabled>
+              <Button
+                color="primary"
+                type="submit"
+                onClick={() => onSubmit({ users: selectedUsers })}
+                disabled={!selectedUsers.admins.length}
+              >
                 Next
               </Button>
             </Grid>,

@@ -71,6 +71,7 @@ export const SelectedUsersWrapper = styled.ul`
   flex-direction: column;
   padding: 0;
   gap: 10px;
+  margin: 0;
 `;
 
 export const SelectedUserItem = styled.li`

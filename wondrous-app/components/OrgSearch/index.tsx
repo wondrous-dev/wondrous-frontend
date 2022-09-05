@@ -23,8 +23,6 @@ import {
   OrgSearchInputIcon,
 } from './styles';
 
-let timeout;
-
 function OrgSearch(props) {
   const { options, onChange, value, disabled, label, globalSearch } = props;
   const [anchorEl, setAnchorEl] = useState(null);

@@ -5,25 +5,29 @@ import SelectOrgs from 'components/CreateCollaborationModal/Steps/SelectOrgs';
 import AddTeamMembers from 'components/CreateCollaborationModal/Steps/AddTeamMembers';
 import Confirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { Org } from 'types/Org';
+import { User } from 'types/User';
 
 type Props = {
   open: boolean;
   onCancel: () => void;
 };
 
+type Users = {
+  admins: Array<User>;
+  members: Array<User>;
+};
 const CreateCollaborationModal = ({ open, onCancel }: Props) => {
   const [state, setState] = useState<{
     step: number;
     org1?: Org;
     org2?: Org;
-    users?: Array<any>; // FIXME
+    users?: Users;
     title?: string;
     mission?: string;
   }>({
     step: 1,
   });
 
-  console.log(state);
   const footerRef = useRef(null);
   const steps = [
     () => (
@@ -49,6 +53,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       <Confirmation
         footerRef={footerRef}
         onCancel={onCancel}
+        collabDetails={state}
         onSubmit={() => {
           throw new Error('Not implemented');
         }}
@@ -66,7 +71,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       open={open}
       onClose={onCancel}
     >
-      <Component />;
+      <Component />
     </ModalComponent>
   );
 };
