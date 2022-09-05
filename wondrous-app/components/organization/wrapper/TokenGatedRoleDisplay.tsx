@@ -137,7 +137,7 @@ function TokenGatedRoleDisplay(props) {
         getTokenInfo({
           variables: {
             contractAddress,
-            chain: role?.tokenGatingCondition?.accessCondition.chain,
+            chain: role?.tokenGatingCondition?.accessCondition[0].chain,
           },
         });
       }
@@ -151,7 +151,7 @@ function TokenGatedRoleDisplay(props) {
     };
 
     getTokenDisplayInfo();
-  }, [role?.tokenGatingCondition?.accessCondition.contractAddress]);
+  }, [role?.tokenGatingCondition?.accessCondition[0].contractAddress]);
 
   const handleClaimRoleClick = async () => {
     try {
@@ -209,7 +209,7 @@ function TokenGatedRoleDisplay(props) {
             Min. amount to hold:
           </TokenGatedRoleDescription>
           <TokenGatedRoleDescription>
-            {role?.tokenGatingCondition?.accessCondition.minValue}
+            {role?.tokenGatingCondition?.accessCondition[0].minValue}
           </TokenGatedRoleDescription>
         </div>
       </div>

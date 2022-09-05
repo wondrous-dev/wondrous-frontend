@@ -108,6 +108,7 @@ export const useSelectMembership = () => useContext(SelectMembershipContext);
 
 export const useTokenGatingCondition = (): {
   editTokenGating: (tokenGatingCondition: TokenGatingCondition) => void;
+  deleteTokenGating: (tokenGatingCondition: TokenGatingCondition) => void;
   closeTokenGatingModal: () => void;
   selectedTokenGatingCondition: TokenGatingCondition;
 } => useContext(TokenGatingContext);

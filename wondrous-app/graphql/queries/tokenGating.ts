@@ -66,12 +66,18 @@ export const GET_TOKEN_GATED_ROLES_FOR_ORG = gql`
         name
         booleanLogic
         accessCondition {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
+          ... on AccessConditionModel {
+            contractAddress
+            type
+            chain
+            method
+            minValue
+            tokenIds
+          }
+          ... on GuildAccessConditionModel {
+            guildId
+            roleId
+          }
         }
       }
     }
@@ -93,12 +99,18 @@ export const GET_TOKEN_GATED_ROLES_FOR_POD = gql`
         name
         booleanLogic
         accessCondition {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
+          ... on AccessConditionModel {
+            contractAddress
+            type
+            chain
+            method
+            minValue
+            tokenIds
+          }
+          ... on GuildAccessConditionModel {
+            guildId
+            roleId
+          }
         }
       }
     }

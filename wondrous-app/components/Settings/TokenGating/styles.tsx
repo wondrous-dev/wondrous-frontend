@@ -42,14 +42,14 @@ export const TokenGatingSubHeader = styled(InputLabel)`
   }
 `;
 
-export const TokenGatingNameHeader = styled(Typography)`
-  && {
-    color: ${palette.white};
-    font-family: 'Space Grotesk';
-    font-weight: 500;
-    font-size: 15px;
-  }
-`;
+// export const TokenGatingNameHeader = styled(Typography)`
+//   && {
+//     color: ${palette.white};
+//     font-family: 'Space Grotesk';
+//     font-weight: 500;
+//     font-size: 15px;
+//   }
+// `;
 
 export const TokenGatingDescription = styled(Typography)`
   && {
@@ -61,18 +61,18 @@ export const TokenGatingDescription = styled(Typography)`
   }
 `;
 
-export const TokenGatingElementWrapper = styled(Box)`
-  && {
-    background: ${palette.black90};
-    border-radius: 6px;
-    padding: 24px;
-    margin-top: 24px;
-    :hover {
-      background: #474747 !important;
-      cursor: pointer;
-    }
-  }
-`;
+// export const TokenGatingElementWrapper = styled(Box)`
+//   && {
+//     background: ${palette.black90};
+//     border-radius: 6px;
+//     padding: 24px;
+//     margin-top: 24px;
+//     :hover {
+//       background: #474747 !important;
+//       cursor: pointer;
+//     }
+//   }
+// `;
 
 export const TokenGatingFormHeaderSecondary = styled(Typography)`
   && {
@@ -253,45 +253,45 @@ export const TableValueText = styled(Typography)`
     font-height: 22px;
   }
 `;
+//
+// export const TokenGateActionMenuContainer = styled.div`
+//   display: flex;
+//   flex-direction: row;
+//   flex-grow: 1;
+//   justify-content: flex-end;
+//   height: 24px;
+// `;
 
-export const TokenGateActionMenuContainer = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  justify-content: flex-end;
-  height: 24px;
-`;
+// export const TokenGateListDiv = styled.div`
+//   align-items: center;
+//   display: flex;
+//   margin-top: 16px;
+// `;
+//
+// export const TokenGateListItemDiv = styled.div`
+//   align-items: center;
+//   display: flex;
+//   margin-right: 16px;
+// `;
 
-export const TokenGateListDiv = styled.div`
-  align-items: center;
-  display: flex;
-  margin-top: 16px;
-`;
+// export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
+//   && {
+//     color: ${palette.grey250};
+//     margin-right: 8px;
+//   }
+// `;
 
-export const TokenGateListItemDiv = styled.div`
-  align-items: center;
-  display: flex;
-  margin-right: 16px;
-`;
-
-export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
-  && {
-    color: ${palette.grey250};
-    margin-right: 8px;
-  }
-`;
-
-export function TokenLogoDisplay(props) {
-  return (
-    <SafeImage
-      useNextImage={false}
-      src={props?.src}
-      style={{
-        width: '29px',
-        height: '28px',
-        borderRadius: '4px',
-        marginRight: '5px',
-      }}
-    />
-  );
-}
+// export function TokenLogoDisplay(props) {
+//   return (
+//     <SafeImage
+//       useNextImage={false}
+//       src={props?.src}
+//       style={{
+//         width: '29px',
+//         height: '28px',
+//         borderRadius: '4px',
+//         marginRight: '5px',
+//       }}
+//     />
+//   );
+// }
