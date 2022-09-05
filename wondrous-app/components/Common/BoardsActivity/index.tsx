@@ -170,7 +170,7 @@ export default function BoardsActivity(props) {
     [view]
   );
 
-  // TODO: When calendar PR is merged
+  // TODO(pkmazarakis): When calendar PR is merged
   // useHotkeys('/', () => {
   // if (setActiveView) {
   //   setActiveView(ViewType.Calendar);
