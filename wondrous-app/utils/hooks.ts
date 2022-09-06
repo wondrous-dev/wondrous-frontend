@@ -26,10 +26,13 @@ import {
   SelectMembershipContext,
   UserProfileContext,
   GlobalContext,
+  HotkeyContext,
   TokenGatingContext,
 } from './contexts';
 
 export const useIsMobile = () => useContext(IsMobileContext);
+
+export const useHotkey = () => useContext(HotkeyContext);
 
 export const useSideBar = () => useContext(SideBarContext);
 // Hook
