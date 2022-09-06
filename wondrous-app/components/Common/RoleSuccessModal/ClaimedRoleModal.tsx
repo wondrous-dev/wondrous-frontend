@@ -11,7 +11,7 @@ import {
   RequestModalTitleBar,
   RequestModalTypeText,
 } from 'components/organization/wrapper/styles';
-import { StyledWarningMessage } from '../ArchiveTaskModal/styles';
+import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 
 const SuccessRoleModal = (props) => {
   const { open, onClose, notLinkedWalletError, linkedWallet, role, request } = props;

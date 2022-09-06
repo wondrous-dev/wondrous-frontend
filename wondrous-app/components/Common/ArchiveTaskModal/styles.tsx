@@ -18,7 +18,6 @@ export const StyledChildren = styled.div``;
 export const StyledBox = styled(Box)`
   width: 488px;
   height: 224px;
-  //for consistency on modals
   background-color: ${greyColors.grey95};
   border-radius: 6px;
 `;

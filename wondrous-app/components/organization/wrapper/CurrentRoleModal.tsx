@@ -2,25 +2,14 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-import { ErrorText } from 'components/Common';
-import {
-  SelectMenuBoardTypeClickAway,
-  SelectMenuBoardTypeIcon,
-  SelectMenuBoardTypeItem,
-  SelectMenuBoardTypeWrapper,
-} from 'components/Common/SelectMenuBoardType/styles';
 import { ActionButton } from 'components/Common/Task/styles';
-import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
 import { GET_ORG_ROLES } from 'graphql/queries';
+import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import {
-  RequestModalBackButton,
   RequestModalBox,
   RequestModalButtonsContainer,
   RequestModalCloseIcon,
   RequestModalContainer,
-  RequestModalCustomPopper,
-  RequestModalHorizontalAlign,
-  RequestModalLevelContainer,
   RequestModalRolesAbilityCheckIcon,
   RequestModalRolesAbilityCloseIcon,
   RequestModalRolesAbilityColumns,
@@ -28,16 +17,11 @@ import {
   RequestModalRolesAbilityRows,
   RequestModalRolesAbilityText,
   RequestModalRolesSubtitle,
-  RequestModalTextarea,
-  RequestModalTextareaWrapper,
   RequestModalTitle,
   RequestModalTitleBar,
-  RequestModalTypeText,
 } from './styles';
-import { StyledCancelButton, StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
 
 const CurrentRoleModal = (props) => {
-  const [showPopper, setShowPopper] = useState(false);
   const {
     open,
     onClose,
@@ -50,12 +34,6 @@ const CurrentRoleModal = (props) => {
   } = props;
 
   const [levelPicked, setLevelPicked] = useState('contributor');
-  const ROLES_COLORS_AND_EMOJIS = {
-    owner: { emoji: '🔑', color: '#7ECC49' },
-    contributor: { emoji: '✨', color: '#FF9933' },
-    core_team: { emoji: '🔮', color: '#EB96EB' },
-  };
-  const [characterCount, setCharacterCount] = useState(0);
 
   const useGetOrgRoles = (org) => {
     const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
@@ -77,27 +55,6 @@ const CurrentRoleModal = (props) => {
 
   const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === levelPicked) : null;
 
-  const handleChange = (e) => {
-    if (error) {
-      setError(false);
-    }
-    if (e.target.value.length <= 200) {
-      setRequestMessage(e.target.value);
-      setCharacterCount(e.target.value.length);
-    }
-  };
-  const handleOnClose = () => {
-    setRequestMessage('');
-    setCharacterCount(0);
-    setError(false);
-    onClose();
-  };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openLevel = Boolean(anchorEl);
-  const handleOnClickAway = () => setAnchorEl(null);
-  const board = useOrgBoard();
-  const [requestMessage, setRequestMessage] = useState('');
-  const [error, setError] = useState(null);
   const rolePermissions = orgRoles?.[roleIndex]?.permissions;
   const roleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
   const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));

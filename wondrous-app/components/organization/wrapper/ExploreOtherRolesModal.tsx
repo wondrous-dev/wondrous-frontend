@@ -6,8 +6,7 @@ import { GET_ORG_ROLES } from 'graphql/queries';
 import { Dialog } from '@mui/material';
 import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
 import apollo from 'services/apollo';
-import { useRouter } from 'next/router';
-import { StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
+import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import {
   RequestModalBackButton,
   RequestModalBox,

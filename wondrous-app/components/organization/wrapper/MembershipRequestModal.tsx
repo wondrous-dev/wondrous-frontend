@@ -1,26 +1,18 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
 import { ErrorText } from 'components/Common';
-import {
-  SelectMenuBoardTypeClickAway,
-  SelectMenuBoardTypeIcon,
-  SelectMenuBoardTypeItem,
-  SelectMenuBoardTypeWrapper,
-} from 'components/Common/SelectMenuBoardType/styles';
 import { ActionButton } from 'components/Common/Task/styles';
 import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
 import { GET_ORG_ROLES } from 'graphql/queries';
+import { StyledCancelButton, StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import {
   RequestModalBackButton,
   RequestModalBox,
   RequestModalButtonsContainer,
   RequestModalCloseIcon,
   RequestModalContainer,
-  RequestModalCustomPopper,
   RequestModalHorizontalAlign,
-  RequestModalLevelContainer,
   RequestModalRolesAbilityCheckIcon,
   RequestModalRolesAbilityCloseIcon,
   RequestModalRolesAbilityColumns,
@@ -34,7 +26,6 @@ import {
   RequestModalTitleBar,
   RequestModalTypeText,
 } from './styles';
-import { StyledCancelButton, StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
 
 const MembershipRequestModal = (props) => {
   const {
