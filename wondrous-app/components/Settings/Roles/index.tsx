@@ -1,5 +1,6 @@
+import Tabs from "components/Tabs";
 import TokenGatingItem from 'components/TokenGatingItem';
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
@@ -36,6 +37,7 @@ import styles, {
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import {TOKEN_GATING_CONDITION_TYPE} from "utils/constants";
 import RoleLockIcon from '../../Icons/rolesLock.svg';
 import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
@@ -465,6 +467,7 @@ function TokenGateRoleConfigModal(props) {
   const router = useRouter();
   const { open, handleClose, orgId, podId, selectedRoleForTokenGate } = props;
   const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE);
   const [getTokenGatingConditionsForOrg, { data, loading, fetchMore }] = useLazyQuery(
     GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
     {
@@ -547,6 +550,11 @@ function TokenGateRoleConfigModal(props) {
     handleClose();
   };
 
+  const tokenGatingConditionsByType = useMemo(
+    () => tokenGatingConditions.filter((r) => (r.type || TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE) === selectedTab),
+    [selectedTab, tokenGatingConditions]
+  );
+
   return (
     <Modal open={open} onClose={handleClose}>
       <TokenGatedRoleModal>
@@ -580,7 +588,18 @@ function TokenGateRoleConfigModal(props) {
             </TokenGatingButton>
           </div>
         </div>
-        {tokenGatingConditions.map((tokenGatingCondition) => (
+
+        <Tabs
+          value={selectedTab}
+          withMargin={false}
+          onChange={(e, tab) => setSelectedTab(tab)}
+          tabs={[
+            { label: 'Token gate', value: TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE },
+            { label: 'Guild.xyz', value: TOKEN_GATING_CONDITION_TYPE.GUILD },
+          ]}
+        />
+
+        {tokenGatingConditionsByType.map((tokenGatingCondition) => (
           <TokenGatingItem
             key={tokenGatingCondition.id}
             tokenGatingCondition={tokenGatingCondition}

@@ -5,6 +5,7 @@ import { TabsProps } from '@mui/material/Tabs/Tabs';
 import { StyledTabs, styles } from './styles';
 
 type Props = TabsProps & {
+  withMargin?: boolean;
   tabs: Array<{
     value: string;
     label: string;
@@ -14,14 +15,13 @@ type Props = TabsProps & {
 const Tabs = ({ tabs, ...props }: Props) => (
   <StyledTabs {...props}>
     {tabs.map((tab) => (
-      <Tab
-        sx={styles.tab}
-        key={tab.value}
-        value={tab.value}
-        label={tab.label}
-      />
+      <Tab sx={styles.tab} key={tab.value} value={tab.value} label={tab.label} />
     ))}
   </StyledTabs>
 );
+
+Tabs.defaultProps = {
+  withMargin: false,
+};
 
 export default Tabs;

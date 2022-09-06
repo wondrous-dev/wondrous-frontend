@@ -135,8 +135,6 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
     }
   };
 
-  const handleUpdateGuild = () => {};
-
   return (
     <Box>
       <Grid container alignItems="center" mb="20px">
