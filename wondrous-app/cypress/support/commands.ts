@@ -38,7 +38,6 @@ export const login = () => {
   cy.dataCy('input-password').type(PASSWORD);
   cy.dataCy('button-login').first().click();
   cy.wait('@gqlemailSigninQuery');
-
   cy.url({ timeout: 18000 }).should('include', 'mission-control');
   cy.wait('@gqlgetUserPermissionContextQuery');
   cy.wait('@gqlgetPerStatusTaskCountForUserBoardQuery');
