@@ -299,7 +299,6 @@ function SingleDatePicker({
                 }}
                 customArrowIcon={<></>}
                 isDayHighlighted={(day) => highlightDay(day)}
-                isDayBlocked={(day) => day.isBefore(todayMoment)}
                 renderCalendarDay={(props) => <CalendarDay {...props} />}
                 hideKeyboardShortcutsPanel
                 renderCalendarInfo={() =>
