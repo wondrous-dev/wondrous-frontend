@@ -5,12 +5,11 @@ import Typography from '@mui/material/Typography';
 import TextField from '@mui/material/TextField';
 import InputAdornment from '@mui/material/InputAdornment';
 import Button from '@mui/material/Button';
-import FormControlLabel from '@mui/material/FormControlLabel';
 
 import SearchIcon from 'components/Icons/search';
 import CloseModalIcon from 'components/Icons/closeModal';
-import Switch from 'components/Common/Switch';
 
+import { blueColors } from 'theme/colors';
 import styles from './styles';
 
 const WORK_CATEGORIES = [
@@ -70,7 +69,7 @@ const AGE_CATEGORIES = [
 const ExploreFilters = ({ open, setOpen, updateFilter }) => {
   const [workCategorySelected, setWorkCategorySelected] = useState('');
   const [ageCategorySelected, setAgeCategorySelected] = useState('');
-  const [isApplications, setIsApplications] = useState(false);
+  // const [isApplications, setIsApplications] = useState(false);
 
   const handleWorkTagClick = (item) => {
     if (workCategorySelected === item.value) {
@@ -112,7 +111,7 @@ const ExploreFilters = ({ open, setOpen, updateFilter }) => {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <SearchIcon color="#CCBBFF" />
+                <SearchIcon color={blueColors.blue20} />
               </InputAdornment>
             ),
           }}
@@ -138,6 +137,7 @@ const ExploreFilters = ({ open, setOpen, updateFilter }) => {
           </Box>
         </Box>
         <Box sx={styles.divider} />
+        {/* TODO(cristobalchao): Add this when BE is ready
         <Box>
           <Typography sx={styles.sectionTitle}>Applications</Typography>
           <FormControlLabel
@@ -157,7 +157,7 @@ const ExploreFilters = ({ open, setOpen, updateFilter }) => {
             label={<Typography sx={styles.switchLabel}>Required</Typography>}
           />
         </Box>
-        <Box sx={styles.divider} />
+        <Box sx={styles.divider} /> */}
         <Box>
           <Typography sx={styles.sectionTitle}>Age of task</Typography>
           <Box sx={styles.categoryContainer}>

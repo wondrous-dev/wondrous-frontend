@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { OverviewComponent } from 'components/Wrapper/styles';
 

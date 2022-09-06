@@ -2,7 +2,7 @@ import React, { useState, useCallback } from 'react';
 import { useIsMobile } from 'utils/hooks';
 import { Button } from 'components/Button';
 import MuiButton from '@mui/material/Button';
-import { Box, Typography, TextField } from '@mui/material';
+import { Box } from '@mui/material';
 
 import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';

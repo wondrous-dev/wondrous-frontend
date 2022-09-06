@@ -229,11 +229,10 @@ export const Tab = styled.button`
 `;
 
 export const ExplorePageContentWrapper = styled.div`
-  height: 100%;
   display: flex;
   padding-bottom: 10rem;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   background: url('/images/explore/explore-page-background.svg');
