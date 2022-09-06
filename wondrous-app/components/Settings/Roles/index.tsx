@@ -17,7 +17,7 @@ import palette from 'theme/palette';
 
 import { Role } from 'types/common';
 import { GET_TOKEN_INFO, GET_NFT_INFO, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
-import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD } from 'graphql/queries';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import {
   APPLY_TOKEN_GATING_TO_ORG_ROLE,
   APPLY_TOKEN_GATING_TO_POD_ROLE,
@@ -94,7 +94,6 @@ type Props = {
   onDeleteRole: (role: Role) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
   onToastClose: () => any;
-  getPodRolesWithTokenGate?: () => any;
   getOrgDiscordRoles?: () => any;
   orgDiscordConfigData?: any;
   allDiscordRolesData?: any;
@@ -110,7 +109,6 @@ function Roles({
   toast,
   onToastClose,
   permissons,
-  getPodRolesWithTokenGate,
   orgDiscordConfigData,
   allDiscordRolesData,
   getOrgDiscordRoles,
@@ -185,7 +183,6 @@ function Roles({
         orgId={orgId}
         podId={podId}
         selectedRoleForTokenGate={selectedRoleForTokenGate}
-        getPodRolesWithTokenGate={getPodRolesWithTokenGate}
       />
 
       {!podId && (
@@ -207,7 +204,6 @@ function Roles({
           selectedRoleForDiscord={selectedRoleForDiscord}
           getOrgDiscordRoles={getOrgDiscordRoles}
           allDiscordRolesData={allDiscordRolesData}
-          getPodRolesWithTokenGate={getPodRolesWithTokenGate}
         />
       )}
 
@@ -381,16 +377,7 @@ function DiscordOnRoleDisplay(props) {
 
 function DiscordRoleSelectionModal(props) {
   const router = useRouter();
-  const {
-    open,
-    handleClose,
-    orgId,
-    podId,
-    selectedRoleForDiscord,
-    getOrgDiscordRoles,
-    allDiscordRolesData,
-    getPodRolesWithTokenGate,
-  } = props;
+  const { open, handleClose, orgId, podId, selectedRoleForDiscord, getOrgDiscordRoles, allDiscordRolesData } = props;
   useEffect(() => {
     if (open) {
       getOrgDiscordRoles();
@@ -417,7 +404,7 @@ function DiscordRoleSelectionModal(props) {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId: '',
           },
-          // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD]
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
         });
       }
     } catch (e) {
@@ -429,7 +416,7 @@ function DiscordRoleSelectionModal(props) {
   const handleElementClick = async (discordRoleId) => {
     try {
       if (selectedRoleForDiscord?.__typename === 'OrgRole') {
-        const orgRoles = await apollo.mutate({
+        await apollo.mutate({
           mutation: CONNECT_DISCORD_ROLE_TO_ORG_ROLE,
           variables: {
             orgRoleId: selectedRoleForDiscord?.id,
@@ -484,7 +471,7 @@ function DiscordRoleSelectionModal(props) {
 
 function TokenGateRoleConfigModal(props) {
   const router = useRouter();
-  const { open, handleClose, orgId, podId, selectedRoleForTokenGate, getPodRolesWithTokenGate } = props;
+  const { open, handleClose, orgId, podId, selectedRoleForTokenGate } = props;
   const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
   const [getTokenGatingConditionsForOrg, { data, loading, fetchMore }] = useLazyQuery(
     GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
@@ -509,7 +496,7 @@ function TokenGateRoleConfigModal(props) {
   const handleRemoveTokenGateFromRole = async () => {
     try {
       if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
-        const orgRoles = await apollo.mutate({
+        await apollo.mutate({
           mutation: REMOVE_TOKEN_GATING_FROM_ORG_ROLE,
           variables: {
             orgRoleId: selectedRoleForTokenGate?.id,
@@ -522,10 +509,10 @@ function TokenGateRoleConfigModal(props) {
         await apollo.mutate({
           mutation: REMOVE_TOKEN_GATING_FROM_POD_ROLE,
           variables: {
-            orgRoleId: selectedRoleForTokenGate?.id,
+            podRoleId: selectedRoleForTokenGate?.id,
           },
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
         });
-        getPodRolesWithTokenGate();
       }
     } catch (e) {
       console.error(e);
@@ -584,7 +571,7 @@ function TokenGateRoleConfigModal(props) {
 function TokenGatingModalElement(props) {
   const [tokenName, setTokenName] = useState(null);
   const [tokenLogo, setTokenLogo] = useState(null);
-  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId, getPodRolesWithTokenGate } = props;
+  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId } = props;
   const router = useRouter();
   const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
     onCompleted: (data) => {
@@ -657,8 +644,8 @@ function TokenGatingModalElement(props) {
             tokenGatingConditionId: tokenGatingCondition?.id,
             podRoleId: selectedRoleForTokenGate?.id,
           },
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
         });
-        getPodRolesWithTokenGate();
       }
     } catch (e) {
       console.error(e);

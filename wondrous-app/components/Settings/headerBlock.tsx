@@ -1,6 +1,6 @@
-import { SafeImage } from 'components/Common/Image';
 import React from 'react';
 import PlusIcon from 'components/Icons/plus';
+import { Grid } from '@mui/material';
 import {
   SettingsHeaderBlock,
   SettingsHeaderContent,
@@ -8,27 +8,24 @@ import {
   SettingsHeaderTitle,
   SettingsHeaderInviteButton,
   SettingsHeaderInviteButtonIcon,
+  SettingsHeaderActionText,
 } from './styles';
-import GeneralSettings from '../Icons/generalSettings';
 
 export function HeaderBlock(props) {
-  const { title, description, icon, onInvite } = props;
+  const { title, description, icon, onInvite, handleDownloadToCSV } = props;
 
   return (
     <SettingsHeaderBlock>
-      {icon ? <SafeImage src={icon} width={72} height={72} useNextImage /> : <GeneralSettings circle />}
       <SettingsHeaderContent>
         <SettingsHeaderTitle>{title}</SettingsHeaderTitle>
         <SettingsHeaderText>{description}</SettingsHeaderText>
       </SettingsHeaderContent>
-      {onInvite && (
-        <SettingsHeaderInviteButton onClick={onInvite}>
-          Invite
-          <SettingsHeaderInviteButtonIcon>
-            <PlusIcon fill="#FFFFFF" />
-          </SettingsHeaderInviteButtonIcon>
-        </SettingsHeaderInviteButton>
-      )}
+      <Grid display="flex" flexDirection="column" alignItems="flex-end" gap="17px">
+        {!!onInvite && <SettingsHeaderInviteButton onClick={onInvite}>Invite</SettingsHeaderInviteButton>}
+        {!!handleDownloadToCSV && (
+          <SettingsHeaderActionText onClick={handleDownloadToCSV}>Download to CSV</SettingsHeaderActionText>
+        )}
+      </Grid>
     </SettingsHeaderBlock>
   );
 }

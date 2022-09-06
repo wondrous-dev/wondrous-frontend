@@ -68,7 +68,7 @@ function Login({ csrfToken }) {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
             if (user) {
               if (user?.username) {
-                router.push('/dashboard', undefined, {
+                router.push('/mission-control', undefined, {
                   shallow: true,
                 });
               } else {
