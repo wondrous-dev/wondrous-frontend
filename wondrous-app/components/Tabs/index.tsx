@@ -21,7 +21,7 @@ const Tabs = ({ tabs, ...props }: Props) => (
 );
 
 Tabs.defaultProps = {
-  withMargin: false,
+  withMargin: true,
 };
 
 export default Tabs;
