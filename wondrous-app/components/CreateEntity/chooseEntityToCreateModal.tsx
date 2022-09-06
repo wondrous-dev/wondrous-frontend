@@ -120,7 +120,7 @@ function ChooseEntityToCreateModal(props) {
               <CreateLayoutsModalItemTitle>{label}</CreateLayoutsModalItemTitle>
             </CreateLayoutsModalItemTitleBlock>
             <IconButton>
-              {showBadge ? <CreateLayoutsModalSubtitle>{`shift+${hotkey}`}</CreateLayoutsModalSubtitle> : null}
+              {showBadge ? <CreateLayoutsModalSubtitle>{hotkey}</CreateLayoutsModalSubtitle> : null}
               <RightArrowIcon />
             </IconButton>
           </CreateLayoutsModalItem>

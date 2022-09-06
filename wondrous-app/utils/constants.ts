@@ -521,6 +521,10 @@ export const APPLICATION_POLICY = {
     title: 'Everyone needs to apply except members with role',
     value: 'roles_can_can_claim',
   },
+  ROLES_CAN_CAN_APPLY: {
+    title: 'Only members with role can apply',
+    value: 'roles_can_can_apply',
+  },
 };
 
 export const APPLICATION_POLICY_LABELS_MAP = {
@@ -528,6 +532,7 @@ export const APPLICATION_POLICY_LABELS_MAP = {
   only_org_members_can_claim: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_CLAIM,
   only_org_members_can_apply: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_APPLY,
   roles_can_can_claim: APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM,
+  roles_can_can_apply: APPLICATION_POLICY.ROLES_CAN_CAN_APPLY,
 };
 
 export const TASK_APPLICATION_STATUS = {

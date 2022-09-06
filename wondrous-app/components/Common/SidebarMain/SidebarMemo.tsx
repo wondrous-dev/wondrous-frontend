@@ -131,12 +131,17 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
             </LogoButton>
           </SidebarTooltip>
           <ButtonWrapper>
-            <Badge badgeContent={HOTKEYS.OPEN_PROFILE} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
-              <SidebarTooltip title="Profile">
-                <ButtonIcon
-                  id="tour-user-profile"
-                  onClick={handleProfileClick}
-                  isActive={isPageActive(PAGE_PATHNAME.profile_username_about)}
+            <SidebarTooltip title="Profile">
+              <ButtonIcon
+                id="tour-user-profile"
+                onClick={handleProfileClick}
+                isActive={isPageActive(PAGE_PATHNAME.profile_username_about)}
+              >
+                <Badge
+                  badgeContent={HOTKEYS.OPEN_PROFILE}
+                  color="primary"
+                  invisible={!showBadge}
+                  style={{ zIndex: 999 }}
                 >
                   <SafeImage
                     src={user?.thumbnailPicture || user?.profilePicture}
@@ -147,9 +152,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                     useNextImage
                     style={profilePictureStyle}
                   />
-                </ButtonIcon>
-              </SidebarTooltip>
-            </Badge>
+                </Badge>
+              </ButtonIcon>
+            </SidebarTooltip>
 
             <MissionControlIconButton isActive={isPageActive(PAGE_PATHNAME.mission_control)} />
 
