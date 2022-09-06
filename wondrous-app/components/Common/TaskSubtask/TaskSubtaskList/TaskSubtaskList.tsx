@@ -4,6 +4,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
 import { TASK_ICONS_LABELS } from 'components/Common/TaskSubtask/TaskSubtasks';
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { Claim } from 'components/Icons/claimTask';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
@@ -12,7 +13,7 @@ import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { delQuery } from 'utils';
-import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
+import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE, ENTITIES_TYPES } from 'utils/constants';
 import {
   TaskSubtaskClaimButtonWrapper,
   TaskSubtaskCoverImageSafeImage,
@@ -36,7 +37,7 @@ import {
 
 const LIMIT = 5;
 
-const useGetSubtasksForTask = ({ taskId, status }) => {
+export const useGetSubtasksForTask = ({ taskId, status }) => {
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(true);
   const { data, fetchMore, loading } = useQuery(GET_SUBTASKS_FOR_TASK, {
@@ -173,40 +174,77 @@ function TaskSubtaskEmptyState() {
   );
 }
 
+export const TaskSubtaskItem = (props) => {
+  const { assignee, privacyLevel, rewards, status, title, id, type, media, taskApplicationPermissions, userId } = props;
+  const [openModal, setOpenModal] = useState(false);
+  return (
+    <div>
+      <TaskViewModal
+        disableEnforceFocus
+        open={openModal}
+        shouldFocusAfterRender={false}
+        handleClose={() => setOpenModal(false)}
+        taskId={id}
+        isTaskProposal={type === ENTITIES_TYPES.PROPOSAL}
+        key={id}
+      />
+      <TaskSubtaskItemWrapper onClick={() => setOpenModal(true)}>
+        <TaskSubtaskItemHeader>
+          <TaskSubtaskItemContent>
+            <TaskSubtaskClaimButton
+              id={id}
+              userId={userId}
+              assignee={assignee}
+              taskApplicationPermissions={taskApplicationPermissions}
+              status={status}
+            />
+            <TaskSubtaskUserImage assignee={assignee} />
+            <TaskSubTaskPrivacyIconWrapper privacyLevel={privacyLevel} />
+          </TaskSubtaskItemContent>
+          <TaskSubtaskItemContent>
+            <TaskSubtaskReward rewards={rewards} />
+            <TaskSubtaskStatusIcon status={status} />
+          </TaskSubtaskItemContent>
+        </TaskSubtaskItemHeader>
+        <TaskSubtaskTitle>{title}</TaskSubtaskTitle>
+        <TaskSubtaskCoverImage media={media} />
+      </TaskSubtaskItemWrapper>
+    </div>
+  );
+};
+
 export function TaskSubtaskList({ taskId, status }) {
   const { hasMore, data, loading, ref } = useGetSubtasksForTask({ taskId, status });
-  const router = useRouter();
   const loggedInUser = useMe();
   const userId = loggedInUser?.id;
   if (isEmpty(data)) return <TaskSubtaskEmptyState />;
   return (
     <TaskSubtaskWrapper>
       {data.map((subtask) => {
-        const { assignee, privacyLevel, rewards, status, title, id, type, media, taskApplicationPermissions } = subtask;
+        const {
+          assignee,
+          privacyLevel,
+          rewards,
+          status: subTaskStatus,
+          title,
+          id,
+          type,
+          media,
+          taskApplicationPermissions,
+        } = subtask;
         return (
-          <TaskSubtaskSmartLink key={id} router={router} type={type} id={id}>
-            <TaskSubtaskItemWrapper>
-              <TaskSubtaskItemHeader>
-                <TaskSubtaskItemContent>
-                  <TaskSubtaskClaimButton
-                    id={id}
-                    userId={userId}
-                    assignee={assignee}
-                    taskApplicationPermissions={taskApplicationPermissions}
-                    status={status}
-                  />
-                  <TaskSubtaskUserImage assignee={assignee} />
-                  <TaskSubTaskPrivacyIconWrapper privacyLevel={privacyLevel} />
-                </TaskSubtaskItemContent>
-                <TaskSubtaskItemContent>
-                  <TaskSubtaskReward rewards={rewards} />
-                  <TaskSubtaskStatusIcon status={status} />
-                </TaskSubtaskItemContent>
-              </TaskSubtaskItemHeader>
-              <TaskSubtaskTitle>{title}</TaskSubtaskTitle>
-              <TaskSubtaskCoverImage media={media} />
-            </TaskSubtaskItemWrapper>
-          </TaskSubtaskSmartLink>
+          <TaskSubtaskItem
+            userId={userId}
+            assignee={assignee}
+            privacyLevel={privacyLevel}
+            rewards={rewards}
+            status={subTaskStatus}
+            title={title}
+            id={id}
+            type={type}
+            media={media}
+            taskApplicationPermissions={taskApplicationPermissions}
+          />
         );
       })}
       <TaskSubTaskHasMore hasMore={hasMore} loading={loading} innerRef={ref} />
