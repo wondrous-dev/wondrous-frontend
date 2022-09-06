@@ -1,78 +1,9 @@
 import { PopperUnstyled } from '@mui/base';
-import {
-  Autocomplete,
-  Box,
-  ButtonBase,
-  FormHelperText,
-  InputBase,
-  InputLabel,
-  List,
-  ListItem,
-  Typography,
-} from '@mui/material';
-import { Button } from 'components/Common/button';
+import { Box, ButtonBase, InputBase, List, ListItem, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { BaseCard } from 'components/Common/card';
-
-export const TokenGatingWrapper = styled.div`
-  width: 100%;
-  height: 100%;
-`;
-
-export const TokenGatingHeader = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 28px;
-    font-weight: 500;
-    color: ${palette.white};
-  }
-`;
-
-export const TokenGatingSubHeader = styled(InputLabel)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 20px;
-    font-weight: 500;
-    color: ${palette.blue20};
-    margin-left: 8px;
-    margin-top: 28px;
-  }
-`;
-
-// export const TokenGatingNameHeader = styled(Typography)`
-//   && {
-//     color: ${palette.white};
-//     font-family: 'Space Grotesk';
-//     font-weight: 500;
-//     font-size: 15px;
-//   }
-// `;
-
-export const TokenGatingDescription = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-size: 14px;
-    font-weight: 400;
-    color: ${palette.grey250};
-    margin-top: 12px;
-  }
-`;
-
-// export const TokenGatingElementWrapper = styled(Box)`
-//   && {
-//     background: ${palette.black90};
-//     border-radius: 6px;
-//     padding: 24px;
-//     margin-top: 24px;
-//     :hover {
-//       background: #474747 !important;
-//       cursor: pointer;
-//     }
-//   }
-// `;
 
 export const TokenGatingFormHeaderSecondary = styled(Typography)`
   && {
@@ -146,14 +77,6 @@ export const TokenGatingTextfieldButtonDown = styled(TokenGatingTextfieldButton)
   }
 `;
 
-export const TaskTemplateActionContainer = styled.div`
-  padding: 24px;
-  background: #141414;
-  width: 100%;
-  justify-content: flex-end;
-  display: flex;
-`;
-
 export const TokenGatingAutocompleteTextfieldDownIcon = styled(ArrowDropDownIcon)``;
 
 export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
@@ -217,81 +140,3 @@ export const TokenGatingInputImage = styled((props) => (
     }}
   />
 ))``;
-
-export const TokenGatingDisabledButton = styled(Button)`
-  && {
-    width: 100%;
-    margin-top: 28px;
-    background: ${palette.grey100};
-    button {
-      background: ${palette.background.default};
-      font-family: 'Space Grotesk';
-      font-size: 16px;
-      font-weight: 500;
-    }
-  }
-`;
-
-export const NewTokenGatingButton = styled(Button)`
-  && {
-    width: 200px;
-    margin-top: 20px;
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-    button {
-      background: ${palette.background.default};
-      font-family: 'Space Grotesk';
-      font-size: 16px;
-      font-weight: 500;
-    }
-  }
-`;
-
-export const TableValueText = styled(Typography)`
-  && {
-    color: #c4c4c4;
-    font-size: 14px;
-    font-height: 22px;
-  }
-`;
-//
-// export const TokenGateActionMenuContainer = styled.div`
-//   display: flex;
-//   flex-direction: row;
-//   flex-grow: 1;
-//   justify-content: flex-end;
-//   height: 24px;
-// `;
-
-// export const TokenGateListDiv = styled.div`
-//   align-items: center;
-//   display: flex;
-//   margin-top: 16px;
-// `;
-//
-// export const TokenGateListItemDiv = styled.div`
-//   align-items: center;
-//   display: flex;
-//   margin-right: 16px;
-// `;
-
-// export const TokenGatingHeaderLabel = styled(TokenGatingNameHeader)`
-//   && {
-//     color: ${palette.grey250};
-//     margin-right: 8px;
-//   }
-// `;
-
-// export function TokenLogoDisplay(props) {
-//   return (
-//     <SafeImage
-//       useNextImage={false}
-//       src={props?.src}
-//       style={{
-//         width: '29px',
-//         height: '28px',
-//         borderRadius: '4px',
-//         marginRight: '5px',
-//       }}
-//     />
-//   );
-// }
