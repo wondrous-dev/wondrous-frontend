@@ -86,7 +86,7 @@ function TokenGatingSettings({ orgId }: Props) {
               background: palette.black90,
             }}
             p="24px"
-            mt="24px"
+            my="24px"
             borderRadius="6px"
           >
             <Typography variant="h2" fontSize="20px" color={palette.blue20}>
