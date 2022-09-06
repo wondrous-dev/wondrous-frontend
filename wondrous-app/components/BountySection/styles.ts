@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import { ShowMoreButton } from 'components/ListView/styles';
 import { Typography } from '@mui/material';
 import { Masonry } from '@mui/lab';
 
@@ -65,10 +64,8 @@ export const ShowMoreButtonWrapper = styled.div`
   border-radius: 6px;
   border-top: 0.5px dashed #2b2b2b;
   padding: 10px;
-  ${ShowMoreButton} {
-    margin-top: 0px;
-    width: fit-content;
-  }
+  margin-top: 0px;
+  width: fit-content;
 `;
 
 export const StyledGridContainer = styled(Masonry)``;

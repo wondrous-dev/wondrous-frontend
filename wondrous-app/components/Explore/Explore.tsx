@@ -133,13 +133,17 @@ function ExploreComponent() {
         </BackgroundTextWrapper>
       </BackgroundContainer>
       <Box sx={{ display: 'flex', width: '100%' }}>
-        <ExploreFilters open={openFilters} setOpen={setOpenFilters} updateFilter={filterBounties} />
+        {activeTab === TABS_LABELS.BOUNTY && (
+          <ExploreFilters open={openFilters} setOpen={setOpenFilters} updateFilter={filterBounties} />
+        )}
         <ExplorePageContentWrapper>
           <TabsWrapper>
-            <MuiButton sx={styles.filterButton} onClick={() => setOpenFilters(!openFilters)}>
-              Add filters
-            </MuiButton>
-            <Box sx={{ mr: 'auto', display: 'flex', gap: 3 }}>
+            {activeTab === TABS_LABELS.BOUNTY && (
+              <MuiButton sx={styles.filterButton} onClick={() => setOpenFilters(!openFilters)}>
+                Add filters
+              </MuiButton>
+            )}
+            <Box sx={{ mr: 'auto', ml: activeTab === TABS_LABELS.BOUNTY ? 'none' : 'auto', display: 'flex', gap: 3 }}>
               {tabs.map((tab, idx) => (
                 <Tab
                   hoverColor={tab.hoverColor}

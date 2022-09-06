@@ -659,7 +659,7 @@ export const ROLE_COLORS_AND_EMOJIS = {
     color: palette.highlightBlue,
     emoji: '🐦',
   },
-}
+};
 
 export const FEATURED_LIST = [
   {

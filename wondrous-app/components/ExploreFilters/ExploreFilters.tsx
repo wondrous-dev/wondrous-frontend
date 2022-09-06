@@ -1,6 +1,4 @@
 import { useState } from 'react';
-import uniqBy from 'lodash/uniqBy';
-import { subDays } from 'date-fns';
 
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -15,108 +13,87 @@ import Switch from 'components/Common/Switch';
 
 import styles from './styles';
 
-const workCategories = [
+const WORK_CATEGORIES = [
   {
-    label: '💻 UI Design',
-    value: 'uiDesign',
+    label: '💻 UI/UX Design',
+    value: 'ui_ux_designer',
   },
   {
-    label: '‍🎨 Illustration',
-    value: 'illustration',
+    label: '‍🎨 Graphic Design',
+    value: 'graphic_design',
   },
   {
-    label: '🚀 Startups',
-    value: 'startups',
+    label: '👥 Social Media',
+    value: 'social_media',
   },
   {
-    label: '🗣 Translations',
-    value: 'translations',
+    label: '✍️ Writing',
+    value: 'content_creation',
   },
   {
     label: '💀 Memes',
     value: 'memes',
   },
   {
-    label: '🔎 SEO',
-    value: 'seo',
+    label: '🖼 NFT',
+    value: 'nft',
   },
   {
-    label: '✍️ Writing',
-    value: 'writing',
+    label: '🪐 Governance',
+    value: 'governance',
   },
   {
-    label: '⚙ Product',
-    value: 'product',
+    label: '🫂 DEFI',
+    value: 'defi',
+  },
+  {
+    label: '⚙ Engineering',
+    value: 'engineering',
   },
 ];
 
-const ageCategories = [
+const AGE_CATEGORIES = [
   {
-    label: 'Today',
-    value: new Date(),
+    label: 'Overdue',
+    value: 'overdue',
   },
   {
-    label: 'This week',
-    value: subDays(new Date(), 7),
+    label: 'Due this week',
+    value: 'due_this_week',
   },
   {
-    label: 'Last week',
-    value: subDays(new Date(), 14),
-  },
-  {
-    label: 'This month',
-    value: subDays(new Date(), 30),
+    label: 'Due next week',
+    value: 'due_next_week',
   },
 ];
-
-const UNIQUE_KEY = 'value';
 
 const ExploreFilters = ({ open, setOpen, updateFilter }) => {
-  const [workCategoriesSelected, setWorkCategoriesSelected] = useState([]);
-  const [ageCategoriesSelected, setAgeCategoriesSelected] = useState([]);
+  const [workCategorySelected, setWorkCategorySelected] = useState('');
+  const [ageCategorySelected, setAgeCategorySelected] = useState('');
   const [isApplications, setIsApplications] = useState(false);
 
   const handleWorkTagClick = (item) => {
-    // TODO: to know what category is handle by back since none of this ones are valid. Ask how a multiple string posibility query is builded on apollo.
-    if (workCategoriesSelected.find((selCategory) => selCategory.value === item.value)) {
-      const updateCategoriesUnselected = workCategoriesSelected.filter(
-        (selCategory) => selCategory.value !== item.value
-      );
+    if (workCategorySelected === item.value) {
       updateFilter({
-        category:
-          updateCategoriesUnselected.length === 0
-            ? null
-            : updateCategoriesUnselected.map((workCategory) => workCategory.value),
+        category: null,
       });
-      setWorkCategoriesSelected(updateCategoriesUnselected);
+      setWorkCategorySelected('');
       return;
     }
-    const updatedCategoriesSelected = uniqBy([...workCategoriesSelected, item], UNIQUE_KEY);
-    updateFilter({ category: updatedCategoriesSelected.map((workCategory) => workCategory.value) });
-    setWorkCategoriesSelected(updatedCategoriesSelected);
+    updateFilter({ category: item.value });
+    setWorkCategorySelected(item.value);
   };
 
   const handleAgeTagClick = (item) => {
-    if (ageCategoriesSelected.find((selCategory) => selCategory.value === item.value)) {
-      const updateAgeCategoriesUnselected = ageCategoriesSelected.filter(
-        (selCategory) => selCategory.value !== item.value
-      );
-      const oldestDate = updateAgeCategoriesUnselected.sort(
-        (dateA, dateB) => Number(dateA.value) - Number(dateB.value)
-      )[0]?.value;
+    if (ageCategorySelected === item.value) {
       updateFilter({
-        date: oldestDate || null,
+        date: null,
       });
-      setAgeCategoriesSelected(updateAgeCategoriesUnselected);
+      setAgeCategorySelected('');
       return;
     }
-    const updateAgeCategoriesSelected = uniqBy([...ageCategoriesSelected, item], UNIQUE_KEY);
-    const oldestDate = updateAgeCategoriesSelected.sort((dateA, dateB) => Number(dateA.value) - Number(dateB.value))[0]
-      ?.value;
-    updateFilter({
-      date: oldestDate || null,
-    });
-    setAgeCategoriesSelected(updateAgeCategoriesSelected);
+    updateFilter({ date: item.value });
+    setAgeCategorySelected(item.value);
   };
 
   return (
@@ -146,13 +123,12 @@ const ExploreFilters = ({ open, setOpen, updateFilter }) => {
         <Box>
           <Typography sx={styles.sectionTitle}>Work Type</Typography>
           <Box sx={styles.categoryContainer}>
-            {workCategories.map((workCat) => (
+            {WORK_CATEGORIES.map((workCat) => (
               <Box
                 key={workCat.value}
                 sx={{
                   ...styles.categoryTag,
-                  ...(workCategoriesSelected.find((selCategory) => selCategory.value === workCat.value) &&
-                    styles.activeTag),
+                  ...(workCategorySelected === workCat.value && styles.activeTag),
                 }}
                 onClick={() => handleWorkTagClick(workCat)}
               >
@@ -185,13 +161,12 @@ const ExploreFilters = ({ open, setOpen, updateFilter }) => {
         <Box>
           <Typography sx={styles.sectionTitle}>Age of task</Typography>
           <Box sx={styles.categoryContainer}>
-            {ageCategories.map((ageCat) => (
+            {AGE_CATEGORIES.map((ageCat) => (
               <Box
                 key={ageCat.value.toString()}
                 sx={{
                   ...styles.categoryTag,
-                  ...(ageCategoriesSelected.find((selCategory) => selCategory.value === ageCat.value) &&
-                    styles.activeTag),
+                  ...(ageCategorySelected === ageCat.value && styles.activeTag),
                 }}
                 onClick={() => handleAgeTagClick(ageCat)}
               >

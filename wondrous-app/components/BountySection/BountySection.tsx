@@ -5,15 +5,7 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
-import {
-  BountySectionHeader,
-  SectionSubheader,
-  SectionWrapper,
-  ShowMoreButtonWrapper,
-  Masonry,
-} from './styles';
-
-let windowOffset = 0;
+import { BountySectionHeader, SectionSubheader, SectionWrapper, ShowMoreButtonWrapper, StyledGridContainer } from './styles';
 
 const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) => {
   const [openModal, setOpenModal] = useState(false);
@@ -23,8 +15,7 @@ const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore 
   const handleCardClick = (bounty) => {
     const newUrl = `${delQuery(router.asPath)}?task=${bounty?.id}`;
     location.push(newUrl);
-    windowOffset = window.scrollY;
-    document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
+    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
   };
 
   useEffect(() => {
@@ -59,7 +50,7 @@ const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore 
         taskId={location?.params?.task?.toString()}
       />
 
-      <BountyBoard Container={Masonry} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
+      <BountyBoard Container={StyledGridContainer} tasks={bounties} displayOrg handleCardClick={handleCardClick} />
       {hasMore && !!bounties?.length && (
         <ShowMoreButtonWrapper>
           <ShowMoreButton type="button" onClick={() => fetchMore()}>
