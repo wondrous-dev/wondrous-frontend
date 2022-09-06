@@ -35,9 +35,9 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
+import SuccessRoleModal from 'components/Common/RoleSuccessModal/ClaimedRoleModal';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { MembershipRequestModal } from './RequestModal';
+import MembershipRequestModal from './MembershipRequestModal';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
@@ -106,6 +106,9 @@ function Wrapper(props) {
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [openExploreOtherRoles, setOpenExploreOtherRoles] = useState(false);
+  const [openClaimedRole, setOpenClaimedRole] = useState(false);
+  const [claimedRole, setClaimedRole] = useState(null);
+  const [roleRequest, setRoleRequest] = useState(null);
 
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
   const [claimableRoleModalOpen, setClaimableRoleModalOpen] = useState(false);
@@ -132,6 +135,15 @@ function Wrapper(props) {
   };
   const handleOpenJoinRequestModal = (open) => {
     setOpenJoinRequestModal(open);
+  };
+  const handleOpenClaimedRole = (open) => {
+    setOpenClaimedRole(open);
+  };
+  const handleSetClaimedRole = (role) => {
+    setClaimedRole(role);
+  };
+  const handleSetRequest = (request) => {
+    setRoleRequest(request);
   };
 
   const handleJoinOrgButtonClick = async () => {
@@ -303,7 +315,11 @@ function Wrapper(props) {
         onClose={() => setOpenJoinRequestModal(false)}
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
-        orgRole={orgRoleName}
+        handleOpenJoinRequestModal={handleOpenJoinRequestModal}
+        handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
+        handleSetRequest={handleSetRequest}
+        handleOpenClaimedRole={handleOpenClaimedRole}
+        orgRole={claimedRole}
       />
       <CurrentRoleModal
         orgId={orgBoard?.orgId}
@@ -325,6 +341,20 @@ function Wrapper(props) {
         handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
         handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
         handleOpenJoinRequestModal={handleOpenJoinRequestModal}
+        handleOpenClaimedRole={handleOpenClaimedRole}
+        handleSetClaimedRole={handleSetClaimedRole}
+        claimableDiscordRole={claimableDiscordRole}
+        tokenGatedRoles={tokenGatedRoles}
+      />
+      <SuccessRoleModal
+        open={openClaimedRole}
+        role={claimedRole}
+        request={roleRequest}
+        onClose={() => {
+          handleSetClaimedRole(null);
+          handleSetRequest(null);
+          setOpenClaimedRole(false);
+        }}
       />
       <ChooseEntityToCreate />
       <TokenGatedAndClaimableRoleModal

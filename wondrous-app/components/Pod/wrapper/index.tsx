@@ -17,7 +17,7 @@ import {
   GET_ORG_BY_ID,
   GET_TASKS_PER_TYPE_FOR_POD,
 } from 'graphql/queries';
-import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
+import MembershipRequestModal from 'components/organization/wrapper/MembershipRequestModal';
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';

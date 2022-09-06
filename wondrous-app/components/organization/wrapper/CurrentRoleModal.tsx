@@ -105,9 +105,6 @@ const CurrentRoleModal = (props) => {
   useEffect(() => {
     setLevelPicked(orgRole);
   }, [orgRole, roleCannotDo]);
-  console.log(PERMISSIONS.FULL_ACCESS.toUpperCase());
-
-  console.log(roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase()));
 
   return (
     <RequestModalContainer

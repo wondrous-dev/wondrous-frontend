@@ -1,47 +1,34 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
-import { ErrorText } from 'components/Common';
-import {
-  SelectMenuBoardTypeClickAway,
-  SelectMenuBoardTypeIcon,
-  SelectMenuBoardTypeItem,
-  SelectMenuBoardTypeWrapper,
-} from 'components/Common/SelectMenuBoardType/styles';
 import { ActionButton } from 'components/Common/Task/styles';
-import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
 import { GET_ORG_ROLES } from 'graphql/queries';
 import { Dialog } from '@mui/material';
+import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
+import apollo from 'services/apollo';
+import { useRouter } from 'next/router';
+import { StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
 import {
   RequestModalBackButton,
   RequestModalBox,
-  RequestModalButtonsContainer,
-  RequestModalClaimButton,
+  RequestModalButtonBackground,
   RequestModalCloseIcon,
-  RequestModalContainer,
-  RequestModalCustomPopper,
   RequestModalExploreRolesAbilityColumns,
+  RequestModalExploreRolesAbilityColumnsTop,
   RequestModalForwardButton,
   RequestModalHorizontalAlign,
-  RequestModalLevelContainer,
   RequestModalRolesAbilityCheckIcon,
   RequestModalRolesAbilityCloseIcon,
-  RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
   RequestModalRolesAbilityRows,
   RequestModalRolesAbilityText,
-  RequestModalRolesSubtitle,
-  RequestModalTextarea,
-  RequestModalTextareaWrapper,
+  RequestModalRolesCircle,
+  RequestModalRolesCircleContainer,
   RequestModalTitle,
   RequestModalTitleBar,
-  RequestModalTypeText,
 } from './styles';
-import { StyledCancelButton, StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
 
 const ExploreOtherRolesModal = (props) => {
-  const [showPopper, setShowPopper] = useState(false);
   const {
     open,
     onClose,
@@ -51,16 +38,13 @@ const ExploreOtherRolesModal = (props) => {
     orgRole,
     handleOpenCurrentRoleModal,
     handleOpenExploreOtherRoles,
+    handleOpenJoinRequestModal,
+    handleOpenClaimedRole,
+    handleSetClaimedRole,
+    tokenGatedRoles,
+    claimableDiscordRole,
   } = props;
   const [carouselIndex, setCarouselIndex] = useState(0);
-  const [levelPicked, setLevelPicked] = useState('contributor');
-  const ROLES_COLORS_AND_EMOJIS = {
-    owner: { emoji: '🔑', color: '#7ECC49' },
-    contributor: { emoji: '✨', color: '#FF9933' },
-    core_team: { emoji: '🔮', color: '#EB96EB' },
-  };
-
-  const [characterCount, setCharacterCount] = useState(0);
 
   const useGetOrgRoles = (org) => {
     const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
@@ -78,43 +62,54 @@ const ExploreOtherRolesModal = (props) => {
     return data?.getOrgRoles;
   };
 
+  const handleClaimClick = async (role) => {
+    const confirmed = confirm(`Are you sure you want to claim ${role.name}`);
+    if (!confirmed) {
+      return;
+    }
+    if (role.__typename === 'OrgRole') {
+      try {
+        await apollo.mutate({
+          mutation: CLAIM_ORG_ROLE_BY_DISCORD_ROLE,
+          variables: {
+            orgRoleId: role?.id,
+          },
+        });
+      } catch (e) {
+        console.error(e);
+      }
+    }
+  };
+
   const orgRoles = useGetOrgRoles(orgId);
-  console.log(orgRoles);
 
-  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === levelPicked) : null;
-
-  const handleChange = (e) => {
-    if (error) {
-      setError(false);
-    }
-    if (e.target.value.length <= 200) {
-      setRequestMessage(e.target.value);
-      setCharacterCount(e.target.value.length);
+  const getButtonAction = (role) => {
+    handleSetClaimedRole(role);
+    if (
+      claimableDiscordRole?.find((discordRole) => discordRole.role_id === role?.id) ||
+      tokenGatedRoles?.find((tokenRole) => tokenRole.id === role?.id)
+    ) {
+      handleClaimClick(role);
+      handleOpenExploreOtherRoles(false);
+      handleOpenClaimedRole(true);
+    } else {
+      handleOpenExploreOtherRoles(false);
+      handleOpenJoinRequestModal(true);
     }
   };
-  const handleOnClose = () => {
-    setRequestMessage('');
-    setCharacterCount(0);
-    setError(false);
-    onClose();
-  };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openLevel = Boolean(anchorEl);
-  const handleOnClickAway = () => setAnchorEl(null);
-  const board = useOrgBoard();
-  const [requestMessage, setRequestMessage] = useState('');
-  const [error, setError] = useState(null);
 
-  const getRolePermissions = (role) => {
-    const rolePermissions = orgRoles?.[role]?.permissions;
-    return rolePermissions;
+  const getButtonTitle = (role) => {
+    if (claimableDiscordRole?.find((discordRole) => discordRole.role_id === role?.id)) {
+      return 'Claim role';
+    }
+    if (orgRole === role?.name) {
+      return 'Current role';
+    }
+    return 'Request role';
   };
 
   const getThreeRolesForCarousel = () => orgRoles?.slice(carouselIndex, carouselIndex + 3);
 
-  useEffect(() => {
-    setLevelPicked(orgRole);
-  }, [orgRole]);
   return (
     <Dialog
       style={{ width: '100%', display: 'inline-block', flexDirection: 'column', borderRadius: '6px' }}
@@ -161,16 +156,19 @@ const ExploreOtherRolesModal = (props) => {
         </RequestModalTitleBar>
 
         <RequestModalRolesAbilityContainer style={{ alignItems: 'center' }}>
-          <RequestModalBackButton
-            color="#FFFFFF"
-            onClick={() => {
-              if (carouselIndex === 0) {
-                setCarouselIndex(orgRoles.length - 3);
-              } else {
-                setCarouselIndex(carouselIndex - 1);
-              }
-            }}
-          />
+          {orgRoles?.length >= 3 ? (
+            <RequestModalBackButton
+              color="#FFFFFF"
+              onClick={() => {
+                if (carouselIndex === 0) {
+                  setCarouselIndex(orgRoles.length - 3);
+                } else {
+                  setCarouselIndex(carouselIndex - 1);
+                }
+              }}
+            />
+          ) : null}
+
           {getThreeRolesForCarousel()?.map((role) => {
             const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
             const roleCannotDo = Object.keys(PERMISSIONS).filter(
@@ -178,101 +176,64 @@ const ExploreOtherRolesModal = (props) => {
             );
             return (
               <RequestModalExploreRolesAbilityColumns key={role.name}>
-                <RequestModalTitle style={{ marginBottom: '12px' }}>{role.name}</RequestModalTitle>
-                {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                  ? Object.keys(PERMISSIONS)?.map((role) => (
-                      <RequestModalRolesAbilityRows key={role}>
-                        <RequestModalRolesAbilityCheckIcon />
-                        <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                      </RequestModalRolesAbilityRows>
-                    ))
-                  : roleCanDo?.map((role) => (
-                      <RequestModalRolesAbilityRows key={role}>
-                        <RequestModalRolesAbilityCheckIcon />
-                        <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                      </RequestModalRolesAbilityRows>
-                    ))}
-                {roleCannotDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                  ? roleCannotDo?.map((role) => (
-                      <RequestModalRolesAbilityRows key={role}>
-                        <RequestModalRolesAbilityCloseIcon />
-                        <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                      </RequestModalRolesAbilityRows>
-                    ))
-                  : null}
-                <ActionButton
-                  disabled={orgRole === role.name}
-                  onClick={() => {
-                    handleOpenCurrentRoleModal(false);
-                    handleOpenExploreOtherRoles(true);
-                  }}
-                >
-                  {orgRole === role.name ? 'Current role' : 'Claimable Task'}
-                </ActionButton>
+                <RequestModalExploreRolesAbilityColumnsTop>
+                  <RequestModalTitle style={{ marginBottom: '12px' }}>{role.name}</RequestModalTitle>
+                  {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+                    ? Object.keys(PERMISSIONS)?.map((role) => (
+                        <RequestModalRolesAbilityRows key={role}>
+                          <RequestModalRolesAbilityCheckIcon />
+                          <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
+                        </RequestModalRolesAbilityRows>
+                      ))
+                    : roleCanDo?.map((role) => (
+                        <RequestModalRolesAbilityRows key={role}>
+                          <RequestModalRolesAbilityCheckIcon />
+                          <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
+                        </RequestModalRolesAbilityRows>
+                      ))}
+                  {roleCannotDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+                    ? roleCannotDo?.map((role) => (
+                        <RequestModalRolesAbilityRows key={role}>
+                          <RequestModalRolesAbilityCloseIcon />
+                          <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
+                        </RequestModalRolesAbilityRows>
+                      ))
+                    : null}
+                </RequestModalExploreRolesAbilityColumnsTop>
+                <RequestModalButtonBackground>
+                  <ActionButton
+                    disabled={orgRole === role.name}
+                    onClick={() => {
+                      getButtonAction(role);
+                    }}
+                  >
+                    {getButtonTitle(role)}
+                  </ActionButton>
+                </RequestModalButtonBackground>
               </RequestModalExploreRolesAbilityColumns>
             );
           })}
-          <RequestModalForwardButton
-            color="#FFFFFF"
-            onClick={() => {
-              if (carouselIndex + 3 < orgRoles.length) {
-                setCarouselIndex(carouselIndex + 1);
-              } else {
-                setCarouselIndex(0);
-              }
-            }}
-          />
+          {orgRoles?.length >= 3 ? (
+            <RequestModalForwardButton
+              color="#FFFFFF"
+              onClick={() => {
+                if (carouselIndex + 3 < orgRoles.length) {
+                  setCarouselIndex(carouselIndex + 1);
+                } else {
+                  setCarouselIndex(0);
+                }
+              }}
+            />
+          ) : null}
         </RequestModalRolesAbilityContainer>
+        <RequestModalRolesCircleContainer>
+          {orgRoles?.map((role, index) => (
+            <RequestModalRolesCircle active={index <= carouselIndex + 2 && index >= carouselIndex} key={role.name} />
+          ))}
+        </RequestModalRolesCircleContainer>
       </RequestModalBox>
-
-      <RequestModalButtonsContainer
-        style={{
-          marginRight: 0,
-        }}
-      >
-        <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-        <ActionButton
-          style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
-          onClick={() => {
-            handleOpenCurrentRoleModal(false);
-            handleOpenExploreOtherRoles(true);
-          }}
-        >
-          Explore other roles
-        </ActionButton>
-      </RequestModalButtonsContainer>
     </Dialog>
   );
 };
 
 export default ExploreOtherRolesModal;
-
-{
-  /* <RequestModalRolesAbilityColumns>
-<RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-{roleCanDo?.map((role) => (
-  <RequestModalRolesAbilityRows key={role}>
-    <RequestModalRolesAbilityCheckIcon />
-    <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-  </RequestModalRolesAbilityRows>
-))}
-</RequestModalRolesAbilityColumns>
-<RequestModalRolesAbilityColumns>
-<RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-{roleCanDo?.map((role) => (
-  <RequestModalRolesAbilityRows key={role}>
-    <RequestModalRolesAbilityCheckIcon />
-    <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-  </RequestModalRolesAbilityRows>
-))}
-</RequestModalRolesAbilityColumns>
-<RequestModalRolesAbilityColumns>
-<RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-{roleCannotDo?.map((role) => (
-  <RequestModalRolesAbilityRows key={role}>
-    <RequestModalRolesAbilityCloseIcon />
-    <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-  </RequestModalRolesAbilityRows>
-))}
-</RequestModalRolesAbilityColumns> */
-}

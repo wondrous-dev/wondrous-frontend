@@ -11,8 +11,9 @@ import CheckMarkIcon from 'components/Icons/checkMark';
 import CloseModalIconRed from 'components/Icons/closeModalRed';
 import { BaseCard } from 'components/Common/card';
 import BackArrowIcon from 'components/Icons/backArrow';
-import { ChevronLeft, ChevronRight } from '@mui/icons-material';
+import { ChevronLeft, ChevronRight, Circle } from '@mui/icons-material';
 import { ActionButton } from 'components/Common/Task/styles';
+import SuccessRole from 'components/Icons/successRole';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
 
@@ -64,6 +65,36 @@ export const RequestModalRolesAbilityContainer = styled.div`
   padding-bottom: 6px;
 `;
 
+export const RequestModalRolesSuccessIcon = styled(SuccessRole)`
+  align-self: center;
+  width: 100%;
+  display: flex;
+`;
+
+export const RequestModalSuccessContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  align-self: center;
+  flex: 1;
+  margin-top: 18px;
+`;
+
+export const RequestModalSubtitle = styled(Typography)`
+  && {
+    font-weight: bold;
+    font-size: 24px;
+    line-height: 23px;
+    color: white;
+    background: -webkit-linear-gradient(180deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-right: 12px;
+  }
+`;
+
 export const RequestModalCustomPopper = styled.div`
   position: absolute;
   background-color: black;
@@ -100,9 +131,12 @@ export const RequestModalTypeText = styled(Typography)`
     font-weight: 400;
     padding: 4px 12px 4px 12px;
     color: white;
-    opacity: ${({ open }) => open && `40%`};
-    outline: 1px solid ${(props) => props.color};
     border-radius: 56px;
+    border: 1px solid #eb96eb;
+    align-self: center;
+    align-items: center;
+    width: 120px;
+    text-align: center;
   }
 `;
 
@@ -156,9 +190,47 @@ export const RequestModalExploreRolesAbilityColumns = styled.div`
   justify-content: flex-start;
   background-color: #2d2d2d;
   margin: 8px;
-  padding: 24px;
   border-radius: 8px;
 `;
+
+export const RequestModalShowRole = styled.div`
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  width: 100%;
+  justify-content: center;
+  align-items: center;
+  background-color: #2d2d2d;
+  margin: 8px;
+  margin-top: 18px;
+  border-radius: 8px;
+  padding: 12px;
+`;
+
+export const RequestModalExploreRolesAbilityColumnsTop = styled.div`
+  padding: 24px;
+`;
+
+export const RequestModalRolesCircleContainer = styled.div`
+  width: 100%;
+  justify-content: center;
+  display: flex;
+`;
+
+export const RequestModalRolesCircle = styled((props) => (
+  <div
+    style={{
+      width: '12px',
+      borderRadius: '2px',
+      border: '2px solid',
+      borderColor: props.active ? '#06FFA5' : '#474747',
+      backgroundColor: props.active ? '#00CD83' : null,
+      height: '12px',
+      marginLeft: '8px',
+      marginRight: '8px',
+    }}
+  />
+))``;
 
 export const RequestModalClaimButton = styled(ActionButton)`
   text-align: center;
@@ -172,6 +244,12 @@ export const RequestModalRolesAbilityRows = styled.div`
   align-items: center;
   justify-content: flex-start;
   margin-bottom: 12px;
+`;
+
+export const RequestModalButtonBackground = styled.div`
+  padding: 16px 24px 16px 24px;
+  background-color: black;
+  border-radius: 0px 0px 8px 8px;
 `;
 
 export const RequestModalRolesAbilityCheckIcon = styled(CheckMarkIcon)`

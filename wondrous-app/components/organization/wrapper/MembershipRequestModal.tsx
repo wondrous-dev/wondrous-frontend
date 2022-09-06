@@ -13,11 +13,13 @@ import { ActionButton } from 'components/Common/Task/styles';
 import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
 import { GET_ORG_ROLES } from 'graphql/queries';
 import {
+  RequestModalBackButton,
   RequestModalBox,
   RequestModalButtonsContainer,
   RequestModalCloseIcon,
   RequestModalContainer,
   RequestModalCustomPopper,
+  RequestModalHorizontalAlign,
   RequestModalLevelContainer,
   RequestModalRolesAbilityCheckIcon,
   RequestModalRolesAbilityCloseIcon,
@@ -34,18 +36,24 @@ import {
 } from './styles';
 import { StyledCancelButton, StyledWarningMessage } from '../../Common/ArchiveTaskModal/styles';
 
-export const MembershipRequestModal = (props) => {
-  const [showPopper, setShowPopper] = useState(false);
-  const { open, onClose, sendRequest, orgId, podId, setJoinRequestSent, notLinkedWalletError, linkedWallet, orgRole } =
-    props;
-
-  const [levelPicked, setLevelPicked] = useState('contributor');
-  const ROLES_COLORS_AND_EMOJIS = {
-    owner: { emoji: '🔑', color: '#7ECC49' },
-    contributor: { emoji: '✨', color: '#FF9933' },
-    core_team: { emoji: '🔮', color: '#EB96EB' },
-  };
-
+const MembershipRequestModal = (props) => {
+  const {
+    open,
+    onClose,
+    sendRequest,
+    orgId,
+    podId,
+    setJoinRequestSent,
+    notLinkedWalletError,
+    linkedWallet,
+    orgRole,
+    handleSetRequest,
+    handleOpenClaimedRole,
+    handleOpenJoinRequestModal,
+    handleOpenExploreOtherRoles,
+  } = props;
+  const [requestMessage, setRequestMessage] = useState('');
+  const [error, setError] = useState(null);
   const [characterCount, setCharacterCount] = useState(0);
 
   const useGetOrgRoles = (org) => {
@@ -66,7 +74,7 @@ export const MembershipRequestModal = (props) => {
 
   const orgRoles = useGetOrgRoles(orgId);
 
-  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === levelPicked) : null;
+  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === orgRole?.name) : null;
 
   const handleChange = (e) => {
     if (error) {
@@ -83,19 +91,11 @@ export const MembershipRequestModal = (props) => {
     setError(false);
     onClose();
   };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const openLevel = Boolean(anchorEl);
-  const handleOnClickAway = () => setAnchorEl(null);
-  const board = useOrgBoard();
-  const [requestMessage, setRequestMessage] = useState('');
-  const [error, setError] = useState(null);
+
   const rolePermissions = orgRoles?.[roleIndex]?.permissions;
   const roleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
   const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
 
-  useEffect(() => {
-    setLevelPicked(orgRole);
-  }, [orgRole]);
   return (
     <RequestModalContainer
       open={open}
@@ -118,8 +118,20 @@ export const MembershipRequestModal = (props) => {
             {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
           </StyledWarningMessage>
         )}
+
         <RequestModalTitleBar>
-          <RequestModalTitle> {orgId ? 'DAO' : 'Pod'} membership request message </RequestModalTitle>
+          <RequestModalHorizontalAlign>
+            <RequestModalBackButton
+              color="#FFFFFF"
+              onClick={() => {
+                handleOpenClaimedRole(false);
+                handleOpenExploreOtherRoles(true);
+              }}
+            />
+
+            <RequestModalTitle> {orgId ? 'DAO' : 'Pod'} membership request message </RequestModalTitle>
+          </RequestModalHorizontalAlign>
+
           <RequestModalCloseIcon
             color="#FFFFFF"
             onClick={() => {
@@ -127,34 +139,7 @@ export const MembershipRequestModal = (props) => {
             }}
           />
         </RequestModalTitleBar>
-        <SelectMenuBoardTypeClickAway onClickAway={handleOnClickAway}>
-          <SelectMenuBoardTypeWrapper>
-            <RequestModalLevelContainer open={openLevel} onClick={() => setShowPopper(!showPopper)}>
-              <RequestModalTypeText
-                color={ROLES_COLORS_AND_EMOJIS[levelPicked]?.color}
-                open={openLevel}
-              >{`${ROLES_COLORS_AND_EMOJIS[levelPicked]?.emoji} ${levelPicked}`}</RequestModalTypeText>
-              <SelectMenuBoardTypeIcon open={openLevel} />
-            </RequestModalLevelContainer>
-            <RequestModalCustomPopper>
-              {showPopper
-                ? orgRoles?.map((role) => (
-                    <SelectMenuBoardTypeItem
-                      picked={role.name === levelPicked}
-                      onClick={() => {
-                        setLevelPicked(role.name);
-                        setShowPopper(false);
-                      }}
-                      value={role.name}
-                      key={role.id}
-                    >
-                      {`${ROLES_COLORS_AND_EMOJIS[levelPicked]?.emoji} ${role.name}`}
-                    </SelectMenuBoardTypeItem>
-                  ))
-                : null}
-            </RequestModalCustomPopper>
-          </SelectMenuBoardTypeWrapper>
-        </SelectMenuBoardTypeClickAway>
+        <RequestModalTypeText>{orgRole?.name}</RequestModalTypeText>
         <RequestModalRolesAbilityContainer>
           <RequestModalRolesAbilityColumns>
             <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
@@ -202,12 +187,15 @@ export const MembershipRequestModal = (props) => {
             if (!requestMessage) {
               setError('Please enter a request message');
             } else {
+              handleSetRequest(requestMessage);
+              handleOpenJoinRequestModal(false);
+              handleOpenClaimedRole(true);
               if (orgId) {
                 sendRequest({
                   variables: {
                     orgId,
                     ...(requestMessage && {
-                      message: `User requesting ${levelPicked} roles: ${requestMessage}`,
+                      message: `Requesting permissions for ${orgRole?.name}. Message: ${requestMessage}`,
                     }),
                   },
                 });
@@ -216,7 +204,7 @@ export const MembershipRequestModal = (props) => {
                   variables: {
                     podId,
                     ...(requestMessage && {
-                      message: requestMessage,
+                      message: `Requesting permissions for ${orgRole?.name}. Message: ${requestMessage}`,
                     }),
                   },
                 });
@@ -232,3 +220,5 @@ export const MembershipRequestModal = (props) => {
     </RequestModalContainer>
   );
 };
+
+export default MembershipRequestModal;
