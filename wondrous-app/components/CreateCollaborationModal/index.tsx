@@ -6,17 +6,22 @@ import AddTeamMembers from 'components/CreateCollaborationModal/Steps/AddTeamMem
 import Confirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
+import { CREATE_COLLAB_REQUST } from 'graphql/mutations';
+import { useMutation } from '@apollo/client';
 
 type Props = {
   open: boolean;
   onCancel: () => void;
+  defaultOrgId?: string;
 };
 
 type Users = {
   admins: Array<User>;
   members: Array<User>;
 };
-const CreateCollaborationModal = ({ open, onCancel }: Props) => {
+const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
+  const [createCollabRequest, { data: collabRequest, error, loading }] = useMutation(CREATE_COLLAB_REQUST);
+
   const [step, setStep] = useState(1);
   const [data, setData] = useState<{
     org1?: Org;
@@ -34,39 +39,54 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       users: { members: prevState.users.members.filter((user) => user.id !== userId), admins: prevState.users.admins },
     }));
   };
+
+  const handleCollabCreate = (values) =>
+    createCollabRequest({
+      variables: {
+        input: {
+          initiatorOrgId: values.org1.id,
+          recipientOrgId: values.org2.id,
+          title: values.title,
+          mission: values.mission,
+        },
+      },
+    });
+
   const steps = [
     () => (
       <SelectOrgs
         footerRef={footerRef}
+        defaultOrgId={defaultOrgId}
         onCancel={onCancel}
-        onSubmit={(values) => {
-          setData({ ...data, ...values });
-          setStep(2);
-        }}
+        onSubmit={handleCollabCreate}
+        // onSubmit={(values) => {
+        // setData({ ...data, ...values });
+        // setStep(2);
+        // }}
       />
     ),
-    () => (
-      <AddTeamMembers
-        org={data.org1}
-        footerRef={footerRef}
-        onCancel={onCancel}
-        onSubmit={({ users }) => {
-          setData({ ...data, users });
-          setStep(3);
-        }}
-      />
-    ),
-    (props) => (
-      <Confirmation
-        footerRef={footerRef}
-        onCancel={onCancel}
-        deleteMember={deleteMember}
-        onSubmit={() => {
-          throw new Error('Not implemented');
-        }}
-        {...props}
-      />
-    ),
+    // () => (
+    //   <AddTeamMembers
+    //     org={data.org1}
+    //     footerRef={footerRef}
+    //     onCancel={onCancel}
+    //     onSubmit={({ users }) => {
+    //       setData({ ...data, users });
+    //       setStep(3);
+    //     }}
+    //   />
+    // ),
+    // (props) => (
+    //   <Confirmation
+    //     footerRef={footerRef}
+    //     onCancel={onCancel}
+    //     deleteMember={deleteMember}
+    //     onSubmit={() => {
+    //       throw new Error('Not implemented');
+    //     }}
+    //     {...props}
+    //   />
+    // ),
   ];
 
   const Component = useMemo(() => steps[step - 1], [step]);
@@ -79,7 +99,7 @@ const CreateCollaborationModal = ({ open, onCancel }: Props) => {
       open={open}
       onClose={onCancel}
     >
-      <Component collabDetails={data} />
+      <Component />
     </ModalComponent>
   );
 };

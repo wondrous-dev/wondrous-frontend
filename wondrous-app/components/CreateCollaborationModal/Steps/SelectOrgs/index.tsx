@@ -22,11 +22,14 @@ type Props = {
   onCancel: () => void;
   onSubmit: (values: { title: string; mission: string; org1: Org; org2: Org }) => void | Promise<any>;
   footerRef: React.RefObject<HTMLDivElement>;
+  defaultOrgId?: string;
 };
 
-const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
+const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props) => {
   const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const [selectedOrg1, setSelectedOrg1] = useState(null);
+  const [selectedOrg1, setSelectedOrg1] = useState(
+    userOrgs?.getUserOrgs?.find((org) => org.id === defaultOrgId) || null
+  );
   const [selectedOrg2, setSelectedOrg2] = useState(null);
 
   const DROPDOWN_PACEHOLDER = {
@@ -165,7 +168,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef }: Props) => {
                     type="submit"
                     disabled={!(selectedOrg1 && selectedOrg2 && isValid)}
                   >
-                    Next
+                    Send invitation
                   </Button>
                 </Grid>,
                 footerRef.current
