@@ -50,6 +50,7 @@ export const ItemButtonText = styled(Typography)`
     align-items: center;
     gap: 8px;
     color: ${({ theme }) => theme.palette.white};
+    line-height: 0;
   }
 `;
 
@@ -60,13 +61,14 @@ export const IconTextWrapper = styled.div`
 `;
 
 export const Count = styled.div`
-  width: 22px;
-  height: 22px;
+  align-items: center;
   background: ${({ theme }) => theme.palette.grey87};
   border-radius: 4px;
   display: flex;
-  align-items: center;
+  height: 22px;
   justify-content: center;
+  min-width: 22px;
+  padding: 0 4px;
   > ${ItemButtonText} {
     color: ${({ theme, isActive }) => (isActive ? theme.palette.highlightBlue : theme.palette.grey250)};
     ${ItemButton}:hover & {

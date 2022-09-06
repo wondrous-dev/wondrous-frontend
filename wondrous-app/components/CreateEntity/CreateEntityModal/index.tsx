@@ -77,7 +77,6 @@ import {
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
-  PERMISSIONS,
   PRIVACY_LEVEL,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -102,6 +101,7 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
@@ -1109,6 +1109,7 @@ interface ICreateEntityModal {
     };
     assigneeId?: string;
     recurringSchema?: any;
+    parentTaskId?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1136,9 +1137,8 @@ const handleRewardOnChange = (form) => (e) => {
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
-
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
-  const isSubtask = parentTaskId !== undefined;
+  const isSubtask = existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const orgBoard = useOrgBoard();
@@ -1532,6 +1532,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       },
     });
   };
+  const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
+  const hasSubTasks = subTasks?.data?.length > 0;
+  const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
@@ -1543,23 +1546,27 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             variables: {
               taskId: existingTask?.id,
             },
-          }).then(() => {
-            if (board?.org || board?.orgData) {
-              if (board?.org) {
-                window.location.href = `/organization/${board?.org?.username}/boards?entity=bounty`;
-              } else if (board?.orgData) {
-                window.location.href = `/organization/${board?.orgData?.username}/boards?entity=bounty`;
+          })
+            .then(() => {
+              if (board?.org || board?.orgData) {
+                if (board?.org) {
+                  window.location.href = `/organization/${board?.org?.username}/boards?entity=bounty`;
+                } else if (board?.orgData) {
+                  window.location.href = `/organization/${board?.orgData?.username}/boards?entity=bounty`;
+                }
+              } else if (board?.pod || board?.podData) {
+                if (board?.pod) {
+                  window.location.href = `/pod/${board?.pod?.id}/boards?entity=bounty`;
+                } else if (board?.podData) {
+                  window.location.href = `/pod/${board?.podData?.id}/boards?entity=bounty`;
+                }
+              } else if (handleClose) {
+                handleClose();
               }
-            } else if (board?.pod || board?.podData) {
-              if (board?.org) {
-                window.location.href = `/pod/${board?.pod?.id}/boards?entity=bounty`;
-              } else if (board?.orgData) {
-                window.location.href = `/pod/${board?.podData?.id}/boards?entity=bounty`;
-              }
-            } else if (handleClose) {
-              handleClose();
-            }
-          });
+            })
+            .catch((err) => {
+              console.log('err', err);
+            });
         }}
       />
       <CreateEntityHeader>
@@ -1757,7 +1764,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               }
             }}
           />
-          {existingTask && existingTask?.type === ENTITIES_TYPES.TASK && (
+          {existingTask && canTurnIntoBounty && (
             <>
               <div
                 style={{

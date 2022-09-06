@@ -78,13 +78,17 @@ export const SearchResultCategoryTitle = styled(Typography)`
 `;
 
 export const SearchInputWrapper = styled.div`
-  display: ${({ isExpanded }) => (isExpanded ? 'block' : 'none')};
-  overflow: hidden;
-  .MuiFormControl-root {
-    margin: 0;
-  }
-  .MuiTextField-root {
-    background: transparent;
+  && {
+    display: ${({ isExpanded }) => (isExpanded ? 'block' : 'none')};
+    overflow: hidden;
+    .MuiFormControl-root {
+      margin: 0;
+    }
+    .MuiTextField-root {
+      background: transparent;
+      border-top-right-radius: 150px;
+      border-bottom-right-radius: 150px;
+    }
   }
 `;
 
