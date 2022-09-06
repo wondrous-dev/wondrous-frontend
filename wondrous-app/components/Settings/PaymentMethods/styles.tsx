@@ -166,3 +166,18 @@ export const PaymentMethodActionMenu = styled.div`
   justify-content: flex-end;
   height: 24px;
 `;
+
+export function TokenLogoDisplay(props) {
+  return (
+    <SafeImage
+      useNextImage={false}
+      src={props?.src}
+      style={{
+        width: '29px',
+        height: '28px',
+        borderRadius: '4px',
+        marginRight: '5px',
+      }}
+    />
+  );
+}
