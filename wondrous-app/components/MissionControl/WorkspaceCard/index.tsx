@@ -24,16 +24,16 @@ const MissionControlWorkspaceCard: React.FC<{
 }> = ({ label, labelGradient, img, stats, hoverImg, gradient, url }) => (
   <MissionControlWorkspaceCardWrapper hoverImg={hoverImg} gradient={gradient}>
     <WorkspaceCardContainer>
-      <WorkspaceCardBannerContainer>
-        <WorkspaceCardBannerImage src={img}>
-          <img src={img} />
-        </WorkspaceCardBannerImage>
-        <WorkspaceCardLabelWrapper>
-          <Link href={url}>
+      <Link href={url}>
+        <WorkspaceCardBannerContainer>
+          <WorkspaceCardBannerImage src={img}>
+            <img src={img} />
+          </WorkspaceCardBannerImage>
+          <WorkspaceCardLabelWrapper>
             <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
-          </Link>
-        </WorkspaceCardLabelWrapper>
-      </WorkspaceCardBannerContainer>
+          </WorkspaceCardLabelWrapper>
+        </WorkspaceCardBannerContainer>
+      </Link>
       <WorkspaceCardStatsContainer>
         {stats.map((stat, idx) => (
           <Link href={stat.url} key={idx}>

@@ -1,6 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import SearchTasks from 'components/SearchTasks';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
@@ -30,7 +30,16 @@ export function BoardsActivityInlineView({
   enableViewSwitcher = true,
   displaySingleViewFilter = false,
 }) {
-  const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter);
+  const { orgBoard, podBoard, userBoard } = useBoards();
+
+  const board = orgBoard || podBoard || userBoard;
+
+  const [displayFilters, setDisplayFilters] = useState(displaySingleViewFilter || board?.hasActiveFilters);
+
+  useEffect(() => {
+    if (board?.hasActiveFilters && board.hasActiveFilters !== displayFilters)
+      setDisplayFilters(board?.hasActiveFilters);
+  }, [board?.entityType]);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
 

@@ -20,7 +20,7 @@ const SideBarComponent = () => {
       isMobile={isMobile}
       sidebar={sidebar}
       handleProfileClick={() => router.push(`/profile/${user.username}/about`)}
-      onLogoClick={() => router.push('/dashboard')}
+      onLogoClick={() => router.push('/explore')}
     />
   );
 };

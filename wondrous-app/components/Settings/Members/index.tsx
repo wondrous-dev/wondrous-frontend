@@ -22,18 +22,13 @@ import MemberRoles from '../MemberRoles';
 import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
 import { SafeImage } from '../../Common/Image';
-import {
-  DefaultProfilePicture,
-  PodsCount,
-  SeeMoreText,
-  StyledTable,
-  StyledTableBody,
-  StyledTableHeaderCell,
-} from './styles';
+import { SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell } from './styles';
 import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
 import { HeaderBlock } from '../headerBlock';
+import MemberTableRow from './MembersTableRow';
+import { exportMembersDataToCSV } from './helpers';
 
 const LIMIT = 10;
 
@@ -178,6 +173,30 @@ function Members(props) {
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
 
+  const handleDownloadToCSV = () => {
+    const isOrg = !!orgId;
+
+    if (isOrg) {
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: Number.POSITIVE_INFINITY,
+        },
+      }).then(({ data }) => {
+        exportMembersDataToCSV(orgOrPodName, data?.getOrgUsers);
+      });
+    } else {
+      getPodUsers({
+        variables: {
+          podId,
+          limit: Number.POSITIVE_INFINITY,
+        },
+      }).then(({ data }) => {
+        exportMembersDataToCSV(orgOrPodName, data?.getPodUsers);
+      });
+    }
+  };
+
   return (
     <SettingsWrapper showPodIcon={false}>
       <NewOrgInviteLinkModal
@@ -201,14 +220,13 @@ function Members(props) {
           <Text color="#C4C4C4" fontSize="16px">
             This will remove the user ‘
             <Text color="white" as="strong">
-              {userToRemove?.firstName} {userToRemove?.lastName}
+              {userToRemove?.username}
             </Text>
             ‘ from this DAO. This action cannot be undone.
           </Text>
         </ConfirmModal>
 
         <HeaderBlock
-          icon={<MembersIcon circle />}
           title={
             <>
               Members&nbsp;
@@ -225,6 +243,7 @@ function Members(props) {
           }
           description="Use roles to organize contributors and admins"
           onInvite={() => setOpenInvite(true)}
+          handleDownloadToCSV={handleDownloadToCSV}
         />
 
         <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
@@ -233,7 +252,23 @@ function Members(props) {
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
         ) : null}
 
-        <StyledTableContainer>
+        {users.length > 0 && (
+          <Grid display="flex" flexDirection="column" gap="25px" width="100%" maxWidth="770px">
+            {users.map(({ user, role }) => (
+              <MemberTableRow
+                user={user}
+                role={role}
+                key={user?.id}
+                orgId={orgId}
+                podId={podId}
+                roleList={roleList}
+                promptRemoveUser={setUserToRemove}
+              />
+            ))}
+          </Grid>
+        )}
+
+        {/* <StyledTableContainer>
           <StyledTable>
             <StyledTableHead>
               <StyledTableRow>
@@ -320,7 +355,7 @@ function Members(props) {
               )}
             </StyledTableBody>
           </StyledTable>
-        </StyledTableContainer>
+        </StyledTableContainer> */}
         {hasMore && (
           <div
             style={{

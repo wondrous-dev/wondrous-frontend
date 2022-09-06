@@ -1,4 +1,5 @@
 /* eslint-disable max-lines */
+import moment from 'moment';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -76,7 +77,6 @@ import {
 import {
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
-  PERMISSIONS,
   PRIVACY_LEVEL,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
@@ -101,6 +101,7 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
@@ -976,6 +977,7 @@ const entityTypeData = {
       reviewerIds: null,
       assigneeId: null,
       dueDate: null,
+      recurringSchema: null,
       rewards: [],
       points: null,
       milestoneId: null,
@@ -1018,6 +1020,7 @@ const entityTypeData = {
       reviewerIds: null,
       rewards: [],
       dueDate: null,
+      recurringSchema: null,
       points: null,
       labelIds: null,
       milestoneId: null,
@@ -1108,6 +1111,8 @@ interface ICreateEntityModal {
       profilePicture?: string;
     };
     assigneeId?: string;
+    recurringSchema?: any;
+    parentTaskId?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -1135,16 +1140,28 @@ const handleRewardOnChange = (form) => (e) => {
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
-  const [recurrenceType, setRecurrenceType] = useState(null);
-  const [recurrenceValue, setRecurrenceValue] = useState(null);
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
-  const isSubtask = parentTaskId !== undefined;
+  const isSubtask = existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null;
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
   const board = orgBoard || podBoard || userBoard;
+  const initialRecurrenceValue =
+    existingTask?.recurringSchema?.daily ||
+    existingTask?.recurringSchema?.weekly ||
+    existingTask?.recurringSchema?.monthly ||
+    existingTask?.recurringSchema?.periodic;
+
+  const initialRecurrenceType =
+    existingTask?.recurringSchema &&
+    Object.keys(existingTask.recurringSchema)[
+      Object?.values(existingTask?.recurringSchema).indexOf(initialRecurrenceValue)
+    ];
+
+  const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
+  const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
   const router = useRouter();
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
@@ -1209,8 +1226,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, ...finalValues } = values;
-
+      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
+        values;
       const input = {
         ...finalValues,
         reviewerIds,
@@ -1223,6 +1240,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           githubPullRequest,
         }),
         ...(status && entityType === ENTITIES_TYPES.TASK && { status }),
+        ...(recurrenceType &&
+          recurrenceValue && {
+            recurringSchema: {
+              [recurrenceType]: recurrenceValue,
+            },
+          }),
       };
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
@@ -1319,6 +1342,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       milestoneId: formValues.milestoneId,
     })
   );
+  useEffect(() => {
+    if (recurrenceType && !form.values.dueDate) {
+      form.setFieldValue('dueDate', moment().toDate());
+    }
+  }, [form.values.dueDate, recurrenceType]);
 
   useEffect(() => {
     form.setFieldValue(
@@ -1328,7 +1356,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     if (isTask) {
       form.setFieldValue('claimPolicy', existingTask?.claimPolicy || null);
       form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
+      form.setFieldValue('shouldUnclaimOnDueDateExpiry', existingTask?.shouldUnclaimOnDueDateExpiry);
     }
+    // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
     form.setFieldValue(
@@ -1505,6 +1535,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       },
     });
   };
+  const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
+  const hasSubTasks = subTasks?.data?.length > 0;
+  const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
@@ -1516,23 +1549,27 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             variables: {
               taskId: existingTask?.id,
             },
-          }).then(() => {
-            if (board?.org || board?.orgData) {
-              if (board?.org) {
-                window.location.href = `/organization/${board?.org?.username}/boards?entity=bounty`;
-              } else if (board?.orgData) {
-                window.location.href = `/organization/${board?.orgData?.username}/boards?entity=bounty`;
+          })
+            .then(() => {
+              if (board?.org || board?.orgData) {
+                if (board?.org) {
+                  window.location.href = `/organization/${board?.org?.username}/boards?entity=bounty`;
+                } else if (board?.orgData) {
+                  window.location.href = `/organization/${board?.orgData?.username}/boards?entity=bounty`;
+                }
+              } else if (board?.pod || board?.podData) {
+                if (board?.pod) {
+                  window.location.href = `/pod/${board?.pod?.id}/boards?entity=bounty`;
+                } else if (board?.podData) {
+                  window.location.href = `/pod/${board?.podData?.id}/boards?entity=bounty`;
+                }
+              } else if (handleClose) {
+                handleClose();
               }
-            } else if (board?.pod || board?.podData) {
-              if (board?.org) {
-                window.location.href = `/pod/${board?.pod?.id}/boards?entity=bounty`;
-              } else if (board?.orgData) {
-                window.location.href = `/pod/${board?.podData?.id}/boards?entity=bounty`;
-              }
-            } else if (handleClose) {
-              handleClose();
-            }
-          });
+            })
+            .catch((err) => {
+              console.log('err', err);
+            });
         }}
       />
       <CreateEntityHeader>
@@ -1730,7 +1767,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               }
             }}
           />
-          {existingTask && existingTask?.type === ENTITIES_TYPES.TASK && (
+          {existingTask && canTurnIntoBounty && (
             <>
               <div
                 style={{
@@ -1960,11 +1997,16 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                     style={{ width: '100%' }}
                     onChange={(value) => {
                       form.setFieldValue('claimPolicy', value);
-                      if (value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value)
+                      if (
+                        value === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
+                        value === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value
+                      )
                         form.setFieldValue('claimPolicyRoles', [roles[0]?.id]);
                     }}
                     renderValue={() => {
-                      const isRolesSelected = form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value;
+                      const isRolesSelected =
+                        form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
+                        form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value;
                       return (
                         <CreateEntityApplicationsSelectRender>
                           <span>
@@ -1986,7 +2028,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       );
                     })}
                   </CreateEntitySelect>
-                  {form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value && (
+                  {(form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM.value ||
+                    form.values.claimPolicy === APPLICATION_POLICY.ROLES_CAN_CAN_APPLY.value) && (
                     <CreateEntitySelect
                       name="task-applications-claim-roles"
                       value={form.values.claimPolicyRoles}
@@ -2086,7 +2129,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 setRecurrenceType={setRecurrenceType}
                 setRecurrenceValue={setRecurrenceValue}
                 hideRecurring={false}
-                handleClose={() => form.setFieldValue('dueDate', null)}
+                handleClose={() => {
+                  form.setFieldValue('dueDate', null);
+                  setRecurrenceType(null);
+                  setRecurrenceValue(null);
+                }}
                 value={form.values.dueDate}
                 recurrenceType={recurrenceType}
                 recurrenceValue={recurrenceValue}

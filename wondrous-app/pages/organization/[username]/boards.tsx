@@ -16,12 +16,13 @@ import {
 } from 'graphql/queries/taskBoard';
 import { GET_USER } from 'graphql/queries/user';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import {
   LIMIT,
   ORG_POD_COLUMNS,
   ORG_POD_PROPOSAL_COLUMNS,
+  DEFAULT_ENTITY_STATUS_FILTER,
   populateProposalColumns,
   populateTaskColumns,
 } from 'services/board';
@@ -39,6 +40,7 @@ import {
   STATUS_APPROVED,
   STATUS_CLOSED,
   PROPOSAL_STATUS_LIST,
+  TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
@@ -439,7 +441,7 @@ function BoardsPage() {
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [filters, setFilters] = useState<TaskFilter>({
     podIds: [],
-    statuses: [],
+    statuses: DEFAULT_ENTITY_STATUS_FILTER[activeEntityFromQuery],
     labelId: null,
     date: null,
     privacyLevel: null,
@@ -505,7 +507,9 @@ function BoardsPage() {
     }
     insertUrlParam('entity', type);
     setEntityType(type);
-    setFilters({});
+    setFilters({
+      statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
+    });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
       insertUrlParam('view', ViewType.Grid);
@@ -724,6 +728,21 @@ function BoardsPage() {
       }
     }
   };
+
+  if (!process.env.NEXT_PUBLIC_PRODUCTION) {
+    console.log(
+      'user permissions context',
+      userPermissionsContext?.getUserPermissionContext
+        ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+        : null
+    );
+  }
+
+  const hasActiveFilters = useMemo(
+    () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
+    [filters]
+  );
+
   return (
     <OrgBoardContext.Provider
       value={{
@@ -746,6 +765,8 @@ function BoardsPage() {
         fetchPerStatus,
         onLoadMore: fetchMore,
         hasMore: orgTaskHasMore,
+        filters,
+        hasActiveFilters,
       }}
     >
       {isMobile ? <MobileComingSoonModal /> : null}

@@ -1,3 +1,5 @@
+import palette from 'theme/palette';
+
 export const spacingUnit = 8;
 
 // Task Status
@@ -514,6 +516,10 @@ export const APPLICATION_POLICY = {
     title: 'Everyone needs to apply except members with role',
     value: 'roles_can_can_claim',
   },
+  ROLES_CAN_CAN_APPLY: {
+    title: 'Only members with role can apply',
+    value: 'roles_can_can_apply',
+  },
 };
 
 export const APPLICATION_POLICY_LABELS_MAP = {
@@ -521,6 +527,7 @@ export const APPLICATION_POLICY_LABELS_MAP = {
   only_org_members_can_claim: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_CLAIM,
   only_org_members_can_apply: APPLICATION_POLICY.ONLY_ORG_MEMBERS_CAN_APPLY,
   roles_can_can_claim: APPLICATION_POLICY.ROLES_CAN_CAN_CLAIM,
+  roles_can_can_apply: APPLICATION_POLICY.ROLES_CAN_CAN_APPLY,
 };
 
 export const TASK_APPLICATION_STATUS = {
@@ -636,4 +643,31 @@ export const USER_BOARD_PAGE_TYPES = {
 export const PAGE_PATHNAME = {
   profile_username_about: '/profile/[username]/about',
   explore: '/explore',
+  mission_control: '/mission-control',
+};
+
+export const ROLES = {
+  OWNER: 'owner',
+  CORE_TEAM: 'core team',
+  CONTRIBUTOR: 'contributor',
+  DEFAULT: 'default', // this is for any role other than the above
+};
+
+export const RoleColorsAndEmojis = {
+  [ROLES.OWNER]: {
+    color: palette.green300,
+    emoji: '🔑',
+  },
+  [ROLES.CORE_TEAM]: {
+    color: palette.violet210,
+    emoji: '🔮',
+  },
+  [ROLES.CONTRIBUTOR]: {
+    color: palette.highlightOrange,
+    emoji: '✨',
+  },
+  [ROLES.DEFAULT]: {
+    color: palette.highlightBlue,
+    emoji: '🐦',
+  },
 };

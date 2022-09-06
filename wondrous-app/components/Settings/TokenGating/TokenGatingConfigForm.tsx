@@ -155,7 +155,11 @@ function TokenGatingConfigForm(props) {
   const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
     onCompleted: (data) => {
       if (data?.getNFTInfo) {
-        if (data?.getNFTInfo.type !== 'ERC721' && data?.getNFTInfo.type !== 'ERC1155') {
+        if (
+          data?.getNFTInfo.type !== 'ERC721' &&
+          data?.getNFTInfo.type !== 'ERC1155' &&
+          data?.getNFTInfo.type !== 'UNKNOWN'
+        ) {
           return;
         }
         const formattedOption = {
