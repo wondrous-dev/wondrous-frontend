@@ -7,6 +7,7 @@ import { Dialog } from '@mui/material';
 import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
 import apollo from 'services/apollo';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
+import ChecklistRow from 'components/CheckList/ChecklistRow';
 import {
   RequestModalBackButton,
   RequestModalBox,
@@ -16,11 +17,7 @@ import {
   RequestModalExploreRolesAbilityColumnsTop,
   RequestModalForwardButton,
   RequestModalHorizontalAlign,
-  RequestModalRolesAbilityCheckIcon,
-  RequestModalRolesAbilityCloseIcon,
   RequestModalRolesAbilityContainer,
-  RequestModalRolesAbilityRows,
-  RequestModalRolesAbilityText,
   RequestModalRolesCircle,
   RequestModalRolesCircleContainer,
   RequestModalTitle,
@@ -178,24 +175,15 @@ const ExploreOtherRolesModal = (props) => {
                 <RequestModalExploreRolesAbilityColumnsTop>
                   <RequestModalTitle style={{ marginBottom: '12px' }}>{role.name}</RequestModalTitle>
                   {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                    ? Object.keys(PERMISSIONS)?.map((role) => (
-                        <RequestModalRolesAbilityRows key={role}>
-                          <RequestModalRolesAbilityCheckIcon />
-                          <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                        </RequestModalRolesAbilityRows>
+                    ? Object.keys(PERMISSIONS)?.map((permission) => (
+                        <ChecklistRow role={permission} key={permission} status="success" />
                       ))
-                    : roleCanDo?.map((role) => (
-                        <RequestModalRolesAbilityRows key={role}>
-                          <RequestModalRolesAbilityCheckIcon />
-                          <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                        </RequestModalRolesAbilityRows>
+                    : roleCanDo?.map((permission) => (
+                        <ChecklistRow role={permission} key={permission} status="success" />
                       ))}
                   {roleCannotDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                    ? roleCannotDo?.map((role) => (
-                        <RequestModalRolesAbilityRows key={role}>
-                          <RequestModalRolesAbilityCloseIcon />
-                          <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                        </RequestModalRolesAbilityRows>
+                    ? roleCannotDo?.map((permission) => (
+                        <ChecklistRow role={permission} key={permission} status="fail" />
                       ))
                     : null}
                 </RequestModalExploreRolesAbilityColumnsTop>

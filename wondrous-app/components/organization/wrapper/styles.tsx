@@ -4,7 +4,15 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as ButtonComponent, Button as BorderButton } from 'components/Common/button';
-import { greyColors } from 'theme/colors';
+import {
+  blackColors,
+  blueColors,
+  greenColors,
+  greyColors,
+  highlightBlue,
+  highlightPurple,
+  violetColors,
+} from 'theme/colors';
 import CloseModalIcon from 'components/Icons/closeModal';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import CloseModalIconRed from 'components/Icons/closeModalRed';
@@ -87,7 +95,12 @@ export const RequestModalSubtitle = styled(Typography)`
     font-size: 24px;
     line-height: 23px;
     color: white;
-    background: -webkit-linear-gradient(180deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    background: -webkit-linear-gradient(
+      180deg,
+      ${blueColors.blue20} -5.62%,
+      ${highlightPurple} 45.92%,
+      ${highlightBlue} 103.12%
+    );
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     margin-right: 12px;
@@ -117,7 +130,7 @@ export const RequestModalRolesSubtitle = styled(Typography)`
     font-size: 14px;
     font-weight: 500;
     font-family: 'Space Grotesk';
-    color: #ccbbff;
+    color: ${blueColors.blue20};
     margin-bottom: 12px;
   }
 `;
@@ -131,7 +144,7 @@ export const RequestModalTypeText = styled(Typography)`
     padding: 4px 12px 4px 12px;
     color: white;
     border-radius: 56px;
-    border: 1px solid #eb96eb;
+    border: 1px solid ${violetColors.violet210};
     align-self: center;
     align-items: center;
     width: 120px;
@@ -187,7 +200,7 @@ export const RequestModalExploreRolesAbilityColumns = styled.div`
   flex: 1;
   width: 100%;
   justify-content: flex-start;
-  background-color: #2d2d2d;
+  background-color: ${greyColors.grey920};
   margin: 8px;
   border-radius: 8px;
 `;
@@ -199,7 +212,7 @@ export const RequestModalShowRole = styled.div`
   width: 100%;
   justify-content: center;
   align-items: center;
-  background-color: #2d2d2d;
+  background-color: ${greyColors.grey920};
   margin: 8px;
   margin-top: 18px;
   border-radius: 8px;
@@ -222,8 +235,8 @@ export const RequestModalRolesCircle = styled((props) => (
       width: '12px',
       borderRadius: '2px',
       border: '2px solid',
-      borderColor: props.active ? '#06FFA5' : '#474747',
-      backgroundColor: props.active ? '#00CD83' : null,
+      borderColor: props.active ? `${greenColors.green30}` : `${greyColors.grey78}`,
+      backgroundColor: props.active ? `${greenColors.green350}` : null,
       height: '12px',
       marginLeft: '8px',
       marginRight: '8px',
@@ -518,7 +531,7 @@ export const HeaderInviteButton = styled(Button)`
     color: white;
     font-weight: 600;
     font-size: 15px;
-    background: #232323;
+    background: ${blackColors.black92};
     width: 98px;
     height: 39px;
     padding: 7px 7px 7px 14px;
@@ -526,17 +539,17 @@ export const HeaderInviteButton = styled(Button)`
     justify-content: space-between;
 
     :hover {
-      background: #3d3d3d;
+      background: ${greyColors.grey88};
 
       .MuiButton-label > div {
-        background: #232323;
+        background: ${blackColors.black92};
       }
     }
   }
 `;
 
 export const PlusIconWrapper = styled.div`
-  background: #3d3d3d;
+  background: ${greyColors.grey88};
   border-radius: 100%;
   width: 26px;
   height: 26px;
@@ -1017,7 +1030,12 @@ export function TokenLogoDisplay(props) {
 
 export const ClaimRoleButton = styled(ButtonComponent)`
   && {
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+    background: -webkit-linear-gradient(
+      180deg,
+      ${blueColors.blue20} -5.62%,
+      ${highlightPurple} 45.92%,
+      ${highlightBlue} 103.12%
+    );
     min-height: 0;
     min-width: 0;
     height: 40px;

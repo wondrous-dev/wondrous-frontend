@@ -6,6 +6,7 @@ import { ActionButton } from 'components/Common/Task/styles';
 import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
 import { GET_ORG_ROLES } from 'graphql/queries';
 import { StyledCancelButton, StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
+import ChecklistRow from 'components/CheckList/ChecklistRow';
 import {
   RequestModalBackButton,
   RequestModalBox,
@@ -13,12 +14,8 @@ import {
   RequestModalCloseIcon,
   RequestModalContainer,
   RequestModalHorizontalAlign,
-  RequestModalRolesAbilityCheckIcon,
-  RequestModalRolesAbilityCloseIcon,
   RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
-  RequestModalRolesAbilityRows,
-  RequestModalRolesAbilityText,
   RequestModalRolesSubtitle,
   RequestModalTextarea,
   RequestModalTextareaWrapper,
@@ -134,20 +131,14 @@ const MembershipRequestModal = (props) => {
         <RequestModalRolesAbilityContainer>
           <RequestModalRolesAbilityColumns>
             <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-            {roleCanDo?.map((role) => (
-              <RequestModalRolesAbilityRows key={role}>
-                <RequestModalRolesAbilityCheckIcon />
-                <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-              </RequestModalRolesAbilityRows>
+            {roleCanDo?.map((permission) => (
+              <ChecklistRow role={permission} key={permission} status="success" />
             ))}
           </RequestModalRolesAbilityColumns>
           <RequestModalRolesAbilityColumns>
             <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-            {roleCannotDo?.map((role) => (
-              <RequestModalRolesAbilityRows key={role}>
-                <RequestModalRolesAbilityCloseIcon />
-                <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-              </RequestModalRolesAbilityRows>
+            {roleCannotDo?.map((permission) => (
+              <ChecklistRow role={permission} key={permission} status="fail" />
             ))}
           </RequestModalRolesAbilityColumns>
         </RequestModalRolesAbilityContainer>

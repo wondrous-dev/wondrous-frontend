@@ -1,21 +1,17 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
 import { ActionButton } from 'components/Common/Task/styles';
 import { GET_ORG_ROLES } from 'graphql/queries';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
+import ChecklistRow from 'components/CheckList/ChecklistRow';
 import {
   RequestModalBox,
   RequestModalButtonsContainer,
   RequestModalCloseIcon,
   RequestModalContainer,
-  RequestModalRolesAbilityCheckIcon,
-  RequestModalRolesAbilityCloseIcon,
   RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
-  RequestModalRolesAbilityRows,
-  RequestModalRolesAbilityText,
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
@@ -100,28 +96,15 @@ const CurrentRoleModal = (props) => {
           <RequestModalRolesAbilityColumns>
             <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
             {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-              ? Object.keys(PERMISSIONS)?.map((role) => (
-                  <RequestModalRolesAbilityRows key={role}>
-                    <RequestModalRolesAbilityCheckIcon />
-                    <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                  </RequestModalRolesAbilityRows>
+              ? Object.keys(PERMISSIONS)?.map((permission) => (
+                  <ChecklistRow role={permission} key={permission} status="success" />
                 ))
-              : roleCanDo?.map((role) => (
-                  <RequestModalRolesAbilityRows key={role}>
-                    <RequestModalRolesAbilityCheckIcon />
-                    <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                  </RequestModalRolesAbilityRows>
-                ))}
+              : roleCanDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="success" />)}
           </RequestModalRolesAbilityColumns>
           <RequestModalRolesAbilityColumns>
             <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
             {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-              ? roleCannotDo?.map((role) => (
-                  <RequestModalRolesAbilityRows key={role}>
-                    <RequestModalRolesAbilityCloseIcon />
-                    <RequestModalRolesAbilityText>{role}</RequestModalRolesAbilityText>
-                  </RequestModalRolesAbilityRows>
-                ))
+              ? roleCannotDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="fail" />)
               : null}
           </RequestModalRolesAbilityColumns>
         </RequestModalRolesAbilityContainer>
