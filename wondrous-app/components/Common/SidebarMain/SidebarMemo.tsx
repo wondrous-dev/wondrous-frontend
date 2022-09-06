@@ -30,7 +30,13 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import { Badge } from '@mui/material';
+import { useHotkey } from 'utils/hooks';
 import MissionControlIconButton from '../SidebarMainMissionControl';
+import AddDaoModal from '../AddDaoModal';
+import { PodModal } from '../PodModal';
 
 type Props = {
   isMobile: boolean;
@@ -77,9 +83,38 @@ const profilePictureStyle = {
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
   const { minimized, setMinimized } = sidebar;
   const [openHelpModal, setOpenHelpModal] = useState(false);
+  const [openPodModal, setOpenPodModal] = useState(false);
+  const [openCreateDaoModal, setOpenCreateDaoModal] = useState(false);
   const handleMinimize = () => setMinimized(false);
   const router = useRouter();
   const isPageActive = (str) => router.pathname.includes(str);
+  const showBadge = useHotkey();
+
+  useHotkeys(
+    HOTKEYS.OPEN_PROFILE,
+    () => {
+      router.push(`/profile/${user?.username}/about`);
+    },
+    [user]
+  );
+
+  useHotkeys(
+    HOTKEYS.ALL_KEYS,
+    (event) => {
+      if (Number(event.key) <= orgsList.length) {
+        router.push(`/organization/${orgsList[Number(event.key) - 1]?.username}/boards`);
+      }
+    },
+    [orgsList]
+  );
+
+  useHotkeys(
+    HOTKEYS.CREATE_DAO,
+    () => {
+      setOpenCreateDaoModal(!openCreateDaoModal);
+    },
+    [openCreateDaoModal]
+  );
 
   if (isMobile) {
     return null;
@@ -102,15 +137,22 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                 onClick={handleProfileClick}
                 isActive={isPageActive(PAGE_PATHNAME.profile_username_about)}
               >
-                <SafeImage
-                  src={user?.thumbnailPicture || user?.profilePicture}
-                  placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-                  width={36}
-                  height={36}
-                  objectFit="cover"
-                  useNextImage
-                  style={profilePictureStyle}
-                />
+                <Badge
+                  badgeContent={HOTKEYS.OPEN_PROFILE}
+                  color="primary"
+                  invisible={!showBadge}
+                  style={{ zIndex: 999 }}
+                >
+                  <SafeImage
+                    src={user?.thumbnailPicture || user?.profilePicture}
+                    placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
+                    width={36}
+                    height={36}
+                    objectFit="cover"
+                    useNextImage
+                    style={profilePictureStyle}
+                  />
+                </Badge>
               </ButtonIcon>
             </SidebarTooltip>
 
@@ -121,27 +163,29 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
           <ButtonWrapper>
             <ExploreIconButton isActive={isPageActive(PAGE_PATHNAME.explore)} />
             <DrawerList id="tour-sidebar-daos">
-              {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
+              {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }, index) => (
                 <SidebarTooltip key={id} title={name}>
-                  <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
-                    <ButtonIcon button key={id} isActive={isActive}>
-                      <DaoIconWrapper>
-                        {thumbnailPicture || profilePicture ? (
-                          <SafeImage
-                            useNextImage={false}
-                            src={thumbnailPicture || profilePicture}
-                            width={36}
-                            height={36}
-                            objectFit="cover"
-                            style={{
-                              borderRadius: '50%',
-                            }}
-                          />
-                        ) : (
-                          <NoLogoDAO />
-                        )}
-                      </DaoIconWrapper>
-                    </ButtonIcon>
+                  <Link href={`/organization/${username}/boards?entity=task`} passHref>
+                    <Badge badgeContent={index + 1} color="primary" invisible={!showBadge}>
+                      <ButtonIcon button isActive={isActive}>
+                        <DaoIconWrapper>
+                          {thumbnailPicture || profilePicture ? (
+                            <SafeImage
+                              useNextImage={false}
+                              src={thumbnailPicture || profilePicture}
+                              width={36}
+                              height={36}
+                              objectFit="cover"
+                              style={{
+                                borderRadius: '50%',
+                              }}
+                            />
+                          ) : (
+                            <NoLogoDAO />
+                          )}
+                        </DaoIconWrapper>
+                      </ButtonIcon>
+                    </Badge>
                   </Link>
                 </SidebarTooltip>
               ))}

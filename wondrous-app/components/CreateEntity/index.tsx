@@ -3,6 +3,8 @@ import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useRouter } from 'next/router';
 import { useGlobalContext } from 'utils/hooks';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
 import CreateEntityModal from './CreateEntityModal/index';
@@ -67,6 +69,7 @@ export function CreateEntity(props: ICreateEntity) {
 
 function ChooseEntityToCreate(props) {
   const globalContext = useGlobalContext();
+  const [openChooseEntity, setOpenChooseEntity] = useState(false);
   const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
@@ -78,6 +81,38 @@ function ChooseEntityToCreate(props) {
     resetEntityType();
     toggleOpen();
   };
+
+  useHotkeys(HOTKEYS.CREATE_TASK, () => {
+    setEntityType(ENTITIES_TYPES.TASK);
+    setOpenChooseEntity(false);
+
+    toggleOpen();
+  });
+  useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
+    setEntityType(ENTITIES_TYPES.BOUNTY);
+    setOpenChooseEntity(false);
+
+    toggleOpen();
+  });
+  useHotkeys(HOTKEYS.CREATE_POD, () => {
+    setEntityType(ENTITIES_TYPES.POD);
+    setOpenChooseEntity(false);
+
+    toggleOpen();
+  });
+  useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
+    setEntityType(ENTITIES_TYPES.PROPOSAL);
+    setOpenChooseEntity(false);
+
+    toggleOpen();
+  });
+  useHotkeys(
+    HOTKEYS.CHOOSE_ENTITY,
+    () => {
+      setOpenChooseEntity(!openChooseEntity);
+    },
+    [openChooseEntity]
+  );
 
   if (entityType) {
     return (
@@ -94,8 +129,10 @@ function ChooseEntityToCreate(props) {
 
   return (
     <CreateFormModalOverlay
-      open={open}
-      onClose={handleCloseModal}
+      open={openChooseEntity}
+      onClose={() => {
+        setOpenChooseEntity(false);
+      }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
