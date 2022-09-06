@@ -1,3 +1,38 @@
+export const HOTKEYS = {
+  GLOBAL_SEARCH: 'shift+enter',
+  LOCAL_SEARCH: 'enter',
+  SHOW_SHORTCUTS: 'shift+S',
+  CREATE_TASK: 'shift+T',
+  CREATE_BOUNTY: 'shift+B',
+  CREATE_MILESTONE: 'shift+M',
+  CREATE_PROPOSAL: 'shift+P',
+  CREATE_DAO: 'shift+D',
+  CREATE_POD: 'shift+L',
+  CREATE_COMMENT: 'W',
+  OPEN_FILTER: 'A',
+  OPEN_PROFILE: 'P',
+  OPEN_EXPLORE: 'E',
+  OPEN_DASHBOARD: 'D',
+  OPEN_NOTIFICATION: 'N',
+  OPEN_POD: 'L',
+  OPEN_MISSION_CONTROL: 'M',
+  CHOOSE_ENTITY: 'C',
+  LIST_VIEW: ',',
+  GRID_VIEW: '.',
+  CALENDAR_VIEW: '/',
+  ENTER_TASK: 'enter',
+  CLAIM_TASK: 'shift+C',
+  ALL_KEYS: '*',
+};
+
+export const ARROW_KEYS = {
+  ARROW_DOWN: 'ArrowDown',
+  ARROW_UP: 'ArrowUp',
+  ARROW_RIGHT: 'ArrowRight',
+  ARROW_LEFT: 'ArrowLeft',
+};
+
+// TODO: Refactor if needed in future PR
 const findNextAvailableStatus = (direction, statusIndex, columns) => {
   let holdStatusIndex = statusIndex;
   for (let i = 0; i <= columns.length; i += 1) {
@@ -42,40 +77,6 @@ const findNextAvailableStatus = (direction, statusIndex, columns) => {
       }
     }
   }
-};
-
-export const HOTKEYS = {
-  GLOBAL_SEARCH: 'shift+enter',
-  LOCAL_SEARCH: 'enter',
-  SHOW_SHORTCUTS: 'shift+S',
-  CREATE_TASK: 'shift+T',
-  CREATE_BOUNTY: 'shift+B',
-  CREATE_MILESTONE: 'shift+M',
-  CREATE_PROPOSAL: 'shift+P',
-  CREATE_DAO: 'shift+D',
-  CREATE_POD: 'shift+L',
-  CREATE_COMMENT: 'W',
-  OPEN_FILTER: 'A',
-  OPEN_PROFILE: 'P',
-  OPEN_EXPLORE: 'E',
-  OPEN_DASHBOARD: 'D',
-  OPEN_NOTIFICATION: 'N',
-  OPEN_POD: 'L',
-  OPEN_MISSION_CONTROL: 'M',
-  CHOOSE_ENTITY: 'C',
-  LIST_VIEW: ',',
-  GRID_VIEW: '.',
-  CALENDAR_VIEW: '/',
-  ENTER_TASK: 'enter',
-  CLAIM_TASK: 'shift+C',
-  ALL_KEYS: '*',
-};
-
-export const ARROW_KEYS = {
-  ARROW_DOWN: 'ArrowDown',
-  ARROW_UP: 'ArrowUp',
-  ARROW_RIGHT: 'ArrowRight',
-  ARROW_LEFT: 'ArrowLeft',
 };
 
 const findFirstAvailableTask = (columns) => columns.findIndex((column) => column.tasks.length > 0);
