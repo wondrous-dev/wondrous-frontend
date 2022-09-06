@@ -20,7 +20,9 @@ type Users = {
   members: Array<User>;
 };
 const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
-  const [createCollabRequest, { data: collabRequest, error, loading }] = useMutation(CREATE_COLLAB_REQUST);
+  const [createCollabRequest, { data: collabRequest, error, loading }] = useMutation(CREATE_COLLAB_REQUST, {
+    onCompleted: () => onCancel(),
+  });
 
   const [step, setStep] = useState(1);
   const [data, setData] = useState<{

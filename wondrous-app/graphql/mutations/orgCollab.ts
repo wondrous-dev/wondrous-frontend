@@ -18,3 +18,20 @@ export const CREATE_COLLAB_REQUST = gql`
   }
   ${OrgFragment}
 `;
+
+export const DECLINE_ORG_COLLAB_REQUEST = gql`
+  mutation declineOrgCollabRequest($orgCollabRequestId: ID!) {
+    declineOrgCollabRequest(orgCollabRequestId: $orgCollabRequestId) {
+      success
+    }
+  }
+`;
+
+export const APPROVE_ORG_COLLAB_REQUEST = gql`
+  mutation approveOrgCollabRequest($orgCollabRequestId: ID!) {
+    approveOrgCollabRequest(orgCollabRequestId: $orgCollabRequestId) {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;

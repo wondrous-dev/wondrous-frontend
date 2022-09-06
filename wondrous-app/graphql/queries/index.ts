@@ -12,3 +12,4 @@ export * from './feed';
 export * from './tokenGating';
 export * from './integration';
 export * from './search';
+export * from './orgCollab';
