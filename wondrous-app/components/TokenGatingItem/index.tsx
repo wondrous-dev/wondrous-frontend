@@ -1,4 +1,5 @@
 import { useLazyQuery } from '@apollo/client';
+import Skeleton from '@mui/material/Skeleton';
 import { SafeImage } from 'components/Common/Image';
 import { GET_NFT_INFO, GET_TOKEN_INFO } from 'graphql/queries';
 import React, { useEffect, useState } from 'react';
@@ -153,28 +154,36 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       </Grid>
 
       <Grid gap="20px" mt="10px" container>
-        {accessConditions.map((accessCondition) => (
-          <Grid key={accessCondition.name + accessCondition.value} sx={{ display: 'flex' }} alignItems="center" item>
-            <Typography color={palette.grey250} fontSize="15px" fontWeight={500} mr="8px" display="inline">
-              {accessCondition.name}:
-            </Typography>
-            {accessCondition.image ? (
-              <SafeImage
-                useNextImage={false}
-                src={accessCondition.image}
-                style={{
-                  width: '29px',
-                  height: '28px',
-                  borderRadius: '4px',
-                  marginRight: '5px',
-                }}
-              />
-            ) : null}
-            <Typography color="white" fontSize="15px" fontWeight={500} display="inline">
-              {accessCondition.value}
-            </Typography>
-          </Grid>
-        ))}
+        {accessConditions.length ? (
+          accessConditions.map((accessCondition) => (
+            <Grid key={accessCondition.name + accessCondition.value} sx={{ display: 'flex' }} alignItems="center" item>
+              <Typography color={palette.grey250} fontSize="15px" fontWeight={500} mr="8px" display="inline">
+                {accessCondition.name}:
+              </Typography>
+              {accessCondition.image ? (
+                <SafeImage
+                  useNextImage={false}
+                  src={accessCondition.image}
+                  style={{
+                    width: '29px',
+                    height: '28px',
+                    borderRadius: '4px',
+                    marginRight: '5px',
+                  }}
+                />
+              ) : null}
+              <Typography color="white" fontSize="15px" fontWeight={500} display="inline">
+                {accessCondition.value}
+              </Typography>
+            </Grid>
+          ))
+        ) : (
+          <Skeleton
+            variant="text"
+            width={100}
+            sx={{ backgroundColor: palette.grey850, fontSize: '20px' }}
+          />
+        )}
       </Grid>
     </Box>
   );
