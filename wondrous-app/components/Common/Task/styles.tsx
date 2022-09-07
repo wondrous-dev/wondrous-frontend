@@ -135,19 +135,6 @@ export const TaskAction = styled.div`
   cursor: pointer;
 `;
 
-export const TaskActionMenu = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  justify-content: flex-end;
-  height: 24px;
-  z-index: 100;
-  align-items: center;
-  > * {
-    margin-left: 12px;
-  }
-`;
-
 export const TaskActionAmount = styled.div`
   display: flex;
   flex-grow: 1;
@@ -159,7 +146,7 @@ export const TaskActionAmount = styled.div`
 export const PodWrapper = styled.div`
   cursor: pointer;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-right: 6px;
   margin-top: 12px;
 `;
@@ -526,4 +513,17 @@ export const DueDateText = styled(Typography)`
 export const LoadMore = styled.div`
   height: 10px;
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
+`;
+
+export const TaskActionMenu = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 24px;
+  width: max-content;
+  z-index: 100;
+  align-items: center;
+  visibility: hidden;
+  ${ProposalCardWrapper}:hover & {
+    visibility: visible;
+  }
 `;
