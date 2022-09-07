@@ -1,7 +1,6 @@
 import { NextRouter, useRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo } from 'react';
 import apollo from 'services/apollo';
-import { TokenGatingCondition } from 'types/TokenGating';
 import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
@@ -24,6 +23,7 @@ import {
   ApprovedSubmissionContext,
   PaymentModalContext,
   SelectMembershipContext,
+  EditTokenGatingConditionContext,
   UserProfileContext,
   GlobalContext,
   TokenGatingContext,
@@ -109,13 +109,7 @@ export const usePaymentModal = () => useContext(PaymentModalContext);
 
 export const useSelectMembership = () => useContext(SelectMembershipContext);
 
-export const useTokenGatingCondition = (): {
-  editTokenGating: (tokenGatingCondition: TokenGatingCondition) => void;
-  deleteTokenGating: (tokenGatingCondition: TokenGatingCondition) => void;
-  closeTokenGatingModal: () => void;
-  selectedTokenGatingCondition: TokenGatingCondition;
-} => useContext(TokenGatingContext);
-
+export const useEditTokenGatingCondition = () => useContext(EditTokenGatingConditionContext);
 /**
  * Hook that alerts clicks outside of the passed ref
  */

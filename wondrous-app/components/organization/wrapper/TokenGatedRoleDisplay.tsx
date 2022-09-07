@@ -13,6 +13,7 @@ import {
 import { useWonderWeb3 } from 'services/web3';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import palette from 'theme/palette';
+import { useEditTokenGatingCondition } from 'utils/hooks';
 import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
 import Tooltip from 'components/Tooltip';
 import { ErrorText } from '../../Common';
@@ -87,7 +88,7 @@ function TokenGatedRoleDisplay(props) {
     },
     fetchPolicy: 'network-only',
   });
-  const contractAddress = role?.tokenGatingCondition?.accessCondition.contractAddress;
+  const contractAddress = role?.tokenGatingCondition?.accessCondition[0].contractAddress;
   const tokenGatingConditionName = role?.tokenGatingCondition?.name;
 
   useEffect(() => {
@@ -131,7 +132,7 @@ function TokenGatedRoleDisplay(props) {
 
   useEffect(() => {
     const getTokenDisplayInfo = async () => {
-      const type = role?.tokenGatingCondition?.accessCondition.type;
+      const type = role?.tokenGatingCondition?.accessCondition[0].type;
       if (type === 'ERC20') {
         getTokenInfo({
           variables: {
@@ -150,7 +151,7 @@ function TokenGatedRoleDisplay(props) {
     };
 
     getTokenDisplayInfo();
-  }, [role?.tokenGatingCondition?.accessCondition[0]?.contractAddress]);
+  }, [role?.tokenGatingCondition?.accessCondition[0].contractAddress]);
 
   const handleClaimRoleClick = async () => {
     try {
@@ -208,7 +209,7 @@ function TokenGatedRoleDisplay(props) {
             Min. amount to hold:
           </TokenGatedRoleDescription>
           <TokenGatedRoleDescription>
-            {role?.tokenGatingCondition?.accessCondition[0]?.minValue}
+            {role?.tokenGatingCondition?.accessCondition[0].minValue}
           </TokenGatedRoleDescription>
         </div>
       </div>

@@ -1,5 +1,5 @@
 import { gql } from '@apollo/client';
-import { TokenGatingConditionFragment, GuildAccessConditionFragment } from 'graphql/fragments/tokenGating';
+import { TokenGatingConditionFragment } from 'graphql/fragments/tokenGating';
 
 export const CREATE_LIT_SIGNATURE = gql`
   mutation createLitSignature($input: LitSignatureCreateInput!) {

@@ -14,6 +14,7 @@ import WalletIcon from 'components/Icons/WalletIcon';
 import CalendarIcon from 'components/Icons/calendar';
 import { EmptyStatePaymentMethodIcon } from 'components/Icons/emptyStates';
 import palette from 'theme/palette';
+
 import {
   PaymentMethodDisplayWrapper,
   PaymentMethodActionMenu,

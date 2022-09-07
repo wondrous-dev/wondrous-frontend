@@ -27,7 +27,7 @@ const Template: ComponentStory<typeof TabsComp> = (props) => {
 };
 export const Tabs = Template.bind({});
 
-const tabs = ['Boards', 'Docs', 'Activity', 'Analytics'].map((tab) => ({ label: tab, value: tab }));
+const tabs = ['Boards', 'Docs', 'Activity', 'Analytics'].map((tab) => ({ label: tab, value: tab, content: tab }));
 
 Tabs.args = {
   tabs,

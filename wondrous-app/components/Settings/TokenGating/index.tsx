@@ -1,70 +1,33 @@
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { DELETE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
-import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries';
-import React, { useContext, useEffect, useState } from 'react';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-
+import ErrorFieldIcon from 'components/Icons/errorField.svg';
+import Ethereum from 'components/Icons/ethereum';
+import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
+import React, { useEffect, useState } from 'react';
+import { useQuery } from '@apollo/client';
 import { GET_ORG_BY_ID } from 'graphql/queries/org';
+import { EditTokenGatingConditionContext } from 'utils/contexts';
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import { TokenGatingCondition } from 'types/TokenGating';
-import { TokenGatingContext } from 'utils/contexts';
-import Button from 'components/Button';
-import palette from 'theme/palette';
-
+import {
+  TokenGatingHeader,
+  TokenGatingDescription,
+  TokenGatingWrapper,
+  TokenGatingElementWrapper,
+  TokenGatingSubHeader,
+  NewTokenGatingButton,
+} from './styles';
 import TokenGatingConditionList from './TokenGatingConditionList';
-import TokenGatingModal from './TokenGatingModal';
+import TokenGatingConfigForm from './TokenGatingConfigForm';
 
-type Props = {
-  orgId: string;
-};
-
-function TokenGatingSettings({ orgId }: Props) {
-  const snackbarContext = useContext(SnackbarAlertContext);
-  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
-  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
-  const setSnackbarAlertSeverity = snackbarContext?.setSnackbarAlertSeverity;
-
-  const [openTokenGatingModal, setOpenTokenGatingModal] = useState(null);
+function TokenGatingSettings(props) {
+  const { orgId } = props;
+  const [showConfigModal, setShowConfigModal] = useState(null);
   const [selectedTokenGatingCondition, setSelectedTokenGatingCondition] = useState(null);
-  const [getOrgById, { data: { getOrgById: org } = { getOrgById: {} } }] = useLazyQuery(GET_ORG_BY_ID);
-  const [deleteTokenGatingCondition] = useMutation(DELETE_TOKEN_GATING_CONDITION, {
-    refetchQueries: [GET_TOKEN_GATING_CONDITIONS_FOR_ORG],
-    onError: () => {
-      setSnackbarAlertOpen(true);
-      setSnackbarAlertSeverity('error');
-      setSnackbarAlertMessage('There are roles associated with this condition!');
+
+  const { data: orgData } = useQuery(GET_ORG_BY_ID, {
+    variables: {
+      orgId,
     },
   });
-
-  useEffect(() => {
-    if (orgId) {
-      getOrgById({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId, getOrgById]);
-
-  const closeTokenGatingModal = () => {
-    setOpenTokenGatingModal(false);
-    setSelectedTokenGatingCondition(null);
-  };
-
-  const deleteTokenGating = (tokenGatingCondition: TokenGatingCondition) => {
-    deleteTokenGatingCondition({
-      variables: {
-        tokenGatingConditionId: tokenGatingCondition?.id,
-      },
-    });
-  };
-
-  const editTokenGating = (tokenGatingCondition: TokenGatingCondition) => {
-    setOpenTokenGatingModal(true);
-    setSelectedTokenGatingCondition(tokenGatingCondition);
-  };
+  const org = orgData?.getOrgById;
 
   return (
     <SettingsWrapper>

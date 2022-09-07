@@ -7,7 +7,6 @@ export const TokenGatingConditionFragment = gql`
     podId
     name
     booleanLogic
-    type
     accessCondition {
       ... on AccessConditionModel {
         contractAddress
