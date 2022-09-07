@@ -607,12 +607,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                         {back && (
                           <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>
                         )}
-                        <TaskModalHeaderShare
-                          entityType={entityType}
-                          url={`${LINK}/organization/${fetchedTask?.orgUsername}/boards?task=${
-                            isSubtask ? fetchedTask?.parentTaskId : taskId
-                          }`}
-                        />
+                        <TaskModalHeaderShare fetchedTask={fetchedTask} />
                         <TaskModalHeaderOpenInFullIcon
                           isFullScreen={fullScreen}
                           onClick={() => setFullScreen(!fullScreen)}
