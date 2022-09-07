@@ -186,7 +186,11 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
             width={100}
             sx={{ backgroundColor: palette.grey850, fontSize: '20px' }}
           />
+<<<<<<< HEAD
 >>>>>>> fd1501d7 (Feature/guild (#978))
+=======
+>>>>>>> 61a86718 (Staging (#980))
+>>>>>>> da55ebfe (Staging (#980))
         )}
       </Grid>
     </Box>

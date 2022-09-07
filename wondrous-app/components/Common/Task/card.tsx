@@ -193,7 +193,11 @@ export function TaskCard({
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
+<<<<<<< HEAD
     <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)} data-cy={`task-card-item-${title}`}>
+=======
+    <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)}>
+>>>>>>> 61a86718 (Staging (#980))
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal

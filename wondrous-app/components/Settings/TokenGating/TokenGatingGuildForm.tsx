@@ -16,7 +16,11 @@ import {
   CREATE_GUILD_ACCESS_CONDITION_FOR_ORG,
   UPDATE_GUILD_ACCESS_CONDITION,
 } from 'graphql/mutations/tokenGating';
+<<<<<<< HEAD
 >>>>>>> fd1501d7 (Feature/guild (#978))
+=======
+>>>>>>> 61a86718 (Staging (#980))
+>>>>>>> da55ebfe (Staging (#980))
 import Button from 'components/Button';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import SmartLink from 'components/Common/SmartLink';
