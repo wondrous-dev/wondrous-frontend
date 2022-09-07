@@ -1,6 +1,6 @@
-import Tabs from "components/Tabs";
+import Tabs from 'components/Tabs';
 import TokenGatingItem from 'components/TokenGatingItem';
-import React, {useState, useEffect, useMemo} from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
@@ -37,9 +37,8 @@ import styles, {
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import {TOKEN_GATING_CONDITION_TYPE} from "utils/constants";
+import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
-import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import {
   Box,

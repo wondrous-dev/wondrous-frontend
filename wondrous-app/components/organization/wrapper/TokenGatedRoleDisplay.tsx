@@ -17,7 +17,6 @@ import { CLAIM_POD_ROLE, CLAIM_ORG_ROLE } from 'graphql/mutations/tokenGating';
 import Tooltip from 'components/Tooltip';
 import { ErrorText } from '../../Common';
 import Accordion from '../../Common/Accordion';
-import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { useMe } from '../../Auth/withAuth';
 
 import {

@@ -1,5 +1,4 @@
 import { Typography } from '@mui/material';
-import { DropDown, DropDownItem } from 'components/Common/dropdown';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import TableCell from '@mui/material/TableCell';
@@ -64,7 +63,3 @@ export const PodsCount = styled.div`
   text-align: center;
   display: inline-block;
 `;
-
-export const MemberDropdown = styled(DropDown)``;
-
-export const MemberDropdownItem = styled(DropDownItem)``;
