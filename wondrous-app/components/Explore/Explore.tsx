@@ -8,7 +8,9 @@ import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';
 import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
 import palette from 'theme/palette';
-import { GRID_MOBILE_STYLES, TABS_LABELS } from 'utils/constants';
+import { TABS_LABELS } from 'utils/constants';
+import { gridMobileStyles } from 'utils/styles';
+
 import BountySection from 'components/BountySection';
 import DaoSection from 'components/DaoSection';
 import ExploreFilters from 'components/ExploreFilters';
@@ -122,7 +124,7 @@ function ExploreComponent() {
         flexDirection: 'column',
       }}
     >
-      <BackgroundContainer style={isMobile ? GRID_MOBILE_STYLES : {}}>
+      <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />
         <Wheel />
         <BackgroundTextWrapper>

@@ -804,12 +804,6 @@ export const FEATURED_LIST = [
   },
 ];
 
-export const GRID_MOBILE_STYLES = {
-  width: '100%',
-  maxWidth: '100vw',
-  marginLeft: '0',
-};
-
 export const TABS_LABELS = {
   DAOS: 'daos',
   BOUNTY: 'bounty',
