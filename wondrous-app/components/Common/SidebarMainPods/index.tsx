@@ -2,6 +2,7 @@ import { Badge } from '@mui/material';
 import { PodModal } from 'components/Common/PodModal';
 import { PodsButton, PodsIconWrapper } from 'components/Common/SidebarMainPods/styles';
 import SidebarTooltip from 'components/Common/SidebarMainTooltip';
+import ChooseEntityToCreate from 'components/CreateEntity';
 import PodsIcon from 'components/Icons/Sidebar/podsGradient.svg';
 import { useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -23,6 +24,7 @@ const PodsIconButton = () => {
   return (
     <>
       <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />
+      <ChooseEntityToCreate />
       <SidebarTooltip title="Pods" style={{ zIndex: 2 }}>
         <PodsButton onClick={() => setOpenPodModal(true)} isActive={openPodModal}>
           <Badge badgeContent={HOTKEYS.OPEN_POD} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>

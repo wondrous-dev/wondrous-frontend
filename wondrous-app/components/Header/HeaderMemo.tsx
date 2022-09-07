@@ -27,25 +27,17 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
           {!isMobile && <Wallet />}
           {!isMobile && <GlobalSearch />}
           <NotificationsBoard />
-
-          {showCreateButton && (
-            <HeaderCreateButton
-              highlighted="true"
-              onClick={() => {
-                openCreateFormModal();
-              }}
-              visibility={showCreateButton}
-            >
-              <Badge
-                badgeContent={HOTKEYS.CHOOSE_ENTITY}
-                color="primary"
-                invisible={!showBadge}
-                style={{ zIndex: 999 }}
-              >
-                <CreateIconOutlined id="tour-header-create-btn" />
-              </Badge>
-            </HeaderCreateButton>
-          )}
+          <HeaderCreateButton
+            highlighted="true"
+            onClick={() => {
+              openCreateFormModal();
+            }}
+            visibility
+          >
+            <Badge badgeContent={HOTKEYS.CHOOSE_ENTITY} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
+              <CreateIconOutlined id="tour-header-create-btn" />
+            </Badge>
+          </HeaderCreateButton>
         </>
       )}
       {!user && (

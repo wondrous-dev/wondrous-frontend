@@ -72,7 +72,6 @@ export default function SidebarLayout({ children }) {
   }
   return (
     <SideBarContext.Provider value={sidebarValue}>
-      <SideBarComponent userOrgs={userOrgs} />
       <GlobalContext.Provider
         value={{
           isCreateEntityModalOpen: createFormModal,
@@ -87,6 +86,7 @@ export default function SidebarLayout({ children }) {
           notificationsLoading,
         }}
       >
+        <SideBarComponent userOrgs={userOrgs} />
         <HeaderComponent />
         <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
       </GlobalContext.Provider>
