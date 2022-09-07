@@ -83,19 +83,27 @@ function ChooseEntityToCreate(props) {
 
   useHotkeys(HOTKEYS.CREATE_TASK, () => {
     setEntityType(ENTITIES_TYPES.TASK);
-    toggleOpen();
+    if (open) {
+      toggleOpen();
+    }
   });
   useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
     setEntityType(ENTITIES_TYPES.BOUNTY);
-    toggleOpen();
+    if (open) {
+      toggleOpen();
+    }
   });
   useHotkeys(HOTKEYS.CREATE_POD, () => {
     setEntityType(ENTITIES_TYPES.POD);
-    toggleOpen();
+    if (open) {
+      toggleOpen();
+    }
   });
   useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
     setEntityType(ENTITIES_TYPES.PROPOSAL);
-    toggleOpen();
+    if (open) {
+      toggleOpen();
+    }
   });
   useHotkeys(
     HOTKEYS.CHOOSE_ENTITY,
@@ -103,7 +111,7 @@ function ChooseEntityToCreate(props) {
       toggleOpen();
       resetEntityType();
     },
-    [open, toggleOpen]
+    [open]
   );
 
   if (entityType) {

@@ -660,3 +660,8 @@ export const RoleColorsAndEmojis = {
     emoji: '🐦',
   },
 };
+
+export enum TOKEN_GATING_CONDITION_TYPE {
+  GUILD = 'guild',
+  TOKEN_GATE = 'token_gate',
+}

@@ -4,12 +4,10 @@ import Wallet from 'components/Common/Wallet';
 import GlobalSearch from 'components/GlobalSearch';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
-import { memo } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { Notification } from 'types/Notification';
 import { User } from 'types/User';
-import { useGlobalContext, useHotkey } from 'utils/hooks';
+import { useHotkey } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import { memo } from 'react';
 import { HeaderBar, HeaderCreateButton } from './styles';
 
 type Props = {

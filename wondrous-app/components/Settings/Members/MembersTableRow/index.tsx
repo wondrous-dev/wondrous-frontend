@@ -5,7 +5,8 @@ import { SafeImage } from 'components/Common/Image';
 import CopyIcon from 'components/Icons/copy';
 import { useWonderWeb3 } from 'services/web3';
 import PodIcon from 'components/Icons/podIcon';
-import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import Dropdown from 'components/Common/Dropdown';
+import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import palette from 'theme/palette';
 import MemberRoleSelectionDropdown from './MemberRoleSelectionDropdown';
@@ -119,10 +120,10 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
           {userPodCount || 0} {userPodCount ? 'Pods' : 'Pod'}
         </UserPodCount>
         <UserOptions>
-          <DropDown
+          <Dropdown
             DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke={palette.white} />}
           >
-            <DropDownItem
+            <DropdownItem
               onClick={() => promptRemoveUser(user)}
               style={{
                 color: palette.white,
@@ -130,8 +131,8 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
               }}
             >
               Remove Member
-            </DropDownItem>
-          </DropDown>
+            </DropdownItem>
+          </Dropdown>
         </UserOptions>
       </Grid>
     </Grid>
