@@ -21,6 +21,7 @@ import { Task } from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 
 import Milestone from 'components/Common/Milestone';
+import { useMe } from 'components/Auth/withAuth';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
@@ -42,7 +43,6 @@ interface ITaskColumn {
   moveCard: any;
   status: string;
   section: Array<any>;
-  handleStatusPicked: any;
 }
 
 const TITLES = {
@@ -67,7 +67,7 @@ const HEADER_ICONS = {
 };
 
 function TaskColumn(props: ITaskColumn) {
-  const { cardsList, moveCard, status, section, handleStatusPicked } = props;
+  const { cardsList, moveCard, status, section } = props;
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
@@ -192,7 +192,7 @@ function TaskColumn(props: ITaskColumn) {
                           <Task task={card} setTask={() => {}} />
                         </Milestone>
                       ) : (
-                        <Task task={card} setTask={() => {}} handleStatusPicked={handleStatusPicked} />
+                        <Task task={card} setTask={() => {}} />
                       )}
                     </div>
                   )}

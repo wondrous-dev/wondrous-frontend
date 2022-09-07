@@ -46,7 +46,7 @@ export const PodsIconWrapper = styled.div`
   justify-content: center;
   position: relative;
   width: 36px;
-  z-index: 1;
+  z-index: 2;
   background: ${({ theme }) => theme.palette.grey87};
 `;
 

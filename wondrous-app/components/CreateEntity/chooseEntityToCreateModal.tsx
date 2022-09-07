@@ -7,8 +7,7 @@ import { useRouter } from 'next/router';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useQuery } from '@apollo/client';
-import { useHotkey, useOrgBoard, usePodBoard } from 'utils/hooks';
-import { HOTKEYS } from 'utils/hotkeyHelper';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import {
   CreateLayoutDaoIcon,
   CreateLayoutMilestoneIcon,
@@ -24,7 +23,6 @@ import {
   CreateLayoutTaskIcon,
   CreateLayoutBountyIcon,
   CreateLayoutProposalIcon,
-  CreateLayoutsModalSubtitle,
 } from './styles';
 import RightArrowIcon from '../Icons/rightArrow';
 import CloseModalIcon from '../Icons/closeModal';
@@ -33,32 +31,26 @@ export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.TASK]: {
     icon: CreateLayoutTaskIcon,
     label: 'Task',
-    hotkey: HOTKEYS.CREATE_TASK,
   },
   [ENTITIES_TYPES.MILESTONE]: {
     icon: CreateLayoutMilestoneIcon,
     label: 'Milestone',
-    hotkey: HOTKEYS.CREATE_MILESTONE,
   },
   [ENTITIES_TYPES.POD]: {
     icon: CreateLayoutPodsIcon,
     label: 'Pod',
-    hotkey: HOTKEYS.CREATE_POD,
   },
   [ENTITIES_TYPES.ORG]: {
     icon: CreateLayoutDaoIcon,
     label: 'DAO',
-    hotkey: HOTKEYS.CREATE_DAO,
   },
   [ENTITIES_TYPES.BOUNTY]: {
     icon: CreateLayoutBountyIcon,
     label: 'Bounty',
-    hotkey: HOTKEYS.CREATE_BOUNTY,
   },
   [ENTITIES_TYPES.PROPOSAL]: {
     icon: CreateLayoutProposalIcon,
     label: 'Proposal',
-    hotkey: HOTKEYS.CREATE_PROPOSAL,
   },
 };
 
@@ -72,7 +64,6 @@ function ChooseEntityToCreateModal(props) {
   });
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
-  const showBadge = useHotkey();
   const board = orgBoard || podBoard;
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
     ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
@@ -113,14 +104,13 @@ function ChooseEntityToCreateModal(props) {
       </CreateLayoutsModalHeader>
       <CreateLayoutsModalItemContainer>
         {/* {Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => ( */}
-        {entries.map(([key, { icon: EntityIcon, label, hotkey }]) => (
+        {entries.map(([key, { icon: EntityIcon, label }]) => (
           <CreateLayoutsModalItem key={key} onClick={() => setEntityType(key)}>
             <CreateLayoutsModalItemTitleBlock>
               <EntityIcon circle />
               <CreateLayoutsModalItemTitle>{label}</CreateLayoutsModalItemTitle>
             </CreateLayoutsModalItemTitleBlock>
             <IconButton>
-              {showBadge ? <CreateLayoutsModalSubtitle>{hotkey}</CreateLayoutsModalSubtitle> : null}
               <RightArrowIcon />
             </IconButton>
           </CreateLayoutsModalItem>

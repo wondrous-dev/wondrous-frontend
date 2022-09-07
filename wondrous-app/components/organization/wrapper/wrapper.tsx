@@ -1,84 +1,83 @@
-/* eslint-disable import/no-named-as-default-member */
-import { Box } from '@mui/system';
-import { useEffect, useState } from 'react';
-import apollo from 'services/apollo';
+import React, { useEffect, useState } from 'react';
 import {
   ENTITIES_TYPES,
   PERMISSIONS,
   PRIVACY_LEVEL,
   SOCIAL_MEDIA_DISCORD,
-  SOCIAL_MEDIA_LINKEDIN,
   SOCIAL_MEDIA_TWITTER,
   SOCIAL_OPENSEA,
+  SOCIAL_MEDIA_LINKEDIN,
 } from 'utils/constants';
+import apollo from 'services/apollo';
+import { Box } from '@mui/system';
 
-import BoardsActivity from 'components/Common/BoardsActivity';
 import TypeSelector from 'components/TypeSelector';
-import DefaultBg from 'public/images/overview/background.png';
 import { parseUserPermissionContext } from 'utils/helpers';
+import BoardsActivity from 'components/Common/BoardsActivity';
+import DefaultBg from 'public/images/overview/background.png';
 
+import { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import ChooseEntityToCreate from 'components/CreateEntity';
-import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
-import { RichTextViewer } from 'components/RichText';
+import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
-import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { useRouter } from 'next/router';
+import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
+import { useWonderWeb3 } from 'services/web3';
 import {
-  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
   GET_TOKEN_GATED_ROLES_FOR_ORG,
   LIT_SIGNATURE_EXIST,
+  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
 } from 'graphql/queries';
-import { GET_TASKS_PER_TYPE, GET_USER_JOIN_ORG_REQUEST } from 'graphql/queries/org';
-import { useRouter } from 'next/router';
+import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
+import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
-import { useWonderWeb3 } from 'services/web3';
-import { useOrgBoard, useTokenGating } from 'utils/hooks';
-import { HOTKEYS } from 'utils/hotkeyHelper';
-import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import { useMe } from '../../Auth/withAuth';
-import { SafeImage } from '../../Common/Image';
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
-import { ToggleBoardPrivacyIcon, TokenGatedBoard } from '../../Common/PrivateBoardIcon';
-import { DAOEmptyIcon } from '../../Icons/dao';
-import { DiscordIcon } from '../../Icons/discord';
-import LinkedInIcon from '../../Icons/linkedIn';
-import OpenSeaIcon from '../../Icons/openSea';
-import TwitterPurpleIcon from '../../Icons/twitterPurple';
-import { MoreInfoModal } from '../../profile/modals';
-import Tabs from '../tabs/tabs';
+import { CreateModalOverlay } from 'components/CreateEntity/styles';
+import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
+import ChooseEntityToCreate from 'components/CreateEntity';
+import BoardLock from 'components/BoardLock';
+import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MembershipRequestModal } from './RequestModal';
+import { DiscordIcon } from '../../Icons/discord';
+import OpenSeaIcon from '../../Icons/openSea';
+import LinkedInIcon from '../../Icons/linkedIn';
+import { DAOEmptyIcon } from '../../Icons/dao';
+import { MoreInfoModal } from '../../profile/modals';
+import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
+import { SafeImage } from '../../Common/Image';
 import {
-  BoardsSubheaderWrapper,
   Content,
   ContentContainer,
   HeaderActivity,
   HeaderActivityLink,
   HeaderActivityLinkIcon,
-  HeaderButton,
   HeaderButtons,
   HeaderContributors,
   HeaderContributorsAmount,
   HeaderContributorsText,
-  HeaderImageWrapper,
   HeaderMainBlock,
+  HeaderButton,
   HeaderPods,
   HeaderPodsAmount,
   HeaderPodsText,
-  HeaderTag,
   HeaderText,
   HeaderTitle,
+  TokenHeader,
+  TokenEmptyLogo,
   HeaderTitleIcon,
-  RoleButton,
+  HeaderImage,
+  HeaderImageWrapper,
+  HeaderTag,
+  BoardsSubheaderWrapper,
   RoleButtonWrapper,
   RoleText,
-  TokenEmptyLogo,
-  TokenHeader,
+  RoleButton,
   Container,
   SettingsButton,
   InviteButton,
 } from './styles';
+import { useMe } from '../../Auth/withAuth';
+import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
 function Wrapper(props) {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
@@ -93,7 +92,6 @@ function Wrapper(props) {
     CONTRIBUTOR: 'contributor',
   };
 
-  const [typeEntity, setTypeEntity] = useState(ENTITIES_TYPES.TASK);
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -277,20 +275,7 @@ function Wrapper(props) {
     }
   }, [orgBoard?.orgId]);
 
-  useHotkeys(HOTKEYS.CREATE_TASK, () => {
-    setTypeEntity(ENTITIES_TYPES.TASK);
-    setCreateTaskModalOpen((prevState) => !prevState);
-  });
-  useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
-    setTypeEntity(ENTITIES_TYPES.BOUNTY);
-    setCreateTaskModalOpen((prevState) => !prevState);
-  });
-  useHotkeys(HOTKEYS.CREATE_MILESTONE, () => {
-    setTypeEntity(ENTITIES_TYPES.MILESTONE);
-    setCreateTaskModalOpen((prevState) => !prevState);
-  });
-  useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
-    setTypeEntity(ENTITIES_TYPES.PROPOSAL);
+  useHotkeys('tab+t', () => {
     setCreateTaskModalOpen((prevState) => !prevState);
   });
 
@@ -336,7 +321,7 @@ function Wrapper(props) {
         onClose={() => setCreateTaskModalOpen(false)}
       >
         <CreateEntityModal
-          entityType={typeEntity}
+          entityType={ENTITIES_TYPES.TASK}
           handleClose={() => setCreateTaskModalOpen(false)}
           resetEntityType={() => {}}
           setEntityType={() => {}}

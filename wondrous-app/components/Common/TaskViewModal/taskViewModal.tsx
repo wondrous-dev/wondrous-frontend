@@ -11,7 +11,7 @@ import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } fro
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
@@ -40,11 +40,17 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
+import {
+  useColumns,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useCanViewTask,
+  useUserProfile,
+  useGlobalContext,
+} from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useMe } from '../../Auth/withAuth';
 import {
   CreateFormButtonsBlock,
@@ -186,6 +192,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
+
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
@@ -247,10 +254,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       // TODO: Move columns
       // let columns = [...boardColumns?.columns]
     },
-  });
-
-  useHotkeys(HOTKEYS.CREATE_COMMENT, () => {
-    setActiveTab(tabs.discussion);
   });
 
   useEffect(() => {
@@ -501,7 +504,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     setFetchedTask(null);
     handleClose();
   };
-
   return (
     <ApprovedSubmissionContext.Provider
       value={{
