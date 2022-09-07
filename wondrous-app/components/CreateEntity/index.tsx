@@ -84,24 +84,31 @@ function ChooseEntityToCreate(props) {
   useHotkeys(HOTKEYS.CREATE_TASK, () => {
     setEntityType(ENTITIES_TYPES.TASK);
     if (open) {
+      resetEntityType();
+
       toggleOpen();
     }
   });
   useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
     setEntityType(ENTITIES_TYPES.BOUNTY);
     if (open) {
+      resetEntityType();
+
       toggleOpen();
     }
   });
   useHotkeys(HOTKEYS.CREATE_POD, () => {
     setEntityType(ENTITIES_TYPES.POD);
     if (open) {
+      resetEntityType();
+
       toggleOpen();
     }
   });
   useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
     setEntityType(ENTITIES_TYPES.PROPOSAL);
     if (open) {
+      resetEntityType();
       toggleOpen();
     }
   });
@@ -119,10 +126,16 @@ function ChooseEntityToCreate(props) {
       <CreateEntity
         entityType={entityType}
         isTaskProposal={entityType === ENTITIES_TYPES.PROPOSAL}
-        handleCloseModal={handleCloseModal}
+        handleCloseModal={() => {
+          resetEntityType();
+          handleCloseModal();
+        }}
         open={open}
         cancel={resetEntityType}
-        handleClose={handleCloseModal}
+        handleClose={() => {
+          resetEntityType();
+          handleCloseModal();
+        }}
       />
     );
   }
