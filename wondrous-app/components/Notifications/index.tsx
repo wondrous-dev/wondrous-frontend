@@ -1,41 +1,36 @@
-import { useMutation } from '@apollo/client';
-import { Badge } from '@mui/material';
-import { LoadMore } from 'components/Common/KanbanBoard/styles';
-import SmartLink from 'components/Common/SmartLink';
-import NotificationsIcon from 'components/Icons/notifications';
-import Tooltip from 'components/Tooltip';
-import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
-import { GET_NOTIFICATIONS } from 'graphql/queries';
-import Link from 'next/link';
-import { useInView } from 'react-intersection-observer';
-import { useEffect, useMemo, useState } from 'react';
-import { useHotkeys } from 'react-hotkeys-hook';
-import calculateTimeLapse from 'utils/calculateTimeLapse';
+import React, { useMemo, useState, useEffect } from 'react';
 import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
-import { useHotkey, useNotifications } from 'utils/hooks';
-import { HOTKEYS } from 'utils/hotkeyHelper';
+import NotificationsIcon from 'components/Icons/notifications';
+import Link from 'next/link';
+import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import { useInView } from 'react-intersection-observer';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
+import calculateTimeLapse from 'utils/calculateTimeLapse';
+import SmartLink from 'components/Common/SmartLink';
+import Tooltip from 'components/Tooltip';
+import { useNotifications } from 'utils/hooks';
 import { LIMIT } from 'services/board';
-import { SmallAvatar } from '../Common/AvatarList';
-import { StyledBadge } from '../Header/styles';
 import {
   NotificationItemBody,
   NotificationItemIcon,
-  NotificationItemInner,
   NotificationItemStatus,
   NotificationItemTimeline,
   NotificationsBoardArrow,
   NotificationsBoardHeader,
   NotificationsBoardOverArrow,
   NotificationsBoardWrapper,
-  NotificationsContentPreview,
-  NotificationsDot,
   NotificationsItem,
-  NotificationsLink,
   NotificationsMarkRead,
   NotificationsOverlay,
-  NotificationsTitle,
+  NotificationsLink,
+  NotificationItemInner,
   NotificationWrapper,
+  NotificationsContentPreview,
+  NotificationsDot,
+  NotificationsTitle,
 } from './styles';
+import { StyledBadge } from '../Header/styles';
+import { SmallAvatar } from '../Common/AvatarList';
 
 function NotificationsBoard({ onlyBoard = false }) {
   const { notifications, unreadCount, fetchMore, markAllNotificationsRead, markNotificationRead, hasMore } =
@@ -45,20 +40,11 @@ function NotificationsBoard({ onlyBoard = false }) {
   const toggleNotifications = () => {
     setIsOpen(!isOpen);
   };
-  const showBadge = useHotkey();
 
   const handleMarkAllRead = async () => {
     // Mark all read (empty arg)
     markAllNotificationsRead();
   };
-
-  useHotkeys(
-    HOTKEYS.OPEN_NOTIFICATION,
-    () => {
-      setIsOpen(!isOpen);
-    },
-    [isOpen]
-  );
 
   const getNotificationActorIcon = (notification) => {
     const initials = notification?.actorUsername && notification.actorUsername[0];
@@ -166,23 +152,16 @@ function NotificationsBoard({ onlyBoard = false }) {
   return (
     <>
       <NotificationsOverlay onClick={toggleNotifications} style={{ display }} />
-      <div style={{ position: 'relative', zIndex: -1 }}>
+      <div style={{ position: 'relative' }}>
         <StyledBadge
           color="primary"
           hasUnreadNotifications={unreadCount > 0}
           isOpen={isOpen}
           onClick={toggleNotifications}
         >
-          <Badge
-            badgeContent={HOTKEYS.OPEN_NOTIFICATION}
-            color="primary"
-            invisible={!showBadge}
-            style={{ zIndex: 999 }}
-          >
-            <Tooltip title="Notifications" style={{ zIndex: 1 }}>
-              <NotificationsIcon />
-            </Tooltip>
-          </Badge>
+          <Tooltip title="Notifications">
+            <NotificationsIcon />
+          </Tooltip>
         </StyledBadge>
         <NotificationsBoardWrapper style={{ display }}>
           <NotificationsBoardHeader>

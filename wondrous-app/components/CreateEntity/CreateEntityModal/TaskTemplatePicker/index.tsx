@@ -5,9 +5,15 @@ import { RichTextViewer } from 'components/RichText';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
 import { GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
 import { useEffect, useState } from 'react';
+import {
+  CreateEntityAutocompletePopperRenderInputAdornment,
+  CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityTextfieldInputTemplate,
+} from 'components/CreateEntity/CreateEntityModal/styles';
 import { MODAL_ACTIONS } from 'utils/constants';
 import { Typography } from '@mui/material';
 import {
+  CreateEntityDefaultDaoImage,
   PodSearchLabel,
   PodSearchListItem,
   TaskTemplateActionPopper,
@@ -36,10 +42,6 @@ import {
   TaskTemplateTitle,
   TaskTemplateTitleBar,
   TaskTemplateActionContainer,
-  TaskTemplateAutocompletePopperRenderInputAdornment,
-  TaskTemplateAutocompletePopperRenderInputIcon,
-  TaskTemplateDefaultDaoImage,
-  TaskTemplateTextfieldInputTemplate,
 } from './styles';
 import TemplateEllipsesIcon from './TemplateEllipsesIcon';
 
@@ -173,7 +175,7 @@ function TaskTemplatePicker(props) {
                   ) : null}
                   {template?.points ? (
                     <TaskTemplateRewardBox>
-                      <TaskTemplateDefaultDaoImage onClick={handleEllipsesClick} />
+                      <CreateEntityDefaultDaoImage onClick={handleEllipsesClick} />
 
                       <TaskTemplatePointsValue>{template?.points} points</TaskTemplatePointsValue>
                     </TaskTemplateRewardBox>
@@ -292,16 +294,16 @@ function TaskTemplatePicker(props) {
                 value={templateValue}
                 fullWidth
                 InputProps={{
-                  inputComponent: TaskTemplateTextfieldInputTemplate,
+                  inputComponent: CreateEntityTextfieldInputTemplate,
                   endAdornment: (
-                    <TaskTemplateAutocompletePopperRenderInputAdornment
+                    <CreateEntityAutocompletePopperRenderInputAdornment
                       position="end"
                       onClick={() => {
                         setTemplateValue(null);
                       }}
                     >
-                      <TaskTemplateAutocompletePopperRenderInputIcon />
-                    </TaskTemplateAutocompletePopperRenderInputAdornment>
+                      <CreateEntityAutocompletePopperRenderInputIcon />
+                    </CreateEntityAutocompletePopperRenderInputAdornment>
                   ),
                 }}
               />

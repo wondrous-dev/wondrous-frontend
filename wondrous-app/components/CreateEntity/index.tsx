@@ -3,8 +3,6 @@ import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useRouter } from 'next/router';
 import { useGlobalContext } from 'utils/hooks';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { HOTKEYS } from 'utils/hotkeyHelper';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
 import CreateEntityModal from './CreateEntityModal/index';
@@ -80,46 +78,6 @@ function ChooseEntityToCreate(props) {
     resetEntityType();
     toggleOpen();
   };
-
-  useHotkeys(HOTKEYS.CREATE_TASK, () => {
-    setEntityType(ENTITIES_TYPES.TASK);
-    if (open) {
-      resetEntityType();
-
-      toggleOpen();
-    }
-  });
-  useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
-    setEntityType(ENTITIES_TYPES.BOUNTY);
-    if (open) {
-      resetEntityType();
-
-      toggleOpen();
-    }
-  });
-  useHotkeys(HOTKEYS.CREATE_POD, () => {
-    setEntityType(ENTITIES_TYPES.POD);
-    if (open) {
-      resetEntityType();
-
-      toggleOpen();
-    }
-  });
-  useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
-    setEntityType(ENTITIES_TYPES.PROPOSAL);
-    if (open) {
-      resetEntityType();
-      toggleOpen();
-    }
-  });
-  useHotkeys(
-    HOTKEYS.CHOOSE_ENTITY,
-    () => {
-      toggleOpen();
-      resetEntityType();
-    },
-    [open]
-  );
 
   if (entityType) {
     return (

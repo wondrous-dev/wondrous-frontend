@@ -27,7 +27,7 @@ export const ExploreButton = styled(ButtonBase)`
     justify-content: center;
     position: relative;
     width: 36px;
-    z-index: 1;
+    z-index: 2;
     :hover {
       ${ButtonIconBefore}
     }

@@ -83,19 +83,6 @@ export const CreateLayoutsModalTitle = styled(Typography)`
   }
 `;
 
-export const CreateLayoutsModalSubtitle = styled(Typography)`
-  && {
-    font-weight: bold;
-    font-size: 12px;
-    line-height: 23px;
-    color: white;
-    background: -webkit-linear-gradient(180deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    margin-right: 12px;
-  }
-`;
-
 export const CreateLayoutsModalCloseButton = styled(IconButton)`
   && {
     width: 34px;
