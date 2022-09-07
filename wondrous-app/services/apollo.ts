@@ -5,9 +5,7 @@ import { getAuthHeader, getWaitlistAuthHeader } from 'components/Auth/withAuth';
 import offsetLimitPaginationInput from 'utils/offsetLimitPaginationInput';
 
 // Staging is http://34.135.9.199/graphql
-const graphqlUri = !process.env.NEXT_PUBLIC_STAGING
-  ? process.env.NEXT_PUBLIC_GRAPHQL_SERVER_URL
-  : 'https://apistaging.wonderapp.co/graphql';
+const graphqlUri = 'https://apistaging.wonderapp.co/graphql';
 
 const httpLink = new HttpLink({
   uri: graphqlUri,
