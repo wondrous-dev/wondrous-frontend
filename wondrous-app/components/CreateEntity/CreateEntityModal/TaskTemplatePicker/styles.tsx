@@ -6,7 +6,9 @@ import EllipsesIcon from 'components/Icons/ellipsesIcon';
 import Ethereum from 'components/Icons/ethereum';
 import PodIcon from 'components/Icons/podIcon';
 import PointsIconCustom from 'components/Icons/PointsIconCustom';
+import SearchIcon from 'components/Icons/search';
 import styled, { css } from 'styled-components';
+import theme from 'theme';
 import { greyColors, white } from 'theme/colors';
 import palette from 'theme/palette';
 import Arrow from '../../../Icons/arrow.svg';
@@ -256,58 +258,6 @@ export const TaskTemplateSpecificTitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 12px;
-`;
-
-export const TaskTemplateAutocompletePopperRenderInputAdornment = styled(InputAdornment)`
-  display: flex;
-  align-items: center;
-  :hover {
-    cursor: pointer;
-  }
-
-  img {
-    width: 24px;
-    height: 24px;
-    border-radius: 50px;
-  }
-`;
-
-export const TaskTemplateAutocompletePopperRenderInputIcon = styled(CloseModalIcon)`
-  && {
-    path {
-      fill: #c4c4c4;
-    }
-  }
-`;
-
-export const TaskTemplateDefaultDaoImage = styled(PointsIconCustom)`
-  color: linear-gradient(180deg, ${white}, 0%, #ffd653 100%);
-  background: #000000;
-  width: 24px;
-  height: 24px;
-  padding: 6px;
-  border-radius: 20px;
-  margin-right: 8px;
-`;
-
-export const TaskTemplateTextfieldInputTemplate = styled(TextField)`
-  && {
-    padding: 0;
-  }
-  .MuiOutlinedInput-root {
-    height: 32px;
-    padding: 0;
-    font-family: 'Space Grotesk';
-    font-size: 13px;
-    font-weight: 500;
-    color: #ffffff;
-    .MuiOutlinedInput-input {
-      padding: 0;
-    }
-    .MuiOutlinedInput-notchedOutline {
-      border: none;
-    }
-  }
 `;
 
 export const TaskTemplateCloseIcon = styled(CloseModalIcon)`
