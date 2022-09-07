@@ -10,31 +10,31 @@ export const TokenGatingConditionFragment = gql`
     type
     accessCondition {
       ... on AccessConditionModel {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
+        contractAddress
+        type
+        chain
+        method
+        minValue
+        tokenIds
       }
       ... on GuildAccessConditionModel {
-          guildId
-          roleId
+        guildId
+        roleId
       }
     }
   }
 `;
 
 export const GuildAccessConditionFragment = gql`
-    fragment GuildAccessConditionFragment on GuildAccessCondition {
-        id
-        orgId
-        podId
-        name
-        type
-        accessCondition {
-            guildId
-            roleId
-        }
+  fragment GuildAccessConditionFragment on GuildAccessCondition {
+    id
+    orgId
+    podId
+    name
+    type
+    accessCondition {
+      guildId
+      roleId
     }
+  }
 `;

@@ -164,7 +164,7 @@ function TaskSubmissionList({
     }
 
     return fetchedTaskSubmissions?.filter((submission) => submission?.createdBy === loggedInUser?.id);
-  }, [canReview, fetchedTask, fetchedTaskSubmissions, loggedInUser])
+  }, [canReview, fetchedTask, fetchedTaskSubmissions, loggedInUser]);
 
   return (
     <TaskSubmissionItemsWrapper data-cy="item-submission">

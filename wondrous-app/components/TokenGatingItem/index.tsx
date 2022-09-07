@@ -178,11 +178,7 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
             </Grid>
           ))
         ) : (
-          <Skeleton
-            variant="text"
-            width={100}
-            sx={{ backgroundColor: palette.grey850, fontSize: '20px' }}
-          />
+          <Skeleton variant="text" width={100} sx={{ backgroundColor: palette.grey850, fontSize: '20px' }} />
         )}
       </Grid>
     </Box>
