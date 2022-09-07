@@ -8,7 +8,7 @@ import { memo } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Notification } from 'types/Notification';
 import { User } from 'types/User';
-import { useHotkey } from 'utils/hooks';
+import { useGlobalContext, useHotkey } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { HeaderBar, HeaderCreateButton } from './styles';
 
@@ -21,9 +21,6 @@ type Props = {
 };
 
 const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
-  useHotkeys(HOTKEYS.CHOOSE_ENTITY, () => {
-    openCreateFormModal();
-  });
   const showBadge = useHotkey();
   return (
     <HeaderBar>
@@ -34,7 +31,13 @@ const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateBu
           <NotificationsBoard />
 
           {showCreateButton && (
-            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+            <HeaderCreateButton
+              highlighted="true"
+              onClick={() => {
+                openCreateFormModal();
+              }}
+              visibility={showCreateButton}
+            >
               <Badge
                 badgeContent={HOTKEYS.CHOOSE_ENTITY}
                 color="primary"

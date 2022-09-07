@@ -69,7 +69,6 @@ export function CreateEntity(props: ICreateEntity) {
 
 function ChooseEntityToCreate(props) {
   const globalContext = useGlobalContext();
-  const [openChooseEntity, setOpenChooseEntity] = useState(false);
   const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
@@ -84,34 +83,26 @@ function ChooseEntityToCreate(props) {
 
   useHotkeys(HOTKEYS.CREATE_TASK, () => {
     setEntityType(ENTITIES_TYPES.TASK);
-    setOpenChooseEntity(false);
-
     toggleOpen();
   });
   useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
     setEntityType(ENTITIES_TYPES.BOUNTY);
-    setOpenChooseEntity(false);
-
     toggleOpen();
   });
   useHotkeys(HOTKEYS.CREATE_POD, () => {
     setEntityType(ENTITIES_TYPES.POD);
-    setOpenChooseEntity(false);
-
     toggleOpen();
   });
   useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
     setEntityType(ENTITIES_TYPES.PROPOSAL);
-    setOpenChooseEntity(false);
-
     toggleOpen();
   });
   useHotkeys(
     HOTKEYS.CHOOSE_ENTITY,
     () => {
-      setOpenChooseEntity(!openChooseEntity);
+      toggleOpen();
     },
-    [openChooseEntity]
+    [open, toggleOpen]
   );
 
   if (entityType) {
@@ -129,9 +120,9 @@ function ChooseEntityToCreate(props) {
 
   return (
     <CreateFormModalOverlay
-      open={openChooseEntity}
+      open={open}
       onClose={() => {
-        setOpenChooseEntity(false);
+        toggleOpen();
       }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
