@@ -129,8 +129,9 @@ function ChooseEntityToCreate(props) {
 
   return (
     <CreateFormModalOverlay
-      open={openChooseEntity}
+      open={open || openChooseEntity}
       onClose={() => {
+        handleCloseModal();
         setOpenChooseEntity(false);
       }}
       aria-labelledby="modal-modal-title"
