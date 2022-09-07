@@ -371,6 +371,11 @@ export const BOARD_TYPE = {
   assignee: 'assignee',
 };
 
+export const OPEN_TASK_METHOD = {
+  link: 'link',
+  hot: 'hot',
+};
+
 export const snakeToCamel = (str) =>
   str?.replace(/([-_][a-z])/g, (group) => group.toUpperCase().replace('-', '').replace('_', ''));
 
@@ -655,3 +660,8 @@ export const RoleColorsAndEmojis = {
     emoji: '🐦',
   },
 };
+
+export enum TOKEN_GATING_CONDITION_TYPE {
+  GUILD = 'guild',
+  TOKEN_GATE = 'token_gate',
+}

@@ -78,7 +78,7 @@ const useGetTaskById = (editTask, task) => {
 };
 
 export function Task(props) {
-  const { task, className } = props;
+  const { task, className, handleStatusPicked } = props;
   const {
     description = '',
     rewards = null,
@@ -306,6 +306,7 @@ export function Task(props) {
       <Card
         viewUrl={viewUrl}
         id={id}
+        handleStatusPicked={handleStatusPicked}
         task={task}
         isMilestone={isMilestone}
         userList={userList}

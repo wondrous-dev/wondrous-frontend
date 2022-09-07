@@ -1,11 +1,15 @@
+import { Badge } from '@mui/material';
 import { Button } from 'components/Common/button';
 import Wallet from 'components/Common/Wallet';
 import GlobalSearch from 'components/GlobalSearch';
 import { CreateIconOutlined } from 'components/Icons/createBtn';
 import NotificationsBoard from 'components/Notifications';
 import { memo } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
 import { Notification } from 'types/Notification';
 import { User } from 'types/User';
+import { useHotkey } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { HeaderBar, HeaderCreateButton } from './styles';
 
 type Props = {
@@ -16,35 +20,48 @@ type Props = {
   user: User | null;
 };
 
-const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => (
-  <HeaderBar>
-    {user && (
-      <>
-        {!isMobile && <Wallet />}
-        {!isMobile && <GlobalSearch />}
-        <NotificationsBoard />
+const HeaderMemo = ({ isMobile, onSignInClick, openCreateFormModal, showCreateButton, user }: Props) => {
+  useHotkeys(HOTKEYS.CHOOSE_ENTITY, () => {
+    openCreateFormModal();
+  });
+  const showBadge = useHotkey();
+  return (
+    <HeaderBar>
+      {user && (
+        <>
+          {!isMobile && <Wallet />}
+          {!isMobile && <GlobalSearch />}
+          <NotificationsBoard />
 
-        {showCreateButton && (
-          <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
-            <CreateIconOutlined id="tour-header-create-btn" />
-          </HeaderCreateButton>
-        )}
-      </>
-    )}
-    {!user && (
-      <Button
-        highlighted
-        type="submit"
-        style={{
-          width: '100px',
-        }}
-        onClick={onSignInClick}
-      >
-        Sign in
-      </Button>
-    )}
-  </HeaderBar>
-);
+          {showCreateButton && (
+            <HeaderCreateButton highlighted="true" onClick={openCreateFormModal} visibility={showCreateButton}>
+              <Badge
+                badgeContent={HOTKEYS.CHOOSE_ENTITY}
+                color="primary"
+                invisible={!showBadge}
+                style={{ zIndex: 999 }}
+              >
+                <CreateIconOutlined id="tour-header-create-btn" />
+              </Badge>
+            </HeaderCreateButton>
+          )}
+        </>
+      )}
+      {!user && (
+        <Button
+          highlighted
+          type="submit"
+          style={{
+            width: '100px',
+          }}
+          onClick={onSignInClick}
+        >
+          Sign in
+        </Button>
+      )}
+    </HeaderBar>
+  );
+};
 
 // eslint-disable-next-line react/display-name
 export default memo(
