@@ -7,34 +7,13 @@ export const TokenGatingConditionFragment = gql`
     podId
     name
     booleanLogic
-    type
     accessCondition {
-      ... on AccessConditionModel {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
-      }
-      ... on GuildAccessConditionModel {
-          guildId
-          roleId
-      }
+      contractAddress
+      type
+      chain
+      method
+      minValue
+      tokenIds
     }
   }
-`;
-
-export const GuildAccessConditionFragment = gql`
-    fragment GuildAccessConditionFragment on GuildAccessCondition {
-        id
-        orgId
-        podId
-        name
-        type
-        accessCondition {
-            guildId
-            roleId
-        }
-    }
 `;

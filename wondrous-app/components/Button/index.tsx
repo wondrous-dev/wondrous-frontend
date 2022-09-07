@@ -78,14 +78,6 @@ type Props = SpaceProps & {
   borderRadius?: number;
   textColor?: string;
   /**
-   * For name to submit
-   */
-  form?: string;
-  /**
-   * Button type
-   */
-  type?: 'submit' | 'button';
-  /**
    * Make buttons look inactive by adding the disabled boolean attribute to any button element.
    */
   disabled?: boolean;
@@ -145,5 +137,3 @@ export const Button = ({
     </ButtonWrapper>
   );
 };
-
-export default Button;
