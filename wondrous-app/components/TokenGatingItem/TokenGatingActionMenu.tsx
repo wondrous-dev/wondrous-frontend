@@ -3,7 +3,8 @@ import Grid from '@mui/material/Grid';
 import Tooltip from 'components/Tooltip';
 
 import palette from 'theme/palette';
-import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import Dropdown from 'components/Common/Dropdown';
+import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 
 type Props = {
@@ -21,19 +22,19 @@ function TokenGatingActionMenu({ onEdit, onDelete }: Props) {
     <Grid container direction="row" justifyContent="flex-end" alignItems="center">
       <Tooltip title="More actions" placement="top">
         <div>
-          <DropDown DropdownHandler={TaskMenuIcon} dropDownStyle={{ transform: 'unset' }}>
+          <Dropdown DropdownHandler={TaskMenuIcon} dropDownStyle={{ transform: 'unset' }}>
             {onEdit ? (
-              <DropDownItem onClick={onEdit} style={dropdownItemStyle}>
+              <DropdownItem onClick={onEdit} style={dropdownItemStyle}>
                 Edit
-              </DropDownItem>
+              </DropdownItem>
             ) : null}
 
             {onDelete ? (
-              <DropDownItem style={dropdownItemStyle} onClick={onDelete}>
+              <DropdownItem style={dropdownItemStyle} onClick={onDelete}>
                 Delete
-              </DropDownItem>
+              </DropdownItem>
             ) : null}
-          </DropDown>
+          </Dropdown>
         </div>
       </Tooltip>
     </Grid>

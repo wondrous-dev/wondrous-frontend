@@ -7,8 +7,14 @@ import { DEACTIVATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
-import { DropDown, DropDownItem } from 'components/Common/dropdown';
-import { PaymentMethodDisplayWrapper, PaymentMethodNameHeader, PaymentMethodActionMenu, TokenLogoDisplay } from './styles';
+import Dropdown from 'components/Common/Dropdown';
+import DropdownItem from 'components/Common/DropdownItem';
+import {
+  PaymentMethodDisplayWrapper,
+  PaymentMethodNameHeader,
+  PaymentMethodActionMenu,
+  TokenLogoDisplay,
+} from './styles';
 
 const dropdownItemStyle = {
   marginRight: '12px',
@@ -40,26 +46,26 @@ function PaymentMethodDisplay(props) {
           Active: {paymentMethod?.deactivatedAt ? 'False' : 'True'}
         </PaymentMethodNameHeader>
         <PaymentMethodActionMenu right="true">
-          <DropDown DropdownHandler={TaskMenuIcon}>
+          <Dropdown DropdownHandler={TaskMenuIcon}>
             {paymentMethod?.deactivatedAt && (
-              <DropDownItem
+              <DropdownItem
                 key={`payment-method-activate${paymentMethod?.id}`}
                 onClick={() => {}}
                 style={dropdownItemStyle}
               >
                 Activate
-              </DropDownItem>
+              </DropdownItem>
             )}
             {!paymentMethod?.deactivatedAt && (
-              <DropDownItem
+              <DropdownItem
                 key={`payment-method-deactivate${paymentMethod?.id}`}
                 style={dropdownItemStyle}
                 onClick={handleDeactivate}
               >
                 Deactivate
-              </DropDownItem>
+              </DropdownItem>
             )}
-          </DropDown>
+          </Dropdown>
         </PaymentMethodActionMenu>
       </div>
       {paymentMethod?.tokenAddress && paymentMethod?.tokenAddress !== '0x0000000000000000000000000000000000000000' && (
