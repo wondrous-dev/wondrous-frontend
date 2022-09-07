@@ -9,7 +9,14 @@ import { createPortal } from 'react-dom';
 
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
+<<<<<<< HEAD
 import { CREATE_GUILD_ACCESS_CONDITION_FOR_ORG, UPDATE_GUILD_ACCESS_CONDITION } from 'graphql/mutations/tokenGating';
+=======
+import {
+  CREATE_GUILD_ACCESS_CONDITION_FOR_ORG,
+  UPDATE_GUILD_ACCESS_CONDITION,
+} from 'graphql/mutations/tokenGating';
+>>>>>>> fd1501d7 (Feature/guild (#978))
 import Button from 'components/Button';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import SmartLink from 'components/Common/SmartLink';

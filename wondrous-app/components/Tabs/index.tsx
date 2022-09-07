@@ -1,24 +1,27 @@
+import Tab from '@mui/material/Tab';
 import React from 'react';
 import { TabsProps } from '@mui/material/Tabs/Tabs';
 
-import { StyledTab, StyledTabs } from './styles';
+import { StyledTabs, styles } from './styles';
 
 type Props = TabsProps & {
+  withMargin?: boolean;
   tabs: Array<{
     value: string;
     label: string;
-    content: React.ReactNode | string | undefined;
   }>;
 };
 
 const Tabs = ({ tabs, ...props }: Props) => (
   <StyledTabs {...props}>
     {tabs.map((tab) => (
-      <StyledTab key={tab.value} value={tab.value} label={tab.label}>
-        {tab.content}
-      </StyledTab>
+      <Tab sx={styles.tab} key={tab.value} value={tab.value} label={tab.label} />
     ))}
   </StyledTabs>
 );
+
+Tabs.defaultProps = {
+  withMargin: true,
+};
 
 export default Tabs;

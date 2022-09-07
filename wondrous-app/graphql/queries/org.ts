@@ -96,12 +96,18 @@ export const GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
         name
         booleanLogic
         accessCondition {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
+          ... on AccessConditionModel {
+            contractAddress
+            type
+            chain
+            method
+            minValue
+            tokenIds
+          }
+          ... on GuildAccessConditionModel {
+            guildId
+            roleId
+          }
         }
       }
       discordRolesInfo {

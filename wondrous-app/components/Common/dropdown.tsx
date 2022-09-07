@@ -73,7 +73,7 @@ export const DropdownOverlay = styled.div`
 `;
 
 export function DropDown(props) {
-  const { DropdownHandler, children, divStyle } = props;
+  const { DropdownHandler, children, divStyle, dropDownStyle = {} } = props;
   const [isOpen, setIsOpen] = useState(false);
   const DropdownWrapperRef = useRef(null);
 
@@ -92,7 +92,7 @@ export function DropDown(props) {
       <DropdownOverlay onClick={toggleDropDown} style={{ display }} />
       <div onClick={toggleDropDown} style={divStyle}>
         <DropdownHandler {...props} isOpen={isOpen} />
-        <DropDownWrapper ref={DropdownWrapperRef} style={{ display }}>
+        <DropDownWrapper ref={DropdownWrapperRef} style={{ ...dropDownStyle, display }}>
           {children}
         </DropDownWrapper>
         {/* <DropDownArrow style={{ display: display }} /> */}

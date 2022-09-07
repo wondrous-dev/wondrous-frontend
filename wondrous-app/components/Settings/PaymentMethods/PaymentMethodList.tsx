@@ -1,5 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
+<<<<<<< HEAD
 import { useMutation } from '@apollo/client';
 import format from 'date-fns/format';
 import { Grid, Typography } from '@mui/material';
@@ -29,6 +30,15 @@ import {
   HelpText,
   PaymentMethodTokenDetails,
 } from './styles';
+=======
+import palette from 'theme/palette';
+import { DEACTIVATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
+import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
+import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import { PaymentMethodDisplayWrapper, PaymentMethodNameHeader, PaymentMethodActionMenu, TokenLogoDisplay } from './styles';
+>>>>>>> fd1501d7 (Feature/guild (#978))
 
 const dropdownItemStyle = {
   marginRight: '12px',
