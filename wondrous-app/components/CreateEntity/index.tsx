@@ -101,6 +101,7 @@ function ChooseEntityToCreate(props) {
     HOTKEYS.CHOOSE_ENTITY,
     () => {
       toggleOpen();
+      resetEntityType();
     },
     [open, toggleOpen]
   );
@@ -123,6 +124,7 @@ function ChooseEntityToCreate(props) {
       open={open}
       onClose={() => {
         toggleOpen();
+        resetEntityType();
       }}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
