@@ -1,5 +1,5 @@
 import React from 'react';
-import { Box } from '@mui/system';
+import Box from '@mui/system/Box';
 import { AVATAR_LIST_OVERFLOW_MAX } from 'utils/constants';
 import Tooltip from 'components/Tooltip';
 import { useRouter } from 'next/router';
@@ -7,7 +7,7 @@ import { SafeImage } from '../Image';
 import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
 
 export function SmallAvatar(props) {
-  const { avatar = {}, id, username, goTo, initials = '', style = {} } = props;
+  const { avatar = {}, id, username, goTo, initials = '', style = {}, imageWidth = 29, imageHeight = 29 } = props;
 
   // TODO: create this as a service
   const randomColor = '#363636';
@@ -16,7 +16,9 @@ export function SmallAvatar(props) {
     <SmallAvatarContainer
       key={id}
       onClick={() => {
-        goTo(username);
+        if (goTo) {
+          goTo(username);
+        }
       }}
       style={{ ...style, zIndex: 6 - (style.zIndex || 0) }}
     >
@@ -31,8 +33,8 @@ export function SmallAvatar(props) {
           }}
         >
           <SafeImage
-            width={29}
-            height={29}
+            width={imageWidth}
+            height={imageHeight}
             src={avatar.url}
             objectFit="cover"
             useNextImage

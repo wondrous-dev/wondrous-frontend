@@ -1,3 +1,5 @@
+import { User } from 'types/User';
+
 export type TaskFilter = {
   statuses?: any[];
   podIds?: any[];
@@ -61,6 +63,7 @@ export interface TaskFragment {
   orgName: string;
   orgOrder: string;
   orgProfilePicture?: any;
+  observers: User[];
   podColor?: any;
   podId?: any;
   podName?: any;

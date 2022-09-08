@@ -1,3 +1,4 @@
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
@@ -11,7 +12,6 @@ import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } fro
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
@@ -118,6 +118,7 @@ import {
   TagsField,
   VotesField,
 } from './taskViewModalFields';
+import WatchersField from './taskViewModalFields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
 import { openSnapshot } from './utils';
 
@@ -501,6 +502,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     setFetchedTask(null);
     handleClose();
   };
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -677,6 +679,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             podId={board?.podId}
                             userId={board?.userId}
                           />
+                          <WatchersField fetchedTask={fetchedTask} />
                           <ApplicationField
                             shouldDisplay={
                               canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0

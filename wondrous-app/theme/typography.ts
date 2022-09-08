@@ -70,7 +70,7 @@ const typography = {
     lineHeight: '15px',
     fontWeight: 600,
   },
-  fontFamily: 'Space Grotesk, sans-serif',
+  fontFamily: '"Space Grotesk", sans-serif',
 };
 
 export default typography;
