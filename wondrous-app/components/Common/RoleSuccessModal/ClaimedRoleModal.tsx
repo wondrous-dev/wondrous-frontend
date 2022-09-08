@@ -9,9 +9,9 @@ import {
   RequestModalSuccessContainer,
   RequestModalTitle,
   RequestModalTitleBar,
-  RequestModalTypeText,
 } from 'components/organization/wrapper/styles';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
+import RolePill from 'components/Common/RolePill';
 
 const SuccessRoleModal = (props) => {
   const { open, onClose, notLinkedWalletError, linkedWallet, role, request } = props;
@@ -50,11 +50,13 @@ const SuccessRoleModal = (props) => {
         </RequestModalTitleBar>
         <RequestModalSuccessContainer>
           <RequestModalRolesSuccessIcon />
-          <RequestModalSubtitle style={{ marginTop: '18px' }}>You have claimed a new role!</RequestModalSubtitle>
+          <RequestModalSubtitle style={{ marginTop: '18px' }}>{`You have ${
+            request ? 'requested' : 'claimed'
+          } a new role!`}</RequestModalSubtitle>
         </RequestModalSuccessContainer>
         <RequestModalShowRole>
           {request ? <RequestModalRolesSubtitle>{`Request: ${request}`}</RequestModalRolesSubtitle> : null}
-          <RequestModalTypeText>{`🔮 ${role?.name}`}</RequestModalTypeText>
+          <RolePill roleName={role?.name} />
         </RequestModalShowRole>
       </RequestModalBox>
     </RequestModalContainer>

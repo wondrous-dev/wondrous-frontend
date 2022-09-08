@@ -7,12 +7,17 @@ import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/sty
 import { GET_ORG_ROLES } from 'graphql/queries';
 import { StyledCancelButton, StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
+import RolePill from 'components/Common/RolePill';
 import {
+  RequestLightBoxContainer,
+  RequestMiddleContainer,
   RequestModalBackButton,
   RequestModalBox,
   RequestModalButtonsContainer,
   RequestModalCloseIcon,
   RequestModalContainer,
+  RequestModalHelperContainer,
+  RequestModalHelperDiv,
   RequestModalHorizontalAlign,
   RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
@@ -21,7 +26,6 @@ import {
   RequestModalTextareaWrapper,
   RequestModalTitle,
   RequestModalTitleBar,
-  RequestModalTypeText,
 } from './styles';
 
 const MembershipRequestModal = (props) => {
@@ -38,7 +42,7 @@ const MembershipRequestModal = (props) => {
     handleSetRequest,
     handleOpenClaimedRole,
     handleOpenJoinRequestModal,
-    handleOpenExploreOtherRoles,
+    handleOpenCurrentRoleModal,
   } = props;
   const [requestMessage, setRequestMessage] = useState('');
   const [error, setError] = useState(null);
@@ -113,11 +117,11 @@ const MembershipRequestModal = (props) => {
               color="#FFFFFF"
               onClick={() => {
                 handleOpenClaimedRole(false);
-                handleOpenExploreOtherRoles(true);
+                handleOpenCurrentRoleModal(true);
               }}
             />
 
-            <RequestModalTitle> {orgId ? 'DAO' : 'Pod'} membership request message </RequestModalTitle>
+            <RequestModalTitle>Applying for role</RequestModalTitle>
           </RequestModalHorizontalAlign>
 
           <RequestModalCloseIcon
@@ -127,34 +131,42 @@ const MembershipRequestModal = (props) => {
             }}
           />
         </RequestModalTitleBar>
-        <RequestModalTypeText>{orgRole?.name}</RequestModalTypeText>
-        <RequestModalRolesAbilityContainer>
-          <RequestModalRolesAbilityColumns>
-            <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-            {roleCanDo?.map((permission) => (
-              <ChecklistRow role={permission} key={permission} status="success" />
-            ))}
-          </RequestModalRolesAbilityColumns>
-          <RequestModalRolesAbilityColumns>
-            <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-            {roleCannotDo?.map((permission) => (
-              <ChecklistRow role={permission} key={permission} status="fail" />
-            ))}
-          </RequestModalRolesAbilityColumns>
-        </RequestModalRolesAbilityContainer>
-        <RequestModalTextareaWrapper noValidate autoComplete="off">
-          <RequestModalTextarea
-            placeholder="What do you want admin to know about you!"
-            rows={4}
-            rowsMax={8}
-            onChange={handleChange}
-            value={requestMessage}
-          />
-          <KudosFormTextareaCharacterCount>
-            {characterCount}/{200} characters
-          </KudosFormTextareaCharacterCount>
-        </RequestModalTextareaWrapper>
-        {error && <ErrorText>{error}</ErrorText>}
+        <RequestMiddleContainer>
+          <RequestLightBoxContainer>
+            <RequestModalHelperContainer>
+              <RolePill roleName={orgRole?.name} />
+              <RequestModalHelperDiv />
+            </RequestModalHelperContainer>
+            <RequestModalRolesAbilityContainer>
+              <RequestModalRolesAbilityColumns>
+                <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
+                {roleCanDo?.map((permission) => (
+                  <ChecklistRow role={permission} key={permission} status="success" />
+                ))}
+              </RequestModalRolesAbilityColumns>
+              <RequestModalRolesAbilityColumns>
+                <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
+                {roleCannotDo?.map((permission) => (
+                  <ChecklistRow role={permission} key={permission} status="fail" />
+                ))}
+              </RequestModalRolesAbilityColumns>
+            </RequestModalRolesAbilityContainer>
+
+            <RequestModalTextareaWrapper noValidate autoComplete="off">
+              <RequestModalTextarea
+                placeholder="What do you want admin to know about you!"
+                rows={4}
+                rowsMax={8}
+                onChange={handleChange}
+                value={requestMessage}
+              />
+              <KudosFormTextareaCharacterCount>
+                {characterCount}/{200} characters
+              </KudosFormTextareaCharacterCount>
+            </RequestModalTextareaWrapper>
+            {error && <ErrorText>{error}</ErrorText>}
+          </RequestLightBoxContainer>
+        </RequestMiddleContainer>
       </RequestModalBox>
 
       <RequestModalButtonsContainer
@@ -176,18 +188,16 @@ const MembershipRequestModal = (props) => {
                 sendRequest({
                   variables: {
                     orgId,
-                    ...(requestMessage && {
-                      message: `Requesting permissions for ${orgRole?.name}. Message: ${requestMessage}`,
-                    }),
+                    message: requestMessage,
+                    roleId: orgRole.id,
                   },
                 });
               } else if (podId) {
                 sendRequest({
                   variables: {
                     podId,
-                    ...(requestMessage && {
-                      message: `Requesting permissions for ${orgRole?.name}. Message: ${requestMessage}`,
-                    }),
+                    message: requestMessage,
+                    roleId: orgRole.id,
                   },
                 });
               }

@@ -6,6 +6,8 @@ import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutat
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
+import { getRoleEmojiByName } from 'components/Settings/Members/MembersTableRow/helpers';
+import RolePill from 'components/Common/RolePill';
 import {
   MemberRequestsList,
   MemberRequestCard,
@@ -82,21 +84,24 @@ function MemberRequests(props) {
   ];
   const showEmptyState = orgUserMembershipRequests?.length === 0;
 
-  const approveRequest = (userId, orgId) => {
+  const approveRequest = (userId, orgId, roleId) => {
     approveJoinOrgRequest({
       variables: {
         userId,
         orgId,
+        roleId,
       },
       refetchQueries,
     });
   };
 
-  const declineRequest = (userId, orgId) => {
+  // REMEMBER COLUMN ENTRY
+  const declineRequest = (userId, orgId, roleId) => {
     rejectJoinOrgRequest({
       variables: {
         userId,
         orgId,
+        roleId,
       },
       refetchQueries,
     });
@@ -161,19 +166,24 @@ function MemberRequests(props) {
                       <MemberName>{request.userUsername}</MemberName>
                     </MemberProfileLink>
                   </Link>
-                  <MemberMessage>“{request.message}”</MemberMessage>
+                  <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
+                  <RolePill roleName={request.roleName} />
+
                   <RequestActionButtons>
-                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId)}>
+                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId, request.roleId)}>
                       Decline
                     </RequestDeclineButton>
-                    <RequestApproveButton onClick={() => approveRequest(request.userId, request.orgId)}>
+                    <RequestApproveButton
+                      onClick={() => {
+                        approveRequest(request.userId, request.orgId, request.roleId);
+                      }}
+                    >
                       Approve
                     </RequestApproveButton>
                   </RequestActionButtons>
                 </MemberRequestCard>
               ))}
             </MemberRequestsList>
-
             {hasMore ? (
               <ShowMoreButton onClick={handleShowMoreRequests}>Show more</ShowMoreButton>
             ) : (

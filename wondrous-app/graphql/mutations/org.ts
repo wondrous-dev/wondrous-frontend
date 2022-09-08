@@ -53,24 +53,24 @@ export const UPDATE_ORG = gql`
 `;
 
 export const CREATE_JOIN_ORG_REQUEST = gql`
-  mutation createJoinOrgRequest($orgId: ID!, $message: String) {
-    createJoinOrgRequest(orgId: $orgId, message: $message) {
+  mutation createJoinOrgRequest($orgId: ID!, $message: String, $roleId: ID!) {
+    createJoinOrgRequest(orgId: $orgId, message: $message, roleId: $roleId) {
       success
     }
   }
 `;
 
 export const APPROVE_JOIN_ORG_REQUEST = gql`
-  mutation approveJoinOrgRequest($userId: ID!, $orgId: ID!) {
-    approveJoinOrgRequest(userId: $userId, orgId: $orgId) {
+  mutation approveJoinOrgRequest($userId: ID!, $orgId: ID!, $roleId: ID!) {
+    approveJoinOrgRequest(userId: $userId, orgId: $orgId, roleId: $roleId) {
       success
     }
   }
 `;
 
 export const REJECT_JOIN_ORG_REQUEST = gql`
-  mutation rejectJoinOrgRequest($userId: ID!, $orgId: ID!) {
-    rejectJoinOrgRequest(userId: $userId, orgId: $orgId) {
+  mutation rejectJoinOrgRequest($userId: ID!, $orgId: ID!, $roleId: ID!) {
+    rejectJoinOrgRequest(userId: $userId, orgId: $orgId, roleId: $roleId) {
       success
     }
   }

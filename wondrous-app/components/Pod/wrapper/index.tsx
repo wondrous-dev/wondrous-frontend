@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box } from '@mui/system';
 import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -26,7 +25,7 @@ import { SafeImage } from 'components/Common/Image';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
+import RolePill from 'components/Common/RolePill';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -46,10 +45,8 @@ import {
   HeaderTitle,
   RoleButtonWrapper,
   RoleText,
-  RoleButton,
   OverviewComponent,
   TokenHeader,
-  HeaderImage,
   HeaderTitleIcon,
   HeaderImageWrapper,
   TokenEmptyLogo,
@@ -217,7 +214,6 @@ function Wrapper(props) {
         },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podBoard?.orgId, userPermissionsContext]);
 
   useEffect(() => {
@@ -325,7 +321,7 @@ function Wrapper(props) {
                   {permissions && podRole && (
                     <RoleButtonWrapper>
                       <RoleText>Your Role:</RoleText>
-                      <RoleButton>🔑 {podRole}</RoleButton>
+                      <RolePill roleName={podRole} />
                     </RoleButtonWrapper>
                   )}
 

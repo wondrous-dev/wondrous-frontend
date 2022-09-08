@@ -1,5 +1,15 @@
 import { SafeImage } from 'components/Common/Image';
-import { Button, IconButton, Typography, Box, Dialog, TextareaAutosize, MenuItem, ButtonBase } from '@mui/material';
+import {
+  Button,
+  IconButton,
+  Typography,
+  Box,
+  Dialog,
+  TextareaAutosize,
+  MenuItem,
+  ButtonBase,
+  Checkbox,
+} from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
@@ -55,11 +65,53 @@ export const RequestModalTitleBar = styled.div`
   width: 100%;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 18px;
-  padding-bottom: 16px;
+  padding: 12px;
+  background-color: ${greyColors.grey96};
+
   border-bottom: 0.5px dashed ${greyColors.grey75};
   ${(props) => props.style}
 `;
+
+export const RequestModalHelperDiv = styled.div`
+  width: 100%;
+`;
+export const RequestModalHelperContainer = styled.div`
+  flex-direction: row;
+  display: flex;
+`;
+export const RequestMiddleContainer = styled.div`
+  padding: 24px;
+`;
+
+export const RequestLightBoxContainer = styled.div`
+  background-color: ${blackColors.black92};
+  padding: 14px;
+  margin-bottom: 18px;
+`;
+
+export const RequestModalCheckPillCombo = styled.div`
+  flex-direction: row;
+  display: flex;
+  align-items: center;
+  margin-bottom: 14px;
+  border-bottom: 0.5px ${greyColors.grey75};
+`;
+
+export const RequestModalCheckbox = styled((props) => (
+  <Checkbox
+    disabled={props.disabled}
+    checked={props.checked}
+    sx={{
+      padding: 0,
+      margin: 0,
+      marginRight: '8px',
+      color: highlightPurple,
+      '&.Mui-checked': {
+        color: highlightPurple,
+      },
+    }}
+  />
+))``;
 
 export const RequestModalRolesAbilityContainer = styled.div`
   display: flex;
@@ -68,8 +120,8 @@ export const RequestModalRolesAbilityContainer = styled.div`
   justify-content: center;
   align-self: center;
   flex: 1;
-  margin-top: 18px;
-  padding-bottom: 6px;
+  margin-top: 14px;
+  background-color: ${blackColors.black92};
 `;
 
 export const RequestModalRolesSuccessIcon = styled(SuccessRole)`
@@ -209,7 +261,6 @@ export const RequestModalShowRole = styled.div`
   display: flex;
   flex-direction: column;
   flex: 1;
-  width: 100%;
   justify-content: center;
   align-items: center;
   background-color: ${greyColors.grey920};
@@ -355,11 +406,9 @@ export const RequestModalForwardButton = styled(ChevronRight)`
   }
 `;
 
-export const RequestModalBox = styled(Box)`
+export const RequestModalBox = styled.div`
   && {
-    /* width: 700px; */
     background-color: ${greyColors.grey98};
-    padding: 24px;
   }
 `;
 

@@ -44,12 +44,38 @@ export const getRoleEmoji = (role) => {
   return RoleColorsAndEmojis[ROLES.DEFAULT].emoji;
 };
 
+export const getRoleEmojiByName = (roleName) => {
+  if (!roleName) {
+    return '';
+  }
+  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleName);
+
+  if (correspondingRoleKey) {
+    return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].emoji;
+  }
+
+  return RoleColorsAndEmojis[ROLES.DEFAULT].emoji;
+};
+
 export const getRoleColor = (role) => {
   if (!role) {
     return '';
   }
   const roleLabel = role.label || role.name;
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
+
+  if (correspondingRoleKey) {
+    return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].color;
+  }
+
+  return RoleColorsAndEmojis[ROLES.DEFAULT].color;
+};
+
+export const getRoleColorByName = (roleName) => {
+  if (!roleName) {
+    return '';
+  }
+  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleName);
 
   if (correspondingRoleKey) {
     return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].color;

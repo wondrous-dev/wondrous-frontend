@@ -174,6 +174,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       podId
       approvedAt
       message
+      roleId
       rejectedAt
       userUsername
       userProfilePicture
@@ -202,6 +203,8 @@ export const GET_ORG_MEMBERSHIP_REQUEST = gql`
       orgName
       orgUsername
       createdAt
+      roleName
+      roleId
     }
   }
 `;
@@ -211,6 +214,7 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     getUserJoinOrgRequest(orgId: $orgId) {
       id
       orgId
+      roleId
       approvedAt
       rejectedAt
     }

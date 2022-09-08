@@ -36,6 +36,7 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import SuccessRoleModal from 'components/Common/RoleSuccessModal/ClaimedRoleModal';
+import RolePill from 'components/Common/RolePill';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import MembershipRequestModal from './MembershipRequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -321,6 +322,7 @@ function Wrapper(props) {
         handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
         handleSetRequest={handleSetRequest}
         handleOpenClaimedRole={handleOpenClaimedRole}
+        handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
         orgRole={claimedRole}
       />
       <CurrentRoleModal
@@ -332,6 +334,11 @@ function Wrapper(props) {
         orgRole={orgRoleName}
         handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
         handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
+        handleOpenClaimedRole={handleOpenClaimedRole}
+        handleOpenJoinRequestModal={handleOpenJoinRequestModal}
+        handleSetClaimedRole={handleSetClaimedRole}
+        claimableDiscordRole={claimableDiscordRole}
+        tokenGatedRoles={tokenGatedRoles}
       />
       <ExploreOtherRolesModal
         orgId={orgBoard?.orgId}
@@ -439,13 +446,14 @@ function Wrapper(props) {
                 {permissions && orgRoleName && (
                   <RoleButtonWrapper>
                     <RoleText>Your Role:</RoleText>
-                    <RoleButton
+                    <RolePill
                       onClick={() => {
                         setOpenCurrentRoleModal(true);
                       }}
+                      roleName={orgRoleName}
                     >
                       🔑 {orgRoleName}
-                    </RoleButton>
+                    </RolePill>
                   </RoleButtonWrapper>
                 )}
                 {/* </Tooltip> */}
@@ -464,7 +472,12 @@ function Wrapper(props) {
                     {joinRequestSent || userJoinRequest?.id ? (
                       <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
                     ) : (
-                      <HeaderButton reversed onClick={handleJoinOrgButtonClick}>
+                      <HeaderButton
+                        reversed
+                        onClick={() => {
+                          handleOpenCurrentRoleModal(true);
+                        }}
+                      >
                         Join org
                       </HeaderButton>
                     )}
