@@ -43,6 +43,9 @@ export default function SidebarLayout({ children }) {
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
+    variables: {
+      excludeSharedOrgs: true,
+    },
   });
 
   const [createFormModal, setCreateFormModal] = useState(false);

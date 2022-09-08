@@ -3,7 +3,7 @@ import { Org } from 'types/Org';
 import * as Yup from 'yup';
 
 import Divider from 'components/Divider';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import { Form, Formik } from 'formik';
@@ -17,6 +17,7 @@ import { GET_USER_ORGS } from 'graphql/queries';
 import TextField from 'components/TextField';
 import palette from 'theme/palette';
 import OrgSearch from 'components/OrgSearch';
+import { useGlobalContext } from 'utils/hooks';
 
 type Props = {
   onCancel: () => void;
@@ -26,10 +27,8 @@ type Props = {
 };
 
 const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props) => {
-  const { data: userOrgs } = useQuery(GET_USER_ORGS);
-  const [selectedOrg1, setSelectedOrg1] = useState(
-    userOrgs?.getUserOrgs?.find((org) => org.id === defaultOrgId) || null
-  );
+  const { userOrgs } = useGlobalContext();
+  const [selectedOrg1, setSelectedOrg1] = useState(userOrgs?.getUserOrgs?.find((org) => org.id === defaultOrgId));
   const [selectedOrg2, setSelectedOrg2] = useState(null);
 
   const DROPDOWN_PACEHOLDER = {

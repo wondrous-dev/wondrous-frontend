@@ -2,14 +2,14 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Typography, InputAdornment } from '@mui/material';
 import { createPortal } from 'react-dom';
 import Box from '@mui/material/Box';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { LIMIT } from 'services/board';
 import GradientHeading from 'components/GradientHeading';
 import SearchIcon from 'components/Icons/search';
 import { Org } from 'types/Org';
 import Divider from 'components/Divider';
 import { Button } from 'components/Button';
-import { GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries';
+import { GET_ORG_ROLES, GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import { Autocomplete, Option } from 'components/SearchTasks/styles';
@@ -21,6 +21,9 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import differenceWith from 'lodash/differenceWith';
 import eq from 'lodash/eq';
 import debounce from 'lodash/debounce';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations';
+import { LINK } from 'utils/constants';
+import ListBox from './Listbox';
 import {
   PaperComponent,
   SelectedUsersWrapper,
@@ -30,17 +33,18 @@ import {
   TextField,
   SelectedCount,
 } from './styles';
-import ListBox from './Listbox';
 
 type Props = {
   org: Org;
   onCancel: () => void;
   onSubmit: ({ users }: any) => void | Promise<any>;
   footerRef: React.RefObject<HTMLDivElement>;
+  selectedUsers: any;
+  setUsers: any;
+  existingUsersIds: Array<string>;
 };
 
-const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
-  const [selectedUsers, setSelectedUsers] = useState({ admins: [], members: [] });
+const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef, selectedUsers, setUsers, existingUsersIds }: Props) => {
   const [hasMore, setHasMore] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
@@ -49,6 +53,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
     fetchMore,
     previousData,
   } = useQuery(GET_ORG_USERS, {
+    fetchPolicy: 'cache-and-network',
     variables: {
       orgId: org.id,
       limit: LIMIT,
@@ -57,6 +62,29 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
       const hasMoreData = getOrgUsers?.length >= LIMIT;
       if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
+  });
+
+  const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
+    onCompleted: (data) => {
+      setInviteLink(`${LINK}/invite/${data?.createOrgInviteLink.token}`);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+  const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
+    // onCompleted: (data) => {
+    //   data?.getOrgRoles &&
+    //     data?.getOrgRoles?.forEach((role) => {
+    //       if (role?.default) {
+    //         setRole(role?.id);
+    //       }
+    //     });
+    // },
+    onError: (e) => {
+      console.error(e);
+    },
+    fetchPolicy: 'cache-and-network',
   });
 
   const users = inputValue ? searchOrgUserResults?.searchOrgUsers : getOrgUsers?.map((i) => i.user);
@@ -68,7 +96,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
     if (e.target.value) search({ variables: { queryString: e.target.value, orgId: org.id } });
   };
 
-  const handleChange = (key, event, users) => setSelectedUsers({ ...selectedUsers, [key]: users });
+  const handleChange = (key, event, users) => setUsers({ ...selectedUsers, [key]: users });
 
   const handleFetchMore = () =>
     !inputValue &&
@@ -77,8 +105,11 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
     );
 
   const availableOptions = useMemo(
-    () => differenceWith(users, selectedUsers.members.concat(selectedUsers.admins), (a: any, b: any) => eq(a.id, b.id)),
-    [selectedUsers, users]
+    () =>
+      differenceWith(users, selectedUsers.members.concat(selectedUsers.admins), (a: any, b: any) =>
+        eq(a.id, b.id)
+      ).filter((user) => !existingUsersIds.includes(user.id)),
+    [selectedUsers, users, existingUsersIds]
   );
 
   const FIELDS_CONFIG = [
@@ -95,7 +126,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
   ];
 
   const removeSelectedUser = (key, userId) =>
-    setSelectedUsers({ ...selectedUsers, [key]: selectedUsers[key].filter((item) => item?.id !== userId) });
+    setUsers({ ...selectedUsers, [key]: selectedUsers[key].filter((item) => item?.id !== userId) });
 
   return (
     <div>
@@ -249,3 +280,6 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef }: Props) => {
 };
 
 export default AddTeamMembers;
+function setInviteLink(arg0: string) {
+  throw new Error('Function not implemented.');
+}

@@ -102,5 +102,6 @@ export const SelectedCount = styled(Typography)`
     color: ${palette.grey57};
     font-weight: 400;
     font-size: 13px;
+    margin-top: 10px;
   }
 `;

@@ -72,10 +72,17 @@ function NotificationsBoard({ onlyBoard = false }) {
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
 
+    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
+
+    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
+      notificationLink = `/org/${notification.objectId}/boards?collabs=${true}`;
+    }
+    console.log(notification.objectType);
+
     const object = (
       <span>
         <NotificationsLink styled={{ display: 'block' }}>
-          <Link href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}>{objectType}</Link>
+          <Link href={notificationLink}>{objectType}</Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>

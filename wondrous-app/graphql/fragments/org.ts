@@ -25,6 +25,14 @@ export const OrgFragment = gql`
     contributorCount
     podCount
     category
+    shared
+    parentOrgs {
+      id
+      profilePicture
+      username
+      thumbnailPicture
+      name
+    }
     links {
       url
       displayName

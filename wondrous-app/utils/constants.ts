@@ -347,6 +347,7 @@ export const NOTIFICATION_VERBS = {
   task_assign: 'assigned a',
   comment: 'commented on',
   task_submit: 'submitted a',
+  collab_invite: 'invited you in a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {
@@ -358,6 +359,7 @@ export const NOTIFICATION_OBJECT_TYPES = {
   comment: 'comment',
   post: 'post',
   kudos: 'kudos',
+  collaboration: 'collaboration',
 };
 
 export const PRIVACY_LEVEL = {

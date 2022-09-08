@@ -34,13 +34,18 @@ export const CollabsContainer = styled.div`
   gap: 8px;
 `;
 
-export const CollabsWrapper = styled.div`
+export const CollabsWrapper = styled.a`
   display: flex;
   flex-direction: column;
+  cursor: pointer;
   gap: 6px;
   padding: 8px;
   background: ${palette.grey99};
   border-radius: 4px;
+  text-decoration: none;
+  :hover {
+    background: ${palette.grey58};
+  }
 `;
 
 export const CollabRequestTitle = styled(Typography)`

@@ -56,27 +56,18 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
 
   const steps = [
     () => (
-      <SelectOrgs
-        footerRef={footerRef}
-        defaultOrgId={defaultOrgId}
-        onCancel={onCancel}
-        onSubmit={handleCollabCreate}
-        // onSubmit={(values) => {
-        // setData({ ...data, ...values });
-        // setStep(2);
-        // }}
-      />
+      <SelectOrgs footerRef={footerRef} defaultOrgId={defaultOrgId} onCancel={onCancel} onSubmit={handleCollabCreate} />
     ),
     // () => (
-    //   <AddTeamMembers
-    //     org={data.org1}
-    //     footerRef={footerRef}
-    //     onCancel={onCancel}
-    //     onSubmit={({ users }) => {
-    //       setData({ ...data, users });
-    //       setStep(3);
-    //     }}
-    //   />
+    // <AddTeamMembers
+    //   org={data.org1}
+    //   footerRef={footerRef}
+    //   onCancel={onCancel}
+    //   onSubmit={({ users }) => {
+    //     setData({ ...data, users });
+    //     setStep(3);
+    //   }}
+    // />
     // ),
     // (props) => (
     //   <Confirmation
@@ -91,8 +82,6 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
     // ),
   ];
 
-  const Component = useMemo(() => steps[step - 1], [step]);
-
   return (
     <ModalComponent
       maxWidth={560}
@@ -101,7 +90,7 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
       open={open}
       onClose={onCancel}
     >
-      <Component />
+      <SelectOrgs footerRef={footerRef} defaultOrgId={defaultOrgId} onCancel={onCancel} onSubmit={handleCollabCreate} />
     </ModalComponent>
   );
 };

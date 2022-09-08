@@ -82,16 +82,21 @@ const useSidebarData = () => {
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
+
           {
-            text: 'DAO2DAO',
-            Icon: Dao2DaoIcon,
-            link: {
-              pathname: router.pathname,
-              query: {
-                ...router.query,
-                collabs: true,
-              },
-            },
+            ...(board?.orgData?.shared
+              ? {}
+              : {
+                  text: 'Collabs',
+                  Icon: Dao2DaoIcon,
+                  link: {
+                    pathname: router.pathname,
+                    query: {
+                      ...router.query,
+                      collabs: true,
+                    },
+                  },
+                }),
           },
           // {
           //   text: 'Pods',
