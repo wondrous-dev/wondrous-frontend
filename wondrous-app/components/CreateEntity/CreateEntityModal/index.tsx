@@ -1538,7 +1538,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
 
   return (
-    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen}>
+    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen} data-cy="modal-create-entity">
       <ConvertTaskToBountyModal
         open={turnTaskToBountyModal}
         onClose={() => setTurnTaskToBountyModal(false)}
@@ -1671,6 +1671,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           maxRows={3}
           error={form.errors?.title}
           onFocus={() => form.setFieldError('title', undefined)}
+          data-cy="create-entity-input-title"
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
@@ -1905,6 +1906,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAutocompletePopper
                   onFocus={() => form.setFieldError('assigneeId', undefined)}
                   openOnFocus
+                  open
+                  data-cy="input-autocomplete-assignee"
                   options={filteredOrgUsersData}
                   value={form.values.assigneeId}
                   isOptionEqualToValue={(option, value) => option.value === value}
@@ -1947,7 +1950,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                     );
                   }}
                   renderOption={(props, option) => (
-                    <CreateEntityAutocompleteOption {...props}>
+                    <CreateEntityAutocompleteOption {...props} data-cy={`assignee-option-${option.label}`}>
                       {option?.profilePicture ? (
                         <SafeImage useNextImage={false} src={option?.profilePicture} />
                       ) : (
@@ -1974,6 +1977,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 onClick={() => {
                   form.setFieldValue('assigneeId', '');
                 }}
+                data-cy="button-add-assignee"
               >
                 <CreateEntityAddButtonIcon />
                 <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
@@ -2603,7 +2607,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <>
               <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
               <CreateEntitySelectErrorWrapper>
-                <CreateEntityCreateTaskButton type="submit">
+                <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
                   {existingTask ? 'Save changes' : `Create ${entityType}`}
                 </CreateEntityCreateTaskButton>
                 {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}

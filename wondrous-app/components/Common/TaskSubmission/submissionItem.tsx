@@ -20,7 +20,7 @@ import { useLocation } from 'utils/useLocation';
 
 import { CompletedIcon, InReviewIcon, RejectedIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import { KudosForm } from '../KudosForm';
+import KudosForm from '../KudosForm';
 import { PaymentButton } from '../Task/paymentButton';
 import { TaskAction, TaskActionAmount } from '../Task/styles';
 import {
@@ -275,7 +275,7 @@ function SubmissionItemLink({ links }: { links: [] }) {
       {links?.map(({ url }, index) => (
         <TaskSubmissionLink key={index} href={url} target="_blank" rel="noopener noreferrer">
           <TaskSubmissionLinkIcon />
-          <TaskSubmissionLinkText>{url}</TaskSubmissionLinkText>
+          <TaskSubmissionLinkText data-cy="submission-link-url">{url}</TaskSubmissionLinkText>
         </TaskSubmissionLink>
       ))}
     </TaskSubmissionLinkWrapper>
@@ -316,7 +316,11 @@ function SubmissionRequestChangeButton({ submission, requestChangeTaskSubmission
 
 function SubmissionApproveTaskButton({ submission, fetchedTaskType, onClick }) {
   if (!submission.approvedAt && fetchedTaskType === TASK_TYPE)
-    return <SubmissionButtonApprove onClick={onClick}>Approve</SubmissionButtonApprove>;
+    return (
+      <SubmissionButtonApprove data-cy="button-approve" onClick={onClick}>
+        Approve
+      </SubmissionButtonApprove>
+    );
   return null;
 }
 

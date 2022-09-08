@@ -193,7 +193,7 @@ export function TaskCard({
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
-    <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)}>
+    <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)} data-cy={`task-card-item-${title}`}>
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
@@ -260,6 +260,7 @@ export function TaskCard({
                         },
                       });
                     }}
+                    data-cy={`task-card-item-${title}`}
                   >
                     Claim
                   </ButtonPrimary>
@@ -325,7 +326,9 @@ export function TaskCard({
 
         <TaskContent>
           <TaskTitle>
-            <a href={viewUrl}>{task.title}</a>
+            <a href={viewUrl} data-cy={`task-card-item-${title}-link`}>
+              {task.title}
+            </a>
           </TaskTitle>
 
           {isBounty && (
