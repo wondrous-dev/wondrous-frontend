@@ -77,7 +77,8 @@
     "slate-react": "0.80.0",
     "styled-components": "5.3.5",
     "styled-system": "5.1.5",
-    "yup": "0.32.11"
+    "yup": "0.32.11",
+    "@babel/helper-string-parser": "^7.18.10"
   },
   "devDependencies": {
     "@babel/core": "^7.18.6",

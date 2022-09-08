@@ -27,7 +27,10 @@ import {
   UserProfileContext,
   GlobalContext,
   TokenGatingContext,
+  HotkeyContext,
 } from './contexts';
+
+export const useHotkey = () => useContext(HotkeyContext);
 
 export const useIsMobile = () => useContext(IsMobileContext);
 
