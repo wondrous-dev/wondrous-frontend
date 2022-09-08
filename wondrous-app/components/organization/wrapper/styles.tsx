@@ -21,6 +21,7 @@ import {
   greyColors,
   highlightBlue,
   highlightPurple,
+  redColors,
   violetColors,
 } from 'theme/colors';
 import CloseModalIcon from 'components/Icons/closeModal';
@@ -31,6 +32,7 @@ import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { ActionButton } from 'components/Common/Task/styles';
 import SuccessRole from 'components/Icons/successRole';
 import typography from 'theme/typography';
+import { LockedIconOutline } from 'components/Icons/userpass';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
 
@@ -48,6 +50,37 @@ export const RequestModalHorizontalAlign = styled.div`
   flex-direction: 'row';
   display: flex;
   align-items: center;
+`;
+
+export const RequestModalTokenGatingItem = styled.div`
+  border: 1px solid ${redColors.red300};
+  border-radius: 4px;
+  padding: 4px;
+`;
+
+export const RequestModalTokenGatingLockBackground = styled.div`
+  background-color: ${greyColors.grey920};
+  border-radius: 4px;
+  padding: 4px;
+  justify-content: center;
+  align-items: center;
+  width: 24px;
+  height: 24px;
+  display: flex;
+`;
+
+export const RequestModalTokenGatingSubtitle = styled.div`
+  && {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Space Grotesk';
+    color: ${(props) => props.color};
+  }
+`;
+
+export const RequestModalLockedIconOutline = styled(LockedIconOutline)`
+  width: 16px;
+  height: 16px;
 `;
 
 export const RequestModalContainer = styled(Dialog)`
@@ -87,6 +120,24 @@ export const RequestLightBoxContainer = styled.div`
   background-color: ${blackColors.black92};
   padding: 14px;
   margin-bottom: 18px;
+`;
+
+export const RequestModalNoRolesContainer = styled.div`
+  width: 100%;
+  flex-direction: column;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const RequestModalNoRolesSubtitle = styled(Typography)`
+  && {
+    font-size: 14px;
+    font-weight: 500;
+    font-family: 'Space Grotesk';
+    color: ${greyColors.grey57};
+    margin-bottom: 12px;
+  }
 `;
 
 export const RequestModalCheckPillCombo = styled.div`

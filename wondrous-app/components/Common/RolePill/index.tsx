@@ -1,5 +1,5 @@
 import { getRoleEmojiByName } from 'components/Settings/Members/MembersTableRow/helpers';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { MemberRolePill } from './styles';
 
 interface RolePillType {

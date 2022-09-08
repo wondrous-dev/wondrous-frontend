@@ -8,6 +8,10 @@ import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
 import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
 import apollo from 'services/apollo';
+import NoRolesIcon from 'components/Icons/noRolesIcon';
+import { DiscordIcon } from 'components/Icons/discord';
+import { Tooltip } from '@mui/material';
+import { redColors } from 'theme/colors';
 import {
   RequestLightBoxContainer,
   RequestMiddleContainer,
@@ -19,11 +23,18 @@ import {
   RequestModalContainer,
   RequestModalHelperContainer,
   RequestModalHelperDiv,
+  RequestModalHorizontalAlign,
+  RequestModalLockedIconOutline,
+  RequestModalNoRolesContainer,
+  RequestModalNoRolesSubtitle,
   RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
+  RequestModalTokenGatingItem,
+  RequestModalTokenGatingLockBackground,
+  RequestModalTokenGatingSubtitle,
 } from './styles';
 
 const CurrentRoleModal = (props) => {
@@ -40,7 +51,7 @@ const CurrentRoleModal = (props) => {
     handleOpenClaimedRole,
   } = props;
 
-  const claimableRoles = [{ name: 'contributor' }];
+  const claimableRoles = [];
 
   const [checkboxRoles, setCheckboxRoles] = useState(null);
   const [orgRolesWithoutCurrent, setOrgRolesWithoutCurrent] = useState(null);
@@ -93,14 +104,6 @@ const CurrentRoleModal = (props) => {
     const holdOrgs = orgRoles?.filter((role) => role.name !== orgRole);
     setOrgRolesWithoutCurrent(holdOrgs);
   }, [orgRoles]);
-
-  console.log(
-    orgRolesWithoutCurrent?.filter(
-      (role) =>
-        (claimableRoles?.some((claimRole) => claimRole?.name !== role?.name) || claimableRoles.length === 0) &&
-        role?.name !== orgRole
-    )
-  );
 
   return (
     <RequestModalContainer
@@ -171,6 +174,46 @@ const CurrentRoleModal = (props) => {
           ) : null}
           <RequestLightBoxContainer>
             <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
+            {claimableRoles?.length === 0 ? (
+              <RequestModalNoRolesContainer>
+                <NoRolesIcon />
+                <RequestModalNoRolesSubtitle style={{ marginTop: '8px' }}>
+                  No claimable roles yet
+                </RequestModalNoRolesSubtitle>
+                <RequestModalHorizontalAlign>
+                  <Tooltip title="Token needed" placement="top">
+                    <RequestModalTokenGatingItem>
+                      <RequestModalHorizontalAlign>
+                        <RequestModalTokenGatingLockBackground>
+                          <RequestModalLockedIconOutline />
+                        </RequestModalTokenGatingLockBackground>
+                        <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
+                          Token Gate:
+                        </RequestModalTokenGatingSubtitle>
+                        <RequestModalTokenGatingSubtitle color={redColors.red300} style={{ paddingLeft: '8px' }}>
+                          Missing
+                        </RequestModalTokenGatingSubtitle>
+                      </RequestModalHorizontalAlign>
+                    </RequestModalTokenGatingItem>
+                  </Tooltip>
+                  <Tooltip title="Connect discord" placement="top">
+                    <RequestModalTokenGatingItem style={{ marginLeft: '8px' }}>
+                      <RequestModalHorizontalAlign>
+                        <RequestModalTokenGatingLockBackground>
+                          <DiscordIcon fill={redColors.red300} />
+                        </RequestModalTokenGatingLockBackground>
+                        <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
+                          Discord Linked:
+                        </RequestModalTokenGatingSubtitle>
+                        <RequestModalTokenGatingSubtitle color={redColors.red300} style={{ paddingLeft: '8px' }}>
+                          No
+                        </RequestModalTokenGatingSubtitle>
+                      </RequestModalHorizontalAlign>
+                    </RequestModalTokenGatingItem>
+                  </Tooltip>
+                </RequestModalHorizontalAlign>
+              </RequestModalNoRolesContainer>
+            ) : null}
             {orgRolesWithoutCurrent
               ?.filter(
                 (role) => claimableRoles?.some((claimRole) => claimRole.name === role?.name) && role?.name !== orgRole
