@@ -14,7 +14,6 @@ describe('Task Spec', () => {
 
   beforeEach(() => {
     cy.restoreLocalStorage();
-    cy.visit('/dashboard');
   });
 
   afterEach(() => {
@@ -22,6 +21,7 @@ describe('Task Spec', () => {
   });
 
   it('Create task', () => {
+    cy.visit('/dashboard');
     cy.dataCy('header-button-create').click();
     cy.dataCy('modal-base');
     cy.dataCy('modal-item-Task').click();
