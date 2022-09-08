@@ -1138,7 +1138,8 @@ const handleRewardOnChange = (form) => (e) => {
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
-  const isSubtask = existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null;
+  const isSubtask =
+    parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
   const isProposal = entityType === ENTITIES_TYPES.PROPOSAL;
   const isTask = entityType === ENTITIES_TYPES.TASK;
   const orgBoard = useOrgBoard();
