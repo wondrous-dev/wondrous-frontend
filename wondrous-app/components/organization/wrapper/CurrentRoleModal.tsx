@@ -38,11 +38,9 @@ const CurrentRoleModal = (props) => {
     handleSetClaimedRole,
     handleOpenJoinRequestModal,
     handleOpenClaimedRole,
-    claimableDiscordRole,
-    tokenGatedRoles,
   } = props;
 
-  const claimableRoles = tokenGatedRoles + claimableDiscordRole;
+  const claimableRoles = [{ name: 'contributor' }];
 
   const [checkboxRoles, setCheckboxRoles] = useState(null);
   const [orgRolesWithoutCurrent, setOrgRolesWithoutCurrent] = useState(null);
@@ -84,20 +82,25 @@ const CurrentRoleModal = (props) => {
     }
   };
 
-  const roleIndex = orgRolesWithoutCurrent
-    ? orgRolesWithoutCurrent.findIndex((object) => object.name === orgRole)
-    : null;
+  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === orgRole) : null;
 
-  const rolePermissions = orgRolesWithoutCurrent?.[roleIndex]?.permissions;
+  const rolePermissions = orgRoles?.[roleIndex]?.permissions;
   const currentRoleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
   const currentRoleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
-
   const claimableRoleLength = claimableRoles ? claimableRoles?.filter((role) => role.name !== orgRole).length : 0;
 
   useEffect(() => {
     const holdOrgs = orgRoles?.filter((role) => role.name !== orgRole);
     setOrgRolesWithoutCurrent(holdOrgs);
   }, [orgRoles]);
+
+  console.log(
+    orgRolesWithoutCurrent?.filter(
+      (role) =>
+        (claimableRoles?.some((claimRole) => claimRole?.name !== role?.name) || claimableRoles.length === 0) &&
+        role?.name !== orgRole
+    )
+  );
 
   return (
     <RequestModalContainer
@@ -230,7 +233,10 @@ const CurrentRoleModal = (props) => {
             <RequestModalRolesSubtitle>Roles you can request</RequestModalRolesSubtitle>
             {orgRolesWithoutCurrent
               ?.filter(
-                (role) => claimableRoles?.some((claimRole) => claimRole.name !== role?.name) && role?.name !== orgRole
+                (role) =>
+                  (claimableRoles?.some((claimRole) => claimRole?.name !== role?.name) ||
+                    claimableRoles.length === 0) &&
+                  role?.name !== orgRole
               )
               ?.map((role, index) => {
                 const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
