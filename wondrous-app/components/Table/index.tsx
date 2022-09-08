@@ -7,56 +7,19 @@ import { GET_TASK_REVIEWERS } from 'graphql/queries';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils';
 import * as Constants from 'utils/constants';
-import {
-  ENTITIES_TYPES,
-  TASK_STATUS_ARCHIVED,
-  TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_REQUESTED,
-  TASK_STATUS_PROPOSAL_REQUEST,
-  TASK_STATUS_SUBMISSION_REQUEST,
-} from 'utils/constants';
+import { ENTITIES_TYPES, TASK_STATUS_PROPOSAL_REQUEST, TASK_STATUS_SUBMISSION_REQUEST } from 'utils/constants';
 import { useColumns } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { CreateEntity } from 'components/CreateEntity';
 import { ArchiveTaskModal } from '../Common/ArchiveTaskModal';
 import { LoadMore } from '../Common/KanbanBoard/styles';
-import { KudosForm } from '../Common/KudosForm';
+import KudosForm from '../Common/KudosForm';
 import { SnackbarAlertContext } from '../Common/SnackbarAlert';
 import { ArchivedTaskUndo } from '../Common/Task/styles';
-import { CreateModalOverlay } from '../CreateEntity/styles';
-import { Claim } from '../Icons/claimTask';
-import ImageIcon from '../Icons/image';
-import AudioIcon from '../Icons/MediaTypesIcons/audio';
-import PlayIcon from '../Icons/play';
-import { TaskMenuIcon } from '../Icons/taskMenu';
-import TaskStatus from '../Icons/TaskStatus';
-import {
-  Box,
-  Initials,
-  MoreOptions,
-  Reward,
-  RewardAmount,
-  RewardContainer,
-  StyledLinkIcon,
-  StyledTable,
-  StyledTableBody,
-  StyledTableCell,
-  StyledTableContainer,
-  StyledTableHead,
-  StyledTableRow,
-  TaskDescription,
-  TaskTitle,
-} from './styles';
+import { StyledTable, StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from './styles';
 import TableBody from './TableBody';
-
-const DELIVERABLES_ICONS = {
-  audio: <AudioIcon />,
-  image: <ImageIcon />,
-  link: <StyledLinkIcon />,
-  video: <PlayIcon />,
-};
 
 const createTasksFromColumns = (columns) =>
   columns.reduce((acc, column) => {
@@ -87,7 +50,7 @@ const createTasksFromColumns = (columns) =>
     return acc;
   }, []);
 
-export function Table(props) {
+function Table(props) {
   const { columns, onLoadMore, hasMore, allTasks, limit, isAdmin, tasks, entityType } = props;
   const router = useRouter();
   const apolloClient = useApolloClient();
@@ -320,3 +283,5 @@ export function Table(props) {
     </>
   );
 }
+
+export default Table;

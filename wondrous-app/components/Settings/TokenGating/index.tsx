@@ -99,7 +99,9 @@ function TokenGatingSettings({ orgId }: Props) {
             </Typography>
 
             <Box display="flex" mt="20px">
-              <Button fullWidth={false} onClick={() => setOpenTokenGatingModal(true)}>New Token gate</Button>
+              <Button fullWidth={false} onClick={() => setOpenTokenGatingModal(true)}>
+                New Token gate
+              </Button>
             </Box>
           </Box>
         </Box>

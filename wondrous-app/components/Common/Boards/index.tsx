@@ -6,9 +6,9 @@ import { splitColsByType } from 'services/board';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ListView from 'components/ListView';
+import Table from 'components/Table';
 import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
-import { Table } from '../../Table';
 import {
   BoardsContainer,
   ResultsCount,
