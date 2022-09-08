@@ -12,3 +12,5 @@ export const StyledShare = styled.div`
     width: 12px;
   }
 `;
+
+export default StyledShare;
