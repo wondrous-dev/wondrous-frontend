@@ -1,30 +1,28 @@
-import { Badge, InputAdornment } from '@mui/material';
-import CircularProgress from '@mui/material/CircularProgress';
+import React, { useState, useEffect, useRef } from 'react';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { InputAdornment } from '@mui/material';
+import CircularProgress from '@mui/material/CircularProgress';
 
 import { SEARCH_GLOBAL } from 'graphql/queries';
 import apollo from 'services/apollo';
 
 import { SafeImage } from 'components/Common/Image';
+import { useOutsideAlerter } from 'utils/hooks';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
-import { SearchIconWrapped } from 'components/SearchTasks/styles';
+import SearchIcon from 'components/Icons/search';
+import { DAOIcon } from 'components/Icons/dao';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
-import { useHotkey, useOutsideAlerter } from 'utils/hooks';
 
-import { useHotkeys } from 'react-hotkeys-hook';
-import { HOTKEYS } from 'utils/hotkeyHelper';
 import {
   GlobalSearchWrapper,
-  SearchIconWrapper,
   SearchInput,
-  SearchInputWrapper,
-  SearchResultCategory,
-  SearchResultCategoryTitle,
-  SearchResultItem,
   SearchResults,
+  SearchResultCategory,
+  SearchResultItem,
+  SearchResultCategoryTitle,
+  SearchInputWrapper,
+  SearchIconWrapper,
 } from './styles';
 
 let timeout;
@@ -56,6 +54,7 @@ function GlobalSearch() {
   const router = useRouter();
   const inputRef = useRef(null);
   const wrapperRef = useRef(null);
+
   const handleClose = () => {
     setIsExpanded(false);
 
@@ -111,7 +110,6 @@ function GlobalSearch() {
     }, 200);
   };
 
-  const showBadge = useHotkey();
   const handleInputExpand = () => (isExpanded ? false : setIsExpanded(true));
 
   const handleRedirect = (type, entity) => {
@@ -124,21 +122,11 @@ function GlobalSearch() {
       return router.push(`/profile/${entity.username}/about`, undefined, { shallow: true });
   };
 
-  useHotkeys(
-    HOTKEYS.GLOBAL_SEARCH,
-    () => {
-      setIsExpanded(!isExpanded);
-    },
-    [isExpanded]
-  );
-
   return (
     <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
-      <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
-        <SearchIconWrapper isExpanded={isExpanded}>
-          <SearchIconWrapped />
-        </SearchIconWrapper>
-      </Badge>
+      <SearchIconWrapper isExpanded={isExpanded}>
+        <SearchIcon />
+      </SearchIconWrapper>
 
       <SearchInputWrapper isExpanded={isExpanded}>
         <SearchInput

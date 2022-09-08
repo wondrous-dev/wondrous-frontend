@@ -27,7 +27,3 @@ export const TokenGatingContext = createContext(null);
 export const UserProfileContext = createContext(null);
 
 export const GlobalContext = createContext(null);
-
-export const CreateEntityContext = createContext(null);
-
-export const HotkeyContext = createContext(null);

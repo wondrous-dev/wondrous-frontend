@@ -1,32 +1,30 @@
-import { useMutation } from '@apollo/client';
-import { useMe } from 'components/Auth/withAuth';
-import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
-import TaskViewModal from 'components/Common/TaskViewModal';
-import { UPDATE_TASK_ORDER, UPDATE_TASK_STATUS } from 'graphql/mutations/task';
-import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { useHotkeys } from 'react-hotkeys-hook';
-import apollo from 'services/apollo';
-import { dedupeColumns, delQuery } from 'utils';
+import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
-  BOARD_TYPE,
-  ENTITIES_TYPES,
-  OPEN_TASK_METHOD,
-  PAYMENT_STATUS,
-  PERMISSIONS,
-  STATUS_APPROVED,
-  STATUS_CLOSED,
-  TASK_STATUS_DONE,
+  TASK_STATUS_TODO,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
-  TASK_STATUS_TODO,
+  TASK_STATUS_DONE,
+  ENTITIES_TYPES,
+  STATUS_APPROVED,
+  PERMISSIONS,
+  PAYMENT_STATUS,
+  BOARD_TYPE,
+  STATUS_CLOSED,
 } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
-import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { ARROW_KEYS, HOTKEYS, pickHotkeyFunction } from 'utils/hotkeyHelper';
+import { useState, useEffect } from 'react';
 import { useLocation } from 'utils/useLocation';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { delQuery, dedupeColumns } from 'utils';
+import { useRouter } from 'next/router';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { useMe } from 'components/Auth/withAuth';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useMutation } from '@apollo/client';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
+import apollo from 'services/apollo';
+import BoardLock from 'components/BoardLock';
 import ItemsContainer from './ItemsContainer';
 
 interface Props {
@@ -48,7 +46,6 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
-  const board = orgBoard || userBoard || podBoard;
   const router = useRouter();
   const { taskCount = {}, fetchPerStatus, entityType, setColumns } = orgBoard || podBoard || userBoard;
   const location = useLocation();
@@ -56,38 +53,18 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
-  const [taskIndex, setTaskIndex] = useState(null);
-  const [statusIndex, setStatusIndex] = useState(null);
-  const [taskId, setTaskId] = useState(null);
-  const [statusPicked, setStatusPicked] = useState(null);
-  const [byLinkOrHot, setByLinkOrHot] = useState(OPEN_TASK_METHOD.link);
+  const [dndErrorModal, setDndErrorModal] = useState(false);
+
   const user = useMe();
-
-  const onlyTaskRoutesForDashboard = ['/dashboard', '/dashboard?view=list', '/dashboard?view=grid'];
-
-  const handleStatusPicked = (status) => {
-    setByLinkOrHot(OPEN_TASK_METHOD.link);
-    setStatusPicked(status);
-  };
 
   useEffect(() => {
     const { params } = location;
-    if (!(params.task || params.taskProposal) || !(orgBoard || userBoard || podBoard)) {
-      return;
+    if (params.task || params.taskProposal) {
+      setOpenModal(true);
     }
-    if (location.params.task && byLinkOrHot === OPEN_TASK_METHOD.link) {
-      const holdTaskId = location.params.task;
-      const holdStatusIndex = columns.findIndex((status) => status.status === statusPicked);
-      const holdTaskIndex = columns[holdStatusIndex]?.tasks.findIndex((task) => task.id === holdTaskId);
-      setTaskIndex(holdTaskIndex);
-      setStatusIndex(holdStatusIndex);
-    }
-    setOpenModal(true);
-  }, [orgBoard, podBoard, userBoard, location]);
+  }, [location]);
 
   const handleModalClose = () => {
-    setTaskIndex(null);
-    setStatusIndex(null);
     const style = document.body.getAttribute('style');
     const top = style.match(/(?<=top: -)(.*?)(?=px)/);
     document.body.setAttribute('style', '');
@@ -100,28 +77,6 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
     location.push(newUrl);
     setOpenModal(false);
   };
-
-  useHotkeys(
-    HOTKEYS.ALL_KEYS,
-    (event) => {
-      if (
-        !Object.values(ARROW_KEYS).includes(event.key) ||
-        !(board?.entityType === ENTITIES_TYPES.TASK || onlyTaskRoutesForDashboard.includes(router.asPath))
-      ) {
-        return;
-      }
-      setOpenModal(true);
-      setByLinkOrHot(OPEN_TASK_METHOD.hot);
-      const { holdTaskIndex, holdStatusIndex } = pickHotkeyFunction(event.key, taskIndex, statusIndex, columns);
-      setStatusIndex(holdStatusIndex);
-      setTaskIndex(holdTaskIndex);
-      if (holdStatusIndex === null) {
-        setOpenModal(false);
-      }
-      setTaskId(columns?.[holdStatusIndex]?.tasks?.[holdTaskIndex]?.id);
-    },
-    [taskIndex, statusIndex, isModalOpen, columns]
-  );
 
   const handleShowAll = (status, limit) => fetchPerStatus(status, limit);
 
@@ -224,6 +179,8 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
     } catch (err) {
       if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
         if (err?.graphQLErrors[0].extensions?.errorCode === 'must_go_through_submission') {
+          setDndErrorModal(true);
+
           setColumns(prevColumnState);
         }
       }
@@ -309,13 +266,9 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
         open={isModalOpen}
         handleClose={handleModalClose}
         isTaskProposal={!!location.params.taskProposal}
-        taskId={
-          byLinkOrHot === OPEN_TASK_METHOD.link
-            ? (location.params.taskProposal ?? location.params.task)?.toString()
-            : taskId
-        }
+        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
       />
-      <DragDropContext onDragEnd={onDragEnd}>
+      <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
         {columns.map((column) => {
           if (!column) return null;
           const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || 0;
@@ -324,7 +277,6 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
               {(provided) => (
                 <div ref={provided.innerRef} {...provided.droppableProps}>
                   <ItemsContainer
-                    handleStatusPicked={handleStatusPicked}
                     entityType={entityType}
                     data={column}
                     taskCount={count}
