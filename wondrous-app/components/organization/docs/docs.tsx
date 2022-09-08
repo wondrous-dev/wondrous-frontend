@@ -1,5 +1,17 @@
+import React, { useEffect, useState } from 'react';
+import isEmpty from 'lodash/isEmpty';
 import { useLazyQuery, useQuery } from '@apollo/client';
+import Image from 'next/image';
+import { useRouter } from 'next/router';
+
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
+import { PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+
 import AddDocumentDialog from 'components/AddDocumentDialog';
 import ResourcesSidebar from 'components/Common/SidebarResources';
 import DeleteDocDialog from 'components/DeleteDocDialog';
@@ -9,17 +21,9 @@ import DocItemsMenu from 'components/DocItemsMenu';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
 import PinnedDocsSection from 'components/PinnedDocsSection';
 import Tooltip from 'components/Tooltip';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_ORG_DOCS, GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
-import isEmpty from 'lodash/isEmpty';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { PERMISSIONS } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
 
 import Wrapper from '../wrapper/wrapper';
-import styles from './docsStyles';
+import styles, { AddIconWrapper } from './docsStyles';
 
 const useGetOrgDocs = (orgId) => {
   const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
@@ -161,6 +165,15 @@ function Docs(props) {
       selectedCategory={selectedCategory}
     >
       <Wrapper orgData={orgData}>
+        {canEdit && (
+          <Box sx={styles.topButtonsContainer}>
+            <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
+              <AddIconWrapper style={styles.addIcon} />
+              Add new doc
+            </Button>
+          </Box>
+        )}
+
         {isEmpty(docData) && (
           <EmptyStateGeneric
             content={`Welcome to the Documents page for ${orgData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
