@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { GradientHighlightHorizontal, GradientMidnightVertical } from '../gradients';
+import { GradientHighlightHorizontal } from 'components/Common/gradients';
 
 export const StyledButton = styled.button`
   display: flex;

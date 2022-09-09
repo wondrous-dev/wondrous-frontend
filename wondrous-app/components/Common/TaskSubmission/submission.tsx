@@ -28,7 +28,7 @@ import {
   TaskSubmissionsFormInactiveWrapper,
   HideSubmissionsCheckBoxDiv,
   HideSubmissionsHelperText,
-} from './styles';
+} from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
