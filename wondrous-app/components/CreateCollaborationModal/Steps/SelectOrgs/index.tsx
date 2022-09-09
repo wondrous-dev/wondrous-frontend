@@ -18,6 +18,7 @@ import TextField from 'components/TextField';
 import palette from 'theme/palette';
 import OrgSearch from 'components/OrgSearch';
 import { useGlobalContext } from 'utils/hooks';
+import { PERMISSIONS } from 'utils/constants';
 
 type Props = {
   onCancel: () => void;
@@ -27,7 +28,8 @@ type Props = {
 };
 
 const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props) => {
-  const { userOrgs } = useGlobalContext();
+  const { userOrgs, userPermissionsContext } = useGlobalContext();
+
   const [selectedOrg1, setSelectedOrg1] = useState(userOrgs?.getUserOrgs?.find((org) => org.id === defaultOrgId));
   const [selectedOrg2, setSelectedOrg2] = useState(null);
 
@@ -77,7 +79,11 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props)
   const org1Schema = useMemo(
     () => ({
       ...orgsSchema,
-      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg2?.id),
+      items: orgsSchema.items?.filter(
+        (org) =>
+          org.id !== selectedOrg2?.id &&
+          userPermissionsContext?.orgPermissions[org.id]?.includes(PERMISSIONS.FULL_ACCESS)
+      ),
       label: selectedOrg1 ? null : DROPDOWN_PACEHOLDER.DAO1,
     }),
     [userOrgs, selectedOrg1, selectedOrg2]

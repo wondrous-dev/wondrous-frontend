@@ -37,14 +37,14 @@ export const CollabsContainer = styled.div`
 export const CollabsWrapper = styled.a`
   display: flex;
   flex-direction: column;
-  cursor: pointer;
+  cursor: ${({ isPending }) => !isPending && 'pointer'};
   gap: 6px;
   padding: 8px;
   background: ${palette.grey99};
   border-radius: 4px;
   text-decoration: none;
   :hover {
-    background: ${palette.grey58};
+    background: ${({ isPending }) => !isPending && palette.grey58};
   }
 `;
 

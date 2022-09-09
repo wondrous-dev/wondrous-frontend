@@ -108,7 +108,7 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef, selectedUsers, set
     () =>
       differenceWith(users, selectedUsers.members.concat(selectedUsers.admins), (a: any, b: any) =>
         eq(a.id, b.id)
-      ).filter((user) => !existingUsersIds.includes(user.id)),
+      ).filter((user) => !existingUsersIds?.includes(user.id)),
     [selectedUsers, users, existingUsersIds]
   );
 

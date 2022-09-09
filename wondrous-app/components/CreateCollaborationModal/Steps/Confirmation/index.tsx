@@ -29,7 +29,7 @@ import {
   MembersDisplayAll,
 } from './styles';
 
-const MEMBER_DISPLAY_LIMIT = 2;
+const MEMBER_DISPLAY_LIMIT = 12;
 
 type Props = {
   onCancel: () => void;

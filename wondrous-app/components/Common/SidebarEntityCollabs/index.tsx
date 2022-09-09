@@ -17,6 +17,8 @@ import { useBoards } from 'utils/hooks';
 import Link from 'next/link';
 import { APPROVE_ORG_COLLAB_REQUEST, DECLINE_ORG_COLLAB_REQUEST } from 'graphql/mutations';
 import { PERMISSIONS } from 'utils/constants';
+import { MODAL_TYPE } from 'components/CreateCollaborationModal/ViewCollab/CollabDetails';
+import CollabsEntityList from './List';
 import {
   CreateButton,
   CollabRequestLogoWrapper,
@@ -59,15 +61,7 @@ const CollabsSidebar = () => {
     variables: {
       orgId: board.orgId,
     },
-    skip: !board?.orgId || canManageCollabs,
-  });
-
-  const [declineOrgCollabRequest] = useMutation(DECLINE_ORG_COLLAB_REQUEST, {
-    refetchQueries: ['getOrgCollabRequestForRecipient', 'getOrgCollabRequestForInitiator'],
-  });
-
-  const [approveOrgCollabRequest] = useMutation(APPROVE_ORG_COLLAB_REQUEST, {
-    refetchQueries: ['getOrgCollabRequestForRecipient', 'getOrgCollabRequestForInitiator'],
+    skip: !board?.orgId || !canManageCollabs,
   });
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
@@ -75,10 +69,6 @@ const CollabsSidebar = () => {
   const href = useBackHref({ router });
 
   const handleCreateModal = () => setOpenCreateModal((prevState) => !prevState);
-
-  const handleDecline = (orgCollabRequestId) => declineOrgCollabRequest({ variables: { orgCollabRequestId } });
-
-  const handleApprove = (orgCollabRequestId) => approveOrgCollabRequest({ variables: { orgCollabRequestId } });
 
   return (
     <>
@@ -113,12 +103,25 @@ const CollabsSidebar = () => {
               <AddIconWrapper /> Create collab
             </CreateButton>
           )}
-
           {canManageCollabs && (
+            <CollabsEntityList
+              label="Pending invites"
+              type={MODAL_TYPE.ACTION}
+              items={pendingInvites?.getOrgCollabRequestForRecipient}
+            />
+          )}
+          {canManageCollabs && (
+            <CollabsEntityList
+              label="Pending requests"
+              type={MODAL_TYPE.VIEW}
+              items={pendingRequests?.getOrgCollabRequestForInitiator}
+            />
+          )}
+          {/* {canManageCollabs && (
             <ListWrapper>
               <Label>Pending invites</Label>
               {pendingInvites?.getOrgCollabRequestForRecipient?.map((request, idx) => (
-                <CollabsWrapper key={idx}>
+                <CollabsWrapper isPending key={idx}>
                   <CollabRequestTitle isPending>{request.title}</CollabRequestTitle>
                   <CollabRequestLogoWrapper isPending>
                     <SidebarTooltip title={request.initiatorOrg.username} placement="top">
@@ -158,7 +161,7 @@ const CollabsSidebar = () => {
             <ListWrapper>
               <Label>Pending requests</Label>
               {pendingRequests?.getOrgCollabRequestForInitiator?.map((request, idx) => (
-                <CollabsWrapper key={idx}>
+                <CollabsWrapper isPending key={idx}>
                   <CollabRequestTitle isPending>{request.title}</CollabRequestTitle>
                   <CollabRequestLogoWrapper isPending>
                     <SidebarTooltip title={request.initiatorOrg.username} placement="top">
@@ -187,7 +190,7 @@ const CollabsSidebar = () => {
                 </CollabsWrapper>
               ))}
             </ListWrapper>
-          )}
+          )} */}
         </ListWrapper>
       </SectionWrapper>
     </>

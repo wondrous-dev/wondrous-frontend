@@ -60,6 +60,15 @@ function NotificationsBoard({ onlyBoard = false }) {
       fetchMore();
     }
   }, [inView, hasMore, notifications?.length]);
+
+  const getNotificationLink = (notification) => {
+    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
+
+    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
+      notificationLink = `/org/${notification.objectId}/boards?collabs=${true}&unread=${!notification?.viewedAt}`;
+    }
+    return notificationLink;
+  };
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
@@ -72,17 +81,11 @@ function NotificationsBoard({ onlyBoard = false }) {
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
 
-    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
-
-    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
-      notificationLink = `/org/${notification.objectId}/boards?collabs=${true}`;
-    }
-    console.log(notification.objectType);
-
+    const link = getNotificationLink(notification);
     const object = (
       <span>
         <NotificationsLink styled={{ display: 'block' }}>
-          <Link href={notificationLink}>{objectType}</Link>
+          <Link href={link}>{objectType}</Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
@@ -112,10 +115,11 @@ function NotificationsBoard({ onlyBoard = false }) {
         {notifications?.length ? (
           notifications?.map((notification) => {
             const isNotificationViewed = notification?.viewedAt;
+            const notificationLink = getNotificationLink(notification);
             return (
               <SmartLink
                 key={`notifications-${notification.id}`}
-                href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
+                href={notificationLink}
                 onClick={() => {
                   markNotificationRead({
                     variables: {

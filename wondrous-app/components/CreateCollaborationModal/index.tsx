@@ -22,6 +22,7 @@ type Users = {
 const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
   const [createCollabRequest, { data: collabRequest, error, loading }] = useMutation(CREATE_COLLAB_REQUST, {
     onCompleted: () => onCancel(),
+    refetchQueries: ['getOrgCollabRequestForInitiator'],
   });
 
   const [step, setStep] = useState(1);
