@@ -14,7 +14,7 @@ interface IToggleViewButtonProps {
 }
 
 // Toggler between views (i.e. grid vs list)
-export function ToggleViewButton(props: IToggleViewButtonProps) {
+function ToggleViewButton(props: IToggleViewButtonProps) {
   const { options } = props;
 
   return (
@@ -39,3 +39,5 @@ export function ToggleViewButton(props: IToggleViewButtonProps) {
     </ToggleViewWrapper>
   );
 }
+
+export default ToggleViewButton;
