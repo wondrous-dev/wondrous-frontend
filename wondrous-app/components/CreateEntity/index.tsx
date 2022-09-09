@@ -75,7 +75,6 @@ function ChooseEntityToCreate(props) {
       setEntityType(undefined);
     }
   };
-  console.log('YOOOOO: ', entityType);
 
   const handleCloseModal = () => {
     resetEntityType();
