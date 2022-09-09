@@ -76,7 +76,7 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
 
   return (
     <TaskSectionDisplayDiv>
-      <TaskSectionLabel>Watchers</TaskSectionLabel>
+      <TaskSectionLabel>Observer</TaskSectionLabel>
       <Grid container alignItems="center" gap={`${observers.length ? 8 : 0}px`}>
         <Grid container alignItems="center" width="auto">
           {observers.slice(0, 6).map((user, index) => {
@@ -104,7 +104,7 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
                 imageHeight={22}
                 initials={currentUser.username}
                 avatar={{ url: currentUser.profilePicture }}
-                style={{ borderRadius: '50%', border: `2px solid ${palette.grey910}` }}
+                style={{ borderRadius: '50%', border: `2px solid ${palette.grey99}` }}
               />
               <Box
                 sx={{
