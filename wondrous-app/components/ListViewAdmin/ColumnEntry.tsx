@@ -392,7 +392,7 @@ function ColumnEntry(props: Props) {
                 onClick={btn.action}
                 key={idx}
               >
-                {btn.isCompleted ? btn.isCompletedLabel : btn.label}
+                <span>{btn.isCompleted ? btn.isCompletedLabel : btn.label}</span>
               </Button>
             );
           })}
