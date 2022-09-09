@@ -229,7 +229,6 @@ export default function ListViewItem({ task, entityType, handleStatusPicked }) {
     <>
       <CreateEntity
         open={editTask}
-        handleCloseModal={() => setEditTask(false)}
         entityType={task?.type}
         handleClose={() => {
           setEditTask(false);

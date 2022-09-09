@@ -269,9 +269,6 @@ export function Task(props) {
     <span className={className}>
       <CreateEntity
         open={editTask}
-        handleCloseModal={() => {
-          setEditTask(false);
-        }}
         entityType={task?.type}
         handleClose={() => {
           setEditTask(false);

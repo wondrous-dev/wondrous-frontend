@@ -17,7 +17,6 @@ export function TaskSubtaskHeader({ taskId, canCreate }) {
     <TaskSubtaskHeaderWrapper>
       <CreateEntity
         entityType={ENTITIES_TYPES.TASK}
-        handleCloseModal={toggleCreateFormModal}
         open={createFormModal}
         cancel={toggleCreateFormModal}
         handleClose={toggleCreateFormModal}

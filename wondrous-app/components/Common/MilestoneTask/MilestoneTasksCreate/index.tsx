@@ -21,7 +21,6 @@ export default function MilestoneTasksCreate({ canCreate, milestone }) {
         cancel={handleModalStatus}
         handleClose={handleModalStatus}
         open={open}
-        handleCloseModal={handleModalStatus}
         formValues={{
           orgId,
           podId,

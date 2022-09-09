@@ -10,7 +10,6 @@ const NewTask = () => {
     <CreateEntity
       entityType={ENTITIES_TYPES.TASK}
       isTaskProposal={false}
-      handleCloseModal={handleRouter}
       cancel={handleRouter}
       handleClose={handleRouter}
       open

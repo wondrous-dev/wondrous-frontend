@@ -345,11 +345,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     return (
       <CreateEntity
         open={open}
-        handleCloseModal={() => {
-          setEditTask(false);
-          setFetchedTask(null);
-          handleClose();
-        }}
         entityType={entityType}
         handleClose={() => {
           setEditTask(false);

@@ -262,9 +262,6 @@ export function Table(props) {
       {editableTask && (
         <CreateEntity
           open={Boolean(open)}
-          handleCloseModal={() => {
-            setEditableTask(false);
-          }}
           entityType={editableTask?.isProposal ? ENTITIES_TYPES.PROPOSAL : editableTask?.type || ENTITIES_TYPES.TASK}
           handleClose={() => setEditableTask(false)}
           cancel={() => setEditableTask(false)}

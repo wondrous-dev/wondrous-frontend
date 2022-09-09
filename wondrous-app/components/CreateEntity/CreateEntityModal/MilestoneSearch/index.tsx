@@ -47,10 +47,6 @@ function MilestoneSearch(props) {
     return (
       <CreateEntity
         entityType={ENTITIES_TYPES.MILESTONE}
-        handleCloseModal={() => {
-          setCreateMilestone(false);
-          handleClickAway();
-        }}
         open={isOpen}
         cancel={() => {
           setCreateMilestone(false);

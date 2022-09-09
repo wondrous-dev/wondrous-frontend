@@ -33,21 +33,20 @@ interface ICreateEntity {
     snapshotId?: string;
   };
   open: Boolean;
-  handleCloseModal: Function;
   isTaskProposal?: boolean;
   formValues?: FormikValues;
   parentTaskId?: string;
 }
 
 export function CreateEntity(props: ICreateEntity) {
-  const { open, entityType, handleCloseModal, isTaskProposal } = props;
+  const { open, entityType, handleClose, isTaskProposal } = props;
 
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
   if (isTaskProposal) {
     return (
       <CreateFormModalOverlay
         open={open}
-        onClose={handleCloseModal}
+        onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
@@ -58,7 +57,7 @@ export function CreateEntity(props: ICreateEntity) {
   return (
     <CreateFormModalOverlay
       open={open}
-      onClose={handleCloseModal}
+      onClose={handleClose}
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
@@ -76,49 +75,64 @@ function ChooseEntityToCreate(props) {
       setEntityType(undefined);
     }
   };
+  console.log('YOOOOO: ', entityType);
+
   const handleCloseModal = () => {
     resetEntityType();
     toggleOpen();
   };
 
-  useHotkeys(HOTKEYS.CREATE_TASK, () => {
-    setEntityType(ENTITIES_TYPES.TASK);
-    if (open) {
-      resetEntityType();
-
-      toggleOpen();
-    }
-  });
-  useHotkeys(HOTKEYS.CREATE_BOUNTY, () => {
-    setEntityType(ENTITIES_TYPES.BOUNTY);
-    if (open) {
-      resetEntityType();
-
-      toggleOpen();
-    }
-  });
-  useHotkeys(HOTKEYS.CREATE_POD, () => {
-    setEntityType(ENTITIES_TYPES.POD);
-    if (open) {
-      resetEntityType();
-
-      toggleOpen();
-    }
-  });
-  useHotkeys(HOTKEYS.CREATE_PROPOSAL, () => {
-    setEntityType(ENTITIES_TYPES.PROPOSAL);
-    if (open) {
-      resetEntityType();
-      toggleOpen();
-    }
-  });
+  useHotkeys(
+    HOTKEYS.CREATE_TASK,
+    () => {
+      setEntityType(ENTITIES_TYPES.TASK);
+      if (open) {
+        toggleOpen();
+        resetEntityType();
+      }
+    },
+    [open, entityType]
+  );
+  useHotkeys(
+    HOTKEYS.CREATE_BOUNTY,
+    () => {
+      setEntityType(ENTITIES_TYPES.BOUNTY);
+      if (open) {
+        resetEntityType();
+        toggleOpen();
+      }
+    },
+    [open, entityType]
+  );
+  useHotkeys(
+    HOTKEYS.CREATE_POD,
+    () => {
+      setEntityType(ENTITIES_TYPES.POD);
+      if (open) {
+        resetEntityType();
+        toggleOpen();
+      }
+    },
+    [open, entityType]
+  );
+  useHotkeys(
+    HOTKEYS.CREATE_PROPOSAL,
+    () => {
+      setEntityType(ENTITIES_TYPES.PROPOSAL);
+      if (open) {
+        resetEntityType();
+        toggleOpen();
+      }
+    },
+    [open]
+  );
   useHotkeys(
     HOTKEYS.CHOOSE_ENTITY,
     () => {
-      toggleOpen();
       resetEntityType();
+      toggleOpen();
     },
-    [open]
+    [open, entityType]
   );
 
   if (entityType) {
@@ -126,14 +140,9 @@ function ChooseEntityToCreate(props) {
       <CreateEntity
         entityType={entityType}
         isTaskProposal={entityType === ENTITIES_TYPES.PROPOSAL}
-        handleCloseModal={() => {
-          resetEntityType();
-          handleCloseModal();
-        }}
         open={open}
         cancel={resetEntityType}
         handleClose={() => {
-          resetEntityType();
           handleCloseModal();
         }}
       />
@@ -150,7 +159,13 @@ function ChooseEntityToCreate(props) {
       aria-labelledby="modal-modal-title"
       aria-describedby="modal-modal-description"
     >
-      <ChooseEntityToCreateModal handleClose={handleCloseModal} setEntityType={setEntityType} />
+      <ChooseEntityToCreateModal
+        handleClose={() => {
+          resetEntityType();
+          toggleOpen();
+        }}
+        setEntityType={setEntityType}
+      />
     </CreateFormModalOverlay>
   );
 }
