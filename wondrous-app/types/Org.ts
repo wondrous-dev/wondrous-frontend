@@ -6,4 +6,5 @@ export interface Org {
   profilePicture: string;
   thumbnailPicture: string;
   privacyLevel: string;
+  description: string;
 }

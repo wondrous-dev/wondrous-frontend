@@ -7,6 +7,7 @@ import { useMutation } from '@apollo/client';
 import { DECLINE_ORG_COLLAB_REQUEST, APPROVE_ORG_COLLAB_REQUEST } from 'graphql/mutations';
 import CollabCreateSuccess from 'components/CreateCollaborationModal/Steps/CollabCreateSuccess';
 import { useRouter } from 'next/router';
+import { useSteps } from 'utils/hooks';
 import { ViewButton } from './styles';
 
 const Actions = ({ type, onClose, onSubmit, declineLabel, acceptLabel }) => (
@@ -24,7 +25,7 @@ const Actions = ({ type, onClose, onSubmit, declineLabel, acceptLabel }) => (
 
 const ViewCollabModal = ({ orgCollabRequest, type }) => {
   const router = useRouter();
-  const [step, setStep] = useState(0);
+  const { step, setStep } = useSteps();
   const [isOpen, setIsOpen] = useState(false);
 
   const [declineOrgCollabRequest] = useMutation(DECLINE_ORG_COLLAB_REQUEST, {

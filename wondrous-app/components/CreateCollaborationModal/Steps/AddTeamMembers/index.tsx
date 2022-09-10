@@ -2,14 +2,14 @@ import React, { useCallback, useMemo, useState } from 'react';
 import { Typography, InputAdornment } from '@mui/material';
 import { createPortal } from 'react-dom';
 import Box from '@mui/material/Box';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { LIMIT } from 'services/board';
 import GradientHeading from 'components/GradientHeading';
 import SearchIcon from 'components/Icons/search';
 import { Org } from 'types/Org';
 import Divider from 'components/Divider';
 import { Button } from 'components/Button';
-import { GET_ORG_ROLES, GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries';
+import { GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import { Autocomplete, Option } from 'components/SearchTasks/styles';
@@ -21,8 +21,8 @@ import CloseModalIcon from 'components/Icons/closeModal';
 import differenceWith from 'lodash/differenceWith';
 import eq from 'lodash/eq';
 import debounce from 'lodash/debounce';
-import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations';
-import { LINK } from 'utils/constants';
+import { LinkIcon } from 'components/Icons/taskModalIcons';
+import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
 import ListBox from './Listbox';
 import {
   PaperComponent,
@@ -37,15 +37,28 @@ import {
 type Props = {
   org: Org;
   onCancel: () => void;
-  onSubmit: ({ users }: any) => void | Promise<any>;
+  onSubmit: () => void | Promise<any>;
   footerRef: React.RefObject<HTMLDivElement>;
   selectedUsers: any;
   setUsers: any;
   existingUsersIds: Array<string>;
+  footerLeftRef: React.RefObject<HTMLDivElement>;
+  collabData: Org;
 };
 
-const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef, selectedUsers, setUsers, existingUsersIds }: Props) => {
+const AddTeamMembers = ({
+  org,
+  onSubmit,
+  onCancel,
+  footerRef,
+  selectedUsers,
+  setUsers,
+  existingUsersIds,
+  footerLeftRef,
+  collabData,
+}: Props) => {
   const [hasMore, setHasMore] = useState(false);
+  const [inviteLinkModalIsOpen, setInviteLinkModalIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
   const {
@@ -62,29 +75,6 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef, selectedUsers, set
       const hasMoreData = getOrgUsers?.length >= LIMIT;
       if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
-  });
-
-  const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
-    onCompleted: (data) => {
-      setInviteLink(`${LINK}/invite/${data?.createOrgInviteLink.token}`);
-    },
-    onError: (e) => {
-      console.error(e);
-    },
-  });
-  const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
-    // onCompleted: (data) => {
-    //   data?.getOrgRoles &&
-    //     data?.getOrgRoles?.forEach((role) => {
-    //       if (role?.default) {
-    //         setRole(role?.id);
-    //       }
-    //     });
-    // },
-    onError: (e) => {
-      console.error(e);
-    },
-    fetchPolicy: 'cache-and-network',
   });
 
   const users = inputValue ? searchOrgUserResults?.searchOrgUsers : getOrgUsers?.map((i) => i.user);
@@ -130,6 +120,12 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef, selectedUsers, set
 
   return (
     <div>
+      <NewOrgInviteLinkModal
+        orgOrPodName={collabData?.name}
+        orgId={collabData?.id}
+        open={inviteLinkModalIsOpen}
+        onClose={() => setInviteLinkModalIsOpen(false)}
+      />
       <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%">
         Add your team members
       </GradientHeading>
@@ -257,18 +253,33 @@ const AddTeamMembers = ({ org, onSubmit, onCancel, footerRef, selectedUsers, set
           {idx !== FIELDS_CONFIG.length - 1 && <Divider my="18px" />}
         </>
       ))}
+      {footerLeftRef.current
+        ? createPortal(
+            <Grid
+              py="4px"
+              px="8px"
+              color="#CCBBFF"
+              justifyContent="center"
+              alignItems="center"
+              gap="10px"
+              display="flex"
+              onClick={() => setInviteLinkModalIsOpen(true)}
+              sx={{ background: '#282828', fontWeight: '600', cursor: 'pointer' }}
+              borderRadius="4px"
+            >
+              <LinkIcon />
+              Universal link
+            </Grid>,
+            footerLeftRef.current
+          )
+        : null}
       {footerRef.current
         ? createPortal(
             <Grid container gap="18px">
               <Button color="grey" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button
-                color="primary"
-                type="submit"
-                onClick={() => onSubmit({ users: selectedUsers })}
-                disabled={!selectedUsers.admins.length}
-              >
+              <Button color="primary" type="submit" onClick={onSubmit} disabled={!selectedUsers.admins.length}>
                 Next
               </Button>
             </Grid>,

@@ -1,14 +1,14 @@
 import React, { useRef, useState, useEffect, useMemo } from 'react';
-
 import { ColumnsContext } from 'utils/contexts';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { BOARDS_MAP, Props, getFilterSchema } from 'components/organization/boards/boards';
 import AddTeamMembers from 'components/CreateCollaborationModal/Steps/AddTeamMembers';
 import { Modal as ModalComponent } from 'components/Modal';
-import { useGlobalContext } from 'utils/hooks';
+import { useGlobalContext, useSteps } from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useLazyQuery } from '@apollo/client';
 import { GET_ORG_USERS } from 'graphql/queries';
+import AddMembersConfirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import SharedOrgHeader from './SharedOrgHeader';
 
 function CollabBoard(props: Props) {
@@ -29,13 +29,18 @@ function CollabBoard(props: Props) {
   } = props;
 
   const [openInviteModal, setOpenInviteModal] = useState(false);
+  const { step, setStep } = useSteps();
   const filterSchema = getFilterSchema(entityType, orgData?.id);
   const ActiveBoard = BOARDS_MAP[entityType];
   const { userPermissionsContext } = useGlobalContext();
   const footerRef = useRef();
+  const footerLeftRef = useRef();
   const [users, setUsers] = useState({ admins: [], members: [] });
   const [getUsers, { data }] = useLazyQuery(GET_ORG_USERS);
-  const handleModal = () => setOpenInviteModal((prevState) => !prevState);
+  const handleModal = () => {
+    setOpenInviteModal((prevState) => !prevState);
+    setStep(0);
+  };
 
   const userOrgsWithFullAccess =
     userPermissionsContext?.orgPermissions &&
@@ -60,6 +65,35 @@ function CollabBoard(props: Props) {
 
   const existingUsersIds = useMemo(() => data?.getOrgUsers.map((orgUser) => orgUser.user.id), [data?.getOrgUsers]);
 
+  const STEPS = [
+    ({ selectedUsers, parentOrg, orgData, existingUsersIds }) => (
+      <AddTeamMembers
+        org={parentOrg}
+        collabData={orgData}
+        footerRef={footerRef}
+        footerLeftRef={footerLeftRef}
+        selectedUsers={selectedUsers}
+        onCancel={handleModal}
+        existingUsersIds={existingUsersIds}
+        setUsers={(users) => setUsers({ ...users })}
+        onSubmit={() => setStep((prevState) => prevState + 1)}
+      />
+    ),
+    ({ selectedUsers }) => (
+      <AddMembersConfirmation
+        onSubmit={() => {}}
+        onCancel={handleModal}
+        footerRef={footerRef}
+        collabDetails={orgData}
+        selectedUsers={selectedUsers}
+        parentOrgs={orgData?.parentOrgs}
+        deleteMember={() => {}}
+      />
+    ),
+  ];
+
+  const Component = useMemo(() => STEPS[step], [step]);
+
   return (
     <Wrapper
       orgData={orgData}
@@ -80,21 +114,15 @@ function CollabBoard(props: Props) {
           maxWidth={560}
           title="Add members"
           footerRight={<div ref={footerRef} />}
+          footerLeft={<div ref={footerLeftRef} />}
           open={openInviteModal}
           onClose={handleModal}
         >
-          <AddTeamMembers
-            org={parentOrg}
-            footerRef={footerRef}
-            onCancel={handleModal}
+          <Component
             selectedUsers={users}
             existingUsersIds={existingUsersIds}
-            setUsers={setUsers}
-            onSubmit={({ users }) => {
-              console.log(users);
-              // setData({ ...data, users });
-              // setStep(3);
-            }}
+            parentOrg={parentOrg}
+            orgData={orgData}
           />
         </ModalComponent>
       )}

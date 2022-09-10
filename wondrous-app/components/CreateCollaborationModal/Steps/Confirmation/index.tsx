@@ -35,35 +35,39 @@ type Props = {
   onCancel: () => void;
   onSubmit: () => void | Promise<any>;
   footerRef: React.RefObject<HTMLDivElement>;
-  collabDetails: {
-    mission?: string;
-    org1?: Org;
-    org2?: Org;
-    step?: number;
-    title?: string;
-    users?: {
-      admins: Array<User>;
-      members: Array<User>;
-    };
+  collabDetails: Org;
+  selectedUsers?: {
+    admins: Array<User>;
+    members: Array<User>;
   };
   deleteMember: (userId: string) => void;
+  parentOrgs: Array<Org>;
 };
 
-const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, deleteMember }: Props) => {
+const AddMembersConfirmation = ({
+  onSubmit,
+  onCancel,
+  footerRef,
+  collabDetails,
+  deleteMember,
+  selectedUsers,
+  parentOrgs,
+}: Props) => {
   const [isMembersModalOpen, setMembersModalOpen] = useState(false);
 
   const handleModal = () => setMembersModalOpen((prevState) => !prevState);
 
+  console.log(parentOrgs);
   return (
     <ConfirmationStepWrapper>
       <MembersModal
         open={isMembersModalOpen}
         onClose={handleModal}
-        members={collabDetails?.users?.members}
+        members={selectedUsers?.members}
         deleteMember={deleteMember}
       />
       <GradientHeading fontSize={24} mb="20px">
-        Confirm details
+        Confirm members list
       </GradientHeading>
 
       <Typography color={palette.grey250}>
@@ -87,27 +91,21 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
           },
         }}
       >
-        <OrgSearchButton>
-          <LabelWrapper>
-            <OrgProfilePicture
-              style={{ width: '42px', height: '42px' }}
-              profilePicture={collabDetails?.org1?.profilePicture}
-            />
-            <span>{collabDetails?.org1?.name}</span>
-          </LabelWrapper>
-        </OrgSearchButton>
-        <Grid container sx={{ flex: '0 0 42px' }} justifyContent="center">
-          <Dao2Dao />
-        </Grid>
-        <OrgSearchButton>
-          <LabelWrapper>
-            <OrgProfilePicture
-              style={{ width: '42px', height: '42px' }}
-              profilePicture={collabDetails?.org2.profilePicture}
-            />
-            <span>{collabDetails?.org2?.name}</span>
-          </LabelWrapper>
-        </OrgSearchButton>
+        {parentOrgs?.map((org, idx) => (
+          <>
+            <OrgSearchButton key={idx}>
+              <LabelWrapper>
+                <OrgProfilePicture style={{ width: '42px', height: '42px' }} profilePicture={org?.profilePicture} />
+                <span>{org.name}</span>
+              </LabelWrapper>
+            </OrgSearchButton>
+            {idx < parentOrgs.length - 1 && (
+              <Grid container sx={{ flex: '0 0 42px' }} justifyContent="center">
+                <Dao2Dao />
+              </Grid>
+            )}
+          </>
+        ))}
       </Grid>
       <Divider my="18px" />
       <Grid container direction="column" sx={{ gap: '14px' }}>
@@ -123,25 +121,8 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
               Title
             </Box>
           </Box>
-          <Box sx={{ width: '100%' }}>
-            <Title>{collabDetails.title}</Title>
-          </Box>
-        </Grid>
-        <Grid container direction="row" wrap="nowrap">
-          <Box sx={{ flex: '0 0 94px' }}>
-            <Box
-              py="4px"
-              px="8px"
-              color="#CCBBFF"
-              sx={{ background: '#282828', display: 'inline-block', fontWeight: '600' }}
-              borderRadius="4px"
-            >
-              Mission
-            </Box>
-          </Box>
-
-          <Box sx={{ width: '100%' }}>
-            <Description>{collabDetails.mission}</Description>
+          <Box sx={{ width: '100%', display: 'flex', alignItems: 'center' }}>
+            <Title>{collabDetails.name}</Title>
           </Box>
         </Grid>
       </Grid>
@@ -161,7 +142,7 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
           </Box>
           <Box sx={{ width: '100%' }}>
             <SelectedUsersWrapper>
-              {collabDetails?.users.admins?.map((admin, idx) => (
+              {selectedUsers.admins?.map((admin, idx) => (
                 <SelectedUserItem key={idx}>
                   {admin?.profilePicture ? (
                     <SafeImage
@@ -196,7 +177,7 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
           </Box>
           <Box sx={{ width: '100%' }}>
             <SelectedMembersWrapper>
-              {collabDetails?.users?.members?.slice(0, MEMBER_DISPLAY_LIMIT).map((member, idx) => (
+              {selectedUsers?.members?.slice(0, MEMBER_DISPLAY_LIMIT).map((member, idx) => (
                 <SelectedMembersItem key={idx} withRightMargin={idx > 0}>
                   {member?.profilePicture ? (
                     <SafeImage
@@ -213,9 +194,9 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
                   )}
                 </SelectedMembersItem>
               ))}
-              {collabDetails?.users?.members?.length > MEMBER_DISPLAY_LIMIT && (
+              {selectedUsers?.members?.length > MEMBER_DISPLAY_LIMIT && (
                 <MembersDisplayAll withRightMargin onClick={handleModal}>
-                  +{collabDetails?.users?.members?.length - MEMBER_DISPLAY_LIMIT} more
+                  +{selectedUsers?.members?.length - MEMBER_DISPLAY_LIMIT} more
                 </MembersDisplayAll>
               )}
             </SelectedMembersWrapper>
@@ -247,7 +228,7 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
                 Cancel
               </Button>
               <Button color="primary" type="submit" onClick={onSubmit}>
-                Send invitation
+                Add members
               </Button>
             </Grid>,
             footerRef.current
@@ -257,4 +238,4 @@ const Step3Confirmation = ({ onSubmit, onCancel, footerRef, collabDetails, delet
   );
 };
 
-export default Step3Confirmation;
+export default AddMembersConfirmation;
