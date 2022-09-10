@@ -32,6 +32,7 @@ import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
 import { GET_JOIN_ORG_REQUESTS } from 'graphql/queries';
+import RolePill from 'components/Common/RolePill';
 import {
   BoldName,
   Description,
@@ -53,6 +54,8 @@ interface Props {
   podName: string;
   userUsername: string;
   id: string;
+  roleId: string;
+  roleName: string;
   creatorProfilePicture?: string;
   creatorUsername?: string;
   message?: string;
@@ -102,6 +105,8 @@ function ColumnEntry(props: Props) {
     podId,
     userUsername,
     id,
+    roleId,
+    roleName,
     creatorProfilePicture,
     creatorUsername,
     message,
@@ -201,6 +206,7 @@ function ColumnEntry(props: Props) {
           variables: {
             userId,
             orgId,
+            roleId,
           },
         }).then(() => positiveCallback()),
       decline: () =>
@@ -208,6 +214,7 @@ function ColumnEntry(props: Props) {
           variables: {
             userId,
             orgId,
+            roleId,
           },
         }).then(() => negativeCallback()),
     };
@@ -371,6 +378,7 @@ function ColumnEntry(props: Props) {
           <BoldName>{username}</BoldName>
 
           <Description>{entryMessage}</Description>
+          {roleName ? <RolePill roleName={roleName} /> : null}
           {links ? <IconsList items={links} /> : null}
           {media ? <IconsList items={media} type={ICON_TYPES.MEDIA} /> : null}
         </ListViewItemDataContainer>

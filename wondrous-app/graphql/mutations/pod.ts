@@ -97,8 +97,8 @@ export const INVITE_USER_TO_POD = gql`
 `;
 
 export const CREATE_JOIN_POD_REQUEST = gql`
-  mutation createJoinPodRequest($podId: ID!, $message: String) {
-    createJoinPodRequest(podId: $podId, message: $message) {
+  mutation createJoinPodRequest($podId: ID!, $message: String, $roleId: ID!) {
+    createJoinPodRequest(podId: $podId, message: $message, roleId: $roleId) {
       success
     }
   }

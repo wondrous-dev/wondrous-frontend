@@ -4,7 +4,7 @@ import { PERMISSIONS } from 'utils/constants';
 import { ErrorText } from 'components/Common';
 import { ActionButton } from 'components/Common/Task/styles';
 import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
-import { GET_ORG_ROLES } from 'graphql/queries';
+import { GET_ORG_ROLES, GET_POD_ROLES } from 'graphql/queries';
 import { StyledCancelButton, StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
@@ -47,6 +47,7 @@ const MembershipRequestModal = (props) => {
   const [requestMessage, setRequestMessage] = useState('');
   const [error, setError] = useState(null);
   const [characterCount, setCharacterCount] = useState(0);
+  const [roles, setRoles] = useState(null);
 
   const useGetOrgRoles = (org) => {
     const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
@@ -64,9 +65,34 @@ const MembershipRequestModal = (props) => {
     return data?.getOrgRoles;
   };
 
-  const orgRoles = useGetOrgRoles(orgId);
+  const useGetPodRoles = (pod) => {
+    const [getPodRoles, { data }] = useLazyQuery(GET_POD_ROLES, {
+      fetchPolicy: 'network-only',
+    });
+    useEffect(() => {
+      if (pod) {
+        getPodRoles({
+          variables: {
+            podId: pod,
+          },
+        });
+      }
+    }, [getPodRoles, pod]);
+    return data?.getPodRoles;
+  };
 
-  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === orgRole?.name) : null;
+  const orgRoles = useGetOrgRoles(orgId);
+  const podRoles = useGetPodRoles(podId);
+
+  useEffect(() => {
+    if (orgRoles) {
+      setRoles(orgRoles);
+    } else {
+      setRoles(podRoles);
+    }
+  }, [orgRoles, podRoles]);
+
+  const roleIndex = roles ? roles?.findIndex((object) => object.name === orgRole?.name) : null;
 
   const handleChange = (e) => {
     if (error) {
@@ -84,7 +110,9 @@ const MembershipRequestModal = (props) => {
     onClose();
   };
 
-  const rolePermissions = orgRoles?.[roleIndex]?.permissions;
+  const defaultRole = roles?.[roles?.findIndex((role) => role?.default === true)];
+
+  const rolePermissions = roles?.[roleIndex]?.permissions;
   const roleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
   const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
 
@@ -121,7 +149,8 @@ const MembershipRequestModal = (props) => {
               }}
             />
 
-            <RequestModalTitle>Applying for role</RequestModalTitle>
+            <RequestModalTitle style={{ marginRight: '12px' }}>Applying for role: </RequestModalTitle>
+            {orgId ? <RolePill roleName={orgRole?.name} /> : <RolePill roleName={defaultRole?.name} />}
           </RequestModalHorizontalAlign>
 
           <RequestModalCloseIcon
@@ -134,25 +163,27 @@ const MembershipRequestModal = (props) => {
         <RequestMiddleContainer>
           <RequestLightBoxContainer>
             <RequestModalHelperContainer>
-              <RolePill roleName={orgRole?.name} />
               <RequestModalHelperDiv />
             </RequestModalHelperContainer>
-            <RequestModalRolesAbilityContainer>
-              <RequestModalRolesAbilityColumns>
-                <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-                {roleCanDo?.map((permission) => (
-                  <ChecklistRow role={permission} key={permission} status="success" />
-                ))}
-              </RequestModalRolesAbilityColumns>
-              <RequestModalRolesAbilityColumns>
-                <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-                {roleCannotDo?.map((permission) => (
-                  <ChecklistRow role={permission} key={permission} status="fail" />
-                ))}
-              </RequestModalRolesAbilityColumns>
-            </RequestModalRolesAbilityContainer>
+            {orgId ? null : <RequestModalRolesSubtitle>Message to admins</RequestModalRolesSubtitle>}
+            {orgId ? (
+              <RequestModalRolesAbilityContainer>
+                <RequestModalRolesAbilityColumns>
+                  <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
+                  {roleCanDo?.map((permission) => (
+                    <ChecklistRow role={permission} key={permission} status="success" />
+                  ))}
+                </RequestModalRolesAbilityColumns>
+                <RequestModalRolesAbilityColumns>
+                  <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
+                  {roleCannotDo?.map((permission) => (
+                    <ChecklistRow role={permission} key={permission} status="fail" />
+                  ))}
+                </RequestModalRolesAbilityColumns>
+              </RequestModalRolesAbilityContainer>
+            ) : null}
 
-            <RequestModalTextareaWrapper noValidate autoComplete="off">
+            <RequestModalTextareaWrapper noValidate autoComplete="off" style={{ marginTop: '24px' }}>
               <RequestModalTextarea
                 placeholder="What do you want admin to know about you!"
                 rows={4}
@@ -197,7 +228,7 @@ const MembershipRequestModal = (props) => {
                   variables: {
                     podId,
                     message: requestMessage,
-                    roleId: orgRole.id,
+                    roleId: defaultRole?.id,
                   },
                 });
               }

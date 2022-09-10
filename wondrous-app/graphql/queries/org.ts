@@ -181,6 +181,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       approvedAt
       message
       roleId
+      roleName
       rejectedAt
       userUsername
       userProfilePicture

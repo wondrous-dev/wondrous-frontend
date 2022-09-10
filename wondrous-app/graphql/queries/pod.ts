@@ -175,6 +175,8 @@ export const GET_POD_MEMBERSHIP_REQUEST = gql`
       podId
       approvedAt
       message
+      roleId
+      roleName
       rejectedAt
       userUsername
       userProfilePicture

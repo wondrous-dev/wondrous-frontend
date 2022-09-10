@@ -6,6 +6,7 @@ import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutat
 import Wrapper from 'components/Pod/wrapper';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
+import RolePill from 'components/Common/RolePill';
 import {
   MemberRequestsList,
   MemberRequestCard,
@@ -162,7 +163,8 @@ function MemberRequests(props) {
                       <MemberName>{request.userUsername}</MemberName>
                     </MemberProfileLink>
                   </Link>
-                  <MemberMessage>“{request.message}”</MemberMessage>
+                  <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
+                  <RolePill roleName={request.roleName} />
                   <RequestActionButtons>
                     <RequestDeclineButton onClick={() => declineRequest(request.userId, request.podId)}>
                       Decline

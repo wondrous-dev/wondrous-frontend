@@ -26,6 +26,7 @@ import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
+import SuccessRoleModal from 'components/Common/RoleSuccessModal/ClaimedRoleModal';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -70,8 +71,11 @@ function Wrapper(props) {
   const [showUsers, setShowUsers] = useState(false);
   const [podRole, setPodRole] = useState(null);
   const [showPods, setShowPods] = useState(false);
+  const [claimedRole, setClaimedRole] = useState(null);
+  const [openClaimedRole, setOpenClaimedRole] = useState(false);
   const [open, setOpen] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
+  const [roleRequest, setRoleRequest] = useState(null);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
   const [getPerTypeTaskCountForPodBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE_FOR_POD);
   const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST);
@@ -111,6 +115,20 @@ function Wrapper(props) {
   };
   const { search } = router.query;
   const links = podProfile?.links;
+
+  const handleOpenJoinRequestModal = (open) => {
+    setOpenJoinRequestModal(open);
+  };
+  const handleOpenClaimedRole = (open) => {
+    setOpenClaimedRole(open);
+  };
+
+  const handleSetClaimedRole = (role) => {
+    setClaimedRole(role);
+  };
+  const handleSetRequest = (request) => {
+    setRoleRequest(request);
+  };
   const handleJoinPodButtonClick = async () => {
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
       setOpenJoinRequestModal(true);
@@ -238,6 +256,20 @@ function Wrapper(props) {
         onClose={() => setOpenJoinRequestModal(false)}
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
+        handleOpenJoinRequestModal={handleOpenJoinRequestModal}
+        handleOpenClaimedRole={handleOpenClaimedRole}
+        handleSetClaimedRole={handleSetClaimedRole}
+        handleSetRequest={handleSetRequest}
+      />
+      <SuccessRoleModal
+        open={openClaimedRole}
+        role={claimedRole}
+        request={roleRequest}
+        onClose={() => {
+          handleSetClaimedRole(null);
+          handleSetRequest(null);
+          setOpenClaimedRole(false);
+        }}
       />
       <TokenGatedAndClaimableRoleModal
         open={openGatedRoleModal}
