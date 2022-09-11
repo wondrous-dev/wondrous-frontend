@@ -159,3 +159,45 @@ export function EmptyStateTasksIcon({ color = '#7A7A7A' }) {
     </svg>
   );
 }
+
+export function EmptyStatePaymentMethodIcon({ fillColor = '#0F0F0F', strokeColor = '#363636' }) {
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="78" height="46" fill="none" viewBox="0 0 78 46">
+      <path
+        stroke={strokeColor}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M23.483 20.253L5.835 17.439c-1.083-.172-2.115.657-2.306 1.851L1.46 32.271c-.19 1.195.533 2.304 1.616 2.476l17.648 2.813c1.083.173 2.116-.656 2.306-1.85l2.07-12.981c.19-1.195-.534-2.304-1.617-2.476zM2.84 23.617l21.57 3.438M75.087 12.349L58.9 4.775c-.993-.465-2.214.047-2.727 1.143l-5.57 11.906c-.513 1.096-.124 2.361.87 2.826l16.186 7.573c.994.465 2.215-.047 2.727-1.143l5.571-11.906c.513-1.095.123-2.36-.87-2.825zM54.316 9.887L74.1 19.143"
+      />
+      <rect
+        width="36"
+        height="36"
+        x="11.755"
+        y="10.535"
+        fill={fillColor}
+        rx="2.333"
+        transform="rotate(-15 11.755 10.535)"
+      />
+      <path
+        stroke={strokeColor}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        d="M40.162 12.488L22.9 17.113c-1.059.284-1.664 1.461-1.35 2.63L24.95 32.44c.314 1.169 1.426 1.886 2.486 1.602l17.262-4.625c1.059-.284 1.664-1.462 1.35-2.63L42.648 14.09c-.313-1.169-1.425-1.886-2.485-1.602zM22.684 23.975l21.098-5.654"
+      />
+      <rect
+        width="36"
+        height="36"
+        x="11.755"
+        y="10.535"
+        stroke={strokeColor}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+        rx="2.333"
+        transform="rotate(-15 11.755 10.535)"
+      />
+    </svg>
+  );
+}
