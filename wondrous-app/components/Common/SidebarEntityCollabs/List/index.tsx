@@ -10,9 +10,9 @@ export default function CollabsEntityList({ items, label, type }) {
     <ListWrapper>
       <Label>{label}</Label>
       {items?.map((request, idx) => (
-        <CollabsWrapper isPending key={idx}>
-          <CollabRequestTitle isPending>{request.title}</CollabRequestTitle>
-          <CollabRequestLogoWrapper isPending>
+        <CollabsWrapper key={idx}>
+          <CollabRequestTitle>{request.title}</CollabRequestTitle>
+          <CollabRequestLogoWrapper>
             <SidebarTooltip title={request.initiatorOrg.username} placement="top">
               <Link href={`/organization/${request.initiatorOrg.username}/boards`}>
                 <a>

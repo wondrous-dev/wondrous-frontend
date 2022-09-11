@@ -37,14 +37,14 @@ export const CollabsContainer = styled.div`
 export const CollabsWrapper = styled.a`
   display: flex;
   flex-direction: column;
-  cursor: ${({ isPending }) => !isPending && 'pointer'};
+  cursor: pointer;
   gap: 6px;
   padding: 8px;
   background: ${palette.grey99};
   border-radius: 4px;
   text-decoration: none;
   :hover {
-    background: ${({ isPending }) => !isPending && palette.grey58};
+    background: ${palette.grey58};
   }
 `;
 
@@ -56,7 +56,6 @@ export const CollabRequestTitle = styled(Typography)`
     font-size: 13px;
     line-height: 16px;
     color: ${palette.white};
-    opacity: ${({ isPending }) => (isPending ? '0.4' : '1')};
   }
 `;
 
@@ -86,5 +85,4 @@ export const CollabRequestLogoWrapper = styled.div`
   line-height: 16px;
   color: ${palette.grey250};
   align-items: center;
-  opacity: ${({ isPending }) => (isPending ? '0.4' : '1')};
 `;

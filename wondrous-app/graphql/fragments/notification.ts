@@ -17,6 +17,8 @@ export const NotificationFragment = gql`
     objectName
     additionalData {
       contentPreview
+      orgUsername
+      addMember
     }
   }
 `;

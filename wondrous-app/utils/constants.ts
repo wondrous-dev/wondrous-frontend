@@ -348,6 +348,7 @@ export const NOTIFICATION_VERBS = {
   comment: 'commented on',
   task_submit: 'submitted a',
   collab_invite: 'invited you in a',
+  collab_approve: 'approved a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {

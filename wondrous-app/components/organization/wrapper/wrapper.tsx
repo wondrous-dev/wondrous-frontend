@@ -93,8 +93,12 @@ function Wrapper(props) {
     podIds,
     userId,
     renderSharedHeader = null,
+    isCollabWorkspace = false,
     inviteButtonSettings = null,
   } = props;
+
+  const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
+
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
@@ -233,7 +237,7 @@ function Wrapper(props) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
       const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
       if (taskCount === 0 && bountyCount > taskCount && finalPath === 'boards') {
-        router.push(`/organization/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+        router.push(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
           shallow: true,
         });
       }
@@ -416,7 +420,7 @@ function Wrapper(props) {
                   <>
                     <HeaderButton
                       onClick={() => {
-                        router.push(`/organization/settings/${orgBoard?.orgId}/general`, undefined, {
+                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`, undefined, {
                           shallow: true,
                         });
                       }}

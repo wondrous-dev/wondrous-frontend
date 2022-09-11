@@ -35,3 +35,11 @@ export const APPROVE_ORG_COLLAB_REQUEST = gql`
   }
   ${OrgFragment}
 `;
+
+export const BATCH_ADD_MEMBERS = gql`
+  mutation batchAddUsers($input: BatchAddUsersInput) {
+    batchAddUsers(input: $input) {
+      success
+    }
+  }
+`;

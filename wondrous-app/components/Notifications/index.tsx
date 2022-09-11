@@ -65,7 +65,10 @@ function NotificationsBoard({ onlyBoard = false }) {
     let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
 
     if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
-      notificationLink = `/org/${notification.objectId}/boards?collabs=${true}&unread=${!notification?.viewedAt}`;
+      const mainPath = notification?.verb === NOTIFICATION_VERBS.collab_invite ? 'organization' : 'collaboration';
+      notificationLink = `/${mainPath}/${notification?.additionalData?.orgUsername}/boards?collabs=${true}${
+        notification?.additionalData?.addMember && !notification?.viewedAt ? `&addMembers=${true}` : ''
+      }`;
     }
     return notificationLink;
   };
@@ -184,10 +187,12 @@ function NotificationsBoard({ onlyBoard = false }) {
           {notifications?.length ? (
             notifications?.map((notification) => {
               const isNotificationViewed = notification?.viewedAt;
+              const notificationLink = getNotificationLink(notification);
+
               return (
                 <SmartLink
                   key={`notifications-${notification.id}`}
-                  href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
+                  href={notificationLink}
                   onClick={() => {
                     markNotificationRead({
                       variables: {

@@ -14,8 +14,15 @@ import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import { Autocomplete, Option } from 'components/SearchTasks/styles';
 import {
+  CreateEntityApplicationsSelectRender,
   CreateEntityAutocompleteOptionTypography,
   CreateEntityDefaultUserImage,
+  CreateEntityOption,
+  CreateEntityOptionLabel,
+  CreateEntitySelect,
+  CreateEntitySelectArrowIcon,
+  CreateEntitySelectWrapper,
+  CreateEntityWrapper,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import CloseModalIcon from 'components/Icons/closeModal';
 import differenceWith from 'lodash/differenceWith';
@@ -23,6 +30,8 @@ import eq from 'lodash/eq';
 import debounce from 'lodash/debounce';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
 import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
+import { PERMISSIONS } from 'utils/constants';
 import ListBox from './Listbox';
 import {
   PaperComponent,
@@ -61,6 +70,31 @@ const AddTeamMembers = ({
   const [inviteLinkModalIsOpen, setInviteLinkModalIsOpen] = useState(false);
   const [inputValue, setInputValue] = useState('');
   const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
+  const { data: orgRoles } = useQuery(GET_ORG_ROLES, {
+    onError: (e) => {
+      console.error(e);
+    },
+    variables: {
+      orgId: collabData.id,
+    },
+    skip: !collabData.id,
+    fetchPolicy: 'cache-and-network',
+    onCompleted: ({ getOrgRoles }) => {
+      const adminMemberRole = getOrgRoles?.reduce(
+        (acc, next) => {
+          if (next.permissions.includes(PERMISSIONS.FULL_ACCESS) && !acc.adminRole) {
+            acc.adminRole = next;
+          }
+          if (!acc.memberRole && !next.permissions.includes(PERMISSIONS.FULL_ACCESS)) {
+            acc.memberRole = next;
+          }
+          return acc;
+        },
+        { adminRole: null, memberRole: null }
+      );
+      setUsers({ ...selectedUsers, ...adminMemberRole });
+    },
+  });
   const {
     data: { getOrgUsers } = {},
     fetchMore,
@@ -107,11 +141,13 @@ const AddTeamMembers = ({
       buttonLabel: 'Admin',
       key: 'admins',
       options: availableOptions,
+      roleKey: 'adminRole',
     },
     {
       buttonLabel: 'Members',
       key: 'members',
       options: availableOptions,
+      roleKey: 'memberRole',
     },
   ];
 
@@ -151,79 +187,106 @@ const AddTeamMembers = ({
               </Box>
             </Box>
             <Box sx={{ width: '100%' }}>
-              <Autocomplete
-                disablePortal
-                disableCloseOnSelect
-                PaperComponent={PaperComponent}
-                clearOnBlur
-                options={field.options}
-                sx={{
-                  color: 'white',
-                  flex: '1 1 auto',
-                  '.MuiOutlinedInput-root': {
-                    background: '#141414',
-                  },
-                  '*': {
+              <Box sx={{ display: 'flex', gap: '10px' }}>
+                <Autocomplete
+                  disablePortal
+                  disableCloseOnSelect
+                  PaperComponent={PaperComponent}
+                  clearOnBlur
+                  options={field.options}
+                  sx={{
                     color: 'white',
-                  },
-                }}
-                multiple
-                openOnFocus
-                limitTags={1}
-                value={selectedUsers[field.key]}
-                ListboxComponent={ListBox}
-                ListboxProps={{
-                  handleFetchMore,
-                  hasMore,
-                }}
-                onChange={(event, options) => {
-                  handleChange(field.key, event, options);
-                }}
-                getOptionLabel={(option: any) => option?.username}
-                renderTags={(tagValue, getTagProps) => null}
-                renderInput={(params) => (
-                  <TextField
-                    {...params}
-                    fullWidth
-                    onChange={handleInputChange}
-                    placeholder="Search users"
-                    onBlur={() => {
-                      if (inputValue) setInputValue('');
-                    }}
-                    InputProps={{
-                      ...params.InputProps,
-                      endAdornment: (
-                        <InputAdornment position="start">
-                          {' '}
-                          <SearchIcon color={palette.highlightBlue} />
-                        </InputAdornment>
-                      ),
-                      disableUnderline: true,
-                    }}
-                  />
-                )}
-                renderOption={(props, option) => (
-                  <Option {...props}>
-                    {option?.profilePicture ? (
-                      <SafeImage
-                        useNextImage={false}
-                        src={option?.profilePicture}
-                        style={{
-                          width: '18px',
-                          height: '18px',
-                          borderRadius: '4px',
-                        }}
-                      />
-                    ) : (
-                      <CreateEntityDefaultUserImage />
-                    )}
+                    flex: '1 1 auto',
+                    '.MuiOutlinedInput-root': {
+                      background: '#141414',
+                    },
+                    '*': {
+                      color: 'white',
+                    },
+                  }}
+                  multiple
+                  openOnFocus
+                  limitTags={1}
+                  value={selectedUsers[field.key]}
+                  ListboxComponent={ListBox}
+                  ListboxProps={{
+                    handleFetchMore,
+                    hasMore,
+                  }}
+                  onChange={(event, options) => handleChange(field.key, event, options)}
+                  getOptionLabel={(option: any) => option?.username}
+                  renderTags={(tagValue, getTagProps) => null}
+                  renderInput={(params) => (
+                    <TextField
+                      {...params}
+                      fullWidth
+                      onChange={handleInputChange}
+                      placeholder="Search users"
+                      onBlur={() => {
+                        if (inputValue) setInputValue('');
+                      }}
+                      InputProps={{
+                        ...params.InputProps,
+                        endAdornment: (
+                          <InputAdornment position="start">
+                            {' '}
+                            <SearchIcon color={palette.highlightBlue} />
+                          </InputAdornment>
+                        ),
+                        disableUnderline: true,
+                      }}
+                    />
+                  )}
+                  renderOption={(props, option) => (
+                    <Option {...props}>
+                      {option?.profilePicture ? (
+                        <SafeImage
+                          useNextImage={false}
+                          src={option?.profilePicture}
+                          style={{
+                            width: '18px',
+                            height: '18px',
+                            borderRadius: '4px',
+                          }}
+                        />
+                      ) : (
+                        <CreateEntityDefaultUserImage />
+                      )}
 
-                    <CreateEntityAutocompleteOptionTypography>
-                      {option?.username}
-                    </CreateEntityAutocompleteOptionTypography>
-                  </Option>
-                )}
-              />
+                      <CreateEntityAutocompleteOptionTypography>
+                        {option?.username}
+                      </CreateEntityAutocompleteOptionTypography>
+                    </Option>
+                  )}
+                />
+                <CreateEntitySelectWrapper style={{ alignItems: 'center', flexWrap: 'nowrap', width: '30%' }}>
+                  <CreateEntityWrapper>
+                    <CreateEntitySelect
+                      name="select-role"
+                      value={selectedUsers[field.roleKey]?.id}
+                      style={{ width: '100%' }}
+                      onChange={(roleId) =>
+                        setUsers({
+                          ...selectedUsers,
+                          [field.roleKey]: orgRoles?.getOrgRoles?.find((role) => role.id === roleId),
+                        })
+                      }
+                      renderValue={
+                        <CreateEntityApplicationsSelectRender>
+                          <span>{selectedUsers[field.roleKey]?.name}</span>
+                          <CreateEntitySelectArrowIcon />
+                        </CreateEntityApplicationsSelectRender>
+                      }
+                    >
+                      {orgRoles?.getOrgRoles?.map((role, idx) => (
+                        <CreateEntityOption key={idx} value={role.id}>
+                          <CreateEntityOptionLabel>{role.name}</CreateEntityOptionLabel>
+                        </CreateEntityOption>
+                      ))}
+                    </CreateEntitySelect>
+                  </CreateEntityWrapper>
+                </CreateEntitySelectWrapper>
+              </Box>
               <SelectedUsersWrapper>
                 {selectedUsers[field.key]?.map((selected, idx) => (
                   <SelectedUserItem key={idx}>

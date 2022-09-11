@@ -29,16 +29,18 @@ import {
   MembersDisplayAll,
 } from './styles';
 
-const MEMBER_DISPLAY_LIMIT = 12;
+const MEMBER_DISPLAY_LIMIT = 3;
 
 type Props = {
   onCancel: () => void;
-  onSubmit: () => void | Promise<any>;
+  onSubmit: (users) => void | Promise<any>;
   footerRef: React.RefObject<HTMLDivElement>;
   collabDetails: Org;
   selectedUsers?: {
     admins: Array<User>;
     members: Array<User>;
+    adminRole: string;
+    memberRole: string;
   };
   deleteMember: (userId: string) => void;
   parentOrgs: Array<Org>;
@@ -57,7 +59,6 @@ const AddMembersConfirmation = ({
 
   const handleModal = () => setMembersModalOpen((prevState) => !prevState);
 
-  console.log(parentOrgs);
   return (
     <ConfirmationStepWrapper>
       <MembersModal
@@ -227,7 +228,7 @@ const AddMembersConfirmation = ({
               <Button color="grey" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button color="primary" type="submit" onClick={onSubmit}>
+              <Button color="primary" type="submit" onClick={() => onSubmit(selectedUsers)}>
                 Add members
               </Button>
             </Grid>,

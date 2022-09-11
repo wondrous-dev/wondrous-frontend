@@ -15,7 +15,13 @@ export const TextField = styled(MuiTextField)`
   }
 `;
 
-export const Grid = styled(MuiGrid)``;
+export const Grid = styled(MuiGrid)`
+  && {
+    .MuiSelectUnstyled-root {
+      background: ${palette.black97};
+    }
+  }
+`;
 
 export const ListboxWrapper = styled.ul`
   border-color: #7a7a7a;
@@ -27,7 +33,7 @@ export const ListboxWrapper = styled.ul`
     align-items: center;
     cursor: pointer;
     width: 100%;
-    background: #1f1f1f;
+    background: ${palette.grey95};
     min-height: 36px;
     padding: 6px 12px;
     &:hover {
