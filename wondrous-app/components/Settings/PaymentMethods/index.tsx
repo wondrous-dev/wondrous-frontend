@@ -5,13 +5,8 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_BY_ID } from 'graphql/queries';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { HeaderBlock } from 'components/Settings/headerBlock';
-import {
-  PaymentMethodDescription,
-  PaymentMethodSettingWrapper,
-  PaymentMethodDisplayWrapper,
-  PaymentMethodSubHeader,
-  NewPaymentMethodButton,
-} from './styles';
+import CreateBtnIcon from 'components/Icons/createBtn';
+import { PaymentMethodSettingWrapper, NewPaymentMethodCTAWrapper, NewPaymentMethodCTAButton } from './styles';
 import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
 import PaymentMethodList from './PaymentMethodList';
 import ConfigPaymentMethodModal from './ConfigPaymentMethodModal';
@@ -43,12 +38,19 @@ function PaymentMethods(props) {
   return (
     <SettingsWrapper>
       <PaymentMethodSettingWrapper>
-        <HeaderBlock icon={<PayoutSettingsHeaderIcon />} title="Payment Methods" description="Manage payment methods" />
-        <PaymentMethodDisplayWrapper>
-          <PaymentMethodSubHeader>Create New</PaymentMethodSubHeader>
-          <PaymentMethodDescription>Create new payment method to pay out contributors</PaymentMethodDescription>
-          <NewPaymentMethodButton onClick={() => setShowConfigModal(true)}>New Payment Method </NewPaymentMethodButton>
-        </PaymentMethodDisplayWrapper>
+        <HeaderBlock
+          icon={<PayoutSettingsHeaderIcon />}
+          title="Payment Methods"
+          description="Manage and set up your payment methods for paying on your community."
+        />
+
+        <NewPaymentMethodCTAWrapper>
+          <NewPaymentMethodCTAButton onClick={() => setShowConfigModal(true)}>
+            <CreateBtnIcon />
+            New Payment Method
+          </NewPaymentMethodCTAButton>
+        </NewPaymentMethodCTAWrapper>
+
         <ConfigPaymentMethodModal
           org={org}
           orgId={orgId}
