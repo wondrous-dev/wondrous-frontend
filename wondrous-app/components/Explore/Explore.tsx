@@ -9,7 +9,7 @@ import { useQuery } from '@apollo/client';
 import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
-import { TABS_LABELS } from 'utils/constants';
+import { GR15DEICategoryName, TABS_LABELS } from 'utils/constants';
 import { gridMobileStyles } from 'utils/styles';
 
 import BountySection from 'components/BountySection';
@@ -89,6 +89,12 @@ function ExploreComponent() {
     [refetch, variables]
   );
 
+  const getGr15ExploreTasks = useCallback(() => {
+    filterBounties({
+      category: GR15DEICategoryName,
+    });
+  }, [filterBounties]);
+
   const handleTabClick = (key) => {
     if (key === activeTab) {
       return setActiveTab(null);
@@ -119,6 +125,10 @@ function ExploreComponent() {
       title: 'GR15 Members',
       color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
       hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+      action: () => {
+        getGr15ExploreTasks();
+        handleTabClick(TABS_LABELS.GR15_DEI);
+      },
       key: TABS_LABELS.GR15_DEI,
       rotateDeg: '-40deg',
       icon: <GR15DEI />,
@@ -128,8 +138,10 @@ function ExploreComponent() {
   useEffect(() => {
     if (router?.query?.tab) {
       setActiveTab(router.query?.tab);
+      getGr15ExploreTasks();
     }
   }, [router]);
+
   return (
     <OverviewComponent
       style={{
@@ -187,6 +199,15 @@ function ExploreComponent() {
             />
           )}
           {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+          {activeTab === null ||
+            (activeTab === TABS_LABELS.GR15_DEI && (
+              <BountySection
+                isMobile={isMobile}
+                bounties={bounties?.getTaskExplore}
+                fetchMore={getTaskExploreFetchMore}
+                hasMore={hasMoreBounties}
+              />
+            ))}
         </ExplorePageContentWrapper>
       </Box>
 

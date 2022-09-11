@@ -1,4 +1,4 @@
-import { Fragment } from 'react';
+import { Fragment, useState } from 'react';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -33,6 +33,9 @@ import {
   SubtasksWrapper,
   BountyCommentsIcon,
 } from './styles';
+import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
+import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
+import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
@@ -66,7 +69,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
       shallow: true,
     });
   };
-
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
 
   return (
@@ -74,12 +77,27 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
       {tasks?.length ? (
         tasks.map((bounty) => {
           const BountyStatusIcon = TASK_ICONS[bounty?.status];
+
+          const hasGR15 = hasGR15DEIIntiative(bounty?.categories);
           return (
             <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
               <BoardsCardHeader>
                 <BoardsCardSubheader>
                   <BountyIcon />
-                  <BountyCardType>Bounty</BountyCardType>
+                  {hasGR15 && (
+                    <>
+                      <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                      <GR15DEILogo
+                        style={{
+                          marginLeft: '-8px',
+                        }}
+                        width="28"
+                        height="28"
+                        onClick={() => setOpenGR15Modal(true)}
+                      />
+                    </>
+                  )}
+                  <BountyCardType>{bounty?.type || ''}</BountyCardType>
                   <BoardsPrivacyLabel>
                     {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                   </BoardsPrivacyLabel>
