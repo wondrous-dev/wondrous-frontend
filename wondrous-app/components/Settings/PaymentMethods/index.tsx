@@ -15,9 +15,11 @@ import { PaymentMethodSettingWrapper, NewPaymentMethodCTAWrapper, NewPaymentMeth
 function PaymentMethods(props) {
   const { orgId } = props;
   const [showConfigModal, setShowConfigModal] = useState(null);
+  const [paymentMethods, setPaymentMethods] = useState([]);
 
   const [getPaymentMethods, { data: paymentMethodData }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
+
   useEffect(() => {
     if (orgId) {
       getPaymentMethods({
@@ -33,6 +35,15 @@ function PaymentMethods(props) {
       });
     }
   }, [orgId, getPaymentMethods]);
+
+  useEffect(() => {
+    if (paymentMethodData?.getPaymentMethodsForOrg?.length) {
+      const data = paymentMethodData?.getPaymentMethodsForOrg
+        .slice()
+        .sort((a, b) => new Date(a?.createdAt).getTime() - new Date(b?.createdAt).getTime());
+      setPaymentMethods(data);
+    }
+  }, [paymentMethodData?.getPaymentMethodsForOrg]);
 
   const org = orgData?.getOrgById;
 
@@ -58,7 +69,7 @@ function PaymentMethods(props) {
           open={showConfigModal}
           setShowConfigModal={setShowConfigModal}
         />
-        <PaymentMethodList paymentMethods={paymentMethodData?.getPaymentMethodsForOrg} />
+        <PaymentMethodList paymentMethods={paymentMethods} />
       </PaymentMethodSettingWrapper>
     </SettingsWrapper>
   );

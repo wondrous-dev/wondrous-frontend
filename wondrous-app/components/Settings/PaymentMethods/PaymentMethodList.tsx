@@ -35,12 +35,15 @@ const dropdownItemStyle = {
 
 function PaymentMethodDisplay(props) {
   const { paymentMethod } = props;
+
   const [deactivatePaymentMethod] = useMutation(DEACTIVATE_PAYMENT_METHOD, {
     refetchQueries: [GET_PAYMENT_METHODS_FOR_ORG],
   });
+
   const [activatePaymentMethod] = useMutation(ACTIVATE_PAYMENT_METHOD, {
     refetchQueries: [GET_PAYMENT_METHODS_FOR_ORG],
   });
+
   const handleDeactivate = () => {
     deactivatePaymentMethod({
       variables: {
@@ -48,6 +51,7 @@ function PaymentMethodDisplay(props) {
       },
     });
   };
+
   const handleActivate = () => {
     activatePaymentMethod({
       variables: {
@@ -55,6 +59,7 @@ function PaymentMethodDisplay(props) {
       },
     });
   };
+
   return (
     <PaymentMethodDisplayWrapper>
       <PaymentMethodTokenDetailsWrapper>
