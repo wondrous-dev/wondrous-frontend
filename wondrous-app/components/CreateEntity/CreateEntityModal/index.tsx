@@ -2590,18 +2590,20 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             handleEditTemplate={handleEditTemplate}
             handleDeleteTemplate={handleDeleteTemplate}
           />
-          <GR15DEICreateSelector
-            setGR15DEISelected={() => {
-              if (form.values.categories?.includes(GR15DEICategoryName)) {
-                const newCategoriesArray = form.values.categories.filter((name) => name !== GR15DEICategoryName);
-                form.setFieldValue('categories', newCategoriesArray);
-              } else {
-                const newCategoriesArray = [...form.values.categories, GR15DEICategoryName];
-                form.setFieldValue('categories', newCategoriesArray);
-              }
-            }}
-            GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
-          />
+          {!isProposal && (
+            <GR15DEICreateSelector
+              setGR15DEISelected={() => {
+                if (form.values.categories?.includes(GR15DEICategoryName)) {
+                  const newCategoriesArray = form.values.categories.filter((name) => name !== GR15DEICategoryName);
+                  form.setFieldValue('categories', newCategoriesArray);
+                } else {
+                  const newCategoriesArray = [...form.values.categories, GR15DEICategoryName];
+                  form.setFieldValue('categories', newCategoriesArray);
+                }
+              }}
+              GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
+            />
+          )}
         </div>
       </CreateEntityBody>
       <CreateEntityHeader>
