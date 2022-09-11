@@ -1,19 +1,19 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useQuery, useMutation } from '@apollo/client';
-import format from 'date-fns/format';
-
+import React from 'react';
 import { useRouter } from 'next/router';
-import palette from 'theme/palette';
+import { useMutation } from '@apollo/client';
+import format from 'date-fns/format';
+import { Grid, Typography } from '@mui/material';
+
 import { ACTIVATE_PAYMENT_METHOD, DEACTIVATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
-import { Grid, Typography } from '@mui/material';
 import WalletIcon from 'components/Icons/WalletIcon';
 import CalendarIcon from 'components/Icons/calendar';
 import { EmptyStatePaymentMethodIcon } from 'components/Icons/emptyStates';
+import palette from 'theme/palette';
 import {
   PaymentMethodDisplayWrapper,
   PaymentMethodActionMenu,

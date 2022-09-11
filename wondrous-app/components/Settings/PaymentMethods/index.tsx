@@ -1,15 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLazyQuery } from '@apollo/client';
 
-import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_BY_ID } from 'graphql/queries';
+
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { HeaderBlock } from 'components/Settings/headerBlock';
 import CreateBtnIcon from 'components/Icons/createBtn';
-import { PaymentMethodSettingWrapper, NewPaymentMethodCTAWrapper, NewPaymentMethodCTAButton } from './styles';
-import { PayoutSettingsHeaderIcon } from '../../Icons/PayoutSettingsHeaderIcon';
+import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
 import PaymentMethodList from './PaymentMethodList';
 import ConfigPaymentMethodModal from './ConfigPaymentMethodModal';
+import { PaymentMethodSettingWrapper, NewPaymentMethodCTAWrapper, NewPaymentMethodCTAButton } from './styles';
 
 function PaymentMethods(props) {
   const { orgId } = props;

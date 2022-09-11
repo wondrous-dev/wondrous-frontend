@@ -1,22 +1,12 @@
-import { PopperUnstyled } from '@mui/base';
-import {
-  Autocomplete,
-  Box,
-  ButtonBase,
-  FormHelperText,
-  InputBase,
-  InputLabel,
-  List,
-  ListItem,
-  Typography,
-} from '@mui/material';
+import { Box, InputBase, InputLabel, Typography } from '@mui/material';
+import styled from 'styled-components';
+
 import { Button } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
-import styled from 'styled-components';
-import palette from 'theme/palette';
 import { BaseCard } from 'components/Common/card';
+
 import typography from 'theme/typography';
-import CreateBtnIcon from 'components/Icons/createBtn';
+import palette from 'theme/palette';
 
 export const PaymentMethodSettingWrapper = styled.div`
   width: 100%;
@@ -63,7 +53,6 @@ export const PaymentMethodFormWrapper = styled(Box)`
 
 export const NewPaymentMethodCTAWrapper = styled.div`
   width: 780px;
-  /* width: 100%; */
   max-width: 780px;
   display: flex;
   align-items: center;
@@ -219,29 +208,6 @@ export const AddPaymetMethodButton = styled(Button)`
       font-family: 'Space Grotesk';
       font-size: 16px;
       font-weight: 500;
-    }
-  }
-`;
-
-export const NewPaymentMethodButton = styled(Button)`
-  && {
-    margin-top: 18px;
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-    max-width: fit-content;
-
-    button {
-      background: ${palette.black101};
-      font-family: 'Space Grotesk';
-      font-size: 13px;
-      font-weight: 600;
-      color: ${palette.blue20};
-      padding: 8px 12px;
-      transition: all 0.3s ease;
-
-      :hover {
-        background: transparent;
-        color: ${palette.white};
-      }
     }
   }
 `;
