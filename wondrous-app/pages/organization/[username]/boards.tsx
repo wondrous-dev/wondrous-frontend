@@ -27,7 +27,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam } from 'utils';
+import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
@@ -417,6 +417,7 @@ function BoardsPage() {
       setIsLoading(true);
     }
     insertUrlParam('entity', type);
+    removeUrlParam('cause');
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
@@ -425,15 +426,6 @@ function BoardsPage() {
       setActiveView(ViewType.Grid);
       insertUrlParam('view', ViewType.Grid);
     }
-    // Any reason we shouldn't do this?
-    const { cause, ...restOfRouterQueries } = routerQuery;
-    router.push({
-      pathname: `/organization/${routerQuery?.username}/boards`,
-      query: {
-        ...restOfRouterQueries,
-        entity: type,
-      },
-    });
   };
 
   const [searchOrgTaskProposals] = useLazyQuery(SEARCH_ORG_TASK_BOARD_PROPOSALS, {

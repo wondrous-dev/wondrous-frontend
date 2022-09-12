@@ -42,6 +42,7 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
+import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MembershipRequestModal } from './RequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -221,13 +222,13 @@ function Wrapper(props) {
   const orgProfile = orgData;
   const hasGr15Tasks = orgProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
   const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
-  const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
 
+  const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
   const { search, entity, cause } = router.query;
-  const onTaskPage = entity === ENTITIES_TYPES.TASK;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
   const boardFilters = board?.filters || {};
@@ -659,17 +660,22 @@ function Wrapper(props) {
           <Container>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+                <TypeSelector
+                  tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard}
+                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                />
               )}
               {!!filterSchema && (
-                <BoardsActivity
-                  onSearch={onSearch}
-                  filterSchema={filterSchema}
-                  onFilterChange={onFilterChange}
-                  statuses={statuses}
-                  podIds={podIds}
-                  userId={userId}
-                />
+                <ExploreGr15TasksAndBountiesContext.Provider value={exploreGr15TasksAndBounties}>
+                  <BoardsActivity
+                    onSearch={onSearch}
+                    filterSchema={filterSchema}
+                    onFilterChange={onFilterChange}
+                    statuses={statuses}
+                    podIds={podIds}
+                    userId={userId}
+                  />
+                </ExploreGr15TasksAndBountiesContext.Provider>
               )}
             </BoardsSubheaderWrapper>
             {children}

@@ -10,7 +10,7 @@ import { ViewType } from 'types/common';
 import { TaskFragment } from 'types/task';
 import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
-import { useHotkey, useUserBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
@@ -44,7 +44,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const [isExpanded, setIsExpanded] = useState(false);
   const board = useUserBoard() || {};
   const autocompleteRef = useRef<HTMLInputElement>();
-
+  const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
   useHotkeys(
     HOTKEYS.LOCAL_SEARCH,
     () => {
@@ -115,6 +115,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
 
   const handleBlur = (e) => setIsExpanded(false);
   const handleFocus = () => setIsExpanded(true);
+  if (exploreGr15TasksAndBounties) return null;
   return (
     <>
       <TaskViewModal
