@@ -412,7 +412,6 @@ function BoardsPage() {
   };
 
   const handleEntityTypeChange = (type) => {
-    const routerQuery = { ...router.query };
     if (type !== entityType) {
       setIsLoading(true);
     }
