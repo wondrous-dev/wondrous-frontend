@@ -42,7 +42,9 @@ function CollabBoard(props: Props) {
   const [getUsers, { data }] = useLazyQuery(GET_ORG_USERS);
 
   const handleModal = () => {
-    insertUrlParam('addMembers', '');
+    if (router.query.addMembers) {
+      insertUrlParam('addMembers', '');
+    }
     setOpenInviteModal((prevState) => !prevState);
     setStep(0);
   };

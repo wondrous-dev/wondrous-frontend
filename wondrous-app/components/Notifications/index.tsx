@@ -1,5 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
-import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
+import { COLLAB_TYPES, NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import NotificationsIcon from 'components/Icons/notifications';
 import Link from 'next/link';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
@@ -65,9 +65,9 @@ function NotificationsBoard({ onlyBoard = false }) {
     let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
 
     if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
-      const mainPath = notification?.verb === NOTIFICATION_VERBS.collab_invite ? 'organization' : 'collaboration';
-      notificationLink = `/${mainPath}/${notification?.additionalData?.orgUsername}/boards?collabs=${true}${
-        notification?.additionalData?.addMember && !notification?.viewedAt ? `&addMembers=${true}` : ''
+      const mainPath = notification.type === COLLAB_TYPES.INVITE ? 'organization' : 'collaboration';
+      notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
+        notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
       }`;
     }
     return notificationLink;

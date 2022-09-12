@@ -5,6 +5,7 @@ import typography from 'theme/typography';
 export const ViewButton = styled.button`
     background: ${palette.highlightPurple};
     border: 0;
+    z-index: 10;
     border-radius: 6px;
     display: flex;
     justify-content: center;

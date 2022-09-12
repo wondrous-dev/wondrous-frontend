@@ -87,7 +87,7 @@ const useSidebarData = () => {
             ...(board?.orgData?.shared
               ? {}
               : {
-                  text: 'Collabs',
+                  text: 'Collectives',
                   Icon: Dao2DaoIcon,
                   link: {
                     pathname: router.pathname,

@@ -100,7 +100,7 @@ const CollabsSidebar = () => {
           </ListWrapper>
           {canManageCollabs && (
             <CreateButton roundedBg onClick={handleCreateModal}>
-              <AddIconWrapper /> Create collab
+              <AddIconWrapper /> Create collective
             </CreateButton>
           )}
           {canManageCollabs && (

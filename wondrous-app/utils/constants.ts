@@ -363,6 +363,11 @@ export const NOTIFICATION_OBJECT_TYPES = {
   collaboration: 'collaboration',
 };
 
+export const COLLAB_TYPES = {
+  INVITE: 'collab_invite',
+  APPROVE: 'collab_approve',
+};
+
 export const PRIVACY_LEVEL = {
   public: 'public',
   private: 'private',

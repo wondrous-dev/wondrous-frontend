@@ -32,7 +32,11 @@ const ViewCollabModal = ({ orgCollabRequest, type }) => {
     refetchQueries: ['getOrgCollabRequestForRecipient'],
   });
 
-  const [approveOrgCollabRequest, { data }] = useMutation(APPROVE_ORG_COLLAB_REQUEST);
+  const isActionTypeModal = type === MODAL_TYPE.ACTION;
+
+  const [approveOrgCollabRequest, { data }] = useMutation(APPROVE_ORG_COLLAB_REQUEST, {
+    refetchQueries: ['getUserPermissionContext'],
+  });
 
   useEffect(() => {
     if (step && !isOpen) setStep(0);
@@ -40,8 +44,6 @@ const ViewCollabModal = ({ orgCollabRequest, type }) => {
 
   const handleDecline = () =>
     declineOrgCollabRequest({ variables: { orgCollabRequestId: orgCollabRequest.id } }).then(() => handleModal());
-
-  // approveOrgCollabRequest({ variables: { orgCollabRequestId: orgCollabRequest.id } })
 
   const handleApprove = () =>
     approveOrgCollabRequest({ variables: { orgCollabRequestId: orgCollabRequest.id } }).then(() => {
@@ -53,9 +55,9 @@ const ViewCollabModal = ({ orgCollabRequest, type }) => {
   const STEPS_TO_ACTIONS_MAP = [
     {
       approve: () => handleApprove(),
-      close: () => handleDecline(),
+      close: () => (isActionTypeModal ? handleDecline() : handleModal()),
       title: 'Project collaboration request',
-      declineLabel: 'Decline',
+      declineLabel: isActionTypeModal ? 'Decline' : 'Close',
       acceptLabel: 'Accept',
     },
     {

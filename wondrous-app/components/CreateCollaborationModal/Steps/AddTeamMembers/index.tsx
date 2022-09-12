@@ -271,12 +271,12 @@ const AddTeamMembers = ({
                           [field.roleKey]: orgRoles?.getOrgRoles?.find((role) => role.id === roleId),
                         })
                       }
-                      renderValue={
+                      renderValue={() => (
                         <CreateEntityApplicationsSelectRender>
                           <span>{selectedUsers[field.roleKey]?.name}</span>
                           <CreateEntitySelectArrowIcon />
                         </CreateEntityApplicationsSelectRender>
-                      }
+                      )}
                     >
                       {orgRoles?.getOrgRoles?.map((role, idx) => (
                         <CreateEntityOption key={idx} value={role.id}>

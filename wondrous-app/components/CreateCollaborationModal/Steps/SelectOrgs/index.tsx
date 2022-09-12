@@ -3,8 +3,7 @@ import { Org } from 'types/Org';
 import * as Yup from 'yup';
 
 import Divider from 'components/Divider';
-import React, { useEffect, useMemo, useState } from 'react';
-import { useQuery } from '@apollo/client';
+import React, { useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { Form, Formik } from 'formik';
 
@@ -13,7 +12,6 @@ import Dao2Dao from 'components/Icons/Dao2Dao';
 import { Button } from 'components/Button';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { DAOIcon } from 'components/Icons/dao';
-import { GET_USER_ORGS } from 'graphql/queries';
 import TextField from 'components/TextField';
 import palette from 'theme/palette';
 import OrgSearch from 'components/OrgSearch';

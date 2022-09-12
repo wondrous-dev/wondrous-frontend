@@ -1,31 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Box, Typography } from '@mui/material';
-import { createPortal } from 'react-dom';
 import Grid from '@mui/material/Grid';
 
 import GradientHeading from 'components/GradientHeading';
 import Divider from 'components/Divider';
-import { Button } from 'components/Button';
 import palette from 'theme/palette';
-import { Org } from 'types/Org';
-import { User } from 'types/User';
 import { LabelWrapper, OrgSearchButton } from 'components/OrgSearch/styles';
 import { InlineText } from 'components/Common/Filter/styles';
 import { OrgProfilePicture, UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import Dao2Dao from 'components/Icons/Dao2Dao';
-import { SafeImage } from 'components/Common/Image';
-import { CreateEntityDefaultUserImage } from 'components/CreateEntity/CreateEntityModal/styles';
-import {
-  SelectedUserItem,
-  SelectedUsersWrapper,
-} from 'components/CreateCollaborationModal/Steps/AddTeamMembers/styles';
 import {
   ConfirmationStepWrapper,
   Description,
   Title,
-  SelectedMembersWrapper,
-  SelectedMembersItem,
-  MembersDisplayAll,
 } from 'components/CreateCollaborationModal/Steps/Confirmation/styles';
 
 export const MODAL_TYPE = {
