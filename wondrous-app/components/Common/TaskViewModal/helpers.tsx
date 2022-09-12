@@ -195,7 +195,7 @@ const TaskHeaderMenu = ({ canEdit, children }) => {
   return (
     <>
       <Tooltip title="More actions" placement="top">
-        <TaskModalHeaderMenuButton onClick={handleClick} open={open}>
+        <TaskModalHeaderMenuButton onClick={handleClick} open={open} data-cy="button-more-actions">
           <MoreIcon />
         </TaskModalHeaderMenuButton>
       </Tooltip>
@@ -254,15 +254,17 @@ export const Menu = ({
     <TaskHeaderMenu canEdit={canEdit}>
       {keys(menuItems).map((item) => {
         const { condition, onClick, ...props } = menuItems[item];
-        return (
-          <>
-            {condition && (
-              <TaskModalHeaderMenuItem key={item} onClick={() => onClick(true)} {...props}>
-                {item} {taskType}
-              </TaskModalHeaderMenuItem>
-            )}
-          </>
-        );
+
+        return condition ? (
+          <TaskModalHeaderMenuItem
+            key={item}
+            onClick={() => onClick(true)}
+            data-cy={`task-header-option-${item}`}
+            {...props}
+          >
+            {item} {taskType}
+          </TaskModalHeaderMenuItem>
+        ) : null;
       })}
     </TaskHeaderMenu>
   );

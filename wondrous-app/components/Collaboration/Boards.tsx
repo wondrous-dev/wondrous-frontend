@@ -12,6 +12,7 @@ import { BATCH_ADD_MEMBERS } from 'graphql/mutations';
 import AddMembersConfirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { useRouter } from 'next/router';
 import { insertUrlParam } from 'utils/index';
+import { LIMIT } from 'services/board';
 import SharedOrgHeader from './SharedOrgHeader';
 
 function CollabBoard(props: Props) {
@@ -70,7 +71,7 @@ function CollabBoard(props: Props) {
       getUsers({
         variables: {
           orgId: orgData?.id,
-          limit: 100,
+          limit: LIMIT,
         },
       });
   }, [openInviteModal]);

@@ -20,7 +20,15 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
 
     switch (node.type) {
       case 'paragraph':
-        return <p key={i}>{children}</p>;
+        if (children && children[0] && children[0]?.props?.children) {
+          return <p key={i}>{children}</p>;
+        }
+        return (
+          <>
+            <br />
+            <p key={i}>{children}</p>
+          </>
+        );
       case 'mention':
         return (
           <Link key={i} href={`/profile/${node.mentionable}/about`} passHref>

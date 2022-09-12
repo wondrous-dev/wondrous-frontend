@@ -18,7 +18,7 @@ import {
   REJECT_SUBMISSION,
 } from 'graphql/mutations';
 import palette from 'theme/palette';
-import { KudosForm } from 'components/Common/KudosForm';
+import KudosForm from 'components/Common/KudosForm';
 import { useContext, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { LinkIcon, DueDateIcon } from 'components/Icons/taskModalIcons';
@@ -392,7 +392,7 @@ function ColumnEntry(props: Props) {
                 onClick={btn.action}
                 key={idx}
               >
-                {btn.isCompleted ? btn.isCompletedLabel : btn.label}
+                <span>{btn.isCompleted ? btn.isCompletedLabel : btn.label}</span>
               </Button>
             );
           })}

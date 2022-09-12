@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState } from 'react';
 import { format } from 'date-fns';
 
 import { transformTaskToTaskCard, parseUserPermissionContext } from 'utils/helpers';
@@ -17,6 +17,8 @@ import {
   BoardsCardMedia,
   BoardsCardFooter,
 } from 'components/Common/Boards/styles';
+import Dropdown from 'components/Common/Dropdown';
+import DropdownItem from 'components/Common/DropdownItem';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -71,7 +73,6 @@ import { MilestoneProgress } from '../MilestoneProgress';
 import { TaskCreatedBy } from '../TaskCreatedBy';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import MilestoneIcon from '../../Icons/milestone';
-import { DropDown, DropDownItem } from '../dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { ButtonPrimary } from '../button';
@@ -108,12 +109,10 @@ export function TaskCard({
 }) {
   const location = useLocation();
   const TaskIcon = TASK_ICONS[task.status];
-  const ref = useRef(null);
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
-  const [displayActions, setDisplayActions] = useState(false);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
@@ -191,12 +190,10 @@ export function TaskCard({
     }
   };
 
+  const [anchorEl, setAnchorEl] = useState(null);
+
   return (
-    <ProposalCardWrapper
-      onMouseEnter={() => canArchive && setDisplayActions(true)}
-      onMouseLeave={() => canArchive && setDisplayActions(false)}
-      ref={ref}
-    >
+    <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)} data-cy={`task-card-item-${title}`}>
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
@@ -263,6 +260,7 @@ export function TaskCard({
                         },
                       });
                     }}
+                    data-cy={`task-card-item-${title}`}
                   >
                     Claim
                   </ButtonPrimary>
@@ -328,7 +326,9 @@ export function TaskCard({
 
         <TaskContent>
           <TaskTitle>
-            <a href={viewUrl}>{task.title}</a>
+            <a href={viewUrl} data-cy={`task-card-item-${title}-link`}>
+              {task.title}
+            </a>
           </TaskTitle>
 
           {isBounty && (
@@ -428,25 +428,11 @@ export function TaskCard({
             </Tooltip>
           )}
           {canArchive && (
-            <TaskActionMenu
-              right="true"
-              style={{
-                flexGrow: '0',
-                position: 'absolute',
-                right: '4px',
-                visibility: displayActions ? 'visible' : 'hidden',
-              }}
-            >
+            <TaskActionMenu>
               <Tooltip title="More actions" placement="top">
-                <div>
-                  <DropDown
-                    DropdownHandler={TaskMenuIcon}
-                    divStyle={{
-                      display: 'flex',
-                      alignItems: 'center',
-                    }}
-                  >
-                    <DropDownItem
+                <span>
+                  <Dropdown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
+                    <DropdownItem
                       key={`task-menu-edit-edit-${id}`}
                       onClick={() => {
                         setEditTask(true);
@@ -454,8 +440,8 @@ export function TaskCard({
                       color={palette.white}
                     >
                       Edit {type}
-                    </DropDownItem>
-                    <DropDownItem
+                    </DropdownItem>
+                    <DropdownItem
                       key={`task-menu-edit-archive${id}`}
                       onClick={() => {
                         setArchiveTask(true);
@@ -463,10 +449,10 @@ export function TaskCard({
                       color={palette.white}
                     >
                       Archive {type}
-                    </DropDownItem>
+                    </DropdownItem>
 
                     {canDelete && (
-                      <DropDownItem
+                      <DropdownItem
                         key={`task-menu-delete-${id}`}
                         onClick={() => {
                           setDeleteTask(true);
@@ -474,10 +460,10 @@ export function TaskCard({
                         color={palette.red800}
                       >
                         Delete {type}
-                      </DropDownItem>
+                      </DropdownItem>
                     )}
-                  </DropDown>
-                </div>
+                  </Dropdown>
+                </span>
               </Tooltip>
             </TaskActionMenu>
           )}

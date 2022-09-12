@@ -105,6 +105,9 @@ const AddTeamMembers = ({
       orgId: org.id,
       limit: LIMIT,
     },
+
+    // TODO (adrian) we need to refactor this on BE to return only users that are not already in the collaboration
+
     onCompleted: ({ getOrgUsers }) => {
       const hasMoreData = getOrgUsers?.length >= LIMIT;
       if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);

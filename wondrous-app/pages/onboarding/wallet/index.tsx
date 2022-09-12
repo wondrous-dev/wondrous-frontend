@@ -1,17 +1,10 @@
-import React, { useState } from 'react';
-import { useRouter } from 'next/router';
-import { useMutation, useQuery } from '@apollo/client';
+import React from 'react';
 
 import { MainWrapper } from 'components/Onboarding/styles';
-import { UPDATE_USER } from 'graphql/mutations';
-import { useMe, withAuth } from 'components/Auth/withAuth';
-import { SetupWallet } from 'components/Onboarding/SetupWallet';
-import { GET_USER_ORGS, GET_USER_PODS } from 'graphql/queries';
+import { withAuth } from 'components/Auth/withAuth';
+import SetupWallet from 'components/Onboarding/SetupWallet';
 
 function SetupWalletPage() {
-  const router = useRouter();
-  const user = useMe();
-
   return (
     <MainWrapper>
       <SetupWallet />

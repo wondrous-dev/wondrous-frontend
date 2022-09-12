@@ -1,12 +1,13 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import Checkbox from '@mui/material/Checkbox';
+import { useInView } from 'react-intersection-observer';
 import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { CompensationAmount, CompensationPill, IconContainer } from 'components/Common/Compensation/styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
-import { ToggleViewButton } from 'components/Common/ToggleViewButton';
+import ToggleViewButton from 'components/Common/ToggleViewButton';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
 import { HeaderBlock } from 'components/Settings/headerBlock';
@@ -14,7 +15,12 @@ import { SeeMoreText } from 'components/Settings/Members/styles';
 import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
 import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
 import { PayModal } from 'components/Settings/Payouts/modal';
-import { BatchPayoutButton, LedgerHeaderButtonsContainer, TableCellText } from 'components/Settings/Payouts/styles';
+import {
+  BatchPayoutButton,
+  LedgerHeaderButtonsContainer,
+  TableCellText,
+  LoadMore,
+} from 'components/Settings/Payouts/styles';
 import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { GeneralSettingsContainer } from 'components/Settings/styles';
@@ -270,9 +276,10 @@ function PaymentItem(props) {
 
 function Payouts(props) {
   const { orgId, podId } = props;
-  const [view, setView] = useState(ViewType.Unpaid);
+  const [view, setView] = useState(null);
   const router = useRouter();
   const { view: payView } = router.query;
+  const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
   const [chainSelected, setChainSelected] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
@@ -309,12 +316,18 @@ function Payouts(props) {
   const [getPaymentsForPod, { fetchMore: fetchMorePodPayments }] = useLazyQuery(GET_PAYMENTS_FOR_POD, {
     fetchPolicy: 'network-only',
   });
-  const [getUnpaidSubmissionsForOrg] = useLazyQuery(GET_UNPAID_SUBMISSIONS_FOR_ORG, {
-    fetchPolicy: 'network-only',
-  });
-  const [getUnpaidSubmissionsForPod] = useLazyQuery(GET_UNPAID_SUBMISSIONS_FOR_POD, {
-    fetchPolicy: 'network-only',
-  });
+  const [getUnpaidSubmissionsForOrg, { fetchMore: fetchMoreUnpaidSubmissionsForOrg }] = useLazyQuery(
+    GET_UNPAID_SUBMISSIONS_FOR_ORG,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
+  const [getUnpaidSubmissionsForPod, { fetchMore: fetchMoreUnpaidSubmissionsForPod }] = useLazyQuery(
+    GET_UNPAID_SUBMISSIONS_FOR_POD,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -333,6 +346,109 @@ function Payouts(props) {
     permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
   const user = useMe();
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
+
+  const org = orgData?.getOrgById;
+  const paid = view === ViewType.Paid;
+
+  const handleMoreData = useCallback(
+    (data) => {
+      if (data?.length > 0) {
+        if (paid) {
+          setPaidList((state) => [...state, ...data]);
+        } else {
+          setUnpaidList((state) => [...state, ...data]);
+        }
+      }
+
+      setHasMore(data?.length >= LIMIT);
+    },
+    [paid]
+  );
+
+  const handleLoadMore = useCallback(() => {
+    if (hasMore) {
+      const list = paid ? paidList : unpaidList;
+
+      if (orgId) {
+        if (paid) {
+          fetchMoreOrgPayments({
+            variables: {
+              input: {
+                offset: list?.length,
+                limit: LIMIT,
+                orgId,
+                orgOnly: false,
+              },
+            },
+          }).then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getPaymentsForOrg;
+            handleMoreData(results);
+          });
+        } else {
+          fetchMoreUnpaidSubmissionsForOrg({
+            variables: {
+              input: {
+                offset: list?.length,
+                limit: LIMIT,
+                orgId,
+                orgOnly: false,
+              },
+            },
+          }).then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getUnpaidSubmissionsForOrg;
+            handleMoreData(results);
+          });
+        }
+      } else if (podId) {
+        if (paid) {
+          fetchMorePodPayments({
+            variables: {
+              input: {
+                offset: list?.length,
+                limit: LIMIT,
+                podId,
+              },
+            },
+          }).then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getPaymentsForPod;
+            handleMoreData(results);
+          });
+        } else {
+          fetchMoreUnpaidSubmissionsForPod({
+            variables: {
+              input: {
+                offset: list?.length,
+                limit: LIMIT,
+                podId,
+              },
+            },
+          }).then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getUnpaidSubmissionsForPod;
+            handleMoreData(results);
+          });
+        }
+      }
+    }
+  }, [paidList, unpaidList, hasMore]);
+
+  const handleBatchPayButtonClick = () => {
+    setOpenBatchPayModal(true);
+  };
+
+  const handleExportButtonClick = () => {
+    if (!paymentSelected || isEmpty(paymentSelected)) {
+      setNoPaymentSelectedError(true);
+      return;
+    }
+    setOpenExportModal(true);
+  };
+
+  const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
+
+  useEffect(() => {
+    setView(ViewType.Unpaid);
+  }, []);
+
   useEffect(() => {
     if (orgId) {
       getOrgById({
@@ -341,28 +457,35 @@ function Payouts(props) {
         },
       });
     }
+  }, [orgId, podId, view]);
+
+  useEffect(() => {
     if (orgId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForOrg({
         variables: {
           input: {
             orgId,
             orgOnly: false,
+            limit: LIMIT,
           },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForOrg;
         setUnpaidList(submissions || []);
+        setHasMore(submissions?.length >= LIMIT);
       });
     } else if (podId && view === ViewType.Unpaid) {
       getUnpaidSubmissionsForPod({
         variables: {
           input: {
             podId,
+            limit: LIMIT,
           },
         },
       }).then((result) => {
         const submissions = result?.data?.getUnpaidSubmissionsForPod;
         setUnpaidList(submissions || []);
+        setHasMore(submissions?.length >= LIMIT);
       });
     } else if (orgId && view === ViewType.Paid) {
       getPaymentsForOrg({
@@ -392,6 +515,9 @@ function Payouts(props) {
         setHasMore(payments?.length >= LIMIT);
       });
     }
+  }, [orgId, podId, view]);
+
+  useEffect(() => {
     if (payView) {
       if (payView === ViewType.Paid) {
         setView(ViewType.Paid);
@@ -399,70 +525,14 @@ function Payouts(props) {
         setView(ViewType.Unpaid);
       }
     }
-  }, [orgId, podId, view, payView]);
-  const org = orgData?.getOrgById;
-  const paid = view === ViewType.Paid;
-  const handleLoadMore = useCallback(() => {
-    if (hasMore) {
-      const list = paid ? paidList : unpaidList;
-      if (orgId) {
-        fetchMoreOrgPayments({
-          variables: {
-            input: {
-              offset: list?.length,
-              limit: LIMIT,
-              orgId,
-            },
-          },
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getPaymentsForOrg;
-          if (results && results?.length > 0) {
-            if (paid) {
-              setPaidList([...paidList, ...results]);
-            } else {
-              setUnpaidList([...unpaidList, ...results]);
-            }
-          } else {
-            setHasMore(false);
-          }
-        });
-      } else if (podId) {
-        fetchMorePodPayments({
-          variables: {
-            input: {
-              offset: list?.length,
-              limit: LIMIT,
-              podId,
-            },
-          },
-        }).then((fetchMoreResult) => {
-          const results = fetchMoreResult?.data?.getPaymentsForPod;
-          if (results && results?.length > 0) {
-            if (paid) {
-              setPaidList([...paidList, ...results]);
-            } else {
-              setUnpaidList([...unpaidList, ...results]);
-            }
-          } else {
-            setHasMore(false);
-          }
-        });
-      }
-    }
-  }, [paidList, unpaidList, hasMore]);
-  const handleBatchPayButtonClick = () => {
-    setOpenBatchPayModal(true);
-  };
+  }, [payView]);
 
-  const handleExportButtonClick = () => {
-    if (!paymentSelected || isEmpty(paymentSelected)) {
-      setNoPaymentSelectedError(true);
-      return;
+  useEffect(() => {
+    if (inView && hasMore) {
+      handleLoadMore();
     }
-    setOpenExportModal(true);
-  };
+  }, [inView, hasMore, handleLoadMore]);
 
-  const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
@@ -604,16 +674,7 @@ function Payouts(props) {
         />
       </PaymentModalContext.Provider>
 
-      {hasMore && (
-        <div
-          style={{
-            textAlign: 'center',
-          }}
-          onClick={() => handleLoadMore()}
-        >
-          <SeeMoreText>See more</SeeMoreText>
-        </div>
-      )}
+      {hasMore && <LoadMore ref={ref} hasMore={hasMore} />}
     </SettingsWrapper>
   );
 }

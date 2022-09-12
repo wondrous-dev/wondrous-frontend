@@ -31,7 +31,7 @@ type Props = {
   /**
    * Modal title
    */
-  title?: string;
+  title?: React.ReactNode | string;
 
   /**
    * Modal width

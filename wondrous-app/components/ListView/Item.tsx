@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
 import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
@@ -23,9 +22,10 @@ import { useRouter } from 'next/router';
 import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import Dropdown from 'components/Common/Dropdown';
+import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
 import { CreateEntity } from 'components/CreateEntity';
@@ -362,8 +362,8 @@ export default function ListViewItem({ task, entityType }) {
               <MoreOptions>
                 <Tooltip title="More actions" placement="top">
                   <div>
-                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                      <DropDownItem
+                    <Dropdown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                      <DropdownItem
                         onClick={() => {
                           setEditTask(true);
                         }}
@@ -373,8 +373,8 @@ export default function ListViewItem({ task, entityType }) {
                         textAlign="left"
                       >
                         Edit task
-                      </DropDownItem>
-                      <DropDownItem
+                      </DropdownItem>
+                      <DropdownItem
                         onClick={() => {
                           setArchiveTask(true);
                         }}
@@ -384,9 +384,9 @@ export default function ListViewItem({ task, entityType }) {
                         textAlign="left"
                       >
                         Archive task
-                      </DropDownItem>
+                      </DropdownItem>
                       {canDelete && (
-                        <DropDownItem
+                        <DropdownItem
                           key={`task-menu-delete-${task.id}`}
                           onClick={() => {
                             setDeleteTask(true);
@@ -397,9 +397,9 @@ export default function ListViewItem({ task, entityType }) {
                           textAlign="left"
                         >
                           Delete task
-                        </DropDownItem>
+                        </DropdownItem>
                       )}
-                    </DropDown>
+                    </Dropdown>
                   </div>
                 </Tooltip>
               </MoreOptions>

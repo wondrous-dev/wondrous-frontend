@@ -145,3 +145,5 @@ export const Button = ({
     </ButtonWrapper>
   );
 };
+
+export default Button;

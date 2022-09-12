@@ -1,5 +1,16 @@
+import React, { useEffect, useState } from 'react';
+import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import { useLazyQuery, useQuery } from '@apollo/client';
+
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
+import { PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+
 import AddDocumentDialog from 'components/AddDocumentDialog';
 import ResourcesSidebar from 'components/Common/SidebarResources';
 import DeleteDocDialog from 'components/DeleteDocDialog';
@@ -7,17 +18,9 @@ import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import DocCategoriesSection from 'components/DocCategoriesSection';
 import DocItemsMenu from 'components/DocItemsMenu';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
-import styles from 'components/organization/docs/docsStyles';
 import PinnedDocsSection from 'components/PinnedDocsSection';
-import Tooltip from 'components/Tooltip';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
-import isEmpty from 'lodash/isEmpty';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
-import React, { useEffect, useState } from 'react';
-import { PERMISSIONS } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
+
+import styles, { AddIconWrapper } from 'components/organization/docs/docsStyles';
 
 import Wrapper from '../wrapper';
 
@@ -161,13 +164,12 @@ function Docs(props) {
     >
       <Wrapper>
         {canEdit && (
-          <Tooltip title="Create new doc category" placement="top">
-            <Box sx={styles.categoryButtonContainer}>
-              <Box sx={styles.categoryButton} onClick={() => setShowCategoriesDialog(true)}>
-                <Image src="/images/icons/plus.svg" alt="plus icon" width={16} height={16} />
-              </Box>
-            </Box>
-          </Tooltip>
+          <Box sx={styles.topButtonsContainer}>
+            <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
+              <AddIconWrapper style={styles.addIcon} />
+              Add new doc
+            </Button>
+          </Box>
         )}
 
         {isEmpty(docData) && (

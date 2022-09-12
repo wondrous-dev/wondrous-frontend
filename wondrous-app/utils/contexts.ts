@@ -22,8 +22,10 @@ export const PaymentModalContext = createContext(null);
 
 export const SelectMembershipContext = createContext(null);
 
-export const EditTokenGatingConditionContext = createContext(null);
+export const TokenGatingContext = createContext(null);
 
 export const UserProfileContext = createContext(null);
 
 export const GlobalContext = createContext(null);
+
+export const HotkeyContext = createContext(null);

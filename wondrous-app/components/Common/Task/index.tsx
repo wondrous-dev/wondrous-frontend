@@ -6,7 +6,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { AvatarList } from 'components/Common/AvatarList';
 import { Compensation } from 'components/Common/Compensation';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { SafeImage } from 'components/Common/Image';
 import { TaskMedia } from 'components/Common/MediaPlayer';

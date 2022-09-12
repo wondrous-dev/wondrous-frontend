@@ -73,6 +73,8 @@ import {
   RoleText,
   RoleButton,
   Container,
+  SettingsButton,
+  InviteButton,
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
@@ -418,18 +420,14 @@ function Wrapper(props) {
                 )}
                 {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                   <>
-                    <HeaderButton
+                    <SettingsButton
                       onClick={() => {
-                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`, undefined, {
-                          shallow: true,
-                        });
+                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
                       }}
                     >
                       Settings
-                    </HeaderButton>
-                    <HeaderButton reversed onClick={handleInviteAction}>
-                      {inviteButtonSettings?.label || 'Invite'}
-                    </HeaderButton>
+                    </SettingsButton>
+                    <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
                   </>
                 )}
               </HeaderButtons>

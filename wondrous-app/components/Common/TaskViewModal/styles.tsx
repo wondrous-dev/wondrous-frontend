@@ -316,6 +316,18 @@ export const TaskModalSnapshot = styled(Button)`
 
 export const TaskModalSnapshotLogo = styled(SnapshotLogoIcon)``;
 
+// export const DiscordThreadButton = styled(Button)`
+//   && {
+//     align-items: center;
+//     background: transparent;
+//     display: flex;
+//     gap: 8px;
+//     height: 30px;
+//     margin: 0;
+//     border: 2px solid ${palette.purple400};
+//   }
+// `;
+
 export const TaskModalSnapshotText = styled(Typography)`
   && {
     font-size: 14px;

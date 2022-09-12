@@ -1,10 +1,10 @@
 export const handleUserOnboardingRedirect = (user, router) => {
   if (user?.signupCompleted) {
-    router.push('/dashboard', undefined, {
+    router.push('/mission-control', undefined, {
       shallow: true,
     });
   } else if (user?.profilePictureUrl) {
-    router.push('/dashboard', undefined, {
+    router.push('/mission-control', undefined, {
       shallow: true,
     });
   } else if (user?.username) {

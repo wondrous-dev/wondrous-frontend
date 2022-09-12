@@ -9,7 +9,7 @@ function Index() {
   const checkSession = useCallback(async () => {
     const token = getAuthHeader();
     if (token) {
-      router.push('/dashboard', undefined, {
+      router.push('/mission-control', undefined, {
         shallow: true,
       });
     } else {

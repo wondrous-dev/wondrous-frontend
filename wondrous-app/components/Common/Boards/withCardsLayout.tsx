@@ -5,7 +5,7 @@ import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
 import TaskViewModal from 'components/Common/TaskViewModal';
-import { Table } from 'components/Table';
+import Table from 'components/Table';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { CardsContainer } from './styles';

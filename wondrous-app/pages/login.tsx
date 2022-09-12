@@ -68,7 +68,7 @@ function Login({ csrfToken }) {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
             if (user) {
               if (user?.username) {
-                router.push('/dashboard', undefined, {
+                router.push('/mission-control', undefined, {
                   shallow: true,
                 });
               } else {
@@ -136,6 +136,7 @@ function Login({ csrfToken }) {
           style={{
             textAlign: 'center',
           }}
+          data-cy="test"
         >
           Log in with email
         </OnboardingTitle>
@@ -165,7 +166,7 @@ function Login({ csrfToken }) {
               required
               rightIcon
             />
-            <Button marginTop="37px" height={50} fullWidth>
+            <Button marginTop="37px" height={50} fullWidth data-cy="button-login">
               Log me in
             </Button>
           </Form>

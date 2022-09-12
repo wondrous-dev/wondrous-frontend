@@ -58,6 +58,10 @@ export const ApproveButton = styled(RequestApproveButton)`
       background: linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%);
     }
   }
+
+  span {
+    z-index: 1;
+  }
 `;
 
 export const DeclineButton = styled(RequestApproveButton)`
@@ -68,6 +72,10 @@ export const DeclineButton = styled(RequestApproveButton)`
     &:hover {
       background: linear-gradient(270deg, ${palette.red300} -5.62%, ${palette.highlightPurple} 103.12%);
     }
+  }
+
+  span {
+    z-index: 1;
   }
 `;
 

@@ -7,7 +7,7 @@
     "es2021": true
   },
   "root": true,
-  "extends": ["airbnb", "next", "next/core-web-vitals", "prettier"],
+  "extends": ["airbnb", "next", "next/core-web-vitals", "plugin:cypress/recommended", "prettier"],
 
   "rules": {
     "no-octal-escape": "off",
