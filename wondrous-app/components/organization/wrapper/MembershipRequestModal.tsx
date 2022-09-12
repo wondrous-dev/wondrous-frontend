@@ -43,6 +43,7 @@ const MembershipRequestModal = (props) => {
     handleOpenClaimedRole,
     handleOpenJoinRequestModal,
     handleOpenCurrentRoleModal,
+    handleSetClaimedRole,
   } = props;
   const [requestMessage, setRequestMessage] = useState('');
   const [error, setError] = useState(null);
@@ -224,6 +225,7 @@ const MembershipRequestModal = (props) => {
                   },
                 });
               } else if (podId) {
+                handleSetClaimedRole(defaultRole);
                 sendRequest({
                   variables: {
                     podId,

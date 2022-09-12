@@ -29,13 +29,12 @@ import {
   GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
 } from 'graphql/queries';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import SuccessRoleModal from 'components/Common/RoleSuccessModal/ClaimedRoleModal';
+import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
 import RolePill from 'components/Common/RolePill';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import MembershipRequestModal from './MembershipRequestModal';
@@ -66,13 +65,11 @@ import {
   TokenHeader,
   TokenEmptyLogo,
   HeaderTitleIcon,
-  HeaderImage,
   HeaderImageWrapper,
   HeaderTag,
   BoardsSubheaderWrapper,
   RoleButtonWrapper,
   RoleText,
-  RoleButton,
   Container,
   SettingsButton,
   InviteButton,
@@ -80,7 +77,6 @@ import {
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import CurrentRoleModal from './CurrentRoleModal';
-import ExploreOtherRolesModal from './ExploreOtherRolesModal';
 
 function Wrapper(props) {
   const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
@@ -319,7 +315,6 @@ function Wrapper(props) {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
         handleOpenJoinRequestModal={handleOpenJoinRequestModal}
-        handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
         handleSetRequest={handleSetRequest}
         handleOpenClaimedRole={handleOpenClaimedRole}
         handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
@@ -333,27 +328,9 @@ function Wrapper(props) {
         linkedWallet={loggedInUser?.activeEthAddress}
         orgRole={orgRoleName}
         handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
-        handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
         handleOpenClaimedRole={handleOpenClaimedRole}
         handleOpenJoinRequestModal={handleOpenJoinRequestModal}
         handleSetClaimedRole={handleSetClaimedRole}
-        claimableDiscordRole={claimableDiscordRole}
-        tokenGatedRoles={tokenGatedRoles}
-      />
-      <ExploreOtherRolesModal
-        orgId={orgBoard?.orgId}
-        open={openExploreOtherRoles}
-        onClose={() => handleOpenExploreOtherRoles(false)}
-        notLinkedWalletError={notLinkedWalletError}
-        linkedWallet={loggedInUser?.activeEthAddress}
-        orgRole={orgRoleName}
-        handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
-        handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
-        handleOpenJoinRequestModal={handleOpenJoinRequestModal}
-        handleOpenClaimedRole={handleOpenClaimedRole}
-        handleSetClaimedRole={handleSetClaimedRole}
-        claimableDiscordRole={claimableDiscordRole}
-        tokenGatedRoles={tokenGatedRoles}
       />
       <SuccessRoleModal
         open={openClaimedRole}
@@ -366,14 +343,6 @@ function Wrapper(props) {
         }}
       />
       <ChooseEntityToCreate />
-      <TokenGatedAndClaimableRoleModal
-        open={claimableRoleModalOpen}
-        onClose={() => setClaimableRoleModalOpen(false)}
-        tokenGatedRoles={tokenGatedRoles}
-        claimableDiscordRole={claimableDiscordRole}
-        setOpenJoinRequestModal={setOpenJoinRequestModal}
-        orgRoleName={orgRoleName}
-      />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
         handleClose={() => {

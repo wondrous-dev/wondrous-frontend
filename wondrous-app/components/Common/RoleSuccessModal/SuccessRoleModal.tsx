@@ -10,11 +10,10 @@ import {
   RequestModalTitle,
   RequestModalTitleBar,
 } from 'components/organization/wrapper/styles';
-import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import RolePill from 'components/Common/RolePill';
 
 const SuccessRoleModal = (props) => {
-  const { open, onClose, notLinkedWalletError, linkedWallet, role, request } = props;
+  const { open, onClose, role, request } = props;
 
   return (
     <RequestModalContainer
@@ -29,15 +28,6 @@ const SuccessRoleModal = (props) => {
           height: 'auto',
         }}
       >
-        {notLinkedWalletError && (
-          <StyledWarningMessage
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
-          </StyledWarningMessage>
-        )}
         <RequestModalTitleBar>
           <RequestModalTitle>Success!</RequestModalTitle>
 

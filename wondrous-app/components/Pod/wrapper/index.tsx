@@ -19,14 +19,13 @@ import {
 import MembershipRequestModal from 'components/organization/wrapper/MembershipRequestModal';
 import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import SuccessRoleModal from 'components/Common/RoleSuccessModal/ClaimedRoleModal';
+import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -270,12 +269,6 @@ function Wrapper(props) {
           handleSetRequest(null);
           setOpenClaimedRole(false);
         }}
-      />
-      <TokenGatedAndClaimableRoleModal
-        open={openGatedRoleModal}
-        onClose={() => setOpenGatedRoleModal(false)}
-        tokenGatedRoles={tokenGatedRoles}
-        setOpenJoinRequestModal={setOpenJoinRequestModal}
       />
       <MoreInfoModal
         open={open && (showUsers || showPods)}

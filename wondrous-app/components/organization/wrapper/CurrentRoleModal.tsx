@@ -51,7 +51,7 @@ const CurrentRoleModal = (props) => {
     handleOpenClaimedRole,
   } = props;
 
-  const claimableRoles = [];
+  const claimableRoles = [{ name: 'owner' }, { name: 'core team' }];
 
   const [checkboxRoles, setCheckboxRoles] = useState(null);
   const [orgRolesWithoutCurrent, setOrgRolesWithoutCurrent] = useState(null);
@@ -74,10 +74,6 @@ const CurrentRoleModal = (props) => {
   const orgRoles = useGetOrgRoles(orgId);
 
   const handleClaimClick = async (role) => {
-    const confirmed = confirm(`Are you sure you want to claim ${role.name}`);
-    if (!confirmed) {
-      return;
-    }
     if (role.__typename === 'OrgRole') {
       try {
         await apollo.mutate({
@@ -277,7 +273,7 @@ const CurrentRoleModal = (props) => {
             {orgRolesWithoutCurrent
               ?.filter(
                 (role) =>
-                  (claimableRoles?.some((claimRole) => claimRole?.name !== role?.name) ||
+                  (claimableRoles?.find((claimRole) => claimRole?.name === role?.name) === undefined ||
                     claimableRoles.length === 0) &&
                   role?.name !== orgRole
               )
