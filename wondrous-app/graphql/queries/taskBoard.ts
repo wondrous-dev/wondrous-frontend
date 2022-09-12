@@ -83,6 +83,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
     $types: [String]
     $labelId: String
     $date: String
+    $category: String
   ) {
     getOrgTaskBoardTasks(
       input: {
@@ -96,6 +97,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
         types: $types
         labelId: $labelId
         date: $date
+        category: $category
       }
     ) {
       ...TaskCardFragment

@@ -88,7 +88,23 @@ export const ExploreProjectsButton = styled(Button)`
     }
   }
 `;
-
+export const ExploreProjectsButtonFilled = styled(Button)`
+  && {
+    min-height: 0;
+    height: 34px;
+    width: fit-content;
+    margin-top: 14px;
+    ${GradientGR15Horizontal}
+    button {
+      text-transform: capitalize;
+      min-height: 0;
+      font-size: 15px;
+      font-weight: 600;
+      font-family: 'Space Grotesk';
+      background: ${GradientGR15Horizontal};
+    }
+  }
+`;
 const styles = {
   white: {
     color: 'white',
