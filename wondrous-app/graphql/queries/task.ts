@@ -202,6 +202,15 @@ export const GET_BOUNTIES_TO_EXPLORE = gql`
   ${TaskCardFragment}
 `;
 
+export const FILTER_BOUNTIES_TO_EXPLORE = gql`
+  query getTaskExplore($input: TaskExploreInput) {
+    getTaskExplore(input: $input) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
 export const RENDER_RICH_TEXT = gql`
   query renderRichText($jsonText: String) {
     renderRichText(jsonText: $jsonText)
