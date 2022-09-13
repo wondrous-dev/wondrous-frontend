@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { space, SpaceProps } from 'styled-system';
 
 import palette from 'theme/palette';
-import typography from '../../theme/typography';
+import typography from 'theme/typography';
 
 const ButtonWrapper = styled.div`
   ${space};
