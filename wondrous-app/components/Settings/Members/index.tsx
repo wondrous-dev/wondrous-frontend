@@ -78,7 +78,7 @@ function Members(props) {
   const wonderWeb3 = useWonderWeb3();
 
   useEffect(() => {
-    if (users.length && !filteredUsers?.length && filteredUsers !== null) {
+    if (users?.length && !filteredUsers?.length && filteredUsers !== null) {
       setFilteredUsers(users);
     }
   }, [users, filteredUsers]);
@@ -298,10 +298,9 @@ function Members(props) {
 
         <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
 
-        {/* In case we decide to add this back later */}
-        {/* {podId ? (
+        {podId ? (
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
-        ) : null} */}
+        ) : null}
 
         <SearchMembers placeholder="Search members..." orgId={orgId} onChange={handleSearchMembers} />
 
@@ -325,94 +324,6 @@ function Members(props) {
           </Typography>
         )}
 
-        {/* <StyledTableContainer>
-          <StyledTable>
-            <StyledTableHead>
-              <StyledTableRow>
-                <StyledTableHeaderCell width="50%">Members</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="30%">Role</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="15%">Pods</StyledTableHeaderCell>
-                <StyledTableHeaderCell width="5%">Edit</StyledTableHeaderCell>
-              </StyledTableRow>
-            </StyledTableHead>
-            <StyledTableBody>
-              {users ? (
-                users.map(({ user, role }) => {
-                  const userId = user?.id;
-
-                  return (
-                    <StyledTableRow key={userId}>
-                      <StyledTableCell>
-                        <Link href={`/profile/${user?.username}/about`} passHref>
-                          <Grid container direction="row" alignItems="center" style={{ cursor: 'pointer' }}>
-                            {user?.thumbnailPicture ? (
-                              <SafeImage
-                                useNextImage={false}
-                                src={user?.thumbnailPicture}
-                                style={{
-                                  width: '40px',
-                                  height: '40px',
-                                  borderRadius: '50%',
-                                  marginRight: '10px',
-                                }}
-                              />
-                            ) : (
-                              <DefaultProfilePicture />
-                            )}
-
-                            <Grid direction="column" alignItems="center">
-                              <Text color="white" fontSize={15} fontWeight={700} lineHeight="20px">
-                                {user?.firstName} {user?.lastName}
-                              </Text>
-
-                              <Text color="#C4C4C4" fontSize={12} lineHeight="17px">
-                                @{user?.username}
-                              </Text>
-                            </Grid>
-                          </Grid>
-                        </Link>
-                      </StyledTableCell>
-                      <StyledTableCell>
-                        <MemberRoleDropdown
-                          userId={userId}
-                          orgId={orgId}
-                          podId={podId}
-                          existingRole={role}
-                          roleList={roleList}
-                          username={user?.username}
-                        />
-                      </StyledTableCell>
-                      <StyledTableCell align="center">
-                        <PodsCount>
-                          {user?.additionalInfo?.podCount || 0} {pluralize('Pod', user?.additionalInfo?.podCount || 0)}{' '}
-                        </PodsCount>
-                      </StyledTableCell>
-
-                      <StyledTableCell>
-                        <DropDown DropdownHandler={TaskMenuIcon}>
-                          <DropDownItem
-                            onClick={() => setUserToRemove(user)}
-                            style={{
-                              color: palette.white,
-                            }}
-                          >
-                            Remove Member
-                          </DropDownItem>
-                        </DropDown>
-                      </StyledTableCell>
-                    </StyledTableRow>
-                  );
-                })
-              ) : (
-                <StyledTableRow>
-                  <StyledTableCell colspan={5} align="center">
-                    <CircularProgress />
-                  </StyledTableCell>
-                </StyledTableRow>
-              )}
-            </StyledTableBody>
-          </StyledTable>
-        </StyledTableContainer> */}
         {hasMore && (
           <div
             style={{

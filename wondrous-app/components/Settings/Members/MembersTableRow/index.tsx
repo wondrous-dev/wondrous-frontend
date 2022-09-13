@@ -13,7 +13,6 @@ import MemberRoleSelectionDropdown from './MemberRoleSelectionDropdown';
 import {
   DefaultProfilePicture,
   UserOptions,
-  UserPodCount,
   UserProfile,
   UserWalletAddress,
   UserWalletAddressContainer,
@@ -43,8 +42,6 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
   const userProfilePicture = user?.thumbnailPicture;
   const userFullName = user?.firstName && `${user?.firstName} ${user?.lastName}` && user?.lastName;
   const username = `@${user?.username}`;
-
-  const userPodCount = user?.additionalInfo?.podCount;
 
   const handleAddressCopy = () => {
     navigator.clipboard.writeText(userENSNameOrWalletAddress);
@@ -107,18 +104,6 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
           roleList={roleList}
           username={user?.username}
         />
-        <UserPodCount>
-          <Grid
-            display="flex"
-            alignItems="center"
-            justifyContent="center"
-            borderRadius="6px"
-            bgcolor={palette.background.default}
-          >
-            <PodIcon strokeColor={palette.blue20} />
-          </Grid>
-          {userPodCount || 0} {userPodCount ? 'Pods' : 'Pod'}
-        </UserPodCount>
         <UserOptions>
           <Dropdown
             DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke={palette.white} />}
