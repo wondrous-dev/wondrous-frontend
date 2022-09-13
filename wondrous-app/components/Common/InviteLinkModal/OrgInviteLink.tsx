@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { CREATE_ORG_INVITE_LINK, SEND_ORG_EMAIL_INVITES } from 'graphql/mutations/org';
 import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -95,7 +95,6 @@ export function OrgInviteLinkModal(props) {
   const [dropRoleBox, setDropRoleBox] = useState(false);
   const [isUniversal, setIsUniversal] = useState(false);
   const [userSearchValue, setUserSearchValue] = useState<string>('');
-  const [userSearchList, setUserSearchList] = useState([]);
   const [listLoading, setListLoading] = useState(false);
 
   // final list to be displayed and sent to BE
@@ -125,6 +124,16 @@ export function OrgInviteLinkModal(props) {
       console.error(e);
     },
   });
+
+  const [sendOrgEmailInvites] = useMutation(SEND_ORG_EMAIL_INVITES, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
   const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
     onCompleted: (data) => {
       data?.getOrgRoles &&
@@ -142,26 +151,18 @@ export function OrgInviteLinkModal(props) {
   });
 
   const handleRemoveFromUsersList = (item) => {
-    const holdingList = selectedUsersList.filter(
-      (user) => item.username !== user.username || item.email !== user.email
-    );
+    const holdingList = selectedUsersList.filter((user) => item.email !== user.email);
     setSelectedUsersList(holdingList);
   };
 
-  const handleAddUserToList = (item, type) => {
-    const itemIndex = selectedUsersList.findIndex((user) => {
-      if (type === 'name') {
-        return item.username === user.username;
-      }
-      return item === user.email;
-    });
+  const handleAddUserToList = (item) => {
+    const itemIndex = selectedUsersList.findIndex((user) => item === user.email);
     if (itemIndex >= 0) {
     } else {
-      if (type === 'email') {
-        setSelectedUsersList((prev) => [...prev, { email: item, role: activeRole.name, type: 'email' }]);
-      } else {
-        setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole.name, type }]);
-      }
+      setSelectedUsersList((prev) => [
+        ...prev,
+        { email: item, role: activeRole.name, roleId: activeRole.id, type: 'email' },
+      ]);
       setUserSearchValue('');
     }
   };
@@ -184,6 +185,19 @@ export function OrgInviteLinkModal(props) {
 
   const handleLinkOneTimeUseChange = () => {
     setLinkOneTimeUse(!linkOneTimeUse);
+  };
+
+  const handleSendInvite = () => {
+    sendOrgEmailInvites({
+      variables: {
+        expiry: null,
+        emailsAndRoles: selectedUsersList.map((item) => ({
+          email: item.email,
+          roleId: item.roleId,
+        })),
+        orgId,
+      },
+    });
   };
 
   useEffect(() => {
@@ -209,20 +223,6 @@ export function OrgInviteLinkModal(props) {
     setCopy(false);
   }, [role, createOrgInviteLink, activeRole.id, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
   const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions);
-
-  useEffect(() => {
-    if (userSearchValue) {
-      const filteredList =
-        userList &&
-        userList.filter(
-          (item) => item.username && item.username.toLocaleLowerCase().includes(userSearchValue.toLocaleLowerCase())
-        );
-
-      setUserSearchList(filteredList);
-    } else {
-      setUserSearchList(userList);
-    }
-  }, [userSearchValue]);
 
   useEffect(() => {
     const checkIfClickedOutside = (e) => {
@@ -276,17 +276,17 @@ export function OrgInviteLinkModal(props) {
                   readOnly={isUniversal}
                   type="text"
                   value={isUniversal ? inviteLink : userSearchValue}
-                  placeholder="Search for usernames or email..."
+                  placeholder="Enter emails to invite..."
                 />
                 {!isUniversal && <SearchIcon />}
               </SearchUserContainer>
-              {userSearchValue ? (
-                validateEmail(userSearchValue) ? (
+              {userSearchValue &&
+                (validateEmail(userSearchValue) ? (
                   <DisplaySearchedUserContainer>
                     <DisplaySearchedUser
                       type="email"
                       onClick={() => {
-                        handleAddUserToList(userSearchValue, 'email');
+                        handleAddUserToList(userSearchValue);
                       }}
                     >
                       <p>{userSearchValue}</p>
@@ -294,30 +294,9 @@ export function OrgInviteLinkModal(props) {
                   </DisplaySearchedUserContainer>
                 ) : (
                   <DisplaySearchedUserContainer>
-                    {userSearchList.length ? (
-                      userSearchList.map((item, i) => (
-                        <DisplaySearchedUser
-                          key={i}
-                          onClick={() => {
-                            handleAddUserToList(item, 'name');
-                          }}
-                        >
-                          {item?.profilePicture ? (
-                            <UserProfilePicture src={item?.thumbnailPicture || item?.profilePicture} />
-                          ) : (
-                            <DefaultProfilePicture />
-                          )}
-                          <p>{item.username}</p>
-                        </DisplaySearchedUser>
-                      ))
-                    ) : (
-                      <EmptySearch>Empty Search</EmptySearch>
-                    )}
+                    <EmptySearch>Enter a valid email</EmptySearch>
                   </DisplaySearchedUserContainer>
-                )
-              ) : (
-                ''
-              )}
+                ))}
             </SearchUserBox>
             <RoleContainer ref={roleContainerRef}>
               <SelectRoleContainer
@@ -422,6 +401,8 @@ export function OrgInviteLinkModal(props) {
                     textDecoration: 'none',
                     color: palette.white,
                   }}
+                  disabled={!selectedUsersList.length}
+                  onClick={handleSendInvite}
                 >
                   Send Invite
                 </Button>

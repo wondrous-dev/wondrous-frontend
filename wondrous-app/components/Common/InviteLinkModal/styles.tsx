@@ -593,7 +593,7 @@ export const BottomBox = styled.div`
   bottom: 0;
   left: 0;
   width: 100%;
-  background: black;
+  background: black !important;
   padding: 24px;
   border-radius: 0px 0px 6px 6px;
 `;

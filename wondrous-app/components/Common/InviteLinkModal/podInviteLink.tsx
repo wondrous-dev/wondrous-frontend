@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
-import { CREATE_POD_INVITE_LINK } from 'graphql/mutations/pod';
+import { BATCH_ADD_USERS_TO_POD, CREATE_POD_INVITE_LINK, SEND_POD_EMAIL_INVITES } from 'graphql/mutations/pod';
 import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
+import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, validateEmail } from 'utils/constants';
@@ -66,6 +67,8 @@ export function PodInviteLinkModal(props) {
   const board = orgBoard || podBoard;
   const userPermissionsContext = board?.userPermissionsContext;
   const [userList, setUserList] = useState([]);
+  const [eligibleUserList, setEligibleUserList] = useState([]);
+  const [orgUserList, setOrgUserList] = useState([]);
   const [activeRole, setActiveRole] = useState<any>({});
   const [inviteLink, setInviteLink] = useState('');
   const [dropRoleBox, setDropRoleBox] = useState(false);
@@ -73,16 +76,25 @@ export function PodInviteLinkModal(props) {
   const [userSearchValue, setUserSearchValue] = useState<string>('');
   const [userSearchList, setUserSearchList] = useState([]);
   const [listLoading, setListLoading] = useState(false);
-
+  const orgId = podBoard?.orgId;
   // final list to be displayed and sent to BE
   const [selectedUsersList, setSelectedUsersList] = useState([]);
-
+  console.log(orgUserList, userList, eligibleUserList, 'all there');
   const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
       const userData = data.getPodUsers;
       const filteredData = userData?.map((userRole) => userRole.user);
       setUserList(filteredData || []);
       setListLoading(false);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
+    onCompleted: (data) => {
+      const userData = data.getOrgUsers;
+      const filteredData = userData?.map((userRole) => userRole.user);
+      setOrgUserList(filteredData || []);
     },
     fetchPolicy: 'cache-and-network',
   });
@@ -101,6 +113,25 @@ export function PodInviteLinkModal(props) {
       console.error(e);
     },
   });
+
+  const [sendPodEmailInvites] = useMutation(SEND_POD_EMAIL_INVITES, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
+  const [batchAddUsers] = useMutation(BATCH_ADD_USERS_TO_POD, {
+    onCompleted: (data) => {
+      console.log(data);
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+  });
+
   const [getPodRoles, { data: podRoles }] = useLazyQuery(GET_POD_ROLES, {
     onCompleted: (data) => {
       if (data?.getPodRoles) {
@@ -135,9 +166,12 @@ export function PodInviteLinkModal(props) {
     if (itemIndex >= 0) {
     } else {
       if (type === 'email') {
-        setSelectedUsersList((prev) => [...prev, { email: item, role: activeRole.name, type: 'email' }]);
+        setSelectedUsersList((prev) => [
+          ...prev,
+          { email: item, role: activeRole.name, roleId: activeRole.id, type: 'email' },
+        ]);
       } else {
-        setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole.name, type }]);
+        setSelectedUsersList((prev) => [...prev, { ...item, role: activeRole.name, roleId: activeRole.id, type }]);
       }
       setUserSearchValue('');
     }
@@ -161,6 +195,29 @@ export function PodInviteLinkModal(props) {
 
   const handleLinkOneTimeUseChange = () => {
     setLinkOneTimeUse(!linkOneTimeUse);
+  };
+
+  const handleSendInvite = () => {
+    const usersList = selectedUsersList
+      .filter((item) => item.type !== 'email')
+      .map((item) => ({ userId: item.id, roleId: item.roleId }));
+    const emailList = selectedUsersList
+      .filter((item) => item.type === 'email')
+      .map((item) => ({ email: item.email, roleId: item.roleId }));
+
+    sendPodEmailInvites({
+      variables: {
+        expiry: null,
+        emailsAndRoles: emailList,
+        podId,
+      },
+    });
+    batchAddUsers({
+      variables: {
+        usersRoles: usersList,
+        podId,
+      },
+    });
   };
 
   useEffect(() => {
@@ -190,14 +247,14 @@ export function PodInviteLinkModal(props) {
   useEffect(() => {
     if (userSearchValue) {
       const filteredList =
-        userList &&
-        userList.filter(
+        eligibleUserList &&
+        eligibleUserList.filter(
           (item) => item.username && item.username.toLocaleLowerCase().includes(userSearchValue.toLocaleLowerCase())
         );
 
       setUserSearchList(filteredList);
     } else {
-      setUserSearchList(userList);
+      setUserSearchList(eligibleUserList);
     }
   }, [userSearchValue]);
 
@@ -225,6 +282,31 @@ export function PodInviteLinkModal(props) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podId]);
+
+  useEffect(() => {
+    if (orgId) {
+      getOrgUsers({
+        variables: {
+          orgId,
+          limit: 1000, // TODO: paginate
+        },
+      });
+    }
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [orgId]);
+
+  useEffect(() => {
+    if (userList.length && orgUserList.length) {
+      const isSameUser = (a, b) => a.id === b.id;
+      const compareFunc = (left, right, compareFunction) =>
+        left.filter((leftValue) => !right.some((rightValue) => compareFunction(leftValue, rightValue)));
+      const orgPodUsers = compareFunc(orgUserList, userList, isSameUser);
+      setEligibleUserList([...orgPodUsers]);
+    } else {
+      setEligibleUserList(orgUserList);
+    }
+  }, [userList, orgUserList]);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
@@ -257,8 +339,8 @@ export function PodInviteLinkModal(props) {
                 />
                 {!isUniversal && <SearchIcon />}
               </SearchUserContainer>
-              {userSearchValue ? (
-                validateEmail(userSearchValue) ? (
+              {userSearchValue &&
+                (validateEmail(userSearchValue) ? (
                   <DisplaySearchedUserContainer>
                     <DisplaySearchedUser
                       type="email"
@@ -291,10 +373,7 @@ export function PodInviteLinkModal(props) {
                       <EmptySearch>Empty Search</EmptySearch>
                     )}
                   </DisplaySearchedUserContainer>
-                )
-              ) : (
-                ''
-              )}
+                ))}
             </SearchUserBox>
             <RoleContainer ref={roleContainerRef}>
               <SelectRoleContainer
@@ -399,6 +478,8 @@ export function PodInviteLinkModal(props) {
                     textDecoration: 'none',
                     color: palette.white,
                   }}
+                  disabled={!selectedUsersList.length}
+                  onClick={handleSendInvite}
                 >
                   Send Invite
                 </Button>
