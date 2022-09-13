@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography, Tab } from '@mui/material';
+import { Tab } from '@mui/material';
 import { BigNumber } from 'bignumber.js';
 import { GRAPHQL_ERRORS, BOUNTY_TYPE, PERMISSIONS } from 'utils/constants';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';

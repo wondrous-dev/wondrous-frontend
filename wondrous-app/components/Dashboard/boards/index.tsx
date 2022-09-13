@@ -376,6 +376,6 @@ const BoardsPage = (props) => {
       </BoardWrapper>
     </UserBoardContext.Provider>
   );
-}
+};
 
 export default BoardsPage;

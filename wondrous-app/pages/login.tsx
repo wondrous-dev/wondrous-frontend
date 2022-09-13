@@ -165,14 +165,7 @@ function Login({ csrfToken }) {
               required
               rightIcon
             />
-            <Button
-              type="submit"
-              style={{
-                marginTop: '37px',
-                minHeight: '50px',
-                width: '100%',
-              }}
-            >
+            <Button marginTop="37px" height={50} fullWidth>
               Log me in
             </Button>
           </Form>
@@ -191,9 +184,11 @@ function Login({ csrfToken }) {
             {!isMobile && <MetaMaskConnector text="" style={buttonStyles} />}
             <WalletConnectConnector text="" style={buttonStyles} />
             <CoinbaseConnector text="" style={buttonStyles} />
-            <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
+
+            <Button height={40} minWidth={40} borderRadius={300} onClick={() => (window.location.href = discordUrl)}>
               <DiscordIcon />
             </Button>
+
             {/* <Button
               style={{
                 width: '40px',

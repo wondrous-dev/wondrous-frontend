@@ -4,6 +4,9 @@ export const midnight = '#141414';
 export const background = '#0F0F0F';
 export const white = '#FFFFFF';
 export const black = '#000000';
+export const electricViolet = '#7427FF';
+export const mineShaft = '#242424';
+export const tundora = '#454545';
 
 export const greyColors = {
   grey10: '#F4F4F4',
@@ -19,6 +22,7 @@ export const greyColors = {
   grey65: '#5E5E5E',
   grey70: '#525252',
   grey75: '#4B4B4B',
+  grey76: '#444444',
   grey78: '#474747',
   grey79: '#424242',
   grey80: '#393939',
@@ -41,6 +45,8 @@ export const greyColors = {
   grey800: '#2D333A',
   grey850: '#787878',
   grey900: '#1D1D1D',
+  grey910: '#171717',
+  grey920: '#2D2D2D',
   grey1000: '#272729',
 };
 

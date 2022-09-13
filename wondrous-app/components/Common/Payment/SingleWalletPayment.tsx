@@ -22,7 +22,7 @@ import { usePaymentModal } from 'utils/hooks';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
-
+import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
@@ -124,7 +124,7 @@ export function SingleWalletPayment(props) {
     const corrctChainWallets = [];
     wallets.map((wallet) => {
       const chain = submissionPaymentInfo?.paymentData[0].chain;
-      if (wallet.chain === chain) {
+      if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
@@ -298,6 +298,7 @@ export function SingleWalletPayment(props) {
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
     setGnosisTransactionLoading(false);
   };
+  const sendTransactionFromMetamask = async () => {};
   const handleCreateNewWalletClick = () => {
     if (podId) {
       const newUrl = `/pod/settings/${podId}/wallet`;
@@ -315,7 +316,12 @@ export function SingleWalletPayment(props) {
     if (!wonderGnosis.isConnected()) {
       console.log('gnosis wallet not yet connected');
     }
-    constructAndSignTransactionData();
+    if (selectedWallet.type !== WALLET_TYPE.METAMASK) {
+      // we use !== metamask because we didn't backfill wallet data, and only other type right now is gnosis
+      constructAndSignTransactionData();
+    } else if (selectedWallet.type === WALLET_TYPE.METAMASK) {
+      sendTransactionFromMetamask();
+    }
   };
   if (walletOptions && walletOptions.length > 0) {
     return (

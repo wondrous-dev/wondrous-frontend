@@ -126,7 +126,7 @@ export const useGetOrgMembershipRequestsToReview = () => {
       sortOrder: filtersToApply?.sortOrder,
     };
     refetchJoinOrgRequests({ ...orgRequestsVariables, ...filters }).then(({ data }) =>
-      setHasMore(data?.getJoinOrgRequestsData?.length >= LIMIT)
+      setHasMore(data?.getJoinOrgRequests?.length >= LIMIT)
     );
   };
 
