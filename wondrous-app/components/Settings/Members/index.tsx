@@ -1,5 +1,6 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import * as Sentry from '@sentry/nextjs';
 import debounce from 'lodash/debounce';
 
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
@@ -37,7 +38,6 @@ import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
 
 const LIMIT = 10;
-// const LIMIT = Number.POSITIVE_INFINITY;
 
 const useKickMember = (orgId, podId, users, setUsers) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
@@ -81,7 +81,7 @@ function Members(props) {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
-  const [firstTimeFetch, setFirstTimeFetch] = useState(false);
+  const [firstTimeFetch, setFirstTimeFetch] = useState(true);
   const [openInvite, setOpenInvite] = useState(false);
 
   const wonderWeb3 = useWonderWeb3();
@@ -92,14 +92,14 @@ function Members(props) {
     }
   }, [users]);
 
-  const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
+  const [getOrgUsers, { data, loading, fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
   });
 
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const [getOrg, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
-  const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
+  const [getPodUsers, { fetchMore: fetchMorePodUsers }] = useLazyQuery(GET_POD_USERS, {
     fetchPolicy: 'network-only',
   });
 
@@ -120,11 +120,11 @@ function Members(props) {
           limit: LIMIT,
         },
       }).then((result) => {
-        if (!firstTimeFetch) {
+        if (firstTimeFetch) {
           const users = result?.data?.getOrgUsers;
           setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getOrgUsers.length >= LIMIT);
-          setFirstTimeFetch(true);
+          setFirstTimeFetch(false);
         }
       });
       getOrgRoles({
@@ -144,11 +144,11 @@ function Members(props) {
           limit: LIMIT,
         },
       }).then((result) => {
-        if (!firstTimeFetch) {
+        if (firstTimeFetch) {
           const users = result?.data?.getPodUsers;
           setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getPodUsers.length >= LIMIT);
-          setFirstTimeFetch(true);
+          setFirstTimeFetch(false);
         }
       });
       getPodRoles({
@@ -161,37 +161,45 @@ function Members(props) {
 
   const isOrg = !!orgId;
 
+  const handleMoreData = (data) => {
+    const hasMore = data.length >= LIMIT;
+    setUsers([...users, ...data]);
+    if (!hasMore) {
+      setHasMore(false);
+    }
+  };
+
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
-      fetchMore({
-        variables: {
-          offset: users.length,
-          limit: LIMIT,
-          searchString: '',
-        },
-      })
-        .then((fetchMoreResult) => {
-          if (orgId) {
-            const orgUsers = fetchMoreResult?.data?.getOrgUsers;
-            const hasMore = orgUsers.length >= LIMIT;
-            setUsers([...users, ...orgUsers]);
-            if (!hasMore) {
-              setHasMore(false);
-            }
-          } else if (podId) {
-            const podUsers = fetchMoreResult?.data?.getPodUsers;
-            const hasMore = podUsers.length >= LIMIT;
-            setUsers([...users, ...podUsers]);
-            if (!hasMore) {
-              setHasMore(false);
-            }
-          }
+      const variables = { offset: users.length, limit: LIMIT, searchString: null };
+
+      if (orgId) {
+        fetchMoreOrgUsers({
+          variables,
         })
-        .catch((error) => {
-          console.error(error);
-        });
+          .then((result) => {
+            handleMoreData(result?.data?.getOrgUsers);
+          })
+          .catch((error) => {
+            console.error(error);
+            Sentry.captureException(error);
+          });
+      }
+
+      if (podId) {
+        fetchMorePodUsers({
+          variables,
+        })
+          .then((result) => {
+            handleMoreData(result?.data?.getPodUsers);
+          })
+          .catch((error) => {
+            console.error(error);
+            Sentry.captureException(error);
+          });
+      }
     }
-  }, [hasMore, users, fetchMore, orgId, podId]);
+  }, [hasMore, users, fetchMoreOrgUsers, orgId, podId]);
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
@@ -225,8 +233,6 @@ function Members(props) {
 
   const handleSearchMembers = useCallback(
     debounce(async (searchQuery: string) => {
-      // const searchQuery = (ev.target as HTMLInputElement).value;
-
       if (!searchQuery.length) {
         setFilteredUsers(users);
         return;
@@ -245,7 +251,7 @@ function Members(props) {
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
-          setFilteredUsers(hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null);
+          setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null));
         });
       } else {
         getPodUsers({
@@ -255,7 +261,7 @@ function Members(props) {
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
-          setFilteredUsers(hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null);
+          setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null));
         });
       }
     }, 500),
@@ -263,7 +269,7 @@ function Members(props) {
   );
 
   useEffect(() => {
-    if (firstTimeFetch) {
+    if (!firstTimeFetch) {
       handleSearchMembers(searchQuery);
     }
   }, [searchQuery, firstTimeFetch]);
