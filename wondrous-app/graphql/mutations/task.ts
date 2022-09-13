@@ -259,12 +259,12 @@ export const CREATE_TASK_DISCORD_THREAD = gql`
       threadId
     }
   }
-`
+`;
 
 export const UPDATE_TASK_OBSERVERS = gql`
   mutation updateTaskObservers($taskId: ID!, $observerIds: [String]!) {
     updateTaskObservers(taskId: $taskId, observerIds: $observerIds) {
-      success
+      title # maybe this should be returning simple response instead?
     }
   }
 `;
