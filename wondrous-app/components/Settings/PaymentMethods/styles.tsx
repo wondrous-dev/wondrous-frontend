@@ -123,16 +123,25 @@ export const PaymentMethodTokenDetailsWrapper = styled.div`
   border-bottom: 1px solid ${palette.black87};
 `;
 
+export const PaymentMethodTokenDetails = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 27px;
+  filter: ${({ isDisabled }) => (isDisabled ? 'blur(1.5px)' : 'none')};
+`;
+
 export const PaymentMethodTokenMetadataWrapper = styled.div`
   display: flex;
   align-items: center;
   padding-top: 10px;
+  filter: ${({ isDisabled }) => (isDisabled ? 'blur(1.5px)' : 'none')};
 `;
 
 export const PaymentMethodTokenInfo = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  filter: ${({ isDisabled }) => (isDisabled ? 'blur(1.5px)' : 'none')};
 `;
 
 export const PaymentMethodTokenInfoLabel = styled(Typography)`
