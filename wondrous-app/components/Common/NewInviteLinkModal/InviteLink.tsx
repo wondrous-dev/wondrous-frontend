@@ -1,16 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
+
+import { useMe } from 'components/Auth/withAuth';
 import PersonAddIcon from 'components/Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
 import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
+
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK } from 'utils/constants';
+
 import { CREATE_POD_INVITE_LINK } from 'graphql/mutations/pod';
 import { GET_POD_ROLES } from 'graphql/queries';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
   StyledModal,
   StyledBox,
@@ -54,10 +58,11 @@ export function NewInviteLinkModal(props) {
     orgId: board?.orgId,
     podId: board?.podId,
   });
+  const user = useMe();
 
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${LINK}/invite/${data?.createOrgInviteLink.token}`);
+      setInviteLink(`${LINK}/invite/org/${data?.createOrgInviteLink.token}`);
     },
     onError: (e) => {
       console.error(e);
@@ -67,7 +72,7 @@ export function NewInviteLinkModal(props) {
 
   const [createPodInviteLink] = useMutation(CREATE_POD_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${LINK}/invite/${data?.createPodInviteLink.token}`);
+      setInviteLink(`${LINK}/invite/pod/${data?.createPodInviteLink.token}`);
     },
     onError: (e) => {
       console.error(e);
@@ -150,7 +155,7 @@ export function NewInviteLinkModal(props) {
         createOrgInviteLink({
           variables: {
             input: {
-              invitorId: '',
+              invitorId: user?.id,
               type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
               orgId,
               orgRoleId: role,
@@ -161,7 +166,7 @@ export function NewInviteLinkModal(props) {
         createPodInviteLink({
           variables: {
             input: {
-              invitorId: '',
+              invitorId: user?.id,
               type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
               podId,
               podRoleId: role,
