@@ -420,6 +420,7 @@ export const GRAPHQL_ERRORS = {
   EMAIL_ALREADY_EXIST: 'email_already_exist',
   INVALID_EMAIL: 'invalid_email',
   POD_WITH_SAME_NEXT_EXISTS: 'Pod with name already exist',
+  DISCORD_NOT_CONFIGURED: 'discord_not_configured',
 };
 
 export const LINK = process.env.NEXT_PUBLIC_PRODUCTION
