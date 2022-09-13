@@ -1,30 +1,26 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
+import * as Sentry from '@sentry/nextjs';
 import debounce from 'lodash/debounce';
 
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { useRouter } from 'next/router';
-import { CircularProgress, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import palette from 'theme/palette';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
 import { KICK_ORG_USER } from 'graphql/mutations/org';
 import { KICK_POD_USER } from 'graphql/mutations/pod';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { useWonderWeb3 } from 'services/web3';
 import MemberRoles from '../MemberRoles';
-import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
-import { SafeImage } from '../../Common/Image';
-import { SearchMembers, SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell } from './styles';
-import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
+import { SearchMembers, SeeMoreText, SeeMoreTextWrapper } from './styles';
 import { RolesContainer } from '../Roles/styles';
-import MembersIcon from '../../Icons/membersSettings';
 import { HeaderBlock } from '../headerBlock';
 import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
@@ -65,32 +61,33 @@ const useKickMember = (orgId, podId, users, setUsers) => {
   return handleKickMember;
 };
 
-function Members(props) {
+function Members() {
   const router = useRouter();
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
   const [userToRemove, setUserToRemove] = useState(null);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
-  const [firstTimeFetch, setFirstTimeFetch] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [firstTimeFetch, setFirstTimeFetch] = useState(true);
   const [openInvite, setOpenInvite] = useState(false);
 
   const wonderWeb3 = useWonderWeb3();
 
   useEffect(() => {
-    if (users?.length && !filteredUsers?.length && filteredUsers !== null) {
+    if (users?.length) {
       setFilteredUsers(users);
     }
-  }, [users, filteredUsers]);
+  }, [users]);
 
-  const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
+  const [getOrgUsers, { fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
   });
 
   const [getPod, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
   const [getOrg, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
-  const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
+  const [getPodUsers, { fetchMore: fetchMorePodUsers }] = useLazyQuery(GET_POD_USERS, {
     fetchPolicy: 'network-only',
   });
 
@@ -111,11 +108,11 @@ function Members(props) {
           limit: LIMIT,
         },
       }).then((result) => {
-        if (!firstTimeFetch) {
+        if (firstTimeFetch) {
           const users = result?.data?.getOrgUsers;
           setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getOrgUsers.length >= LIMIT);
-          setFirstTimeFetch(true);
+          setFirstTimeFetch(false);
         }
       });
       getOrgRoles({
@@ -135,11 +132,11 @@ function Members(props) {
           limit: LIMIT,
         },
       }).then((result) => {
-        if (!firstTimeFetch) {
+        if (firstTimeFetch) {
           const users = result?.data?.getPodUsers;
           setUsers(users);
           setHasMore(result?.data?.hasMore || result?.data?.getPodUsers.length >= LIMIT);
-          setFirstTimeFetch(true);
+          setFirstTimeFetch(false);
         }
       });
       getPodRoles({
@@ -152,36 +149,45 @@ function Members(props) {
 
   const isOrg = !!orgId;
 
+  const handleMoreData = (data) => {
+    const hasMore = data.length >= LIMIT;
+    setUsers([...users, ...data]);
+    if (!hasMore) {
+      setHasMore(false);
+    }
+  };
+
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
-      fetchMore({
-        variables: {
-          offset: users.length,
-          limit: LIMIT,
-        },
-      })
-        .then((fetchMoreResult) => {
-          if (orgId) {
-            const orgUsers = fetchMoreResult?.data?.getOrgUsers;
-            const hasMore = orgUsers.length >= LIMIT;
-            setUsers([...users, ...orgUsers]);
-            if (!hasMore) {
-              setHasMore(false);
-            }
-          } else if (podId) {
-            const podUsers = fetchMoreResult?.data?.getPodUsers;
-            const hasMore = podUsers.length >= LIMIT;
-            setUsers([...users, ...podUsers]);
-            if (!hasMore) {
-              setHasMore(false);
-            }
-          }
+      const variables = { offset: users.length, limit: LIMIT, searchString: null };
+
+      if (orgId) {
+        fetchMoreOrgUsers({
+          variables,
         })
-        .catch((error) => {
-          console.error(error);
-        });
+          .then((result) => {
+            handleMoreData(result?.data?.getOrgUsers);
+          })
+          .catch((error) => {
+            console.error(error);
+            Sentry.captureException(error);
+          });
+      }
+
+      if (podId) {
+        fetchMorePodUsers({
+          variables,
+        })
+          .then((result) => {
+            handleMoreData(result?.data?.getPodUsers);
+          })
+          .catch((error) => {
+            console.error(error);
+            Sentry.captureException(error);
+          });
+      }
     }
-  }, [hasMore, users, fetchMore, orgId, podId]);
+  }, [hasMore, users, fetchMoreOrgUsers, orgId, podId]);
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
@@ -208,10 +214,13 @@ function Members(props) {
     }
   };
 
-  const handleSearchMembers = useCallback(
-    debounce(async (ev: React.ChangeEvent) => {
-      const searchQuery = (ev.target as HTMLInputElement).value;
+  const handleSearchQueryOnChange = useCallback((ev: React.ChangeEvent) => {
+    const searchQuery = (ev.target as HTMLInputElement).value;
+    setSearchQuery(searchQuery);
+  }, []);
 
+  const handleSearchMembers = useCallback(
+    debounce(async (searchQuery: string) => {
       if (!searchQuery.length) {
         setFilteredUsers(users);
         return;
@@ -230,7 +239,7 @@ function Members(props) {
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
-          setFilteredUsers(hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null);
+          setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null));
         });
       } else {
         getPodUsers({
@@ -240,12 +249,18 @@ function Members(props) {
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
-          setFilteredUsers(hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null);
+          setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null));
         });
       }
     }, 500),
     [users]
   );
+
+  useEffect(() => {
+    if (!firstTimeFetch) {
+      handleSearchMembers(searchQuery);
+    }
+  }, [searchQuery, firstTimeFetch]);
 
   return (
     <SettingsWrapper showPodIcon={false}>
@@ -302,7 +317,7 @@ function Members(props) {
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
         ) : null}
 
-        <SearchMembers placeholder="Search members..." orgId={orgId} onChange={handleSearchMembers} />
+        <SearchMembers placeholder="Search members..." orgId={orgId} onChange={handleSearchQueryOnChange} />
 
         {filteredUsers?.length > 0 ? (
           <Grid display="flex" flexDirection="column" gap="25px" width="100%" maxWidth="770px">
@@ -324,15 +339,10 @@ function Members(props) {
           </Typography>
         )}
 
-        {hasMore && (
-          <div
-            style={{
-              textAlign: 'center',
-            }}
-            onClick={() => handleLoadMore()}
-          >
+        {hasMore && !searchQuery?.length && (
+          <SeeMoreTextWrapper onClick={() => handleLoadMore()}>
             <SeeMoreText>See more</SeeMoreText>
-          </div>
+          </SeeMoreTextWrapper>
         )}
       </RolesContainer>
     </SettingsWrapper>
