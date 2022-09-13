@@ -406,6 +406,7 @@ export const InitativesField = ({ shouldDisplay }) => {
                 style={{
                   marginRight: '8px',
                 }}
+                onClick={() => setOpenModal(true)}
               />
               <TaskSectionInfoText>Gitcoin Grants R15 - DEI</TaskSectionInfoText>
             </TaskIntiativesContainer>
