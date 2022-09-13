@@ -8,7 +8,7 @@ import { ACTIVATE_PAYMENT_METHOD, DEACTIVATE_PAYMENT_METHOD } from 'graphql/muta
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
-import Dropdown from 'components/Common/Dropdown';
+import { DropDown } from 'components/Common/dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import WalletIcon from 'components/Icons/WalletIcon';
 import CalendarIcon from 'components/Icons/calendar';
@@ -92,7 +92,7 @@ function PaymentMethodDisplay(props) {
           </PaymentMethodTokenDetails>
 
           <PaymentMethodActionMenu right="true">
-            <Dropdown
+            <DropDown
               DropdownHandler={() => (
                 <TaskMenuIcon fill={palette.black92} fillOnHover={palette.black60} stroke={palette.grey57} />
               )}
@@ -115,7 +115,7 @@ function PaymentMethodDisplay(props) {
                   Deactivate
                 </DropdownItem>
               )}
-            </Dropdown>
+            </DropDown>
           </PaymentMethodActionMenu>
         </Grid>
 

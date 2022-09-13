@@ -1,7 +1,7 @@
 import { Typography, Tab, Tabs } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { MODAL_TABS_MAP } from 'utils/constants';
+import { EXPLORE_MODAL_TABS_MAP, MODAL_TABS_MAP } from 'utils/constants';
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
@@ -203,6 +203,34 @@ export const StyledTabs = styled(Tabs)`
     background: linear-gradient(270deg, #ccbbff 2.13%, #7427ff 48.52%, #00baff 100%);
     left: ${(props) => (props.value === MODAL_TABS_MAP.PODS ? '115px !important' : '0')};
     width: ${(props) => (props.value === MODAL_TABS_MAP.PODS ? '47.4792px !important' : '98px !important')};
+    /* 39.4792px */
+  }
+`;
+
+export const ExploreStyledTabs = styled(Tabs)`
+  && {
+    color: #fff;
+    ${({ withMargin = true }) => withMargin && 'margin: 30px auto;'};
+    margin-top: 16px;
+    width: 100%;
+  }
+
+  .MuiTabs-flexContainer {
+    justify-content: start;
+    ${({ withBorder = true }) => withBorder && 'border-bottom: 2px solid #4b4b4b;'};
+  }
+  .MuiTab-textColorInherit {
+    color: unset;
+  }
+  .MuiButtonBase-root {
+    padding: 0 5px;
+    min-height: unset;
+  }
+
+  .MuiTabs-indicator {
+    background: linear-gradient(270deg, #ccbbff 2.13%, #7427ff 48.52%, #00baff 100%);
+    left: ${(props) => (props.value === EXPLORE_MODAL_TABS_MAP.GRANTEES ? '95px !important' : '0')};
+    width: ${(props) => (props.value === EXPLORE_MODAL_TABS_MAP.GRANTEES ? '70px !important' : '80px !important')};
     /* 39.4792px */
   }
 `;

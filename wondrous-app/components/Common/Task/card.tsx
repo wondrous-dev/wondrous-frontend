@@ -17,7 +17,7 @@ import {
   BoardsCardMedia,
   BoardsCardFooter,
 } from 'components/Common/Boards/styles';
-import Dropdown from 'components/Common/Dropdown';
+import { DropDown } from 'components/Common/dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
@@ -442,7 +442,7 @@ export function TaskCard({
             <TaskActionMenu>
               <Tooltip title="More actions" placement="top">
                 <span>
-                  <Dropdown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
+                  <DropDown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
                     <DropdownItem
                       key={`task-menu-edit-edit-${id}`}
                       onClick={() => {
@@ -473,7 +473,7 @@ export function TaskCard({
                         Delete {type}
                       </DropdownItem>
                     )}
-                  </Dropdown>
+                  </DropDown>
                 </span>
               </Tooltip>
             </TaskActionMenu>

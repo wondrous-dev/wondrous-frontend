@@ -258,6 +258,11 @@ export const MODAL_TABS_MAP = {
   PODS: 'Pods',
 };
 
+export const EXPLORE_MODAL_TABS_MAP = {
+  SPONSORS: 'Sponsors',
+  GRANTEES: 'Grantees',
+};
+
 export const MEDIA_TYPES = {
   IMAGE: 'image',
   TEXT: 'text',

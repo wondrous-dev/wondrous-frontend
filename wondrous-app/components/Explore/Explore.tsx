@@ -196,18 +196,19 @@ function ExploreComponent() {
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}
+              gr15DEI={false}
             />
           )}
           {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
-          {activeTab === null ||
-            (activeTab === TABS_LABELS.GR15_DEI && (
-              <BountySection
-                isMobile={isMobile}
-                bounties={bounties?.getTaskExplore}
-                fetchMore={getTaskExploreFetchMore}
-                hasMore={hasMoreBounties}
-              />
-            ))}
+          {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
+            <BountySection
+              isMobile={isMobile}
+              bounties={bounties?.getTaskExplore}
+              fetchMore={getTaskExploreFetchMore}
+              hasMore={hasMoreBounties}
+              gr15DEI
+            />
+          )}
         </ExplorePageContentWrapper>
       </Box>
 
