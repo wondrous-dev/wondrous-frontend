@@ -122,9 +122,10 @@ export const OverflowBox = styled.div`
   }
 
   &::-webkit-scrollbar {
-    height: 0;
-    width: 0;
-    display: none;
+    height: 0px;
+    width: 5px;
+    border-radius: 210px;
+    background: #606060;
   }
 
   &::-webkit-scrollbar-thumb {
