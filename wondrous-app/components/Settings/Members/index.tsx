@@ -21,7 +21,14 @@ import MemberRoles from '../MemberRoles';
 import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
 import { SafeImage } from '../../Common/Image';
-import { SearchMembers, SeeMoreText, StyledTable, StyledTableBody, StyledTableHeaderCell } from './styles';
+import {
+  SearchMembers,
+  SeeMoreText,
+  SeeMoreTextWrapper,
+  StyledTable,
+  StyledTableBody,
+  StyledTableHeaderCell,
+} from './styles';
 import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
 import { RolesContainer } from '../Roles/styles';
 import MembersIcon from '../../Icons/membersSettings';
@@ -30,6 +37,7 @@ import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
 
 const LIMIT = 10;
+// const LIMIT = Number.POSITIVE_INFINITY;
 
 const useKickMember = (orgId, podId, users, setUsers) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
@@ -72,16 +80,17 @@ function Members(props) {
   const [userToRemove, setUserToRemove] = useState(null);
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
 
   const wonderWeb3 = useWonderWeb3();
 
   useEffect(() => {
-    if (users?.length && !filteredUsers?.length && filteredUsers !== null) {
+    if (users?.length) {
       setFilteredUsers(users);
     }
-  }, [users, filteredUsers]);
+  }, [users]);
 
   const [getOrgUsers, { data, loading, fetchMore }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
@@ -158,6 +167,7 @@ function Members(props) {
         variables: {
           offset: users.length,
           limit: LIMIT,
+          searchString: '',
         },
       })
         .then((fetchMoreResult) => {
@@ -208,9 +218,14 @@ function Members(props) {
     }
   };
 
+  const handleSearchQueryOnChange = useCallback((ev: React.ChangeEvent) => {
+    const searchQuery = (ev.target as HTMLInputElement).value;
+    setSearchQuery(searchQuery);
+  }, []);
+
   const handleSearchMembers = useCallback(
-    debounce(async (ev: React.ChangeEvent) => {
-      const searchQuery = (ev.target as HTMLInputElement).value;
+    debounce(async (searchQuery: string) => {
+      // const searchQuery = (ev.target as HTMLInputElement).value;
 
       if (!searchQuery.length) {
         setFilteredUsers(users);
@@ -246,6 +261,12 @@ function Members(props) {
     }, 500),
     [users]
   );
+
+  useEffect(() => {
+    if (firstTimeFetch) {
+      handleSearchMembers(searchQuery);
+    }
+  }, [searchQuery, firstTimeFetch]);
 
   return (
     <SettingsWrapper showPodIcon={false}>
@@ -302,7 +323,7 @@ function Members(props) {
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
         ) : null}
 
-        <SearchMembers placeholder="Search members..." orgId={orgId} onChange={handleSearchMembers} />
+        <SearchMembers placeholder="Search members..." orgId={orgId} onChange={handleSearchQueryOnChange} />
 
         {filteredUsers?.length > 0 ? (
           <Grid display="flex" flexDirection="column" gap="25px" width="100%" maxWidth="770px">
@@ -324,15 +345,10 @@ function Members(props) {
           </Typography>
         )}
 
-        {hasMore && (
-          <div
-            style={{
-              textAlign: 'center',
-            }}
-            onClick={() => handleLoadMore()}
-          >
+        {hasMore && !searchQuery?.length && (
+          <SeeMoreTextWrapper onClick={() => handleLoadMore()}>
             <SeeMoreText>See more</SeeMoreText>
-          </div>
+          </SeeMoreTextWrapper>
         )}
       </RolesContainer>
     </SettingsWrapper>
