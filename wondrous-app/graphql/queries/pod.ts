@@ -65,10 +65,6 @@ export const GET_POD_USERS = gql`
         firstName
         lastName
         bio
-        additionalInfo {
-          orgCount
-          podCount
-        }
       }
       role {
         permissions

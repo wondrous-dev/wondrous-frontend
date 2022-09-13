@@ -61,10 +61,6 @@ export const GET_ORG_USERS = gql`
         firstName
         lastName
         bio
-        additionalInfo {
-          orgCount
-          podCount
-        }
       }
       role {
         id
@@ -162,9 +158,6 @@ export const SEARCH_ORG_USERS = gql`
       username
       profilePicture
       thumbnailPicture
-      additionalInfo {
-        podCount
-      }
       firstName
       lastName
       bio

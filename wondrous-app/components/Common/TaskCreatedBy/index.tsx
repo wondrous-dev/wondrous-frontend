@@ -21,7 +21,7 @@ export const StyledMention = styled(Typography)`
 
 export function TaskCreatedBy(props) {
   const { router, type, createdBy } = props;
-  const [getUser, { data: getUserData }] = useLazyQuery(GET_USER);
+  const [getUser, { data: getUserData }] = useLazyQuery(GET_USER); // TODO should be reading this from resolver instead
   const isShown = type === ENTITIES_TYPES.MILESTONE || type === ENTITIES_TYPES.BOUNTY;
   useEffect(() => {
     if (isShown) {

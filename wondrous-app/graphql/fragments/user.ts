@@ -42,8 +42,6 @@ export const ProfileUserFragment = gql`
     id
     username
     bio
-    firstName
-    lastName
     headerPicture
     activeEthAddress
     profilePicture
@@ -57,5 +55,16 @@ export const ProfileUserFragment = gql`
       orgCount
       podCount
     }
+  }
+`;
+
+export const SmallUserFragment = gql`
+  fragment UserSmall on User {
+    id
+    username
+    headerPicture
+    activeEthAddress
+    profilePicture
+    thumbnailPicture
   }
 `;
