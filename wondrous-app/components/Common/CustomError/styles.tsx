@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+
+import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { OverviewComponent } from 'components/Wrapper/styles';
 
@@ -32,5 +34,25 @@ export const ErrorHeader = styled(Typography)`
     -webkit-text-fill-color: transparent;
     background-clip: text;
     text-fill-color: transparent;
+  }
+`;
+
+export const EscapeButton = styled(Button)`
+  && {
+    align-self: auto;
+  }
+`;
+export const SectionSubheader = styled(Typography)`
+  && {
+    font-family: 'Space Grotesk';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 20px;
+    /* identical to box height, or 93% */
+
+    letter-spacing: 0.0025em;
+
+    color: #ffffff;
   }
 `;
