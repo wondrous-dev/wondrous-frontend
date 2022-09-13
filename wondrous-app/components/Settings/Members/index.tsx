@@ -226,7 +226,7 @@ function Members(props) {
         getOrgUsers({
           variables: {
             orgId,
-            queryString: isSearchQueryENS ? walletAddress : searchQuery,
+            searchString: isSearchQueryENS ? walletAddress : searchQuery,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
@@ -236,7 +236,7 @@ function Members(props) {
         getPodUsers({
           variables: {
             podId,
-            queryString: isSearchQueryENS ? walletAddress : searchQuery,
+            searchString: isSearchQueryENS ? walletAddress : searchQuery,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
