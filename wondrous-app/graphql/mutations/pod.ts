@@ -96,6 +96,22 @@ export const INVITE_USER_TO_POD = gql`
   }
 `;
 
+export const SEND_POD_EMAIL_INVITES = gql`
+  mutation sendPodRoleInviteEmails($podId: ID!, $expiry: String, $emailsAndRoles: String) {
+    sendPodRoleInviteEmails(podId: $podId, expiry: $expiry, emailsAndRoles: $emailsAndRoles) {
+      success
+    }
+  }
+`;
+
+export const BATCH_ADD_USERS_TO_POD = gql`
+  mutation batchAddUsersToPod($podId: ID!, $usersRoles: String) {
+    batchAddUsersToPod(podId: $podId, usersRoles: $usersRoles) {
+      success
+    }
+  }
+`;
+
 export const CREATE_JOIN_POD_REQUEST = gql`
   mutation createJoinPodRequest($podId: ID!, $message: String) {
     createJoinPodRequest(podId: $podId, message: $message) {
