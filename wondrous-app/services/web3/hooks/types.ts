@@ -138,7 +138,12 @@ export interface WonderWeb3 {
   activateAndStore: (connectorName: string) => void;
 
   /**
-   * Activates a connector by name and stores it to local storage to be used on session reload.
+   * Resolves ENS Name from provided eth address.
    */
   getENSNameFromEthAddress: (address: string) => Promise<string | null>;
+
+  /**
+   * Resolves eth address from provided ENS Name
+   */
+  getAddressFromENS: (address: string) => Promise<string | null>;
 }
