@@ -6,33 +6,21 @@ import debounce from 'lodash/debounce';
 import { GET_ORG_BY_ID, GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
 import { GET_POD_BY_ID, GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
 import { useRouter } from 'next/router';
-import { CircularProgress, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import palette from 'theme/palette';
 import { Text } from 'components/styled';
 import Grid from '@mui/material/Grid';
 import { KICK_ORG_USER } from 'graphql/mutations/org';
 import { KICK_POD_USER } from 'graphql/mutations/pod';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { useWonderWeb3 } from 'services/web3';
 import MemberRoles from '../MemberRoles';
-import MemberRoleDropdown from './MemberRoleDropdown';
 import InviteMember from './InviteMember';
-import { SafeImage } from '../../Common/Image';
-import {
-  SearchMembers,
-  SeeMoreText,
-  SeeMoreTextWrapper,
-  StyledTable,
-  StyledTableBody,
-  StyledTableHeaderCell,
-} from './styles';
-import { StyledTableCell, StyledTableContainer, StyledTableHead, StyledTableRow } from '../../Table/styles';
+import { SearchMembers, SeeMoreText, SeeMoreTextWrapper } from './styles';
 import { RolesContainer } from '../Roles/styles';
-import MembersIcon from '../../Icons/membersSettings';
 import { HeaderBlock } from '../headerBlock';
 import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
@@ -73,7 +61,7 @@ const useKickMember = (orgId, podId, users, setUsers) => {
   return handleKickMember;
 };
 
-function Members(props) {
+function Members() {
   const router = useRouter();
   const { orgId, podId } = router.query;
   const [hasMore, setHasMore] = useState(true);
@@ -92,7 +80,7 @@ function Members(props) {
     }
   }, [users]);
 
-  const [getOrgUsers, { data, loading, fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
+  const [getOrgUsers, { fetchMore: fetchMoreOrgUsers }] = useLazyQuery(GET_ORG_USERS, {
     fetchPolicy: 'network-only',
   });
 
