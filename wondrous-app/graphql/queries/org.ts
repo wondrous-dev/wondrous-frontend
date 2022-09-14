@@ -264,3 +264,18 @@ export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
     }
   }
 `;
+
+export const GET_PARENT_ORG_CONTRIBUTORS = gql`
+  query getParentOrgsContributors($orgId: String!, $limit: Int, $offset: Int, $searchString: String) {
+    getParentOrgsContributors(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString) {
+      id
+      username
+      profilePicture
+      thumbnailPicture
+      activeEthAddress
+      firstName
+      lastName
+      bio
+    }
+  }
+`;
