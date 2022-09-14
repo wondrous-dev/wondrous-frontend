@@ -121,18 +121,19 @@ function ExploreComponent() {
       icon: <BountyCone />,
       hoverColor: 'linear-gradient(88.88deg, #525252 24.45%, #FFD653 91.22%)',
     },
-    {
-      title: 'GR15 Members',
-      color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
-      hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
-      action: () => {
-        getGr15ExploreTasks();
-        handleTabClick(TABS_LABELS.GR15_DEI);
-      },
-      key: TABS_LABELS.GR15_DEI,
-      rotateDeg: '-40deg',
-      icon: <GR15DEI />,
-    },
+    // TODO: unhide after we gather enough tasks and bounties
+    // {
+    //   title: 'GR15 Members',
+    //   color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+    //   hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+    //   action: () => {
+    //     getGr15ExploreTasks();
+    //     handleTabClick(TABS_LABELS.GR15_DEI);
+    //   },
+    //   key: TABS_LABELS.GR15_DEI,
+    //   rotateDeg: '-40deg',
+    //   icon: <GR15DEI />,
+    // },
   ];
 
   useEffect(() => {
