@@ -14,7 +14,9 @@ import { useRouter } from 'next/router';
 
 const MyContext = React.createContext(null);
 const EXCLUDED_PATHS = [
-  '/invite/[type]/[token]',
+  '/invite/org/[token]',
+  '/invite/pod/[token]',
+  '/invite/[token]',
   '/organization/[username]/boards',
   '/login',
   '/discord/callback',

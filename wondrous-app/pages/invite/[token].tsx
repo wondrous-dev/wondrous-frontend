@@ -24,12 +24,8 @@ function ContributorOnboardingPage() {
   const podInfo = podData?.getInvitedPodInfo;
   useEffect(() => {
     if (token) {
-      if (type === 'org') {
-        getOrgInviteOrgInfo({ variables: { token } });
-      }
-      if (type === 'pod') {
-        getPodInvitePodInfo({ variables: { token } });
-      }
+      getOrgInviteOrgInfo({ variables: { token } });
+      getPodInvitePodInfo({ variables: { token } });
     }
 
     if (user && token) {
