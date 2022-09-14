@@ -11,7 +11,7 @@ export const ActivityIndicatorContainer = styled.div`
 `;
 
 export const PodWrapper = styled.div`
-  background: #0f0f0f;
+  background: ${palette.background.default};
   border-radius: 6px;
   padding: 12px;
   cursor: pointer;
@@ -34,7 +34,7 @@ export const UserMetaDataContainer = styled.div`
 `;
 export const NameText = styled(Typography)`
   && {
-    color: #ccbbff;
+    color: ${palette.blue20};
     font-size: 15px;
     line-height: 20px;
     font-weight: 700;
@@ -46,7 +46,7 @@ export const CommentLine = styled(Typography)`
   && {
     font-size: 14px;
     line-height: 20px;
-    color: #c4c4c4;
+    color: ${palette.grey250};
     font-weight: 600;
     text-align: left;
     white-space: pre-line;
@@ -64,12 +64,12 @@ export const TabContainer = styled.div`
   align-items: center;
   margin-top: 16px;
   margin-bottom: 16px;
-  border-bottom: 2px solid #252525;
+  border-bottom: 2px solid ${palette.grey1030};
 `;
 
 export const PodExplainerText = styled(Typography)`
   && {
-    color: #828282;
+    color: ${palette.grey1020};
     font-size: 13px;
     line-height: 20px;
     margin-top: 8px;
@@ -85,7 +85,7 @@ export const TabContainerText = styled(Typography)`
 `;
 export const Tab2 = styled.div`
   text-align: center;
-  border-bottom: 2px solid ${(props) => (props.selected ? '#7427FF' : 'transparent')};
+  border-bottom: 2px solid ${(props) => (props.selected ? palette.highlightPurple : 'transparent')};
   padding-bottom: 12px;
   margin-right: 24px;
   cursor: pointer;
@@ -118,26 +118,26 @@ export const OverflowBox = styled.div`
   -ms-overflow-style: none;
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background: #606060;
+    background: ${palette.grey1010};
   }
 
   &::-webkit-scrollbar {
     height: 0px;
     width: 5px;
     border-radius: 210px;
-    background: #606060;
+    background: ${palette.grey1010};
   }
 
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
-    background: #c4c4c4;
+    background: ${palette.grey250};
   }
 `;
 export const SearchBox = styled.div`
   width: 100%;
   margin: 18px 0 20px;
-  background: #141414;
+  background: ${palette.black97};
   border-radius: 4px;
   padding: 13px;
   display: flex;
@@ -150,11 +150,11 @@ export const SearchBox = styled.div`
     background: none;
     border: none;
     outline: none;
-    color: #7a7a7a;
+    color: ${palette.grey57};
     padding-left: 20px;
     flex: auto;
     &::placeholder {
-      color: #7a7a7a;
+      color: ${palette.grey57};
       font-weight: 400;
       font-size: 14px;
       line-height: 19px;
@@ -181,7 +181,7 @@ export const Container = styled.div`
 
 export const StyledTabs = styled(Tabs)`
   && {
-    color: #fff;
+    color: ${palette.white};
     ${({ withMargin = true }) => withMargin && 'margin: 30px auto;'};
     margin-top: 16px;
     width: 100%;
@@ -189,7 +189,7 @@ export const StyledTabs = styled(Tabs)`
 
   .MuiTabs-flexContainer {
     justify-content: start;
-    ${({ withBorder = true }) => withBorder && 'border-bottom: 2px solid #4b4b4b;'};
+    ${({ withBorder = true }) => withBorder && `border-bottom: 2px solid ${palette.grey75};`};
   }
   .MuiTab-textColorInherit {
     color: unset;
@@ -200,7 +200,12 @@ export const StyledTabs = styled(Tabs)`
   }
 
   .MuiTabs-indicator {
-    background: linear-gradient(270deg, #ccbbff 2.13%, #7427ff 48.52%, #00baff 100%);
+    background: linear-gradient(
+      270deg,
+      ${palette.blue20} 2.13%,
+      ${palette.highlightPurple} 48.52%,
+      ${palette.highlightBlue} 100%
+    );
     left: ${(props) => (props.value === MODAL_TABS_MAP.PODS ? '115px !important' : '0')};
     width: ${(props) => (props.value === MODAL_TABS_MAP.PODS ? '47.4792px !important' : '98px !important')};
     /* 39.4792px */
@@ -215,7 +220,7 @@ export const StyledTab = styled(Tab)`
     min-width: fit-content;
     opacity: 1;
     margin-right: 20px;
-    color: ${({ isActive }) => (isActive ? 'white' : '#828282')};
+    color: ${({ isActive }) => (isActive ? palette.white : palette.grey1020)};
   }
 `;
 
@@ -236,7 +241,7 @@ export const SearchIconContainer = styled.div`
   transform: translateY(2px);
   svg {
     path {
-      stroke: #ccbbff;
+      stroke: ${palette.blue20};
     }
   }
 `;
