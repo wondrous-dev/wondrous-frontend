@@ -16,6 +16,7 @@ import { delQuery, insertUrlParam } from 'utils';
 import { useMe } from 'components/Auth/withAuth';
 import { EmptyMemberRequestsListMessage } from 'components/organization/members/styles';
 import { Spinner } from 'components/Dashboard/bounties/styles';
+import KudosForm from 'components/Common/KudosForm';
 import ColumnEntry from './ColumnEntry';
 
 interface ColumnItem {
@@ -47,6 +48,7 @@ const COUNTS_MAP = {
 
 function ListViewAdmin({ column }: Props) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [kudosFormData, setKudosFormData] = useState(null);
   const location = useLocation();
   const router = useRouter();
   const board = useUserBoard();
@@ -98,8 +100,21 @@ function ListViewAdmin({ column }: Props) {
   const Icon = ICON_MAP[column.type];
   const count = generateCount(column.type);
 
+  const handleKudosFormOnClose = () => setKudosFormData(null);
+
   return (
     <>
+      <KudosForm
+        onClose={handleKudosFormOnClose}
+        open={!!kudosFormData}
+        submission={{
+          id: kudosFormData?.id,
+          podId: kudosFormData?.podId,
+          orgId: kudosFormData?.orgId,
+          createdBy: kudosFormData?.createdBy,
+        }}
+      />
+
       <TaskViewModal
         disableEnforceFocus
         open={isModalOpen}
@@ -133,6 +148,7 @@ function ListViewAdmin({ column }: Props) {
               podName={item.podName}
               userUsername={item.userUsername}
               id={item.id}
+              createdBy={item.createdBy}
               orgId={item.orgId}
               userPermissionsContext={globalContext?.userPermissionsContext}
               creatorProfilePicture={item.creatorProfilePicture}
@@ -149,6 +165,7 @@ function ListViewAdmin({ column }: Props) {
               links={item.links}
               media={item.media}
               taskStatus={item.taskStatus}
+              setKudosFormData={setKudosFormData}
             />
           ))}
         </Accordion>

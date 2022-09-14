@@ -1,6 +1,4 @@
 import styled from 'styled-components';
-import { RequestApproveButton } from 'components/organization/members/styles';
-import Typography from '@mui/material/Typography';
 
 export const IconWrapper = styled.div`
   display: flex;
