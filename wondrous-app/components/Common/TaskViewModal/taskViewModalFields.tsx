@@ -11,10 +11,8 @@ import Box from '@mui/material/Box';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { Badge } from '@mui/material';
-import { useHotkey } from 'utils/hooks';
-import { HOTKEYS } from 'utils/hotkeyHelper';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { useState } from 'react';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
@@ -39,8 +37,6 @@ import {
   TaskIntiativesContainer,
 } from './styles';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';
-import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
-import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
 
 export function ReviewerField({ reviewerData, handleClose, shouldDisplay }) {
   const router = useRouter();

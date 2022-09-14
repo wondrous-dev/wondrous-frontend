@@ -8,6 +8,7 @@ import {
   SOCIAL_OPENSEA,
   SOCIAL_MEDIA_LINKEDIN,
   GR15DEICategoryName,
+  BOUNTY_TYPE,
 } from 'utils/constants';
 import apollo from 'services/apollo';
 import { Box } from '@mui/system';
@@ -109,7 +110,7 @@ const ExploreOrgGr15 = ({
     return (
       <ExploreButton
         onClick={() => {
-          router.push(`/organization/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+          router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
             shallow: true,
           });
         }}

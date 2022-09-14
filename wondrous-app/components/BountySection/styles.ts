@@ -3,6 +3,7 @@ import { Typography } from '@mui/material';
 import { Masonry } from '@mui/lab';
 import Grid from '@mui/material/Grid';
 import { white } from 'theme/colors';
+import typography from 'theme/typography';
 
 export const OrgsSectionHeader = styled(Typography)`
   && {
@@ -115,7 +116,7 @@ export const Gr15DEIExplainerSubheader = styled(Typography)`
     -moz-background-clip: text;
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
-    font-family: 'Space Grotesk';
+    font-family: ${typography.fontFamily};
     font-style: normal;
     font-weight: 500;
     font-size: 18px;
@@ -186,4 +187,10 @@ export const OrgItemDescription = styled(Typography)`
     color: ${white};
     font-size: 14px;
   }
+`;
+
+export const Gr15Img = styled.img`
+  height: 100%;
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
 `;

@@ -253,7 +253,7 @@ export default function TableBody({
                 <Tooltip title="More actions" placement="top">
                   <div>
                     {!isTaskSubmission && (
-                      <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                      <DropDown DropdownHandler={TaskMenuIcon} fill={palette?.grey95}>
                         <DropdownItem
                           key={`task-menu-edit-${task.id}${index}`}
                           onClick={() => editTask(task, status)}

@@ -1,6 +1,6 @@
 import { useLazyQuery } from '@apollo/client';
 import { EXPLORE_MODAL_TABS_MAP, LINK } from 'utils/constants';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { CircularProgress } from '@mui/material';
 import { GET_GR15_GRANTEES, GET_GR15_SPONSORS } from 'graphql/queries/org';
@@ -56,22 +56,16 @@ const OrgItem = (props) => {
 export default function ExploreOrgGr15Modal(props) {
   const { showSponsors, showGrantees, setShowSponsors, setShowGrantees, open, handleClose, name } = props;
   const [listLoading, setListLoading] = useState(true);
-  const [sponsorList, setSponsorList] = useState([]);
-  const [granteeList, setGranteeList] = useState([]);
   const [activeTab, setActiveTab] = useState(null);
-  const [getGr15Sponsors] = useLazyQuery(GET_GR15_SPONSORS, {
-    onCompleted: (data) => {
-      const sponsorData = data.getGr15Sponsors;
-      setSponsorList(sponsorData || []);
+  const [getGr15Sponsors, { data: sponsorData }] = useLazyQuery(GET_GR15_SPONSORS, {
+    onCompleted: () => {
       setListLoading(false);
     },
     fetchPolicy: 'cache-and-network',
   });
 
-  const [getGr15Grantees] = useLazyQuery(GET_GR15_GRANTEES, {
-    onCompleted: (data) => {
-      const granteeData = data.getGr15Grantees;
-      setGranteeList(granteeData || []);
+  const [getGr15Grantees, { data: granteeData }] = useLazyQuery(GET_GR15_GRANTEES, {
+    onCompleted: () => {
       setListLoading(false);
     },
     fetchPolicy: 'cache-and-network',
@@ -89,6 +83,23 @@ export default function ExploreOrgGr15Modal(props) {
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [setShowGrantees, setShowSponsors, showSponsors, showGrantees]);
+
+  const setActiveTabCallback = useCallback(
+    (tab) => {
+      if (tab === EXPLORE_MODAL_TABS_MAP.SPONSORS) {
+        setShowGrantees(false);
+        setShowSponsors(true);
+        setActiveTab(EXPLORE_MODAL_TABS_MAP.SPONSORS);
+        getGr15Sponsors();
+      } else if (tab === EXPLORE_MODAL_TABS_MAP.GRANTEES) {
+        setShowGrantees(true);
+        setShowSponsors(false);
+        setActiveTab(EXPLORE_MODAL_TABS_MAP.GRANTEES);
+        getGr15Grantees();
+      }
+    },
+    [setShowGrantees, setShowSponsors, setActiveTab, getGr15Grantees, getGr15Sponsors]
+  );
 
   return (
     <Modal
@@ -122,20 +133,14 @@ export default function ExploreOrgGr15Modal(props) {
           <ExploreStyledTabs value={activeTab} variant="fullWidth">
             <TabText
               onClick={() => {
-                setShowGrantees(false);
-                setShowSponsors(true);
-                setActiveTab(EXPLORE_MODAL_TABS_MAP.SPONSORS);
-                getGr15Sponsors();
+                setActiveTabCallback(EXPLORE_MODAL_TABS_MAP.SPONSORS);
               }}
             >
               <StyledTab isActive={activeTab === EXPLORE_MODAL_TABS_MAP.SPONSORS} label="Sponsors" />
             </TabText>
             <TabText
               onClick={() => {
-                setShowGrantees(true);
-                setShowSponsors(false);
-                setActiveTab(EXPLORE_MODAL_TABS_MAP.GRANTEES);
-                getGr15Grantees();
+                setActiveTabCallback(EXPLORE_MODAL_TABS_MAP.GRANTEES);
               }}
             >
               <StyledTab isActive={activeTab === EXPLORE_MODAL_TABS_MAP.GRANTEES} label="Grantees" />{' '}
@@ -149,7 +154,7 @@ export default function ExploreOrgGr15Modal(props) {
                 <CircularProgress />
               </ActivityIndicatorContainer>
             )}
-            {sponsorList.map((org, i) => (
+            {sponsorData?.getGr15Sponsors.map((org, i) => (
               <OrgItem key={org?.id} org={org} />
             ))}
           </OverflowBox>
@@ -162,7 +167,7 @@ export default function ExploreOrgGr15Modal(props) {
               </ActivityIndicatorContainer>
             )}
 
-            {granteeList.map((org, i) => (
+            {granteeData?.getGr15Grantees.map((org, i) => (
               <OrgItem key={org?.id} org={org} />
             ))}
           </OverflowBox>

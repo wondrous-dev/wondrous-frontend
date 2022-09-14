@@ -22,6 +22,7 @@ import {
   Gr15DEIExploreOrgsInnerDiv,
   Gr15DEIButtonText,
   Gr15DEIButtonDiv,
+  Gr15Img,
 } from './styles';
 import ExploreOrgGr15Modal from './modal';
 
@@ -88,15 +89,7 @@ const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore,
                 alignItems: 'center',
               }}
             >
-              <img
-                style={{
-                  height: '100%',
-                  borderTopLeftRadius: '8px',
-                  borderBottomLeftRadius: '8px',
-                }}
-                src="/images/initiatives/gr15DEI/explore.png"
-                alt="gr15 explore icon"
-              />
+              <Gr15Img src="/images/initiatives/gr15DEI/explore.png" alt="gr15 explore icon" />
               <Gr15DEIExploreOrgsInnerDiv>
                 <Gr15DEIExplainerTitleText
                   style={{

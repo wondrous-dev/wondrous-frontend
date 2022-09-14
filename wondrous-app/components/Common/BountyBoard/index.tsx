@@ -22,6 +22,8 @@ import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { Compensation } from '../Compensation';
 import {
   BountyCardWrapper,
@@ -33,9 +35,7 @@ import {
   SubtasksWrapper,
   BountyCommentsIcon,
 } from './styles';
-import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
 import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
-import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
