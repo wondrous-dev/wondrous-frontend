@@ -166,7 +166,7 @@ function NotificationsBoard({ onlyBoard = false }) {
   return (
     <>
       <NotificationsOverlay onClick={toggleNotifications} style={{ display }} />
-      <div style={{ position: 'relative', zIndex: -1 }}>
+      <div style={{ position: 'relative' }}>
         <StyledBadge
           color="primary"
           hasUnreadNotifications={unreadCount > 0}
