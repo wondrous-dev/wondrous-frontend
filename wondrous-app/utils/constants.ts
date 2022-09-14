@@ -258,6 +258,11 @@ export const MODAL_TABS_MAP = {
   PODS: 'Pods',
 };
 
+export const EXPLORE_MODAL_TABS_MAP = {
+  SPONSORS: 'Sponsors',
+  GRANTEES: 'Grantees',
+};
+
 export const MEDIA_TYPES = {
   IMAGE: 'image',
   TEXT: 'text',
@@ -813,9 +818,11 @@ export const FEATURED_LIST = [
 export const TABS_LABELS = {
   DAOS: 'daos',
   BOUNTY: 'bounty',
+  GR15_DEI: 'gr15_dei',
 };
 
 export enum TOKEN_GATING_CONDITION_TYPE {
   GUILD = 'guild',
   TOKEN_GATE = 'token_gate',
 }
+export const GR15DEICategoryName = 'gr15_dei';

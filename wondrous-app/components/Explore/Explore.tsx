@@ -1,14 +1,15 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
 import { useIsMobile } from 'utils/hooks';
 import { Button } from 'components/Button';
 import MuiButton from '@mui/material/Button';
 import { Box } from '@mui/material';
 
-import { DaosCube, BountyCone } from 'components/Icons/ExplorePageIcons';
+import { DaosCube, BountyCone, GR15DEI } from 'components/Icons/ExplorePageIcons';
 import { useQuery } from '@apollo/client';
 import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
+import { useRouter } from 'next/router';
 import palette from 'theme/palette';
-import { TABS_LABELS } from 'utils/constants';
+import { GR15DEICategoryName, TABS_LABELS } from 'utils/constants';
 import { gridMobileStyles } from 'utils/styles';
 
 import BountySection from 'components/BountySection';
@@ -40,6 +41,7 @@ function ExploreComponent() {
   const isMobile = useIsMobile();
   const [activeTab, setActiveTab] = useState(null);
   const [hasMoreBounties, setHasMoreBounties] = useState(true);
+  const router = useRouter();
   const {
     data: bounties,
     fetchMore,
@@ -87,6 +89,12 @@ function ExploreComponent() {
     [refetch, variables]
   );
 
+  const getGr15ExploreTasks = useCallback(() => {
+    filterBounties({
+      category: GR15DEICategoryName,
+    });
+  }, [filterBounties]);
+
   const handleTabClick = (key) => {
     if (key === activeTab) {
       return setActiveTab(null);
@@ -113,7 +121,26 @@ function ExploreComponent() {
       icon: <BountyCone />,
       hoverColor: 'linear-gradient(88.88deg, #525252 24.45%, #FFD653 91.22%)',
     },
+    {
+      title: 'GR15 Members',
+      color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+      hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+      action: () => {
+        getGr15ExploreTasks();
+        handleTabClick(TABS_LABELS.GR15_DEI);
+      },
+      key: TABS_LABELS.GR15_DEI,
+      rotateDeg: '-40deg',
+      icon: <GR15DEI />,
+    },
   ];
+
+  useEffect(() => {
+    if (router?.query?.tab) {
+      setActiveTab(router.query?.tab);
+      getGr15ExploreTasks();
+    }
+  }, [router]);
 
   return (
     <OverviewComponent
@@ -169,9 +196,19 @@ function ExploreComponent() {
               bounties={bounties?.getTaskExplore}
               fetchMore={getTaskExploreFetchMore}
               hasMore={hasMoreBounties}
+              gr15DEI={false}
             />
           )}
           {(activeTab === null || activeTab === TABS_LABELS.DAOS) && <DaoSection isMobile={isMobile} />}
+          {(activeTab === null || activeTab === TABS_LABELS.GR15_DEI) && (
+            <BountySection
+              isMobile={isMobile}
+              bounties={bounties?.getTaskExplore}
+              fetchMore={getTaskExploreFetchMore}
+              hasMore={hasMoreBounties}
+              gr15DEI
+            />
+          )}
         </ExplorePageContentWrapper>
       </Box>
 

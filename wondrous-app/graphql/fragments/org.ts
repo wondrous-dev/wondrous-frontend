@@ -38,6 +38,10 @@ export const OrgFragment = gql`
       displayName
       type
     }
+    hasGr15TasksAndBounties {
+      hasGr15Tasks
+      hasGr15Bounties
+    }
   }
 `;
 

@@ -21,6 +21,9 @@ export const GET_TASK_APPLICATIONS = gql`
       creator {
         username
         profilePicture
+        checkIsGr15Contributor {
+          isGr15Contributor
+        }
       }
     }
   }

@@ -28,7 +28,7 @@ import {
   DEFAULT_ENTITY_STATUS_FILTER,
 } from 'services/board';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam } from 'utils';
+import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
 import {
   PRIVACY_LEVEL,
   STATUS_OPEN,
@@ -57,6 +57,7 @@ const useGetPodTaskBoardTasks = ({
   date,
   privacyLevel,
   userId,
+  category,
 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
@@ -140,6 +141,7 @@ const useGetPodTaskBoardTasks = ({
             offset: 0,
             labelId,
             date,
+            category,
             types: [entityType],
             ...(privacyLevel === PRIVACY_LEVEL.public && {
               onlyPublic: true,
@@ -149,7 +151,7 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-  }, [getPodTaskBoardTasks, podId, statuses, setPodTaskHasMore, entityType, labelId, date, privacyLevel]);
+  }, [getPodTaskBoardTasks, podId, statuses, setPodTaskHasMore, entityType, labelId, date, privacyLevel, category]);
   return { fetchMore: getPodTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
@@ -238,6 +240,7 @@ const useGetPodTaskBoard = ({
   date,
   privacyLevel,
   userId,
+  category,
 }) => {
   const listView = view === ViewType.List;
   const board = {
@@ -254,6 +257,7 @@ const useGetPodTaskBoard = ({
       date,
       privacyLevel,
       userId,
+      category,
     }),
     proposals: useGetPodTaskProposals({
       listView,
@@ -303,7 +307,7 @@ function BoardsPage() {
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
-  const { statuses, labelId, date, privacyLevel } = filters;
+  const { statuses, labelId, date, privacyLevel, category } = filters;
 
   const { fetchMore, fetchPerStatus } = useGetPodTaskBoard({
     section,
@@ -320,6 +324,7 @@ function BoardsPage() {
     labelId,
     date,
     privacyLevel,
+    category,
   });
 
   const handleEntityTypeChange = (type) => {
@@ -327,6 +332,7 @@ function BoardsPage() {
       setIsLoading(true);
     }
     insertUrlParam('entity', type);
+    removeUrlParam('cause');
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],

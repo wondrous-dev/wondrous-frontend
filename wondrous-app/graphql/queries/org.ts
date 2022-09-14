@@ -182,6 +182,9 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -201,6 +204,9 @@ export const GET_ORG_MEMBERSHIP_REQUEST = gql`
       orgName
       orgUsername
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -263,4 +269,22 @@ export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
       fullName
     }
   }
+`;
+
+export const GET_GR15_SPONSORS = gql`
+  query getGr15Sponsors {
+    getGr15Sponsors {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;
+
+export const GET_GR15_GRANTEES = gql`
+  query getGr15Grantees {
+    getGr15Grantees {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
 `;

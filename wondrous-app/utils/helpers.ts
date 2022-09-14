@@ -174,3 +174,5 @@ export const deleteTaskFromCache = (cache, id, keys = []) => {
     fields,
   });
 };
+
+export const transformCategoryFormat = (categories) => categories && categories.map((item) => item?.name);

@@ -27,7 +27,7 @@ import {
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam } from 'utils';
+import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
@@ -110,6 +110,7 @@ const useGetOrgTaskBoardTasks = ({
           labelId: filters?.labelId,
           date: filters?.date,
           types: [entityType],
+          category: filters?.category,
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -415,6 +416,7 @@ function BoardsPage() {
       setIsLoading(true);
     }
     insertUrlParam('entity', type);
+    removeUrlParam('cause');
     setEntityType(type);
     setFilters({
       statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
@@ -580,7 +582,9 @@ function BoardsPage() {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, category: null }
+  ) => {
     setFilters(filtersToApply);
 
     if (search) {

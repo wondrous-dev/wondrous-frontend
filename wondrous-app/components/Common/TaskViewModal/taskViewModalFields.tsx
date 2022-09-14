@@ -11,6 +11,9 @@ import Box from '@mui/material/Box';
 import isEmpty from 'lodash/isEmpty';
 import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { useState } from 'react';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
@@ -31,6 +34,7 @@ import {
   TaskSectionInfoMilestoneIcon,
   TaskSectionTagWrapper,
   Tag,
+  TaskIntiativesContainer,
 } from './styles';
 import RecurringIcon from '../../../public/images/icons/recurring.svg';
 
@@ -379,3 +383,32 @@ export function TagsField({ shouldDisplay, labels }) {
     </TaskSectionDisplayDiv>
   );
 }
+
+export const InitativesField = ({ shouldDisplay }) => {
+  const [openModal, setOpenModal] = useState(false);
+  if (!shouldDisplay) return null;
+  return (
+    <>
+      <GR15DEIModal open={openModal} onClose={() => setOpenModal(false)} />
+      <TaskSectionDisplayDiv>
+        <TaskSectionLabel>Initiative</TaskSectionLabel>
+        <TaskSectionImageContent
+          hasContent={shouldDisplay}
+          ContentComponent={() => (
+            <TaskIntiativesContainer>
+              <GR15DEILogo
+                width="26"
+                height="26"
+                style={{
+                  marginRight: '8px',
+                }}
+                onClick={() => setOpenModal(true)}
+              />
+              <TaskSectionInfoText>Gitcoin Grants R15 - DEI</TaskSectionInfoText>
+            </TaskIntiativesContainer>
+          )}
+        />
+      </TaskSectionDisplayDiv>
+    </>
+  );
+};
