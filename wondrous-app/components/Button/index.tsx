@@ -1,8 +1,9 @@
 import React, { ReactNode } from 'react';
 import styled from 'styled-components';
-import { ResponsiveValue, space, SpaceProps } from 'styled-system';
+import { space, SpaceProps } from 'styled-system';
 
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 const ButtonWrapper = styled.div`
   ${space};
@@ -27,12 +28,15 @@ const ButtonInner = styled.button`
   display: flex;
   flex-direction: row;
   flex: 1 1 auto;
-  font-size: 16px;
+  font-size: ${(props) => props.fontSize || '16px'};
+  font-weight: ${(props) => props.fontWeight || 400};
+  font-family: ${typography.fontFamily};
   justify-content: center;
   padding: 0 ${(props) => props.paddingX || 30}px;
 
   &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};
+    color: ${(props) => props?.hover?.textColor || props.textColor};
   }
 
   &:disabled {
@@ -106,8 +110,13 @@ type Props = SpaceProps & {
     paddingX?: number;
     background?: string;
     borderColor?: string;
+    fontSize?: number | string;
+    fontWeight?: number | string;
+    width?: number | string;
+    height?: number | string;
     hover?: {
       background?: string;
+      textColor?: string;
     };
   };
 };

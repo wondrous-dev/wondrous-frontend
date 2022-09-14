@@ -68,21 +68,6 @@ export const UserWalletAddress = styled(Typography)`
   }
 `;
 
-export const UserPodCount = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px;
-  padding-right: 12px;
-  border-radius: 6px;
-  background: ${palette.black101};
-  min-width: fit-content;
-
-  color: ${palette.white};
-  font-family: ${typography.fontFamily};
-  font-size: 15px;
-`;
-
 export const UserOptions = styled.div`
   background: ${palette.black101};
   padding: 9px;
