@@ -76,7 +76,6 @@ const StyledSelect = styled(Select)`
   && {
     background: transparent;
     color: ${palette.white};
-    height: 42px;
     width: 100%;
     border-radius: 6px;
     border: 1px solid ${palette.grey79};
@@ -95,6 +94,10 @@ const StyledSelect = styled(Select)`
 
     p {
       margin: 0;
+    }
+
+    > div {
+      padding: 8px;
     }
   }
 `;
