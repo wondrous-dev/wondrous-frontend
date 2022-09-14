@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
-import { useMe } from 'components/Auth/withAuth';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SectionWrapper } from './styles';
@@ -35,7 +35,6 @@ export default function SidebarLayout({ children }) {
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
-    skip: !user?.id,
   });
   const {
     data: notifications,
@@ -47,7 +46,6 @@ export default function SidebarLayout({ children }) {
       offset: 0,
       limit: LIMIT,
     },
-    skip: !user?.id,
   });
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
