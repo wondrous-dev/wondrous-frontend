@@ -26,6 +26,7 @@ import {
   PaymentMethodTokenMetadataWrapper,
   PaymentMethodEmptyStateContainer,
   HelpText,
+  PaymentMethodTokenDetails,
 } from './styles';
 
 const dropdownItemStyle = {
@@ -35,6 +36,8 @@ const dropdownItemStyle = {
 
 function PaymentMethodDisplay(props) {
   const { paymentMethod } = props;
+
+  const isPaymentMethodDisabled = !!paymentMethod?.deactivatedAt;
 
   const [deactivatePaymentMethod] = useMutation(DEACTIVATE_PAYMENT_METHOD, {
     refetchQueries: [GET_PAYMENT_METHODS_FOR_ORG],
@@ -64,7 +67,7 @@ function PaymentMethodDisplay(props) {
     <PaymentMethodDisplayWrapper>
       <PaymentMethodTokenDetailsWrapper>
         <Grid display="flex" alignItems="center" justifyContent="space-between">
-          <Grid display="flex" alignItems="center" gap="27px">
+          <PaymentMethodTokenDetails isDisabled={isPaymentMethodDisabled}>
             <PaymentMethodTokenInfo>
               <PaymentMethodTokenInfoLabel>Token</PaymentMethodTokenInfoLabel>
               <PaymentMethodTokenInfoValue>
@@ -85,7 +88,7 @@ function PaymentMethodDisplay(props) {
                 <PaymentMethodTokenInfoValueText uppercase>{paymentMethod?.symbol}</PaymentMethodTokenInfoValueText>
               </PaymentMethodTokenInfoValue>
             </PaymentMethodTokenInfo>
-          </Grid>
+          </PaymentMethodTokenDetails>
 
           <PaymentMethodActionMenu right="true">
             <Dropdown
@@ -93,7 +96,7 @@ function PaymentMethodDisplay(props) {
                 <TaskMenuIcon fill={palette.black92} fillOnHover={palette.black60} stroke={palette.grey57} />
               )}
             >
-              {paymentMethod?.deactivatedAt && (
+              {isPaymentMethodDisabled && (
                 <DropdownItem
                   key={`payment-method-activate${paymentMethod?.id}`}
                   onClick={handleActivate}
@@ -102,7 +105,7 @@ function PaymentMethodDisplay(props) {
                   Activate
                 </DropdownItem>
               )}
-              {!paymentMethod?.deactivatedAt && (
+              {!isPaymentMethodDisabled && (
                 <DropdownItem
                   key={`payment-method-deactivate${paymentMethod?.id}`}
                   style={dropdownItemStyle}
@@ -116,7 +119,7 @@ function PaymentMethodDisplay(props) {
         </Grid>
 
         {paymentMethod?.tokenAddress && paymentMethod?.tokenAddress !== '0x0000000000000000000000000000000000000000' && (
-          <PaymentMethodTokenInfo>
+          <PaymentMethodTokenInfo isDisabled={isPaymentMethodDisabled}>
             <PaymentMethodTokenInfoLabel>Token Address</PaymentMethodTokenInfoLabel>
             <PaymentMethodTokenInfoValue>
               <PaymentMethodTokenInfoValueText>{paymentMethod?.tokenAddress}</PaymentMethodTokenInfoValueText>
@@ -124,7 +127,7 @@ function PaymentMethodDisplay(props) {
           </PaymentMethodTokenInfo>
         )}
       </PaymentMethodTokenDetailsWrapper>
-      <PaymentMethodTokenMetadataWrapper>
+      <PaymentMethodTokenMetadataWrapper isDisabled={isPaymentMethodDisabled}>
         <Grid display="flex" alignItems="center" gap="9px">
           <CalendarIcon stroke={palette.grey250} />
           <Typography fontSize="12px" color={palette.grey250}>

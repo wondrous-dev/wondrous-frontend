@@ -1,12 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { COLLAB_TYPES, NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
-import { useMutation } from '@apollo/client';
 import { Badge } from '@mui/material';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import SmartLink from 'components/Common/SmartLink';
 import NotificationsIcon from 'components/Icons/notifications';
 import Tooltip from 'components/Tooltip';
-import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';

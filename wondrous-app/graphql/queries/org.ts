@@ -50,8 +50,8 @@ export const GET_USER_ORGS = gql`
 `;
 
 export const GET_ORG_USERS = gql`
-  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int) {
-    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset) {
+  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int, $searchString: String) {
+    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString) {
       user {
         id
         username
@@ -61,10 +61,6 @@ export const GET_ORG_USERS = gql`
         firstName
         lastName
         bio
-        additionalInfo {
-          orgCount
-          podCount
-        }
       }
       role {
         id
@@ -162,9 +158,6 @@ export const SEARCH_ORG_USERS = gql`
       username
       profilePicture
       thumbnailPicture
-      additionalInfo {
-        podCount
-      }
       firstName
       lastName
       bio

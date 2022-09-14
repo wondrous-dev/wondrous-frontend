@@ -1,10 +1,11 @@
-import { Typography } from '@mui/material';
+import { Button, Input, InputAdornment, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Table from '@mui/material/Table';
 
+import SearchIcon from 'components/Icons/search';
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
 
 export const InviteDiv = styled.div`
@@ -12,6 +13,29 @@ export const InviteDiv = styled.div`
   margin-top: 20px;
 
   ${newDropdownStyles}
+`;
+
+export const SearchMembers = styled(({ ...props }) => (
+  <Input
+    {...props}
+    disableUnderline
+    startAdornment={
+      <InputAdornment position="start">
+        <SearchIcon color={palette.blue20} />
+      </InputAdornment>
+    }
+  />
+))`
+  && {
+    height: 40px;
+    background: ${palette.black101};
+    color: ${palette.grey250};
+    width: 100%;
+    padding: 0 10px;
+    margin: 10px 0 31px 0;
+    border-radius: 6px;
+    font-size: 15px;
+  }
 `;
 
 export const MembersTable = styled.div`
@@ -22,7 +46,16 @@ export const MembersTable = styled.div`
   max-width: 770px;
 `;
 
-export const SeeMoreText = styled(Typography)`
+export const SeeMoreTextWrapper = styled.div`
+  && {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const SeeMoreText = styled(Button)`
   && {
     color: ${palette.white};
     text-decoration: underline;

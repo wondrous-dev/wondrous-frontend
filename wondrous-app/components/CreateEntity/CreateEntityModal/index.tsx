@@ -1906,7 +1906,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAutocompletePopper
                   onFocus={() => form.setFieldError('assigneeId', undefined)}
                   openOnFocus
-                  open
                   data-cy="input-autocomplete-assignee"
                   options={filteredOrgUsersData}
                   value={form.values.assigneeId}

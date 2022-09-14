@@ -6,7 +6,6 @@ import { useGlobalContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
 import CreateEntityModal from './CreateEntityModal/index';
-import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
 
 interface ICreateEntity {
