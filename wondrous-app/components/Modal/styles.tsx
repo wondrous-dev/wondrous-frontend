@@ -100,6 +100,7 @@ export const ModalFooter = styled.div`
 export const ModalFooterLeft = styled.div`
   display: flex;
   gap: 18px;
+  flex: 1;
 `;
 
 export const ModalFooterRight = styled.div`

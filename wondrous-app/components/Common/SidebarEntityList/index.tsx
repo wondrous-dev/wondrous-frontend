@@ -14,6 +14,7 @@ import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries'
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
+import Dao2DaoIcon from 'components/Icons/Dao2Dao';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -80,6 +81,22 @@ const useSidebarData = () => {
             link: `${link}/boards?entity=${ENTITIES_TYPES.PROPOSAL}`,
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
+          },
+
+          {
+            ...(board?.orgData?.shared
+              ? {}
+              : {
+                  text: 'Collectives',
+                  Icon: Dao2DaoIcon,
+                  link: {
+                    pathname: router.pathname,
+                    query: {
+                      ...router.query,
+                      collabs: true,
+                    },
+                  },
+                }),
           },
           // {
           //   text: 'Pods',

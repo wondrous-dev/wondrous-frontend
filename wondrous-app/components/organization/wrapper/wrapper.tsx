@@ -79,18 +79,34 @@ import {
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 
+const ORG_PERMISSIONS = {
+  MANAGE_SETTINGS: 'manageSettings',
+  CONTRIBUTOR: 'contributor',
+};
+
 function Wrapper(props) {
-  const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
+  const {
+    children,
+    orgData,
+    onSearch,
+    filterSchema,
+    onFilterChange,
+    statuses,
+    podIds,
+    userId,
+    renderSharedHeader = null,
+    isCollabWorkspace = false,
+    inviteButtonSettings = null,
+  } = props;
+
+  const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
+
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
-  const ORG_PERMISSIONS = {
-    MANAGE_SETTINGS: 'manageSettings',
-    CONTRIBUTOR: 'contributor',
-  };
 
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
@@ -223,7 +239,7 @@ function Wrapper(props) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
       const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
       if (taskCount === 0 && bountyCount > taskCount && finalPath === 'boards') {
-        router.push(`/organization/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+        router.push(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
           shallow: true,
         });
       }
@@ -279,6 +295,7 @@ function Wrapper(props) {
     setCreateTaskModalOpen((prevState) => !prevState);
   });
 
+  const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -346,22 +363,26 @@ function Wrapper(props) {
         <ContentContainer>
           <TokenHeader>
             <HeaderMainBlock>
-              <Box sx={{ flex: '0 0 60px' }}>
-                <SafeImage
-                  src={orgProfile?.profilePicture}
-                  placeholderComp={
-                    <TokenEmptyLogo>
-                      <DAOEmptyIcon />
-                    </TokenEmptyLogo>
-                  }
-                  width="60px"
-                  height="60px"
-                  useNextImage
-                  style={{
-                    borderRadius: '6px',
-                  }}
-                />
-              </Box>
+              {orgData?.shared && renderSharedHeader ? (
+                renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
+              ) : (
+                <Box sx={{ flex: '0 0 60px' }}>
+                  <SafeImage
+                    src={orgProfile?.profilePicture}
+                    placeholderComp={
+                      <TokenEmptyLogo>
+                        <DAOEmptyIcon />
+                      </TokenEmptyLogo>
+                    }
+                    width="60px"
+                    height="60px"
+                    useNextImage
+                    style={{
+                      borderRadius: '6px',
+                    }}
+                  />
+                </Box>
+              )}
 
               <HeaderTitleIcon>
                 <HeaderTitle>{orgProfile?.name}</HeaderTitle>
@@ -401,12 +422,12 @@ function Wrapper(props) {
                   <>
                     <SettingsButton
                       onClick={() => {
-                        router.push(`/organization/settings/${orgBoard?.orgId}/general`);
+                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
                       }}
                     >
                       Settings
                     </SettingsButton>
-                    <InviteButton onClick={() => setOpenInvite(true)}>Invite</InviteButton>
+                    <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
                   </>
                 )}
               </HeaderButtons>

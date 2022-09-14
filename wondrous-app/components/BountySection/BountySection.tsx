@@ -5,7 +5,13 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { delQuery } from 'utils';
 import { useLocation } from 'utils/useLocation';
-import { BountySectionHeader, SectionSubheader, SectionWrapper, ShowMoreButtonWrapper, StyledGridContainer } from './styles';
+import {
+  BountySectionHeader,
+  SectionSubheader,
+  SectionWrapper,
+  ShowMoreButtonWrapper,
+  StyledGridContainer,
+} from './styles';
 
 const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore }) => {
   const [openModal, setOpenModal] = useState(false);
