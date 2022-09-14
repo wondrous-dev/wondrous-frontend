@@ -1,4 +1,4 @@
-import { Input, InputAdornment, Typography } from '@mui/material';
+import { Button, Input, InputAdornment, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import TableCell from '@mui/material/TableCell';
@@ -46,7 +46,16 @@ export const MembersTable = styled.div`
   max-width: 770px;
 `;
 
-export const SeeMoreText = styled(Typography)`
+export const SeeMoreTextWrapper = styled.div`
+  && {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const SeeMoreText = styled(Button)`
   && {
     color: ${palette.white};
     text-decoration: underline;
