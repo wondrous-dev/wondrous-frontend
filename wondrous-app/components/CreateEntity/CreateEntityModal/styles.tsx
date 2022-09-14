@@ -551,7 +551,7 @@ export function CreateEntityPrivacySelect(props) {
     ...props.components,
   };
 
-  return <SelectUnstyled {...props} components={components} />;
+  return <SelectUnstyled {...props} components={components} placeholder="hello" />;
 }
 
 export const CreateEntityPrivacySelectRender = styled.div`

@@ -1,3 +1,9 @@
+import { useState, useEffect } from 'react';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { DragDropContext, Droppable } from 'react-beautiful-dnd';
+import { useRouter } from 'next/router';
+import { useMutation } from '@apollo/client';
+
 import usePrevious, { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   TASK_STATUS_TODO,
@@ -11,20 +17,17 @@ import {
   BOARD_TYPE,
   STATUS_CLOSED,
 } from 'utils/constants';
-import { useState, useEffect } from 'react';
 import { useLocation } from 'utils/useLocation';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery, dedupeColumns } from 'utils';
-import { useRouter } from 'next/router';
-import { DragDropContext, Droppable } from 'react-beautiful-dnd';
-import { useMe } from 'components/Auth/withAuth';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useMutation } from '@apollo/client';
-import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
-import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
+import { getFirstTask, HOTKEYS, pickHotkeyFunction, TASK_CONTROLS, TASK_ROUTES_FOR_ROUTER } from 'utils/hotkeyHelper';
 import apollo from 'services/apollo';
-import BoardLock from 'components/BoardLock';
+import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
+import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+
+import { useMe } from 'components/Auth/withAuth';
+import TaskViewModal from 'components/Common/TaskViewModal';
+import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK } from 'graphql/queries';
 import ItemsContainer from './ItemsContainer';
 
@@ -55,6 +58,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
+  const taskId = (location.params.taskProposal ?? location.params.task)?.toString();
 
   const user = useMe();
 
@@ -64,6 +68,31 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
       setOpenModal(true);
     }
   }, [location]);
+
+  useHotkeys(
+    HOTKEYS.ALL_KEYS,
+    (e) => {
+      // TODO: update this when the issue from package is fixed.
+      if (
+        !TASK_CONTROLS.includes(e.key) ||
+        !(props.entityType === ENTITIES_TYPES.TASK || !TASK_ROUTES_FOR_ROUTER.includes(router.asPath))
+      ) {
+        return;
+      }
+      if (!taskId && !isModalOpen) {
+        const currentTaskId = getFirstTask(columns).id;
+        location.push(`${delQuery(router.asPath)}?task=${currentTaskId}&entity=task&view=list`);
+        setOpenModal(true);
+        return;
+      }
+      const newTask = pickHotkeyFunction(e.key, columns, taskId);
+
+      if (newTask) {
+        location.push(`${delQuery(router.asPath)}?task=${newTask}&entity=task&view=list`);
+      }
+    },
+    [taskId, columns, isModalOpen]
+  );
 
   const handleModalClose = () => {
     const style = document.body.getAttribute('style');
@@ -268,7 +297,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
         open={isModalOpen}
         handleClose={handleModalClose}
         isTaskProposal={!!location.params.taskProposal}
-        taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
+        taskId={taskId}
       />
       <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
         {columns.map((column) => {

@@ -71,7 +71,7 @@ function DropdownSelect({
   const handleChange = (event) => {
     setValue(event.target.value);
 
-    onChange && onChange();
+    onChange && onChange(event.target.value);
   };
 
   return (

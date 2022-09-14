@@ -31,121 +31,98 @@ export const ARROW_KEYS = {
   ARROW_LEFT: 'ArrowLeft',
 };
 
-// TODO: Refactor if needed in future PR
-const findNextAvailableStatus = (direction, statusIndex, columns) => {
-  let holdStatusIndex = statusIndex;
-  for (let i = 0; i <= columns.length; i += 1) {
-    if (direction === 'down') {
-      holdStatusIndex += 1;
-      if (columns.length > holdStatusIndex && columns[holdStatusIndex]?.tasks.length !== 0) {
-        return holdStatusIndex;
-      }
+export const TASK_CONTROLS = Object.values(ARROW_KEYS);
+export const TASK_ROUTES_FOR_ROUTER = ['/dashboard', '/dashboard?view=list', '/dashboard?view=grid'];
 
-      if (columns.length === holdStatusIndex) {
-        holdStatusIndex = -1;
-      }
+export const getFirstTask = (columns) => columns[columns.findIndex((column) => column.tasks.length > 0)].tasks[0];
+
+const getTaskInfo = (taskId, columns) => {
+  let currentTaskIndex;
+
+  const currentColumnIndex = columns.findIndex((column) => {
+    currentTaskIndex = column.tasks.findIndex((columnTask) => columnTask.id === taskId);
+    if (currentTaskIndex !== -1) {
+      return true;
     }
-    if (direction === 'left') {
-      holdStatusIndex -= 1;
-      if (holdStatusIndex >= 0 && columns[holdStatusIndex]?.tasks.length !== 0) {
-        return holdStatusIndex;
-      }
-      if (holdStatusIndex <= 0) {
-        holdStatusIndex = columns.length;
-      }
-    }
-    if (direction === 'right') {
-      holdStatusIndex += 1;
-      if (columns.length > holdStatusIndex && columns[holdStatusIndex]?.tasks.length !== 0) {
-        return holdStatusIndex;
-      }
-      if (holdStatusIndex === columns.length) {
-        holdStatusIndex = -1;
-      }
-    }
-    if (direction === 'up') {
-      if (holdStatusIndex === undefined || holdStatusIndex === null) {
-        holdStatusIndex = columns.length;
-      }
-      holdStatusIndex -= 1;
-      if (holdStatusIndex >= 0 && columns[holdStatusIndex]?.tasks.length !== 0) {
-        return holdStatusIndex;
-      }
-      if (holdStatusIndex <= 0) {
-        holdStatusIndex = columns.length;
-      }
-    }
-  }
+    return false;
+  });
+  return { currentColumnIndex, currentTaskIndex };
 };
 
-const findFirstAvailableTask = (columns) => columns.findIndex((column) => column.tasks.length > 0);
-
-export const hotkeyUpArrowHelper = (taskIndex, statusIndex, columns) => {
-  let holdTaskIndex = taskIndex;
-  let holdStatusIndex = statusIndex;
-
-  if (holdStatusIndex === null && holdTaskIndex === null) {
-    holdStatusIndex = findNextAvailableStatus('up', statusIndex, columns);
-    holdTaskIndex = columns[holdStatusIndex]?.tasks.length - 1;
-    return { holdTaskIndex, holdStatusIndex };
+const getNextAvalaibleColumnRight = (columns, currentColumnIndex) => {
+  if (columns.length === currentColumnIndex + 1) {
+    return columns.findIndex((column) => column.tasks.length > 0);
   }
-  if (holdTaskIndex - 1 >= 0) {
-    holdTaskIndex -= 1;
-    return { holdTaskIndex, holdStatusIndex };
+
+  const nextColumn = columns.findIndex((column, index) => index > currentColumnIndex && column.tasks.length > 0);
+
+  if (nextColumn === -1) {
+    return columns.findIndex((column) => column.tasks.length > 0);
   }
-  holdStatusIndex = findNextAvailableStatus('up', statusIndex, columns);
-  holdTaskIndex = columns[holdStatusIndex]?.tasks.length - 1;
-  return { holdTaskIndex, holdStatusIndex };
+
+  return nextColumn;
 };
 
-export const hotkeyLeftArrowHelper = (taskIndex, statusIndex, columns) => {
-  let holdStatusIndex = statusIndex;
-  let holdTaskIndex = taskIndex;
-  if (holdStatusIndex !== null) {
-    holdStatusIndex = findNextAvailableStatus('left', statusIndex, columns);
-    holdTaskIndex = 0;
-  } else {
-    holdStatusIndex = findFirstAvailableTask(columns);
-    holdTaskIndex = 0;
+const getNextAvalaibleColumnLeft = (columns, currentColumnIndex) => {
+  const reversedColumns = [...columns].reverse();
+  const reversedindex = columns.length - currentColumnIndex - 1;
+
+  if (currentColumnIndex === 0) {
+    const columnFounded = reversedColumns.findIndex((column) => column.tasks.length > 0);
+    return columns.length - columnFounded - 1;
   }
-  return { holdTaskIndex, holdStatusIndex };
+
+  const nextColumn = reversedColumns.findIndex((column, index) => index > reversedindex && column.tasks.length > 0);
+  if (nextColumn === -1) {
+    return reversedColumns.findIndex((column) => column.tasks.length > 0);
+  }
+
+  return columns.length - nextColumn - 1;
 };
 
-export const hotkeyDownArrowHelper = (taskIndex, statusIndex, columns) => {
-  let holdTaskIndex = taskIndex;
-  let holdStatusIndex = statusIndex;
+const downArrowHelper = (taskInfo, columns) => {
+  const currentColumn = columns[taskInfo.currentColumnIndex].tasks;
 
-  if (holdStatusIndex === null && holdTaskIndex === null) {
-    holdStatusIndex = findFirstAvailableTask(columns);
-    holdTaskIndex = 0;
-    return { holdTaskIndex, holdStatusIndex };
+  if (currentColumn.length > taskInfo.currentTaskIndex + 1) {
+    return currentColumn[taskInfo.currentTaskIndex + 1].id;
   }
-  if (holdTaskIndex + 1 < columns[holdStatusIndex]?.tasks?.length) {
-    holdTaskIndex += 1;
-    return { holdTaskIndex, holdStatusIndex };
+  if (currentColumn.length === taskInfo.currentTaskIndex + 1) {
+    const nextColumn = getNextAvalaibleColumnRight(columns, taskInfo.currentColumnIndex);
+    return columns[nextColumn].tasks[0].id;
   }
-  holdStatusIndex = findNextAvailableStatus('down', statusIndex, columns);
-  holdTaskIndex = 0;
-  return { holdTaskIndex, holdStatusIndex };
+  return undefined;
 };
 
-export const hotkeyRightArrowHelper = (taskIndex, statusIndex, columns) => {
-  let holdStatusIndex = statusIndex;
-  let holdTaskIndex = taskIndex;
-  if (holdStatusIndex !== null) {
-    holdStatusIndex = findNextAvailableStatus('right', statusIndex, columns);
-    holdTaskIndex = 0;
-  } else {
-    holdStatusIndex = findFirstAvailableTask(columns);
-    holdTaskIndex = 0;
+const upArrowHelper = (taskInfo, columns) => {
+  const currentColumn = columns[taskInfo.currentColumnIndex].tasks;
+
+  if (taskInfo.currentTaskIndex === 0) {
+    const nextColumn = getNextAvalaibleColumnLeft(columns, taskInfo.currentColumnIndex);
+    return columns[nextColumn].tasks[columns[nextColumn].tasks.length - 1].id;
   }
-  return { holdTaskIndex, holdStatusIndex };
+
+  if (currentColumn.length >= taskInfo.currentTaskIndex) {
+    return currentColumn[taskInfo.currentTaskIndex - 1].id;
+  }
+
+  return undefined;
 };
 
-export const pickHotkeyFunction = (key, taskIndex, statusIndex, columns) => {
-  if (key === ARROW_KEYS.ARROW_RIGHT) return hotkeyRightArrowHelper(taskIndex, statusIndex, columns);
-  if (key === ARROW_KEYS.ARROW_LEFT) return hotkeyLeftArrowHelper(taskIndex, statusIndex, columns);
-  if (key === ARROW_KEYS.ARROW_UP) return hotkeyUpArrowHelper(taskIndex, statusIndex, columns);
-  if (key === ARROW_KEYS.ARROW_DOWN) return hotkeyDownArrowHelper(taskIndex, statusIndex, columns);
-  return null;
+const rightArrowHelper = (taskInfo, columns) => {
+  const nextColumn = getNextAvalaibleColumnRight(columns, taskInfo.currentColumnIndex);
+  return columns[nextColumn].tasks[0].id;
+};
+
+const leftArrowHelper = (taskInfo, columns) => {
+  const nextColumn = getNextAvalaibleColumnLeft(columns, taskInfo.currentColumnIndex);
+  return columns[nextColumn].tasks[0].id;
+};
+
+export const pickHotkeyFunction = (key, columns, taskId): string => {
+  const taskInfo = getTaskInfo(taskId, columns);
+
+  if (key === ARROW_KEYS.ARROW_RIGHT) return rightArrowHelper(taskInfo, columns);
+  if (key === ARROW_KEYS.ARROW_LEFT) return leftArrowHelper(taskInfo, columns);
+  if (key === ARROW_KEYS.ARROW_UP) return upArrowHelper(taskInfo, columns);
+  if (key === ARROW_KEYS.ARROW_DOWN) return downArrowHelper(taskInfo, columns);
 };

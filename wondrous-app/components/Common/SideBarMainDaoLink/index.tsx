@@ -1,21 +1,31 @@
-import { Badge } from '@mui/material';
 import React from 'react';
-import Link from 'next/link';
-import { useHotkey } from 'utils/hooks';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { useRouter } from 'next/router';
+import Link from 'next/link';
+
+import { Badge } from '@mui/material';
+
+import { useHotkey } from 'utils/hooks';
+
 import { SafeImage } from '../Image';
-import styles, { ButtonIcon, DaoIconWrapper, NoLogoDAO } from './styles';
 import SidebarTooltip from '../SidebarMainTooltip';
+
+import styles, { ButtonIcon, DaoIconWrapper, NoLogoDAO } from './styles';
 
 const SideBarMainDaoLink = ({ id, name, username, isActive, thumbnailPicture, profilePicture, index }) => {
   const showBadge = useHotkey();
   const router = useRouter();
   const fixedIndex = (index + 1).toString();
 
-  useHotkeys(fixedIndex, () => {
-    router.push(`/organization/${username}/boards?entity=task`);
-  });
+  useHotkeys(
+    fixedIndex,
+    () => {
+      if (showBadge) {
+        router.push(`/organization/${username}/boards?entity=task`);
+      }
+    },
+    [showBadge]
+  );
 
   return (
     <SidebarTooltip key={id} title={name}>
