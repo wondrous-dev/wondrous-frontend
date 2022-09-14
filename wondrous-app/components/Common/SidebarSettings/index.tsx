@@ -42,7 +42,7 @@ import { SettingsBoardContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useSideBar } from 'utils/hooks';
 
-const createListItems = ({ orgId, podId }) => [
+const createListItems = ({ orgId, podId, mainPath }) => [
   {
     Icon: HexagonIcon,
     label: 'Profile Page Settings',
@@ -54,70 +54,70 @@ const createListItems = ({ orgId, podId }) => [
     Icon: HexagonIcon,
     label: 'General Settings',
     value: 'general',
-    href: orgId ? `/organization/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: WrenchIcon,
     label: 'Configure Wallet',
     value: 'wallet',
-    href: orgId ? `/organization/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/wallet` : `/pod/settings/${podId}/wallet`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: LockIconOutline,
     label: 'Token Gating',
     value: 'token-gating',
-    href: `/organization/settings/${orgId}/token-gating`,
+    href: `/${mainPath}/settings/${orgId}/token-gating`,
     page: [SettingsPage.Org],
   },
   {
     Icon: HexagonIcon, // need icon
     label: 'Integrations Settings',
     value: 'integrations',
-    href: orgId ? `/organization/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/integrations` : `/pod/settings/${podId}/integrations`,
     page: [SettingsPage.Org],
   },
   {
     Icon: ReceiptIcon,
     label: 'Payments Ledger',
     value: 'payouts',
-    href: orgId ? `/organization/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/payouts` : `/pod/settings/${podId}/payouts`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: ReceiptIcon,
     label: 'Payment Method',
     value: 'payment-method',
-    href: `/organization/settings/${orgId}/payment-method`,
+    href: `/${mainPath}/settings/${orgId}/payment-method`,
     page: [SettingsPage.Org],
   },
   {
     Icon: GroupIcon,
     label: 'Members',
     value: 'members',
-    href: orgId ? `/organization/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/members` : `/pod/settings/${podId}/members`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: RolesIcon,
     label: 'Roles',
     value: 'roles',
-    href: orgId ? `/organization/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/roles` : `/pod/settings/${podId}/roles`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: NotificationsIcon,
     label: 'Notifications',
     value: 'notifications',
-    href: orgId ? `/organization/settings/${orgId}/notifications` : `/pod/settings/${podId}/notifications`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/notifications` : `/pod/settings/${podId}/notifications`,
     page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: FileDownloadIcon,
     label: 'Task Import',
     value: 'import',
-    href: `/organization/settings/${orgId}/task-import`,
+    href: `/${mainPath}/settings/${orgId}/task-import`,
     page: [SettingsPage.Org],
   },
   {
@@ -137,7 +137,7 @@ const createListItems = ({ orgId, podId }) => [
     ),
     label: 'Github',
     value: 'github',
-    href: orgId ? `/organization/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
+    href: orgId ? `/${mainPath}/settings/${orgId}/github` : `/pod/settings/${podId}/github`,
     page: [SettingsPage.Pod],
   },
 ];
@@ -158,6 +158,8 @@ function SettingsWrapper(props) {
 
   const org = orgData?.getOrgById;
   const pod = podData?.getPodById;
+
+  const mainPath = org?.shared ? 'collaboration' : 'organization';
 
   useEffect(() => {
     if (orgId || org) {
@@ -195,7 +197,7 @@ function SettingsWrapper(props) {
         shallow: true,
       });
     } else if (org) {
-      router.push(`/organization/${org?.username}/boards`, undefined, {
+      router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
         shallow: true,
       });
     }
@@ -204,7 +206,7 @@ function SettingsWrapper(props) {
   const settingsPageConfig = {
     [String(orgId)]: {
       page: SettingsPage.Org,
-      path: `/organization/${org?.username}/boards`,
+      path: `/${mainPath}/${org?.username}/boards`,
       label: 'DAO',
     },
     [String(podId)]: {
@@ -236,7 +238,7 @@ function SettingsWrapper(props) {
             <ListWrapper>
               <Label>{activeSettingsPage.label} Settings</Label>
               <ListWrapper>
-                {createListItems({ orgId, podId }).map((item) => {
+                {createListItems({ orgId, podId, mainPath }).map((item) => {
                   if (!item.page?.includes(activeSettingsPage.page)) return null;
                   const { href, Icon, label } = item;
                   const pathnameSplit = pathname.split('/');

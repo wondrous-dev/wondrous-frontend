@@ -101,6 +101,8 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
+import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
@@ -144,8 +146,6 @@ import {
   CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
-  CreateEntityPrivacyMembersIcon,
-  CreateEntityPrivacyPublicIcon,
   CreateEntityPrivacySelect,
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
@@ -213,12 +213,12 @@ const privacyOptions = {
   public: {
     label: 'Public',
     value: PRIVACY_LEVEL.public,
-    Icon: CreateEntityPrivacyPublicIcon,
+    Icon: PrivacyPublicIcon,
   },
   private: {
     label: 'Members',
     value: '',
-    Icon: CreateEntityPrivacyMembersIcon,
+    Icon: PrivacyMembersIcon,
   },
 };
 const filterUserOptions = (options) => {

@@ -317,3 +317,8 @@ export const useNotifications = () => {
     hasMore,
   };
 };
+
+export const useSteps = (defaultStep = 0) => {
+  const [step, setStep] = useState(defaultStep);
+  return { step, setStep };
+};

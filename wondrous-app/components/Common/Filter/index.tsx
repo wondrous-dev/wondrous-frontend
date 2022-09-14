@@ -31,10 +31,11 @@ interface IFilterProps {
   onRemove?: ({}: TaskFilter) => void;
   selected?: any;
   key?: number;
+  withSearch?: boolean;
 }
 
 function Filter(props: IFilterProps) {
-  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected } = props;
+  const { filterSchema = {}, onChange, currentIdx, schemaLength, onRemove, selected, withSearch = false } = props;
   const { query, variables } = filterSchema;
   const [items, setItems] = useState(filterSchema?.items || []);
   const [open, setOpen] = useState(false);
@@ -87,7 +88,9 @@ function Filter(props: IFilterProps) {
   };
 
   const handleRemove = (filter, shouldCloseModal = true) => {
-    onRemove(filter);
+    if (onRemove) {
+      onRemove(filter);
+    }
     if (open) {
       setOpen(!shouldCloseModal);
     }
@@ -140,7 +143,7 @@ function Filter(props: IFilterProps) {
           <FilterValues>
             <Icon style={{ backgroundColor: '#0f0f0f', borderRadius: '6px' }} height="26" width="26" />
             {displayNames ? (
-              <InlineText>{`${filterSchema?.label}: ${displayNames}`}</InlineText>
+              <InlineText>{`${filterSchema?.label ? `${filterSchema?.label}: ` : ''} ${displayNames}`}</InlineText>
             ) : (
               filterSchema?.label || 'Filters'
             )}

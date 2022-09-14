@@ -1,17 +1,15 @@
-import { useMutation } from '@apollo/client';
+import React, { useEffect, useState } from 'react';
+import { COLLAB_TYPES, NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { Badge } from '@mui/material';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import SmartLink from 'components/Common/SmartLink';
 import NotificationsIcon from 'components/Icons/notifications';
 import Tooltip from 'components/Tooltip';
-import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { GET_NOTIFICATIONS } from 'graphql/queries';
 import Link from 'next/link';
 import { useInView } from 'react-intersection-observer';
-import { useEffect, useMemo, useState } from 'react';
 import { useHotkeys } from 'react-hotkeys-hook';
 import calculateTimeLapse from 'utils/calculateTimeLapse';
-import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
 import { useHotkey, useNotifications } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { LIMIT } from 'services/board';
@@ -74,6 +72,18 @@ function NotificationsBoard({ onlyBoard = false }) {
       fetchMore();
     }
   }, [inView, hasMore, notifications?.length]);
+
+  const getNotificationLink = (notification) => {
+    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
+
+    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
+      const mainPath = notification.type === COLLAB_TYPES.INVITE ? 'organization' : 'collaboration';
+      notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
+        notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
+      }`;
+    }
+    return notificationLink;
+  };
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
@@ -86,10 +96,11 @@ function NotificationsBoard({ onlyBoard = false }) {
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
 
+    const link = getNotificationLink(notification);
     const object = (
       <span>
         <NotificationsLink styled={{ display: 'block' }}>
-          <Link href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}>{objectType}</Link>
+          <Link href={link}>{objectType}</Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
@@ -119,10 +130,11 @@ function NotificationsBoard({ onlyBoard = false }) {
         {notifications?.length ? (
           notifications?.map((notification) => {
             const isNotificationViewed = notification?.viewedAt;
+            const notificationLink = getNotificationLink(notification);
             return (
               <SmartLink
                 key={`notifications-${notification.id}`}
-                href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
+                href={notificationLink}
                 onClick={() => {
                   markNotificationRead({
                     variables: {
@@ -194,10 +206,12 @@ function NotificationsBoard({ onlyBoard = false }) {
           {notifications?.length ? (
             notifications?.map((notification) => {
               const isNotificationViewed = notification?.viewedAt;
+              const notificationLink = getNotificationLink(notification);
+
               return (
                 <SmartLink
                   key={`notifications-${notification.id}`}
-                  href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
+                  href={notificationLink}
                   onClick={() => {
                     markNotificationRead({
                       variables: {

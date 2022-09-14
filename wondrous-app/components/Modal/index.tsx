@@ -54,7 +54,7 @@ export function Modal({ open, onClose, title, footerLeft, footerRight, maxWidth,
         <ModalDialog maxWidth={maxWidth}>
           <ModalContent>
             <ModalHeader>
-              {title && <ModalTitle>{title}</ModalTitle>}
+              {!!title && <ModalTitle>{title}</ModalTitle>}
               <CloseModalBtn onClick={onClose} />
             </ModalHeader>
 
