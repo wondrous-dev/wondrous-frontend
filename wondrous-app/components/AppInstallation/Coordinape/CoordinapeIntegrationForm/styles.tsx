@@ -1,4 +1,4 @@
-import { Button, Chip, MenuItem, Select } from '@mui/material';
+import { Accordion, AccordionDetails, AccordionSummary, Button, Chip, MenuItem, Select } from '@mui/material';
 import EllipsesIcon from 'components/Icons/ellipsesIcon';
 import styled from 'styled-components';
 import palette from 'theme/palette';
@@ -15,16 +15,57 @@ export const CoordinapeIntegrationFormContent = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-  border-bottom: 1px solid ${palette.grey79};
 `;
 
 export const CoordinapeIntegrationFormContentSection = styled(CoordinapeIntegrationFormContent)`
   && {
     width: 100%;
     padding: 0;
-    padding-bottom: 24px;
-    margin-bottom: 24px;
   }
+`;
+
+export const CoordinapeIntegrationFormExpandedViewWrapper = styled(Accordion)`
+  && {
+    background: ${palette.grey900};
+    margin-top: ${(props) => (props.expanded ? 0 : '-26px')};
+
+    & .MuiAccordion-region {
+      display: flex;
+      flex-direction: column;
+      box-shadow: none;
+    }
+
+    & .MuiAccordionDetails-root {
+      padding: 0;
+    }
+
+    &.MuiPaper-root {
+      width: 100%;
+    }
+
+    &.MuiPaper-root.MuiAccordion-root {
+      box-shadow: none;
+    }
+
+    &.MuiPaper-root::before {
+      display: none;
+    }
+  }
+`;
+
+export const CoordinapeIntegrationFormExpandedViewInvisibleState = styled(AccordionSummary)`
+  && {
+    display: none;
+  }
+`;
+
+export const CoordinapeIntegrationFormExpandedViewContent = styled(AccordionDetails)``;
+
+export const CoordinapeIntegrationFormContentSectionSeperator = styled.div`
+  height: 1px;
+  width: 100%;
+  background: ${palette.grey79};
+  margin: 24px 0;
 `;
 
 export const Ellipses = styled(EllipsesIcon)`
@@ -132,6 +173,7 @@ export const CoordinapeIntegrationFormActions = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  border-top: 1px solid ${palette.grey79};
 `;
 
 export const CoordinapeIntegrationFormAction = styled(Button)`

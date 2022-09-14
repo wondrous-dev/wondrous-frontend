@@ -20,6 +20,10 @@ import {
   CoordinapeIntegrationFormSelect,
   CoordinapeIntegrationFormSelectMenuItem,
   CoordinapeIntegrationFormSelectChip,
+  CoordinapeIntegrationFormContentSectionSeperator,
+  CoordinapeIntegrationFormExpandedViewWrapper,
+  CoordinapeIntegrationFormExpandedViewInvisibleState,
+  CoordinapeIntegrationFormExpandedViewContent,
 } from './styles';
 
 import { DEFAULT_ORGANIZATION_OPTION, DEFAULT_POD_OPTION } from './constants';
@@ -56,6 +60,10 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
       setSelectedPods(DEFAULT_POD_OPTION);
     }
   }, [selectedPods]);
+
+  useEffect(() => {
+    setSelectedPods(DEFAULT_POD_OPTION);
+  }, [selectedOrganization?.value]);
 
   const handleSelectedOrganizationChange = useCallback((event) => {
     const { value } = event.target;
@@ -156,6 +164,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
               Not you?
             </Typography>
           </Grid>
+          <CoordinapeIntegrationFormContentSectionSeperator />
         </CoordinapeIntegrationFormContentSection>
         <CoordinapeIntegrationFormContentSection>
           <Grid width="100%">
@@ -193,24 +202,30 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
             </Grid>
           </Grid>
         </CoordinapeIntegrationFormContentSection>
-        <Grid width="100%">
-          <Typography fontSize="12px" color={palette.grey40} fontWeight={500} textTransform="uppercase" width="100%">
-            Optional: Only show specific pods
-          </Typography>
-          <CoordinapeIntegrationFormSelect
-            value={selectedPods}
-            renderValue={renderPodSelection}
-            onChange={handleSelectedPodChange}
-            // showIcon={false}
-          >
-            {orgPods?.map((pod) => (
-              <CoordinapeIntegrationFormSelectMenuItem key={pod.id} value={pod}>
-                {pod.name}
-                {isPodPresentInSelectedPods(pod.id) && <CheckMarkIcon fillColor={palette.highlightBlue} />}
-              </CoordinapeIntegrationFormSelectMenuItem>
-            ))}
-          </CoordinapeIntegrationFormSelect>
-        </Grid>
+        <CoordinapeIntegrationFormExpandedViewWrapper
+          expanded={selectedOrganization?.value && orgPods?.length}
+          TransitionProps={{ unmountOnExit: true }}
+        >
+          <CoordinapeIntegrationFormExpandedViewInvisibleState />
+          <CoordinapeIntegrationFormExpandedViewContent>
+            <CoordinapeIntegrationFormContentSectionSeperator />
+            <Typography fontSize="12px" color={palette.grey40} fontWeight={500} textTransform="uppercase" width="100%">
+              Optional: Only show specific pods
+            </Typography>
+            <CoordinapeIntegrationFormSelect
+              value={selectedPods}
+              renderValue={renderPodSelection}
+              onChange={handleSelectedPodChange}
+            >
+              {orgPods?.map((pod) => (
+                <CoordinapeIntegrationFormSelectMenuItem key={pod.id} value={pod}>
+                  {pod.name}
+                  {isPodPresentInSelectedPods(pod.id) && <CheckMarkIcon fillColor={palette.highlightBlue} />}
+                </CoordinapeIntegrationFormSelectMenuItem>
+              ))}
+            </CoordinapeIntegrationFormSelect>
+          </CoordinapeIntegrationFormExpandedViewContent>
+        </CoordinapeIntegrationFormExpandedViewWrapper>
       </CoordinapeIntegrationFormContent>
       <CoordinapeIntegrationFormActions>
         <CoordinapeIntegrationFormAction>Cancel</CoordinapeIntegrationFormAction>
