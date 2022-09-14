@@ -39,7 +39,6 @@ const profilePictureStyle = {
 };
 
 interface ICoordinapeIntegrationFormProps {
-  isMobile?: boolean;
   user: User;
 }
 

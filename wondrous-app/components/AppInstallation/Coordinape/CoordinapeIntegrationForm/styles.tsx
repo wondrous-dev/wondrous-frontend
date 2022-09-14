@@ -125,6 +125,26 @@ export const CoordinapeIntegrationFormSelect = styled(({ className, showIcon = t
   &.MuiPaper-root > .MuiList-padding {
     padding: 4px;
   }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: ${palette.grey10};
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: ${palette.grey50};
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: ${palette.grey76};
+  }
 `;
 
 export const CoordinapeIntegrationFormSelectMenuItem = styled(MenuItem)`
