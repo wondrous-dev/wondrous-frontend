@@ -19,6 +19,13 @@ export const TaskFragment = gql`
     dueDate
     status
     paymentStatus
+    observers {
+      id
+      username
+      profilePicture
+      firstName
+      lastName
+    }
     labels {
       id
       name

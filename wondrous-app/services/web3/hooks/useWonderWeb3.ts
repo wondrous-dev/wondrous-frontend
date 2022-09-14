@@ -200,6 +200,16 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
   };
 
+  const getAddressFromENS = async (ens: string) => {
+    try {
+      const prov = new ethers.providers.Web3Provider(provider);
+      const address = await prov.resolveName(ens);
+      return address;
+    } catch (err) {
+      return null;
+    }
+  };
+
   const disconnect = () => {
     deactivate();
     setConnecting(false);
@@ -256,5 +266,6 @@ export default function useWonderWeb3(): WonderWeb3 {
     activate,
     activateAndStore,
     getENSNameFromEthAddress,
+    getAddressFromENS,
   };
 }
