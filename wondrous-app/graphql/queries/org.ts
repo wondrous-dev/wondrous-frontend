@@ -182,6 +182,9 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -201,6 +204,9 @@ export const GET_ORG_MEMBERSHIP_REQUEST = gql`
       orgName
       orgUsername
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
