@@ -480,47 +480,35 @@ function Wrapper(props) {
                 renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
               ) : (
                 <Box sx={{ flex: '0 0 60px' }}>
-                  <div
+                  <SafeImage
+                    src={orgProfile?.profilePicture}
+                    placeholderComp={
+                      <TokenEmptyLogo>
+                        <DAOEmptyIcon />
+                      </TokenEmptyLogo>
+                    }
+                    width="60px"
+                    height="60px"
+                    useNextImage
                     style={{
-                      position: 'relative',
-                      cursor: 'pointer',
-                      ...(isGr15Sponsor && {
-                        marginRight: '20px',
-                      }),
+                      borderRadius: '6px',
                     }}
-                  >
-                    <SafeImage
-                      src={orgProfile?.profilePicture}
-                      placeholderComp={
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      }
-                      width="60px"
-                      height="60px"
-                      useNextImage
-                      style={{
-                        borderRadius: '6px',
-                      }}
-                    />
-                    {isGr15Sponsor && (
-                      <>
-                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                        <GR15DEILogo
-                          width="42"
-                          height="42"
-                          onClick={() => setOpenGR15Modal(true)}
-                          style={{
-                            top: '0',
-                            right: '-20px',
-                            position: 'absolute',
-                            zIndex: '20',
-                          }}
-                        />
-                      </>
-                    )}
-                  </div>
+                  />
                 </Box>
+              )}
+              {isGr15Sponsor && (
+                <>
+                  <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                  <GR15DEILogo
+                    width="42"
+                    height="42"
+                    onClick={() => setOpenGR15Modal(true)}
+                    style={{
+                      marginLeft: '-8px',
+                      cursor: 'pointer',
+                    }}
+                  />
+                </>
               )}
               <HeaderTitleIcon>
                 <HeaderTitle>{orgProfile?.name}</HeaderTitle>
