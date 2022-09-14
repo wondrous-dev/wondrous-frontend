@@ -54,7 +54,7 @@ const OrgItem = (props) => {
 };
 
 export default function ExploreOrgGr15Modal(props) {
-  const { showSponsors, showGrantees, setShowSponsors, setShowGrantees, open, handleClose, name } = props;
+  const { showSponsors, showGrantees, setShowSponsors, setShowGrantees, open, handleClose } = props;
   const [listLoading, setListLoading] = useState(true);
   const [activeTab, setActiveTab] = useState(null);
   const [getGr15Sponsors, { data: sponsorData }] = useLazyQuery(GET_GR15_SPONSORS, {
@@ -113,7 +113,7 @@ export default function ExploreOrgGr15Modal(props) {
     >
       <TaskModalBaseCard>
         <TitleSection>
-          <Title>{name}</Title>
+          <Title>{showSponsors ? 'GR15-DEI sponsors' : 'GR15-DEI grantees'}</Title>
           <CloseIconContainer
             onClick={() => {
               setShowSponsors(false);

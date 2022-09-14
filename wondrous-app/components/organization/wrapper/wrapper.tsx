@@ -499,7 +499,14 @@ function Wrapper(props) {
               {isGr15Sponsor && (
                 <div>
                   <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                  <GR15DEILogo width="42" height="42" onClick={() => setOpenGR15Modal(true)} />
+                  <GR15DEILogo
+                    width="42"
+                    height="42"
+                    style={{
+                      marginLeft: '4px',
+                    }}
+                    onClick={() => setOpenGR15Modal(true)}
+                  />
                 </div>
               )}
               <HeaderTitleIcon>
