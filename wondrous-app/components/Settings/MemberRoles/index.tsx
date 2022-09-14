@@ -28,33 +28,6 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
 
   return (
     <Container withPodMembers={!isDAO}>
-      {!isDAO ? (
-        <PodMembers>
-          <div>
-            {`${users.length} `}
-            <Text as="span" color="#6C6C6C">
-              pod {pluralize('member', users.length)}
-            </Text>
-          </div>
-          <PodIconWithoutBg />
-
-          <Avatars style={{ width: `fit-content` }}>
-            {users.map(({ user }, index) =>
-              user?.thumbnailPicture ? (
-                <SafeImage
-                  useNextImage={false}
-                  key={user.id}
-                  style={{ left: index * width - index * overlapLeft }}
-                  src={user?.thumbnailPicture}
-                />
-              ) : (
-                <DefaultUserImage key={user.id} style={{ left: index * width - index * overlapLeft }} />
-              )
-            )}
-          </Avatars>
-        </PodMembers>
-      ) : null}
-
       <Grid display="flex" alignItems="center" gap="30px">
         <Grid display="flex" alignItems="center" gap="4px">
           <Typography color={palette.white} fontSize={14} fontWeight={500} minWidth="fit-content">

@@ -1,14 +1,20 @@
 import { useEffect, useState } from 'react';
+import { useMutation, useLazyQuery } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
+
+import { useMe } from 'components/Auth/withAuth';
 import PersonAddIcon from 'components/Icons/personAdd';
 import { CopyIcon, CopySuccessIcon } from 'components/Icons/copy';
 import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInviteLink';
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
+
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK } from 'utils/constants';
+
+import { CREATE_POD_INVITE_LINK } from 'graphql/mutations/pod';
+import { GET_POD_ROLES } from 'graphql/queries';
+import { CREATE_ORG_INVITE_LINK } from 'graphql/mutations/org';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
   StyledModal,
   StyledBox,
@@ -37,8 +43,8 @@ import {
   TextSubheading,
 } from './styles';
 
-export function NewOrgInviteLinkModal(props) {
-  const { orgOrPodName, orgId, open, onClose } = props;
+export function NewInviteLinkModal(props) {
+  const { orgOrPodName, orgId, podId, open, onClose } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
   const [inviteLink, setInviteLink] = useState('');
@@ -52,20 +58,48 @@ export function NewOrgInviteLinkModal(props) {
     orgId: board?.orgId,
     podId: board?.podId,
   });
+  const user = useMe();
 
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${LINK}/invite/${data?.createOrgInviteLink.token}`);
+      setInviteLink(`${LINK}/invite/org/${data?.createOrgInviteLink.token}`);
     },
     onError: (e) => {
       console.error(e);
       Sentry.captureException(e);
     },
   });
+
+  const [createPodInviteLink] = useMutation(CREATE_POD_INVITE_LINK, {
+    onCompleted: (data) => {
+      setInviteLink(`${LINK}/invite/pod/${data?.createPodInviteLink.token}`);
+    },
+    onError: (e) => {
+      console.error(e);
+      Sentry.captureException(e);
+    },
+  });
+
   const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES, {
     onCompleted: (data) => {
       data?.getOrgRoles &&
         data?.getOrgRoles?.forEach((role) => {
+          if (role?.default) {
+            setRole(role?.id);
+          }
+        });
+    },
+    onError: (e) => {
+      console.error(e);
+      Sentry.captureException(e);
+    },
+    fetchPolicy: 'cache-and-network',
+  });
+
+  const [getPodRoles, { data: podRoles }] = useLazyQuery(GET_POD_ROLES, {
+    onCompleted: (data) => {
+      data?.getPodRoles &&
+        data?.getPodRoles?.forEach((role) => {
           if (role?.default) {
             setRole(role?.id);
           }
@@ -98,29 +132,55 @@ export function NewOrgInviteLinkModal(props) {
     setLinkOneTimeUse(!linkOneTimeUse);
   };
 
+  const isOrg = !!orgId;
+
   useEffect(() => {
     if (!role && open) {
-      getOrgRoles({
-        variables: {
-          orgId,
-        },
-      });
+      if (isOrg) {
+        getOrgRoles({
+          variables: {
+            orgId,
+          },
+        });
+      } else {
+        getPodRoles({
+          variables: {
+            podId,
+          },
+        });
+      }
     }
     if (open) {
-      createOrgInviteLink({
-        variables: {
-          input: {
-            invitorId: '',
-            type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
-            orgId,
-            orgRoleId: role,
+      if (isOrg) {
+        createOrgInviteLink({
+          variables: {
+            input: {
+              invitorId: user?.id,
+              type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
+              orgId,
+              orgRoleId: role,
+            },
           },
-        },
-      });
+        });
+      } else {
+        createPodInviteLink({
+          variables: {
+            input: {
+              invitorId: user?.id,
+              type: linkOneTimeUse ? ONE_TIME_USE_INVITE_LINK : PUBLIC_INVITE_LINK,
+              podId,
+              podRoleId: role,
+            },
+          },
+        });
+      }
     }
     setCopy(false);
-  }, [role, createOrgInviteLink, linkOneTimeUse, orgId, orgRoles, open, getOrgRoles]);
-  const roles = putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions);
+  }, [role, linkOneTimeUse, orgId, podId, open]);
+
+  const roles = isOrg
+    ? putDefaultRoleOnTop(orgRoles?.getOrgRoles, permissions)
+    : putDefaultRoleOnTop(podRoles?.getPodRoles, permissions);
 
   return (
     <StyledModal open={open} onClose={handleOnClose}>
