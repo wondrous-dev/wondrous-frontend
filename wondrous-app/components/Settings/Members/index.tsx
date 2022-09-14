@@ -14,7 +14,7 @@ import { KICK_ORG_USER } from 'graphql/mutations/org';
 import { KICK_POD_USER } from 'graphql/mutations/pod';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
-import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
+import { NewInviteLinkModal } from 'components/Common/NewInviteLinkModal/InviteLink';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { useWonderWeb3 } from 'services/web3';
 import MemberRoles from '../MemberRoles';
@@ -264,9 +264,10 @@ function Members() {
 
   return (
     <SettingsWrapper showPodIcon={false}>
-      <NewOrgInviteLinkModal
+      <NewInviteLinkModal
         orgOrPodName={orgOrPodName}
         orgId={orgId}
+        podId={podId}
         open={openInvite}
         onClose={() => setOpenInvite(false)}
       />

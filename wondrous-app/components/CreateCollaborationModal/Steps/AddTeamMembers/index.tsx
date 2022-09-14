@@ -29,8 +29,8 @@ import differenceWith from 'lodash/differenceWith';
 import eq from 'lodash/eq';
 import debounce from 'lodash/debounce';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
-import { NewOrgInviteLinkModal } from 'components/Common/NewInviteLinkModal/OrgInviteLink';
 import { GET_ORG_ROLES, GET_PARENT_ORG_CONTRIBUTORS } from 'graphql/queries/org';
+import { NewInviteLinkModal } from 'components/Common/NewInviteLinkModal/InviteLink';
 import { PERMISSIONS } from 'utils/constants';
 import ListBox from './Listbox';
 import {
@@ -152,7 +152,7 @@ const AddTeamMembers = ({
 
   return (
     <div>
-      <NewOrgInviteLinkModal
+      <NewInviteLinkModal
         orgOrPodName={collabData?.name}
         orgId={collabData?.id}
         open={inviteLinkModalIsOpen}

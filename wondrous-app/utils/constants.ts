@@ -580,6 +580,8 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/discord/callback',
   '/email/verify',
   '/github/callback',
+  '/invite/org/[token]',
+  '/invite/pod/[token]',
   '/invite/[token]',
   '/onboarding/build-profile',
   '/onboarding/discord',
