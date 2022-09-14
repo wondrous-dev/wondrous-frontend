@@ -342,7 +342,7 @@ const AddTeamMembers = ({
                 color="primary"
                 type="submit"
                 onClick={onSubmit}
-                disabled={!selectedUsers.admins.length || !selectedUsers.members.length}
+                disabled={!(selectedUsers.admins.length || selectedUsers.members.length)}
               >
                 Next
               </Button>

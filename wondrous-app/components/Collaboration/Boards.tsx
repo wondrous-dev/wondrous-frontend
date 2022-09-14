@@ -47,6 +47,7 @@ function CollabBoard(props: Props) {
     }
     setOpenInviteModal((prevState) => !prevState);
     setStep(0);
+    setUsers({ admins: [], members: [], adminRole: null, memberRole: null });
   };
 
   const [batchAddUsers] = useMutation(BATCH_ADD_MEMBERS, {
