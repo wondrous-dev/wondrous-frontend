@@ -101,7 +101,7 @@ const AddTeamMembers = ({
   } = useQuery(GET_PARENT_ORG_CONTRIBUTORS, {
     fetchPolicy: 'cache-and-network',
     variables: {
-      orgId: collabData.id,
+      sharedOrgId: collabData.id,
       limit: LIMIT,
     },
     onCompleted: (data) => {
