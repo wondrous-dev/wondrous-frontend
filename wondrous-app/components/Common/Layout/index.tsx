@@ -10,6 +10,7 @@ import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { toggleHtmlOverflow } from 'utils/helpers';
 import { useIsMobile } from 'utils/hooks';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { SectionWrapper } from './styles';
@@ -24,6 +25,7 @@ const getOrgsList = (userOrgs, router) => {
 };
 
 export default function SidebarLayout({ children }) {
+  const user = useMe();
   const isMobile = useIsMobile();
   const router = useRouter();
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
@@ -48,6 +50,9 @@ export default function SidebarLayout({ children }) {
   const [minimized, setMinimized] = useState(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
+    variables: {
+      excludeSharedOrgs: true,
+    },
   });
 
   const [createFormModal, setCreateFormModal] = useState(false);

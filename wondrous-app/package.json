@@ -19,7 +19,7 @@
     "pipeline": "NODE_OPTIONS=\"--max_old_space_size=4096\" next lint && next build",
     "cy:open": "cypress open",
     "cy:run": "cypress run",
-    "cy:record" : "cypress run --record --key 207cb3ab-473b-4077-b89e-92ce6a0ff249",
+    "cy:record": "cypress run --record --key 207cb3ab-473b-4077-b89e-92ce6a0ff249",
     "e2e:headless": "start-server-and-test start http://localhost:3000 cy:record"
   },
   "dependencies": {

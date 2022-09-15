@@ -111,6 +111,7 @@ import {
   ApplicationField,
   AssigneeField,
   DueDateField,
+  InitativesField,
   MilestoneField,
   PointsField,
   ProposerField,
@@ -120,7 +121,7 @@ import {
 } from './taskViewModalFields';
 import WatchersField from './taskViewModalFields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
-import { openSnapshot } from './utils';
+import { hasGR15DEIIntiative, openSnapshot } from './utils';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -713,6 +714,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                           />
                           <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
+                          <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                           {isTaskProposal && (
                             <>
                               <VoteResults

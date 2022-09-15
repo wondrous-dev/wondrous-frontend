@@ -32,6 +32,17 @@ export function insertUrlParam(key, value) {
   }
 }
 
+export function removeUrlParam(key) {
+  if (history.pushState) {
+    const searchParams = new URLSearchParams(window.location.search);
+    searchParams.delete(key);
+    const newurl = `${window.location.protocol}//${window.location.host}${
+      window.location.pathname
+    }?${searchParams.toString()}`;
+    window.history.pushState({ path: newurl }, '', newurl);
+  }
+}
+
 export const delQuery = (asPath) => asPath.split('?')[0];
 
 export const dedupeColumns = (columns) => {

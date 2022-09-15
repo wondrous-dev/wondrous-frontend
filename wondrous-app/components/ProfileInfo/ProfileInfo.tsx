@@ -15,6 +15,8 @@ import { UserInterestModal, getInterestDisplay } from 'components/Common/UserInt
 
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -43,12 +45,14 @@ const SOCIAL_ICONS = {
 
 function ProfileInfo({ userProfile }) {
   const user = useMe();
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [openInterestModal, setOpenInterestModal] = useState(false);
   const { id, links, firstName, lastName, username, bio, profilePicture, interests } = userProfile;
   const fullName = firstName && lastName ? `${firstName} ${lastName}` : username;
   const { mainLink, social, websites } = parseLinks(links);
   const [createUserInterest] = useMutation(CREATE_USER_INTEREST, { refetchQueries: [GET_USER_INTERESTS] });
   const viewingSelf = user?.username === username;
+  const isGr15Contributor = user?.checkIsGr15Contributor?.isGr15Contributor;
 
   return (
     <ProfileInfoWrapper>
@@ -59,16 +63,51 @@ function ProfileInfo({ userProfile }) {
       />
 
       <ProfileInfoContainer>
-        <SafeImage
-          src={profilePicture || DefaultUserImage}
-          width={40}
-          height={40}
-          objectFit="cover"
-          useNextImage
+        <div
           style={{
-            borderRadius: '50%',
+            position: 'relative',
+            ...(isGr15Contributor && {
+              marginRight: '20px',
+            }),
           }}
-        />
+        >
+          {profilePicture ? (
+            <SafeImage
+              src={profilePicture}
+              width={62}
+              height={62}
+              objectFit="cover"
+              useNextImage
+              style={{
+                borderRadius: '50%',
+              }}
+            />
+          ) : (
+            <DefaultUserImage
+              style={{
+                width: '62',
+                height: '62',
+                borderRadius: '31px',
+              }}
+            />
+          )}
+          {isGr15Contributor && (
+            <>
+              <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+              <GR15DEILogo
+                width="42"
+                height="42"
+                onClick={() => setOpenGR15Modal(true)}
+                style={{
+                  top: '0',
+                  right: '-20px',
+                  position: 'absolute',
+                  zIndex: '20',
+                }}
+              />
+            </>
+          )}
+        </div>
         <ProfileInfoFullName>{fullName || username}</ProfileInfoFullName>
         <ProfileInfoUsername>@{username}</ProfileInfoUsername>
       </ProfileInfoContainer>

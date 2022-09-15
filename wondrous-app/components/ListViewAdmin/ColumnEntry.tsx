@@ -31,6 +31,9 @@ import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
+import { GET_JOIN_ORG_REQUESTS } from 'graphql/queries';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   BoldName,
   Description,
@@ -71,6 +74,7 @@ interface Props {
   taskStatus?: string;
   setKudosFormData: (data: any) => any;
   createdBy?: string;
+  isGr15Contributor?: boolean;
 }
 
 export const ICON_TYPES = {
@@ -119,9 +123,12 @@ function ColumnEntry(props: Props) {
     links,
     media,
     taskStatus,
+    isGr15Contributor,
     setKudosFormData,
     createdBy,
   } = props;
+  const [isKudosModalOpen, setKudosModalOpen] = useState(false);
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const refetchQueries = ['getWorkFlowBoardReviewableItemsCount'];
 
@@ -364,6 +371,19 @@ function ColumnEntry(props: Props) {
             )}
           </div>
         </Tooltip>
+        {isGr15Contributor && (
+          <>
+            <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+            <GR15DEILogo
+              style={{
+                marginLeft: '-8px',
+              }}
+              width="28"
+              height="28"
+              onClick={() => setOpenGR15Modal(true)}
+            />
+          </>
+        )}
         <BoldName>{username}</BoldName>
 
         <Description>{entryMessage}</Description>

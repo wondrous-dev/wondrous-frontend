@@ -29,3 +29,5 @@ export const UserProfileContext = createContext(null);
 export const GlobalContext = createContext(null);
 
 export const HotkeyContext = createContext(null);
+
+export const ExploreGr15TasksAndBountiesContext = createContext(null);

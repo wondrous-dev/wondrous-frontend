@@ -73,7 +73,7 @@ export const DeclineButton = styled(RequestApproveButton)`
       background: linear-gradient(270deg, ${palette.red300} -5.62%, ${palette.highlightPurple} 103.12%);
     }
   }
-  
+
   span {
     z-index: 1;
   }

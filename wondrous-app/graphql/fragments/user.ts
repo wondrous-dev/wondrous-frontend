@@ -22,6 +22,9 @@ export const LoggedinUserFragment = gql`
       displayName
       type
     }
+    checkIsGr15Contributor {
+      isGr15Contributor
+    }
   }
 `;
 
@@ -54,6 +57,9 @@ export const ProfileUserFragment = gql`
     additionalInfo {
       orgCount
       podCount
+    }
+    checkIsGr15Contributor {
+      isGr15Contributor
     }
   }
 `;
