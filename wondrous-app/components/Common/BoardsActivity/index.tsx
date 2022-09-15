@@ -1,6 +1,13 @@
 import { useEffect, useMemo, useState } from 'react';
 import SearchTasks from 'components/SearchTasks';
-import { useHotkey, useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import {
+  useHotkey,
+  useBoards,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useExploreGr15TasksAndBounties,
+} from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';

@@ -116,7 +116,7 @@ const AddTeamMembers = ({
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
-    if (e.target.value) search({ variables: { queryString: e.target.value, orgId: org.id } });
+    if (e.target.value) search({ variables: { searchString: e.target.value, orgId: org.id } });
   };
 
   const handleChange = (key, event, users) => setUsers({ ...selectedUsers, [key]: users });

@@ -76,8 +76,8 @@ export const GET_POD_USERS = gql`
 `;
 
 export const SEARCH_POD_USERS = gql`
-  query searchPodUsers($podId: ID!, $queryString: String!) {
-    searchPodUsers(podId: $podId, queryString: $queryString) {
+  query searchPodUsers($podId: ID!, $searchString: String!) {
+    searchPodUsers(podId: $podId, searchString: $searchString) {
       id
       username
       profilePicture
@@ -158,6 +158,9 @@ export const GET_JOIN_POD_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -180,6 +183,9 @@ export const GET_POD_MEMBERSHIP_REQUEST = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;

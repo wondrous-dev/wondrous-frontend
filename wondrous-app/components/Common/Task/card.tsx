@@ -17,7 +17,7 @@ import {
   BoardsCardMedia,
   BoardsCardFooter,
 } from 'components/Common/Boards/styles';
-import Dropdown from 'components/Common/Dropdown';
+import { DropDown } from 'components/Common/dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
@@ -30,6 +30,8 @@ import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
 import { DAOIcon } from 'components/Icons/dao';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -77,6 +79,7 @@ import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { ButtonPrimary } from '../button';
 import TASK_ICONS from './constants';
+import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
 
 let windowOffset = 0;
 
@@ -112,6 +115,7 @@ export function TaskCard({
   const boardColumns = useColumns();
   const [claimed, setClaimed] = useState(false);
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const totalSubtask = task?.totalSubtaskCount;
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
@@ -181,6 +185,7 @@ export function TaskCard({
     task?.status !== Constants.TASK_STATUS_DONE;
   const canApply = !canClaim && task?.taskApplicationPermissions?.canApply;
 
+  const hasGR15 = hasGR15DEIIntiative(task?.categories);
   const onNavigate = (e) => {
     // TODO refactor this
     if (!showPaymentModal && !isApplicationModalOpen) {
@@ -222,6 +227,12 @@ export function TaskCard({
               ) : (
                 <DAOIcon />
               ))}
+            {hasGR15 && (
+              <>
+                <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
+              </>
+            )}
             {canClaim ? (
               <>
                 {claimed ? (
@@ -431,7 +442,7 @@ export function TaskCard({
             <TaskActionMenu>
               <Tooltip title="More actions" placement="top">
                 <span>
-                  <Dropdown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
+                  <DropDown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
                     <DropdownItem
                       key={`task-menu-edit-edit-${id}`}
                       onClick={() => {
@@ -462,7 +473,7 @@ export function TaskCard({
                         Delete {type}
                       </DropdownItem>
                     )}
-                  </Dropdown>
+                  </DropDown>
                 </span>
               </Tooltip>
             </TaskActionMenu>

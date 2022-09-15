@@ -7,16 +7,17 @@ import {
   SOCIAL_MEDIA_TWITTER,
   SOCIAL_OPENSEA,
   SOCIAL_MEDIA_LINKEDIN,
+  GR15DEICategoryName,
+  BOUNTY_TYPE,
 } from 'utils/constants';
 import apollo from 'services/apollo';
 import { Box } from '@mui/system';
-
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
 
-import { useOrgBoard, useTokenGating } from 'utils/hooks';
+import usePrevious, { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
@@ -28,6 +29,12 @@ import {
   LIT_SIGNATURE_EXIST,
   GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
 } from 'graphql/queries';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import {
+  ExploreProjectsButton,
+  ExploreProjectsButtonFilled,
+} from 'components/Common/IntiativesModal/GR15DEIModal/styles';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
 import { RichTextViewer } from 'components/RichText';
@@ -36,6 +43,7 @@ import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
+import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MembershipRequestModal } from './RequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -75,6 +83,7 @@ import {
   Container,
   SettingsButton,
   InviteButton,
+  HeaderGr15Sponsor,
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
@@ -82,6 +91,91 @@ import TwitterPurpleIcon from '../../Icons/twitterPurple';
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
   CONTRIBUTOR: 'contributor',
+};
+
+const ExploreOrgGr15 = ({
+  onTaskPage,
+  onBountyPage,
+  hasGr15Tasks,
+  hasGr15Bounties,
+  orgProfile,
+  onFilterChange,
+  filters,
+  exploreGr15TasksAndBounties,
+  setExploreGr15TasksAndBounties,
+}) => {
+  const router = useRouter();
+  const ExploreButton = exploreGr15TasksAndBounties ? ExploreProjectsButtonFilled : ExploreProjectsButton;
+  if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
+    return (
+      <ExploreButton
+        onClick={() => {
+          router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
+            shallow: true,
+          });
+        }}
+      >
+        Explore GR15 Bounties
+      </ExploreButton>
+    );
+  }
+  if (onBountyPage && !hasGr15Bounties && hasGr15Tasks) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          router.push(
+            `/organization/${orgProfile?.username}/boards?entity=task&cause=${GR15DEICategoryName}`,
+            undefined,
+            {
+              shallow: true,
+            }
+          );
+        }}
+      >
+        Explore GR15 Tasks
+      </ExploreButton>
+    );
+  }
+  if (onTaskPage && hasGr15Tasks) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
+          onFilterChange({
+            ...filters,
+            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
+          });
+        }}
+      >
+        Explore GR15 tasks
+      </ExploreButton>
+    );
+  }
+  if (onBountyPage && hasGr15Bounties) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
+          onFilterChange({
+            ...filters,
+            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
+          });
+        }}
+      >
+        Explore GR15 bounties
+      </ExploreButton>
+    );
+  }
+  return null;
 };
 
 function Wrapper(props) {
@@ -124,12 +218,21 @@ function Wrapper(props) {
   const [claimableRoleModalOpen, setClaimableRoleModalOpen] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
-
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
+  const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
+  const hasGr15Tasks = orgProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
+  const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
+
+  const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
-  const { search, entity } = router.query;
+  const { search, entity, cause } = router.query;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
+  const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
+  const board = orgBoard;
+  const boardFilters = board?.filters || {};
   const { asPath } = router;
   let finalPath = '';
   if (asPath) {
@@ -233,6 +336,7 @@ function Wrapper(props) {
     setTokenGatedRoles(roles);
     setClaimableRoleModalOpen(true);
   };
+  const previousEntity = usePrevious(entity);
 
   useEffect(() => {
     if (!entity && !search) {
@@ -245,6 +349,15 @@ function Wrapper(props) {
       }
     }
   }, [tasksPerTypeData, entity, finalPath]);
+
+  useEffect(() => {
+    if (cause === GR15DEICategoryName) {
+      onFilterChange({
+        category: GR15DEICategoryName,
+      });
+      setExploreGr15TasksAndBounties(true);
+    }
+  }, [cause, setExploreGr15TasksAndBounties]);
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
@@ -383,9 +496,29 @@ function Wrapper(props) {
                   />
                 </Box>
               )}
-
+              {isGr15Sponsor && (
+                <div>
+                  <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                  <GR15DEILogo
+                    width="42"
+                    height="42"
+                    style={{
+                      marginLeft: '4px',
+                    }}
+                    onClick={() => setOpenGR15Modal(true)}
+                  />
+                </div>
+              )}
               <HeaderTitleIcon>
-                <HeaderTitle>{orgProfile?.name}</HeaderTitle>
+                <HeaderTitle
+                  style={{
+                    ...(isGr15Sponsor && {
+                      marginLeft: '12px',
+                    }),
+                  }}
+                >
+                  {orgProfile?.name}
+                </HeaderTitle>
                 <HeaderTag>@{orgProfile?.username}</HeaderTag>
               </HeaderTitleIcon>
               <HeaderButtons>
@@ -454,6 +587,21 @@ function Wrapper(props) {
                 <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
                 <HeaderPodsText>Pods</HeaderPodsText>
               </HeaderPods>
+              {isGr15Sponsor && (
+                <HeaderGr15Sponsor>
+                  <ExploreOrgGr15
+                    onTaskPage={onTaskPage}
+                    onBountyPage={onBountyPage}
+                    hasGr15Bounties={hasGr15Bounties}
+                    hasGr15Tasks={hasGr15Tasks}
+                    onFilterChange={onFilterChange}
+                    orgProfile={orgProfile}
+                    filters={boardFilters}
+                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                  />
+                </HeaderGr15Sponsor>
+              )}
               {links?.map((link, index) => {
                 if (link.type === 'link') {
                   return (
@@ -508,17 +656,22 @@ function Wrapper(props) {
           <Container>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+                <TypeSelector
+                  tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard}
+                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                />
               )}
               {!!filterSchema && (
-                <BoardsActivity
-                  onSearch={onSearch}
-                  filterSchema={filterSchema}
-                  onFilterChange={onFilterChange}
-                  statuses={statuses}
-                  podIds={podIds}
-                  userId={userId}
-                />
+                <ExploreGr15TasksAndBountiesContext.Provider value={exploreGr15TasksAndBounties}>
+                  <BoardsActivity
+                    onSearch={onSearch}
+                    filterSchema={filterSchema}
+                    onFilterChange={onFilterChange}
+                    statuses={statuses}
+                    podIds={podIds}
+                    userId={userId}
+                  />
+                </ExploreGr15TasksAndBountiesContext.Provider>
               )}
             </BoardsSubheaderWrapper>
             {children}

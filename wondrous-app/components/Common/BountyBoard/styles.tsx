@@ -72,6 +72,7 @@ export const BountyCardType = styled.div`
   font-weight: 700;
   font-size: 13px;
   line-height: 17px;
+  text-transform: capitalize;
 `;
 
 export const BountyCardSubmissionsCount = styled.div`

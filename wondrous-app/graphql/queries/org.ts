@@ -152,8 +152,8 @@ export const GET_ORG_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $queryString: String!) {
-    searchOrgUsers(orgId: $orgId, queryString: $queryString) {
+  query searchOrgUsers($orgId: ID!, $searchString: String!) {
+    searchOrgUsers(orgId: $orgId, searchString: $searchString) {
       id
       username
       profilePicture
@@ -182,6 +182,9 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -201,6 +204,9 @@ export const GET_ORG_MEMBERSHIP_REQUEST = gql`
       orgName
       orgUsername
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -267,7 +273,7 @@ export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
 
 export const GET_PARENT_ORG_CONTRIBUTORS = gql`
   query getParentOrgsContributors($sharedOrgId: String!, $limit: Int, $offset: Int, $searchString: String) {
-    getParentOrgsContributors(sharedOrgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString) {
+    getParentOrgsContributors(sharedOrgId: $sharedOrgId, limit: $limit, offset: $offset, searchString: $searchString) {
       id
       username
       profilePicture
@@ -278,4 +284,22 @@ export const GET_PARENT_ORG_CONTRIBUTORS = gql`
       bio
     }
   }
+`;
+
+export const GET_GR15_SPONSORS = gql`
+  query getGr15Sponsors {
+    getGr15Sponsors {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;
+
+export const GET_GR15_GRANTEES = gql`
+  query getGr15Grantees {
+    getGr15Grantees {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
 `;

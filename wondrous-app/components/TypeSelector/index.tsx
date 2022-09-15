@@ -13,6 +13,7 @@ interface TasksPerType {
 }
 interface Props {
   tasksPerTypeData: TasksPerType;
+  setExploreGr15TasksAndBounties?: any;
 }
 
 const config = [
@@ -22,7 +23,7 @@ const config = [
   { key: 'proposalCount', icon: FlagIcon, title: 'proposals', type: ENTITIES_TYPES.PROPOSAL },
 ];
 
-export default function TaskTypeSelector({ tasksPerTypeData }: Props) {
+export default function TaskTypeSelector({ tasksPerTypeData, setExploreGr15TasksAndBounties }: Props) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
@@ -34,7 +35,14 @@ export default function TaskTypeSelector({ tasksPerTypeData }: Props) {
         const isActive = entityType === stat.type;
         const Icon = stat.icon;
         return (
-          <StatItem key={stat.key} onClick={() => setEntityType(stat.type)} isActive={isActive}>
+          <StatItem
+            key={stat.key}
+            onClick={() => {
+              setEntityType(stat.type);
+              setExploreGr15TasksAndBounties(false);
+            }}
+            isActive={isActive}
+          >
             <IconWrapper isActive={isActive}>
               <Icon displayBackground={false} fill="transparent" stroke="white" width="25" height="25" />
             </IconWrapper>

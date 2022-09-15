@@ -160,7 +160,7 @@ function InviteMember(props) {
               searchOrgUsers({
                 variables: {
                   orgId,
-                  queryString: '',
+                  searchString: '',
                 },
               });
             }
@@ -169,7 +169,7 @@ function InviteMember(props) {
             searchOrgUsers({
               variables: {
                 orgId,
-                queryString: newInputValue,
+                searchString: newInputValue,
               },
             });
             setInviteeString(newInputValue);
