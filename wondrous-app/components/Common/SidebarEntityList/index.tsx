@@ -82,22 +82,18 @@ const useSidebarData = () => {
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
-
-          {
-            ...(board?.orgData?.shared
-              ? {}
-              : {
-                  text: 'Collectives',
-                  Icon: Dao2DaoIcon,
-                  link: {
-                    pathname: router.pathname,
-                    query: {
-                      ...router.query,
-                      collabs: true,
-                    },
-                  },
-                }),
+          !board?.orgData?.shared && {
+            text: 'Collaborations',
+            Icon: Dao2DaoIcon,
+            link: {
+              pathname: router.pathname,
+              query: {
+                ...router.query,
+                collabs: true,
+              },
+            },
           },
+
           // {
           //   text: 'Pods',
           //   Icon: PodIcon,
@@ -161,17 +157,20 @@ const List = () => {
         <ListWrapper key={label}>
           <Label>{label}</Label>
           <ListWrapper>
-            {items.map(({ text, link, Icon, count, entityType = null }) => (
-              <Item
-                key={text}
-                onClick={handleOnClick(link, entityType)}
-                Icon={Icon}
-                isActive={isActive(entityType, link)}
-                count={count}
-              >
-                {text}
-              </Item>
-            ))}
+            {items.map(
+              ({ text, link, Icon, count, entityType = null }) =>
+                !!text && (
+                  <Item
+                    key={text}
+                    onClick={handleOnClick(link, entityType)}
+                    Icon={Icon}
+                    isActive={isActive(entityType, link)}
+                    count={count}
+                  >
+                    {text}
+                  </Item>
+                )
+            )}
           </ListWrapper>
         </ListWrapper>
       ))}

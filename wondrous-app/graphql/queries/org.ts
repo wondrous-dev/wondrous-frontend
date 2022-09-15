@@ -271,6 +271,21 @@ export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
   }
 `;
 
+export const GET_PARENT_ORG_CONTRIBUTORS = gql`
+  query getParentOrgsContributors($sharedOrgId: String!, $limit: Int, $offset: Int, $searchString: String) {
+    getParentOrgsContributors(sharedOrgId: $sharedOrgId, limit: $limit, offset: $offset, searchString: $searchString) {
+      id
+      username
+      profilePicture
+      thumbnailPicture
+      activeEthAddress
+      firstName
+      lastName
+      bio
+    }
+  }
+`;
+
 export const GET_GR15_SPONSORS = gql`
   query getGr15Sponsors {
     getGr15Sponsors {
