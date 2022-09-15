@@ -552,7 +552,7 @@ function BoardsPage() {
           orgId: id,
           limit: LIMIT,
           offset: 0,
-          queryString: searchString,
+          searchString,
         },
       }),
       apollo.query({
