@@ -158,6 +158,9 @@ export const GET_JOIN_POD_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -180,6 +183,9 @@ export const GET_POD_MEMBERSHIP_REQUEST = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;

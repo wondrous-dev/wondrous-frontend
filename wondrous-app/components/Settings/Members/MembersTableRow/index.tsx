@@ -5,7 +5,7 @@ import { SafeImage } from 'components/Common/Image';
 import CopyIcon from 'components/Icons/copy';
 import { useWonderWeb3 } from 'services/web3';
 import PodIcon from 'components/Icons/podIcon';
-import Dropdown from 'components/Common/Dropdown';
+import { DropDown } from 'components/Common/dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import palette from 'theme/palette';
@@ -105,7 +105,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
           username={user?.username}
         />
         <UserOptions>
-          <Dropdown
+          <DropDown
             DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke={palette.white} />}
           >
             <DropdownItem
@@ -117,7 +117,7 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
             >
               Remove Member
             </DropdownItem>
-          </Dropdown>
+          </DropDown>
         </UserOptions>
       </Grid>
     </Grid>

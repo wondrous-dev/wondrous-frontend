@@ -6,6 +6,9 @@ import { TASK_APPLICATION_STATUS_LABELS, TASK_APPLICATION_STATUS } from 'utils/c
 import { Approved, Rejected, PendingApplication } from 'components/Icons';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
 import { ActionButton } from 'components/Common/Task/styles';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { useState } from 'react';
 import {
   CardWrapper,
   CardHeader,
@@ -48,6 +51,7 @@ interface Props {
   onApprove: () => void;
   onReject: () => void;
   showActions: boolean;
+  isGr15Contributor?: boolean;
 }
 
 export default function ApplicationCard({
@@ -60,7 +64,9 @@ export default function ApplicationCard({
   onApprove,
   onReject,
   showActions,
+  isGr15Contributor,
 }: Props) {
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const ACTION_BUTTONS_CONFIG = [
     {
       label: 'Reject',
@@ -104,7 +110,12 @@ export default function ApplicationCard({
               />
             )}
           </SmartLink>
-
+          {isGr15Contributor && (
+            <>
+              <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+              <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
+            </>
+          )}
           <SmartLink href={`/profile/${username}/about`} asLink>
             <CardUsername>{username}</CardUsername>
           </SmartLink>

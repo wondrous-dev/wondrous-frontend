@@ -166,6 +166,7 @@ function ListViewAdmin({ column }: Props) {
               media={item.media}
               taskStatus={item.taskStatus}
               setKudosFormData={setKudosFormData}
+              isGr15Contributor={item?.checkIsGr15Contributor?.isGr15Contributor}
             />
           ))}
         </Accordion>

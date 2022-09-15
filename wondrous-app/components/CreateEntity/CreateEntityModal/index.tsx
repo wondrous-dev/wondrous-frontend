@@ -84,8 +84,15 @@ import {
   TASK_STATUS_TODO,
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
+  GR15DEICategoryName,
 } from 'utils/constants';
-import { transformTaskToTaskCard, hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
+
+import {
+  transformTaskToTaskCard,
+  hasCreateTaskPermission,
+  transformMediaFormat,
+  transformCategoryFormat,
+} from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
@@ -101,6 +108,8 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
+import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
+import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
@@ -144,8 +153,6 @@ import {
   CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
-  CreateEntityPrivacyMembersIcon,
-  CreateEntityPrivacyPublicIcon,
   CreateEntityPrivacySelect,
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
@@ -179,6 +186,7 @@ import { MediaItem } from '../MediaItem';
 import Tags, { Option as Label } from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
+import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -213,12 +221,12 @@ const privacyOptions = {
   public: {
     label: 'Public',
     value: PRIVACY_LEVEL.public,
-    Icon: CreateEntityPrivacyPublicIcon,
+    Icon: PrivacyPublicIcon,
   },
   private: {
     label: 'Members',
     value: '',
-    Icon: CreateEntityPrivacyMembersIcon,
+    Icon: PrivacyMembersIcon,
   },
 };
 const filterUserOptions = (options) => {
@@ -987,6 +995,7 @@ const entityTypeData = {
       chooseGithubPullRequest: false,
       chooseGithubIssue: false,
       parentTaskId: null,
+      categories: [],
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -1003,6 +1012,7 @@ const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      categories: [],
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -1023,6 +1033,7 @@ const entityTypeData = {
       milestoneId: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      categories: [],
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -1040,6 +1051,7 @@ const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      categories: [],
     },
   },
 };
@@ -1064,6 +1076,7 @@ const initialValues = (entityType, existingTask = undefined) => {
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
+      categories: transformCategoryFormat(existingTask?.categories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
       labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
@@ -2560,17 +2573,38 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </CreateEntityLabelSelectWrapper>
           )}
         <CreateEntityDivider />
-        <TaskTemplatePicker
-          options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
-          value={form.values.podId}
-          onChange={handleOnchangePodId}
-          disabled={formValues !== undefined}
-          handleSubmitTemplate={handleSubmitTemplate}
-          paymentMethods={paymentMethods}
-          handleSaveTemplate={handleSaveTemplate}
-          handleEditTemplate={handleEditTemplate}
-          handleDeleteTemplate={handleDeleteTemplate}
-        />
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          <TaskTemplatePicker
+            options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
+            value={form.values.podId}
+            onChange={handleOnchangePodId}
+            disabled={formValues !== undefined}
+            handleSubmitTemplate={handleSubmitTemplate}
+            paymentMethods={paymentMethods}
+            handleSaveTemplate={handleSaveTemplate}
+            handleEditTemplate={handleEditTemplate}
+            handleDeleteTemplate={handleDeleteTemplate}
+          />
+          {!isProposal && (
+            <GR15DEICreateSelector
+              setGR15DEISelected={() => {
+                if (form.values.categories?.includes(GR15DEICategoryName)) {
+                  const newCategoriesArray = form.values.categories.filter((name) => name !== GR15DEICategoryName);
+                  form.setFieldValue('categories', newCategoriesArray);
+                } else {
+                  const newCategoriesArray = [...form.values.categories, GR15DEICategoryName];
+                  form.setFieldValue('categories', newCategoriesArray);
+                }
+              }}
+              GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
+            />
+          )}
+        </div>
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>

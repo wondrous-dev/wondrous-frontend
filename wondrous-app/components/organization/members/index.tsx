@@ -6,6 +6,8 @@ import { APPROVE_JOIN_ORG_REQUEST, REJECT_JOIN_ORG_REQUEST } from 'graphql/mutat
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   MemberRequestsList,
   MemberRequestCard,
@@ -68,6 +70,7 @@ function MemberRequests(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
   const { data: orgUserMembershipRequests, fetchMore, hasMore } = useGetOrgMemberRequests(orgId);
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
   const refetchQueries = [
@@ -157,6 +160,19 @@ function MemberRequests(props) {
                           initials={getUserInitials(request.userUsername)}
                           style={{ width: '28px', height: '28px' }}
                         />
+                      )}
+                      {request?.checkIsGr15Contributor?.isGr15Contributor && (
+                        <>
+                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                          <GR15DEILogo
+                            style={{
+                              marginLeft: '-8px',
+                            }}
+                            width="28"
+                            height="28"
+                            onClick={() => setOpenGR15Modal(true)}
+                          />
+                        </>
                       )}
                       <MemberName>{request.userUsername}</MemberName>
                     </MemberProfileLink>
