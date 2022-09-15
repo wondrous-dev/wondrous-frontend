@@ -61,8 +61,8 @@ export const CREATE_JOIN_ORG_REQUEST = gql`
 `;
 
 export const SEND_ORG_EMAIL_INVITES = gql`
-  mutation sendOrgRoleInviteEmails($orgId: ID!, $expiry: String, $emailsAndRoles: String) {
-    sendOrgRoleInviteEmails(orgId: $orgId, expiry: $expiry, emailsAndRoles: $emailsAndRoles) {
+  mutation sendOrgRoleInviteEmails($input: OrgInviteLinkInput) {
+    sendOrgRoleInviteEmails(input: $input) {
       success
     }
   }
