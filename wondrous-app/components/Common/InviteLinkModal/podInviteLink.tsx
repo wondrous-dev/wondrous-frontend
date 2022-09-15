@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { BATCH_ADD_USERS_TO_POD, CREATE_POD_INVITE_LINK, SEND_POD_EMAIL_INVITES } from 'graphql/mutations/pod';
 import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
-import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
+import { GET_ORG_USERS } from 'graphql/queries/org';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { LINK, validateEmail } from 'utils/constants';
@@ -207,15 +207,19 @@ export function PodInviteLinkModal(props) {
 
     sendPodEmailInvites({
       variables: {
-        expiry: null,
-        emailsAndRoles: emailList,
-        podId,
+        input: {
+          expiry: null,
+          emailsAndRoles: emailList,
+          podId,
+        },
       },
     });
     batchAddUsers({
       variables: {
-        usersRoles: usersList,
-        podId,
+        input: {
+          usersRoles: usersList,
+          podId,
+        },
       },
     });
   };
@@ -448,15 +452,7 @@ export function PodInviteLinkModal(props) {
                 >
                   Cancel
                 </CancelButton>
-                <Button
-                  onClick={handleOnCopy}
-                  style={{
-                    textDecoration: 'none',
-                    color: palette.white,
-                  }}
-                >
-                  {copy ? 'Copied' : 'Copy Link'}
-                </Button>
+                <Button onClick={handleOnCopy}>{copy ? 'Copied' : 'Copy Link'}</Button>
               </LinkFlex>
             </CopyLinkBox>
           )}
@@ -473,14 +469,7 @@ export function PodInviteLinkModal(props) {
                 Universal link
               </UniversalLinkButton>
               <LinkFlex>
-                <Button
-                  style={{
-                    textDecoration: 'none',
-                    color: palette.white,
-                  }}
-                  disabled={!selectedUsersList.length}
-                  onClick={handleSendInvite}
-                >
+                <Button disabled={!selectedUsersList.length} onClick={handleSendInvite}>
                   Send Invite
                 </Button>
               </LinkFlex>

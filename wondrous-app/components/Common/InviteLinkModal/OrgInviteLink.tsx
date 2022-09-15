@@ -190,12 +190,14 @@ export function OrgInviteLinkModal(props) {
   const handleSendInvite = () => {
     sendOrgEmailInvites({
       variables: {
-        expiry: null,
-        emailsAndRoles: selectedUsersList.map((item) => ({
-          email: item.email,
-          roleId: item.roleId,
-        })),
-        orgId,
+        input: {
+          expiry: null,
+          emailsAndRoles: selectedUsersList.map((item) => ({
+            email: item.email,
+            roleId: item.roleId,
+          })),
+          orgId,
+        },
       },
     });
   };
@@ -371,15 +373,7 @@ export function OrgInviteLinkModal(props) {
                 >
                   Cancel
                 </CancelButton>
-                <Button
-                  onClick={handleOnCopy}
-                  style={{
-                    textDecoration: 'none',
-                    color: palette.white,
-                  }}
-                >
-                  {copy ? 'Copied' : 'Copy Link'}
-                </Button>
+                <Button onClick={handleOnCopy}>{copy ? 'Copied' : 'Copy Link'}</Button>
               </LinkFlex>
             </CopyLinkBox>
           )}
@@ -396,14 +390,7 @@ export function OrgInviteLinkModal(props) {
                 Universal link
               </UniversalLinkButton>
               <LinkFlex>
-                <Button
-                  style={{
-                    textDecoration: 'none',
-                    color: palette.white,
-                  }}
-                  disabled={!selectedUsersList.length}
-                  onClick={handleSendInvite}
-                >
+                <Button disabled={!selectedUsersList.length} onClick={handleSendInvite}>
                   Send Invite
                 </Button>
               </LinkFlex>
