@@ -18,3 +18,12 @@ export const GET_POD_FEED = gql`
   }
   ${FeedItemFragment}
 `;
+
+export const GET_USER_FEED = gql`
+  query getUserFeed($limit: Int, $offset: Int, $userId: ID, $verb: String) {
+    getUserFeed(userId: $userId, verb: $verb, limit: $limit, offset: $offset) {
+      ...FeedItemFragment
+    }
+  }
+  ${FeedItemFragment}
+`;

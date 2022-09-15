@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router';
-import { useOrgBoard, usePodBoard, useCreateEntityContext } from 'utils/hooks';
+import { useOrgBoard, usePodBoard, useGlobalContext } from 'utils/hooks';
 import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { useMe } from 'components/Auth/withAuth';
 import SkeletonBoard from 'components/Common/SkeletonBoard';
@@ -11,11 +11,11 @@ function BoardLock({ children, handleJoinClick, requestSent }) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
-  const entityContext = useCreateEntityContext();
+  const globalContext = useGlobalContext();
   const router = useRouter();
   const user = useMe();
   if (!board) return children;
-  const { userOrgs } = entityContext;
+  const { userOrgs } = globalContext;
   const permissions = parseUserPermissionContext({
     userPermissionsContext: board?.userPermissionsContext,
     orgId: board?.orgId,

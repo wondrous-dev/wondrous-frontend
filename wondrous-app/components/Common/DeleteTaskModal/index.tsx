@@ -1,7 +1,8 @@
 import { useMutation } from '@apollo/client';
 import { DELETE_MILESTONE, DELETE_TASK, DELETE_TASK_PROPOSAL } from 'graphql/mutations';
 import CloseModalIcon from 'components/Icons/closeModal';
-import { ArchivedIcon } from '../../Icons/statusIcons';
+import { deleteTaskFromCache } from 'utils/helpers';
+import { ArchivedIcon } from 'components/Icons/statusIcons';
 import {
   StyledBody,
   StyledBox,
@@ -23,33 +24,39 @@ interface IArchiveTaskModalProps {
   onDelete: () => void;
 }
 
-export function DeleteTaskModal(props: IArchiveTaskModalProps) {
+function DeleteTaskModal(props: IArchiveTaskModalProps) {
   const { open, onClose, onDelete, taskType, taskId } = props;
   const refetchQueries = [
-    'getUserTaskBoardTasks',
-    'getOrgTaskBoardTasks',
-    'getPodTaskBoardTasks',
     'getPerStatusTaskCountForUserBoard',
     'getPerStatusTaskCountForOrgBoard',
     'getPerStatusTaskCountForPodBoard',
     'getSubtasksForTask',
     'getPerTypeTaskCountForOrgBoard',
     'getPerTypeTaskCountForPodBoard',
-    ,
   ];
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },
     refetchQueries,
+    update: (cache) =>
+      deleteTaskFromCache(cache, taskId, ['getUserTaskBoardTasks', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks']),
   });
   const [deleteMilestone] = useMutation(DELETE_MILESTONE, {
     variables: { milestoneId: taskId },
     refetchQueries,
+    update: (cache) =>
+      deleteTaskFromCache(cache, taskId, ['getUserTaskBoardTasks', 'getOrgTaskBoardTasks', 'getPodTaskBoardTasks']),
   });
 
   const [deleteProposal] = useMutation(DELETE_TASK_PROPOSAL, {
     variables: { proposalId: taskId },
+    update: (cache) =>
+      deleteTaskFromCache(cache, taskId, [
+        'getOrgTaskBoardProposals',
+        'getPodTaskBoardProposals',
+        'getUserTaskBoardProposals',
+        'getProposalsUserCanReview',
+      ]),
     refetchQueries: [
-      'GetOrgTaskBoardProposals',
       'getPerStatusTaskCountForUserBoard',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
@@ -88,7 +95,7 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
         <StyledDivider />
         <StyledButtonsContainer>
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
-          <StyledDeleteTaskButton onClick={() => handleDelete()}>
+          <StyledDeleteTaskButton data-cy="button-delete" onClick={() => handleDelete()}>
             <ArchivedIcon />
             <StyledDeleteLabel>Delete {taskType}</StyledDeleteLabel>
           </StyledDeleteTaskButton>
@@ -97,3 +104,5 @@ export function DeleteTaskModal(props: IArchiveTaskModalProps) {
     </StyledDialog>
   );
 }
+
+export default DeleteTaskModal;

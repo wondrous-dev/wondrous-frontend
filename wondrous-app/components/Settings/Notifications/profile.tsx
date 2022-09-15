@@ -13,7 +13,7 @@ import Checkbox from 'components/Checkbox';
 import { getDiscordUrl } from 'utils';
 import { GET_USER_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import {
   UserDiscordNotificationSettingsDiv,
   UserDiscordNotificationSettingsText,

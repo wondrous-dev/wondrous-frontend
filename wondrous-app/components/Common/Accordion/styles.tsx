@@ -2,6 +2,9 @@ import styled from 'styled-components';
 
 import Accordion from '@mui/material/Accordion';
 import AccordionDetailsComp from '@mui/material/AccordionDetails';
+import Typography from '@mui/material/Typography';
+import typography from 'theme/typography';
+import palette from 'theme/palette';
 
 export const AccordionComp = styled(Accordion)`
   && {
@@ -11,7 +14,7 @@ export const AccordionComp = styled(Accordion)`
     font-size: 14px;
     line-height: 21px;
     letter-spacing: 0.01em;
-    background: transparent;
+    background: ${palette.black97};
     margin-bottom: 16px;
   }
 
@@ -28,24 +31,15 @@ export const AccordionComp = styled(Accordion)`
 
   .MuiAccordionSummary-contentGutters {
     padding-left: 15px;
-
-    &:not(.Mui-disabled) p {
-      color: #ffffff;
-    }
   }
 
   .MuiAccordionSummary-expandIconWrapper {
     width: 40px;
     height: 100%;
-    border-left: 1px solid #4b4b4b;
-
-    &.Mui-expanded {
-      border-right: 1px solid #4b4b4b;
-      border-left: none;
-    }
 
     svg {
       margin: auto;
+      stroke: ${palette.white};
     }
 
     &:not(.Mui-disabled) {
@@ -69,5 +63,21 @@ export const AccordionComp = styled(Accordion)`
 `;
 
 export const AccordionDetails = styled(AccordionDetailsComp)`
-  border-top: 1px solid #4b4b4b;
+  background: ${palette.grey950};
+  padding: 14px;
+`;
+
+export const Title = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-style: normal;
+    font-weight: 600;
+    font-size: 15px;
+    line-height: 23px;
+    /* identical to box height, or 153% */
+
+    letter-spacing: 0.0025em;
+
+    color: ${palette.blue20};
+  }
 `;

@@ -1,54 +1,62 @@
-import React, { useMemo, useState, useEffect } from 'react';
-import { NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
-import NotificationsIcon from 'components/Icons/notifications';
-import Link from 'next/link';
+import React, { useEffect, useState } from 'react';
+import { COLLAB_TYPES, NOTIFICATION_OBJECT_TYPES, NOTIFICATION_VERBS, snakeToCamel } from 'utils/constants';
+import { Badge } from '@mui/material';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
-import { useInView } from 'react-intersection-observer';
-import { MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
-import { useMutation } from '@apollo/client';
-import { GET_NOTIFICATIONS } from 'graphql/queries';
-import calculateTimeLapse from 'utils/calculateTimeLapse';
 import SmartLink from 'components/Common/SmartLink';
+import NotificationsIcon from 'components/Icons/notifications';
 import Tooltip from 'components/Tooltip';
+import { GET_NOTIFICATIONS } from 'graphql/queries';
+import Link from 'next/link';
+import { useInView } from 'react-intersection-observer';
+import { useHotkeys } from 'react-hotkeys-hook';
+import calculateTimeLapse from 'utils/calculateTimeLapse';
+import { useHotkey, useNotifications } from 'utils/hooks';
+import { HOTKEYS } from 'utils/hotkeyHelper';
+import { LIMIT } from 'services/board';
+import { SmallAvatar } from '../Common/AvatarList';
+import { StyledBadge } from '../Header/styles';
 import {
   NotificationItemBody,
   NotificationItemIcon,
+  NotificationItemInner,
   NotificationItemStatus,
   NotificationItemTimeline,
   NotificationsBoardArrow,
   NotificationsBoardHeader,
   NotificationsBoardOverArrow,
   NotificationsBoardWrapper,
-  NotificationsItem,
-  NotificationsMarkRead,
-  NotificationsOverlay,
-  NotificationsLink,
-  NotificationItemInner,
-  NotificationWrapper,
   NotificationsContentPreview,
   NotificationsDot,
+  NotificationsItem,
+  NotificationsLink,
+  NotificationsMarkRead,
+  NotificationsOverlay,
   NotificationsTitle,
+  NotificationWrapper,
 } from './styles';
-import { StyledBadge } from '../Header/styles';
-import { SmallAvatar } from '../Common/AvatarList';
 
-function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifications }) {
-  const unreadCount = useMemo(() => notifications?.filter((n) => !n.viewedAt).length, [notifications]);
-
+function NotificationsBoard({ onlyBoard = false }) {
+  const { notifications, unreadCount, fetchMore, markAllNotificationsRead, markNotificationRead, hasMore } =
+    useNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const [ref, inView] = useInView({});
   const toggleNotifications = () => {
     setIsOpen(!isOpen);
   };
+  const showBadge = useHotkey();
 
   const handleMarkAllRead = async () => {
     // Mark all read (empty arg)
-    setNotifications();
+    markAllNotificationsRead();
   };
 
-  const handleNotificationsSettings = () => {
-    // console.log('Tap on Notifications Settings');
-  };
+  useHotkeys(
+    HOTKEYS.OPEN_NOTIFICATION,
+    () => {
+      setIsOpen(!isOpen);
+    },
+    [isOpen]
+  );
 
   const getNotificationActorIcon = (notification) => {
     const initials = notification?.actorUsername && notification.actorUsername[0];
@@ -58,26 +66,27 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
 
     return <SmallAvatar initials={initials} avatar={avatar} />;
   };
-  const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
-  const hasMore = useEffect(() => {
-    if (inView && fetchMoreNotifications) {
-      fetchMoreNotifications({
-        variables: {
-          offset: notifications?.length,
-          limit: 10,
-        },
-      }).then((result) => {
-        const newNotifs = result?.data?.getNotifications;
-        if (newNotifs && newNotifs?.length > 0) {
-          setNotifications([...notifications, newNotifs]);
-        }
-      });
+
+  useEffect(() => {
+    if (inView && hasMore && notifications?.length >= LIMIT) {
+      fetchMore();
     }
-  }, [inView, fetchMoreNotifications]);
+  }, [inView, hasMore, notifications?.length]);
+
+  const getNotificationLink = (notification) => {
+    let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
+
+    if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
+      const mainPath = notification.type === COLLAB_TYPES.INVITE ? 'organization' : 'collaboration';
+      notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
+        notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
+      }`;
+    }
+    return notificationLink;
+  };
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;
-    const userId = notification.actorId;
     const actor = (
       <NotificationsLink>
         <Link href={`/profile/${userName}/about`}>{userName}</Link>
@@ -86,12 +95,12 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
 
     const verb = NOTIFICATION_VERBS[notification.type];
     const objectType = NOTIFICATION_OBJECT_TYPES[notification.objectType];
-    const { objectId } = notification;
 
+    const link = getNotificationLink(notification);
     const object = (
       <span>
         <NotificationsLink styled={{ display: 'block' }}>
-          <Link href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}>{objectType}</Link>
+          <Link href={link}>{objectType}</Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>
@@ -115,6 +124,57 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
 
   const display = isOpen ? 'block' : 'none';
 
+  if (onlyBoard) {
+    return (
+      <>
+        {notifications?.length ? (
+          notifications?.map((notification) => {
+            const isNotificationViewed = notification?.viewedAt;
+            const notificationLink = getNotificationLink(notification);
+            return (
+              <SmartLink
+                key={`notifications-${notification.id}`}
+                href={notificationLink}
+                onClick={() => {
+                  markNotificationRead({
+                    variables: {
+                      notificationId: notification?.id,
+                    },
+                    refetchQueries: [GET_NOTIFICATIONS],
+                  });
+                }}
+              >
+                <NotificationsItem isNotificationViewed={isNotificationViewed}>
+                  <NotificationItemIcon>
+                    {getNotificationActorIcon(notification)}
+                    <NotificationItemStatus>{notification.status}</NotificationItemStatus>
+                  </NotificationItemIcon>
+                  <NotificationWrapper>
+                    <NotificationItemBody>
+                      <NotificationItemInner>{getNotificationText(notification)}</NotificationItemInner>
+                    </NotificationItemBody>
+                    <NotificationsContentPreview>{getContentPreview(notification)}</NotificationsContentPreview>
+                  </NotificationWrapper>
+                  {!isNotificationViewed && <NotificationsDot />}
+                </NotificationsItem>
+              </SmartLink>
+            );
+          })
+        ) : (
+          <NotificationsItem emptyNotifications>
+            <NotificationItemBody emptyNotifications>No notifications</NotificationItemBody>
+          </NotificationsItem>
+        )}
+        <LoadMore
+          style={{
+            height: '20px',
+          }}
+          hasMore
+          ref={ref}
+        />
+      </>
+    );
+  }
   return (
     <>
       <NotificationsOverlay onClick={toggleNotifications} style={{ display }} />
@@ -125,9 +185,16 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
           isOpen={isOpen}
           onClick={toggleNotifications}
         >
-          <Tooltip title="Notifications">
-            <NotificationsIcon />
-          </Tooltip>
+          <Badge
+            badgeContent={HOTKEYS.OPEN_NOTIFICATION}
+            color="primary"
+            invisible={!showBadge}
+            style={{ zIndex: 999 }}
+          >
+            <Tooltip title="Notifications" style={{ zIndex: 1 }}>
+              <NotificationsIcon />
+            </Tooltip>
+          </Badge>
         </StyledBadge>
         <NotificationsBoardWrapper style={{ display }}>
           <NotificationsBoardHeader>
@@ -139,10 +206,12 @@ function NotificationsBoard({ notifications, setNotifications, fetchMoreNotifica
           {notifications?.length ? (
             notifications?.map((notification) => {
               const isNotificationViewed = notification?.viewedAt;
+              const notificationLink = getNotificationLink(notification);
+
               return (
                 <SmartLink
                   key={`notifications-${notification.id}`}
-                  href={`/${snakeToCamel(notification.objectType)}/${notification.objectId}`}
+                  href={notificationLink}
                   onClick={() => {
                     markNotificationRead({
                       variables: {

@@ -6,12 +6,6 @@ import Checkbox from '@mui/material/Checkbox';
 import palette from 'theme/palette';
 import { Button } from '../../Common/button';
 
-export const ConnectDiscordButton = styled(Button)`
-  && {
-    max-width: 206px;
-  }
-`;
-
 export const TableValueText = styled(Typography)`
   && {
     color: #c4c4c4;

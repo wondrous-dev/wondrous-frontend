@@ -79,6 +79,7 @@ function MemberRoleDropdown(props) {
       formSelectStyle={{
         height: 'auto',
         marginTop: '-20px',
+        maxWidth: '180px',
       }}
     />
   );

@@ -11,7 +11,7 @@ import {
 
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { ErrorText } from 'components/Common';
 import Switch from 'components/Common/Switch';
 import { NotificationOutlineSettings } from 'components/Icons/notifications';

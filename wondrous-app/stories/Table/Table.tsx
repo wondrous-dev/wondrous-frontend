@@ -8,7 +8,7 @@ import {
   StyledTableBody,
 } from './styles';
 
-export const Table = () => (
+const Table = () => (
   <StyledTableContainer>
     <StyledTable>
       <StyledTableHead>
@@ -45,3 +45,5 @@ export const Table = () => (
     </StyledTable>
   </StyledTableContainer>
 );
+
+export default Table;

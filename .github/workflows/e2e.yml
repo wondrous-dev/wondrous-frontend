@@ -1,0 +1,51 @@
+name: Cypress Tests
+on:
+  push:
+    branches-ignore:
+      - 'main'
+env:
+  NEXT_PUBLIC_RPC_URL_ETH: ${{secrets.NEXT_PUBLIC_RPC_URL_ETH}}
+  NEXT_PUBLIC_RPC_URL_MATIC: ${{secrets.NEXT_PUBLIC_RPC_URL_MATIC}}
+  NEXT_PUBLIC_RPC_URL_HARMONY: ${{secrets.NEXT_PUBLIC_RPC_URL_HARMONY}}
+  NEXT_PUBLIC_RPC_URL_ARBITRUM: ${{secrets.NEXT_PUBLIC_RPC_URL_ARBITRUM}}
+  NEXT_PUBLIC_RPC_URL_BSC: ${{secrets.NEXT_PUBLIC_RPC_URL_BSC}}
+  NEXT_PUBLIC_RPC_URL_BOBA: ${{secrets.NEXT_PUBLIC_RPC_URL_BOBA}}
+  NEXT_PUBLIC_RPC_URL_RINKEBY: ${{secrets.NEXT_PUBLIC_RPC_URL_RINKEBY}}
+  NEXT_PUBLIC_GRAPHQL_SERVER_URL: ${{secrets.NEXT_PUBLIC_GRAPHQL_SERVER_URL}}
+  CYPRESS_RECORD_KEY: ${{secrets.CYPRESS_RECORD_KEY}}
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+       
+      - name: Install
+        uses: actions/setup-node@v1
+        with:
+          node-version: 16
+      - run: cd wondrous-app && yarn install --frozen-lockfile
+      - run: cd wondrous-app && yarn build
+        
+
+      - name: Save build folder
+        uses: actions/upload-artifact@v2
+        with:
+          name: build
+          if-no-files-found: error
+          path: './wondrous-app/.next'
+  ui-chrome-tests:
+    runs-on: ubuntu-latest
+    needs: install
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Download the build folders
+        uses: actions/download-artifact@v2
+        with:
+          name: build
+          path: './wondrous-app/.next'
+
+      - name: Run Tests
+        run: cd wondrous-app && yarn && yarn e2e:headless

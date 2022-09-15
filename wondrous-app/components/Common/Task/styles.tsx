@@ -1,6 +1,7 @@
 import { MenuItem, Modal, Typography } from '@mui/material';
 import ProposalIcon from 'components/Icons/proposalIcon';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { BaseCard } from '../card';
@@ -134,19 +135,6 @@ export const TaskAction = styled.div`
   cursor: pointer;
 `;
 
-export const TaskActionMenu = styled.div`
-  display: flex;
-  flex-direction: row;
-  flex-grow: 1;
-  justify-content: flex-end;
-  height: 24px;
-  z-index: 100;
-  align-items: center;
-  > * {
-    margin-left: 12px;
-  }
-`;
-
 export const TaskActionAmount = styled.div`
   display: flex;
   flex-grow: 1;
@@ -158,9 +146,20 @@ export const TaskActionAmount = styled.div`
 export const PodWrapper = styled.div`
   cursor: pointer;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   margin-right: 6px;
   margin-top: 12px;
+`;
+
+export const BountySignifier = styled.div`
+  && {
+    background: ${palette.grey85};
+    font-size: 13px;
+    color: ${({ theme }) => theme.palette.white};
+    padding: 1px 8px;
+    border-radius: 190px;
+    margin-left: -16px;
+  }
 `;
 
 export const PodName = styled(Typography)`
@@ -514,4 +513,17 @@ export const DueDateText = styled(Typography)`
 export const LoadMore = styled.div`
   height: 10px;
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
+`;
+
+export const TaskActionMenu = styled.div`
+  display: flex;
+  justify-content: center;
+  height: 24px;
+  width: max-content;
+  z-index: 100;
+  align-items: center;
+  visibility: hidden;
+  ${ProposalCardWrapper}:hover & {
+    visibility: visible;
+  }
 `;

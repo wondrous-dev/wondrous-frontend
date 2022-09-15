@@ -27,7 +27,7 @@ function Signup() {
     const result = await emailSignup(email, password);
     if (result?.success === true) {
       // Check for token
-      router.push('/dashboard', undefined, {
+      router.push('/mission-control', undefined, {
         shallow: true,
       });
     } else {

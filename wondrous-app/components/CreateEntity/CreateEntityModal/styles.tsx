@@ -15,40 +15,10 @@ import SingleDatePicker from 'components/SingleDatePicker';
 import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
+import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
-import PrivacyMembersIcon from '../../Icons/privacyMembers.svg';
-import PrivacyPublicIcon from '../../Icons/privacyPublic.svg';
 import MilestoneSearch from './MilestoneSearch';
-
-export const scrollBarStyles = css`
-  :hover {
-    &::-webkit-scrollbar {
-      display: block;
-    }
-  }
-  &::-webkit-scrollbar {
-    display: none;
-    position: absolute;
-    z-index: 999;
-    width: 20px;
-    background: transparent;
-    border-radius: 0 4px 4px 0;
-    outline: none;
-  }
-  &::-webkit-scrollbar-track {
-    background: #606060;
-    background-clip: padding-box;
-    border: 8px solid rgba(0, 0, 0, 0);
-    border-radius: 50px;
-  }
-  &::-webkit-scrollbar-thumb {
-    border-radius: 50px;
-    border: 8px solid rgba(0, 0, 0, 0);
-    background: #c4c4c4;
-    background-clip: padding-box;
-  }
-`;
 
 const fullScreenStyle = css`
   max-height: 100vh;
@@ -606,8 +576,6 @@ export const CreateEntityPrivacySelectRenderLabel = styled.div`
   align-items: center;
 `;
 
-export const CreateEntityPrivacyMembersIcon = styled(PrivacyMembersIcon)``;
-export const CreateEntityPrivacyPublicIcon = styled(PrivacyPublicIcon)``;
 export const CreateEntityPrivacyIconWrapper = styled.div`
   display: flex;
   align-items: center;

@@ -18,13 +18,13 @@ import {
   REJECT_SUBMISSION,
 } from 'graphql/mutations';
 import palette from 'theme/palette';
-import { KudosForm } from 'components/Common/KudosForm';
+import KudosForm from 'components/Common/KudosForm';
 import { useContext, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { LinkIcon, DueDateIcon } from 'components/Icons/taskModalIcons';
 import { Rewards } from 'components/Common/TaskViewModal/helpers';
 import { ListViewItemBodyWrapper, ListViewItemDataContainer, ListViewItemActions } from 'components/ListView/styles';
-import { NoLogoDAO } from 'components/SideBar/styles';
+import { NoLogoDAO } from 'components/Common/SidebarMain/styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { DAOIcon } from 'components/Icons/dao';
@@ -32,6 +32,8 @@ import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
 import { GET_JOIN_ORG_REQUESTS } from 'graphql/queries';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   BoldName,
   Description,
@@ -70,6 +72,9 @@ interface Props {
   links?: any;
   media?: any;
   taskStatus?: string;
+  setKudosFormData: (data: any) => any;
+  createdBy?: string;
+  isGr15Contributor?: boolean;
 }
 
 export const ICON_TYPES = {
@@ -118,8 +123,12 @@ function ColumnEntry(props: Props) {
     links,
     media,
     taskStatus,
+    isGr15Contributor,
+    setKudosFormData,
+    createdBy,
   } = props;
   const [isKudosModalOpen, setKudosModalOpen] = useState(false);
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const refetchQueries = ['getWorkFlowBoardReviewableItemsCount'];
 
@@ -229,7 +238,7 @@ function ColumnEntry(props: Props) {
           approveTaskSubmission({ variables: { submissionId: id } }).then(() => {
             setSnackbarAlertMessage('Submission approved');
             setSnackbarAlertOpen(true);
-            setKudosModalOpen(true);
+            setKudosFormData({ id, podId, orgId, createdBy });
           });
         },
         decline: () =>
@@ -301,104 +310,110 @@ function ColumnEntry(props: Props) {
     const viewItemId = taskId || id;
     selectTask(viewItemId, type);
   };
-  const handleKudosFormOnClose = () => {
-    setKudosModalOpen(false);
-  };
 
   return (
-    <>
-      <KudosForm onClose={handleKudosFormOnClose} open={isKudosModalOpen} submission={{ id, podId, orgId }} />
-
-      <ListViewItemBodyWrapper>
-        <ListViewItemDataContainer onClick={handleItemClick}>
-          <Tooltip title={orgUsername}>
+    <ListViewItemBodyWrapper>
+      <ListViewItemDataContainer onClick={handleItemClick}>
+        <Tooltip title={orgUsername}>
+          <div>
+            {orgProfilePicture ? (
+              <SafeImage
+                useNextImage={false}
+                src={orgProfilePicture}
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '6px',
+                }}
+              />
+            ) : (
+              <NoLogoDAO>
+                <DAOIcon />
+              </NoLogoDAO>
+            )}
+          </div>
+        </Tooltip>
+        <Tooltip title={podName}>
+          {podId ? (
             <div>
-              {orgProfilePicture ? (
-                <SafeImage
-                  useNextImage={false}
-                  src={orgProfilePicture}
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '6px',
-                  }}
-                />
-              ) : (
-                <NoLogoDAO>
-                  <DAOIcon />
-                </NoLogoDAO>
-              )}
+              <PodIcon
+                color={podColor}
+                style={{
+                  width: '30px',
+                  height: '30px',
+                }}
+              />
             </div>
-          </Tooltip>
-          <Tooltip title={podName}>
-            {podId ? (
-              <div>
-                <PodIcon
-                  color={podColor}
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                  }}
-                />
-              </div>
-            ) : null}
-          </Tooltip>
-          <Tooltip title={username}>
-            <div>
-              {userAvatar ? (
-                <SafeImage
-                  useNextImage={false}
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '13px',
-                    marginRight: '4px',
-                  }}
-                  src={userAvatar}
-                />
-              ) : (
-                <DefaultUserImage
-                  style={{
-                    width: '30px',
-                    height: '30px',
-                    borderRadius: '13px',
-                    marginRight: '4px',
-                  }}
-                />
-              )}
-            </div>
-          </Tooltip>
-          <BoldName>{username}</BoldName>
-
-          <Description>{entryMessage}</Description>
-          {links ? <IconsList items={links} /> : null}
-          {media ? <IconsList items={media} type={ICON_TYPES.MEDIA} /> : null}
-        </ListViewItemDataContainer>
-        <ListViewItemActions>
-          {taskDueDate ? (
-            <DueDateWrapper>
-              <DueDateIcon />
-              {format(new Date(taskDueDate), 'MMM dd')}
-            </DueDateWrapper>
           ) : null}
-          {rewards ? <Rewards user={null} withLabel={false} fetchedTask={{ rewards }} /> : null}
-          {Buttons.map((btn, idx) => {
-            const Button = btn.component;
-            return (
-              <Button
-                type="button"
-                isCompleted={btn.isCompleted}
-                disabled={btn.isCompleted}
-                onClick={btn.action}
-                key={idx}
-              >
-                {btn.isCompleted ? btn.isCompletedLabel : btn.label}
-              </Button>
-            );
-          })}
-        </ListViewItemActions>
-      </ListViewItemBodyWrapper>
-    </>
+        </Tooltip>
+        <Tooltip title={username}>
+          <div>
+            {userAvatar ? (
+              <SafeImage
+                useNextImage={false}
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '13px',
+                  marginRight: '4px',
+                }}
+                src={userAvatar}
+              />
+            ) : (
+              <DefaultUserImage
+                style={{
+                  width: '30px',
+                  height: '30px',
+                  borderRadius: '13px',
+                  marginRight: '4px',
+                }}
+              />
+            )}
+          </div>
+        </Tooltip>
+        {isGr15Contributor && (
+          <>
+            <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+            <GR15DEILogo
+              style={{
+                marginLeft: '-8px',
+              }}
+              width="28"
+              height="28"
+              onClick={() => setOpenGR15Modal(true)}
+            />
+          </>
+        )}
+        <BoldName>{username}</BoldName>
+
+        <Description>{entryMessage}</Description>
+        {links ? <IconsList items={links} /> : null}
+        {media ? <IconsList items={media} type={ICON_TYPES.MEDIA} /> : null}
+      </ListViewItemDataContainer>
+      <ListViewItemActions>
+        {taskDueDate ? (
+          <DueDateWrapper>
+            <DueDateIcon />
+            {format(new Date(taskDueDate), 'MMM dd')}
+          </DueDateWrapper>
+        ) : null}
+        {rewards ? <Rewards user={null} withLabel={false} fetchedTask={{ rewards }} /> : null}
+        {Buttons.map((btn, idx) => {
+          const Button = btn.component;
+          return (
+            <Button
+              type="button"
+              isCompleted={btn.isCompleted}
+              disabled={btn.isCompleted}
+              onClick={btn.action}
+              key={idx}
+            >
+              <span>{btn.isCompleted ? btn.isCompletedLabel : btn.label}</span>
+            </Button>
+          );
+        })}
+      </ListViewItemActions>
+    </ListViewItemBodyWrapper>
   );
 }
 

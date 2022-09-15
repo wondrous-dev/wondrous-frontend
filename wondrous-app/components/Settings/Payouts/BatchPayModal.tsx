@@ -10,7 +10,7 @@ import usePrevious from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
-import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_ORG_BY_ID, GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import isEqual from 'lodash/isEqual';
 import {
   PodNameTypography,
@@ -75,6 +75,9 @@ export function BatchPayModal(props) {
   });
 
   const [getPodById] = useLazyQuery(GET_POD_BY_ID);
+
+  const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
+
   const getWallets = useCallback(
     async (podId, orgId) => {
       if (podId) {
@@ -105,6 +108,11 @@ export function BatchPayModal(props) {
         }
       } else if (orgId) {
         getOrgWallet({
+          variables: {
+            orgId,
+          },
+        });
+        getOrgById({
           variables: {
             orgId,
           },
@@ -184,7 +192,7 @@ export function BatchPayModal(props) {
                 Object.keys(unpaidSubmissions).map((key, index) => {
                   const submission = unpaidSubmissions[key];
                   const taskHref = orgId
-                    ? `/organization/${orgId}/boards?task=${submission.taskId}`
+                    ? `/organization/${orgData?.username}/boards?task=${submission.taskId}`
                     : `/pod/${podId}/boards?task=${submission.taskId}`;
 
                   return (

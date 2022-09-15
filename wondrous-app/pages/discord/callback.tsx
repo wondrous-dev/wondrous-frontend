@@ -54,7 +54,7 @@ function Callback() {
       .then((result) => {
         if (result?.data?.redeemOrgInviteLink?.success) {
           if (user && user?.username) {
-            router.push('/dashboard', undefined, {
+            router.push('/mission-control', undefined, {
               shallow: true,
             });
           } else if (user && !user?.username) {
@@ -71,7 +71,7 @@ function Callback() {
             err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
         ) {
           if (user && user?.username) {
-            router.push('/dashboard', undefined, {
+            router.push('/mission-control', undefined, {
               shallow: true,
             });
           } else if (user && !user?.username) {
@@ -92,7 +92,7 @@ function Callback() {
       .then((result) => {
         if (result?.data?.redeemPodInviteLink?.success) {
           if (user && user?.username) {
-            router.push('/dashboard', undefined, {
+            router.push('/mission-control', undefined, {
               shallow: true,
             });
           } else if (user && !user?.username) {
@@ -110,7 +110,7 @@ function Callback() {
             err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
         ) {
           if (user && user?.username) {
-            router.push('/dashboard', undefined, {
+            router.push('/mission-control', undefined, {
               shallow: true,
             });
           } else if (user && !user?.username) {
@@ -231,7 +231,7 @@ function Callback() {
               }
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
               // Only place to change this is in settings
-              router.push('/dashboard', undefined, {
+              router.push('/mission-control', undefined, {
                 shallow: true,
               });
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
@@ -240,7 +240,7 @@ function Callback() {
                   shallow: true,
                 });
               } else {
-                router.push('/dashboard', undefined, {
+                router.push('/mission-control', undefined, {
                   shallow: true,
                 });
               }

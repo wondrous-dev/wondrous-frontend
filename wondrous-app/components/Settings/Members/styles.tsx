@@ -1,13 +1,12 @@
-import { Typography } from '@mui/material';
-import { DropDown, DropDownItem } from 'components/Common/dropdown';
+import { Button, Input, InputAdornment, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import TableCell from '@mui/material/TableCell';
 import TableBody from '@mui/material/TableBody';
 import Table from '@mui/material/Table';
 
+import SearchIcon from 'components/Icons/search';
 import { newDropdownStyles } from 'components/Common/DropdownSelect/styles';
-import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 
 export const InviteDiv = styled.div`
   display: flex;
@@ -16,26 +15,47 @@ export const InviteDiv = styled.div`
   ${newDropdownStyles}
 `;
 
-const ProfilePictureStyles = {
-  marginRight: '16px',
-  width: '32px',
-  height: '32px',
-  borderRadius: '16px',
-};
-
-export function DefaultProfilePicture(props) {
-  return <DefaultUserImage style={ProfilePictureStyles} />;
-}
-
-export const UsernameText = styled(Typography)`
+export const SearchMembers = styled(({ ...props }) => (
+  <Input
+    {...props}
+    disableUnderline
+    startAdornment={
+      <InputAdornment position="start">
+        <SearchIcon color={palette.blue20} />
+      </InputAdornment>
+    }
+  />
+))`
   && {
-    color: #c4c4c4;
-    font-size: 14px;
-    line-height: 22px;
+    height: 40px;
+    background: ${palette.black101};
+    color: ${palette.grey250};
+    width: 100%;
+    padding: 0 10px;
+    margin: 10px 0 31px 0;
+    border-radius: 6px;
+    font-size: 15px;
   }
 `;
 
-export const SeeMoreText = styled(Typography)`
+export const MembersTable = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  width: 100%;
+  max-width: 770px;
+`;
+
+export const SeeMoreTextWrapper = styled.div`
+  && {
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+`;
+
+export const SeeMoreText = styled(Button)`
   && {
     color: ${palette.white};
     text-decoration: underline;
@@ -76,7 +96,3 @@ export const PodsCount = styled.div`
   text-align: center;
   display: inline-block;
 `;
-
-export const MemberDropdown = styled(DropDown)``;
-
-export const MemberDropdownItem = styled(DropDownItem)``;

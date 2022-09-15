@@ -23,16 +23,23 @@ function RolesPage() {
       setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
     },
   });
-  const { data: getPodData, loading } = useQuery(GET_POD_BY_ID, {
+  const [getPodById, { data: getPodData, loading }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: (data) => {
       if (data?.getPodById) {
         setPod(data?.getPodById);
       }
     },
-    variables: {
-      podId,
-    },
   });
+
+  useEffect(() => {
+    if (podId) {
+      getPodById({
+        variables: {
+          podId,
+        },
+      });
+    }
+  }, [podId]);
 
   const [createPodRole] = useMutation(CREATE_POD_ROLE, {
     onCompleted: ({ createPodRole: role }) => {
@@ -109,7 +116,6 @@ function RolesPage() {
       onPermissionsChange={updateRolePermissions}
       toast={toast}
       onToastClose={() => setToast({ ...toast, show: false })}
-      getPodRolesWithTokenGate={getPodRolesWithTokenGate}
     />
   );
 }

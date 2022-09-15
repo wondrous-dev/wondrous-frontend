@@ -16,7 +16,7 @@ import {
 } from 'graphql/mutations';
 import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
 import { HeaderBlock } from '../headerBlock';
 import { DiscordCardElementDiv, TableValueText, DiscordChannelInfoDiv } from './styles';

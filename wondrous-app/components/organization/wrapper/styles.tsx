@@ -1,10 +1,11 @@
+import { Box, Button, ButtonBase, IconButton, Typography } from '@mui/material';
+import { Button as BorderButton, Button as ButtonComponent } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
-import { Button, IconButton, Typography, Box } from '@mui/material';
 import Image from 'next/image';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as ButtonComponent, Button as BorderButton } from 'components/Common/button';
+import typography from 'theme/typography';
 import { BaseCard } from '../../Common/card';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
@@ -22,7 +23,6 @@ export const OverviewComponent = styled.section`
 export const HeaderImageWrapper = styled.div`
   width: 100%;
   height: 100px;
-  margin-top: 70px;
   overflow: hidden;
   position: relative;
 `;
@@ -70,7 +70,6 @@ export const TokenEmptyLogo = styled.div`
 
 export const Content = styled.div`
   width: 100%;
-  height: 100%;
   display: flex;
   justify-content: center;
 `;
@@ -134,7 +133,7 @@ export const HeaderButtons = styled.div`
   width: fit-content;
   height: 100%;
   display: flex;
-  justify-content: space-between;
+  gap: 4px;
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -382,6 +381,7 @@ export const HeaderPodsText = styled(HeaderContributorsAmount)`
   color: #6c6c6c;
 `;
 
+export const HeaderGr15Sponsor = styled.div``;
 // cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;
@@ -715,4 +715,43 @@ export const BoardsSubheaderWrapper = styled.div`
   grid-template-columns: 1fr 1fr;
   grid-row-gap: 20px;
   align-items: center;
+`;
+
+export const Container = styled.div`
+  width: 95%;
+  margin-top: 22px;
+`;
+
+export const SettingsButton = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: ${palette.grey75};
+    border-radius: 216px;
+    color: ${palette.white};
+    cursor: pointer;
+    display: flex;
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    font-weight: 500;
+    height: 36px;
+    justify-content: center;
+    min-width: 110px;
+  }
+`;
+
+export const InviteButton = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: linear-gradient(82.03deg, ${palette.highlightPurple} 50.7%, ${palette.highlightBlue} 107.99%);
+    border-radius: 216px;
+    color: ${palette.white};
+    cursor: pointer;
+    display: flex;
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    font-weight: 500;
+    height: 36px;
+    justify-content: center;
+    min-width: 110px;
+  }
 `;

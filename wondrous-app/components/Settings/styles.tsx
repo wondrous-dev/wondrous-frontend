@@ -12,6 +12,7 @@ import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { Button } from '../Common/button';
 import { Discord } from '../Icons/discord';
 import { Twitter } from '../Icons/twitter';
@@ -26,11 +27,17 @@ export const SettingsContainer = styled.div`
 `;
 
 export const SettingsSidebar = styled.div`
-  margin: 70px 0 0 0px;
-  min-width: 350px;
-  width: 350px;
-  padding: 55px 20px 50px 35px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  background: ${({ theme }) => theme.palette.black92};
+  flex-direction: column;
+  gap: 28px;
+  height: 100%;
+  overflow-y: auto;
+  padding: 24px;
+  padding-top: 94px;
+  position: fixed;
+  width: 260px;
+  display: flex;
+  ${({ minimized }) => minimized && `left: -100%`};
 `;
 
 export const SettingsSidebarContainer = styled.div`
@@ -62,49 +69,61 @@ export const SettingsSidebarTabsSectionLabel = styled(Typography)`
 
 export const SettingsSidebarTabsListContainer = styled(List)`
   && {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
     margin-top: 20px;
-  }
-  & > li {
-    margin-top: 2px;
   }
 `;
 
 export const SettingsSidebarTabsListItem = styled(ListItem)`
   && {
-    background: ${(props) => props.active && '#313131'};
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-    border-radius: 4px;
     width: 100%;
-    height: 40px;
-    padding: 4px;
+    height: 32px;
+    padding: 1px;
+    border-radius: 4px;
+    background: transparent;
+    background: ${({ active }) => active && 'linear-gradient(90.03deg, #00baff 0.03%, #7427ff 98.82%)'};
+    cursor: pointer;
     :hover {
-      cursor: pointer;
-      background: linear-gradient(270deg, #262626 0%, #1c1c1c 100%);
-      outline: 1px solid #313131;
-    }
-    > * {
-      margin-left: 10px;
-    }
-    > :first-child {
-      margin-left: 0;
+      background: #313131;
     }
   }
 `;
 
-export const SettingsSidebarTabsListItemIcon = styled(ListItemIcon)`
+export const ItemButtonInner = styled.div`
+  border-radius: 3px;
+  background: transparent;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px;
+  padding-left: 0px;
+  background: ${({ active }) => active && '#313131'};
+  ${SettingsSidebarTabsListItem}:hover & {
+    background: #313131;
+  }
+`;
+
+export const SettingsSidebarTabsListItemIcon = styled.div`
   && {
     min-width: 0;
-    width: 32px;
-    height: 32px;
-    background: #0f0f0f;
+    width: 22px;
+    height: 22px;
+    background: #313131;
     border-radius: 4px;
     display: flex;
     align-items: center;
     justify-content: center;
+    svg {
+      width: 12px;
+      height: auto;
+    }
   }
   & path {
+    stroke: #ffffff;
     stroke: ${(props) => props.active && '#30c7ff'};
   }
   ${SettingsSidebarTabsListItem}:hover & {
@@ -125,12 +144,13 @@ export const SettingsSidebarTabsListItemText = styled(Typography)`
 `;
 
 export const SettingsContentBlock = styled.div`
-  width: 100%;
-  height: 100%;
-  padding: 140px 120px;
   background-color: #0f0f0f;
+  height: 100%;
   overflow-y: auto;
-  min-height: 100vh;
+  padding-left: 380px;
+  padding-top: 140px;
+  padding-right: 120px;
+  width: 100%;
 `;
 
 export const SettingsDaoPodIndicator = styled(Box)`
@@ -199,12 +219,11 @@ export const SettingsHeaderBlock = styled.div`
 `;
 
 export const SettingsHeaderContent = styled.div`
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  margin-left: 27px;
+  gap: 14px;
+  flex: 1;
 `;
 
 export const SettingsHeaderTitle = styled.div`
@@ -222,7 +241,7 @@ export const SettingsHeaderText = styled(Typography)`
     font-size: 15px;
     line-height: 23px;
     letter-spacing: 0.01em;
-    color: #ffffff;
+    color: ${palette.grey57};
     display: flex;
     justify-content: space-between;
   }
@@ -231,16 +250,15 @@ export const SettingsHeaderText = styled(Typography)`
 export const SettingsHeaderInviteButton = styled.button`
   display: flex;
   align-items: center;
-  gap: 12px;
-  background: #232323;
-  color: #ffffff;
+  background: ${palette.highlightPurple};
+  color: ${palette.white};
   font-size: 15px;
   font-weight: 700;
   line-height: 150%;
-  padding: 7px 7px 7px 14px;
+  padding: 10.5px 10px;
   outline: none;
   border: none;
-  border-radius: 1000px;
+  border-radius: 6px;
   cursor: pointer;
 `;
 
@@ -252,6 +270,16 @@ export const SettingsHeaderInviteButtonIcon = styled.div`
   justify-content: center;
   background: #3d3d3d;
   border-radius: 1000px;
+`;
+
+export const SettingsHeaderActionText = styled(ButtonBase)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    line-height: 18px;
+    letter-spacing: 0.01em;
+    color: ${palette.highlightBlue};
+  }
 `;
 
 // general settings styles

@@ -37,8 +37,8 @@ export const GET_ORG_INVITE_ORG_INFO = gql`
 `;
 
 export const GET_USER_ORGS = gql`
-  query getUserOrgs($userId: String) {
-    getUserOrgs(userId: $userId) {
+  query getUserOrgs($userId: String, $excludeSharedOrgs: Boolean) {
+    getUserOrgs(userId: $userId, excludeSharedOrgs: $excludeSharedOrgs) {
       id
       username
       name
@@ -50,13 +50,14 @@ export const GET_USER_ORGS = gql`
 `;
 
 export const GET_ORG_USERS = gql`
-  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int) {
-    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset) {
+  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int, $searchString: String) {
+    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString) {
       user {
         id
         username
         profilePicture
         thumbnailPicture
+        activeEthAddress
         firstName
         lastName
         bio
@@ -95,12 +96,18 @@ export const GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
         name
         booleanLogic
         accessCondition {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
+          ... on AccessConditionModel {
+            contractAddress
+            type
+            chain
+            method
+            minValue
+            tokenIds
+          }
+          ... on GuildAccessConditionModel {
+            guildId
+            roleId
+          }
         }
       }
       discordRolesInfo {
@@ -145,15 +152,12 @@ export const GET_ORG_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $queryString: String!) {
-    searchOrgUsers(orgId: $orgId, queryString: $queryString) {
+  query searchOrgUsers($orgId: ID!, $searchString: String!) {
+    searchOrgUsers(orgId: $orgId, searchString: $searchString) {
       id
       username
       profilePicture
       thumbnailPicture
-      additionalInfo {
-        podCount
-      }
       firstName
       lastName
       bio
@@ -178,6 +182,9 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -197,6 +204,9 @@ export const GET_ORG_MEMBERSHIP_REQUEST = gql`
       orgName
       orgUsername
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -259,4 +269,22 @@ export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
       fullName
     }
   }
+`;
+
+export const GET_GR15_SPONSORS = gql`
+  query getGr15Sponsors {
+    getGr15Sponsors {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
+`;
+
+export const GET_GR15_GRANTEES = gql`
+  query getGr15Grantees {
+    getGr15Grantees {
+      ...OrgFragment
+    }
+  }
+  ${OrgFragment}
 `;

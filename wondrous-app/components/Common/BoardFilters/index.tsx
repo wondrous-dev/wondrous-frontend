@@ -2,7 +2,7 @@ import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
 import React, { useEffect, useState } from 'react';
 import omit from 'lodash/omit';
-import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useOrgBoard, usePodBoard } from 'utils/hooks';
 import {
   BoardFiltersWrapper,
   BoardFiltersContainer,
@@ -15,6 +15,8 @@ import {
 } from './styles';
 
 export function FiltersTriggerButton({ onClick, isOpen }) {
+  const exploreGr15TasksAndBounties = useExploreGr15TasksAndBounties();
+  if (exploreGr15TasksAndBounties) return null;
   return (
     <Button className={`FiltersTrigger-button ${isOpen ? 'active' : ''}`} reversed onClick={onClick}>
       <FilterIcon stroke="white" />
@@ -23,11 +25,21 @@ export function FiltersTriggerButton({ onClick, isOpen }) {
   );
 }
 
+const generateDefaultFiltersState = (filters, filterSchema) => {
+  const activeFilters = Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length);
+  const activeSchema = filterSchema?.filter((schema) => activeFilters.includes(schema.name));
+  return activeSchema.reduce((acc, next) => {
+    acc[next.name] = next?.items?.filter((item) => filters[next.name].includes(item.id));
+    return acc;
+  }, {});
+};
+
 export default function BoardFilters({ filterSchema, onChange, showAppliedFilters = false }) {
-  const [appliedFilters, setAppliedFilters] = useState<any>({});
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
+  const boardFilters = board?.filters || {};
+  const [appliedFilters, setAppliedFilters] = useState<any>(generateDefaultFiltersState(boardFilters, filterSchema));
 
   const entityType = board?.entityType;
 
@@ -43,7 +55,8 @@ export default function BoardFilters({ filterSchema, onChange, showAppliedFilter
   };
 
   useEffect(() => {
-    if (Object.keys(appliedFilters)) setAppliedFilters({});
+    const filters = generateDefaultFiltersState(boardFilters, filterSchema);
+    setAppliedFilters(filters);
   }, [entityType]);
 
   const handleFilterChange = (filter) => {

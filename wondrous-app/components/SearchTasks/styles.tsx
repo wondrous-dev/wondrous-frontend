@@ -44,43 +44,45 @@ export const Autocomplete = styled(AutocompleteComp)`
 `;
 
 export const Input = styled(TextField)`
-  &.MuiTextField-root {
-    border-radius: 6px;
-    display: flex;
-    justify-content: center;
-    margin-right: 8px;
-    padding: 0;
-    background: #1b1b1b;
-    position: relative;
-  }
-  & .MuiOutlinedInput-root {
-    padding: 0;
-  }
-  && .MuiInputBase-input {
-    font-size: 14px;
-    line-height: 19;
-    letter-spacing: 0.01em;
-    color: #c4c4c4;
-    padding: 10px 0px 10px 0px;
-    outline: none;
-    ::placeholder {
-      color: white;
-      opacity: 1;
+  && {
+    &.MuiTextField-root {
+      border-radius: 6px;
+      display: flex;
+      justify-content: center;
+      margin-right: 8px;
+      padding: 0;
+      background: #1b1b1b;
+      position: relative;
     }
-  }
-  & .MuiInput-underline:before {
-    display: none;
-  }
-  & .MuiInput-underline:after {
-    display: none;
-  }
+    & .MuiOutlinedInput-root {
+      padding: 0;
+    }
+    && .MuiInputBase-input {
+      font-size: 14px;
+      line-height: 19;
+      letter-spacing: 0.01em;
+      color: #c4c4c4;
+      padding: 10px 0px 10px 0px;
+      outline: none;
+      ::placeholder {
+        color: white;
+        opacity: 1;
+      }
+    }
+    & .MuiInput-underline:before {
+      display: none;
+    }
+    & .MuiInput-underline:after {
+      display: none;
+    }
 
-  & .MuiOutlinedInput-notchedOutline {
-    border: none;
-  }
+    & .MuiOutlinedInput-notchedOutline {
+      border: none;
+    }
 
-  .MuiInputAdornment-positionStart {
-    margin: 0 12px;
+    .MuiInputAdornment-positionStart {
+      margin: 0 12px;
+    }
   }
 `;
 

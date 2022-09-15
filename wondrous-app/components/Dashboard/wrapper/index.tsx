@@ -1,15 +1,17 @@
 import React from 'react';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader } from './styles';
+import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader, BannerWrapper } from './styles';
 
 const CONFIG_MAP = {
   ADMIN: {
-    label: 'My Operator Workspace',
+    label: 'Operator Workspace',
     img: '/images/operator.png',
+    gradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
   },
   CONTRIBUTOR: {
-    label: 'My Contributor Workspace',
+    label: 'Contributor Workspace',
     img: '/images/contrib.png',
+    gradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
   },
 };
 
@@ -21,9 +23,10 @@ const Wrapper = (props) => {
   return (
     <OverviewComponent>
       <ChooseEntityToCreate />
-      <Banner img={config.img}>
-        <DashboardHeader>{config.label}</DashboardHeader>
-      </Banner>
+      <BannerWrapper>
+        <Banner src={config.img} />
+        <DashboardHeader gradient={config.gradient}>{config.label}</DashboardHeader>
+      </BannerWrapper>
       <Content>
         <ContentContainer>{children}</ContentContainer>
       </Content>

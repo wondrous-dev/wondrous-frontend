@@ -1,9 +1,8 @@
-import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
-
+import { Input } from 'components/SearchTasks/styles';
+import styled from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { Input, SearchIconWrapped } from 'components/SearchTasks/styles';
 
 export const GlobalSearchWrapper = styled.div`
   display: flex;
@@ -11,38 +10,25 @@ export const GlobalSearchWrapper = styled.div`
   align-items: center;
   height: 100%;
   position: relative;
-  min-width: 40px;
+  width: fit-content;
   cursor: pointer;
   border-radius: 6px;
   position: relative;
-  &::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 6px;
-    background: ${({ isExpanded }) => (isExpanded ? 'linear-gradient(90deg, #ccbbff 1.14%, #7427ff 100.09%)' : '')};
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
-  }
-  &:hover ${SearchIconWrapped} {
-    path {
-      stroke: url(#linear);
-    }
-  }
+  filter: ${({ theme }) => `drop-shadow(0 3px 3px ${theme.palette.black101})`};
 `;
 
 export const SearchInput = styled(Input)`
   && {
     .MuiOutlinedInput-root {
       width: 100%;
-      padding-left: 12px;
-      background: ${palette.background.default};
-      border-top-right-radius: 6px;
-      border-bottom-right-radius: 6px;
+      background: ${({ theme }) => theme.palette.grey87};
+      border-top-right-radius: 150px;
+      border-bottom-right-radius: 150px;
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
+      font-family: 'Space Grotesk';
+      font-weight: 500;
+      font-size: 13px;
       .MuiOutlinedInput-input {
         z-index: 100;
       }
@@ -92,26 +78,35 @@ export const SearchResultCategoryTitle = styled(Typography)`
 `;
 
 export const SearchInputWrapper = styled.div`
-  transition: width 0.3s;
-  background: transparent;
-  width: ${({ isExpanded }) => (isExpanded ? '100%' : '0%')};
-  overflow: hidden;
-  .MuiFormControl-root {
-    margin: 0;
+  && {
+    display: ${({ isExpanded }) => (isExpanded ? 'block' : 'none')};
+    overflow: hidden;
+    .MuiFormControl-root {
+      margin: 0;
+    }
+    .MuiTextField-root {
+      background: transparent;
+      border-top-right-radius: 150px;
+      border-bottom-right-radius: 150px;
+    }
   }
 `;
 
 export const SearchIconWrapper = styled.div`
-  background: ${palette.background.default};
-  height: 40px;
-  min-width: 40px;
-  justify-content: center;
   align-items: center;
+  background: ${({ theme }) => theme.palette.grey87};
+  border-bottom-left-radius: 150px;
+  border-bottom-right-radius: 0;
+  border-top-left-radius: 150px;
+  border-top-right-radius: 0;
   display: flex;
-  border-top-left-radius: 6px;
-  border-bottom-left-radius: 6px;
-  border-top-right-radius: 0px;
-  border-bottom-right-radius: 0px;
-  transition: border-radius 0.3s;
-  ${({ isExpanded }) => !isExpanded && 'border-radius: 6px;'};
+  height: 40px;
+  justify-content: center;
+  width: 40px;
+  ${({ isExpanded }) => !isExpanded && 'border-radius: 50%;'};
+  svg {
+    path {
+      stroke: ${({ theme }) => theme.palette.white};
+    }
+  }
 `;

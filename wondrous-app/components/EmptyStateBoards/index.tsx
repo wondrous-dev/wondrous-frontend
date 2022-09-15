@@ -75,7 +75,7 @@ function EmptyStateBoards({ status, hidePlaceholder, fullWidth }: Props) {
 
   const orgRole = orgBoard && userPermissionsContext?.orgRoles[board?.orgId];
 
-  const podRole = podBoard && userPermissionsContext?.podRoles[board?.orgId];
+  const podRole = podBoard && userPermissionsContext?.podRoles[board?.podId];
 
   const role = orgRole || podRole;
 
@@ -94,7 +94,6 @@ function EmptyStateBoards({ status, hidePlaceholder, fullWidth }: Props) {
     handleTaskModal();
   };
   const boardTypeTitle = orgBoard ? 'org' : 'pod';
-
   return (
     <>
       <CreateModalOverlay

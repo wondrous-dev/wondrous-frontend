@@ -70,7 +70,7 @@ function Signup() {
             onCompleted: (data) => {
               if (data?.redeemPodInviteLink?.success) {
                 if (user?.username) {
-                  router.push('/dashboard', undefined, {
+                  router.push('/mission-control', undefined, {
                     shallow: true,
                   });
                 } else {
@@ -87,7 +87,7 @@ function Signup() {
                   err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
               ) {
                 if (user?.username) {
-                  router.push('/dashboard', undefined, {
+                  router.push('/mission-control', undefined, {
                     shallow: true,
                   });
                 } else {
@@ -107,7 +107,7 @@ function Signup() {
             onCompleted: (data) => {
               if (data?.redeemOrgInviteLink?.success) {
                 if (user?.username) {
-                  router.push('/dashboard', undefined, {
+                  router.push('/mission-control', undefined, {
                     shallow: true,
                   });
                 } else {
@@ -124,7 +124,7 @@ function Signup() {
                   err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.POD_INVITE_ALREADY_EXISTS)
               ) {
                 if (user?.username) {
-                  router.push('/dashboard', undefined, {
+                  router.push('/mission-control', undefined, {
                     shallow: true,
                   });
                 } else {

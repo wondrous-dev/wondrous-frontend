@@ -1,7 +1,7 @@
 import { useCallback, useState } from 'react';
 import { UserBoardContext } from 'utils/contexts';
 import BoardWrapper from 'components/Dashboard/boards/BoardWrapper';
-import { useCreateEntityContext } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 import { useMe } from 'components/Auth/withAuth';
 import { useQuery } from '@apollo/client';
 import {
@@ -17,7 +17,7 @@ import apollo from 'services/apollo';
 
 const ProposalsBoard = () => {
   const loggedInUser = useMe();
-  const { userOrgs } = useCreateEntityContext();
+  const { userOrgs } = useGlobalContext();
   const [hasMore, setHasMore] = useState(true);
   const { data: getPerStatusTaskCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD, {
     variables: {

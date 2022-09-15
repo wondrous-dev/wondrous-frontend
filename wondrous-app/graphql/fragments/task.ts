@@ -19,6 +19,13 @@ export const TaskFragment = gql`
     dueDate
     status
     paymentStatus
+    observers {
+      id
+      username
+      profilePicture
+      firstName
+      lastName
+    }
     labels {
       id
       name
@@ -95,6 +102,10 @@ export const TaskFragment = gql`
     claimPolicy
     claimPolicyRoles
     shouldUnclaimOnDueDateExpiry
+    hideSubmissions
+    categories {
+      name
+    }
   }
 
   ${MediaFragment}
@@ -156,6 +167,10 @@ export const TaskCardFragment = gql`
       canClaim
       canApply
       hasUserApplied
+    }
+    hideSubmissions
+    categories {
+      name
     }
   }
   ${MediaFragment}
@@ -279,6 +294,9 @@ export const TaskSubmissionFragment = gql`
     creator {
       username
       profilePicture
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
     media {
       ...MediaFragment
@@ -316,6 +334,9 @@ export const TaskProposalFragment = gql`
     creator {
       username
       profilePicture
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
     media {
       ...MediaFragment
@@ -346,6 +367,9 @@ export const TaskProposalFragment = gql`
         reject
       }
       userVote
+    }
+    categories {
+      name
     }
   }
   ${MediaFragment}
@@ -407,6 +431,9 @@ export const BountyFragment = gql`
     parentTaskId
     privacyLevel
     maxSubmissionCount
+    categories {
+      name
+    }
   }
   ${MediaFragment}
 `;

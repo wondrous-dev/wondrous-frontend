@@ -35,6 +35,8 @@ export default function useWonderWeb3(): WonderWeb3 {
   const { connecting, setConnecting } = useContext(WonderWeb3Context);
   const [lastChainId, setLastChainId] = useState(chainId);
 
+  const isInProduction = process.env.NEXT_PUBLIC_PRODUCTION;
+
   const chainName = useMemo(() => SUPPORTED_CHAINS[chainId] || 'none', [chainId]);
 
   const address = useMemo(() => account, [account]);
@@ -188,6 +190,26 @@ export default function useWonderWeb3(): WonderWeb3 {
     return true;
   };
 
+  const getENSNameFromEthAddress = async (address: string) => {
+    try {
+      const prov = new ethers.providers.Web3Provider(provider);
+      const name = await prov.lookupAddress(address);
+      return name;
+    } catch (err) {
+      return null;
+    }
+  };
+
+  const getAddressFromENS = async (ens: string) => {
+    try {
+      const prov = new ethers.providers.Web3Provider(provider);
+      const address = await prov.resolveName(ens);
+      return address;
+    } catch (err) {
+      return null;
+    }
+  };
+
   const disconnect = () => {
     deactivate();
     setConnecting(false);
@@ -243,5 +265,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     library,
     activate,
     activateAndStore,
+    getENSNameFromEthAddress,
+    getAddressFromENS,
   };
 }

@@ -1,8 +1,10 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
+import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import Boards from 'components/organization/boards/boards';
+import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, GET_ORG_PODS, SEARCH_ORG_USERS } from 'graphql/queries/org';
+import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_ORG_TASK_BOARD_PROPOSALS,
   GET_ORG_TASK_BOARD_TASKS,
@@ -13,31 +15,32 @@ import {
 } from 'graphql/queries/taskBoard';
 import { GET_USER } from 'graphql/queries/user';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useReducer, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import {
   LIMIT,
-  populateTaskColumns,
-  populateProposalColumns,
   ORG_POD_COLUMNS,
   ORG_POD_PROPOSAL_COLUMNS,
+  DEFAULT_ENTITY_STATUS_FILTER,
+  populateProposalColumns,
+  populateTaskColumns,
 } from 'services/board';
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
-import { dedupeColumns, insertUrlParam } from 'utils';
+import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
 import { sectionOpeningReducer } from 'utils/board';
 import {
-  STATUSES_ON_ENTITY_TYPES,
-  PRIVACY_LEVEL,
-  STATUS_OPEN,
-  TASK_STATUSES,
   ENTITIES_TYPES,
+  PRIVACY_LEVEL,
+  PROPOSAL_STATUS_LIST,
   STATUS_APPROVED,
   STATUS_CLOSED,
-  PROPOSAL_STATUS_LIST,
+  STATUS_OPEN,
+  STATUSES_ON_ENTITY_TYPES,
+  TASK_STATUSES,
+  TASK_STATUS_TODO,
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import { useIsMobile } from 'utils/hooks';
 
 const useGetOrgTaskBoardTasks = ({
@@ -107,6 +110,7 @@ const useGetOrgTaskBoardTasks = ({
           labelId: filters?.labelId,
           date: filters?.date,
           types: [entityType],
+          category: filters?.category,
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
           }),
@@ -354,7 +358,7 @@ function BoardsPage() {
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [filters, setFilters] = useState<TaskFilter>({
     podIds: [],
-    statuses: [],
+    statuses: DEFAULT_ENTITY_STATUS_FILTER[activeEntityFromQuery],
     labelId: null,
     date: null,
     privacyLevel: null,
@@ -412,8 +416,11 @@ function BoardsPage() {
       setIsLoading(true);
     }
     insertUrlParam('entity', type);
+    removeUrlParam('cause');
     setEntityType(type);
-    setFilters({});
+    setFilters({
+      statuses: DEFAULT_ENTITY_STATUS_FILTER[type],
+    });
     if (type === ENTITIES_TYPES.PROPOSAL && activeView !== ViewType.Grid) {
       setActiveView(ViewType.Grid);
       insertUrlParam('view', ViewType.Grid);
@@ -554,7 +561,7 @@ function BoardsPage() {
           orgId: id,
           limit: LIMIT,
           offset: 0,
-          queryString: searchString,
+          searchString,
         },
       }),
       apollo.query({
@@ -575,7 +582,9 @@ function BoardsPage() {
     }));
   }
 
-  const handleFilterChange: any = (filtersToApply = { statuses: [], podIds: [], labelId: null, date: null }) => {
+  const handleFilterChange: any = (
+    filtersToApply = { statuses: [], podIds: [], labelId: null, date: null, category: null }
+  ) => {
     setFilters(filtersToApply);
 
     if (search) {
@@ -633,6 +642,12 @@ function BoardsPage() {
         : null
     );
   }
+
+  const hasActiveFilters = useMemo(
+    () => !!Object.keys(filters).filter((filterKey) => !!filters[filterKey]?.length)?.length,
+    [filters]
+  );
+
   return (
     <OrgBoardContext.Provider
       value={{
@@ -655,25 +670,29 @@ function BoardsPage() {
         fetchPerStatus,
         onLoadMore: fetchMore,
         hasMore: orgTaskHasMore,
+        filters,
+        hasActiveFilters,
       }}
     >
       {isMobile ? <MobileComingSoonModal /> : null}
-      <Boards
-        columns={columns}
-        searchString={searchString}
-        onLoadMore={fetchMore}
-        onSearch={handleSearch}
-        onFilterChange={handleFilterChange}
-        hasMore={orgTaskHasMore}
-        orgData={orgData}
-        statuses={filters?.statuses}
-        podIds={filters?.podIds}
-        setColumns={setColumns}
-        loading={isLoading}
-        entityType={entityType}
-        userId={userId?.toString()}
-        activeView={activeView}
-      />
+      <EntitySidebar>
+        <Boards
+          columns={columns}
+          searchString={searchString}
+          onLoadMore={fetchMore}
+          onSearch={handleSearch}
+          onFilterChange={handleFilterChange}
+          hasMore={orgTaskHasMore}
+          orgData={orgData}
+          statuses={filters?.statuses}
+          podIds={filters?.podIds}
+          setColumns={setColumns}
+          loading={isLoading}
+          entityType={entityType}
+          userId={userId?.toString()}
+          activeView={activeView}
+        />
+      </EntitySidebar>
     </OrgBoardContext.Provider>
   );
 }

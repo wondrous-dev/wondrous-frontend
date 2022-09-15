@@ -1,6 +1,7 @@
 import { NextRouter, useRouter } from 'next/router';
-import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction } from 'react';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo } from 'react';
 import apollo from 'services/apollo';
+import { TokenGatingCondition } from 'types/TokenGating';
 import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
@@ -8,7 +9,9 @@ import {
   GET_POD_BY_ID,
   GET_ORG_FROM_USERNAME,
 } from 'graphql/queries';
-import { useLazyQuery } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
+import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
+import { LIMIT } from 'services/board';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -21,10 +24,14 @@ import {
   ApprovedSubmissionContext,
   PaymentModalContext,
   SelectMembershipContext,
-  EditTokenGatingConditionContext,
   UserProfileContext,
-  CreateEntityContext,
+  GlobalContext,
+  TokenGatingContext,
+  HotkeyContext,
+  ExploreGr15TasksAndBountiesContext,
 } from './contexts';
+
+export const useHotkey = () => useContext(HotkeyContext);
 
 export const useIsMobile = () => useContext(IsMobileContext);
 
@@ -73,6 +80,8 @@ export const usePodBoard = () => useContext(PodBoardContext);
 
 export const useUserBoard = () => useContext(UserBoardContext);
 
+export const useExploreGr15TasksAndBounties = () => useContext(ExploreGr15TasksAndBountiesContext);
+
 export const useBoards = () => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -103,7 +112,13 @@ export const usePaymentModal = () => useContext(PaymentModalContext);
 
 export const useSelectMembership = () => useContext(SelectMembershipContext);
 
-export const useEditTokenGatingCondition = () => useContext(EditTokenGatingConditionContext);
+export const useTokenGatingCondition = (): {
+  editTokenGating: (tokenGatingCondition: TokenGatingCondition) => void;
+  deleteTokenGating: (tokenGatingCondition: TokenGatingCondition) => void;
+  closeTokenGatingModal: () => void;
+  selectedTokenGatingCondition: TokenGatingCondition;
+} => useContext(TokenGatingContext);
+
 /**
  * Hook that alerts clicks outside of the passed ref
  */
@@ -193,7 +208,7 @@ export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
 };
 
 export const useGetPerStatusTaskCountForUserBoard = (userId) => {
-  const [getPerStatusTaskCountForUserBoard, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
+  const [getPerStatusTaskCountForUserBoard, { data, loading }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD);
 
   useEffect(() => {
     if (userId) {
@@ -205,7 +220,7 @@ export const useGetPerStatusTaskCountForUserBoard = (userId) => {
     }
   }, [userId, getPerStatusTaskCountForUserBoard]);
 
-  return { data };
+  return { data, loading };
 };
 
 export const useGetPodById = (podId) => {
@@ -236,7 +251,7 @@ export const useGetOrgFromUsername = (username) => {
   return data?.getOrgFromUsername;
 };
 
-export const useCreateEntityContext = () => useContext(CreateEntityContext);
+export const useGlobalContext = () => useContext(GlobalContext);
 
 export const useCanViewTask = (task, userPermissionsContext, permissions) => {
   const [canViewTask, setCanViewTask] = useState(null);
@@ -278,4 +293,35 @@ export const useScrollIntoView = (isElementToScroll, cb = null) => {
     }
   }, [elementRef, isElementToScroll]);
   return elementRef;
+};
+
+export const useNotifications = () => {
+  const [hasMore, setHasMore] = useState(true);
+  const { notifications, refetchNotifications, fetchMoreNotifications } = useGlobalContext();
+  const [markAllNotificationsRead] = useMutation(MARK_ALL_NOTIFICATIONS_READ, {
+    refetchQueries: ['getNotifications'],
+  });
+  const [markNotificationRead] = useMutation(MARK_NOTIFICATIONS_READ);
+
+  const fetchMore = () => {
+    fetchMoreNotifications({ variables: { offset: notifications?.length, limit: LIMIT } }).then(({ data }) =>
+      setHasMore(data?.getNotifications?.length >= LIMIT)
+    );
+  };
+
+  const unreadCount = useMemo(() => notifications?.filter((n) => !n.viewedAt).length, [notifications]);
+
+  return {
+    notifications,
+    markAllNotificationsRead,
+    unreadCount,
+    markNotificationRead,
+    fetchMore,
+    hasMore,
+  };
+};
+
+export const useSteps = (defaultStep = 0) => {
+  const [step, setStep] = useState(defaultStep);
+  return { step, setStep };
 };

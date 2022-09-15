@@ -1,8 +1,10 @@
 import { gql } from '@apollo/client';
-import { OrgFragment } from '../fragments/org';
-import { PodFragment } from '../fragments/pod';
-import { TaskCardFragment } from '../fragments/task';
-import { LoggedinUserFragment, LoggedinWaitlistUserFragment, ProfileUserFragment } from '../fragments/user';
+import {
+  LoggedinUserFragment,
+  LoggedinWaitlistUserFragment,
+  ProfileUserFragment,
+  SmallUserFragment,
+} from '../fragments/user';
 
 export const WHOAMI = gql`
   query whoami {
@@ -88,10 +90,10 @@ export const GET_AUTOCOMPLETE_USERS = gql`
 export const GET_USER = gql`
   query getUser($userId: ID!) {
     getUser(userId: $userId) {
-      ...UserProfile
+      ...UserSmall
     }
   }
-  ${ProfileUserFragment}
+  ${SmallUserFragment}
 `;
 
 export const GET_USER_INTERESTS = gql`

@@ -17,6 +17,8 @@ import {
 import { parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import palette from 'theme/palette';
+import { DropDown } from 'components/Common/dropdown';
+import DropdownItem from 'components/Common/DropdownItem';
 import SmartLink from 'components/Common/SmartLink';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils/index';
@@ -25,7 +27,6 @@ import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
 import { useMe } from '../Auth/withAuth';
 import { AvatarList } from '../Common/AvatarList';
-import { DropDown, DropDownItem } from '../Common/dropdown';
 import { SafeImage } from '../Common/Image';
 import { ActionButton as ClaimButton } from '../Common/Task/styles';
 import { DropDownButtonDecision } from '../DropDownDecision/DropDownButton';
@@ -252,8 +253,8 @@ export default function TableBody({
                 <Tooltip title="More actions" placement="top">
                   <div>
                     {!isTaskSubmission && (
-                      <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
-                        <DropDownItem
+                      <DropDown DropdownHandler={TaskMenuIcon} fill={palette?.grey95}>
+                        <DropdownItem
                           key={`task-menu-edit-${task.id}${index}`}
                           onClick={() => editTask(task, status)}
                           color="#C4C4C4"
@@ -262,8 +263,8 @@ export default function TableBody({
                           textAlign="left"
                         >
                           Edit {dropdownItemLabel}
-                        </DropDownItem>
-                        <DropDownItem
+                        </DropdownItem>
+                        <DropdownItem
                           key={`task-menu-report-${task.id}`}
                           onClick={() => {
                             setSelectedTask(task);
@@ -275,10 +276,10 @@ export default function TableBody({
                           textAlign="left"
                         >
                           Archive {dropdownItemLabel}
-                        </DropDownItem>
+                        </DropdownItem>
                         {(task?.type === Constants.TASK_TYPE || task?.type === Constants.MILESTONE_TYPE) &&
                           !task?.isProposal && (
-                            <DropDownItem
+                            <DropdownItem
                               key={`task-menu-delete-${task.id}`}
                               onClick={() => {
                                 setSelectedTask(task);
@@ -290,7 +291,7 @@ export default function TableBody({
                               textAlign="left"
                             >
                               Delete {dropdownItemLabel}
-                            </DropDownItem>
+                            </DropdownItem>
                           )}
                       </DropDown>
                     )}

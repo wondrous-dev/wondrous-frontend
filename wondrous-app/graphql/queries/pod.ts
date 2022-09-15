@@ -54,13 +54,14 @@ export const GET_USER_AVAILABLE_PODS = gql`
 `;
 
 export const GET_POD_USERS = gql`
-  query getPodUsers($podId: String!, $limit: Int, $offset: Int) {
-    getPodUsers(podId: $podId, limit: $limit, offset: $offset) {
+  query getPodUsers($podId: String!, $limit: Int, $offset: Int, $searchString: String) {
+    getPodUsers(podId: $podId, limit: $limit, offset: $offset, searchString: $searchString) {
       user {
         id
         username
         profilePicture
         thumbnailPicture
+        activeEthAddress
         firstName
         lastName
         bio
@@ -75,8 +76,8 @@ export const GET_POD_USERS = gql`
 `;
 
 export const SEARCH_POD_USERS = gql`
-  query searchPodUsers($podId: ID!, $queryString: String!) {
-    searchPodUsers(podId: $podId, queryString: $queryString) {
+  query searchPodUsers($podId: ID!, $searchString: String!) {
+    searchPodUsers(podId: $podId, searchString: $searchString) {
       id
       username
       profilePicture
@@ -110,12 +111,18 @@ export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
         name
         booleanLogic
         accessCondition {
-          contractAddress
-          type
-          chain
-          method
-          minValue
-          tokenIds
+          ... on AccessConditionModel {
+            contractAddress
+            type
+            chain
+            method
+            minValue
+            tokenIds
+          }
+          ... on GuildAccessConditionModel {
+            guildId
+            roleId
+          }
         }
       }
     }
@@ -151,6 +158,9 @@ export const GET_JOIN_POD_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -173,6 +183,9 @@ export const GET_POD_MEMBERSHIP_REQUEST = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;

@@ -2,11 +2,10 @@ import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useRouter } from 'next/router';
-import { useCreateEntityContext } from 'utils/hooks';
+import { useGlobalContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
 import CreatePodModal from './CreatePodModal';
 import CreateEntityModal from './CreateEntityModal/index';
-import EditLayoutBaseModal from './editEntityModal';
 import { CreateFormModalOverlay } from './styles';
 
 interface ICreateEntity {
@@ -66,8 +65,8 @@ export function CreateEntity(props: ICreateEntity) {
 }
 
 function ChooseEntityToCreate(props) {
-  const createEntityContext = useCreateEntityContext();
-  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = createEntityContext;
+  const globalContext = useGlobalContext();
+  const { isCreateEntityModalOpen: open, toggleCreateFormModal: toggleOpen } = globalContext;
   const [entityType, setEntityType] = useState(undefined);
   const resetEntityType = () => {
     if (entityType) {

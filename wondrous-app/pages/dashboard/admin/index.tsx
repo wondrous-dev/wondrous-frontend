@@ -26,6 +26,7 @@ const AdminDashboard = () => {
         value={{
           searchLabel: 'Search tasks or people...',
           adminWorkflowCount: adminWorkflowCount?.getWorkFlowBoardReviewableItemsCount,
+          enableViewSwitcher: true,
         }}
       >
         {isMobile ? <MobileComingSoonModal /> : null}

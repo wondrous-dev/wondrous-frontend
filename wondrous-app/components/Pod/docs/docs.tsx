@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
-import { useLazyQuery, useQuery } from '@apollo/client';
-import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
-import Image from 'next/image';
-import { useRouter } from 'next/router';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
+import { useLazyQuery, useQuery } from '@apollo/client';
 
 import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
 
-import Tooltip from 'components/Tooltip';
-
-import DocItemsMenu from 'components/DocItemsMenu';
-import DeleteDocDialog from 'components/DeleteDocDialog';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_POD_DOCS, GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
+import { PERMISSIONS } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
 
 import AddDocumentDialog from 'components/AddDocumentDialog';
-import PinnedDocsSection from 'components/PinnedDocsSection';
-import DocCategoriesSection from 'components/DocCategoriesSection';
+import ResourcesSidebar from 'components/Common/SidebarResources';
+import DeleteDocDialog from 'components/DeleteDocDialog';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
-
-import styles from 'components/organization/docs/docsStyles';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { PERMISSIONS } from 'utils/constants';
+import DocCategoriesSection from 'components/DocCategoriesSection';
+import DocItemsMenu from 'components/DocItemsMenu';
 import EmptyStateGeneric from 'components/EmptyStateGeneric';
+import PinnedDocsSection from 'components/PinnedDocsSection';
+
+import styles, { AddIconWrapper } from 'components/organization/docs/docsStyles';
+
 import Wrapper from '../wrapper';
 
 const useGetPodDocs = (podId) => {
@@ -29,6 +29,7 @@ const useGetPodDocs = (podId) => {
     variables: {
       podId,
     },
+    fetchPolicy: 'cache-and-network',
   });
 
   const [getPodDocsCategories, { data: categoriesData, loading: loadingCategories }] = useLazyQuery(
@@ -37,6 +38,7 @@ const useGetPodDocs = (podId) => {
       variables: {
         podId,
       },
+      fetchPolicy: 'network-only',
     }
   );
 
@@ -53,7 +55,6 @@ const useGetPodDocs = (podId) => {
       getPodDocsCategories();
     }
   }, [loadingCategories, podId, getPodDocsCategories, categoriesData]);
-
   return {
     docData: docData?.getPodDocuments,
     categoriesData: categoriesData?.getPodDocumentCategories,
@@ -67,6 +68,7 @@ function Docs(props) {
   const router = useRouter();
 
   const { docData, categoriesData } = useGetPodDocs(podId);
+  const [selectedCategory, setSelectedCategory] = useState(null);
   const [showDocDialog, setDocShowDialog] = useState(false);
   const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
   const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
@@ -75,7 +77,6 @@ function Docs(props) {
   const [pinned, setPinned] = useState(false);
   const [menuAnchor, setMenuAnchor] = useState(null);
   const openMenu = Boolean(menuAnchor);
-
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -147,71 +148,84 @@ function Docs(props) {
 
   const pinnedDocs = docData?.filter((doc) => doc.pinned);
 
+  const filteredCategories = selectedCategory
+    ? categoriesData.filter((i) => i.id === selectedCategory)
+    : categoriesData;
+
+  const handleCreateNewCategory = () => setShowCategoriesDialog(true);
+  const handleSelectCategory = (id) => () => setSelectedCategory(id);
+
   return (
-    <Wrapper>
-      {canEdit && (
-        <Tooltip title="Create new doc category" placement="top">
-          <Box sx={styles.categoryButtonContainer}>
-            <Box sx={styles.categoryButton} onClick={() => setShowCategoriesDialog(true)}>
-              <Image src="/images/icons/plus.svg" alt="plus icon" width={16} height={16} />
-            </Box>
+    <ResourcesSidebar
+      docs={categoriesData}
+      handleCreateNewCategory={handleCreateNewCategory}
+      handleSelectCategory={handleSelectCategory}
+      selectedCategory={selectedCategory}
+    >
+      <Wrapper>
+        {canEdit && (
+          <Box sx={styles.topButtonsContainer}>
+            <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
+              <AddIconWrapper style={styles.addIcon} />
+              Add new doc
+            </Button>
           </Box>
-        </Tooltip>
-      )}
+        )}
 
-      {isEmpty(docData) && (
-        <EmptyStateGeneric
-          content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+        {isEmpty(docData) && (
+          <EmptyStateGeneric
+            content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
+          />
+        )}
+
+        {!isEmpty(pinnedDocs) && (
+          <PinnedDocsSection
+            onDialogOpen={handleOpenDocDialogPinned}
+            pinnedDocs={pinnedDocs}
+            onItemClick={handleItemClick}
+          />
+        )}
+
+        {filteredCategories?.map((category) => (
+          <DocCategoriesSection
+            key={category.id}
+            category={category}
+            onItemClick={handleItemClick}
+            onOpenDocDialog={handleOpenDocDialog}
+            onCategoryDialogOpen={handleOpenCategoriesDialog}
+            docs={docData}
+            canEdit={canEdit}
+          />
+        ))}
+
+        <DocItemsMenu
+          open={openMenu}
+          anchorEl={menuAnchor}
+          onClose={handleMenuClose}
+          onDelete={handleOpenDeleteDialog}
+          onEdit={handleOpenEditDocDialog}
         />
-      )}
-
-      {!isEmpty(pinnedDocs) && (
-        <PinnedDocsSection
-          onDialogOpen={handleOpenDocDialogPinned}
-          pinnedDocs={pinnedDocs}
-          onItemClick={handleItemClick}
+        <AddDocumentDialog
+          open={showDocDialog}
+          onClose={handleCloseDocDialog}
+          title={docCategory?.name}
+          orgId={podData?.orgId}
+          podId={podId}
+          category={docCategory}
+          document={selectedDoc}
+          pinned={pinned}
         />
-      )}
-
-      {categoriesData?.map((category) => (
-        <DocCategoriesSection
-          key={category.id}
-          category={category}
-          onItemClick={handleItemClick}
-          onOpenDocDialog={handleOpenDocDialog}
-          onCategoryDialogOpen={handleOpenCategoriesDialog}
-          docs={docData}
-          canEdit={canEdit}
+        <DocCategoriesDialog
+          open={showCategoriesDialog}
+          onClose={handleCloseCategoriesDialog}
+          orgName={router.query.username}
+          orgId={podData?.orgId}
+          podId={podId}
+          category={docCategory}
         />
-      ))}
-
-      <DocItemsMenu
-        open={openMenu}
-        anchorEl={menuAnchor}
-        onClose={handleMenuClose}
-        onDelete={handleOpenDeleteDialog}
-        onEdit={handleOpenEditDocDialog}
-      />
-      <AddDocumentDialog
-        open={showDocDialog}
-        onClose={handleCloseDocDialog}
-        title={docCategory?.name}
-        orgId={podData?.orgId}
-        podId={podId}
-        category={docCategory}
-        document={selectedDoc}
-        pinned={pinned}
-      />
-      <DocCategoriesDialog
-        open={showCategoriesDialog}
-        onClose={handleCloseCategoriesDialog}
-        orgName={router.query.username}
-        orgId={podData?.orgId}
-        podId={podId}
-        category={docCategory}
-      />
-      <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
-    </Wrapper>
+        <DeleteDocDialog open={showDeleteDocDialog} onClose={handleCloseDeleteDialog} selectedDoc={selectedDoc} />
+      </Wrapper>
+    </ResourcesSidebar>
   );
 }
 

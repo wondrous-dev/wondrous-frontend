@@ -22,6 +22,9 @@ export const LoggedinUserFragment = gql`
       displayName
       type
     }
+    checkIsGr15Contributor {
+      isGr15Contributor
+    }
   }
 `;
 
@@ -42,8 +45,6 @@ export const ProfileUserFragment = gql`
     id
     username
     bio
-    firstName
-    lastName
     headerPicture
     activeEthAddress
     profilePicture
@@ -57,5 +58,19 @@ export const ProfileUserFragment = gql`
       orgCount
       podCount
     }
+    checkIsGr15Contributor {
+      isGr15Contributor
+    }
+  }
+`;
+
+export const SmallUserFragment = gql`
+  fragment UserSmall on User {
+    id
+    username
+    headerPicture
+    activeEthAddress
+    profilePicture
+    thumbnailPicture
   }
 `;

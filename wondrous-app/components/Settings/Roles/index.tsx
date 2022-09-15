@@ -1,23 +1,14 @@
-import React, { useState, useEffect } from 'react';
+import Tabs from 'components/Tabs';
+import TokenGatingItem from 'components/TokenGatingItem';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
-import {
-  TokenGatingNameHeader,
-  TokenGatingElementWrapper,
-  TokenGateActionMenu,
-  TokenGateListDiv,
-  TokenGateListItemDiv,
-  TokenGatingHeaderLabel,
-  TokenLogoDisplay,
-} from 'components/Settings/TokenGating/styles';
-import palette from 'theme/palette';
-
 import { Role } from 'types/common';
 import { GET_TOKEN_INFO, GET_NFT_INFO, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
-import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD } from 'graphql/queries';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
 import {
   APPLY_TOKEN_GATING_TO_ORG_ROLE,
   APPLY_TOKEN_GATING_TO_POD_ROLE,
@@ -45,9 +36,9 @@ import styles, {
 
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
+import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
 import RoleLockIcon from '../../Icons/rolesLock.svg';
-import { DropDown, DropDownItem } from '../../Common/dropdown';
 import { TaskMenuIcon } from '../../Icons/taskMenu';
 import {
   Box,
@@ -94,7 +85,6 @@ type Props = {
   onDeleteRole: (role: Role) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
   onToastClose: () => any;
-  getPodRolesWithTokenGate?: () => any;
   getOrgDiscordRoles?: () => any;
   orgDiscordConfigData?: any;
   allDiscordRolesData?: any;
@@ -110,7 +100,6 @@ function Roles({
   toast,
   onToastClose,
   permissons,
-  getPodRolesWithTokenGate,
   orgDiscordConfigData,
   allDiscordRolesData,
   getOrgDiscordRoles,
@@ -185,7 +174,6 @@ function Roles({
         orgId={orgId}
         podId={podId}
         selectedRoleForTokenGate={selectedRoleForTokenGate}
-        getPodRolesWithTokenGate={getPodRolesWithTokenGate}
       />
 
       {!podId && (
@@ -207,7 +195,6 @@ function Roles({
           selectedRoleForDiscord={selectedRoleForDiscord}
           getOrgDiscordRoles={getOrgDiscordRoles}
           allDiscordRolesData={allDiscordRolesData}
-          getPodRolesWithTokenGate={getPodRolesWithTokenGate}
         />
       )}
 
@@ -381,16 +368,7 @@ function DiscordOnRoleDisplay(props) {
 
 function DiscordRoleSelectionModal(props) {
   const router = useRouter();
-  const {
-    open,
-    handleClose,
-    orgId,
-    podId,
-    selectedRoleForDiscord,
-    getOrgDiscordRoles,
-    allDiscordRolesData,
-    getPodRolesWithTokenGate,
-  } = props;
+  const { open, handleClose, orgId, podId, selectedRoleForDiscord, getOrgDiscordRoles, allDiscordRolesData } = props;
   useEffect(() => {
     if (open) {
       getOrgDiscordRoles();
@@ -418,7 +396,7 @@ function DiscordRoleSelectionModal(props) {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId: '',
           },
-          // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD]
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
         });
       }
     } catch (e) {
@@ -430,7 +408,7 @@ function DiscordRoleSelectionModal(props) {
   const handleElementClick = async (discordRoleId) => {
     try {
       if (selectedRoleForDiscord?.__typename === 'OrgRole') {
-        const orgRoles = await apollo.mutate({
+        await apollo.mutate({
           mutation: CONNECT_DISCORD_ROLE_TO_ORG_ROLE,
           variables: {
             orgRoleId: selectedRoleForDiscord?.id,
@@ -486,8 +464,9 @@ function DiscordRoleSelectionModal(props) {
 
 function TokenGateRoleConfigModal(props) {
   const router = useRouter();
-  const { open, handleClose, orgId, podId, selectedRoleForTokenGate, getPodRolesWithTokenGate } = props;
+  const { open, handleClose, orgId, podId, selectedRoleForTokenGate } = props;
   const [tokenGatingConditions, setTokenGatingConditions] = useState([]);
+  const [selectedTab, setSelectedTab] = useState(TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE);
   const [getTokenGatingConditionsForOrg, { data, loading, fetchMore }] = useLazyQuery(
     GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
     {
@@ -511,7 +490,7 @@ function TokenGateRoleConfigModal(props) {
   const handleRemoveTokenGateFromRole = async () => {
     try {
       if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
-        const orgRoles = await apollo.mutate({
+        await apollo.mutate({
           mutation: REMOVE_TOKEN_GATING_FROM_ORG_ROLE,
           variables: {
             orgRoleId: selectedRoleForTokenGate?.id,
@@ -524,10 +503,10 @@ function TokenGateRoleConfigModal(props) {
         await apollo.mutate({
           mutation: REMOVE_TOKEN_GATING_FROM_POD_ROLE,
           variables: {
-            orgRoleId: selectedRoleForTokenGate?.id,
+            podRoleId: selectedRoleForTokenGate?.id,
           },
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
         });
-        getPodRolesWithTokenGate();
       }
     } catch (e) {
       console.error(e);
@@ -535,6 +514,45 @@ function TokenGateRoleConfigModal(props) {
     }
     handleClose();
   };
+
+  const handleTokenGatingConditionClick = async (tokenGatingCondition) => {
+    const confirmed = confirm(`Apply ${tokenGatingCondition?.name} to role?`);
+    if (!confirmed) {
+      return;
+    }
+    try {
+      if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
+        await apollo.mutate({
+          mutation: APPLY_TOKEN_GATING_TO_ORG_ROLE,
+          variables: {
+            tokenGatingConditionId: tokenGatingCondition?.id,
+            orgRoleId: selectedRoleForTokenGate?.id,
+          },
+          refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
+        });
+      }
+
+      if (selectedRoleForTokenGate?.__typename === 'PodRole') {
+        await apollo.mutate({
+          mutation: APPLY_TOKEN_GATING_TO_POD_ROLE,
+          variables: {
+            tokenGatingConditionId: tokenGatingCondition?.id,
+            podRoleId: selectedRoleForTokenGate?.id,
+          },
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
+        });
+      }
+    } catch (e) {
+      console.error(e);
+      return;
+    }
+    handleClose();
+  };
+
+  const tokenGatingConditionsByType = useMemo(
+    () => tokenGatingConditions.filter((r) => (r.type || TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE) === selectedTab),
+    [selectedTab, tokenGatingConditions]
+  );
 
   return (
     <Modal open={open} onClose={handleClose}>
@@ -569,156 +587,31 @@ function TokenGateRoleConfigModal(props) {
             </TokenGatingButton>
           </div>
         </div>
-        {tokenGatingConditions.map((tokenGatingCondition) => (
-          <TokenGatingModalElement
+
+        <Tabs
+          value={selectedTab}
+          withMargin={false}
+          onChange={(e, tab) => setSelectedTab(tab)}
+          tabs={[
+            { label: 'Token gate', value: TOKEN_GATING_CONDITION_TYPE.TOKEN_GATE },
+            { label: 'Guild.xyz', value: TOKEN_GATING_CONDITION_TYPE.GUILD },
+          ]}
+        />
+
+        {tokenGatingConditionsByType.map((tokenGatingCondition) => (
+          <TokenGatingItem
             key={tokenGatingCondition.id}
             tokenGatingCondition={tokenGatingCondition}
-            selectedRoleForTokenGate={selectedRoleForTokenGate}
-            handleClose={handleClose}
-            orgId={orgId}
+            onEdit={() => {
+              router.push(`/organization/settings/${orgId}/token-gating`, undefined, {
+                shallow: true,
+              });
+            }}
+            onClick={() => handleTokenGatingConditionClick(tokenGatingCondition)}
           />
         ))}
       </TokenGatedRoleModal>
     </Modal>
-  );
-}
-
-function TokenGatingModalElement(props) {
-  const [tokenName, setTokenName] = useState(null);
-  const [tokenLogo, setTokenLogo] = useState(null);
-  const { tokenGatingCondition, selectedRoleForTokenGate, handleClose, orgId, getPodRolesWithTokenGate } = props;
-  const router = useRouter();
-  const [getTokenInfo, { loading: getTokenInfoLoading }] = useLazyQuery(GET_TOKEN_INFO, {
-    onCompleted: (data) => {
-      if (data?.getTokenInfo) {
-        setTokenName(data?.getTokenInfo.name);
-        setTokenLogo(data?.getTokenInfo.logoUrl);
-      }
-    },
-    fetchPolicy: 'network-only',
-  });
-
-  const [getNFTInfo, { loading: getNFTInfoLoading }] = useLazyQuery(GET_NFT_INFO, {
-    onCompleted: (data) => {
-      if (data?.getNFTInfo) {
-        setTokenName(data?.getNFTInfo.name);
-        setTokenLogo(data?.getNFTInfo.logoUrl);
-      }
-    },
-    fetchPolicy: 'network-only',
-  });
-  const contractAddress = tokenGatingCondition?.accessCondition[0].contractAddress;
-  const dropdownItemStyle = {
-    marginRight: '12px',
-    color: palette.white,
-  };
-
-  useEffect(() => {
-    const getTokenDisplayInfo = async () => {
-      const type = tokenGatingCondition?.accessCondition[0].type;
-      if (type === 'ERC20') {
-        getTokenInfo({
-          variables: {
-            contractAddress,
-            chain: tokenGatingCondition?.accessCondition[0].chain,
-          },
-        });
-      }
-      if (type === 'ERC721') {
-        getNFTInfo({
-          variables: {
-            contractAddress,
-          },
-        });
-      }
-    };
-
-    getTokenDisplayInfo();
-  }, [tokenGatingCondition?.accessCondition[0].contractAddress]);
-  const handleWrapperElementClick = async () => {
-    const confirmed = confirm(`Apply ${tokenGatingCondition?.name} to role?`);
-    if (!confirmed) {
-      return;
-    }
-    try {
-      if (selectedRoleForTokenGate?.__typename === 'OrgRole') {
-        await apollo.mutate({
-          mutation: APPLY_TOKEN_GATING_TO_ORG_ROLE,
-          variables: {
-            tokenGatingConditionId: tokenGatingCondition?.id,
-            orgRoleId: selectedRoleForTokenGate?.id,
-          },
-          refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
-        });
-      }
-
-      if (selectedRoleForTokenGate?.__typename === 'PodRole') {
-        await apollo.mutate({
-          mutation: APPLY_TOKEN_GATING_TO_POD_ROLE,
-          variables: {
-            tokenGatingConditionId: tokenGatingCondition?.id,
-            podRoleId: selectedRoleForTokenGate?.id,
-          },
-        });
-        getPodRolesWithTokenGate();
-      }
-    } catch (e) {
-      console.error(e);
-      return;
-    }
-    handleClose();
-  };
-  return (
-    <TokenGatingElementWrapper onClick={handleWrapperElementClick}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-        }}
-      >
-        <TokenGatingNameHeader>{tokenGatingCondition?.name}</TokenGatingNameHeader>
-        <TokenGateActionMenu right="true">
-          <DropDown DropdownHandler={TaskMenuIcon}>
-            <DropDownItem
-              key={`token-gate-edit${tokenGatingCondition?.id}`}
-              onClick={() => {
-                router.push(`/organization/settings/${orgId}/token-gating`, undefined, {
-                  shallow: true,
-                });
-              }}
-              style={dropdownItemStyle}
-            >
-              Edit
-            </DropDownItem>
-          </DropDown>
-        </TokenGateActionMenu>
-      </div>
-      <TokenGateListDiv>
-        <TokenGateListItemDiv>
-          <TokenGatingHeaderLabel>Chain:</TokenGatingHeaderLabel>
-          <TokenGatingNameHeader>
-            <span
-              style={{
-                textTransform: 'capitalize',
-              }}
-            >
-              {tokenGatingCondition?.accessCondition[0].chain}
-            </span>
-          </TokenGatingNameHeader>
-        </TokenGateListItemDiv>
-        <TokenGateListItemDiv>
-          <TokenGatingHeaderLabel>Token:</TokenGatingHeaderLabel>
-          <TokenLogoDisplay src={tokenLogo} />
-          <TokenGatingNameHeader>
-            <span>{tokenName || tokenGatingCondition?.accessCondition[0].contractAddress}</span>
-          </TokenGatingNameHeader>
-        </TokenGateListItemDiv>
-        <TokenGateListItemDiv>
-          <TokenGatingHeaderLabel>Min. amount to hold:</TokenGatingHeaderLabel>
-          <TokenGatingNameHeader>{tokenGatingCondition?.accessCondition[0].minValue}</TokenGatingNameHeader>
-        </TokenGateListItemDiv>
-      </TokenGateListDiv>
-    </TokenGatingElementWrapper>
   );
 }
 

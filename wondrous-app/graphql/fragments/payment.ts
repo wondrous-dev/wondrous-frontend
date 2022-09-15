@@ -3,6 +3,8 @@ import { gql } from '@apollo/client';
 export const PaymentMethodFragment = gql`
   fragment PaymentMethodFragment on PaymentMethod {
     id
+    createdAt
+    deactivatedAt
     orgId
     tokenAddress
     chain

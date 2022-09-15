@@ -24,7 +24,11 @@ function OnboardingFooter({ onConnectDiscordClick, onContinueClick, onLaterClick
         ) : null}
       </div>
       <RightButtons>
-        {onLaterClick ? <Later onClick={onLaterClick}>Later</Later> : null}
+        {onLaterClick ? (
+          <Later onClick={onLaterClick} data-cy="button-later">
+            Later
+          </Later>
+        ) : null}
         {onContinueClick ? <ContinueButton onClick={onContinueClick}>Continue</ContinueButton> : null}
         {onConnectDiscordClick ? (
           <ContinueButton onClick={onConnectDiscordClick}>

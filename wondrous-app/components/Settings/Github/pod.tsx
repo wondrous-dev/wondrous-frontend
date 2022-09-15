@@ -21,7 +21,7 @@ import { SafeImage } from 'components/Common/Image';
 import { ADD_POD_GITHUB_REPO, DELETE_POD_GITHUB_REPO_INTEGRATION } from 'graphql/mutations/pod';
 import { GRAPHQL_ERRORS } from 'utils/constants';
 import { ErrorText } from 'components/Common';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { ImportTaskModal } from './confirmImportTaskModal';
 import { AddRepoDiv, GithubLink, GithubButtonDiv, PodGithubExplainerText, RepoDiv, RepoDivTitle } from './styles';
 import { HeaderBlock } from '../headerBlock';

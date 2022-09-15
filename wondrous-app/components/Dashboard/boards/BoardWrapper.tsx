@@ -18,11 +18,13 @@ const BoardWrapper = ({ children, isAdmin, onSearch, filterSchema, onFilterChang
       label: 'Contributor',
       isActive: !router.asPath.includes(ViewType.Admin),
       onChange: handleOnToggle,
+      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #F2C678 119.61%)',
     },
     {
-      label: 'Admin',
+      label: 'Operator',
       isActive: router.asPath.includes(ViewType.Admin),
       onChange: handleOnToggle,
+      gradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
     },
   ];
 

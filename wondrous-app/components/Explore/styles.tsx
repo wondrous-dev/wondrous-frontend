@@ -1,12 +1,24 @@
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
-import MasonryCSS from 'react-masonry-css';
-import { ShowMoreButton } from 'components/Common/ListViewAccordion/styles';
 import { device } from 'utils/device';
 import palette from 'theme/palette';
 import { CreateFormPreviewButton } from '../CreateEntity/styles';
 import WheelSvg from './wheel.svg';
 import Metheor from './metheor.svg';
+
+const styles = {
+  filterButton: {
+    justifySelf: 'left',
+    color: 'white',
+    mr: 'auto',
+    backgroundColor: '#4000b3',
+    border: `1px solid #7427FF`,
+    borderRadius: '6px',
+    px: 1.5,
+  },
+};
+
+export default styles;
 
 export const Wheel = styled(WheelSvg)`
   && {
@@ -38,7 +50,6 @@ export const BackgroundImg = styled.img`
 
 export const BackgroundContainer = styled.div`
   width: 100%;
-  padding-top: 2rem;
   border-radius: 6px;
   display: flex;
   justify-content: center;
@@ -108,66 +119,6 @@ export const BackgroundTextSubHeader = styled(Typography)`
   }
 `;
 
-export const StyledGridItem = styled.div`
-  margin: 0 0 24px 24px;
-  background-color: #1e1e1e;
-  border-radius: 12px;
-  text-align: center;
-  padding-bottom: 20px;
-  display: flex;
-  cursor: pointer;
-  flex-direction: column;
-  position: relative;
-  align-items: center;
-  overflow: hidden;
-  img {
-    transition: transform 0.4s ease;
-    transform-origin: 50% 50%;
-  }
-  &::before {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 12px;
-    background: none;
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
-    pointer-events: none;
-  }
-
-  &:hover {
-    background: linear-gradient(180deg, #1e1e1e 50%, #373737 100%);
-    &::before {
-      background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
-    }
-    img {
-      transform: scale(1.1);
-    }
-  }
-`;
-
-export const OrgName = styled(Typography)`
-  && {
-    color: white;
-    font-weight: bold;
-    font-size: 18px;
-    line-height: 26px;
-    margin-bottom: 8px;
-  }
-`;
-
-export const OrgDescription = styled(Typography)`
-  && {
-    font-size: 15px;
-    line-height: 24px;
-    color: #c4c4c4;
-    padding-left: 12px;
-    padding-right: 12px;
-  }
-`;
-
 export const ExploreButton = styled(CreateFormPreviewButton)`
   && {
     margin-left: 0;
@@ -188,6 +139,7 @@ export const TabsWrapper = styled.div`
   width: 100%;
   margin-top: 33px;
   width: 80%;
+  justify-content: center;
   @media ${device.mobileL} {
     flex-direction: column;
   }
@@ -277,68 +229,14 @@ export const Tab = styled.button`
 `;
 
 export const ExplorePageContentWrapper = styled.div`
-  height: 100%;
   display: flex;
   padding-bottom: 10rem;
   flex-direction: column;
-  justify-content: center;
+  justify-content: flex-start;
   align-items: center;
   width: 100%;
   background: url('/images/explore/explore-page-background.svg');
   background-size: cover;
-`;
-
-export const OrgsSectionHeader = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 28px;
-    line-height: 24px;
-    /* identical to box height, or 86% */
-
-    letter-spacing: 0.0025em;
-
-    /* Status - Proposal */
-
-    background: linear-gradient(46.92deg, #b820ff 8.72%, #ffffff 115.55%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-  }
-`;
-export const SectionSubheader = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 400;
-    font-size: 15px;
-    line-height: 20px;
-    /* identical to box height, or 93% */
-
-    letter-spacing: 0.0025em;
-
-    color: #ffffff;
-  }
-`;
-
-export const SectionWrapper = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 80%;
-  gap: 24px;
-  margin-top: 33px;
-`;
-
-export const BountySectionHeader = styled(OrgsSectionHeader)`
-  && {
-    background: linear-gradient(180deg, #ffffff 0%, #ffd653 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-  }
 `;
 
 export const ExplorePageFooter = styled.div`
@@ -410,42 +308,5 @@ export const PartnershipRequestSubheader = styled(Typography)`
     letter-spacing: 0.0025em;
 
     color: #ffffff;
-  }
-`;
-
-export const ShowMoreButtonWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-bottom: 0.5px dashed #2b2b2b;
-  border-radius: 6px;
-  border-top: 0.5px dashed #2b2b2b;
-  padding: 10px;
-  ${ShowMoreButton} {
-    margin-top: 0px;
-    width: fit-content;
-  }
-`;
-
-export const Masonry = styled(MasonryCSS).attrs({
-  breakpointCols: {
-    default: 3,
-    1199: 2,
-    599: 1,
-  },
-  columns: { xs: 1, sm: 2, md: 2, lg: 3 },
-  columnClassName: 'masonry-grid-column',
-})`
-  display: flex;
-  margin: -24px 12px 0 -12px;
-
-  .masonry-grid-column > div {
-    margin: 24px 12px 0;
-  }
-
-  @media (max-width: 600px) {
-    width: 100%;
-    max-width: 100vw;
-    margin-left: 0;
   }
 `;

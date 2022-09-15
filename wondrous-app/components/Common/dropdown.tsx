@@ -4,24 +4,25 @@ import { useOutsideAlerter } from 'utils/hooks';
 import { GradientMidnightDiagonalOposite, GradientMidnightVertical } from './gradients';
 
 const DropDownWrapper = styled.div`
-    position: absolute;
-    min-width: 185px;
-    min-height: 30px;
-    padding: 4px 2px;
-    margin-left: -145px;
-    margin-top: 9px;
-    width: fit-content;
-    background: #1D1D1D;
-    border: 1px solid #4B4B4B;
-    border-radius: 6px;
-    transition: 0.2s display;
-    z-index: 100;
-    display: flex;
-    flex-direction: column;
-    justify-content; center;
-    gap: 6px
-    padding-top: 20px;
-    padding-bottom: 10px;
+  position: absolute;
+  min-width: 185px;
+  min-height: 30px;
+  padding: 4px 2px;
+  margin-left: -145px;
+  margin-top: 9px;
+  width: fit-content;
+  background: #1d1d1d;
+  border: 1px solid #4b4b4b;
+  border-radius: 6px;
+  transition: 0.2s display;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 6px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  transform: translateY(100%);
 `;
 
 const DropDownArrow = styled.div`
@@ -72,7 +73,7 @@ export const DropdownOverlay = styled.div`
 `;
 
 export function DropDown(props) {
-  const { DropdownHandler, children, divStyle } = props;
+  const { DropdownHandler, children, divStyle, dropDownStyle = {} } = props;
   const [isOpen, setIsOpen] = useState(false);
   const DropdownWrapperRef = useRef(null);
 
@@ -91,7 +92,7 @@ export function DropDown(props) {
       <DropdownOverlay onClick={toggleDropDown} style={{ display }} />
       <div onClick={toggleDropDown} style={divStyle}>
         <DropdownHandler {...props} isOpen={isOpen} />
-        <DropDownWrapper ref={DropdownWrapperRef} style={{ display }}>
+        <DropDownWrapper ref={DropdownWrapperRef} style={{ ...dropDownStyle, display }}>
           {children}
         </DropDownWrapper>
         {/* <DropDownArrow style={{ display: display }} /> */}

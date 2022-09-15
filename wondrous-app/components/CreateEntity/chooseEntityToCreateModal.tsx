@@ -3,7 +3,6 @@ import { IconButton } from '@mui/material';
 
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 
-import { useRouter } from 'next/router';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useQuery } from '@apollo/client';
@@ -57,8 +56,6 @@ export const ENTITIES_UI_ELEMENTS = {
 function ChooseEntityToCreateModal(props) {
   const { handleClose, setEntityType } = props;
 
-  // TODO: remove since DAO creation will be introduced
-  const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
@@ -75,7 +72,6 @@ function ChooseEntityToCreateModal(props) {
     podId: board?.podId,
   });
 
-  const onPodPage = router.pathname.includes('/pod/');
   const entries = Object.entries(ENTITIES_UI_ELEMENTS).filter(([key]) => {
     if (
       !permissions.includes(PERMISSIONS.FULL_ACCESS) &&
@@ -105,7 +101,7 @@ function ChooseEntityToCreateModal(props) {
       <CreateLayoutsModalItemContainer>
         {/* {Object.entries(ENTITIES_UI_ELEMENTS).map(([key, { icon: EntityIcon, label }]) => ( */}
         {entries.map(([key, { icon: EntityIcon, label }]) => (
-          <CreateLayoutsModalItem key={key} onClick={() => setEntityType(key)}>
+          <CreateLayoutsModalItem key={key} onClick={() => setEntityType(key)} data-cy={`modal-item-${label}`}>
             <CreateLayoutsModalItemTitleBlock>
               <EntityIcon circle />
               <CreateLayoutsModalItemTitle>{label}</CreateLayoutsModalItemTitle>

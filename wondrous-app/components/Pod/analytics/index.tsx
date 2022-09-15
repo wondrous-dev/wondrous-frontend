@@ -27,7 +27,7 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
+import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
@@ -42,8 +42,8 @@ import {
 import palette from 'theme/palette';
 import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import CSVModal from 'components/organization/analytics/CSVModal';
-import { exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
-import { PRIVATE_TASK_TITLE } from 'utils/constants';
+import { calculateCount, exportContributorTaskCSV, getContributorTaskData } from 'components/organization/analytics';
+import { BOUNTY_TYPE, PRIVATE_TASK_TITLE } from 'utils/constants';
 import Wrapper from '../wrapper';
 import { Post } from '../../Common/Post';
 
@@ -72,6 +72,10 @@ function UserRow({ contributorTask }) {
   const [clicked, setClicked] = useState(false);
   const [openModal, setOpenModal] = useState(false);
   const [taskOpened, setTaskOpened] = useState(null);
+
+  const contributionCount = calculateCount(contributorTask?.tasks);
+  const bountyCount = contributionCount?.bountyCount;
+  const taskCount = contributionCount?.taskCount;
 
   return (
     <ContributorDiv>
@@ -130,17 +134,36 @@ function UserRow({ contributorTask }) {
           />
           <TaskCountWrapper>
             <TaskCountText>
-              {contributorTask?.tasks?.length}
+              {taskCount}
               <span
                 style={{
                   color: 'rgba(108, 108, 108, 1)',
                   marginLeft: '4px',
                 }}
               >
-                {contributorTask?.tasks?.length === 1 ? 'task' : 'tasks'}
+                {taskCount === 1 ? 'task' : 'tasks'}
               </span>
             </TaskCountText>
           </TaskCountWrapper>
+          {bountyCount > 0 && (
+            <TaskCountWrapper
+              style={{
+                marginLeft: '12px',
+              }}
+            >
+              <TaskCountText>
+                {bountyCount}
+                <span
+                  style={{
+                    color: 'rgba(108, 108, 108, 1)',
+                    marginLeft: '4px',
+                  }}
+                >
+                  {bountyCount === 1 ? 'bounty' : 'bounties'}
+                </span>
+              </TaskCountText>
+            </TaskCountWrapper>
+          )}
           <TaskCountWrapper
             style={{
               background: 'none',
@@ -184,6 +207,7 @@ function UserRow({ contributorTask }) {
                 >
                   {cutString(task?.title === PRIVATE_TASK_TITLE ? 'Private Task' : task?.title)}
                 </TaskTitle>
+                {task?.type === BOUNTY_TYPE && <BountySignifier>bounty</BountySignifier>}
                 <div
                   style={{
                     flex: 1,
@@ -291,6 +315,7 @@ function Analytics(props) {
           podId,
           toTime: format(toTime, 'yyyy-MM-dd'),
           fromTime: format(fromTime, 'yyyy-MM-dd'),
+          includeBounties: true,
           ...(assignee && {
             assigneeId: assignee?.value,
           }),
@@ -409,6 +434,7 @@ function Analytics(props) {
                   orgId,
                   toTime: format(toTime, 'yyyy-MM-dd'),
                   fromTime: format(fromTime, 'yyyy-MM-dd'),
+                  includeBounties: true,
                 },
               });
             }

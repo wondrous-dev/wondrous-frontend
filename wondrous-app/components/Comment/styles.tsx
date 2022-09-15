@@ -2,13 +2,13 @@ import { Typography } from '@mui/material';
 import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { SafeImage } from '../Common/Image';
-import DefaultUserImage from '../Common/Image/DefaultUserImage';
-import { CreateFormPreviewButton } from '../CreateEntity/styles';
+import { Button } from 'components/Common/button';
+import { GradientHighlightHorizontal } from 'components/Common/gradients';
+import { SafeImage } from 'components/Common/Image';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 
-export const CommentListWrapper = styled.div`
-  margin-top: 16px;
-`;
+export const CommentListWrapper = styled.div``;
 
 export const CommentListContainer = styled.div`
   margin-top: 16px;
@@ -137,4 +137,33 @@ export const DeleteText = styled(Typography)`
 
 export const TextInputDiv = styled.div`
   height: 100px;
+`;
+
+export const DiscordDiscussionButtonWrapper = styled.div`
+  background: ${palette.grey910};
+  width: 100%;
+  border-radius: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  position: relative;
+  z-index: 2;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+`;
+
+export const DiscordThreadCreateButton = styled(Button)`
+  && {
+    ${GradientHighlightHorizontal}
+    height: 10px;
+    width: fit-content;
+    > button {
+      font-family: 'Space Grotesk';
+      ${({ theme }) => `
+        font-weight: ${theme.typography.fontWeightMedium};
+  `}
+    }
+  }
 `;

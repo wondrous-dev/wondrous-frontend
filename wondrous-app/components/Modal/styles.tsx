@@ -17,8 +17,9 @@ export const ModalContainer = styled.div`
 
 export const ModalDialog = styled.div`
   position: relative;
-  width: auto;
-  margin: 0.5rem;
+  width: 100%;
+  max-width: ${(props) => (props.maxWidth ? `${props.maxWidth}px` : '100%')};
+  margin: 50px auto auto;
   pointer-events: none;
   background: ${(props) => props.theme.palette.grey900};
   border: 1px solid ${(props) => props.theme.palette.grey79};
@@ -99,6 +100,7 @@ export const ModalFooter = styled.div`
 export const ModalFooterLeft = styled.div`
   display: flex;
   gap: 18px;
+  flex: 1;
 `;
 
 export const ModalFooterRight = styled.div`

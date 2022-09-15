@@ -216,17 +216,16 @@ function SubmissionFormLinkField({ formik }) {
                   <SubmissionFormLinkIcon />
                 </SubmissionFormLinkStartAdornment>
               }
+              data-cy="submission-input-url"
               endAdornment={
-                <>
-                  {index > 0 && (
-                    <SubmissionFormLinkEndAdornment
-                      position="end"
-                      onClick={removeLinkField({ formik, indexToRemove: index })}
-                    >
-                      <SubmissionFormLinkCloseIcon />
-                    </SubmissionFormLinkEndAdornment>
-                  )}
-                </>
+                index > 0 && (
+                  <SubmissionFormLinkEndAdornment
+                    position="end"
+                    onClick={removeLinkField({ formik, indexToRemove: index })}
+                  >
+                    <SubmissionFormLinkCloseIcon />
+                  </SubmissionFormLinkEndAdornment>
+                )
               }
             />
             <SubmissionFormFieldErrorText>{formik.errors?.link?.[index]?.url}</SubmissionFormFieldErrorText>
@@ -379,7 +378,7 @@ export function TaskSubmissionForm(props) {
             <SubmissionDivider />
             <SubmissionFormButtonWrapper>
               <SubmissionFormCancel onClick={cancelSubmissionForm}>Cancel</SubmissionFormCancel>
-              <SubmissionFormSubmit>{submissionFormSubmitText}</SubmissionFormSubmit>
+              <SubmissionFormSubmit data-cy="submission-button-submit">{submissionFormSubmitText}</SubmissionFormSubmit>
             </SubmissionFormButtonWrapper>
           </SubmissionForm>
         )}

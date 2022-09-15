@@ -5,7 +5,7 @@ import { Box } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
-import SettingsWrapper from 'components/Settings/settingsWrapper';
+import SettingsWrapper from 'components/Common/SidebarSettings';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -121,7 +121,7 @@ function GeneralSettingsComponent(props) {
       tooltip: `Public means anyone can see this ${typeText?.toLowerCase()}`,
     },
     [PRIVACY_LEVEL.private]: {
-      title: 'Pod Members Only',
+      title: isPod ? 'Pod Members Only' : 'Org members Only',
       tooltip: `Private means only those with the proper permissions can see this ${typeText?.toLowerCase()}`,
     },
   };
@@ -245,22 +245,20 @@ function GeneralSettingsComponent(props) {
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
 
-        {isPod && (
-          <div
-            style={{
-              marginTop: '32px',
-            }}
-          >
-            <CreateFormAddDetailsTab>
-              <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
-              <TabsVisibility
-                options={tabsVisibilityOptions}
-                selected={tabsVisibilitySelected}
-                onChange={tabsVisibilityHandleOnChange}
-              />
-            </CreateFormAddDetailsTab>
-          </div>
-        )}
+        <div
+          style={{
+            marginTop: '32px',
+          }}
+        >
+          <CreateFormAddDetailsTab>
+            <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
+            <TabsVisibility
+              options={tabsVisibilityOptions}
+              selected={tabsVisibilitySelected}
+              onChange={tabsVisibilityHandleOnChange}
+            />
+          </CreateFormAddDetailsTab>
+        </div>
 
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>
@@ -537,6 +535,7 @@ function GeneralSettings() {
   const [orgLinks, setOrgLinks] = useState([]);
   const [descriptionText, setDescriptionText] = useState('');
   const [toast, setToast] = useState({ show: false, message: '' });
+  const [isPrivate, setIsPrivate] = useState(null);
   const router = useRouter();
   const { orgId } = router.query;
 
@@ -548,6 +547,7 @@ function GeneralSettings() {
     setDescriptionText(organization.description);
 
     setOrgProfile(organization);
+    setIsPrivate(organization.privacyLevel === PRIVACY_LEVEL.private);
   }
 
   const [getOrgById, { data: getOrgByIdData }] = useLazyQuery(GET_ORG_BY_ID, {
@@ -621,7 +621,7 @@ function GeneralSettings() {
           links,
           name: orgProfile.name,
           description: orgProfile.description,
-          privacyLevel: orgProfile.privacyLevel,
+          privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
         },
@@ -651,6 +651,8 @@ function GeneralSettings() {
       logoImage={logoImage}
       newProfile={orgProfile}
       resetChanges={resetChanges}
+      isPrivate={isPrivate}
+      setIsPrivate={setIsPrivate}
       saveChanges={saveChanges}
       typeText="DAO"
       setProfile={setOrgProfile}
