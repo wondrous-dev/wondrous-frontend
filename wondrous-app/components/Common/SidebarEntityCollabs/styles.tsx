@@ -20,7 +20,7 @@ export const CreateButton = styled.button`
   font-family: ${typography.fontFamily};
   font-style: normal;
   font-weight: 500;
-  font-size: 13px;
+  font-size: 11px;
   line-height: 16px;
 
   :hover {

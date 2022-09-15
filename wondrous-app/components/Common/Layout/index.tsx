@@ -25,7 +25,6 @@ const getOrgsList = (userOrgs, router) => {
 };
 
 export default function SidebarLayout({ children }) {
-  const user = useMe();
   const isMobile = useIsMobile();
   const router = useRouter();
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
