@@ -119,6 +119,15 @@ export const GET_MILESTONES = gql`
   }
 `;
 
+export const GET_CATEGORIES = gql`
+  query getMilestones($orgId: ID!, $podId: ID) {
+    getMilestones(orgId: $orgId, podId: $podId) {
+      title
+      id
+    }
+  }
+`;
+
 export const GET_SUBTASK_COUNT_FOR_TASK = gql`
   query getSubtaskCountForTask($taskId: ID!) {
     getSubtaskCountForTask(taskId: $taskId) {

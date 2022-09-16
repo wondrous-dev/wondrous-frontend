@@ -26,7 +26,7 @@ import { TextInput } from '../TextInput';
 
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from '../Common/DropdownSelect/DropdownSelect';
 import CloseModalIcon from '../Icons/closeModal';
 import { SafeImage } from '../Common/Image';
 import InputForm from '../Common/InputForm/inputForm';

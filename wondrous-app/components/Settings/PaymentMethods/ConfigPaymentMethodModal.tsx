@@ -11,7 +11,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
 import { CREATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
 import { GRAPHQL_ERRORS } from 'utils/constants';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from '../../Common/DropdownSelect/DropdownSelect';
 import {
   PaymentConfigModal,
   CustomAddressInput,

@@ -26,13 +26,12 @@ import {
   MilestoneSearchWrapper,
 } from './styles';
 
-function MilestoneSearch(props) {
-  const { options, onChange, value, handleClose, formValues = null, disabled, autoFocus = false } = props;
+function MilestoneSearch({ options, onChange, value, handleClose, formValues = null, disabled, autoFocus = false }) {
   const [createMilestone, setCreateMilestone] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
 
   const anchorEl = useRef(null);
-  const handleClick = () => setIsOpen((isOpen) => !isOpen);
+  const handleClick = () => setIsOpen((open) => !open);
   const handleClickAway = () => setIsOpen(false);
 
   useEffect(() => {

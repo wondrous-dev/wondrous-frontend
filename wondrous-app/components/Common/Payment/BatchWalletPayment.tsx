@@ -28,7 +28,7 @@ import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/co
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
+import DropdownSelect from '../DropdownSelect/DropdownSelect';
 import { constructGnosisRedirectUrl } from './SingleWalletPayment';
 
 const generateReadablePreviewForAddress = (address: String) => {

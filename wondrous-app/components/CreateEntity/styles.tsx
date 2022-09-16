@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from '../Common/DropdownSelect/DropdownSelect';
 import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
 import CreateMilestoneIcon from '../Icons/createMilestone';

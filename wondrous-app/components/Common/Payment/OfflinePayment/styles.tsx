@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button } from '../../button';
-import DropdownSelect from '../../DropdownSelect/dropdownSelect';
+import DropdownSelect from '../../DropdownSelect/DropdownSelect';
 
 export const OfflinePaymentWrapper = styled.div`
   margin-top: 10px;
