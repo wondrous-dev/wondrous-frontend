@@ -60,6 +60,14 @@ export const CREATE_JOIN_ORG_REQUEST = gql`
   }
 `;
 
+export const SEND_ORG_EMAIL_INVITES = gql`
+  mutation sendOrgRoleInviteEmails($input: OrgInviteLinkInput) {
+    sendOrgRoleInviteEmails(input: $input) {
+      success
+    }
+  }
+`;
+
 export const APPROVE_JOIN_ORG_REQUEST = gql`
   mutation approveJoinOrgRequest($userId: ID!, $orgId: ID!) {
     approveJoinOrgRequest(userId: $userId, orgId: $orgId) {
