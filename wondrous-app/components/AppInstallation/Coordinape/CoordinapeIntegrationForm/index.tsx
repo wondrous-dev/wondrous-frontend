@@ -27,7 +27,7 @@ import {
 } from './styles';
 
 import { DEFAULT_ORGANIZATION_OPTION, DEFAULT_POD_OPTION } from './constants';
-import { useGetLoggedInUserFullAccessOrgs, useGetOrgPods, useGetUserOrgs } from './hooks';
+import { useGetLoggedInUserFullAccessOrgs, useGetOrgPods } from './hooks';
 
 const coordinapeImageUrl = 'https://avatars.githubusercontent.com/u/80926529';
 
@@ -47,8 +47,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
   const [selectedOrganization, setSelectedOrganization] = useState(DEFAULT_ORGANIZATION_OPTION);
   const [selectedPods, setSelectedPods] = useState(DEFAULT_POD_OPTION);
 
-  // const userFullAccessOrganizationData = useGetLoggedInUserFullAccessOrgs(); // to be utilized when backend is ready
-  const userOrgs = useGetUserOrgs(user?.id);
+  const userFullAccessOrganizationData = useGetLoggedInUserFullAccessOrgs();
   const orgPods = useGetOrgPods(selectedOrganization?.value);
 
   const userProfilePicture = user?.thumbnailPicture || user?.profilePicture;
@@ -175,7 +174,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
               renderValue={renderOrganizationSelection}
               onChange={handleSelectedOrganizationChange}
             >
-              {userOrgs?.map((org) => (
+              {userFullAccessOrganizationData?.map((org) => (
                 <CoordinapeIntegrationFormSelectMenuItem key={org.id} value={org}>
                   {org.name}
                 </CoordinapeIntegrationFormSelectMenuItem>
