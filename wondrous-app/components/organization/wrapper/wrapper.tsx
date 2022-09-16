@@ -480,40 +480,50 @@ function Wrapper(props) {
                 renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
               ) : (
                 <Box sx={{ flex: '0 0 60px' }}>
-                  <SafeImage
-                    src={orgProfile?.profilePicture}
-                    placeholderComp={
-                      <TokenEmptyLogo>
-                        <DAOEmptyIcon />
-                      </TokenEmptyLogo>
-                    }
-                    width="60px"
-                    height="60px"
-                    useNextImage
+                  <div
                     style={{
-                      borderRadius: '6px',
+                      position: 'relative',
+                      cursor: 'pointer',
                     }}
-                  />
+                  >
+                    <SafeImage
+                      src={orgProfile?.profilePicture}
+                      placeholderComp={
+                        <TokenEmptyLogo>
+                          <DAOEmptyIcon />
+                        </TokenEmptyLogo>
+                      }
+                      width="60px"
+                      height="60px"
+                      useNextImage
+                      style={{
+                        borderRadius: '6px',
+                      }}
+                    />
+                    {isGr15Sponsor && (
+                      <>
+                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                        <GR15DEILogo
+                          width="42"
+                          height="42"
+                          onClick={() => setOpenGR15Modal(true)}
+                          style={{
+                            top: '0',
+                            right: '-20px',
+                            position: 'absolute',
+                            zIndex: '20',
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
                 </Box>
-              )}
-              {isGr15Sponsor && (
-                <div>
-                  <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                  <GR15DEILogo
-                    width="42"
-                    height="42"
-                    style={{
-                      marginLeft: '4px',
-                    }}
-                    onClick={() => setOpenGR15Modal(true)}
-                  />
-                </div>
               )}
               <HeaderTitleIcon>
                 <HeaderTitle
                   style={{
                     ...(isGr15Sponsor && {
-                      marginLeft: '12px',
+                      marginLeft: '24px',
                     }),
                   }}
                 >
