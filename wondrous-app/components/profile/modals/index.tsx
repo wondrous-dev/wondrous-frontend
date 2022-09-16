@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { CircularProgress } from '@mui/material';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
@@ -37,12 +37,13 @@ import {
   UserWrapper,
 } from './styles';
 
-const PodItem = forwardRef((props: any, ref) => {
+const VIRTUAL_PAGINATION_PER_PAGE_COUNT = 5;
+
+function PodItem(props) {
   const router = useRouter();
   const { pod } = props;
   return (
     <PodWrapper
-      ref={ref}
       onClick={() =>
         router.push(`/pod/${pod?.id}/boards`, undefined, {
           shallow: true,
@@ -55,15 +56,13 @@ const PodItem = forwardRef((props: any, ref) => {
       </PodExplainerText>
     </PodWrapper>
   );
-});
+}
 
-const UserItem = forwardRef((props: any, ref) => {
+function UserItem(props) {
   const router = useRouter();
   const { user } = props;
-
   return (
     <UserWrapper
-      ref={ref}
       onClick={() =>
         router.push(`/profile/${user?.username}/about`, undefined, {
           shallow: true,
@@ -83,7 +82,7 @@ const UserItem = forwardRef((props: any, ref) => {
       </UserMetaDataContainer>
     </UserWrapper>
   );
-});
+}
 
 export function MoreInfoModal(props) {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
@@ -96,17 +95,8 @@ export function MoreInfoModal(props) {
   const [searchedPodList, setSearchedPodList] = useState([]);
   const [paginatedUserList, setPaginatedUserList] = useState([]);
   const [paginatedPodList, setPaginatedPodList] = useState([]);
-  const usersOverflowBoxRef = useRef(null);
-  const userListItemRef = useRef(null);
-  const podsOverflowBoxRef = useRef(null);
-  const podListItemRef = useRef(null);
   const [activeTab, setActiveTab] = useState(MODAL_TABS_MAP.CONTRIBUTORS);
   const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
-  const [userVirtualPaginationCount, setUserVirtualPaginationCount] = useState(5);
-  const [podVirtualPaginationCount, setPodVirtualPaginationCount] = useState(5);
-  const shouldMonitorUsersListRef = useRef(true);
-  const shouldMonitorPodsListRef = useRef(true);
-
   const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
     onCompleted: (data) => {
       const userData = data.getOrgUsers;
@@ -129,20 +119,45 @@ export function MoreInfoModal(props) {
 
   const pods = orgPodData?.getOrgPods;
 
-  const SEARCH_TYPE_USER = 1;
-  const SEARCH_TYPE_POD = 2;
-
-  const searchUserOrPod = (searchQuery, searchType = SEARCH_TYPE_USER) => {
+  const searchUser = (searchQuery) => {
     const localSearchQuery = searchQuery.toLowerCase();
-    const listToSearch = searchType === SEARCH_TYPE_USER ? userList : podList;
-    const setFunctionForListToSearch = searchType === SEARCH_TYPE_USER ? setSearchedUserList : setSearchedPodList;
     if (searchQuery) {
-      const searchFields = searchType === SEARCH_TYPE_USER ? ['username', 'bio'] : ['name', 'description'];
-      const newList = listToSearch.filter((item) =>
-        searchFields.some((field) => item[field]?.toLowerCase().includes(localSearchQuery))
-      );
-      setFunctionForListToSearch(newList);
-    } else setFunctionForListToSearch(listToSearch);
+      const newList = userList.filter((item) => {
+        if (item.username && item.bio) {
+          return (
+            item.username.toLowerCase().includes(localSearchQuery) || item.bio.toLowerCase().includes(localSearchQuery)
+          );
+        }
+        if (item.username) {
+          return item.username.toLowerCase().includes(localSearchQuery);
+        }
+        if (item.bio) {
+          return item.bio.toLowerCase().includes(localSearchQuery);
+        }
+      });
+      setSearchedUserList(newList);
+    } else setSearchedUserList(userList);
+  };
+
+  const searchPod = (searchQuery) => {
+    const localSearchQuery = searchQuery.toLowerCase();
+    if (searchQuery) {
+      const newList = podList.filter((item) => {
+        if (item.name && item.description) {
+          return (
+            item.name.toLowerCase().includes(localSearchQuery) ||
+            item.description.toLowerCase().includes(localSearchQuery)
+          );
+        }
+        if (item.name) {
+          return item.name.toLowerCase().includes(localSearchQuery);
+        }
+        if (item.description) {
+          return item.description.toLowerCase().includes(localSearchQuery);
+        }
+      });
+      setSearchedPodList(newList);
+    } else setSearchedPodList(podList);
   };
 
   const paginateDataList = (dataList, perPageCount) =>
@@ -153,17 +168,17 @@ export function MoreInfoModal(props) {
 
   useEffect(() => {
     if (searchedUserList) {
-      const newPaginatedUserList = paginateDataList(searchedUserList, userVirtualPaginationCount);
+      const newPaginatedUserList = paginateDataList(searchedUserList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
       setPaginatedUserList(newPaginatedUserList);
     }
-  }, [searchedUserList, userVirtualPaginationCount]);
+  }, [searchedUserList]);
 
   useEffect(() => {
     if (searchedPodList) {
-      const newPaginatedPodList = paginateDataList(searchedPodList, podVirtualPaginationCount);
+      const newPaginatedPodList = paginateDataList(searchedPodList, VIRTUAL_PAGINATION_PER_PAGE_COUNT);
       setPaginatedPodList(newPaginatedPodList);
     }
-  }, [searchedPodList, podVirtualPaginationCount]);
+  }, [searchedPodList]);
 
   useEffect(() => {
     if (showUsers && !displayUsers && !displayPods) {
@@ -217,26 +232,6 @@ export function MoreInfoModal(props) {
       setSearchedPodList([...podList]);
     }
   }, [podList]);
-
-  useEffect(() => {
-    if (usersOverflowBoxRef.current && userListItemRef.current && displayUsers && !!shouldMonitorUsersListRef.current) {
-      const boxHeight = usersOverflowBoxRef.current.offsetHeight;
-      const listHeight = userListItemRef.current.offsetHeight + 16;
-      const paginationCount = boxHeight / listHeight;
-      setUserVirtualPaginationCount(Math.ceil(paginationCount));
-      shouldMonitorUsersListRef.current = false;
-    }
-  }, [paginatedUserList, displayUsers]);
-
-  useEffect(() => {
-    if (podsOverflowBoxRef.current && podListItemRef.current && !!shouldMonitorPodsListRef.current && displayPods) {
-      const boxHeight = podsOverflowBoxRef.current.offsetHeight;
-      const listHeight = podListItemRef.current.offsetHeight + 16;
-      const paginationCount = boxHeight / listHeight;
-      setPodVirtualPaginationCount(Math.ceil(paginationCount));
-      shouldMonitorPodsListRef.current = false;
-    }
-  }, [paginatedPodList, displayPods]);
 
   return (
     <Modal
@@ -292,9 +287,9 @@ export function MoreInfoModal(props) {
           <input
             onChange={(e) => {
               if (displayUsers) {
-                searchUserOrPod(e.target.value, SEARCH_TYPE_USER);
+                searchUser(e.target.value);
               } else if (displayPods) {
-                searchUserOrPod(e.target.value, SEARCH_TYPE_POD);
+                searchPod(e.target.value);
               }
             }}
             placeholder={`Search ${displayPods ? 'pods' : 'contributors'}...`}
@@ -303,23 +298,23 @@ export function MoreInfoModal(props) {
           />
         </SearchBox>
         {displayUsers && (
-          <OverflowBox ref={usersOverflowBoxRef}>
+          <OverflowBox>
             {listLoading && (
               <ActivityIndicatorContainer>
                 <CircularProgress />
               </ActivityIndicatorContainer>
             )}
             {paginatedUserList.map((item, i) => (
-              <Snap key={item[0]?.id ?? i} className="section_scroll">
-                {item.map((user) => (
-                  <UserItem ref={userListItemRef} key={user?.id} user={user} />
+              <Snap key={i} className="section_scroll">
+                {item.map((user, index) => (
+                  <UserItem key={user?.id} user={user} />
                 ))}
               </Snap>
             ))}
           </OverflowBox>
         )}
         {displayPods && (
-          <OverflowBox ref={podsOverflowBoxRef}>
+          <OverflowBox>
             {listLoading && (
               <ActivityIndicatorContainer>
                 <CircularProgress />
@@ -327,9 +322,9 @@ export function MoreInfoModal(props) {
             )}
 
             {paginatedPodList.map((item, i) => (
-              <Snap key={item[0]?.id ?? i} className="section_scroll">
-                {item.map((pod) => (
-                  <PodItem ref={podListItemRef} key={pod?.id} pod={pod} />
+              <Snap key={i} className="section_scroll">
+                {item.map((pod, index) => (
+                  <PodItem key={pod?.id} pod={pod} />
                 ))}
               </Snap>
             ))}
