@@ -1,6 +1,6 @@
+import HelpModal from 'components/Common/HelpModal.jsx';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import HelpModal from 'components/Common/HelpModal.jsx';
 import {
   BottomButtonIcon,
   ButtonIcon,
@@ -11,13 +11,13 @@ import {
   DrawerComponent,
   DrawerContainer,
   DrawerList,
-  HeaderLogo,
-  LogoButton,
   NoLogoDAO,
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
 import AddDaoButton from 'components/Common/SidebarMainAddDao';
 import ExploreIconButton from 'components/Common/SidebarMainExplore';
+import SidebarMainLogo from 'components/Common/SidebarMainLogo';
+import MissionControlIconButton from 'components/Common/SidebarMainMissionControl';
 import PodsIconButton from 'components/Common/SidebarMainPods';
 import SidebarTooltip from 'components/Common/SidebarMainTooltip';
 import { toolTipStyle } from 'components/Common/SidebarStyles';
@@ -30,7 +30,6 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
-import MissionControlIconButton from '../SidebarMainMissionControl';
 
 type Props = {
   isMobile: boolean;
@@ -90,11 +89,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
       <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
       <DrawerContainer>
         <DrawerBlockWrapper>
-          <SidebarTooltip title="Dashboard" id="tour-header-dashboard-icon">
-            <LogoButton onClick={onLogoClick}>
-              <HeaderLogo />
-            </LogoButton>
-          </SidebarTooltip>
+          <SidebarMainLogo key={router.asPath} onClick={onLogoClick} isActive={isPageActive(PAGE_PATHNAME.explore)} />
           <ButtonWrapper>
             <SidebarTooltip title="Profile">
               <ButtonIcon
