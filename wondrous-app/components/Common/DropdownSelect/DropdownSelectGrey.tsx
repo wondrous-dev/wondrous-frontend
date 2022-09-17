@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import styled from 'styled-components';
 
 export const RolesDropdown = styled(DropdownSelect)`

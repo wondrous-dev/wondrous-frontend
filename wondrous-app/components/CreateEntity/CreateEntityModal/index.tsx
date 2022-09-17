@@ -52,7 +52,6 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
   GET_MILESTONES,
   GET_TASK_BY_ID,
-  GET_TASK_REVIEWERS,
 } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
@@ -77,7 +76,6 @@ import {
   updateTaskItemOnEntityType,
 } from 'utils/board';
 import {
-  CATEGORY_TYPES,
   CATEGORY_LABELS,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
@@ -330,6 +328,16 @@ const filterOptionsWithPermission = (
       color,
     }));
 };
+
+const filterCategoryValues = (categories = []) =>
+  categories?.map((category) =>
+    typeof category === 'string'
+      ? {
+          id: category,
+          label: CATEGORY_LABELS[category],
+        }
+      : category
+  );
 
 const getPodObject = (pods, podId) => {
   let justCreatedPod = null;
@@ -1249,8 +1257,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories?.map((category) => category.id);
-
+      const categories = values?.categories.map((category) => category.name);
       const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
         values;
       const input = {
@@ -1499,10 +1506,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   // snapshot integration
   const {
-    orgSnapshot,
     getOrgSnapshotInfo,
     snapshotConnected,
-    snapshotSpace,
     snapshotErrorElement,
     snapshotLoading,
     exportTaskProposal,
@@ -1539,7 +1544,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   // cancel snapshot proposal
   const cancelSnapshotProposal = async () => {
-    await cancelProposal(existingTask.snapshotId).then((receipt) => {
+    await cancelProposal(existingTask.snapshotId).then(() => {
       setSnapshotId(null);
     });
     await apollo.mutate({
@@ -1549,6 +1554,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       },
     });
   };
+
   const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
   const hasSubTasks = subTasks?.data?.length > 0;
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
@@ -2334,14 +2340,12 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               label="Select Category"
               searchPlaceholder="Search categories"
               options={categoriesData}
-              value={form.values.categories}
+              value={filterCategoryValues(form.values.categories)}
               onChange={(categories) => {
-                form.setFieldValue('categories', categories);
+                form.setFieldValue('categories', [...categories]);
               }}
               disabled={formValues?.categories}
-              onClose={() => {
-                form.setFieldValue('categories', []);
-              }}
+              onClose={() => {}}
             />
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>

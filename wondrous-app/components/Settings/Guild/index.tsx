@@ -17,7 +17,7 @@ import {
 import { LabelBlock } from 'components/Settings/styles';
 import { useWonderWeb3 } from 'services/web3';
 import useGuildXyz from 'services/guildxyz';
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { ErrorText } from 'components/Common';
 
 export default function GuildIntegration({ orgId }) {

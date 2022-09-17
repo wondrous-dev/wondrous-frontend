@@ -58,6 +58,7 @@ export const DropdownSearchButton = styled(ButtonUnstyled)`
 export const DropdownSearchImageLabelWrapper = styled.div`
   display: flex;
   align-items: center;
+  max-width: 320px;
 `;
 
 export const DropdownSearchLabel = styled(Typography)`
@@ -113,6 +114,9 @@ export const DropdownSearchInput = styled(TextField)`
   }
   .MuiOutlinedInput-notchedOutline {
     border: none;
+  }
+  .MuiChip-root {
+    color: ${palette.white};
   }
 `;
 

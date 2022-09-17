@@ -1,6 +1,6 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   CreateLayoutsModalHeader,
   CreateLayoutsModalItemContainer,

@@ -21,7 +21,7 @@ import {
 import { InputAdornment, TextField } from '@mui/material';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import SearchIcon from 'components/Icons/search';
 import RolesIcon from 'components/Icons/roles';

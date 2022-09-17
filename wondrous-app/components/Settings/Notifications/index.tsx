@@ -9,7 +9,7 @@ import {
   MANUAL_DISCORD_ORG_SETUP,
 } from 'graphql/mutations';
 
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { ErrorText } from 'components/Common';

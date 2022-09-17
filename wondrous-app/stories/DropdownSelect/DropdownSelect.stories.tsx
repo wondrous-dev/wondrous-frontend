@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import styled from 'styled-components';
 
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 
 const chainOptions = [
   {

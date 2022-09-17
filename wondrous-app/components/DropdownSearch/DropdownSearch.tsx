@@ -1,6 +1,6 @@
 /* eslint-disable react/no-unstable-nested-components */
 import { useEffect, useState, useRef, useMemo } from 'react';
-import { Autocomplete, Box, Checkbox, ClickAwayListener } from '@mui/material';
+import { Autocomplete, Box, ClickAwayListener } from '@mui/material';
 
 import {
   DropdownSearchLabel,
@@ -42,15 +42,21 @@ const DropdownSearch = ({
   const handleClick = () => setIsOpen((open) => !open);
 
   const handleClickAway = () => setIsOpen(false);
+
+  const selectedValues = useMemo(() => {
+    const valueIds = value?.map((v) => v.id);
+    return options.filter((option) => valueIds.includes(option.id));
+  }, [value, options]);
+
   return (
     <ClickAwayListener onClickAway={handleClickAway}>
       <Box width="100%">
         <DropdownSearchButton open={isOpen} disabled={!options || disabled} onClick={handleClick} ref={anchorEl}>
           <DropdownSearchImageLabelWrapper>
-            {value?.length > 0 ? (
-              value?.map((category) => (
-                <DropdownSearchLabel key={category.id} hasValue={category.id}>
-                  {category.label}
+            {selectedValues?.length > 0 ? (
+              selectedValues.map((v) => (
+                <DropdownSearchLabel key={v.id} hasValue={v.id}>
+                  {v.label}
                 </DropdownSearchLabel>
               ))
             ) : (
@@ -62,7 +68,7 @@ const DropdownSearch = ({
         <DropdownSearchPopper open={isOpen} anchorEl={anchorEl.current} placement="bottom-start" disablePortal>
           <Autocomplete
             multiple
-            value={value || []}
+            value={selectedValues}
             renderInput={(params) => (
               <DropdownSearchInput
                 {...params}
@@ -101,8 +107,13 @@ const DropdownSearch = ({
             open={isOpen}
             options={options}
             disablePortal
-            onChange={(event, value) => {
-              onChange(value);
+            onChange={(_, changedOptions) => {
+              onChange(
+                changedOptions.map(({ id, label: labelChanged }) => ({
+                  id,
+                  label: labelChanged,
+                }))
+              );
             }}
             blurOnSelect
           />

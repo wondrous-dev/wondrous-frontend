@@ -11,7 +11,7 @@ import { MANUAL_DISCORD_ORG_SETUP } from 'graphql/mutations';
 import { BOT_URL } from 'components/DiscordNotificationSetup';
 import palette from 'theme/palette';
 import InputForm from 'components/Common/InputForm/inputForm';
-import DropdownSelect from 'components/Common/DropdownSelect/DropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import { AddGuildButton, DiscordText } from 'components/Settings/styles';

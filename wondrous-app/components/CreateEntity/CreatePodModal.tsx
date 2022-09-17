@@ -22,11 +22,11 @@ import { TextInputContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { TextInput } from '../TextInput';
 
 import { useMe } from '../Auth/withAuth';
 import { ErrorText } from '../Common';
-import DropdownSelect from '../Common/DropdownSelect/DropdownSelect';
 import CloseModalIcon from '../Icons/closeModal';
 import { SafeImage } from '../Common/Image';
 import InputForm from '../Common/InputForm/inputForm';
