@@ -45,13 +45,24 @@ type Props = {
    * Footer right part
    */
   footerRight?: React.ReactNode;
+
+  alignCenter?: boolean;
 };
 
-export function Modal({ open, onClose, title, footerLeft, footerRight, maxWidth, children }: Props) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  footerLeft,
+  footerRight,
+  maxWidth,
+  children,
+  alignCenter = false,
+}: Props) {
   return (
     <ModalComponent open={open} onClose={onClose}>
-      <ModalContainer tabIndex={-1}>
-        <ModalDialog maxWidth={maxWidth}>
+      <ModalContainer tabIndex={-1} alignCenter={alignCenter}>
+        <ModalDialog maxWidth={maxWidth} alignCenter={alignCenter}>
           <ModalContent>
             <ModalHeader>
               {!!title && <ModalTitle>{title}</ModalTitle>}
