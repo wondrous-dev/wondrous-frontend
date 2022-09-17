@@ -31,6 +31,8 @@ function GR15DEIModal({ open, onClose }: GR15DEIModalProps) {
     >
       <DialogTitle sx={styles.dialogTitle}>
         <GR15DEILogo
+          width="28"
+          height="28"
           style={{
             marginRight: '12px',
             marginLeft: '-8px',
