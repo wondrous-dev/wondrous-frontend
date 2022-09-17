@@ -15,9 +15,11 @@ type Props = {
   roleList: Role[];
   isDAO: boolean;
   users: Array<{ user: { thumbnailPicture: string; id: string } }>;
+  selectedRoleIds: string[];
+  handleRoleFilterChange: (roleId: string) => void;
 };
 
-function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
+function MemberRoles({ roleList = [], users = [], isDAO, selectedRoleIds = [], handleRoleFilterChange }: Props) {
   const width = 30;
   const overlapLeft = 5;
   const containerWidth = users.length * width - overlapLeft * (users.length - 1) + 2;
@@ -39,7 +41,12 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
         </Grid>
         <Grid display="flex" alignItems="center" gap="10px">
           {roleList.map((role) => (
-            <MemberRole key={role.name} borderColor={getRoleColor(role)}>
+            <MemberRole
+              key={role.name}
+              borderColor={getRoleColor(role)}
+              isActive={selectedRoleIds.includes(role?.id)}
+              onClick={() => handleRoleFilterChange(role?.id)}
+            >
               <span>{getRoleEmoji(role)}</span>
               <Typography color={palette.white} textTransform="capitalize" fontSize={13} fontWeight={500}>
                 {role.name}

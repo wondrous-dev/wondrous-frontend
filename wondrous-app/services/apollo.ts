@@ -121,7 +121,7 @@ const cache = new InMemoryCache({
           keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
           merge: offsetLimitPaginationInput,
         },
-        getOrgUsers: offsetLimitPagination(['orgId']),
+        getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'filterByRoles']),
       },
     },
   },

@@ -25,7 +25,7 @@ import { HeaderBlock } from '../headerBlock';
 import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
 
-const LIMIT = 10;
+const LIMIT = 2;
 
 const useKickMember = (orgId, podId, users, setUsers) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
@@ -69,6 +69,7 @@ function Members() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRoleIds, setSelectedRoleIds] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(true);
   const [openInvite, setOpenInvite] = useState(false);
 
@@ -159,7 +160,12 @@ function Members() {
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
-      const variables = { offset: users.length, limit: LIMIT, searchString: null };
+      const variables = {
+        offset: users.length,
+        limit: LIMIT,
+        searchString: null,
+        filterByRoles: [],
+      };
 
       if (orgId) {
         fetchMoreOrgUsers({
@@ -191,6 +197,7 @@ function Members() {
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
+  const showHasMore = hasMore && !searchQuery?.length && !selectedRoleIds?.length;
 
   const handleDownloadToCSV = () => {
     if (isOrg) {
@@ -214,14 +221,24 @@ function Members() {
     }
   };
 
+  const handleRoleFilterChange = useCallback((roleId: string) => {
+    setSelectedRoleIds((selectedRoleIds) => {
+      const isSelected = selectedRoleIds.includes(roleId);
+      if (isSelected) {
+        return selectedRoleIds.filter((role) => role !== roleId);
+      }
+      return [...selectedRoleIds, roleId];
+    });
+  }, []);
+
   const handleSearchQueryOnChange = useCallback((ev: React.ChangeEvent) => {
     const searchQuery = (ev.target as HTMLInputElement).value;
     setSearchQuery(searchQuery);
   }, []);
 
   const handleSearchMembers = useCallback(
-    debounce(async (searchQuery: string) => {
-      if (!searchQuery.length) {
+    debounce(async () => {
+      if (!searchQuery?.length && !selectedRoleIds?.length) {
         setFilteredUsers(users);
         return;
       }
@@ -236,6 +253,7 @@ function Members() {
           variables: {
             orgId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
+            filterByRoles: selectedRoleIds,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
@@ -246,6 +264,7 @@ function Members() {
           variables: {
             podId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
+            filterByRoles: selectedRoleIds,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
@@ -253,14 +272,14 @@ function Members() {
         });
       }
     }, 500),
-    [users]
+    [users, searchQuery, selectedRoleIds, isOrg]
   );
 
   useEffect(() => {
     if (!firstTimeFetch) {
-      handleSearchMembers(searchQuery);
+      handleSearchMembers();
     }
-  }, [searchQuery, firstTimeFetch]);
+  }, [searchQuery, selectedRoleIds?.length, firstTimeFetch]);
 
   return (
     <SettingsWrapper showPodIcon={false}>
@@ -312,7 +331,13 @@ function Members() {
           handleDownloadToCSV={handleDownloadToCSV}
         />
 
-        <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
+        <MemberRoles
+          users={users}
+          roleList={roleList}
+          isDAO={!!orgId}
+          selectedRoleIds={selectedRoleIds}
+          handleRoleFilterChange={handleRoleFilterChange}
+        />
 
         {podId ? (
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
@@ -340,7 +365,7 @@ function Members() {
           </Typography>
         )}
 
-        {hasMore && !searchQuery?.length && (
+        {showHasMore && (
           <SeeMoreTextWrapper onClick={() => handleLoadMore()}>
             <SeeMoreText>See more</SeeMoreText>
           </SeeMoreTextWrapper>
