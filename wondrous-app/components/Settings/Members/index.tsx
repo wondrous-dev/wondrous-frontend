@@ -25,7 +25,7 @@ import { HeaderBlock } from '../headerBlock';
 import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
 
-const LIMIT = 2;
+const LIMIT = 10;
 
 const useKickMember = (orgId, podId, users, setUsers) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
