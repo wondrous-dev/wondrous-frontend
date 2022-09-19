@@ -1685,6 +1685,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           error={form.errors?.title}
           onFocus={() => form.setFieldError('title', undefined)}
           data-cy="create-entity-input-title"
+          autoFocus
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
