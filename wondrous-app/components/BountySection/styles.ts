@@ -52,6 +52,7 @@ export const SectionSubheader = styled(Typography)`
 `;
 
 export const SectionWrapper = styled.div`
+  position: relative;
   display: flex;
   flex-direction: column;
   width: 80%;
