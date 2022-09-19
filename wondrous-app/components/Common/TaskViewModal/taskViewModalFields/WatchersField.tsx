@@ -86,14 +86,19 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
             }
 
             return (
-              <SmallAvatar
-                imageWidth={22}
-                imageHeight={22}
-                key={user.id}
-                initials={user.username}
-                avatar={{ url: user.profilePicture }}
-                style={{ borderRadius: '50%', border: `2px solid ${palette.grey910}` }}
-              />
+              <Tooltip key={user.username} title={user.username} placement="top">
+                <Box ml="-6px" overflow="hidden">
+                  <SmallAvatar
+                    imageWidth={22}
+                    imageHeight={22}
+                    key={user.id}
+                    initials={user.username.substring(0, 2).toUpperCase()}
+                    avatar={{ url: user.profilePicture }}
+                    style={{ borderRadius: '50%', border: `2px solid ${palette.grey910}`, cursor: 'default' }}
+                    border="none"
+                  />
+                </Box>
+              </Tooltip>
             );
           })}
 
@@ -102,9 +107,10 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
               <SmallAvatar
                 imageWidth={22}
                 imageHeight={22}
-                initials={currentUser.username}
+                initials={currentUser.username.substring(0, 2).toUpperCase()}
                 avatar={{ url: currentUser.profilePicture }}
-                style={{ borderRadius: '50%', border: `2px solid ${palette.grey99}` }}
+                style={{ borderRadius: '50%', border: `2px solid ${palette.grey99}`, cursor: 'default' }}
+                border="none"
               />
               <Box
                 sx={{
