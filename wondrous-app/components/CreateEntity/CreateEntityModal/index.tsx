@@ -1220,7 +1220,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
 
-  const initialPodId = !existingTask && (board?.podId || routerPodId);
+  const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
     initialValues: initialValues({ entityType, existingTask, initialPodId }),
     validateOnChange: false,
