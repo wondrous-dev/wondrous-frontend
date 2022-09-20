@@ -7,7 +7,7 @@ import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
-import { handleAddFile } from 'utils/media';
+import { handleAddFiles } from 'utils/media';
 import { URL_REGEX } from 'utils/constants';
 
 import { useLazyQuery } from '@apollo/client';
@@ -53,9 +53,8 @@ function ImageUploader({ errors, setValue, value }) {
   const handleFormUpload = async (event) => {
     const fileUploaded = event.target.files[0];
     setFile(fileUploaded);
-
-    handleAddFile({
-      event,
+    handleAddFiles({
+      files: event.target.files,
       filePrefix: 'tmp/docs/',
       mediaUploads,
       setMediaUploads,

@@ -5,7 +5,6 @@ import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
-import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
 import PlusIcon from 'components/Icons/plus';
@@ -711,12 +710,6 @@ export const CreateEntitySaveTemplateButtonDisabled = styled(ButtonUnstyled)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
-
-export const CreateEntityAttachmentIcon = styled(AttachFileIcon)`
-  && {
-    margin-right: 8px;
-  }
 `;
 
 export const CreateEntitySaveIcon = styled(SaveAltOutlined)`
