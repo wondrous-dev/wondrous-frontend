@@ -24,7 +24,7 @@ import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { DropDown } from 'components/Common/dropdown';
+import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';
@@ -362,7 +362,7 @@ export default function ListViewItem({ task, entityType }) {
               <MoreOptions>
                 <Tooltip title="More actions" placement="top">
                   <div>
-                    <DropDown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
+                    <Dropdown DropdownHandler={TaskMenuIcon} fill="#1F1F1F">
                       <DropdownItem
                         onClick={() => {
                           setEditTask(true);
@@ -399,7 +399,7 @@ export default function ListViewItem({ task, entityType }) {
                           Delete task
                         </DropdownItem>
                       )}
-                    </DropDown>
+                    </Dropdown>
                   </div>
                 </Tooltip>
               </MoreOptions>
