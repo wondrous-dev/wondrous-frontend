@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK, SEND_ORG_EMAIL_INVITES } from 'graphql/mutations/org';
 import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
@@ -10,7 +10,6 @@ import ArrowFillIcon from 'components/Icons/arrowfill';
 import DeleteBasketIcon from 'components/Icons/DeleteBasketIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import { Button } from 'components/Button';
-import palette from 'theme/palette';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import SearchIcon from 'components/Icons/search';
@@ -89,26 +88,14 @@ export function OrgInviteLinkModal(props) {
   const podBoard = usePodBoard();
   const board = orgBoard || podBoard;
   const userPermissionsContext = board?.userPermissionsContext;
-  const [userList, setUserList] = useState([]);
   const [activeRole, setActiveRole] = useState<any>({});
   const [inviteLink, setInviteLink] = useState('');
   const [dropRoleBox, setDropRoleBox] = useState(false);
   const [isUniversal, setIsUniversal] = useState(false);
   const [userSearchValue, setUserSearchValue] = useState<string>('');
-  const [listLoading, setListLoading] = useState(false);
 
   // final list to be displayed and sent to BE
   const [selectedUsersList, setSelectedUsersList] = useState([]);
-
-  const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
-    onCompleted: (data) => {
-      const userData = data.getOrgUsers;
-      const filteredData = userData?.map((userRole) => userRole.user);
-      setUserList(filteredData || []);
-      setListLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -239,19 +226,6 @@ export function OrgInviteLinkModal(props) {
       document.removeEventListener('mousedown', checkIfClickedOutside);
     };
   }, [dropRoleBox]);
-
-  useEffect(() => {
-    if (orgId) {
-      getOrgUsers({
-        variables: {
-          orgId,
-          limit: 1000, // TODO: paginate
-        },
-      });
-    }
-
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
 
   return (
     <StyledModal open={open} onClose={() => handleOnClose(false)}>

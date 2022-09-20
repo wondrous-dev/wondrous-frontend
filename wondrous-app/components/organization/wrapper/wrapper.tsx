@@ -42,7 +42,6 @@ import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { Snackbar } from 'components/Settings/Roles/styles';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';

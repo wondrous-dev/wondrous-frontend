@@ -26,7 +26,6 @@ import { SafeImage } from 'components/Common/Image';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import BoardLock from 'components/BoardLock';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { Snackbar } from 'components/Settings/Roles/styles';
