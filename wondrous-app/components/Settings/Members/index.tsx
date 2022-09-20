@@ -221,25 +221,31 @@ function Members() {
     }
   };
 
-  const handleRoleFilterChange = useCallback((roleId: string) => {
-    setSelectedRoleIds((selectedRoleIds) => {
+  const handleRoleFilterChange = useCallback(
+    (roleId: string) => {
+      let updatedRoleIds = [];
       const isSelected = selectedRoleIds.includes(roleId);
-      if (isSelected) {
-        return selectedRoleIds.filter((role) => role !== roleId);
-      }
-      return [...selectedRoleIds, roleId];
-    });
-  }, []);
+      if (isSelected) updatedRoleIds = selectedRoleIds.filter((id) => id !== roleId);
+      else updatedRoleIds = [...selectedRoleIds, roleId];
 
-  const handleSearchQueryOnChange = useCallback((ev: React.ChangeEvent) => {
-    const searchQuery = (ev.target as HTMLInputElement).value;
-    setSearchQuery(searchQuery);
-  }, []);
+      setSelectedRoleIds(updatedRoleIds);
+      handleSearchMembers(searchQuery, updatedRoleIds);
+    },
+    [searchQuery, selectedRoleIds]
+  );
+
+  const handleSearchQueryOnChange = useCallback(
+    (ev: React.ChangeEvent) => {
+      const searchQuery = (ev.target as HTMLInputElement).value;
+      setSearchQuery(searchQuery);
+      handleSearchMembers(searchQuery, selectedRoleIds);
+    },
+    [selectedRoleIds]
+  );
 
   const handleSearchMembers = useCallback(
-    debounce(async () => {
+    debounce(async (searchQuery = '', selectedRoleIds = []) => {
       if (!searchQuery?.length && !selectedRoleIds?.length) {
-        setFilteredUsers(users);
         return;
       }
 
@@ -274,14 +280,14 @@ function Members() {
         });
       }
     }, 500),
-    [users, searchQuery, selectedRoleIds, isOrg]
+    [users, isOrg]
   );
 
   useEffect(() => {
-    if (!firstTimeFetch) {
-      handleSearchMembers();
+    if (!searchQuery?.length && !selectedRoleIds?.length) {
+      setFilteredUsers(users);
     }
-  }, [searchQuery, selectedRoleIds?.length, firstTimeFetch]);
+  }, [searchQuery, selectedRoleIds?.length]);
 
   return (
     <SettingsWrapper showPodIcon={false}>
