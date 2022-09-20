@@ -254,6 +254,7 @@ function Members() {
             orgId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
             roleIds: selectedRoleIds,
+            limit: Number.POSITIVE_INFINITY,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
@@ -265,6 +266,7 @@ function Members() {
             podId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
             roleIds: selectedRoleIds,
+            limit: Number.POSITIVE_INFINITY,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
