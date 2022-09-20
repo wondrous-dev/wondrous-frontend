@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
+import apollo from 'services/apollo';
 import { Grid, Typography } from '@mui/material';
 import cloneDeep from 'lodash/cloneDeep';
+import { useRouter } from 'next/router';
 
 import { SafeImage } from 'components/Common/Image';
 import CheckMarkIcon from 'components/Icons/checkMark';
@@ -9,6 +11,8 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { User } from 'types/User';
 import palette from 'theme/palette';
 import { logout } from 'components/Auth/withAuth';
+import { ErrorText } from 'components/Common';
+import { CONNECT_COORDINAPE_TO_ORG } from 'graphql/mutations/integration';
 import {
   CoordinapeIntegrationFormAction,
   CoordinapeIntegrationFormActions,
@@ -44,10 +48,14 @@ interface ICoordinapeIntegrationFormProps {
 
 const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
   const { user } = props;
+  const router = useRouter();
+  const { redirect, circleId } = router.query;
+
   const [selectedOrganization, setSelectedOrganization] = useState(DEFAULT_ORGANIZATION_OPTION);
   const [selectedPods, setSelectedPods] = useState(DEFAULT_POD_OPTION);
-
+  const [errorText, setErrorText] = useState(null);
   const userFullAccessOrganizationData = useGetLoggedInUserFullAccessOrgs();
+
   const orgPods = useGetOrgPods(selectedOrganization?.value);
 
   const userProfilePicture = user?.thumbnailPicture || user?.profilePicture;
@@ -121,6 +129,44 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
     </Grid>
   );
 
+  const handleCancel = () => {
+    const redirectUrl: any = redirect;
+    router.push(redirectUrl);
+  };
+
+  const handleAuthorize = async () => {
+    setErrorText(null);
+    const orgId = selectedOrganization?.value;
+    const orgUsername = selectedOrganization?.label;
+    const podIds = selectedPods?.map((selectedPod) => selectedPod.value);
+    const podIdsString = podIds.join(',');
+    apollo
+      .mutate({
+        mutation: CONNECT_COORDINAPE_TO_ORG,
+        variables: {
+          orgId,
+          input: {
+            circleId,
+            selectedPodIds: podIds,
+          },
+        },
+      })
+      .then(() => {
+        const url = `${redirect}?wonder_organization_id=${orgId}&wonder_organization_name=${orgUsername}&wonder_pod_ids=${podIdsString}`;
+        router.push(url);
+      })
+      .catch((err) => {
+        console.error(err);
+        setErrorText('could not link coordinape circle please contact support');
+      });
+  };
+
+  useEffect(() => {
+    setErrorText(null);
+    if (userFullAccessOrganizationData?.length === 0) {
+      setErrorText('You must have full to an org to configure coordinape');
+    }
+  }, [userFullAccessOrganizationData]);
   return (
     <CoordinapeIntegrationFormWrapper>
       <CoordinapeIntegrationFormContent>
@@ -162,6 +208,8 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
               Not you?
             </Typography>
           </Grid>
+          <ErrorText>{errorText}</ErrorText>
+
           <CoordinapeIntegrationFormContentSectionSeperator />
         </CoordinapeIntegrationFormContentSection>
         <CoordinapeIntegrationFormContentSection>
@@ -226,9 +274,13 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
         </CoordinapeIntegrationFormExpandedViewWrapper>
       </CoordinapeIntegrationFormContent>
       <CoordinapeIntegrationFormActions>
-        <CoordinapeIntegrationFormAction>Cancel</CoordinapeIntegrationFormAction>
+        <CoordinapeIntegrationFormAction onClick={handleCancel}>Cancel</CoordinapeIntegrationFormAction>
         <CoordinapeIntegrationFormActionSeperator />
-        <CoordinapeIntegrationFormAction isPrimary>Authorize</CoordinapeIntegrationFormAction>
+        {userFullAccessOrganizationData?.length && (
+          <CoordinapeIntegrationFormAction isPrimary onClick={handleAuthorize}>
+            Authorize
+          </CoordinapeIntegrationFormAction>
+        )}
       </CoordinapeIntegrationFormActions>
     </CoordinapeIntegrationFormWrapper>
   );
