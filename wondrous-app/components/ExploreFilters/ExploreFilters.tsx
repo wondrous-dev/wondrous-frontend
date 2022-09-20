@@ -141,22 +141,22 @@ const ExploreFilters = ({ open, setOpen, updateFilter }) => {
         <Box>
           <Typography sx={styles.sectionTitle}>Applications</Typography>
           <FormControlLabel
-            sx={{ mx: 0, mt: 1.5 }}
-            labelPlacement="start"
-            control={
-              <Switch
-                label="Required"
-                size="medium"
-                checked={isApplications}
-                onChange={(e) => {
-                  setIsApplications(!isApplications);
-                  // TODO BE integration
-                }}
-              />
-            }
-            label={<Typography sx={styles.switchLabel}>Required</Typography>}
+          sx={{ mx: 0, mt: 1.5 }}
+          labelPlacement="start"
+          control={
+            <Switch
+            label="Required"
+            size="medium"
+            checked={isApplications}
+            onChange={(e) => {
+              setIsApplications(!isApplications);
+              // TODO BE integration
+            }}
+            />
+          }
+          label={<Typography sx={styles.switchLabel}>Required</Typography>}
           />
-        </Box>
+          </Box>
         <Box sx={styles.divider} /> */}
         <Box>
           <Typography sx={styles.sectionTitle}>Age of task</Typography>
