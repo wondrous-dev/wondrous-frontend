@@ -29,6 +29,7 @@ import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { Snackbar } from 'components/Settings/Roles/styles';
 import {
   ExploreProjectsButton,
   ExploreProjectsButtonFilled,
@@ -200,6 +201,7 @@ function Wrapper(props) {
   const podProfile = podBoard?.pod;
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '' });
   const orgHasGr15Tasks = orgData?.getOrgById?.hasGr15TasksAndBounties?.hasGr15Tasks;
   const orgHasGr15Bounties = orgData?.getOrgById?.hasGr15TasksAndBounties?.hasGr15Bounties;
   const podHasGr15Tasks = podProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
@@ -343,7 +345,24 @@ function Wrapper(props) {
   const showFilters = router?.pathname === '/pod/[podId]/boards';
   return (
     <>
-      <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <Snackbar
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={toast.show}
+        onClose={() => setToast({ show: false, message: '' })}
+        message={toast.message}
+      />
+
+      <PodInviteLinkModal
+        podId={podBoard?.podId}
+        open={openInvite}
+        onClose={(isInvitationSuccessful, isEmail) => {
+          setOpenInvite(false);
+          if (isInvitationSuccessful) {
+            setToast({ ...toast, message: `${isEmail ? 'Email' : 'User'} invitations sent successfully.`, show: true });
+          }
+        }}
+      />
       <MembershipRequestModal
         podId={podBoard?.podId}
         setJoinRequestSent={setJoinRequestSent}

@@ -177,8 +177,8 @@ export function PodInviteLinkModal(props) {
     }
   };
 
-  const handleOnClose = () => {
-    onClose();
+  const handleOnClose = (isInvitationSuccessful = false, isEmail = true) => {
+    onClose(isInvitationSuccessful, isEmail);
     setCopy(false);
     setLinkOneTimeUse(false);
     setInviteLink('');
@@ -205,23 +205,32 @@ export function PodInviteLinkModal(props) {
       .filter((item) => item.type === 'email')
       .map((item) => ({ email: item.email, roleId: item.roleId }));
 
-    sendPodEmailInvites({
-      variables: {
-        input: {
-          expiry: null,
-          emailsAndRoles: emailList,
-          podId,
+    if (emailList?.length) {
+      sendPodEmailInvites({
+        variables: {
+          input: {
+            expiry: null,
+            emailsAndRoles: emailList,
+            podId,
+          },
         },
-      },
-    });
-    batchAddUsers({
-      variables: {
-        input: {
-          usersRoles: usersList,
-          podId,
+      }).then(() => {
+        if (!usersList?.length) handleOnClose(true);
+      });
+    }
+
+    if (usersList?.length) {
+      batchAddUsers({
+        variables: {
+          input: {
+            usersRoles: usersList,
+            podId,
+          },
         },
-      },
-    });
+      }).then(() => {
+        handleOnClose(true, false);
+      });
+    }
   };
 
   useEffect(() => {
@@ -313,7 +322,7 @@ export function PodInviteLinkModal(props) {
   }, [userList, orgUserList]);
 
   return (
-    <StyledModal open={open} onClose={handleOnClose}>
+    <StyledModal open={open} onClose={() => handleOnClose(false)}>
       <StyledBox isUniversal={isUniversal}>
         <TopDivider>
           <HeadingWrapper>
@@ -325,7 +334,7 @@ export function PodInviteLinkModal(props) {
                 <TextHeading>{!isUniversal ? 'Invite' : 'Share with people and groups'}</TextHeading>
               </TextHeadingWrapper>
             </IconTextWrapper>
-            <CloseButton onClick={handleOnClose} />
+            <CloseButton onClick={() => handleOnClose(false)} />
           </HeadingWrapper>
           <DashedLine />
 
