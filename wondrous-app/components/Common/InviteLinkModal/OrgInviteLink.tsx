@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { CREATE_ORG_INVITE_LINK, SEND_ORG_EMAIL_INVITES } from 'graphql/mutations/org';
 import { GET_ORG_ROLES, GET_ORG_USERS } from 'graphql/queries/org';
@@ -13,6 +13,7 @@ import { Button } from 'components/Button';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
 import SearchIcon from 'components/Icons/search';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   BottomBox,
   CancelButton,
@@ -81,6 +82,7 @@ export const putDefaultRoleOnTop = (roles, permissions) => {
 export function OrgInviteLinkModal(props) {
   const roleContainerRef = useRef<HTMLDivElement>(null);
   const { orgId, open, onClose } = props;
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
   const [linkOneTimeUse, setLinkOneTimeUse] = useState(false);
@@ -190,6 +192,10 @@ export function OrgInviteLinkModal(props) {
           orgId,
         },
       },
+    }).then(() => {
+      setSnackbarAlertMessage('Email invites sent successfully');
+      setSnackbarAlertOpen(true);
+      handleOnClose();
     });
   };
 
