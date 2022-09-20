@@ -67,10 +67,13 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
 
   const Component = steps[step];
 
+  const isCenterStep = step === steps.length - 1;
+
   return (
     <StarsBackground enableStarsBg={open && step === steps.length - 1}>
       <ModalComponent
         maxWidth={560}
+        alignCenter={isCenterStep}
         title="Create Project Collaboration"
         footerRight={<div ref={footerRef} />}
         open={open}

@@ -9,7 +9,7 @@ import SearchIcon from 'components/Icons/search';
 import { Org } from 'types/Org';
 import Divider from 'components/Divider';
 import { Button } from 'components/Button';
-import { GET_ORG_USERS, SEARCH_ORG_USERS } from 'graphql/queries';
+import { SEARCH_ORG_USERS } from 'graphql/queries';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import { Autocomplete, Option } from 'components/SearchTasks/styles';
@@ -29,8 +29,8 @@ import differenceWith from 'lodash/differenceWith';
 import eq from 'lodash/eq';
 import debounce from 'lodash/debounce';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
+import { GET_ORG_ROLES, GET_PARENT_ORG_CONTRIBUTORS } from 'graphql/queries/org';
 import { NewInviteLinkModal } from 'components/Common/NewInviteLinkModal/InviteLink';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { PERMISSIONS } from 'utils/constants';
 import ListBox from './Listbox';
 import {
@@ -50,7 +50,6 @@ type Props = {
   footerRef: React.RefObject<HTMLDivElement>;
   selectedUsers: any;
   setUsers: any;
-  existingUsersIds: Array<string>;
   footerLeftRef: React.RefObject<HTMLDivElement>;
   collabData: Org;
 };
@@ -62,7 +61,6 @@ const AddTeamMembers = ({
   footerRef,
   selectedUsers,
   setUsers,
-  existingUsersIds,
   footerLeftRef,
   collabData,
 }: Props) => {
@@ -95,48 +93,43 @@ const AddTeamMembers = ({
       setUsers({ ...selectedUsers, ...adminMemberRole });
     },
   });
+
   const {
-    data: { getOrgUsers } = {},
+    data: { getParentOrgsContributors } = {},
     fetchMore,
     previousData,
-  } = useQuery(GET_ORG_USERS, {
+  } = useQuery(GET_PARENT_ORG_CONTRIBUTORS, {
     fetchPolicy: 'cache-and-network',
     variables: {
-      orgId: org.id,
+      sharedOrgId: collabData.id,
       limit: LIMIT,
     },
-
-    // TODO (adrian) we need to refactor this on BE to return only users that are not already in the collaboration
-
-    onCompleted: ({ getOrgUsers }) => {
-      const hasMoreData = getOrgUsers?.length >= LIMIT;
+    onCompleted: (data) => {
+      const hasMoreData = data?.getParentOrgsContributors?.length >= LIMIT;
       if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
   });
 
-  const users = inputValue ? searchOrgUserResults?.searchOrgUsers : getOrgUsers?.map((i) => i.user);
+  const users = inputValue ? searchOrgUserResults?.searchOrgUsers : getParentOrgsContributors;
 
   const search = useCallback(debounce(searchOrgUsers, 1000), []);
 
   const handleInputChange = (e) => {
     setInputValue(e.target.value);
-    if (e.target.value) search({ variables: { queryString: e.target.value, orgId: org.id } });
+    if (e.target.value) search({ variables: { searchString: e.target.value, orgId: org.id } });
   };
 
   const handleChange = (key, event, users) => setUsers({ ...selectedUsers, [key]: users });
 
   const handleFetchMore = () =>
     !inputValue &&
-    fetchMore({ variables: { offset: getOrgUsers?.length } }).then(({ data }) =>
-      setHasMore(data?.getOrgUsers?.length >= LIMIT)
+    fetchMore({ variables: { offset: getParentOrgsContributors?.length } }).then(({ data }) =>
+      setHasMore(data?.getParentOrgsContributors?.length >= LIMIT)
     );
 
   const availableOptions = useMemo(
-    () =>
-      differenceWith(users, selectedUsers.members.concat(selectedUsers.admins), (a: any, b: any) =>
-        eq(a.id, b.id)
-      ).filter((user) => !existingUsersIds?.includes(user.id)),
-    [selectedUsers, users, existingUsersIds]
+    () => differenceWith(users, selectedUsers.members.concat(selectedUsers.admins), (a: any, b: any) => eq(a.id, b.id)),
+    [selectedUsers, users]
   );
 
   const FIELDS_CONFIG = [
@@ -345,7 +338,12 @@ const AddTeamMembers = ({
               <Button color="grey" onClick={onCancel}>
                 Cancel
               </Button>
-              <Button color="primary" type="submit" onClick={onSubmit} disabled={!selectedUsers.admins.length}>
+              <Button
+                color="primary"
+                type="submit"
+                onClick={onSubmit}
+                disabled={!(selectedUsers.admins.length || selectedUsers.members.length)}
+              >
                 Next
               </Button>
             </Grid>,

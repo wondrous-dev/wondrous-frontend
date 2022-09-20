@@ -515,7 +515,7 @@ function BoardsPage() {
           podId,
           limit: LIMIT,
           offset: 0,
-          queryString: searchString,
+          searchString,
         },
       }),
       apollo.query({

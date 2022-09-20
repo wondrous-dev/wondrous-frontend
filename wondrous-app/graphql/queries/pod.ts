@@ -76,8 +76,8 @@ export const GET_POD_USERS = gql`
 `;
 
 export const SEARCH_POD_USERS = gql`
-  query searchPodUsers($podId: ID!, $queryString: String!) {
-    searchPodUsers(podId: $podId, queryString: $queryString) {
+  query searchPodUsers($podId: ID!, $searchString: String!) {
+    searchPodUsers(podId: $podId, searchString: $searchString) {
       id
       username
       profilePicture

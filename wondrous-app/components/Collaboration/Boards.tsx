@@ -40,7 +40,6 @@ function CollabBoard(props: Props) {
   const footerRef = useRef();
   const footerLeftRef = useRef();
   const [users, setUsers] = useState({ admins: [], members: [], adminRole: null, memberRole: null });
-  const [getUsers, { data }] = useLazyQuery(GET_ORG_USERS);
 
   const handleModal = () => {
     if (router.query.addMembers) {
@@ -48,6 +47,7 @@ function CollabBoard(props: Props) {
     }
     setOpenInviteModal((prevState) => !prevState);
     setStep(0);
+    setUsers({ admins: [], members: [], adminRole: null, memberRole: null });
   };
 
   const [batchAddUsers] = useMutation(BATCH_ADD_MEMBERS, {
@@ -64,19 +64,7 @@ function CollabBoard(props: Props) {
         orgData?.id !== org
     );
 
-  const parentOrg = orgData?.parentOrgs.find((org) => userOrgsWithFullAccess.includes(org?.id));
-
-  useEffect(() => {
-    if (openInviteModal && orgData?.id && !users.admins.length)
-      getUsers({
-        variables: {
-          orgId: orgData?.id,
-          limit: LIMIT,
-        },
-      });
-  }, [openInviteModal]);
-
-  const existingUsersIds = useMemo(() => data?.getOrgUsers.map((orgUser) => orgUser.user.id), [data?.getOrgUsers]);
+  const parentOrg = orgData?.parentOrgs?.find((org) => userOrgsWithFullAccess?.includes(org?.id));
 
   const deleteMember = (userId) => {
     setUsers((prevState) => ({
@@ -100,7 +88,7 @@ function CollabBoard(props: Props) {
   };
 
   const STEPS = [
-    ({ selectedUsers, parentOrg, orgData, existingUsersIds }) => (
+    ({ selectedUsers, parentOrg, orgData }) => (
       <AddTeamMembers
         org={parentOrg}
         collabData={orgData}
@@ -108,7 +96,6 @@ function CollabBoard(props: Props) {
         footerLeftRef={footerLeftRef}
         selectedUsers={selectedUsers}
         onCancel={handleModal}
-        existingUsersIds={existingUsersIds}
         setUsers={setUsers}
         onSubmit={() => setStep((prevState) => prevState + 1)}
       />
@@ -153,14 +140,7 @@ function CollabBoard(props: Props) {
           open={openInviteModal}
           onClose={handleModal}
         >
-          {!!orgData && (
-            <Component
-              selectedUsers={users}
-              existingUsersIds={existingUsersIds}
-              parentOrg={parentOrg}
-              orgData={orgData}
-            />
-          )}
+          {!!orgData && <Component selectedUsers={users} parentOrg={parentOrg} orgData={orgData} />}
         </ModalComponent>
       )}
       <ColumnsContext.Provider value={{ columns, setColumns }}>

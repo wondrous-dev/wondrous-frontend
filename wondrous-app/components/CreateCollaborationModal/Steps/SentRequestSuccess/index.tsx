@@ -15,7 +15,7 @@ const SentRequestSuccess = ({ orgs, footerRef, onClose }) => (
       mb="20px"
       style={{ width: '100%', alignItems: 'center', justifyContent: 'center', display: 'flex' }}
     >
-      Success! Request sent
+      Docking Request Sent!
     </GradientHeading>
     <Grid
       mb="20px"
@@ -51,8 +51,8 @@ const SentRequestSuccess = ({ orgs, footerRef, onClose }) => (
       ))}
     </Grid>
     <Typography sx={{ fontSize: '14px', width: '100%', textAlign: 'center' }} color={palette.grey250}>
-      They will receive an invitation. They will be able to add their people in. Once they accept, the workspace will
-      activate.
+      The other project will now receive an invitation. Once they accept, the workspace will be activated and both
+      parties can add members to this shared workspace.
     </Typography>
     {footerRef.current
       ? createPortal(

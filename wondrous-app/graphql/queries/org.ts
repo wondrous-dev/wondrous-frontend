@@ -152,8 +152,8 @@ export const GET_ORG_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $queryString: String!) {
-    searchOrgUsers(orgId: $orgId, queryString: $queryString) {
+  query searchOrgUsers($orgId: ID!, $searchString: String!) {
+    searchOrgUsers(orgId: $orgId, searchString: $searchString) {
       id
       username
       profilePicture
@@ -267,6 +267,21 @@ export const GET_ORG_AVAILABLE_REPOSITORIES = gql`
     getOrgAvailableRepositories(orgId: $orgId) {
       id
       fullName
+    }
+  }
+`;
+
+export const GET_PARENT_ORG_CONTRIBUTORS = gql`
+  query getParentOrgsContributors($sharedOrgId: String!, $limit: Int, $offset: Int, $searchString: String) {
+    getParentOrgsContributors(sharedOrgId: $sharedOrgId, limit: $limit, offset: $offset, searchString: $searchString) {
+      id
+      username
+      profilePicture
+      thumbnailPicture
+      activeEthAddress
+      firstName
+      lastName
+      bio
     }
   }
 `;
