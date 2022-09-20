@@ -157,20 +157,6 @@ export const DrawerBackButton = styled(BottomButtonIcon)`
   }
 `;
 
-export const LogoButton = styled(ButtonBase)`
-  && {
-    cursor: pointer;
-  }
-`;
-
-export const HeaderLogo = styled(Logo)`
-  width: 41px;
-  height: 31px;
-  path {
-    fill: white;
-  }
-`;
-
 export const ButtonWrapper = styled.div`
   background: ${({ theme }) => theme.palette.black92};
   display: flex;

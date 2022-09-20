@@ -6,7 +6,7 @@ const withBundleAnalyzer = require('@next/bundle-analyzer')({
 module.exports = withBundleAnalyzer({
   /* config options here */
   reactStrictMode: true,
-  images: { domains: ['www.notion.so', 'storage.googleapis.com', 'pbs.twimg.com'] },
+  images: { domains: ['www.notion.so', 'storage.googleapis.com', 'pbs.twimg.com', 'avatars.githubusercontent.com'] },
   webpack(config) {
     config.module.rules.push({
       test: /\.svg$/,
