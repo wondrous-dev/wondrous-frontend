@@ -601,6 +601,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/reset-password',
   '/onboarding-dao',
   '/new-task',
+  '/apps/install/coordinape',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
