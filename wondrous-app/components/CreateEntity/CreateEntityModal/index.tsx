@@ -1728,26 +1728,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           handleMedia={handleMedia}
           entityType={entityType}
         />
-        {existingTask && canTurnIntoBounty && (
-          <>
-            <div
-              style={{
-                flex: 1,
-              }}
-            />
-            <CreateEntityAttachment
-              style={{
-                marginTop: '24px',
-                alignSelf: 'flex-start',
-              }}
-              onClick={() => {
-                setTurnTaskToBountyModal(true);
-              }}
-            >
-              Turn into bounty
-            </CreateEntityAttachment>
-          </>
-        )}
         <CreateEntityDivider />
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
@@ -2519,6 +2499,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           style={{
             display: 'flex',
             alignItems: 'center',
+            gap: '20px',
+            maxHeight: '44px',
           }}
         >
           <TaskTemplatePicker
@@ -2545,6 +2527,15 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               }}
               GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
             />
+          )}
+          {existingTask && canTurnIntoBounty && (
+            <CreateEntityAttachment
+              onClick={() => {
+                setTurnTaskToBountyModal(true);
+              }}
+            >
+              Turn Into Bounty
+            </CreateEntityAttachment>
           )}
         </div>
       </CreateEntityBody>
