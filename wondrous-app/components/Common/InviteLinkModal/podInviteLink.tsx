@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { BATCH_ADD_USERS_TO_POD, CREATE_POD_INVITE_LINK, SEND_POD_EMAIL_INVITES } from 'graphql/mutations/pod';
 import { GET_POD_ROLES, GET_POD_USERS } from 'graphql/queries/pod';
@@ -14,6 +14,7 @@ import { Button } from 'components/Button';
 import palette from 'theme/palette';
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 import RadioButtonUncheckedIcon from '@mui/icons-material/RadioButtonUnchecked';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SearchIcon from 'components/Icons/search';
 import { putDefaultRoleOnTop } from './OrgInviteLink';
 import {
@@ -59,6 +60,7 @@ import {
 export function PodInviteLinkModal(props) {
   const roleContainerRef = useRef<HTMLDivElement>(null);
   const { podId, open, onClose } = props;
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
   const [linkOneTimeUse, setLinkOneTimeUse] = useState(false);
@@ -210,23 +212,38 @@ export function PodInviteLinkModal(props) {
       .filter((item) => item.type === 'email')
       .map((item) => ({ email: item.email, roleId: item.roleId }));
 
-    sendPodEmailInvites({
-      variables: {
-        input: {
-          expiry: null,
-          emailsAndRoles: emailList,
-          podId,
+    if (emailList?.length) {
+      sendPodEmailInvites({
+        variables: {
+          input: {
+            expiry: null,
+            emailsAndRoles: emailList,
+            podId,
+          },
         },
-      },
-    });
-    batchAddUsers({
-      variables: {
-        input: {
-          usersRoles: usersList,
-          podId,
+      }).then(() => {
+        if (!usersList?.length) {
+          setSnackbarAlertMessage('Email invites sent successfully');
+          setSnackbarAlertOpen(true);
+          handleOnClose();
+        }
+      });
+    }
+
+    if (usersList?.length) {
+      batchAddUsers({
+        variables: {
+          input: {
+            usersRoles: usersList,
+            podId,
+          },
         },
-      },
-    });
+      }).then(() => {
+        setSnackbarAlertMessage('User invites sent successfully');
+        setSnackbarAlertOpen(true);
+        handleOnClose();
+      });
+    }
   };
 
   useEffect(() => {
