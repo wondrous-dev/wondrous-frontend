@@ -258,7 +258,7 @@ function Wrapper(props) {
         claimableDiscordRoleFound = true;
       }
     } catch (e) {
-      console.error('error getting cliamble discord roles', e);
+      console.error('error getting claimable discord roles', e);
     }
 
     if (loggedInUser && !loggedInUser?.activeEthAddress) {
