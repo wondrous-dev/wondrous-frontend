@@ -50,8 +50,8 @@ export const GET_USER_ORGS = gql`
 `;
 
 export const GET_ORG_USERS = gql`
-  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int, $searchString: String) {
-    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString) {
+  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int, $searchString: String, $roleIds: [String]) {
+    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString, roleIds: $roleIds) {
       user {
         id
         username

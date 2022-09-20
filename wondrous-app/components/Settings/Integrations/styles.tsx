@@ -4,7 +4,7 @@ import { Button as MuiButton, Typography, InputBase } from '@mui/material';
 
 export const IntegrationsContainer = styled.div`
   height: 100vh;
-  width: 100%;
+  width: calc(100vw - 350px);
   max-width: 765px;
 `;
 
@@ -56,7 +56,7 @@ export const IntegrationsSnapshotInputSubBlock = styled.div`
   min-width: 200px;
   display: flex;
   flex-direction: column;
-  @media (max-width: 1096px) {
+  @media (max-width: 683px) {
     width: 100%;
   }
 `;
@@ -92,7 +92,7 @@ export const IntegrationsConnectButton = styled(MuiButton)`
     height: 40px;
     background: #0f0f0f;
     border: 1px solid deepskyblue;
-    margin-left: 20px;
+    margin-left: 10px;
     //text
     font-weight: 500;
     font-size: 16px;
@@ -104,7 +104,7 @@ export const IntegrationsConnectButton = styled(MuiButton)`
     .Mui-disabled {
       color: #ffffff;
     }
-    @media (max-width: 1096px) {
+    @media (max-width: 683px) {
       margin-top: 10px;
       margin-left: 0;
     }
@@ -131,7 +131,7 @@ export const IntegrationsDisconnectButton = styled(MuiButton)`
     .Mui-disabled {
       color: #ffffff;
     }
-    @media (max-width: 1096px) {
+    @media (max-width: 683px) {
       margin-top: 10px;
       margin-left: 0;
     }

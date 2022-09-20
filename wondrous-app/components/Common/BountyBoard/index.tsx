@@ -34,6 +34,7 @@ import {
   SubmissionCount,
   SubtasksWrapper,
   BountyCommentsIcon,
+  BountyBoardEmpty,
 } from './styles';
 import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
 
@@ -193,7 +194,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
           );
         })
       ) : (
-        <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
+        <BountyBoardEmpty />
       )}
     </Container>
   );

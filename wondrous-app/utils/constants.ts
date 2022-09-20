@@ -354,6 +354,7 @@ export const NOTIFICATION_VERBS = {
   task_submit: 'submitted a',
   collab_invite: 'invited you in a',
   collab_approve: 'approved a',
+  collab_decline: 'declined request to join a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {
@@ -371,6 +372,7 @@ export const NOTIFICATION_OBJECT_TYPES = {
 export const COLLAB_TYPES = {
   INVITE: 'collab_invite',
   APPROVE: 'collab_approve',
+  DECLINE: 'collab_decline',
 };
 
 export const PRIVACY_LEVEL = {
