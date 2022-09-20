@@ -92,7 +92,7 @@ export const IntegrationsConnectButton = styled(MuiButton)`
     height: 40px;
     background: #0f0f0f;
     border: 1px solid deepskyblue;
-    margin-left: 20px;
+    margin-left: 10px;
     //text
     font-weight: 500;
     font-size: 16px;
