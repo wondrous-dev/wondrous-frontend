@@ -24,7 +24,8 @@ export const StyledBox = styled(Box)`
   border-radius: 6px;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   margin: 60px auto;
-  height: ${(props) => (props.isUniversal ? 'unset' : '85%')};
+  height: auto;
+  max-height: ${(props) => (props.isUniversal ? 'unset' : '85%')};
   position: relative;
 `;
 export const HeadingWrapper = styled.div`
@@ -513,14 +514,17 @@ export const IndividualRoleBox = styled.div`
 export const UserBox = styled.div`
   width: 100%;
   margin-bottom: 24px;
-  height: 400px;
+  height: auto;
+  max-height: 400px;
 `;
 
 export const UsersDetailsBox = styled.div`
   width: 100%;
   margin-bottom: 24px;
-  height: 330px;
+  height: auto;
+  max-height: 330px;
   overflow-y: auto;
+  padding-right: 6px;
 
   &::-webkit-scrollbar-track {
     box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
@@ -589,9 +593,6 @@ export const DeleteBox = styled.div`
 `;
 
 export const BottomBox = styled.div`
-  position: ${(props) => (props.isUniversal ? 'unset' : 'absolute')};
-  bottom: 0;
-  left: 0;
   width: 100%;
   background: black !important;
   padding: 24px;
@@ -632,6 +633,7 @@ export const CancelButton = styled.button`
   border-radius: 35px;
   border: none;
   margin-right: 24px;
+  cursor: pointer;
 `;
 
 export const UniversalLinkButton = styled.button`

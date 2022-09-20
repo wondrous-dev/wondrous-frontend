@@ -91,7 +91,7 @@ export function OrgInviteLinkModal(props) {
   const [activeRole, setActiveRole] = useState<any>({});
   const [inviteLink, setInviteLink] = useState('');
   const [dropRoleBox, setDropRoleBox] = useState(false);
-  const [isUniversal, setIsUniversal] = useState(false);
+  const [isUniversal, setIsUniversal] = useState(true);
   const [userSearchValue, setUserSearchValue] = useState<string>('');
 
   // final list to be displayed and sent to BE
@@ -159,6 +159,10 @@ export function OrgInviteLinkModal(props) {
     setCopy(false);
     setLinkOneTimeUse(false);
     setInviteLink('');
+    setIsUniversal(true);
+    setRole('');
+    setActiveRole({});
+    setSelectedUsersList([]);
   };
 
   const handleOnCopy = () => {
@@ -345,9 +349,10 @@ export function OrgInviteLinkModal(props) {
                 <CancelButton
                   onClick={() => {
                     setIsUniversal(!isUniversal);
+                    setCopy(false);
                   }}
                 >
-                  Cancel
+                  Invite by Email
                 </CancelButton>
                 <Button onClick={handleOnCopy}>{copy ? 'Copied' : 'Copy Link'}</Button>
               </LinkFlex>
