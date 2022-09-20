@@ -230,7 +230,7 @@ export function OrgInviteLinkModal(props) {
   }, [dropRoleBox]);
 
   return (
-    <StyledModal open={open} onClose={() => handleOnClose(false)}>
+    <StyledModal open={open} onClose={handleOnClose}>
       <StyledBox isUniversal={isUniversal}>
         <TopDivider>
           <HeadingWrapper>
@@ -242,7 +242,7 @@ export function OrgInviteLinkModal(props) {
                 <TextHeading>{!isUniversal ? 'Invite' : 'Share with people and groups'}</TextHeading>
               </TextHeadingWrapper>
             </IconTextWrapper>
-            <CloseButton onClick={() => handleOnClose(false)} />
+            <CloseButton onClick={handleOnClose} />
           </HeadingWrapper>
           <DashedLine />
 
