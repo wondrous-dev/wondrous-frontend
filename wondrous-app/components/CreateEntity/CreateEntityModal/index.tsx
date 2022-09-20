@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
-import moment from 'moment';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import apollo from 'services/apollo';
@@ -10,7 +10,6 @@ import DropdownSearch from 'components/DropdownSearch';
 import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   REMOVE_MEDIA_FROM_TASK,
@@ -18,7 +17,6 @@ import {
   TURN_TASK_TO_BOUNTY,
   CREATE_TASK_TEMPLATE,
   UPDATE_TASK_TEMPLATE,
-  DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import { ATTACH_MEDIA_TO_TASK_PROPOSAL, REMOVE_MEDIA_FROM_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -28,6 +26,7 @@ import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import cloneDeep from 'lodash/cloneDeep';
 
+import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
@@ -35,9 +34,6 @@ import { ReactEditor } from 'slate-react';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_TODO,
-  APPLICATION_POLICY,
-  APPLICATION_POLICY_LABELS_MAP,
-  GR15DEICategoryName,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -93,8 +89,8 @@ import {
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
+  CreateEntityApplicationsSelectRender,
   CreateEntityAttachment,
-  CreateEntityAttachmentIcon,
   CreateEntityAutocompleteOption,
   CreateEntityAutocompleteOptionTypography,
   CreateEntityAutocompletePopper,
@@ -130,21 +126,17 @@ import {
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
   CreateEntityPrivacySelectRenderLabel,
-  CreateEntityWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntitySelectWrapper,
   CreateEntityTextfield,
   CreateEntityTitle,
-  EditorPlaceholder,
+  CreateEntityWrapper,
   EditorContainer,
+  EditorPlaceholder,
   EditorToolbar,
   MediaUploadDiv,
-  CreateEntityApplicationsSelectRender,
-  ApplicationInputWrapper,
-  ApplicationInputUnassignContainer,
-  SnapshotErrorText,
   SnapshotButtonBlock,
   CreateEntityPaymentMethodSelected,
 } from './styles';
@@ -152,7 +144,6 @@ import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
-import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
@@ -684,7 +675,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           autoFocus
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
-
         <EditorToolbar ref={setEditorToolbarNode} />
         <EditorContainer
           onClick={() => {
@@ -740,65 +730,34 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   }}
                 />
               ))}
-            <CreateEntityAttachment onClick={() => inputRef.current.click()}>
-              <CreateEntityAttachmentIcon />
-              Add Attachment
-              {fileUploadLoading && <FileLoading />}
-            </CreateEntityAttachment>
           </MediaUploadDiv>
-          <input
-            type="file"
-            hidden
-            ref={inputRef}
-            onChange={async (event) => {
-              const fileToAdd = await handleAddFile({
-                event,
-                filePrefix: 'tmp/task/new/',
-                mediaUploads: form.values.mediaUploads,
-                setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
-                setFileUploadLoading,
-              });
-              if (existingTask) {
-                handleMedia().attach({
-                  variables: {
-                    ...(entityType === ENTITIES_TYPES.PROPOSAL
-                      ? { proposalId: existingTask?.id }
-                      : { taskId: existingTask?.id }),
-                    input: {
-                      mediaUploads: [fileToAdd],
-                    },
-                  },
-                  onCompleted: (data) => {
-                    const task = data?.attachTaskMedia || data?.attachTaskProposalMedia;
-                    form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
-                    setFileUploadLoading(false);
-                  },
-                });
-              }
-            }}
-          />
-          {existingTask && canTurnIntoBounty && (
-            <>
-              <div
-                style={{
-                  flex: 1,
-                }}
-              />
-              <CreateEntityAttachment
-                style={{
-                  marginTop: '8px',
-                  marginLeft: '16px',
-                  alignSelf: 'flex-start',
-                }}
-                onClick={() => {
-                  setTurnTaskToBountyModal(true);
-                }}
-              >
-                Turn into bounty
-              </CreateEntityAttachment>
-            </>
-          )}
         </CreateEntityLabelSelectWrapper>
+        <CreateEntityAttachments
+          form={form}
+          existingTaskId={existingTask?.id}
+          handleMedia={handleMedia}
+          entityType={entityType}
+        />
+        {existingTask && canTurnIntoBounty && (
+          <>
+            <div
+              style={{
+                flex: 1,
+              }}
+            />
+            <CreateEntityAttachment
+              style={{
+                marginTop: '24px',
+                alignSelf: 'flex-start',
+              }}
+              onClick={() => {
+                setTurnTaskToBountyModal(true);
+              }}
+            >
+              Turn into bounty
+            </CreateEntityAttachment>
+          </>
+        )}
         <CreateEntityDivider />
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
@@ -905,7 +864,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </Tooltip>
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.assignee)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Assignee</CreateEntityLabel>
@@ -1172,7 +1130,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reward)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Reward</CreateEntityLabel>
@@ -1243,7 +1200,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.points)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Points</CreateEntityLabel>
@@ -1293,7 +1249,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.milestone)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Milestone</CreateEntityLabel>
