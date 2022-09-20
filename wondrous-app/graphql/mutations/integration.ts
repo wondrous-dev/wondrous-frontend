@@ -117,3 +117,11 @@ export const DISCONNECT_GUILD_FROM_ORG = gql`
     }
   }
 `;
+
+export const CONNECT_COORDINAPE_TO_ORG = gql`
+  mutation connectCoordinapeCircleToOrg($orgId: ID!, $input: CoordinapeConnectInput) {
+    connectCoordinapeCircleToOrg(orgId: $orgId, input: $input) {
+      success
+    }
+  }
+`;

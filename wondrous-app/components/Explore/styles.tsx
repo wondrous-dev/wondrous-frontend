@@ -235,6 +235,8 @@ export const ExplorePageContentWrapper = styled.div`
   justify-content: flex-start;
   align-items: center;
   width: 100%;
+  transition: padding 300ms cubic-bezier(0, 0, 0.2, 1);
+  padding-left: ${({ filtersOpen }) => (filtersOpen ? '240px' : '0px')};
   background: url('/images/explore/explore-page-background.svg');
   background-size: cover;
 `;

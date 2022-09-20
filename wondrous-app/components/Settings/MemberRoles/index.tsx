@@ -35,11 +35,11 @@ function MemberRoles({ roleList = [], users = [], isDAO, selectedRoleIds = [], h
           <Typography color={palette.white} fontSize={14} fontWeight={500} minWidth="fit-content">
             {roleList.length}
           </Typography>
-          <Typography color={palette.grey60} fontSize={14} fontWeight={500} minWidth="fit-content">
+          <Typography color={palette.grey60} fontSize={14} fontWeight={500} minWidth="max-content">
             {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
           </Typography>
         </Grid>
-        <Grid display="flex" alignItems="center" gap="10px">
+        <Grid display="flex" alignItems="center" gap="10px" flexWrap="wrap">
           {roleList.map((role) => (
             <MemberRole
               key={role.name}

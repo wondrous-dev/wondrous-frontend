@@ -579,6 +579,7 @@ export const CreateFormPreviewButton = styled(Button)`
     background: #0f0f0f;
     border: 1px solid deepskyblue;
     margin-left: 25px;
+    margin-bottom: 16px;
 
     //text
     font-weight: 500;

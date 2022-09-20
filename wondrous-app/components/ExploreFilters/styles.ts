@@ -1,11 +1,13 @@
 const styles = {
   root: {
-    transition: 'width .5s ease, min-width 0.5s ease',
-    visibility: 'hidden',
-    width: 0,
-    minWidth: 0,
-    opacity: 0,
-    position: 'relative',
+    p: 1.25,
+    width: 240,
+    minWidth: 240,
+    height: '100%',
+    position: 'absolute',
+    transform: 'translateX(-240px)',
+    transition: 'transform 300ms cubic-bezier(0, 0, 0.2, 1)',
+    overflow: 'hidden',
     backgroundColor: (theme) => theme.palette.grey900,
   },
   filterRoot: {
@@ -13,11 +15,8 @@ const styles = {
     top: 0,
   },
   showFilters: {
-    p: 1.25,
-    visibility: 'visible',
-    width: 240,
-    minWidth: 240,
-    opacity: 1,
+    transform: 'translateX(0px)',
+    overflow: 'visible',
   },
   divider: {
     my: 2,

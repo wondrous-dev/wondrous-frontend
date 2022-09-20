@@ -128,3 +128,12 @@ export const GET_USER_ORG_ROLES = gql`
     }
   }
 `;
+
+export const GET_LOGGED_IN_USER_FULL_ACCESS_ORGS = gql`
+  query getLoggedInUserFullAccessOrgs {
+    getLoggedInUserFullAccessOrgs {
+      id
+      name
+    }
+  }
+`;

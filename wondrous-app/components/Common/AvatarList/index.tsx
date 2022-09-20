@@ -7,7 +7,17 @@ import { SafeImage } from '../Image';
 import { SmallAvatarWrapper, SmallAvatarContainer, AvatarListWrapper } from './styles';
 
 export function SmallAvatar(props) {
-  const { avatar = {}, id, username, goTo, initials = '', style = {}, imageWidth = 29, imageHeight = 29 } = props;
+  const {
+    avatar = {},
+    id,
+    username,
+    goTo,
+    initials = '',
+    style = {},
+    imageWidth = 29,
+    imageHeight = 29,
+    border = '',
+  } = props;
 
   // TODO: create this as a service
   const randomColor = '#363636';
@@ -45,9 +55,12 @@ export function SmallAvatar(props) {
         </Box>
       ) : (
         <SmallAvatarWrapper
+          imageWidth={imageWidth}
+          imageHeight={imageHeight}
           randomColor={avatar?.color || randomColor}
           isOwnerOfPod={avatar?.isOwnerOfPod}
           avatarURL={avatar?.url}
+          border={border}
         >
           {avatar.url ? '' : <span>{initials}</span>}
         </SmallAvatarWrapper>

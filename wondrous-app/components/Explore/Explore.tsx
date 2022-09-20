@@ -162,18 +162,25 @@ function ExploreComponent() {
           </BackgroundTextSubHeader>
         </BackgroundTextWrapper>
       </BackgroundContainer>
-      <Box sx={{ display: 'flex', width: '100%' }}>
+      <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
         {activeTab === TABS_LABELS.BOUNTY && (
           <ExploreFilters open={openFilters} setOpen={setOpenFilters} updateFilter={filterBounties} />
         )}
-        <ExplorePageContentWrapper>
+        <ExplorePageContentWrapper filtersOpen={activeTab === TABS_LABELS.BOUNTY && openFilters}>
           <TabsWrapper>
             {activeTab === TABS_LABELS.BOUNTY && (
               <MuiButton sx={styles.filterButton} onClick={() => setOpenFilters(!openFilters)}>
                 Add filters
               </MuiButton>
             )}
-            <Box sx={{ mr: 'auto', ml: activeTab === TABS_LABELS.BOUNTY ? 'none' : 'auto', display: 'flex', gap: 3 }}>
+            <Box
+              sx={{
+                ml: activeTab === TABS_LABELS.BOUNTY ? 'none' : 'auto',
+                mr: 'auto',
+                display: 'flex',
+                gap: 3,
+              }}
+            >
               {tabs.map((tab, idx) => (
                 <Tab
                   hoverColor={tab.hoverColor}
