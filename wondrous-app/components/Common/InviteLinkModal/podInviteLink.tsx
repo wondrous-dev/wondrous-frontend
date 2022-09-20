@@ -396,7 +396,7 @@ export function PodInviteLinkModal(props) {
                         </DisplaySearchedUser>
                       ))
                     ) : (
-                      <EmptySearch>Empty Search</EmptySearch>
+                      <EmptySearch>User not found...</EmptySearch>
                     )}
                   </DisplaySearchedUserContainer>
                 ))}
