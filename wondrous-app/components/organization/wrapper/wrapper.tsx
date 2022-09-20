@@ -511,7 +511,7 @@ function Wrapper(props) {
                             top: '0',
                             right: '-20px',
                             position: 'absolute',
-                            zIndex: '25'
+                            zIndex: '25',
                           }}
                         />
                       </>
