@@ -77,7 +77,7 @@ function NotificationsBoard({ onlyBoard = false }) {
     let notificationLink = `/${snakeToCamel(notification.objectType)}/${notification.objectId}`;
 
     if (notification.objectType === NOTIFICATION_OBJECT_TYPES.collaboration) {
-      const mainPath = notification.type === COLLAB_TYPES.INVITE ? 'organization' : 'collaboration';
+      const mainPath = notification.type === COLLAB_TYPES.APPROVE ? 'collaboration' : 'organization';
       notificationLink = `/${mainPath}/${notification.additionalData.orgUsername}/boards?collabs=${true}${
         notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
       }`;
