@@ -1248,7 +1248,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
-      const points = parseInt(values.points);
+      const points = parseInt(values.points, 10);
       const rewards = isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
@@ -1257,7 +1257,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories.map((category) => category.name);
+      const categories = values?.categories.map((category) => category.id);
       const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
         values;
       const input = {
