@@ -23,7 +23,7 @@ export const StyledBox = styled(Box)`
   width: 682px;
   border-radius: 6px;
   background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
-  margin: 60px auto;
+  margin: 88px auto;
   height: auto;
   max-height: ${(props) => (props.isUniversal ? 'unset' : '85%')};
   position: relative;
