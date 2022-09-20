@@ -44,6 +44,7 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import BoardLock from 'components/BoardLock';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
+import { Snackbar } from 'components/Settings/Roles/styles';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MembershipRequestModal } from './RequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -220,6 +221,7 @@ function Wrapper(props) {
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
+  const [toast, setToast] = useState({ show: false, message: '' });
   const orgProfile = orgData;
   const hasGr15Tasks = orgProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
   const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
@@ -411,7 +413,23 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <Snackbar
+        autoHideDuration={3000}
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={toast.show}
+        onClose={() => setToast({ show: false, message: '' })}
+        message={toast.message}
+      />
+      <OrgInviteLinkModal
+        orgId={orgBoard?.orgId}
+        open={openInvite}
+        onClose={(isEmailInvitationSuccessful) => {
+          setOpenInvite(false);
+          if (isEmailInvitationSuccessful) {
+            setToast({ ...toast, message: `Email invitations sent successfully.`, show: true });
+          }
+        }}
+      />
       <MembershipRequestModal
         orgId={orgBoard?.orgId}
         setJoinRequestSent={setJoinRequestSent}

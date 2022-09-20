@@ -167,8 +167,8 @@ export function OrgInviteLinkModal(props) {
     }
   };
 
-  const handleOnClose = () => {
-    onClose();
+  const handleOnClose = (isEmailInvitationSuccessful = false) => {
+    onClose(isEmailInvitationSuccessful);
     setCopy(false);
     setLinkOneTimeUse(false);
     setInviteLink('');
@@ -199,6 +199,8 @@ export function OrgInviteLinkModal(props) {
           orgId,
         },
       },
+    }).then(() => {
+      handleOnClose(true);
     });
   };
 
