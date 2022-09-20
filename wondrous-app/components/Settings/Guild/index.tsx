@@ -104,7 +104,7 @@ export default function GuildIntegration({ orgId }) {
       },
     });
   };
-  const handleGuildDisonnect = () => {
+  const handleGuildDisconnect = () => {
     if (!connectedGuildId) return;
     disconnectGuildFromOrg({
       variables: {
@@ -123,7 +123,9 @@ export default function GuildIntegration({ orgId }) {
             <IntegrationsSnapshotInputSubBlock>
               <IntegrationsSnapshotENSInput value={connectedGuild?.name} />
             </IntegrationsSnapshotInputSubBlock>
-            <IntegrationsDisconnectButton onClick={handleGuildDisonnect}>Disconnect Guild</IntegrationsDisconnectButton>
+            <IntegrationsDisconnectButton onClick={handleGuildDisconnect}>
+              Disconnect Guild
+            </IntegrationsDisconnectButton>
           </IntegrationsSnapshotSubBlock>
         </div>
       )}
