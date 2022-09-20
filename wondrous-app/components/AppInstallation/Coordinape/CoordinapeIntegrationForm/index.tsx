@@ -147,7 +147,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
           orgId,
           input: {
             circleId,
-            selectedPodIds: podIds[0] === '' ? null : podIds,
+            selectedPodIds: podIds,
           },
         },
       })
