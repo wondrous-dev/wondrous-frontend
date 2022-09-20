@@ -62,7 +62,6 @@ import isUndefined from 'lodash/isUndefined';
 import assignWith from 'lodash/assignWith';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
-import assignIn from 'lodash/assignIn';
 
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
@@ -1067,8 +1066,8 @@ const useContextValue = (condition, callback) => {
   }, [condition, callback]);
 };
 
-const initialValues = ({ entityType, existingTask = null, initialPodId = null }) => {
-  const defaultValues = assignIn(cloneDeep(entityTypeData[entityType]?.initialValues), { podId: initialPodId });
+const initialValues = (entityType, existingTask = undefined) => {
+  const defaultValues = cloneDeep(entityTypeData[entityType].initialValues);
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
@@ -1084,11 +1083,11 @@ const initialValues = ({ entityType, existingTask = null, initialPodId = null })
     },
     defaultValuesKeys
   );
-  const initialValuesData = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
+  const initialValues = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
     isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue
   );
 
-  return initialValuesData;
+  return initialValues;
 };
 
 interface ICreateEntityModal {
@@ -1220,9 +1219,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
 
-  const initialPodId = !existingTask && (board?.podId || routerPodId);
   const form: any = useFormik({
-    initialValues: initialValues({ entityType, existingTask, initialPodId }),
+    initialValues: initialValues(entityType, existingTask),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
@@ -1277,16 +1275,19 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const pods = useGetAvailableUserPods(form.values.orgId);
   const roles = useGetOrgRoles(form.values.orgId);
 
-  const handleOnchangePodId = (podId) => {
-    form.setValues({
-      ...form.values,
-      milestoneId: null,
-      privacyLevel: getPrivacyLevel(podId, pods),
-      podId,
-    });
-    form.setErrors({});
-  };
-
+  const handleOnchangePodId = useCallback(
+    (podId) => {
+      const resetValues = initialValues(entityType);
+      form.setValues({
+        ...form.values,
+        milestoneId: resetValues?.milestoneId,
+        privacyLevel: getPrivacyLevel(podId, pods),
+        podId,
+      });
+      form.setErrors({});
+    },
+    [entityType, form, getPrivacyLevel]
+  );
   const availablePullRequests = useGetPodPullRequests(form.values.podId);
   const availableRepos = useGetPodGithubIntegrations(form.values.podId);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
@@ -1325,6 +1326,19 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     () => form.setFieldValue('orgId', board?.orgId)
   );
 
+  useContextValue(
+    !form.values.podId &&
+      (board?.podId || routerPodId) &&
+      form.values.orgId &&
+      !existingTask &&
+      pods &&
+      hasCreateTaskPermission({
+        userPermissionsContext: fetchedUserPermissionsContext,
+        orgId: form.values.orgId,
+        podId: board?.podId,
+      }),
+    () => handleOnchangePodId(board?.podId || routerPodId)
+  );
   useContextValue(formValues?.orgId && !form.values.orgId, () =>
     form.setValues({ ...form.values, orgId: formValues.orgId })
   );
