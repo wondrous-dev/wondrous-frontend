@@ -152,7 +152,11 @@ function Members() {
 
   const handleMoreData = (data) => {
     const hasMore = data.length >= LIMIT;
-    setUsers([...users, ...data]);
+    const shouldGoToFilteredData = searchQuery.length > 0 || selectedRoleIds.length > 0;
+    shouldGoToFilteredData
+      ? setFilteredUsers((users) => [...users, ...data])
+      : setUsers((users) => [...users, ...data]);
+    // setUsers([...users, ...data]);
     if (!hasMore) {
       setHasMore(false);
     }
@@ -161,10 +165,10 @@ function Members() {
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
       const variables = {
-        offset: users.length,
+        offset: filteredUsers.length,
         limit: LIMIT,
-        searchString: null,
-        roleIds: [],
+        searchString: searchQuery,
+        roleIds: selectedRoleIds,
       };
 
       if (orgId) {
@@ -193,11 +197,12 @@ function Members() {
           });
       }
     }
-  }, [hasMore, users, fetchMoreOrgUsers, orgId, podId]);
+  }, [hasMore, users, fetchMoreOrgUsers, orgId, podId, searchQuery, filteredUsers?.length, selectedRoleIds]);
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
-  const showHasMore = hasMore && !searchQuery?.length && !selectedRoleIds?.length;
+  // const showHasMore = hasMore && !searchQuery?.length && !selectedRoleIds?.length;
+  const showHasMore = hasMore;
 
   const handleDownloadToCSV = () => {
     if (isOrg) {
@@ -254,17 +259,19 @@ function Members() {
       if (isSearchQueryENS) {
         walletAddress = await wonderWeb3.getAddressFromENS(searchQuery);
       }
+
       if (isOrg) {
         getOrgUsers({
           variables: {
             orgId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
             roleIds: selectedRoleIds,
-            limit: Number.POSITIVE_INFINITY,
+            limit: LIMIT,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
           setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null));
+          setHasMore(data?.getOrgUsers.length >= LIMIT);
         });
       } else {
         getPodUsers({
@@ -272,20 +279,22 @@ function Members() {
             podId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
             roleIds: selectedRoleIds,
-            limit: Number.POSITIVE_INFINITY,
+            limit: LIMIT,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
           setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null));
+          setHasMore(data?.getPodUsers.length >= LIMIT);
         });
       }
     }, 500),
-    [users, isOrg]
+    [users, isOrg, filteredUsers?.length]
   );
 
   useEffect(() => {
     if (!searchQuery?.length && !selectedRoleIds?.length) {
       setFilteredUsers(users);
+      setHasMore(users.length >= LIMIT);
     }
   }, [searchQuery, selectedRoleIds?.length]);
 
