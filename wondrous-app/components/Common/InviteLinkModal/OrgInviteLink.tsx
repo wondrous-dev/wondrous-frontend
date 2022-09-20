@@ -254,7 +254,7 @@ export function OrgInviteLinkModal(props) {
   }, [orgId]);
 
   return (
-    <StyledModal open={open} onClose={handleOnClose}>
+    <StyledModal open={open} onClose={() => handleOnClose(false)}>
       <StyledBox isUniversal={isUniversal}>
         <TopDivider>
           <HeadingWrapper>
@@ -266,7 +266,7 @@ export function OrgInviteLinkModal(props) {
                 <TextHeading>{!isUniversal ? 'Invite' : 'Share with people and groups'}</TextHeading>
               </TextHeadingWrapper>
             </IconTextWrapper>
-            <CloseButton onClick={handleOnClose} />
+            <CloseButton onClick={() => handleOnClose(false)} />
           </HeadingWrapper>
           <DashedLine />
 
