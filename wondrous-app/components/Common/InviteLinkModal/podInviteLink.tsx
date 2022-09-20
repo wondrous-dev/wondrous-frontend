@@ -178,8 +178,8 @@ export function PodInviteLinkModal(props) {
     }
   };
 
-  const handleOnClose = (isInvitationSuccessful = false, isEmail = true) => {
-    onClose(isInvitationSuccessful, isEmail);
+  const handleOnClose = () => {
+    onClose();
     setCopy(false);
     setLinkOneTimeUse(false);
     setInviteLink('');
@@ -210,32 +210,23 @@ export function PodInviteLinkModal(props) {
       .filter((item) => item.type === 'email')
       .map((item) => ({ email: item.email, roleId: item.roleId }));
 
-    if (emailList?.length) {
-      sendPodEmailInvites({
-        variables: {
-          input: {
-            expiry: null,
-            emailsAndRoles: emailList,
-            podId,
-          },
+    sendPodEmailInvites({
+      variables: {
+        input: {
+          expiry: null,
+          emailsAndRoles: emailList,
+          podId,
         },
-      }).then(() => {
-        if (!usersList?.length) handleOnClose(true);
-      });
-    }
-
-    if (usersList?.length) {
-      batchAddUsers({
-        variables: {
-          input: {
-            usersRoles: usersList,
-            podId,
-          },
+      },
+    });
+    batchAddUsers({
+      variables: {
+        input: {
+          usersRoles: usersList,
+          podId,
         },
-      }).then(() => {
-        handleOnClose(true, false);
-      });
-    }
+      },
+    });
   };
 
   useEffect(() => {
@@ -327,7 +318,7 @@ export function PodInviteLinkModal(props) {
   }, [userList, orgUserList]);
 
   return (
-    <StyledModal open={open} onClose={() => handleOnClose(false)}>
+    <StyledModal open={open} onClose={handleOnClose}>
       <StyledBox isUniversal={isUniversal}>
         <TopDivider>
           <HeadingWrapper>
@@ -339,7 +330,7 @@ export function PodInviteLinkModal(props) {
                 <TextHeading>{!isUniversal ? 'Invite' : 'Share with people and groups'}</TextHeading>
               </TextHeadingWrapper>
             </IconTextWrapper>
-            <CloseButton onClick={() => handleOnClose(false)} />
+            <CloseButton onClick={handleOnClose} />
           </HeadingWrapper>
           <DashedLine />
 
