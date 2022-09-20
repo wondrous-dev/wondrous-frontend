@@ -164,7 +164,7 @@ function Members() {
         offset: users.length,
         limit: LIMIT,
         searchString: null,
-        filterByRoles: [],
+        roleIds: [],
       };
 
       if (orgId) {
@@ -253,7 +253,7 @@ function Members() {
           variables: {
             orgId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
-            filterByRoles: selectedRoleIds,
+            roleIds: selectedRoleIds,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
@@ -264,7 +264,7 @@ function Members() {
           variables: {
             podId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
-            filterByRoles: selectedRoleIds,
+            roleIds: selectedRoleIds,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
