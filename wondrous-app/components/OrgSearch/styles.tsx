@@ -62,7 +62,8 @@ export const OrgSearchInput = styled(TextField)`
 export const OrgSearchListItem = styled.li`
   && {
     list-style: none;
-    height: 34px;
+    height: 40px;
+    min-height: 40px !important;
     padding: 6px 12px;
     background: ${palette.black92};
     display: ${({ hide }) => (hide ? 'none' : 'flex')};

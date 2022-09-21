@@ -354,6 +354,7 @@ export const NOTIFICATION_VERBS = {
   task_submit: 'submitted a',
   collab_invite: 'invited you in a',
   collab_approve: 'approved a',
+  collab_decline: 'declined request to join a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {
@@ -371,6 +372,7 @@ export const NOTIFICATION_OBJECT_TYPES = {
 export const COLLAB_TYPES = {
   INVITE: 'collab_invite',
   APPROVE: 'collab_approve',
+  DECLINE: 'collab_decline',
 };
 
 export const PRIVACY_LEVEL = {
@@ -601,6 +603,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/reset-password',
   '/onboarding-dao',
   '/new-task',
+  '/apps/install/coordinape',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
@@ -826,3 +829,29 @@ export enum TOKEN_GATING_CONDITION_TYPE {
   TOKEN_GATE = 'token_gate',
 }
 export const GR15DEICategoryName = 'gr15_dei';
+
+export const CATEGORY_TYPES = {
+  UI_UX_DESIGNER: 'ui_ux_designer',
+  SOCIAL_MEDIA: 'social_media',
+  GRAPHIC_DESIGN: 'graphic_design',
+  GROWTH_MARKETING: 'growth_marketing',
+  CONTENT_CREATION: 'content_creation',
+  MEMES: 'memes',
+  NFT: 'nft',
+  GOVERNANCE: 'governance',
+  DEFI: 'defi',
+  ENGINEERING: 'engineering',
+};
+
+export const CATEGORY_LABELS = {
+  [CATEGORY_TYPES.UI_UX_DESIGNER]: '💻 UI/UX Design',
+  [CATEGORY_TYPES.SOCIAL_MEDIA]: '👥 Social Media',
+  [CATEGORY_TYPES.GRAPHIC_DESIGN]: '🖌 Graphic Design',
+  [CATEGORY_TYPES.GROWTH_MARKETING]: '📈 Growth Marketing',
+  [CATEGORY_TYPES.CONTENT_CREATION]: '✍️ Writing',
+  [CATEGORY_TYPES.MEMES]: '💀 Memes',
+  [CATEGORY_TYPES.NFT]: '🖼 NFT',
+  [CATEGORY_TYPES.GOVERNANCE]: '🪐 Governance',
+  [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
+  [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
+};

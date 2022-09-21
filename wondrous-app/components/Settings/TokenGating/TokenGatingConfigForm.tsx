@@ -17,7 +17,7 @@ import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } 
 import { AccessCondition, TokenGatingCondition } from 'types/TokenGating';
 import { useTokenGatingCondition } from 'utils/hooks';
 import { NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   TokenGatingAutocompleteList,
   TokenGatingAutocompleteListItem,

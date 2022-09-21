@@ -33,7 +33,8 @@ export const PaymentModal = styled(BaseCard)`
   position: absolute;
   left: 50%;
   top: 50%;
-  min-height: 70%;
+  height: 90%;
+  padding: 10px 0;
   transform: translate(-50%, -50%);
   overflow-y: scroll;
   z-index: 2100;
@@ -153,7 +154,7 @@ export const StyledTabs = styled((props) => (
 });
 
 export const PaymentMethodWrapper = styled.div`
-  margin-bottom: 32px;
+  padding-bottom: 32px;
 `;
 
 export const WarningTypography = styled(Typography)`

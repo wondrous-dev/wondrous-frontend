@@ -511,7 +511,7 @@ function Wrapper(props) {
                             top: '0',
                             right: '-20px',
                             position: 'absolute',
-                            zIndex: '20',
+                            zIndex: '25',
                           }}
                         />
                       </>
@@ -529,7 +529,7 @@ function Wrapper(props) {
                 >
                   {orgProfile?.name}
                 </HeaderTitle>
-                <HeaderTag>@{orgProfile?.username}</HeaderTag>
+                {!isCollabWorkspace && <HeaderTag>@{orgProfile?.username}</HeaderTag>}
               </HeaderTitleIcon>
               <HeaderButtons>
                 {/* <Tooltip title="your permissions are:" > */}

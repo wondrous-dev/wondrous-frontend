@@ -17,7 +17,7 @@ import {
 import { parseUserPermissionContext, shrinkNumber, transformTaskToTaskCard } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import palette from 'theme/palette';
-import { DropDown } from 'components/Common/dropdown';
+import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import SmartLink from 'components/Common/SmartLink';
 import { ViewType } from 'types/common';
@@ -253,9 +253,9 @@ export default function TableBody({
                 <Tooltip title="More actions" placement="top">
                   <div>
                     {!isTaskSubmission && (
-                      <DropDown DropdownHandler={TaskMenuIcon} fill={palette?.grey95}>
+                      <Dropdown DropdownHandler={TaskMenuIcon} fill={palette?.grey95}>
                         <DropdownItem
-                          key={`task-menu-edit-${task.id}${index}`}
+                          key={`task-menu-edit-${task.id}`}
                           onClick={() => editTask(task, status)}
                           color="#C4C4C4"
                           fontSize="13px"
@@ -293,7 +293,7 @@ export default function TableBody({
                               Delete {dropdownItemLabel}
                             </DropdownItem>
                           )}
-                      </DropDown>
+                      </Dropdown>
                     )}
                   </div>
                 </Tooltip>

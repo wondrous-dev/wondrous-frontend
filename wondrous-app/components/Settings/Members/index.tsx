@@ -69,6 +69,7 @@ function Members() {
   const [users, setUsers] = useState([]);
   const [filteredUsers, setFilteredUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
+  const [selectedRoleIds, setSelectedRoleIds] = useState([]);
   const [firstTimeFetch, setFirstTimeFetch] = useState(true);
   const [openInvite, setOpenInvite] = useState(false);
 
@@ -151,7 +152,11 @@ function Members() {
 
   const handleMoreData = (data) => {
     const hasMore = data.length >= LIMIT;
-    setUsers([...users, ...data]);
+    const shouldGoToFilteredData = searchQuery.length > 0 || selectedRoleIds.length > 0;
+    shouldGoToFilteredData
+      ? setFilteredUsers((users) => [...users, ...data])
+      : setUsers((users) => [...users, ...data]);
+    // setUsers([...users, ...data]);
     if (!hasMore) {
       setHasMore(false);
     }
@@ -159,7 +164,12 @@ function Members() {
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
-      const variables = { offset: users.length, limit: LIMIT, searchString: null };
+      const variables = {
+        offset: filteredUsers.length,
+        limit: LIMIT,
+        searchString: searchQuery,
+        roleIds: selectedRoleIds,
+      };
 
       if (orgId) {
         fetchMoreOrgUsers({
@@ -187,10 +197,12 @@ function Members() {
           });
       }
     }
-  }, [hasMore, users, fetchMoreOrgUsers, orgId, podId]);
+  }, [hasMore, users, fetchMoreOrgUsers, orgId, podId, searchQuery, filteredUsers?.length, selectedRoleIds]);
 
   const orgOrPodName = orgData?.getOrgById?.name || podData?.getPodById?.name;
   const handleKickMember = useKickMember(orgId, podId, users, setUsers);
+  // const showHasMore = hasMore && !searchQuery?.length && !selectedRoleIds?.length;
+  const showHasMore = hasMore;
 
   const handleDownloadToCSV = () => {
     if (isOrg) {
@@ -214,15 +226,31 @@ function Members() {
     }
   };
 
-  const handleSearchQueryOnChange = useCallback((ev: React.ChangeEvent) => {
-    const searchQuery = (ev.target as HTMLInputElement).value;
-    setSearchQuery(searchQuery);
-  }, []);
+  const handleRoleFilterChange = useCallback(
+    (roleId: string) => {
+      let updatedRoleIds = [];
+      const isSelected = selectedRoleIds.includes(roleId);
+      if (isSelected) updatedRoleIds = selectedRoleIds.filter((id) => id !== roleId);
+      else updatedRoleIds = [...selectedRoleIds, roleId];
+
+      setSelectedRoleIds(updatedRoleIds);
+      handleSearchMembers(searchQuery, updatedRoleIds);
+    },
+    [searchQuery, selectedRoleIds]
+  );
+
+  const handleSearchQueryOnChange = useCallback(
+    (ev: React.ChangeEvent) => {
+      const searchQuery = (ev.target as HTMLInputElement).value;
+      setSearchQuery(searchQuery);
+      handleSearchMembers(searchQuery, selectedRoleIds);
+    },
+    [selectedRoleIds]
+  );
 
   const handleSearchMembers = useCallback(
-    debounce(async (searchQuery: string) => {
-      if (!searchQuery.length) {
-        setFilteredUsers(users);
+    debounce(async (searchQuery = '', selectedRoleIds = []) => {
+      if (!searchQuery?.length && !selectedRoleIds?.length) {
         return;
       }
 
@@ -231,36 +259,44 @@ function Members() {
       if (isSearchQueryENS) {
         walletAddress = await wonderWeb3.getAddressFromENS(searchQuery);
       }
+
       if (isOrg) {
         getOrgUsers({
           variables: {
             orgId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
+            roleIds: selectedRoleIds,
+            limit: LIMIT,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getOrgUsers?.length > 0;
           setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getOrgUsers : null));
+          setHasMore(data?.getOrgUsers.length >= LIMIT);
         });
       } else {
         getPodUsers({
           variables: {
             podId,
             searchString: isSearchQueryENS ? walletAddress : searchQuery,
+            roleIds: selectedRoleIds,
+            limit: LIMIT,
           },
         }).then(({ data }) => {
           const hasUsersCorrespondingToSearchQuery = data?.getPodUsers?.length > 0;
           setFilteredUsers((_) => (hasUsersCorrespondingToSearchQuery ? data?.getPodUsers : null));
+          setHasMore(data?.getPodUsers.length >= LIMIT);
         });
       }
     }, 500),
-    [users]
+    [users, isOrg, filteredUsers?.length]
   );
 
   useEffect(() => {
-    if (!firstTimeFetch) {
-      handleSearchMembers(searchQuery);
+    if (!searchQuery?.length && !selectedRoleIds?.length) {
+      setFilteredUsers(users);
+      setHasMore(users.length >= LIMIT);
     }
-  }, [searchQuery, firstTimeFetch]);
+  }, [searchQuery, selectedRoleIds?.length]);
 
   return (
     <SettingsWrapper showPodIcon={false}>
@@ -312,7 +348,13 @@ function Members() {
           handleDownloadToCSV={handleDownloadToCSV}
         />
 
-        <MemberRoles users={users} roleList={roleList} isDAO={!!orgId} />
+        <MemberRoles
+          users={users}
+          roleList={roleList}
+          isDAO={!!orgId}
+          selectedRoleIds={selectedRoleIds}
+          handleRoleFilterChange={handleRoleFilterChange}
+        />
 
         {podId ? (
           <InviteMember users={users} setUsers={setUsers} orgId={orgId} podId={podId} roleList={roleList} />
@@ -340,7 +382,7 @@ function Members() {
           </Typography>
         )}
 
-        {hasMore && !searchQuery?.length && (
+        {showHasMore && (
           <SeeMoreTextWrapper onClick={() => handleLoadMore()}>
             <SeeMoreText>See more</SeeMoreText>
           </SeeMoreTextWrapper>

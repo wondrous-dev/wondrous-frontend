@@ -14,7 +14,7 @@ import {
   ENABLE_POD_DISCORD_NOTIFICATION_CONFIG,
   MANUAL_DISCORD_POD_SETUP,
 } from 'graphql/mutations';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { NotificationOutlineSettings } from '../../Icons/notifications';
