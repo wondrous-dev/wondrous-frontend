@@ -2,8 +2,8 @@ import InputBase from '@mui/material/InputBase';
 import { Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { Button } from '../../button';
-import DropdownSelect from '../../DropdownSelect/dropdownSelect';
 
 export const OfflinePaymentWrapper = styled.div`
   margin-top: 10px;

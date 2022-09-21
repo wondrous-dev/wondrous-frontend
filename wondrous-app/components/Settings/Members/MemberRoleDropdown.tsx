@@ -5,7 +5,7 @@ import { UPDATE_USER_POD_ROLE } from 'graphql/mutations/pod';
 import { PERMISSIONS } from 'utils/constants';
 import { useSettings } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import { filterRoles } from './helpers';
 
