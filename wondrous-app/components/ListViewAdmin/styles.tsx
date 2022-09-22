@@ -41,6 +41,8 @@ export const IconsWrapper = styled.div`
 `;
 
 export const MediaIcon = styled(AttachFileIcon)`
+  width: 15px;
+  height: 16px;
   path {
     stroke: ${palette.white};
   }

@@ -1,11 +1,10 @@
 import { ButtonUnstyled, OptionUnstyled, PopperUnstyled, SelectUnstyled, TextareaAutosize } from '@mui/base';
 import SaveAltOutlined from '@mui/icons-material/SaveAltOutlined';
-import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui/material';
+import { Autocomplete, ButtonBase, Input, InputAdornment, TextField, Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
-import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
 import PlusIcon from 'components/Icons/plus';
@@ -16,6 +15,7 @@ import styled, { css } from 'styled-components';
 import { greyColors } from 'theme/colors';
 import palette from 'theme/palette';
 import scrollBarStyles from 'components/Common/ScrollbarStyles';
+import typography from 'theme/typography';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
 import MilestoneSearch from './MilestoneSearch';
@@ -651,24 +651,23 @@ export const CreateEntityCreateTaskButton = styled(Button)`
   }
 `;
 
-export const CreateEntityAttachment = styled(ButtonUnstyled)`
-  background: #282828;
-  font-family: 'Space Grotesk';
-  font-size: 14px;
-  font-weight: 500;
-  text-align: left;
-  color: ${palette.white};
-  border: none;
-  border-radius: 4px;
-  padding: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  :hover {
+export const CreateEntityAttachment = styled(ButtonBase)`
+  && {
+    align-items: center;
+    background: ${greyColors.grey90};
+    border-radius: 4px;
+    border: none;
+    color: ${palette.white};
     cursor: pointer;
-    background: #454545;
-    filter: drop-shadow(0 8px 2px #171717);
-    transition: all ease-in-out 0.2s;
+    display: flex;
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    font-weight: 500;
+    height: 44px;
+    justify-content: center;
+    max-width: 250px;
+    min-width: 130px;
+    padding: 12px;
   }
 `;
 
@@ -711,12 +710,6 @@ export const CreateEntitySaveTemplateButtonDisabled = styled(ButtonUnstyled)`
   display: flex;
   align-items: center;
   justify-content: space-between;
-`;
-
-export const CreateEntityAttachmentIcon = styled(AttachFileIcon)`
-  && {
-    margin-right: 8px;
-  }
 `;
 
 export const CreateEntitySaveIcon = styled(SaveAltOutlined)`
@@ -1058,5 +1051,4 @@ export const SnapshotErrorText = styled.div`
 export const SnapshotButtonBlock = styled.div`
   display: flex;
   justify-content: left;
-  margin-left: 24px;
 `;

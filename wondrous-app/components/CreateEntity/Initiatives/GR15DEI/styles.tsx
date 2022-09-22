@@ -13,7 +13,6 @@ export const GRDEISelectorContainer = styled.div`
   border: 1px solid transparent;
   display: flex;
   align-items: center;
-  margin-left: 20px;
   height: 45.5px;
   padding-right: 12px;
 `;
