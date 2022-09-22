@@ -248,7 +248,7 @@ export const StyledTab = styled(Tab)`
 `;
 
 export const Snap = styled.div`
-  scroll-snap-align: start;
+  // scroll-snap-align: start;
 `;
 export const TabText = styled.p`
   margin: 0px !important;

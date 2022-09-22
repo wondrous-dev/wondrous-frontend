@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import { CREATE_POD } from 'graphql/mutations/pod';
 import { GET_AUTOCOMPLETE_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_ORG_USERS } from 'graphql/queries/org';
+import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import palette from 'theme/palette';
 import {
@@ -19,6 +19,7 @@ import {
   PRIVACY_LEVEL,
 } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
+import { LIMIT } from 'services/board';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
@@ -132,10 +133,10 @@ export const filterOrgUsersForAutocomplete = (orgUsers): { display: string; id: 
   if (!orgUsers) {
     return [];
   }
-  return orgUsers.map((orgUser) => ({
-    ...orgUser?.user,
-    display: orgUser?.user?.username,
-    id: orgUser?.user?.id,
+  return orgUsers?.map((orgUser) => ({
+    ...orgUser,
+    display: orgUser?.username,
+    id: orgUser?.id,
   }));
 };
 
@@ -160,7 +161,7 @@ export const filterOrgUsers = (orgUsers) => {
     return [];
   }
 
-  return orgUsers.map((orgUser) => ({
+  return orgUsers?.map((orgUser) => ({
     profilePicture: orgUser?.user?.thumbnailPicture || orgUser?.user?.profilePicture,
     label: orgUser?.user?.username,
     value: orgUser?.user?.id,
@@ -207,12 +208,15 @@ function CreatePodModal(props) {
       setFetchPaymentMethod(true);
     },
   });
-  const [orgUserFetched, setOrgUserFetched] = useState(false);
-  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {
-    onCompleted: () => {
-      setOrgUserFetched(true);
-    },
-  });
+  const [searchOrgUsers] = useLazyQuery(SEARCH_ORG_USERS);
+
+  const handleUserMentionChange = (query) =>
+    searchOrgUsers({
+      variables: {
+        orgId: org,
+        searchString: query,
+      },
+    }).then(({ data }) => data?.searchOrgUsers?.map((user) => ({ ...user, display: user.username, id: user.id })));
 
   const podDescriptionTextCounter = (e) => {
     if (e.target.value.length < textLimit) {
@@ -267,15 +271,6 @@ function CreatePodModal(props) {
         setPod(board?.podId || routerPodId);
       }
       if (org) {
-        if (!orgUserFetched) {
-          getOrgUsers({
-            variables: {
-              orgId: org,
-              limit: 100, // TODO: fix autocomplete
-            },
-          });
-          setOrgUserFetched(true);
-        }
         if (!fetchPaymentMethod) {
           getPaymentMethods({
             variables: {
@@ -409,7 +404,7 @@ function CreatePodModal(props) {
                 value={{
                   content: podDescriptionText,
                   onChange: podDescriptionTextCounter,
-                  list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
+                  onMentionChange: handleUserMentionChange,
                 }}
               >
                 <TextInput

@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
-import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
+import { GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, SEARCH_POD_USERS } from 'graphql/queries';
 import {
   ContributorRow,
   ContributorDiv,
@@ -285,18 +285,18 @@ function Analytics(props) {
 
   const [assignee, setAssignee] = useState(null);
   const [assigneeString, setAssigneeString] = useState('');
-  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
-  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {});
+  const [searchPodUsers, { data: podUsers }] = useLazyQuery(SEARCH_POD_USERS, {});
 
   useEffect(() => {
-    if (orgId) {
-      getOrgUsers({
+    if (podId) {
+      searchPodUsers({
         variables: {
-          orgId,
+          podId,
+          searchString: '',
         },
       });
     }
-  }, [orgId, getOrgUsers]);
+  }, [orgId, searchPodUsers]);
 
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
@@ -324,6 +324,15 @@ function Analytics(props) {
     }
   }, [orgId, fromTime, toTime, assignee?.value]);
 
+  const handleInputChange = (event, newInputValue) => {
+    setAssigneeString(newInputValue);
+    searchPodUsers({
+      variables: {
+        searchString: newInputValue,
+        podId,
+      },
+    });
+  };
   return (
     <Wrapper>
       <CreateModalOverlay
@@ -365,21 +374,7 @@ function Analytics(props) {
         </LocalizationProvider>
         <HeaderText>by</HeaderText>
         <StyledAutocompletePopper
-          options={
-            assigneeString
-              ? filterUsers(autocompleteData?.getAutocompleteUsers)
-              : filterOrgUsers(orgUsersData?.getOrgUsers)
-          }
-          onOpen={() => {
-            // if (pod) {
-            //   getPodUsers({
-            //     variables: {
-            //       podId: pod?.id || pod,
-            //       limit: 100, // TODO: fix autocomplete
-            //     },
-            //   });
-            // }
-          }}
+          options={filterUsers(podUsers?.searchPodUsers)}
           renderInput={(params) => {
             const InputProps = {
               ...params?.InputProps,
@@ -418,14 +413,7 @@ function Analytics(props) {
           }}
           value={assignee}
           inputValue={assigneeString}
-          onInputChange={(event, newInputValue) => {
-            setAssigneeString(newInputValue);
-            getAutocompleteUsers({
-              variables: {
-                username: newInputValue,
-              },
-            });
-          }}
+          onInputChange={handleInputChange}
           onChange={(_, __, reason) => {
             if (reason === 'clear') {
               setAssignee(null);
