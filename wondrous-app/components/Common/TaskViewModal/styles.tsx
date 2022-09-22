@@ -53,7 +53,7 @@ export const TaskModalCard = styled.div`
 export const TaskModalHeader = styled.div`
   display: flex;
   align-items: center;
-  background: #2d2d2d;
+  background: ${palette.grey920};
   height: 56px;
   padding: 12px;
   justify-content: space-between;

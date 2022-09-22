@@ -35,12 +35,10 @@ export const greyColors = {
   grey88: '#3d3d3d',
   grey90: '#262626',
   grey95: '#1f1f1f',
-  grey96: '#2d2d2d',
   grey97: '#2c2c2c',
   grey98: '#1c1c1c',
   grey99: '#282828',
   grey100: '#161616',
-  grey105: '#141414',
   grey150: '#E3E5E9',
   grey200: '#DADADA',
   grey250: '#C4C4C4',
@@ -57,7 +55,6 @@ export const greyColors = {
   grey910: '#171717',
   grey920: '#2D2D2D',
   grey1000: '#272729',
-  grey960: '#0f0f0f',
 };
 
 export const redColors = {

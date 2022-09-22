@@ -99,7 +99,7 @@ export const RequestModalTitleBar = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 12px;
-  background-color: ${greyColors.grey96};
+  background-color: ${greyColors.grey920};
 
   border-bottom: 0.5px dashed ${greyColors.grey75};
   ${(props) => props.style}
@@ -399,7 +399,7 @@ export const RequestModalButtonsContainer = styled.div`
   width: 100%;
   justify-content: flex-end;
   align-items: center;
-  background: ${greyColors.grey105};
+  background: ${palette.black97};
   padding: 24px;
 `;
 

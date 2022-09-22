@@ -1,7 +1,6 @@
 import { Box, Button, Dialog, Divider, Typography } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { greyColors } from 'theme/colors';
 import { Button as ButtonComponent } from '../button';
 
 export const StyledDialog = styled(Dialog)`
@@ -18,7 +17,7 @@ export const StyledChildren = styled.div``;
 export const StyledBox = styled(Box)`
   width: 488px;
   height: 224px;
-  background-color: ${greyColors.grey95};
+  background: linear-gradient(180deg, #262626 0%, #141414 100%);
   border-radius: 6px;
 `;
 
