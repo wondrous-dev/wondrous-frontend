@@ -1,56 +1,47 @@
 /* eslint-disable max-lines */
+import moment from 'moment';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
-import Checkbox from 'components/Checkbox';
-import { ErrorText } from 'components/Common';
-import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
+import apollo from 'services/apollo';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
-  TaskModalSnapshot,
-  TaskModalSnapshotLogo,
-  TaskModalSnapshotText,
-} from 'components/Common/TaskViewModal/styles';
-import CreateEntityAttachments from 'components/CreateEntityDragAndDrop';
-import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
-import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
-import {
+  countCharacters,
   deserializeRichText,
   extractMentions,
   plainTextToRichText,
   RichTextEditor,
   useEditor,
 } from 'components/RichText';
-import { GithubLink } from 'components/Settings/Github/styles';
-import { StyledChipTag } from 'components/Tags/styles';
 import Tooltip from 'components/Tooltip';
+import CreateEntityAttachments from 'components/CreateEntityDragAndDrop';
 import { FormikValues, useFormik } from 'formik';
-import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
 import { CREATE_LABEL } from 'graphql/mutations/org';
+import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   CREATE_BOUNTY,
   CREATE_MILESTONE,
   CREATE_TASK,
-  CREATE_TASK_GITHUB_ISSUE,
-  CREATE_TASK_TEMPLATE,
-  DELETE_TASK_TEMPLATE,
   REMOVE_MEDIA_FROM_TASK,
-  TURN_TASK_TO_BOUNTY,
+  CREATE_TASK_GITHUB_ISSUE,
   UPDATE_BOUNTY,
   UPDATE_MILESTONE,
   UPDATE_TASK,
+  TURN_TASK_TO_BOUNTY,
+  CREATE_TASK_TEMPLATE,
   UPDATE_TASK_TEMPLATE,
+  DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import {
-  ATTACH_MEDIA_TO_TASK_PROPOSAL,
   CREATE_TASK_PROPOSAL,
-  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
   UPDATE_TASK_PROPOSAL,
+  ATTACH_MEDIA_TO_TASK_PROPOSAL,
+  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
 } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
 import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
+import { GET_ORG_ROLES } from 'graphql/queries/org';
 import {
   GET_POD_GITHUB_INTEGRATIONS,
   GET_POD_GITHUB_PULL_REQUESTS,
@@ -61,22 +52,21 @@ import {
   GET_ELIGIBLE_REVIEWERS_FOR_POD,
   GET_MILESTONES,
   GET_TASK_BY_ID,
+  GET_TASK_REVIEWERS,
 } from 'graphql/queries/task';
-import assignWith from 'lodash/assignWith';
-import cloneDeep from 'lodash/cloneDeep';
+
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
-import isUndefined from 'lodash/isUndefined';
+import cloneDeep from 'lodash/cloneDeep';
 import pick from 'lodash/pick';
+import isUndefined from 'lodash/isUndefined';
+import assignWith from 'lodash/assignWith';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 import assignIn from 'lodash/assignIn';
 
-import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import apollo from 'services/apollo';
-import { useSnapshot } from 'services/snapshot';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import {
@@ -87,36 +77,45 @@ import {
   updateTaskItemOnEntityType,
 } from 'utils/board';
 import {
-  APPLICATION_POLICY,
-  APPLICATION_POLICY_LABELS_MAP,
   CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
-  GR15DEICategoryName,
   PRIVACY_LEVEL,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
+  APPLICATION_POLICY,
+  APPLICATION_POLICY_LABELS_MAP,
+  GR15DEICategoryName,
 } from 'utils/constants';
+
 import {
-  hasCreateTaskPermission,
-  transformCategoryFormat,
-  transformMediaFormat,
   transformTaskToTaskCard,
+  hasCreateTaskPermission,
+  transformMediaFormat,
+  transformCategoryFormat,
 } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import * as Yup from 'yup';
-import { SafeImage } from '../../Common/Image';
-import Tags, { Option as Label } from '../../Tags';
-import GR15DEICreateSelector from '../Initiatives/GR15DEI';
-import { MediaItem } from '../MediaItem';
+import { StyledChipTag } from 'components/Tags/styles';
+import { GithubLink } from 'components/Settings/Github/styles';
+import { ErrorText } from 'components/Common';
+import Checkbox from 'components/Checkbox';
+
+import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
+import { useSnapshot } from 'services/snapshot';
+import {
+  TaskModalSnapshot,
+  TaskModalSnapshotLogo,
+  TaskModalSnapshotText,
+} from 'components/Common/TaskViewModal/styles';
+import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
+import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
+import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
-  ApplicationInputUnassignContainer,
-  ApplicationInputWrapper,
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
-  CreateEntityApplicationsSelectRender,
   CreateEntityAttachment,
   CreateEntityAutocompleteOption,
   CreateEntityAutocompleteOptionTypography,
@@ -150,7 +149,7 @@ import {
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodOptionIcon,
   CreateEntityPaymentMethodSelect,
-  CreateEntityPaymentMethodSelected,
+  CreateEntityPaymentMethodSelectRender,
   CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
@@ -158,6 +157,7 @@ import {
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
   CreateEntityPrivacySelectRenderLabel,
+  CreateEntityWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
@@ -168,18 +168,25 @@ import {
   CreateEntityTextfieldInputLabel,
   CreateEntityTextfieldInputPoints,
   CreateEntityTextfieldInputReward,
-  CreateEntityTextfieldInputTemplate,
   CreateEntityTextfieldPoints,
   CreateEntityTitle,
-  CreateEntityWrapper,
-  EditorContainer,
   EditorPlaceholder,
+  EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
-  SnapshotButtonBlock,
+  CreateEntityApplicationsSelectRender,
+  ApplicationInputWrapper,
+  ApplicationInputUnassignContainer,
   SnapshotErrorText,
+  SnapshotButtonBlock,
+  CreateEntityTextfieldInputTemplate,
+  CreateEntityPaymentMethodSelected,
 } from './styles';
+import { MediaItem } from '../MediaItem';
+import Tags, { Option as Label } from '../../Tags';
+import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
+import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
 const formValidationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
