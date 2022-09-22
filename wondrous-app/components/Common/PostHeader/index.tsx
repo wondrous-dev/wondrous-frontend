@@ -7,8 +7,8 @@ import { ObjectType, PostVerbType } from 'types/post';
 import * as Constants from 'utils/constants';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import SmartLink from 'components/Common/SmartLink';
+import KudosForm from 'components/Common/KudosForm';
 import { useMe } from '../../Auth/withAuth';
-import { KudosForm } from '../KudosForm';
 import {
   PostHeaderDefaultUserImage,
   PostHeaderImage,

@@ -13,6 +13,7 @@ function ContributorOnboardingPage() {
   const router = useRouter();
 
   const { token, type } = router.query;
+
   const [getOrgInviteOrgInfo, { data: orgData }] = useLazyQuery(GET_ORG_INVITE_ORG_INFO);
   const [getPodInvitePodInfo, { data: podData }] = useLazyQuery(GET_POD_INVITE_ORG_INFO);
 
@@ -22,20 +23,9 @@ function ContributorOnboardingPage() {
   const orgInfo = orgData?.getInvitedOrgInfo;
   const podInfo = podData?.getInvitedPodInfo;
   useEffect(() => {
-    if (type === 'pod') {
-      if (token) {
-        getPodInvitePodInfo({
-          variables: {
-            token,
-          },
-        });
-      }
-    } else if (token) {
-      getOrgInviteOrgInfo({
-        variables: {
-          token,
-        },
-      });
+    if (token) {
+      getOrgInviteOrgInfo({ variables: { token } });
+      getPodInvitePodInfo({ variables: { token } });
     }
 
     if (user && token) {

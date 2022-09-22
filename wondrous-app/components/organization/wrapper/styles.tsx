@@ -844,6 +844,7 @@ export const HeaderPodsText = styled(HeaderContributorsAmount)`
   color: #6c6c6c;
 `;
 
+export const HeaderGr15Sponsor = styled.div``;
 // cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;

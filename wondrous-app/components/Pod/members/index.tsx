@@ -7,6 +7,8 @@ import Wrapper from 'components/Pod/wrapper';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
 import RolePill from 'components/Common/RolePill';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   MemberRequestsList,
   MemberRequestCard,
@@ -68,6 +70,7 @@ const useGetPodMemberRequests = (podId) => {
 
 function MemberRequests(props) {
   const { podData = {} } = props;
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const { id: podId } = podData;
   const { data: podUserMembershipRequests, fetchMore, hasMore } = useGetPodMemberRequests(podId);
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST);
@@ -159,6 +162,19 @@ function MemberRequests(props) {
                           initials={getUserInitials(request.userUsername)}
                           style={{ width: '28px', height: '28px' }}
                         />
+                      )}
+                      {request?.checkIsGr15Contributor?.isGr15Contributor && (
+                        <>
+                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                          <GR15DEILogo
+                            style={{
+                              marginLeft: '-8px',
+                            }}
+                            width="28"
+                            height="28"
+                            onClick={() => setOpenGR15Modal(true)}
+                          />
+                        </>
                       )}
                       <MemberName>{request.userUsername}</MemberName>
                     </MemberProfileLink>

@@ -98,6 +98,7 @@ export const greenColors = {
   green600: '#00bf9c',
   green700: '#219653',
   green710: '#004129',
+  green720: '#12413d',
   green800: '#06FFA5',
 };
 
@@ -148,6 +149,8 @@ export const blackColors = {
   black60: '#6B7075',
   black70: '#353535',
   black80: '#333333',
+  black85: '#2D2C2C',
+  black87: '#292929',
   black90: '#23292F',
   black91: '#2B2B2B',
   black92: '#232323',

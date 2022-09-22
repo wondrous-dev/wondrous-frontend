@@ -1,11 +1,11 @@
+import { useMemo, useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
-import { UPDATE_TASK, UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
+import { UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import Checkbox from 'components/Checkbox';
-import { useState, useEffect } from 'react';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_ARCHIVED,
@@ -26,21 +26,20 @@ import {
   TaskSubmissionEmptyStateContainer,
   TaskSubmissionItemsWrapper,
   TaskSubmissionsFormInactiveWrapper,
-  SubmissionDisplayText,
   HideSubmissionsCheckBoxDiv,
   HideSubmissionsHelperText,
-} from './styles';
+} from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
 import { SubmissionPayment } from './submissionPayment';
 
-function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '' }) {
+function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '', dataCy = 'submission' }) {
   return (
     <SubmissionButtonWrapperGradient>
       <SubmissionButtonWrapperBackground>
         {buttonText && (
-          <SubmissionButtonCreate onClick={onClick} show={buttonText}>
+          <SubmissionButtonCreate onClick={onClick} show={buttonText} data-cy={`submission-button-${dataCy}`}>
             {buttonText}
           </SubmissionButtonCreate>
         )}
@@ -88,16 +87,15 @@ function TaskSubmissionsEmptyState() {
 }
 
 function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveProgress, taskStatus }) {
-  if (taskStatus === TASK_STATUS_TODO) {
-    if (canSubmit || canMoveProgress) {
-      return (
-        <SubmissionButtonWrapper
-          onClick={handleTaskProgressStatus}
-          buttonText="Set Status to In-Progress"
-          helperText="In order to submit, set this task to In-Progress."
-        />
-      );
-    }
+  if (taskStatus === TASK_STATUS_TODO && (canSubmit || canMoveProgress)) {
+    return (
+      <SubmissionButtonWrapper
+        onClick={handleTaskProgressStatus}
+        buttonText="Set Status to In-Progress"
+        helperText="In order to submit, set this task to In-Progress."
+        data-cy="submission-button-progress"
+      />
+    );
   }
   return null;
 }
@@ -160,18 +158,16 @@ function TaskSubmissionList({
   loggedInUser,
   getTaskSubmissionsForTask,
 }) {
-  // If you can review you can see all submissions. Otherwise you can see none of just your own
-  let filteredFetchedTaskSubmissions = fetchedTaskSubmissions;
-  if (!canReview && fetchedTask?.hideSubmissions) {
-    filteredFetchedTaskSubmissions = filteredFetchedTaskSubmissions?.filter((submission) => {
-      if (submission?.createdBy === loggedInUser?.id) {
-        return true;
-      }
-      return false;
-    });
-  }
+  const filteredFetchedTaskSubmissions = useMemo(() => {
+    if (canReview || !fetchedTask?.hideSubmissions) {
+      return fetchedTaskSubmissions;
+    }
+
+    return fetchedTaskSubmissions?.filter((submission) => submission?.createdBy === loggedInUser?.id);
+  }, [canReview, fetchedTask, fetchedTaskSubmissions, loggedInUser]);
+
   return (
-    <TaskSubmissionItemsWrapper>
+    <TaskSubmissionItemsWrapper data-cy="item-submission">
       {filteredFetchedTaskSubmissions?.map((taskSubmission) => (
         <SubmissionItem
           setSubmissionToEdit={setSubmissionToEdit}

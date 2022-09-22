@@ -15,9 +15,11 @@ type Props = {
   roleList: Role[];
   isDAO: boolean;
   users: Array<{ user: { thumbnailPicture: string; id: string } }>;
+  selectedRoleIds: string[];
+  handleRoleFilterChange: (roleId: string) => void;
 };
 
-function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
+function MemberRoles({ roleList = [], users = [], isDAO, selectedRoleIds = [], handleRoleFilterChange }: Props) {
   const width = 30;
   const overlapLeft = 5;
   const containerWidth = users.length * width - overlapLeft * (users.length - 1) + 2;
@@ -28,45 +30,23 @@ function MemberRoles({ roleList = [], users = [], isDAO }: Props) {
 
   return (
     <Container withPodMembers={!isDAO}>
-      {!isDAO ? (
-        <PodMembers>
-          <div>
-            {`${users.length} `}
-            <Text as="span" color="#6C6C6C">
-              pod {pluralize('member', users.length)}
-            </Text>
-          </div>
-          <PodIconWithoutBg />
-
-          <Avatars style={{ width: `fit-content` }}>
-            {users.map(({ user }, index) =>
-              user?.thumbnailPicture ? (
-                <SafeImage
-                  useNextImage={false}
-                  key={user.id}
-                  style={{ left: index * width - index * overlapLeft }}
-                  src={user?.thumbnailPicture}
-                />
-              ) : (
-                <DefaultUserImage key={user.id} style={{ left: index * width - index * overlapLeft }} />
-              )
-            )}
-          </Avatars>
-        </PodMembers>
-      ) : null}
-
       <Grid display="flex" alignItems="center" gap="30px">
         <Grid display="flex" alignItems="center" gap="4px">
           <Typography color={palette.white} fontSize={14} fontWeight={500} minWidth="fit-content">
             {roleList.length}
           </Typography>
-          <Typography color={palette.grey60} fontSize={14} fontWeight={500} minWidth="fit-content">
+          <Typography color={palette.grey60} fontSize={14} fontWeight={500} minWidth="max-content">
             {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
           </Typography>
         </Grid>
-        <Grid display="flex" alignItems="center" gap="10px">
+        <Grid display="flex" alignItems="center" gap="10px" flexWrap="wrap">
           {roleList.map((role) => (
-            <MemberRole key={role.name} borderColor={getRoleColor(role)}>
+            <MemberRole
+              key={role.name}
+              borderColor={getRoleColor(role)}
+              isActive={selectedRoleIds.includes(role?.id)}
+              onClick={() => handleRoleFilterChange(role?.id)}
+            >
               <span>{getRoleEmoji(role)}</span>
               <Typography color={palette.white} textTransform="capitalize" fontSize={13} fontWeight={500}>
                 {role.name}

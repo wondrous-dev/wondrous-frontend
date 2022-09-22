@@ -20,7 +20,7 @@ export const CREATE_TOKEN_GATING_CONDITION_FOR_ORG = gql`
 
 export const CREATE_GUILD_ACCESS_CONDITION_FOR_ORG = gql`
   mutation createGuildAccessConditionForOrg($input: GuildAccessConditionInput!) {
-      createGuildAccessConditionForOrg(input: $input) {
+    createGuildAccessConditionForOrg(input: $input) {
       ...GuildAccessConditionFragment
     }
   }
@@ -46,7 +46,7 @@ export const UPDATE_TOKEN_GATING_CONDITION = gql`
 
 export const UPDATE_GUILD_ACCESS_CONDITION = gql`
   mutation updateGuildAccessCondition($tokenGatingConditionId: ID!, $input: GuildAccessConditionInput!) {
-      updateGuildAccessCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
+    updateGuildAccessCondition(tokenGatingConditionId: $tokenGatingConditionId, input: $input) {
       ...TokenGatingConditionFragment
     }
   }

@@ -61,6 +61,23 @@ export const guideConfig = {
       },
       {
         selector: '#tour-sidebar-daos',
+        position: 'center',
+        content: () => (
+          <div>
+            <StepTitle gradient="linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)">
+              Press SHIFT+S for shortcuts.
+            </StepTitle>
+            <StepBody>
+              Simply press shift+s together to show all the shortcuts around app. List in tutorial button in sidebar.
+            </StepBody>
+          </div>
+        ),
+        nextButtonTitle: 'Great to know',
+        prevButtonTitle: 'Skip training',
+        prevAction: 'skip',
+      },
+      {
+        selector: '#tour-shortcuts',
         position: 'right',
         content: () => (
           <div>

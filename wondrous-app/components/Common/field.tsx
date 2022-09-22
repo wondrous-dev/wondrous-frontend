@@ -47,7 +47,7 @@ export function Field({ ...props }) {
   return (
     <FieldWrapper {...props}>
       {props.icon && props.icon()}
-      <FieldInput {...props} />
+      <FieldInput data-cy={`input-${props.name}`} {...props} />
     </FieldWrapper>
   );
 }

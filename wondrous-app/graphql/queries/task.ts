@@ -119,6 +119,15 @@ export const GET_MILESTONES = gql`
   }
 `;
 
+export const GET_CATEGORIES = gql`
+  query getMilestones($orgId: ID!, $podId: ID) {
+    getMilestones(orgId: $orgId, podId: $podId) {
+      title
+      id
+    }
+  }
+`;
+
 export const GET_SUBTASK_COUNT_FOR_TASK = gql`
   query getSubtaskCountForTask($taskId: ID!) {
     getSubtaskCountForTask(taskId: $taskId) {
@@ -196,6 +205,15 @@ export const GET_TASK_SUBMISSION_COMMENTS = gql`
 export const GET_BOUNTIES_TO_EXPLORE = gql`
   query getBountiesToExplore($limit: Int, $offset: Int) {
     getBountiesToExplore(limit: $limit, offset: $offset) {
+      ...TaskCardFragment
+    }
+  }
+  ${TaskCardFragment}
+`;
+
+export const FILTER_BOUNTIES_TO_EXPLORE = gql`
+  query getTaskExplore($input: TaskExploreInput) {
+    getTaskExplore(input: $input) {
       ...TaskCardFragment
     }
   }

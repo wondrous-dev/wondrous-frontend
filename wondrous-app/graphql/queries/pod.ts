@@ -54,8 +54,8 @@ export const GET_USER_AVAILABLE_PODS = gql`
 `;
 
 export const GET_POD_USERS = gql`
-  query getPodUsers($podId: String!, $limit: Int, $offset: Int) {
-    getPodUsers(podId: $podId, limit: $limit, offset: $offset) {
+  query getPodUsers($podId: String!, $limit: Int, $offset: Int, $searchString: String, $roleIds: [String]) {
+    getPodUsers(podId: $podId, limit: $limit, offset: $offset, searchString: $searchString, roleIds: $roleIds) {
       user {
         id
         username
@@ -65,10 +65,6 @@ export const GET_POD_USERS = gql`
         firstName
         lastName
         bio
-        additionalInfo {
-          orgCount
-          podCount
-        }
       }
       role {
         permissions
@@ -80,8 +76,8 @@ export const GET_POD_USERS = gql`
 `;
 
 export const SEARCH_POD_USERS = gql`
-  query searchPodUsers($podId: ID!, $queryString: String!) {
-    searchPodUsers(podId: $podId, queryString: $queryString) {
+  query searchPodUsers($podId: ID!, $searchString: String!) {
+    searchPodUsers(podId: $podId, searchString: $searchString) {
       id
       username
       profilePicture
@@ -162,6 +158,9 @@ export const GET_JOIN_POD_REQUESTS = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;
@@ -186,6 +185,9 @@ export const GET_POD_MEMBERSHIP_REQUEST = gql`
       podColor
       podName
       createdAt
+      checkIsGr15Contributor {
+        isGr15Contributor
+      }
     }
   }
 `;

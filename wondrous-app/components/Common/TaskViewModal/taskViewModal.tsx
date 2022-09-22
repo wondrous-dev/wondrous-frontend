@@ -1,3 +1,4 @@
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
@@ -11,7 +12,6 @@ import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } fro
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import React, { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
@@ -40,17 +40,11 @@ import {
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
 } from 'utils/helpers';
-import {
-  useColumns,
-  useOrgBoard,
-  usePodBoard,
-  useUserBoard,
-  useCanViewTask,
-  useUserProfile,
-  useGlobalContext,
-} from 'utils/hooks';
+import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useMe } from '../../Auth/withAuth';
 import {
   CreateFormButtonsBlock,
@@ -117,6 +111,7 @@ import {
   ApplicationField,
   AssigneeField,
   DueDateField,
+  InitativesField,
   MilestoneField,
   PointsField,
   ProposerField,
@@ -124,8 +119,9 @@ import {
   TagsField,
   VotesField,
 } from './taskViewModalFields';
+import WatchersField from './taskViewModalFields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
-import { openSnapshot } from './utils';
+import { hasGR15DEIIntiative, openSnapshot } from './utils';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -192,7 +188,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
-
   const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
@@ -254,6 +249,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       // TODO: Move columns
       // let columns = [...boardColumns?.columns]
     },
+  });
+
+  useHotkeys(HOTKEYS.CREATE_COMMENT, () => {
+    setActiveTab(tabs.discussion);
   });
 
   useEffect(() => {
@@ -504,6 +503,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     setFetchedTask(null);
     handleClose();
   };
+
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -609,12 +609,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                         {back && (
                           <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>
                         )}
-                        <TaskModalHeaderShare
-                          entityType={entityType}
-                          url={`${LINK}/organization/${fetchedTask?.orgUsername}/boards?task=${
-                            isSubtask ? fetchedTask?.parentTaskId : taskId
-                          }`}
-                        />
+                        <TaskModalHeaderShare fetchedTask={fetchedTask} />
                         <TaskModalHeaderOpenInFullIcon
                           isFullScreen={fullScreen}
                           onClick={() => setFullScreen(!fullScreen)}
@@ -639,6 +634,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
                         <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
                         <TaskModalTaskStatusMoreInfo>
+                          {/* {!isTaskProposal && !isMilestone && canEdit && (
+                            <DiscordThreadButton >
+                              <DiscordIcon />
+                              <TaskModalSnapshotText>Open Discussion</TaskModalSnapshotText>
+                            </DiscordThreadButton>
+                          )} */}
                           {fetchedTask?.snapshotId && (
                             <TaskModalSnapshot onClick={handleSnapshot}>
                               <TaskModalSnapshotLogo />
@@ -679,6 +680,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             podId={board?.podId}
                             userId={board?.userId}
                           />
+                          <WatchersField fetchedTask={fetchedTask} />
                           <ApplicationField
                             shouldDisplay={
                               canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0
@@ -712,6 +714,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                           />
                           <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
+                          <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                           {isTaskProposal && (
                             <>
                               <VoteResults

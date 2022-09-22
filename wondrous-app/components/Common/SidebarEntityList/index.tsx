@@ -14,6 +14,7 @@ import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries'
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
+import Dao2DaoIcon from 'components/Icons/Dao2Dao';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -81,6 +82,18 @@ const useSidebarData = () => {
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
+          !board?.orgData?.shared && {
+            text: 'Collaborations',
+            Icon: Dao2DaoIcon,
+            link: {
+              pathname: router.pathname,
+              query: {
+                ...router.query,
+                collabs: true,
+              },
+            },
+          },
+
           // {
           //   text: 'Pods',
           //   Icon: PodIcon,
@@ -144,17 +157,20 @@ const List = () => {
         <ListWrapper key={label}>
           <Label>{label}</Label>
           <ListWrapper>
-            {items.map(({ text, link, Icon, count, entityType = null }) => (
-              <Item
-                key={text}
-                onClick={handleOnClick(link, entityType)}
-                Icon={Icon}
-                isActive={isActive(entityType, link)}
-                count={count}
-              >
-                {text}
-              </Item>
-            ))}
+            {items.map(
+              ({ text, link, Icon, count, entityType = null }) =>
+                !!text && (
+                  <Item
+                    key={text}
+                    onClick={handleOnClick(link, entityType)}
+                    Icon={Icon}
+                    isActive={isActive(entityType, link)}
+                    count={count}
+                  >
+                    {text}
+                  </Item>
+                )
+            )}
           </ListWrapper>
         </ListWrapper>
       ))}

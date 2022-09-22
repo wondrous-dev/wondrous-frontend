@@ -25,10 +25,10 @@ import {
 } from 'graphql/queries/payment';
 import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
 import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { ErrorText } from '..';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { PaymentPendingTypography } from './styles';
-import DropdownSelect from '../DropdownSelect/dropdownSelect';
 import { constructGnosisRedirectUrl } from './SingleWalletPayment';
 
 const generateReadablePreviewForAddress = (address: String) => {

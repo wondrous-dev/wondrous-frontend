@@ -40,3 +40,7 @@ export const StyledCheckbox = styled(Checkbox)`
     }
   }
 `;
+
+export const LoadMore = styled.div`
+  display: ${(props) => (props.hasMore ? 'block' : 'none')};
+`;

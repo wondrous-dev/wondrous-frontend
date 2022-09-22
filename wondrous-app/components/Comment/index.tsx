@@ -1,9 +1,10 @@
 import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
 import { useEffect, useState, useRef } from 'react';
+import apollo from 'services/apollo';
 import { GET_ORG_USERS } from 'graphql/queries/org';
-import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
+import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
-import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { PERMISSIONS, TASK_STATUS_REQUESTED, GRAPHQL_ERRORS } from 'utils/constants';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard, cutString } from 'utils/helpers';
 import { TextInputContext } from 'utils/contexts';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
@@ -15,7 +16,9 @@ import { useRouter } from 'next/router';
 import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
 import { updateTask } from 'utils/board';
 import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
-import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from '../Common/Task/styles';
+import { DiscordIcon } from 'components/Icons/discord';
+import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from 'components/Common/Task/styles';
+
 import {
   AddCommentButton,
   CommentItemContainer,
@@ -31,6 +34,8 @@ import {
   AddCommentContainer,
   DeleteText,
   TextInputDiv,
+  DiscordDiscussionButtonWrapper,
+  DiscordThreadCreateButton,
 } from './styles';
 import { useMe } from '../Auth/withAuth';
 import { TextInput } from '../TextInput';
@@ -52,6 +57,7 @@ export function CommentBox(props) {
       limit: 1000, // TODO: fix autocomplete
     },
   });
+
   const [createTaskComment, { data: taskCommentData }] = useMutation(CREATE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
   });
@@ -132,6 +138,7 @@ export function CommentBox(props) {
         >
           <TextInput
             placeholder="Write a comment"
+            autoFocus
             // rows={5}
             // maxRows={5}
           />
@@ -263,6 +270,7 @@ function CommentListEmptyState() {
 
 export function CommentList(props) {
   const { taskType, task, submission } = props;
+  const router = useRouter();
   const [comments, setComments] = useState([]);
   const [getTaskComments] = useLazyQuery(GET_COMMENTS_FOR_TASK, {
     onCompleted: (data) => {
@@ -314,9 +322,40 @@ export function CommentList(props) {
   comments?.forEach((comment) => {
     set.add(comment?.userId);
   });
+  const handleDiscordButtonClick = async () => {
+    try {
+      const {
+        data: {
+          createTaskDiscordThread: { guildId, threadId },
+        },
+      } = await apollo.mutate({
+        mutation: CREATE_TASK_DISCORD_THREAD,
+        variables: {
+          taskId: task?.id,
+        },
+      });
+
+      window.open(`discord://.com/channels/${guildId}/${threadId}`);
+    } catch (err) {
+      if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_NOT_CONFIGURED) {
+        if (task?.podId) {
+          router.push(`/pod/settings/${task?.podId}/notifications`);
+        } else if (task?.orgId) {
+          router.push(`/organization/settings/${task?.orgId}/notifications`);
+        }
+      }
+    }
+  };
 
   return (
     <CommentListWrapper>
+      <DiscordDiscussionButtonWrapper>
+        <DiscordThreadCreateButton onClick={handleDiscordButtonClick}>
+          <DiscordIcon style={{ marginRight: 10 }} />
+          Open Discussion
+        </DiscordThreadCreateButton>
+      </DiscordDiscussionButtonWrapper>
+
       <CommentBox
         orgId={task?.orgId || submission?.orgId}
         existingContent=""

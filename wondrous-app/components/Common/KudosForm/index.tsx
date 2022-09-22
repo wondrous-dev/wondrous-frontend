@@ -23,7 +23,7 @@ import {
 
 const maxLength = 380;
 
-export function KudosForm(props) {
+function KudosForm(props) {
   const { open, onClose, submission, existingContent, id } = props;
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const [textarea, setTextarea] = useState('');
@@ -64,7 +64,7 @@ export function KudosForm(props) {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage('Kudos updated successfully.');
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     } else {
       await createPost({
         variables: { input },
@@ -75,7 +75,7 @@ export function KudosForm(props) {
           setSnackbarAlertOpen(true);
           setSnackbarAlertMessage('Kudos posted successfully.');
         })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error(err));
     }
   };
 
@@ -109,7 +109,9 @@ export function KudosForm(props) {
           {error && <KudosFormError>This field is required.</KudosFormError>}
           <KudosFormDivider />
           <KudosFormButtonWrapper>
-            <KudosFormCancelButton onClick={handleOnClose}>Approve without kudos </KudosFormCancelButton>
+            <KudosFormCancelButton data-cy="button-approve-no-kudos" onClick={handleOnClose}>
+              Approve without kudos{' '}
+            </KudosFormCancelButton>
             <KudosFormSubmitButton
               onClick={() =>
                 handleSubmit({
@@ -133,3 +135,5 @@ export function KudosForm(props) {
     </KudosFormModal>
   );
 }
+
+export default KudosForm;

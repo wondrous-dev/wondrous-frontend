@@ -1,6 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
 import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
@@ -23,7 +22,7 @@ import { useRouter } from 'next/router';
 import { useLocation } from 'utils/useLocation';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';

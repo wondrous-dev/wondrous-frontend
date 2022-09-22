@@ -3,9 +3,9 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
 import CreateMilestoneIcon from '../Icons/createMilestone';
@@ -579,6 +579,8 @@ export const CreateFormPreviewButton = styled(Button)`
     background: #0f0f0f;
     border: 1px solid deepskyblue;
     margin-left: 25px;
+    margin-bottom: 16px;
+
     //text
     font-weight: 500;
     font-size: 16px;

@@ -4,7 +4,7 @@ import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
@@ -26,6 +26,13 @@ import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
+import BoardLock from 'components/BoardLock';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import {
+  ExploreProjectsButton,
+  ExploreProjectsButtonFilled,
+} from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
@@ -54,6 +61,7 @@ import {
   BoardsSubheaderWrapper,
   InviteButton,
   SettingsButton,
+  HeaderGr15Sponsor,
 } from '../../organization/wrapper/styles';
 import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
@@ -61,10 +69,92 @@ import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import { useMe } from '../../Auth/withAuth';
 import DefaultBg from '../../../public/images/overview/background.png';
 
+const ExplorePodGr15 = ({
+  onTaskPage,
+  onBountyPage,
+  hasGr15Tasks,
+  hasGr15Bounties,
+  podProfile,
+  onFilterChange,
+  filters,
+  exploreGr15TasksAndBounties,
+  setExploreGr15TasksAndBounties,
+}) => {
+  const router = useRouter();
+  const ExploreButton = exploreGr15TasksAndBounties ? ExploreProjectsButtonFilled : ExploreProjectsButton;
+  if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
+    return (
+      <ExploreButton
+        onClick={() => {
+          router.push(`/pod/${podProfile?.id}/boards?entity=bounty`, undefined, {
+            shallow: true,
+          });
+        }}
+      >
+        Explore GR15 Bounties
+      </ExploreButton>
+    );
+  }
+  if (onBountyPage && !hasGr15Bounties && hasGr15Tasks) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          router.push(`/pod/${podProfile?.id}/boards?entity=task&cause=${GR15DEICategoryName}`, undefined, {
+            shallow: true,
+          });
+        }}
+      >
+        Explore GR15 Tasks
+      </ExploreButton>
+    );
+  }
+  if (onTaskPage && hasGr15Tasks) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
+          onFilterChange({
+            ...filters,
+            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
+          });
+        }}
+      >
+        Explore GR15 tasks
+      </ExploreButton>
+    );
+  }
+  if (onBountyPage && hasGr15Bounties) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
+          onFilterChange({
+            ...filters,
+            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
+          });
+        }}
+      >
+        Explore GR15 bounties
+      </ExploreButton>
+    );
+  }
+  return null;
+};
+
 function Wrapper(props) {
   const { children, onSearch, filterSchema, onFilterChange, statuses, userId } = props;
 
   const router = useRouter();
+  const { entity, cause } = router.query;
   const loggedInUser = useMe();
   const wonderWeb3 = useWonderWeb3();
   const [showUsers, setShowUsers] = useState(false);
@@ -83,6 +173,7 @@ function Wrapper(props) {
   const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
   const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
+  const boardFilters = podBoard?.filters || {};
   const [tokenGatingConditions, isTokenGatingInfoLoading] = useTokenGating(podBoard?.orgId);
   const [getOrg, { loading: isOrgLoading, data: orgData }] = useLazyQuery(GET_ORG_BY_ID, {
     fetchPolicy: 'cache-and-network',
@@ -108,6 +199,16 @@ function Wrapper(props) {
   const [openInvite, setOpenInvite] = useState(false);
   const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const podProfile = podBoard?.pod;
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
+  const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
+  const orgHasGr15Tasks = orgData?.getOrgById?.hasGr15TasksAndBounties?.hasGr15Tasks;
+  const orgHasGr15Bounties = orgData?.getOrgById?.hasGr15TasksAndBounties?.hasGr15Bounties;
+  const podHasGr15Tasks = podProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
+  const podHasGr15Bounties = podProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
+  const isGr15Sponsor = orgHasGr15Tasks || orgHasGr15Bounties;
+  const podIsGr15Sponsor = podHasGr15Tasks || podHasGr15Bounties;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
+  const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const toggleCreateFormModal = () => {
     toggleHtmlOverflow();
     setCreateFormModal((prevState) => !prevState);
@@ -196,6 +297,16 @@ function Wrapper(props) {
       setOpenGatedRoleModal(false);
     }
   }, [joinRequestSent]);
+
+  useEffect(() => {
+    if (cause === GR15DEICategoryName) {
+      onFilterChange({
+        category: GR15DEICategoryName,
+      });
+      setExploreGr15TasksAndBounties(true);
+    }
+  }, [cause, setExploreGr15TasksAndBounties]);
+
   useEffect(() => {
     const podPermissions = parseUserPermissionContext({
       userPermissionsContext,
@@ -306,21 +417,51 @@ function Wrapper(props) {
                         router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
                       }}
                     >
-                      <SafeImage
-                        src={orgData?.getOrgById?.profilePicture}
-                        placeholderComp={
-                          <TokenEmptyLogo>
-                            <DAOEmptyIcon />
-                          </TokenEmptyLogo>
-                        }
-                        width={60}
-                        height={60}
-                        layout="fixed"
-                        useNextImage
+                      <div
                         style={{
-                          borderRadius: '6px',
+                          position: 'relative',
+                          cursor: 'pointer',
+                          ...(isGr15Sponsor && {
+                            marginRight: '20px',
+                          }),
                         }}
-                      />
+                      >
+                        <SafeImage
+                          src={orgData?.getOrgById?.profilePicture}
+                          placeholderComp={
+                            <TokenEmptyLogo>
+                              <DAOEmptyIcon />
+                            </TokenEmptyLogo>
+                          }
+                          width={60}
+                          height={60}
+                          layout="fixed"
+                          useNextImage
+                          style={{
+                            borderRadius: '6px',
+                          }}
+                        />
+                        {isGr15Sponsor && (
+                          <>
+                            <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                            <GR15DEILogo
+                              width="42"
+                              height="42"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                e.stopPropagation();
+                                setOpenGR15Modal(true);
+                              }}
+                              style={{
+                                top: '0',
+                                right: '-20px',
+                                position: 'absolute',
+                                zIndex: '20',
+                              }}
+                            />
+                          </>
+                        )}
+                      </div>
                     </OrgLogoWrapper>
 
                     <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
@@ -407,6 +548,21 @@ function Wrapper(props) {
                     {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
                   </HeaderContributorsText>
                 </HeaderContributors>
+                {podIsGr15Sponsor && (
+                  <HeaderGr15Sponsor>
+                    <ExplorePodGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={podHasGr15Bounties}
+                      hasGr15Tasks={podHasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      podProfile={podProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
+                  </HeaderGr15Sponsor>
+                )}
                 {/* <HeaderPods>
                     <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
@@ -417,7 +573,10 @@ function Wrapper(props) {
             <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
               <BoardsSubheaderWrapper>
                 {podBoard?.setEntityType && !search && (
-                  <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard} />
+                  <TypeSelector
+                    tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForPodBoard}
+                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                  />
                 )}
                 {showFilters && (
                   <BoardsActivity

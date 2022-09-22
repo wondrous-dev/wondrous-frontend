@@ -27,7 +27,11 @@ import {
   UserProfileContext,
   GlobalContext,
   TokenGatingContext,
+  HotkeyContext,
+  ExploreGr15TasksAndBountiesContext,
 } from './contexts';
+
+export const useHotkey = () => useContext(HotkeyContext);
 
 export const useIsMobile = () => useContext(IsMobileContext);
 
@@ -75,6 +79,8 @@ export const useOrgBoard = () => useContext(OrgBoardContext);
 export const usePodBoard = () => useContext(PodBoardContext);
 
 export const useUserBoard = () => useContext(UserBoardContext);
+
+export const useExploreGr15TasksAndBounties = () => useContext(ExploreGr15TasksAndBountiesContext);
 
 export const useBoards = () => {
   const orgBoard = useOrgBoard();
@@ -313,4 +319,9 @@ export const useNotifications = () => {
     fetchMore,
     hasMore,
   };
+};
+
+export const useSteps = (defaultStep = 0) => {
+  const [step, setStep] = useState(defaultStep);
+  return { step, setStep };
 };

@@ -1,4 +1,4 @@
-import { PERMISSIONS, RoleColorsAndEmojis, ROLES } from 'utils/constants';
+import { PERMISSIONS, ROLE_COLORS_AND_EMOJIS, ROLES } from 'utils/constants';
 
 export const getAddressToDisplay = (address: string): string => {
   const isENSName = address.endsWith('.eth');
@@ -38,10 +38,10 @@ export const getRoleEmoji = (role) => {
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
 
   if (correspondingRoleKey) {
-    return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].emoji;
+    return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].emoji;
   }
 
-  return RoleColorsAndEmojis[ROLES.DEFAULT].emoji;
+  return ROLE_COLORS_AND_EMOJIS[ROLES.DEFAULT].emoji;
 };
 
 export const getRoleEmojiByName = (roleName) => {
@@ -51,10 +51,10 @@ export const getRoleEmojiByName = (roleName) => {
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleName);
 
   if (correspondingRoleKey) {
-    return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].emoji;
+    return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].emoji;
   }
 
-  return RoleColorsAndEmojis[ROLES.DEFAULT].emoji;
+  return ROLE_COLORS_AND_EMOJIS[ROLES.DEFAULT].emoji;
 };
 
 export const getRoleColor = (role) => {
@@ -65,10 +65,10 @@ export const getRoleColor = (role) => {
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
 
   if (correspondingRoleKey) {
-    return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].color;
+    return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].color;
   }
 
-  return RoleColorsAndEmojis[ROLES.DEFAULT].color;
+  return ROLE_COLORS_AND_EMOJIS[ROLES.DEFAULT].color;
 };
 
 export const getRoleColorByName = (roleName) => {
@@ -78,8 +78,8 @@ export const getRoleColorByName = (roleName) => {
   const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleName);
 
   if (correspondingRoleKey) {
-    return RoleColorsAndEmojis[ROLES[correspondingRoleKey]].color;
+    return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].color;
   }
 
-  return RoleColorsAndEmojis[ROLES.DEFAULT].color;
+  return ROLE_COLORS_AND_EMOJIS[ROLES.DEFAULT].color;
 };

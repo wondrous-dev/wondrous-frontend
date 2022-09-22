@@ -251,3 +251,20 @@ export const TURN_TASK_TO_BOUNTY = gql`
   }
   ${BountyFragment}
 `;
+
+export const CREATE_TASK_DISCORD_THREAD = gql`
+  mutation createTaskDiscordThread($taskId: ID!) {
+    createTaskDiscordThread(taskId: $taskId) {
+      guildId
+      threadId
+    }
+  }
+`;
+
+export const UPDATE_TASK_OBSERVERS = gql`
+  mutation updateTaskObservers($taskId: ID!, $observerIds: [String]!) {
+    updateTaskObservers(taskId: $taskId, observerIds: $observerIds) {
+      title # maybe this should be returning simple response instead?
+    }
+  }
+`;

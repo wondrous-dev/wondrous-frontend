@@ -20,7 +20,7 @@ import { useLocation } from 'utils/useLocation';
 
 import { CompletedIcon, InReviewIcon, RejectedIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
-import { KudosForm } from '../KudosForm';
+import KudosForm from '../KudosForm';
 import { PaymentButton } from '../Task/paymentButton';
 import { TaskAction, TaskActionAmount } from '../Task/styles';
 import {
@@ -52,6 +52,9 @@ import {
   TaskSubmissionLinkWrapper,
   TaskSubmissionLinkText,
 } from './styles';
+import GR15DEIModal from '../IntiativesModal/GR15DEIModal';
+import { GR15DEILogo } from '../IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
 
 const isBountyApprovedUnpaid = ({ fetchedTask, submission }) => {
   const { approvedAt, paymentStatus } = submission;
@@ -249,11 +252,18 @@ function SubmissionItemUserImage({ creatorProfilePicture }) {
   return <DefaultUserImage />;
 }
 
-function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture }) {
+function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor }) {
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
   return (
     <Link href={`/profile/${creatorUsername}/about`} passHref>
       <SubmissionItemUserLink>
         <SubmissionItemUserImage creatorProfilePicture={creatorProfilePicture} />
+        {isGr15Contributor && (
+          <>
+            <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+            <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
+          </>
+        )}
         <SubmissionItemCreator>{creatorUsername}</SubmissionItemCreator>
       </SubmissionItemUserLink>
     </Link>
@@ -275,7 +285,7 @@ function SubmissionItemLink({ links }: { links: [] }) {
       {links?.map(({ url }, index) => (
         <TaskSubmissionLink key={index} href={url} target="_blank" rel="noopener noreferrer">
           <TaskSubmissionLinkIcon />
-          <TaskSubmissionLinkText>{url}</TaskSubmissionLinkText>
+          <TaskSubmissionLinkText data-cy="submission-link-url">{url}</TaskSubmissionLinkText>
         </TaskSubmissionLink>
       ))}
     </TaskSubmissionLinkWrapper>
@@ -316,7 +326,11 @@ function SubmissionRequestChangeButton({ submission, requestChangeTaskSubmission
 
 function SubmissionApproveTaskButton({ submission, fetchedTaskType, onClick }) {
   if (!submission.approvedAt && fetchedTaskType === TASK_TYPE)
-    return <SubmissionButtonApprove onClick={onClick}>Approve</SubmissionButtonApprove>;
+    return (
+      <SubmissionButtonApprove data-cy="button-approve" onClick={onClick}>
+        Approve
+      </SubmissionButtonApprove>
+    );
   return null;
 }
 
@@ -419,6 +433,10 @@ export function SubmissionItem({
             <SubmissionItemUserWrapper
               creatorUsername={submission?.creatorUsername}
               creatorProfilePicture={submission?.creatorProfilePicture}
+              isGr15Contributor={
+                hasGR15DEIIntiative(fetchedTask?.categories) &&
+                submission?.creator?.checkIsGr15Contributor?.isGr15Contributor
+              }
             />
             <SubmissionItemCreatedAt createdAt={submission.createdAt} />
           </SubmissionItemHeaderContent>

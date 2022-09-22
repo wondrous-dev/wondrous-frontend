@@ -7,16 +7,17 @@ import {
   SOCIAL_MEDIA_TWITTER,
   SOCIAL_OPENSEA,
   SOCIAL_MEDIA_LINKEDIN,
+  GR15DEICategoryName,
+  BOUNTY_TYPE,
 } from 'utils/constants';
 import apollo from 'services/apollo';
 import { Box } from '@mui/system';
-
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
 
-import { useOrgBoard, useTokenGating } from 'utils/hooks';
+import usePrevious, { useOrgBoard, useTokenGating } from 'utils/hooks';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
@@ -28,6 +29,12 @@ import {
   LIT_SIGNATURE_EXIST,
   GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
 } from 'graphql/queries';
+import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import {
+  ExploreProjectsButton,
+  ExploreProjectsButtonFilled,
+} from 'components/Common/IntiativesModal/GR15DEIModal/styles';
+import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
@@ -36,6 +43,8 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
 import RolePill from 'components/Common/RolePill';
+import BoardLock from 'components/BoardLock';
+import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import MembershipRequestModal from './MembershipRequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -73,23 +82,125 @@ import {
   Container,
   SettingsButton,
   InviteButton,
+  HeaderGr15Sponsor,
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import CurrentRoleModal from './CurrentRoleModal';
 
+const ORG_PERMISSIONS = {
+  MANAGE_SETTINGS: 'manageSettings',
+  CONTRIBUTOR: 'contributor',
+};
+
+const ExploreOrgGr15 = ({
+  onTaskPage,
+  onBountyPage,
+  hasGr15Tasks,
+  hasGr15Bounties,
+  orgProfile,
+  onFilterChange,
+  filters,
+  exploreGr15TasksAndBounties,
+  setExploreGr15TasksAndBounties,
+}) => {
+  const router = useRouter();
+  const ExploreButton = exploreGr15TasksAndBounties ? ExploreProjectsButtonFilled : ExploreProjectsButton;
+  if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
+    return (
+      <ExploreButton
+        onClick={() => {
+          router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
+            shallow: true,
+          });
+        }}
+      >
+        Explore GR15 Bounties
+      </ExploreButton>
+    );
+  }
+  if (onBountyPage && !hasGr15Bounties && hasGr15Tasks) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          router.push(
+            `/organization/${orgProfile?.username}/boards?entity=task&cause=${GR15DEICategoryName}`,
+            undefined,
+            {
+              shallow: true,
+            }
+          );
+        }}
+      >
+        Explore GR15 Tasks
+      </ExploreButton>
+    );
+  }
+  if (onTaskPage && hasGr15Tasks) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
+          onFilterChange({
+            ...filters,
+            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
+          });
+        }}
+      >
+        Explore GR15 tasks
+      </ExploreButton>
+    );
+  }
+  if (onBountyPage && hasGr15Bounties) {
+    return (
+      <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
+        onClick={() => {
+          setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
+          onFilterChange({
+            ...filters,
+            category: exploreGr15TasksAndBounties ? null : GR15DEICategoryName,
+          });
+        }}
+      >
+        Explore GR15 bounties
+      </ExploreButton>
+    );
+  }
+  return null;
+};
+
 function Wrapper(props) {
-  const { children, orgData, onSearch, filterSchema, onFilterChange, statuses, podIds, userId } = props;
+  const {
+    children,
+    orgData,
+    onSearch,
+    filterSchema,
+    onFilterChange,
+    statuses,
+    podIds,
+    userId,
+    renderSharedHeader = null,
+    isCollabWorkspace = false,
+    inviteButtonSettings = null,
+  } = props;
+
+  const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
+
   const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
-  const ORG_PERMISSIONS = {
-    MANAGE_SETTINGS: 'manageSettings',
-    CONTRIBUTOR: 'contributor',
-  };
 
   const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
@@ -113,12 +224,21 @@ function Wrapper(props) {
   const [claimableRoleModalOpen, setClaimableRoleModalOpen] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
-
+  const [openGR15Modal, setOpenGR15Modal] = useState(false);
+  const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
+  const hasGr15Tasks = orgProfile?.hasGr15TasksAndBounties?.hasGr15Tasks;
+  const hasGr15Bounties = orgProfile?.hasGr15TasksAndBounties?.hasGr15Bounties;
+
+  const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
-  const { search, entity } = router.query;
+  const { search, entity, cause } = router.query;
+  const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
+  const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
+  const board = orgBoard;
+  const boardFilters = board?.filters || {};
   const { asPath } = router;
   let finalPath = '';
   if (asPath) {
@@ -241,18 +361,28 @@ function Wrapper(props) {
     setTokenGatedRoles(roles);
     setClaimableRoleModalOpen(true);
   };
+  const previousEntity = usePrevious(entity);
 
   useEffect(() => {
     if (!entity && !search) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
       const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
       if (taskCount === 0 && bountyCount > taskCount && finalPath === 'boards') {
-        router.push(`/organization/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+        router.push(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
           shallow: true,
         });
       }
     }
   }, [tasksPerTypeData, entity, finalPath]);
+
+  useEffect(() => {
+    if (cause === GR15DEICategoryName) {
+      onFilterChange({
+        category: GR15DEICategoryName,
+      });
+      setExploreGr15TasksAndBounties(true);
+    }
+  }, [cause, setExploreGr15TasksAndBounties]);
 
   useEffect(() => {
     const orgPermissions = parseUserPermissionContext({
@@ -303,6 +433,7 @@ function Wrapper(props) {
     setCreateTaskModalOpen((prevState) => !prevState);
   });
 
+  const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -389,26 +520,60 @@ function Wrapper(props) {
         <ContentContainer>
           <TokenHeader>
             <HeaderMainBlock>
-              <Box sx={{ flex: '0 0 60px' }}>
-                <SafeImage
-                  src={orgProfile?.profilePicture}
-                  placeholderComp={
-                    <TokenEmptyLogo>
-                      <DAOEmptyIcon />
-                    </TokenEmptyLogo>
-                  }
-                  width="60px"
-                  height="60px"
-                  useNextImage
-                  style={{
-                    borderRadius: '6px',
-                  }}
-                />
-              </Box>
-
+              {orgData?.shared && renderSharedHeader ? (
+                renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
+              ) : (
+                <Box sx={{ flex: '0 0 60px' }}>
+                  <div
+                    style={{
+                      position: 'relative',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    <SafeImage
+                      src={orgProfile?.profilePicture}
+                      placeholderComp={
+                        <TokenEmptyLogo>
+                          <DAOEmptyIcon />
+                        </TokenEmptyLogo>
+                      }
+                      width="60px"
+                      height="60px"
+                      useNextImage
+                      style={{
+                        borderRadius: '6px',
+                      }}
+                    />
+                    {isGr15Sponsor && (
+                      <>
+                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                        <GR15DEILogo
+                          width="42"
+                          height="42"
+                          onClick={() => setOpenGR15Modal(true)}
+                          style={{
+                            top: '0',
+                            right: '-20px',
+                            position: 'absolute',
+                            zIndex: '25',
+                          }}
+                        />
+                      </>
+                    )}
+                  </div>
+                </Box>
+              )}
               <HeaderTitleIcon>
-                <HeaderTitle>{orgProfile?.name}</HeaderTitle>
-                <HeaderTag>@{orgProfile?.username}</HeaderTag>
+                <HeaderTitle
+                  style={{
+                    ...(isGr15Sponsor && {
+                      marginLeft: '24px',
+                    }),
+                  }}
+                >
+                  {orgProfile?.name}
+                </HeaderTitle>
+                {!isCollabWorkspace && <HeaderTag>@{orgProfile?.username}</HeaderTag>}
               </HeaderTitleIcon>
               <HeaderButtons>
                 {/* <Tooltip title="your permissions are:" > */}
@@ -456,12 +621,12 @@ function Wrapper(props) {
                   <>
                     <SettingsButton
                       onClick={() => {
-                        router.push(`/organization/settings/${orgBoard?.orgId}/general`);
+                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
                       }}
                     >
                       Settings
                     </SettingsButton>
-                    <InviteButton onClick={() => setOpenInvite(true)}>Invite</InviteButton>
+                    <InviteButton onClick={handleInviteAction}>{inviteButtonSettings?.label || 'Invite'}</InviteButton>
                   </>
                 )}
               </HeaderButtons>
@@ -488,6 +653,21 @@ function Wrapper(props) {
                 <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
                 <HeaderPodsText>Pods</HeaderPodsText>
               </HeaderPods>
+              {isGr15Sponsor && (
+                <HeaderGr15Sponsor>
+                  <ExploreOrgGr15
+                    onTaskPage={onTaskPage}
+                    onBountyPage={onBountyPage}
+                    hasGr15Bounties={hasGr15Bounties}
+                    hasGr15Tasks={hasGr15Tasks}
+                    onFilterChange={onFilterChange}
+                    orgProfile={orgProfile}
+                    filters={boardFilters}
+                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                  />
+                </HeaderGr15Sponsor>
+              )}
               {links?.map((link, index) => {
                 if (link.type === 'link') {
                   return (
@@ -542,17 +722,22 @@ function Wrapper(props) {
           <Container>
             <BoardsSubheaderWrapper>
               {orgBoard?.setEntityType && !search && (
-                <TypeSelector tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard} />
+                <TypeSelector
+                  tasksPerTypeData={tasksPerTypeData?.getPerTypeTaskCountForOrgBoard}
+                  setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                />
               )}
               {!!filterSchema && (
-                <BoardsActivity
-                  onSearch={onSearch}
-                  filterSchema={filterSchema}
-                  onFilterChange={onFilterChange}
-                  statuses={statuses}
-                  podIds={podIds}
-                  userId={userId}
-                />
+                <ExploreGr15TasksAndBountiesContext.Provider value={exploreGr15TasksAndBounties}>
+                  <BoardsActivity
+                    onSearch={onSearch}
+                    filterSchema={filterSchema}
+                    onFilterChange={onFilterChange}
+                    statuses={statuses}
+                    podIds={podIds}
+                    userId={userId}
+                  />
+                </ExploreGr15TasksAndBountiesContext.Provider>
               )}
             </BoardsSubheaderWrapper>
             {children}

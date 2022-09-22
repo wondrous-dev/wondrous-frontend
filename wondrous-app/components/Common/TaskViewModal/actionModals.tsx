@@ -1,9 +1,9 @@
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { CompleteModal } from 'components/Common/CompleteModal';
-import { DeleteTaskModal } from 'components/Common/DeleteTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { useCallback } from 'react';
 import { useMutation } from '@apollo/client';
-import { COMPLETE_MILESTONE, COMPLETE_BOUNTY, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations';
+import { COMPLETE_MILESTONE, COMPLETE_BOUNTY, UNARCHIVE_TASK } from 'graphql/mutations';
 import { BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
 import { ArchivedTaskUndo } from './styles';
 

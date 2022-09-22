@@ -21,7 +21,7 @@ import {
 import { InputAdornment, TextField } from '@mui/material';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import ArrowDropDownIcon from 'components/Icons/arrowDropDown';
 import SearchIcon from 'components/Icons/search';
 import RolesIcon from 'components/Icons/roles';
@@ -160,7 +160,7 @@ function InviteMember(props) {
               searchOrgUsers({
                 variables: {
                   orgId,
-                  queryString: '',
+                  searchString: '',
                 },
               });
             }
@@ -169,7 +169,7 @@ function InviteMember(props) {
             searchOrgUsers({
               variables: {
                 orgId,
-                queryString: newInputValue,
+                searchString: newInputValue,
               },
             });
             setInviteeString(newInputValue);

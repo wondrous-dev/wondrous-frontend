@@ -34,7 +34,7 @@ const BaseCardInner = styled.div`
 
 export function BaseCard({ className, children }) {
   return (
-    <BaseCardWrapper className={className}>
+    <BaseCardWrapper className={className} data-cy="modal-base">
       <BaseCardInner>{children}</BaseCardInner>
     </BaseCardWrapper>
   );

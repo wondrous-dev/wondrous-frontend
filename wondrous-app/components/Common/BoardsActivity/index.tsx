@@ -1,10 +1,17 @@
 import { useEffect, useMemo, useState } from 'react';
 import SearchTasks from 'components/SearchTasks';
-import { useBoards, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import {
+  useHotkey,
+  useBoards,
+  useOrgBoard,
+  usePodBoard,
+  useUserBoard,
+  useExploreGr15TasksAndBounties,
+} from 'utils/hooks';
 import SelectMenuBoardType from 'components/Common/SelectMenuBoardType';
 import { useRouter } from 'next/router';
 import { ViewType } from 'types/common';
-import { ToggleViewButton } from 'components/Common/ToggleViewButton';
+import ToggleViewButton from 'components/Common/ToggleViewButton';
 import Toggle from 'components/Common/Toggle';
 import { delQuery, insertUrlParam } from 'utils';
 import { GridViewIcon } from 'components/Icons/ViewIcons/gridView';
@@ -13,6 +20,9 @@ import BoardFilters, { FiltersTriggerButton } from 'components/Common/BoardFilte
 import UserFilter from 'components/Common/BoardFilters/userFilter';
 import { ENTITIES_TYPES } from 'utils/constants';
 import palette from 'theme/palette';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { Badge } from '@mui/material';
+import { HOTKEYS } from 'utils/hotkeyHelper';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -41,7 +51,15 @@ export function BoardsActivityInlineView({
   }, [board?.entityType]);
 
   const handleFilterDisplay = () => setDisplayFilters(!displayFilters);
+  const showBadge = useHotkey();
 
+  useHotkeys(
+    HOTKEYS.OPEN_FILTER,
+    () => {
+      setDisplayFilters(!displayFilters);
+    },
+    [displayFilters]
+  );
   return (
     <>
       <BoardsActivityInlineViewWrapper displaySingleViewFilter={displaySingleViewFilter}>
@@ -56,7 +74,14 @@ export function BoardsActivityInlineView({
         {withAdminToggle ? <Toggle items={toggleItems} /> : null}
         {view && !searchQuery && enableViewSwitcher ? <ToggleViewButton options={listViewOptions} /> : null}
         {!displaySingleViewFilter ? (
-          <FiltersTriggerButton onClick={handleFilterDisplay} isOpen={displayFilters} />
+          <Badge badgeContent={HOTKEYS.OPEN_FILTER} color="primary" invisible={!showBadge}>
+            <FiltersTriggerButton
+              onClick={() => {
+                handleFilterDisplay();
+              }}
+              isOpen={displayFilters}
+            />
+          </Badge>
         ) : null}
       </BoardsActivityInlineViewWrapper>
       {displayFilters && !displaySingleViewFilter && (
@@ -125,6 +150,42 @@ export default function BoardsActivity(props) {
       },
     },
   ];
+
+  useHotkeys(
+    HOTKEYS.LIST_VIEW,
+    () => {
+      if (setActiveView) {
+        setActiveView(ViewType.List);
+        insertUrlParam('view', ViewType.List);
+      } else {
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+      }
+    },
+    [view]
+  );
+
+  useHotkeys(
+    HOTKEYS.GRID_VIEW,
+    () => {
+      if (setActiveView) {
+        setActiveView(ViewType.Grid);
+        insertUrlParam('view', ViewType.Grid);
+      } else {
+        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+      }
+    },
+    [view]
+  );
+
+  // TODO(pkmazarakis): When calendar PR is merged
+  // useHotkeys(HOTKEYS.CALENDAR_VIEW, () => {
+  // if (setActiveView) {
+  //   setActiveView(ViewType.Calendar);
+  //   insertUrlParam('view', ViewType.Calendar);
+  // } else {
+  //   router.replace(`${delQuery(router.asPath)}?view=${ViewType.Calendar}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+  // }
+  // }, [view])
 
   return (
     <BoardsActivityInlineView

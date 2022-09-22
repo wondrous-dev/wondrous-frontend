@@ -139,7 +139,7 @@ export const RequestDeclineButton = styled(RequestActionButton)`
   && {
     background: ${palette.grey78};
     &:hover {
-      background: ${palette.grey78}b3;
+      background: ${palette.grey78};
     }
   }
 `;

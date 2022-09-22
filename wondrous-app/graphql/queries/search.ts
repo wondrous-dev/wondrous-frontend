@@ -27,3 +27,15 @@ export const SEARCH_GLOBAL = gql`
     }
   }
 `;
+
+export const SEARCH_GLOBAL_ORGS = gql`
+  query globalSearchOrgs($searchString: String!) {
+    globalSearchOrgs(searchString: $searchString) {
+      id
+      name
+      username
+      profilePicture
+      thumbnailPicture
+    }
+  }
+`;
