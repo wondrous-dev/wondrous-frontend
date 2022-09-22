@@ -167,21 +167,25 @@ function GeneralSettingsComponent(props) {
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
+        {console.log(orgProfile)}
+        {!orgProfile?.shared ? (
+          <>
+            {newProfile?.profilePicture && !logoImage ? (
+              <Box sx={{ marginTop: '30px' }}>
+                <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
+              </Box>
+            ) : null}
 
-        {newProfile?.profilePicture && !logoImage ? (
-          <Box sx={{ marginTop: '30px' }}>
-            <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
-          </Box>
+            <ImageUpload
+              image={logoImage}
+              imageWidth={52}
+              imageHeight={52}
+              imageName="Logo"
+              updateFilesCb={(file) => handleImageChange(file, 'profile')}
+              profileImage={newProfile?.profilePicture}
+            />
+          </>
         ) : null}
-
-        <ImageUpload
-          image={logoImage}
-          imageWidth={52}
-          imageHeight={52}
-          imageName="Logo"
-          updateFilesCb={(file) => handleImageChange(file, 'profile')}
-          profileImage={newProfile?.profilePicture}
-        />
 
         {newProfile?.headerPicture && !headerImage && (
           <Box sx={{ width: '100%', height: '100px', position: 'relative', marginTop: '30px' }}>
