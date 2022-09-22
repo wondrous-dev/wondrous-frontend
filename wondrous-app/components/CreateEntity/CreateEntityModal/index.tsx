@@ -1,6 +1,6 @@
 /* eslint-disable max-lines */
+import moment from 'moment';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import apollo from 'services/apollo';
@@ -17,6 +17,7 @@ import {
   TURN_TASK_TO_BOUNTY,
   CREATE_TASK_TEMPLATE,
   UPDATE_TASK_TEMPLATE,
+  DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import { ATTACH_MEDIA_TO_TASK_PROPOSAL, REMOVE_MEDIA_FROM_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -26,7 +27,6 @@ import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import cloneDeep from 'lodash/cloneDeep';
 
-import moment from 'moment';
 import { useRouter } from 'next/router';
 import React, { useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
@@ -34,6 +34,9 @@ import { ReactEditor } from 'slate-react';
 import {
   ENTITIES_TYPES,
   TASK_STATUS_TODO,
+  APPLICATION_POLICY,
+  APPLICATION_POLICY_LABELS_MAP,
+  GR15DEICategoryName,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -89,7 +92,6 @@ import {
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
-  CreateEntityApplicationsSelectRender,
   CreateEntityAttachment,
   CreateEntityAutocompleteOption,
   CreateEntityAutocompleteOptionTypography,
@@ -126,15 +128,15 @@ import {
   CreateEntityPrivacySelectOption,
   CreateEntityPrivacySelectRender,
   CreateEntityPrivacySelectRenderLabel,
+  CreateEntityWrapper,
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntitySelectWrapper,
   CreateEntityTextfield,
   CreateEntityTitle,
-  CreateEntityWrapper,
-  EditorContainer,
   EditorPlaceholder,
+  EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
   SnapshotButtonBlock,
@@ -144,6 +146,7 @@ import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
+import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
