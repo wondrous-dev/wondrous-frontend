@@ -113,6 +113,7 @@ import {
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
+import TaskPriorityToggleButton from 'components/Common/TaskPriority/TaskPriorityToggleButton';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
@@ -823,6 +824,7 @@ const useCreateTaskProposal = () => {
           mediaUploads: input.mediaUploads,
           rewards: input.rewards,
           privacyLevel: input.privacyLevel,
+          priority: input.priority,
         },
       },
     })
@@ -865,6 +867,7 @@ const useUpdateTaskProposal = () => {
           mediaUploads: input.mediaUploads,
           rewards: input.rewards,
           privacyLevel: input.privacyLevel,
+          priority: input.priority,
         },
       },
     }).then(() => {
@@ -968,6 +971,7 @@ enum Fields {
   reward,
   points,
   milestone,
+  priority,
   tags,
   githubPullRequest,
   shouldUnclaimOnDueDateExpiry,
@@ -985,6 +989,7 @@ const entityTypeData = {
       Fields.reward,
       Fields.points,
       Fields.milestone,
+      Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
     ],
@@ -1015,6 +1020,7 @@ const entityTypeData = {
       chooseGithubIssue: false,
       parentTaskId: null,
       categories: [],
+      priority: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -1032,6 +1038,7 @@ const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: [],
+      priority: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -1053,6 +1060,7 @@ const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: [],
+      priority: null,
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -1071,6 +1079,7 @@ const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       categories: [],
+      priority: null,
     },
   },
 };
@@ -1142,6 +1151,7 @@ interface ICreateEntityModal {
     assigneeId?: string;
     recurringSchema?: any;
     parentTaskId?: string;
+    priority?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;
@@ -2327,6 +2337,26 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAddButtonIcon />
                 <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
               </CreateEntityLabelAddButton>
+            )}
+          </CreateEntitySelectWrapper>
+        </CreateEntityLabelSelectWrapper>
+
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.priority)}>
+          <CreateEntityLabelWrapper>
+            <CreateEntityLabel>Priority</CreateEntityLabel>
+          </CreateEntityLabelWrapper>
+          <CreateEntitySelectWrapper>
+            {form.values.priority === null ? (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('priority', '');
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            ) : (
+              <TaskPriorityToggleButton value={form.values.priority} setValue={form.setFieldValue} />
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>

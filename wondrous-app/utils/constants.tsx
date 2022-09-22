@@ -1,4 +1,8 @@
 import palette from 'theme/palette';
+import HighIcon from 'components/Icons/HighIcon';
+import LowIcon from 'components/Icons/LowIcon';
+import MediumIcon from 'components/Icons/MediumIcon';
+import UrgentIcon from 'components/Icons/UrgentIcon';
 
 export const spacingUnit = 8;
 
@@ -13,6 +17,37 @@ export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
+
+export const PRIORITIES = [
+  {
+    value: 'p0',
+    label: 'Low',
+    textColor: palette.green820,
+    borderColor: palette.green810,
+    icon: <LowIcon />,
+  },
+  {
+    value: 'p1',
+    label: 'Medium',
+    textColor: palette.blue620,
+    borderColor: palette.blue610,
+    icon: <MediumIcon />,
+  },
+  {
+    value: 'p2',
+    label: 'High',
+    textColor: palette.highlightOrange,
+    borderColor: palette.highlightOrange,
+    icon: <HighIcon />,
+  },
+  {
+    value: 'p3',
+    label: 'Urgent',
+    textColor: palette.purple620,
+    borderColor: palette.purple610,
+    icon: <UrgentIcon />,
+  },
+];
 
 // Task date types
 export const TASK_DATE_OVERDUE = 'overdue';
