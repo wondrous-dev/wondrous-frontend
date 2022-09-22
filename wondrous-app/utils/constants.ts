@@ -706,9 +706,10 @@ export const FEATURED_LIST = [
   },
   {
     username: 'Gitcoin',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1461700151383400450/3Kwlnvl__400x400.png',
+    imageUrl:
+      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F50979198683054094%2F9LcOi-h9HNYw0Q.png%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T010948Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D994baac008c150225a553e785a03d2b8d52a5197869ee51bbb18cb7f3ed93c58c16c3c82fb14fd31257260fb9b9a3f0a9da8e43905fda01f2b408da71c80b85cce4a85d40a6366f4eddc2c6c600016aad8eca3727845ab859fee52c0218b51a2e66230fa6a0fc60149f00e7692312e532839a5dfc4e160ebd328002073a698b34a987020a65dd73d81c2ac61ed778f2705d6a06de39475753abb4242360786733021e953ae514626170260e02d4deb525582a15a5d1920232e4f8fd403c07b69026d55e99f3f204d00f19e7b1745e2cce058331aebafff1e9e304b6bd37fdda69fd03504926d49430c643a05175b8773ac016fac95a115fc11fb511363d7f29b&w=128&q=75',
     bio: "Gitcoin is where the world's leading web3 projects are born, validated & funded.",
-    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1656360691/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1661964290/1500x500',
     name: 'Gitcoin',
   },
   {
@@ -720,7 +721,8 @@ export const FEATURED_LIST = [
   },
   {
     username: 'talentDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1492177780791861253/aK138-gB_400x400.jpg',
+    imageUrl:
+      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F50274039728439308%2FmI1xeJwh6lbqzg.jpeg%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T012216Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D400151c09ca2904cabb7ce3b4c51db344a11d7c6c500ae514b01eafcce420d730e1e36ba3f3dc9d6c0a999bceefbadc102e9739a39346b666740f4f3dc813f810f4afe046ba291dcb4752f94386a7de8757c8a9fc494be8df4c8abcc414f33977fec94cee9d6ba26fb5bc0e739027763a80386c6f1ffca13481901c5d7326bdaeeb6ef2883a1d64d46ffbe90aabf4fbd0d07c96187ccd41ab072f7f35b30d3f0dff30e42f8d20d56a35fb4c61e00b0314ed41349b493a4fd7850f630e02d2ad2d9d29c6b9a6400f99de22c8dacc7d84746831a0a282bbdd7dd65229f1e8932b00aabc885941011ea658d6246a616e4b11858b56c828f15eef851b9d75dd5bf73&w=128&q=75',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1468727203219193859/1651863023/1500x500',
     bio: 'Unlock talent | Decentralize knowledge | #DeSci DAO Building the Journal of Decentralized Work',
     name: 'Talent DAO',
@@ -783,7 +785,8 @@ export const FEATURED_LIST = [
   },
   {
     username: 'Layer2DAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1481858736935215105/AXt1mSp__400x400.jpg',
+    imageUrl:
+      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F56980676447043635%2FzbzfvKSepLRufA.jpeg%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T005133Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D630344abb9aa3728847fecc77a9b6535b3361744e0cd58a320faf7b203d2fd834ec6e8a772079f2d563765352c21d5a509f22ce28ba129b761b44269e84fc9605f65d6f3151aea3577d5cb3dd91b968568bb92aa579e11646b4ddb659637214925cd5a37cd187839fda5e6305870ff7568e3d5b0a4aabc3e3d988bce2ff519d1aadaf97a4e6584c4b94e140fe5fa197f796ba4edeaec4a9b9ad143a7f3d4b89c371d194f9dfe6432350b8341ceae462bac86b0713481e002be906ac1c348597156611dfbc58c3416e77b1878aaf864f7731910ea2247e890115a80cc98ccab23affc1d4745ffc6251575ebfc240b5bd5f783a22c95759c283522c23eee77d635&w=128&q=75',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1480302068602576897/1642437751/1500x500',
     bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
     name: 'Layer2 DAO',
@@ -813,10 +816,17 @@ export const FEATURED_LIST = [
     username: 'Lobby3',
     name: 'Lobby3',
     bio: 'Join our fight to advance economic opportunity and Web3 technology in D.C. 👾',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1501218472973504512/xWitV8PR_400x400.jpg',
+    imageUrl:
+      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F52285666880389143%2FUJ_qE_1gDT_E-g.png%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T012315Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D9b99784a299448d7421c780c9a44b2e1a07a3aaeeb1df430761e9d82eb2976bec54215e0b4d37f034112cf460bcac78f4b2202931f73a5adf11313845b8483099c3578f03519cc6696b2ab676a92621ac796e5d151ec50f3cefbf06a44f5b08f6c867a39f55670af92841b45ac7b0623ae6f39e05ff32c5962b03c44bf553326e68e68ce8bce2c391bf7d3814857e71ba30d58f9c2951617ee704f18a63ffcd00abd840107cd22dede379efcebc38a473719cc3b6de6260bc992394ae51afa5a3e88386a5aae71baf9000be70ac37481464bde5aee66e56dcce8487c404e2265cd3247111ee619b7c45a634949a2f474a3668ebeb7fa6aca109c84ea538ec879&w=128&q=75',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1483865970724589568/1645050021/1500x500',
   },
 ];
+
+export const gridMobileStyles = {
+  width: '100%',
+  maxWidth: '100vw',
+  marginLeft: '0',
+};
 
 export const TABS_LABELS = {
   DAOS: 'daos',
@@ -828,4 +838,31 @@ export enum TOKEN_GATING_CONDITION_TYPE {
   GUILD = 'guild',
   TOKEN_GATE = 'token_gate',
 }
+
 export const GR15DEICategoryName = 'gr15_dei';
+
+export const CATEGORY_TYPES = {
+  UI_UX_DESIGNER: 'ui_ux_designer',
+  SOCIAL_MEDIA: 'social_media',
+  GRAPHIC_DESIGN: 'graphic_design',
+  GROWTH_MARKETING: 'growth_marketing',
+  CONTENT_CREATION: 'content_creation',
+  MEMES: 'memes',
+  NFT: 'nft',
+  GOVERNANCE: 'governance',
+  DEFI: 'defi',
+  ENGINEERING: 'engineering',
+};
+
+export const CATEGORY_LABELS = {
+  [CATEGORY_TYPES.UI_UX_DESIGNER]: '💻 UI/UX Design',
+  [CATEGORY_TYPES.SOCIAL_MEDIA]: '👥 Social Media',
+  [CATEGORY_TYPES.GRAPHIC_DESIGN]: '🖌 Graphic Design',
+  [CATEGORY_TYPES.GROWTH_MARKETING]: '📈 Growth Marketing',
+  [CATEGORY_TYPES.CONTENT_CREATION]: '✍️ Writing',
+  [CATEGORY_TYPES.MEMES]: '💀 Memes',
+  [CATEGORY_TYPES.NFT]: '🖼 NFT',
+  [CATEGORY_TYPES.GOVERNANCE]: '🪐 Governance',
+  [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
+  [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
+};
