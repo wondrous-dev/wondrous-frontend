@@ -24,7 +24,7 @@ import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import Dropdown from 'components/Common/Dropdown';
+import Dropdown from 'components/Common/Dropdown/index';
 import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { MoreOptions } from 'components/Table/styles';

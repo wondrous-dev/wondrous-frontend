@@ -78,6 +78,8 @@ export const blueColors = {
   blue400: '#0D22D7',
   blue500: '#1C9DED',
   blue600: '#2F80ED',
+  blue610: '#4073ff',
+  blue620: '#5986ff',
   blue700: '#1247EF',
   blue800: '#1D1D1B',
 };
@@ -95,6 +97,8 @@ export const greenColors = {
   green710: '#004129',
   green720: '#12413d',
   green800: '#06FFA5',
+  green810: '#1fffae',
+  green820: '#00e491',
 };
 
 export const yellowColors = {
@@ -122,6 +126,7 @@ export const orangeColors = {
   orange90: '#f2c678',
   orange100: '#F2994A',
   orange200: '#FF901F',
+  orange300: '#FF9934',
   orange600: '#E28855',
 };
 
@@ -133,6 +138,8 @@ export const purpleColors = {
   purple400: '#3F0AB0',
   purple500: '#28009F',
   purple600: '#FF2975',
+  purple610: '#b8255f',
+  purple620: '#ff418c',
   purple700: '#8C1EFF',
   purple800: '#8237FF',
 };

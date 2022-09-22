@@ -57,6 +57,7 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
+import TaskPriorityToggleButton from 'components/Common/TaskPriority/TaskPriorityToggleButton';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -1327,6 +1328,27 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.priority)}>
+          <CreateEntityLabelWrapper>
+            <CreateEntityLabel>Priority</CreateEntityLabel>
+          </CreateEntityLabelWrapper>
+          <CreateEntitySelectWrapper>
+            {form.values.priority === null ? (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('priority', '');
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            ) : (
+              <TaskPriorityToggleButton value={form.values.priority} setValue={form.setFieldValue} />
+            )}
+          </CreateEntitySelectWrapper>
+        </CreateEntityLabelSelectWrapper>
+
         {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
           <CreateEntityLabelWrapper>
