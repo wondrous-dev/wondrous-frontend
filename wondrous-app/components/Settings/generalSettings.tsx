@@ -167,7 +167,7 @@ function GeneralSettingsComponent(props) {
             </GeneralSettingsDAODescriptionInputCounter>
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
-        {console.log(orgProfile)}
+
         {!orgProfile?.shared ? (
           <>
             {newProfile?.profilePicture && !logoImage ? (
