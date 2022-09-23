@@ -2,7 +2,7 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { ActionButton } from 'components/Common/Task/styles';
-import { GET_ORG_ROLES } from 'graphql/queries';
+import { GET_ORG_ROLES, GET_AUTO_CLAIMABLE_ROLES, CAN_CLAIM_ORG_ROLE } from 'graphql/queries';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
@@ -44,7 +44,7 @@ const CurrentRoleModal = (props) => {
     orgId,
     notLinkedWalletError,
     linkedWallet,
-    orgRole,
+    currentRoleName,
     handleOpenCurrentRoleModal,
     handleSetClaimedRole,
     handleOpenJoinRequestModal,
@@ -56,22 +56,34 @@ const CurrentRoleModal = (props) => {
   const [checkboxRoles, setCheckboxRoles] = useState(null);
   const [orgRolesWithoutCurrent, setOrgRolesWithoutCurrent] = useState(null);
 
-  const useGetOrgRoles = (org) => {
-    const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
+  const useGetOrgRoles = (orgId) => {
+    // why even use this chook here
+    const [getOrgRoles, { data: allRoles }] = useLazyQuery(GET_ORG_ROLES, {
+      fetchPolicy: 'network-only',
+    });
+    const [getAutoClaimableOrgRoles, { data: autoClaimableRoles }] = useLazyQuery(GET_AUTO_CLAIMABLE_ROLES, {
       fetchPolicy: 'network-only',
     });
     useEffect(() => {
-      if (org) {
+      if (orgId) {
         getOrgRoles({
           variables: {
-            orgId: org,
+            orgId,
+          },
+        });
+        getAutoClaimableOrgRoles({
+          variables: {
+            orgId,
           },
         });
       }
-    }, [getOrgRoles, org]);
-    return data?.getOrgRoles;
+    }, [getOrgRoles, orgId]);
+    console.log(autoClaimableRoles);
+    return { allRoles: allRoles?.getOrgRoles, autoClaimableRoles: autoClaimableRoles?.getAutoClaimableOrgRoles };
   };
-  const orgRoles = useGetOrgRoles(orgId);
+  const { allRoles: orgRoles, autoClaimableRoles } = useGetOrgRoles(orgId);
+  console.log('autoClaimableRoles', autoClaimableRoles);
+  console.log('orgRoles', orgRoles);
 
   const handleClaimClick = async (role) => {
     if (role.__typename === 'OrgRole') {
@@ -89,16 +101,18 @@ const CurrentRoleModal = (props) => {
     }
   };
 
-  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === orgRole) : null;
+  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === currentRoleName) : null;
 
   const rolePermissions = orgRoles?.[roleIndex]?.permissions;
   const currentRoleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
   const currentRoleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
-  const claimableRoleLength = claimableRoles ? claimableRoles?.filter((role) => role.name !== orgRole).length : 0;
+  const claimableRoleLength = claimableRoles
+    ? claimableRoles?.filter((role) => role.name !== currentRoleName).length
+    : 0;
 
   useEffect(() => {
-    const holdOrgs = orgRoles?.filter((role) => role.name !== orgRole);
-    setOrgRolesWithoutCurrent(holdOrgs);
+    const noneCurrentROles = orgRoles?.filter((role) => role.name !== currentRoleName);
+    setOrgRolesWithoutCurrent(noneCurrentROles);
   }, [orgRoles]);
 
   return (
@@ -125,7 +139,7 @@ const CurrentRoleModal = (props) => {
         )}
 
         <RequestModalTitleBar>
-          <RequestModalTitle>Join Wonderverse</RequestModalTitle>
+          <RequestModalTitle>Explore Roles</RequestModalTitle>
 
           <RequestModalCloseIcon
             color="#FFFFFF"
@@ -135,13 +149,13 @@ const CurrentRoleModal = (props) => {
           />
         </RequestModalTitleBar>
         <RequestMiddleContainer>
-          {orgRole ? (
+          {currentRoleName ? (
             <RequestLightBoxContainer>
               <RequestModalRolesSubtitle>Current role</RequestModalRolesSubtitle>
               <RequestModalCheckPillCombo>
                 <RequestModalCheckbox disabled checked />
                 <RequestModalHelperContainer>
-                  <RolePill roleName={orgRole} />
+                  <RolePill roleName={currentRoleName} />
                   <RequestModalHelperDiv />
                 </RequestModalHelperContainer>
               </RequestModalCheckPillCombo>
@@ -212,7 +226,8 @@ const CurrentRoleModal = (props) => {
             ) : null}
             {orgRolesWithoutCurrent
               ?.filter(
-                (role) => claimableRoles?.some((claimRole) => claimRole.name === role?.name) && role?.name !== orgRole
+                (role) =>
+                  claimableRoles?.some((claimRole) => claimRole.name === role?.name) && role?.name !== currentRoleName
               )
               ?.map((role, index) => {
                 const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
@@ -275,7 +290,7 @@ const CurrentRoleModal = (props) => {
                 (role) =>
                   (claimableRoles?.find((claimRole) => claimRole?.name === role?.name) === undefined ||
                     claimableRoles.length === 0) &&
-                  role?.name !== orgRole
+                  role?.name !== currentRoleName
               )
               ?.map((role, index) => {
                 const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
