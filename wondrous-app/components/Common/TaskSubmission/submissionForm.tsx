@@ -14,7 +14,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRef, useState } from 'react';
 import { ReactEditor } from 'slate-react';
 import { transformMediaFormat } from 'utils/helpers';
-import { handleAddFiles } from 'utils/media';
+import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import {
   SubmissionDescriptionEditor,
@@ -84,12 +84,12 @@ const handleInputOnChange = async ({
   setMediaUploads,
   setLoading,
 }) => {
-  const fileToAdd = await handleAddFiles({
-    files: event.target.files,
+  setLoading(true);
+  const fileToAdd = await handleAddFile({
+    event,
     filePrefix: 'tmp/task/new/',
     mediaUploads,
     setMediaUploads: (i) => setMediaUploads(i),
-    setFileUploadLoading: setLoading,
   });
   if (submissionToEdit) {
     attachTaskSubmissionMedia({
@@ -102,6 +102,7 @@ const handleInputOnChange = async ({
       refetchQueries: () => ['getTaskSubmissionsForTask', 'attachTaskSubmissionMedia'],
     });
   }
+  setLoading(false);
 };
 
 const handleRemoveItem =

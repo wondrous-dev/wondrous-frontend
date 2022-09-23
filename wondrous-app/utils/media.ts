@@ -38,40 +38,36 @@ export const getVideoFileType = (result) => {
   return fileType;
 };
 
-const setFileType = (fileType) => {
-  if (fileType in IMAGE_FILE_EXTENSIONS_TYPE_MAPPING) {
-    return 'image';
+export const handleAddFile = async (props) => {
+  const { event, filePrefix, setMediaUploads, mediaUploads, setFileUploadLoading } = props;
+  const file = event.target.files[0];
+  if (file) {
+    if (setFileUploadLoading) {
+      setFileUploadLoading(true);
+    }
+    const fileName = file?.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+    const fileUrl = filePrefix + filename;
+    await uploadMedia({ filename: fileUrl, fileType, file });
+    const fileToAdd = {
+      uploadSlug: fileUrl,
+      name: filename,
+      type: '',
+    };
+    if (fileType in IMAGE_FILE_EXTENSIONS_TYPE_MAPPING) {
+      fileToAdd.type = 'image';
+    } else if (fileType in VIDEO_FILE_EXTENSIONS_TYPE_MAPPING) {
+      fileToAdd.type = 'video';
+    } else {
+      fileToAdd.type = 'file';
+    }
+    setMediaUploads([...mediaUploads, fileToAdd]);
+    if (setFileUploadLoading) {
+      setFileUploadLoading(false);
+    }
+    return fileToAdd;
   }
-  if (fileType in VIDEO_FILE_EXTENSIONS_TYPE_MAPPING) {
-    return 'video';
-  }
-  return 'file';
-};
-
-export const handleAddFiles = async (props) => {
-  const { files, filePrefix, setMediaUploads, mediaUploads, setFileUploadLoading = (i) => i } = props;
-  setFileUploadLoading(true);
-  const arrayFiles: Array<File> = Array.from(files);
-  const newFiles = Promise.all(
-    arrayFiles?.map(async (file) => {
-      // get image preview
-      const { fileType, filename } = getFilenameAndType(file.name);
-      const fileUrl = filePrefix + filename;
-      await uploadMedia({ filename: fileUrl, fileType, file });
-      const fileToAdd = {
-        uploadSlug: fileUrl,
-        name: filename,
-        type: setFileType(fileType),
-      };
-      return fileToAdd;
-    })
-  )
-    .then((values) => {
-      setMediaUploads([...mediaUploads, ...values]);
-      return values;
-    })
-    .finally(() => setFileUploadLoading(false));
-  return newFiles;
 };
 
 export const handleImageFile = ({ file, id }) => {
