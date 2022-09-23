@@ -93,6 +93,7 @@ import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
   CreateEntityAttachment,
+  CreateEntityAttachmentIcon,
   CreateEntityAutocompleteOption,
   CreateEntityAutocompleteOptionTypography,
   CreateEntityAutocompletePopper,
@@ -678,6 +679,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           autoFocus
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
+
         <EditorToolbar ref={setEditorToolbarNode} />
         <EditorContainer
           onClick={() => {
@@ -733,14 +735,65 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   }}
                 />
               ))}
+            <CreateEntityAttachment onClick={() => inputRef.current.click()}>
+              <CreateEntityAttachmentIcon />
+              Add Attachment
+              {fileUploadLoading && <FileLoading />}
+            </CreateEntityAttachment>
           </MediaUploadDiv>
+          <input
+            type="file"
+            hidden
+            ref={inputRef}
+            onChange={async (event) => {
+              const fileToAdd = await handleAddFile({
+                event,
+                filePrefix: 'tmp/task/new/',
+                mediaUploads: form.values.mediaUploads,
+                setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
+                setFileUploadLoading,
+              });
+              if (existingTask) {
+                handleMedia().attach({
+                  variables: {
+                    ...(entityType === ENTITIES_TYPES.PROPOSAL
+                      ? { proposalId: existingTask?.id }
+                      : { taskId: existingTask?.id }),
+                    input: {
+                      mediaUploads: [fileToAdd],
+                    },
+                  },
+                  onCompleted: (data) => {
+                    const task = data?.attachTaskMedia || data?.attachTaskProposalMedia;
+                    form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
+                    setFileUploadLoading(false);
+                  },
+                });
+              }
+            }}
+          />
+          {existingTask && canTurnIntoBounty && (
+            <>
+              <div
+                style={{
+                  flex: 1,
+                }}
+              />
+              <CreateEntityAttachment
+                style={{
+                  marginTop: '8px',
+                  marginLeft: '16px',
+                  alignSelf: 'flex-start',
+                }}
+                onClick={() => {
+                  setTurnTaskToBountyModal(true);
+                }}
+              >
+                Turn into bounty
+              </CreateEntityAttachment>
+            </>
+          )}
         </CreateEntityLabelSelectWrapper>
-        <CreateEntityAttachments
-          form={form}
-          existingTaskId={existingTask?.id}
-          handleMedia={handleMedia}
-          entityType={entityType}
-        />
         <CreateEntityDivider />
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reviewer)}>
           <CreateEntityLabelWrapper>
@@ -847,6 +900,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </Tooltip>
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.assignee)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Assignee</CreateEntityLabel>
@@ -1113,6 +1167,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.reward)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Reward</CreateEntityLabel>
@@ -1183,6 +1238,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.points)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Points</CreateEntityLabel>
@@ -1232,6 +1288,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.milestone)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Milestone</CreateEntityLabel>
@@ -1531,8 +1588,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           style={{
             display: 'flex',
             alignItems: 'center',
-            gap: '20px',
-            maxHeight: '44px',
           }}
         >
           <TaskTemplatePicker
@@ -1559,15 +1614,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               }}
               GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
             />
-          )}
-          {existingTask && canTurnIntoBounty && (
-            <CreateEntityAttachment
-              onClick={() => {
-                setTurnTaskToBountyModal(true);
-              }}
-            >
-              Turn Into Bounty
-            </CreateEntityAttachment>
           )}
         </div>
       </CreateEntityBody>
