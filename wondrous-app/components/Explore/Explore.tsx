@@ -156,10 +156,8 @@ function ExploreComponent() {
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />
         <Wheel />
         <BackgroundTextWrapper>
-          <BackgroundTextHeader>Enter the project wormhole</BackgroundTextHeader>
-          <BackgroundTextSubHeader>
-            Join your next favorite project and earn crypto by contributing to one of our Partners
-          </BackgroundTextSubHeader>
+          <BackgroundTextHeader>Enter the project Enter the project metaverse</BackgroundTextHeader>
+          <BackgroundTextSubHeader>Earn crypto by contributing to your favorite web3 projects</BackgroundTextSubHeader>
         </BackgroundTextWrapper>
       </BackgroundContainer>
       <Box sx={{ display: 'flex', width: '100%', position: 'relative' }}>
