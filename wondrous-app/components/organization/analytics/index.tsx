@@ -18,7 +18,6 @@ import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
-import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
 import { PayoutModal } from './PayoutModal';
 import {
@@ -37,6 +36,18 @@ import {
   ExportCSVButtonText,
 } from './styles';
 import Wrapper from '../wrapper/wrapper';
+
+export const filterOrgUsers = (orgUsers) => {
+  if (!orgUsers) {
+    return [];
+  }
+
+  return orgUsers?.map((orgUser) => ({
+    profilePicture: orgUser?.user?.thumbnailPicture || orgUser?.user?.profilePicture,
+    label: orgUser?.user?.username,
+    value: orgUser?.user?.id,
+  }));
+};
 
 export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime, isPod = false }) => {
   const headers = [
