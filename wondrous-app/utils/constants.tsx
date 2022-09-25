@@ -615,6 +615,7 @@ export const PROPOSAL_VOTE_LABELS = {
 
 export const PAGES_WITH_NO_SIDEBAR = [
   '/',
+  '/forgot-password-sent',
   '/forgot-password',
   '/signup',
   '/signup/email',
@@ -634,7 +635,6 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/submission/[submissionId]',
   '/twitter/callback',
   '/twitter/verify-tweet',
-  '/forgot-password',
   '/reset-password',
   '/onboarding-dao',
   '/new-task',
@@ -741,9 +741,9 @@ export const FEATURED_LIST = [
   },
   {
     username: 'Gitcoin',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1461700151383400450/3Kwlnvl__400x400.png',
+    imageUrl: 'https://d1fdloi71mui9q.cloudfront.net/KHC7f0e5SvS0GinfdwZE_6XUob6JgGP8uW86i',
     bio: "Gitcoin is where the world's leading web3 projects are born, validated & funded.",
-    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1656360691/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1661964290/1500x500',
     name: 'Gitcoin',
   },
   {
@@ -755,7 +755,7 @@ export const FEATURED_LIST = [
   },
   {
     username: 'talentDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1492177780791861253/aK138-gB_400x400.jpg',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1565047080489553921/EQSISitd_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1468727203219193859/1651863023/1500x500',
     bio: 'Unlock talent | Decentralize knowledge | #DeSci DAO Building the Journal of Decentralized Work',
     name: 'Talent DAO',
@@ -818,7 +818,8 @@ export const FEATURED_LIST = [
   },
   {
     username: 'Layer2DAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1481858736935215105/AXt1mSp__400x400.jpg',
+    imageUrl:
+      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F56980676447043635%2FzbzfvKSepLRufA.jpeg%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T005133Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D630344abb9aa3728847fecc77a9b6535b3361744e0cd58a320faf7b203d2fd834ec6e8a772079f2d563765352c21d5a509f22ce28ba129b761b44269e84fc9605f65d6f3151aea3577d5cb3dd91b968568bb92aa579e11646b4ddb659637214925cd5a37cd187839fda5e6305870ff7568e3d5b0a4aabc3e3d988bce2ff519d1aadaf97a4e6584c4b94e140fe5fa197f796ba4edeaec4a9b9ad143a7f3d4b89c371d194f9dfe6432350b8341ceae462bac86b0713481e002be906ac1c348597156611dfbc58c3416e77b1878aaf864f7731910ea2247e890115a80cc98ccab23affc1d4745ffc6251575ebfc240b5bd5f783a22c95759c283522c23eee77d635&w=128&q=75',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1480302068602576897/1642437751/1500x500',
     bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
     name: 'Layer2 DAO',
@@ -848,10 +849,16 @@ export const FEATURED_LIST = [
     username: 'Lobby3',
     name: 'Lobby3',
     bio: 'Join our fight to advance economic opportunity and Web3 technology in D.C. 👾',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1501218472973504512/xWitV8PR_400x400.jpg',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1542579303615021056/yG2LqO3M_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1483865970724589568/1645050021/1500x500',
   },
 ];
+
+export const gridMobileStyles = {
+  width: '100%',
+  maxWidth: '100vw',
+  marginLeft: '0',
+};
 
 export const TABS_LABELS = {
   DAOS: 'daos',
@@ -863,6 +870,7 @@ export enum TOKEN_GATING_CONDITION_TYPE {
   GUILD = 'guild',
   TOKEN_GATE = 'token_gate',
 }
+
 export const GR15DEICategoryName = 'gr15_dei';
 
 export const CATEGORY_TYPES = {

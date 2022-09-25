@@ -111,6 +111,8 @@ export const ProfileInfoInterestsChipWrapper = styled(Box)`
   align-items: center;
   gap: 8px;
   margin-left: 16px;
+  flex-wrap: wrap;
+  max-width: 80%;
 `;
 
 export const ProfileInfoInterestsChip = styled(Chip)`

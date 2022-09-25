@@ -766,6 +766,12 @@ export const TaskTabText = styled(Typography)`
   }
 `;
 
+export const DiscussionCount = styled.span`
+  background: ${({ isActive }) => (isActive ? '#282828' : '#282828')};
+  padding: 2px 8px;
+  border-radius: 200px;
+`;
+
 export const TaskSectionContent = styled.div`
   padding: 20px 24px;
   background-color: #141414;
