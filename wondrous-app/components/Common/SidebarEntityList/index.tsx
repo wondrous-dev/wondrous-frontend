@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import Dao2DaoIcon from 'components/Icons/Dao2Dao';
+import { podIcon } from 'stories/Icons/SVGRIconsList';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -30,6 +31,7 @@ const usePerTypeTaskCountForBoard = () => {
     },
     skip: !(podBoard && board.podId),
   });
+
   return orgData?.getPerTypeTaskCountForOrgBoard || podData?.getPerTypeTaskCountForPodBoard || {};
 };
 
@@ -94,11 +96,12 @@ const useSidebarData = () => {
             },
           },
 
-          // {
-          //   text: 'Pods',
-          //   Icon: PodIcon,
-          //   link: null, // link: not sure yet
-          // },
+          {
+            text: 'Pods',
+            Icon: podIcon,
+            // count: unknown
+            link: null,
+          },
         ],
       },
       {
