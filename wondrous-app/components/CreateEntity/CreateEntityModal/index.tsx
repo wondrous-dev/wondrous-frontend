@@ -262,7 +262,7 @@ const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
     url: githubPullRequest.url,
   }));
 };
-const filterPaymentMethods = (paymentMethods) => {
+export const filterPaymentMethods = (paymentMethods) => {
   if (!paymentMethods) return [];
   return paymentMethods.map((paymentMethod) => ({
     ...paymentMethod,

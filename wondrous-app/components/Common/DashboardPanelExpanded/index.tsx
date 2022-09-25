@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import React from 'react';
 import { ViewType } from 'types/common';
 import { delQuery } from 'utils';
-import { AndroidSwitch } from 'components/CreateEntity/CreatePodModal';
+import AndroidSwitch from 'components/Common/AndroidSwitch';
 import DashboardPanelStatusCard from '../DashboardPanelExpandedStatusCard';
 import {
   CircularProgressWrapper,
