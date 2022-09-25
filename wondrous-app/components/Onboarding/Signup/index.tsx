@@ -30,7 +30,7 @@ const state = JSON.stringify({
 });
 const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
-const checkPasswordStrength = (password) => {
+export const checkPasswordStrength = (password) => {
   if (!password) {
     return false;
   }
@@ -39,6 +39,7 @@ const checkPasswordStrength = (password) => {
   }
   return true;
 };
+
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
