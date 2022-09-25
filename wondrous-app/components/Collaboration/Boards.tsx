@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { ColumnsContext } from 'utils/contexts';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { BOARDS_MAP, Props, getFilterSchema } from 'components/organization/boards/boards';
@@ -6,13 +6,11 @@ import AddTeamMembers from 'components/CreateCollaborationModal/Steps/AddTeamMem
 import { Modal as ModalComponent } from 'components/Modal';
 import { useGlobalContext, useSteps } from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
-import { useLazyQuery, useMutation } from '@apollo/client';
-import { GET_ORG_USERS } from 'graphql/queries';
+import { useMutation } from '@apollo/client';
 import { BATCH_ADD_MEMBERS } from 'graphql/mutations';
 import AddMembersConfirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { useRouter } from 'next/router';
 import { insertUrlParam } from 'utils/index';
-import { LIMIT } from 'services/board';
 import SharedOrgHeader from './SharedOrgHeader';
 
 function CollabBoard(props: Props) {

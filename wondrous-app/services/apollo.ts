@@ -116,12 +116,12 @@ const cache = new InMemoryCache({
         },
         getNotifications: offsetLimitPagination(),
         getUserFeed: offsetLimitPagination(),
-
+        searchOrgUsers: offsetLimitPagination(['orgId', 'searchString']),
         getUserTaskBoardTasks: {
           keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
           merge: offsetLimitPaginationInput,
         },
-        getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds', 'limit', 'offset']),
+        getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds', 'limit']),
       },
     },
   },

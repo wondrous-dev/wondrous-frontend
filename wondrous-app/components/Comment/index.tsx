@@ -1,13 +1,12 @@
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
-import { useEffect, useState, useRef } from 'react';
+import { useMutation, useLazyQuery } from '@apollo/client';
+import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
-import { GET_ORG_USERS } from 'graphql/queries/org';
+import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import { CREATE_TASK_COMMENT, DELETE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { PERMISSIONS, TASK_STATUS_REQUESTED, GRAPHQL_ERRORS } from 'utils/constants';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard, cutString } from 'utils/helpers';
 import { TextInputContext } from 'utils/contexts';
-import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import { GET_COMMENTS_FOR_TASK, GET_TASK_SUBMISSION_COMMENTS } from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import { formatDistance } from 'date-fns';
@@ -18,6 +17,10 @@ import { updateTask } from 'utils/board';
 import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from 'components/Common/Task/styles';
+import { LIMIT } from 'services/board';
+import { ErrorText } from 'components/Common';
+import { useMe } from 'components/Auth/withAuth';
+import { TextInput } from 'components/TextInput';
 
 import {
   AddCommentButton,
@@ -37,9 +40,6 @@ import {
   DiscordDiscussionButtonWrapper,
   DiscordThreadCreateButton,
 } from './styles';
-import { useMe } from '../Auth/withAuth';
-import { TextInput } from '../TextInput';
-import { ErrorText } from '../Common';
 
 export function CommentBox(props) {
   const user = useMe();
@@ -51,12 +51,7 @@ export function CommentBox(props) {
   const boardColumns = useColumns();
   const [comment, setComment] = useState(existingContent || '');
   const [emptyCommentError, setEmptyCommentError] = useState(null);
-  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
-    variables: {
-      orgId,
-      limit: 1000, // TODO: fix autocomplete
-    },
-  });
+  const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
 
   const [createTaskComment, { data: taskCommentData }] = useMutation(CREATE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
@@ -123,25 +118,29 @@ export function CommentBox(props) {
 
   if (!user) return null;
 
+  const handleUserMentionChange = (query) =>
+    searchOrgUsers({
+      variables: {
+        orgId,
+        searchString: query,
+      },
+    }).then(({ data }) => data?.searchOrgUsers?.map((user) => ({ ...user, display: user.username, id: user.id })));
+
+  const handleChange = (e) => {
+    setEmptyCommentError(null);
+    setComment(e.target.value);
+  };
   return (
     <AddCommentContainer>
       <TextInputDiv>
         <TextInputContext.Provider
           value={{
             content: comment,
-            onChange: (e) => {
-              setEmptyCommentError(null);
-              setComment(e.target.value);
-            },
-            list: filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers),
+            onChange: handleChange,
+            onMentionChange: handleUserMentionChange,
           }}
         >
-          <TextInput
-            placeholder="Write a comment"
-            autoFocus
-            // rows={5}
-            // maxRows={5}
-          />
+          <TextInput placeholder="Write a comment" autoFocus />
         </TextInputContext.Provider>
       </TextInputDiv>
       {emptyCommentError && <ErrorText>Empty Comment</ErrorText>}

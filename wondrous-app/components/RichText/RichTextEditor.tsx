@@ -30,6 +30,7 @@ interface Props {
   editorContainerNode: HTMLElement;
 
   placeholder?: React.ReactNode;
+  onMentionChange: (query: string) => Promise<any>;
 }
 
 const renderLeaf = (props) => <Leaf {...props} />;
@@ -67,8 +68,9 @@ const RichTextEditor: React.FC<Props> = ({
   editorContainerNode,
   onChange,
   onClick,
+  onMentionChange,
 }) => {
-  const mentions = useMentions({ editor, mentionables });
+  const mentions = useMentions({ editor, mentionables, onMentionChange });
 
   return (
     <Slate

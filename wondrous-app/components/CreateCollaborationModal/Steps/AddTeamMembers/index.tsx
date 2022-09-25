@@ -355,6 +355,3 @@ const AddTeamMembers = ({
 };
 
 export default AddTeamMembers;
-function setInviteLink(arg0: string) {
-  throw new Error('Function not implemented.');
-}
