@@ -33,7 +33,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import TaskPriorityChip from 'components/Common/TaskPriority/TaskPriorityChip';
+import TaskPriorityChip from 'components/Common/TaskPriority';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -344,7 +344,7 @@ export function TaskCard({
             </a>
           </TaskTitle>
 
-          {task?.priority && (
+          {task?.priority ? (
             <Box
               sx={{
                 margin: '14px 0',
@@ -352,7 +352,7 @@ export function TaskCard({
             >
               <TaskPriorityChip value={task?.priority} />
             </Box>
-          )}
+          ) : null}
 
           {isBounty && (
             <TaskBountyOverview

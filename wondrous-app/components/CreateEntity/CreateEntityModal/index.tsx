@@ -113,7 +113,7 @@ import {
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
-import TaskPriorityToggleButton from 'components/Common/TaskPriority/TaskPriorityToggleButton';
+import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,

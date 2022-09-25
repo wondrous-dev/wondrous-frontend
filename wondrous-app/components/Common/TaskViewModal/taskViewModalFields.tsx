@@ -14,7 +14,7 @@ import Tooltip from 'components/Tooltip';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { useState } from 'react';
-import TaskPriorityChip from 'components/Common/TaskPriority/TaskPriorityChip';
+import TaskPriorityChip from 'components/Common/TaskPriority';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,

@@ -2,7 +2,7 @@ import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 import { Box } from '@mui/material';
 
-import TaskPriorityToggleButton from 'components/Common/TaskPriority/TaskPriorityToggleButton';
+import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import { Formik } from 'formik';
 
 export default {
