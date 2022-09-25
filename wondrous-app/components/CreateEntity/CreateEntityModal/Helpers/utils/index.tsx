@@ -44,17 +44,13 @@ export const formValidationSchema = Yup.object().shape({
     )
     .optional()
     .nullable(),
-<<<<<<< HEAD
   milestoneId: Yup.string()
     .nullable()
     .test(
       'emptyCheck',
       'Please enter a valid Milestone',
       (milestoneId) => milestoneId !== '' && milestoneId !== undefined
-    ),
-=======
-  milestoneId: Yup.string().nullable(),
->>>>>>> fcd12c3a (feat - reorg, switch from getOrgUsers to searchOrgUsers (#1044))
+    )
 });
 
 export const privacyOptions = {
