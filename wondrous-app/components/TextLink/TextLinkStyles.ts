@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 
 export const StyledLink = styled.a`

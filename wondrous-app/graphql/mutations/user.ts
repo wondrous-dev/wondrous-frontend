@@ -109,3 +109,22 @@ export const USER_DISCORD_DISCONNECT = gql`
     }
   }
 `;
+
+export const REQUEST_PASSWORD_RESET = gql`
+  mutation requestPasswordReset($email: String!) {
+    requestPasswordReset(email: $email) {
+      success
+    }
+  }
+`;
+
+export const RESET_PASSWORD = gql`
+  mutation resetPassword($input: PasswordResetInput!) {
+    resetPassword(input: $input) {
+      user {
+        id
+      }
+      token
+    }
+  }
+`;

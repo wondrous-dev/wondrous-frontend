@@ -5,7 +5,7 @@ import { useIsMobile } from 'utils/hooks';
 import { LineWithText } from 'components/Common/lines';
 import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
-import { PaddedParagraph } from 'components/Common/text';
+import { PaddedParagraph, StyledLink } from 'components/Common/text';
 import { LoginError } from 'components/Pages/login';
 import palette from 'theme/palette';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
@@ -23,6 +23,7 @@ import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/
 import { Connectors, MainWrapper } from 'components/Onboarding/styles';
 import { Button } from 'components/Button';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
+import Link from 'next/link';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({
@@ -144,7 +145,7 @@ function Login({ csrfToken }) {
         <div style={{ width: '100%' }}>
           {!notSupportedChain && errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
           {notSupportedChain && <LoginError>Unsupported network, changed to mainnet or a supported network</LoginError>}
-          <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
+          <Form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Field
               type="email"
@@ -166,6 +167,9 @@ function Login({ csrfToken }) {
               required
               rightIcon
             />
+            <StyledLink href="/forgot-password" style={{ marginTop: '2px' }}>
+              Forgot password
+            </StyledLink>
             <Button marginTop="37px" height={50} fullWidth data-cy="button-login">
               Log me in
             </Button>

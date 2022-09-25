@@ -14,11 +14,11 @@ const ListBox = forwardRef((props: any, ref: any) => {
   }, [hasMore, inView]);
 
   useImperativeHandle(ref, () => innerRef.current);
-
   return (
-    <ListboxWrapper {...rest} ref={innerRef} role="listbox">
+    // eslint-disable-next-line jsx-a11y/aria-role
+    <ListboxWrapper {...rest} ref={innerRef} role="list-box">
       {children}
-      <LoadMore ref={inViewRef} style={{ height: '2px' }} />
+      <LoadMore ref={inViewRef} style={{ height: '2px', display: 'block' }} />
     </ListboxWrapper>
   );
 });

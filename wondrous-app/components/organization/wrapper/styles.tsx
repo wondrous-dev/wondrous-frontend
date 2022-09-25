@@ -1221,5 +1221,7 @@ export const InviteButton = styled(ButtonBase)`
     height: 36px;
     justify-content: center;
     min-width: 110px;
+    padding: 8px 24px;
+    width: max-content;
   }
 `;

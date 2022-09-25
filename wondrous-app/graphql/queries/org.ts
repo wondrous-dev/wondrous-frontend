@@ -197,8 +197,8 @@ export const GET_ORG_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $searchString: String!) {
-    searchOrgUsers(orgId: $orgId, searchString: $searchString) {
+  query searchOrgUsers($orgId: ID!, $searchString: String!, $limit: Int, $offset: Int) {
+    searchOrgUsers(orgId: $orgId, searchString: $searchString, limit: $limit, offset: $offset) {
       id
       username
       profilePicture
