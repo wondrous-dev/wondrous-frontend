@@ -156,7 +156,7 @@ function ExploreComponent() {
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />
         <Wheel />
         <BackgroundTextWrapper>
-          <BackgroundTextHeader>Enter the project Enter the project metaverse</BackgroundTextHeader>
+          <BackgroundTextHeader>Enter the project metaverse</BackgroundTextHeader>
           <BackgroundTextSubHeader>Earn crypto by contributing to your favorite web3 projects</BackgroundTextSubHeader>
         </BackgroundTextWrapper>
       </BackgroundContainer>
