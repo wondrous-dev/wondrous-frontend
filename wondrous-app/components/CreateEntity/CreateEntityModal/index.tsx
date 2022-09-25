@@ -1327,7 +1327,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
+        {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Category</CreateEntityLabel>
@@ -1659,7 +1659,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
                   {existingTask ? 'Save changes' : `Create ${entityType}`}
                 </CreateEntityCreateTaskButton>
-                {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
+                {!isEmpty(form.errors) && <CreateEntityError>Please check your input fields</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>
             </>
           )}
