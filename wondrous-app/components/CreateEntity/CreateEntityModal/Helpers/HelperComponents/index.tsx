@@ -106,5 +106,16 @@ export const CreateEntityPaymentMethodItem = ({ icon, chain, symbol }) => (
       {symbol}
       <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
     </CreateEntityPaymentMethodLabel>
+    {/* {deactivatedAt && (
+      // since there's less space either show icon if exist or show symbol
+      <>
+        {icon ? (
+          <CreateEntityPaymentMethodOptionIcon>{icon}</CreateEntityPaymentMethodOptionIcon>
+        ) : (
+          <CreateEntityPaymentMethodLabel> {symbol} </CreateEntityPaymentMethodLabel>
+        )}
+        <CreateEntityPaymentMethodLabel>Deactivated</CreateEntityPaymentMethodLabel>
+      </>
+    )} */}
   </>
 );
