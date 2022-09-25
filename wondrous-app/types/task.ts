@@ -2,6 +2,7 @@ import { User } from 'types/User';
 
 export type TaskFilter = {
   statuses?: any[];
+  priorities?: string[],
   podIds?: any[];
   labelId?: string;
   date?: string;

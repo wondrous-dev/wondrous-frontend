@@ -1,10 +1,10 @@
 import React from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
 
-import TaskPriorityChip from 'components/Common/TaskPriority/TaskPriorityChip';
+import TaskPriorityChip from 'components/Common/TaskPriority';
 
 export default {
-  title: 'Data Display/PriorityChip',
+  title: 'Data Display/TaskPriority',
   component: TaskPriorityChip,
 } as ComponentMeta<typeof TaskPriorityChip>;
 

@@ -33,7 +33,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import TaskPriorityChip from 'components/Common/TaskPriority/TaskPriorityChip';
+import TaskPriority from 'components/Common/TaskPriority';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -350,7 +350,7 @@ export function TaskCard({
                 margin: '14px 0',
               }}
             >
-              <TaskPriorityChip value={task?.priority} />
+              <TaskPriority value={task?.priority} />
             </Box>
           )}
 

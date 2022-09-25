@@ -46,11 +46,6 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
 import PriorityIcon from 'components/Icons/PriorityIcon';
 import { Box } from '@mui/material';
-import UrgentIcon from 'components/Icons/UrgentIcon';
-import HighIcon from 'components/Icons/HighIcon';
-import MediumIcon from 'components/Icons/MediumIcon';
-import LowIcon from 'components/Icons/LowIcon';
-import { HighPriorityStyle, LowPriorityStyle, MediumPriorityStyle, UrgentPriorityStyle } from 'services/styles';
 
 const generateTodoColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -449,13 +444,12 @@ export const DEFAULT_ENTITY_STATUS_FILTER = {
 };
 
 export const PRIORITY_FILTERS = {
-  name: 'priority',
+  name: 'priorities',
   label: 'Priority',
   icon: ({ style, ...rest }) => <PriorityIcon {...rest} />,
   multiChoice: true,
   items: PRIORITIES.map((priority) => ({
     id: priority.value,
-    // TODO: DO I need color here?
     color: priority.textColor,
     name: <Box sx={{ color: priority.textColor, fontWeight: 500 }}>{priority.label}</Box>,
     icon: priority.icon,

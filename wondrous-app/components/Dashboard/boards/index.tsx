@@ -84,6 +84,7 @@ const useGetUserTaskBoardTasks = ({
         filters?.statuses?.length > 0
           ? filters?.statuses?.filter((status) => TASKS_DEFAULT_STATUSES.includes(status))
           : TASKS_DEFAULT_STATUSES;
+
       const taskBoardStatusesIsNotEmpty = taskBoardStatuses.length > 0;
       getUserTaskBoardTasks({
         variables: {
@@ -93,6 +94,7 @@ const useGetUserTaskBoardTasks = ({
           limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
           offset: 0,
           orgId: filters?.orgId,
+          priorities: filters?.priorities,
           date: filters?.date,
           ...(filters?.privacyLevel === PRIVACY_LEVEL.public && {
             onlyPublic: true,
@@ -146,6 +148,7 @@ const BoardsPage = (props) => {
   const [filters, setFilters] = useState<TaskFilter>({
     podIds: [],
     statuses: [],
+    priorities: [],
     labelId: null,
     date: null,
     privacyLevel: null,
@@ -294,7 +297,7 @@ const BoardsPage = (props) => {
     }));
   }
 
-  const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], date: null, orgId: null }) => {
+  const handleFilterChange = (filtersToApply = { statuses: [], podIds: [], priorities: [], date: null, orgId: null }) => {
     setFilters(filtersToApply);
     if (search) {
       const taskStatuses = filtersToApply.statuses?.filter((status) => TASK_STATUSES.includes(status));

@@ -38,6 +38,7 @@ import {
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
   GR15DEICategoryName,
+  PRIORITIES,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -57,7 +58,7 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
-import TaskPriorityToggleButton from 'components/Common/TaskPriority/TaskPriorityToggleButton';
+import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -227,6 +228,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const editor = useEditor();
 
   const initialPodId = !existingTask ? board?.podId || routerPodId : null;
+
   const form: any = useFormik({
     initialValues: initialValues({ entityType, existingTask, initialPodId }),
     validateOnChange: false,
@@ -369,6 +371,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
+    form.setFieldValue('priority', existingTask?.priority || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
     form.setFieldValue(
       'labelIds',
@@ -1337,7 +1340,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.priority === null ? (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('priority', '');
+                  form.setFieldValue('priority', PRIORITIES[1].value);
                 }}
               >
                 <CreateEntityAddButtonIcon />
