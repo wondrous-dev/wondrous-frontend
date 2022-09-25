@@ -1,7 +1,6 @@
 import { CreateEntity } from 'components/CreateEntity';
 import { useEffect, useRef, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useLocation } from 'utils/useLocation';
 import {
   MilestoneSearchAutocomplete,
   MilestoneSearchAutocompletePopper,

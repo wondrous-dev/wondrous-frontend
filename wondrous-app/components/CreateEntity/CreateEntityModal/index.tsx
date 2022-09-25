@@ -113,6 +113,7 @@ import {
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
+import { StyledLink } from 'components/Common/text';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
@@ -262,7 +263,8 @@ const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
     url: githubPullRequest.url,
   }));
 };
-const filterPaymentMethods = (paymentMethods) => {
+
+export const filterPaymentMethods = (paymentMethods) => {
   if (!paymentMethods) return [];
   return paymentMethods.map((paymentMethod) => ({
     ...paymentMethod,
@@ -529,6 +531,7 @@ const useGetPaymentMethods = (orgId) => {
       getPaymentMethods({
         variables: {
           orgId,
+          includeDeactivated: true,
         },
       });
     }
@@ -1309,6 +1312,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       podId,
     });
     form.setErrors({});
+  };
+
+  const handlePaymentMethodRedirect = () => {
+    handleClose();
+    router.push(`/organization/settings/${form.values.orgId}/payment-method`);
   };
 
   const availablePullRequests = useGetPodPullRequests(form.values.podId);
@@ -2181,7 +2189,26 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityLabel>Reward</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            {form.values.rewards?.length > 0 && (
+            {form.values.rewards?.length > 0 &&
+              paymentMethods?.length === 0 &&
+              form.values?.rewards?.[0]?.paymentMethodId && (
+                // this is the case where in edit mode, reward exist but the associated payment method is deactivated
+                // TODO really we should show the deactivated payment method and mark it as deactivated
+                <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+                  {' '}
+                  Selected payment method is currently deactivated
+                </StyledLink>
+              )}
+            {form.values.rewards?.length > 0 &&
+              paymentMethods?.length === 0 &&
+              !form.values?.rewards?.[0]?.paymentMethodId && (
+                // this is the case when no reward is currently attached and no payment method was created
+                <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+                  {' '}
+                  Set up payment method
+                </StyledLink>
+              )}
+            {form.values.rewards?.length > 0 && paymentMethods?.length > 0 && (
               <CreateEntityWrapper>
                 <CreateEntityPaymentMethodSelect
                   name="rewards-payment-method"
