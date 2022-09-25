@@ -6,7 +6,8 @@ import DialogContent from '@mui/material/DialogContent';
 import IconButton from '@mui/material/IconButton';
 
 import CloseModalIcon from 'components/Icons/closeModal';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { ErrorText } from 'components/Common';
 import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import styles, { CategoryHeader, CategoryRow, InterestButton, StyledDialogContent } from './styles';
 
@@ -159,8 +160,9 @@ export const getInterestDisplay = (interest) => {
     }
   }
 };
-export function UserInterestModal({ open, onClose, createUserInterest }) {
+export function UserInterestModal({ open, onClose, createUserInterest, existingInterests }) {
   const [interests, setInterests] = useState({});
+  const [interestSelectError, setInterestSelectError] = useState(null);
   const saveUnsaveInterest = (interest) => {
     if (interest in interests) {
       delete interests[interest];
@@ -172,19 +174,40 @@ export function UserInterestModal({ open, onClose, createUserInterest }) {
       setInterests(newObj);
     }
   };
+
+  useEffect(() => {
+    if (existingInterests && existingInterests.length > 0) {
+      const newObj = {};
+      for (const existingInterest of existingInterests) {
+        newObj[existingInterest] = true;
+      }
+      setInterests(newObj);
+    }
+  }, [existingInterests, open]);
+
+  const handleClose = () => {
+    setInterests({});
+    onClose();
+  };
+
   const handlSaveUserInterestClick = () => {
+    if (interests && Object.keys(interests)?.length > 8) {
+      setInterestSelectError('Select up to 8 interests');
+      return;
+    }
     createUserInterest({
       variables: {
         interests: Object.keys(interests),
       },
     }).then(() => {
-      onClose();
+      handleClose();
     });
   };
+
   return (
     <Dialog
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       fullWidth
       maxWidth="md"
       PaperProps={{
@@ -235,7 +258,7 @@ export function UserInterestModal({ open, onClose, createUserInterest }) {
                 background: interest.value in interests ? '#7427FF' : '#232323',
               }}
               onClick={() => saveUnsaveInterest(interest.value)}
-              key={interest}
+              key={interest.value}
             >
               {interest.display}
             </InterestButton>
@@ -249,7 +272,7 @@ export function UserInterestModal({ open, onClose, createUserInterest }) {
                 background: interest.value in interests ? '#7427FF' : '#232323',
               }}
               onClick={() => saveUnsaveInterest(interest.value)}
-              key={interest}
+              key={interest.value}
             >
               {interest.display}
             </InterestButton>
@@ -263,7 +286,7 @@ export function UserInterestModal({ open, onClose, createUserInterest }) {
                 background: interest.value in interests ? '#7427FF' : '#232323',
               }}
               onClick={() => saveUnsaveInterest(interest.value)}
-              key={interest}
+              key={interest.value}
             >
               {interest.display}
             </InterestButton>
@@ -277,7 +300,7 @@ export function UserInterestModal({ open, onClose, createUserInterest }) {
                 background: interest.value in interests ? '#7427FF' : '#232323',
               }}
               onClick={() => saveUnsaveInterest(interest.value)}
-              key={interest}
+              key={interest.value}
             >
               {interest.display}
             </InterestButton>
@@ -285,6 +308,8 @@ export function UserInterestModal({ open, onClose, createUserInterest }) {
         </CategoryRow>
       </StyledDialogContent>
       <DialogActions>
+        {interestSelectError && <ErrorText>{interestSelectError}</ErrorText>}
+
         <CreateFormCancelButton>Cancel</CreateFormCancelButton>
         <CreateFormPreviewButton onClick={handlSaveUserInterestClick}>Save</CreateFormPreviewButton>
       </DialogActions>
