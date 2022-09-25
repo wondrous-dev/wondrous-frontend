@@ -13,7 +13,6 @@ import { ENTITIES_TYPES, GRAPHQL_ERRORS, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL
 import { TextInputContext } from 'utils/contexts';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { TextInput } from '../TextInput';
 
@@ -49,9 +48,6 @@ import {
   CreateFormMainSelects,
   CreateFormPreviewButton,
   CreateFormBaseModalHeaderWrapper,
-  EditorContainer,
-  EditorPlaceholder,
-  EditorToolbar,
   TextInputDiv,
 } from './styles';
 
@@ -193,9 +189,9 @@ function CreatePodModal(props) {
 
   const [createPod, { loading: createPodLoading, error: createPodError }] = useMutation(CREATE_POD, {
     onCompleted: (data) => {
-      const pod = data?.createPod;
+      const createdPod = data?.createPod;
       handleClose();
-      router.push(`/pod/${pod?.id}/boards`, undefined, {
+      router.push(`/pod/${createdPod?.id}/boards`, undefined, {
         shallow: true,
       });
     },

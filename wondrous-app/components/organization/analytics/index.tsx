@@ -106,6 +106,7 @@ export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime
   document.body.appendChild(link); // Required for FF
   link.click();
 };
+
 export const UserRowPictureStyles = {
   width: '30px',
   height: '30px',
@@ -150,6 +151,18 @@ export const calculateCount = (tasks) => {
     taskCount,
     bountyCount,
   };
+};
+
+export const filterOrgUsers = (orgUsers) => {
+  if (!orgUsers) {
+    return [];
+  }
+
+  return orgUsers.map((orgUser) => ({
+    profilePicture: orgUser?.user?.thumbnailPicture || orgUser?.user?.profilePicture,
+    label: orgUser?.user?.username,
+    value: orgUser?.user?.id,
+  }));
 };
 
 function UserRow({ contributorTask }) {
