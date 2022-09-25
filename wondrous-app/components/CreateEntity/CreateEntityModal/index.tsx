@@ -938,9 +938,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                           value: assignee?.label,
                         }}
                         onChange={(e) => {
-                          console.log(params);
                           params.inputProps.onChange(e);
-                          search({ searchString: e.target.value });
+                          search(e.target.value);
                         }}
                         autoFocus={!form.values.assigneeId}
                         ref={params.InputProps.ref}
