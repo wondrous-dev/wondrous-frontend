@@ -580,6 +580,7 @@ export const PROPOSAL_VOTE_LABELS = {
 
 export const PAGES_WITH_NO_SIDEBAR = [
   '/',
+  '/forgot-password-sent',
   '/forgot-password',
   '/signup',
   '/signup/email',
@@ -599,7 +600,6 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/submission/[submissionId]',
   '/twitter/callback',
   '/twitter/verify-tweet',
-  '/forgot-password',
   '/reset-password',
   '/onboarding-dao',
   '/new-task',
