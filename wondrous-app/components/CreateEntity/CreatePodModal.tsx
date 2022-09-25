@@ -12,6 +12,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, GRAPHQL_ERRORS, MEDIA_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
+import { LIMIT } from 'services/board';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { RichTextEditor, useEditor, countCharacters, extractMentions, plainTextToRichText } from 'components/RichText';
@@ -116,7 +117,7 @@ export const filterOrgUsers = (orgUsers) => {
     return [];
   }
 
-  return orgUsers.map((orgUser) => ({
+  return orgUsers?.map((orgUser) => ({
     profilePicture: orgUser?.user?.thumbnailPicture || orgUser?.user?.profilePicture,
     label: orgUser?.user?.username,
     value: orgUser?.user?.id,
