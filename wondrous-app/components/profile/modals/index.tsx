@@ -1,4 +1,4 @@
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { CircularProgress } from '@mui/material';
 import { GET_ORG_PODS, GET_ORG_USERS } from 'graphql/queries/org';
@@ -13,6 +13,9 @@ import { cutString } from 'utils/helpers';
 import { RichTextViewer } from 'components/RichText';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { MODAL_TABS_MAP } from 'utils/constants';
+import { LIMIT } from 'services/board';
+import { LoadMore } from 'components/SearchTasks/styles';
+import { useInView } from 'react-intersection-observer';
 import {
   ActivityIndicatorContainer,
   CloseIconContainer,
@@ -88,9 +91,8 @@ const UserItem = forwardRef((props: any, ref) => {
 export function MoreInfoModal(props) {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
   const [displayUsers, setDisplayUsers] = useState(showUsers);
-  const [listLoading, setListLoading] = useState(true);
   const [displayPods, setDisplayPods] = useState(showPods);
-  const [userList, setUserList] = useState([]);
+  const [hasMoreUsers, setHasMoreUsers] = useState(false);
   const [podList, setPodList] = useState([]);
   const [searchedUserList, setSearchedUserList] = useState([]);
   const [searchedPodList, setSearchedPodList] = useState([]);
@@ -106,26 +108,64 @@ export function MoreInfoModal(props) {
   const [podVirtualPaginationCount, setPodVirtualPaginationCount] = useState(5);
   const shouldMonitorUsersListRef = useRef(true);
   const shouldMonitorPodsListRef = useRef(true);
+  const [loadMoreRef, inView] = useInView({});
 
-  const [getOrgUsers] = useLazyQuery(GET_ORG_USERS, {
-    onCompleted: (data) => {
-      const userData = data.getOrgUsers;
-      const filteredData = userData?.map((userRole) => userRole.user);
-      setUserList(filteredData || []);
-      setListLoading(false);
-    },
-    fetchPolicy: 'cache-and-network',
-  });
+  const handleHasMore = (userData) => setHasMoreUsers(userData?.length === LIMIT);
 
-  const [getPodUsers] = useLazyQuery(GET_POD_USERS, {
+  const [getOrgUsers, { previousData, fetchMore, data: orgUsers, loading: orgUsersLoading }] = useLazyQuery(
+    GET_ORG_USERS,
+    {
+      onCompleted: (data) => {
+        const userData = data.getOrgUsers;
+        if (!previousData) {
+          handleHasMore(userData);
+        }
+      },
+      fetchPolicy: 'cache-and-network',
+    }
+  );
+
+  const [
+    getPodUsers,
+    { previousData: previousPodUsersData, fetchMore: fetchMorePodUsers, data: podUsers, loading: podUsersLoading },
+  ] = useLazyQuery(GET_POD_USERS, {
     onCompleted: (data) => {
       const userData = data.getPodUsers;
-      const filteredData = userData?.map((userRole) => userRole.user);
-      setUserList(filteredData || []);
-      setListLoading(false);
+      if (!previousData) {
+        handleHasMore(userData);
+      }
     },
     fetchPolicy: 'cache-and-network',
   });
+
+  const listLoading = orgUsersLoading || podUsersLoading;
+
+  const userList = useMemo(() => {
+    const userData = orgUsers?.getOrgUsers || podUsers?.getPodUsers;
+    return userData?.map((userRole) => userRole.user);
+  }, [orgUsers, podUsers]);
+
+  const handleFetchMoreUsers = () => {
+    if (displayUsers) {
+      if (podId) {
+        fetchMorePodUsers({
+          variables: {
+            offset: userList.length,
+          },
+        }).then(({ data }) => handleHasMore(data?.getPodUsers));
+      } else {
+        fetchMore({
+          variables: {
+            offset: userList.length,
+          },
+        }).then(({ data }) => handleHasMore(data?.getOrgUsers));
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (hasMoreUsers && inView && userList.length) handleFetchMoreUsers();
+  }, [hasMoreUsers, inView, previousData]);
 
   const pods = orgPodData?.getOrgPods;
 
@@ -133,16 +173,29 @@ export function MoreInfoModal(props) {
   const SEARCH_TYPE_POD = 2;
 
   const searchUserOrPod = (searchQuery, searchType = SEARCH_TYPE_USER) => {
+    if (searchType === SEARCH_TYPE_USER) {
+      const searchFunction = podId ? getPodUsers : getOrgUsers;
+      return searchFunction({
+        variables: {
+          searchString: searchQuery,
+          offset: 0,
+          ...(podId ? { podId } : { orgId }),
+          limit: LIMIT,
+        },
+      }).then(({ data }) => {
+        const userData = data?.getOrgUsers || data?.getPodUsers;
+        return handleHasMore(userData);
+      });
+    }
     const localSearchQuery = searchQuery.toLowerCase();
-    const listToSearch = searchType === SEARCH_TYPE_USER ? userList : podList;
     const setFunctionForListToSearch = searchType === SEARCH_TYPE_USER ? setSearchedUserList : setSearchedPodList;
     if (searchQuery) {
-      const searchFields = searchType === SEARCH_TYPE_USER ? ['username', 'bio'] : ['name', 'description'];
-      const newList = listToSearch.filter((item) =>
+      const searchFields = ['name', 'description'];
+      const newList = podList.filter((item) =>
         searchFields.some((field) => item[field]?.toLowerCase().includes(localSearchQuery))
       );
       setFunctionForListToSearch(newList);
-    } else setFunctionForListToSearch(listToSearch);
+    } else setFunctionForListToSearch(podList);
   };
 
   const paginateDataList = (dataList, perPageCount) =>
@@ -185,7 +238,7 @@ export function MoreInfoModal(props) {
         getOrgUsers({
           variables: {
             orgId,
-            limit: 1000, // TODO: paginate
+            limit: LIMIT,
           },
         });
       }
@@ -194,14 +247,13 @@ export function MoreInfoModal(props) {
         getPodUsers({
           variables: {
             podId,
-            limit: 1000, // TODO: paginate
+            limit: LIMIT,
           },
         });
       }
     }
     if (pods) {
       setPodList(pods);
-      setListLoading(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [orgId, podId, displayPods, displayUsers, showUsers, showPods, pods]);
@@ -316,6 +368,7 @@ export function MoreInfoModal(props) {
                 ))}
               </Snap>
             ))}
+            <LoadMore ref={loadMoreRef} style={{ paddingTop: '10px', height: '2px', display: 'block' }} />
           </OverflowBox>
         )}
         {displayPods && (

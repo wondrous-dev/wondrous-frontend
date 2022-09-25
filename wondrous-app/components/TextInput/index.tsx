@@ -7,7 +7,6 @@ import { SafeImage } from '../Common/Image';
 
 export function TextInput(props) {
   const { overrideStyle, ...rest } = props;
-  const [name, setName] = useState('');
   const inputProps = useTextInput();
 
   const handleChange = useCallback(
@@ -23,9 +22,6 @@ export function TextInput(props) {
     if (inputProps?.orgId) {
     }
   }, [inputProps?.orgId]);
-
-  const fetchData = (query) =>
-    inputProps?.list.filter((user) => user?.username?.toLowerCase().startsWith(query?.toLowerCase()));
 
   const style = !overrideStyle && {
     ...{
@@ -64,6 +60,11 @@ export function TextInput(props) {
     ...rest?.style,
   };
 
+  const handleData = (query, callback) => {
+    if (!query && !inputProps?.onMentionChange) return;
+    inputProps?.onMentionChange(query).then(callback);
+  };
+
   return (
     <MentionsInput
       {...rest}
@@ -76,7 +77,7 @@ export function TextInput(props) {
       <Mention
         trigger="@"
         open
-        data={fetchData}
+        data={handleData}
         displayTransform={(id, display) => `@${display}`}
         regex={/@\[(.*?)]\((.*?)\)/}
         renderSuggestion={(suggestion) => (

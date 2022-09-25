@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
 import { format } from 'date-fns';
-import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, GET_ORG_USERS } from 'graphql/queries';
+import { GET_AUTOCOMPLETE_USERS, GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD, SEARCH_ORG_USERS } from 'graphql/queries';
 import palette from 'theme/palette';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -18,7 +18,6 @@ import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
 import { OptionDiv, OptionTypography, StyledAutocompletePopper, StyledChip } from 'components/CreateEntity/styles';
-import { filterOrgUsers } from 'components/CreateEntity/CreatePodModal';
 import { BOUNTY_TYPE, PRIVATE_TASK_TITLE, TASK_TYPE } from 'utils/constants';
 import { PayoutModal } from './PayoutModal';
 import {
@@ -37,6 +36,18 @@ import {
   ExportCSVButtonText,
 } from './styles';
 import Wrapper from '../wrapper/wrapper';
+
+export const filterOrgUsers = (orgUsers) => {
+  if (!orgUsers) {
+    return [];
+  }
+
+  return orgUsers?.map((orgUser) => ({
+    profilePicture: orgUser?.user?.thumbnailPicture || orgUser?.user?.profilePicture,
+    label: orgUser?.user?.username,
+    value: orgUser?.user?.id,
+  }));
+};
 
 export const exportContributorTaskCSV = ({ contributorTaskData, fromTime, toTime, isPod = false }) => {
   const headers = [
@@ -420,22 +431,21 @@ export const getContributorTaskData = (data) => {
 function Analytics(props) {
   const { orgData = {} } = props;
   const { id: orgId } = orgData;
-  const [ref, inView] = useInView({});
   const [assignee, setAssignee] = useState(null);
   const [payoutModal, setPayoutModal] = useState(false);
   const [assigneeString, setAssigneeString] = useState('');
-  const [getAutocompleteUsers, { data: autocompleteData }] = useLazyQuery(GET_AUTOCOMPLETE_USERS);
-  const [getOrgUsers, { data: orgUsersData }] = useLazyQuery(GET_ORG_USERS, {});
+  const [searchOrgUsers, { data: orgUsersData }] = useLazyQuery(SEARCH_ORG_USERS, {});
 
   useEffect(() => {
     if (orgId) {
-      getOrgUsers({
+      searchOrgUsers({
         variables: {
           orgId,
+          searchString: '',
         },
       });
     }
-  }, [orgId, getOrgUsers]);
+  }, [orgId, searchOrgUsers]);
 
   const today = new Date();
   const tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
@@ -467,6 +477,15 @@ function Analytics(props) {
     }
   }, [orgId, fromTime, toTime, assignee?.value]);
 
+  const handleInputChange = (event, newInputValue) => {
+    setAssigneeString(newInputValue);
+    searchOrgUsers({
+      variables: {
+        searchString: newInputValue,
+        orgId,
+      },
+    });
+  };
   return (
     <Wrapper orgData={orgData}>
       <PayoutModal
@@ -500,11 +519,7 @@ function Analytics(props) {
         </LocalizationProvider>
         <HeaderText>by</HeaderText>
         <StyledAutocompletePopper
-          options={
-            assigneeString
-              ? filterUsers(autocompleteData?.getAutocompleteUsers)
-              : filterOrgUsers(orgUsersData?.getOrgUsers)
-          }
+          options={filterUsers(orgUsersData?.searchOrgUsers)}
           onOpen={() => {}}
           renderInput={(params) => {
             const InputProps = {
@@ -544,14 +559,7 @@ function Analytics(props) {
           }}
           value={assignee}
           inputValue={assigneeString}
-          onInputChange={(event, newInputValue) => {
-            setAssigneeString(newInputValue);
-            getAutocompleteUsers({
-              variables: {
-                username: newInputValue,
-              },
-            });
-          }}
+          onInputChange={handleInputChange}
           onChange={(_, __, reason) => {
             if (reason === 'clear') {
               setAssignee(null);
