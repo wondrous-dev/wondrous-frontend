@@ -14,9 +14,9 @@ import {
 } from '@mui/material';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import AndroidSwitch from 'components/Common/AndroidSwitch';
-import { ModalCloseButton } from 'components/Common/ModalCloseButton';
-import { Button as ButtonComponent } from 'components/Common/button';
+import { ModalCloseButton } from '../ModalCloseButton';
+import { Button as ButtonComponent } from '../button';
+import { AndroidSwitch } from '../../CreateEntity/CreatePodModal';
 
 export const StyledModal = styled(Modal)``;
 

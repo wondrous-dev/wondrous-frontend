@@ -7,7 +7,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG, GET_SUBMISSIONS_PAYMENT_INFO } from 'graph
 import { parseUserPermissionContext } from 'utils/helpers';
 import { PERMISSIONS, TASK_STATUS_DONE } from 'utils/constants';
 import { format } from 'date-fns';
-import { filterPaymentMethods } from 'components/CreateEntity/CreateEntityModal';
+import { filterPaymentMethods } from 'components/CreateEntity/CreatePodModal';
 import {
   CreateFormMainBlockTitle,
   CreateFormRewardCurrency,
