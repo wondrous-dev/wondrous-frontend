@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 
 import { useRouter } from 'next/router';
+import { REQUEST_PASSWORD_RESET } from 'graphql/mutations/user';
+import apollo from 'services/apollo';
 import { Card, CardBody, CardFooter } from 'components/Common/auth';
 import { Button } from 'components/Common/button';
 import AuthLayout from 'components/Common/Layout/Auth';
@@ -20,8 +22,22 @@ function ForgotPassword() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // TODO: Reset Password plumbing with backend
-    router.push('/verify');
+    console.log(email);
+    setErrorMessage(null);
+    await apollo
+      .mutate({
+        mutation: REQUEST_PASSWORD_RESET,
+        variables: {
+          email,
+        },
+      })
+      .then(() => {
+        router.push(`/forgot-password-sent?email=${email}`);
+      })
+      .catch((e) => {
+        console.error(e);
+        setErrorMessage('Error sending reset email, please try again');
+      });
   };
 
   return (
