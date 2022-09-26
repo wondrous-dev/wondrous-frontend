@@ -12,7 +12,7 @@ import {
 } from '@mui/material';
 import styled from 'styled-components';
 import { ModalCloseButton } from 'components/Common/ModalCloseButton';
-import { AndroidSwitch } from 'components/CreateEntity/CreatePodModal';
+import AndroidSwitch from 'components/Common/AndroidSwitch';
 import palette from 'theme/palette';
 
 export const StyledModal = styled(Modal)``;

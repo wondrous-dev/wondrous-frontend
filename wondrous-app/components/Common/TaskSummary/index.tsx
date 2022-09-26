@@ -22,7 +22,6 @@ import { TaskCommentIcon } from '../../Icons/taskComment';
 import { TaskMedia } from '../MediaPlayer';
 import { useMe } from '../../Auth/withAuth';
 import PodIcon from '../../Icons/podIcon';
-import { CreateFormButtonsBlock, CreateFormFooterButtons, CreateFormPreviewButton } from '../../CreateEntity/styles';
 import { Arrow, Media } from '../../Icons/sections';
 import {
   TaskSummaryWrapper,

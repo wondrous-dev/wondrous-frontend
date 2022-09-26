@@ -9,7 +9,7 @@ import {
   REMOVE_SUBMISSION_MEDIA,
   UPDATE_TASK_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
-import { GET_ORG_USERS } from 'graphql/queries/org';
+import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import isEmpty from 'lodash/isEmpty';
 import { useRef, useState } from 'react';
 import { ReactEditor } from 'slate-react';
@@ -154,13 +154,17 @@ const handleSubmit = ({
 };
 
 function SubmissionFormDescriptionField({ formik, orgId }) {
-  const { data: orgUsersData } = useQuery(GET_ORG_USERS, {
+  const { data: orgUsersData, refetch } = useQuery(SEARCH_ORG_USERS, {
     variables: {
       orgId,
+      searchString: '',
     },
   });
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
+
+  const handleUserMentionChange = (query) => refetch({ searchString: query });
+
   return (
     <SubmissionFormDescription>
       <SubmissionDescriptionEditorEditorToolbar ref={setEditorToolbarNode} />
@@ -172,8 +176,9 @@ function SubmissionFormDescriptionField({ formik, orgId }) {
       >
         <RichTextEditor
           editor={editor}
+          onMentionChange={handleUserMentionChange}
           initialValue={formik.values.descriptionText}
-          mentionables={filterOrgUsersForAutocomplete(orgUsersData?.getOrgUsers)}
+          mentionables={filterOrgUsersForAutocomplete(orgUsersData?.searchOrgUsers)}
           placeholder="Enter a description"
           toolbarNode={editorToolbarNode}
           onChange={(text) => formik.setFieldValue('descriptionText', text)}

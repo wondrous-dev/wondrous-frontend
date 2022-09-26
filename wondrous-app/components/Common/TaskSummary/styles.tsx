@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import SmartLink from 'components/Common/SmartLink';
-import { CreateFormButtonsBlock, CreateFormPreviewButton } from '../../CreateEntity/styles';
+import { CreateFormButtonsBlock } from '../../CreateEntity/styles';
 import { SafeImage } from '../Image';
 
 export const TaskSummaryWrapper = styled(SmartLink)`

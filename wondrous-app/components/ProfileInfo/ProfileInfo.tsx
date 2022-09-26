@@ -60,6 +60,7 @@ function ProfileInfo({ userProfile }) {
         open={openInterestModal}
         onClose={() => setOpenInterestModal(false)}
         createUserInterest={createUserInterest}
+        existingInterests={interests}
       />
 
       <ProfileInfoContainer>

@@ -291,6 +291,7 @@ function BatchWalletPayment(props) {
             onClick={handlePaymentClick}
             style={{
               marginLeft: 0,
+              marginBottom: 16,
             }}
           >
             Pay All
