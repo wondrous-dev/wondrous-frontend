@@ -61,6 +61,14 @@ export const GET_TASK_SUBMISSIONS_FOR_TASK = gql`
   ${TaskSubmissionFragment}
 `;
 
+export const GET_SUBMISSION_COUNT_FOR_TASK = gql`
+  query getSubmissionCountForTask($taskId: ID!, $status: String) {
+    getSubmissionCountForTask(taskId: $taskId, status: $status) {
+      submissionCount
+    }
+  }
+`;
+
 export const GET_COMMENTS_FOR_TASK = gql`
   query getTaskComments($taskId: ID!) {
     getTaskComments(taskId: $taskId) {
