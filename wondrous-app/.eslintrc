@@ -8,11 +8,12 @@
   },
   "root": true,
   "extends": ["airbnb", "next", "next/core-web-vitals", "plugin:cypress/recommended", "prettier"],
-
+  "plugins": ["@typescript-eslint"],
   "rules": {
     "no-octal-escape": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".js", ".jsx", ".tsx"] }],
-    "no-unused-vars": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": "warn",
     "import/extensions": [
       "error",
       "ignorePackages",
