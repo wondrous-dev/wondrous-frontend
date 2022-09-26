@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 import moment from 'moment';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -142,12 +144,16 @@ import {
   MediaUploadDiv,
   SnapshotButtonBlock,
   CreateEntityPaymentMethodSelected,
+  CreateEntityApplicationsSelectRender,
+  ApplicationInputWrapper,
+  ApplicationInputUnassignContainer,
 } from './styles';
 import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
+import { SnapshotErrorText } from '../styles';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
