@@ -88,15 +88,17 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props)
   );
 
   // Unselect org from org1
-  const org2Schema = useMemo(
-    () => ({
+  const org2Schema = useMemo(() => {
+    const items = orgsSchema.items?.filter((org) => org.id !== selectedOrg1?.id);
+    items.unshift({ name: 'Project not in wonder', id: null, skipProfilePicture: true });
+    return {
       ...orgsSchema,
-      items: orgsSchema.items?.filter((org) => org.id !== selectedOrg1?.id),
+      items,
       label: selectedOrg2 ? null : DROPDOWN_PACEHOLDER.DAO2,
-    }),
-    [userOrgs, selectedOrg1, selectedOrg2]
-  );
+    };
+  }, [userOrgs, selectedOrg1, selectedOrg2]);
 
+  console.log(org2Schema);
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     mission: Yup.string().required('Mission is required'),

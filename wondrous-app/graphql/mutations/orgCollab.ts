@@ -7,6 +7,7 @@ export const CREATE_COLLAB_REQUST = gql`
       initiatorOrgId
       recipientOrgId
       title
+      token
       mission
       initiatorOrg {
         ...OrgFragment

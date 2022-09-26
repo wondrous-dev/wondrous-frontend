@@ -89,8 +89,12 @@ function OrgSearch(props) {
             getOptionLabel={(option) => option.name}
             renderOption={(props, option) => (
               <OrgSearchListItem {...props}>
-                <OrgProfilePicture style={{ width: '26px', height: '26px' }} profilePicture={option?.profilePicture} />
-
+                {!option?.skipProfilePicture && (
+                  <OrgProfilePicture
+                    style={{ width: '26px', height: '26px' }}
+                    profilePicture={option?.profilePicture}
+                  />
+                )}
                 <span>{option.name}</span>
               </OrgSearchListItem>
             )}
