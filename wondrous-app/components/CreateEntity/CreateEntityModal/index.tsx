@@ -91,6 +91,7 @@ import {
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
 } from './Helpers';
+
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
@@ -148,6 +149,7 @@ import {
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
 } from './styles';
+
 import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
