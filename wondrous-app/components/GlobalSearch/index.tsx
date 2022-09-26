@@ -11,6 +11,7 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import { SearchIconWrapped } from 'components/SearchTasks/styles';
+import SearchSuggestions from 'components/SearchSuggestions';
 import { GLOBAL_SEARCH_TYPES } from 'utils/constants';
 import { useHotkey, useOutsideAlerter } from 'utils/hooks';
 
@@ -25,6 +26,7 @@ import {
   SearchResultCategoryTitle,
   SearchResultItem,
   SearchResults,
+  SearchWrapper,
 } from './styles';
 
 let timeout;
@@ -134,28 +136,30 @@ function GlobalSearch() {
 
   return (
     <GlobalSearchWrapper onClick={handleInputExpand} ref={wrapperRef} isExpanded={isExpanded}>
-      <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
-        <SearchIconWrapper isExpanded={isExpanded}>
-          <SearchIconWrapped />
-        </SearchIconWrapper>
-      </Badge>
-
-      <SearchInputWrapper isExpanded={isExpanded}>
-        <SearchInput
-          sx={{ height: '40px' }}
-          isExpanded={isExpanded}
-          placeholder="Search"
-          inputRef={inputRef}
-          onChange={handleInputChange}
-          InputProps={{
-            endAdornment: (
-              <InputAdornment position="end">
-                {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
-              </InputAdornment>
-            ),
-          }}
-        />
-      </SearchInputWrapper>
+      <SearchWrapper isExpanded={isExpanded}>
+        <Badge badgeContent={HOTKEYS.GLOBAL_SEARCH} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
+          <SearchIconWrapper isExpanded={isExpanded}>
+            <SearchIconWrapped />
+          </SearchIconWrapper>
+        </Badge>
+        <SearchInputWrapper isExpanded={isExpanded}>
+          <SearchInput
+            sx={{ height: '40px' }}
+            isExpanded={isExpanded}
+            placeholder="Search"
+            inputRef={inputRef}
+            onChange={handleInputChange}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  {isLoading ? <CircularProgress color="secondary" size={20} sx={{ marginRight: '12px' }} /> : null}
+                </InputAdornment>
+              ),
+            }}
+          />
+        </SearchInputWrapper>
+      </SearchWrapper>
+      <SearchSuggestions show={isExpanded && Object.keys(options)?.length === 0} />
       {Object.keys(options)?.length ? (
         <SearchResults>
           {Object.keys(options).map((option, optionIdx) => {
