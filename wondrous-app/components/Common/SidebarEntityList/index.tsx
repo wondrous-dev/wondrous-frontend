@@ -10,7 +10,7 @@ import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
 import ShowChartIcon from 'components/Icons/Sidebar/showChart.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
-import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
+import { GET_ORG_BY_ID, GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
@@ -35,6 +35,19 @@ const usePerTypeTaskCountForBoard = () => {
   return orgData?.getPerTypeTaskCountForOrgBoard || podData?.getPerTypeTaskCountForPodBoard || {};
 };
 
+const useOrgPodsCount = () => {
+  const { board, orgBoard } = useBoards();
+
+  const { data: orgById } = useQuery(GET_ORG_BY_ID, {
+    variables: {
+      orgId: board?.orgId,
+    },
+    skip: !(orgBoard && board.orgId),
+  });
+
+  return orgById?.getOrgById.podCount;
+};
+
 const useSidebarData = () => {
   const { board, orgBoard } = useBoards();
   const { setEntityType } = board || {};
@@ -50,6 +63,7 @@ const useSidebarData = () => {
     };
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
+  const podsCount = useOrgPodsCount();
   return {
     handleOnClick,
     data: [
@@ -99,8 +113,9 @@ const useSidebarData = () => {
           {
             text: 'Pods',
             Icon: podIcon,
-            // count: unknown
-            link: null,
+            count: podsCount,
+            link: `${link}/boards?entity=${ENTITIES_TYPES.POD}`,
+            entityType: ENTITIES_TYPES.POD,
           },
         ],
       },
