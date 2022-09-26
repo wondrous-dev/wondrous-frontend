@@ -2,7 +2,11 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { ActionButton } from 'components/Common/Task/styles';
-import { GET_ORG_ROLES, GET_AUTO_CLAIMABLE_ROLES, CAN_CLAIM_ORG_ROLE } from 'graphql/queries';
+import {
+  GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
+  GET_AUTO_CLAIMABLE_ROLES,
+  CAN_CLAIM_ORG_ROLE,
+} from 'graphql/queries';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
@@ -51,17 +55,11 @@ const CurrentRoleModal = (props) => {
     handleOpenClaimedRole,
   } = props;
 
-  const claimableRoles = [{ name: 'owner' }, { name: 'core team' }];
-
   const [checkboxRoles, setCheckboxRoles] = useState(null);
-  const [orgRolesWithoutCurrent, setOrgRolesWithoutCurrent] = useState(null);
 
   const useGetOrgRoles = (orgId) => {
     // why even use this chook here
-    const [getOrgRoles, { data: allRoles }] = useLazyQuery(GET_ORG_ROLES, {
-      fetchPolicy: 'network-only',
-    });
-    const [getAutoClaimableOrgRoles, { data: autoClaimableRoles }] = useLazyQuery(GET_AUTO_CLAIMABLE_ROLES, {
+    const [getOrgRoles, { data: orgRoles }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
       fetchPolicy: 'network-only',
     });
     useEffect(() => {
@@ -71,19 +69,25 @@ const CurrentRoleModal = (props) => {
             orgId,
           },
         });
-        getAutoClaimableOrgRoles({
-          variables: {
-            orgId,
-          },
-        });
       }
     }, [getOrgRoles, orgId]);
-    console.log(autoClaimableRoles);
-    return { allRoles: allRoles?.getOrgRoles, autoClaimableRoles: autoClaimableRoles?.getAutoClaimableOrgRoles };
+    return { orgRoles: orgRoles?.getOrgRoles };
   };
-  const { allRoles: orgRoles, autoClaimableRoles } = useGetOrgRoles(orgId);
-  console.log('autoClaimableRoles', autoClaimableRoles);
-  console.log('orgRoles', orgRoles);
+  const { orgRoles } = useGetOrgRoles(orgId);
+  const noneCurrentRoles = orgRoles?.filter((role) => role.name !== currentRoleName);
+  const rolesWithAccessCondition = noneCurrentRoles?.filter((role) => {
+    if (role.discordRolesInfo?.length > 0) return true;
+    if (role.tokenGatingCondition) return true;
+    return false;
+  });
+  const rolesWithoutAccessCondition = noneCurrentRoles?.filter((role) => {
+    if (role.discordRolesInfo?.length > 0) return false;
+    if (role.tokenGatingCondition) return false;
+    return true;
+  });
+  console.log('currentRoleName', currentRoleName);
+  console.log('rolesWithAccessCondition', rolesWithAccessCondition);
+  console.log('rolesWithoutAccessCondition', rolesWithoutAccessCondition);
 
   const handleClaimClick = async (role) => {
     if (role.__typename === 'OrgRole') {
@@ -101,19 +105,14 @@ const CurrentRoleModal = (props) => {
     }
   };
 
-  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === currentRoleName) : null;
+  const currentRoleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === currentRoleName) : null; //
 
-  const rolePermissions = orgRoles?.[roleIndex]?.permissions;
-  const currentRoleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
-  const currentRoleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
-  const claimableRoleLength = claimableRoles
-    ? claimableRoles?.filter((role) => role.name !== currentRoleName).length
-    : 0;
-
-  useEffect(() => {
-    const noneCurrentROles = orgRoles?.filter((role) => role.name !== currentRoleName);
-    setOrgRolesWithoutCurrent(noneCurrentROles);
-  }, [orgRoles]);
+  const currentRolePermissions = orgRoles?.[currentRoleIndex]?.permissions;
+  const currentRoleCanDo = Object.keys(PERMISSIONS).filter((key) => currentRolePermissions?.includes(PERMISSIONS[key]));
+  const currentRoleCannotDo = Object.keys(PERMISSIONS).filter(
+    (key) => !currentRolePermissions?.includes(PERMISSIONS[key])
+  );
+  const claimableRoleLength = rolesWithAccessCondition ? rolesWithAccessCondition.length : 0;
 
   return (
     <RequestModalContainer
@@ -149,7 +148,7 @@ const CurrentRoleModal = (props) => {
           />
         </RequestModalTitleBar>
         <RequestMiddleContainer>
-          {currentRoleName ? (
+          {/* {currentRoleName ? (
             <RequestLightBoxContainer>
               <RequestModalRolesSubtitle>Current role</RequestModalRolesSubtitle>
               <RequestModalCheckPillCombo>
@@ -181,10 +180,10 @@ const CurrentRoleModal = (props) => {
                 </RequestModalRolesAbilityColumns>
               </RequestModalRolesAbilityContainer>
             </RequestLightBoxContainer>
-          ) : null}
+          ) : null} */}
           <RequestLightBoxContainer>
             <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
-            {claimableRoles?.length === 0 ? (
+            {/* {rolesWithAccessCondition?.length === 0 ? (
               <RequestModalNoRolesContainer>
                 <NoRolesIcon />
                 <RequestModalNoRolesSubtitle style={{ marginTop: '8px' }}>
@@ -223,128 +222,112 @@ const CurrentRoleModal = (props) => {
                   </Tooltip>
                 </RequestModalHorizontalAlign>
               </RequestModalNoRolesContainer>
-            ) : null}
-            {orgRolesWithoutCurrent
-              ?.filter(
-                (role) =>
-                  claimableRoles?.some((claimRole) => claimRole.name === role?.name) && role?.name !== currentRoleName
-              )
-              ?.map((role, index) => {
-                const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
-                  role?.permissions?.includes(PERMISSIONS[key])
-                );
-                const roleCannotDo = Object.keys(PERMISSIONS).filter(
-                  (key) => !role?.permissions?.includes(PERMISSIONS[key])
-                );
+            ) : null} */}
+            {rolesWithAccessCondition?.map((role, index) => {
+              const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
+              const roleCannotDo = Object.keys(PERMISSIONS).filter(
+                (key) => !role?.permissions?.includes(PERMISSIONS[key])
+              );
 
-                return (
-                  <div key={role?.name}>
-                    <RequestModalCheckPillCombo>
-                      <div
-                        onClick={() => {
-                          if (index === checkboxRoles) {
-                            setCheckboxRoles(null);
-                          } else {
-                            setCheckboxRoles(index);
-                          }
-                        }}
-                      >
-                        <RequestModalCheckbox checked={index === checkboxRoles} />
-                      </div>
-                      <RequestModalHelperContainer>
-                        <RolePill roleName={role.name} />
-                        <RequestModalHelperDiv />
-                      </RequestModalHelperContainer>
-                    </RequestModalCheckPillCombo>
-                    {index === checkboxRoles ? (
-                      <RequestModalRolesAbilityContainer>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
+              return (
+                <div key={role?.name}>
+                  <RequestModalCheckPillCombo>
+                    <div
+                      onClick={() => {
+                        if (index === checkboxRoles) {
+                          setCheckboxRoles(null);
+                        } else {
+                          setCheckboxRoles(index);
+                        }
+                      }}
+                    >
+                      <RequestModalCheckbox checked={index === checkboxRoles} />
+                    </div>
+                    <RequestModalHelperContainer>
+                      <RolePill roleName={role.name} />
+                      <RequestModalHelperDiv />
+                    </RequestModalHelperContainer>
+                  </RequestModalCheckPillCombo>
+                  {index === checkboxRoles ? (
+                    <RequestModalRolesAbilityContainer>
+                      <RequestModalRolesAbilityColumns>
+                        <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
 
-                          {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? Object.keys(PERMISSIONS)?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))
-                            : roleCanDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))}
-                        </RequestModalRolesAbilityColumns>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-                          {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? roleCannotDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="fail" />
-                              ))
-                            : null}
-                        </RequestModalRolesAbilityColumns>
-                      </RequestModalRolesAbilityContainer>
-                    ) : null}
-                  </div>
-                );
-              })}
+                        {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+                          ? Object.keys(PERMISSIONS)?.map((permission) => (
+                              <ChecklistRow role={permission} key={permission} status="success" />
+                            ))
+                          : roleCanDo?.map((permission) => (
+                              <ChecklistRow role={permission} key={permission} status="success" />
+                            ))}
+                      </RequestModalRolesAbilityColumns>
+                      <RequestModalRolesAbilityColumns>
+                        <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
+                        {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+                          ? roleCannotDo?.map((permission) => (
+                              <ChecklistRow role={permission} key={permission} status="fail" />
+                            ))
+                          : null}
+                      </RequestModalRolesAbilityColumns>
+                    </RequestModalRolesAbilityContainer>
+                  ) : null}
+                </div>
+              );
+            })}
           </RequestLightBoxContainer>
           <RequestLightBoxContainer>
             <RequestModalRolesSubtitle>Roles you can request</RequestModalRolesSubtitle>
-            {orgRolesWithoutCurrent
-              ?.filter(
-                (role) =>
-                  (claimableRoles?.find((claimRole) => claimRole?.name === role?.name) === undefined ||
-                    claimableRoles.length === 0) &&
-                  role?.name !== currentRoleName
-              )
-              ?.map((role, index) => {
-                const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
-                  role?.permissions?.includes(PERMISSIONS[key])
-                );
-                const roleCannotDo = Object.keys(PERMISSIONS).filter(
-                  (key) => !role?.permissions?.includes(PERMISSIONS[key])
-                );
-                return (
-                  <div key={role?.name}>
-                    <RequestModalCheckPillCombo>
-                      <div
-                        onClick={() => {
-                          if (index + claimableRoleLength === checkboxRoles) {
-                            setCheckboxRoles(null);
-                          } else {
-                            setCheckboxRoles(index + claimableRoleLength);
-                          }
-                        }}
-                      >
-                        <RequestModalCheckbox checked={index + claimableRoleLength === checkboxRoles} />
-                      </div>
+            {rolesWithoutAccessCondition?.map((role, index) => {
+              const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
+              const roleCannotDo = Object.keys(PERMISSIONS).filter(
+                (key) => !role?.permissions?.includes(PERMISSIONS[key])
+              );
+              return (
+                <div key={role?.name}>
+                  <RequestModalCheckPillCombo>
+                    <div
+                      onClick={() => {
+                        if (index + claimableRoleLength === checkboxRoles) {
+                          setCheckboxRoles(null);
+                        } else {
+                          setCheckboxRoles(index + claimableRoleLength);
+                        }
+                      }}
+                    >
+                      <RequestModalCheckbox checked={index + claimableRoleLength === checkboxRoles} />
+                    </div>
 
-                      <RequestModalHelperContainer>
-                        <RolePill roleName={role.name} />
-                        <RequestModalHelperDiv />
-                      </RequestModalHelperContainer>
-                    </RequestModalCheckPillCombo>
-                    {index + claimableRoleLength === checkboxRoles ? (
-                      <RequestModalRolesAbilityContainer>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
+                    <RequestModalHelperContainer>
+                      <RolePill roleName={role.name} />
+                      <RequestModalHelperDiv />
+                    </RequestModalHelperContainer>
+                  </RequestModalCheckPillCombo>
+                  {index + claimableRoleLength === checkboxRoles ? (
+                    <RequestModalRolesAbilityContainer>
+                      <RequestModalRolesAbilityColumns>
+                        <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
 
-                          {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? Object.keys(PERMISSIONS)?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))
-                            : roleCanDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))}
-                        </RequestModalRolesAbilityColumns>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-                          {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? roleCannotDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="fail" />
-                              ))
-                            : null}
-                        </RequestModalRolesAbilityColumns>
-                      </RequestModalRolesAbilityContainer>
-                    ) : null}
-                  </div>
-                );
-              })}
+                        {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+                          ? Object.keys(PERMISSIONS)?.map((permission) => (
+                              <ChecklistRow role={permission} key={permission} status="success" />
+                            ))
+                          : roleCanDo?.map((permission) => (
+                              <ChecklistRow role={permission} key={permission} status="success" />
+                            ))}
+                      </RequestModalRolesAbilityColumns>
+                      <RequestModalRolesAbilityColumns>
+                        <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
+                        {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+                          ? roleCannotDo?.map((permission) => (
+                              <ChecklistRow role={permission} key={permission} status="fail" />
+                            ))
+                          : null}
+                      </RequestModalRolesAbilityColumns>
+                    </RequestModalRolesAbilityContainer>
+                  ) : null}
+                </div>
+              );
+            })}
           </RequestLightBoxContainer>
         </RequestMiddleContainer>
       </RequestModalBox>
@@ -358,12 +341,12 @@ const CurrentRoleModal = (props) => {
           <ActionButton
             style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
             onClick={() => {
-              handleSetClaimedRole(orgRolesWithoutCurrent[checkboxRoles]);
+              handleSetClaimedRole(noneCurrentRoles[checkboxRoles]);
               if (checkboxRoles >= claimableRoleLength) {
                 handleOpenCurrentRoleModal(false);
                 handleOpenJoinRequestModal(true);
               } else {
-                handleClaimClick(orgRolesWithoutCurrent[checkboxRoles]);
+                handleClaimClick(noneCurrentRoles[checkboxRoles]);
                 handleOpenCurrentRoleModal(false);
                 handleOpenClaimedRole(true);
               }
