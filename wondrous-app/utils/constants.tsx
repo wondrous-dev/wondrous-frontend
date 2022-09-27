@@ -945,3 +945,5 @@ export enum SUBMISSION_COMMENT_TYPE {
   RESUBMIT = 'resubmit',
   REOPEN = 'reopen',
 }
+
+export const HEADER_ASPECT_RATIO = 7.05

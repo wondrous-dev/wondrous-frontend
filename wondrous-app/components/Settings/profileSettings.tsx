@@ -24,10 +24,8 @@ import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import CloseModalIcon from 'components/Icons/closeModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
-import ProfilePictureAdd from '../../public/images/onboarding/profile-picture-add.svg';
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { ErrorText } from '../Common';
-import { SafeImage } from '../Common/Image';
-import { ProfilePictureDiv } from '../Onboarding/styles';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
@@ -198,6 +196,7 @@ function ProfileSettings(props) {
       setProfileBio(loggedInUser?.bio);
     }
   }, [loggedInUser?.username, loggedInUser?.userInfo?.email, loggedInUser?.bio]);
+
   const handleSaveChanges = async () => {
     if (!USERNAME_REGEX.test(username)) {
       setErrors({
@@ -325,42 +324,24 @@ function ProfileSettings(props) {
         <GeneralSettingsInputsBlock
           style={{
             borderBottom: 'none',
+            padding: '30px 0 0 0',
           }}
         >
-          {profilePictureUrl ? (
-            <ProfilePictureDiv>
-              <LabelBlock>Profile Picture</LabelBlock>
-              <SafeImage
-                useNextImage={false}
-                src={profilePictureUrl}
-                style={{
-                  width: '52px',
-                  height: '52px',
-                  borderRadius: '26px',
-                }}
-              />
-              <ProfilePictureAdd
-                onClick={() => {
-                  // restart the profile picture addition
-                  setProfilePictureUrl(null);
-                  setProfilePicture(null);
-                }}
-                style={{
-                  position: 'absolute',
-                  marginLeft: '-16px',
-                  cursor: 'pointer',
-                }}
-              />
-            </ProfilePictureDiv>
-          ) : (
-            <ImageUpload
-              image={profilePicture}
-              imageWidth={52}
-              imageHeight={52}
-              imageName="Profile Picture"
-              updateFilesCb={setProfilePicture}
-            />
-          )}
+          <ImageUpload
+            imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
+            image={loggedInUser?.profilePicture}
+            title="Profile Pic"
+            updateFilesCb={setProfilePicture}
+            avatarEditorTitle="Upload a profile image"
+          />
+
+          <ImageUpload
+            imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+            image={loggedInUser?.headerPicture}
+            title="Header"
+            updateFilesCb={setProfileBanner}
+            avatarEditorTitle="Upload a header image"
+          />
         </GeneralSettingsInputsBlock>
 
         <SettingsLinks links={links} setLinks={setLinks} />

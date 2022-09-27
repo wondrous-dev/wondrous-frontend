@@ -7,6 +7,7 @@ import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -169,37 +170,21 @@ function GeneralSettingsComponent(props) {
         </GeneralSettingsInputsBlock>
 
         {!orgProfile?.shared ? (
-          <>
-            {newProfile?.profilePicture && !logoImage ? (
-              <Box sx={{ marginTop: '30px' }}>
-                <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
-              </Box>
-            ) : null}
-
-            <ImageUpload
-              image={logoImage}
-              imageWidth={52}
-              imageHeight={52}
-              imageName="Logo"
-              updateFilesCb={(file) => handleImageChange(file, 'profile')}
-              profileImage={newProfile?.profilePicture}
-            />
-          </>
+          <ImageUpload
+            image={newProfile?.profilePicture}
+            imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
+            title="Logo"
+            updateFilesCb={(iconImg) => handleImageChange(iconImg, 'profile')}
+            avatarEditorTitle="Upload a profile image"
+          />
         ) : null}
 
-        {newProfile?.headerPicture && !headerImage && (
-          <Box sx={{ width: '100%', height: '100px', position: 'relative', marginTop: '30px' }}>
-            <SafeImage src={newProfile?.headerPicture} layout="fill" objectFit="cover" useNextImage />
-          </Box>
-        )}
-
         <ImageUpload
-          image={headerImage}
-          imageWidth="1350"
-          imageHeight="200"
-          imageName="Header"
-          updateFilesCb={(file) => handleImageChange(file, 'header')}
-          profileImage={newProfile?.headerPicture}
+          image={newProfile?.headerPicture}
+          title="Header"
+          imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+          updateFilesCb={(headerImg) => handleImageChange(headerImg, 'header')}
+          avatarEditorTitle="Upload a header image"
         />
 
         {isPod && (

@@ -1,3 +1,4 @@
+import 'react-aspect-ratio/aspect-ratio.css';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ThemeProvider as StyledComponentProvider } from 'styled-components';
