@@ -3,12 +3,12 @@ import { Button, IconButton, Typography, ButtonBase } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as ButtonComponent, Button as BorderButton } from 'components/Common/button';
+import { Button as BorderButton } from 'components/Common/button';
 import { blackColors, greyColors } from 'theme/colors';
 import { BaseCard } from 'components/Common/card';
 import typography from 'theme/typography';
-import { LogoCircle } from '../../Common/ci';
-import { LinkIcon } from '../../Icons/linkIcon';
+import { LogoCircle } from 'components/Common/ci';
+import { LinkIcon } from 'components/Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
   width: 100%;

@@ -1,21 +1,15 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { ActionButton } from 'components/Common/Task/styles';
-import {
-  GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
-  GET_AUTO_CLAIMABLE_POD_ROLES,
-  LIT_SIGNATURE_EXIST,
-} from 'graphql/queries';
-import { CLAIM_POD_ROLE, CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import { useWonderWeb3 } from 'services/web3';
+import { GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_AUTO_CLAIMABLE_POD_ROLES } from 'graphql/queries';
+import { CLAIM_POD_ROLE } from 'graphql/mutations/tokenGating';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import RolePill from 'components/Common/RolePill';
 import apollo from 'services/apollo';
 import NoRolesIcon from 'components/Icons/noRolesIcon';
-import { Tooltip, CircularProgress } from '@mui/material';
 import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
-import { RolePermissionDisplay } from 'components/RoleModal/CurrentRoleModal';
+import { IndividualRoleDisplay, RolePermissionDisplay } from 'components/RoleModal/RoleModalElement';
+import { ErrorText } from 'components/Common';
 
 import {
   RequestLightBoxContainer,
@@ -28,88 +22,12 @@ import {
   RequestModalContainer,
   RequestModalHelperContainer,
   RequestModalHelperDiv,
-  RequestModalHorizontalAlign,
-  RequestModalLockedIconOutline,
-  SuccessLockedIconOutline,
   RequestModalNoRolesContainer,
   RequestModalNoRolesSubtitle,
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
-  RequestModalTokenGatingLockBackground,
-  RequestModalTokenGatingSubtitle,
 } from './styles';
-
-const IndividualRoleDisplay = (props) => {
-  const {
-    role,
-    setSelectedRoleId,
-    selectedRoleId,
-    hasAccessCondition = false,
-    autoClaimLoading,
-    claimabeRoles,
-  } = props;
-  const selected = selectedRoleId === role?.id;
-  const handleSelect = () => {
-    if (selected) {
-      setSelectedRoleId(null);
-      return;
-    }
-    setSelectedRoleId(role?.id);
-  };
-  const claimable = claimabeRoles?.find((claimableRole) => claimableRole?.id === role?.id);
-  return (
-    <div>
-      <RequestModalCheckPillCombo>
-        <div onClick={handleSelect}>
-          <RequestModalCheckbox checked={selected} />
-        </div>
-        <RequestModalHelperContainer>
-          <RolePill roleName={role.name} />
-          {hasAccessCondition && autoClaimLoading && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}>
-              <CircularProgress size={20} />
-            </div>
-          )}
-          {hasAccessCondition && !autoClaimLoading && claimable && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}>
-              <RequestModalHorizontalAlign>
-                <RequestModalTokenGatingLockBackground>
-                  <SuccessLockedIconOutline />
-                </RequestModalTokenGatingLockBackground>
-                <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
-                  Can Claim
-                </RequestModalTokenGatingSubtitle>
-              </RequestModalHorizontalAlign>
-            </div>
-          )}
-          {hasAccessCondition && !autoClaimLoading && !claimable && (
-            <div style={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}>
-              <RequestModalHorizontalAlign>
-                <RequestModalTokenGatingLockBackground>
-                  <RequestModalLockedIconOutline />
-                </RequestModalTokenGatingLockBackground>
-                <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
-                  Requirement Missing
-                </RequestModalTokenGatingSubtitle>
-                {/* <RequestModalTokenGatingSubtitle color={redColors.red300} style={{ paddingLeft: '8px' }}>
-                Requirement Missing
-                </RequestModalTokenGatingSubtitle> */}
-              </RequestModalHorizontalAlign>
-            </div>
-          )}
-          {/* <RequestModalHelperDiv /> */}
-        </RequestModalHelperContainer>
-      </RequestModalCheckPillCombo>
-      {selected && (
-        <>
-          {/* {hasAccessCondition && <AccessConditionDispaly role={role} />} */}
-          <RolePermissionDisplay role={role} />
-        </>
-      )}
-    </div>
-  );
-};
 
 const CurrentRoleModal = (props) => {
   const {
@@ -122,9 +40,9 @@ const CurrentRoleModal = (props) => {
     setClaimedOrRequestedRole,
     setOpenJoinRequestModal,
   } = props;
-  const wonderWeb3 = useWonderWeb3();
   const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
 
   const [getPodRoles, { data: podRolesData }] = useLazyQuery(GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
     fetchPolicy: 'network-only',
@@ -135,33 +53,6 @@ const CurrentRoleModal = (props) => {
       fetchPolicy: 'network-only',
     }
   );
-
-  const handleJoinPodButtonClick = async () => {
-    const foo = linkedWallet;
-    let litSignatureExistResult;
-    try {
-      litSignatureExistResult = await apollo.query({
-        query: LIT_SIGNATURE_EXIST,
-      });
-    } catch (e) {
-      console.error(e);
-    }
-    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
-    if (!litSignatureExist?.exist) {
-      try {
-        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
-        await apollo.mutate({
-          mutation: CREATE_LIT_SIGNATURE,
-          variables: {
-            input: {
-              signature: signedMessage,
-              signingAddress: wonderWeb3.address,
-            },
-          },
-        });
-      } catch (e) {}
-    }
-  };
 
   useEffect(() => {
     if (podId && open) {
@@ -207,24 +98,25 @@ const CurrentRoleModal = (props) => {
   const handleClaimClick = async () => {
     setClaimedOrRequestedRole(selectedRole);
     if (selectedRoleIsClaimable) {
+      try {
+        await apollo.mutate({
+          mutation: CLAIM_POD_ROLE,
+          variables: {
+            podRoleId: selectedRole?.id,
+          },
+          refetchQueries: ['getUserPodRoles'],
+        });
+      } catch (e) {
+        console.error(e);
+        setErrorMessage('Failed to claim role, please try again');
+        return;
+      }
       setOpenSuccessModal(true);
     } else {
       setOpenJoinRequestModal(true);
     }
     onClose();
     setSelectedRoleId(null);
-
-    // try {
-    //   await apollo.mutate({
-    //     mutation: CLAIM_POD_ROLE,
-    //     variables: {
-    //       podRoleId: selectedRole?.id,
-    //     },
-    //     refetchQueries: ['getUserPodRoles'],
-    //   });
-    // } catch (e) {
-    //   console.error(e);
-    // }
   };
   if (openSuccessModal) {
     return <SuccessRoleModal open={openSuccessModal} role={selectedRole} onClose={handleClose} />;
@@ -314,6 +206,8 @@ const CurrentRoleModal = (props) => {
             marginRight: 0,
           }}
         >
+          {errorMessage && <ErrorText>{errorMessage}</ErrorText>}
+
           <ActionButton
             style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
             disabled={selectedRoleHasAccessCondition && autoClaimLoading}
