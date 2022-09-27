@@ -32,7 +32,7 @@ import { ChevronLeft, ChevronRight } from '@mui/icons-material';
 import { ActionButton } from 'components/Common/Task/styles';
 import SuccessRole from 'components/Icons/successRole';
 import typography from 'theme/typography';
-import { LockedIconOutline } from 'components/Icons/userpass';
+import { LockedIconOutline, LockIconOutline } from 'components/Icons/userpass';
 import { LogoCircle } from '../../Common/ci';
 import { LinkIcon } from '../../Icons/linkIcon';
 
@@ -79,6 +79,11 @@ export const RequestModalTokenGatingSubtitle = styled.div`
 `;
 
 export const RequestModalLockedIconOutline = styled(LockedIconOutline)`
+  width: 16px;
+  height: 16px;
+`;
+
+export const SuccessLockedIconOutline = styled(LockIconOutline)`
   width: 16px;
   height: 16px;
 `;
