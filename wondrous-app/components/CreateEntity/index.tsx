@@ -34,6 +34,7 @@ interface ICreateEntity {
   isTaskProposal?: boolean;
   formValues?: FormikValues;
   parentTaskId?: string;
+  privacyLevel?: string;
 }
 
 export function CreateEntity(props: ICreateEntity) {

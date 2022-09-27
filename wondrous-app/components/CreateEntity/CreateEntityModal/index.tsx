@@ -403,9 +403,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
-  const isPrivacySelectorEnabled =
-    getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
-
+  const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
@@ -514,6 +512,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
 
+  useEffect(() => {
+    if (isInPrivatePod && !existingTask) {
+      form.setFieldValue('privacyLevel', privacyOptions.private.value);
+    } else if (existingTask) {
+      form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    }
+  }, [isInPrivatePod, existingTask]);
   const exportProposalToSnapshot = async () => {
     const receipt = await exportTaskProposal(existingTask);
     if (!receipt) {
@@ -1628,12 +1633,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={!isPrivacySelectorEnabled}
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
             renderValue={(value) => (
-              <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
+              <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
                   <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
                   <CreateEntitySelectArrowIcon />
