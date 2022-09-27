@@ -148,6 +148,7 @@ import {
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
+  SnapshotErrorText,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -155,7 +156,6 @@ import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
-import { SnapshotErrorText } from '../styles';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;

@@ -791,32 +791,3 @@ export const EditorToolbar = styled.div`
 export const TextInputDiv = styled.div`
   height: 100px;
 `;
-
-export const SnapshotButtonBlock = styled(CreateFormButtonsBlock)`
-  && {
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-  }
-`;
-
-export const SnapshotErrorText = styled.div`
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  line-height: 10px;
-`;
-
-export const SnapshotButton = styled(CreateFormPreviewButton)`
-  && {
-    border: 1px solid gold;
-    .MuiCircularProgress-svg {
-      width: 100%;
-      height: 100%;
-    }
-  }
-`;
