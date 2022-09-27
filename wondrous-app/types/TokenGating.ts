@@ -1,7 +1,6 @@
 import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
 
 export interface AccessCondition {
-  __typename: 'AccessConditionModel';
   contractAddress: string;
   type: string;
   chain: string;
@@ -13,7 +12,6 @@ export interface AccessCondition {
 export interface GuildAccessCondition {
   guildId: string;
   roleId: string;
-  __typename: 'GuildAccessCondition';
 }
 
 export interface TokenGatingCondition {
@@ -24,5 +22,6 @@ export interface TokenGatingCondition {
   name: string;
   booleanLogic?: any;
   type: TOKEN_GATING_CONDITION_TYPE;
-  accessCondition: AccessCondition | GuildAccessCondition;
+  tokenAccessCondition: AccessCondition;
+  guildAccessCondition: GuildAccessCondition;
 }

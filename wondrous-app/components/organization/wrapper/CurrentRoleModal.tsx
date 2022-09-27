@@ -2,7 +2,12 @@ import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { ActionButton } from 'components/Common/Task/styles';
-import { GET_ORG_ROLES } from 'graphql/queries';
+import {
+  GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
+  GET_AUTO_CLAIMABLE_ORG_ROLES,
+  GET_TOKEN_INFO,
+  GET_NFT_INFO,
+} from 'graphql/queries';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
@@ -10,8 +15,9 @@ import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
 import apollo from 'services/apollo';
 import NoRolesIcon from 'components/Icons/noRolesIcon';
 import { DiscordIcon } from 'components/Icons/discord';
-import { Tooltip } from '@mui/material';
+import { Tooltip, CircularProgress } from '@mui/material';
 import { redColors } from 'theme/colors';
+import useGuildXyz from 'services/guildxyz';
 import {
   RequestLightBoxContainer,
   RequestMiddleContainer,
@@ -25,6 +31,7 @@ import {
   RequestModalHelperDiv,
   RequestModalHorizontalAlign,
   RequestModalLockedIconOutline,
+  SuccessLockedIconOutline,
   RequestModalNoRolesContainer,
   RequestModalNoRolesSubtitle,
   RequestModalRolesAbilityColumns,
@@ -37,6 +44,185 @@ import {
   RequestModalTokenGatingSubtitle,
 } from './styles';
 
+const AccessConditionDispaly = (props) => {
+  const { role } = props;
+  const tokenAccessCondition = role?.tokenGatingCondition?.tokenAccessCondition?.[0];
+  const guildAccessCondition = role?.tokenGatingCondition?.guildAccessCondition;
+  const { getGuildById } = useGuildXyz();
+  const [guildRoleInfo, setGuildRoleInfo] = useState(null);
+  const [tokenGatingInfo, setTokenGatingInfo] = useState(null);
+  useEffect(() => {
+    const fetchGuildRole = async () => {
+      const guild = await getGuildById(guildAccessCondition?.guildId);
+      const role = guild?.roles?.find((r) => r.id === Number(guildAccessCondition?.roleId));
+      setGuildRoleInfo({ guild: guild.name, role: role?.name });
+    };
+
+    if (guildAccessCondition?.roleId) {
+      fetchGuildRole();
+    }
+  }, [guildAccessCondition?.roleId]);
+
+  useEffect(() => {
+    const getTokenDisplayInfo = async () => {
+      const { contractAddress } = tokenAccessCondition;
+      switch (tokenAccessCondition.type) {
+        case 'ERC20':
+          apollo
+            .query({
+              query: GET_TOKEN_INFO,
+              variables: {
+                contractAddress,
+                chain: tokenAccessCondition.chain,
+              },
+            })
+            .then(({ data }) => {
+              setTokenGatingInfo({
+                chain: tokenAccessCondition.chain,
+                image: data?.getTokenInfo.logoUrl,
+                nameOrAddress: data?.getTokenInfo.name || tokenAccessCondition.contractAddress,
+                minAmount: tokenAccessCondition.minValue,
+              });
+            });
+          break;
+        case 'ERC721':
+          apollo
+            .query({
+              query: GET_NFT_INFO,
+              variables: {
+                contractAddress,
+                chain: tokenAccessCondition.chain,
+              },
+            })
+            .then(({ data }) => {
+              setTokenGatingInfo({
+                chain: tokenAccessCondition.chain,
+                image: data?.getNFTInfo.logoUrl,
+                nameOrAddress: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
+                minAmount: tokenAccessCondition.minValue,
+              });
+            });
+          break;
+        default:
+          break;
+      }
+    };
+
+    if (tokenAccessCondition?.contractAddress) {
+      getTokenDisplayInfo();
+    }
+  }, [tokenAccessCondition?.contractAddress]);
+
+  return (
+    <>
+      {role?.discordRolesInfo?.length > 0 && (
+        <RequestModalTokenGatingSubtitle>
+          connected to: {role?.discordRolesInfo[0].name}
+        </RequestModalTokenGatingSubtitle>
+      )}
+      {tokenGatingInfo && (
+        <RequestModalTokenGatingSubtitle>connected to: {tokenGatingInfo.nameOrAddress}</RequestModalTokenGatingSubtitle>
+      )}
+      {guildRoleInfo && (
+        <RequestModalTokenGatingSubtitle>connected to: {guildRoleInfo.role}</RequestModalTokenGatingSubtitle>
+      )}
+    </>
+  );
+};
+const RolePermissionDisplay = (props) => {
+  const { role } = props;
+  const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
+  const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !role?.permissions?.includes(PERMISSIONS[key]));
+  return (
+    <RequestModalRolesAbilityContainer>
+      <RequestModalRolesAbilityColumns>
+        <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
+
+        {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
+          ? Object.keys(PERMISSIONS)?.map((permission) => (
+              <ChecklistRow role={permission} key={permission} status="success" />
+            ))
+          : roleCanDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="success" />)}
+      </RequestModalRolesAbilityColumns>
+      <RequestModalRolesAbilityColumns>
+        <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
+        {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase()) &&
+          roleCannotDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="fail" />)}
+      </RequestModalRolesAbilityColumns>
+    </RequestModalRolesAbilityContainer>
+  );
+};
+const IndividualRoleDisplay = (props) => {
+  const {
+    role,
+    setSelectedRoleId,
+    selectedRoleId,
+    hasAccessCondition = false,
+    autoClaimLoading,
+    claimabeRoles,
+  } = props;
+  const selected = selectedRoleId === role?.id;
+  const handleSelect = () => {
+    if (selected) {
+      setSelectedRoleId(null);
+      return;
+    }
+    setSelectedRoleId(role?.id);
+  };
+  const claimable = claimabeRoles?.find((claimableRole) => claimableRole?.id === role?.id);
+  return (
+    <div>
+      <RequestModalCheckPillCombo>
+        <div onClick={handleSelect}>
+          <RequestModalCheckbox checked={selected} />
+        </div>
+        <RequestModalHelperContainer>
+          <RolePill roleName={role.name} />
+          {hasAccessCondition && autoClaimLoading && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}>
+              <CircularProgress size={20} />
+            </div>
+          )}
+          {hasAccessCondition && !autoClaimLoading && claimable && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}>
+              <RequestModalHorizontalAlign>
+                <RequestModalTokenGatingLockBackground>
+                  <SuccessLockedIconOutline />
+                </RequestModalTokenGatingLockBackground>
+                <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
+                  Can Claim
+                </RequestModalTokenGatingSubtitle>
+              </RequestModalHorizontalAlign>
+            </div>
+          )}
+          {hasAccessCondition && !autoClaimLoading && !claimable && (
+            <div style={{ display: 'flex', justifyContent: 'center', marginLeft: 5 }}>
+              <RequestModalHorizontalAlign>
+                <RequestModalTokenGatingLockBackground>
+                  <RequestModalLockedIconOutline />
+                </RequestModalTokenGatingLockBackground>
+                <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
+                  Requirement Missing
+                </RequestModalTokenGatingSubtitle>
+                {/* <RequestModalTokenGatingSubtitle color={redColors.red300} style={{ paddingLeft: '8px' }}>
+                Requirement Missing
+                </RequestModalTokenGatingSubtitle> */}
+              </RequestModalHorizontalAlign>
+            </div>
+          )}
+          {/* <RequestModalHelperDiv /> */}
+        </RequestModalHelperContainer>
+      </RequestModalCheckPillCombo>
+      {selected && (
+        <>
+          {/* {hasAccessCondition && <AccessConditionDispaly role={role} />} */}
+          <RolePermissionDisplay role={role} />
+        </>
+      )}
+    </div>
+  );
+};
+
 const CurrentRoleModal = (props) => {
   const {
     open,
@@ -44,62 +230,72 @@ const CurrentRoleModal = (props) => {
     orgId,
     notLinkedWalletError,
     linkedWallet,
-    orgRole,
+    currentRoleName,
     handleOpenCurrentRoleModal,
     handleSetClaimedRole,
     handleOpenJoinRequestModal,
     handleOpenClaimedRole,
   } = props;
 
-  const claimableRoles = [{ name: 'owner' }, { name: 'core team' }];
+  const [selectedRoleId, setSelectedRoleId] = useState(null);
 
-  const [checkboxRoles, setCheckboxRoles] = useState(null);
-  const [orgRolesWithoutCurrent, setOrgRolesWithoutCurrent] = useState(null);
-
-  const useGetOrgRoles = (org) => {
-    const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
+  const [getOrgRoles, { data: orgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
+    fetchPolicy: 'network-only',
+  });
+  const [getAutoClaimableOrgRoles, { data: autoClaimableRolesData, loading: autoClaimLoading }] = useLazyQuery(
+    GET_AUTO_CLAIMABLE_ORG_ROLES,
+    {
       fetchPolicy: 'network-only',
-    });
-    useEffect(() => {
-      if (org) {
-        getOrgRoles({
-          variables: {
-            orgId: org,
-          },
-        });
-      }
-    }, [getOrgRoles, org]);
-    return data?.getOrgRoles;
-  };
-  const orgRoles = useGetOrgRoles(orgId);
-
-  const handleClaimClick = async (role) => {
-    if (role.__typename === 'OrgRole') {
-      try {
-        await apollo.mutate({
-          mutation: CLAIM_ORG_ROLE_BY_DISCORD_ROLE,
-          variables: {
-            orgRoleId: role?.id,
-          },
-          refetchQueries: ['getUserOrgRoles'],
-        });
-      } catch (e) {
-        console.error(e);
-      }
     }
-  };
-
-  const roleIndex = orgRoles ? orgRoles.findIndex((object) => object.name === orgRole) : null;
-
-  const rolePermissions = orgRoles?.[roleIndex]?.permissions;
-  const currentRoleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
-  const currentRoleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
-  const claimableRoleLength = claimableRoles ? claimableRoles?.filter((role) => role.name !== orgRole).length : 0;
+  );
 
   useEffect(() => {
-    const holdOrgs = orgRoles?.filter((role) => role.name !== orgRole);
-    setOrgRolesWithoutCurrent(holdOrgs);
-  }, [orgRoles]);
+    if (orgId && open) {
+      getOrgRoles({
+        variables: {
+          orgId,
+        },
+      });
+      getAutoClaimableOrgRoles({
+        variables: {
+          orgId,
+        },
+      });
+    }
+  }, [getOrgRoles, orgId, open]);
+  const orgRoles = orgRolesData?.getOrgRoles; // all roles for org
+  const noneCurrentRoles = orgRoles?.filter((role) => role.name !== currentRoleName);
+  const rolesWithAccessCondition = noneCurrentRoles?.filter((role) => {
+    if (role.discordRolesInfo?.length > 0) return true;
+    if (role.tokenGatingCondition) return true;
+    return false;
+  });
+  const rolesWithoutAccessCondition = noneCurrentRoles?.filter((role) => {
+    if (role.discordRolesInfo?.length > 0) return false;
+    if (role.tokenGatingCondition) return false;
+    return true;
+  });
+  const currentRole = currentRoleName && orgRoles?.find((r) => r.name === currentRoleName);
+  const claimableRoles = autoClaimableRolesData?.getAutoClaimableOrgRoles;
+  const selectedRole = selectedRoleId && noneCurrentRoles?.find((r) => r.id === selectedRoleId);
+  const selectedRoleHasAccessCondition =
+    selectedRole?.discordRolesInfo?.length > 0 || selectedRole?.tokenGatingCondition;
+  const selectedRoleIsClaimable =
+    selectedRoleId && selectedRoleHasAccessCondition && claimableRoles?.some((r) => r.id === selectedRoleId);
+
+  const handleClaimClick = async () => {
+    try {
+      await apollo.mutate({
+        mutation: CLAIM_ORG_ROLE_BY_DISCORD_ROLE,
+        variables: {
+          orgRoleId: selectedRole?.id,
+        },
+        refetchQueries: ['getUserOrgRoles'],
+      });
+    } catch (e) {
+      console.error(e);
+    }
+  };
 
   return (
     <RequestModalContainer
@@ -125,7 +321,7 @@ const CurrentRoleModal = (props) => {
         )}
 
         <RequestModalTitleBar>
-          <RequestModalTitle>Join Wonderverse</RequestModalTitle>
+          <RequestModalTitle>Explore Roles</RequestModalTitle>
 
           <RequestModalCloseIcon
             color="#FFFFFF"
@@ -135,206 +331,56 @@ const CurrentRoleModal = (props) => {
           />
         </RequestModalTitleBar>
         <RequestMiddleContainer>
-          {orgRole ? (
+          {currentRoleName && (
             <RequestLightBoxContainer>
               <RequestModalRolesSubtitle>Current role</RequestModalRolesSubtitle>
               <RequestModalCheckPillCombo>
                 <RequestModalCheckbox disabled checked />
                 <RequestModalHelperContainer>
-                  <RolePill roleName={orgRole} />
+                  <RolePill roleName={currentRoleName} />
                   <RequestModalHelperDiv />
                 </RequestModalHelperContainer>
               </RequestModalCheckPillCombo>
-              <RequestModalRolesAbilityContainer>
-                <RequestModalRolesAbilityColumns>
-                  <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-
-                  {currentRoleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                    ? Object.keys(PERMISSIONS)?.map((permission) => (
-                        <ChecklistRow role={permission} key={permission} status="success" />
-                      ))
-                    : currentRoleCanDo?.map((permission) => (
-                        <ChecklistRow role={permission} key={permission} status="success" />
-                      ))}
-                </RequestModalRolesAbilityColumns>
-                <RequestModalRolesAbilityColumns>
-                  <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-                  {currentRoleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                    ? currentRoleCannotDo?.map((permission) => (
-                        <ChecklistRow role={permission} key={permission} status="fail" />
-                      ))
-                    : null}
-                </RequestModalRolesAbilityColumns>
-              </RequestModalRolesAbilityContainer>
+              <RolePermissionDisplay role={currentRole} />
             </RequestLightBoxContainer>
-          ) : null}
+          )}
           <RequestLightBoxContainer>
             <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
-            {claimableRoles?.length === 0 ? (
+            {rolesWithAccessCondition?.length === 0 && (
               <RequestModalNoRolesContainer>
                 <NoRolesIcon />
                 <RequestModalNoRolesSubtitle style={{ marginTop: '8px' }}>
                   No claimable roles yet
                 </RequestModalNoRolesSubtitle>
-                <RequestModalHorizontalAlign>
-                  <Tooltip title="Token needed" placement="top">
-                    <RequestModalTokenGatingItem>
-                      <RequestModalHorizontalAlign>
-                        <RequestModalTokenGatingLockBackground>
-                          <RequestModalLockedIconOutline />
-                        </RequestModalTokenGatingLockBackground>
-                        <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
-                          Token Gate:
-                        </RequestModalTokenGatingSubtitle>
-                        <RequestModalTokenGatingSubtitle color={redColors.red300} style={{ paddingLeft: '8px' }}>
-                          Missing
-                        </RequestModalTokenGatingSubtitle>
-                      </RequestModalHorizontalAlign>
-                    </RequestModalTokenGatingItem>
-                  </Tooltip>
-                  <Tooltip title="Connect discord" placement="top">
-                    <RequestModalTokenGatingItem style={{ marginLeft: '8px' }}>
-                      <RequestModalHorizontalAlign>
-                        <RequestModalTokenGatingLockBackground>
-                          <DiscordIcon fill={redColors.red300} />
-                        </RequestModalTokenGatingLockBackground>
-                        <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
-                          Discord Linked:
-                        </RequestModalTokenGatingSubtitle>
-                        <RequestModalTokenGatingSubtitle color={redColors.red300} style={{ paddingLeft: '8px' }}>
-                          No
-                        </RequestModalTokenGatingSubtitle>
-                      </RequestModalHorizontalAlign>
-                    </RequestModalTokenGatingItem>
-                  </Tooltip>
-                </RequestModalHorizontalAlign>
               </RequestModalNoRolesContainer>
-            ) : null}
-            {orgRolesWithoutCurrent
-              ?.filter(
-                (role) => claimableRoles?.some((claimRole) => claimRole.name === role?.name) && role?.name !== orgRole
-              )
-              ?.map((role, index) => {
-                const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
-                  role?.permissions?.includes(PERMISSIONS[key])
-                );
-                const roleCannotDo = Object.keys(PERMISSIONS).filter(
-                  (key) => !role?.permissions?.includes(PERMISSIONS[key])
-                );
-
-                return (
-                  <div key={role?.name}>
-                    <RequestModalCheckPillCombo>
-                      <div
-                        onClick={() => {
-                          if (index === checkboxRoles) {
-                            setCheckboxRoles(null);
-                          } else {
-                            setCheckboxRoles(index);
-                          }
-                        }}
-                      >
-                        <RequestModalCheckbox checked={index === checkboxRoles} />
-                      </div>
-                      <RequestModalHelperContainer>
-                        <RolePill roleName={role.name} />
-                        <RequestModalHelperDiv />
-                      </RequestModalHelperContainer>
-                    </RequestModalCheckPillCombo>
-                    {index === checkboxRoles ? (
-                      <RequestModalRolesAbilityContainer>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-
-                          {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? Object.keys(PERMISSIONS)?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))
-                            : roleCanDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))}
-                        </RequestModalRolesAbilityColumns>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-                          {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? roleCannotDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="fail" />
-                              ))
-                            : null}
-                        </RequestModalRolesAbilityColumns>
-                      </RequestModalRolesAbilityContainer>
-                    ) : null}
-                  </div>
-                );
-              })}
+            )}
+            {rolesWithAccessCondition?.map((role, index) => (
+              <IndividualRoleDisplay
+                key={role.id}
+                role={role}
+                selectedRoleId={selectedRoleId}
+                setSelectedRoleId={setSelectedRoleId}
+                hasAccessCondition
+                autoClaimLoading={autoClaimLoading}
+                claimabeRoles={claimableRoles}
+              />
+            ))}
           </RequestLightBoxContainer>
           <RequestLightBoxContainer>
             <RequestModalRolesSubtitle>Roles you can request</RequestModalRolesSubtitle>
-            {orgRolesWithoutCurrent
-              ?.filter(
-                (role) =>
-                  (claimableRoles?.find((claimRole) => claimRole?.name === role?.name) === undefined ||
-                    claimableRoles.length === 0) &&
-                  role?.name !== orgRole
-              )
-              ?.map((role, index) => {
-                const roleCanDo = Object.keys(PERMISSIONS).filter((key) =>
-                  role?.permissions?.includes(PERMISSIONS[key])
-                );
-                const roleCannotDo = Object.keys(PERMISSIONS).filter(
-                  (key) => !role?.permissions?.includes(PERMISSIONS[key])
-                );
-                return (
-                  <div key={role?.name}>
-                    <RequestModalCheckPillCombo>
-                      <div
-                        onClick={() => {
-                          if (index + claimableRoleLength === checkboxRoles) {
-                            setCheckboxRoles(null);
-                          } else {
-                            setCheckboxRoles(index + claimableRoleLength);
-                          }
-                        }}
-                      >
-                        <RequestModalCheckbox checked={index + claimableRoleLength === checkboxRoles} />
-                      </div>
-
-                      <RequestModalHelperContainer>
-                        <RolePill roleName={role.name} />
-                        <RequestModalHelperDiv />
-                      </RequestModalHelperContainer>
-                    </RequestModalCheckPillCombo>
-                    {index + claimableRoleLength === checkboxRoles ? (
-                      <RequestModalRolesAbilityContainer>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-
-                          {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? Object.keys(PERMISSIONS)?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))
-                            : roleCanDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="success" />
-                              ))}
-                        </RequestModalRolesAbilityColumns>
-                        <RequestModalRolesAbilityColumns>
-                          <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-                          {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-                            ? roleCannotDo?.map((permission) => (
-                                <ChecklistRow role={permission} key={permission} status="fail" />
-                              ))
-                            : null}
-                        </RequestModalRolesAbilityColumns>
-                      </RequestModalRolesAbilityContainer>
-                    ) : null}
-                  </div>
-                );
-              })}
+            {rolesWithoutAccessCondition?.map((role, index) => (
+              <IndividualRoleDisplay
+                key={role.id}
+                role={role}
+                selectedRoleId={selectedRoleId}
+                setSelectedRoleId={setSelectedRoleId}
+              />
+            ))}
           </RequestLightBoxContainer>
         </RequestMiddleContainer>
       </RequestModalBox>
 
-      {checkboxRoles !== null ? (
+      {selectedRoleId && (
         <RequestModalButtonsContainer
           style={{
             marginRight: 0,
@@ -342,22 +388,25 @@ const CurrentRoleModal = (props) => {
         >
           <ActionButton
             style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
+            disabled={selectedRoleHasAccessCondition && autoClaimLoading}
             onClick={() => {
-              handleSetClaimedRole(orgRolesWithoutCurrent[checkboxRoles]);
-              if (checkboxRoles >= claimableRoleLength) {
-                handleOpenCurrentRoleModal(false);
-                handleOpenJoinRequestModal(true);
-              } else {
-                handleClaimClick(orgRolesWithoutCurrent[checkboxRoles]);
+              handleSetClaimedRole(selectedRole);
+              if (selectedRoleIsClaimable) {
+                handleClaimClick();
                 handleOpenCurrentRoleModal(false);
                 handleOpenClaimedRole(true);
+              } else {
+                handleOpenCurrentRoleModal(false);
+                handleOpenJoinRequestModal(true);
               }
             }}
           >
-            {checkboxRoles >= claimableRoleLength ? 'Request role' : 'Claim role'}
+            {!selectedRoleHasAccessCondition && 'Request Role'}
+            {selectedRoleHasAccessCondition && selectedRoleIsClaimable && 'Claim role'}
+            {selectedRoleHasAccessCondition && !selectedRoleIsClaimable && 'Request Role'}
           </ActionButton>
         </RequestModalButtonsContainer>
-      ) : null}
+      )}
     </RequestModalContainer>
   );
 };

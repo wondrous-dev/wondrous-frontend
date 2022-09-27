@@ -194,8 +194,8 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
 
   useEffect(() => {
     // this is for edit only, prepopulating
-    if (selectedTokenGatingCondition && selectedTokenGatingCondition?.accessCondition) {
-      const accessCondition = selectedTokenGatingCondition.accessCondition as AccessCondition;
+    if (selectedTokenGatingCondition && selectedTokenGatingCondition?.tokenAccessCondition?.[0]) {
+      const accessCondition = selectedTokenGatingCondition.tokenAccessCondition[0] as AccessCondition;
 
       setAccessConditionType(accessCondition?.type);
       setName(selectedTokenGatingCondition.name);

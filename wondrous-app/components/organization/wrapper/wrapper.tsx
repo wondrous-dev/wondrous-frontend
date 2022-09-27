@@ -457,7 +457,7 @@ function Wrapper(props) {
         onClose={() => setOpenCurrentRoleModal(false)}
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
-        orgRole={orgRoleName}
+        currentRoleName={orgRoleName}
         handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
         handleOpenClaimedRole={handleOpenClaimedRole}
         handleOpenJoinRequestModal={handleOpenJoinRequestModal}
