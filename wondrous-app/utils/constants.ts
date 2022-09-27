@@ -783,8 +783,7 @@ export const FEATURED_LIST = [
   },
   {
     username: 'Layer2DAO',
-    imageUrl:
-      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F56980676447043635%2FzbzfvKSepLRufA.jpeg%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T005133Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D630344abb9aa3728847fecc77a9b6535b3361744e0cd58a320faf7b203d2fd834ec6e8a772079f2d563765352c21d5a509f22ce28ba129b761b44269e84fc9605f65d6f3151aea3577d5cb3dd91b968568bb92aa579e11646b4ddb659637214925cd5a37cd187839fda5e6305870ff7568e3d5b0a4aabc3e3d988bce2ff519d1aadaf97a4e6584c4b94e140fe5fa197f796ba4edeaec4a9b9ad143a7f3d4b89c371d194f9dfe6432350b8341ceae462bac86b0713481e002be906ac1c348597156611dfbc58c3416e77b1878aaf864f7731910ea2247e890115a80cc98ccab23affc1d4745ffc6251575ebfc240b5bd5f783a22c95759c283522c23eee77d635&w=128&q=75',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1566191261987512321/CNtKHXGT_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1480302068602576897/1642437751/1500x500',
     bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
     name: 'Layer2 DAO',
