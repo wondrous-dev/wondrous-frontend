@@ -175,6 +175,14 @@ const styles = {
   discordConnection: {
     backgroundColor: palette.black90,
   },
+  box: {
+    backgroundColor: palette.black90,
+    borderRadius: '6px',
+    padding: '15px',
+    gap: '10px',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+  },
 };
 
 export default styles;

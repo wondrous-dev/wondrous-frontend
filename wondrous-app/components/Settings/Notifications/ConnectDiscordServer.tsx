@@ -7,7 +7,7 @@ import palette from 'theme/palette';
 import WonderButton from 'components/Button';
 import WonderModal from 'components/Modal';
 import AddWonderBotToDiscordConfig from 'components/Settings/Notifications/AddWonderBotToDiscordConfig';
-import styles from 'components/Settings/Notifications/DiscordNotificationSection/styles';
+import styles from './styles';
 
 type Props = {
   orgId: string;
