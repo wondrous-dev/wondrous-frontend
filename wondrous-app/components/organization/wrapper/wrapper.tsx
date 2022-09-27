@@ -10,7 +10,6 @@ import {
   GR15DEICategoryName,
   BOUNTY_TYPE,
 } from 'utils/constants';
-import apollo from 'services/apollo';
 import { Box } from '@mui/system';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -18,33 +17,24 @@ import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
 
 import usePrevious, { useOrgBoard, useTokenGating } from 'utils/hooks';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
-import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
 import { useRouter } from 'next/router';
-import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import { useWonderWeb3 } from 'services/web3';
-import {
-  GET_TOKEN_GATED_ROLES_FOR_ORG,
-  LIT_SIGNATURE_EXIST,
-  GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
-} from 'graphql/queries';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import {
   ExploreProjectsButton,
   ExploreProjectsButtonFilled,
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { RichTextViewer } from 'components/RichText';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
-import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
 import RolePill from 'components/Common/RolePill';
 import BoardLock from 'components/BoardLock';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
+import CurrentRoleModal from 'components/organization/wrapper/CurrentRoleModal';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import MembershipRequestModal from './MembershipRequestModal';
 import { DiscordIcon } from '../../Icons/discord';
@@ -86,7 +76,6 @@ import {
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
-import CurrentRoleModal from './CurrentRoleModal';
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -195,33 +184,25 @@ function Wrapper(props) {
 
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
-  const wonderWeb3 = useWonderWeb3();
   const loggedInUser = useMe();
   const [open, setOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
 
-  const [createJoinOrgRequest] = useMutation(CREATE_JOIN_ORG_REQUEST);
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [orgRoleName, setOrgRoleName] = useState(null);
-  const [claimableDiscordRole, setClaimableDiscordRole] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
-  const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const [openInvite, setOpenInvite] = useState(false);
   const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
-  const [openExploreOtherRoles, setOpenExploreOtherRoles] = useState(false);
-  const [openClaimedRole, setOpenClaimedRole] = useState(false);
-  const [claimedRole, setClaimedRole] = useState(null);
-  const [roleRequest, setRoleRequest] = useState(null);
+  const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
 
   const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
-  const [claimableRoleModalOpen, setClaimableRoleModalOpen] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
@@ -234,6 +215,7 @@ function Wrapper(props) {
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
+  console.log('userJoinRequest', userJoinRequest);
   const { search, entity, cause } = router.query;
   const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
@@ -246,121 +228,6 @@ function Wrapper(props) {
     finalPath = finalPathArr[finalPathArr.length - 1];
   }
 
-  const handleOpenExploreOtherRoles = (open) => {
-    setOpenExploreOtherRoles(open);
-  };
-  const handleOpenCurrentRoleModal = (open) => {
-    setOpenCurrentRoleModal(open);
-  };
-  const handleOpenJoinRequestModal = (open) => {
-    setOpenJoinRequestModal(open);
-  };
-  const handleOpenClaimedRole = (open) => {
-    setOpenClaimedRole(open);
-  };
-  const handleSetClaimedRole = (role) => {
-    setClaimedRole(role);
-  };
-  const handleSetRequest = (request) => {
-    setRoleRequest(request);
-  };
-
-  const handleJoinOrgButtonClick = async () => {
-    let claimableDiscordRoleFound = false;
-    try {
-      const { data: claimableDiscorRoles } = await apollo.query({
-        query: GET_ORG_ROLES_CLAIMABLE_BY_DISCORD,
-        variables: {
-          orgId: orgBoard?.orgId,
-        },
-      });
-      setClaimableDiscordRole(claimableDiscorRoles?.getOrgRolesClaimableByDiscord);
-      if (
-        claimableDiscorRoles?.getOrgRolesClaimableByDiscord &&
-        claimableDiscorRoles?.getOrgRolesClaimableByDiscord.length > 0
-      ) {
-        claimableDiscordRoleFound = true;
-      }
-    } catch (e) {
-      console.error('error getting cliamble discord roles', e);
-    }
-
-    if (loggedInUser && !loggedInUser?.activeEthAddress) {
-      if (!claimableDiscordRoleFound && !permissions) {
-        setOpenJoinRequestModal(true);
-      }
-    }
-    let apolloResult;
-    try {
-      apolloResult = await apollo.query({
-        query: GET_TOKEN_GATED_ROLES_FOR_ORG,
-        variables: {
-          orgId: orgBoard?.orgId,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      if (!claimableDiscordRoleFound && !permissions) {
-        setOpenJoinRequestModal(true);
-      }
-      return;
-    }
-
-    const roles = apolloResult?.data?.getTokenGatedRolesForOrg;
-    if (!roles || roles?.length === 0) {
-      if (!claimableDiscordRoleFound && !permissions) {
-        setOpenJoinRequestModal(true);
-        return;
-      }
-    }
-    if (
-      wonderWeb3.address &&
-      loggedInUser?.activeEthAddress &&
-      wonderWeb3.toChecksumAddress(wonderWeb3.address) != wonderWeb3.toChecksumAddress(loggedInUser?.activeEthAddress)
-    ) {
-      if (!claimableDiscordRoleFound && !permissions) {
-        setOpenJoinRequestModal(true);
-        setNotLinkedWalletError(true);
-        return;
-      }
-    }
-    let litSignatureExistResult;
-    try {
-      litSignatureExistResult = await apollo.query({
-        query: LIT_SIGNATURE_EXIST,
-      });
-    } catch (e) {
-      console.error(e);
-      if (!claimableDiscordRoleFound && !permissions) {
-        setOpenJoinRequestModal(true);
-        return;
-      }
-    }
-    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
-    if (!litSignatureExist?.exist) {
-      // FIXME make sure  account is the correct account
-      try {
-        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
-        await apollo.mutate({
-          mutation: CREATE_LIT_SIGNATURE,
-          variables: {
-            input: {
-              signature: signedMessage,
-              signingAddress: wonderWeb3.address,
-            },
-          },
-        });
-      } catch (e) {
-        console.error(e);
-        if (!claimableDiscordRoleFound) {
-          setOpenJoinRequestModal(true);
-        }
-        return;
-      }
-    }
-    setTokenGatedRoles(roles);
-    setClaimableRoleModalOpen(true);
-  };
   const previousEntity = usePrevious(entity);
 
   useEffect(() => {
@@ -439,17 +306,11 @@ function Wrapper(props) {
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MembershipRequestModal
         orgId={orgBoard?.orgId}
-        setJoinRequestSent={setJoinRequestSent}
-        sendRequest={createJoinOrgRequest}
         open={openJoinRequestModal}
         onClose={() => setOpenJoinRequestModal(false)}
-        notLinkedWalletError={notLinkedWalletError}
-        linkedWallet={loggedInUser?.activeEthAddress}
-        handleOpenJoinRequestModal={handleOpenJoinRequestModal}
-        handleSetRequest={handleSetRequest}
-        handleOpenClaimedRole={handleOpenClaimedRole}
-        handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
-        orgRole={claimedRole}
+        setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+        requestingRole={claimedOrRequestedRole}
+        setJoinRequestSent={setJoinRequestSent}
       />
       <CurrentRoleModal
         orgId={orgBoard?.orgId}
@@ -458,20 +319,8 @@ function Wrapper(props) {
         notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
         currentRoleName={orgRoleName}
-        handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
-        handleOpenClaimedRole={handleOpenClaimedRole}
-        handleOpenJoinRequestModal={handleOpenJoinRequestModal}
-        handleSetClaimedRole={handleSetClaimedRole}
-      />
-      <SuccessRoleModal
-        open={openClaimedRole}
-        role={claimedRole}
-        request={roleRequest}
-        onClose={() => {
-          handleSetClaimedRole(null);
-          handleSetRequest(null);
-          setOpenClaimedRole(false);
-        }}
+        setOpenJoinRequestModal={setOpenJoinRequestModal}
+        setClaimedOrRequestedRole={setClaimedOrRequestedRole}
       />
       <ChooseEntityToCreate />
       <MoreInfoModal
@@ -609,7 +458,7 @@ function Wrapper(props) {
                       <HeaderButton
                         reversed
                         onClick={() => {
-                          handleOpenCurrentRoleModal(true);
+                          setOpenCurrentRoleModal(true);
                         }}
                       >
                         Join org

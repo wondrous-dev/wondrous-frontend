@@ -7,17 +7,22 @@ import {
   GET_AUTO_CLAIMABLE_ORG_ROLES,
   GET_TOKEN_INFO,
   GET_NFT_INFO,
+  LIT_SIGNATURE_EXIST,
 } from 'graphql/queries';
+import { CLAIM_ORG_ROLE, CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
+import { useMe } from 'components/Auth/withAuth';
+import { useWonderWeb3 } from 'services/web3';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
-import { CLAIM_ORG_ROLE_BY_DISCORD_ROLE } from 'graphql/mutations';
 import apollo from 'services/apollo';
 import NoRolesIcon from 'components/Icons/noRolesIcon';
 import { DiscordIcon } from 'components/Icons/discord';
 import { Tooltip, CircularProgress } from '@mui/material';
-import { redColors } from 'theme/colors';
 import useGuildXyz from 'services/guildxyz';
+import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
+
 import {
   RequestLightBoxContainer,
   RequestMiddleContainer,
@@ -39,7 +44,6 @@ import {
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
-  RequestModalTokenGatingItem,
   RequestModalTokenGatingLockBackground,
   RequestModalTokenGatingSubtitle,
 } from './styles';
@@ -152,6 +156,7 @@ const RolePermissionDisplay = (props) => {
     </RequestModalRolesAbilityContainer>
   );
 };
+
 const IndividualRoleDisplay = (props) => {
   const {
     role,
@@ -231,13 +236,12 @@ const CurrentRoleModal = (props) => {
     notLinkedWalletError,
     linkedWallet,
     currentRoleName,
-    handleOpenCurrentRoleModal,
-    handleSetClaimedRole,
-    handleOpenJoinRequestModal,
-    handleOpenClaimedRole,
+    setClaimedOrRequestedRole,
+    setOpenJoinRequestModal,
   } = props;
-
+  const wonderWeb3 = useWonderWeb3();
   const [selectedRoleId, setSelectedRoleId] = useState(null);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
   const [getOrgRoles, { data: orgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
     fetchPolicy: 'network-only',
@@ -248,6 +252,33 @@ const CurrentRoleModal = (props) => {
       fetchPolicy: 'network-only',
     }
   );
+
+  const handleJoinOrgButtonClick = async () => {
+    const foo = linkedWallet;
+    let litSignatureExistResult;
+    try {
+      litSignatureExistResult = await apollo.query({
+        query: LIT_SIGNATURE_EXIST,
+      });
+    } catch (e) {
+      console.error(e);
+    }
+    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
+    if (!litSignatureExist?.exist) {
+      try {
+        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
+        await apollo.mutate({
+          mutation: CREATE_LIT_SIGNATURE,
+          variables: {
+            input: {
+              signature: signedMessage,
+              signingAddress: wonderWeb3.address,
+            },
+          },
+        });
+      } catch (e) {}
+    }
+  };
 
   useEffect(() => {
     if (orgId && open) {
@@ -263,6 +294,7 @@ const CurrentRoleModal = (props) => {
       });
     }
   }, [getOrgRoles, orgId, open]);
+
   const orgRoles = orgRolesData?.getOrgRoles; // all roles for org
   const noneCurrentRoles = orgRoles?.filter((role) => role.name !== currentRoleName);
   const rolesWithAccessCondition = noneCurrentRoles?.filter((role) => {
@@ -283,24 +315,42 @@ const CurrentRoleModal = (props) => {
   const selectedRoleIsClaimable =
     selectedRoleId && selectedRoleHasAccessCondition && claimableRoles?.some((r) => r.id === selectedRoleId);
 
-  const handleClaimClick = async () => {
-    try {
-      await apollo.mutate({
-        mutation: CLAIM_ORG_ROLE_BY_DISCORD_ROLE,
-        variables: {
-          orgRoleId: selectedRole?.id,
-        },
-        refetchQueries: ['getUserOrgRoles'],
-      });
-    } catch (e) {
-      console.error(e);
-    }
+  const handleClose = () => {
+    onClose();
+    setSelectedRoleId(null);
+    setOpenSuccessModal(false);
   };
+
+  const handleClaimClick = async () => {
+    setClaimedOrRequestedRole(selectedRole);
+    if (selectedRoleIsClaimable) {
+      setOpenSuccessModal(true);
+    } else {
+      setOpenJoinRequestModal(true);
+    }
+    onClose();
+    setSelectedRoleId(null);
+
+    // try {
+    //   await apollo.mutate({
+    //     mutation: CLAIM_ORG_ROLE,
+    //     variables: {
+    //       orgRoleId: selectedRole?.id,
+    //     },
+    //     refetchQueries: ['getUserOrgRoles'],
+    //   });
+    // } catch (e) {
+    //   console.error(e);
+    // }
+  };
+  if (openSuccessModal) {
+    return <SuccessRoleModal open={openSuccessModal} role={selectedRole} onClose={handleClose} />;
+  }
 
   return (
     <RequestModalContainer
       open={open}
-      onClose={onClose}
+      onClose={handleClose}
       aria-labelledby="archive-task-modal"
       aria-describedby="modal-modal-description"
     >
@@ -323,12 +373,7 @@ const CurrentRoleModal = (props) => {
         <RequestModalTitleBar>
           <RequestModalTitle>Explore Roles</RequestModalTitle>
 
-          <RequestModalCloseIcon
-            color="#FFFFFF"
-            onClick={() => {
-              onClose();
-            }}
-          />
+          <RequestModalCloseIcon color="#FFFFFF" onClick={handleClose} />
         </RequestModalTitleBar>
         <RequestMiddleContainer>
           {currentRoleName && (
@@ -389,17 +434,7 @@ const CurrentRoleModal = (props) => {
           <ActionButton
             style={{ padding: '8px 30px 8px 30px', marginLeft: '8px' }}
             disabled={selectedRoleHasAccessCondition && autoClaimLoading}
-            onClick={() => {
-              handleSetClaimedRole(selectedRole);
-              if (selectedRoleIsClaimable) {
-                handleClaimClick();
-                handleOpenCurrentRoleModal(false);
-                handleOpenClaimedRole(true);
-              } else {
-                handleOpenCurrentRoleModal(false);
-                handleOpenJoinRequestModal(true);
-              }
-            }}
+            onClick={handleClaimClick}
           >
             {!selectedRoleHasAccessCondition && 'Request Role'}
             {selectedRoleHasAccessCondition && selectedRoleIsClaimable && 'Claim role'}

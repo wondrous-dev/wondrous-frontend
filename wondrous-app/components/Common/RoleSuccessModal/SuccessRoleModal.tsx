@@ -13,7 +13,7 @@ import {
 import RolePill from 'components/Common/RolePill';
 
 const SuccessRoleModal = (props) => {
-  const { open, onClose, role, request } = props;
+  const { open, onClose, role, joinRequestSent } = props;
 
   return (
     <RequestModalContainer
@@ -41,11 +41,10 @@ const SuccessRoleModal = (props) => {
         <RequestModalSuccessContainer>
           <RequestModalRolesSuccessIcon />
           <RequestModalSubtitle style={{ marginTop: '18px' }}>{`You have ${
-            request ? 'requested' : 'claimed'
+            joinRequestSent ? 'requested' : 'claimed'
           } a new role!`}</RequestModalSubtitle>
         </RequestModalSuccessContainer>
         <RequestModalShowRole>
-          {request ? <RequestModalRolesSubtitle>{`Request: ${request}`}</RequestModalRolesSubtitle> : null}
           <RolePill roleName={role?.name} />
         </RequestModalShowRole>
       </RequestModalBox>
