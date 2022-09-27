@@ -1,11 +1,8 @@
-import { Discord } from 'components/Icons/discord';
-import DiscordIntegrationCard from 'components/Settings/Notifications/DiscordIntegrationCard';
-import { TitleStyle } from 'components/Settings/Notifications/DiscordNotificationSection/styles';
 import React, { useEffect, useState } from 'react';
 import { useQuery, useLazyQuery } from '@apollo/client';
+
+import DiscordIntegrationCard from 'components/Settings/Notifications/DiscordIntegrationCard';
 import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_CHANNELS_FROM_DISCORD } from 'graphql/queries';
-import Chip from '@mui/material/Chip';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -14,22 +11,29 @@ import palette from 'theme/palette';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { NotificationOutlineSettings } from 'components/Icons/notifications';
 import { HeaderBlock } from 'components/Settings/headerBlock';
-import WonderButton from 'components/Button';
 
 import { GeneralSettingsIntegrationsBlock } from 'components/Settings/styles';
-import Accordion from 'components/Common/Accordion';
-import DiscordNotificationSection from 'components/Settings/Notifications/DiscordNotificationSection';
 import ConnectDiscordServer from 'components/Settings/Notifications/ConnectDiscordServer';
-import styles, { GuildNameStyle } from 'components/Settings/Notifications/styles';
+import styles from 'components/Settings/Notifications/styles';
+
+enum NotificationType {
+  TasksNotifications = 'tasksNotifications',
+  TaskDiscussionThread = 'taskDiscussion',
+}
 
 function Notifications({ orgId }) {
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
-  const [guildId, setGuildId] = useState('1023920043031011369');
+  const [guildId, setGuildId] = useState(null);
+  // TODO: This is just for demo purposes
+  const [__discordNotificationConfigData, __setDiscordNotificationConfigData] = useState(null);
+
+  // const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP);
   const { data } = useQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
     variables: {
       orgId,
     },
   });
+
   useEffect(() => {
     if (guildId) {
       getChannelsFromDiscord({
@@ -39,14 +43,53 @@ function Notifications({ orgId }) {
       });
     }
   }, [guildId]);
+
   const discordNotificationConfigData = data?.getOrgDiscordNotificationConfig;
 
   useEffect(() => {
     setGuildId(discordNotificationConfigData?.guildId);
+    __setDiscordNotificationConfigData(discordNotificationConfigData);
   }, [discordNotificationConfigData?.guildId]);
 
+  // TODO: Implement
+  const handleConnect = (notificationType: string, channelId: string) => {
+    const channelName = (discordChannelData?.getAvailableChannelsForDiscordGuild || []).find(
+      (r) => r.id === channelId
+    )?.name;
+
+    __setDiscordNotificationConfigData({
+      ...__discordNotificationConfigData,
+      channelInfo: {
+        ...__discordNotificationConfigData.channelInfo,
+        [notificationType]: {
+          channelName,
+          guildName: null,
+        },
+      },
+    });
+
+    // manualDiscordOrgSetup({
+    //   variables: {
+    //     guildId,
+    //     orgId,
+    //     channelId,
+    //   },
+    //   refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
+    // });
+  };
+
+  // TODO: Implement
+  const handleDisconnect = (notificationType: string) => {
+    __setDiscordNotificationConfigData({
+      ...__discordNotificationConfigData,
+      channelInfo: {
+        ...__discordNotificationConfigData.channelInfo,
+        [notificationType]: null,
+      },
+    });
+  };
+
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
-  const isDiscordConnected = Boolean(discordNotificationConfigData?.id);
 
   return (
     <SettingsWrapper>
@@ -67,40 +110,24 @@ function Notifications({ orgId }) {
           </Typography>
           <Divider sx={styles.divider} />
 
-          {isDiscordConnected ? (
-            <Grid container sx={styles.discordConnection}>
-              <Typography sx={{ color: palette.white, fontWeight: 500 }}>Connected Server:</Typography>
-              <Chip label={discordNotificationConfigData?.channelInfo?.guildName} sx={GuildNameStyle} />
-            </Grid>
-          ) : (
-            <ConnectDiscordServer orgId={orgId} />
-          )}
+          {!guildId && discordNotificationConfigData !== undefined ? <ConnectDiscordServer orgId={orgId} /> : null}
 
           <DiscordIntegrationCard
             title="Tasks Notifications"
             discordChannels={discordChannels}
-            disabled={!isDiscordConnected}
+            disabled={!guildId}
+            onConnect={(channelId) => handleConnect(NotificationType.TasksNotifications, channelId)}
+            onDisconnect={() => handleDisconnect(NotificationType.TasksNotifications)}
+            channel={__discordNotificationConfigData?.channelInfo[NotificationType.TasksNotifications]}
           />
           <DiscordIntegrationCard
             title="Task Discussion Thread"
             discordChannels={discordChannels}
-            disabled={!isDiscordConnected}
+            disabled={!guildId}
+            onConnect={(channelId) => handleConnect(NotificationType.TaskDiscussionThread, channelId)}
+            onDisconnect={() => handleDisconnect(NotificationType.TaskDiscussionThread)}
+            channel={__discordNotificationConfigData?.channelInfo[NotificationType.TaskDiscussionThread]}
           />
-
-          {/* <DiscordNotificationSection */}
-          {/*  sectionTitle="Tasks Notifications" */}
-          {/*  titleEnable="Send a message a task is assigned to someone" */}
-          {/*  titleConnect="Send a message a task is assigned to someone" */}
-          {/*  filteredDiscordChannels={filteredDiscordChannels} */}
-          {/*  discordNotificationConfigData={discordNotificationConfigData} */}
-          {/* /> */}
-          {/* <DiscordNotificationSection */}
-          {/*  sectionTitle="Task Discussion Thread" */}
-          {/*  titleEnable="Send a message that an issue discussion thread has been created" */}
-          {/*  titleConnect="Send a message that an issue discussion thread has been created" */}
-          {/*  filteredDiscordChannels={filteredDiscordChannels} */}
-          {/*  discordNotificationConfigData={discordNotificationConfigData} */}
-          {/* /> */}
         </GeneralSettingsIntegrationsBlock>
       </Grid>
     </SettingsWrapper>

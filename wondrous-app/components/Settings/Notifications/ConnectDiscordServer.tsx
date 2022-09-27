@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import Grid from '@mui/material/Grid';
-import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 
 import palette from 'theme/palette';
@@ -19,7 +18,7 @@ const ConnectDiscordServer = ({ orgId }: Props) => {
 
   return (
     <>
-      <Grid container sx={styles.box}>
+      <Grid container sx={styles.connectDiscord}>
         <WonderButton
           borderRadius={6}
           minWidth={200}
@@ -30,7 +29,9 @@ const ConnectDiscordServer = ({ orgId }: Props) => {
           Connect Discord
         </WonderButton>
 
-        <Typography color={palette.grey250}>Connect one or more integrations types to your Discord server</Typography>
+        <Typography ml="5px" color={palette.grey250}>
+          Connect one or more integrations types to your Discord server
+        </Typography>
       </Grid>
 
       <WonderModal

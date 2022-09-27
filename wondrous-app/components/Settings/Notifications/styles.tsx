@@ -2,7 +2,6 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import Checkbox from '@mui/material/Checkbox';
 import palette from 'theme/palette';
 import { Button } from '../../Common/button';
 
@@ -149,24 +148,6 @@ export const NotificationSettingsButtonsBlock = styled.div`
   padding: 30px 0px;
 `;
 
-export const DiscordIntegrationStyle = {
-  fontWeight: 500,
-  fontSize: '24px',
-  marginBottom: '10px',
-  backgroundImage: `linear-gradient(270deg, ${palette.blue20} -5.62%, ${palette.highlightPurple} 45.92%, ${palette.highlightBlue} 103.12%)`,
-  color: 'transparent',
-  backgroundClip: 'text',
-};
-
-export const GuildNameStyle = {
-  color: palette.white,
-  fontWeight: 500,
-  background: `linear-gradient(266.31deg,${palette.highlightPurple} 1.4%,${palette.orange90} 119.61%)`,
-  borderRadius: '6px',
-  height: 'fit-content',
-  marginLeft: '10px',
-};
-
 const styles = {
   divider: {
     backgroundColor: palette.grey85,
@@ -175,7 +156,7 @@ const styles = {
   discordConnection: {
     backgroundColor: palette.black90,
   },
-  box: {
+  connectDiscord: {
     backgroundColor: palette.black90,
     borderRadius: '6px',
     padding: '15px',
