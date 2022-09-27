@@ -52,6 +52,7 @@ export const CHECK_POD_ROLE_TOKEN_GATING_CONDITION = gql`
 `;
 
 export const GET_TOKEN_GATED_ROLES_FOR_ORG = gql`
+  # can probably remove this endpoint
   query getTokenGatedRolesForOrg($orgId: ID!) {
     getTokenGatedRolesForOrg(orgId: $orgId) {
       id
@@ -65,19 +66,17 @@ export const GET_TOKEN_GATED_ROLES_FOR_ORG = gql`
         podId
         name
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
         }
       }
     }
@@ -85,6 +84,7 @@ export const GET_TOKEN_GATED_ROLES_FOR_ORG = gql`
 `;
 
 export const GET_TOKEN_GATED_ROLES_FOR_POD = gql`
+  # can probably remove this endpoint
   query getTokenGatedRolesForPod($podId: ID!) {
     getTokenGatedRolesForPod(podId: $podId) {
       id
@@ -98,19 +98,17 @@ export const GET_TOKEN_GATED_ROLES_FOR_POD = gql`
         podId
         name
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
         }
       }
     }

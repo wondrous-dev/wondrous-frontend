@@ -83,7 +83,7 @@ export const GET_ORG_ROLES = gql`
 `;
 
 // get roles that has potential to be claimable
-export const GET_AUTO_CLAIMABLE_ROLES = gql`
+export const GET_AUTO_CLAIMABLE_ORG_ROLES = gql`
   query getAutoClaimableOrgRoles($orgId: ID!) {
     getAutoClaimableOrgRoles(orgId: $orgId) {
       id
@@ -96,19 +96,17 @@ export const GET_AUTO_CLAIMABLE_ROLES = gql`
         podId
         name
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
         }
       }
       discordRolesInfo {
@@ -139,20 +137,19 @@ export const GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
         orgId
         podId
         name
+        type
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
         }
       }
       discordRolesInfo {

@@ -110,19 +110,17 @@ export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
         podId
         name
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
         }
       }
     }

@@ -87,7 +87,6 @@ import {
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
 import CurrentRoleModal from './CurrentRoleModal';
-import ExploreOtherRolesModal from './ExploreOtherRolesModal';
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -464,21 +463,6 @@ function Wrapper(props) {
         handleOpenJoinRequestModal={handleOpenJoinRequestModal}
         handleSetClaimedRole={handleSetClaimedRole}
       />
-      {/* <ExploreOtherRolesModal
-          open
-          onClose={() => setOpenExploreOtherRoles(false)}
-          orgId={orgBoard?.orgId}
-          notLinkedWalletError={notLinkedWalletError}
-          linkedWallet={loggedInUser?.activeEthAddress}
-          orgRole={orgRoleName}
-          handleOpenCurrentRoleModal={handleOpenCurrentRoleModal}
-          handleOpenExploreOtherRoles={handleOpenExploreOtherRoles}
-          handleOpenJoinRequestModal={handleOpenJoinRequestModal}
-          handleOpenClaimedRole={handleOpenClaimedRole}
-          handleSetClaimedRole={handleSetClaimedRole}
-          tokenGatedRole={[]}
-          claimableDiscordRole={[]}
-      /> */}
       <SuccessRoleModal
         open={openClaimedRole}
         role={claimedRole}
