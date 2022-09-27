@@ -90,6 +90,7 @@ function Notifications({ orgId }) {
   };
 
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
+  const channelInfo = __discordNotificationConfigData?.channelInfo || {};
 
   return (
     <SettingsWrapper>
@@ -118,7 +119,7 @@ function Notifications({ orgId }) {
             disabled={!guildId}
             onConnect={(channelId) => handleConnect(NotificationType.TasksNotifications, channelId)}
             onDisconnect={() => handleDisconnect(NotificationType.TasksNotifications)}
-            channel={__discordNotificationConfigData?.channelInfo[NotificationType.TasksNotifications]}
+            channel={channelInfo[NotificationType.TasksNotifications]}
           />
           <DiscordIntegrationCard
             title="Task Discussion Thread"
@@ -126,7 +127,7 @@ function Notifications({ orgId }) {
             disabled={!guildId}
             onConnect={(channelId) => handleConnect(NotificationType.TaskDiscussionThread, channelId)}
             onDisconnect={() => handleDisconnect(NotificationType.TaskDiscussionThread)}
-            channel={__discordNotificationConfigData?.channelInfo[NotificationType.TaskDiscussionThread]}
+            channel={channelInfo[NotificationType.TaskDiscussionThread]}
           />
         </GeneralSettingsIntegrationsBlock>
       </Grid>
