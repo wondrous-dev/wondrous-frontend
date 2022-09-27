@@ -763,7 +763,7 @@ export const FEATURED_LIST = [
   {
     username: 'blu3dao',
     imageUrl: 'https://pbs.twimg.com/profile_images/1488749682251628553/c7l6JtMr_400x400.png',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1655502475/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1663944361/1500x500',
     bio: '🦋 making the impossible, possible. ✨ a DAO focused on empowering women & non-binary people to earn, learn & play in web3 via mentorship, community & funding',
     name: 'Blu3 DAO',
   },
@@ -777,7 +777,7 @@ export const FEATURED_LIST = [
   {
     username: 'bobanetwork',
     imageUrl: 'https://pbs.twimg.com/profile_images/1536795904706895872/PVQ769qJ_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1655490876/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1663777233/1500x500',
     bio: 'Lower gas, faster, secured in Ethereum, supercharged with Hybrid Compute: bridge at http://gateway.boba.network',
     name: 'Boba Network',
   },
