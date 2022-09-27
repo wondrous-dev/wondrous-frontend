@@ -42,6 +42,7 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
+import PodPage from './pod';
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -354,6 +355,13 @@ function BoardsPage() {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
+  // console.log({
+  //   "username": username,
+  //   "orgId": orgId,
+  //   "search": search,
+  //   "userId": userId,
+  //   "entity": entity
+  // })
   const activeEntityFromQuery = (Array.isArray(entity) ? entity[0] : entity) || ENTITIES_TYPES.TASK;
   const [columns, setColumns] = useState(ORG_POD_COLUMNS);
   const [filters, setFilters] = useState<TaskFilter>({
@@ -648,6 +656,12 @@ function BoardsPage() {
     [filters]
   );
 
+  let isPodpage = false;
+
+  if (entity === 'pod') {
+    isPodpage = true;
+  }
+
   return (
     <OrgBoardContext.Provider
       value={{
@@ -676,22 +690,26 @@ function BoardsPage() {
     >
       {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
-        <Boards
-          columns={columns}
-          searchString={searchString}
-          onLoadMore={fetchMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-          hasMore={orgTaskHasMore}
-          orgData={orgData}
-          statuses={filters?.statuses}
-          podIds={filters?.podIds}
-          setColumns={setColumns}
-          loading={isLoading}
-          entityType={entityType}
-          userId={userId?.toString()}
-          activeView={activeView}
-        />
+        {isPodpage ? (
+          <PodPage orgData={orgData} />
+        ) : (
+          <Boards
+            columns={columns}
+            searchString={searchString}
+            onLoadMore={fetchMore}
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            hasMore={orgTaskHasMore}
+            orgData={orgData}
+            statuses={filters?.statuses}
+            podIds={filters?.podIds}
+            setColumns={setColumns}
+            loading={isLoading}
+            entityType={entityType}
+            userId={userId?.toString()}
+            activeView={activeView}
+          />
+        )}
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );

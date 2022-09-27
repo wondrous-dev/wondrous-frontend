@@ -116,6 +116,7 @@ const useSidebarData = () => {
             count: podsCount,
             link: `${link}/boards?entity=${ENTITIES_TYPES.POD}`,
             entityType: ENTITIES_TYPES.POD,
+            // link: `${link}/pod`,
           },
         ],
       },
