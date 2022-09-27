@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 import moment from 'moment';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,7 +12,6 @@ import DropdownSearch from 'components/DropdownSearch';
 import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   REMOVE_MEDIA_FROM_TASK,
@@ -90,6 +91,7 @@ import {
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
 } from './Helpers';
+
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
@@ -141,18 +143,19 @@ import {
   EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
+  SnapshotButtonBlock,
+  CreateEntityPaymentMethodSelected,
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
-  SnapshotErrorText,
-  SnapshotButtonBlock,
-  CreateEntityPaymentMethodSelected,
 } from './styles';
+
 import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
+import { SnapshotErrorText } from '../styles';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;

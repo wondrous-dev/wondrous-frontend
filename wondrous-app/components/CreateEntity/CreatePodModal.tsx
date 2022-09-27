@@ -314,8 +314,8 @@ function CreatePodModal(props) {
                   },
                 }}
               />
-            </TextInputContext.Provider>
-          </TextInputDiv>
+              </TextInputContext.Provider>
+            </TextInputDiv>
 
           <CreateFormMainDescriptionInputSymbolCounter>
             {podDescriptionText?.length}/{textLimit} characters

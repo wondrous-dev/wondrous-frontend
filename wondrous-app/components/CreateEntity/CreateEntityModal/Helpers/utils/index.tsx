@@ -50,7 +50,7 @@ export const formValidationSchema = Yup.object().shape({
       'emptyCheck',
       'Please enter a valid Milestone',
       (milestoneId) => milestoneId !== '' && milestoneId !== undefined
-    ),
+    )
 });
 
 export const privacyOptions = {
