@@ -132,7 +132,7 @@ const AccessConditionDispaly = (props) => {
     </>
   );
 };
-const RolePermissionDisplay = (props) => {
+export const RolePermissionDisplay = (props) => {
   const { role } = props;
   const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
   const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !role?.permissions?.includes(PERMISSIONS[key]));

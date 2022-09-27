@@ -1,26 +1,21 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
-import { PERMISSIONS } from 'utils/constants';
 import { ActionButton } from 'components/Common/Task/styles';
 import {
-  GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
-  GET_AUTO_CLAIMABLE_ORG_ROLES,
-  GET_TOKEN_INFO,
-  GET_NFT_INFO,
+  GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
+  GET_AUTO_CLAIMABLE_POD_ROLES,
   LIT_SIGNATURE_EXIST,
 } from 'graphql/queries';
-import { CLAIM_ORG_ROLE, CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
+import { CLAIM_POD_ROLE, CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { useWonderWeb3 } from 'services/web3';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
-import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
 import apollo from 'services/apollo';
 import NoRolesIcon from 'components/Icons/noRolesIcon';
-import { DiscordIcon } from 'components/Icons/discord';
 import { Tooltip, CircularProgress } from '@mui/material';
-import useGuildXyz from 'services/guildxyz';
 import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
+import { RolePermissionDisplay } from 'components/RoleModal/CurrentRoleModal';
 
 import {
   RequestLightBoxContainer,
@@ -38,123 +33,12 @@ import {
   SuccessLockedIconOutline,
   RequestModalNoRolesContainer,
   RequestModalNoRolesSubtitle,
-  RequestModalRolesAbilityColumns,
-  RequestModalRolesAbilityContainer,
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
   RequestModalTokenGatingLockBackground,
   RequestModalTokenGatingSubtitle,
 } from './styles';
-
-const AccessConditionDispaly = (props) => {
-  const { role } = props;
-  const tokenAccessCondition = role?.tokenGatingCondition?.tokenAccessCondition?.[0];
-  const guildAccessCondition = role?.tokenGatingCondition?.guildAccessCondition;
-  const { getGuildById } = useGuildXyz();
-  const [guildRoleInfo, setGuildRoleInfo] = useState(null);
-  const [tokenGatingInfo, setTokenGatingInfo] = useState(null);
-  useEffect(() => {
-    const fetchGuildRole = async () => {
-      const guild = await getGuildById(guildAccessCondition?.guildId);
-      const role = guild?.roles?.find((r) => r.id === Number(guildAccessCondition?.roleId));
-      setGuildRoleInfo({ guild: guild.name, role: role?.name });
-    };
-
-    if (guildAccessCondition?.roleId) {
-      fetchGuildRole();
-    }
-  }, [guildAccessCondition?.roleId]);
-
-  useEffect(() => {
-    const getTokenDisplayInfo = async () => {
-      const { contractAddress } = tokenAccessCondition;
-      switch (tokenAccessCondition.type) {
-        case 'ERC20':
-          apollo
-            .query({
-              query: GET_TOKEN_INFO,
-              variables: {
-                contractAddress,
-                chain: tokenAccessCondition.chain,
-              },
-            })
-            .then(({ data }) => {
-              setTokenGatingInfo({
-                chain: tokenAccessCondition.chain,
-                image: data?.getTokenInfo.logoUrl,
-                nameOrAddress: data?.getTokenInfo.name || tokenAccessCondition.contractAddress,
-                minAmount: tokenAccessCondition.minValue,
-              });
-            });
-          break;
-        case 'ERC721':
-          apollo
-            .query({
-              query: GET_NFT_INFO,
-              variables: {
-                contractAddress,
-                chain: tokenAccessCondition.chain,
-              },
-            })
-            .then(({ data }) => {
-              setTokenGatingInfo({
-                chain: tokenAccessCondition.chain,
-                image: data?.getNFTInfo.logoUrl,
-                nameOrAddress: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
-                minAmount: tokenAccessCondition.minValue,
-              });
-            });
-          break;
-        default:
-          break;
-      }
-    };
-
-    if (tokenAccessCondition?.contractAddress) {
-      getTokenDisplayInfo();
-    }
-  }, [tokenAccessCondition?.contractAddress]);
-
-  return (
-    <>
-      {role?.discordRolesInfo?.length > 0 && (
-        <RequestModalTokenGatingSubtitle>
-          connected to: {role?.discordRolesInfo[0].name}
-        </RequestModalTokenGatingSubtitle>
-      )}
-      {tokenGatingInfo && (
-        <RequestModalTokenGatingSubtitle>connected to: {tokenGatingInfo.nameOrAddress}</RequestModalTokenGatingSubtitle>
-      )}
-      {guildRoleInfo && (
-        <RequestModalTokenGatingSubtitle>connected to: {guildRoleInfo.role}</RequestModalTokenGatingSubtitle>
-      )}
-    </>
-  );
-};
-const RolePermissionDisplay = (props) => {
-  const { role } = props;
-  const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
-  const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !role?.permissions?.includes(PERMISSIONS[key]));
-  return (
-    <RequestModalRolesAbilityContainer>
-      <RequestModalRolesAbilityColumns>
-        <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
-
-        {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-          ? Object.keys(PERMISSIONS)?.map((permission) => (
-              <ChecklistRow role={permission} key={permission} status="success" />
-            ))
-          : roleCanDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="success" />)}
-      </RequestModalRolesAbilityColumns>
-      <RequestModalRolesAbilityColumns>
-        <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-        {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase()) &&
-          roleCannotDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="fail" />)}
-      </RequestModalRolesAbilityColumns>
-    </RequestModalRolesAbilityContainer>
-  );
-};
 
 const IndividualRoleDisplay = (props) => {
   const {
@@ -242,17 +126,17 @@ const CurrentRoleModal = (props) => {
   const [selectedRoleId, setSelectedRoleId] = useState(null);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
 
-  const [getOrgRoles, { data: orgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
+  const [getPodRoles, { data: podRolesData }] = useLazyQuery(GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
     fetchPolicy: 'network-only',
   });
-  const [getAutoClaimableOrgRoles, { data: autoClaimableRolesData, loading: autoClaimLoading }] = useLazyQuery(
-    GET_AUTO_CLAIMABLE_ORG_ROLES,
+  const [getAutoClaimablePodRoles, { data: autoClaimableRolesData, loading: autoClaimLoading }] = useLazyQuery(
+    GET_AUTO_CLAIMABLE_POD_ROLES,
     {
       fetchPolicy: 'network-only',
     }
   );
 
-  const handleJoinOrgButtonClick = async () => {
+  const handleJoinPodButtonClick = async () => {
     const foo = linkedWallet;
     let litSignatureExistResult;
     try {
@@ -280,22 +164,22 @@ const CurrentRoleModal = (props) => {
   };
 
   useEffect(() => {
-    if (orgId && open) {
-      getOrgRoles({
+    if (podId && open) {
+      getPodRoles({
         variables: {
-          orgId,
+          podId,
         },
       });
-      getAutoClaimableOrgRoles({
+      getAutoClaimablePodRoles({
         variables: {
-          orgId,
+          podId,
         },
       });
     }
-  }, [getOrgRoles, orgId, open]);
+  }, [getPodRoles, podId, open]);
 
-  const orgRoles = orgRolesData?.getOrgRoles; // all roles for org
-  const noneCurrentRoles = orgRoles?.filter((role) => role.name !== currentRoleName);
+  const podRoles = podRolesData?.getPodRoles; // all roles for pod
+  const noneCurrentRoles = podRoles?.filter((role) => role.name !== currentRoleName);
   const rolesWithAccessCondition = noneCurrentRoles?.filter((role) => {
     if (role.discordRolesInfo?.length > 0) return true;
     if (role.tokenGatingCondition) return true;
@@ -306,8 +190,8 @@ const CurrentRoleModal = (props) => {
     if (role.tokenGatingCondition) return false;
     return true;
   });
-  const currentRole = currentRoleName && orgRoles?.find((r) => r.name === currentRoleName);
-  const claimableRoles = autoClaimableRolesData?.getAutoClaimableOrgRoles;
+  const currentRole = currentRoleName && podRoles?.find((r) => r.name === currentRoleName);
+  const claimableRoles = autoClaimableRolesData?.getAutoClaimablePodRoles;
   const selectedRole = selectedRoleId && noneCurrentRoles?.find((r) => r.id === selectedRoleId);
   const selectedRoleHasAccessCondition =
     selectedRole?.discordRolesInfo?.length > 0 || selectedRole?.tokenGatingCondition;
@@ -332,11 +216,11 @@ const CurrentRoleModal = (props) => {
 
     // try {
     //   await apollo.mutate({
-    //     mutation: CLAIM_ORG_ROLE,
+    //     mutation: CLAIM_POD_ROLE,
     //     variables: {
-    //       orgRoleId: selectedRole?.id,
+    //       podRoleId: selectedRole?.id,
     //     },
-    //     refetchQueries: ['getUserOrgRoles'],
+    //     refetchQueries: ['getUserPodRoles'],
     //   });
     // } catch (e) {
     //   console.error(e);
