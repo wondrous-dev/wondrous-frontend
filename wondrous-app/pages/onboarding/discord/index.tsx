@@ -10,11 +10,15 @@ import { useMe, withAuth } from 'components/Auth/withAuth';
 
 function ConnectDiscordPage() {
   const router = useRouter();
+  const {collabInvite} = router.query
   const user = useMe();
 
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
+    let nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
 
+    if(collabInvite) {
+      nextStep = nextStep + '?collabInvite=' + collabInvite;
+    }
     router.push(nextStep, undefined, { shallow: true });
   };
 

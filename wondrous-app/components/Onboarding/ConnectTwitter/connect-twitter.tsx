@@ -22,6 +22,8 @@ import TwitterSmallLogo from '../../../public/images/onboarding/twitter-logo.svg
 
 export function ConnectTwitter({ firstOrg, firstPod }) {
   const router = useRouter();
+  const {collabInvite} = router.query
+
   const isMobile = useIsMobile();
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
@@ -46,6 +48,16 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
   };
 
   const handleLaterClick = () => {
+    // if user has collabInvite token and is not a member of an org we assume they want to create a new org  
+
+    if(collabInvite && !firstOrg) {
+      return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
+        shallow: true,
+      });
+    }
+    if(collabInvite && firstOrg) {
+      return router.push(`/invite/collab/${collabInvite}`, undefined, {shallow: true})
+    }
     if (firstPod) {
       router.push(`/pod/${firstPod.id}/boards`, undefined, {
         shallow: true,

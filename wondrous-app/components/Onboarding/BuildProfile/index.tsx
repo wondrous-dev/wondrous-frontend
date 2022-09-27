@@ -20,6 +20,7 @@ import {
 
 export function OnboardingBuildProfile({ updateUser }) {
   const router = useRouter();
+  const {collabInvite} = router.query;
   const [bio, setBio] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const user = useMe();
@@ -64,8 +65,10 @@ export function OnboardingBuildProfile({ updateUser }) {
   );
 
   const goToNextStep = () => {
-    const nextStep = user?.userInfo?.email ? '/onboarding/discord' : '/onboarding/email';
-
+    let nextStep = user?.userInfo?.email ? '/onboarding/discord' : '/onboarding/email';
+    if(collabInvite) {
+      nextStep = nextStep + '?collabInvite=' + collabInvite;
+    }
     router.push(nextStep, undefined, { shallow: true });
   };
 

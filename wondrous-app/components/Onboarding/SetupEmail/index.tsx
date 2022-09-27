@@ -14,6 +14,7 @@ export function SetupEmail({ firstOrg, firstPod }) {
   const [loading, setLoading] = useState(null);
   const user = useMe();
   const router = useRouter();
+  const {collabInvite} = router.query
   const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
 
   useEffect(() => {
@@ -21,8 +22,11 @@ export function SetupEmail({ firstOrg, firstPod }) {
   }, []);
 
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress ? '/onboarding/discord' : '/onboarding/twitter';
+    let nextStep = user.activeEthAddress ? '/onboarding/discord' : '/onboarding/twitter';
 
+    if(collabInvite) {
+      nextStep = nextStep + '?collabInvite=' + collabInvite;
+    }
     router.push(nextStep, undefined, { shallow: true });
   };
 

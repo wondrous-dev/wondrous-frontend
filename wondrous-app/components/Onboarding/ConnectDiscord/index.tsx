@@ -25,10 +25,14 @@ export function ConnectDiscord({ updateUser }) {
   const router = useRouter();
   const [bio, setBio] = useState('');
   const user = useMe();
-  const { discordUserExists, discordError, success } = router.query;
+  const { discordUserExists, discordError, success, collabInvite } = router.query;
   const isMobile = useIsMobile();
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
+    let nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
+
+    if(collabInvite) {
+      nextStep = nextStep + '?collabInvite=' + collabInvite;
+    }
 
     router.push(nextStep, undefined, { shallow: true });
   };

@@ -1,13 +1,31 @@
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/router';
-import { useLazyQuery, useMutation } from '@apollo/client';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth, useMe } from 'components/Auth/withAuth';
+import { MainWrapper } from 'components/Onboarding/styles';
+import { GET_ORG_COLLAB_REQUEST_BY_TOKEN, GET_USER_ORGS } from 'graphql/queries';
+import CollabInvite from 'components/CollabInvite';
 
 const CollabsOnboardingPage = () => {
   const router = useRouter();
   const { token } = router.query;
   const user = useMe();
+  const { data: userOrgs } = useQuery(GET_USER_ORGS, {
+    skip: !user?.id,
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      excludeSharedOrgs: true,
+    },
+  });
 
+  const { data, loading, error } = useQuery(GET_ORG_COLLAB_REQUEST_BY_TOKEN, {
+    variables: {
+        token
+    },
+    skip: !token
+  });
+
+  console.log(data, user, userOrgs)
   /*
 
     step 1: Fetch request from token
@@ -19,7 +37,11 @@ const CollabsOnboardingPage = () => {
     step 7: Redirect to collab page
 
   */
-  return null;
+  return (
+    <MainWrapper>
+        {data && <CollabInvite orgRequestInfo={data} />}
+    </MainWrapper>
+  )
 };
 
 export default withAuth(CollabsOnboardingPage);

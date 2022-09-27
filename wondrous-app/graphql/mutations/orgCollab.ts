@@ -44,3 +44,11 @@ export const BATCH_ADD_MEMBERS = gql`
     }
   }
 `;
+
+export const REDEEM_COLLAB_TOKEN = gql`
+  mutation redeemOrgCollabRequestInviteToken($orgId: ID!, $token: String!) {
+    redeemOrgCollabRequestInviteToken(orgId: $orgId, token: $token) {
+      username
+    }
+  }
+`;

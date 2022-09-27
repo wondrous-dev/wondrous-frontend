@@ -62,3 +62,22 @@ export const GET_ORG_COLLAB_REQUESTS_FOR_INITIATOR = gql`
     }
   }
 `;
+
+export const GET_ORG_COLLAB_REQUEST_BY_TOKEN = gql`
+  query getOrgCollabRequestByToken($token: String!) {
+    getOrgCollabRequestByToken(token: $token) {
+      id
+      initiatorOrg {
+        username
+        name
+        profilePicture
+      }
+      initiator {
+        username
+        profilePicture
+      }
+      title
+      mission
+    }
+  }
+`;
