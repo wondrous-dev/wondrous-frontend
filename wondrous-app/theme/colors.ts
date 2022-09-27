@@ -13,7 +13,6 @@ export const greyColors = {
   grey10: '#F4F4F4',
   grey20: '#E0E0E0',
   grey30: '#C6C6C6',
-  grey33: '#C4C4C4',
   grey35: '#B5B6B7',
   grey40: '#A8A8A8',
   grey50: '#8D8D8D',
