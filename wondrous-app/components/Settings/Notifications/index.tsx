@@ -94,7 +94,7 @@ function Notifications({ orgId }) {
 
   return (
     <SettingsWrapper>
-      <Grid container>
+      <Grid container maxWidth="740px">
         <HeaderBlock
           icon={<NotificationOutlineSettings width="32" height="32" />}
           title="Notifications"

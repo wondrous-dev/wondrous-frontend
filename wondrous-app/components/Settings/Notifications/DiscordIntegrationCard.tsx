@@ -52,7 +52,16 @@ const DiscordIntegrationCard = ({ title, disabled, discordChannels, channel, onC
 
   if (expanded) {
     rightButton = channel ? (
-      <WonderButton variant="outlined" color="red" height={30} borderRadius={6} onClick={onDisconnect}>
+      <WonderButton
+        variant="outlined"
+        color="red"
+        height={30}
+        borderRadius={6}
+        onClick={() => {
+          setSelectedChannel(null);
+          onDisconnect();
+        }}
+      >
         Disconnect
       </WonderButton>
     ) : (
