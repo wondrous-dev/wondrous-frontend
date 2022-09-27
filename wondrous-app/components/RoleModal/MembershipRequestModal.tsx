@@ -1,15 +1,15 @@
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
-import { GET_USER_JOIN_ORG_REQUEST } from 'graphql/queries/org';
+import { GET_USER_JOIN_ORG_REQUEST, GET_USER_JOIN_POD_REQUEST } from 'graphql/queries';
 import { ErrorText } from 'components/Common';
 import { ActionButton } from 'components/Common/Task/styles';
 import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
-import { CREATE_JOIN_ORG_REQUEST } from 'graphql/mutations/org';
+import { CREATE_JOIN_ORG_REQUEST, CREATE_JOIN_POD_REQUEST } from 'graphql/mutations';
 import { StyledCancelButton, StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
-import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
+import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
 import {
   RequestLightBoxContainer,
   RequestMiddleContainer,
@@ -31,7 +31,7 @@ import {
 } from './styles';
 
 const MembershipRequestModal = (props) => {
-  const { open, onClose, orgId, requestingRole, setOpenCurrentRoleModal } = props;
+  const { open, onClose, orgId, podId, requestingRole, setOpenCurrentRoleModal } = props;
   const [requestMessage, setRequestMessage] = useState('');
   const [error, setError] = useState(null);
   const [openSuccessModal, setOpenSuccessModal] = useState(false);
@@ -43,6 +43,13 @@ const MembershipRequestModal = (props) => {
     refetchQueries: [GET_USER_JOIN_ORG_REQUEST],
   });
 
+  const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST, {
+    onCompleted: () => {
+      setOpenSuccessModal(true);
+    },
+    refetchQueries: [GET_USER_JOIN_POD_REQUEST],
+  });
+
   const handleSubmit = () => {
     if (!requestMessage) {
       setError('Please enter a request message');
@@ -52,6 +59,15 @@ const MembershipRequestModal = (props) => {
       createJoinOrgRequest({
         variables: {
           orgId,
+          message: requestMessage,
+          roleId: requestingRole.id,
+        },
+      });
+    }
+    if (podId) {
+      createJoinPodRequest({
+        variables: {
+          podId,
           message: requestMessage,
           roleId: requestingRole.id,
         },

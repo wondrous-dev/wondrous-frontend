@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { getRoleColorByName } from 'components/Settings/Members/MembersTableRow/helpers';
+import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helpers';
 import styled from 'styled-components';
 
 export const MemberRolePill = styled(Typography)`
@@ -10,7 +10,7 @@ export const MemberRolePill = styled(Typography)`
     font-size: 14px;
     padding: 4px 12px 4px 12px;
     border-radius: 30px;
-    border: 1px solid ${(props) => getRoleColorByName(props.roleName)};
+    border: 1px solid ${(props) => getRoleColor(props.roleName)};
     font-family: 'Space Grotesk';
     color: white;
     align-items: center;

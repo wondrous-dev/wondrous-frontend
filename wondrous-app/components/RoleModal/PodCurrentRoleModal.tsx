@@ -11,7 +11,6 @@ import {
 } from 'graphql/queries';
 import { CLAIM_ORG_ROLE, CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
-import { useMe } from 'components/Auth/withAuth';
 import { useWonderWeb3 } from 'services/web3';
 import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import ChecklistRow from 'components/CheckList/ChecklistRow';
@@ -21,7 +20,7 @@ import NoRolesIcon from 'components/Icons/noRolesIcon';
 import { DiscordIcon } from 'components/Icons/discord';
 import { Tooltip, CircularProgress } from '@mui/material';
 import useGuildXyz from 'services/guildxyz';
-import SuccessRoleModal from 'components/Common/RoleSuccessModal/SuccessRoleModal';
+import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
 
 import {
   RequestLightBoxContainer,
@@ -232,7 +231,7 @@ const CurrentRoleModal = (props) => {
   const {
     open,
     onClose,
-    orgId,
+    podId,
     notLinkedWalletError,
     linkedWallet,
     currentRoleName,

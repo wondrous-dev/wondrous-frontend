@@ -34,9 +34,9 @@ import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import BoardLock from 'components/BoardLock';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import CurrentRoleModal from 'components/organization/wrapper/CurrentRoleModal';
+import CurrentRoleModal from 'components/RoleModal/CurrentRoleModal';
+import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import MembershipRequestModal from './MembershipRequestModal';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
@@ -197,7 +197,6 @@ function Wrapper(props) {
   const [permissions, setPermissions] = useState(undefined);
   const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
-  const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
@@ -310,7 +309,6 @@ function Wrapper(props) {
         onClose={() => setOpenJoinRequestModal(false)}
         setOpenCurrentRoleModal={setOpenCurrentRoleModal}
         requestingRole={claimedOrRequestedRole}
-        setJoinRequestSent={setJoinRequestSent}
       />
       <CurrentRoleModal
         orgId={orgBoard?.orgId}
@@ -452,7 +450,7 @@ function Wrapper(props) {
                 />
                 {permissions === null && (
                   <>
-                    {joinRequestSent || userJoinRequest?.id ? (
+                    {userJoinRequest?.id ? (
                       <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
                     ) : (
                       <HeaderButton

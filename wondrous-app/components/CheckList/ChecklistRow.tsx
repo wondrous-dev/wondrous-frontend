@@ -3,7 +3,7 @@ import {
   RequestModalRolesAbilityCloseIcon,
   RequestModalRolesAbilityRows,
   RequestModalRolesAbilityText,
-} from 'components/organization/wrapper/styles';
+} from 'components/RoleModal/styles';
 import React from 'react';
 
 const ChecklistRow = ({ role, status }) => (

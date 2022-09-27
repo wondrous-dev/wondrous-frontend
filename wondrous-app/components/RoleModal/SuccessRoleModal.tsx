@@ -9,7 +9,7 @@ import {
   RequestModalSuccessContainer,
   RequestModalTitle,
   RequestModalTitleBar,
-} from 'components/organization/wrapper/styles';
+} from 'components/RoleModal/styles';
 import RolePill from 'components/Common/RolePill';
 
 const SuccessRoleModal = (props) => {

@@ -1,5 +1,5 @@
 import { Button, Typography } from '@mui/material';
-import { getRoleColorByName } from 'components/Settings/Members/MembersTableRow/helpers';
+import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helpers';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -73,16 +73,6 @@ export const MemberRequestCard = styled.div`
   padding: 8px 0;
   font-family: 'Space Grotesk';
   width: 100%;
-`;
-
-export const MemberRolePill = styled(Typography)`
-  font-size: 14px;
-  padding: 4px 12px 4px 12px;
-  border-radius: 30px;
-  border: 1px solid ${(props) => getRoleColorByName(props.role)};
-  font-family: 'Space Grotesk';
-  color: white;
-  align-items: center;
 `;
 
 export const MemberProfileLink = styled.a`

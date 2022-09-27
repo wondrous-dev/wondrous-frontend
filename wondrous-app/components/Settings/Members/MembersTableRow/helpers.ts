@@ -31,24 +31,18 @@ export const filterRoles = (roles, isOwner, userIsOwner) => {
 };
 
 export const getRoleEmoji = (role) => {
+  // role is either the role object or rolename
   if (!role) {
     return '';
   }
-  const roleLabel = role.label || role.name;
-  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
 
-  if (correspondingRoleKey) {
-    return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].emoji;
+  let correspondingRoleKey;
+  if (typeof role === 'string') {
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === role);
+  } else {
+    const roleLabel = role.label || role.name;
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
   }
-
-  return ROLE_COLORS_AND_EMOJIS[ROLES.DEFAULT].emoji;
-};
-
-export const getRoleEmojiByName = (roleName) => {
-  if (!roleName) {
-    return '';
-  }
-  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleName);
 
   if (correspondingRoleKey) {
     return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].emoji;
@@ -58,24 +52,17 @@ export const getRoleEmojiByName = (roleName) => {
 };
 
 export const getRoleColor = (role) => {
+  // role is either the role object or rolename
   if (!role) {
     return '';
   }
-  const roleLabel = role.label || role.name;
-  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
-
-  if (correspondingRoleKey) {
-    return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].color;
+  let correspondingRoleKey;
+  if (typeof role === 'string') {
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === role);
+  } else {
+    const roleLabel = role.label || role.name;
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
   }
-
-  return ROLE_COLORS_AND_EMOJIS[ROLES.DEFAULT].color;
-};
-
-export const getRoleColorByName = (roleName) => {
-  if (!roleName) {
-    return '';
-  }
-  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleName);
 
   if (correspondingRoleKey) {
     return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].color;
