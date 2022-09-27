@@ -31,7 +31,6 @@ import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
-import { GET_JOIN_ORG_REQUESTS } from 'graphql/queries';
 import RolePill from 'components/Common/RolePill';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
@@ -213,23 +212,21 @@ function ColumnEntry(props: Props) {
       accept: () =>
         approveJoinOrgRequest({
           variables: {
-            userId,
-            orgId,
-            roleId,
+            joinOrgRequestId: id,
           },
         }).then(() => positiveCallback()),
       decline: () =>
         rejectJoinOrgRequest({
           variables: {
-            userId,
-            orgId,
-            roleId,
+            joinOrgRequestId: id,
           },
         }).then(() => negativeCallback()),
     };
     if (podId) {
-      config.accept = () => approveJoinPodRequest({ variables: { userId, podId } }).then(() => positiveCallback());
-      config.decline = () => rejectJoinPodRequest({ variables: { userId, podId } }).then(() => negativeCallback());
+      config.accept = () =>
+        approveJoinPodRequest({ variables: { joinOrgRequestId: id } }).then(() => positiveCallback());
+      config.decline = () =>
+        rejectJoinPodRequest({ variables: { joinOrgRequestId: id } }).then(() => negativeCallback());
     }
     return config;
   };

@@ -52,12 +52,6 @@ export const RequestModalHorizontalAlign = styled.div`
   align-items: center;
 `;
 
-export const RequestModalTokenGatingItem = styled.div`
-  border: 1px solid ${redColors.red300};
-  border-radius: 4px;
-  padding: 4px;
-`;
-
 export const RequestModalTokenGatingLockBackground = styled.div`
   background-color: ${greyColors.grey920};
   border-radius: 4px;
@@ -227,7 +221,7 @@ export const RequestModalCustomPopper = styled.div`
 
 export const RequestModalTextareaWrapper = styled.div`
   margin-top: 42px;
-  color: ${greyColors.grey33};
+  color: ${greyColors.grey250};
   background: ${greyColors.grey910};
   border-radius: 6px;
   padding: 15px 18px;
@@ -280,7 +274,7 @@ export const RequestModalTypeItem = styled(MenuItem)`
 `;
 
 export const RequestModalTextarea = styled(TextareaAutosize)`
-  color: ${greyColors.grey33};
+  color: ${greyColors.grey250};
   border-radius: 6px;
   background: ${greyColors.grey910};
   width: 100%;

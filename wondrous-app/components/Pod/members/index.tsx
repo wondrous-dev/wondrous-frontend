@@ -87,21 +87,19 @@ function MemberRequests(props) {
   ];
   const showEmptyState = podUserMembershipRequests?.length === 0;
 
-  const approveRequest = (userId, podId) => {
+  const approveRequest = (requestId) => {
     approveJoinPodRequest({
       variables: {
-        userId,
-        podId,
+        joinOrgRequestId: requestId,
       },
       refetchQueries,
     });
   };
 
-  const declineRequest = (userId, podId) => {
+  const declineRequest = (requestId) => {
     rejectJoinPodRequest({
       variables: {
-        userId,
-        podId,
+        joinOrgRequestId: requestId,
       },
       refetchQueries,
     });
@@ -182,12 +180,8 @@ function MemberRequests(props) {
                   <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
                   <RolePill roleName={request.roleName} />
                   <RequestActionButtons>
-                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.podId)}>
-                      Decline
-                    </RequestDeclineButton>
-                    <RequestApproveButton onClick={() => approveRequest(request.userId, request.podId)}>
-                      Approve
-                    </RequestApproveButton>
+                    <RequestDeclineButton onClick={() => declineRequest(request.id)}>Decline</RequestDeclineButton>
+                    <RequestApproveButton onClick={() => approveRequest(request.id)}>Approve</RequestApproveButton>
                   </RequestActionButtons>
                 </MemberRequestCard>
               ))}

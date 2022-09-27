@@ -105,16 +105,16 @@ export const CREATE_JOIN_POD_REQUEST = gql`
 `;
 
 export const APPROVE_JOIN_POD_REQUEST = gql`
-  mutation approveJoinPodRequest($userId: ID!, $podId: ID!) {
-    approveJoinPodRequest(userId: $userId, podId: $podId) {
+  mutation approveJoinPodRequest($joinPodRequestId: ID!) {
+    approveJoinPodRequest(joinPodRequestId: $joinPodRequestId) {
       success
     }
   }
 `;
 
 export const REJECT_JOIN_POD_REQUEST = gql`
-  mutation rejectJoinPodRequest($userId: ID!, $podId: ID!) {
-    rejectJoinPodRequest(userId: $userId, podId: $podId) {
+  mutation rejectJoinPodRequest($joinPodReqeustId: ID!) {
+    rejectJoinPodRequest(joinPodRequestId: $joinPodRequestId) {
       success
     }
   }

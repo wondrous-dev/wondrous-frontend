@@ -206,6 +206,8 @@ export const SEARCH_ORG_USERS = gql`
     }
   }
 `;
+
+// used for admin dashboard
 export const GET_JOIN_ORG_REQUESTS = gql`
   query getJoinOrgRequests($limit: Int, $offset: Int, $sortOrder: String, $orgId: ID, $podIds: [ID]) {
     getJoinOrgRequests(limit: $limit, offset: $offset, sortOrder: $sortOrder, orgId: $orgId, podIds: $podIds) {
@@ -233,6 +235,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
   }
 `;
 
+// used in org members tab
 export const GET_ORG_MEMBERSHIP_REQUEST = gql`
   query getOrgMembershipRequest($orgId: ID!, $limit: Int, $offset: Int) {
     getOrgMembershipRequest(orgId: $orgId, limit: $limit, offset: $offset) {

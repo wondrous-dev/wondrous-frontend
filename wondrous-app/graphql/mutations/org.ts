@@ -61,16 +61,16 @@ export const CREATE_JOIN_ORG_REQUEST = gql`
 `;
 
 export const APPROVE_JOIN_ORG_REQUEST = gql`
-  mutation approveJoinOrgRequest($userId: ID!, $orgId: ID!, $roleId: ID!) {
-    approveJoinOrgRequest(userId: $userId, orgId: $orgId, roleId: $roleId) {
+  mutation approveJoinOrgRequest($joinOrgRequestId: ID!) {
+    approveJoinOrgRequest(joinOrgRequestId: $joinOrgRequestId) {
       success
     }
   }
 `;
 
 export const REJECT_JOIN_ORG_REQUEST = gql`
-  mutation rejectJoinOrgRequest($userId: ID!, $orgId: ID!, $roleId: ID!) {
-    rejectJoinOrgRequest(userId: $userId, orgId: $orgId, roleId: $roleId) {
+  mutation rejectJoinOrgRequest($joinOrgRequestId: ID!) {
+    rejectJoinOrgRequest(joinOrgRequestId: $joinOrgRequestId) {
       success
     }
   }
@@ -124,4 +124,12 @@ export const CREATE_ORG = gql`
     }
   }
   ${OrgFragment}
+`;
+
+export const CLAIM_ORG_ROLE = gql`
+  mutation claimOrgRole($orgRoleId: ID!) {
+    claimOrgRole(orgRoleId: $orgRoleId) {
+      success
+    }
+  }
 `;

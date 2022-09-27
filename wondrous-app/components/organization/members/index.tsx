@@ -86,24 +86,20 @@ function MemberRequests(props) {
   ];
   const showEmptyState = orgUserMembershipRequests?.length === 0;
 
-  const approveRequest = (userId, orgId, roleId) => {
+  const approveRequest = (id) => {
     approveJoinOrgRequest({
       variables: {
-        userId,
-        orgId,
-        roleId,
+        joinOrgRequestId: id,
       },
       refetchQueries,
     });
   };
 
   // REMEMBER COLUMN ENTRY
-  const declineRequest = (userId, orgId, roleId) => {
+  const declineRequest = (id) => {
     rejectJoinOrgRequest({
       variables: {
-        userId,
-        orgId,
-        roleId,
+        joinOrgRequestId: id,
       },
       refetchQueries,
     });
@@ -185,12 +181,10 @@ function MemberRequests(props) {
                   <RolePill roleName={request.roleName} />
 
                   <RequestActionButtons>
-                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.orgId, request.roleId)}>
-                      Decline
-                    </RequestDeclineButton>
+                    <RequestDeclineButton onClick={() => declineRequest(request.id)}>Decline</RequestDeclineButton>
                     <RequestApproveButton
                       onClick={() => {
-                        approveRequest(request.userId, request.orgId, request.roleId);
+                        approveRequest(request.id);
                       }}
                     >
                       Approve
