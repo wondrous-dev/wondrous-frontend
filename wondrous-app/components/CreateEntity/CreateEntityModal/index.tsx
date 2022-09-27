@@ -403,11 +403,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
-  const isPrivacySelectorEnabled =
-    getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
-
+  const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
-
+  console.log('orgBoard', orgBoard, podBoard);
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
   const handleSubmitTemplate = (template) => {
@@ -513,6 +511,24 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       });
     }
   }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
+
+  useEffect(() => {
+    if (existingTask?.privacyLevel) {
+      form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    } else if (podBoard) {
+      if (isInPrivatePod) {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      } else if (podBoard?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      }
+    } else if (orgBoard) {
+      if (orgBoard?.orgData?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      } else {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      }
+    }
+  }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
 
   const exportProposalToSnapshot = async () => {
     const receipt = await exportTaskProposal(existingTask);
@@ -1628,12 +1644,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={!isPrivacySelectorEnabled}
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
             renderValue={(value) => (
-              <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
+              <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
                   <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
                   <CreateEntitySelectArrowIcon />
