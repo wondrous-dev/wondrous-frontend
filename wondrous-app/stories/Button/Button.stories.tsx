@@ -44,6 +44,8 @@ const ColorTemplate: ComponentStory<typeof Button> = (props) => (
     <Button color="primary">Primary</Button>
     <Button color="grey">Grey</Button>
     <Button color="purple">Purple</Button>
+    <Button color="blue">Blue</Button>
+    <Button color="red">Red</Button>
   </Container>
 );
 export const Color = ColorTemplate.bind({});
@@ -52,6 +54,12 @@ const OutlinedTemplate: ComponentStory<typeof Button> = (args) => (
   <Container>
     <Button variant="outlined" color="purple">
       Purple
+    </Button>
+    <Button color="blue" variant="outlined">
+      Blue
+    </Button>
+    <Button color="red" variant="outlined">
+      Red
     </Button>
   </Container>
 );
@@ -67,6 +75,12 @@ const DisableStateTemplate: ComponentStory<typeof Button> = (props) => (
     </Button>
     <Button color="purple" disabled>
       Purple
+    </Button>
+    <Button color="blue" disabled>
+      Blue
+    </Button>
+    <Button color="red" disabled>
+      Red
     </Button>
   </Container>
 );
