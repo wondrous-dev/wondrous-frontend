@@ -1,5 +1,7 @@
 /* eslint-disable max-lines */
 import moment from 'moment';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
@@ -10,7 +12,6 @@ import DropdownSearch from 'components/DropdownSearch';
 import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
 import { useFormik } from 'formik';
-import GitHubIcon from '@mui/icons-material/GitHub';
 import {
   ATTACH_MEDIA_TO_TASK,
   REMOVE_MEDIA_FROM_TASK,
@@ -141,13 +142,14 @@ import {
   EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
+  SnapshotButtonBlock,
+  CreateEntityPaymentMethodSelected,
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
-  SnapshotButtonBlock,
-  CreateEntityPaymentMethodSelected,
 } from './styles';
+
 import { MediaItem } from '../MediaItem';
 import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
@@ -244,7 +246,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories.map((category) => category.id);
+      const categories = values?.categories.map((category) => category.id || category);
       const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
         values;
       const input = {
@@ -1327,7 +1329,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
-
+        {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Category</CreateEntityLabel>
@@ -1659,7 +1661,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
                   {existingTask ? 'Save changes' : `Create ${entityType}`}
                 </CreateEntityCreateTaskButton>
-                {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
+                {!isEmpty(form.errors) && <CreateEntityError>Please check your input fields</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>
             </>
           )}
