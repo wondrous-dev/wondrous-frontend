@@ -405,7 +405,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
-
+  console.log('orgBoard', orgBoard, podBoard);
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
   const handleSubmitTemplate = (template) => {
@@ -513,13 +513,23 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
 
   useEffect(() => {
-    if (isInPrivatePod && !existingTask) {
-      form.setFieldValue('privacyLevel', privacyOptions.private.value);
-    } else if (existingTask?.privacyLevel) {
+    if (existingTask?.privacyLevel) {
       form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    } else if (podBoard) {
+      if (isInPrivatePod) {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      } else if (podBoard?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      }
+    } else if (orgBoard) {
+      if (orgBoard?.orgData?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      } else {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      }
     }
-  }, [isInPrivatePod, existingTask?.privacyLevel]);
-  console.log('what the');
+  }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
+
   const exportProposalToSnapshot = async () => {
     const receipt = await exportTaskProposal(existingTask);
     if (!receipt) {
