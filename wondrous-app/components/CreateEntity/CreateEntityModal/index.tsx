@@ -515,10 +515,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   useEffect(() => {
     if (isInPrivatePod && !existingTask) {
       form.setFieldValue('privacyLevel', privacyOptions.private.value);
-    } else if (existingTask) {
+    } else if (existingTask?.privacyLevel) {
       form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
     }
-  }, [isInPrivatePod, existingTask]);
+  }, [isInPrivatePod, existingTask?.privacyLevel]);
+  console.log('what the');
   const exportProposalToSnapshot = async () => {
     const receipt = await exportTaskProposal(existingTask);
     if (!receipt) {
