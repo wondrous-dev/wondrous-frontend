@@ -330,7 +330,6 @@ export const PERMISSIONS = {
   EDIT_TASK: 'edit_task', // edit task even when you are not the creator
   MANAGE_BOARD: 'manage_board', /// move task around, but can't move it to 'done'
   APPROVE_PAYMENT: 'approve_payment',
-  CAN_COMMENT: 'can_comment',
   FULL_ACCESS: 'full_access',
   MANAGE_MEMBER: 'manage_member',
   REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
@@ -347,7 +346,6 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.EDIT_TASK]: 'Edit task',
   [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
   [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
-  [PERMISSIONS.CAN_COMMENT]: 'Can comment',
   [PERMISSIONS.MANAGE_POD]: 'Manage pod',
   [PERMISSIONS.REORDER_TASK]: 'Reorder task',
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
