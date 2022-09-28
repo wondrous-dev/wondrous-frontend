@@ -515,6 +515,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   useEffect(() => {
     if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
       form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    } else if (existingTask && existingTask?.privacyLevel === null) {
+      form.setFieldValue('privacyLevel', privacyOptions.private.value);
     } else if (podBoard) {
       if (isInPrivatePod) {
         form.setFieldValue('privacyLevel', privacyOptions.private.value);
