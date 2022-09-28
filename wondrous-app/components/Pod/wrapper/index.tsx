@@ -154,7 +154,6 @@ function Wrapper(props) {
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
-  const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
   const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
   const boardFilters = podBoard?.filters || {};
@@ -252,6 +251,7 @@ function Wrapper(props) {
   }, [podBoard?.podId]);
 
   const showFilters = router?.pathname === '/pod/[podId]/boards';
+  console.log('setOpenCurrentRoleModal', setOpenCurrentRoleModal);
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -266,7 +266,6 @@ function Wrapper(props) {
         podId={podBoard?.podId}
         open={openCurrentRoleModal}
         onClose={() => setOpenCurrentRoleModal(false)}
-        notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
         currentRoleName={podRoleName}
         setOpenJoinRequestModal={setOpenJoinRequestModal}
@@ -378,7 +377,12 @@ function Wrapper(props) {
                   {permissions && podRoleName && (
                     <RoleButtonWrapper>
                       <RoleText>Your Role:</RoleText>
-                      <RolePill roleName={podRoleName} />
+                      <RolePill
+                        roleName={podRoleName}
+                        onClick={() => {
+                          setOpenCurrentRoleModal(true);
+                        }}
+                      />
                     </RoleButtonWrapper>
                   )}
 

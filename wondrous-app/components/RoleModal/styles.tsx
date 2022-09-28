@@ -9,6 +9,7 @@ import CloseModalIconRed from 'components/Icons/closeModalRed';
 import { ChevronLeft } from '@mui/icons-material';
 import SuccessRole from 'components/Icons/successRole';
 import { LockedIconOutline, LockIconOutline } from 'components/Icons/userpass';
+import { Button } from 'components/Common/Wallet/styles';
 
 export const RequestModalHorizontalAlign = styled.div`
   flex-direction: 'row';
@@ -32,7 +33,7 @@ export const RequestModalTokenGatingSubtitle = styled.div`
     font-size: 14px;
     font-weight: 500;
     font-family: 'Space Grotesk';
-    color: ${(props) => props.color};
+    color: white;
   }
 `;
 
@@ -316,4 +317,66 @@ export const RequestModalBox = styled.div`
   && {
     background-color: ${greyColors.grey98};
   }
+`;
+
+export const LitWarningMessage = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    color: ${palette.white};
+    margin-left: 10px;
+    margin-bottom: 5px;
+  }
+`;
+
+export const ClaimRoleWarningWrapper = styled.div`
+  background: ${palette.violet950};
+  padding: 10px;
+  display: flex;
+  gap: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 6px;
+  border: 1px solid ${palette.violet100};
+  margin-bottom: 10px;
+  ${Button} {
+    background: ${palette.background.default};
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
+      mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
+      mask-composite: xor;
+      padding: 1.8px;
+      border-radius: 1000px;
+    }
+    &:hover {
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
+    }
+  }
+`;
+
+export const ClaimRoleInfoWrapper = styled.div`
+  background: ${palette.green720};
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 6px;
+  margin-bottom: 10px;
 `;

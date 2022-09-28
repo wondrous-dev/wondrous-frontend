@@ -2,20 +2,17 @@ import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { ActionButton } from 'components/Common/Task/styles';
 import { GET_TOKEN_INFO, GET_NFT_INFO } from 'graphql/queries';
-import ChecklistRow from 'components/CheckList/ChecklistRow';
+import ChecklistRow from 'components/RoleModal/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
 import apollo from 'services/apollo';
 import NoRolesIcon from 'components/Icons/noRolesIcon';
 import { DiscordIcon } from 'components/Icons/discord';
 import { Tooltip, CircularProgress } from '@mui/material';
 import useGuildXyz from 'services/guildxyz';
-import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
 
 import {
   RequestModalCheckbox,
   RequestModalCheckPillCombo,
-  RequestModalCloseIcon,
-  RequestModalContainer,
   RequestModalHelperContainer,
   RequestModalHelperDiv,
   RequestModalHorizontalAlign,
@@ -26,10 +23,9 @@ import {
   RequestModalRolesAbilityColumns,
   RequestModalRolesAbilityContainer,
   RequestModalRolesSubtitle,
-  RequestModalTitle,
-  RequestModalTitleBar,
   RequestModalTokenGatingLockBackground,
   RequestModalTokenGatingSubtitle,
+  ClaimRoleInfoWrapper,
 } from './styles';
 
 const AccessConditionDispaly = (props) => {
@@ -39,63 +35,64 @@ const AccessConditionDispaly = (props) => {
   const { getGuildById } = useGuildXyz();
   const [guildRoleInfo, setGuildRoleInfo] = useState(null);
   const [tokenGatingInfo, setTokenGatingInfo] = useState(null);
-  useEffect(() => {
-    const fetchGuildRole = async () => {
-      const guild = await getGuildById(guildAccessCondition?.guildId);
-      const role = guild?.roles?.find((r) => r.id === Number(guildAccessCondition?.roleId));
-      setGuildRoleInfo({ guild: guild.name, role: role?.name });
-    };
 
+  const fetchGuildRole = async () => {
+    const guild = await getGuildById(guildAccessCondition?.guildId);
+    const role = guild?.roles?.find((r) => r.id === Number(guildAccessCondition?.roleId));
+    setGuildRoleInfo({ guild: guild.name, role: role?.name });
+  };
+
+  useEffect(() => {
     if (guildAccessCondition?.roleId) {
       fetchGuildRole();
     }
   }, [guildAccessCondition?.roleId]);
 
-  useEffect(() => {
-    const getTokenDisplayInfo = async () => {
-      const { contractAddress } = tokenAccessCondition;
-      switch (tokenAccessCondition.type) {
-        case 'ERC20':
-          apollo
-            .query({
-              query: GET_TOKEN_INFO,
-              variables: {
-                contractAddress,
-                chain: tokenAccessCondition.chain,
-              },
-            })
-            .then(({ data }) => {
-              setTokenGatingInfo({
-                chain: tokenAccessCondition.chain,
-                image: data?.getTokenInfo.logoUrl,
-                nameOrAddress: data?.getTokenInfo.name || tokenAccessCondition.contractAddress,
-                minAmount: tokenAccessCondition.minValue,
-              });
+  const getTokenDisplayInfo = async () => {
+    const { contractAddress } = tokenAccessCondition;
+    switch (tokenAccessCondition.type) {
+      case 'ERC20':
+        apollo
+          .query({
+            query: GET_TOKEN_INFO,
+            variables: {
+              contractAddress,
+              chain: tokenAccessCondition.chain,
+            },
+          })
+          .then(({ data }) => {
+            setTokenGatingInfo({
+              chain: tokenAccessCondition.chain,
+              image: data?.getTokenInfo.logoUrl,
+              nameOrAddress: data?.getTokenInfo.name || tokenAccessCondition.contractAddress,
+              minAmount: tokenAccessCondition.minValue,
             });
-          break;
-        case 'ERC721':
-          apollo
-            .query({
-              query: GET_NFT_INFO,
-              variables: {
-                contractAddress,
-                chain: tokenAccessCondition.chain,
-              },
-            })
-            .then(({ data }) => {
-              setTokenGatingInfo({
-                chain: tokenAccessCondition.chain,
-                image: data?.getNFTInfo.logoUrl,
-                nameOrAddress: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
-                minAmount: tokenAccessCondition.minValue,
-              });
+          });
+        break;
+      case 'ERC721':
+        apollo
+          .query({
+            query: GET_NFT_INFO,
+            variables: {
+              contractAddress,
+              chain: tokenAccessCondition.chain,
+            },
+          })
+          .then(({ data }) => {
+            setTokenGatingInfo({
+              chain: tokenAccessCondition.chain,
+              image: data?.getNFTInfo.logoUrl,
+              nameOrAddress: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
+              minAmount: tokenAccessCondition.minValue,
             });
-          break;
-        default:
-          break;
-      }
-    };
+          });
+        break;
+      default:
+        break;
+    }
+  };
 
+  useEffect(() => {
     if (tokenAccessCondition?.contractAddress) {
       getTokenDisplayInfo();
     }
@@ -104,15 +101,26 @@ const AccessConditionDispaly = (props) => {
   return (
     <>
       {role?.discordRolesInfo?.length > 0 && (
-        <RequestModalTokenGatingSubtitle>
-          connected to: {role?.discordRolesInfo[0].name}
-        </RequestModalTokenGatingSubtitle>
+        <ClaimRoleInfoWrapper>
+          <RequestModalTokenGatingSubtitle>
+            If you have discord role: {role?.discordRolesInfo[0].name}
+          </RequestModalTokenGatingSubtitle>
+        </ClaimRoleInfoWrapper>
       )}
       {tokenGatingInfo && (
-        <RequestModalTokenGatingSubtitle>connected to: {tokenGatingInfo.nameOrAddress}</RequestModalTokenGatingSubtitle>
+        <ClaimRoleInfoWrapper>
+          <RequestModalTokenGatingSubtitle>Token gate: {tokenGatingInfo.nameOrAddress}</RequestModalTokenGatingSubtitle>
+          <RequestModalTokenGatingSubtitle>
+            Min Amt: {tokenGatingInfo.minAmount} | Chain: {tokenGatingInfo.chain}
+          </RequestModalTokenGatingSubtitle>
+        </ClaimRoleInfoWrapper>
       )}
       {guildRoleInfo && (
-        <RequestModalTokenGatingSubtitle>connected to: {guildRoleInfo.role}</RequestModalTokenGatingSubtitle>
+        <ClaimRoleInfoWrapper>
+          <RequestModalTokenGatingSubtitle>
+            If you have Guild.xyz role: {guildRoleInfo.role}
+          </RequestModalTokenGatingSubtitle>
+        </ClaimRoleInfoWrapper>
       )}
     </>
   );
@@ -120,22 +128,22 @@ const AccessConditionDispaly = (props) => {
 
 export const RolePermissionDisplay = (props) => {
   const { role } = props;
-  const roleCanDo = Object.keys(PERMISSIONS).filter((key) => role?.permissions?.includes(PERMISSIONS[key]));
-  const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !role?.permissions?.includes(PERMISSIONS[key]));
+  const roleCanDo = Object.values(PERMISSIONS).filter((value) => role?.permissions?.includes(value));
+  const roleCannotDo = Object.values(PERMISSIONS).filter((value) => !role?.permissions?.includes(value));
   return (
     <RequestModalRolesAbilityContainer>
       <RequestModalRolesAbilityColumns>
         <RequestModalRolesSubtitle>This role can:</RequestModalRolesSubtitle>
 
-        {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS.toUpperCase())
-          ? Object.keys(PERMISSIONS)?.map((permission) => (
+        {roleCanDo?.includes(PERMISSIONS.FULL_ACCESS)
+          ? Object.values(PERMISSIONS)?.map((permission) => (
               <ChecklistRow role={permission} key={permission} status="success" />
             ))
           : roleCanDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="success" />)}
       </RequestModalRolesAbilityColumns>
       <RequestModalRolesAbilityColumns>
         <RequestModalRolesSubtitle>This role cannot:</RequestModalRolesSubtitle>
-        {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS.toUpperCase()) &&
+        {roleCannotDo.includes(PERMISSIONS.FULL_ACCESS) &&
           roleCannotDo?.map((permission) => <ChecklistRow role={permission} key={permission} status="fail" />)}
       </RequestModalRolesAbilityColumns>
     </RequestModalRolesAbilityContainer>
@@ -179,7 +187,7 @@ export const IndividualRoleDisplay = (props) => {
                 <RequestModalTokenGatingLockBackground>
                   <SuccessLockedIconOutline />
                 </RequestModalTokenGatingLockBackground>
-                <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
+                <RequestModalTokenGatingSubtitle style={{ paddingLeft: '8px' }}>
                   Can Claim
                 </RequestModalTokenGatingSubtitle>
               </RequestModalHorizontalAlign>
@@ -191,7 +199,7 @@ export const IndividualRoleDisplay = (props) => {
                 <RequestModalTokenGatingLockBackground>
                   <RequestModalLockedIconOutline />
                 </RequestModalTokenGatingLockBackground>
-                <RequestModalTokenGatingSubtitle color="white" style={{ paddingLeft: '8px' }}>
+                <RequestModalTokenGatingSubtitle style={{ paddingLeft: '8px' }}>
                   Requirement Missing
                 </RequestModalTokenGatingSubtitle>
               </RequestModalHorizontalAlign>
@@ -202,7 +210,7 @@ export const IndividualRoleDisplay = (props) => {
       </RequestModalCheckPillCombo>
       {selected && (
         <>
-          {/* {hasAccessCondition && <AccessConditionDispaly role={role} />} */}
+          {hasAccessCondition && <AccessConditionDispaly role={role} />}
           <RolePermissionDisplay role={role} />
         </>
       )}

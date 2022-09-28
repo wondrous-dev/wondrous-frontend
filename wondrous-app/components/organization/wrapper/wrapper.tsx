@@ -201,7 +201,6 @@ function Wrapper(props) {
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
 
-  const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
   const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
@@ -214,7 +213,6 @@ function Wrapper(props) {
   const links = orgProfile?.links;
   const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
-  console.log('userJoinRequest', userJoinRequest);
   const { search, entity, cause } = router.query;
   const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
@@ -314,7 +312,6 @@ function Wrapper(props) {
         orgId={orgBoard?.orgId}
         open={openCurrentRoleModal}
         onClose={() => setOpenCurrentRoleModal(false)}
-        notLinkedWalletError={notLinkedWalletError}
         linkedWallet={loggedInUser?.activeEthAddress}
         currentRoleName={orgRoleName}
         setOpenJoinRequestModal={setOpenJoinRequestModal}

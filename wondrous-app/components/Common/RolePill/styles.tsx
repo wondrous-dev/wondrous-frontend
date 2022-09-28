@@ -1,6 +1,7 @@
 import { Typography } from '@mui/material';
 import { getRoleColor } from 'components/Settings/Members/MembersTableRow/helpers';
 import styled from 'styled-components';
+import typography from 'theme/typography';
 
 export const MemberRolePill = styled(Typography)`
   && {
@@ -11,7 +12,7 @@ export const MemberRolePill = styled(Typography)`
     padding: 4px 12px 4px 12px;
     border-radius: 30px;
     border: 1px solid ${(props) => getRoleColor(props.roleName)};
-    font-family: 'Space Grotesk';
+    font-family: ${typography.fontFamily};
     color: white;
     align-items: center;
     :hover {

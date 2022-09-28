@@ -7,7 +7,7 @@ import { ActionButton } from 'components/Common/Task/styles';
 import { KudosFormTextareaCharacterCount } from 'components/Common/KudosForm/styles';
 import { CREATE_JOIN_ORG_REQUEST, CREATE_JOIN_POD_REQUEST } from 'graphql/mutations';
 import { StyledCancelButton, StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
-import ChecklistRow from 'components/CheckList/ChecklistRow';
+import ChecklistRow from 'components/RoleModal/ChecklistRow';
 import RolePill from 'components/Common/RolePill';
 import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
 import {
@@ -83,8 +83,8 @@ const MembershipRequestModal = (props) => {
   };
 
   const rolePermissions = requestingRole?.permissions;
-  const roleCanDo = Object.keys(PERMISSIONS).filter((key) => rolePermissions?.includes(PERMISSIONS[key]));
-  const roleCannotDo = Object.keys(PERMISSIONS).filter((key) => !rolePermissions?.includes(PERMISSIONS[key]));
+  const roleCanDo = Object.values(PERMISSIONS).filter((value) => rolePermissions?.includes(value));
+  const roleCannotDo = Object.values(PERMISSIONS).filter((value) => !rolePermissions?.includes(value));
 
   if (openSuccessModal) {
     return (

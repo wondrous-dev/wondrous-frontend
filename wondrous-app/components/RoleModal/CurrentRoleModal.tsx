@@ -1,6 +1,8 @@
 import { useLazyQuery } from '@apollo/client';
 import { useEffect, useState } from 'react';
 import { ActionButton } from 'components/Common/Task/styles';
+import { useMe } from 'components/Auth/withAuth';
+import Link from 'next/link';
 import {
   GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
   GET_AUTO_CLAIMABLE_ORG_ROLES,
@@ -10,13 +12,15 @@ import {
 import { CLAIM_ORG_ROLE, CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
 import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { useWonderWeb3 } from 'services/web3';
-import { StyledWarningMessage } from 'components/Common/ArchiveTaskModal/styles';
 import RolePill from 'components/Common/RolePill';
 import apollo from 'services/apollo';
 import NoRolesIcon from 'components/Icons/noRolesIcon';
 import SuccessRoleModal from 'components/RoleModal/SuccessRoleModal';
 import { IndividualRoleDisplay, RolePermissionDisplay } from 'components/RoleModal/RoleModalElement';
 import { ErrorText } from 'components/Common';
+import InfoIcon from 'components/Icons/infoIcon';
+import Tooltip from 'components/Tooltip';
+import palette from 'theme/palette';
 
 import {
   RequestLightBoxContainer,
@@ -34,24 +38,49 @@ import {
   RequestModalRolesSubtitle,
   RequestModalTitle,
   RequestModalTitleBar,
+  LitWarningMessage,
+  ClaimRoleWarningWrapper,
 } from './styles';
 
-const useObtainLitSignature = (activeEthAddress) => {
-  const wonderWeb3 = useWonderWeb3();
+const CurrentRoleModal = (props) => {
+  const { open, onClose, orgId, linkedWallet, currentRoleName, setClaimedOrRequestedRole, setOpenJoinRequestModal } =
+    props;
+  const user = useMe();
 
-  const checkAndObtainLitSignature = async () => {
-    let litSignatureExistResult;
-    try {
-      litSignatureExistResult = await apollo.query({
-        query: LIT_SIGNATURE_EXIST,
-      });
-    } catch (e) {
-      console.error(e);
-      return false;
+  const wonderWeb3 = useWonderWeb3();
+  const [selectedRoleId, setSelectedRoleId] = useState(null);
+  const [openSuccessModal, setOpenSuccessModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [notLinkedWalletError, setNotLinkedWalletError] = useState(null);
+  const [litSignatureRequired, setLitSignatureRequired] = useState(false);
+
+  const [getOrgRoles, { data: orgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
+    fetchPolicy: 'network-only',
+  });
+  const [getAutoClaimableOrgRoles, { data: autoClaimableRolesData, loading: autoClaimLoading }] = useLazyQuery(
+    GET_AUTO_CLAIMABLE_ORG_ROLES,
+    {
+      fetchPolicy: 'network-only',
     }
-    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
-    if (litSignatureExist?.exist) return true;
-    if (!litSignatureExist?.exist) {
+  );
+  const [litSignatureExist, { data: litSignatureExistData, loading: litSignatureLoading }] = useLazyQuery(
+    LIT_SIGNATURE_EXIST,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
+  useEffect(() => {
+    if (linkedWallet) {
+      litSignatureExist();
+    }
+  }, [linkedWallet]);
+
+  const saveLitSignature = async () => {
+    if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
+      setNotLinkedWalletError(true);
+      return;
+    }
+    if (!litSignatureExistData?.litSignatureExist?.exist) {
       try {
         const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
         await apollo.mutate({
@@ -63,38 +92,11 @@ const useObtainLitSignature = (activeEthAddress) => {
             },
           },
         });
-        return true;
       } catch (e) {
         console.error(e);
-        return false;
       }
     }
   };
-};
-const CurrentRoleModal = (props) => {
-  const {
-    open,
-    onClose,
-    orgId,
-    notLinkedWalletError,
-    linkedWallet,
-    currentRoleName,
-    setClaimedOrRequestedRole,
-    setOpenJoinRequestModal,
-  } = props;
-  const [selectedRoleId, setSelectedRoleId] = useState(null);
-  const [openSuccessModal, setOpenSuccessModal] = useState(false);
-  const [errorMessage, setErrorMessage] = useState(null);
-
-  const [getOrgRoles, { data: orgRolesData }] = useLazyQuery(GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
-    fetchPolicy: 'network-only',
-  });
-  const [getAutoClaimableOrgRoles, { data: autoClaimableRolesData, loading: autoClaimLoading }] = useLazyQuery(
-    GET_AUTO_CLAIMABLE_ORG_ROLES,
-    {
-      fetchPolicy: 'network-only',
-    }
-  );
 
   useEffect(() => {
     if (orgId && open) {
@@ -130,6 +132,33 @@ const CurrentRoleModal = (props) => {
     selectedRole?.discordRolesInfo?.length > 0 || selectedRole?.tokenGatingCondition;
   const selectedRoleIsClaimable =
     selectedRoleId && selectedRoleHasAccessCondition && claimableRoles?.some((r) => r.id === selectedRoleId);
+
+  // these are just for error messages
+  const rolesWithTokenGate = rolesWithAccessCondition?.filter((role) => {
+    if (!role.tokenGatingCondition) return false;
+    if (role.tokenGatingCondition?.tokenAccessCondition) return true;
+    return false;
+  });
+
+  const rolesWithDiscordAccess = rolesWithAccessCondition?.filter((role) => {
+    if (role.discordRolesInfo?.length > 0) return true;
+    return false;
+  });
+
+  useEffect(() => {
+    if (!linkedWallet || !wonderWeb3?.address) return;
+    if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
+      setNotLinkedWalletError(null);
+    }
+    if (!rolesWithTokenGate || rolesWithTokenGate.length === 0) return;
+    if (litSignatureLoading) return;
+    if (!litSignatureExistData?.litSignatureExist?.exist) {
+      setLitSignatureRequired(true);
+    }
+    if (litSignatureExistData?.litSignatureExist?.exist) {
+      setLitSignatureRequired(false);
+    }
+  }, [wonderWeb3.address, linkedWallet, rolesWithTokenGate]);
 
   const handleClose = () => {
     onClose();
@@ -178,20 +207,10 @@ const CurrentRoleModal = (props) => {
           height: 'auto',
         }}
       >
-        {notLinkedWalletError && (
-          <StyledWarningMessage
-            style={{
-              marginLeft: 0,
-            }}
-          >
-            {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
-          </StyledWarningMessage>
-        )}
-
         <RequestModalTitleBar>
           <RequestModalTitle>Explore Roles</RequestModalTitle>
 
-          <RequestModalCloseIcon color="#FFFFFF" onClick={handleClose} />
+          <RequestModalCloseIcon color={palette.white} onClick={handleClose} />
         </RequestModalTitleBar>
         <RequestMiddleContainer>
           {currentRoleName && (
@@ -208,7 +227,37 @@ const CurrentRoleModal = (props) => {
             </RequestLightBoxContainer>
           )}
           <RequestLightBoxContainer>
-            <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
+            <Tooltip title="you can still request roles that you lack requirements for" placement="top">
+              <div style={{ display: 'flex' }}>
+                <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
+                <InfoIcon style={{ marginLeft: 5 }} />
+              </div>
+            </Tooltip>
+            {rolesWithDiscordAccess?.length !== 0 && user?.userInfo?.discordUsername && (
+              <ClaimRoleWarningWrapper>
+                <LitWarningMessage>To join via discord, connect your discord to Wonder</LitWarningMessage>
+                <Link href="/profile/setting">
+                  <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
+                </Link>
+              </ClaimRoleWarningWrapper>
+            )}
+            {rolesWithAccessCondition?.length !== 0 && notLinkedWalletError && (
+              <ClaimRoleWarningWrapper>
+                <LitWarningMessage>
+                  {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
+                </LitWarningMessage>
+              </ClaimRoleWarningWrapper>
+            )}
+
+            {!notLinkedWalletError && litSignatureRequired && (
+              <ClaimRoleWarningWrapper>
+                <LitWarningMessage>To join via token gated role, we need a signature from you</LitWarningMessage>
+                <ActionButton style={{ marginLeft: 5 }} onClick={saveLitSignature}>
+                  Click here to sign
+                </ActionButton>
+              </ClaimRoleWarningWrapper>
+            )}
+
             {rolesWithAccessCondition?.length === 0 && (
               <RequestModalNoRolesContainer>
                 <NoRolesIcon />
