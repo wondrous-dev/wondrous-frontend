@@ -20,13 +20,14 @@ import {
 
 export function OnboardingBuildProfile({ updateUser }) {
   const router = useRouter();
-  const {collabInvite} = router.query;
+  const { collabInvite } = router.query;
   const [bio, setBio] = useState('');
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const user = useMe();
   const [image, setImage] = useState('');
   const inputRef: any = useRef();
   const [error, setError] = useState('');
+  const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
 
   useEffect(() => {
     if (user?.bio) {
@@ -65,10 +66,9 @@ export function OnboardingBuildProfile({ updateUser }) {
   );
 
   const goToNextStep = () => {
-    let nextStep = user?.userInfo?.email ? '/onboarding/discord' : '/onboarding/email';
-    if(collabInvite) {
-      nextStep = nextStep + '?collabInvite=' + collabInvite;
-    }
+    const nextStep = user?.userInfo?.email
+      ? `/onboarding/discord${collabInviteQueryString}`
+      : `/onboarding/email${collabInviteQueryString}`;
     router.push(nextStep, undefined, { shallow: true });
   };
 
