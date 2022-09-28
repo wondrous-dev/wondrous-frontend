@@ -74,6 +74,9 @@ const ExplorePodGr15 = ({
   if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
     return (
       <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
         onClick={() => {
           router.push(`/pod/${podProfile?.id}/boards?entity=bounty`, undefined, {
             shallow: true,
