@@ -137,6 +137,14 @@ export const GET_SUBTASK_COUNT_FOR_TASK = gql`
   }
 `;
 
+export const GET_SUBMISSION_COUNT_FOR_TASK = gql`
+  query getSubmissionCountForTask($taskId: ID!, $status: String) {
+    getSubmissionCountForTask(taskId: $taskId, status: $status) {
+      submissionCount
+    }
+  }
+`;
+
 export const GET_SUBTASKS_FOR_TASK = gql`
   query getSubtasksForTask($taskId: ID!, $limit: Int, $offset: Int, $status: String) {
     getSubtasksForTask(taskId: $taskId, limit: $limit, offset: $offset, status: $status) {
