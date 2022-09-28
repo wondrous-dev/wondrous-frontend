@@ -233,10 +233,10 @@ const CurrentRoleModal = (props) => {
                 <InfoIcon style={{ marginLeft: 5 }} />
               </div>
             </Tooltip>
-            {rolesWithDiscordAccess?.length !== 0 && user?.userInfo?.discordUsername && (
+            {rolesWithDiscordAccess?.length !== 0 && !user?.userInfo?.discordUsername && (
               <ClaimRoleWarningWrapper>
                 <LitWarningMessage>To join via discord, connect your discord to Wonder</LitWarningMessage>
-                <Link href="/profile/setting">
+                <Link href="/profile/settings">
                   <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
                 </Link>
               </ClaimRoleWarningWrapper>
