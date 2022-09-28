@@ -10,6 +10,7 @@ import useGuildXyz from 'services/guildxyz';
 
 import palette from 'theme/palette';
 import { AccessCondition, GuildAccessCondition, TokenGatingCondition } from 'types/TokenGating';
+import { ErrorText } from 'components/Common';
 import TokenGateActionMenu from './TokenGatingActionMenu';
 
 type Props = {
@@ -21,8 +22,9 @@ type Props = {
 
 function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Props) {
   const { getGuildById } = useGuildXyz();
-  const guildAccessCondition = tokenGatingCondition?.accessCondition as GuildAccessCondition;
-  const accessCondition = tokenGatingCondition?.accessCondition as AccessCondition;
+  const guildAccessCondition = tokenGatingCondition?.guildAccessCondition as GuildAccessCondition;
+  const tokenAccessCondition = tokenGatingCondition?.tokenAccessCondition?.[0] as AccessCondition;
+  const [guildFetchError, setGuildFetchError] = useState(null);
   const [accessConditions, setAccessConditions] = useState<
     Array<{
       name: string;
@@ -36,16 +38,16 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       setAccessConditions([
         {
           name: 'Chain',
-          value: accessCondition.chain,
+          value: tokenAccessCondition.chain,
         },
         {
           name: 'Token',
           image: data?.getTokenInfo.logoUrl,
-          value: data?.getTokenInfo.name || accessCondition.contractAddress,
+          value: data?.getTokenInfo.name || tokenAccessCondition.contractAddress,
         },
         {
           name: 'Min. amount to hold:',
-          value: accessCondition.minValue,
+          value: tokenAccessCondition.minValue,
         },
       ]);
     },
@@ -57,16 +59,16 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       setAccessConditions([
         {
           name: 'Chain',
-          value: accessCondition.chain,
+          value: tokenAccessCondition.chain,
         },
         {
           name: 'Token',
           image: data?.getNFTInfo.logoUrl,
-          value: data?.getNFTInfo.name || accessCondition.contractAddress,
+          value: data?.getNFTInfo.name || tokenAccessCondition.contractAddress,
         },
         {
           name: 'Min. amount to hold:',
-          value: accessCondition.minValue,
+          value: tokenAccessCondition.minValue,
         },
       ]);
     },
@@ -75,9 +77,17 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
 
   useEffect(() => {
     const fetchGuildRole = async () => {
-      const guild = await getGuildById(guildAccessCondition?.guildId);
-      const role = guild.roles.find((r) => r.id === Number(guildAccessCondition.roleId));
-
+      let guild;
+      try {
+        guild = await getGuildById(guildAccessCondition?.guildId);
+      } catch (e) {
+        setGuildFetchError('Guild not found, the guild might be deleted');
+        return;
+      }
+      const role = guild?.roles?.find((r) => r.id === Number(guildAccessCondition?.roleId));
+      if (!role) {
+        setGuildFetchError('Role might be deleted from guild');
+      }
       setAccessConditions([
         {
           name: 'Guild',
@@ -90,22 +100,21 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       ]);
     };
 
-    if (guildAccessCondition.roleId) {
+    if (guildAccessCondition?.roleId) {
       fetchGuildRole();
     }
   }, [guildAccessCondition?.roleId]);
 
   useEffect(() => {
-    const { contractAddress } = accessCondition;
-
     const getTokenDisplayInfo = async () => {
-      switch (accessCondition.type) {
+      const { contractAddress } = tokenAccessCondition;
+      switch (tokenAccessCondition.type) {
         case 'ERC20':
           {
             getTokenInfo({
               variables: {
                 contractAddress,
-                chain: accessCondition.chain,
+                chain: tokenAccessCondition.chain,
               },
             });
           }
@@ -123,10 +132,10 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
       }
     };
 
-    if (accessCondition.contractAddress) {
+    if (tokenAccessCondition?.contractAddress) {
       getTokenDisplayInfo();
     }
-  }, [accessCondition.contractAddress]);
+  }, [tokenAccessCondition?.contractAddress]);
 
   return (
     <Box
@@ -175,6 +184,7 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
               <Typography color="white" fontSize="15px" fontWeight={500} display="inline">
                 {accessCondition.value}
               </Typography>
+              {setGuildFetchError && <ErrorText>{guildFetchError}</ErrorText>}
             </Grid>
           ))
         ) : (

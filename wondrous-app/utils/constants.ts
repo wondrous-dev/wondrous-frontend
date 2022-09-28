@@ -340,6 +340,21 @@ export const PERMISSIONS = {
   REORDER_TASK: 'reorder_task', // reorder task vertically
 };
 
+export const PERMISSION_TO_DISPLAY = {
+  [PERMISSIONS.FULL_ACCESS]: 'All Permissions',
+  [PERMISSIONS.MANAGE_MEMBER]: 'Add members',
+  [PERMISSIONS.CREATE_TASK]: 'Create task',
+  [PERMISSIONS.EDIT_TASK]: 'Edit task',
+  [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
+  [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
+  [PERMISSIONS.CAN_COMMENT]: 'Can comment',
+  [PERMISSIONS.MANAGE_POD]: 'Manage pod',
+  [PERMISSIONS.REORDER_TASK]: 'Reorder task',
+  [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
+  [PERMISSIONS.MANAGE_POST]: 'Manage post',
+  [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
+};
+
 export const NOTIFICATION_VERBS = {
   task_like: 'liked a',
   mention: 'mentioned you in a',
@@ -763,7 +778,7 @@ export const FEATURED_LIST = [
   {
     username: 'blu3dao',
     imageUrl: 'https://pbs.twimg.com/profile_images/1488749682251628553/c7l6JtMr_400x400.png',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1655502475/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1663944361/1500x500',
     bio: '🦋 making the impossible, possible. ✨ a DAO focused on empowering women & non-binary people to earn, learn & play in web3 via mentorship, community & funding',
     name: 'Blu3 DAO',
   },
@@ -777,14 +792,13 @@ export const FEATURED_LIST = [
   {
     username: 'bobanetwork',
     imageUrl: 'https://pbs.twimg.com/profile_images/1536795904706895872/PVQ769qJ_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1655490876/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1663777233/1500x500',
     bio: 'Lower gas, faster, secured in Ethereum, supercharged with Hybrid Compute: bridge at http://gateway.boba.network',
     name: 'Boba Network',
   },
   {
     username: 'Layer2DAO',
-    imageUrl:
-      'https://app.wonderverse.xyz/_next/image?url=https%3A%2F%2Fstorage.googleapis.com%2Fwondrous-media-prod%2Forg%2Fprofile%2F56980676447043635%2FzbzfvKSepLRufA.jpeg%3FX-Goog-Algorithm%3DGOOG4-RSA-SHA256%26X-Goog-Credential%3Dgcs-admin%2540wondrous-1587456307075.iam.gserviceaccount.com%252F20220922%252Fauto%252Fstorage%252Fgoog4_request%26X-Goog-Date%3D20220922T005133Z%26X-Goog-Expires%3D7200%26X-Goog-SignedHeaders%3Dhost%26X-Goog-Signature%3D630344abb9aa3728847fecc77a9b6535b3361744e0cd58a320faf7b203d2fd834ec6e8a772079f2d563765352c21d5a509f22ce28ba129b761b44269e84fc9605f65d6f3151aea3577d5cb3dd91b968568bb92aa579e11646b4ddb659637214925cd5a37cd187839fda5e6305870ff7568e3d5b0a4aabc3e3d988bce2ff519d1aadaf97a4e6584c4b94e140fe5fa197f796ba4edeaec4a9b9ad143a7f3d4b89c371d194f9dfe6432350b8341ceae462bac86b0713481e002be906ac1c348597156611dfbc58c3416e77b1878aaf864f7731910ea2247e890115a80cc98ccab23affc1d4745ffc6251575ebfc240b5bd5f783a22c95759c283522c23eee77d635&w=128&q=75',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1566191261987512321/CNtKHXGT_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1480302068602576897/1642437751/1500x500',
     bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
     name: 'Layer2 DAO',

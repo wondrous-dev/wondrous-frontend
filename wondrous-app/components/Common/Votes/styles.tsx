@@ -72,7 +72,7 @@ export const VoteRowWrapper = styled.div`
 `;
 
 export const VoteProgressBar = styled.div`
-  background: #2d2d2d;
+  background: ${palette.grey920};
   border-radius: 410px;
   width: 100%;
   height: 5px;
