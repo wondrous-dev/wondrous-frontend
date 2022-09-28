@@ -106,7 +106,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                         width: '29px',
                         height: '29px',
                         marginRight: '0',
-                        marginLeft: '8px',
                       }}
                       isPrivate={bounty?.privacyLevel !== PRIVACY_LEVEL.public}
                       tooltipTitle={bounty?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
