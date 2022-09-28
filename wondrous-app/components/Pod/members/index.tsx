@@ -6,6 +6,7 @@ import { APPROVE_JOIN_POD_REQUEST, REJECT_JOIN_POD_REQUEST } from 'graphql/mutat
 import Wrapper from 'components/Pod/wrapper';
 import { SafeImage } from 'components/Common/Image';
 import { SmallAvatar } from 'components/Common/AvatarList';
+import RolePill from 'components/Common/RolePill';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
@@ -86,21 +87,19 @@ function MemberRequests(props) {
   ];
   const showEmptyState = podUserMembershipRequests?.length === 0;
 
-  const approveRequest = (userId, podId) => {
+  const approveRequest = (requestId) => {
     approveJoinPodRequest({
       variables: {
-        userId,
-        podId,
+        joinOrgRequestId: requestId,
       },
       refetchQueries,
     });
   };
 
-  const declineRequest = (userId, podId) => {
+  const declineRequest = (requestId) => {
     rejectJoinPodRequest({
       variables: {
-        userId,
-        podId,
+        joinOrgRequestId: requestId,
       },
       refetchQueries,
     });
@@ -178,14 +177,11 @@ function MemberRequests(props) {
                       <MemberName>{request.userUsername}</MemberName>
                     </MemberProfileLink>
                   </Link>
-                  <MemberMessage>“{request.message}”</MemberMessage>
+                  <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
+                  <RolePill roleName={request.roleName} />
                   <RequestActionButtons>
-                    <RequestDeclineButton onClick={() => declineRequest(request.userId, request.podId)}>
-                      Decline
-                    </RequestDeclineButton>
-                    <RequestApproveButton onClick={() => approveRequest(request.userId, request.podId)}>
-                      Approve
-                    </RequestApproveButton>
+                    <RequestDeclineButton onClick={() => declineRequest(request.id)}>Decline</RequestDeclineButton>
+                    <RequestApproveButton onClick={() => approveRequest(request.id)}>Approve</RequestApproveButton>
                   </RequestActionButtons>
                 </MemberRequestCard>
               ))}

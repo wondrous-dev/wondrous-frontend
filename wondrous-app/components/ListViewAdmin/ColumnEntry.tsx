@@ -31,7 +31,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
-import { GET_JOIN_ORG_REQUESTS } from 'graphql/queries';
+import RolePill from 'components/Common/RolePill';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
@@ -55,6 +55,8 @@ interface Props {
   podName: string;
   userUsername: string;
   id: string;
+  roleId: string;
+  roleName: string;
   creatorProfilePicture?: string;
   creatorUsername?: string;
   message?: string;
@@ -107,6 +109,8 @@ function ColumnEntry(props: Props) {
     podId,
     userUsername,
     id,
+    roleId,
+    roleName,
     creatorProfilePicture,
     creatorUsername,
     message,
@@ -208,21 +212,21 @@ function ColumnEntry(props: Props) {
       accept: () =>
         approveJoinOrgRequest({
           variables: {
-            userId,
-            orgId,
+            joinOrgRequestId: id,
           },
         }).then(() => positiveCallback()),
       decline: () =>
         rejectJoinOrgRequest({
           variables: {
-            userId,
-            orgId,
+            joinOrgRequestId: id,
           },
         }).then(() => negativeCallback()),
     };
     if (podId) {
-      config.accept = () => approveJoinPodRequest({ variables: { userId, podId } }).then(() => positiveCallback());
-      config.decline = () => rejectJoinPodRequest({ variables: { userId, podId } }).then(() => negativeCallback());
+      config.accept = () =>
+        approveJoinPodRequest({ variables: { joinOrgRequestId: id } }).then(() => positiveCallback());
+      config.decline = () =>
+        rejectJoinPodRequest({ variables: { joinOrgRequestId: id } }).then(() => negativeCallback());
     }
     return config;
   };
@@ -387,6 +391,7 @@ function ColumnEntry(props: Props) {
         <BoldName>{username}</BoldName>
 
         <Description>{entryMessage}</Description>
+        {roleName ? <RolePill roleName={roleName} /> : null}
         {links ? <IconsList items={links} /> : null}
         {media ? <IconsList items={media} type={ICON_TYPES.MEDIA} /> : null}
       </ListViewItemDataContainer>

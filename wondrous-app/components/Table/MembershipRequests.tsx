@@ -167,7 +167,7 @@ export default function MembershipRequestTable(props) {
               {isAdmin && (
                 <StyledTableCell align="center">
                   {/* TODO: change the design for disabled button */}
-                  <DropDownButtonDecision userId={request?.userId} orgId={request?.orgId} podId={request?.podId} />
+                  <DropDownButtonDecision requestId={request?.id} orgId={request?.orgId} podId={request?.podId} />
                 </StyledTableCell>
               )}
               {/* <StyledTableCell align="center">

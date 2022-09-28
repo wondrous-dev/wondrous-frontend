@@ -148,6 +148,8 @@ function ListViewAdmin({ column }: Props) {
               podName={item.podName}
               userUsername={item.userUsername}
               id={item.id}
+              roleId={item.roleId}
+              roleName={item.roleName}
               createdBy={item.createdBy}
               orgId={item.orgId}
               userPermissionsContext={globalContext?.userPermissionsContext}

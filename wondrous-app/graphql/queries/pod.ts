@@ -97,7 +97,7 @@ export const GET_POD_ROLES = gql`
   }
 `;
 
-export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
+export const GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
   query getPodRolesWithTokenGate($podId: ID) {
     getPodRoles(podId: $podId) {
       id
@@ -110,20 +110,56 @@ export const GET_POD_ROLES_WITH_TOKEN_GATE = gql`
         podId
         name
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
         }
+        guildAccessCondition {
+          guildId
+          roleId
+        }
+      }
+      discordRolesInfo {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const GET_AUTO_CLAIMABLE_POD_ROLES = gql`
+  query getAutoClaimablePodRoles($podId: ID!) {
+    getAutoClaimablePodRoles(podId: $podId) {
+      id
+      name
+      default
+      permissions
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
+        }
+      }
+      discordRolesInfo {
+        id
+        name
       }
     }
   }
@@ -174,6 +210,8 @@ export const GET_POD_MEMBERSHIP_REQUEST = gql`
       podId
       approvedAt
       message
+      roleId
+      roleName
       rejectedAt
       userUsername
       userProfilePicture
