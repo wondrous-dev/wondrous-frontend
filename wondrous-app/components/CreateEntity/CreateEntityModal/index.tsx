@@ -405,7 +405,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
-  console.log('orgBoard', orgBoard, podBoard);
+
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
 
   const handleSubmitTemplate = (template) => {
@@ -513,7 +513,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
 
   useEffect(() => {
-    if (existingTask?.privacyLevel) {
+    if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
       form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
     } else if (podBoard) {
       if (isInPrivatePod) {
