@@ -12,6 +12,7 @@ export const Wrapper = styled.div`
   border-radius: 6px;
   border: 1px solid ${palette.grey79};
   padding: 8px;
+  display: ${({ show }) => (show ? 'block' : 'none')};
 `;
 
 export const Item = styled.div`

@@ -271,7 +271,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
       <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
         {columns.map((column) => {
           if (!column) return null;
-          const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || 0;
+          const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || column.count || 0;
           return (
             <Droppable droppableId={column?.status}>
               {(provided) => (

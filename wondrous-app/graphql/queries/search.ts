@@ -49,3 +49,14 @@ export const SEARCH_USER_CREATED_TASKS = gql`
   }
   ${TaskCardFragment}
 `;
+
+export const GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK = gql`
+  query getPerStatusTaskCountForUserCreatedTask {
+    getPerStatusTaskCountForUserCreatedTask {
+      created
+      inProgress
+      completed
+      inReview
+    }
+  }
+`;
