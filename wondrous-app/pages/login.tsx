@@ -25,10 +25,6 @@ import { Button } from 'components/Button';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
 const discordUrlWithoutState = getDiscordUrl();
-const state = JSON.stringify({
-  callbackType: DISCORD_CONNECT_TYPES.login,
-});
-const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 function Login({ csrfToken }) {
   const wonderWeb3 = useWonderWeb3();
@@ -42,6 +38,12 @@ function Login({ csrfToken }) {
   const { discordConnectError, collabInvite } = router.query;
 
   const collabInviteQuery = collabInvite ? `?collabInvite=${collabInvite}` : '';
+
+  const state = JSON.stringify({
+    callbackType: DISCORD_CONNECT_TYPES.login,
+    ...(collabInvite ? { collabInvite } : {}),
+  });
+  const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
   const handleSubmit = async (event) => {
     event.preventDefault();

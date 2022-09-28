@@ -38,6 +38,7 @@ export function ConnectDiscord({ updateUser }) {
   const handleConnectDiscordClick = () => {
     const state = JSON.stringify({
       callbackType: DISCORD_CONNECT_TYPES.connectOnboarding,
+      ...(collabInvite ? { collabInvite } : {}),
     });
     window.location.href = `${DISCORD_OAUTH_URL}&state=${state}`;
   };
