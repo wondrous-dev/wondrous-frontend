@@ -100,23 +100,23 @@ const handleStep = (step, { action, hasError = false }) => {
 
 const useCreateOrg = () => {
   const router = useRouter();
-  const {collabInvite} = router.query;
+  const { collabInvite } = router.query;
 
-  const [redeemCollabToken] = useMutation(REDEEM_COLLAB_TOKEN, {
+  const [redeemCollabToken, { loading: redeemLoading }] = useMutation(REDEEM_COLLAB_TOKEN, {
+    notifyOnNetworkStatusChange: true,
     onCompleted: ({ redeemOrgCollabRequestInviteToken }) => {
-      const {username} = redeemOrgCollabRequestInviteToken
+      const { username } = redeemOrgCollabRequestInviteToken;
       router.push(`/collaboration/${username}/boards`);
-    }
-  })
+    },
+  });
   const [mutation, { loading }] = useMutation(CREATE_ORG, {
     refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
     onCompleted: ({ createOrg }) => {
       const { username, id } = createOrg;
-      if(!collabInvite) {
+      if (!collabInvite) {
         router.push(`organization/${username}/boards`);
-      }
-      else {
-        redeemCollabToken({variables: {orgId: id, token: collabInvite}})
+      } else {
+        redeemCollabToken({ variables: { orgId: id, token: collabInvite } });
       }
     },
   });
@@ -124,7 +124,7 @@ const useCreateOrg = () => {
     const { addBot, ...rest } = values;
     await mutation({ variables: { input: rest } });
   };
-  return { handleCreateOrg: handleMutation, loading };
+  return { handleCreateOrg: handleMutation, loading: loading || redeemLoading };
 };
 
 const useIsOrgUsernameTaken = () => {

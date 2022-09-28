@@ -37,7 +37,6 @@ function OrgSearch(props) {
 
   const handleInputChange = (e) =>
     globalSearch && e.target.value && search({ variables: { searchString: e.target.value } });
-
   return (
     <PodSearchClickAway onClickAway={handleClickAway}>
       <OrgSearchWrapper>

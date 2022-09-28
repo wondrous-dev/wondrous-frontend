@@ -98,7 +98,6 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props)
     };
   }, [userOrgs, selectedOrg1, selectedOrg2]);
 
-  console.log(org2Schema);
   const validationSchema = Yup.object().shape({
     title: Yup.string().required('Title is required'),
     mission: Yup.string().required('Mission is required'),

@@ -71,6 +71,7 @@ export const GET_ORG_COLLAB_REQUEST_BY_TOKEN = gql`
         username
         name
         profilePicture
+        id
       }
       initiator {
         username

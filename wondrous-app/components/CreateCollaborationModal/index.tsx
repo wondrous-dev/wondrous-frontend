@@ -72,7 +72,7 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
         title="Create Project Collaboration"
         footerRight={<div ref={footerRef} />}
         open={open}
-        onClose={onCancel}
+        onClose={onClose}
       >
         <Component />
       </ModalComponent>
