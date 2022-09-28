@@ -18,6 +18,7 @@ import {
 import apollo from 'services/apollo';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { GET_SUBMISSION_COUNT_FOR_TASK } from 'graphql/queries/task';
 import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
@@ -236,7 +237,7 @@ function KanbanBoard(props) {
 
   const location = useLocation();
 
-  const confirmCardMove = (moveAction) => (id, status, index, source) => {
+  const confirmCardMove = (moveAction) => async (id, status, index, source) => {
     const sourceColumn = columns.findIndex((column) => column.status === source.droppableId);
     const taskToUpdate = columns[sourceColumn]?.tasks.find((task) => task?.id === id);
     const taskType = taskToUpdate?.isProposal ? 'taskProposal' : 'task';
@@ -244,16 +245,29 @@ function KanbanBoard(props) {
     if (board?.entityType) {
       viewUrl += `&entity=${board?.entityType}`;
     }
-    const shouldConfirmInReviewTask =
-      status === TASK_STATUS_DONE &&
-      source.droppableId === TASK_STATUS_IN_REVIEW &&
-      taskToUpdate.waitingForReviewSubmissionsCount &&
-      taskToUpdate.waitingForReviewSubmissionsCount > 0; // is this the right logic?
+    let shouldConfirmInReviewTask = false;
+    let pendingSubmissionCount = 0;
+    if (status === TASK_STATUS_DONE) {
+      try {
+        const { data } = await apollo.query({
+          query: GET_SUBMISSION_COUNT_FOR_TASK,
+          variables: {
+            taskId: id,
+            status: 'waiting_for_review',
+          },
+        });
+        shouldConfirmInReviewTask = data?.getSubmissionCountForTask?.submissionCount > 0;
+        pendingSubmissionCount = data?.getSubmissionCountForTask?.submissionCount;
+      } catch (e) {
+        // error fetching this, not a big deal
+        console.error(e);
+      }
+    }
     if (shouldConfirmInReviewTask) {
       setTaskToConfirm({
         task: {
           id: taskToUpdate?.id,
-          waitingForReviewSubmissionsCount: taskToUpdate?.waitingForReviewSubmissionsCount,
+          waitingForReviewSubmissionsCount: pendingSubmissionCount,
           title: taskToUpdate?.title,
         },
         confirmTitle: `Task ${taskToUpdate?.title} has submissions you need to review`,
