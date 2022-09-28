@@ -12,7 +12,13 @@ import {
   SearchBarContainer,
   SearchBarIcon,
   SearchInput,
-} from './styles';
+  CreateNewPodButton,
+  CreateNewPodContainer,
+  CreatePodModalContainer
+} from 'components/Pod/styles';
+
+import CreatePodModal from 'components/CreateEntity/CreatePodModal';
+
 // import { GET_ORG_PODS } from 'graphql/queries/org';
 // import { useLazyQuery } from '@apollo/client';
 
@@ -28,6 +34,9 @@ const PodPage = ({ orgData }) => {
 
   return (
     <PodPageWrapper>
+      <CreatePodModalContainer>
+          {/* <CreatePodModal /> */}
+      </CreatePodModalContainer>
       <PodPageInnerContainer>
         <MainHeading>Pods in Wonderverse</MainHeading>
         <TabsOptionContainer>
@@ -52,6 +61,9 @@ const PodPage = ({ orgData }) => {
                 onChange={(e) => setSerchText(e.target.value)}
               />
             </SearchBarContainer>
+            <CreateNewPodContainer>
+                <CreateNewPodButton>Create new Pods</CreateNewPodButton>
+            </CreateNewPodContainer>
           </ShowALlTab>
 
           <PodsIamInTab active={tabState === TabState.PodsIamIn}>

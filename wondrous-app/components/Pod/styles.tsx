@@ -30,21 +30,21 @@ export const TabsOptionContainer = styled.div`
 `;
 
 export const SearchBarContainer = styled.div`
-  width: 90%;
-  height: 5rem;
+  width: 100%;
+  height: 4rem;
   background-color: #141414;
   display: flex;
   align-items: center;
 `;
 
 export const SearchBarIcon = styled(SearchIcon)`
-  height: 2.2rem;
+  height: 1.5rem;
   margin-left: 1rem;
 `;
 
 export const SearchInput = styled.input`
   margin-left: 0.5rem;
-  font-size: 1.8rem;
+  font-size: 1.3rem;
   font-weight: 400;
   color: #fff;
   background-color: transparent;
@@ -98,3 +98,30 @@ export const PodsIamNotInTab = styled.div`
         display: flex;
     `}
 `;
+
+export const CreateNewPodButton = styled.button`
+  width: 13rem;
+  height: 3rem;
+  background-color: #313131;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 500;
+  border: none;
+  border-radius: 6px;
+`
+
+export const CreateNewPodContainer = styled.div`
+  background-color: #232323;
+  margin-top: 1.2rem;
+  width: 100%;
+  height: 6rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
+
+export const CreatePodModalContainer = styled.div`
+  /* margin-left: 5rem; */
+  position: absolute;
+
+`
