@@ -29,17 +29,22 @@ type Props = {
 
 const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
   const { closeTokenGatingModal, selectedTokenGatingCondition } = useTokenGatingCondition();
-  const { accessCondition } = (selectedTokenGatingCondition || {}) as TokenGatingCondition & {
-    accessCondition: GuildAccessCondition;
+  const { guildAccessCondition } = (selectedTokenGatingCondition || {}) as TokenGatingCondition & {
+    guildAccessCondition: GuildAccessCondition;
   };
   const [name, setName] = useState<string>(selectedTokenGatingCondition?.name);
-  const [roleId, setRoleId] = useState<string>(accessCondition?.roleId);
+  const [roleId, setRoleId] = useState<string>(guildAccessCondition?.roleId);
   const [guild, setGuild] = useState(null);
   const [creationError, setCreationError] = useState(null);
   const { getGuildById } = useGuildXyz();
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+  const selectedRole = guild?.roles?.find((role) => role?.id?.toString() === roleId?.toString());
+
+  useEffect(() => {
+    setName(`Guild: ${guild?.name}, role: ${selectedRole?.name}`);
+  }, [guild, selectedRole]);
 
   const [getOrgGuild, { error: getOrgGuildError }] = useLazyQuery(GET_ORG_GUILD, {
     onCompleted: async (data) => {
@@ -57,13 +62,13 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
   });
 
   useEffect(() => {
-    if (accessCondition?.guildId) {
-      getGuildById(accessCondition?.guildId).then((guildById) => setGuild(guildById));
+    if (guildAccessCondition?.guildId) {
+      getGuildById(guildAccessCondition?.guildId).then((guildById) => setGuild(guildById));
     } else {
       getOrgGuild();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [accessCondition?.guildId]);
+  }, [guildAccessCondition?.guildId]);
 
   const [createGuildAccessConditionForOrg, { loading: creating }] = useMutation(CREATE_GUILD_ACCESS_CONDITION_FOR_ORG, {
     onCompleted: () => {
@@ -157,7 +162,7 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
       </CustomField>
 
       <CustomField label="Name">
-        <TokenGatingTextfieldInput value={name} onChange={(e) => setName(e.target.value)} />
+        <TokenGatingTextfieldInput value={name} />
       </CustomField>
 
       {creationError ? <Typography color={palette.red400}>{creationError}</Typography> : null}
@@ -170,7 +175,7 @@ const TokenGatingGuildForm = ({ orgId, footerRef }: Props) => {
               </Button>
 
               <Button onClick={saveGuild} type="button" disabled={!(roleId && name) || creating || updating}>
-                {selectedTokenGatingCondition ? 'Update' : 'Create'} Guild
+                {selectedTokenGatingCondition ? 'Update' : 'Create'} Guild Token Gate
               </Button>
             </Grid>,
             footerRef.current

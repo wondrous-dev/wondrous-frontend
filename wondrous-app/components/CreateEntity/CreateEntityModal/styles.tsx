@@ -1046,15 +1046,6 @@ export const SnapshotErrorText = styled.div`
   line-height: 10px;
 `;
 
-// export const SnapshotButtonBlock = styled.div`
-//     height: 40px;
-//     display: flex;
-//     flex-direction: column;
-//     justify-content: center;
-//     align-items: center;
-//     margin-left: auto;
-// `;
-
 export const SnapshotButtonBlock = styled.div`
   display: flex;
   justify-content: left;

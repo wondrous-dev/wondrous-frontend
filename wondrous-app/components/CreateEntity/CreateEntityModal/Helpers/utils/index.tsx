@@ -385,6 +385,7 @@ export interface ICreateEntityModal {
     assigneeId?: string;
     recurringSchema?: any;
     parentTaskId?: string;
+    privacyLevel?: string;
   };
   parentTaskId?: string;
   resetEntityType?: Function;

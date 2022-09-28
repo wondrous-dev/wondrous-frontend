@@ -1,21 +1,21 @@
-import { Box, Button, ButtonBase, IconButton, Typography } from '@mui/material';
-import { Button as BorderButton, Button as ButtonComponent } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
-import Image from 'next/image';
+import { Button, IconButton, Typography, ButtonBase } from '@mui/material';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import { Button as BorderButton } from 'components/Common/button';
+import { blackColors, greyColors } from 'theme/colors';
+import { BaseCard } from 'components/Common/card';
 import typography from 'theme/typography';
-import { BaseCard } from '../../Common/card';
-import { LogoCircle } from '../../Common/ci';
-import { LinkIcon } from '../../Icons/linkIcon';
+import { LogoCircle } from 'components/Common/ci';
+import { LinkIcon } from 'components/Icons/linkIcon';
 
 export const OverviewComponent = styled.section`
   width: 100%;
   min-height: 100vh;
   height: 100%;
   //background-color: ${palette.background.default};
-  background-color: #0f0f0f;
+  background-color: ${greyColors.grey910};
   transition: 0.15s all ease;
   padding-bottom: 40px;
 `;
@@ -168,7 +168,7 @@ export const HeaderInviteButton = styled(Button)`
     color: white;
     font-weight: 600;
     font-size: 15px;
-    background: #232323;
+    background: ${blackColors.black92};
     width: 98px;
     height: 39px;
     padding: 7px 7px 7px 14px;
@@ -176,17 +176,17 @@ export const HeaderInviteButton = styled(Button)`
     justify-content: space-between;
 
     :hover {
-      background: #3d3d3d;
+      background: ${greyColors.grey88};
 
       .MuiButton-label > div {
-        background: #232323;
+        background: ${blackColors.black92};
       }
     }
   }
 `;
 
 export const PlusIconWrapper = styled.div`
-  background: #3d3d3d;
+  background: ${greyColors.grey88};
   border-radius: 100%;
   width: 26px;
   height: 26px;
@@ -399,7 +399,7 @@ export const PostComponent = styled(BaseCard)`
 export const PostBlock = styled.div`
   position: relative;
   padding: 0 26px 18px;
-  border-left: 1px solid #4b4b4b;
+  border-left: 1px solid ${greyColors.grey75};
   margin-bottom: 0 !important;
 `;
 
@@ -453,7 +453,7 @@ export const PostTask = styled.div`
   width: 100%;
   padding: 14px 14px 18px;
 
-  border: 1px solid #4b4b4b;
+  border: 1px solid ${greyColors.grey75};
   border-top-right-radius: 6px;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
@@ -588,125 +588,6 @@ export const PostActivity = styled.div`
   height: 18px;
   display: flex;
   justify-content: space-between;
-  align-items: center;
-`;
-
-export const PostLikes = styled(Typography)`
-  && {
-    //width: 45px;
-    font-weight: 500;
-    font-size: 13px;
-    line-height: 17px;
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-
-    & img {
-      margin-right: 10px;
-    }
-  }
-`;
-
-export const PostActivityIcon = styled.img`
-  width: auto;
-  height: auto;
-`;
-
-export const PostComments = styled(PostLikes)``;
-export const PostShares = styled(PostLikes)``;
-
-// token gated related components TODO move elsewhere
-export const TokenGatedRoleWrapper = styled(Box)`
-  && {
-    background: #0f0f0f;
-    border-radius: 6px;
-    padding: 16px;
-    margin-top: 10px;
-    display: flex;
-    justify-content: space-between;
-  }
-`;
-
-export const TokenGatedRoleTitle = styled(Typography)`
-  && {
-    font-weight: 300;
-    font-size: 20px;
-    line-height: 36px;
-    display: flex;
-    align-items: center;
-    color: #ffffff;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  }
-`;
-
-export const TokenGatedRoleDescription = styled(Typography)`
-  && {
-    font-weight: 200;
-    font-size: 15px;
-    line-height: 36px;
-    display: flex;
-    align-items: center;
-    color: #ccbbff;
-    text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-  }
-`;
-
-export function TokenLogoDisplay(props) {
-  return (
-    <SafeImage
-      useNextImage={false}
-      src={props?.src}
-      style={{
-        width: '29px',
-        height: '28px',
-        borderRadius: '4px',
-        marginRight: '5px',
-      }}
-    />
-  );
-}
-
-export const ClaimRoleButton = styled(ButtonComponent)`
-  && {
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
-    min-height: 0;
-    min-width: 0;
-    height: 40px;
-    display: flex;
-    padding: 4px 2px;
-    justify-content: space-between;
-    align-items: center;
-    text-align: center;
-    color: #ffffff;
-    opacity: 0.8;
-    transition: opacity 0.25s;
-    button {
-      padding: 4px 8px;
-      background: rgba(20, 20, 20, 1);
-      font-size: 15px;
-      display: flex;
-      justify-content: flex-start;
-      align-items: center;
-    }
-
-    :hover {
-      opacity: 1;
-    }
-  }
-`;
-
-export const ClaimRoleLabel = styled(Typography)`
-  && {
-    margin-left: 6px;
-    color: #fff;
-    font-weight: 600;
-    font-size: 15px;
-    letter-spacing: -1%;
-  }
-`;
-
-export const RoleActionWrapper = styled.div`
-  display: flex;
   align-items: center;
 `;
 
