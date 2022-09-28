@@ -17,19 +17,19 @@ const COLUMNS_SNAKE_TO_CAMEL_CASE = {
 const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
 
 const SearchResult = () => {
-  const { data: userCreatedtasksData } = useQuery(SEARCH_USER_CREATED_TASKS, {
+  const { data: userCreatedTasksData } = useQuery(SEARCH_USER_CREATED_TASKS, {
     variables: {
       statuses: ['created', 'in_progress', 'in_review', 'completed'],
     },
   });
-  const userCreatedtasks = userCreatedtasksData?.searchUserCreatedTask;
+  const userCreatedTasks = userCreatedTasksData?.searchUserCreatedTask;
   const { data: perStatusCountData } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK);
   const perStatusCount = perStatusCountData?.getPerStatusTaskCountForUserCreatedTask;
-  const taskByStatus = groupBy(userCreatedtasks, 'status');
+  const taskByStatus = groupBy(userCreatedTasks, 'status');
   const columns = ORG_POD_COLUMNS.map(({ status }) => ({
     status,
     tasks: taskByStatus[status],
-    count: perStatusCount[COLUMNS_SNAKE_TO_CAMEL_CASE[status]] || 0,
+    count: perStatusCount?.[COLUMNS_SNAKE_TO_CAMEL_CASE?.[status]] || 0,
   }));
   return (
     <Wrapper>
