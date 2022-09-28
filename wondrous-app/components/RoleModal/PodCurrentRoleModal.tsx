@@ -223,70 +223,74 @@ const PodCurrentRoleModal = (props) => {
               <RolePermissionDisplay role={currentRole} />
             </RequestLightBoxContainer>
           )}
-          <RequestLightBoxContainer>
-            <Tooltip title="you can still request roles that you lack requirements for" placement="top">
-              <div style={{ display: 'flex' }}>
-                <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
-                <InfoIcon style={{ marginLeft: 5 }} />
-              </div>
-            </Tooltip>
+          {rolesWithAccessCondition?.length > 0 && (
+            <RequestLightBoxContainer>
+              <Tooltip title="you can still request roles that you lack requirements for" placement="top">
+                <div style={{ display: 'flex' }}>
+                  <RequestModalRolesSubtitle>Roles you can claim</RequestModalRolesSubtitle>
+                  <InfoIcon style={{ marginLeft: 5 }} />
+                </div>
+              </Tooltip>
 
-            {rolesWithDiscordAccess?.length !== 0 && !user?.userInfo?.discordUsername && (
-              <ClaimRoleWarningWrapper>
-                <LitWarningMessage>To join via discord, connect your discord to Wonder</LitWarningMessage>
-                <Link href="/profile/settings">
-                  <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
-                </Link>
-              </ClaimRoleWarningWrapper>
-            )}
+              {rolesWithDiscordAccess?.length !== 0 && !user?.userInfo?.discordUsername && (
+                <ClaimRoleWarningWrapper>
+                  <LitWarningMessage>To join via discord, connect your discord to Wonder</LitWarningMessage>
+                  <Link href="/profile/settings">
+                    <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
+                  </Link>
+                </ClaimRoleWarningWrapper>
+              )}
 
-            {rolesWithAccessCondition?.length !== 0 && notLinkedWalletError && (
-              <ClaimRoleWarningWrapper>
-                <LitWarningMessage>
-                  {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
-                </LitWarningMessage>
-              </ClaimRoleWarningWrapper>
-            )}
+              {rolesWithAccessCondition?.length !== 0 && notLinkedWalletError && (
+                <ClaimRoleWarningWrapper>
+                  <LitWarningMessage>
+                    {`To join via token gated role, switch to linked wallet ${linkedWallet?.slice(0, 7)}...`}
+                  </LitWarningMessage>
+                </ClaimRoleWarningWrapper>
+              )}
 
-            {!notLinkedWalletError && litSignatureRequired && (
-              <ClaimRoleWarningWrapper>
-                <LitWarningMessage>To join via token gated role, we need a signature from you</LitWarningMessage>
-                <ActionButton style={{ marginLeft: 5 }} onClick={saveLitSignature}>
-                  Click here to sign
-                </ActionButton>
-              </ClaimRoleWarningWrapper>
-            )}
-            {rolesWithAccessCondition?.length === 0 && (
-              <RequestModalNoRolesContainer>
-                <NoRolesIcon />
-                <RequestModalNoRolesSubtitle style={{ marginTop: '8px' }}>
-                  No claimable roles yet
-                </RequestModalNoRolesSubtitle>
-              </RequestModalNoRolesContainer>
-            )}
-            {rolesWithAccessCondition?.map((role, index) => (
-              <IndividualRoleDisplay
-                key={role.id}
-                role={role}
-                selectedRoleId={selectedRoleId}
-                setSelectedRoleId={setSelectedRoleId}
-                hasAccessCondition
-                autoClaimLoading={autoClaimLoading}
-                claimabeRoles={claimableRoles}
-              />
-            ))}
-          </RequestLightBoxContainer>
-          <RequestLightBoxContainer>
-            <RequestModalRolesSubtitle>Roles you can request</RequestModalRolesSubtitle>
-            {rolesWithoutAccessCondition?.map((role, index) => (
-              <IndividualRoleDisplay
-                key={role.id}
-                role={role}
-                selectedRoleId={selectedRoleId}
-                setSelectedRoleId={setSelectedRoleId}
-              />
-            ))}
-          </RequestLightBoxContainer>
+              {!notLinkedWalletError && litSignatureRequired && (
+                <ClaimRoleWarningWrapper>
+                  <LitWarningMessage>To join via token gated role, we need a signature from you</LitWarningMessage>
+                  <ActionButton style={{ marginLeft: 5 }} onClick={saveLitSignature}>
+                    Click here to sign
+                  </ActionButton>
+                </ClaimRoleWarningWrapper>
+              )}
+              {rolesWithAccessCondition?.length === 0 && (
+                <RequestModalNoRolesContainer>
+                  <NoRolesIcon />
+                  <RequestModalNoRolesSubtitle style={{ marginTop: '8px' }}>
+                    No claimable roles yet
+                  </RequestModalNoRolesSubtitle>
+                </RequestModalNoRolesContainer>
+              )}
+              {rolesWithAccessCondition?.map((role, index) => (
+                <IndividualRoleDisplay
+                  key={role.id}
+                  role={role}
+                  selectedRoleId={selectedRoleId}
+                  setSelectedRoleId={setSelectedRoleId}
+                  hasAccessCondition
+                  autoClaimLoading={autoClaimLoading}
+                  claimabeRoles={claimableRoles}
+                />
+              ))}
+            </RequestLightBoxContainer>
+          )}
+          {rolesWithoutAccessCondition?.length > 0 && (
+            <RequestLightBoxContainer>
+              <RequestModalRolesSubtitle>Roles you can request</RequestModalRolesSubtitle>
+              {rolesWithoutAccessCondition?.map((role, index) => (
+                <IndividualRoleDisplay
+                  key={role.id}
+                  role={role}
+                  selectedRoleId={selectedRoleId}
+                  setSelectedRoleId={setSelectedRoleId}
+                />
+              ))}
+            </RequestLightBoxContainer>
+          )}
         </RequestMiddleContainer>
       </RequestModalBox>
 
