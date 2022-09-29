@@ -7,7 +7,7 @@ import { generateColumns } from 'services/board';
 import { COLUMNS_CONFIGURATION, ENTITIES_TYPES } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 
-import { Title, Wrapper } from './styles';
+import { Title, TitleWrapper, TotalTaskCount, Wrapper } from './styles';
 
 const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
 
@@ -26,8 +26,9 @@ const COLUMNS_SNAKE_TO_CAMEL_CASE = {
 };
 
 const useSearchUserCreatedTasks = () => {
-  const [columns, setColumns] = useState(ORG_POD_COLUMNS);
+  const [columns, setColumns] = useState<any>(ORG_POD_COLUMNS);
   useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK, {
+    fetchPolicy: 'cache-and-network',
     onCompleted: ({ getPerStatusTaskCountForUserCreatedTask }) => {
       setColumns(
         handleSetColumns(columns, {
@@ -62,8 +63,9 @@ const useSearchUserCreatedTasks = () => {
   return { columns, setColumns, fetchPerStatus };
 };
 
-const SearchResult = () => {
+const SearchResultUserCreatedTasks = () => {
   const { columns, setColumns, fetchPerStatus } = useSearchUserCreatedTasks();
+  const totalTaskCount = columns.reduce((prev, current) => (current.count || 0) + prev, 0);
   const value = useMemo(
     () => ({
       entityType: ENTITIES_TYPES.TASK,
@@ -75,11 +77,14 @@ const SearchResult = () => {
   return (
     <UserBoardContext.Provider value={value}>
       <Wrapper>
-        <Title>Tasks I've Created</Title>
+        <TitleWrapper>
+          <Title>Tasks I've Created</Title>
+          <TotalTaskCount>{totalTaskCount} tasks</TotalTaskCount>
+        </TitleWrapper>
         <ListView columns={columns} onLoadMore={() => null} hasMore={false} />
       </Wrapper>
     </UserBoardContext.Provider>
   );
 };
 
-export default SearchResult;
+export default SearchResultUserCreatedTasks;

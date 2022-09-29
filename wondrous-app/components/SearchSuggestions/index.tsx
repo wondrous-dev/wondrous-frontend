@@ -1,12 +1,15 @@
 import { useRouter } from 'next/router';
 import { Wrapper, Item, CheckedBox, IconWrapper } from './styles';
 
-const SearchSuggestions = ({ show }) => {
+const SearchSuggestions = ({ show, setParentState }) => {
   const router = useRouter();
-  const handleOnClick = () => router.push('/search-result');
+  const handleOnClick = (suggestion) => () => {
+    setParentState(false);
+    router.push(`/search-result?suggestion=${suggestion}`);
+  };
   return (
     <Wrapper show={show}>
-      <Item onClick={handleOnClick}>
+      <Item onClick={handleOnClick('user-created-tasks')}>
         <IconWrapper>
           <CheckedBox />
         </IconWrapper>

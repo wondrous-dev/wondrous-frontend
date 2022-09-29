@@ -80,6 +80,7 @@ export default function ItemsContainer({ data, taskCount, fetchPerStatus, entity
         hasMore={taskCount > LIMIT && tasks.length <= LIMIT}
         onShowMore={() => handleShowAll(status, taskCount)}
         showMoreTitle="Show all"
+        key={tasks}
       >
         {tasks?.length ? (
           tasks.map((task, idx) => (
