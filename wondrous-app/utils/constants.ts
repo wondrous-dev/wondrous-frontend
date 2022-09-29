@@ -360,7 +360,6 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
   [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
   [PERMISSIONS.MANAGE_POD]: 'Manage pod',
-  [PERMISSIONS.REORDER_TASK]: 'Reorder task',
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
   [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
