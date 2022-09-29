@@ -7,6 +7,8 @@ import { usePodBoard } from 'utils/hooks';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import MilestoneTasks from 'components/Common/MilestoneTask';
 import { CommentList } from 'components/Comment';
+import { useLazyQuery } from '@apollo/client';
+import { GET_SUBTASK_COUNT_FOR_TASK } from 'graphql/queries';
 import {
   TaskModalFooter,
   TaskSectionFooterTitleDiv,
@@ -44,6 +46,7 @@ interface Props {
 }
 
 const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
+  const [getSubtaskCount, { data: subTaskCountData }] = useLazyQuery(GET_SUBTASK_COUNT_FOR_TASK);
   const {
     fullScreen,
     isTaskProposal,
@@ -81,11 +84,21 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
     }
   }, [isMilestone, isTaskProposal, router?.query?.taskCommentId]);
 
+  useEffect(() => {
+    if (fetchedTask?.id && !isSubtask) {
+      getSubtaskCount({
+        variables: {
+          taskId: fetchedTask?.id,
+        },
+      });
+    }
+  }, [fetchedTask?.id, isSubtask]);
   const canCreate =
     permissions.includes(PERMISSIONS.CREATE_TASK) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
 
+  const subTaskCount = subTaskCountData?.getSubtaskCountForTask?.total;
   const canMoveProgress =
     (podBoard && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
@@ -112,7 +125,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
               <TaskTabText isActive={active}>
                 {tab}{' '}
                 {tab === tabs.discussion && <TabItemCount isActive={active}>{fetchedTask?.commentCount}</TabItemCount>}
-                {tab === tabs.subTasks && <TabItemCount isActive={active}>{fetchedTask?.subtaskCount}</TabItemCount>}
+                {tab === tabs.subTasks && <TabItemCount isActive={active}>{subTaskCount}</TabItemCount>}
               </TaskTabText>
             </TaskSubmissionTab>
           );
