@@ -325,19 +325,31 @@ export const MODAL_ACTIONS = {
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
 export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
   EDIT_TASK: 'edit_task', // edit task even when you are not the creator
   MANAGE_BOARD: 'manage_board', /// move task around, but can't move it to 'done'
   APPROVE_PAYMENT: 'approve_payment',
-  CAN_COMMENT: 'can_comment',
   FULL_ACCESS: 'full_access',
   MANAGE_MEMBER: 'manage_member',
   REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
-  REORDER_TASK: 'reorder_task', // reorder task vertically
+};
+
+export const PERMISSION_TO_DISPLAY = {
+  [PERMISSIONS.FULL_ACCESS]: 'All Permissions',
+  [PERMISSIONS.MANAGE_MEMBER]: 'Add members',
+  [PERMISSIONS.CREATE_TASK]: 'Create task',
+  [PERMISSIONS.EDIT_TASK]: 'Edit task',
+  [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
+  [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
+  [PERMISSIONS.MANAGE_POD]: 'Manage pod',
+  [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
+  [PERMISSIONS.MANAGE_POST]: 'Manage post',
+  [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
 };
 
 export const NOTIFICATION_VERBS = {

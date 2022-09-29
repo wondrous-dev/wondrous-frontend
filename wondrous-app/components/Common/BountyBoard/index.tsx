@@ -37,6 +37,7 @@ import {
   BountyBoardEmpty,
 } from './styles';
 import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
@@ -99,9 +100,17 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     </>
                   )}
                   <BountyCardType>{bounty?.type || ''}</BountyCardType>
-                  <BoardsPrivacyLabel>
-                    {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-                  </BoardsPrivacyLabel>
+                  {bounty?.privacyLevel !== PRIVACY_LEVEL.public && (
+                    <ToggleBoardPrivacyIcon
+                      style={{
+                        width: '29px',
+                        height: '29px',
+                        marginRight: '0',
+                      }}
+                      isPrivate={bounty?.privacyLevel !== PRIVACY_LEVEL.public}
+                      tooltipTitle={bounty?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                    />
+                  )}
                 </BoardsCardSubheader>
                 {bounty?.status === TASK_STATUS_DONE && !bounty?.rewards && <CompletedIcon />}
                 {bounty?.rewards && bounty?.rewards?.length > 0 && (
@@ -115,7 +124,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={bounty.description} />
                 </BoardsCardBodyDescription>
-                {bounty?.media?.[0] ? (
+                {bounty?.media?.[0] && bounty?.media?.[0]?.type === 'image' ? (
                   <BoardsCardMedia>
                     <SafeImage
                       useNextImage={false}

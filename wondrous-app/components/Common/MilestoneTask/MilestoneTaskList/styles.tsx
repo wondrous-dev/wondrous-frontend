@@ -5,6 +5,7 @@ import TaskMenuStatus, { TaskStatusMenuButton } from 'components/Common/TaskMenu
 import CalendarIcon from 'components/Icons/calendar';
 import CommentsIcon from 'components/Icons/comments';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const MilestoneTaskListWrapper = styled.div`
   margin-top: 24px;
@@ -147,7 +148,7 @@ export const MilestoneTaskPrivacyAndStatus = styled.div`
 export const MilestoneTaskPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
   && {
     height: 28px;
-    background: #2d2d2d;
+    background: ${palette.grey920};
     border-radius: 6px;
     width: 28px;
     min-width: 28px;

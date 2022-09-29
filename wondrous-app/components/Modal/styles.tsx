@@ -87,7 +87,7 @@ export const ModalHeader = styled.div`
   align-items: center;
   justify-content: space-between;
   padding: 12px;
-  background: #2d2d2d;
+  background: ${palette.grey920};
   border-radius: 6px 6px 0 0;
 `;
 

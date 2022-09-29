@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import Roles from 'components/Settings/Roles';
-import { GET_POD_ROLES_WITH_TOKEN_GATE, GET_POD_BY_ID } from 'graphql/queries';
+import { GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_BY_ID } from 'graphql/queries';
 import { Role } from 'types/common';
 import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from 'graphql/mutations/pod';
 import permissons from 'utils/podPermissions';
@@ -15,14 +15,17 @@ function RolesPage() {
   const [pod, setPod] = useState(null);
   const router = useRouter();
   const { podId } = router.query;
-  const [getPodRolesWithTokenGate, { data: getPodRolesData }] = useLazyQuery(GET_POD_ROLES_WITH_TOKEN_GATE, {
-    variables: {
-      podId,
-    },
-    onCompleted: (data) => {
-      setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
-    },
-  });
+  const [getPodRolesWithTokenGate, { data: getPodRolesData }] = useLazyQuery(
+    GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
+    {
+      variables: {
+        podId,
+      },
+      onCompleted: (data) => {
+        setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
+      },
+    }
+  );
   const [getPodById, { data: getPodData, loading }] = useLazyQuery(GET_POD_BY_ID, {
     onCompleted: (data) => {
       if (data?.getPodById) {
@@ -46,7 +49,7 @@ function RolesPage() {
       setToast({ ...toast, message: `${role.name} created successfully.`, show: true });
       getPodRolesWithTokenGate();
     },
-    refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
+    refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
   });
 
   const [updatePodRole] = useMutation(UPDATE_POD_ROLE, {

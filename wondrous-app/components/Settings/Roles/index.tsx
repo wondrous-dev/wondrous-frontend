@@ -8,7 +8,7 @@ import apollo from 'services/apollo';
 
 import { Role } from 'types/common';
 import { GET_TOKEN_INFO, GET_NFT_INFO, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
-import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD } from 'graphql/queries';
 import {
   APPLY_TOKEN_GATING_TO_ORG_ROLE,
   APPLY_TOKEN_GATING_TO_POD_ROLE,
@@ -386,7 +386,6 @@ function DiscordRoleSelectionModal(props) {
           },
           refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
-        console.log('triggered');
       }
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
@@ -396,7 +395,7 @@ function DiscordRoleSelectionModal(props) {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId: '',
           },
-          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
       }
     } catch (e) {
@@ -416,7 +415,6 @@ function DiscordRoleSelectionModal(props) {
           },
           refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
-        console.log('triggered');
       }
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
@@ -505,7 +503,7 @@ function TokenGateRoleConfigModal(props) {
           variables: {
             podRoleId: selectedRoleForTokenGate?.id,
           },
-          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
       }
     } catch (e) {
@@ -539,7 +537,7 @@ function TokenGateRoleConfigModal(props) {
             tokenGatingConditionId: tokenGatingCondition?.id,
             podRoleId: selectedRoleForTokenGate?.id,
           },
-          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE],
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
       }
     } catch (e) {
