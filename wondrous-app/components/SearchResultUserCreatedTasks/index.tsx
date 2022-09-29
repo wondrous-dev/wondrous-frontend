@@ -3,13 +3,15 @@ import ListView from 'components/ListView';
 import { GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import groupBy from 'lodash/groupBy';
 import { useMemo, useState } from 'react';
-import { generateColumns } from 'services/board';
-import { COLUMNS_CONFIGURATION, ENTITIES_TYPES } from 'utils/constants';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { UserBoardContext } from 'utils/contexts';
 
 import { Title, TitleWrapper, TotalTaskCount, Wrapper } from './styles';
 
-const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG);
+const COLUMNS = [
+  { status: 'created', tasks: [], count: 0 },
+  { status: 'in_progress', tasks: [], count: 0 },
+];
 
 const handleSetColumns = (columns, { key, newVal }) =>
   columns.map(({ status, ...column }) => ({
@@ -26,7 +28,7 @@ const COLUMNS_SNAKE_TO_CAMEL_CASE = {
 };
 
 const useSearchUserCreatedTasks = () => {
-  const [columns, setColumns] = useState<any>(ORG_POD_COLUMNS);
+  const [columns, setColumns] = useState(COLUMNS);
   useQuery(GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK, {
     fetchPolicy: 'cache-and-network',
     onCompleted: ({ getPerStatusTaskCountForUserCreatedTask }) => {
@@ -40,7 +42,7 @@ const useSearchUserCreatedTasks = () => {
   });
   const { fetchMore } = useQuery(SEARCH_USER_CREATED_TASKS, {
     variables: {
-      statuses: ['created', 'in_progress', 'in_review', 'completed'],
+      statuses: ['created', 'in_progress'],
       offset: 0,
       limit: 10,
     },
