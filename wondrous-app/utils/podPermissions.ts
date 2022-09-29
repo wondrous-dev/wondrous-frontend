@@ -47,11 +47,11 @@ const permissons: Permisson[] = [
     subTitle: 'Member can manage pod.',
     permission: PERMISSIONS.MANAGE_POD,
   },
-  {
-    title: 'Posting privileges',
-    subTitle: 'Can post to the activity timeline as brand.',
-    permission: PERMISSIONS.MANAGE_POST,
-  },
+  // {
+  //   title: 'Posting privileges',
+  //   subTitle: 'Can post to the activity timeline as brand.',
+  //   permission: PERMISSIONS.MANAGE_POST,
+  // },
 ];
 
 export default permissons;
