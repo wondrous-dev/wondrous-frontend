@@ -66,8 +66,8 @@ export const TaskFragment = gql`
     orgOrder
     podOrder
     assigneeOrder
-    reactionCount
     commentCount
+    subtaskCount
     privacyLevel
     rewards {
       rewardAmount
@@ -83,7 +83,6 @@ export const TaskFragment = gql`
       monthly
       periodic
     }
-    maxSubmissionCount
     points
     githubIssue {
       id
@@ -135,7 +134,6 @@ export const TaskCardFragment = gql`
     dueDate
     status
     completedAt
-    reactionCount
     commentCount
     orgOrder
     podOrder
@@ -174,7 +172,7 @@ export const TaskCardFragment = gql`
   }
   ${MediaFragment}
 `;
-// Omitting reactionCount, commentCount, share Count
+
 export const TaskProposalCardFragment = gql`
   fragment TaskProposalCardFragment on TaskProposalCard {
     id
@@ -303,6 +301,7 @@ export const TaskSubmissionFragment = gql`
   }
   ${MediaFragment}
 `;
+
 export const TaskProposalFragment = gql`
   fragment TaskProposalFragment on TaskProposal {
     id
@@ -421,7 +420,6 @@ export const BountyFragment = gql`
     reviewers {
       username
     }
-    reactionCount
     commentCount
     orgOrder
     podOrder
@@ -429,7 +427,6 @@ export const BountyFragment = gql`
     paymentStatus
     parentTaskId
     privacyLevel
-    maxSubmissionCount
     categories {
       name
     }
@@ -472,7 +469,6 @@ export const MilestoneFragment = gql`
     orgOrder
     podOrder
     assigneeOrder
-    reactionCount
     commentCount
     privacyLevel
   }
