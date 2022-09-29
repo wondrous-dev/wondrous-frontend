@@ -325,6 +325,7 @@ export const MODAL_ACTIONS = {
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
 export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
   EDIT_TASK: 'edit_task', // edit task even when you are not the creator
@@ -336,7 +337,6 @@ export const PERMISSIONS = {
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
-  REORDER_TASK: 'reorder_task', // reorder task vertically
 };
 
 export const PERMISSION_TO_DISPLAY = {
@@ -347,7 +347,6 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
   [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
   [PERMISSIONS.MANAGE_POD]: 'Manage pod',
-  [PERMISSIONS.REORDER_TASK]: 'Reorder task',
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
   [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
