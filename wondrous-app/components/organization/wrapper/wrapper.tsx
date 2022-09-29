@@ -98,6 +98,9 @@ const ExploreOrgGr15 = ({
   if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
     return (
       <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
         onClick={() => {
           router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
             shallow: true,
