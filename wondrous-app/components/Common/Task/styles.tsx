@@ -410,10 +410,9 @@ export const ProposalCardWrapper = styled.div`
   padding: 14px;
   margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 6px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  background: ${palette.grey900};
   gap: 14px;
-  border: 0px solid transparent;
-  border-radius: 5px;
+  border-radius: 6px;
   position: relative;
   height: fit-content;
   align-items: flex-start;
