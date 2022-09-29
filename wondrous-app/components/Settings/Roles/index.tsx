@@ -386,7 +386,6 @@ function DiscordRoleSelectionModal(props) {
           },
           refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
-        console.log('triggered');
       }
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
