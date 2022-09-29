@@ -1,4 +1,3 @@
-import Checkbox from 'components/Checkbox';
 import { CheckedBoxIcon } from 'components/Icons/checkedBox';
 import styled from 'styled-components';
 import palette from 'theme/palette';
@@ -28,15 +27,15 @@ export const Item = styled.div`
 `;
 
 export const IconWrapper = styled.div`
-    display: flex;
-    align-items: center
-    justify-content: center;
-    height: 24px;
-    width: 24px;
-    border-radius: 4px;
-    ${Item}:hover & {
-        background: ${palette.highlightPurple};
-    }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 24px;
+  width: 24px;
+  border-radius: 4px;
+  ${Item}:hover & {
+    background: ${palette.highlightPurple};
+  }
 `;
 
 export const CheckedBox = styled((props) => <CheckedBoxIcon {...props} stroke="white" pathFill="none" />)``;
