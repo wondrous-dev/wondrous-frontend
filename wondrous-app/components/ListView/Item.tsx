@@ -11,7 +11,7 @@ import Tooltip from 'components/Tooltip';
 import palette from 'theme/palette';
 import { Claim } from 'components/Icons/claimTask';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
-import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_USER_PERMISSION_CONTEXT, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
@@ -82,6 +82,7 @@ export default function ListViewItem({ task, entityType }) {
       'getPerStatusTaskCountForPodBoard',
       'getPerTypeTaskCountForOrgBoard',
       'getPerTypeTaskCountForPodBoard',
+      SEARCH_USER_CREATED_TASKS,
     ],
     onError: () => {
       console.error('Something went wrong with archiving tasks');
@@ -185,6 +186,7 @@ export default function ListViewItem({ task, entityType }) {
       'getPerStatusTaskCountForOrgBoard',
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForPodBoard',
+      SEARCH_USER_CREATED_TASKS,
     ],
     onError: () => {
       console.error('Something went wrong unarchiving tasks');
