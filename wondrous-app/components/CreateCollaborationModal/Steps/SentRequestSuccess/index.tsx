@@ -80,23 +80,16 @@ const SentRequestSuccess = ({ orgs, footerRef, onClose, token }) => {
           ? 'Share with people and groups. Once they accept, the workspace will be activated and both parties can add members to this shared workspace.'
           : 'The other project will now receive an invitation. Once they accept, the workspace will be activated and both parties can add members to this shared workspace.'}
       </Typography>
-      <InviteThruLinkInputWrapper>
-        <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
-        {/* {copy ? (
-              <>
-                <InviteThruLinkButtonSuccessLabel>Link copied!</InviteThruLinkButtonSuccessLabel> <CopySuccessIcon />
-              </>
-            ) : (
-              <>
-                <InviteThruLinkButtonLabel>Copy link</InviteThruLinkButtonLabel> <CopyIcon color="#7427FF" />
-              </>
-            )} */}
+      {!!token && (
+        <InviteThruLinkInputWrapper>
+          <InviteThruLinkTextField variant="outlined" value={`${inviteLink}`} disabled />
 
-        <CopyLinkButton onClick={handleOnCopy}>
-          <LinkIcon />
-          {copy ? 'Link Copied' : 'Copy Link'}
-        </CopyLinkButton>
-      </InviteThruLinkInputWrapper>
+          <CopyLinkButton onClick={handleOnCopy}>
+            <LinkIcon />
+            {copy ? 'Link Copied' : 'Copy Link'}
+          </CopyLinkButton>
+        </InviteThruLinkInputWrapper>
+      )}
       {footerRef.current
         ? createPortal(
             <Grid container gap="18px">
