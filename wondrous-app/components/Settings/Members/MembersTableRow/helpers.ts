@@ -31,11 +31,18 @@ export const filterRoles = (roles, isOwner, userIsOwner) => {
 };
 
 export const getRoleEmoji = (role) => {
+  // role is either the role object or rolename
   if (!role) {
     return '';
   }
-  const roleLabel = role.label || role.name;
-  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
+
+  let correspondingRoleKey;
+  if (typeof role === 'string') {
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === role);
+  } else {
+    const roleLabel = role.label || role.name;
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
+  }
 
   if (correspondingRoleKey) {
     return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].emoji;
@@ -45,11 +52,17 @@ export const getRoleEmoji = (role) => {
 };
 
 export const getRoleColor = (role) => {
+  // role is either the role object or rolename
   if (!role) {
     return '';
   }
-  const roleLabel = role.label || role.name;
-  const correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
+  let correspondingRoleKey;
+  if (typeof role === 'string') {
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === role);
+  } else {
+    const roleLabel = role.label || role.name;
+    correspondingRoleKey = Object.keys(ROLES).find((key) => ROLES[key] === roleLabel);
+  }
 
   if (correspondingRoleKey) {
     return ROLE_COLORS_AND_EMOJIS[ROLES[correspondingRoleKey]].color;

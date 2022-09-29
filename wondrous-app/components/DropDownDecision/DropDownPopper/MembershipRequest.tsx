@@ -12,7 +12,7 @@ const DECISIONS = [
 ];
 
 export function DropDownPopper(props) {
-  const { onClose, userId, orgId, podId } = props;
+  const { onClose, orgId, podId, requestId } = props;
   const [approveJoinOrgRequest] = useMutation(APPROVE_JOIN_ORG_REQUEST);
   const [rejectJoinOrgRequest] = useMutation(REJECT_JOIN_ORG_REQUEST);
   const [approveJoinPodRequest] = useMutation(APPROVE_JOIN_POD_REQUEST);
@@ -23,8 +23,7 @@ export function DropDownPopper(props) {
     if (decision === DECISION_REJECT) {
       rejectJoinOrgRequest({
         variables: {
-          orgId,
-          userId,
+          joinOrgRequestId: requestId,
         },
         refetchQueries: refetchQueries(),
       });
@@ -33,8 +32,7 @@ export function DropDownPopper(props) {
     if (decision === DECISION_APPROVE_ONLY) {
       approveJoinOrgRequest({
         variables: {
-          userId,
-          orgId,
+          joinOrgRequestId: requestId,
         },
         refetchQueries: refetchQueries(),
       });
@@ -47,8 +45,7 @@ export function DropDownPopper(props) {
     if (decision === DECISION_REJECT) {
       rejectJoinPodRequest({
         variables: {
-          podId,
-          userId,
+          joinPodRequestId: requestId,
         },
         refetchQueries: refetchQueries(),
       });
@@ -57,8 +54,7 @@ export function DropDownPopper(props) {
     if (decision === DECISION_APPROVE_ONLY) {
       approveJoinPodRequest({
         variables: {
-          userId,
-          podId,
+          joinPodRequestId: requestId,
         },
         refetchQueries: refetchQueries(),
       });

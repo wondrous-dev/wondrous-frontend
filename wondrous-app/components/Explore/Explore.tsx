@@ -99,6 +99,9 @@ function ExploreComponent() {
     if (key === activeTab) {
       return setActiveTab(null);
     }
+    router.push(`/explore?tab=${key}`, undefined, {
+      shallow: true,
+    });
     return setActiveTab(key);
   };
   const tabs = [
@@ -115,33 +118,37 @@ function ExploreComponent() {
       title: 'Explore work',
       color: 'linear-gradient(180deg, #FFFFFF 0%, #FFD653 100%)',
       rotateDeg: '-70deg',
-      action: () => handleTabClick(TABS_LABELS.BOUNTY),
+      action: () => {
+        handleTabClick(TABS_LABELS.BOUNTY);
+      },
       iconPseudoStyleWidth: '110%',
       key: TABS_LABELS.BOUNTY,
       icon: <BountyCone />,
       hoverColor: 'linear-gradient(88.88deg, #525252 24.45%, #FFD653 91.22%)',
     },
-    // TODO: unhide after we gather enough tasks and bounties
-    // {
-    //   title: 'GR15 Members',
-    //   color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
-    //   hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
-    //   action: () => {
-    //     getGr15ExploreTasks();
-    //     handleTabClick(TABS_LABELS.GR15_DEI);
-    //   },
-    //   key: TABS_LABELS.GR15_DEI,
-    //   rotateDeg: '-40deg',
-    //   icon: <GR15DEI />,
-    // },
+    {
+      title: 'GR15 Members',
+      color: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+      hoverColor: 'linear-gradient(91.14deg, #C1ADFE 1.96%, #83CCB9 48.21%, #FBA3B8 98.48%, #FFE98A 130.65%)',
+      action: () => {
+        handleTabClick(TABS_LABELS.GR15_DEI);
+      },
+      key: TABS_LABELS.GR15_DEI,
+      rotateDeg: '-40deg',
+      icon: <GR15DEI />,
+    },
   ];
 
   useEffect(() => {
     if (router?.query?.tab) {
       setActiveTab(router.query?.tab);
-      getGr15ExploreTasks();
+      if (router?.query?.tab === TABS_LABELS.GR15_DEI) {
+        getGr15ExploreTasks();
+      } else if (router?.query?.tab === TABS_LABELS.BOUNTY) {
+        filterBounties(null);
+      }
     }
-  }, [router]);
+  }, [router, getGr15ExploreTasks, filterBounties]);
 
   return (
     <OverviewComponent

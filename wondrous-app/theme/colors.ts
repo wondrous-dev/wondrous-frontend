@@ -31,6 +31,7 @@ export const greyColors = {
   grey80: '#393939',
   grey85: '#363636',
   grey87: '#313131',
+  grey88: '#3d3d3d',
   grey90: '#262626',
   grey95: '#1f1f1f',
   grey97: '#2c2c2c',

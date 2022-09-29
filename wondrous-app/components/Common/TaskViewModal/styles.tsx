@@ -53,7 +53,7 @@ export const TaskModalCard = styled.div`
 export const TaskModalHeader = styled.div`
   display: flex;
   align-items: center;
-  background: #2d2d2d;
+  background: ${palette.grey920};
   height: 56px;
   padding: 12px;
   justify-content: space-between;
@@ -766,7 +766,7 @@ export const TaskTabText = styled(Typography)`
   }
 `;
 
-export const DiscussionCount = styled.span`
+export const TabItemCount = styled.span`
   background: ${({ isActive }) => (isActive ? '#282828' : '#282828')};
   padding: 2px 8px;
   border-radius: 200px;

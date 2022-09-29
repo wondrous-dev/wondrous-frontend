@@ -91,7 +91,6 @@ import {
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
 } from './Helpers';
-
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
@@ -148,6 +147,7 @@ import {
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
+  SnapshotErrorText,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -155,7 +155,6 @@ import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
-import { SnapshotErrorText } from '../styles';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
@@ -403,9 +402,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
-  const isPrivacySelectorEnabled =
-    getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
-
+  const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
@@ -513,6 +510,24 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       });
     }
   }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
+
+  useEffect(() => {
+    if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
+      form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    } else if (podBoard) {
+      if (isInPrivatePod) {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      } else if (podBoard?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      }
+    } else if (orgBoard) {
+      if (orgBoard?.orgData?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      } else {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      }
+    }
+  }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
 
   const exportProposalToSnapshot = async () => {
     const receipt = await exportTaskProposal(existingTask);
@@ -1628,12 +1643,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={!isPrivacySelectorEnabled}
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={form.handleChange('privacyLevel')}
             renderValue={(value) => (
-              <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
+              <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
                   <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
                   <CreateEntitySelectArrowIcon />

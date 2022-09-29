@@ -1,31 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
-import { Box } from '@mui/system';
-import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
-import { LIT_PROTOCOL_MESSAGE } from 'utils/web3Constants';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard, useTokenGating } from 'utils/hooks';
-import { useWonderWeb3 } from 'services/web3';
-import {
-  GET_USER_JOIN_POD_REQUEST,
-  GET_TOKEN_GATED_ROLES_FOR_POD,
-  LIT_SIGNATURE_EXIST,
-  GET_ORG_BY_ID,
-  GET_TASKS_PER_TYPE_FOR_POD,
-} from 'graphql/queries';
-import { MembershipRequestModal } from 'components/organization/wrapper/RequestModal';
-import { CREATE_JOIN_POD_REQUEST } from 'graphql/mutations/pod';
-import { CREATE_LIT_SIGNATURE } from 'graphql/mutations/tokenGating';
-import { TokenGatedAndClaimableRoleModal } from 'components/organization/wrapper/TokenGatedAndClaimableRoleModal';
+import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
+import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
+import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
 import TypeSelector from 'components/TypeSelector';
 import { SafeImage } from 'components/Common/Image';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import RolePill from 'components/Common/RolePill';
 import BoardLock from 'components/BoardLock';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
@@ -52,10 +41,8 @@ import {
   HeaderTitle,
   RoleButtonWrapper,
   RoleText,
-  RoleButton,
   OverviewComponent,
   TokenHeader,
-  HeaderImage,
   HeaderTitleIcon,
   HeaderImageWrapper,
   TokenEmptyLogo,
@@ -87,6 +74,9 @@ const ExplorePodGr15 = ({
   if (onTaskPage && !hasGr15Tasks && hasGr15Bounties) {
     return (
       <ExploreButton
+        style={{
+          marginTop: 0,
+        }}
         onClick={() => {
           router.push(`/pod/${podProfile?.id}/boards?entity=bounty`, undefined, {
             shallow: true,
@@ -158,18 +148,15 @@ function Wrapper(props) {
   const router = useRouter();
   const { entity, cause } = router.query;
   const loggedInUser = useMe();
-  const wonderWeb3 = useWonderWeb3();
   const [showUsers, setShowUsers] = useState(false);
-  const [podRole, setPodRole] = useState(null);
+  const [podRoleName, setPodRoleName] = useState(null);
   const [showPods, setShowPods] = useState(false);
   const [open, setOpen] = useState(false);
-  const [joinRequestSent, setJoinRequestSent] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
   const [getPerTypeTaskCountForPodBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE_FOR_POD);
-  const [createJoinPodRequest] = useMutation(CREATE_JOIN_POD_REQUEST);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
-  const [notLinkedWalletError, setNotLinkedWalletError] = useState(false);
-  const [openGatedRoleModal, setOpenGatedRoleModal] = useState(false);
+  const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
+  const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
   const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
   const boardFilters = podBoard?.filters || {};
@@ -194,9 +181,7 @@ function Wrapper(props) {
   };
   const userPermissionsContext = podBoard?.userPermissionsContext;
   const [permissions, setPermissions] = useState(undefined);
-  const [createFormModal, setCreateFormModal] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
-  const [tokenGatedRoles, setTokenGatedRoles] = useState([]);
   const podProfile = podBoard?.pod;
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
@@ -208,80 +193,9 @@ function Wrapper(props) {
   const podIsGr15Sponsor = podHasGr15Tasks || podHasGr15Bounties;
   const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
-  const toggleCreateFormModal = () => {
-    toggleHtmlOverflow();
-    setCreateFormModal((prevState) => !prevState);
-  };
+
   const { search } = router.query;
   const links = podProfile?.links;
-  const handleJoinPodButtonClick = async () => {
-    if (loggedInUser && !loggedInUser?.activeEthAddress) {
-      setOpenJoinRequestModal(true);
-    }
-    let apolloResult;
-    try {
-      apolloResult = await apollo.query({
-        query: GET_TOKEN_GATED_ROLES_FOR_POD,
-        variables: {
-          podId: podBoard?.podId,
-        },
-      });
-    } catch (e) {
-      console.error(e);
-      setOpenJoinRequestModal(true);
-      return;
-    }
-    const roles = apolloResult?.data?.getTokenGatedRolesForPod;
-    if (!roles || roles?.length === 0) {
-      setOpenJoinRequestModal(true);
-      return;
-    }
-    if (
-      wonderWeb3.address &&
-      loggedInUser?.activeEthAddress &&
-      wonderWeb3.toChecksumAddress(wonderWeb3.address) != wonderWeb3.toChecksumAddress(loggedInUser?.activeEthAddress)
-    ) {
-      setOpenJoinRequestModal(true);
-      setNotLinkedWalletError(true);
-      return;
-    }
-    let litSignatureExistResult;
-    try {
-      litSignatureExistResult = await apollo.query({
-        query: LIT_SIGNATURE_EXIST,
-      });
-    } catch (e) {
-      console.error(e);
-      setOpenJoinRequestModal(true);
-      return;
-    }
-    const litSignatureExist = litSignatureExistResult?.data?.litSignatureExist;
-    if (!litSignatureExist?.exist) {
-      try {
-        const signedMessage = await wonderWeb3.signMessage(LIT_PROTOCOL_MESSAGE);
-        await apollo.mutate({
-          mutation: CREATE_LIT_SIGNATURE,
-          variables: {
-            input: {
-              signature: signedMessage,
-              signingAddress: wonderWeb3.address,
-            },
-          },
-        });
-      } catch (e) {
-        console.error(e);
-        setOpenJoinRequestModal(true);
-        return;
-      }
-    }
-    setTokenGatedRoles(roles);
-    setOpenGatedRoleModal(true);
-  };
-  useEffect(() => {
-    if (joinRequestSent) {
-      setOpenGatedRoleModal(false);
-    }
-  }, [joinRequestSent]);
 
   useEffect(() => {
     if (cause === GR15DEICategoryName) {
@@ -299,7 +213,7 @@ function Wrapper(props) {
       orgId: podBoard?.orgId,
     });
     const role = userPermissionsContext?.podRoles[podBoard?.podId];
-    setPodRole(role);
+    setPodRoleName(role);
 
     if (
       podPermissions?.includes(PERMISSIONS.MANAGE_MEMBER) ||
@@ -327,7 +241,6 @@ function Wrapper(props) {
         },
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [podBoard?.orgId, userPermissionsContext]);
 
   useEffect(() => {
@@ -341,23 +254,25 @@ function Wrapper(props) {
   }, [podBoard?.podId]);
 
   const showFilters = router?.pathname === '/pod/[podId]/boards';
+  console.log('setOpenCurrentRoleModal', setOpenCurrentRoleModal);
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
       <MembershipRequestModal
         podId={podBoard?.podId}
-        setJoinRequestSent={setJoinRequestSent}
-        sendRequest={createJoinPodRequest}
         open={openJoinRequestModal}
         onClose={() => setOpenJoinRequestModal(false)}
-        notLinkedWalletError={notLinkedWalletError}
-        linkedWallet={loggedInUser?.activeEthAddress}
+        setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+        requestingRole={claimedOrRequestedRole}
       />
-      <TokenGatedAndClaimableRoleModal
-        open={openGatedRoleModal}
-        onClose={() => setOpenGatedRoleModal(false)}
-        tokenGatedRoles={tokenGatedRoles}
+      <PodCurrentRoleModal
+        podId={podBoard?.podId}
+        open={openCurrentRoleModal}
+        onClose={() => setOpenCurrentRoleModal(false)}
+        linkedWallet={loggedInUser?.activeEthAddress}
+        currentRoleName={podRoleName}
         setOpenJoinRequestModal={setOpenJoinRequestModal}
+        setClaimedOrRequestedRole={setClaimedOrRequestedRole}
       />
       <MoreInfoModal
         open={open && (showUsers || showPods)}
@@ -462,10 +377,15 @@ function Wrapper(props) {
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
                 </HeaderTitleIcon>
                 <HeaderButtons>
-                  {permissions && podRole && (
+                  {permissions && podRoleName && (
                     <RoleButtonWrapper>
                       <RoleText>Your Role:</RoleText>
-                      <RoleButton>🔑 {podRole}</RoleButton>
+                      <RolePill
+                        roleName={podRoleName}
+                        onClick={() => {
+                          setOpenCurrentRoleModal(true);
+                        }}
+                      />
                     </RoleButtonWrapper>
                   )}
 
@@ -479,14 +399,18 @@ function Wrapper(props) {
                     isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
                     tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
                   />
-
                   {permissions === null && (
                     <>
-                      {joinRequestSent || userJoinRequest?.id ? (
+                      {userJoinRequest?.id ? (
                         <HeaderButton style={{ pointerEvents: 'none' }}>Request sent</HeaderButton>
                       ) : (
-                        <HeaderButton reversed onClick={handleJoinPodButtonClick}>
-                          Join pod
+                        <HeaderButton
+                          reversed
+                          onClick={() => {
+                            setOpenCurrentRoleModal(true);
+                          }}
+                        >
+                          Join Pod
                         </HeaderButton>
                       )}
                     </>

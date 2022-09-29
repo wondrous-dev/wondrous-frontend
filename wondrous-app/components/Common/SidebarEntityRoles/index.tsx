@@ -3,7 +3,7 @@ import BackButton from 'components/Common/SidebarBackButton';
 import { SectionWrapper, StyledSettingsIcon } from 'components/Common/SidebarEntityRoles/styles';
 import Item from 'components/Common/SidebarItem';
 import { AddIconWrapper, Label, ListWrapper } from 'components/Common/SidebarStyles';
-import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE } from 'graphql/queries';
+import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD } from 'graphql/queries';
 import useCanManage from 'hooks/useCanManage';
 import { pickBy } from 'lodash';
 import { useRouter } from 'next/router';
@@ -27,7 +27,7 @@ const RolesSidebar = () => {
     },
     skip: podBoard,
   });
-  const { data: getPodRolesData } = useQuery(GET_POD_ROLES_WITH_TOKEN_GATE, {
+  const { data: getPodRolesData } = useQuery(GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD, {
     variables: {
       podId: board.podId,
     },
