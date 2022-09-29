@@ -25,6 +25,7 @@ import { populateOrder } from 'components/Common/KanbanBoard/kanbanBoard';
 import { UPDATE_TASK_STATUS, UPDATE_TASK_ORDER } from 'graphql/mutations/task';
 import apollo from 'services/apollo';
 import BoardLock from 'components/BoardLock';
+import { GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK } from 'graphql/queries';
 import ItemsContainer from './ItemsContainer';
 
 interface Props {
@@ -172,6 +173,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
           'getPerStatusTaskCountForUserBoard',
           'getPerStatusTaskCountForOrgBoard',
           'getPerStatusTaskCountForPodBoard',
+          GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
         ],
       });
 
