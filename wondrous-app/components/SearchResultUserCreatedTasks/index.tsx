@@ -73,8 +73,9 @@ const SearchResultUserCreatedTasks = () => {
       entityType: ENTITIES_TYPES.TASK,
       setColumns,
       fetchPerStatus,
+      columns,
     }),
-    [setColumns, fetchPerStatus]
+    [setColumns, fetchPerStatus, columns]
   );
   return (
     <UserBoardContext.Provider value={value}>

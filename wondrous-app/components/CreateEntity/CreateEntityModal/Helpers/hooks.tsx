@@ -407,6 +407,7 @@ export const useUpdateTask = () => {
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      SEARCH_USER_CREATED_TASKS,
     ],
   });
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
