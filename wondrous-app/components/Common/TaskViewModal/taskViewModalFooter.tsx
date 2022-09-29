@@ -13,7 +13,7 @@ import {
   TaskSubmissionTab,
   TaskTabText,
   TaskSectionContent,
-  DiscussionCount,
+  TabItemCount,
 } from './styles';
 import { tabs } from './constants';
 import { selectTabsPerType } from './utils';
@@ -111,9 +111,8 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
             <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
               <TaskTabText isActive={active}>
                 {tab}{' '}
-                {tab === tabs.discussion && (
-                  <DiscussionCount isActive={active}>{fetchedTask?.commentCount}</DiscussionCount>
-                )}
+                {tab === tabs.discussion && <TabItemCount isActive={active}>{fetchedTask?.commentCount}</TabItemCount>}
+                {tab === tabs.subTasks && <TabItemCount isActive={active}>{fetchedTask?.subtaskCount}</TabItemCount>}
               </TaskTabText>
             </TaskSubmissionTab>
           );
