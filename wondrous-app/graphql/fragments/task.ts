@@ -67,7 +67,6 @@ export const TaskFragment = gql`
     podOrder
     assigneeOrder
     commentCount
-    subtaskCount
     privacyLevel
     rewards {
       rewardAmount

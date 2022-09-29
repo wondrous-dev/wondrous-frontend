@@ -283,6 +283,7 @@ export const useCreateTask = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getTasksForMilestone',
+      'getSubtaskCountForTask',
     ],
   });
 
