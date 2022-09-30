@@ -2,6 +2,7 @@ import React from 'react';
 import Link from 'next/link';
 
 import { Button } from 'components/Button';
+import { useRouter } from 'next/router';
 import { Header, LogoText, Wonder } from './styles';
 import WonderLogo from '../../../../public/images/onboarding/wonder-logo.svg';
 
@@ -28,6 +29,8 @@ const styleSecondVersionHeader = {
 };
 
 function OnboardingHeader({ children, withLoginButton = false, withSignupButton = false, secondVersionLogo }: Props) {
+  const router = useRouter();
+
   return (
     <Header style={secondVersionLogo ? styleSecondVersionHeader : null}>
       <Wonder style={secondVersionLogo ? styleSecondVersionLogoWrapper : null}>
@@ -35,7 +38,12 @@ function OnboardingHeader({ children, withLoginButton = false, withSignupButton 
         <LogoText style={secondVersionLogo ? styleSecondVersionLogo : null}>wonder</LogoText>
       </Wonder>
       {withLoginButton || withSignupButton ? (
-        <Link href={withSignupButton ? '/signup' : `/login`} passHref>
+        <Link
+          href={{
+            pathname: withSignupButton ? '/signup' : `/login`,
+            query: router.query,
+          }}
+        >
           <div>
             <Button>{withSignupButton ? 'Sign up' : 'Login'}</Button>
           </div>
