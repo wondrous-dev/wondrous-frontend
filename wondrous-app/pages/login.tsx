@@ -23,13 +23,8 @@ import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/
 import { Connectors, MainWrapper } from 'components/Onboarding/styles';
 import { Button } from 'components/Button';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
-import Link from 'next/link';
 
 const discordUrlWithoutState = getDiscordUrl();
-const state = JSON.stringify({
-  callbackType: DISCORD_CONNECT_TYPES.login,
-});
-const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 function Login({ csrfToken }) {
   const wonderWeb3 = useWonderWeb3();
@@ -40,7 +35,16 @@ function Login({ csrfToken }) {
   const [loading, setLoading] = useState(null);
   const isMobile = useIsMobile();
   const router = useRouter();
-  const { discordConnectError } = router.query;
+  const { discordConnectError, collabInvite } = router.query;
+
+  const collabInviteQuery = collabInvite ? `?collabInvite=${collabInvite}` : '';
+
+  const state = JSON.stringify({
+    callbackType: DISCORD_CONNECT_TYPES.login,
+    ...(collabInvite ? { collabInvite } : {}),
+  });
+  const discordUrl = `${discordUrlWithoutState}&state=${state}`;
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -69,11 +73,12 @@ function Login({ csrfToken }) {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
             if (user) {
               if (user?.username) {
-                router.push('/mission-control', undefined, {
+                const route = collabInvite ? `/invite/collab/${collabInvite}` : '/mission-control';
+                router.push(route, undefined, {
                   shallow: true,
                 });
               } else {
-                router.push('/onboarding/welcome', undefined, {
+                router.push(`/onboarding/welcome${collabInviteQuery}`, undefined, {
                   shallow: true,
                 });
               }

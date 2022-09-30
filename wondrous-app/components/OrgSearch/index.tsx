@@ -37,7 +37,6 @@ function OrgSearch(props) {
 
   const handleInputChange = (e) =>
     globalSearch && e.target.value && search({ variables: { searchString: e.target.value } });
-
   return (
     <PodSearchClickAway onClickAway={handleClickAway}>
       <OrgSearchWrapper>
@@ -89,8 +88,12 @@ function OrgSearch(props) {
             getOptionLabel={(option) => option.name}
             renderOption={(props, option) => (
               <OrgSearchListItem {...props}>
-                <OrgProfilePicture style={{ width: '26px', height: '26px' }} profilePicture={option?.profilePicture} />
-
+                {!option?.skipProfilePicture && (
+                  <OrgProfilePicture
+                    style={{ width: '26px', height: '26px' }}
+                    profilePicture={option?.profilePicture}
+                  />
+                )}
                 <span>{option.name}</span>
               </OrgSearchListItem>
             )}

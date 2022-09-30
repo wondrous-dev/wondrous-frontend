@@ -44,7 +44,7 @@ export function Invite({
 
   const [unsuportedChain, setUnsuportedChain] = useState(false);
   const router = useRouter();
-  const { token, type, discordConnectError } = router.query;
+  const { token, type, discordConnectError, collabInvite } = router.query;
   // Two stage process as wallet connection takes
   // time.
   // const connectWallet = async (event) => {
@@ -226,6 +226,7 @@ export function Invite({
                 callbackType: DISCORD_CONNECT_TYPES.signup,
                 token,
                 type,
+                ...(collabInvite ? { collabInvite } : {}),
               });
               window.location.href = `${url}&state=${state}`;
             }}
@@ -254,7 +255,7 @@ export function Invite({
                   });
                 }
               } else {
-                router.push('/signup/email', undefined, {
+                router.push(`/signup/email${collabInvite ? `?collabInvite=${collabInvite}` : ''}`, undefined, {
                   shallow: true,
                 });
               }

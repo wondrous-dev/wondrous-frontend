@@ -14,15 +14,18 @@ export function SetupEmail({ firstOrg, firstPod }) {
   const [loading, setLoading] = useState(null);
   const user = useMe();
   const router = useRouter();
+  const { collabInvite } = router.query;
   const [setUserSignupComplete] = useMutation(SET_USER_SIGNUP_COMPLETE);
+  const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
 
   useEffect(() => {
     setUserSignupComplete();
   }, []);
 
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress ? '/onboarding/discord' : '/onboarding/twitter';
-
+    const nextStep = user.activeEthAddress
+      ? `/onboarding/discord${collabInviteQueryString}`
+      : `/onboarding/twitter${collabInviteQueryString}`;
     router.push(nextStep, undefined, { shallow: true });
   };
 
