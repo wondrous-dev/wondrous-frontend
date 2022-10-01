@@ -4,6 +4,7 @@ import { Button as MuiButton, Typography, InputBase } from '@mui/material';
 import { CreateLayoutsModal, CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import NotionIcon from 'components/Icons/Notion';
 import CloseIcon from '@mui/icons-material/Close';
+import DocumentIcon from 'components/Icons/DocumentIcon';
 
 export const TaskImportContainer = styled.div`
   height: 100vh;
@@ -12,8 +13,8 @@ export const TaskImportContainer = styled.div`
 `;
 
 export const TaskImportMethodBlock = styled.div`
-  padding: 30px 0;
-  border-bottom: 1px solid ${palette.grey85};
+  padding-top: 30px;
+  /* border-bottom: 1px solid ${palette.grey85}; */
 `;
 
 export const IntegrationsSnapshotBlock = styled.div`
@@ -82,6 +83,16 @@ export const DisconnectFromNotionButtonIcon = styled(CloseIcon)`
   && {
     width: 18px;
     height: 18px;
+  }
+`;
+
+export const GenericImportTasksButton = styled(ConnectToNotionButton)``;
+
+export const ImportTasksIcon = styled(DocumentIcon)`
+  && {
+    width: 18px;
+    height: 18px;
+    margin-right: 10px;
   }
 `;
 
