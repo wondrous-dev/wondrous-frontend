@@ -21,7 +21,9 @@ import {
   STATUS_WAITING_FOR_REVIEW,
   STATUS_REJECTED,
   STATUS_CHANGE_REQUESTED,
+  PRIORITIES,
 } from 'utils/constants';
+import Box from '@mui/material/Box';
 import { Archived, InReview, Requested } from 'components/Icons/sections';
 import { StatusDefaultIcon, InReviewIcon } from 'components/Icons/statusIcons';
 import { Proposal, Approved, Rejected } from 'components/Icons';
@@ -43,6 +45,7 @@ import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import palette from 'theme/palette';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
+import PriorityIcon from 'components/Icons/PriorityIcon';
 
 const generateTodoColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -440,6 +443,20 @@ export const DEFAULT_ENTITY_STATUS_FILTER = {
   [ENTITIES_TYPES.PROPOSAL]: [],
 };
 
+export const PRIORITY_FILTERS = {
+  name: 'priorities',
+  label: 'Priority',
+  icon: ({ style, ...rest }) => <PriorityIcon {...rest} />,
+  multiChoice: true,
+  items: PRIORITIES.map((priority) => ({
+    id: priority.value,
+    color: priority.textColor,
+    name: <Box sx={{ color: priority.textColor, fontWeight: 500 }}>{priority.label}</Box>,
+    icon: priority.icon,
+    pillIcon: () => <PriorityIcon viewBox="0 0 18 13" />,
+  })),
+};
+
 export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false }) => {
   const SHARED_FILTERS = [
     ...(enablePodFilter ? addPodFilter(orgId) : []),
@@ -457,6 +474,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
           pillIcon: (props) => <TagsIcon viewBox="0 0 18 12" {...props} />,
         })),
     },
+    PRIORITY_FILTERS,
     {
       name: 'date',
       label: 'Dates',
@@ -535,6 +553,7 @@ export const ENTITIES_TYPES_FILTER_STATUSES = ({ orgId, enablePodFilter = false 
               pillIcon: TagsIcon,
             })),
         },
+        PRIORITY_FILTERS,
         {
           name: 'date',
           label: 'Dates',
@@ -651,6 +670,7 @@ export const generateUserDashboardFilters = ({ userId, orgs = [], type = ENTITIE
         pillIcon: CreatePodIcon,
       })),
   },
+  PRIORITY_FILTERS,
   {
     name: 'date',
     label: 'Dates',

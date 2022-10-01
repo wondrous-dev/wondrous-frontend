@@ -10,7 +10,7 @@ import {
   HARMONY_PROXY_FACTORY,
   HARMONY_SAFE_MASTER_COPY,
   HARMONY_SAFE_MASTER_COPY2,
-} from '../utils/constants';
+} from 'utils/constants';
 
 const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   // todo refactor this to have one consistent naming probably

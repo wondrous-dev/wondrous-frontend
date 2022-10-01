@@ -177,6 +177,7 @@ export const FilterItem = styled.div`
   padding: 8px;
   position: relative;
   cursor: pointer;
+  border: 1px solid ${(props) => props.borderColor};
 
   ${({ selected, gradient }) => `&::before {
     content: '';
@@ -190,7 +191,11 @@ export const FilterItem = styled.div`
     padding: 1px;
   }`}
   &:hover {
-    ${({ selected }) => !selected && '&::before { background: linear-gradient(270deg, #474747 1.17%, #7a7a7a 101%)}'}
+    background: none;
+
+    rect {
+      fill: ${palette.background.default};
+    }
   }
 `;
 

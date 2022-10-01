@@ -286,6 +286,7 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
   query getUserTaskBoardTasks(
     $userId: ID
     $statuses: [String]
+    $priorities: [String]
     $orgId: String
     $podIds: [String]
     $limit: Int
@@ -297,6 +298,7 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
       input: {
         userId: $userId
         statuses: $statuses
+        priorities: $priorities
         orgId: $orgId
         podIds: $podIds
         limit: $limit

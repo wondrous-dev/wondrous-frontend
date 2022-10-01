@@ -10,7 +10,7 @@ import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
+import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { TabsVisibility } from '../Common/TabsVisibility';
 import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
