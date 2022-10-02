@@ -70,6 +70,7 @@ export const GenericImportTaskModalBody = styled.div`
   background: ${palette.grey900};
   display: flex;
   flex-direction: column;
+  gap: 26px;
 `;
 
 export const GenericImportTaskModalInputWrapper = styled.div`
@@ -185,7 +186,7 @@ export const GenericImportTaskModalSelectValueDisplayText = styled(Typography)`
 export const GenericImportTaskModalBodyExpandedViewWrapper = styled(Accordion)`
   && {
     background: ${palette.grey900};
-    margin-top: ${(props) => (props.expanded ? 0 : '-26px')};
+    margin-top: ${(props) => (props.expanded ? 0 : '-24px')};
 
     & .MuiAccordion-region {
       display: flex;
