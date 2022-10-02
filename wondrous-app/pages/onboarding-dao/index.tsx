@@ -3,7 +3,7 @@ import { withAuth } from 'components/Auth/withAuth';
 import { AddImages, CreateDao, DaoCategory, InviteCommunity, Review, StepWrapper } from 'components/OnboardingDao';
 import { STEP_ACTIONS } from 'components/OnboardingDao/constants';
 import { Form, Formik } from 'formik';
-import { CREATE_ORG } from 'graphql/mutations';
+import { CREATE_ORG, REDEEM_COLLAB_TOKEN } from 'graphql/mutations';
 import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS, IS_ORG_USERNAME_TAKEN } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useReducer, useState } from 'react';
@@ -100,18 +100,31 @@ const handleStep = (step, { action, hasError = false }) => {
 
 const useCreateOrg = () => {
   const router = useRouter();
+  const { collabInvite } = router.query;
+
+  const [redeemCollabToken, { loading: redeemLoading }] = useMutation(REDEEM_COLLAB_TOKEN, {
+    notifyOnNetworkStatusChange: true,
+    onCompleted: ({ redeemOrgCollabRequestInviteToken }) => {
+      const { username } = redeemOrgCollabRequestInviteToken;
+      router.push(`/collaboration/${username}/boards`);
+    },
+  });
   const [mutation, { loading }] = useMutation(CREATE_ORG, {
     refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_USER_ORGS],
     onCompleted: ({ createOrg }) => {
-      const { username } = createOrg;
-      router.push(`organization/${username}/boards`);
+      const { username, id } = createOrg;
+      if (!collabInvite) {
+        router.push(`organization/${username}/boards`);
+      } else {
+        redeemCollabToken({ variables: { orgId: id, token: collabInvite } });
+      }
     },
   });
   const handleMutation = async (values) => {
     const { addBot, ...rest } = values;
     await mutation({ variables: { input: rest } });
   };
-  return { handleCreateOrg: handleMutation, loading };
+  return { handleCreateOrg: handleMutation, loading: loading || redeemLoading };
 };
 
 const useIsOrgUsernameTaken = () => {

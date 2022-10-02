@@ -23,6 +23,7 @@ const EXCLUDED_PATHS = [
   '/onboarding/welcome',
   '/explore',
   '/404',
+  '/invite/collab/[token]'
 ];
 
 export const useMe = () => useContext(MyContext);
@@ -243,7 +244,9 @@ export const withAuth = (Component, noCache = false) => {
     const router = useRouter();
     const [token, setToken] = useState(null);
     const [tokenLoading, setTokenLoading] = useState(true);
-    const { data, loading, error } = useQuery(GET_LOGGED_IN_USER);
+    const { data, loading, error } = useQuery(GET_LOGGED_IN_USER, {
+      skip: typeof window !== 'undefined' && !getAuthHeader()
+    });
     useEffect(() => {
       (async () => {
         const newToken = await getAuthHeader();

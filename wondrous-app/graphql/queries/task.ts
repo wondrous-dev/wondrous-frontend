@@ -92,25 +92,10 @@ export const GET_TASK_COMMENT_BY_ID = gql`
 export const GET_TASKS_FOR_MILESTONE = gql`
   query getTasksForMilestone($milestoneId: ID!, $status: String, $limit: Int, $offset: Int) {
     getTasksForMilestone(milestoneId: $milestoneId, status: $status, limit: $limit, offset: $offset) {
-      id
-      title
-      assignee {
-        username
-        profilePicture
-      }
-      privacyLevel
-      dueDate
-      rewards {
-        rewardAmount
-        paymentMethodId
-        symbol
-        icon
-        tokenName
-        chain
-      }
-      commentCount
+      ...TaskFragment
     }
   }
+  ${TaskFragment}
 `;
 
 export const GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE = gql`
