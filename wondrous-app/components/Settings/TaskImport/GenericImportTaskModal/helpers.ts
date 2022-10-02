@@ -1,6 +1,8 @@
 import isEqual from 'lodash/isEqual';
 import { ASANA_CSV_HEADERS, TRELLO_CSV_HEADERS } from './constants';
 
+const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+
 const getFormattedCSVData = (data) => {
   const formattedData = [];
 
@@ -16,6 +18,24 @@ const getFormattedCSVData = (data) => {
   });
 
   return formattedData;
+};
+
+const getFormattedDescription = (description: string) => {
+  const formattedDescription = [];
+  const paragraphs = description?.split('\n');
+  paragraphs?.forEach((paragraph) => {
+    const formattedParagraph = { type: 'paragraph', children: [] };
+    const content = paragraph.split(URL_REGEX)?.filter((c) => !!c);
+    content?.forEach((c) => {
+      if (c?.match(URL_REGEX)) {
+        formattedParagraph.children.push({ type: 'link', href: c, children: [{ text: c }] });
+      } else {
+        formattedParagraph.children.push({ text: c });
+      }
+    });
+    formattedDescription.push(formattedParagraph);
+  });
+  return JSON.stringify(formattedDescription);
 };
 
 const addOrgOrPodIdToTasks = (tasks, isOrg, orgOrPodId) => {
@@ -42,7 +62,7 @@ export const getTasksFromAsanaData = (data, isOrg, orgOrPodId) => {
   let tasks = formattedData.map((data) => {
     const task = {
       title: data.name,
-      description: data.notes,
+      description: getFormattedDescription(data.notes),
       // due_date: data['due-date'],
       // assignee: data.assignee,
       // tags: data.tags,
@@ -73,7 +93,7 @@ export const getTasksFromTrelloData = (data, isOrg, orgOrPodId) => {
   let tasks = formattedData.map((data) => {
     const task = {
       title: data['card-name'],
-      description: data['card-description'],
+      description: getFormattedDescription(data['card-description']),
       // due_date: data['due-date'] ? new Date(data['due-date']) : null,
       // assignee: data.assignee,
       // tags: data.tags,
