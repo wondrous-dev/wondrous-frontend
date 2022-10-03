@@ -203,17 +203,18 @@ export const useCreateLabel = (orgId, callback) => {
   return handleCreateLabel;
 };
 
-export const useGetPaymentMethods = (orgId) => {
+export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
   const [getPaymentMethods, { data }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   useEffect(() => {
     if (orgId) {
       getPaymentMethods({
         variables: {
           orgId,
+          includeDeactivated,
         },
       });
     }
-  }, [orgId, getPaymentMethods]);
+  }, [orgId, includeDeactivated, getPaymentMethods]);
   return data?.getPaymentMethodsForOrg;
 };
 
