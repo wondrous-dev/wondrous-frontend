@@ -80,10 +80,10 @@ function Notifications({ orgId }) {
 
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
   const taskNotificationConfig = __discordNotificationConfigData?.filter(
-    (config) => config.type === NotificationType.TasksNotifications && config.channelId
+    (config) => config.type === NotificationType.TasksNotifications && !config.disabledAt
   );
   const threadNotificationConfig = __discordNotificationConfigData?.filter(
-    (config) => config.type === NotificationType.TaskDiscussionThread && config.channelId
+    (config) => config.type === NotificationType.TaskDiscussionThread && !config.disabledAt
   );
 
   return (
