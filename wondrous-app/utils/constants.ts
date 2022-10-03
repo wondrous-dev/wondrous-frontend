@@ -352,21 +352,6 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
 };
 
-export const PERMISSION_TO_DISPLAY = {
-  [PERMISSIONS.FULL_ACCESS]: 'All Permissions',
-  [PERMISSIONS.MANAGE_MEMBER]: 'Add members',
-  [PERMISSIONS.CREATE_TASK]: 'Create task',
-  [PERMISSIONS.EDIT_TASK]: 'Edit task',
-  [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
-  [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
-  [PERMISSIONS.CAN_COMMENT]: 'Can comment',
-  [PERMISSIONS.MANAGE_POD]: 'Manage pod',
-  [PERMISSIONS.REORDER_TASK]: 'Reorder task',
-  [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
-  [PERMISSIONS.MANAGE_POST]: 'Manage post',
-  [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
-};
-
 export const NOTIFICATION_VERBS = {
   task_like: 'liked a',
   mention: 'mentioned you in a',
