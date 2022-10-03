@@ -1,5 +1,5 @@
 import { useState, useContext, useEffect } from 'react';
-import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
+import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS, TASK_TYPE } from 'utils/constants';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
@@ -333,7 +333,7 @@ export default function ListViewItem({ task, entityType }) {
                 Pay
               </ButtonPrimary>
             )}
-            {!assigneeId && status !== TASK_STATUS_DONE && (
+            {!assigneeId && status !== TASK_STATUS_DONE && task.type === TASK_TYPE && (
               <>
                 {claimed ? (
                   <ButtonPrimary
