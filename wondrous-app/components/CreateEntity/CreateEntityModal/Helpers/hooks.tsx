@@ -22,6 +22,8 @@ import {
   GET_PAYMENT_METHODS_FOR_ORG,
   SEARCH_ORG_USERS,
   GET_MILESTONES,
+  SEARCH_USER_CREATED_TASKS,
+  GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
 } from 'graphql/queries';
 import { debounce } from 'lodash';
 import { useEffect, useState, useCallback } from 'react';
@@ -283,7 +285,8 @@ export const useCreateTask = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getTasksForMilestone',
-      'getSubtaskCountForTask',
+      SEARCH_USER_CREATED_TASKS,
+      GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
     ],
   });
 
@@ -404,6 +407,7 @@ export const useUpdateTask = () => {
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      SEARCH_USER_CREATED_TASKS,
     ],
   });
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
