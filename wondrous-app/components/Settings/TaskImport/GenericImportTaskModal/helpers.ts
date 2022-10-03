@@ -1,5 +1,5 @@
 import isEqual from 'lodash/isEqual';
-import { ASANA_CSV_HEADERS, TRELLO_CSV_HEADERS } from './constants';
+import { ASANA_TASKS_CSV_HEADERS, GENERIC_TASKS_CSV_HEADERS, TRELLO_TASKS_CSV_HEADERS } from './constants';
 
 const URL_REGEX = /(https?:\/\/[^\s]+\w)/g;
 const BOLD_REGEX = /(\*\*\w*\*\*)/g;
@@ -87,7 +87,7 @@ const addOrgOrPodIdToTasks = (tasks, isOrg, orgOrPodId) => {
 };
 
 export const getTasksFromAsanaData = (data, isOrg, orgOrPodId) => {
-  if (!isEqual(data[0], ASANA_CSV_HEADERS)) {
+  if (!isEqual(data[0], ASANA_TASKS_CSV_HEADERS)) {
     throw new Error('CSV format does not match with Asana');
   }
 
@@ -112,7 +112,7 @@ export const getTasksFromAsanaData = (data, isOrg, orgOrPodId) => {
 };
 
 export const getTasksFromTrelloData = (data, isOrg, orgOrPodId) => {
-  if (!isEqual(data[0], TRELLO_CSV_HEADERS)) {
+  if (!isEqual(data[0], TRELLO_TASKS_CSV_HEADERS)) {
     throw new Error('CSV format does not match with Trello');
   }
 
@@ -137,7 +137,22 @@ export const getTasksFromTrelloData = (data, isOrg, orgOrPodId) => {
 };
 
 export const getTasksFromGenericData = (data, isOrg, orgOrPodId) => {
-  console.log('generic');
-  console.log({ data });
-  return data;
+  if (!isEqual(data[0], GENERIC_TASKS_CSV_HEADERS)) {
+    throw new Error('CSV format does not match with the given format');
+  }
+
+  const formattedData = getFormattedCSVData(data);
+
+  let tasks = formattedData.map((data) => {
+    const task = {
+      title: data.title,
+      description: getFormattedDescription(data.description),
+    };
+
+    return task;
+  });
+
+  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId);
+
+  return tasks;
 };

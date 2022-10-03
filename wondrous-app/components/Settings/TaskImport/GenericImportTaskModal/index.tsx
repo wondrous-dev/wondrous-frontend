@@ -19,6 +19,7 @@ import {
   GenericImportTaskModalSelect,
   GenericImportTaskModalInputWrapper,
   GenericImportTaskModalLabel,
+  GenericImportTaskModalLabelHelperLink,
   GenericImportTaskModalWrapper,
   GenericImportTaskModalSelectMenuItem,
   GenericImportTaskModalSelectValueDisplay,
@@ -175,7 +176,19 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
             {importFormat?.value && (
               <>
                 <GenericImportTaskModalInputWrapper>
-                  <GenericImportTaskModalLabel htmlFor="upload-zone">Upload file</GenericImportTaskModalLabel>
+                  <GenericImportTaskModalLabel htmlFor="upload-zone">
+                    Upload file {importFormat?.value === IMPORT_FORMATS.GENERAL && ' | CSV File should follow this'}
+                    {importFormat?.value === IMPORT_FORMATS.GENERAL && (
+                      <GenericImportTaskModalLabelHelperLink
+                        href="https://docs.google.com/spreadsheets/d/1byibx7lPAhQRj2FgNevYco0e66KwXpd6PHUoBK3cyFY/edit?usp=sharing"
+                        target="_blank"
+                        noreferrer
+                        noopener
+                      >
+                        format
+                      </GenericImportTaskModalLabelHelperLink>
+                    )}
+                  </GenericImportTaskModalLabel>
                   <CSVFileDropzone
                     handleFileUpload={handleFileUpload}
                     key={importFormat?.value}

@@ -97,6 +97,11 @@ export const GenericImportTaskModalLabel = styled.label`
   width: max-content;
 `;
 
+export const GenericImportTaskModalLabelHelperLink = styled.a`
+  color: ${palette.highlightBlue};
+  margin-left: 6px;
+`;
+
 export const GenericImportTaskModalError = styled(Typography)`
   && {
     font-family: ${typography.fontFamily};

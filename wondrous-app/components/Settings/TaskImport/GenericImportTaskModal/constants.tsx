@@ -18,7 +18,7 @@ export const IMPORT_FORMATS = {
   GENERAL: 'general',
 };
 
-export const ASANA_CSV_HEADERS = [
+export const ASANA_TASKS_CSV_HEADERS = [
   'Task ID',
   'Created At',
   'Completed At',
@@ -39,7 +39,7 @@ export const ASANA_CSV_HEADERS = [
   'Status',
 ];
 
-export const TRELLO_CSV_HEADERS = [
+export const TRELLO_TASKS_CSV_HEADERS = [
   'Card ID',
   'Card Name',
   'Card URL',
@@ -62,3 +62,5 @@ export const TRELLO_CSV_HEADERS = [
   'Start Date',
   'Due Complete',
 ];
+
+export const GENERIC_TASKS_CSV_HEADERS = ['Title', 'Description'];
