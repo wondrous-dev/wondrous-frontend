@@ -50,6 +50,7 @@ const useGetPodTaskBoardTasks = ({
   setPodTaskHasMore,
   podId,
   statuses,
+  priorities,
   entityType,
   setIsLoading,
   search,
@@ -137,6 +138,7 @@ const useGetPodTaskBoardTasks = ({
           input: {
             podId,
             statuses: taskBoardStatuses,
+            priorities,
             limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
             offset: 0,
             labelId,
@@ -162,6 +164,7 @@ const useGetPodTaskProposals = ({
   columns,
   podId,
   statuses,
+  priorities,
   entityType,
   setIsLoading,
   setPodTaskHasMore,
@@ -236,6 +239,7 @@ const useGetPodTaskBoard = ({
   setIsLoading,
   search,
   statuses,
+  priorities,
   labelId,
   date,
   privacyLevel,
@@ -250,6 +254,7 @@ const useGetPodTaskBoard = ({
       setPodTaskHasMore,
       podId,
       statuses,
+      priorities,
       entityType,
       setIsLoading,
       search,
@@ -266,6 +271,7 @@ const useGetPodTaskBoard = ({
       columns,
       podId,
       statuses,
+      priorities,
       entityType,
       setIsLoading,
       setPodTaskHasMore,
@@ -297,6 +303,7 @@ function BoardsPage() {
 
   const [filters, setFilters] = useState<TaskFilter>({
     statuses: DEFAULT_ENTITY_STATUS_FILTER[activeEntityFromQuery],
+    priorities: [],
     labelId: null,
     date: null,
     privacyLevel: null,
@@ -307,7 +314,7 @@ function BoardsPage() {
   const pod = podData?.getPodById;
   const [firstTimeFetch, setFirstTimeFetch] = useState(false);
 
-  const { statuses, labelId, date, privacyLevel, category } = filters;
+  const { statuses, labelId, date, privacyLevel, category, priorities } = filters;
 
   const { fetchMore, fetchPerStatus } = useGetPodTaskBoard({
     section,
@@ -317,6 +324,7 @@ function BoardsPage() {
     setPodTaskHasMore,
     podId,
     statuses,
+    priorities,
     userId,
     entityType,
     setIsLoading,

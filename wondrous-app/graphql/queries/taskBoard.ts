@@ -7,13 +7,14 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
   query GetOrgTaskBoardProposals(
     $orgId: ID!
     $statuses: [String]
+    $priorities: [String]
     $podIds: [String]
     $limit: Int
     $offset: Int
     $labelId: String
   ) {
     getOrgTaskBoardProposals(
-      input: { orgId: $orgId, statuses: $statuses, podIds: $podIds, limit: $limit, offset: $offset, labelId: $labelId }
+      input: { orgId: $orgId, statuses: $statuses, priorities: $priorities, podIds: $podIds, limit: $limit, offset: $offset, labelId: $labelId }
     ) {
       ...TaskProposalCardFragment
     }
@@ -25,6 +26,7 @@ export const SEARCH_ORG_TASK_BOARD_PROPOSALS = gql`
   query searchProposalsForOrgBoardView(
     $orgId: ID!
     $statuses: [String]
+    $priorities: [String]
     $searchString: String
     $podIds: [String]
     $limit: Int
@@ -34,6 +36,7 @@ export const SEARCH_ORG_TASK_BOARD_PROPOSALS = gql`
       input: {
         orgId: $orgId
         statuses: $statuses
+        priorities: $priorities
         searchString: $searchString
         podIds: $podIds
         limit: $limit
@@ -75,6 +78,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
   query getOrgTaskBoardTasks(
     $orgId: ID!
     $statuses: [String]
+    $priorities: [String]
     $searchString: String
     $podIds: [String]
     $limit: Int
@@ -89,6 +93,7 @@ export const GET_ORG_TASK_BOARD_TASKS = gql`
       input: {
         orgId: $orgId
         statuses: $statuses
+        priorities: $priorities
         searchString: $searchString
         podIds: $podIds
         limit: $limit
@@ -110,6 +115,7 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
   query getUserTaskBoardProposals(
     $userId: ID
     $statuses: [String]
+    $priorities: [String]
     $orgId: String
     $podIds: [String]
     $limit: Int
@@ -120,6 +126,7 @@ export const GET_USER_TASK_BOARD_PROPOSALS = gql`
       input: {
         userId: $userId
         statuses: $statuses
+        priorities: $priorities
         orgId: $orgId
         podIds: $podIds
         limit: $limit
@@ -137,6 +144,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
   query getTasksRelatedToUserInOrg(
     $orgId: ID!
     $statuses: [String]
+    $priorities: [String]
     $searchString: String
     $podIds: [String]
     $userId: String
@@ -151,6 +159,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_ORG = gql`
       input: {
         orgId: $orgId
         statuses: $statuses
+        priorities: $priorities
         searchString: $searchString
         podIds: $podIds
         userId: $userId
@@ -172,6 +181,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
   query getTasksRelatedToUserInPod(
     $podId: ID!
     $statuses: [String]
+    $priorities: [String]
     $searchString: String
     $userId: String
     $limit: Int
@@ -185,6 +195,7 @@ export const GET_TASKS_RELATED_TO_USER_IN_POD = gql`
       input: {
         podId: $podId
         statuses: $statuses
+        priorities: $priorities
         searchString: $searchString
         userId: $userId
         limit: $limit
@@ -205,6 +216,7 @@ export const SEARCH_TASKS_FOR_ORG_BOARD_VIEW = gql`
   query searchTasksForOrgBoardView(
     $orgId: ID!
     $statuses: [String]
+    $priorities: [String]
     $searchString: String
     $podIds: [String]
     $limit: Int
@@ -214,6 +226,7 @@ export const SEARCH_TASKS_FOR_ORG_BOARD_VIEW = gql`
       input: {
         orgId: $orgId
         statuses: $statuses
+        priorities: $priorities
         searchString: $searchString
         podIds: $podIds
         limit: $limit
@@ -258,6 +271,7 @@ export const SEARCH_TASKS_FOR_USER_BOARD_VIEW = gql`
     $userId: ID!
     $orgId: String
     $statuses: [String]
+    $priorities: [String]
     $searchString: String
     $podIds: [String]
     $limit: Int
@@ -269,6 +283,7 @@ export const SEARCH_TASKS_FOR_USER_BOARD_VIEW = gql`
         userId: $userId
         orgId: $orgId
         statuses: $statuses
+        priorities: $priorities
         searchString: $searchString
         podIds: $podIds
         limit: $limit
