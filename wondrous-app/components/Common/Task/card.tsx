@@ -564,6 +564,9 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
         </BoardsCardHeader>
         <BoardsCardBody>
           <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
+          <Box>
+            <TaskPriority value={task?.priority} />
+          </Box>
           <BoardsCardBodyDescription>
             <RichTextViewer text={description} />
           </BoardsCardBodyDescription>

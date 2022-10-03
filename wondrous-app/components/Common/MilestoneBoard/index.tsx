@@ -1,3 +1,5 @@
+import Box from '@mui/material/Box';
+
 import CommentsIcon from 'components/Icons/comments';
 import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import { MilestoneProgress } from 'components/Common/MilestoneProgress';
@@ -17,6 +19,7 @@ import { useRouter } from 'next/router';
 import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import TaskPriority from 'components/Common/TaskPriority';
 import { SafeImage } from '../Image';
 import { MilestoneCard, MilestoneCardTitle, MilestoneIcon, MilestoneProgressWrapper } from './styles';
 
@@ -48,6 +51,11 @@ export default function Board({ tasks, handleCardClick }) {
               </BoardsCardHeader>
               <BoardsCardBody>
                 <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
+                {milestone?.priority ? (
+                  <Box>
+                    <TaskPriority value={milestone?.priority} />
+                  </Box>
+                ) : null}
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={milestone.description} />
                 </BoardsCardBodyDescription>

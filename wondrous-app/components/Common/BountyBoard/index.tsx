@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react';
+import Box from '@mui/material/Box';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -24,6 +25,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import TaskPriority from 'components/Common/TaskPriority';
 import { Compensation } from '../Compensation';
 import {
   BountyCardWrapper,
@@ -121,6 +123,11 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
               </BoardsCardHeader>
               <BoardsCardBody>
                 <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
+                {bounty?.priority ? (
+                  <Box>
+                    <TaskPriority value={bounty?.priority} />
+                  </Box>
+                ) : null}
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={bounty.description} />
                 </BoardsCardBodyDescription>

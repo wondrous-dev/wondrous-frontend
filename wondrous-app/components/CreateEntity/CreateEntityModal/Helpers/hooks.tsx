@@ -555,6 +555,7 @@ export const useUpdateTaskProposal = () => {
           milestoneId: input.milestoneId,
           orgId: input.orgId,
           podId: input.podId,
+          priority: input.priority,
           reviewerIds: input.reviewerIds,
           dueDate: input.dueDate,
           timezone: input.timezone,
