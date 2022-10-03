@@ -4,6 +4,7 @@ import { ASANA_CSV_HEADERS, TRELLO_CSV_HEADERS } from './constants';
 const URL_REGEX = /(https?:\/\/[^\s]+\w)/g;
 const BOLD_REGEX = /(\*\*\w*\*\*)/g;
 const ITALIC_REGEX = /(\*\w*\*)/g;
+const BULLET_LIST_REGEX = /(\s{4}|- )\w+/g;
 
 const regexToMatch = new RegExp([URL_REGEX.source, BOLD_REGEX.source, ITALIC_REGEX.source].join('|'), 'g');
 
@@ -28,6 +29,17 @@ const getFormattedDescription = (description: string) => {
   const formattedDescription = [];
   const paragraphs = description?.split('\n');
   paragraphs?.forEach((paragraph) => {
+    const isParagraphBulletList = paragraph.match(BULLET_LIST_REGEX);
+
+    if (isParagraphBulletList) {
+      formattedDescription.push({
+        type: 'bulleted-list',
+        children: [{ type: 'list-item', children: [{ text: paragraph?.replace('- ', '') }] }],
+      });
+
+      return;
+    }
+
     const formattedParagraph = { type: 'paragraph', children: [] };
 
     const content = paragraph.split(regexToMatch)?.filter((c) => !!c);
@@ -56,6 +68,7 @@ const getFormattedDescription = (description: string) => {
 
     formattedDescription.push(formattedParagraph);
   });
+
   return JSON.stringify(formattedDescription);
 };
 
