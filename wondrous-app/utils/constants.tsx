@@ -383,7 +383,7 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
   [PERMISSIONS.MANAGE_POD]: 'Manage pod',
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
-  [PERMISSIONS.MANAGE_POST]: 'Manage post',
+  // [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
 };
 
@@ -651,6 +651,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/onboarding-dao',
   '/new-task',
   '/apps/install/coordinape',
+  '/invite/collab/[token]',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'

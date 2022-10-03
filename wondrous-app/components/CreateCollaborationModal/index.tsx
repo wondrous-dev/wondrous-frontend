@@ -16,14 +16,10 @@ type Props = {
   defaultOrgId?: string;
 };
 
-type Users = {
-  admins: Array<User>;
-  members: Array<User>;
-};
 const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
   const { step, setStep } = useSteps(0);
   const [orgs, setOrgs] = useState({ org1: null, org2: null });
-  const [createCollabRequest] = useMutation(CREATE_COLLAB_REQUST, {
+  const [createCollabRequest, { data: collabRequestData }] = useMutation(CREATE_COLLAB_REQUST, {
     onCompleted: () => {
       setStep((prevState) => prevState + 1);
     },
@@ -35,14 +31,6 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
     onCancel();
   };
 
-  const [data, setData] = useState<{
-    org1?: Org;
-    org2?: Org;
-    users?: Users;
-    title?: string;
-    mission?: string;
-  }>({});
-
   const footerRef = useRef(null);
 
   const handleCollabCreate = (values) => {
@@ -51,9 +39,9 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
       variables: {
         input: {
           initiatorOrgId: values.org1.id,
-          recipientOrgId: values.org2.id,
           title: values.title,
           mission: values.mission,
+          ...(values.org2.id ? { recipientOrgId: values.org2.id } : {}),
         },
       },
     });
@@ -62,7 +50,14 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
     () => (
       <SelectOrgs footerRef={footerRef} defaultOrgId={defaultOrgId} onCancel={onClose} onSubmit={handleCollabCreate} />
     ),
-    () => <SentRequestSuccess orgs={orgs} footerRef={footerRef} onClose={onClose} />,
+    () => (
+      <SentRequestSuccess
+        orgs={orgs}
+        token={collabRequestData?.requestOrgCollab?.token}
+        footerRef={footerRef}
+        onClose={onClose}
+      />
+    ),
   ];
 
   const Component = steps[step];
@@ -77,7 +72,7 @@ const CreateCollaborationModal = ({ open, onCancel, defaultOrgId }: Props) => {
         title="Create Project Collaboration"
         footerRight={<div ref={footerRef} />}
         open={open}
-        onClose={onCancel}
+        onClose={onClose}
       >
         <Component />
       </ModalComponent>

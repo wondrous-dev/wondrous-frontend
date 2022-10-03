@@ -3,6 +3,7 @@ import { DELETE_MILESTONE, DELETE_TASK, DELETE_TASK_PROPOSAL } from 'graphql/mut
 import CloseModalIcon from 'components/Icons/closeModal';
 import { deleteTaskFromCache } from 'utils/helpers';
 import { ArchivedIcon } from 'components/Icons/statusIcons';
+import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import {
   StyledBody,
   StyledBox,
@@ -33,6 +34,7 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
     'getSubtasksForTask',
     'getPerTypeTaskCountForOrgBoard',
     'getPerTypeTaskCountForPodBoard',
+    SEARCH_USER_CREATED_TASKS,
   ];
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },

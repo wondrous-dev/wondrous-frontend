@@ -22,7 +22,12 @@ import {
   DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
 import { ATTACH_MEDIA_TO_TASK_PROPOSAL, REMOVE_MEDIA_FROM_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import {
+  GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
+  GET_USER_ORGS,
+  GET_USER_PERMISSION_CONTEXT,
+  SEARCH_USER_CREATED_TASKS,
+} from 'graphql/queries';
 import { GET_TASK_BY_ID } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
@@ -211,6 +216,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForOrgBoard',
       'getPerStatusTaskCountForPodBoard',
+      SEARCH_USER_CREATED_TASKS,
+      GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
     ],
   });
 

@@ -1,7 +1,10 @@
+import Divider from '@mui/material/Divider';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import DiscordIntegrationCard from 'components/Settings/Notifications/DiscordIntegrationCard';
 import React, { useEffect, useState } from 'react';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import Link from 'next/link';
-import EditIcon from 'components/Icons/editIcon';
 import palette from 'theme/palette';
 import {
   GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
@@ -9,65 +12,25 @@ import {
   GET_CHANNELS_FROM_DISCORD,
   GET_POD_BY_ID,
 } from 'graphql/queries';
-import {
-  DISABLE_POD_DISCORD_NOTIFICATION_CONFIG,
-  ENABLE_POD_DISCORD_NOTIFICATION_CONFIG,
-  MANUAL_DISCORD_POD_SETUP,
-} from 'graphql/mutations';
-import DropdownSelect from 'components/Common/DropdownSelect';
-import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { MANUAL_DISCORD_POD_SETUP, DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
+
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import { NotificationOutlineSettings } from '../../Icons/notifications';
-import { HeaderBlock } from '../headerBlock';
-import { DiscordCardElementDiv, TableValueText, DiscordChannelInfoDiv } from './styles';
-import Switch from '../../Common/Switch';
-import {
-  StyledTable,
-  StyledTableBody,
-  StyledTableCell,
-  StyledTableContainer,
-  StyledTableHead,
-  StyledTableRow,
-} from '../../Table/styles';
-import { DiscordText, GeneralSettingsIntegrationsBlock, LabelBlock } from '../styles';
-import { ErrorText } from '../../Common';
+import { NotificationType } from 'components/Settings/Notifications/constants';
+import { HeaderBlock } from 'components/Settings/headerBlock';
+import { NotificationOutlineSettings } from 'components/Icons/notifications';
+import styles from './styles';
+import { GeneralSettingsIntegrationsBlock } from '../styles';
 
 function PodNotification(props) {
   const { podId } = props;
   const [orgNotificationConfig, setOrgNotificationConfig] = useState(null);
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
-  const [selectedChannel, setSelectedChannel] = useState(null);
-  const [editChannel, setEditChannel] = useState(null);
-  const [notificationOn, setNotificationOn] = useState(null);
-  const [channelDeletedError, setChannelDeletedError] = useState(null);
-  const [serverDisconnectedError, setServerDisconnectedError] = useState(null);
-  const [mutationError, setMutationError] = useState(null);
-  const [enableDiscordNotification] = useMutation(ENABLE_POD_DISCORD_NOTIFICATION_CONFIG, {
-    onCompleted: (data) => {
-      setNotificationOn(true);
-    },
-    onError: (e) => {
-      console.error(e);
-      setMutationError('error enabling notifications');
-    },
-  });
-  const [disableDiscordNotification] = useMutation(DISABLE_POD_DISCORD_NOTIFICATION_CONFIG, {
-    onCompleted: (data) => {
-      setNotificationOn(false);
-    },
-    onError: (e) => {
-      console.error(e);
-      setMutationError('error disabling notifications');
-    },
-  });
-  const [manualDiscordPodSetup, { error: saveDiscordPodError }] = useMutation(MANUAL_DISCORD_POD_SETUP, {
-    onCompleted: () => {
-      setEditChannel(null);
-    },
-  });
+  const [__discordNotificationConfigData, __setDiscordNotificationConfigData] = useState(null);
+  const [manualDiscordPodSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_POD_SETUP);
+  const [disconnectPodDiscordNotificationConfig] = useMutation(DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG);
 
-  const [getOrgDiscordNotificationConfig, { loading, called }] = useLazyQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
+  const [getOrgDiscordNotificationConfig] = useLazyQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
     onCompleted: (data) => {
       setOrgNotificationConfig(data?.getOrgDiscordNotificationConfig);
     },
@@ -90,12 +53,8 @@ function PodNotification(props) {
   const discordNotificationConfigData = data?.getPodDiscordNotificationConfig;
 
   useEffect(() => {
-    setNotificationOn(discordNotificationConfigData?.disabledAt === null);
-  }, [discordNotificationConfigData?.disabledAt]);
-
-  useEffect(() => {
-    setGuildId(discordNotificationConfigData?.guildId || orgNotificationConfig?.guildId);
-  }, [orgNotificationConfig?.guildId, discordNotificationConfigData?.guildId]);
+    setGuildId(discordNotificationConfigData?.[0]?.guildId || orgNotificationConfig?.[0]?.guildId);
+  }, [orgNotificationConfig, discordNotificationConfigData]);
 
   useEffect(() => {
     if (guildId) {
@@ -118,46 +77,38 @@ function PodNotification(props) {
   }, [orgId]);
 
   useEffect(() => {
-    const channelName = discordNotificationConfigData?.channelInfo?.channelName;
-    const guildName = discordNotificationConfigData?.channelInfo?.guildName;
-    if (discordNotificationConfigData?.id && !channelName && !guildName) {
-      setServerDisconnectedError(true);
-    } else if (discordNotificationConfigData?.id && !channelName && guildName) {
-      setChannelDeletedError(true);
-    }
+    __setDiscordNotificationConfigData(discordNotificationConfigData);
   }, [discordNotificationConfigData]);
 
+  const handleConnect = (notificationType: string, channelId: string) => {
+    manualDiscordPodSetup({
+      variables: {
+        guildId,
+        podId,
+        channelId,
+        type: notificationType,
+      },
+      refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
+    });
+  };
+
+  const handleDisconnect = (notificationType: string) => {
+    disconnectPodDiscordNotificationConfig({
+      variables: {
+        podId,
+        type: notificationType,
+      },
+      refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
+    });
+  };
+
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
-  const filteredDiscordChannels = discordChannels.map((channel) => ({
-    value: channel.id,
-    label: channel.name,
-  }));
-
-  const handleEditClick = () => {
-    setEditChannel(true);
-    setSelectedChannel(discordNotificationConfigData?.channelId);
-  };
-
-  const handleEnableDisableSwitch = async () => {
-    setMutationError(null);
-    if (notificationOn) {
-      const confirmed = confirm('Are you sure you want to disable discord channel notfications?');
-      if (!confirmed) {
-        return;
-      }
-    }
-    if (notificationOn) {
-      disableDiscordNotification({
-        variables: { podId },
-      });
-    }
-
-    if (!notificationOn) {
-      enableDiscordNotification({
-        variables: { podId },
-      });
-    }
-  };
+  const taskNotificationConfig = __discordNotificationConfigData?.filter(
+    (config) => config.type === NotificationType.TasksNotifications && !config.disabledAt
+  );
+  const threadNotificationConfig = __discordNotificationConfigData?.filter(
+    (config) => config.type === NotificationType.TaskDiscussionThread && !config.disabledAt
+  );
 
   return (
     <SettingsWrapper>
@@ -167,120 +118,49 @@ function PodNotification(props) {
         description="Manage notifications"
       />
 
-      <GeneralSettingsIntegrationsBlock
-        style={{
-          borderBottom: 'none',
-        }}
-      >
-        <LabelBlock>Discord Integration</LabelBlock>
-        <DiscordText>For private channels, please ensure that the bot is added as a role</DiscordText>
-        {called && !loading && !orgNotificationConfig?.guildId && (
-          <ErrorText>
-            Add wonder bot to discord server on the org{' '}
-            <Link href={`/organization/settings/${orgId}/notifications`}>notification setting page</Link>
-          </ErrorText>
-        )}
-        {orgNotificationConfig?.guildId && (
-          <>
-            {' '}
-            <StyledTableContainer
-              style={{
-                marginLeft: '-3%',
-                width: '100%',
-              }}
-            >
-              <StyledTable>
-                <StyledTableHead>
-                  <StyledTableRow>
-                    {/* <StyledTableCell align="center" width={'10%'}>
-                    active
-                  </StyledTableCell> */}
-                    <StyledTableCell align="center" width="45%">
-                      Connected Server
-                    </StyledTableCell>
-                    <StyledTableCell align="center" width="45%">
-                      channel
-                    </StyledTableCell>
-                    <StyledTableCell align="center" width="10%">
-                      Enabled
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </StyledTableHead>
-                <StyledTableBody>
-                  <StyledTableRow
-                    style={{
-                      width: '150%',
-                    }}
-                  >
-                    <StyledTableCell>
-                      <TableValueText>{orgNotificationConfig?.channelInfo?.guildName}</TableValueText>
-                    </StyledTableCell>
-                    <StyledTableCell>
-                      {!editChannel && discordNotificationConfigData?.channelInfo?.channelName && (
-                        <DiscordChannelInfoDiv>
-                          <TableValueText>{discordNotificationConfigData?.channelInfo?.channelName}</TableValueText>
-                          <EditIcon
-                            style={{ marginLeft: '15px', cursor: 'pointer', height: '15px' }}
-                            onClick={handleEditClick}
-                          />
-                        </DiscordChannelInfoDiv>
-                      )}
-                      {(!discordNotificationConfigData?.channelInfo?.channelName || editChannel) && (
-                        <DiscordCardElementDiv>
-                          <DropdownSelect
-                            value={selectedChannel}
-                            setValue={setSelectedChannel}
-                            formSelectStyle={{
-                              height: 'auto',
-                            }}
-                            innerStyle={{
-                              marginTop: '0',
-                              background: palette.grey1000,
-                            }}
-                            options={filteredDiscordChannels}
-                          />
-                        </DiscordCardElementDiv>
-                      )}
-                    </StyledTableCell>
-                    <StyledTableCell>
-                      {' '}
-                      <Switch size="medium" checked={notificationOn} onClick={handleEnableDisableSwitch} />
-                    </StyledTableCell>
-                  </StyledTableRow>
-                </StyledTableBody>
-              </StyledTable>
-              {mutationError && <ErrorText>{mutationError}</ErrorText>}
-            </StyledTableContainer>
-            {selectedChannel && (
-              <>
-                <CreateFormPreviewButton
-                  style={{
-                    float: 'right',
-                    marginTop: '24px',
-                  }}
-                  onClick={() => {
-                    manualDiscordPodSetup({
-                      variables: {
-                        guildId,
-                        podId,
-                        channelId: selectedChannel,
-                      },
-                      refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
-                    });
-                  }}
-                >
-                  Save changes
-                </CreateFormPreviewButton>
-                {saveDiscordPodError && (
-                  <ErrorText>
-                    Failed to set up Discord for pod: {saveDiscordPodError?.message || saveDiscordPodError}
-                  </ErrorText>
-                )}
-              </>
-            )}
-          </>
-        )}
-      </GeneralSettingsIntegrationsBlock>
+      <Grid container>
+        <GeneralSettingsIntegrationsBlock
+          style={{
+            borderBottom: 'none',
+          }}
+        >
+          <Typography color={palette.blue20} fontWeight={500}>
+            Discord Integration
+          </Typography>
+          <Divider sx={styles.divider} />
+
+          {!guildId && discordNotificationConfigData !== undefined ? (
+            <Grid container sx={styles.connectDiscord}>
+              <Typography
+                fontSize="14px"
+                color={palette.grey250}
+                fontWeight={500}
+                sx={{ a: { color: palette.highlightBlue } }}
+              >
+                Add wonder bot to discord server on the org{' '}
+                <Link href={`/organization/settings/${orgId}/notifications`}>notification setting page</Link>
+              </Typography>
+            </Grid>
+          ) : null}
+
+          <DiscordIntegrationCard
+            title="Tasks Notifications"
+            discordChannels={discordChannels}
+            disabled={!guildId}
+            onConnect={(channelId) => handleConnect(NotificationType.TasksNotifications, channelId)}
+            onDisconnect={() => handleDisconnect(NotificationType.TasksNotifications)}
+            channel={taskNotificationConfig?.[0]?.channelInfo}
+          />
+          <DiscordIntegrationCard
+            title="Task Discussion Thread"
+            discordChannels={discordChannels}
+            disabled={!guildId}
+            onConnect={(channelId) => handleConnect(NotificationType.TaskDiscussionThread, channelId)}
+            onDisconnect={() => handleDisconnect(NotificationType.TaskDiscussionThread)}
+            channel={threadNotificationConfig?.[0]?.channelInfo}
+          />
+        </GeneralSettingsIntegrationsBlock>
+      </Grid>
     </SettingsWrapper>
   );
 }

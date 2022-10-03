@@ -814,7 +814,7 @@ export const FILTER_STATUSES_ADMIN = {
   ],
 };
 
-const generateColumns = (withSection: boolean, type: string) => {
+export const generateColumns = (withSection: boolean, type: string) => {
   const todoColumn = generateTodoColumn(withSection);
   const inProgressColumn = generateInProgressColumn(withSection);
   const doneColumn = generateDoneColumn(withSection);

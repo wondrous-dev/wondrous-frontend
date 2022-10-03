@@ -11,6 +11,7 @@ import OnboardingWelcome from 'components/Onboarding/Welcome';
 function OnboardingWelcomePage() {
   const router = useRouter();
   const user = useMe();
+  const {collabInvite} = router.query
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
     fetchPolicy: 'network-only',
   });
@@ -19,7 +20,7 @@ function OnboardingWelcomePage() {
     onCompleted: (data) => {
       const { updateUser } = data;
       if (updateUser) {
-        router.push('/onboarding/build-profile', undefined, {
+        router.push(`/onboarding/build-profile${collabInvite ? `?collabInvite=${collabInvite}` : ''}`, undefined, {
           shallow: true,
         });
       }
