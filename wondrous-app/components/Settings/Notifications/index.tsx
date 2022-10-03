@@ -17,14 +17,13 @@ import ConnectDiscordServer from 'components/Settings/Notifications/ConnectDisco
 import styles from 'components/Settings/Notifications/styles';
 
 enum NotificationType {
-  TasksNotifications = 'tasksNotifications',
-  TaskDiscussionThread = 'taskDiscussion',
+  Task = 'task',
+  Thread = 'thread',
 }
 
 function Notifications({ orgId }) {
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
-  // TODO: This is just for demo purposes
   const [__discordNotificationConfigData, __setDiscordNotificationConfigData] = useState(null);
 
   // const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP);
@@ -32,6 +31,7 @@ function Notifications({ orgId }) {
     variables: {
       orgId,
     },
+    skip: !orgId
   });
 
   useEffect(() => {
@@ -51,46 +51,7 @@ function Notifications({ orgId }) {
     __setDiscordNotificationConfigData(discordNotificationConfigData);
   }, [discordNotificationConfigData?.guildId]);
 
-  // TODO: Implement
-  const handleConnect = (notificationType: string, channelId: string) => {
-    const channelName = (discordChannelData?.getAvailableChannelsForDiscordGuild || []).find(
-      (r) => r.id === channelId
-    )?.name;
-
-    __setDiscordNotificationConfigData({
-      ...__discordNotificationConfigData,
-      channelInfo: {
-        ...__discordNotificationConfigData.channelInfo,
-        [notificationType]: {
-          channelName,
-          guildName: null,
-        },
-      },
-    });
-
-    // manualDiscordOrgSetup({
-    //   variables: {
-    //     guildId,
-    //     orgId,
-    //     channelId,
-    //   },
-    //   refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
-    // });
-  };
-
-  // TODO: Implement
-  const handleDisconnect = (notificationType: string) => {
-    __setDiscordNotificationConfigData({
-      ...__discordNotificationConfigData,
-      channelInfo: {
-        ...__discordNotificationConfigData.channelInfo,
-        [notificationType]: null,
-      },
-    });
-  };
-
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
-  const channelInfo = __discordNotificationConfigData?.channelInfo || {};
 
   return (
     <SettingsWrapper>
@@ -111,23 +72,23 @@ function Notifications({ orgId }) {
           </Typography>
           <Divider sx={styles.divider} />
 
-          {!guildId && discordNotificationConfigData !== undefined ? <ConnectDiscordServer orgId={orgId} /> : null}
+          {/* {!discordNotificationConfigData?.length && discordNotificationConfigData !== undefined ? <ConnectDiscordServer orgId={orgId} /> : null} */}
 
           <DiscordIntegrationCard
             title="Tasks Notifications"
+            orgId={orgId}
             discordChannels={discordChannels}
-            disabled={!guildId}
-            onConnect={(channelId) => handleConnect(NotificationType.TasksNotifications, channelId)}
-            onDisconnect={() => handleDisconnect(NotificationType.TasksNotifications)}
-            channel={channelInfo[NotificationType.TasksNotifications]}
+            type={NotificationType.Task}
+            configData={__discordNotificationConfigData}
+            // disabled={!guildId}
           />
           <DiscordIntegrationCard
             title="Task Discussion Thread"
+            orgId={orgId}
             discordChannels={discordChannels}
-            disabled={!guildId}
-            onConnect={(channelId) => handleConnect(NotificationType.TaskDiscussionThread, channelId)}
-            onDisconnect={() => handleDisconnect(NotificationType.TaskDiscussionThread)}
-            channel={channelInfo[NotificationType.TaskDiscussionThread]}
+            configData={discordNotificationConfigData}
+            type={NotificationType.Thread}
+            // disabled={!guildId}
           />
         </GeneralSettingsIntegrationsBlock>
       </Grid>

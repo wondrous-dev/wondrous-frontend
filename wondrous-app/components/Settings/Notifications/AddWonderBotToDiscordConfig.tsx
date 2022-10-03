@@ -15,11 +15,12 @@ import DropdownSelect from 'components/Common/DropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import { AddGuildButton, DiscordText } from 'components/Settings/styles';
+import Box from '@mui/material/Box';
 import { DiscordCard, DiscordCardElement, DiscordCardElementDiv } from './styles';
 
 let timeout;
 
-function AddWonderBotToDiscordConfig({ orgId }) {
+function AddWonderBotToDiscordConfig({ orgId, onSave }) {
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
@@ -95,13 +96,13 @@ function AddWonderBotToDiscordConfig({ orgId }) {
 
   return (
     <>
-      <DiscordCard container spacing={2}>
+      <DiscordCard container>
         <DiscordCardElement sm={4}>
           <DiscordCardElementDiv>
-            <DiscordText>1. Paste invite link</DiscordText>
+            <DiscordText>Paste invite link</DiscordText>
             <InputForm
               style={{
-                background: palette.grey1000,
+                background: palette.black97,
               }}
               value={discordInviteLink}
               onChange={(e) => setDiscordInviteLink(e.target.value)}
@@ -111,7 +112,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
         </DiscordCardElement>
         <DiscordCardElement sm={4}>
           <DiscordCardElementDiv>
-            <DiscordText>2. Add bot</DiscordText>
+            <DiscordText>Add bot</DiscordText>
             {guildId && !discordBotAdded?.checkDiscordBotAdded?.botAdded ? (
               <AddGuildButton
                 style={{
@@ -148,7 +149,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
         </DiscordCardElement>
         <DiscordCardElement sm={4}>
           <DiscordCardElementDiv>
-            <DiscordText>3. Set channel</DiscordText>
+            <DiscordText>Set channel</DiscordText>
             <DropdownSelect
               value={selectedChannel}
               setValue={setSelectedChannel}
@@ -157,7 +158,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
               }}
               innerStyle={{
                 marginTop: '0',
-                background: palette.grey1000,
+                background: palette.black97,
               }}
               options={filteredDiscordChannels}
             />
@@ -165,11 +166,10 @@ function AddWonderBotToDiscordConfig({ orgId }) {
         </DiscordCardElement>
       </DiscordCard>
       {selectedChannel && (
-        <>
+        <Box sx={{padding: '12px', display: 'flex', justifyContent: 'flex-end'}}>
           <CreateFormPreviewButton
             style={{
-              float: 'right',
-              marginTop: '24px',
+              margin: '0'
             }}
             onClick={() => {
               manualDiscordOrgSetup({
@@ -180,6 +180,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
                 },
                 refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
               });
+              if(onSave) onSave()
             }}
           >
             Save changes
@@ -189,7 +190,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
               Failed to set up Discord for organization: {saveDiscordOrgError?.message || saveDiscordOrgError}
             </ErrorText>
           )}
-        </>
+        </Box>
       )}
     </>
   );

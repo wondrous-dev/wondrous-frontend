@@ -154,18 +154,12 @@ function PodNotification(props) {
             title="Tasks Notifications"
             discordChannels={discordChannels}
             disabled={!guildId}
-            onConnect={(channelId) => handleConnect(NotificationType.TasksNotifications, channelId)}
-            onDisconnect={() => handleDisconnect(NotificationType.TasksNotifications)}
-            channel={channelInfo[NotificationType.TasksNotifications]}
-          />
+            channel={channelInfo[NotificationType.TasksNotifications]} configData={undefined} orgId={''}          />
           <DiscordIntegrationCard
             title="Task Discussion Thread"
             discordChannels={discordChannels}
             disabled={!guildId}
-            onConnect={(channelId) => handleConnect(NotificationType.TaskDiscussionThread, channelId)}
-            onDisconnect={() => handleDisconnect(NotificationType.TaskDiscussionThread)}
-            channel={channelInfo[NotificationType.TaskDiscussionThread]}
-          />
+            channel={channelInfo[NotificationType.TaskDiscussionThread]} configData={undefined} orgId={''}          />
         </GeneralSettingsIntegrationsBlock>
       </Grid>
     </SettingsWrapper>

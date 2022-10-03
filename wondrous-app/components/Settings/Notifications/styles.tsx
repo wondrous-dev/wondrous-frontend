@@ -3,7 +3,9 @@ import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import palette from 'theme/palette';
-import { Button } from '../../Common/button';
+import { Button } from 'components/Common/button';
+import typography from 'theme/typography';
+import PlusIcon from 'components/Icons/plus';
 
 export const ConnectDiscordButton = styled(Button)`
   && {
@@ -21,10 +23,7 @@ export const TableValueText = styled(Typography)`
 
 export const DiscordCard = styled(Grid)`
   && {
-    background: #3f3f45;
     border-radius: 8px;
-    margin: 24px 0 0;
-    padding: 8px;
     width: 100%;
   }
 `;
@@ -148,10 +147,49 @@ export const NotificationSettingsButtonsBlock = styled.div`
   padding: 30px 0px;
 `;
 
+export const AddServerButton = styled.button`
+  color: ${palette.blue20};
+  width: 100%;
+  height: 36px;
+  border-radius: 6px;
+  border: 0;
+  background-color: ${palette.grey920};
+  font-family: ${typography.fontFamily};
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 16px;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  align-items: center;
+  cursor: pointer;
+  &:hover {
+    background-color: ${palette.grey950}
+  }
+`;
+
+const PlusIconWrapper = styled.div`
+border: 1px solid ${palette.highlightBlue};
+height: 24px;
+width: 24px;
+display: flex;
+justify-content: center;
+align-items: center;
+border-radius: 100%;
+`;
+
+
+export const AddServerPlusIcon = () => (
+  <PlusIconWrapper>
+    <PlusIcon fill={palette.highlightBlue}/>
+  </PlusIconWrapper>
+);
+
+
 const styles = {
   divider: {
     backgroundColor: palette.grey85,
-    margin: '12px 0'
+    margin: '12px 0',
   },
   discordConnection: {
     backgroundColor: palette.black90,

@@ -18,7 +18,7 @@ const ListBox = forwardRef((props: any, ref: any) => {
     // eslint-disable-next-line jsx-a11y/aria-role
     <ListboxWrapper {...rest} ref={innerRef} role="list-box">
       {children}
-      <LoadMore ref={inViewRef} style={{ height: '2px', display: 'block' }} />
+      {!!handleFetchMore && <LoadMore ref={inViewRef} style={{ height: '2px', display: 'block' }} />}
     </ListboxWrapper>
   );
 });
