@@ -335,13 +335,13 @@ function ProfileSettings(props) {
             avatarEditorTitle="Upload a profile image"
           />
 
-          <ImageUpload
+          {/* <ImageUpload
             imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
             image={loggedInUser?.headerPicture}
             title="Header"
             updateFilesCb={setProfileBanner}
             avatarEditorTitle="Upload a header image"
-          />
+          /> */}
         </GeneralSettingsInputsBlock>
 
         <SettingsLinks links={links} setLinks={setLinks} />

@@ -168,7 +168,8 @@ const AvatarEditor = ({
           </Styles.RightButtons>
         </Styles.ToolButtonsContainer>
         <Styles.RecomendationContainer>
-          <ImageUploadRecommendText>Min size: 1200 x 170px</ImageUploadRecommendText>
+          {/* this shouldn't be hardcoded */}
+          <ImageUploadRecommendText>Recommended: 1200 x 170px</ImageUploadRecommendText>
         </Styles.RecomendationContainer>
       </Styles.Content>
 
@@ -176,7 +177,7 @@ const AvatarEditor = ({
         <Styles.CancelButton onClick={onCancel}>Cancel</Styles.CancelButton>
 
         <Button highlighted onClick={handleSave}>
-          Save Changes
+          Confirm Image
         </Button>
       </Styles.Footer>
     </Styles.Container>

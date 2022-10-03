@@ -516,6 +516,7 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
   && {
     font-size: 12px;
     line-height: 15px;
+    color: #cb3340;
     padding: 0 !important;
     min-width: 0 !important;
     text-decoration: underline;
