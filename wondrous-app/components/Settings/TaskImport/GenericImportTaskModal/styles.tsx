@@ -1,4 +1,13 @@
-import { Accordion, AccordionDetails, AccordionSummary, MenuItem, Modal, Select, Typography } from '@mui/material';
+import {
+  Accordion,
+  AccordionDetails,
+  AccordionSummary,
+  CircularProgress,
+  MenuItem,
+  Modal,
+  Select,
+  Typography,
+} from '@mui/material';
 import styled from 'styled-components';
 import CloseModalIcon from 'components/Icons/closeModal';
 import AttachFileSvg from 'components/Icons/attachFile.svg';
@@ -258,6 +267,12 @@ export const GenericImportTaskModalFooterButton = styled(Button)`
         cursor: not-allowed;
       }
     }
+  }
+`;
+
+export const GenericImportTaskModalProgressSpinner = styled(CircularProgress)`
+  && {
+    margin-left: 12px;
   }
 `;
 

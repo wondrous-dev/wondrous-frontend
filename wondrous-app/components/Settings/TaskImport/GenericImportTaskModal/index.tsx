@@ -5,7 +5,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import useAlerts from 'hooks/useAlerts';
 import CSVFileDropzone from 'components/Common/CSVFileDropZone';
 import { IMPORT_TASKS } from 'graphql/mutations';
-import { DEFAULT_IMPORT_FORMAT, IMPORT_FORMAT_OPTIONS, IMPORT_FORMATS } from './constants';
+import { DEFAULT_IMPORT_FORMAT, IMPORT_FORMAT_OPTIONS, IMPORT_FORMATS, DEFAULT_TASKS_DATA } from './constants';
 import {
   GenericImportTaskModalBody,
   GenericImportTaskModalBodyExpandedViewInvisibleState,
@@ -24,6 +24,7 @@ import {
   GenericImportTaskModalSelectValueDisplay,
   GenericImportTaskModalSelectValueDisplayText,
   GenericImportTaskModalError,
+  GenericImportTaskModalProgressSpinner,
 } from './styles';
 import { getTasksFromAsanaData, getTasksFromGenericData, getTasksFromTrelloData } from './helpers';
 
@@ -38,6 +39,8 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
   const { isOpen = false, handleClose = () => {}, orgId, podId } = props;
 
   const [importFormat, setImportFormat] = useState(DEFAULT_IMPORT_FORMAT);
+  const [tasksData, setTasksData] = useState(DEFAULT_TASKS_DATA);
+  const [isImportInProgress, setIsImportInProgress] = useState(false);
   const [error, setError] = useState('');
 
   const { showError } = useAlerts();
@@ -50,12 +53,14 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
   };
 
   const isExpandedViewVisible = importFormat?.value;
-  const isAddButtonDisabled = !importFormat?.value;
+  const isImportButtonDisabled = !importFormat?.value || !tasksData?.tasks?.length || isImportInProgress;
   const isOrg = !!orgId;
   const orgOrdPodId = isOrg ? orgId : podId;
 
   const resetStates = useCallback(() => {
     setImportFormat(DEFAULT_IMPORT_FORMAT);
+    setTasksData(DEFAULT_TASKS_DATA);
+    setIsImportInProgress(false);
     setError('');
   }, []);
 
@@ -108,9 +113,9 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
           formattedData = getTasksFromGenericData(data, isOrg, orgOrdPodId);
         }
 
-        console.log({ formattedData });
+        const formattedDataIdentifier = new Date().getTime();
 
-        // importTasks({ variables: { input: formattedData } }); // testing be integration
+        setTasksData((_) => ({ tasks: formattedData, key: formattedDataIdentifier }));
       } catch (error) {
         setError(error.message);
         Sentry.captureException(error); // this is most likely user error, should we capture this?
@@ -118,6 +123,16 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
     },
     [importFormat?.value]
   );
+
+  const handleImportTasks = useCallback(() => {
+    try {
+      setIsImportInProgress(true);
+      importTasks({ variables: { input: tasksData.tasks } });
+    } catch (error) {
+      showError("We're facing some issues trying to import the tasks. Please try again later!");
+      Sentry.captureException(error);
+    }
+  }, [tasksData.key]);
 
   const renderImportFromValue = () => (
     <GenericImportTaskModalSelectValueDisplay>
@@ -161,7 +176,11 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
               <>
                 <GenericImportTaskModalInputWrapper>
                   <GenericImportTaskModalLabel htmlFor="upload-zone">Upload file</GenericImportTaskModalLabel>
-                  <CSVFileDropzone handleFileUpload={handleFileUpload} key={importFormat?.value} />
+                  <CSVFileDropzone
+                    handleFileUpload={handleFileUpload}
+                    key={importFormat?.value}
+                    isDisabled={isImportInProgress}
+                  />
                 </GenericImportTaskModalInputWrapper>
                 {error && <GenericImportTaskModalError>{error}</GenericImportTaskModalError>}
               </>
@@ -170,8 +189,8 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
         </GenericImportTaskModalBody>
         <GenericImportTaskModalFooter>
           <GenericImportTaskModalFooterButton onClick={handleClose}>Cancel</GenericImportTaskModalFooterButton>
-          <GenericImportTaskModalFooterButton isPrimary disabled={isAddButtonDisabled} onClick={() => {}}>
-            Start importing
+          <GenericImportTaskModalFooterButton isPrimary disabled={isImportButtonDisabled} onClick={handleImportTasks}>
+            Start importing {isImportInProgress && <GenericImportTaskModalProgressSpinner size={16} />}
           </GenericImportTaskModalFooterButton>
         </GenericImportTaskModalFooter>
       </GenericImportTaskModalCard>

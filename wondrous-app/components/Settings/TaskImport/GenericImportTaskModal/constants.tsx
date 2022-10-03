@@ -4,6 +4,7 @@ import CSVIcon from 'components/Icons/csv.svg';
 import { AttachFileIcon } from './styles';
 
 export const DEFAULT_IMPORT_FORMAT = { label: 'Select Import Format', value: '', icon: <AttachFileIcon /> };
+export const DEFAULT_TASKS_DATA = { tasks: [], key: new Date().getTime() };
 
 export const IMPORT_FORMAT_OPTIONS = [
   { label: 'Asana', value: 'asana', icon: <AsanaIcon /> },

@@ -7,10 +7,16 @@ interface ICSVFileDropzoneProps {
   handleFileUpload: (results) => void;
   handleFileRemove?: () => void;
   dropText?: string;
+  isDisabled?: boolean;
 }
 
 const CSVFileDropzone = (props: ICSVFileDropzoneProps) => {
-  const { handleFileUpload, handleFileRemove, dropText = 'Drop CSV file here or click to upload' } = props;
+  const {
+    handleFileUpload,
+    handleFileRemove,
+    dropText = 'Drop CSV file here or click to upload',
+    isDisabled = false,
+  } = props;
   const { CSVReader } = useCSVReader();
 
   return (
@@ -18,6 +24,8 @@ const CSVFileDropzone = (props: ICSVFileDropzoneProps) => {
       onUploadAccepted={(results: any) => {
         handleFileUpload(results?.data);
       }}
+      noDrag={isDisabled}
+      noClick={isDisabled}
       skipEmptyLines
     >
       {({ getRootProps, acceptedFile, getRemoveFileProps, Remove }: any) => (
