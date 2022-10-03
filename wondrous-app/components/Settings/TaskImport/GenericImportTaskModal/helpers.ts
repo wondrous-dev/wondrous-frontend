@@ -1,7 +1,11 @@
 import isEqual from 'lodash/isEqual';
 import { ASANA_CSV_HEADERS, TRELLO_CSV_HEADERS } from './constants';
 
-const URL_REGEX = /(https?:\/\/[^\s]+)/g;
+const URL_REGEX = /(https?:\/\/[^\s]+\w)/g;
+const BOLD_REGEX = /(\*\*\w*\*\*)/g;
+const ITALIC_REGEX = /(\*\w*\*)/g;
+
+const regexToMatch = new RegExp([URL_REGEX.source, BOLD_REGEX.source, ITALIC_REGEX.source].join('|'), 'g');
 
 const getFormattedCSVData = (data) => {
   const formattedData = [];
@@ -25,14 +29,31 @@ const getFormattedDescription = (description: string) => {
   const paragraphs = description?.split('\n');
   paragraphs?.forEach((paragraph) => {
     const formattedParagraph = { type: 'paragraph', children: [] };
-    const content = paragraph.split(URL_REGEX)?.filter((c) => !!c);
+
+    const content = paragraph.split(regexToMatch)?.filter((c) => !!c);
+
     content?.forEach((c) => {
-      if (c?.match(URL_REGEX)) {
-        formattedParagraph.children.push({ type: 'link', href: c, children: [{ text: c }] });
+      if (URL_REGEX.test(c)) {
+        formattedParagraph.children.push({
+          type: 'link',
+          href: c,
+          children: [{ text: 'link' }],
+        });
+      } else if (BOLD_REGEX.test(c)) {
+        formattedParagraph.children.push({
+          bold: true,
+          text: c.replace(/\*/g, ''),
+        });
+      } else if (ITALIC_REGEX.test(c)) {
+        formattedParagraph.children.push({
+          italic: true,
+          text: c.replace(/\*/g, ''),
+        });
       } else {
         formattedParagraph.children.push({ text: c });
       }
     });
+
     formattedDescription.push(formattedParagraph);
   });
   return JSON.stringify(formattedDescription);
@@ -63,12 +84,6 @@ export const getTasksFromAsanaData = (data, isOrg, orgOrPodId) => {
     const task = {
       title: data.name,
       description: getFormattedDescription(data.notes),
-      // due_date: data['due-date'],
-      // assignee: data.assignee,
-      // tags: data.tags,
-      // status: data.status,
-      // project: data.project,
-      // section: data.section,
     } as any;
 
     if (data['due-date']) {
@@ -94,12 +109,6 @@ export const getTasksFromTrelloData = (data, isOrg, orgOrPodId) => {
     const task = {
       title: data['card-name'],
       description: getFormattedDescription(data['card-description']),
-      // due_date: data['due-date'] ? new Date(data['due-date']) : null,
-      // assignee: data.assignee,
-      // tags: data.tags,
-      // status: data.status,
-      // project: data.project,
-      // section: data.section,
     } as any;
 
     if (data['due-date']) {
