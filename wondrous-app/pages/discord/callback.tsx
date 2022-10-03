@@ -23,11 +23,18 @@ function Callback() {
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
 
+  const parsedState = state ? JSON.parse(state) : null;
+
+  const collabInviteQueryString = parsedState?.collabInvite ? `?collabInvite=${parsedState?.collabInvite}` : '';
+
+  const defaultRoute = parsedState?.collabInvite ? `/invite/collab/${collabInviteQueryString}` : '/mission-control';
+
+  console.log(parsedState);
   const returnToPage = useCallback(() => {
     let inviteToken;
     let inviteType = null;
+
     if (state) {
-      const parsedState = JSON.parse(state);
       inviteToken = parsedState?.token;
       inviteType = parsedState?.type;
     }
@@ -40,9 +47,15 @@ function Callback() {
         shallow: true,
       });
     } else {
-      router.push('/login?discordConnectError=true', undefined, {
-        shallow: true,
-      });
+      router.push(
+        `/login?discordConnectError=true${
+          parsedState?.collabInvite ? `&collabInvite=${parsedState?.collabInvite}` : ''
+        }`,
+        undefined,
+        {
+          shallow: true,
+        }
+      );
     }
   }, [state, router]);
   const redeemOrgInvite = async (token, user) => {
@@ -140,9 +153,15 @@ function Callback() {
               // Only place to change this is in settings
               window.location.href = `/profile/settings`;
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
-              router.push('/onboarding/discord?success', undefined, {
-                shallow: true,
-              });
+              router.push(
+                `/onboarding/discord?success${
+                  parsedState?.collabInvite ? `&collabInvite=${parsedState?.collabInvite}` : ''
+                }`,
+                undefined,
+                {
+                  shallow: true,
+                }
+              );
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao) {
               router.push(
                 {
@@ -150,6 +169,7 @@ function Callback() {
                   query: {
                     restoreState: true,
                     success: true,
+                    ...(parsedState?.collabInvite ? { collabInvite: parsedState?.collabInvite } : {}),
                   },
                 },
                 undefined,
@@ -179,6 +199,7 @@ function Callback() {
                   query: {
                     discordError: 1,
                     discordUserExists: Number(alreadyExists),
+                    ...(parsedState?.collabInvite ? { collabInvite: parsedState?.collabInvite } : {}),
                   },
                 },
                 undefined,
@@ -194,6 +215,7 @@ function Callback() {
                     discordError: 1,
                     discordUserExists: Number(alreadyExists),
                     restoreState: true,
+                    ...(parsedState?.collabInvite ? { collabInvite: parsedState?.collabInvite } : {}),
                   },
                 },
                 undefined,
@@ -231,16 +253,16 @@ function Callback() {
               }
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.login) {
               // Only place to change this is in settings
-              router.push('/mission-control', undefined, {
+              router.push(defaultRoute, undefined, {
                 shallow: true,
               });
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.signup) {
               if (!discordUser?.username) {
-                router.push('/onboarding/welcome', undefined, {
+                router.push(`/onboarding/welcome${collabInviteQueryString}`, undefined, {
                   shallow: true,
                 });
               } else {
-                router.push('/mission-control', undefined, {
+                router.push(defaultRoute, undefined, {
                   shallow: true,
                 });
               }

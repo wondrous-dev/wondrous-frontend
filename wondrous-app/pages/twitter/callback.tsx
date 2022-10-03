@@ -13,17 +13,19 @@ import { GRAPHQL_ERRORS } from 'utils/constants';
 function Callback() {
   const router = useRouter();
   const [successfullyVerified, setSuccessfullyVerified] = useState(false);
-  const { code, state, error: twitterError } = router.query;
+  const { code, state, error: twitterError }: any = router.query;
   const [verifyTwitter] = useMutation(VERIFY_TWITTER, {
     onError: () => {
       console.error('error verifying twitter');
     },
   });
 
+  const collabInviteCode = state?.split('collabInvite=')[1] || '';
   useEffect(() => {
     if (twitterError === 'access_denied') {
       router.replace({
-        pathname: '/onboarding/twitter',
+        pathname: `/onboarding/twitter`,
+        ...(collabInviteCode ? { query: { collabInvite: collabInviteCode } } : {}),
       });
     }
   }, [twitterError]);
@@ -33,10 +35,10 @@ function Callback() {
       verifyTwitter({
         variables: { code },
       }).then(() => {
-        console.log('state', state);
         if (state === 'onboarding') {
           router.replace({
-            pathname: '/twitter/verify-tweet',
+            pathname: `/twitter/verify-tweet`,
+            ...(collabInviteCode ? { query: { collabInvite: collabInviteCode } } : {}),
           });
         }
         if (state === 'profile') {

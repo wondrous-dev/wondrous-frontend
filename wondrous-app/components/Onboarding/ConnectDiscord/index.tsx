@@ -25,17 +25,20 @@ export function ConnectDiscord({ updateUser }) {
   const router = useRouter();
   const [bio, setBio] = useState('');
   const user = useMe();
-  const { discordUserExists, discordError, success } = router.query;
+  const { discordUserExists, discordError, success, collabInvite } = router.query;
   const isMobile = useIsMobile();
+  const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress ? '/onboarding/twitter' : '/onboarding/wallet';
-
+    const nextStep = user.activeEthAddress
+      ? `/onboarding/twitter${collabInviteQueryString}`
+      : `/onboarding/wallet${collabInviteQueryString}`;
     router.push(nextStep, undefined, { shallow: true });
   };
 
   const handleConnectDiscordClick = () => {
     const state = JSON.stringify({
       callbackType: DISCORD_CONNECT_TYPES.connectOnboarding,
+      ...(collabInvite ? { collabInvite } : {}),
     });
     window.location.href = `${DISCORD_OAUTH_URL}&state=${state}`;
   };

@@ -11,16 +11,13 @@ import {
   Later,
   SecretCodeContainer,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
-import CheckMarkIcon from 'components/Icons/checkMark';
-import { Button } from 'components/Common/button';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
 import Image from 'next/image';
 import { useWonderWeb3 } from 'services/web3';
 import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 import TwitterLogo from '../../../public/images/twitter.svg';
-import { InviteWelcomeBoxParagraph, QRCodeTwitter, WalletConnected, Label } from '../styles';
+import { InviteWelcomeBoxParagraph } from '../styles';
 import { useMe } from '../../Auth/withAuth';
-import TwitterBlue from '../../../public/images/twitterBlue.svg';
 
 // const buttonStyle = {
 //   background: 'linear-gradient(270deg, #CCBBFF -5.62%, #7427FF 45.92%, #00BAFF 103.12%)',
@@ -32,6 +29,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
   const router = useRouter();
   const user = useMe();
   const wonderWeb3 = useWonderWeb3();
+  const { collabInvite } = router?.query;
 
   const [tweetVerified, setTweetVerified] = useState(false);
   const { data: userData } = useQuery(GET_LOGGED_IN_USER, {
@@ -40,6 +38,7 @@ function VerifyTweet({ firstOrg, firstPod }) {
       if (data?.getLoggedinUser?.userInfo && !userData?.getLoggedinUser?.userInfo?.twitterUsername) {
         router.push(`/onboarding/twitter`, undefined, {
           shallow: true,
+          ...(collabInvite ? { query: { collabInvite } } : {}),
         });
       }
     },
@@ -74,6 +73,14 @@ function VerifyTweet({ firstOrg, firstPod }) {
 
   const hanldeLaterClick = () => {
     // if user is part of a org maybe redirect to org
+    if (collabInvite && !firstOrg) {
+      return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
+        shallow: true,
+      });
+    }
+    if (collabInvite && firstOrg) {
+      return router.push(`/invite/collab/${collabInvite}`, undefined, { shallow: true });
+    }
     if (firstPod) {
       router.push(`/pod/${firstPod.id}/boards`, undefined, {
         shallow: true,
