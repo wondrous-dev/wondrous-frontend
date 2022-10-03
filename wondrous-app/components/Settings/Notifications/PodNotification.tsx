@@ -3,7 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import DiscordIntegrationCard from 'components/Settings/Notifications/DiscordIntegrationCard';
 import React, { useEffect, useState } from 'react';
-import { useQuery, useLazyQuery } from '@apollo/client';
+import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 import Link from 'next/link';
 import palette from 'theme/palette';
 import {
@@ -12,17 +12,14 @@ import {
   GET_CHANNELS_FROM_DISCORD,
   GET_POD_BY_ID,
 } from 'graphql/queries';
+import { MANUAL_DISCORD_POD_SETUP, DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
 
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import { NotificationOutlineSettings } from '../../Icons/notifications';
-import { HeaderBlock } from '../headerBlock';
+import { NotificationType } from 'components/Settings/Notifications/constants';
+import { HeaderBlock } from 'components/Settings/headerBlock';
+import { NotificationOutlineSettings } from 'components/Icons/notifications';
 import styles from './styles';
 import { GeneralSettingsIntegrationsBlock } from '../styles';
-
-enum NotificationType {
-  TasksNotifications = 'tasksNotifications',
-  TaskDiscussionThread = 'taskDiscussion',
-}
 
 function PodNotification(props) {
   const { podId } = props;
@@ -30,6 +27,8 @@ function PodNotification(props) {
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
   const [__discordNotificationConfigData, __setDiscordNotificationConfigData] = useState(null);
+  const [manualDiscordPodSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_POD_SETUP);
+  const [disconnectPodDiscordNotificationConfig] = useMutation(DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG);
 
   const [getOrgDiscordNotificationConfig] = useLazyQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
     onCompleted: (data) => {
@@ -54,8 +53,8 @@ function PodNotification(props) {
   const discordNotificationConfigData = data?.getPodDiscordNotificationConfig;
 
   useEffect(() => {
-    setGuildId(discordNotificationConfigData?.guildId || orgNotificationConfig?.guildId);
-  }, [orgNotificationConfig?.guildId, discordNotificationConfigData?.guildId]);
+    setGuildId(discordNotificationConfigData?.[0]?.guildId || orgNotificationConfig?.[0]?.guildId);
+  }, [orgNotificationConfig, discordNotificationConfigData]);
 
   useEffect(() => {
     if (guildId) {
@@ -81,46 +80,35 @@ function PodNotification(props) {
     __setDiscordNotificationConfigData(discordNotificationConfigData);
   }, [discordNotificationConfigData]);
 
-  // TODO: Implement
   const handleConnect = (notificationType: string, channelId: string) => {
-    const channelName = (discordChannelData?.getAvailableChannelsForDiscordGuild || []).find(
-      (r) => r.id === channelId
-    )?.name;
-
-    __setDiscordNotificationConfigData({
-      ...__discordNotificationConfigData,
-      channelInfo: {
-        ...__discordNotificationConfigData.channelInfo,
-        [notificationType]: {
-          channelName,
-          guildName: null,
-        },
+    manualDiscordPodSetup({
+      variables: {
+        guildId,
+        podId,
+        channelId,
+        type: notificationType,
       },
+      refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
     });
-
-    // manualDiscordOrgSetup({
-    //   variables: {
-    //     guildId,
-    //     orgId,
-    //     channelId,
-    //   },
-    //   refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
-    // });
   };
 
-  // TODO: Implement
   const handleDisconnect = (notificationType: string) => {
-    __setDiscordNotificationConfigData({
-      ...__discordNotificationConfigData,
-      channelInfo: {
-        ...__discordNotificationConfigData.channelInfo,
-        [notificationType]: null,
+    disconnectPodDiscordNotificationConfig({
+      variables: {
+        podId,
+        type: notificationType,
       },
+      refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
     });
   };
 
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
-  const channelInfo = __discordNotificationConfigData?.channelInfo || {};
+  const taskNotificationConfig = __discordNotificationConfigData?.filter(
+    (config) => config.type === NotificationType.TasksNotifications && config.channelId
+  );
+  const threadNotificationConfig = __discordNotificationConfigData?.filter(
+    (config) => config.type === NotificationType.TaskDiscussionThread && config.channelId
+  );
 
   return (
     <SettingsWrapper>
@@ -143,7 +131,12 @@ function PodNotification(props) {
 
           {!guildId && discordNotificationConfigData !== undefined ? (
             <Grid container sx={styles.connectDiscord}>
-              <Typography fontSize="14px" color={palette.grey250} fontWeight={500} sx={{ a: { color: palette.highlightBlue } }}>
+              <Typography
+                fontSize="14px"
+                color={palette.grey250}
+                fontWeight={500}
+                sx={{ a: { color: palette.highlightBlue } }}
+              >
                 Add wonder bot to discord server on the org{' '}
                 <Link href={`/organization/settings/${orgId}/notifications`}>notification setting page</Link>
               </Typography>
@@ -156,7 +149,7 @@ function PodNotification(props) {
             disabled={!guildId}
             onConnect={(channelId) => handleConnect(NotificationType.TasksNotifications, channelId)}
             onDisconnect={() => handleDisconnect(NotificationType.TasksNotifications)}
-            channel={channelInfo[NotificationType.TasksNotifications]}
+            channel={taskNotificationConfig?.[0]?.channelInfo}
           />
           <DiscordIntegrationCard
             title="Task Discussion Thread"
@@ -164,7 +157,7 @@ function PodNotification(props) {
             disabled={!guildId}
             onConnect={(channelId) => handleConnect(NotificationType.TaskDiscussionThread, channelId)}
             onDisconnect={() => handleDisconnect(NotificationType.TaskDiscussionThread)}
-            channel={channelInfo[NotificationType.TaskDiscussionThread]}
+            channel={threadNotificationConfig?.[0]?.channelInfo}
           />
         </GeneralSettingsIntegrationsBlock>
       </Grid>

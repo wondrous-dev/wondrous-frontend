@@ -28,7 +28,7 @@ type Props = {
 const DiscordIntegrationCard = ({ title, disabled, discordChannels, channel, onConnect, onDisconnect }: Props) => {
   const [expanded, setExpanded] = useState(false);
   const [selectedChannel, setSelectedChannel] = useState(null);
-
+  console.log(channel);
   useEffect(() => {
     if (channel) {
       setExpanded(true);
