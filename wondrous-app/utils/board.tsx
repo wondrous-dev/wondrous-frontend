@@ -86,8 +86,13 @@ export const updateTaskItemOnEntityType = (updatedItem, columns) => {
   return columns;
 };
 
-export const removeTaskItem = (itemId, columns) => {
-  columns[0].tasks = columns[0].tasks.filter((task) => task.id !== itemId);
+export const removeTaskItemOnEntityType = (updatedItem, columns) => {
+  const columnToUpdate = columns.filter((column) => column.id !== updatedItem.id);
+  return columnToUpdate;
+};
+
+export const removeTaskItem = (item, columns) => {
+  columns[0].tasks = columns[0].tasks.filter((task) => task.id !== item.id);
   return columns;
 };
 
@@ -126,8 +131,8 @@ export const updateInProgressTask = (updatedItem, columns) => {
   return columns;
 };
 
-export const removeInProgressTask = (itemId, columns) => {
-  columns[1].tasks = columns[1].tasks.filter((task) => task.id !== itemId);
+export const removeInProgressTask = (item, columns) => {
+  columns[1].tasks = columns[1].tasks.filter((task) => task.id !== item.id);
   return columns;
 };
 
@@ -166,8 +171,8 @@ export const updateInReviewItem = (updatedItem, columns) => {
   return columns;
 };
 
-export const removeInReviewItem = (itemId, columns) => {
-  columns[2].tasks = columns[2].tasks.filter((task) => task.id !== itemId);
+export const removeInReviewItem = (item, columns) => {
+  columns[2].tasks = columns[2].tasks.filter((task) => task.id !== item.id);
   return columns;
 };
 
@@ -186,8 +191,8 @@ export const updateCompletedItem = (updatedItem, columns) => {
   return columns;
 };
 
-export const removeCompletedItem = (itemId, columns) => {
-  columns[3].tasks = columns[3].tasks.filter((task) => task.id !== itemId);
+export const removeCompletedItem = (item, columns) => {
+  columns[3].tasks = columns[3].tasks.filter((task) => task.id !== item.id);
   return columns;
 };
 

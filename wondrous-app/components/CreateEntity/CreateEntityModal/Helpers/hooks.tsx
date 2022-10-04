@@ -34,6 +34,11 @@ import {
   updateTaskItem,
   updateCompletedItem,
   updateTaskItemOnEntityType,
+  removeInReviewItem,
+  removeInProgressTask,
+  removeTaskItem,
+  removeCompletedItem,
+  removeTaskItemOnEntityType,
 } from 'utils/board';
 import {
   CATEGORY_LABELS,
@@ -51,6 +56,23 @@ import {
   getPodObject,
   onCorrectPage,
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
+
+const HANDLE_TASKS = {
+  REMOVE: {
+    inReview: removeInReviewItem,
+    inProgress: removeInProgressTask,
+    done: removeCompletedItem,
+    toDo: removeTaskItem,
+    onEntityType: removeTaskItemOnEntityType,
+  },
+  UPDATE: {
+    inReview: updateInReviewItem,
+    inProgress: updateInProgressTask,
+    done: updateCompletedItem,
+    toDo: updateTaskItem,
+    onEntityType: updateTaskItemOnEntityType,
+  },
+};
 
 export const useGetOrgRoles = (org) => {
   const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
@@ -419,17 +441,20 @@ export const useUpdateTask = () => {
       },
     }).then(({ data }) => {
       const task = data?.updateTask;
-      if (board?.setColumns && onCorrectPage(existingTask, board)) {
+      if (board?.setColumns) {
         const transformedTask = transformTaskToTaskCard(task, {});
         let columns = [...board?.columns];
+
+        const handleTasks = onCorrectPage(task, board) ? HANDLE_TASKS.UPDATE : HANDLE_TASKS.REMOVE;
+
         if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
+          columns = handleTasks.inReview(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
+          columns = handleTasks.inProgress(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO) {
-          columns = updateTaskItem(transformedTask, columns);
+          columns = handleTasks.toDo(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
+          columns = handleTasks.done(transformedTask, columns);
         }
         board.setColumns(columns);
       }
@@ -449,20 +474,22 @@ export const useUpdateMilestone = () => {
       },
     }).then(({ data }) => {
       const milestone = data?.updateMilestone;
-      if (board?.setColumns && onCorrectPage) {
+      if (board?.setColumns) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
+
+        const handleTasks = onCorrectPage(milestone, board) ? HANDLE_TASKS.UPDATE : HANDLE_TASKS.REMOVE;
         let columns = [...board?.columns];
         if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
+          columns = handleTasks.inReview(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
+          columns = handleTasks.inProgress(transformedTask, columns);
           // if there's no entityType we assume it's the userBoard and keeping the old logic
         } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
-          columns = updateTaskItem(transformedTask, columns);
+          columns = handleTasks.toDo(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
-          columns = updateTaskItemOnEntityType(transformedTask, columns);
+          columns = handleTasks.onEntityType(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
+          columns = handleTasks.done(transformedTask, columns);
         }
         board.setColumns(columns);
       }
