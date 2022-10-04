@@ -71,12 +71,14 @@ export const addTaskItem = (newItem, columns) => {
 };
 
 export const updateTaskItem = (updatedItem, columns) => {
-  columns[0].tasks = columns[0].tasks.map((task) => {
-    if (task.id === updatedItem.id) {
-      return updatedItem;
-    }
-    return task;
-  });
+  if (columns[0].tasks) {
+    columns[0].tasks = columns[0].tasks.map((task) => {
+      if (task.id === updatedItem.id) {
+        return updatedItem;
+      }
+      return task;
+    });
+  }
   return columns;
 };
 
