@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const IconWrapper = styled.div`
   display: flex;
@@ -47,4 +48,14 @@ export const ListViewItemActions = styled.div`
   justify-content: center;
   align-items: center;
   gap: 16px;
+`;
+
+export const Type = styled.div`
+  line-height: 0;
+  font-size: 12px;
+  font-weight: 600;
+  background: ${palette.grey90};
+  padding: 12px;
+  border-radius: 100px;
+  color: ${palette.grey500};
 `;

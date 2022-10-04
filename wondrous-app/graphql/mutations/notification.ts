@@ -16,33 +16,17 @@ export const MARK_ALL_NOTIFICATIONS_READ = gql`
   }
 `;
 
-export const ENABLE_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation enableOrgDiscordNotificationConfig($orgId: ID!) {
-    enableOrgDiscordNotificationConfig(orgId: $orgId) {
+export const DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
+  mutation disconnectOrgDiscordNotificationConfig($orgId: ID!, $type: String!) {
+    disconnectOrgDiscordNotificationConfig(orgId: $orgId, type: $type) {
       success
     }
   }
 `;
 
-export const DISABLE_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation disableOrgDiscordNotificationConfig($orgId: ID!) {
-    disableOrgDiscordNotificationConfig(orgId: $orgId) {
-      success
-    }
-  }
-`;
-
-export const ENABLE_POD_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation enablePodDiscordNotificationConfig($podId: ID!) {
-    enablePodDiscordNotificationConfig(podId: $podId) {
-      success
-    }
-  }
-`;
-
-export const DISABLE_POD_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation disablePodDiscordNotificationConfig($podId: ID!) {
-    disablePodDiscordNotificationConfig(podId: $podId) {
+export const DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG = gql`
+  mutation disconnectPodDiscordNotificationConfig($podId: ID!, $type: String!) {
+    disconnectPodDiscordNotificationConfig(podId: $podId, type: $type) {
       success
     }
   }
@@ -65,16 +49,16 @@ export const DISABLE_USER_DISCORD_NOTIFICATION_CONFIG = gql`
 `;
 
 export const MANUAL_DISCORD_ORG_SETUP = gql`
-  mutation manualDiscordOrgSetup($orgId: ID!, $guildId: String!, $channelId: String!) {
-    manualDiscordOrgSetup(orgId: $orgId, guildId: $guildId, channelId: $channelId) {
+  mutation manualDiscordOrgSetup($orgId: ID!, $guildId: String!, $channelId: String!, $type: String) {
+    manualDiscordOrgSetup(orgId: $orgId, guildId: $guildId, channelId: $channelId, type: $type) {
       success
     }
   }
 `;
 
 export const MANUAL_DISCORD_POD_SETUP = gql`
-  mutation manualDiscordPodSetup($podId: ID!, $guildId: String!, $channelId: String!) {
-    manualDiscordPodSetup(podId: $podId, guildId: $guildId, channelId: $channelId) {
+  mutation manualDiscordPodSetup($podId: ID!, $guildId: String!, $channelId: String!, $type: String) {
+    manualDiscordPodSetup(podId: $podId, guildId: $guildId, channelId: $channelId, type: $type) {
       success
     }
   }

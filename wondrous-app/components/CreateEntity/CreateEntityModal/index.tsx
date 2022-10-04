@@ -58,6 +58,7 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
+import { StyledLink } from 'components/Common/text';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -182,6 +183,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
   const router = useRouter();
+  const [paymentMethodInactiveError, setPaymentMethodInactiveError] = useState(false);
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -272,8 +274,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
-  const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
+  const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId, true));
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(form.values.orgId);
+  const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
   const filteredOrgUsersData = filterOrgUsers({ orgUsersData, existingTask });
   const orgLabelsData = useGetOrgLabels(form.values.orgId);
   const handleCreateLabel = useCreateLabel(form.values.orgId, (newLabelId) =>
@@ -558,6 +561,22 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         proposalId: existingTask?.id,
       },
     });
+  };
+
+  const selectedPaymentMethod = paymentMethods.filter((p) => p.id === form.values?.rewards?.[0]?.paymentMethodId);
+
+  useEffect(() => {
+    if (selectedPaymentMethod?.length > 0) {
+      setPaymentMethodInactiveError(false);
+      if (selectedPaymentMethod?.[0]?.deactivatedAt) {
+        setPaymentMethodInactiveError(true);
+      }
+    }
+  }, [selectedPaymentMethod]);
+
+  const handlePaymentMethodRedirect = () => {
+    handleClose();
+    router.push(`/organization/settings/${form.values.orgId}/payment-method`);
   };
 
   const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
@@ -1196,55 +1215,70 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityLabel>Reward</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            {form.values.rewards?.length > 0 && (
-              <CreateEntityWrapper>
-                <CreateEntityPaymentMethodSelect
-                  name="rewards-payment-method"
-                  value={form.values?.rewards?.[0]?.paymentMethodId}
-                  onChange={(value) => {
-                    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
-                  }}
-                  renderValue={(value) => {
-                    if (!value?.label?.props) return null;
-                    return (
-                      <CreateEntityPaymentMethodSelected>
-                        <CreateEntityPaymentMethodItem {...value.label.props} />
-                        <CreateEntitySelectArrowIcon />
-                      </CreateEntityPaymentMethodSelected>
-                    );
-                  }}
-                >
-                  {paymentMethods.map(({ symbol, icon, id, chain }) => (
-                    <CreateEntityPaymentMethodOption key={id} value={id}>
-                      <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
-                    </CreateEntityPaymentMethodOption>
-                  ))}
-                </CreateEntityPaymentMethodSelect>
-                <CreateEntityTextfield
-                  autoComplete="off"
-                  autoFocus={!form.values.rewards?.[0]?.rewardAmount}
-                  name="rewards"
-                  onChange={handleRewardOnChange(form)}
-                  placeholder="Enter rewards..."
-                  value={form.values?.rewards?.[0]?.rewardAmount}
-                  fullWidth
-                  InputProps={{
-                    inputComponent: CreateEntityTextfieldInputRewardComponent,
-                    endAdornment: (
-                      <CreateEntityAutocompletePopperRenderInputAdornment
-                        position="end"
-                        onClick={() => {
-                          form.setFieldValue('rewards', []);
-                        }}
-                      >
-                        <CreateEntityAutocompletePopperRenderInputIcon />
-                      </CreateEntityAutocompletePopperRenderInputAdornment>
-                    ),
-                  }}
-                  error={form.errors?.rewards?.[0]?.rewardAmount}
-                  onFocus={() => form.setFieldError('rewards', undefined)}
-                />
-              </CreateEntityWrapper>
+            {form.values.rewards?.length > 0 &&
+              // this check is to only show the field when there exist a reward with paymethod not active, otherwise just hide
+              (activePaymentMethods?.length > 0 || form.values?.rewards?.[0]?.paymentMethodId) && (
+                <CreateEntityWrapper>
+                  <CreateEntityPaymentMethodSelect
+                    name="rewards-payment-method"
+                    value={form.values?.rewards?.[0]?.paymentMethodId}
+                    onChange={(value) => {
+                      form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
+                    }}
+                    renderValue={(selectedItem) => {
+                      if (!selectedItem?.label?.props) return null;
+                      return (
+                        <CreateEntityPaymentMethodSelected>
+                          <CreateEntityPaymentMethodItem {...selectedItem.label.props} />
+                          <CreateEntitySelectArrowIcon />
+                        </CreateEntityPaymentMethodSelected>
+                      );
+                    }}
+                  >
+                    {activePaymentMethods.map(({ symbol, icon, id, chain }) => (
+                      <CreateEntityPaymentMethodOption key={id} value={id}>
+                        <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
+                      </CreateEntityPaymentMethodOption>
+                    ))}
+                  </CreateEntityPaymentMethodSelect>
+                  <CreateEntityTextfield
+                    autoComplete="off"
+                    autoFocus={!form.values.rewards?.[0]?.rewardAmount}
+                    name="rewards"
+                    onChange={handleRewardOnChange(form)}
+                    placeholder="Enter rewards..."
+                    value={form.values?.rewards?.[0]?.rewardAmount}
+                    fullWidth
+                    InputProps={{
+                      inputComponent: CreateEntityTextfieldInputRewardComponent,
+                      endAdornment: (
+                        <CreateEntityAutocompletePopperRenderInputAdornment
+                          position="end"
+                          onClick={() => {
+                            form.setFieldValue('rewards', []);
+                          }}
+                        >
+                          <CreateEntityAutocompletePopperRenderInputIcon />
+                        </CreateEntityAutocompletePopperRenderInputAdornment>
+                      ),
+                    }}
+                    error={form.errors?.rewards?.[0]?.rewardAmount}
+                    onFocus={() => form.setFieldError('rewards', undefined)}
+                  />
+                </CreateEntityWrapper>
+              )}
+            {paymentMethodInactiveError && (
+              <ErrorText>
+                Payment method {`${selectedPaymentMethod?.[0]?.symbol} ${selectedPaymentMethod?.[0]?.chain}`} is
+                deactivated
+              </ErrorText>
+            )}{' '}
+            {form.values.rewards?.length > 0 && activePaymentMethods?.length === 0 && (
+              // this is the case when no reward is currently attached and no payment method was created
+              <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+                {' '}
+                Set up payment method
+              </StyledLink>
             )}
             {form.touched.rewards && form.errors?.rewards?.[0]?.rewardAmount && (
               <CreateEntityError>{form.errors?.rewards?.[0]?.rewardAmount}</CreateEntityError>
@@ -1252,7 +1286,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('rewards', [{ rewardAmount: '', paymentMethodId: paymentMethods?.[0]?.id }]);
+                  form.setFieldValue('rewards', [{ rewardAmount: '', paymentMethodId: activePaymentMethods?.[0]?.id }]);
                 }}
               >
                 <CreateEntityAddButtonIcon />

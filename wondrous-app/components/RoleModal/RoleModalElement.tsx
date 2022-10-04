@@ -170,8 +170,8 @@ export const IndividualRoleDisplay = (props) => {
   const claimable = claimabeRoles?.find((claimableRole) => claimableRole?.id === role?.id);
   return (
     <div>
-      <RequestModalCheckPillCombo>
-        <div onClick={handleSelect}>
+      <RequestModalCheckPillCombo onClick={handleSelect}>
+        <div>
           <RequestModalCheckbox checked={selected} />
         </div>
         <RequestModalHelperContainer>

@@ -348,7 +348,7 @@ export const PERMISSION_TO_DISPLAY = {
   [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
   [PERMISSIONS.MANAGE_POD]: 'Manage pod',
   [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
-  [PERMISSIONS.MANAGE_POST]: 'Manage post',
+  // [PERMISSIONS.MANAGE_POST]: 'Manage post',
   [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
 };
 
@@ -660,6 +660,7 @@ export const PAGE_PATHNAME = {
   profile_username_about: '/profile/[username]/about',
   explore: '/explore',
   mission_control: '/mission-control',
+  search_result: '/search-result',
 };
 
 export const ROLES = {
