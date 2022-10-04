@@ -20,8 +20,12 @@ const useGetUserAboutPage = (userId) => {
   const [disableCompletedTaskButton, setDisableCompletedTaskButton] = useState(false);
   const [disableInProgressButton, setDisableInProgressButton] = useState(false);
   const [disableOrgRolesButton, setDisableOrgRolesButton] = useState(false);
-  const [getUserCompletedTasks, { fetchMore: completedTaskFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
-  const [getUserInProgressTasks, { fetchMore: inProgressFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS);
+  const [getUserCompletedTasks, { fetchMore: completedTaskFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+    fetchPolicy: 'network-only',
+  });
+  const [getUserInProgressTasks, { fetchMore: inProgressFetchMore }] = useLazyQuery(GET_USER_TASK_BOARD_TASKS, {
+    fetchPolicy: 'network-only',
+  });
   const [getUserOrgRoles, { data: userOrgRolesData }] = useLazyQuery(GET_USER_ORG_ROLES);
   const [inProgressData, setInProgressData] = useState([]);
   const { data: userTaskCountData } = useGetPerStatusTaskCountForUserBoard(userId);
