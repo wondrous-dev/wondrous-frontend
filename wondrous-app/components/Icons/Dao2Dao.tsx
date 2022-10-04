@@ -1,6 +1,22 @@
 import React from 'react';
 import palette from 'theme/palette';
 
+export const SmallDao2DaoIcon = ({ stroke = '#7A7A7A', ...rest }) => (
+  <svg width="16" height="13" viewBox="0 0 16 13" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
+    <path
+      d="M5.71303 0.912109L10.5592 3.71003V9.30588L5.71303 12.1038L0.866889 9.30588V3.71003L5.71303 0.912109Z"
+      stroke={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+    <path
+      d="M10.2208 0.912109L15.067 3.71003V9.30588L10.2208 12.1038L5.3747 9.30588V3.71003L10.2208 0.912109Z"
+      stroke={stroke}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+    />
+  </svg>
+);
 const Dao2DaoIcon = ({ stroke = '#7A7A7A', ...rest }) => (
   <svg width={23} height={18} fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
     <path
