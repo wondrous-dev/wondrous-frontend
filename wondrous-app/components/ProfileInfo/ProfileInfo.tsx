@@ -17,6 +17,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import ChooseEntityToCreate from 'components/CreateEntity';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -58,6 +59,7 @@ function ProfileInfo({ userProfile }) {
 
   return (
     <ProfileInfoWrapper>
+      <ChooseEntityToCreate />
       <UserInterestModal
         open={openInterestModal}
         onClose={() => setOpenInterestModal(false)}
