@@ -6,7 +6,7 @@ import styles from './styles';
 
 type Props = {
   /**
-   * The value of the priority
+   * The value of the priority p0, p1, p2, p3
    */
   value: string;
 };
