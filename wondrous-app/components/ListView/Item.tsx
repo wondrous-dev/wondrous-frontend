@@ -1,5 +1,12 @@
 import { useState, useContext, useEffect } from 'react';
-import { TASK_STATUS_IN_REVIEW, TASK_STATUS_DONE, ENTITIES_TYPES, PERMISSIONS, TASK_TYPE } from 'utils/constants';
+import {
+  TASK_STATUS_IN_REVIEW,
+  TASK_STATUS_DONE,
+  ENTITIES_TYPES,
+  PERMISSIONS,
+  TASK_TYPE,
+  PAGE_PATHNAME,
+} from 'utils/constants';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
@@ -35,11 +42,13 @@ import {
   ListViewItemDataContainer,
   ListViewItemIconsWrapper,
   ListViewItemActions,
+  Type,
 } from './styles';
 
 export default function ListViewItem({ task, entityType }) {
   let windowOffset = 0;
   const router = useRouter();
+  const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
   const [data, setData] = useState(task);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
@@ -307,6 +316,7 @@ export default function ListViewItem({ task, entityType }) {
               />
             )}
             {title}
+            {showTaskType && <Type>{task.type}</Type>}
             {!!totalSubtaskCount && (
               <ListViewItemIconsWrapper>
                 <SubtaskLightIcon fill="none" stroke={palette.grey57} height="30" width="30" viewBox="0 3 20 20" />

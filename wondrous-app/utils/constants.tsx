@@ -695,6 +695,7 @@ export const PAGE_PATHNAME = {
   profile_username_about: '/profile/[username]/about',
   explore: '/explore',
   mission_control: '/mission-control',
+  search_result: '/search-result',
 };
 
 export const ROLES = {

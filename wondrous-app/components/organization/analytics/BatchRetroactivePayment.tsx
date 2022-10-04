@@ -81,6 +81,7 @@ export function BatchRetroactivePayment(props: Props) {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
       console.log('error connecting to gnosis safe', selectedWallet.chain);
+      console.error(e);
       setSafeConnectionError(`Cannot connect to safe, check if connected to  ${selectedWallet.chain}`);
     }
   };

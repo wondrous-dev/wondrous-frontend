@@ -13,7 +13,17 @@ const HeaderComponent = () => {
   const globalContext = useGlobalContext();
   const { toggleCreateFormModal: openCreateFormModal } = globalContext;
   const router = useRouter();
-  const urlsWithCreateButton = ['/boards', '/dashboard', '/activities', '/docs', '/analytics'];
+  const urlsWithCreateButton = [
+    '/boards',
+    '/dashboard',
+    '/activities',
+    '/docs',
+    '/analytics',
+    '/explore',
+    '/profile',
+    '/settings',
+    '/mission-control',
+  ];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
 
   return (
