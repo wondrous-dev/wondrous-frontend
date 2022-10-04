@@ -1,8 +1,8 @@
 import palette from 'theme/palette';
-import HighIcon from 'components/Icons/HighIcon';
-import LowIcon from 'components/Icons/LowIcon';
-import MediumIcon from 'components/Icons/MediumIcon';
-import UrgentIcon from 'components/Icons/UrgentIcon';
+import PriorityHighIcon from 'components/Icons/PriorityHighIcon';
+import PriorityLowIcon from 'components/Icons/PriorityLowIcon';
+import PriorityMediumIcon from 'components/Icons/PriorityMediumIcon';
+import PriorityUrgentIcon from 'components/Icons/PriorityUrgentIcon';
 
 export const spacingUnit = 8;
 
@@ -24,28 +24,28 @@ export const PRIORITIES = [
     label: 'Low',
     textColor: palette.green820,
     borderColor: palette.green810,
-    icon: <LowIcon />,
+    icon: <PriorityLowIcon />,
   },
   {
     value: 'p1',
     label: 'Medium',
     textColor: palette.blue620,
     borderColor: palette.blue610,
-    icon: <MediumIcon />,
+    icon: <PriorityMediumIcon />,
   },
   {
     value: 'p2',
     label: 'High',
     textColor: palette.highlightOrange,
     borderColor: palette.highlightOrange,
-    icon: <HighIcon />,
+    icon: <PriorityHighIcon />,
   },
   {
     value: 'p3',
     label: 'Urgent',
     textColor: palette.purple620,
     borderColor: palette.purple610,
-    icon: <UrgentIcon />,
+    icon: <PriorityUrgentIcon />,
   },
 ];
 

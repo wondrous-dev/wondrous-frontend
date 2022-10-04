@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function HighIcon(props) {
+export default function PriorityHighIcon() {
   return (
     <svg width="17" height="18" viewBox="0 0 17 18" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect y="0.5" width="17" height="17" rx="8.5" fill="#232323" />
