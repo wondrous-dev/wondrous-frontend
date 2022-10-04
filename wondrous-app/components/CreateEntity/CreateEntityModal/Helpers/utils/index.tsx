@@ -183,10 +183,14 @@ export const getPodObject = (pods, podId) => {
   return justCreatedPod;
 };
 
-export const onCorrectPage = (existingTask, board) =>
-  existingTask?.orgId === board?.orgId ||
-  existingTask?.podId === board?.podId ||
-  existingTask?.userId === board?.userId;
+export const onCorrectPage = (existingTask, board) => {
+  if (board?.podId) return existingTask.podId === board.podId;
+  return (
+    existingTask?.orgId === board?.orgId ||
+    existingTask?.podId === board?.podId ||
+    existingTask?.userId === board?.userId
+  );
+};
 
 export const getPrivacyLevel = (podId, pods) => {
   const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;

@@ -83,9 +83,7 @@ const useGetPodTaskBoardTasks = ({
       input: {
         ...variables.input,
         offset:
-          entityType === ENTITIES_TYPES.TASK
-            ? columns.map(({ tasks }) => tasks.length).reduce((a, b) => a + b, 0)
-            : columns.length,
+          entityType === ENTITIES_TYPES.TASK ? Math.max(...columns.map(({ tasks }) => tasks.length)) : columns.length,
       },
     };
     fetchMore({
