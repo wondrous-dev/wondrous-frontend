@@ -132,6 +132,7 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
     } catch (error) {
       showError("We're facing some issues trying to import the tasks. Please try again later!");
       Sentry.captureException(error);
+      setIsImportInProgress(false);
     }
   }, [tasksData.key]);
 
@@ -203,7 +204,8 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
         <GenericImportTaskModalFooter>
           <GenericImportTaskModalFooterButton onClick={handleClose}>Cancel</GenericImportTaskModalFooterButton>
           <GenericImportTaskModalFooterButton isPrimary disabled={isImportButtonDisabled} onClick={handleImportTasks}>
-            Start importing {isImportInProgress && <GenericImportTaskModalProgressSpinner size={16} />}
+            {isImportInProgress ? 'Importing tasks' : 'Start importing'}{' '}
+            {isImportInProgress && <GenericImportTaskModalProgressSpinner size={16} />}
           </GenericImportTaskModalFooterButton>
         </GenericImportTaskModalFooter>
       </GenericImportTaskModalCard>
