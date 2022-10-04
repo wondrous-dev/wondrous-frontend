@@ -1679,7 +1679,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <CreateEntityPrivacySelect
             name="privacyLevel"
             value={form.values.privacyLevel}
-            onChange={() => form.handleChange('privacyLevel')}
+            onChange={(value) => {
+              form.setFieldValue('privacyLevel', value);
+            }}
             renderValue={(value) => (
               <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
