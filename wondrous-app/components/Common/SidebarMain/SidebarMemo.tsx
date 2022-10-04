@@ -5,13 +5,11 @@ import {
   BottomButtonIcon,
   ButtonIcon,
   ButtonWrapper,
-  DaoIconWrapper,
   DrawerBackButton,
   DrawerBlockWrapper,
   DrawerComponent,
   DrawerContainer,
   DrawerList,
-  NoLogoDAO,
   StyledSettingsIcon,
 } from 'components/Common/SidebarMain/styles';
 import AddDaoButton from 'components/Common/SidebarMainAddDao';
@@ -30,6 +28,7 @@ import React, { memo, useState } from 'react';
 import { Org } from 'types/Org';
 import { User } from 'types/User';
 import { PAGE_PATHNAME } from 'utils/constants';
+import SideBarMainDaoLink from 'components/Common/SideBarMainDaoLink';
 
 type Props = {
   isMobile: boolean;
@@ -116,29 +115,8 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
           <ButtonWrapper>
             <ExploreIconButton isActive={isPageActive(PAGE_PATHNAME.explore)} />
             <DrawerList id="tour-sidebar-daos">
-              {orgsList?.map(({ id, name, username, isActive, thumbnailPicture, profilePicture }) => (
-                <SidebarTooltip key={id} title={name}>
-                  <Link key={id} href={`/organization/${username}/boards?entity=task`} passHref>
-                    <ButtonIcon button key={id} isActive={isActive}>
-                      <DaoIconWrapper>
-                        {thumbnailPicture || profilePicture ? (
-                          <SafeImage
-                            useNextImage={false}
-                            src={thumbnailPicture || profilePicture}
-                            width={36}
-                            height={36}
-                            objectFit="cover"
-                            style={{
-                              borderRadius: '50%',
-                            }}
-                          />
-                        ) : (
-                          <NoLogoDAO />
-                        )}
-                      </DaoIconWrapper>
-                    </ButtonIcon>
-                  </Link>
-                </SidebarTooltip>
+              {orgsList?.map((org, index) => (
+                <SideBarMainDaoLink {...org} index={index} />
               ))}
               <AddDaoButton />
             </DrawerList>

@@ -1,10 +1,9 @@
-import { ClickAwayListener, Popper } from '@mui/material';
-import { DropdownButton, DropdownWrapper } from 'components/Common/Dropdown/styles';
 import React, { useState } from 'react';
+import { ClickAwayListener, Popper } from '@mui/material';
+import { DropdownButton, DropdownWrapper } from './styles';
 
-export default function Dropdown(props) {
+function Dropdown(props) {
   const {
-    DropdownHandler,
     children,
     divStyle,
     dropDownStyle = {},
@@ -12,6 +11,7 @@ export default function Dropdown(props) {
     disablePortal = false,
     setAnchorEl,
     anchorEl,
+    DropdownHandler,
   } = props;
   const [defaultAnchorEl, setDefaultAnchorEl] = useState(null);
   const selectedAnchorEl = setAnchorEl ? anchorEl : defaultAnchorEl;
@@ -51,3 +51,5 @@ export default function Dropdown(props) {
     </>
   );
 }
+
+export default Dropdown;

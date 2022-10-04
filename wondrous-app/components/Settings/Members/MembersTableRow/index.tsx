@@ -4,7 +4,6 @@ import { Grid, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import CopyIcon from 'components/Icons/copy';
 import { useWonderWeb3 } from 'services/web3';
-import PodIcon from 'components/Icons/podIcon';
 import Dropdown from 'components/Common/Dropdown';
 import DropdownItem from 'components/Common/DropdownItem';
 import { TaskMenuIcon } from 'components/Icons/taskMenu';

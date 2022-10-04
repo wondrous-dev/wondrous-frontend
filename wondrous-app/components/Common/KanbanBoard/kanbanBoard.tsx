@@ -23,6 +23,8 @@ import { parseUserPermissionContext, enableContainerOverflow } from 'utils/helpe
 import { useMutation } from '@apollo/client';
 import { dedupeColumns, delQuery } from 'utils';
 import ConfirmModal from 'components/Common/ConfirmModal';
+import { useHotkeys } from 'react-hotkeys-hook';
+import { getFirstTask, HOTKEYS, pickHotkeyFunction, TASK_CONTROLS, TASK_ROUTES_FOR_ROUTER } from 'utils/hotkeyHelper';
 import { useMe } from '../../Auth/withAuth';
 import DndErrorModal from './DndErrorModal';
 import TaskColumn from './TaskColumn';
@@ -44,19 +46,22 @@ export const populateOrder = (index, tasks, field) => {
 };
 
 function KanbanBoard(props) {
+  const router = useRouter();
+  const location = useLocation();
   const user = useMe();
   const { columns, onLoadMore, hasMore, setColumns } = props;
   const [openModal, setOpenModal] = useState(false);
-  const router = useRouter();
+  const [taskToConfirm, setTaskToConfirm] = useState<any>(null);
   const [updateTaskOrder] = useMutation(UPDATE_TASK_ORDER);
   const [dndErrorModal, setDndErrorModal] = useState(false);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
-  const [taskToConfirm, setTaskToConfirm] = useState<any>(null);
   // Permissions for Draggable context
   const orgBoard = useOrgBoard();
   const userBoard = useUserBoard();
   const podBoard = usePodBoard();
+  const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
+
   const board = orgBoard || userBoard || podBoard;
   const isProposalEntity = board?.entityType === ENTITIES_TYPES.PROPOSAL;
   const userPermissionsContext =
@@ -76,6 +81,33 @@ function KanbanBoard(props) {
 
     return canEdit && user && task;
   };
+
+  useHotkeys(
+    HOTKEYS.ALL_KEYS,
+    (e) => {
+      // TODO: update this when the issue from package is fixed.
+      if (
+        !TASK_CONTROLS.includes(e.key) ||
+        !(board?.entityType === ENTITIES_TYPES.TASK || TASK_ROUTES_FOR_ROUTER.includes(router.asPath))
+      ) {
+        return;
+      }
+
+      if (!taskId && !openModal) {
+        const currentTaskId = getFirstTask(columns).id;
+        location.push(`${delQuery(router.asPath)}?task=${currentTaskId}&entity=task&view=grid`);
+        setOpenModal(true);
+        return;
+      }
+
+      const newTask = pickHotkeyFunction(e.key, columns, taskId);
+
+      if (newTask) {
+        location.push(`${delQuery(router.asPath)}?task=${newTask}&entity=task&view=grid`);
+      }
+    },
+    [taskId, columns, openModal]
+  );
 
   // Updates the task status on Backend
   // TODO: Aggregate all Task mutations on one Task
@@ -235,8 +267,6 @@ function KanbanBoard(props) {
     }
   };
 
-  const location = useLocation();
-
   const confirmCardMove = (moveAction) => async (id, status, index, source) => {
     const sourceColumn = columns.findIndex((column) => column.status === source.droppableId);
     const taskToUpdate = columns[sourceColumn]?.tasks.find((task) => task?.id === id);
@@ -317,7 +347,6 @@ function KanbanBoard(props) {
     setOpenModal(false);
   };
 
-  const taskId = (location?.params?.task || location?.params.taskProposal)?.toString() || taskToConfirm?.id;
   return (
     <KanbanBoardContainer>
       <DndErrorModal open={dndErrorModal} handleClose={() => setDndErrorModal(false)} />
@@ -346,11 +375,9 @@ function KanbanBoard(props) {
         key={taskId}
       />
       <DragDropContext onDragEnd={onDragEnd}>
-        {columns.map((column) => {
-          const { status, section, tasks } = column;
-
-          return <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />;
-        })}
+        {columns.map(({ status, section, tasks }) => (
+          <TaskColumn key={status} cardsList={tasks} moveCard={moveCard} status={status} section={section} />
+        ))}
       </DragDropContext>
     </KanbanBoardContainer>
   );

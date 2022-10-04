@@ -157,8 +157,15 @@ import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
-export default function CreateEntityModal(props: ICreateEntityModal) {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
+export default function CreateEntityModal({
+  entityType,
+  handleClose,
+  cancel,
+  existingTask,
+  parentTaskId,
+  formValues,
+  status,
+}: ICreateEntityModal) {
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
@@ -283,8 +290,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     form.setFieldValue('labelIds', [...form.values.labelIds, newLabelId])
   );
 
-  const [createGithubIssue, { data: createGithubIssueData, loading: createGithubIssueLoading }] =
-    useMutation(CREATE_TASK_GITHUB_ISSUE);
+  const [createGithubIssue, { loading: createGithubIssueLoading }] = useMutation(CREATE_TASK_GITHUB_ISSUE);
 
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
 
