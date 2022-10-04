@@ -212,11 +212,12 @@ const useGetPodTaskProposals = ({
       statuses?.length > 0
         ? statuses?.filter((status) => PROPOSAL_STATUS_LIST.includes(status))
         : [STATUS_OPEN, STATUS_CLOSED, STATUS_APPROVED];
-    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId)
+    if (entityType === ENTITIES_TYPES.PROPOSAL && !search && podId) {
       getPodTaskProposals({
         variables: {
           input: {
             podId,
+            priorities,
             statuses: proposalBoardStatuses,
             offset: 0,
             labelId,
@@ -224,7 +225,8 @@ const useGetPodTaskProposals = ({
           },
         },
       });
-  }, [getPodTaskProposals, podId, statuses, entityType, labelId]);
+    }
+  }, [getPodTaskProposals, podId, statuses, priorities, entityType, labelId]);
   return { fetchMore: getProposalsFetchMore };
 };
 
