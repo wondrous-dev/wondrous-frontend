@@ -104,6 +104,7 @@ const useGetOrgTaskBoardTasks = ({
         variables: {
           orgId,
           podIds: filters?.podIds,
+          priorities: filters?.priorities,
           offset: 0,
           statuses: taskBoardStatuses,
           limit: taskBoardLimit,
@@ -206,6 +207,7 @@ const useGetTaskRelatedToUser = ({
       getTasksRelatedToUserInOrg({
         variables: {
           podIds: filters?.podIds,
+          priorities: filters?.priorities,
           userId,
           orgId,
           statuses: taskBoardStatuses,
@@ -281,6 +283,7 @@ const useGetOrgTaskBoardProposals = ({
       getOrgTaskProposals({
         variables: {
           podIds: filters?.podIds,
+          priorities: filters?.priorities,
           orgId,
           statuses: proposalBoardStatuses,
           offset: 0,
@@ -446,6 +449,7 @@ function BoardsPage() {
   const searchOrgTaskProposalsArgs = {
     variables: {
       podIds: filters?.podIds,
+      priorities: filters?.priorities,
       orgId: orgId || orgData?.id,
       statuses: [STATUS_OPEN],
       offset: 0,
@@ -512,6 +516,7 @@ function BoardsPage() {
           const searchOrgTasksArgs = {
             variables: {
               podIds: filters?.podIds,
+              priorities: filters?.priorities,
               orgId: id,
               limit: 1000,
               offset: 0,
@@ -542,6 +547,7 @@ function BoardsPage() {
     const searchOrgTasksArgs = {
       variables: {
         podIds: filters?.podIds,
+        priorities: filters?.priorities,
         orgId: id,
         limit: LIMIT,
         offset: 0,
@@ -627,6 +633,7 @@ function BoardsPage() {
         const proposalArgs = {
           ...searchOrgTaskProposalsArgs,
           podIds: filters?.podIds,
+          priorities: filters?.priorities,
         };
         searchOrgTaskProposals(proposalArgs);
         setIsLoading(false);

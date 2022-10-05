@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
+    "lint:quiet": "next lint --quiet",
     "lint:fix": "prettier --write '**/*.{ts,tsx}' && eslint --fix .",
     "lint:write": "next lint --cache --fix",
     "format": "prettier --write './**/*.{ts,tsx}'",
