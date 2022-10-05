@@ -14,6 +14,7 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
     $labelId: String
   ) {
     getOrgTaskBoardProposals(
+<<<<<<< HEAD
       input: {
         orgId: $orgId
         statuses: $statuses
@@ -23,6 +24,9 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
         offset: $offset
         labelId: $labelId
       }
+=======
+      input: { orgId: $orgId, statuses: $statuses, priorities: $priorities, podIds: $podIds, limit: $limit, offset: $offset, labelId: $labelId }
+>>>>>>> 71fd07ca (Add priorities to tasks (#1099))
     ) {
       ...TaskProposalCardFragment
     }

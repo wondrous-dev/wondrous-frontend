@@ -359,7 +359,11 @@ export function TaskCard({
             </a>
           </TaskTitle>
 
+<<<<<<< HEAD
           {/* {task?.priority && (
+=======
+          {task?.priority && (
+>>>>>>> 71fd07ca (Add priorities to tasks (#1099))
             <Box
               sx={{
                 margin: '14px 0',
@@ -368,7 +372,11 @@ export function TaskCard({
               <TaskPriority value={task?.priority} />
             </Box>
           )}
+<<<<<<< HEAD
  */}
+=======
+
+>>>>>>> 71fd07ca (Add priorities to tasks (#1099))
           {isBounty && (
             <TaskBountyOverview
               totalSubmissionsCount={task?.totalSubmissionsCount}
