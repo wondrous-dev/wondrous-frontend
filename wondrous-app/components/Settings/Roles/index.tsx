@@ -70,6 +70,8 @@ import Switch from '../../Common/Switch';
 import Accordion from '../../Common/Accordion';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { HeaderBlock } from '../headerBlock';
+import { Grid, Typography } from '@mui/material';
+import discord from 'pages/onboarding/discord';
 
 type Props = {
   orgId: any;
@@ -404,7 +406,7 @@ function DiscordRoleSelectionModal(props) {
     }
     handleClose();
   };
-  const handleElementClick = async (discordRoleId) => {
+  const handleElementClick = async (discordRoleId, guildId) => {
     try {
       if (selectedRoleForDiscord?.__typename === 'OrgRole') {
         await apollo.mutate({
@@ -412,6 +414,7 @@ function DiscordRoleSelectionModal(props) {
           variables: {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId,
+            guildId
           },
           refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
@@ -423,6 +426,7 @@ function DiscordRoleSelectionModal(props) {
           variables: {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId,
+            guildId
           },
           // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD]
         });
@@ -450,10 +454,24 @@ function DiscordRoleSelectionModal(props) {
         </div>
         {allDiscordRolesData &&
           allDiscordRolesData.length > 0 &&
-          allDiscordRolesData.map((discordRoleData) => (
-            <DiscordElementWrapper key={discordRoleData.id} onClick={() => handleElementClick(discordRoleData.id)}>
-              {discordRoleData.name}
-            </DiscordElementWrapper>
+          allDiscordRolesData.map((discordRoleData, idx) => (
+            <Grid display="flex" gap="10px" key={idx} direction="column">
+              <Typography fontSize="18px" color="white" fontWeight={600}>
+                {discordRoleData?.channelInfo?.guildName}
+              </Typography>
+              <Box>
+                {discordRoleData?.roles?.map((role) => {
+                  return (
+                    <DiscordElementWrapper
+                      key={role.id}
+                      onClick={() => handleElementClick(role.id, discordRoleData?.guildId)}
+                    >
+                      {role.name}
+                    </DiscordElementWrapper>
+                  );
+                })}
+              </Box>
+            </Grid>
           ))}
       </DiscordRoleModal>
     </Modal>
@@ -624,14 +642,17 @@ export function DiscordRoleSelectModal(props) {
     }
   }, [open]);
 
-  const handleSelectDiscordRoles = (discordRoleId) => {
+  const handleSelectDiscordRoles = (discordRoleId, guildId) => {
     setImportRoleError(null);
     if (discordRoleId in selectedDiscordRoles) {
       delete selectedDiscordRoles[discordRoleId];
       const newObj = { ...selectedDiscordRoles };
       setSelectedDiscordRoles(newObj);
     } else {
-      selectedDiscordRoles[discordRoleId] = true;
+      selectedDiscordRoles[discordRoleId] = {
+        value: true,
+        guildId,
+      };
       const newObj = { ...selectedDiscordRoles };
       setSelectedDiscordRoles(newObj);
     }
@@ -645,8 +666,13 @@ export function DiscordRoleSelectModal(props) {
       await apollo.mutate({
         mutation: IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
         variables: {
-          orgId,
-          discordRoleIds: Object.keys(selectedDiscordRoles),
+          input: {
+            orgId,
+            discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
+              roleId: discordRoleId,
+              guildId: selectedDiscordRoles[discordRoleId].guildId,
+            })),
+          },
         },
         refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
       });
@@ -687,18 +713,27 @@ export function DiscordRoleSelectModal(props) {
       </DialogTitle>
       <StyledDialogContent>
         <CategoryHeader>Avaliable Roles:</CategoryHeader>
-        <CategoryRow>
+        <CategoryRow style={{ flexDirection: 'column', width: '100%' }}>
           {allDiscordRolesData &&
             allDiscordRolesData.map((discordRole) => (
-              <InterestButton
-                style={{
-                  background: discordRole.id in selectedDiscordRoles ? '#7427FF' : '#232323',
-                }}
-                onClick={() => handleSelectDiscordRoles(discordRole.id)}
-                key={discordRole.id}
-              >
-                {discordRole.name}
-              </InterestButton>
+              <Grid display="flex" gap="10px" direction="column" width="100%">
+                <Typography fontWeight="600" fontSize="18px" color="white">
+                  {discordRole?.channelInfo?.guildName}
+                </Typography>
+                <CategoryRow>
+                  {discordRole?.roles?.map((role) => (
+                    <InterestButton
+                      style={{
+                        background: role.id in selectedDiscordRoles ? '#7427FF' : '#232323',
+                      }}
+                      onClick={() => handleSelectDiscordRoles(role.id, discordRole?.guildId)}
+                      key={role.id}
+                    >
+                      {role.name}
+                    </InterestButton>
+                  ))}
+                </CategoryRow>
+              </Grid>
             ))}
         </CategoryRow>
         {importRoleError && <ErrorText>{importRoleError}</ErrorText>}
