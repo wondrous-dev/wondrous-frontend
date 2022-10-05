@@ -84,8 +84,10 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
     },
     onError: (e) => {
       // const errorMessageFromGql = e.graphQLErrors[0]?.extensions?.message;
+      showError("We're facing some issues trying to import the tasks. Please try again later!", true);
       console.log(e);
       Sentry.captureException(e);
+      setIsImportInProgress(false);
     },
   });
 
@@ -101,6 +103,7 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
     (data) => {
       try {
         setError('');
+        setTasksData(DEFAULT_TASKS_DATA);
         let formattedData;
         if (importFormat?.value === IMPORT_FORMATS.ASANA) {
           formattedData = getTasksFromAsanaData(data, isOrg, orgOrdPodId);
@@ -126,14 +129,8 @@ function GenericImportTaskModal(props: IGenericImportTaskModalProps) {
   );
 
   const handleImportTasks = useCallback(() => {
-    try {
-      setIsImportInProgress(true);
-      importTasks({ variables: { input: tasksData.tasks } });
-    } catch (error) {
-      showError("We're facing some issues trying to import the tasks. Please try again later!");
-      Sentry.captureException(error);
-      setIsImportInProgress(false);
-    }
+    setIsImportInProgress(true);
+    importTasks({ variables: { input: tasksData.tasks } });
   }, [tasksData.key]);
 
   const renderImportFromValue = () => (
