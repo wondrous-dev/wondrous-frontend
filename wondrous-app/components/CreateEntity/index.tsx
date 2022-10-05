@@ -1,11 +1,11 @@
+import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { useRouter } from 'next/router';
 import { useGlobalContext } from 'utils/hooks';
 import ChooseEntityToCreateModal from './chooseEntityToCreateModal';
-import CreatePodModal from './CreatePodModal';
 import CreateEntityModal from './CreateEntityModal/index';
+import CreatePodModal from './CreatePodModal';
 import { CreateFormModalOverlay } from './styles';
 
 interface ICreateEntity {
@@ -39,29 +39,36 @@ interface ICreateEntity {
 
 export function CreateEntity(props: ICreateEntity) {
   const { open, entityType, handleCloseModal, isTaskProposal } = props;
-
+  const [discard, setDiscard] = useState(false);
+  const handleCloseForm = () => setDiscard(true);
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
   if (isTaskProposal) {
     return (
-      <CreateFormModalOverlay
-        open={open}
-        onClose={handleCloseModal}
-        aria-labelledby="modal-modal-title"
-        aria-describedby="modal-modal-description"
-      >
-        <CreateEntityModal {...props} />
-      </CreateFormModalOverlay>
+      <>
+        <CreateEntityDiscardTask
+          open={discard}
+          onClose={setDiscard}
+          onCloseFormModal={handleCloseModal}
+          entityType={entityType}
+        />
+        <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
+          <CreateEntityModal {...props} />
+        </CreateFormModalOverlay>
+      </>
     );
   }
   return (
-    <CreateFormModalOverlay
-      open={open}
-      onClose={handleCloseModal}
-      aria-labelledby="modal-modal-title"
-      aria-describedby="modal-modal-description"
-    >
-      {forNewModal ? <CreateEntityModal {...props} /> : <CreatePodModal {...props} />}
-    </CreateFormModalOverlay>
+    <>
+      <CreateEntityDiscardTask
+        open={discard}
+        onClose={setDiscard}
+        onCloseFormModal={handleCloseModal}
+        entityType={entityType}
+      />
+      <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
+        {forNewModal ? <CreateEntityModal {...props} /> : <CreatePodModal {...props} />}
+      </CreateFormModalOverlay>
+    </>
   );
 }
 
