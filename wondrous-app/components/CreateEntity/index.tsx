@@ -18,6 +18,7 @@ interface ICreateEntity {
       id: string;
       url: string;
     };
+    priority: string | void;
     claimPolicyRoles: [string] | null;
     shouldUnclaimOnDueDateExpiry: boolean | null;
     claimPolicy: string | null;
@@ -34,6 +35,7 @@ interface ICreateEntity {
   isTaskProposal?: boolean;
   formValues?: FormikValues;
   parentTaskId?: string;
+  privacyLevel?: string;
 }
 
 export function CreateEntity(props: ICreateEntity) {

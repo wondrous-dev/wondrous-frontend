@@ -17,7 +17,7 @@ import {
 import { LabelBlock } from 'components/Settings/styles';
 import { useWonderWeb3 } from 'services/web3';
 import useGuildXyz from 'services/guildxyz';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { ErrorText } from 'components/Common';
 
 export default function GuildIntegration({ orgId }) {
@@ -104,7 +104,7 @@ export default function GuildIntegration({ orgId }) {
       },
     });
   };
-  const handleGuildDisonnect = () => {
+  const handleGuildDisconnect = () => {
     if (!connectedGuildId) return;
     disconnectGuildFromOrg({
       variables: {
@@ -123,7 +123,9 @@ export default function GuildIntegration({ orgId }) {
             <IntegrationsSnapshotInputSubBlock>
               <IntegrationsSnapshotENSInput value={connectedGuild?.name} />
             </IntegrationsSnapshotInputSubBlock>
-            <IntegrationsDisconnectButton onClick={handleGuildDisonnect}>Disconnect Guild</IntegrationsDisconnectButton>
+            <IntegrationsDisconnectButton onClick={handleGuildDisconnect}>
+              Disconnect Guild
+            </IntegrationsDisconnectButton>
           </IntegrationsSnapshotSubBlock>
         </div>
       )}

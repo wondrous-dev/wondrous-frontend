@@ -30,7 +30,7 @@ const state = JSON.stringify({
 });
 const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
-const checkPasswordStrength = (password) => {
+export const checkPasswordStrength = (password) => {
   if (!password) {
     return false;
   }
@@ -39,6 +39,7 @@ const checkPasswordStrength = (password) => {
   }
   return true;
 };
+
 function Signup() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -47,7 +48,9 @@ function Signup() {
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLink] = useMutation(REDEEM_POD_INVITE_LINK);
   const router = useRouter();
-  const { type, inviteToken } = router?.query;
+  const { type, inviteToken, collabInvite } = router?.query;
+
+  const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
   const handleSubmit = async (event) => {
     event.preventDefault();
     if (!checkPasswordStrength(password)) {
@@ -74,7 +77,7 @@ function Signup() {
                     shallow: true,
                   });
                 } else {
-                  router.push(`/onboarding/welcome`, undefined, {
+                  router.push(`/onboarding/welcome${collabInviteQueryString}`, undefined, {
                     shallow: true,
                   });
                 }
@@ -91,7 +94,7 @@ function Signup() {
                     shallow: true,
                   });
                 } else {
-                  router.push(`/onboarding/welcome`, undefined, {
+                  router.push(`/onboarding/welcome${collabInviteQueryString}`, undefined, {
                     shallow: true,
                   });
                 }
@@ -138,7 +141,7 @@ function Signup() {
           });
         }
       } else {
-        router.push('/onboarding/welcome', undefined, {
+        router.push(`/onboarding/welcome${collabInviteQueryString}`, undefined, {
           shallow: true,
         });
       }

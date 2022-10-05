@@ -1,6 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 
 import { Tag, Text } from 'components/styled';
 import { Role } from 'types/common';
@@ -49,17 +49,21 @@ export const Avatars = styled.div`
   }
 `;
 
-export const MemberRole = styled.div`
-  min-width: fit-content;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-family: ${typography.fontFamily};
-  font-size: 13px;
-  font-weight: 500;
-  color: ${palette.white};
-  padding: 2px 7px;
-  border: 1px solid ${(props) => (props.borderColor ? props.borderColor : palette.white)};
-  border-radius: 1000px;
+export const MemberRole = styled(Button)`
+  && {
+    min-width: fit-content;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    font-weight: 500;
+    color: ${palette.white};
+    padding: 2px 7px;
+    border: 1px solid ${(props) => (props.borderColor ? props.borderColor : palette.white)};
+    border-radius: 1000px;
+
+    background: ${(props) => (props.isActive ? `${props.borderColor}66` : 'transparent')};
+  }
 `;

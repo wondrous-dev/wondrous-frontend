@@ -129,7 +129,7 @@ const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore,
         </GR15DEIExplainerContainer>
       ) : (
         <>
-          <BountySectionHeader>Discover work</BountySectionHeader>
+          <BountySectionHeader>Explore work</BountySectionHeader>
           <SectionSubheader>Make crypto while contributing to your favorite DAOs</SectionSubheader>
         </>
       )}

@@ -3,9 +3,9 @@ import Autocomplete, { autocompleteClasses } from '@mui/material/Autocomplete';
 import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
-import DropdownSelect from '../Common/DropdownSelect/dropdownSelect';
 import BountyIcon from '../Icons/createBounty.svg';
 import CreateDaoIcon from '../Icons/createDao';
 import CreateMilestoneIcon from '../Icons/createMilestone';
@@ -790,33 +790,4 @@ export const EditorToolbar = styled.div`
 
 export const TextInputDiv = styled.div`
   height: 100px;
-`;
-
-export const SnapshotButtonBlock = styled(CreateFormButtonsBlock)`
-  && {
-    height: 40px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin-left: auto;
-  }
-`;
-
-export const SnapshotErrorText = styled.div`
-  text-align: left;
-  display: flex;
-  flex-direction: column;
-  margin: 0;
-  line-height: 10px;
-`;
-
-export const SnapshotButton = styled(CreateFormPreviewButton)`
-  && {
-    border: 1px solid gold;
-    .MuiCircularProgress-svg {
-      width: 100%;
-      height: 100%;
-    }
-  }
 `;

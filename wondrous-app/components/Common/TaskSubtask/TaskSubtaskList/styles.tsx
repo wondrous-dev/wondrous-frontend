@@ -4,6 +4,7 @@ import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import { EmptyStateSubtasksIcon } from 'components/Icons/emptyStates';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const TaskSubtaskWrapper = styled.div`
   display: flex;
@@ -81,7 +82,7 @@ export const TaskSubtaskRewardAmount = styled(Typography)`
 export const TaskSubtaskPrivacyIcon = styled(ToggleBoardPrivacyIcon)`
   && {
     height: 28px;
-    background: #2d2d2d;
+    background: ${palette.grey920};
     border-radius: 6px;
     width: 28px;
     min-width: 28px;

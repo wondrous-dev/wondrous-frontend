@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react';
+import Box from '@mui/material/Box';
 import {
   BoardsCardSubheader,
   BoardsCardHeader,
@@ -24,6 +25,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import TaskPriority from 'components/Common/TaskPriority';
 import { Compensation } from '../Compensation';
 import {
   BountyCardWrapper,
@@ -34,8 +36,10 @@ import {
   SubmissionCount,
   SubtasksWrapper,
   BountyCommentsIcon,
+  BountyBoardEmpty,
 } from './styles';
 import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
+import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
@@ -98,9 +102,17 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     </>
                   )}
                   <BountyCardType>{bounty?.type || ''}</BountyCardType>
-                  <BoardsPrivacyLabel>
-                    {bounty?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-                  </BoardsPrivacyLabel>
+                  {bounty?.privacyLevel !== PRIVACY_LEVEL.public && (
+                    <ToggleBoardPrivacyIcon
+                      style={{
+                        width: '29px',
+                        height: '29px',
+                        marginRight: '0',
+                      }}
+                      isPrivate={bounty?.privacyLevel !== PRIVACY_LEVEL.public}
+                      tooltipTitle={bounty?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
+                    />
+                  )}
                 </BoardsCardSubheader>
                 {bounty?.status === TASK_STATUS_DONE && !bounty?.rewards && <CompletedIcon />}
                 {bounty?.rewards && bounty?.rewards?.length > 0 && (
@@ -111,10 +123,15 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
               </BoardsCardHeader>
               <BoardsCardBody>
                 <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
+                {bounty?.priority ? (
+                  <Box>
+                    <TaskPriority value={bounty?.priority} />
+                  </Box>
+                ) : null}
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={bounty.description} />
                 </BoardsCardBodyDescription>
-                {bounty?.media?.[0] ? (
+                {bounty?.media?.[0] && bounty?.media?.[0]?.type === 'image' ? (
                   <BoardsCardMedia>
                     <SafeImage
                       useNextImage={false}
@@ -193,7 +210,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
           );
         })
       ) : (
-        <EmptyStateBoards hidePlaceholder status={TASK_STATUS_TODO} fullWidth />
+        <BountyBoardEmpty />
       )}
     </Container>
   );

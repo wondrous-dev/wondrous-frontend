@@ -1,6 +1,7 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
 import { TaskCardFragment, TaskFragment, TaskSubmissionFragment, TaskTemplateFragment } from 'graphql/fragments/task';
+import { MediaFragment } from 'graphql/fragments/media';
 
 export const GET_TASK_BY_ID = gql`
   query getTaskById($taskId: ID!) {
@@ -119,6 +120,15 @@ export const GET_MILESTONES = gql`
   }
 `;
 
+export const GET_CATEGORIES = gql`
+  query getMilestones($orgId: ID!, $podId: ID) {
+    getMilestones(orgId: $orgId, podId: $podId) {
+      title
+      id
+    }
+  }
+`;
+
 export const GET_SUBTASK_COUNT_FOR_TASK = gql`
   query getSubtaskCountForTask($taskId: ID!) {
     getSubtaskCountForTask(taskId: $taskId) {
@@ -128,13 +138,45 @@ export const GET_SUBTASK_COUNT_FOR_TASK = gql`
   }
 `;
 
+export const GET_SUBMISSION_COUNT_FOR_TASK = gql`
+  query getSubmissionCountForTask($taskId: ID!, $status: String) {
+    getSubmissionCountForTask(taskId: $taskId, status: $status) {
+      submissionCount
+    }
+  }
+`;
+
 export const GET_SUBTASKS_FOR_TASK = gql`
   query getSubtasksForTask($taskId: ID!, $limit: Int, $offset: Int, $status: String) {
     getSubtasksForTask(taskId: $taskId, limit: $limit, offset: $offset, status: $status) {
-      ...TaskFragment
+      id
+      title
+      type
+      status
+      assignee {
+        username
+        profilePicture
+      }
+      privacyLevel
+      rewards {
+        rewardAmount
+        paymentMethodId
+        symbol
+        icon
+        tokenName
+        chain
+      }
+      media {
+        ...MediaFragment
+      }
+      taskApplicationPermissions {
+        canClaim
+        canApply
+        hasUserApplied
+      }
     }
   }
-  ${TaskFragment}
+  ${MediaFragment}
 `;
 
 export const GET_COMPLETED_TASKS_BETWEEN_TIME_PERIOD = gql`

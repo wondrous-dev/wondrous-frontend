@@ -63,7 +63,7 @@ const cache = new InMemoryCache({
         },
         getSubtasksForTask: offsetLimitPagination(['taskId', 'status']),
         getUserTaskBoardProposals: {
-          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
+          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses', 'priorities']],
           merge: offsetLimitPaginationInput,
         },
         getJoinOrgRequests: {
@@ -116,12 +116,12 @@ const cache = new InMemoryCache({
         },
         getNotifications: offsetLimitPagination(),
         getUserFeed: offsetLimitPagination(),
-
+        searchOrgUsers: offsetLimitPagination(['orgId', 'searchString']),
         getUserTaskBoardTasks: {
-          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses']],
+          keyArgs: ['input', ['orgId', 'podIds', 'date', 'statuses', 'priorities']],
           merge: offsetLimitPaginationInput,
         },
-        getOrgUsers: offsetLimitPagination(['orgId']),
+        getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds', 'limit']),
       },
     },
   },

@@ -50,8 +50,8 @@ export const GET_USER_ORGS = gql`
 `;
 
 export const GET_ORG_USERS = gql`
-  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int, $searchString: String) {
-    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString) {
+  query getOrgUsers($orgId: String!, $limit: Int, $offset: Int, $searchString: String, $roleIds: [String]) {
+    getOrgUsers(orgId: $orgId, limit: $limit, offset: $offset, searchString: $searchString, roleIds: $roleIds) {
       user {
         id
         username
@@ -82,6 +82,49 @@ export const GET_ORG_ROLES = gql`
   }
 `;
 
+// get roles that has potential to be claimable
+export const GET_AUTO_CLAIMABLE_ORG_ROLES = gql`
+  query getAutoClaimableOrgRoles($orgId: ID!) {
+    getAutoClaimableOrgRoles(orgId: $orgId) {
+      id
+      name
+      default
+      permissions
+      tokenGatingCondition {
+        id
+        orgId
+        podId
+        name
+        booleanLogic
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
+        }
+      }
+      discordRolesInfo {
+        id
+        name
+      }
+    }
+  }
+`;
+
+export const CAN_CLAIM_ORG_ROLE = gql`
+  query canClaimOrgRole($orgRoleId: ID) {
+    canClaimOrgRole(orgRoleId: $orgRoleId) {
+      success
+    }
+  }
+`;
+
 export const GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
   query getOrgRolesWithTokenGate($orgId: ID) {
     getOrgRoles(orgId: $orgId) {
@@ -94,20 +137,19 @@ export const GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD = gql`
         orgId
         podId
         name
+        type
         booleanLogic
-        accessCondition {
-          ... on AccessConditionModel {
-            contractAddress
-            type
-            chain
-            method
-            minValue
-            tokenIds
-          }
-          ... on GuildAccessConditionModel {
-            guildId
-            roleId
-          }
+        tokenAccessCondition {
+          contractAddress
+          type
+          chain
+          method
+          minValue
+          tokenIds
+        }
+        guildAccessCondition {
+          guildId
+          roleId
         }
       }
       discordRolesInfo {
@@ -152,8 +194,8 @@ export const GET_ORG_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $searchString: String!) {
-    searchOrgUsers(orgId: $orgId, searchString: $searchString) {
+  query searchOrgUsers($orgId: ID!, $searchString: String!, $limit: Int, $offset: Int) {
+    searchOrgUsers(orgId: $orgId, searchString: $searchString, limit: $limit, offset: $offset) {
       id
       username
       profilePicture
@@ -164,6 +206,8 @@ export const SEARCH_ORG_USERS = gql`
     }
   }
 `;
+
+// used for admin dashboard
 export const GET_JOIN_ORG_REQUESTS = gql`
   query getJoinOrgRequests($limit: Int, $offset: Int, $sortOrder: String, $orgId: ID, $podIds: [ID]) {
     getJoinOrgRequests(limit: $limit, offset: $offset, sortOrder: $sortOrder, orgId: $orgId, podIds: $podIds) {
@@ -173,6 +217,8 @@ export const GET_JOIN_ORG_REQUESTS = gql`
       podId
       approvedAt
       message
+      roleId
+      roleName
       rejectedAt
       userUsername
       userProfilePicture
@@ -189,6 +235,7 @@ export const GET_JOIN_ORG_REQUESTS = gql`
   }
 `;
 
+// used in org members tab
 export const GET_ORG_MEMBERSHIP_REQUEST = gql`
   query getOrgMembershipRequest($orgId: ID!, $limit: Int, $offset: Int) {
     getOrgMembershipRequest(orgId: $orgId, limit: $limit, offset: $offset) {
@@ -204,6 +251,8 @@ export const GET_ORG_MEMBERSHIP_REQUEST = gql`
       orgName
       orgUsername
       createdAt
+      roleName
+      roleId
       checkIsGr15Contributor {
         isGr15Contributor
       }
@@ -216,6 +265,7 @@ export const GET_USER_JOIN_ORG_REQUEST = gql`
     getUserJoinOrgRequest(orgId: $orgId) {
       id
       orgId
+      roleId
       approvedAt
       rejectedAt
     }

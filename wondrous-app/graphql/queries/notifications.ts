@@ -18,6 +18,7 @@ export const GET_ORG_DISCORD_NOTIFICATION_CONFIGS = gql`
       channelId
       guildId
       disabledAt
+      type
       channelInfo {
         channelName
         guildName
@@ -34,6 +35,7 @@ export const GET_POD_DISCORD_NOTIFICATION_CONFIGS = gql`
       podId
       channelId
       guildId
+      type
       disabledAt
       channelInfo {
         channelName

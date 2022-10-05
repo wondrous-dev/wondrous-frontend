@@ -6,17 +6,15 @@ import { Editor, Range, Transforms } from 'slate';
 const useMentions = ({
   editor,
   mentionables,
+  onMentionChange,
 }: {
   editor: CustomEditor;
   mentionables: { display: string; id: string; profilePicture?: string }[];
+  onMentionChange: (searchString) => void;
 }) => {
   const [mentionTarget, setMentionTarget] = useState<Range | undefined>();
   const [activeMentionIndex, setActiveMentionIndex] = useState(0);
   const [mentionSearch, setMentionSearch] = useState('');
-
-  const foundMentionables = mentionables
-    .filter((m) => m.display?.toLowerCase().startsWith(mentionSearch?.toLowerCase()))
-    .slice(0, 10);
 
   const onChange = () => {
     const { selection } = editor;
@@ -35,7 +33,7 @@ const useMentions = ({
 
       if (afterMatch && beforeMatch) {
         setMentionTarget(beforeRange);
-        setMentionSearch(beforeMatch[1]);
+        onMentionChange(beforeMatch[1]);
         setActiveMentionIndex(0);
         return;
       }
@@ -49,12 +47,12 @@ const useMentions = ({
       switch (event.key) {
         case 'ArrowDown':
           event.preventDefault();
-          const prevIndex = activeMentionIndex >= foundMentionables.length - 1 ? 0 : activeMentionIndex + 1;
+          const prevIndex = activeMentionIndex >= mentionables.length - 1 ? 0 : activeMentionIndex + 1;
           setActiveMentionIndex(prevIndex);
           break;
         case 'ArrowUp':
           event.preventDefault();
-          const nextIndex = activeMentionIndex <= 0 ? foundMentionables.length - 1 : activeMentionIndex - 1;
+          const nextIndex = activeMentionIndex <= 0 ? mentionables.length - 1 : activeMentionIndex - 1;
           setActiveMentionIndex(nextIndex);
           break;
         case 'Tab':
@@ -63,8 +61,8 @@ const useMentions = ({
           Transforms.select(editor, mentionTarget);
           EditorHelpers.insertMention(
             editor,
-            foundMentionables[activeMentionIndex].display,
-            foundMentionables[activeMentionIndex].id
+            mentionables[activeMentionIndex].display,
+            mentionables[activeMentionIndex].id
           );
           setMentionTarget(null);
           break;
@@ -82,7 +80,6 @@ const useMentions = ({
       mentionSearch,
       mentionTarget,
       activeMentionIndex,
-      foundMentionables,
     },
     handlers: {
       onChange,

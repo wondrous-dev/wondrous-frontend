@@ -1,4 +1,8 @@
 import palette from 'theme/palette';
+import PriorityHighIcon from 'components/Icons/PriorityHighIcon';
+import PriorityLowIcon from 'components/Icons/PriorityLowIcon';
+import PriorityMediumIcon from 'components/Icons/PriorityMediumIcon';
+import PriorityUrgentIcon from 'components/Icons/PriorityUrgentIcon';
 
 export const spacingUnit = 8;
 
@@ -13,6 +17,37 @@ export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
+
+export const PRIORITIES = [
+  {
+    value: 'p0',
+    label: 'Low',
+    textColor: palette.green820,
+    borderColor: palette.green810,
+    icon: <PriorityLowIcon />,
+  },
+  {
+    value: 'p1',
+    label: 'Medium',
+    textColor: palette.blue620,
+    borderColor: palette.blue610,
+    icon: <PriorityMediumIcon />,
+  },
+  {
+    value: 'p2',
+    label: 'High',
+    textColor: palette.highlightOrange,
+    borderColor: palette.highlightOrange,
+    icon: <PriorityHighIcon />,
+  },
+  {
+    value: 'p3',
+    label: 'Urgent',
+    textColor: palette.purple620,
+    borderColor: palette.purple610,
+    icon: <PriorityUrgentIcon />,
+  },
+];
 
 // Task date types
 export const TASK_DATE_OVERDUE = 'overdue';
@@ -325,19 +360,31 @@ export const MODAL_ACTIONS = {
 export const MENTION_REGEX = /@\[(.*?)]\((.*?)\)/g;
 
 export const USERNAME_REGEX = /^[A-Za-z0-9_]{3,16}$/;
+
 export const PERMISSIONS = {
   CREATE_TASK: 'create_task',
   EDIT_TASK: 'edit_task', // edit task even when you are not the creator
   MANAGE_BOARD: 'manage_board', /// move task around, but can't move it to 'done'
   APPROVE_PAYMENT: 'approve_payment',
-  CAN_COMMENT: 'can_comment',
   FULL_ACCESS: 'full_access',
   MANAGE_MEMBER: 'manage_member',
   REVIEW_TASK: 'review_task', // can be set as reviewer, once approved, it' automatically done
   MANAGE_COMMENT: 'manage_comment',
   MANAGE_POST: 'manage_post',
   MANAGE_POD: 'manage_pod', //  create new pod, archive existing pod
-  REORDER_TASK: 'reorder_task', // reorder task vertically
+};
+
+export const PERMISSION_TO_DISPLAY = {
+  [PERMISSIONS.FULL_ACCESS]: 'All Permissions',
+  [PERMISSIONS.MANAGE_MEMBER]: 'Add members',
+  [PERMISSIONS.CREATE_TASK]: 'Create task',
+  [PERMISSIONS.EDIT_TASK]: 'Edit task',
+  [PERMISSIONS.REVIEW_TASK]: 'Review Tasks',
+  [PERMISSIONS.MANAGE_COMMENT]: 'Manage comment',
+  [PERMISSIONS.MANAGE_POD]: 'Manage pod',
+  [PERMISSIONS.MANAGE_BOARD]: 'Manage board',
+  // [PERMISSIONS.MANAGE_POST]: 'Manage post',
+  [PERMISSIONS.APPROVE_PAYMENT]: 'Approve payment',
 };
 
 export const NOTIFICATION_VERBS = {
@@ -354,6 +401,7 @@ export const NOTIFICATION_VERBS = {
   task_submit: 'submitted a',
   collab_invite: 'invited you in a',
   collab_approve: 'approved a',
+  collab_decline: 'declined request to join a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {
@@ -371,6 +419,7 @@ export const NOTIFICATION_OBJECT_TYPES = {
 export const COLLAB_TYPES = {
   INVITE: 'collab_invite',
   APPROVE: 'collab_approve',
+  DECLINE: 'collab_decline',
 };
 
 export const PRIVACY_LEVEL = {
@@ -578,6 +627,7 @@ export const PROPOSAL_VOTE_LABELS = {
 
 export const PAGES_WITH_NO_SIDEBAR = [
   '/',
+  '/forgot-password-sent',
   '/forgot-password',
   '/signup',
   '/signup/email',
@@ -597,10 +647,11 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/submission/[submissionId]',
   '/twitter/callback',
   '/twitter/verify-tweet',
-  '/forgot-password',
   '/reset-password',
   '/onboarding-dao',
   '/new-task',
+  '/apps/install/coordinape',
+  '/invite/collab/[token]',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
@@ -644,6 +695,7 @@ export const PAGE_PATHNAME = {
   profile_username_about: '/profile/[username]/about',
   explore: '/explore',
   mission_control: '/mission-control',
+  search_result: '/search-result',
 };
 
 export const ROLES = {
@@ -703,9 +755,9 @@ export const FEATURED_LIST = [
   },
   {
     username: 'Gitcoin',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1461700151383400450/3Kwlnvl__400x400.png',
+    imageUrl: 'https://d1fdloi71mui9q.cloudfront.net/KHC7f0e5SvS0GinfdwZE_6XUob6JgGP8uW86i',
     bio: "Gitcoin is where the world's leading web3 projects are born, validated & funded.",
-    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1656360691/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1661964290/1500x500',
     name: 'Gitcoin',
   },
   {
@@ -717,7 +769,7 @@ export const FEATURED_LIST = [
   },
   {
     username: 'talentDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1492177780791861253/aK138-gB_400x400.jpg',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1565047080489553921/EQSISitd_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1468727203219193859/1651863023/1500x500',
     bio: 'Unlock talent | Decentralize knowledge | #DeSci DAO Building the Journal of Decentralized Work',
     name: 'Talent DAO',
@@ -760,7 +812,7 @@ export const FEATURED_LIST = [
   {
     username: 'blu3dao',
     imageUrl: 'https://pbs.twimg.com/profile_images/1488749682251628553/c7l6JtMr_400x400.png',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1655502475/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1663944361/1500x500',
     bio: '🦋 making the impossible, possible. ✨ a DAO focused on empowering women & non-binary people to earn, learn & play in web3 via mentorship, community & funding',
     name: 'Blu3 DAO',
   },
@@ -774,13 +826,13 @@ export const FEATURED_LIST = [
   {
     username: 'bobanetwork',
     imageUrl: 'https://pbs.twimg.com/profile_images/1536795904706895872/PVQ769qJ_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1655490876/1500x500',
+    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1663777233/1500x500',
     bio: 'Lower gas, faster, secured in Ethereum, supercharged with Hybrid Compute: bridge at http://gateway.boba.network',
     name: 'Boba Network',
   },
   {
     username: 'Layer2DAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1481858736935215105/AXt1mSp__400x400.jpg',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1566191261987512321/CNtKHXGT_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1480302068602576897/1642437751/1500x500',
     bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
     name: 'Layer2 DAO',
@@ -810,10 +862,16 @@ export const FEATURED_LIST = [
     username: 'Lobby3',
     name: 'Lobby3',
     bio: 'Join our fight to advance economic opportunity and Web3 technology in D.C. 👾',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1501218472973504512/xWitV8PR_400x400.jpg',
+    imageUrl: 'https://pbs.twimg.com/profile_images/1542579303615021056/yG2LqO3M_400x400.jpg',
     headerUrl: 'https://pbs.twimg.com/profile_banners/1483865970724589568/1645050021/1500x500',
   },
 ];
+
+export const gridMobileStyles = {
+  width: '100%',
+  maxWidth: '100vw',
+  marginLeft: '0',
+};
 
 export const TABS_LABELS = {
   DAOS: 'daos',
@@ -825,4 +883,31 @@ export enum TOKEN_GATING_CONDITION_TYPE {
   GUILD = 'guild',
   TOKEN_GATE = 'token_gate',
 }
+
 export const GR15DEICategoryName = 'gr15_dei';
+
+export const CATEGORY_TYPES = {
+  UI_UX_DESIGNER: 'ui_ux_designer',
+  SOCIAL_MEDIA: 'social_media',
+  GRAPHIC_DESIGN: 'graphic_design',
+  GROWTH_MARKETING: 'growth_marketing',
+  CONTENT_CREATION: 'content_creation',
+  MEMES: 'memes',
+  NFT: 'nft',
+  GOVERNANCE: 'governance',
+  DEFI: 'defi',
+  ENGINEERING: 'engineering',
+};
+
+export const CATEGORY_LABELS = {
+  [CATEGORY_TYPES.UI_UX_DESIGNER]: '💻 UI/UX Design',
+  [CATEGORY_TYPES.SOCIAL_MEDIA]: '👥 Social Media',
+  [CATEGORY_TYPES.GRAPHIC_DESIGN]: '🖌 Graphic Design',
+  [CATEGORY_TYPES.GROWTH_MARKETING]: '📈 Growth Marketing',
+  [CATEGORY_TYPES.CONTENT_CREATION]: '✍️ Writing',
+  [CATEGORY_TYPES.MEMES]: '💀 Memes',
+  [CATEGORY_TYPES.NFT]: '🖼 NFT',
+  [CATEGORY_TYPES.GOVERNANCE]: '🪐 Governance',
+  [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
+  [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
+};

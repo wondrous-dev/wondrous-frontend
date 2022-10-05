@@ -11,10 +11,11 @@ import { MANUAL_DISCORD_ORG_SETUP } from 'graphql/mutations';
 import { BOT_URL } from 'components/DiscordNotificationSetup';
 import palette from 'theme/palette';
 import InputForm from 'components/Common/InputForm/inputForm';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import { AddGuildButton, DiscordText } from 'components/Settings/styles';
+import { NotificationType } from 'components/Settings/Notifications/constants';
 import { DiscordCard, DiscordCardElement, DiscordCardElementDiv } from './styles';
 
 let timeout;
@@ -177,6 +178,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
                   guildId,
                   orgId,
                   channelId: selectedChannel,
+                  type: NotificationType.TasksNotifications,
                 },
                 refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
               });

@@ -6,11 +6,11 @@ import React, { useEffect, useState } from 'react';
 import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
 import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { filteredColorOptions, PRIVACY_LEVEL } from '../../utils/constants';
 import { getFilenameAndType, uploadMedia } from '../../utils/media';
 import { TabsVisibility } from '../Common/TabsVisibility';
 import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
@@ -168,20 +168,24 @@ function GeneralSettingsComponent(props) {
           </GeneralSettingsDAODescriptionBlock>
         </GeneralSettingsInputsBlock>
 
-        {newProfile?.profilePicture && !logoImage ? (
-          <Box sx={{ marginTop: '30px' }}>
-            <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
-          </Box>
-        ) : null}
+        {!orgProfile?.shared ? (
+          <>
+            {newProfile?.profilePicture && !logoImage ? (
+              <Box sx={{ marginTop: '30px' }}>
+                <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
+              </Box>
+            ) : null}
 
-        <ImageUpload
-          image={logoImage}
-          imageWidth={52}
-          imageHeight={52}
-          imageName="Logo"
-          updateFilesCb={(file) => handleImageChange(file, 'profile')}
-          profileImage={newProfile?.profilePicture}
-        />
+            <ImageUpload
+              image={logoImage}
+              imageWidth={52}
+              imageHeight={52}
+              imageName="Logo"
+              updateFilesCb={(file) => handleImageChange(file, 'profile')}
+              profileImage={newProfile?.profilePicture}
+            />
+          </>
+        ) : null}
 
         {newProfile?.headerPicture && !headerImage && (
           <Box sx={{ width: '100%', height: '100px', position: 'relative', marginTop: '30px' }}>

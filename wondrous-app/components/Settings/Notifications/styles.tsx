@@ -2,9 +2,14 @@ import React from 'react';
 import styled from 'styled-components';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
-import Checkbox from '@mui/material/Checkbox';
 import palette from 'theme/palette';
 import { Button } from '../../Common/button';
+
+export const ConnectDiscordButton = styled(Button)`
+  && {
+    max-width: 206px;
+  }
+`;
 
 export const TableValueText = styled(Typography)`
   && {
@@ -18,12 +23,15 @@ export const DiscordCard = styled(Grid)`
   && {
     background: #3f3f45;
     border-radius: 8px;
-    margin-top: 24px;
+    margin: 24px 0 0;
     padding: 8px;
+    width: 100%;
   }
 `;
 
-export const DiscordCardElement = styled(Grid)``;
+export const DiscordCardElement = styled(Grid)`
+  width: 50%;
+`;
 export const DiscordCardElementDiv = styled.div`
   padding: 12px;
 `;
@@ -139,3 +147,23 @@ export const NotificationSettingsButtonsBlock = styled.div`
   justify-content: end;
   padding: 30px 0px;
 `;
+
+const styles = {
+  divider: {
+    backgroundColor: palette.grey85,
+    margin: '12px 0',
+  },
+  discordConnection: {
+    backgroundColor: palette.black90,
+  },
+  connectDiscord: {
+    backgroundColor: palette.black90,
+    borderRadius: '6px',
+    padding: '15px',
+    gap: '10px',
+    alignItems: 'center',
+    flexWrap: 'nowrap',
+  },
+};
+
+export default styles;

@@ -4,6 +4,8 @@ import palette from 'theme/palette';
 
 import { Typography } from '@mui/material';
 
+import EmptyStateArt from 'components/EmptyStateGeneric/EmptyStateArt';
+
 export const IconWrapper = styled.div`
   border-radius: 180px;
   display: flex;
@@ -11,6 +13,34 @@ export const IconWrapper = styled.div`
   align-items: center;
   padding: 8px;
   background: ${palette.background.default};
+`;
+
+export const BountyBoardEmptyWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: ${palette.white};
+  padding: 10px;
+  border-radius: 3px;
+  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
+  gap: 14px;
+  border: 0px solid transparent;
+  border-radius: 6px;
+  position: relative;
+  height: fit-content;
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 5px;
+    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    padding: 1px;
+    pointer-events: none;
+  }
 `;
 
 const SUB_BACKGROUND_MAP = {
@@ -23,6 +53,15 @@ export function BountyIcon() {
     <IconWrapper>
       <StarIcon />
     </IconWrapper>
+  );
+}
+
+export function BountyBoardEmpty() {
+  return (
+    <BountyBoardEmptyWrapper>
+      No results found
+      <EmptyStateArt />
+    </BountyBoardEmptyWrapper>
   );
 }
 

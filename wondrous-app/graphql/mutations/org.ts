@@ -53,24 +53,24 @@ export const UPDATE_ORG = gql`
 `;
 
 export const CREATE_JOIN_ORG_REQUEST = gql`
-  mutation createJoinOrgRequest($orgId: ID!, $message: String) {
-    createJoinOrgRequest(orgId: $orgId, message: $message) {
+  mutation createJoinOrgRequest($orgId: ID!, $message: String, $roleId: ID!) {
+    createJoinOrgRequest(orgId: $orgId, message: $message, roleId: $roleId) {
       success
     }
   }
 `;
 
 export const APPROVE_JOIN_ORG_REQUEST = gql`
-  mutation approveJoinOrgRequest($userId: ID!, $orgId: ID!) {
-    approveJoinOrgRequest(userId: $userId, orgId: $orgId) {
+  mutation approveJoinOrgRequest($joinOrgRequestId: ID!) {
+    approveJoinOrgRequest(joinOrgRequestId: $joinOrgRequestId) {
       success
     }
   }
 `;
 
 export const REJECT_JOIN_ORG_REQUEST = gql`
-  mutation rejectJoinOrgRequest($userId: ID!, $orgId: ID!) {
-    rejectJoinOrgRequest(userId: $userId, orgId: $orgId) {
+  mutation rejectJoinOrgRequest($joinOrgRequestId: ID!) {
+    rejectJoinOrgRequest(joinOrgRequestId: $joinOrgRequestId) {
       success
     }
   }
@@ -124,4 +124,12 @@ export const CREATE_ORG = gql`
     }
   }
   ${OrgFragment}
+`;
+
+export const CLAIM_ORG_ROLE = gql`
+  mutation claimOrgRole($orgRoleId: ID!) {
+    claimOrgRole(orgRoleId: $orgRoleId) {
+      success
+    }
+  }
 `;

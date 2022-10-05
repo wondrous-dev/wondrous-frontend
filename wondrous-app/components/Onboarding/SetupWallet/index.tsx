@@ -21,10 +21,11 @@ import WalletIcon from '../../../public/images/onboarding/union.svg';
 function SetupWallet() {
   const router = useRouter();
   const isMobile = useIsMobile();
-
+  const { collabInvite } = router.query;
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
 
+  const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
   const linkUserWithWallet = useCallback(async () => {
     if (wonderWeb3.address && wonderWeb3.chain && !wonderWeb3.connecting) {
       const messageToSign = await getUserSigningMessage(wonderWeb3.address, SupportedChainType.ETH);
@@ -34,7 +35,7 @@ function SetupWallet() {
         if (signedMessageIsString(signedMessage)) {
           const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
           if (result === true) {
-            router.push('/onboarding/twitter', undefined, {
+            router.push(`/onboarding/twitter${collabInviteQueryString}`, undefined, {
               shallow: true,
             });
           }
@@ -62,7 +63,7 @@ function SetupWallet() {
   }, [wonderWeb3.wallet, wonderWeb3.active, wonderWeb3.web3Provider]);
 
   const handleLaterClick = () => {
-    router.push('/onboarding/twitter', undefined, {
+    router.push(`/onboarding/twitter${collabInviteQueryString}`, undefined, {
       shallow: true,
     });
   };

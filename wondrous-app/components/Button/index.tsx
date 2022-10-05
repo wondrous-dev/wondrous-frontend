@@ -65,6 +65,22 @@ const theme = {
     background: palette.electricViolet,
     borderRadius: 6,
   },
+  blue: {
+    borderColor: 'deepskyblue',
+    background: 'deepskyblue',
+    borderRadius: 6,
+    hover: {
+      background: palette.grey920,
+    },
+  },
+  red: {
+    borderColor: palette.red200,
+    background: palette.red200,
+    borderRadius: 6,
+    hover: {
+      background: palette.grey920,
+    },
+  },
 };
 
 type Props = SpaceProps & {
@@ -72,7 +88,7 @@ type Props = SpaceProps & {
    * We include several predefined button styles,
    * each serving its own semantic purpose, with a few extras thrown in for more control.
    */
-  color?: 'primary' | 'grey' | 'purple';
+  color?: 'primary' | 'grey' | 'purple' | 'blue' | 'red';
   children: ReactNode | undefined | string;
   minWidth?: number;
   height?: number;
@@ -130,6 +146,10 @@ export const Button = ({
   ...props
 }: Props) => {
   const buttonProps = { ...theme[color], ...props };
+
+  if (buttonTheme?.borderColor) {
+    buttonProps.borderColor = buttonTheme.borderColor;
+  }
 
   if (variant === 'outlined') {
     buttonProps.borderColor = buttonProps.background;

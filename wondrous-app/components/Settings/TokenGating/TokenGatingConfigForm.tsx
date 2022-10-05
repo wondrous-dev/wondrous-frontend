@@ -17,7 +17,7 @@ import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } 
 import { AccessCondition, TokenGatingCondition } from 'types/TokenGating';
 import { useTokenGatingCondition } from 'utils/hooks';
 import { NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
-import DropdownSelect from '../../Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   TokenGatingAutocompleteList,
   TokenGatingAutocompleteListItem,
@@ -194,8 +194,8 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
 
   useEffect(() => {
     // this is for edit only, prepopulating
-    if (selectedTokenGatingCondition && selectedTokenGatingCondition?.accessCondition) {
-      const accessCondition = selectedTokenGatingCondition.accessCondition as AccessCondition;
+    if (selectedTokenGatingCondition && selectedTokenGatingCondition?.tokenAccessCondition?.[0]) {
+      const accessCondition = selectedTokenGatingCondition.tokenAccessCondition[0] as AccessCondition;
 
       setAccessConditionType(accessCondition?.type);
       setName(selectedTokenGatingCondition.name);

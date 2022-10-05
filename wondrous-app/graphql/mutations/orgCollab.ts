@@ -7,6 +7,7 @@ export const CREATE_COLLAB_REQUST = gql`
       initiatorOrgId
       recipientOrgId
       title
+      token
       mission
       initiatorOrg {
         ...OrgFragment
@@ -40,6 +41,14 @@ export const BATCH_ADD_MEMBERS = gql`
   mutation batchAddUsers($input: BatchAddUsersInput) {
     batchAddUsers(input: $input) {
       success
+    }
+  }
+`;
+
+export const REDEEM_COLLAB_TOKEN = gql`
+  mutation redeemOrgCollabRequestInviteToken($orgId: ID!, $token: String!) {
+    redeemOrgCollabRequestInviteToken(orgId: $orgId, token: $token) {
+      username
     }
   }
 `;

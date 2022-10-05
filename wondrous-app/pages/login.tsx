@@ -5,7 +5,7 @@ import { useIsMobile } from 'utils/hooks';
 import { LineWithText } from 'components/Common/lines';
 import { Form } from 'components/Common/form';
 import { Field } from 'components/Common/field';
-import { PaddedParagraph } from 'components/Common/text';
+import { PaddedParagraph, StyledLink } from 'components/Common/text';
 import { LoginError } from 'components/Pages/login';
 import palette from 'theme/palette';
 import { EmailIcon, LockIcon } from 'components/Icons/userpass';
@@ -25,10 +25,6 @@ import { Button } from 'components/Button';
 import { handleUserOnboardingRedirect } from 'components/Onboarding/utils';
 
 const discordUrlWithoutState = getDiscordUrl();
-const state = JSON.stringify({
-  callbackType: DISCORD_CONNECT_TYPES.login,
-});
-const discordUrl = `${discordUrlWithoutState}&state=${state}`;
 
 function Login({ csrfToken }) {
   const wonderWeb3 = useWonderWeb3();
@@ -39,7 +35,16 @@ function Login({ csrfToken }) {
   const [loading, setLoading] = useState(null);
   const isMobile = useIsMobile();
   const router = useRouter();
-  const { discordConnectError } = router.query;
+  const { discordConnectError, collabInvite } = router.query;
+
+  const collabInviteQuery = collabInvite ? `?collabInvite=${collabInvite}` : '';
+
+  const state = JSON.stringify({
+    callbackType: DISCORD_CONNECT_TYPES.login,
+    ...(collabInvite ? { collabInvite } : {}),
+  });
+  const discordUrl = `${discordUrlWithoutState}&state=${state}`;
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -68,11 +73,12 @@ function Login({ csrfToken }) {
             const user = await walletSignin(wonderWeb3.address, signedMessage);
             if (user) {
               if (user?.username) {
-                router.push('/mission-control', undefined, {
+                const route = collabInvite ? `/invite/collab/${collabInvite}` : '/mission-control';
+                router.push(route, undefined, {
                   shallow: true,
                 });
               } else {
-                router.push('/onboarding/welcome', undefined, {
+                router.push(`/onboarding/welcome${collabInviteQuery}`, undefined, {
                   shallow: true,
                 });
               }
@@ -144,7 +150,7 @@ function Login({ csrfToken }) {
         <div style={{ width: '100%' }}>
           {!notSupportedChain && errorMessage ? <LoginError>{errorMessage}</LoginError> : ''}
           {notSupportedChain && <LoginError>Unsupported network, changed to mainnet or a supported network</LoginError>}
-          <Form onSubmit={handleSubmit} style={{ marginBottom: '37px' }}>
+          <Form onSubmit={handleSubmit} style={{ marginBottom: '20px' }}>
             <input name="csrfToken" type="hidden" defaultValue={csrfToken} />
             <Field
               type="email"
@@ -166,6 +172,9 @@ function Login({ csrfToken }) {
               required
               rightIcon
             />
+            <StyledLink href="/forgot-password" style={{ marginTop: '2px' }}>
+              Forgot password
+            </StyledLink>
             <Button marginTop="37px" height={50} fullWidth data-cy="button-login">
               Log me in
             </Button>

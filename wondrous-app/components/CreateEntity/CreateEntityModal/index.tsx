@@ -1,101 +1,50 @@
 /* eslint-disable max-lines */
 import moment from 'moment';
+import GitHubIcon from '@mui/icons-material/GitHub';
+
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Box from '@mui/material/Box';
 import CircularProgress from '@mui/material/CircularProgress';
 import apollo from 'services/apollo';
+
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
-import {
-  countCharacters,
-  deserializeRichText,
-  extractMentions,
-  plainTextToRichText,
-  RichTextEditor,
-  useEditor,
-} from 'components/RichText';
+import DropdownSearch from 'components/DropdownSearch';
+import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
-import { FormikValues, useFormik } from 'formik';
-import { CREATE_LABEL } from 'graphql/mutations/org';
-import GitHubIcon from '@mui/icons-material/GitHub';
+import { useFormik } from 'formik';
 import {
   ATTACH_MEDIA_TO_TASK,
-  CREATE_BOUNTY,
-  CREATE_MILESTONE,
-  CREATE_TASK,
   REMOVE_MEDIA_FROM_TASK,
   CREATE_TASK_GITHUB_ISSUE,
-  UPDATE_BOUNTY,
-  UPDATE_MILESTONE,
-  UPDATE_TASK,
   TURN_TASK_TO_BOUNTY,
   CREATE_TASK_TEMPLATE,
   UPDATE_TASK_TEMPLATE,
   DELETE_TASK_TEMPLATE,
 } from 'graphql/mutations/task';
-import {
-  CREATE_TASK_PROPOSAL,
-  UPDATE_TASK_PROPOSAL,
-  ATTACH_MEDIA_TO_TASK_PROPOSAL,
-  REMOVE_MEDIA_FROM_TASK_PROPOSAL,
-} from 'graphql/mutations/taskProposal';
-import { GET_ORG_LABELS, GET_ORG_USERS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
-import { GET_ORG_ROLES } from 'graphql/queries/org';
-import {
-  GET_POD_GITHUB_INTEGRATIONS,
-  GET_POD_GITHUB_PULL_REQUESTS,
-  GET_USER_AVAILABLE_PODS,
-} from 'graphql/queries/pod';
-import {
-  GET_ELIGIBLE_REVIEWERS_FOR_ORG,
-  GET_ELIGIBLE_REVIEWERS_FOR_POD,
-  GET_MILESTONES,
-  GET_TASK_BY_ID,
-  GET_TASK_REVIEWERS,
-} from 'graphql/queries/task';
+import { ATTACH_MEDIA_TO_TASK_PROPOSAL, REMOVE_MEDIA_FROM_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { GET_TASK_BY_ID } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
 import cloneDeep from 'lodash/cloneDeep';
-import pick from 'lodash/pick';
-import isUndefined from 'lodash/isUndefined';
-import assignWith from 'lodash/assignWith';
-import sortBy from 'lodash/sortBy';
-import uniqBy from 'lodash/uniqBy';
 
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import {
-  updateCompletedItem,
-  updateInProgressTask,
-  updateInReviewItem,
-  updateTaskItem,
-  updateTaskItemOnEntityType,
-} from 'utils/board';
-import {
-  CHAIN_TO_CHAIN_DIPLAY_NAME,
   ENTITIES_TYPES,
-  PRIVACY_LEVEL,
-  TASK_STATUS_DONE,
-  TASK_STATUS_IN_PROGRESS,
-  TASK_STATUS_IN_REVIEW,
   TASK_STATUS_TODO,
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
   GR15DEICategoryName,
+  PRIORITIES,
 } from 'utils/constants';
 
-import {
-  transformTaskToTaskCard,
-  hasCreateTaskPermission,
-  transformMediaFormat,
-  transformCategoryFormat,
-} from 'utils/helpers';
+import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
-import * as Yup from 'yup';
 import { StyledChipTag } from 'components/Tags/styles';
 import { GithubLink } from 'components/Settings/Github/styles';
 import { ErrorText } from 'components/Common';
@@ -108,10 +57,43 @@ import {
   TaskModalSnapshotLogo,
   TaskModalSnapshotText,
 } from 'components/Common/TaskViewModal/styles';
-import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
-import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
+import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
+import { StyledLink } from 'components/Common/text';
+import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
+import {
+  privacyOptions,
+  filterOptionsWithPermission,
+  formValidationSchema,
+  useGetPaymentMethods,
+  useGetOrgUsers,
+  useGetOrgLabels,
+  useCreateLabel,
+  useGetMilestones,
+  useGetCategories,
+  useGetAvailableUserPods,
+  useGetOrgRoles,
+  getPrivacyLevel,
+  useGetPodPullRequests,
+  useGetPodGithubIntegrations,
+  useGetEligibleReviewers,
+  filterUserOptions,
+  filterCategoryValues,
+  entityTypeData,
+  filterPaymentMethods,
+  filterOrgUsers,
+  filterOrgUsersForAutocomplete,
+  Fields,
+  handleRewardOnChange,
+  ICreateEntityModal,
+  initialValues,
+  useContextValue,
+  CreateEntityDropdown,
+  CreateEntityPaymentMethodItem,
+  CreateEntityTextfieldInputPointsComponent,
+  CreateEntityTextfieldInputRewardComponent,
+} from './Helpers';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
@@ -142,14 +124,9 @@ import {
   CreateEntityMilestoneSearch,
   CreateEntityOpenInFullIcon,
   CreateEntityOption,
-  CreateEntityOptionImageWrapper,
   CreateEntityOptionLabel,
-  CreateEntityPaymentMethodLabel,
-  CreateEntityPaymentMethodLabelChain,
   CreateEntityPaymentMethodOption,
-  CreateEntityPaymentMethodOptionIcon,
   CreateEntityPaymentMethodSelect,
-  CreateEntityPaymentMethodSelectRender,
   CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
@@ -161,992 +138,26 @@ import {
   CreateEntitySelect,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
-  CreateEntitySelectRootValue,
-  CreateEntitySelectRootValueWrapper,
   CreateEntitySelectWrapper,
   CreateEntityTextfield,
-  CreateEntityTextfieldInputLabel,
-  CreateEntityTextfieldInputPoints,
-  CreateEntityTextfieldInputReward,
-  CreateEntityTextfieldPoints,
   CreateEntityTitle,
   EditorPlaceholder,
   EditorContainer,
   EditorToolbar,
   MediaUploadDiv,
+  SnapshotButtonBlock,
+  CreateEntityPaymentMethodSelected,
   CreateEntityApplicationsSelectRender,
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
-  SnapshotButtonBlock,
-  CreateEntityTextfieldInputTemplate,
-  CreateEntityPaymentMethodSelected,
 } from './styles';
+
 import { MediaItem } from '../MediaItem';
-import Tags, { Option as Label } from '../../Tags';
+import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
-
-const formValidationSchema = Yup.object().shape({
-  orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
-  podId: Yup.string().optional().nullable(),
-  title: Yup.string().required('Title is required'),
-  reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
-  assigneeId: Yup.string().nullable(),
-  claimPolicy: Yup.string().nullable(),
-  claimPolicyRoles: Yup.array().of(Yup.string()).optional().nullable(),
-  shouldUnclaimOnDueDateExpiry: Yup.boolean().nullable(),
-  points: Yup.number()
-    .typeError('Points must be a number')
-    .integer('Points must be whole number')
-    .moreThan(0, 'Points must be greater than 0')
-    .optional()
-    .nullable(),
-  rewards: Yup.array()
-    .of(
-      Yup.object({
-        paymentMethodId: Yup.string().required(),
-        rewardAmount: Yup.number()
-          .typeError('Reward amount must be a number')
-          .moreThan(0, 'Reward amount must be greater than 0'),
-      })
-    )
-    .optional()
-    .nullable(),
-  milestoneId: Yup.string().nullable(),
-});
-
-const privacyOptions = {
-  public: {
-    label: 'Public',
-    value: PRIVACY_LEVEL.public,
-    Icon: PrivacyPublicIcon,
-  },
-  private: {
-    label: 'Members',
-    value: '',
-    Icon: PrivacyMembersIcon,
-  },
-};
-const filterUserOptions = (options) => {
-  if (!options) return [];
-  return options.map((option) => ({
-    label: option?.username ?? option?.title,
-    id: option?.id,
-    profilePicture: option?.profilePicture,
-  }));
-};
-
-const filterOrgUsersForAutocomplete = (orgUsers) => {
-  if (!orgUsers) {
-    return [];
-  }
-  return orgUsers.map((orgUser) => ({
-    ...orgUser?.user,
-    display: orgUser?.user?.username,
-    id: orgUser?.user?.id,
-  }));
-};
-
-const filterGithubPullRequestsForAutocomplete = (githubPullRequests) => {
-  if (!githubPullRequests) {
-    return [];
-  }
-  return githubPullRequests.map((githubPullRequest) => ({
-    id: githubPullRequest.id,
-    label: githubPullRequest.title,
-    url: githubPullRequest.url,
-  }));
-};
-const filterPaymentMethods = (paymentMethods) => {
-  if (!paymentMethods) return [];
-  return paymentMethods.map((paymentMethod) => ({
-    ...paymentMethod,
-    icon: (
-      <SafeImage
-        useNextImage={false}
-        src={paymentMethod.icon}
-        style={{ width: '30px', height: '30px', borderRadius: '15px' }}
-      />
-    ),
-    label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,
-    value: paymentMethod.id,
-  }));
-};
-
-const filterOrgUsers = ({ orgUsersData, existingTask = null }) => {
-  if (!orgUsersData) {
-    return [];
-  }
-  const users = orgUsersData.map((orgUser) => ({
-    profilePicture: orgUser?.user?.profilePicture,
-    label: orgUser?.user?.username,
-    value: orgUser?.user?.id,
-  }));
-  const availableUsers = existingTask?.assigneeId
-    ? users.concat({
-        label: existingTask?.assignee?.username,
-        profilePicture: existingTask?.assignee?.profilePicture,
-        value: existingTask?.assigneeId,
-      })
-    : users;
-  return sortBy(
-    uniqBy(availableUsers, ({ value }) => value),
-    ({ label }) => label
-  );
-};
-
-const filterOptionsWithPermission = (
-  entityType = ENTITIES_TYPES.TASK,
-  options,
-  userPermissionsContext,
-  orgId = undefined,
-  podId = undefined
-) => {
-  if (!options) {
-    return [];
-  }
-  return options
-    .filter(({ id }) => {
-      const listPodId = orgId ? id : undefined;
-      return (
-        hasCreateTaskPermission({
-          userPermissionsContext,
-          orgId: orgId ?? id,
-          podId: podId || listPodId,
-        }) || entityType === ENTITIES_TYPES.PROPOSAL
-      );
-    })
-    .map(({ profilePicture, name, id, color }) => ({
-      imageUrl: profilePicture,
-      label: name,
-      value: id,
-      color,
-    }));
-};
-
-const getPodObject = (pods, podId) => {
-  let justCreatedPod = null;
-  pods.forEach((testPod) => {
-    if (testPod.id === podId) {
-      justCreatedPod = testPod;
-    }
-  });
-  return justCreatedPod;
-};
-
-const onCorrectPage = (existingTask, board) =>
-  existingTask?.orgId === board?.orgId ||
-  existingTask?.podId === board?.podId ||
-  existingTask?.userId === board?.userId;
-
-const getPrivacyLevel = (podId, pods) => {
-  const selectedPodPrivacyLevel = pods?.filter((i) => i.id === podId)[0]?.privacyLevel;
-  const privacyLevel = privacyOptions[selectedPodPrivacyLevel]?.value ?? privacyOptions.public.value;
-  return privacyLevel;
-};
-
-const useGetOrgRoles = (org) => {
-  const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
-    fetchPolicy: 'network-only',
-  });
-  useEffect(() => {
-    if (org) {
-      getOrgRoles({
-        variables: {
-          orgId: org,
-        },
-      });
-    }
-  }, [getOrgRoles, org]);
-  return data?.getOrgRoles;
-};
-
-const useGetAvailableUserPods = (org) => {
-  const [getAvailableUserPods, { data }] = useLazyQuery(GET_USER_AVAILABLE_PODS, {
-    fetchPolicy: 'network-only',
-  });
-  useEffect(() => {
-    if (org) {
-      getAvailableUserPods({
-        variables: {
-          orgId: org,
-        },
-      });
-    }
-  }, [getAvailableUserPods, org]);
-  return data?.getAvailableUserPods;
-};
-
-const filterGithubReposForAutocomplete = (githubPullRepos) => {
-  if (!githubPullRepos) {
-    return [];
-  }
-
-  return githubPullRepos.map((githubPullRepo) => ({
-    id: githubPullRepo.githubInfo?.repoId,
-    label: githubPullRepo.githubInfo?.repoPathname,
-  }));
-};
-
-const useGetPodGithubIntegrations = (pod) => {
-  const [getPodGithubIntegrations, { data: podGithubIntegrationData, error: podGithubIntegrationError }] =
-    useLazyQuery(GET_POD_GITHUB_INTEGRATIONS);
-  useEffect(() => {
-    if (pod) {
-      getPodGithubIntegrations({
-        variables: {
-          podId: pod,
-        },
-      });
-    }
-  }, [pod]);
-  return filterGithubReposForAutocomplete(podGithubIntegrationData?.getPodGithubRepoIntegrations);
-};
-
-const useGetPodPullRequests = (pod) => {
-  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS);
-  useEffect(() => {
-    if (pod) {
-      getPodGithubPullRequests({
-        variables: {
-          podId: pod,
-        },
-      });
-    }
-  }, [pod]);
-
-  return filterGithubPullRequestsForAutocomplete(podGithubPullRequestsData?.getPodGithubPullRequests);
-};
-
-const useGetEligibleReviewers = (org, pod) => {
-  const [getEligibleReviewersForOrg, { data: eligibleReviewersForOrgData }] =
-    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_ORG);
-
-  const [getEligibleReviewersForPod, { data: eligibleReviewersForPodData }] =
-    useLazyQuery(GET_ELIGIBLE_REVIEWERS_FOR_POD);
-  useEffect(() => {
-    if (pod) {
-      getEligibleReviewersForPod({
-        variables: {
-          podId: pod,
-          searchString: '',
-        },
-        fetchPolicy: 'cache-and-network',
-      });
-    } else if (org) {
-      getEligibleReviewersForOrg({
-        variables: {
-          orgId: org,
-          searchString: '',
-        },
-        fetchPolicy: 'cache-and-network',
-      });
-    }
-  }, [org, pod, getEligibleReviewersForOrg, getEligibleReviewersForPod]);
-  const eligibleReviewers = filterUserOptions(
-    pod
-      ? eligibleReviewersForPodData?.getEligibleReviewersForPod
-      : eligibleReviewersForOrgData?.getEligibleReviewersForOrg
-  );
-  return eligibleReviewers;
-};
-
-const useGetOrgLabels = (orgId) => {
-  const [getOrgLabels, { data }] = useLazyQuery(GET_ORG_LABELS, {
-    fetchPolicy: 'cache-and-network',
-  });
-
-  useEffect(() => {
-    if (orgId) {
-      getOrgLabels({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId, getOrgLabels]);
-
-  return data?.getOrgLabels;
-};
-
-const useCreateGithubIssueFromTask = (taskId, callback) => {
-  const [createGithubIssue] = useMutation(CREATE_TASK_GITHUB_ISSUE);
-  const handleCreateGithubIssue = async (repoPathname) => {
-    const {
-      data: { createGithubIssue: newGithubIssue },
-    } = await createGithubIssue({
-      variables: {
-        taskId,
-        repoPathname,
-      },
-    });
-    callback(newGithubIssue);
-  };
-  return handleCreateGithubIssue;
-};
-
-const useCreateLabel = (orgId, callback) => {
-  const [createLabel] = useMutation(CREATE_LABEL, {
-    refetchQueries: () => ['getOrgLabels'],
-  });
-
-  const handleCreateLabel = async (label: Label) => {
-    const {
-      data: { createLabel: newLabel },
-    } = await createLabel({
-      variables: {
-        input: {
-          orgId,
-          name: label.name,
-          color: label.color,
-        },
-      },
-    });
-    callback(newLabel.id);
-  };
-  return handleCreateLabel;
-};
-
-const useGetPaymentMethods = (orgId) => {
-  const [getPaymentMethods, { data }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
-  useEffect(() => {
-    if (orgId) {
-      getPaymentMethods({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId, getPaymentMethods]);
-  return data?.getPaymentMethodsForOrg;
-};
-
-const useGetOrgUsers = (orgId) => {
-  const [getOrgUsers, { data }] = useLazyQuery(GET_ORG_USERS);
-  useEffect(() => {
-    if (orgId)
-      getOrgUsers({
-        variables: {
-          orgId,
-          limit: 1000, // TODO: fix autocomplete
-        },
-      });
-  }, [orgId, getOrgUsers]);
-  return data?.getOrgUsers;
-};
-
-const useGetMilestones = (orgId, podId) => {
-  const [getMilestones, { data }] = useLazyQuery(GET_MILESTONES);
-  useEffect(() => {
-    if (orgId)
-      getMilestones({
-        variables: {
-          orgId,
-          podId,
-        },
-      });
-  }, [getMilestones, orgId, podId]);
-  return data?.getMilestones;
-};
-
-const useCreateTask = () => {
-  const [createTask, { loading }] = useMutation(CREATE_TASK, {
-    refetchQueries: () => [
-      'getPerStatusTaskCountForMilestone',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-      'getSubtasksForTask',
-      'getSubtaskCountForTask',
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getTasksForMilestone',
-    ],
-  });
-
-  const handleMutation = ({ input, board, pods, form, handleClose }) =>
-    createTask({
-      variables: {
-        input,
-      },
-    })
-      .then(() => {
-        handleClose();
-      })
-      .catch((e) => console.log(e));
-
-  return { handleMutation, loading };
-};
-
-const useCreateMilestone = () => {
-  const [createMilestone, { loading }] = useMutation(CREATE_MILESTONE, {
-    refetchQueries: () => [
-      'getUserTaskBoardTasks',
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-      'getMilestones',
-    ],
-  });
-  const handleMutation = ({ input, board, pods, form, handleClose, formValues }) => {
-    createMilestone({
-      variables: {
-        input,
-      },
-    }).then((result) => {
-      if (formValues !== undefined) {
-        handleClose(result);
-        return;
-      }
-      if (board?.entityType === ENTITIES_TYPES.MILESTONE || !board?.entityType) {
-        const task = result?.data?.createMilestone;
-        const justCreatedPod = getPodObject(pods, task.podId);
-        if (
-          board?.setColumns &&
-          ((task?.orgId === board?.orgId && !board?.podId) ||
-            task?.podId === board?.podId ||
-            form.values.podId === board?.podId)
-        ) {
-          const transformedTask = transformTaskToTaskCard(task, {
-            orgName: board?.org?.name,
-            orgProfilePicture: board?.org?.profilePicture,
-            podName: justCreatedPod?.name,
-          });
-
-          let columns = [...board?.columns];
-          if (columns[0]?.tasks) {
-            columns[0].tasks = [transformedTask, ...columns[0].tasks];
-          } else {
-            columns = [transformedTask, ...columns];
-          }
-          board.setColumns(columns);
-        }
-      } else {
-        board?.setEntityType(ENTITIES_TYPES.MILESTONE);
-      }
-      handleClose(result);
-    });
-  };
-  return { handleMutation, loading };
-};
-
-const useCreateBounty = () => {
-  const [createBounty, { loading }] = useMutation(CREATE_BOUNTY, {
-    refetchQueries: () => ['getPerTypeTaskCountForOrgBoard', 'getPerTypeTaskCountForPodBoard'],
-  });
-  const handleMutation = ({ input, board, pods, form, handleClose }) => {
-    createBounty({
-      variables: {
-        input,
-      },
-    })
-      .then((result) => {
-        if (board?.entityType === ENTITIES_TYPES.BOUNTY || !board?.entityType) {
-          const task = result?.data?.createBounty;
-          const justCreatedPod = getPodObject(pods, task.podId);
-          if (
-            board?.setColumns &&
-            ((task?.orgId === board?.orgId && !board?.podId) ||
-              task?.podId === board?.podId ||
-              form.values.podId === board?.podId)
-          ) {
-            const transformedTask = transformTaskToTaskCard(task, {
-              orgName: board?.org?.name,
-              orgProfilePicture: board?.org?.profilePicture,
-              podName: justCreatedPod?.name,
-            });
-
-            let columns = [...board?.columns];
-            if (columns[0]?.tasks) {
-              columns = [transformedTask, ...columns[0].tasks];
-            } else {
-              columns = [transformedTask, ...columns];
-            }
-            board?.setColumns(columns);
-          }
-        } else {
-          board?.setEntityType(ENTITIES_TYPES.BOUNTY);
-        }
-        handleClose();
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
-  return { handleMutation, loading };
-};
-
-const useUpdateTask = () => {
-  const [updateTask, { loading }] = useMutation(UPDATE_TASK, {
-    refetchQueries: () => [
-      'getPerStatusTaskCountForMilestone',
-      'getUserTaskBoardTasks',
-      'getPerStatusTaskCountForUserBoard',
-    ],
-  });
-  const handleMutation = ({ input, board, handleClose, existingTask }) => {
-    updateTask({
-      variables: {
-        taskId: existingTask?.id,
-        input,
-      },
-    }).then(({ data }) => {
-      const task = data?.updateTask;
-      if (board?.setColumns && onCorrectPage(existingTask, board)) {
-        const transformedTask = transformTaskToTaskCard(task, {});
-        let columns = [...board?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_TODO) {
-          columns = updateTaskItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
-        }
-        board.setColumns(columns);
-      }
-      handleClose();
-    });
-  };
-  return { handleMutation, loading };
-};
-
-const useUpdateMilestone = () => {
-  const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
-  const handleMutation = ({ input, board, handleClose, existingTask }) => {
-    updateMilestone({
-      variables: {
-        milestoneId: existingTask?.id,
-        input,
-      },
-    }).then(({ data }) => {
-      const milestone = data?.updateMilestone;
-      if (board?.setColumns && onCorrectPage) {
-        const transformedTask = transformTaskToTaskCard(milestone, {});
-        let columns = [...board?.columns];
-        if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
-          // if there's no entityType we assume it's the userBoard and keeping the old logic
-        } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
-          columns = updateTaskItem(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
-          columns = updateTaskItemOnEntityType(transformedTask, columns);
-        } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
-        }
-        board.setColumns(columns);
-      }
-      handleClose();
-    });
-  };
-  return { handleMutation, loading };
-};
-
-const useUpdateBounty = () => {
-  const [updateBounty, { loading }] = useMutation(UPDATE_BOUNTY, {
-    refetchQueries: () => [
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForPodBoard',
-    ],
-  });
-  const handleMutation = ({ input, existingTask, handleClose }) => {
-    // this should filter out fields that are not in bountyinput
-    updateBounty({
-      variables: {
-        bountyId: existingTask?.id,
-        input,
-      },
-    }).then(() => {
-      handleClose();
-    });
-  };
-  return { handleMutation, loading };
-};
-
-const useCreateTaskProposal = () => {
-  const [createTaskProposal, { loading }] = useMutation(CREATE_TASK_PROPOSAL, {
-    refetchQueries: () => [
-      'GetOrgTaskBoardProposals',
-      'getPodTaskBoardProposals',
-      'GetUserTaskBoardProposals',
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-      'getPerStatusTaskCountForOrgBoard',
-      'getPerStatusTaskCountForOrgBoard',
-      'getUserTaskBoardProposals',
-    ],
-  });
-
-  const handleMutation = ({ input, board, pods, form, handleClose }) =>
-    createTaskProposal({
-      variables: {
-        input: {
-          title: input.title,
-          description: input.description,
-          milestoneId: input.milestoneId,
-          orgId: input.orgId,
-          podId: input.podId,
-          reviewerIds: input.reviewerIds,
-          dueDate: input.dueDate,
-          timezone: input.timezone,
-          labelIds: input.labelIds,
-          proposedAssigneeId: input.assigneeId,
-          userMentions: input.userMentions,
-          mediaUploads: input.mediaUploads,
-          rewards: input.rewards,
-          privacyLevel: input.privacyLevel,
-        },
-      },
-    })
-      .then(() => {
-        handleClose();
-      })
-      .catch((e) => console.log(e));
-
-  return { handleMutation, loading };
-};
-
-const useUpdateTaskProposal = () => {
-  const [updateTaskProposal, { loading }] = useMutation(UPDATE_TASK_PROPOSAL, {
-    refetchQueries: () => [
-      'GetUserTaskBoardProposals',
-      'GetOrgTaskBoardProposals',
-      'getPodTaskBoardProposals',
-      'getPerTypeTaskCountForOrgBoard',
-      'getPerTypeTaskCountForPodBoard',
-      'getUserTaskBoardProposals',
-    ],
-  });
-
-  const handleMutation = ({ input, board, handleClose, existingTask }) => {
-    updateTaskProposal({
-      variables: {
-        proposalId: existingTask?.id,
-        input: {
-          title: input.title,
-          description: input.description,
-          milestoneId: input.milestoneId,
-          orgId: input.orgId,
-          podId: input.podId,
-          reviewerIds: input.reviewerIds,
-          dueDate: input.dueDate,
-          timezone: input.timezone,
-          labelIds: input.labelIds,
-          proposedAssigneeId: input.assigneeId,
-          userMentions: input.userMentions,
-          mediaUploads: input.mediaUploads,
-          rewards: input.rewards,
-          privacyLevel: input.privacyLevel,
-        },
-      },
-    }).then(() => {
-      handleClose();
-    });
-  };
-  return { handleMutation, loading };
-};
-
-function CreateEntityDropdownRenderOptions(value) {
-  return (
-    <CreateEntitySelectRootValue>
-      <CreateEntitySelectRootValueWrapper>{value?.label}</CreateEntitySelectRootValueWrapper>
-      <CreateEntitySelectArrowIcon />
-    </CreateEntitySelectRootValue>
-  );
-}
-
-function CreateEntityDropdown(props) {
-  const {
-    value,
-    options,
-    onChange,
-    name,
-    renderValue = CreateEntityDropdownRenderOptions,
-    DefaultImageComponent,
-    error,
-    onFocus,
-    disabled,
-  } = props;
-  const dropdownValue = value === null ? 'placeholder' : value;
-  const placeholderText = { podId: 'Select Pod', orgId: 'Select Org' };
-  return (
-    <CreateEntitySelect
-      name={name}
-      renderValue={renderValue}
-      onChange={onChange}
-      disabled={disabled || options.length == 0}
-      value={dropdownValue}
-      error={error}
-      onFocus={onFocus}
-    >
-      <CreateEntityOption key="placeholder" value="placeholder" hide>
-        <CreateEntityOptionImageWrapper>
-          <DefaultImageComponent color="#474747" />
-        </CreateEntityOptionImageWrapper>
-        <CreateEntityOptionLabel>{placeholderText[name]}</CreateEntityOptionLabel>
-      </CreateEntityOption>
-      {options.map((i) => {
-        const { imageUrl, label, value, color = '' } = i;
-        return (
-          <CreateEntityOption key={value} value={i.value}>
-            <CreateEntityOptionImageWrapper>
-              {imageUrl ? <SafeImage useNextImage={false} src={imageUrl} /> : <DefaultImageComponent color={color} />}
-            </CreateEntityOptionImageWrapper>
-            <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
-          </CreateEntityOption>
-        );
-      })}
-    </CreateEntitySelect>
-  );
-}
-
-const CreateEntityTextfieldInputPointsComponent = React.forwardRef((props, ref) => (
-  <CreateEntityTextfieldInputPoints
-    {...props}
-    fullWidth={false}
-    ref={ref}
-    inputProps={{
-      maxLength: 3,
-    }}
-    InputProps={{
-      startAdornment: (
-        <CreateEntityAutocompletePopperRenderInputAdornment position="start">
-          <CreateEntityTextfieldPoints />
-        </CreateEntityAutocompletePopperRenderInputAdornment>
-      ),
-      endAdornment: (
-        <CreateEntityAutocompletePopperRenderInputAdornment position="end">
-          <CreateEntityTextfieldInputLabel>PTS</CreateEntityTextfieldInputLabel>
-        </CreateEntityAutocompletePopperRenderInputAdornment>
-      ),
-    }}
-  />
-));
-
-const CreateEntityTextfieldInputRewardComponent = React.forwardRef((props, ref) => (
-  <CreateEntityTextfieldInputReward {...props} ref={ref} />
-));
-
-const CreateEntityTextfieldInputTemplateComponent = React.forwardRef((props, ref) => (
-  <CreateEntityTextfieldInputTemplate {...props} ref={ref} />
-));
-
-enum Fields {
-  reviewer,
-  assignee,
-  claimPolicy,
-  claimPolicyRoles,
-  dueDate,
-  reward,
-  points,
-  milestone,
-  tags,
-  githubPullRequest,
-  shouldUnclaimOnDueDateExpiry,
-}
-
-const entityTypeData = {
-  [ENTITIES_TYPES.TASK]: {
-    fields: [
-      Fields.reviewer,
-      Fields.assignee,
-      Fields.claimPolicy,
-      Fields.claimPolicyRoles,
-      Fields.shouldUnclaimOnDueDateExpiry,
-      Fields.dueDate,
-      Fields.reward,
-      Fields.points,
-      Fields.milestone,
-      Fields.tags,
-      Fields.githubPullRequest,
-    ],
-    createMutation: useCreateTask,
-    updateMutation: useUpdateTask,
-    initialValues: {
-      orgId: null,
-      podId: null,
-      claimPolicy: null,
-      claimPolicyRoles: null,
-      shouldUnclaimOnDueDateExpiry: null,
-      title: '',
-      description: plainTextToRichText(''),
-      reviewerIds: null,
-      assigneeId: null,
-      dueDate: null,
-      recurringSchema: null,
-      rewards: [],
-      points: null,
-      milestoneId: null,
-      labelIds: null,
-      privacyLevel: privacyOptions.public.value,
-      mediaUploads: [],
-      githubPullRequest: null,
-      githubIssue: null,
-      githubRepo: null,
-      chooseGithubPullRequest: false,
-      chooseGithubIssue: false,
-      parentTaskId: null,
-      categories: [],
-    },
-  },
-  [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.tags],
-    createMutation: useCreateMilestone,
-    updateMutation: useUpdateMilestone,
-    initialValues: {
-      orgId: null,
-      podId: null,
-      title: '',
-      description: plainTextToRichText(''),
-      dueDate: null,
-      points: null,
-      labelIds: null,
-      privacyLevel: privacyOptions.public.value,
-      mediaUploads: [],
-      categories: [],
-    },
-  },
-  [ENTITIES_TYPES.BOUNTY]: {
-    fields: [Fields.reviewer, Fields.dueDate, Fields.reward, Fields.points, Fields.milestone, , Fields.tags],
-    createMutation: useCreateBounty,
-    updateMutation: useUpdateBounty,
-    initialValues: {
-      orgId: null,
-      podId: null,
-      title: '',
-      description: plainTextToRichText(''),
-      reviewerIds: null,
-      rewards: [],
-      dueDate: null,
-      recurringSchema: null,
-      points: null,
-      labelIds: null,
-      milestoneId: null,
-      privacyLevel: privacyOptions.public.value,
-      mediaUploads: [],
-      categories: [],
-    },
-  },
-  [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.tags],
-    createMutation: useCreateTaskProposal,
-    updateMutation: useUpdateTaskProposal,
-    initialValues: {
-      orgId: null,
-      podId: null,
-      title: '',
-      description: plainTextToRichText(''),
-      dueDate: null,
-      rewards: [],
-      milestoneId: null,
-      labelIds: null,
-      privacyLevel: privacyOptions.public.value,
-      mediaUploads: [],
-      categories: [],
-    },
-  },
-};
-
-const TEXT_LIMIT = 900;
-
-const useContextValue = (condition, callback) => {
-  useEffect(() => {
-    if (condition) {
-      callback();
-    }
-  }, [condition, callback]);
-};
-
-const initialValues = (entityType, existingTask = undefined) => {
-  const defaultValues = cloneDeep(entityTypeData[entityType].initialValues);
-  if (!existingTask) return defaultValues;
-  const defaultValuesKeys = Object.keys(defaultValues);
-  const description = deserializeRichText(existingTask.description);
-  const existingTaskValues = pick(
-    {
-      ...existingTask,
-      description,
-      mediaUploads: transformMediaFormat(existingTask?.media),
-      categories: transformCategoryFormat(existingTask?.categories),
-      reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
-      rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
-      labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
-    },
-    defaultValuesKeys
-  );
-  const initialValues = assignWith(defaultValues, existingTaskValues, (objValue, srcValue) =>
-    isNull(srcValue) || isUndefined(srcValue) ? objValue : srcValue
-  );
-
-  return initialValues;
-};
-
-interface ICreateEntityModal {
-  entityType: string;
-  handleClose: Function;
-  cancel: Function;
-  existingTask?: {
-    id: string;
-    reviewers?: { username: string; id: string }[] | null;
-    claimPolicyRoles?: [string] | null;
-    claimPolicy?: string | null;
-    shouldUnclaimOnDueDateExpiry?: boolean;
-    points?: number;
-    rewards?: { rewardAmount: string; paymentMethodId: string }[] | null;
-    milestoneId?: string | null;
-    labels?: { id: string }[] | null;
-    githubIssue?: {
-      id: string;
-      url: string;
-    };
-    githubPullRequest?: {
-      id: string;
-      url: string;
-      title: string;
-    };
-    type?: string;
-    orgId: string;
-    snapshotId?: string;
-    assignee?: {
-      username?: string;
-      profilePicture?: string;
-    };
-    assigneeId?: string;
-    recurringSchema?: any;
-    parentTaskId?: string;
-  };
-  parentTaskId?: string;
-  resetEntityType?: Function;
-  setEntityType?: Function;
-  formValues?: FormikValues;
-  status?: string;
-}
-
-const CreateEntityPaymentMethodItem = ({ icon, chain, symbol }) => (
-  <>
-    <CreateEntityPaymentMethodOptionIcon>{icon}</CreateEntityPaymentMethodOptionIcon>
-    <CreateEntityPaymentMethodLabel>
-      {symbol}
-      <CreateEntityPaymentMethodLabelChain>{chain}</CreateEntityPaymentMethodLabelChain>
-    </CreateEntityPaymentMethodLabel>
-  </>
-);
-
-const handleRewardOnChange = (form) => (e) => {
-  const { value } = e.target;
-  if (/^\d*\.?\d*$/.test(value)) {
-    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], rewardAmount: value }]);
-  }
-};
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
@@ -1174,6 +185,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [recurrenceValue, setRecurrenceValue] = useState(initialRecurrenceValue);
   const [recurrenceType, setRecurrenceType] = useState(initialRecurrenceType);
   const router = useRouter();
+  const [paymentMethodInactiveError, setPaymentMethodInactiveError] = useState(false);
   const [turnTaskToBountyModal, setTurnTaskToBountyModal] = useState(false);
   const { podId: routerPodId } = router.query;
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
@@ -1219,8 +231,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
 
+  const initialPodId = !existingTask ? board?.podId || routerPodId : null;
   const form: any = useFormik({
-    initialValues: initialValues(entityType, existingTask),
+    initialValues: initialValues({ entityType, existingTask, initialPodId }),
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema: formValidationSchema,
@@ -1228,7 +241,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       const reviewerIds = values?.reviewerIds?.filter((i) => i !== null);
       const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
       const userMentions = extractMentions(values.description);
-      const points = parseInt(values.points);
+      const points = parseInt(values.points, 10);
       const rewards = isEmpty(values.rewards)
         ? []
         : [{ ...values.rewards[0], rewardAmount: parseFloat(values.rewards[0].rewardAmount) }];
@@ -1237,6 +250,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
+      const categories = values?.categories.map((category) => category.id || category);
       const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
         values;
       const input = {
@@ -1246,6 +260,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         rewards,
         timezone,
         userMentions,
+        categories,
         description: JSON.stringify(values.description),
         ...(values?.githubPullRequest?.id && {
           githubPullRequest,
@@ -1261,8 +276,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
-  const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId));
-  const orgUsersData = useGetOrgUsers(form.values.orgId);
+  const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId, true));
+  const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(form.values.orgId);
+  const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
   const filteredOrgUsersData = filterOrgUsers({ orgUsersData, existingTask });
   const orgLabelsData = useGetOrgLabels(form.values.orgId);
   const handleCreateLabel = useCreateLabel(form.values.orgId, (newLabelId) =>
@@ -1271,23 +287,24 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   const [createGithubIssue, { data: createGithubIssueData, loading: createGithubIssueLoading }] =
     useMutation(CREATE_TASK_GITHUB_ISSUE);
+
   const milestonesData = useGetMilestones(form.values.orgId, form.values.podId);
+
+  const categoriesData = useGetCategories();
+
   const pods = useGetAvailableUserPods(form.values.orgId);
   const roles = useGetOrgRoles(form.values.orgId);
 
-  const handleOnchangePodId = useCallback(
-    (podId) => {
-      const resetValues = initialValues(entityType);
-      form.setValues({
-        ...form.values,
-        milestoneId: resetValues?.milestoneId,
-        privacyLevel: getPrivacyLevel(podId, pods),
-        podId,
-      });
-      form.setErrors({});
-    },
-    [entityType, form, getPrivacyLevel]
-  );
+  const handleOnchangePodId = (podId) => {
+    form.setValues({
+      ...form.values,
+      milestoneId: null,
+      privacyLevel: getPrivacyLevel(podId, pods),
+      podId,
+    });
+    form.setErrors({});
+  };
+
   const availablePullRequests = useGetPodPullRequests(form.values.podId);
   const availableRepos = useGetPodGithubIntegrations(form.values.podId);
   const eligibleReviewers = useGetEligibleReviewers(form.values.orgId, form.values.podId);
@@ -1326,19 +343,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     () => form.setFieldValue('orgId', board?.orgId)
   );
 
-  useContextValue(
-    !form.values.podId &&
-      (board?.podId || routerPodId) &&
-      form.values.orgId &&
-      !existingTask &&
-      pods &&
-      hasCreateTaskPermission({
-        userPermissionsContext: fetchedUserPermissionsContext,
-        orgId: form.values.orgId,
-        podId: board?.podId,
-      }),
-    () => handleOnchangePodId(board?.podId || routerPodId)
-  );
   useContextValue(formValues?.orgId && !form.values.orgId, () =>
     form.setValues({ ...form.values, orgId: formValues.orgId })
   );
@@ -1371,6 +375,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
+    form.setFieldValue('priority', existingTask?.priority || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
     form.setFieldValue(
       'labelIds',
@@ -1403,9 +408,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
   }, [parentTaskId, getTaskById, isSubtask]);
 
-  const isPrivacySelectorEnabled =
-    getPrivacyLevel(form.values.podId, pods) === privacyOptions.public.value || !form.values.podId;
-
+  const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
   const noGithubTies = !existingTask?.githubIssue && !existingTask?.githubPullRequest;
 
   const getRoleDataById = (id) => roles?.find((role) => role.id === id);
@@ -1453,7 +456,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         },
       },
     }).catch((err) => {
-      console.log(err);
+      console.error(err);
     });
   };
 
@@ -1476,7 +479,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           assigneeId: form.values.assigneeId,
           reviewerIds: form.values.reviewerIds,
           rewards,
-          points: parseInt(form.values.points),
+          points: parseInt(form.values.points, 10),
           description,
           podId: form.values.podId,
         },
@@ -1496,10 +499,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   // snapshot integration
   const {
-    orgSnapshot,
     getOrgSnapshotInfo,
     snapshotConnected,
-    snapshotSpace,
     snapshotErrorElement,
     snapshotLoading,
     exportTaskProposal,
@@ -1515,6 +516,24 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       });
     }
   }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
+
+  useEffect(() => {
+    if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
+      form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    } else if (podBoard) {
+      if (isInPrivatePod) {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      } else if (podBoard?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      }
+    } else if (orgBoard) {
+      if (orgBoard?.orgData?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      } else {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      }
+    }
+  }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
 
   const exportProposalToSnapshot = async () => {
     const receipt = await exportTaskProposal(existingTask);
@@ -1536,7 +555,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
   // cancel snapshot proposal
   const cancelSnapshotProposal = async () => {
-    await cancelProposal(existingTask.snapshotId).then((receipt) => {
+    await cancelProposal(existingTask.snapshotId).then(() => {
       setSnapshotId(null);
     });
     await apollo.mutate({
@@ -1546,6 +565,23 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       },
     });
   };
+
+  const selectedPaymentMethod = paymentMethods.filter((p) => p.id === form.values?.rewards?.[0]?.paymentMethodId);
+
+  useEffect(() => {
+    if (selectedPaymentMethod?.length > 0) {
+      setPaymentMethodInactiveError(false);
+      if (selectedPaymentMethod?.[0]?.deactivatedAt) {
+        setPaymentMethodInactiveError(true);
+      }
+    }
+  }, [selectedPaymentMethod]);
+
+  const handlePaymentMethodRedirect = () => {
+    handleClose();
+    router.push(`/organization/settings/${form.values.orgId}/payment-method`);
+  };
+
   const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
   const hasSubTasks = subTasks?.data?.length > 0;
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
@@ -1579,7 +615,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               }
             })
             .catch((err) => {
-              console.log('err', err);
+              console.error('err', err);
             });
         }}
       />
@@ -1685,6 +721,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           error={form.errors?.title}
           onFocus={() => form.setFieldError('title', undefined)}
           data-cy="create-entity-input-title"
+          autoFocus
         />
         <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
@@ -1703,6 +740,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         >
           <RichTextEditor
             editor={editor}
+            onMentionChange={search}
             initialValue={form.values.description}
             mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
             placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
@@ -1919,6 +957,11 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAutocompletePopper
                   onFocus={() => form.setFieldError('assigneeId', undefined)}
                   openOnFocus
+                  ListboxComponent={ListBox}
+                  ListboxProps={{
+                    handleFetchMore: fetchMoreOrgUsers,
+                    hasMore: hasMoreOrgUsers,
+                  }}
                   data-cy="input-autocomplete-assignee"
                   options={filteredOrgUsersData}
                   value={form.values.assigneeId}
@@ -1933,6 +976,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                         inputProps={{
                           ...params.inputProps,
                           value: assignee?.label,
+                        }}
+                        onChange={(e) => {
+                          params.inputProps.onChange(e);
+                          search(e.target.value);
                         }}
                         autoFocus={!form.values.assigneeId}
                         ref={params.InputProps.ref}
@@ -2171,55 +1218,70 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityLabel>Reward</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            {form.values.rewards?.length > 0 && (
-              <CreateEntityWrapper>
-                <CreateEntityPaymentMethodSelect
-                  name="rewards-payment-method"
-                  value={form.values?.rewards?.[0]?.paymentMethodId}
-                  onChange={(value) => {
-                    form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
-                  }}
-                  renderValue={(value) => {
-                    if (!value?.label?.props) return null;
-                    return (
-                      <CreateEntityPaymentMethodSelected>
-                        <CreateEntityPaymentMethodItem {...value.label.props} />
-                        <CreateEntitySelectArrowIcon />
-                      </CreateEntityPaymentMethodSelected>
-                    );
-                  }}
-                >
-                  {paymentMethods.map(({ symbol, icon, id, chain }) => (
-                    <CreateEntityPaymentMethodOption key={id} value={id}>
-                      <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
-                    </CreateEntityPaymentMethodOption>
-                  ))}
-                </CreateEntityPaymentMethodSelect>
-                <CreateEntityTextfield
-                  autoComplete="off"
-                  autoFocus={!form.values.rewards?.[0]?.rewardAmount}
-                  name="rewards"
-                  onChange={handleRewardOnChange(form)}
-                  placeholder="Enter rewards..."
-                  value={form.values?.rewards?.[0]?.rewardAmount}
-                  fullWidth
-                  InputProps={{
-                    inputComponent: CreateEntityTextfieldInputRewardComponent,
-                    endAdornment: (
-                      <CreateEntityAutocompletePopperRenderInputAdornment
-                        position="end"
-                        onClick={() => {
-                          form.setFieldValue('rewards', []);
-                        }}
-                      >
-                        <CreateEntityAutocompletePopperRenderInputIcon />
-                      </CreateEntityAutocompletePopperRenderInputAdornment>
-                    ),
-                  }}
-                  error={form.errors?.rewards?.[0]?.rewardAmount}
-                  onFocus={() => form.setFieldError('rewards', undefined)}
-                />
-              </CreateEntityWrapper>
+            {form.values.rewards?.length > 0 &&
+              // this check is to only show the field when there exist a reward with paymethod not active, otherwise just hide
+              (activePaymentMethods?.length > 0 || form.values?.rewards?.[0]?.paymentMethodId) && (
+                <CreateEntityWrapper>
+                  <CreateEntityPaymentMethodSelect
+                    name="rewards-payment-method"
+                    value={form.values?.rewards?.[0]?.paymentMethodId}
+                    onChange={(value) => {
+                      form.setFieldValue('rewards', [{ ...form.values?.rewards?.[0], paymentMethodId: value }]);
+                    }}
+                    renderValue={(selectedItem) => {
+                      if (!selectedItem?.label?.props) return null;
+                      return (
+                        <CreateEntityPaymentMethodSelected>
+                          <CreateEntityPaymentMethodItem {...selectedItem.label.props} />
+                          <CreateEntitySelectArrowIcon />
+                        </CreateEntityPaymentMethodSelected>
+                      );
+                    }}
+                  >
+                    {activePaymentMethods.map(({ symbol, icon, id, chain }) => (
+                      <CreateEntityPaymentMethodOption key={id} value={id}>
+                        <CreateEntityPaymentMethodItem icon={icon} symbol={symbol} chain={chain} />
+                      </CreateEntityPaymentMethodOption>
+                    ))}
+                  </CreateEntityPaymentMethodSelect>
+                  <CreateEntityTextfield
+                    autoComplete="off"
+                    autoFocus={!form.values.rewards?.[0]?.rewardAmount}
+                    name="rewards"
+                    onChange={handleRewardOnChange(form)}
+                    placeholder="Enter rewards..."
+                    value={form.values?.rewards?.[0]?.rewardAmount}
+                    fullWidth
+                    InputProps={{
+                      inputComponent: CreateEntityTextfieldInputRewardComponent,
+                      endAdornment: (
+                        <CreateEntityAutocompletePopperRenderInputAdornment
+                          position="end"
+                          onClick={() => {
+                            form.setFieldValue('rewards', []);
+                          }}
+                        >
+                          <CreateEntityAutocompletePopperRenderInputIcon />
+                        </CreateEntityAutocompletePopperRenderInputAdornment>
+                      ),
+                    }}
+                    error={form.errors?.rewards?.[0]?.rewardAmount}
+                    onFocus={() => form.setFieldError('rewards', undefined)}
+                  />
+                </CreateEntityWrapper>
+              )}
+            {paymentMethodInactiveError && (
+              <ErrorText>
+                Payment method {`${selectedPaymentMethod?.[0]?.symbol} ${selectedPaymentMethod?.[0]?.chain}`} is
+                deactivated
+              </ErrorText>
+            )}{' '}
+            {form.values.rewards?.length > 0 && activePaymentMethods?.length === 0 && (
+              // this is the case when no reward is currently attached and no payment method was created
+              <StyledLink onClick={handlePaymentMethodRedirect} style={{ cursor: 'pointer' }}>
+                {' '}
+                Set up payment method
+              </StyledLink>
             )}
             {form.touched.rewards && form.errors?.rewards?.[0]?.rewardAmount && (
               <CreateEntityError>{form.errors?.rewards?.[0]?.rewardAmount}</CreateEntityError>
@@ -2227,7 +1289,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             {form.values.rewards?.length === 0 && (
               <CreateEntityLabelAddButton
                 onClick={() => {
-                  form.setFieldValue('rewards', [{ rewardAmount: '', paymentMethodId: paymentMethods?.[0]?.id }]);
+                  form.setFieldValue('rewards', [{ rewardAmount: '', paymentMethodId: activePaymentMethods?.[0]?.id }]);
                 }}
               >
                 <CreateEntityAddButtonIcon />
@@ -2318,6 +1380,46 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
               </CreateEntityLabelAddButton>
             )}
+          </CreateEntitySelectWrapper>
+        </CreateEntityLabelSelectWrapper>
+
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.priority)}>
+          <CreateEntityLabelWrapper>
+            <CreateEntityLabel>Priority</CreateEntityLabel>
+          </CreateEntityLabelWrapper>
+          <CreateEntitySelectWrapper>
+            {form.values.priority === null ? (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('priority', PRIORITIES[1].value);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            ) : (
+              <TaskPriorityToggleButton value={form.values.priority} setValue={form.setFieldValue} />
+            )}
+          </CreateEntitySelectWrapper>
+        </CreateEntityLabelSelectWrapper>
+
+        {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
+          <CreateEntityLabelWrapper>
+            <CreateEntityLabel>Category</CreateEntityLabel>
+          </CreateEntityLabelWrapper>
+          <CreateEntitySelectWrapper>
+            <DropdownSearch
+              label="Select Category"
+              searchPlaceholder="Search categories"
+              options={categoriesData}
+              value={filterCategoryValues(form.values.categories)}
+              onChange={(categories) => {
+                form.setFieldValue('categories', [...categories]);
+              }}
+              disabled={formValues?.categories}
+              onClose={() => {}}
+            />
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
@@ -2419,13 +1521,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       isOptionEqualToValue={(option, value) => option.value?.id === value}
                       getOptionLabel={(option) => option?.label || option.title || ''}
                       renderInput={(params) => (
-                        // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
                         <CreateEntityAutocompletePopperRenderInput
                           {...params}
-                          // inputProps={{
-                          //   ...params.inputProps,
-                          //   value: githubPullRequest?.label,
-                          // }}
                           ref={params.InputProps.ref}
                           disableUnderline
                           fullWidth
@@ -2514,13 +1611,8 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       isOptionEqualToValue={(option, value) => option.value?.id === value}
                       getOptionLabel={(option) => option?.label || option.title || ''}
                       renderInput={(params) => (
-                        // const assignee = filteredOrgUsersData.find((user) => user.value === params.inputProps.value);
                         <CreateEntityAutocompletePopperRenderInput
                           {...params}
-                          // inputProps={{
-                          //   ...params.inputProps,
-                          //   value: githubPullRequest?.label,
-                          // }}
                           ref={params.InputProps.ref}
                           disableUnderline
                           fullWidth
@@ -2609,12 +1701,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
           <CreateEntityPrivacySelect
-            disabled={!isPrivacySelectorEnabled}
             name="privacyLevel"
             value={form.values.privacyLevel}
-            onChange={form.handleChange('privacyLevel')}
+            onChange={(value) => {
+              form.setFieldValue('privacyLevel', value);
+            }}
             renderValue={(value) => (
-              <Tooltip title={!isPrivacySelectorEnabled && 'The selected pod is for members only'} placement="top">
+              <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
                   <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
                   <CreateEntitySelectArrowIcon />
@@ -2643,7 +1736,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
                   {existingTask ? 'Save changes' : `Create ${entityType}`}
                 </CreateEntityCreateTaskButton>
-                {!isEmpty(form.errors) && <CreateEntityError>Something went wrong</CreateEntityError>}
+                {!isEmpty(form.errors) && <CreateEntityError>Please check your input fields</CreateEntityError>}
               </CreateEntitySelectErrorWrapper>
             </>
           )}

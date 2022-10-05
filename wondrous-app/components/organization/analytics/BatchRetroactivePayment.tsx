@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { ethers, utils } from 'ethers';
-import DropdownSelect from 'components/Common/DropdownSelect/dropdownSelect';
+import DropdownSelect from 'components/Common/DropdownSelect';
 import { CircularProgress } from '@mui/material';
 import { useQuery, useMutation } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
@@ -81,6 +81,7 @@ export function BatchRetroactivePayment(props: Props) {
       await wonderGnosis.connectSafeSdk({ chain, safeAddress });
     } catch (e) {
       console.log('error connecting to gnosis safe', selectedWallet.chain);
+      console.error(e);
       setSafeConnectionError(`Cannot connect to safe, check if connected to  ${selectedWallet.chain}`);
     }
   };

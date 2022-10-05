@@ -73,12 +73,6 @@ function RolesPage() {
     }
   }, [orgId, getOrgRolesWithTokenGate, getOrgDiscordNotificationConfig]);
 
-  // useEffect(() => {
-  //   if (getOrgDiscordConfigData?.getOrgDiscordNotificationConfig?.guildId) {
-  //     getOrgDiscordRoles();
-  //   }
-  // }, [getOrgDiscordConfigData]);
-
   function deleteRole(role: Role) {
     const index = roles.indexOf(role);
 
