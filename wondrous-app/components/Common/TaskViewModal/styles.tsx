@@ -178,11 +178,7 @@ export const SubtaskIconWrapper = styled(TaskModalHeaderIconWrapper)`
   cursor: auto;
 `;
 
-export const TaskModalHeaderShare = styled((props) => (
-  <div {...props}>
-    <Share {...props} />
-  </div>
-))`
+export const TaskModalHeaderShare = styled((props) => <Share {...props} />)`
   && {
     width: 32px;
     height: 32px;
