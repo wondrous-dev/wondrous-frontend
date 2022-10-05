@@ -10,9 +10,7 @@ const CreateEntityDiscardTask = ({ open, onClose, onCloseFormModal, entityType }
           <CloseModalIcon />
         </CloseHeaderIcon>
       </Header>
-      <Body>
-        <p>Are you sure you want to discard your current {entityType}?</p>
-      </Body>
+      <Body>Are you sure you want to discard your current {entityType}?</Body>
       <Footer>
         <Cancel onClick={() => onClose(false)}>Cancel</Cancel>
         <Discard
