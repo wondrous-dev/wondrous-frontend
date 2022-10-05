@@ -221,6 +221,7 @@ export enum Fields {
   tags,
   githubPullRequest,
   shouldUnclaimOnDueDateExpiry,
+  priority,
 }
 
 export const entityTypeData = {
@@ -235,6 +236,7 @@ export const entityTypeData = {
       Fields.reward,
       Fields.points,
       Fields.milestone,
+      Fields.priority,
       Fields.tags,
       Fields.githubPullRequest,
     ],
@@ -264,11 +266,12 @@ export const entityTypeData = {
       chooseGithubPullRequest: false,
       chooseGithubIssue: false,
       parentTaskId: null,
+      priority: null,
       categories: [],
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
-    fields: [Fields.dueDate, Fields.points, Fields.tags],
+    fields: [Fields.dueDate, Fields.points, Fields.priority, Fields.tags],
     createMutation: useCreateMilestone,
     updateMutation: useUpdateMilestone,
     initialValues: {
@@ -281,11 +284,20 @@ export const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      priority: null,
       categories: [],
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
-    fields: [Fields.reviewer, Fields.dueDate, Fields.reward, Fields.points, Fields.milestone, , Fields.tags],
+    fields: [
+      Fields.reviewer,
+      Fields.dueDate,
+      Fields.reward,
+      Fields.points,
+      Fields.milestone,
+      Fields.priority,
+      Fields.tags,
+    ],
     createMutation: useCreateBounty,
     updateMutation: useUpdateBounty,
     initialValues: {
@@ -302,11 +314,12 @@ export const entityTypeData = {
       milestoneId: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
+      priority: null,
       categories: [],
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
-    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.tags],
+    fields: [Fields.dueDate, Fields.reward, Fields.milestone, Fields.priority, Fields.tags],
     createMutation: useCreateTaskProposal,
     updateMutation: useUpdateTaskProposal,
     initialValues: {
@@ -361,6 +374,7 @@ export interface ICreateEntityModal {
   handleClose: Function;
   cancel: Function;
   existingTask?: {
+    priority: string | void;
     id: string;
     reviewers?: { username: string; id: string }[] | null;
     claimPolicyRoles?: [string] | null;

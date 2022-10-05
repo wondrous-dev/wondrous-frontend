@@ -1,6 +1,7 @@
 import { User } from 'types/User';
 
 export type TaskFilter = {
+  priorities?: string[];
   statuses?: any[];
   podIds?: any[];
   labelId?: string;

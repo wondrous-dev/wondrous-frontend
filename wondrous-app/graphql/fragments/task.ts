@@ -188,6 +188,7 @@ export const TaskProposalCardFragment = gql`
     podProfilePicture
     podName
     podColor
+    priority
     title
     description
     approvedAt

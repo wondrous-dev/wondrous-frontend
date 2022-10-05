@@ -18,6 +18,7 @@ interface ICreateEntity {
       id: string;
       url: string;
     };
+    priority: string | void;
     claimPolicyRoles: [string] | null;
     shouldUnclaimOnDueDateExpiry: boolean | null;
     claimPolicy: string | null;
