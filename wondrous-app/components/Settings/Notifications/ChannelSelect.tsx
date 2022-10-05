@@ -49,6 +49,9 @@ export default function ChannelSelect({ channelInfo, channelId, setChannelsToUpd
               background: palette.black97,
               height: '36px',
             },
+            'input': {
+              color: palette.white,
+            },
             '*': {
               color: 'white',
               fontWeight: '500',

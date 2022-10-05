@@ -24,7 +24,6 @@ export const TableValueText = styled(Typography)`
 export const DiscordCard = styled(Grid)`
   && {
     border-radius: 8px;
-    margin: 24px 0 0;
     padding: 8px;
     width: 100%;
   }

@@ -17,28 +17,11 @@ type Props = {
   configData: any;
   type?: string;
   orgId: string;
-  channel: {
-    channelName: string;
-    guildName: string;
-  } | null;
-  discordChannels: Array<{
-    id: string;
-    name: string;
-  }>;
 };
 
 const DiscordIntegrationCard = ({ title, disabled, orgId, configData, type = '' }: Props) => {
   const [channelsToUpdate, setChannelsToUpdate] = useState({});
   const [expanded, setIsExpanded] = useState(true);
-  // useEffect(() => {
-  //   if (configData?.length) {
-  //     setExpanded(true);
-  //   }
-  // }, [configData?.length]);
-
-  const handleConnect = () => {};
-
-  const handleDisconnect = () => {};
 
   const toggleExpanded = () => setIsExpanded((prev) => !prev);
 
@@ -56,7 +39,6 @@ const DiscordIntegrationCard = ({ title, disabled, orgId, configData, type = '' 
             {title}
           </Typography>
         </Grid>
-        {/* <Grid item>{rightButton}</Grid> */}
       </Grid>
 
       <Collapse sx={{ width: '100%' }} in={expanded}>
@@ -68,7 +50,7 @@ const DiscordIntegrationCard = ({ title, disabled, orgId, configData, type = '' 
             }}
           >
             <Grid display="flex" direction="column" gap="10px">
-              <AddServer orgId={orgId}/>
+              <AddServer orgId={orgId} type={type}/>
               {configData?.map((discordConfig, idx) => (
                 <Fragment key={idx}>
                   <Typography color="white" fontWeight={500}>

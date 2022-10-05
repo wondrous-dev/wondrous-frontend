@@ -6,7 +6,7 @@ import { CloseModalBtn } from 'components/Modal/styles';
 import AddWonderBotToDiscordConfig from './AddWonderBotToDiscordConfig';
 import { AddServerButton, AddServerPlusIcon } from './styles';
 
-const AddServer = ({ orgId }) => {
+const AddServer = ({ orgId, type }) => {
   const [addServerPanelOpen, setAddServerPanelOpen] = useState(false);
 
   const toggleServerPanel = () => setAddServerPanelOpen((prev) => !prev);
@@ -34,7 +34,7 @@ const AddServer = ({ orgId }) => {
         <CloseModalBtn onClick={toggleServerPanel} />
       </Grid>
       <Grid sx={{ background: palette.grey99 }} width="100%">
-        <AddWonderBotToDiscordConfig orgId={orgId} onSave={toggleServerPanel}/>
+        <AddWonderBotToDiscordConfig orgId={orgId} onSave={toggleServerPanel} type={type}/>
       </Grid>
     </Grid>
   );

@@ -21,7 +21,7 @@ import { DiscordCard, DiscordCardElement, DiscordCardElementDiv } from './styles
 
 let timeout;
 
-function AddWonderBotToDiscordConfig({ orgId, onSave }) {
+function AddWonderBotToDiscordConfig({ orgId, onSave, type = NotificationType.TasksNotifications }) {
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
@@ -178,7 +178,7 @@ function AddWonderBotToDiscordConfig({ orgId, onSave }) {
                   guildId,
                   orgId,
                   channelId: selectedChannel,
-                  type: NotificationType.TasksNotifications,
+                  type,
                 },
                 refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
               });
