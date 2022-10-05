@@ -24,6 +24,8 @@ export const TableValueText = styled(Typography)`
 export const DiscordCard = styled(Grid)`
   && {
     border-radius: 8px;
+    margin: 24px 0 0;
+    padding: 8px;
     width: 100%;
   }
 `;
@@ -164,35 +166,33 @@ export const AddServerButton = styled.button`
   align-items: center;
   cursor: pointer;
   &:hover {
-    background-color: ${palette.grey950}
+    background-color: ${palette.grey950};
   }
 `;
 
 const PlusIconWrapper = styled.div`
-border: 1px solid ${palette.highlightBlue};
-height: 24px;
-width: 24px;
-display: flex;
-justify-content: center;
-align-items: center;
-border-radius: 100%;
+  border: 1px solid ${palette.highlightBlue};
+  height: 24px;
+  width: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 100%;
 `;
-
 
 export const AddServerPlusIcon = () => (
   <PlusIconWrapper>
-    <PlusIcon fill={palette.highlightBlue}/>
+    <PlusIcon fill={palette.highlightBlue} />
   </PlusIconWrapper>
 );
-
 
 const styles = {
   divider: {
     backgroundColor: palette.grey85,
     margin: '12px 0',
-  },
-  discordConnection: {
-    backgroundColor: palette.black90,
+    discordConnection: {
+      backgroundColor: palette.black90,
+    },
   },
   connectDiscord: {
     backgroundColor: palette.black90,

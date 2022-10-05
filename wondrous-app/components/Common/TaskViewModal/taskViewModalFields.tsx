@@ -14,6 +14,7 @@ import Tooltip from 'components/Tooltip';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { useState } from 'react';
+import TaskPriority from 'components/Common/TaskPriority';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
@@ -358,6 +359,21 @@ export function MilestoneField({ shouldDisplay, milestoneId, getTaskById, milest
         )}
         DefaultImageComponent={() => <TaskSectionInfoMilestoneIcon />}
       />
+    </TaskSectionDisplayDiv>
+  );
+}
+
+export function PriorityField({ priority }) {
+  if (!priority) {
+    return null;
+  }
+
+  return (
+    <TaskSectionDisplayDiv>
+      <TaskSectionLabel>Priority</TaskSectionLabel>
+      <TaskSectionTagWrapper>
+        <TaskPriority value={priority} />
+      </TaskSectionTagWrapper>
     </TaskSectionDisplayDiv>
   );
 }

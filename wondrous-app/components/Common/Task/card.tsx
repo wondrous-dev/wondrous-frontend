@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { format } from 'date-fns';
+import Box from '@mui/material/Box';
 
 import { transformTaskToTaskCard, parseUserPermissionContext } from 'utils/helpers';
 import palette from 'theme/palette';
@@ -32,6 +33,7 @@ import { DAOIcon } from 'components/Icons/dao';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import TaskPriority from 'components/Common/TaskPriority';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -342,6 +344,16 @@ export function TaskCard({
             </a>
           </TaskTitle>
 
+          {task?.priority && (
+            <Box
+              sx={{
+                margin: '14px 0',
+              }}
+            >
+              <TaskPriority value={task?.priority} />
+            </Box>
+          )}
+
           {isBounty && (
             <TaskBountyOverview
               totalSubmissionsCount={task?.totalSubmissionsCount}
@@ -552,6 +564,9 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
         </BoardsCardHeader>
         <BoardsCardBody>
           <BoardsCardBodyTitle>{title}</BoardsCardBodyTitle>
+          <Box>
+            <TaskPriority value={task?.priority} />
+          </Box>
           <BoardsCardBodyDescription>
             <RichTextViewer text={description} />
           </BoardsCardBodyDescription>

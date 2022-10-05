@@ -17,6 +17,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
+import ChooseEntityToCreate from 'components/CreateEntity';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -52,10 +53,13 @@ function ProfileInfo({ userProfile }) {
   const { mainLink, social, websites } = parseLinks(links);
   const [createUserInterest] = useMutation(CREATE_USER_INTEREST, { refetchQueries: [GET_USER_INTERESTS] });
   const viewingSelf = user?.username === username;
-  const isGr15Contributor = user?.checkIsGr15Contributor?.isGr15Contributor;
+  const isGr15Contributor = viewingSelf
+    ? user?.checkIsGr15Contributor?.isGr15Contributor
+    : userProfile?.checkIsGr15Contributor?.isGr15Contributor;
 
   return (
     <ProfileInfoWrapper>
+      <ChooseEntityToCreate />
       <UserInterestModal
         open={openInterestModal}
         onClose={() => setOpenInterestModal(false)}

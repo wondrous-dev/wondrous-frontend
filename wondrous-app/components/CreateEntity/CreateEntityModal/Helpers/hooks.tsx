@@ -22,6 +22,8 @@ import {
   GET_PAYMENT_METHODS_FOR_ORG,
   SEARCH_ORG_USERS,
   GET_MILESTONES,
+  SEARCH_USER_CREATED_TASKS,
+  GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
 } from 'graphql/queries';
 import { debounce } from 'lodash';
 import { useEffect, useState, useCallback } from 'react';
@@ -32,6 +34,11 @@ import {
   updateTaskItem,
   updateCompletedItem,
   updateTaskItemOnEntityType,
+  removeInReviewItem,
+  removeInProgressTask,
+  removeTaskItem,
+  removeCompletedItem,
+  removeTaskItemOnEntityType,
 } from 'utils/board';
 import {
   CATEGORY_LABELS,
@@ -49,6 +56,23 @@ import {
   getPodObject,
   onCorrectPage,
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
+
+const HANDLE_TASKS = {
+  REMOVE: {
+    inReview: removeInReviewItem,
+    inProgress: removeInProgressTask,
+    done: removeCompletedItem,
+    toDo: removeTaskItem,
+    onEntityType: removeTaskItemOnEntityType,
+  },
+  UPDATE: {
+    inReview: updateInReviewItem,
+    inProgress: updateInProgressTask,
+    done: updateCompletedItem,
+    toDo: updateTaskItem,
+    onEntityType: updateTaskItemOnEntityType,
+  },
+};
 
 export const useGetOrgRoles = (org) => {
   const [getOrgRoles, { data }] = useLazyQuery(GET_ORG_ROLES, {
@@ -201,17 +225,18 @@ export const useCreateLabel = (orgId, callback) => {
   return handleCreateLabel;
 };
 
-export const useGetPaymentMethods = (orgId) => {
+export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
   const [getPaymentMethods, { data }] = useLazyQuery(GET_PAYMENT_METHODS_FOR_ORG);
   useEffect(() => {
     if (orgId) {
       getPaymentMethods({
         variables: {
           orgId,
+          includeDeactivated,
         },
       });
     }
-  }, [orgId, getPaymentMethods]);
+  }, [orgId, includeDeactivated, getPaymentMethods]);
   return data?.getPaymentMethodsForOrg;
 };
 
@@ -283,6 +308,8 @@ export const useCreateTask = () => {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getTasksForMilestone',
+      SEARCH_USER_CREATED_TASKS,
+      GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
     ],
   });
 
@@ -403,6 +430,7 @@ export const useUpdateTask = () => {
       'getPerStatusTaskCountForMilestone',
       'getUserTaskBoardTasks',
       'getPerStatusTaskCountForUserBoard',
+      SEARCH_USER_CREATED_TASKS,
     ],
   });
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
@@ -413,17 +441,20 @@ export const useUpdateTask = () => {
       },
     }).then(({ data }) => {
       const task = data?.updateTask;
-      if (board?.setColumns && onCorrectPage(existingTask, board)) {
+      if (board?.setColumns) {
         const transformedTask = transformTaskToTaskCard(task, {});
         let columns = [...board?.columns];
+
+        const handleTasks = onCorrectPage(task, board) ? HANDLE_TASKS.UPDATE : HANDLE_TASKS.REMOVE;
+
         if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
+          columns = handleTasks.inReview(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
+          columns = handleTasks.inProgress(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO) {
-          columns = updateTaskItem(transformedTask, columns);
+          columns = handleTasks.toDo(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
+          columns = handleTasks.done(transformedTask, columns);
         }
         board.setColumns(columns);
       }
@@ -432,6 +463,7 @@ export const useUpdateTask = () => {
   };
   return { handleMutation, loading };
 };
+
 
 export const useUpdateMilestone = () => {
   const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
@@ -443,20 +475,22 @@ export const useUpdateMilestone = () => {
       },
     }).then(({ data }) => {
       const milestone = data?.updateMilestone;
-      if (board?.setColumns && onCorrectPage) {
+      if (board?.setColumns) {
         const transformedTask = transformTaskToTaskCard(milestone, {});
+
+        const handleTasks = onCorrectPage(milestone, board) ? HANDLE_TASKS.UPDATE : HANDLE_TASKS.REMOVE;
         let columns = [...board?.columns];
         if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-          columns = updateInReviewItem(transformedTask, columns);
+          columns = handleTasks.inReview(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-          columns = updateInProgressTask(transformedTask, columns);
+          columns = handleTasks.inProgress(transformedTask, columns);
           // if there's no entityType we assume it's the userBoard and keeping the old logic
         } else if (transformedTask.status === TASK_STATUS_TODO && !board?.entityType) {
-          columns = updateTaskItem(transformedTask, columns);
+          columns = handleTasks.toDo(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_TODO && board?.entityType) {
-          columns = updateTaskItemOnEntityType(transformedTask, columns);
+          columns = handleTasks.onEntityType(transformedTask, columns);
         } else if (transformedTask.status === TASK_STATUS_DONE) {
-          columns = updateCompletedItem(transformedTask, columns);
+          columns = handleTasks.done(transformedTask, columns);
         }
         board.setColumns(columns);
       }
@@ -554,6 +588,7 @@ export const useUpdateTaskProposal = () => {
           milestoneId: input.milestoneId,
           orgId: input.orgId,
           podId: input.podId,
+          priority: input.priority,
           reviewerIds: input.reviewerIds,
           dueDate: input.dueDate,
           timezone: input.timezone,

@@ -7,7 +7,7 @@ import Tooltip from 'components/Tooltip';
 import { formatDistance } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_ORG_LABELS } from 'graphql/queries';
+import { GET_ORG_LABELS, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
@@ -114,6 +114,7 @@ import {
   InitativesField,
   MilestoneField,
   PointsField,
+  PriorityField,
   ProposerField,
   ReviewerField,
   TagsField,
@@ -241,6 +242,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       'getPerStatusTaskCountForOrgBoard',
       'getPodTaskBoardTasks',
       'getPerStatusTaskCountForPodBoard',
+      SEARCH_USER_CREATED_TASKS,
     ],
     onError: () => {
       console.error('Something went wrong with archiving tasks');
@@ -713,6 +715,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             getTaskById={getTaskById}
                             milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                           />
+                          <PriorityField priority={fetchedTask?.priority} />
                           <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
                           <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                           {isTaskProposal && (

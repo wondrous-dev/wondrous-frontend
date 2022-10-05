@@ -14,7 +14,7 @@ import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries'
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
-import Dao2DaoIcon from 'components/Icons/Dao2Dao';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -84,7 +84,7 @@ const useSidebarData = () => {
           },
           !board?.orgData?.shared && {
             text: 'Collaborations',
-            Icon: Dao2DaoIcon,
+            Icon: SmallDao2DaoIcon,
             link: {
               pathname: router.pathname,
               query: {

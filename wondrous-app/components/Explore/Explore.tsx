@@ -16,6 +16,7 @@ import BountySection from 'components/BountySection';
 import DaoSection from 'components/DaoSection';
 import ExploreFilters from 'components/ExploreFilters';
 
+import ChooseEntityToCreate from 'components/CreateEntity';
 import styles, {
   BackgroundContainer,
   BackgroundTextWrapper,
@@ -159,6 +160,7 @@ function ExploreComponent() {
         flexDirection: 'column',
       }}
     >
+      <ChooseEntityToCreate />
       <BackgroundContainer style={isMobile ? gridMobileStyles : {}}>
         <BackgroundImg src="/images/explore/explore-page-banner.svg" />
         <Wheel />

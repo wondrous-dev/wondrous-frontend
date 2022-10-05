@@ -16,6 +16,7 @@ import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import { AddGuildButton, DiscordText } from 'components/Settings/styles';
 import Box from '@mui/material/Box';
+import { NotificationType } from 'components/Settings/Notifications/constants';
 import { DiscordCard, DiscordCardElement, DiscordCardElementDiv } from './styles';
 
 let timeout;
@@ -177,6 +178,7 @@ function AddWonderBotToDiscordConfig({ orgId, onSave }) {
                   guildId,
                   orgId,
                   channelId: selectedChannel,
+                  type: NotificationType.TasksNotifications,
                 },
                 refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
               });

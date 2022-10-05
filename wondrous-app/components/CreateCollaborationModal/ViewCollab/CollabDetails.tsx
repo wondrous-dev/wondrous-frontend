@@ -34,29 +34,34 @@ const CreatedBy = ({ username, profilePicture }) => (
   </Grid>
 );
 
-const CollabDetails = ({ type, request }) => {
-  const FIELDS = [
-    {
-      label: 'Title',
-      component: () => <Title>{request.title}</Title>,
-    },
-    {
-      label: 'Mission',
-      component: () => <Description>{request.mission}</Description>,
-    },
-    {
-      label: 'Request by',
-      component: () => (
-        <CreatedBy username={request.initiator.username} profilePicture={request.initiator.profilePicture} />
-      ),
-    },
-  ];
+export const generateFields = (request) => [
+  {
+    label: 'Title',
+    component: () => <Title>{request.title}</Title>,
+  },
+  {
+    label: 'Mission',
+    component: () => <Description>{request.mission}</Description>,
+  },
+  {
+    label: 'Request by',
+    component: () => (
+      <CreatedBy username={request.initiator.username} profilePicture={request.initiator.profilePicture} />
+    ),
+  },
+];
 
+export const Heading = ({ title = 'Project collaboration request' }) => (
+  <GradientHeading fontSize={24} mb="20px">
+    {title}
+  </GradientHeading>
+);
+
+const CollabDetails = ({ type, request }) => {
+  const FIELDS = generateFields(request);
   return (
     <ConfirmationStepWrapper>
-      <GradientHeading fontSize={24} mb="20px">
-        Project collaboration request
-      </GradientHeading>
+      <Heading />
       <Typography sx={{ fontSize: '14px' }} color={palette.grey250}>
         {CONTENT[type]}
       </Typography>
@@ -92,9 +97,9 @@ const CollabDetails = ({ type, request }) => {
           <LabelWrapper>
             <OrgProfilePicture
               style={{ width: '42px', height: '42px' }}
-              profilePicture={request?.recipientOrg.profilePicture}
+              profilePicture={request?.recipientOrg?.profilePicture}
             />
-            <span>{request?.recipientOrg?.name}</span>
+            <span>{request?.recipientOrg?.name || 'New org'}</span>
           </LabelWrapper>
         </OrgSearchButton>
       </Grid>

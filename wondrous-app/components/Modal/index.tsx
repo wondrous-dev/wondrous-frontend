@@ -23,7 +23,7 @@ type Props = {
   /**
    * Callback fired when the component requests to be closed. The reason parameter can optionally be used to control the response to onClose.
    */
-  onClose: () => void;
+  onClose?: () => void;
   /**
    * A single child content element.
    */
@@ -66,7 +66,7 @@ export function Modal({
           <ModalContent>
             <ModalHeader>
               {!!title && <ModalTitle>{title}</ModalTitle>}
-              <CloseModalBtn onClick={onClose} />
+              {onClose && <CloseModalBtn onClick={onClose} />}
             </ModalHeader>
 
             <ModalBody>{children}</ModalBody>

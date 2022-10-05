@@ -4,10 +4,12 @@ import Box from '@mui/material/Box';
 import Collapse from '@mui/material/Collapse';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
-import palette from 'theme/palette';
 import { ActionButton } from 'components/Common/Task/styles';
 import ChannelSelect from './ChannelSelect';
 import AddServer from './AddServer';
+import WonderButton from 'components/Button';
+import { Discord } from 'components/Icons/discord';
+import palette from 'theme/palette';
 
 type Props = {
   title: string;
