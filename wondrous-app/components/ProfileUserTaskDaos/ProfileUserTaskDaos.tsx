@@ -12,8 +12,6 @@ function ProfileUserTaskCard(props) {
 
 function ProfileUserTaskDaos({ userProfile }) {
   const { id: userId } = userProfile;
-  console.log('userProfile', userProfile);
-  console.log('userId', userId);
 
   const {
     completedTasksData,
