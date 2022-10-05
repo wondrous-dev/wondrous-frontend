@@ -14,7 +14,15 @@ export const GET_ORG_TASK_BOARD_PROPOSALS = gql`
     $labelId: String
   ) {
     getOrgTaskBoardProposals(
-      input: { orgId: $orgId, statuses: $statuses, priorities: $priorities, podIds: $podIds, limit: $limit, offset: $offset, labelId: $labelId }
+      input: {
+        orgId: $orgId
+        statuses: $statuses
+        priorities: $priorities
+        podIds: $podIds
+        limit: $limit
+        offset: $offset
+        labelId: $labelId
+      }
     ) {
       ...TaskProposalCardFragment
     }

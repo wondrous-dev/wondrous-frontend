@@ -151,7 +151,18 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-  }, [getPodTaskBoardTasks, podId, statuses, priorities, setPodTaskHasMore, entityType, labelId, date, privacyLevel, category]);
+  }, [
+    getPodTaskBoardTasks,
+    podId,
+    statuses,
+    priorities,
+    setPodTaskHasMore,
+    entityType,
+    labelId,
+    date,
+    privacyLevel,
+    category,
+  ]);
   return { fetchMore: getPodTaskBoardTasksFetchMore, fetchPerStatus };
 };
 

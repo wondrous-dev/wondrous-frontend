@@ -3,7 +3,6 @@ import { useContext, useState, useEffect, useCallback, useMemo } from 'react';
 import Safe, { EthersAdapter, SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 
 import SafeServiceClient from '@gnosis.pm/safe-service-client';
-import { useWonderWeb3 } from './web3';
 import {
   CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL,
   HARMONY_MULTI_SEND_ADDR,
@@ -11,6 +10,7 @@ import {
   HARMONY_SAFE_MASTER_COPY,
   HARMONY_SAFE_MASTER_COPY2,
 } from 'utils/constants';
+import { useWonderWeb3 } from './web3';
 
 const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   // todo refactor this to have one consistent naming probably
