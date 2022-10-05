@@ -114,6 +114,7 @@ import {
   InitativesField,
   MilestoneField,
   PointsField,
+  PriorityField,
   ProposerField,
   ReviewerField,
   TagsField,
@@ -714,6 +715,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             getTaskById={getTaskById}
                             milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                           />
+                          <PriorityField priority={fetchedTask?.priority} />
                           <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
                           <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                           {isTaskProposal && (

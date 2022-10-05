@@ -166,6 +166,7 @@ function Filter(props: IFilterProps) {
 
                         return (
                           <FilterItem
+                            borderColor={item?.color}
                             gradient={item?.gradient}
                             onClick={() => toggleOption({ ...item, filterType: filterSchema.name })}
                             selected={isSelected}

@@ -39,6 +39,7 @@ import {
   APPLICATION_POLICY,
   APPLICATION_POLICY_LABELS_MAP,
   GR15DEICategoryName,
+  PRIORITIES,
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
@@ -59,6 +60,7 @@ import {
 import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtaskList/TaskSubtaskList';
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import { StyledLink } from 'components/Common/text';
+import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -373,6 +375,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     }
     // TODO we should add recurring to bounties and milesstone
     form.setFieldValue('points', existingTask?.points || null);
+    form.setFieldValue('priority', existingTask?.priority || null);
     form.setFieldValue('milestoneId', isEmpty(existingTask?.milestoneId) ? null : existingTask?.milestoneId);
     form.setFieldValue(
       'labelIds',
@@ -1379,6 +1382,27 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
+
+        <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.priority)}>
+          <CreateEntityLabelWrapper>
+            <CreateEntityLabel>Priority</CreateEntityLabel>
+          </CreateEntityLabelWrapper>
+          <CreateEntitySelectWrapper>
+            {form.values.priority === null ? (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('priority', PRIORITIES[1].value);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            ) : (
+              <TaskPriorityToggleButton value={form.values.priority} setValue={form.setFieldValue} />
+            )}
+          </CreateEntitySelectWrapper>
+        </CreateEntityLabelSelectWrapper>
+
         {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
           <CreateEntityLabelWrapper>
@@ -1679,7 +1703,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <CreateEntityPrivacySelect
             name="privacyLevel"
             value={form.values.privacyLevel}
-            onChange={() => form.handleChange('privacyLevel')}
+            onChange={(value) => {
+              form.setFieldValue('privacyLevel', value);
+            }}
             renderValue={(value) => (
               <Tooltip placement="top">
                 <CreateEntityPrivacySelectRender>
