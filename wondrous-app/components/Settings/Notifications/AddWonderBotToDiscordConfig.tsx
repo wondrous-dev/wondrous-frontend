@@ -22,7 +22,12 @@ import { DiscordCard, DiscordCardElement, DiscordCardElementDiv } from './styles
 
 let timeout;
 
-function AddWonderBotToDiscordConfig({ orgId, onSave, type = NotificationType.TasksNotifications, podId }) {
+function AddWonderBotToDiscordConfig({
+  orgId,
+  onSave = null,
+  type = NotificationType.TasksNotifications,
+  podId = null,
+}) {
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
@@ -89,7 +94,7 @@ function AddWonderBotToDiscordConfig({ orgId, onSave, type = NotificationType.Ta
       });
     if (onSave) onSave();
   };
-  
+
   useEffect(() => {
     clearTimeout(timeout);
     timeout = setTimeout(async () => {

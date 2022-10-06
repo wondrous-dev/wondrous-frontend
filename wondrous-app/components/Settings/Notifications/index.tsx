@@ -19,6 +19,9 @@ import styles from 'components/Settings/Notifications/styles';
 
 function Notifications({ orgId }) {
   const [getOrgDiscordNotificationConfig, { data }] = useLazyQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS);
+  const [disconnectOrgDiscordNotificationConfig] = useMutation(DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG, {
+    refetchQueries: ['getOrgDiscordNotificationConfig'],
+  });
 
   useEffect(() => {
     if (orgId) {
@@ -30,6 +33,15 @@ function Notifications({ orgId }) {
     }
   }, [orgId]);
 
+  const handleDisconnect = (notificationType, id) => {
+    disconnectOrgDiscordNotificationConfig({
+      variables: {
+        orgId,
+        type: notificationType,
+        discordConfigId: id,
+      },
+    });
+  };
 
   const discordNotificationConfigData = data?.getOrgDiscordNotificationConfig;
 
@@ -39,6 +51,19 @@ function Notifications({ orgId }) {
   const threadNotificationConfig = discordNotificationConfigData?.filter(
     (config) => config.type === NotificationType.TaskDiscussionThread && !config.disabledAt
   );
+
+  const DISCORD_NOTIFICATION_CARDS = [
+    {
+      title: 'Tasks Notifications',
+      type: NotificationType.TasksNotifications,
+      configData: taskNotificationConfig,
+    },
+    {
+      title: 'Task Discussion Thread',
+      type: NotificationType.TaskDiscussionThread,
+      configData: threadNotificationConfig,
+    },
+  ];
 
   return (
     <SettingsWrapper>
@@ -59,22 +84,16 @@ function Notifications({ orgId }) {
           </Typography>
           <Divider sx={styles.divider} />
 
-          {/* {!discordNotificationConfigData?.length && discordNotificationConfigData !== undefined ? <ConnectDiscordServer orgId={orgId} /> : null} */}
-
-          <DiscordIntegrationCard
-            title="Tasks Notifications"
-            orgId={orgId}
-            type={NotificationType.TasksNotifications}
-            configData={taskNotificationConfig}
-            disabled={false}
-          />
-          <DiscordIntegrationCard
-            title="Task Discussion Thread"
-            orgId={orgId}
-            configData={threadNotificationConfig}
-            type={NotificationType.TaskDiscussionThread}
-            disabled={false}
-          />
+          {DISCORD_NOTIFICATION_CARDS.map((card, idx) => (
+            <DiscordIntegrationCard
+              key={idx}
+              title={card.title}
+              type={card.type}
+              configData={card.configData}
+              orgId={orgId}
+              handleDisconnect={handleDisconnect}
+            />
+          ))}
         </GeneralSettingsIntegrationsBlock>
       </Grid>
     </SettingsWrapper>

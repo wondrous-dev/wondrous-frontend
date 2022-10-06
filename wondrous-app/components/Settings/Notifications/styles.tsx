@@ -6,6 +6,7 @@ import palette from 'theme/palette';
 import { Button } from 'components/Common/button';
 import typography from 'theme/typography';
 import PlusIcon from 'components/Icons/plus';
+import { ButtonUnstyled } from '@mui/base';
 
 export const ConnectDiscordButton = styled(Button)`
   && {
@@ -184,6 +185,12 @@ export const AddServerPlusIcon = () => (
     <PlusIcon fill={palette.highlightBlue} />
   </PlusIconWrapper>
 );
+
+export const RemoveDiscordServer = styled(AddServerButton)`
+  && {
+    width: fit-content;
+  }
+`;
 
 const styles = {
   divider: {

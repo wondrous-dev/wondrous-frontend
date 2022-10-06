@@ -5,22 +5,22 @@ import Collapse from '@mui/material/Collapse';
 import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import { ActionButton } from 'components/Common/Task/styles';
+import palette from 'theme/palette';
+import TrashbinIcon from 'components/Icons/Trashbin';
 import ChannelSelect from './ChannelSelect';
 import AddServer from './AddServer';
-import WonderButton from 'components/Button';
-import { Discord } from 'components/Icons/discord';
-import palette from 'theme/palette';
+import { RemoveDiscordServer } from './styles';
 
 type Props = {
   title: string;
-  disabled: boolean;
   configData: any;
   type?: string;
   orgId?: string;
-  podId?: string
+  podId?: string;
+  handleDisconnect: (notificationType: string, id: string) => void;
 };
 
-const DiscordIntegrationCard = ({ title, disabled, orgId, podId, configData, type = '' }: Props) => {
+const DiscordIntegrationCard = ({ title, orgId, podId, configData, handleDisconnect, type = '' }: Props) => {
   const [channelsToUpdate, setChannelsToUpdate] = useState({});
   const [expanded, setIsExpanded] = useState(true);
 
@@ -51,12 +51,19 @@ const DiscordIntegrationCard = ({ title, disabled, orgId, podId, configData, typ
             }}
           >
             <Grid display="flex" direction="column" gap="10px">
-              <AddServer orgId={orgId} type={type} podId={podId}/>
+              <AddServer orgId={orgId} type={type} podId={podId} />
               {configData?.map((discordConfig, idx) => (
                 <Fragment key={idx}>
-                  <Typography color="white" fontWeight={500}>
-                    {discordConfig?.channelInfo?.guildName}
-                  </Typography>
+                  <Grid display="flex" justifyContent="space-between">
+                    <Typography color="white" fontWeight={500}>
+                      {discordConfig?.channelInfo?.guildName}
+                    </Typography>
+                    <RemoveDiscordServer onClick={() => handleDisconnect(type, discordConfig.id)} type="button">
+                      <TrashbinIcon />
+                      Remove server
+                    </RemoveDiscordServer>
+                  </Grid>
+
                   <ChannelSelect
                     guildId={discordConfig?.guildId}
                     channelInfo={discordConfig?.channelInfo}

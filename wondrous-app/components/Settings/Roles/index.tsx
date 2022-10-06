@@ -3,11 +3,11 @@ import TokenGatingItem from 'components/TokenGatingItem';
 import React, { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/router';
 import Modal from '@mui/material/Modal';
-import { useQuery, useMutation, useLazyQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
 
 import { Role } from 'types/common';
-import { GET_TOKEN_INFO, GET_NFT_INFO, GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
+import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG } from 'graphql/queries/tokenGating';
 import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD } from 'graphql/queries';
 import {
   APPLY_TOKEN_GATING_TO_ORG_ROLE,
@@ -38,8 +38,9 @@ import { CreateFormCancelButton, CreateFormPreviewButton } from 'components/Crea
 import { ErrorText } from 'components/Common';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { TOKEN_GATING_CONDITION_TYPE } from 'utils/constants';
+import { Grid, Typography } from '@mui/material';
+
 import RoleLockIcon from '../../Icons/rolesLock.svg';
-import { TaskMenuIcon } from '../../Icons/taskMenu';
 import {
   Box,
   CreateRole,
@@ -61,7 +62,6 @@ import {
   RoleTokenGatingWrapper,
   TokenGatedRoleModal,
   TokenGatedRoleModalTitle,
-  TokenGatingButtonText,
   ImportDiscordRoleButton,
   DiscordRoleModal,
   DiscordElementWrapper,
@@ -70,8 +70,6 @@ import Switch from '../../Common/Switch';
 import Accordion from '../../Common/Accordion';
 import UserCheckIcon from '../../Icons/userCheckIcon';
 import { HeaderBlock } from '../headerBlock';
-import { Grid, Typography } from '@mui/material';
-import discord from 'pages/onboarding/discord';
 
 type Props = {
   orgId: any;
@@ -414,7 +412,7 @@ function DiscordRoleSelectionModal(props) {
           variables: {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId,
-            guildId
+            guildId,
           },
           refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
@@ -426,7 +424,7 @@ function DiscordRoleSelectionModal(props) {
           variables: {
             orgRoleId: selectedRoleForDiscord?.id,
             discordRoleId,
-            guildId
+            guildId,
           },
           // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD]
         });
@@ -460,16 +458,14 @@ function DiscordRoleSelectionModal(props) {
                 {discordRoleData?.channelInfo?.guildName}
               </Typography>
               <Box>
-                {discordRoleData?.roles?.map((role) => {
-                  return (
-                    <DiscordElementWrapper
-                      key={role.id}
-                      onClick={() => handleElementClick(role.id, discordRoleData?.guildId)}
-                    >
-                      {role.name}
-                    </DiscordElementWrapper>
-                  );
-                })}
+                {discordRoleData?.roles?.map((role) => (
+                  <DiscordElementWrapper
+                    key={role.id}
+                    onClick={() => handleElementClick(role.id, discordRoleData?.guildId)}
+                  >
+                    {role.name}
+                  </DiscordElementWrapper>
+                ))}
               </Box>
             </Grid>
           ))}

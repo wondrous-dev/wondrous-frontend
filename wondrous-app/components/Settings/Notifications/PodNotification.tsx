@@ -23,25 +23,7 @@ import { GeneralSettingsIntegrationsBlock } from '../styles';
 
 function PodNotification(props) {
   const { podId } = props;
-  const [orgNotificationConfig, setOrgNotificationConfig] = useState(null);
-  const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
-  const [guildId, setGuildId] = useState(null);
-  const [manualDiscordPodSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_POD_SETUP);
   const [disconnectPodDiscordNotificationConfig] = useMutation(DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG);
-
-  const [getOrgDiscordNotificationConfig] = useLazyQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS, {
-    onCompleted: (data) => {
-      setOrgNotificationConfig(data?.getOrgDiscordNotificationConfig);
-    },
-    fetchPolicy: 'network-only',
-  });
-
-  const { data: podData } = useQuery(GET_POD_BY_ID, {
-    variables: {
-      podId,
-    },
-  });
-  const orgId = podData?.getPodById?.orgId;
 
   const { data } = useQuery(GET_POD_DISCORD_NOTIFICATION_CONFIGS, {
     variables: {
@@ -49,28 +31,19 @@ function PodNotification(props) {
     },
   });
 
-  useEffect(() => {
-    if (orgId) {
-      getOrgDiscordNotificationConfig({
-        variables: {
-          orgId,
-        },
-      });
-    }
-  }, [orgId]);
-
-  const handleDisconnect = (notificationType: string) => {
+  const handleDisconnect = (notificationType: string, id) => {
     disconnectPodDiscordNotificationConfig({
       variables: {
         podId,
         type: notificationType,
+        discordConfigId: id,
       },
       refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
     });
   };
 
-  const discordNotificationConfigData = data?.getPodDiscordNotificationConfig
-  
+  const discordNotificationConfigData = data?.getPodDiscordNotificationConfig;
+
   const taskNotificationConfig = discordNotificationConfigData?.filter(
     (config) => config.type === NotificationType.TasksNotifications && !config.disabledAt
   );
@@ -78,6 +51,18 @@ function PodNotification(props) {
     (config) => config.type === NotificationType.TaskDiscussionThread && !config.disabledAt
   );
 
+  const DISCORD_NOTIFICATION_CARDS = [
+    {
+      title: 'Tasks Notifications',
+      type: NotificationType.TasksNotifications,
+      configData: taskNotificationConfig,
+    },
+    {
+      title: 'Task Discussion Thread',
+      type: NotificationType.TaskDiscussionThread,
+      configData: threadNotificationConfig,
+    },
+  ];
   return (
     <SettingsWrapper>
       <HeaderBlock
@@ -96,36 +81,16 @@ function PodNotification(props) {
             Discord Integration
           </Typography>
           <Divider sx={styles.divider} />
-
-          {!guildId && discordNotificationConfigData !== undefined ? (
-            <Grid container sx={styles.connectDiscord}>
-              <Typography
-                fontSize="14px"
-                color={palette.grey250}
-                fontWeight={500}
-                sx={{ a: { color: palette.highlightBlue } }}
-              >
-                Add wonder bot to discord server on the org{' '}
-                <Link href={`/organization/settings/${orgId}/notifications`}>notification setting page</Link>
-              </Typography>
-            </Grid>
-          ) : null}
-
-
-          <DiscordIntegrationCard
-            title="Tasks Notifications"
-            disabled={!guildId}
-            type={NotificationType.TasksNotifications}
-            configData={taskNotificationConfig}
-            orgId={''}
-          />
-          <DiscordIntegrationCard
-            title="Task Discussion Thread"
-            disabled={!guildId}
-            type={NotificationType.TaskDiscussionThread}
-            configData={threadNotificationConfig}
-            orgId={''}
-          />
+          {DISCORD_NOTIFICATION_CARDS.map((card, idx) => (
+            <DiscordIntegrationCard
+              key={idx}
+              title={card.title}
+              type={card.type}
+              configData={card.configData}
+              podId={podId}
+              handleDisconnect={handleDisconnect}
+            />
+          ))}
         </GeneralSettingsIntegrationsBlock>
       </Grid>
     </SettingsWrapper>

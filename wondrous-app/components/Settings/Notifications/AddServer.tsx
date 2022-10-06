@@ -27,14 +27,21 @@ const AddServer = ({ orgId, type, podId }) => {
       justifyContent="space-between"
       alignItems="center"
     >
-      <Grid display="flex" item alignItems="center" justifyContent="space-between" width="100%" sx={{padding: '10px 15px'}}>
+      <Grid
+        display="flex"
+        item
+        alignItems="center"
+        justifyContent="space-between"
+        width="100%"
+        sx={{ padding: '10px 15px' }}
+      >
         <Typography color={palette.blue20} fontSize="14px">
           Adding new server
         </Typography>
         <CloseModalBtn onClick={toggleServerPanel} />
       </Grid>
       <Grid sx={{ background: palette.grey99 }} width="100%">
-        <AddWonderBotToDiscordConfig orgId={orgId} onSave={toggleServerPanel} type={type}/>
+        <AddWonderBotToDiscordConfig orgId={orgId} onSave={toggleServerPanel} type={type} podId={podId} />
       </Grid>
     </Grid>
   );

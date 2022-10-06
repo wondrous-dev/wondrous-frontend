@@ -17,16 +17,16 @@ export const MARK_ALL_NOTIFICATIONS_READ = gql`
 `;
 
 export const DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation disconnectOrgDiscordNotificationConfig($orgId: ID!, $type: String!) {
-    disconnectOrgDiscordNotificationConfig(orgId: $orgId, type: $type) {
+  mutation disconnectOrgDiscordNotificationConfig($orgId: ID!, $type: String!, $discordConfigId: String) {
+    disconnectOrgDiscordNotificationConfig(orgId: $orgId, type: $type, discordConfigId: $discordConfigId) {
       success
     }
   }
 `;
 
 export const DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation disconnectPodDiscordNotificationConfig($podId: ID!, $type: String!) {
-    disconnectPodDiscordNotificationConfig(podId: $podId, type: $type) {
+  mutation disconnectPodDiscordNotificationConfig($podId: ID!, $type: String!, $discordConfigId: String) {
+    disconnectPodDiscordNotificationConfig(podId: $podId, type: $type, discordConfigId: $discordConfigId) {
       success
     }
   }
