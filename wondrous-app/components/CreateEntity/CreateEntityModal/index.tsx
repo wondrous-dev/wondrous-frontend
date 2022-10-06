@@ -217,15 +217,15 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   });
 
   const [createTaskTemplate] = useMutation(CREATE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
   const [updateTaskTemplate] = useMutation(UPDATE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
   const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
@@ -1673,7 +1673,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         >
           <TaskTemplatePicker
             options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
-            value={form.values.podId}
+            value={form.values.orgId}
             onChange={handleOnchangePodId}
             disabled={formValues !== undefined}
             handleSubmitTemplate={handleSubmitTemplate}

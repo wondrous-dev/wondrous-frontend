@@ -3,7 +3,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { ActionButton } from 'components/Common/Task/styles';
 import { RichTextViewer } from 'components/RichText';
 import { TokenGatingTextfieldInput } from 'components/Settings/TokenGating/styles';
-import { GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
+import { GET_ORG_TASK_TEMPLATES, GET_TASK_TEMPLATES_BY_USER_ID } from 'graphql/queries';
 import { useEffect, useState } from 'react';
 import {
   CreateEntityAutocompletePopperRenderInputAdornment,
@@ -74,17 +74,19 @@ function TaskTemplatePicker(props) {
   const templateOptionsOpen = Boolean(optionAnchorEl);
   const [templates, setTemplates] = useState([]);
 
-  const [getTaskTemplates, { data, loading }] = useLazyQuery(GET_TASK_TEMPLATES_BY_USER_ID, {
+  const [getTaskTemplates, { data, loading }] = useLazyQuery(GET_ORG_TASK_TEMPLATES, {
     fetchPolicy: 'cache-and-network',
   });
 
   useEffect(() => {
-    getTaskTemplates({
-      variables: {
-        userId: user?.id,
-      },
-    });
-  }, []);
+    if (value) {
+      getTaskTemplates({
+        variables: {
+          orgId: value,
+        },
+      });
+    }
+  }, [value]);
 
   const handlePressEditTemplate = (templateId) => {
     handleEditTemplate(templateId);
@@ -114,8 +116,8 @@ function TaskTemplatePicker(props) {
         </TaskTemplateTitleBar>
         {loading ? (
           <TaskTemplateLabelValue>loading!</TaskTemplateLabelValue>
-        ) : data?.getTaskTemplatesByUserId.length > 0 ? (
-          data?.getTaskTemplatesByUserId.map((template, index) => (
+        ) : data?.getOrgTaskTemplates.length > 0 ? (
+          data?.getOrgTaskTemplates.map((template, index) => (
             <TaskTemplateContainer
               onClick={() => {
                 handleSubmitTemplate(template);
