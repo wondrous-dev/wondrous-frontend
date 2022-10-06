@@ -352,8 +352,17 @@ export const HeaderContributors = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 6px;
   cursor: pointer;
-  margin-right: 8px;
+  margin-right: 14px;
+  background: ${(props) => (props?.isInPodPage ? palette.grey950 : palette.grey98)};
+  padding: 12px;
+  border-radius: 1000px;
+  transition: background 0.2s ease-in-out;
+
+  :hover {
+    background: ${palette.grey920};
+  }
 `;
 
 export const HeaderContributorsAmount = styled(Typography)`
@@ -363,23 +372,22 @@ export const HeaderContributorsAmount = styled(Typography)`
     line-height: 150%;
     display: flex;
     align-items: center;
-    color: #ffffff;
+    color: ${palette.highlightBlue};
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
-    margin-right: 5px;
   }
 `;
 
 export const HeaderContributorsText = styled(HeaderContributorsAmount)`
-  color: #6c6c6c;
+  && {
+    color: ${palette.white};
+  }
 `;
 
 export const HeaderPods = styled(HeaderContributors)``;
 
 export const HeaderPodsAmount = styled(HeaderContributorsAmount)``;
 
-export const HeaderPodsText = styled(HeaderContributorsAmount)`
-  color: #6c6c6c;
-`;
+export const HeaderPodsText = styled(HeaderContributorsText)``;
 
 export const HeaderGr15Sponsor = styled.div``;
 // cardStyles
