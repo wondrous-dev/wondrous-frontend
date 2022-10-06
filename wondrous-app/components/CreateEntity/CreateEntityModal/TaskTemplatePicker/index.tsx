@@ -283,8 +283,7 @@ function TaskTemplatePicker(props) {
                 />
               </TaskTemplateTitleBar>
               <TaskTemplateLabelValue style={{ marginBottom: '18px' }}>
-                This will appear on your template lists. It will only be visible to you and you can apply it or delete
-                it any time.
+                This will appear on the org's template lists. It will only be visible to members of the organization.
               </TaskTemplateLabelValue>
               <TokenGatingTextfieldInput
                 autoComplete="off"
