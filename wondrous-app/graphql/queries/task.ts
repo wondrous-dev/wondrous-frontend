@@ -21,6 +21,15 @@ export const GET_TASK_TEMPLATES_BY_USER_ID = gql`
   ${TaskTemplateFragment}
 `;
 
+export const GET_ORG_TASK_TEMPLATES = gql`
+  query getOrgTaskTemplates($orgId: ID!) {
+    getOrgTaskTemplates(orgId: $orgId) {
+      ...TaskTemplateFragment
+    }
+  }
+  ${TaskTemplateFragment}
+`;
+
 export const GET_TASK_REVIEWERS = gql`
   query getTaskReviewers($taskId: ID!) {
     getTaskReviewers(taskId: $taskId) {
