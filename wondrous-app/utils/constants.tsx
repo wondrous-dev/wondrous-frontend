@@ -652,6 +652,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/new-task',
   '/apps/install/coordinape',
   '/invite/collab/[token]',
+  '/invite/collab/members/[token]',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
@@ -911,3 +912,8 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
   [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
 };
+
+export const enum ORG_TYPES {
+  ORG = 'org',
+  COLLAB = 'collab',
+}

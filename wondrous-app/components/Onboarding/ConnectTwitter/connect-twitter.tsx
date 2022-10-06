@@ -50,7 +50,6 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
 
   const handleLaterClick = () => {
     // if user has collabInvite token and is not a member of an org we assume they want to create a new org
-
     if (collabInvite && !firstOrg) {
       return router.push(`/onboarding-dao?collabInvite=${collabInvite}`, undefined, {
         shallow: true,
@@ -64,7 +63,7 @@ export function ConnectTwitter({ firstOrg, firstPod }) {
         shallow: true,
       });
     } else if (firstOrg) {
-      router.push(`/organization/${firstOrg.username}/boards`, undefined, {
+      router.push(`/${firstOrg?.shared ? 'collaboration' : 'organization'}/${firstOrg.username}/boards`, undefined, {
         shallow: true,
       });
     } else {
