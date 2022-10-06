@@ -16,10 +16,11 @@ type Props = {
   disabled: boolean;
   configData: any;
   type?: string;
-  orgId: string;
+  orgId?: string;
+  podId?: string
 };
 
-const DiscordIntegrationCard = ({ title, disabled, orgId, configData, type = '' }: Props) => {
+const DiscordIntegrationCard = ({ title, disabled, orgId, podId, configData, type = '' }: Props) => {
   const [channelsToUpdate, setChannelsToUpdate] = useState({});
   const [expanded, setIsExpanded] = useState(true);
 
@@ -50,7 +51,7 @@ const DiscordIntegrationCard = ({ title, disabled, orgId, configData, type = '' 
             }}
           >
             <Grid display="flex" direction="column" gap="10px">
-              <AddServer orgId={orgId} type={type}/>
+              <AddServer orgId={orgId} type={type} podId={podId}/>
               {configData?.map((discordConfig, idx) => (
                 <Fragment key={idx}>
                   <Typography color="white" fontWeight={500}>

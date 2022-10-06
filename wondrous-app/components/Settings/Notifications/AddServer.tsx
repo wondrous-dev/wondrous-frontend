@@ -6,7 +6,7 @@ import { CloseModalBtn } from 'components/Modal/styles';
 import AddWonderBotToDiscordConfig from './AddWonderBotToDiscordConfig';
 import { AddServerButton, AddServerPlusIcon } from './styles';
 
-const AddServer = ({ orgId, type }) => {
+const AddServer = ({ orgId, type, podId }) => {
   const [addServerPanelOpen, setAddServerPanelOpen] = useState(false);
 
   const toggleServerPanel = () => setAddServerPanelOpen((prev) => !prev);

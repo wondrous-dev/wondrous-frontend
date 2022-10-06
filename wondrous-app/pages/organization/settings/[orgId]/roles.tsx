@@ -22,7 +22,6 @@ function RolesPage() {
     },
   });
 
-  console.log(getOrgDiscordRolesData)
   const [getOrgDiscordNotificationConfig, { data: getOrgDiscordConfigData }] = useLazyQuery(
     GET_ORG_DISCORD_NOTIFICATION_CONFIGS,
     {

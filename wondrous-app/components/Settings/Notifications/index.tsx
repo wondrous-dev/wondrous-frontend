@@ -33,14 +33,6 @@ function Notifications({ orgId }) {
 
   const discordNotificationConfigData = data?.getOrgDiscordNotificationConfig;
 
-  // useEffect(() => {
-  //   setGuildId(discordNotificationConfigData?.guildId);
-  //   __setDiscordNotificationConfigData(discordNotificationConfigData);
-  // }, [discordNotificationConfigData?.guildId]);
-
-
-
-
   const taskNotificationConfig = discordNotificationConfigData?.filter(
     (config) => config.type === NotificationType.TasksNotifications && !config.disabledAt
   );

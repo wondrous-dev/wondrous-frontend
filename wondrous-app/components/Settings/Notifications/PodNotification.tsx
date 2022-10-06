@@ -26,7 +26,6 @@ function PodNotification(props) {
   const [orgNotificationConfig, setOrgNotificationConfig] = useState(null);
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
-  const [__discordNotificationConfigData, __setDiscordNotificationConfigData] = useState(null);
   const [manualDiscordPodSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_POD_SETUP);
   const [disconnectPodDiscordNotificationConfig] = useMutation(DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG);
 
@@ -50,22 +49,6 @@ function PodNotification(props) {
     },
   });
 
-  const discordNotificationConfigData = data?.getPodDiscordNotificationConfig;
-
-  useEffect(() => {
-    setGuildId(discordNotificationConfigData?.[0]?.guildId || orgNotificationConfig?.[0]?.guildId);
-  }, [orgNotificationConfig, discordNotificationConfigData]);
-
-  useEffect(() => {
-    if (guildId) {
-      getChannelsFromDiscord({
-        variables: {
-          guildId,
-        },
-      });
-    }
-  }, [guildId]);
-
   useEffect(() => {
     if (orgId) {
       getOrgDiscordNotificationConfig({
@@ -75,22 +58,6 @@ function PodNotification(props) {
       });
     }
   }, [orgId]);
-
-  useEffect(() => {
-    __setDiscordNotificationConfigData(discordNotificationConfigData);
-  }, [discordNotificationConfigData]);
-
-  const handleConnect = (notificationType: string, channelId: string) => {
-    manualDiscordPodSetup({
-      variables: {
-        guildId,
-        podId,
-        channelId,
-        type: notificationType,
-      },
-      refetchQueries: [GET_POD_DISCORD_NOTIFICATION_CONFIGS],
-    });
-  };
 
   const handleDisconnect = (notificationType: string) => {
     disconnectPodDiscordNotificationConfig({
@@ -102,11 +69,12 @@ function PodNotification(props) {
     });
   };
 
-  const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
-  const taskNotificationConfig = __discordNotificationConfigData?.filter(
+  const discordNotificationConfigData = data?.getPodDiscordNotificationConfig
+  
+  const taskNotificationConfig = discordNotificationConfigData?.filter(
     (config) => config.type === NotificationType.TasksNotifications && !config.disabledAt
   );
-  const threadNotificationConfig = __discordNotificationConfigData?.filter(
+  const threadNotificationConfig = discordNotificationConfigData?.filter(
     (config) => config.type === NotificationType.TaskDiscussionThread && !config.disabledAt
   );
 
@@ -143,20 +111,19 @@ function PodNotification(props) {
             </Grid>
           ) : null}
 
+
           <DiscordIntegrationCard
             title="Tasks Notifications"
-            discordChannels={discordChannels}
             disabled={!guildId}
-            channel={taskNotificationConfig?.[0]?.channelInfo}
-            configData={undefined}
+            type={NotificationType.TasksNotifications}
+            configData={taskNotificationConfig}
             orgId={''}
           />
           <DiscordIntegrationCard
             title="Task Discussion Thread"
-            discordChannels={discordChannels}
             disabled={!guildId}
-            channel={threadNotificationConfig?.[0]?.channelInfo}
-            configData={undefined}
+            type={NotificationType.TaskDiscussionThread}
+            configData={threadNotificationConfig}
             orgId={''}
           />
         </GeneralSettingsIntegrationsBlock>
