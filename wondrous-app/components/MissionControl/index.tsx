@@ -19,6 +19,7 @@ import {
   TASK_STATUS_SUBMISSION_REQUEST,
   TASK_STATUS_TODO,
 } from 'utils/constants';
+import ChooseEntityToCreate from 'components/CreateEntity';
 import { useGetPerStatusTaskCountForUserBoard } from 'utils/hooks';
 import { KudosWidget, InProgressTasksWidget } from 'components/MissionControlWidgets';
 import { ConnectWallet, Notifications } from 'components/MissionControlSidebarWidgets';
@@ -140,6 +141,7 @@ const MissionControl = () => {
 
   return (
     <MissionControlWrapper>
+      <ChooseEntityToCreate />
       <MissionControlWidgetsWrapper>
         {CARDS_CONFIG.workspace.map(({ label, labelGradient, img, stats, hoverImg, gradient, url }, idx) => (
           <MissionControlWorkspaceCard

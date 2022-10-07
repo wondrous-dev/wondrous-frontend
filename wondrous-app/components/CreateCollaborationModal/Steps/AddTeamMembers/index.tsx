@@ -31,7 +31,7 @@ import debounce from 'lodash/debounce';
 import { LinkIcon } from 'components/Icons/taskModalIcons';
 import { GET_ORG_ROLES, GET_PARENT_ORG_CONTRIBUTORS } from 'graphql/queries/org';
 import { NewInviteLinkModal } from 'components/Common/NewInviteLinkModal/InviteLink';
-import { PERMISSIONS } from 'utils/constants';
+import { PERMISSIONS, ORG_TYPES } from 'utils/constants';
 import ListBox from './Listbox';
 import {
   PaperComponent,
@@ -156,6 +156,7 @@ const AddTeamMembers = ({
         orgOrPodName={collabData?.name}
         orgId={collabData?.id}
         open={inviteLinkModalIsOpen}
+        orgType={ORG_TYPES.COLLAB}
         onClose={() => setInviteLinkModalIsOpen(false)}
       />
       <GradientHeading fontSize={24} mb="20px" gradient="89.67deg, #CCBBFF 37.16%, #00BAFF 108.05%">

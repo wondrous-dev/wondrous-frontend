@@ -1,4 +1,8 @@
 import palette from 'theme/palette';
+import PriorityHighIcon from 'components/Icons/PriorityHighIcon';
+import PriorityLowIcon from 'components/Icons/PriorityLowIcon';
+import PriorityMediumIcon from 'components/Icons/PriorityMediumIcon';
+import PriorityUrgentIcon from 'components/Icons/PriorityUrgentIcon';
 
 export const spacingUnit = 8;
 
@@ -13,6 +17,37 @@ export const TASK_STATUS_AWAITING_PAYMENT = 'awaiting_payment';
 export const TASK_STATUS_PAID = 'paid';
 export const TASK_STATUS_PROPOSAL_REQUEST = 'proposal_request';
 export const TASK_STATUS_SUBMISSION_REQUEST = 'submission_request';
+
+export const PRIORITIES = [
+  {
+    value: 'p0',
+    label: 'Low',
+    textColor: palette.green820,
+    borderColor: palette.green810,
+    icon: <PriorityLowIcon />,
+  },
+  {
+    value: 'p1',
+    label: 'Medium',
+    textColor: palette.blue620,
+    borderColor: palette.blue610,
+    icon: <PriorityMediumIcon />,
+  },
+  {
+    value: 'p2',
+    label: 'High',
+    textColor: palette.highlightOrange,
+    borderColor: palette.highlightOrange,
+    icon: <PriorityHighIcon />,
+  },
+  {
+    value: 'p3',
+    label: 'Urgent',
+    textColor: palette.purple620,
+    borderColor: palette.purple610,
+    icon: <PriorityUrgentIcon />,
+  },
+];
 
 // Task date types
 export const TASK_DATE_OVERDUE = 'overdue';
@@ -617,6 +652,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/new-task',
   '/apps/install/coordinape',
   '/invite/collab/[token]',
+  '/invite/collab/members/[token]',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
@@ -876,3 +912,8 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
   [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
 };
+
+export const enum ORG_TYPES {
+  ORG = 'org',
+  COLLAB = 'collab',
+}

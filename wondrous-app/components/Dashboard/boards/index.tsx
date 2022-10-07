@@ -88,6 +88,7 @@ const useGetUserTaskBoardTasks = ({
       getUserTaskBoardTasks({
         variables: {
           podIds: filters?.podIds,
+          priorities: filters?.priorities,
           userId: loggedInUser?.id,
           statuses: taskBoardStatuses,
           limit: taskBoardStatusesIsNotEmpty ? LIMIT : 0,
@@ -102,6 +103,7 @@ const useGetUserTaskBoardTasks = ({
       setHasMoreTasks(true);
     }
   }, [getUserTaskBoardTasks, loggedInUser?.id, filters, setHasMoreTasks]);
+
   return { getUserTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
