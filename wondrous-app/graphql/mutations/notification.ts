@@ -71,3 +71,27 @@ export const SET_USER_NOTIFICATION_SETTINGS = gql`
     }
   }
 `;
+
+export const MANUAL_DISCORD_COLLAB_SETUP = gql`
+  mutation manualDiscordCollabSetup($orgId: ID!, $guildId: String!, $channelId: String!, $type: String) {
+    manualDiscordCollabSetup(orgId: $orgId, guildId: $guildId, channelId: $channelId, type: $type) {
+      success
+    }
+  }
+`;
+
+export const UPDATE_ORG_DISCORD_NOTIFICATION_CONFIG_CHANNEL = gql`
+  mutation updateOrgDiscordNotificationChannel($orgId: ID!, $discordConfigId: String!, $channelId: String!) {
+    updateOrgDiscordNotificationChannel(orgId: $orgId, discordConfigId: $discordConfigId, channelId: $channelId) {
+      success
+    }
+  }
+`;
+
+export const UPDATE_POD_DISCORD_NOTIFICATION_CONFIG_CHANNEL = gql`
+  mutation updateOrgDiscordNotificationChannel($podId: ID!, $discordConfigId: String!, $channelId: String!) {
+    updatePodDiscordNotificationChannel(podId: $podId, discordConfigId: $discordConfigId, channelId: $channelId) {
+      success
+    }
+  }
+`;

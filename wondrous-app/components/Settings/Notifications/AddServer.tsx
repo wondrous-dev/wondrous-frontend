@@ -3,10 +3,9 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import { CloseModalBtn } from 'components/Modal/styles';
-import AddWonderBotToDiscordConfig from './AddWonderBotToDiscordConfig';
 import { AddServerButton, AddServerPlusIcon } from './styles';
 
-const AddServer = ({ orgId, type, podId }) => {
+const AddServer = ({ children }) => {
   const [addServerPanelOpen, setAddServerPanelOpen] = useState(false);
 
   const toggleServerPanel = () => setAddServerPanelOpen((prev) => !prev);
@@ -41,7 +40,7 @@ const AddServer = ({ orgId, type, podId }) => {
         <CloseModalBtn onClick={toggleServerPanel} />
       </Grid>
       <Grid sx={{ background: palette.grey99 }} width="100%">
-        <AddWonderBotToDiscordConfig orgId={orgId} onSave={toggleServerPanel} type={type} podId={podId} />
+        {children(toggleServerPanel)}
       </Grid>
     </Grid>
   );

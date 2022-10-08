@@ -238,7 +238,7 @@ function Roles({
             ))}
           </Permissions>
         </Accordion>
-        {!podId && !orgDiscordConfigData?.[0]?.guildId && (
+        {!podId && !orgDiscordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
               router.push(`/organization/settings/${orgId}/notifications`);
@@ -247,7 +247,7 @@ function Roles({
             Connect your Discord server to import roles
           </ImportDiscordRoleButton>
         )}
-        {!podId && orgDiscordConfigData?.[0]?.guildId && (
+        {!podId && !!orgDiscordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
               setDiscordRoleImportModalOpen(true);
@@ -346,7 +346,7 @@ function DiscordOnRoleDisplay(props) {
     setSelectedRoleForDiscord(role);
     setDiscordRoleModalOpen(true);
   };
-  if (!orgDiscordConfigData?.[0]?.guildId) {
+  if (!orgDiscordConfigData?.length) {
     return <></>;
   }
   return (

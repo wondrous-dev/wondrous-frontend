@@ -17,7 +17,6 @@ import { updateTask } from 'utils/board';
 import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TaskSubmissionHeaderCreatorText, TaskSubmissionHeaderTimeText } from 'components/Common/Task/styles';
-import { LIMIT } from 'services/board';
 import { ErrorText } from 'components/Common';
 import { useMe } from 'components/Auth/withAuth';
 import { TextInput } from 'components/TextInput';
@@ -278,6 +277,7 @@ export function CommentList(props) {
     },
     fetchPolicy: 'network-only',
   });
+  console.log(task);
   const [getTaskProposalComments] = useLazyQuery(GET_COMMENTS_FOR_TASK_PROPOSAL, {
     onCompleted: (data) => {
       const commentList = data?.getTaskProposalComments;
@@ -348,12 +348,14 @@ export function CommentList(props) {
 
   return (
     <CommentListWrapper>
-      <DiscordDiscussionButtonWrapper>
-        <DiscordThreadCreateButton onClick={handleDiscordButtonClick}>
-          <DiscordIcon style={{ marginRight: 10 }} />
-          Open Discussions
-        </DiscordThreadCreateButton>
-      </DiscordDiscussionButtonWrapper>
+      {!task?.org?.shared && (
+        <DiscordDiscussionButtonWrapper>
+          <DiscordThreadCreateButton onClick={handleDiscordButtonClick}>
+            <DiscordIcon style={{ marginRight: 10 }} />
+            Open Discussion
+          </DiscordThreadCreateButton>
+        </DiscordDiscussionButtonWrapper>
+      )}
 
       <CommentBox
         orgId={task?.orgId || submission?.orgId}

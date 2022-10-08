@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_CHANNELS_FROM_DISCORD } from 'graphql/queries';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_CHANNELS_FROM_DISCORD, GET_ORG_BY_ID } from 'graphql/queries';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 
 import DiscordIntegrationCard from 'components/Settings/Notifications/DiscordIntegrationCard';
@@ -17,7 +17,7 @@ import { GeneralSettingsIntegrationsBlock } from 'components/Settings/styles';
 import { NotificationType } from 'components/Settings/Notifications/constants';
 import styles from 'components/Settings/Notifications/styles';
 
-function Notifications({ orgId }) {
+function Notifications({ orgId, isCollab = false }) {
   const [getOrgDiscordNotificationConfig, { data }] = useLazyQuery(GET_ORG_DISCORD_NOTIFICATION_CONFIGS);
   const [disconnectOrgDiscordNotificationConfig] = useMutation(DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG, {
     refetchQueries: ['getOrgDiscordNotificationConfig'],
@@ -57,11 +57,15 @@ function Notifications({ orgId }) {
       title: 'Tasks Notifications',
       type: NotificationType.TasksNotifications,
       configData: taskNotificationConfig,
+      displayAddButton: isCollab || !taskNotificationConfig?.length,
+      isCollab,
     },
-    {
+    !isCollab && {
       title: 'Task Discussion Thread',
       type: NotificationType.TaskDiscussionThread,
       configData: threadNotificationConfig,
+      displayAddButton: !threadNotificationConfig?.length,
+      isCollab,
     },
   ];
 
@@ -84,16 +88,21 @@ function Notifications({ orgId }) {
           </Typography>
           <Divider sx={styles.divider} />
 
-          {DISCORD_NOTIFICATION_CARDS.map((card, idx) => (
-            <DiscordIntegrationCard
-              key={idx}
-              title={card.title}
-              type={card.type}
-              configData={card.configData}
-              orgId={orgId}
-              handleDisconnect={handleDisconnect}
-            />
-          ))}
+          {DISCORD_NOTIFICATION_CARDS.map(
+            (card, idx) =>
+              !!card && (
+                <DiscordIntegrationCard
+                  key={idx}
+                  title={card.title}
+                  displayAddButton={card.displayAddButton}
+                  type={card.type}
+                  configData={card.configData}
+                  isCollab={card.isCollab}
+                  orgId={orgId}
+                  handleDisconnect={handleDisconnect}
+                />
+              )
+          )}
         </GeneralSettingsIntegrationsBlock>
       </Grid>
     </SettingsWrapper>

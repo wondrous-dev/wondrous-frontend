@@ -7,7 +7,7 @@ import {
   GET_CHANNELS_FROM_DISCORD,
   GET_POD_DISCORD_NOTIFICATION_CONFIGS,
 } from 'graphql/queries';
-import { MANUAL_DISCORD_ORG_SETUP, MANUAL_DISCORD_POD_SETUP } from 'graphql/mutations';
+import { MANUAL_DISCORD_COLLAB_SETUP, MANUAL_DISCORD_ORG_SETUP, MANUAL_DISCORD_POD_SETUP } from 'graphql/mutations';
 
 import { BOT_URL } from 'components/DiscordNotificationSetup';
 import palette from 'theme/palette';
@@ -27,12 +27,22 @@ function AddWonderBotToDiscordConfig({
   onSave = null,
   type = NotificationType.TasksNotifications,
   podId = null,
+  isCollab = false,
 }) {
+  const onCompletedCallback = () => onSave && onSave();
+
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
-  const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP);
-  const [manualDiscordPodSetup, { error: saveDiscordPodError }] = useMutation(MANUAL_DISCORD_POD_SETUP);
+  const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP, {
+    onCompleted: onCompletedCallback,
+  });
+  const [manualDiscordCollabSetup, { error: saveDiscordCollabError }] = useMutation(MANUAL_DISCORD_COLLAB_SETUP, {
+    onCompleted: onCompletedCallback,
+  });
+  const [manualDiscordPodSetup, { error: saveDiscordPodError }] = useMutation(MANUAL_DISCORD_POD_SETUP, {
+    onCompleted: onCompletedCallback,
+  });
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
@@ -68,11 +78,11 @@ function AddWonderBotToDiscordConfig({
     }
   }, [discordBotAdded]);
 
-  const handleManualSetup = () => {
-    const orgRefetchQueries = [GET_ORG_DISCORD_NOTIFICATION_CONFIGS];
-    const podRefetchQueries = [GET_POD_DISCORD_NOTIFICATION_CONFIGS];
+  const orgRefetchQueries = [GET_ORG_DISCORD_NOTIFICATION_CONFIGS];
+  const podRefetchQueries = [GET_POD_DISCORD_NOTIFICATION_CONFIGS];
 
-    if (podId) {
+  const discordSetupMethods = {
+    pods: () =>
       manualDiscordPodSetup({
         variables: {
           guildId,
@@ -81,8 +91,8 @@ function AddWonderBotToDiscordConfig({
           type,
         },
         refetchQueries: podRefetchQueries,
-      });
-    } else
+      }),
+    org: () =>
       manualDiscordOrgSetup({
         variables: {
           guildId,
@@ -91,8 +101,23 @@ function AddWonderBotToDiscordConfig({
           type,
         },
         refetchQueries: orgRefetchQueries,
-      });
-    if (onSave) onSave();
+      }),
+    collab: () =>
+      manualDiscordCollabSetup({
+        variables: {
+          guildId,
+          orgId,
+          channelId: selectedChannel,
+          type,
+        },
+        refetchQueries: orgRefetchQueries,
+      }),
+  };
+
+  const handleManualSetup = () => {
+    if (podId) return discordSetupMethods.pods();
+    if (isCollab) return discordSetupMethods.collab();
+    return discordSetupMethods.org();
   };
 
   useEffect(() => {
@@ -123,6 +148,7 @@ function AddWonderBotToDiscordConfig({
       }
     }, 1000);
   }, [discordInviteLink]);
+
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
   const filteredDiscordChannels = discordChannels.map((channel) => ({
     value: channel.id,

@@ -56,11 +56,13 @@ function PodNotification(props) {
       title: 'Tasks Notifications',
       type: NotificationType.TasksNotifications,
       configData: taskNotificationConfig,
+      displayAddButton: !taskNotificationConfig?.length,
     },
     {
       title: 'Task Discussion Thread',
       type: NotificationType.TaskDiscussionThread,
       configData: threadNotificationConfig,
+      displayAddButton: !threadNotificationConfig?.length,
     },
   ];
   return (

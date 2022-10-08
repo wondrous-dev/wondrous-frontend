@@ -9,7 +9,7 @@ import { CreateEntityAutocompleteOptionTypography } from 'components/CreateEntit
 import { PaperComponent, TextField } from 'components/CreateCollaborationModal/Steps/AddTeamMembers/styles';
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 
-export default function ChannelSelect({ channelInfo, channelId, setChannelsToUpdate, guildId }) {
+export default function ChannelSelect({ discordConfigId, channelInfo, channelId, guildId, handleUpdateChannel }) {
   const [selectedChannel, setSelectedChannel] = useState({ id: channelId, name: channelInfo?.channelName });
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
 
@@ -22,10 +22,7 @@ export default function ChannelSelect({ channelInfo, channelId, setChannelsToUpd
 
   const options = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
 
-  const handleChange = (e, options) => {
-    setSelectedChannel(options);
-    setChannelsToUpdate((prev) => ({ ...prev, [guildId]: options.id }));
-  };
+  const handleChange = (e, options) => setSelectedChannel(options);
 
   return (
     <Grid display="flex" direction="column" gap="10px">
@@ -35,7 +32,7 @@ export default function ChannelSelect({ channelInfo, channelId, setChannelsToUpd
       <Typography color={palette.blue20} fontSize="14px" fontWeight={500}>
         POST IN
       </Typography>
-      <Box sx={{ display: 'flex', gap: '10px' }}>
+      <Box sx={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
         <Autocomplete
           disablePortal
           onOpen={handleOptions}
@@ -44,12 +41,13 @@ export default function ChannelSelect({ channelInfo, channelId, setChannelsToUpd
           options={options}
           sx={{
             color: 'white',
+            width: 'fit-content !important',
             flex: '1 1 auto',
             '.MuiOutlinedInput-root': {
               background: palette.black97,
               height: '36px',
             },
-            'input': {
+            input: {
               color: palette.white,
             },
             '*': {
@@ -69,20 +67,18 @@ export default function ChannelSelect({ channelInfo, channelId, setChannelsToUpd
             </Option>
           )}
         />
-      </Box>
-      {/* <Box display="flex">
-        {selectedChannel ? (
+        {selectedChannel?.id !== channelId ? (
           <WonderButton
             borderRadius={6}
             variant="outlined"
             color="blue"
             height={30}
-            onClick={() => onConnect(selectedChannel)}
+            onClick={() => handleUpdateChannel(discordConfigId, selectedChannel.id)}
           >
             Connect
           </WonderButton>
         ) : null}
-      </Box> */}
+      </Box>
     </Grid>
   );
 }
