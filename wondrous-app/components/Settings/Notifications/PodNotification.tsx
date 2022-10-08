@@ -83,16 +83,20 @@ function PodNotification(props) {
             Discord Integration
           </Typography>
           <Divider sx={styles.divider} />
-          {DISCORD_NOTIFICATION_CARDS.map((card, idx) => (
-            <DiscordIntegrationCard
-              key={idx}
-              title={card.title}
-              type={card.type}
-              configData={card.configData}
-              podId={podId}
-              handleDisconnect={handleDisconnect}
-            />
-          ))}
+          {DISCORD_NOTIFICATION_CARDS.map(
+            (card, idx) =>
+              !!card && (
+                <DiscordIntegrationCard
+                  key={idx}
+                  title={card.title}
+                  podId={podId}
+                  displayAddButton={card.displayAddButton}
+                  type={card.type}
+                  configData={card.configData}
+                  handleDisconnect={handleDisconnect}
+                />
+              )
+          )}
         </GeneralSettingsIntegrationsBlock>
       </Grid>
     </SettingsWrapper>
