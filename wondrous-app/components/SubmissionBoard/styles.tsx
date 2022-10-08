@@ -7,15 +7,7 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { BoardsCardBody, BoardsCardBodyDescription, BoardsCardFooter } from 'components/Common/Boards/styles';
 
-export const SubmissionCardWrapper = styled(BountyCardWrapper)`
-  && {
-    background: ${palette.grey900};
-    &::before {
-      border: 0px;
-      display: none;
-    }
-  }
-`;
+export const SubmissionCardWrapper = styled(BountyCardWrapper)``;
 
 export const SubmissionIcon = styled.div`
   align-self: flex-end;

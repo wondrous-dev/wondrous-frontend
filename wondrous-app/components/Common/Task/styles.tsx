@@ -416,17 +416,28 @@ export const ProposalCardWrapper = styled.div`
   position: relative;
   height: fit-content;
   align-items: flex-start;
+  transition: background 0.2s ease-in-out;
+
   &::before {
     content: '';
     position: absolute;
     inset: 0;
-    border-radius: 5px;
-    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    border-radius: 6px;
+    background: ${palette.grey900};
+    -webkit-mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
     -webkit-mask-composite: xor;
     mask-composite: exclude;
     padding: 1px;
     pointer-events: none;
+    transition: background 0.2s ease-in-out;
+  }
+
+  :hover {
+    background: ${palette.black92};
+  }
+
+  :hover::before {
+    background: linear-gradient(169.47deg, ${palette.grey75} 7.84%, ${palette.black92} 108.71%);
   }
 `;
 
