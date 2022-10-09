@@ -4,7 +4,7 @@ import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
-import { formatDistance } from 'date-fns';
+import { format, formatDistance, differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_ORG_LABELS, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
@@ -488,6 +488,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const canApply = !canClaim && fetchedTask?.taskApplicationPermissions?.canApply;
 
+  const taskCreatedBefore = differenceInDays(new Date(), new Date(fetchedTask?.createdAt));
+
   const handleReviewButton = () => {
     if (activeTab !== tabs.applications) {
       setActiveTab(tabs.applications);
@@ -779,12 +781,17 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   <TaskSectionInfoCreatorTask>
                                     created this task{isTaskProposal && ' proposal'}{' '}
                                   </TaskSectionInfoCreatorTask>
-                                  <TaskSectionInfoCreatorDaysAgo>
-                                    {fetchedTask?.createdAt &&
-                                      formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
-                                        addSuffix: true,
-                                      })}
-                                  </TaskSectionInfoCreatorDaysAgo>
+                                  {fetchedTask?.createdAt && (
+                                    <TaskSectionInfoCreatorDaysAgo>
+                                      {taskCreatedBefore >= 7 ? (
+                                        <>on {format(new Date(fetchedTask?.createdAt), 'MM/dd/yyyy')}</>
+                                      ) : (
+                                        formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
+                                          addSuffix: true,
+                                        })
+                                      )}
+                                    </TaskSectionInfoCreatorDaysAgo>
+                                  )}
                                 </TaskSectionInfoTextCreator>
                               )}
                               onClick={() => {
