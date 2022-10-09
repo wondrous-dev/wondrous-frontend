@@ -277,7 +277,6 @@ export function CommentList(props) {
     },
     fetchPolicy: 'network-only',
   });
-  console.log(task);
   const [getTaskProposalComments] = useLazyQuery(GET_COMMENTS_FOR_TASK_PROPOSAL, {
     onCompleted: (data) => {
       const commentList = data?.getTaskProposalComments;
