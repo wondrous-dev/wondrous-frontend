@@ -17,21 +17,26 @@ import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSu
 import { PayModal } from 'components/Settings/Payouts/modal';
 import {
   BatchPayoutButton,
-  LedgerHeaderButtonsContainer,
   TableCellText,
   LoadMore,
+  LedgerActionButtonsContainer,
+  LedgerDownloadButton,
+  LedgerClearSelectionButton,
+  PayoutSelectionSelect,
+  PayoutSelectionSelectValueDisplay,
+  PayoutSelectionSelectValueDisplayText,
+  PayoutSelectionSelectMenuItem,
+  PayoutCount,
+  StyledTableContainer,
+  StyledTable,
+  StyledTableHead,
+  StyledTableBody,
+  StyledTableRow,
+  StyledTableCell,
 } from 'components/Settings/Payouts/styles';
 import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { GeneralSettingsContainer } from 'components/Settings/styles';
-import {
-  StyledTable,
-  StyledTableBody,
-  StyledTableCell,
-  StyledTableContainer,
-  StyledTableHead,
-  StyledTableRow,
-} from 'components/Table/styles';
 import Tooltip from 'components/Tooltip';
 import { format } from 'date-fns';
 import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
@@ -50,13 +55,44 @@ import { delQuery } from 'utils';
 import { PERMISSIONS } from 'utils/constants';
 import { PaymentModalContext } from 'utils/contexts';
 import { cutString, parseUserPermissionContext } from 'utils/helpers';
+import Toggle from 'components/Common/Toggle';
+import { Grid } from '@mui/material';
+import { useGetPaymentMethods } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { capitalize } from 'utils/common';
+import { INITIAL_SELECTION_OPTIONS } from './constants';
+import PayoutTable from './PayoutTable';
 
 enum ViewType {
   Paid = 'paid',
+  Processing = 'processing',
   Unpaid = 'unpaid',
 }
 
+const imageStyle = {
+  width: '32px',
+  height: '32px',
+  borderRadius: '16px',
+  marginRight: '8px',
+};
+
 const LIMIT = 10;
+
+const PaidItem = (props) => {
+  const {
+    item,
+    org,
+    podId,
+    chain,
+    setChainSelected,
+    paymentSelected,
+    setPaymentsSelected,
+    canViewPaymentLink,
+    viewingUser,
+  } = props;
+
+  return <div />;
+};
+
 function PaymentItem(props) {
   const {
     item,
@@ -247,11 +283,6 @@ function PaymentItem(props) {
             </a>
           )}
         </StyledTableCell>
-        {item.paymentStatus !== 'paid' && (
-          <StyledTableCell>
-            <TableCellText>{item.paymentStatus}</TableCellText>
-          </StyledTableCell>
-        )}
         {item.chain ? (
           <StyledTableCell>
             <TableCellText>{item.chain}</TableCellText>
@@ -276,39 +307,31 @@ function PaymentItem(props) {
 
 function Payouts(props) {
   const { orgId, podId } = props;
-  const [view, setView] = useState(null);
+
   const router = useRouter();
+
+  const [view, setView] = useState(null);
+
   const { view: payView } = router.query;
+
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
+
   const [chainSelected, setChainSelected] = useState(null);
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const [openExportModal, setOpenExportModal] = useState(false);
   const [noPaymentSelectedError, setNoPaymentSelectedError] = useState(null);
+
+  const [paidList, setPaidList] = useState([]);
+  const [unpaidList, setUnpaidList] = useState([]);
+
   useEffect(() => {
     setNoPaymentSelectedError(false);
     if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
       setChainSelected(null);
     }
   }, [paymentSelected]);
-
-  const listViewOptions = [
-    {
-      name: 'Unpaid',
-      active: view === ViewType.Unpaid || view === null,
-      action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`);
-      },
-    },
-    {
-      name: 'Paid',
-      active: view === ViewType.Paid,
-      action: () => {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
-      },
-    },
-  ];
 
   const [getPaymentsForOrg, { fetchMore: fetchMoreOrgPayments }] = useLazyQuery(GET_PAYMENTS_FOR_ORG, {
     fetchPolicy: 'network-only',
@@ -328,26 +351,13 @@ function Payouts(props) {
       fetchPolicy: 'network-only',
     }
   );
-  const [paidList, setPaidList] = useState([]);
-  const [unpaidList, setUnpaidList] = useState([]);
+
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
   });
-  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
-    : null;
 
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId,
-    podId,
-  });
-  const canViewPaymentLink =
-    permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
-  const user = useMe();
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
-  const org = orgData?.getOrgById;
   const paid = view === ViewType.Paid;
 
   const handleMoreData = useCallback(
@@ -443,8 +453,6 @@ function Payouts(props) {
     setOpenExportModal(true);
   };
 
-  const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
-
   useEffect(() => {
     setView(ViewType.Unpaid);
   }, []);
@@ -533,10 +541,73 @@ function Payouts(props) {
     }
   }, [inView, hasMore, handleLoadMore]);
 
+  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
+    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
+    : null;
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId,
+    podId,
+  });
+
+  const canViewPaymentLink =
+    permissions.includes(PERMISSIONS.APPROVE_PAYMENT) || permissions.includes(PERMISSIONS.FULL_ACCESS);
+
+  const user = useMe();
+
+  const org = orgData?.getOrgById;
+
+  const toggleItems = [
+    {
+      label: 'Unpaid',
+      isActive: view === ViewType.Unpaid || view === null,
+      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
+      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
+    },
+    {
+      label: 'Processing',
+      isActive: view === ViewType.Processing || view === null,
+      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
+      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
+    },
+    {
+      label: 'Paid',
+      isActive: view === ViewType.Paid,
+      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
+      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
+    },
+  ];
+
+  const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
+
+  const paymentMethods = useGetPaymentMethods(orgId)?.map((method) => method.chain);
+  const supportedPaymentChains = Array.from(new Set(paymentMethods));
+
+  const selectionOptions = [
+    ...INITIAL_SELECTION_OPTIONS,
+    ...supportedPaymentChains?.map((chain: string) => ({
+      label: `Select all from ${capitalize(chain)}`,
+      value: chain,
+    })),
+  ];
+
+  const paymentCount = paidList?.length || unpaidList?.length;
+
+  const renderSelectionValue = () => (
+    <PayoutSelectionSelectValueDisplay>
+      <PayoutSelectionSelectValueDisplayText isActive>Select all</PayoutSelectionSelectValueDisplayText>
+    </PayoutSelectionSelectValueDisplay>
+  );
+
   return (
     <SettingsWrapper>
       <GeneralSettingsContainer>
-        <HeaderBlock icon={<PayoutSettingsHeaderIcon />} title="Payment Ledger" description="Manage all payouts" />
+        <HeaderBlock
+          icon={<PayoutSettingsHeaderIcon />}
+          title="Payment Ledger"
+          description="Where you manage all your projects payouts"
+        />
       </GeneralSettingsContainer>
       <SubmissionPaymentCSVModal
         chain={chainSelected}
@@ -548,26 +619,36 @@ function Payouts(props) {
         unpaidSubmissions={paymentSelected}
       />
 
-      <LedgerHeaderButtonsContainer>
-        <ToggleViewButton
-          options={listViewOptions}
-          style={{
-            marginTop: '32px',
-            marginBottom: '-16px',
-          }}
-        />
-        {!paid && (
-          <div>
-            <CreateFormPreviewButton onClick={handleExportButtonClick}> Export to csv</CreateFormPreviewButton>
-            {noPaymentSelectedError && <ErrorText>No payments selected</ErrorText>}
-          </div>
-        )}
-      </LedgerHeaderButtonsContainer>
-      <StyledTableContainer
-        style={{
-          width: '100%',
-        }}
-      >
+      <LedgerActionButtonsContainer>
+        <Grid display="flex" alignItems="center" gap="18px">
+          <PayoutSelectionSelect value="garbagevalue" renderValue={renderSelectionValue}>
+            {selectionOptions.map((option) => (
+              <PayoutSelectionSelectMenuItem key={option.value} value={option.value}>
+                {option.label}
+              </PayoutSelectionSelectMenuItem>
+            ))}
+          </PayoutSelectionSelect>
+          <LedgerClearSelectionButton>Clear selection</LedgerClearSelectionButton>
+        </Grid>
+
+        {!paid && <LedgerDownloadButton onClick={handleExportButtonClick}>Download to CSV</LedgerDownloadButton>}
+        {/* <div>
+          <LedgerDownloadButton onClick={handleExportButtonClick}>Download to CSV</LedgerDownloadButton>
+          {noPaymentSelectedError && <ErrorText>No payments selected</ErrorText>}
+        </div> */}
+
+        <Toggle items={toggleItems} />
+      </LedgerActionButtonsContainer>
+
+      {!!paymentCount && (
+        <PayoutCount>
+          {paymentCount} {capitalize(view)} transactions
+        </PayoutCount>
+      )}
+
+      <PayoutTable paid={paid} paidList={paidList} unpaidList={unpaidList} />
+
+      {/* <StyledTableContainer>
         <StyledTable>
           <StyledTableHead>
             <StyledTableRow>
@@ -604,13 +685,6 @@ function Payouts(props) {
                   <div>Link</div>
                 </Tooltip>
               </StyledTableCell>
-              {view === ViewType.Unpaid && (
-                <StyledTableCell width="10%">
-                  <Tooltip title="Payment status" placement="top">
-                    <div>Status</div>
-                  </Tooltip>
-                </StyledTableCell>
-              )}
               <StyledTableCell>
                 <Tooltip title="Payment network" placement="top">
                   <div>Chain</div>
@@ -658,7 +732,8 @@ function Payouts(props) {
             )}
           </StyledTableBody>
         </StyledTable>
-      </StyledTableContainer>
+      </StyledTableContainer> */}
+
       <PaymentModalContext.Provider
         value={{
           onPaymentComplete: () => {},
@@ -674,7 +749,7 @@ function Payouts(props) {
         />
       </PaymentModalContext.Provider>
 
-      <LoadMore style={{ height: '2px' }} ref={ref} hasMore={hasMore} />
+      {/* <LoadMore style={{ height: '2px' }} ref={ref} hasMore={hasMore} /> */}
     </SettingsWrapper>
   );
 }
