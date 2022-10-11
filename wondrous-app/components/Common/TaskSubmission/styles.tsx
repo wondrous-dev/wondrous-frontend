@@ -685,20 +685,6 @@ export const SubmissionItemSafeImage = styled(SafeImage).attrs({ useNextImage: f
   border-radius: 50px;
 `;
 
-export const SubmissionItemStatusWrapper = styled.div`
-  background: #2f2f2f;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 50px;
-  height: 28px;
-  padding: 2px 12px 2px 3px;
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-`;
-
 const SubmissionItemStatusText = styled(Typography)`
   && {
     font-size: 14px;
@@ -709,18 +695,6 @@ const SubmissionItemStatusText = styled(Typography)`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-`;
-
-export const SubmissionItemStatusTextAwaitingReview = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, #00baff);
-`;
-
-export const SubmissionItemStatusTextChangesRequested = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, #ffd653);
-`;
-
-export const SubmissionItemStatusTextChangesRejected = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, ${palette.red400});
 `;
 
 export const SubmissionItemStatusChangesRequestedIcon = styled((props) => (
@@ -735,10 +709,6 @@ export const SubmissionItemStatusChangesRequestedIcon = styled((props) => (
   align-items: center;
   justify-content: center;
   border-radius: 24px;
-`;
-
-export const SubmissionItemStatusTextCompleted = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, #06ffa5);
 `;
 
 export const SubmissionItemsMedia = styled(TaskMedia)`
