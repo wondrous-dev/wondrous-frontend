@@ -917,3 +917,12 @@ export const enum ORG_TYPES {
   ORG = 'org',
   COLLAB = 'collab',
 }
+
+export const SUBMISSION_STATUS = {
+  AWAITING_REVIEW: 'Awaiting review',
+  REJECTED: 'Rejected',
+  CHANGES_REQUESTED: 'Changes requested',
+  APPROVED: 'Approved',
+  APPROVED_AND_PROCESSING_PAYMENT: 'Approved and processing payment',
+  APPROVED_AND_PAID: 'Approved and paid',
+} as const;

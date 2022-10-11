@@ -3,6 +3,7 @@ import { useMutation } from '@apollo/client';
 import { CommentList } from 'components/Comment';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RichTextViewer } from 'components/RichText';
+import SubmissionStatus from 'components/Common/SubmissionStatus';
 import Tooltip from 'components/Tooltip';
 import { formatDistance } from 'date-fns';
 import {
@@ -13,12 +14,11 @@ import {
 } from 'graphql/mutations/taskSubmission';
 import isEmpty from 'lodash/isEmpty';
 import { useEffect, useState } from 'react';
-import { BOUNTY_TYPE, PAYMENT_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/constants';
+import { BOUNTY_TYPE, PAYMENT_STATUS, SUBMISSION_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
 
-import { CompletedIcon, InReviewIcon, RejectedIcon } from '../../Icons/statusIcons';
 import DefaultUserImage from '../Image/DefaultUserImage';
 import KudosForm from '../KudosForm';
 import { PaymentButton } from '../Task/paymentButton';
@@ -38,12 +38,6 @@ import {
   SubmissionItemSafeImage,
   SubmissionItemSection,
   SubmissionItemsMedia,
-  SubmissionItemStatusChangesRequestedIcon,
-  SubmissionItemStatusTextAwaitingReview,
-  SubmissionItemStatusTextChangesRequested,
-  SubmissionItemStatusTextChangesRejected,
-  SubmissionItemStatusTextCompleted,
-  SubmissionItemStatusWrapper,
   SubmissionItemTimeText,
   SubmissionItemUserLink,
   SubmissionItemWrapper,
@@ -182,69 +176,23 @@ const useRejectTaskSubmission = ({ submission, handleBountyTypeCompletion }) => 
   return rejectTaskSubmission;
 };
 
-export const SubmissionItemStatus = (props) => {
-  const { submission, hideTitle = false } = props;
-  const awaitingReview = !submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt;
-  const changesRequested = submission?.changeRequestedAt;
-  const rejected = submission?.rejectedAt;
-  const approvedAndPaid = submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PAID;
-  const approvedAndProcessingPayment =
-    submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PROCESSING;
-  const approvedAt = submission?.approvedAt;
-  if (awaitingReview) {
-    return (
-      <SubmissionItemStatusWrapper>
-        <InReviewIcon />
-        {!hideTitle && <SubmissionItemStatusTextAwaitingReview>Awaiting review</SubmissionItemStatusTextAwaitingReview>}
-      </SubmissionItemStatusWrapper>
-    );
-  }
-  if (changesRequested) {
-    return (
-      <SubmissionItemStatusWrapper>
-        <SubmissionItemStatusChangesRequestedIcon />
-        {!hideTitle && (
-          <SubmissionItemStatusTextChangesRequested>Changes requested</SubmissionItemStatusTextChangesRequested>
-        )}
-      </SubmissionItemStatusWrapper>
-    );
-  }
-  if (rejected) {
-    return (
-      <SubmissionItemStatusWrapper>
-        <RejectedIcon />
-        {!hideTitle && <SubmissionItemStatusTextChangesRejected>Rejected</SubmissionItemStatusTextChangesRejected>}
-      </SubmissionItemStatusWrapper>
-    );
-  }
-  if (approvedAndPaid) {
-    return (
-      <SubmissionItemStatusWrapper>
-        <CompletedIcon />
-        {!hideTitle && <SubmissionItemStatusTextCompleted>Approved and Paid</SubmissionItemStatusTextCompleted>}
-      </SubmissionItemStatusWrapper>
-    );
-  }
-  if (approvedAndProcessingPayment) {
-    return (
-      <SubmissionItemStatusWrapper>
-        <CompletedIcon />
-        {!hideTitle && (
-          <SubmissionItemStatusTextCompleted>Approved and Processing Payment</SubmissionItemStatusTextCompleted>
-        )}
-      </SubmissionItemStatusWrapper>
-    );
-  }
-  if (approvedAt) {
-    return (
-      <SubmissionItemStatusWrapper>
-        <CompletedIcon />
-        {!hideTitle && <SubmissionItemStatusTextCompleted>Approved</SubmissionItemStatusTextCompleted>}
-      </SubmissionItemStatusWrapper>
-    );
-  }
-
+const selectSubmissionStatus = (submission) => {
+  if (!submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt)
+    return SUBMISSION_STATUS.AWAITING_REVIEW;
+  if (submission?.changeRequestedAt) return SUBMISSION_STATUS.CHANGES_REQUESTED;
+  if (submission?.rejectedAt) return SUBMISSION_STATUS.REJECTED;
+  if (submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PAID)
+    return SUBMISSION_STATUS.APPROVED_AND_PAID;
+  if (submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PROCESSING)
+    return SUBMISSION_STATUS.APPROVED_AND_PROCESSING_PAYMENT;
+  if (submission?.approvedAt) return SUBMISSION_STATUS.APPROVED;
   return null;
+};
+
+export const SubmissionItemStatus = (props) => {
+  const { submission } = props;
+  const submissionStatus = selectSubmissionStatus(submission);
+  return <SubmissionStatus status={submissionStatus} />;
 };
 
 function SubmissionItemUserImage({ creatorProfilePicture }) {
