@@ -1,20 +1,19 @@
 import styled from 'styled-components';
-import {
-  Button,
-  Checkbox,
-  MenuItem,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import MenuItem from '@mui/material/MenuItem';
+import Select from '@mui/material/Select';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Typography from '@mui/material/Typography';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { Button as StyledButton } from 'components/Common/button';
 
 export const LedgerActionButtonsContainer = styled.div`
   display: flex;
@@ -220,18 +219,6 @@ export const StyledTableCell = styled(TableCell)`
     padding: 14px;
   }
 
-  &.justify-right {
-    display: flex;
-    align-items: center;
-    justify-content: flex-end;
-  }
-
-  /* &.justify-left {
-    display: flex;
-    align-items: center;
-    justify-content: flex-start;
-  } */
-
   &.clickable {
     cursor: pointer;
   }
@@ -247,10 +234,6 @@ export const RewardChainHalfBox = styled.div`
   display: flex;
   align-items: center;
   gap: 4px;
-  color: ${palette.white};
-  font-family: ${typography.fontFamily};
-  font-size: 13px;
-  font-weight: 500;
   padding: 6px 8px 6px 10px;
   background: ${(props) => (props.isRewardBox ? palette.grey85 : palette.grey900)};
   border: 1px solid ${palette.grey79};
@@ -261,11 +244,21 @@ export const RewardChainHalfBox = styled.div`
   border-top-right-radius: ${(props) => (props.isRewardBox ? '0px' : '1000px')};
   border-bottom-right-radius: ${(props) => (props.isRewardBox ? '0px' : '1000px')};
   margin-right: ${(props) => (props.isRewardBox ? '-14px' : '0px')};
-  margin-left: ${(props) => (props.isRewardBox ? '0px' : '-14px')};
+  margin-left: ${(props) => (props.isRewardBox ? 'auto' : '-14px')};
 
   svg {
     width: 16px;
     height: 16px;
+  }
+`;
+
+export const RewardChainHalfBoxText = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    font-weight: 500;
+    width: max-content;
   }
 `;
 
@@ -285,16 +278,42 @@ export const TableCellText = styled(Typography)`
 
 export const StyledCheckbox = styled(Checkbox)`
   && {
-    width: 24px;
-    height: 24px;
-    color: ${(props) => (props.disabled ? palette.grey800 : palette.white)};
+    width: 20px;
+    height: 20px;
+    background: ${(props) => (props.checked ? palette.white : 'transparent')};
+    color: ${(props) => (props.disabled ? palette.grey800 : palette.highlightPurple)};
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-    /* border: ${(props) => (props.isDisabled ? `1px solid ${palette.grey800}` : `1px solid ${palette.white}`)}; */
+    /* border: ${(props) =>
+      props.isDisabled
+        ? `1px solid ${palette.grey800}`
+        : `1px solid ${palette.white}`}; */ // could be useful for disabled state, need to check with design
   }
 `;
 
 export const PayeeProfileLink = styled.a`
   text-decoration: none;
+`;
+
+export const PayeePayButton = styled(StyledButton)`
+  && {
+    background: linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%),
+      linear-gradient(0deg, ${palette.background.default}, ${palette.background.default});
+
+    button {
+      font-family: ${typography.fontFamily};
+      font-size: 14px;
+      font-weight: 500;
+      color: ${palette.white};
+      padding: 7px 16px;
+      border-radius: 1000px;
+      background: ${palette.background.default};
+      transition: background 0.2s ease-in-out;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
 `;
 
 export const PayeeUsername = styled(Typography)`
@@ -323,6 +342,75 @@ export const PayeeAddressTag = styled(PayeeUsername)`
       width: 16px;
       height: 16px;
     }
+  }
+`;
+
+export const PayoutItemLinkContainer = styled.a`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: ${palette.highlightPurple};
+  border-radius: 6px;
+  padding: 8px;
+  text-decoration: none;
+  transition: background 0.2s ease-in-out;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  &:hover {
+    background: ${palette.highlightPurple}CC;
+  }
+`;
+
+export const PayoutTaskTitleContainer = styled.div`
+  padding: 6px 8px;
+  font-family: ${typography.fontFamily};
+  font-size: 13px;
+  background: ${palette.black92};
+  color: ${palette.white};
+  max-width: 175px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  border-radius: 6px;
+  position: relative;
+
+  &:after {
+    content: '';
+    display: block;
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 100%;
+    background: linear-gradient(to left, ${palette.black97}D9, ${palette.black92}3D);
+    z-index: 100;
+  }
+`;
+
+export const PayoutTaskCompletionDate = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: ${palette.black101};
+  border-radius: 6px;
+  padding: 6px 10px;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+`;
+
+export const PayoutTaskCompletionDateText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    color: ${palette.white};
+    width: max-content;
   }
 `;
 

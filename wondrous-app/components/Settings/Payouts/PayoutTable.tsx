@@ -4,13 +4,19 @@ import { ErrorText } from 'components/Common';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
+import CalendarIcon from 'components/Icons/calendar';
 import CopyIcon from 'components/Icons/copy';
 import Ethereum from 'components/Icons/ethereumV2';
+import { LinkIcon } from 'components/Icons/taskModalIcons';
 import Tooltip from 'components/Tooltip';
+import format from 'date-fns/format';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import { capitalize } from 'utils/common';
+import { PaymentModalContext } from 'utils/contexts';
+import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
+import { PayModal } from './modal';
 import {
   PayeeAddressTag,
   PayeeAddressTagContainer,
@@ -25,6 +31,12 @@ import {
   StyledTableRow,
   TableCellText,
   RewardChainHalfBox,
+  PayoutItemLinkContainer,
+  PayoutTaskTitleContainer,
+  RewardChainHalfBoxText,
+  PayoutTaskCompletionDate,
+  PayoutTaskCompletionDateText,
+  PayeePayButton,
 } from './styles';
 
 const imageStyle = {
@@ -34,10 +46,19 @@ const imageStyle = {
   marginRight: '8px',
 };
 
+interface PayeeDetails {
+  podId?: string;
+  orgId?: string;
+  assigneeId: string;
+  assigneeUsername: string;
+  taskTitle: string;
+  submissionId: string;
+}
+
 const PayoutItem = (props) => {
   const {
     item,
-    checked,
+    checked = false,
     org,
     podId,
     chain,
@@ -45,6 +66,7 @@ const PayoutItem = (props) => {
     paymentSelected,
     setPaymentsSelected,
     canViewPaymentLink,
+    handlePay,
     viewingUser,
   } = props;
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
@@ -67,11 +89,12 @@ const PayoutItem = (props) => {
     linkText = item.safeTxHash;
   }
 
-  const disabled =
-    (chain && item?.chain !== chain) ||
-    item?.paymentStatus === 'processing' ||
-    item?.paymentStatus === 'paid' ||
-    !item.payeeActiveEthAddress;
+  const disabled = !item.payeeActiveEthAddress;
+  // const disabled =
+  //   (chain && item?.chain !== chain) ||
+  //   item?.paymentStatus === 'processing' ||
+  //   item?.paymentStatus === 'paid' ||
+  //   !item.payeeActiveEthAddress;
 
   const showWorkingCheckbox = item.paymentStatus !== 'paid' && item.payeeActiveEthAddress;
 
@@ -109,81 +132,114 @@ const PayoutItem = (props) => {
     // setChainSelected(item.chain);
   };
 
+  const handlePayeePayButton = () => {
+    handlePay({
+      podId,
+      orgId: org?.username,
+      assigneeId: item?.payeeId,
+      assigneeUsername: item?.payeeUsername,
+      taskTitle: item?.taskTitle,
+      submissionId: item?.submissionId,
+    });
+  };
+
   return (
-    <>
-      {/* <PaymentModalContext.Provider
-        value={{
-          onPaymentComplete: () => {},
-        }}
-      >
-        {openModal && (
-          <PayModal
-            podId={podId}
-            orgId={org?.id}
-            open={openModal}
-            handleClose={() => setOpenModal(false)}
-            assigneeId={item.payeeId}
-            assigneeUsername={item.payeeUsername}
-            taskTitle={item.taskTitle}
-            submissionId={item.submissionId}
-          />
-        )}
-      </PaymentModalContext.Provider> */}
-      <StyledTableRow>
-        <StyledTableCell>
-          <Grid display="flex" alignItems="center" gap="12px">
-            <Grid display="flex" alignItems="center" gap="6px">
-              {showWorkingCheckbox ? (
-                <StyledCheckbox
-                  checked={checked}
-                  disabled={disabled}
-                  onChange={handleItemOnCheck}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              ) : (
-                <Tooltip title="User has no web3 address" placement="top">
-                  <StyledCheckbox checked={false} disabled={disabled} inputProps={{ 'aria-label': 'controlled' }} />
-                </Tooltip>
-              )}
-
-              <Link href={`/profile/${item?.payeeUsername}/about`} passHref>
-                <PayeeProfileLink>
-                  <Grid display="flex" alignItems="center" gap="6px">
-                    <SafeImage
-                      useNextImage={false}
-                      src={item?.payeeProfilePicture}
-                      style={imageStyle}
-                      placeholderComp={<DefaultUserImage style={imageStyle} />}
-                    />
-                    <PayeeUsername>{item?.payeeUsername}</PayeeUsername>
-                  </Grid>
-                </PayeeProfileLink>
-              </Link>
-            </Grid>
-            {!!addressTag && (
-              <PayeeAddressTagContainer onClick={handleAddressCopy}>
-                <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
-                  {hasAddressBeenCopied ? 'Address copied!' : addressTag}
-                </PayeeAddressTag>
-                <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
-              </PayeeAddressTagContainer>
+    <StyledTableRow>
+      <StyledTableCell>
+        <Grid display="flex" alignItems="center" gap="12px">
+          <Grid display="flex" alignItems="center" gap="8px">
+            {showWorkingCheckbox ? (
+              <StyledCheckbox
+                checked={checked}
+                disabled={disabled}
+                onChange={handleItemOnCheck}
+                inputProps={{ 'aria-label': 'controlled' }}
+              />
+            ) : (
+              <Tooltip title="User has no web3 address" placement="top">
+                <StyledCheckbox checked={false} disabled={disabled} inputProps={{ 'aria-label': 'controlled' }} />
+              </Tooltip>
             )}
-          </Grid>
-        </StyledTableCell>
 
-        <StyledTableCell className="justify-right">
+            <PayeePayButton onClick={handlePayeePayButton}>Pay</PayeePayButton>
+
+            <Link href={`/profile/${item?.payeeUsername}/about`} passHref>
+              <PayeeProfileLink>
+                <Grid display="flex" alignItems="center" gap="6px">
+                  <SafeImage
+                    useNextImage={false}
+                    src={item?.payeeProfilePicture}
+                    style={imageStyle}
+                    placeholderComp={<DefaultUserImage style={imageStyle} />}
+                  />
+                  <PayeeUsername>{item?.payeeUsername}</PayeeUsername>
+                </Grid>
+              </PayeeProfileLink>
+            </Link>
+          </Grid>
+          {!!addressTag && (
+            <PayeeAddressTagContainer onClick={handleAddressCopy}>
+              <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
+                {hasAddressBeenCopied ? 'Address copied!' : addressTag}
+              </PayeeAddressTag>
+              <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
+            </PayeeAddressTagContainer>
+          )}
+        </Grid>
+      </StyledTableCell>
+
+      <StyledTableCell>
+        {item?.amount ? (
           <RewardChainHalfBox isRewardBox>
             <Ethereum />
-            {item?.amount} {item?.symbol}
+            <RewardChainHalfBoxText>
+              {item?.amount} {item?.symbol}
+            </RewardChainHalfBoxText>
           </RewardChainHalfBox>
-        </StyledTableCell>
+        ) : (
+          <RewardChainHalfBox isRewardBox>
+            <RewardChainHalfBoxText>reward</RewardChainHalfBoxText>
+          </RewardChainHalfBox>
+        )}
+      </StyledTableCell>
 
-        <StyledTableCell>
-          <RewardChainHalfBox>{capitalize(item?.chain)}</RewardChainHalfBox>
-        </StyledTableCell>
+      <StyledTableCell>
+        {item?.amount ? (
+          <RewardChainHalfBox>
+            <RewardChainHalfBoxText>{capitalize(item?.chain)}</RewardChainHalfBoxText>
+          </RewardChainHalfBox>
+        ) : (
+          <RewardChainHalfBox>
+            <RewardChainHalfBoxText>removed</RewardChainHalfBoxText>
+          </RewardChainHalfBox>
+        )}
+      </StyledTableCell>
 
-        {/* <StyledTableCell> */}
-        {/* <div
+      <StyledTableCell>
+        {!!link && (
+          <PayoutItemLinkContainer href={link} target="_blank" rel="noreferrer noopener">
+            <LinkIcon />
+          </PayoutItemLinkContainer>
+        )}
+      </StyledTableCell>
+
+      <StyledTableCell>
+        <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
+      </StyledTableCell>
+
+      <StyledTableCell>
+        {!!item?.submissionApprovedAt && (
+          <PayoutTaskCompletionDate>
+            <CalendarIcon />
+            <PayoutTaskCompletionDateText>
+              {format(new Date(item?.submissionApprovedAt), 'MM-dd-yy')}
+            </PayoutTaskCompletionDateText>
+          </PayoutTaskCompletionDate>
+        )}
+      </StyledTableCell>
+
+      {/* <StyledTableCell> */}
+      {/* <div
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -206,7 +262,7 @@ const PayoutItem = (props) => {
               )}
             </TableCellText>
           </div> */}
-        {/* {item.paymentStatus !== 'paid' && (
+      {/* {item.paymentStatus !== 'paid' && (
                   <>
                     {item.paymentStatus !== 'processing' && (
                       <BatchPayoutButton onClick={() => setOpenModal(true)}> Pay </BatchPayoutButton>
@@ -214,10 +270,10 @@ const PayoutItem = (props) => {
                   </>
                 )} */}
 
-        {/* : (
+      {/* : (
                <ErrorText>User has no web3 address</ErrorText>
              )} */}
-        {/* <div
+      {/* <div
             style={{
               display: 'flex',
               alignItems: 'center',
@@ -231,9 +287,9 @@ const PayoutItem = (props) => {
             )}
             <TableCellText>{item?.payeeUsername}</TableCellText>
           </div> */}
-        {/* </StyledTableCell> */}
+      {/* </StyledTableCell> */}
 
-        {/* <StyledTableCell>
+      {/* <StyledTableCell>
           <div
             style={{
               display: 'flex',
@@ -249,7 +305,7 @@ const PayoutItem = (props) => {
             <TableCellText>{item?.payeeUsername}</TableCellText>
           </div>
         </StyledTableCell> */}
-        {/* <StyledTableCell
+      {/* <StyledTableCell
           style={{
             minWidth: '120px',
           }}
@@ -278,7 +334,7 @@ const PayoutItem = (props) => {
             <ErrorText>Reward removed from task</ErrorText>
           )}
         </StyledTableCell> */}
-        {/* <StyledTableCell>
+      {/* <StyledTableCell>
           <Link href={taskHref}>
             <a
               target="_blank"
@@ -291,7 +347,7 @@ const PayoutItem = (props) => {
             </a>
           </Link>
         </StyledTableCell> */}
-        {/* <StyledTableCell>
+      {/* <StyledTableCell>
           {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
             <a
               style={{
@@ -305,7 +361,7 @@ const PayoutItem = (props) => {
             </a>
           )}
         </StyledTableCell> */}
-        {/* {item.chain ? (
+      {/* {item.chain ? (
           <StyledTableCell>
             <TableCellText>{item.chain}</TableCellText>
           </StyledTableCell>
@@ -322,8 +378,7 @@ const PayoutItem = (props) => {
             <TableCellText>{format(new Date(item.payedAt), 'MM/dd/yyyy')}</TableCellText>
           </StyledTableCell>
         )} */}
-      </StyledTableRow>
-    </>
+    </StyledTableRow>
   );
 };
 
@@ -336,7 +391,7 @@ const PayoutTable = (props) => {
     org,
     podId,
     chain,
-    canViewPaymentLink,
+    canViewPaymentLink = false,
     user,
     chainSelected,
     setChainSelected,
@@ -344,52 +399,113 @@ const PayoutTable = (props) => {
     setPaymentsSelected,
   } = props;
 
+  const [chainsSelected, setChainsSelected] = useState([]);
+  const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
+
+  const [showPayModal, setShowPayModal] = useState(false);
+  const [showBatchPayModal, setShowBatchPayModal] = useState(false);
+
+  useEffect(() => {
+    if (payeeDetails?.submissionId) {
+      setShowPayModal(true);
+    } else {
+      setShowPayModal(false);
+    }
+  }, [payeeDetails?.submissionId]);
+
   const paymentslist = paid ? paidList : unpaidList;
-  console.log({ paymentslist });
+  // console.log({ paymentslist });
+
+  const handlePayIndividualPayee = (payee: PayeeDetails) => {
+    setPayeeDetails(payee);
+    // setShowBatchPayModal(true);
+  };
+
+  const handlePaymentCompletion = () => {
+    setPayeeDetails(null);
+    setShowPayModal(false);
+    setShowBatchPayModal(false);
+  };
 
   return (
-    <StyledTableContainer>
-      <StyledTable>
-        <StyledTableHead>
-          <StyledTableRow>
-            <StyledTableCell align="left" width="30%">
-              <Tooltip title="Person assigned to task" placement="top">
-                <div>Payee</div>
-              </Tooltip>
-            </StyledTableCell>
-            <StyledTableCell align="center" width="15%">
-              <Tooltip title={paid ? 'Amount paid' : 'Amount owed'} placement="top">
-                <div>Reward</div>
-              </Tooltip>
-            </StyledTableCell>
-            <StyledTableCell align="center" width="15%">
-              <Tooltip title="Payment network" placement="top">
-                <div>Chain</div>
-              </Tooltip>
-            </StyledTableCell>
-            <StyledTableCell align="center" width="5%">
-              <Tooltip title="Proof of payment" placement="top">
-                <div>Link</div>
-              </Tooltip>
-            </StyledTableCell>
-            <StyledTableCell align="center" width="25%">
-              <Tooltip title="Task title" placement="top">
-                <div>Task title</div>
-              </Tooltip>
-            </StyledTableCell>
-            <StyledTableCell align="center" width="15%">
-              <Tooltip title="Task completed on" placement="top">
-                <div>Complete</div>
-              </Tooltip>
-            </StyledTableCell>
-          </StyledTableRow>
-        </StyledTableHead>
-        <StyledTableBody>
-          {paymentslist.map((item) => (
-            <PayoutItem key={item.id || item.task?.id} item={item} checked org={org} podId={podId} chain={chain} />
-          ))}
-        </StyledTableBody>
-        {/* <StyledTableBody>
+    <>
+      <PaymentModalContext.Provider
+        value={{
+          onPaymentComplete: handlePaymentCompletion,
+        }}
+      >
+        {showPayModal && (
+          <PayModal
+            podId={podId}
+            orgId={org?.id}
+            open={showPayModal}
+            handleClose={handlePaymentCompletion}
+            assigneeId={payeeDetails?.assigneeId}
+            assigneeUsername={payeeDetails?.assigneeUsername}
+            taskTitle={payeeDetails?.taskTitle}
+            submissionId={payeeDetails?.submissionId}
+          />
+        )}
+        {/* {showBatchPayModal && <BatchPayModal
+          chain={chainSelected}
+          podId={podId}
+          orgId={orgId}
+          open={openBatchPayModal}
+          handleClose={() => setOpenBatchPayModal(false)}
+          unpaidSubmissions={paymentSelected}
+        />} */}
+      </PaymentModalContext.Provider>
+      <StyledTableContainer>
+        <StyledTable>
+          <StyledTableHead>
+            <StyledTableRow>
+              <StyledTableCell align="left" width="30%">
+                <Tooltip title="Person assigned to task" placement="top">
+                  <div>Payee</div>
+                </Tooltip>
+              </StyledTableCell>
+              <StyledTableCell align="center" width="15%">
+                <Tooltip title={paid ? 'Amount paid' : 'Amount owed'} placement="top">
+                  <div>Reward</div>
+                </Tooltip>
+              </StyledTableCell>
+              <StyledTableCell align="center" width="15%">
+                <Tooltip title="Payment network" placement="top">
+                  <div>Chain</div>
+                </Tooltip>
+              </StyledTableCell>
+              <StyledTableCell align="center" width="5%">
+                <Tooltip title="Proof of payment" placement="top">
+                  <div>Link</div>
+                </Tooltip>
+              </StyledTableCell>
+              <StyledTableCell align="center" width="25%">
+                <Tooltip title="Task title" placement="top">
+                  <div>Task title</div>
+                </Tooltip>
+              </StyledTableCell>
+              <StyledTableCell align="center" width="15%">
+                <Tooltip title="Task completed on" placement="top">
+                  <div>Complete</div>
+                </Tooltip>
+              </StyledTableCell>
+            </StyledTableRow>
+          </StyledTableHead>
+          <StyledTableBody>
+            {paymentslist.map((item) => (
+              <PayoutItem
+                key={item.id || item.task?.id}
+                item={item}
+                // checked={false}
+                org={org}
+                podId={podId}
+                chain={chain}
+                canViewPaymentLink={canViewPaymentLink}
+                handlePay={handlePayIndividualPayee}
+              />
+            ))}
+          </StyledTableBody>
+          {/* <StyledTableBody>
           {view === ViewType.Paid ? (
             <>
               {paidList?.map((item) => (
@@ -425,8 +541,9 @@ const PayoutTable = (props) => {
             </>
           )}
         </StyledTableBody> */}
-      </StyledTable>
-    </StyledTableContainer>
+        </StyledTable>
+      </StyledTableContainer>
+    </>
   );
 };
 

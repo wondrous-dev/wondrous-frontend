@@ -646,7 +646,14 @@ function Payouts(props) {
         </PayoutCount>
       )}
 
-      <PayoutTable paid={paid} paidList={paidList} unpaidList={unpaidList} />
+      <PayoutTable
+        org={org}
+        podId={podId}
+        paid={paid}
+        paidList={paidList}
+        unpaidList={unpaidList}
+        canViewPaymentLink={canViewPaymentLink}
+      />
 
       {/* <StyledTableContainer>
         <StyledTable>
