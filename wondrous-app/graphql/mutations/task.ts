@@ -268,3 +268,11 @@ export const UPDATE_TASK_OBSERVERS = gql`
     }
   }
 `;
+
+export const DUPLICATE_TASK = gql`
+  mutation duplicateTask($taskId: ID!) {
+    duplicateTask(taskId: $taskId) {
+      title # maybe this should be returning simple response instead?
+    }
+  }
+`;
