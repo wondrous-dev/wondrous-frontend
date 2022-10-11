@@ -21,10 +21,18 @@ export const GET_ORG_SNAPSHOT_INFO = gql`
 export const GET_ORG_DISCORD_ROLES = gql`
   query getOrgDiscordRoles($orgId: ID!) {
     getOrgDiscordRoles(orgId: $orgId) {
-      id
-      name
-      color
-      permissions
+      guildId
+      channelId
+      channelInfo {
+        channelName
+        guildName
+      }
+      roles {
+        id
+        name
+        color
+        permissions
+      }
     }
   }
 `;

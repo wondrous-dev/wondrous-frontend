@@ -17,16 +17,16 @@ export const MARK_ALL_NOTIFICATIONS_READ = gql`
 `;
 
 export const DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation disconnectOrgDiscordNotificationConfig($orgId: ID!, $type: String!) {
-    disconnectOrgDiscordNotificationConfig(orgId: $orgId, type: $type) {
+  mutation disconnectOrgDiscordNotificationConfig($orgId: ID!, $type: String!, $discordConfigId: String) {
+    disconnectOrgDiscordNotificationConfig(orgId: $orgId, type: $type, discordConfigId: $discordConfigId) {
       success
     }
   }
 `;
 
 export const DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG = gql`
-  mutation disconnectPodDiscordNotificationConfig($podId: ID!, $type: String!) {
-    disconnectPodDiscordNotificationConfig(podId: $podId, type: $type) {
+  mutation disconnectPodDiscordNotificationConfig($podId: ID!, $type: String!, $discordConfigId: String) {
+    disconnectPodDiscordNotificationConfig(podId: $podId, type: $type, discordConfigId: $discordConfigId) {
       success
     }
   }
@@ -67,6 +67,30 @@ export const MANUAL_DISCORD_POD_SETUP = gql`
 export const SET_USER_NOTIFICATION_SETTINGS = gql`
   mutation setUserNotificationSettings($settings: NotificationSettings) {
     setUserNotificationSettings(settings: $settings) {
+      success
+    }
+  }
+`;
+
+export const MANUAL_DISCORD_COLLAB_SETUP = gql`
+  mutation manualDiscordCollabSetup($orgId: ID!, $guildId: String!, $channelId: String!, $type: String) {
+    manualDiscordCollabSetup(orgId: $orgId, guildId: $guildId, channelId: $channelId, type: $type) {
+      success
+    }
+  }
+`;
+
+export const UPDATE_ORG_DISCORD_NOTIFICATION_CONFIG_CHANNEL = gql`
+  mutation updateOrgDiscordNotificationChannel($orgId: ID!, $discordConfigId: String!, $channelId: String!) {
+    updateOrgDiscordNotificationChannel(orgId: $orgId, discordConfigId: $discordConfigId, channelId: $channelId) {
+      success
+    }
+  }
+`;
+
+export const UPDATE_POD_DISCORD_NOTIFICATION_CONFIG_CHANNEL = gql`
+  mutation updateOrgDiscordNotificationChannel($podId: ID!, $discordConfigId: String!, $channelId: String!) {
+    updatePodDiscordNotificationChannel(podId: $podId, discordConfigId: $discordConfigId, channelId: $channelId) {
       success
     }
   }

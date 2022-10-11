@@ -570,7 +570,7 @@ export const Snackbar = styled(SnackbarComp)`
 export const DiscordText = styled(Typography)`
   && {
     font-size: 14px;
-    color: ${palette.white};
+    color: ${palette.blue20};
     margin-bottom: 8px;
   }
 `;
