@@ -43,6 +43,8 @@ import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
+  GET_PROCESSING_PAYMENTS_FOR_ORG,
+  GET_PROCESSING_PAYMENTS_FOR_POD,
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
@@ -57,10 +59,10 @@ import { PaymentModalContext } from 'utils/contexts';
 import { cutString, parseUserPermissionContext } from 'utils/helpers';
 import Toggle from 'components/Common/Toggle';
 import { Grid } from '@mui/material';
-import { useGetPaymentMethods } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import { capitalize } from 'utils/common';
 import { INITIAL_SELECTION_OPTIONS } from './constants';
 import PayoutTable from './PayoutTable';
+import { useGetPaymentMethodsForOrg } from './hooks';
 
 enum ViewType {
   Paid = 'paid',
@@ -76,22 +78,6 @@ const imageStyle = {
 };
 
 const LIMIT = 10;
-
-const PaidItem = (props) => {
-  const {
-    item,
-    org,
-    podId,
-    chain,
-    setChainSelected,
-    paymentSelected,
-    setPaymentsSelected,
-    canViewPaymentLink,
-    viewingUser,
-  } = props;
-
-  return <div />;
-};
 
 function PaymentItem(props) {
   const {
@@ -317,7 +303,10 @@ function Payouts(props) {
   const [ref, inView] = useInView({});
   const [hasMore, setHasMore] = useState(false);
 
+  const [selectAllFromChainSelected, setSelectAllFromChainSelected] = useState('');
+
   const [chainSelected, setChainSelected] = useState(null);
+
   const [paymentSelected, setPaymentsSelected] = useState(null);
   const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const [openExportModal, setOpenExportModal] = useState(false);
@@ -325,13 +314,15 @@ function Payouts(props) {
 
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
+  const [processingList, setProcessingList] = useState([]);
 
-  useEffect(() => {
-    setNoPaymentSelectedError(false);
-    if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
-      setChainSelected(null);
-    }
-  }, [paymentSelected]);
+  // no payments selected error while downloading
+  // useEffect(() => {
+  //   setNoPaymentSelectedError(false);
+  //   if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
+  //     setChainSelected(null);
+  //   }
+  // }, [paymentSelected]);
 
   const [getPaymentsForOrg, { fetchMore: fetchMoreOrgPayments }] = useLazyQuery(GET_PAYMENTS_FOR_ORG, {
     fetchPolicy: 'network-only',
@@ -351,6 +342,18 @@ function Payouts(props) {
       fetchPolicy: 'network-only',
     }
   );
+  const [getProcessingPaymentsForOrg, { fetchMore: fetchMoreProcessingPaymentsForOrg }] = useLazyQuery(
+    GET_PROCESSING_PAYMENTS_FOR_ORG,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
+  const [getProcessingPaymentsForPod, { fetchMore: fetchMoreProcessingPaymentsForPod }] = useLazyQuery(
+    GET_PROCESSING_PAYMENTS_FOR_POD,
+    {
+      fetchPolicy: 'network-only',
+    }
+  );
 
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
@@ -359,12 +362,15 @@ function Payouts(props) {
   const [getOrgById, { data: orgData }] = useLazyQuery(GET_ORG_BY_ID);
 
   const paid = view === ViewType.Paid;
+  const processing = view === ViewType.Processing;
 
   const handleMoreData = useCallback(
     (data) => {
       if (data?.length > 0) {
         if (paid) {
           setPaidList((state) => [...state, ...data]);
+        } else if (processing) {
+          setProcessingList((state) => [...state, ...data]);
         } else {
           setUnpaidList((state) => [...state, ...data]);
         }
@@ -377,7 +383,7 @@ function Payouts(props) {
 
   const handleLoadMore = useCallback(() => {
     if (hasMore) {
-      const list = paid ? paidList : unpaidList;
+      const list = paid ? paidList : processing ? processingList : unpaidList;
 
       if (orgId) {
         if (paid) {
@@ -392,6 +398,20 @@ function Payouts(props) {
             },
           }).then((fetchMoreResult) => {
             const results = fetchMoreResult?.data?.getPaymentsForOrg;
+            handleMoreData(results);
+          });
+        } else if (processing) {
+          fetchMoreProcessingPaymentsForOrg({
+            variables: {
+              input: {
+                offset: list?.length,
+                limit: LIMIT,
+                orgId,
+                orgOnly: false,
+              },
+            },
+          }).then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getProcessingPaymentsForOrg;
             handleMoreData(results);
           });
         } else {
@@ -423,6 +443,19 @@ function Payouts(props) {
             const results = fetchMoreResult?.data?.getPaymentsForPod;
             handleMoreData(results);
           });
+        } else if (processing) {
+          fetchMoreProcessingPaymentsForPod({
+            variables: {
+              input: {
+                offset: list?.length,
+                limit: LIMIT,
+                podId,
+              },
+            },
+          }).then((fetchMoreResult) => {
+            const results = fetchMoreResult?.data?.getProcessingPaymentsForPod;
+            handleMoreData(results);
+          });
         } else {
           fetchMoreUnpaidSubmissionsForPod({
             variables: {
@@ -439,18 +472,18 @@ function Payouts(props) {
         }
       }
     }
-  }, [paidList, unpaidList, hasMore]);
+  }, [paidList, unpaidList, processingList, hasMore]);
 
   const handleBatchPayButtonClick = () => {
     setOpenBatchPayModal(true);
   };
 
   const handleExportButtonClick = () => {
-    if (!paymentSelected || isEmpty(paymentSelected)) {
-      setNoPaymentSelectedError(true);
-      return;
-    }
-    setOpenExportModal(true);
+    // if (!paymentSelected || isEmpty(paymentSelected)) {
+    //   setNoPaymentSelectedError(true);
+    //   return;
+    // }
+    // setOpenExportModal(true);
   };
 
   useEffect(() => {
@@ -495,6 +528,33 @@ function Payouts(props) {
         setUnpaidList(submissions || []);
         setHasMore(submissions?.length >= LIMIT);
       });
+    } else if (orgId && view === ViewType.Processing) {
+      getProcessingPaymentsForOrg({
+        variables: {
+          input: {
+            orgId,
+            orgOnly: false,
+            limit: LIMIT,
+          },
+        },
+      }).then((result) => {
+        const payments = result?.data?.getProcessingPaymentsForOrg;
+        setProcessingList(payments || []);
+        setHasMore(payments?.length >= LIMIT);
+      });
+    } else if (podId && view === ViewType.Processing) {
+      getProcessingPaymentsForPod({
+        variables: {
+          input: {
+            podId,
+            limit: LIMIT,
+          },
+        },
+      }).then((result) => {
+        const payments = result?.data?.getProcessingPaymentsForPod;
+        setProcessingList(payments || []);
+        setHasMore(payments?.length >= LIMIT);
+      });
     } else if (orgId && view === ViewType.Paid) {
       getPaymentsForOrg({
         variables: {
@@ -531,6 +591,8 @@ function Payouts(props) {
         setView(ViewType.Paid);
       } else if (payView === ViewType.Unpaid) {
         setView(ViewType.Unpaid);
+      } else if (payView === ViewType.Processing) {
+        setView(ViewType.Processing);
       }
     }
   }, [payView]);
@@ -567,8 +629,8 @@ function Payouts(props) {
     },
     {
       label: 'Processing',
-      isActive: view === ViewType.Processing || view === null,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
+      isActive: view === ViewType.Processing,
+      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
       gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
     },
     {
@@ -579,9 +641,9 @@ function Payouts(props) {
     },
   ];
 
-  const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
+  // const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
 
-  const paymentMethods = useGetPaymentMethods(orgId)?.map((method) => method.chain);
+  const paymentMethods = useGetPaymentMethodsForOrg(orgId)?.map((method) => method.chain);
   const supportedPaymentChains = Array.from(new Set(paymentMethods));
 
   const selectionOptions = [
@@ -592,7 +654,12 @@ function Payouts(props) {
     })),
   ];
 
-  const paymentCount = paidList?.length || unpaidList?.length;
+  const paymentCount = paidList?.length || unpaidList?.length || processingList?.length;
+
+  const handleSelectItemsBasedOnChain = (ev) => {
+    const { value } = ev.target;
+    setSelectAllFromChainSelected((_) => value);
+  };
 
   const renderSelectionValue = () => (
     <PayoutSelectionSelectValueDisplay>
@@ -609,7 +676,7 @@ function Payouts(props) {
           description="Where you manage all your projects payouts"
         />
       </GeneralSettingsContainer>
-      <SubmissionPaymentCSVModal
+      {/* <SubmissionPaymentCSVModal
         chain={chainSelected}
         podId={podId}
         orgId={orgId}
@@ -617,13 +684,21 @@ function Payouts(props) {
         handleClose={() => setOpenExportModal(false)}
         exportPaymentCSV={exportSubmissionPaymentCsv}
         unpaidSubmissions={paymentSelected}
-      />
+      /> */}
 
       <LedgerActionButtonsContainer>
         <Grid display="flex" alignItems="center" gap="18px">
-          <PayoutSelectionSelect value="garbagevalue" renderValue={renderSelectionValue}>
+          <PayoutSelectionSelect
+            value={selectAllFromChainSelected || true}
+            renderValue={renderSelectionValue}
+            onChange={handleSelectItemsBasedOnChain}
+          >
             {selectionOptions.map((option) => (
-              <PayoutSelectionSelectMenuItem key={option.value} value={option.value}>
+              <PayoutSelectionSelectMenuItem
+                key={option.value}
+                value={option.value}
+                isSelected={selectAllFromChainSelected === option.value}
+              >
                 {option.label}
               </PayoutSelectionSelectMenuItem>
             ))}
@@ -650,8 +725,11 @@ function Payouts(props) {
         org={org}
         podId={podId}
         paid={paid}
+        processing={processing}
         paidList={paidList}
         unpaidList={unpaidList}
+        processingList={processingList}
+        selectAllFromChainSelected={selectAllFromChainSelected}
         canViewPaymentLink={canViewPaymentLink}
       />
 
@@ -741,7 +819,7 @@ function Payouts(props) {
         </StyledTable>
       </StyledTableContainer> */}
 
-      <PaymentModalContext.Provider
+      {/* <PaymentModalContext.Provider
         value={{
           onPaymentComplete: () => {},
         }}
@@ -754,7 +832,7 @@ function Payouts(props) {
           handleClose={() => setOpenBatchPayModal(false)}
           unpaidSubmissions={paymentSelected}
         />
-      </PaymentModalContext.Provider>
+      </PaymentModalContext.Provider> */}
 
       {/* <LoadMore style={{ height: '2px' }} ref={ref} hasMore={hasMore} /> */}
     </SettingsWrapper>
