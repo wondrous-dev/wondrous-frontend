@@ -152,10 +152,12 @@ export const PayoutSelectionSelectValueDisplayText = styled(Typography)`
 `;
 
 export const PayoutCount = styled(Typography)`
-  font-family: ${typography.fontFamily};
-  font-size: 14px;
-  font-weight: 500;
-  color: ${palette.blue20};
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    font-weight: 500;
+    color: ${palette.blue20};
+  }
 `;
 
 export const StyledTableContainer = styled(TableContainer)`

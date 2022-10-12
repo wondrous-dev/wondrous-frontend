@@ -65,3 +65,27 @@ export const UnpaidSubmissionFragment = gql`
     safeTxHash
   }
 `;
+
+export const ProcessingPaymentFragment = gql`
+  fragment ProcessingPaymentFragment on ProcessingPayment {
+    taskTitle
+    taskId
+    submissionId
+    payeeId
+    payeeUsername
+    payeeProfilePicture
+    payeeActiveEthAddress
+    submissionApprovedAt
+    paymentStatus
+    chain
+    amount
+    symbol
+    icon
+    tokenName
+    decimal
+    tokenAddress
+    safeAddress
+    txHash
+    safeTxHash
+  }
+`;

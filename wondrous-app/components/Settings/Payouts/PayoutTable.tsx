@@ -38,6 +38,7 @@ import {
   PayoutTaskCompletionDateText,
   PayeePayButton,
 } from './styles';
+import { PAYMENT_TYPES } from './constants';
 
 const imageStyle = {
   width: '32px',
@@ -59,6 +60,7 @@ const PayoutItem = (props) => {
   const {
     item,
     checked = false,
+    isDisabled = false,
     org,
     podId,
     chain,
@@ -67,6 +69,7 @@ const PayoutItem = (props) => {
     setPaymentsSelected,
     canViewPaymentLink,
     handlePay,
+    handleCheck,
     viewingUser,
   } = props;
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
@@ -89,14 +92,18 @@ const PayoutItem = (props) => {
     linkText = item.safeTxHash;
   }
 
-  const disabled = !item.payeeActiveEthAddress;
+  const disabled = isDisabled || (item.paymentStatus === PAYMENT_TYPES.UNPAID && !item.payeeActiveEthAddress);
   // const disabled =
   //   (chain && item?.chain !== chain) ||
   //   item?.paymentStatus === 'processing' ||
   //   item?.paymentStatus === 'paid' ||
   //   !item.payeeActiveEthAddress;
 
-  const showWorkingCheckbox = item.paymentStatus !== 'paid' && item.payeeActiveEthAddress;
+  // const showCheckbox = item.paymentStatus !== 'paid' && item.payeeActiveEthAddress;
+  const showCheckbox =
+    item.paymentStatus === PAYMENT_TYPES.PAID ||
+    item.paymentStatus === PAYMENT_TYPES.PROCESSING ||
+    item.payeeActiveEthAddress;
 
   const address = item?.payeeActiveEthAddress;
   const addressTag = useMemo(() => {
@@ -148,11 +155,11 @@ const PayoutItem = (props) => {
       <StyledTableCell>
         <Grid display="flex" alignItems="center" gap="12px">
           <Grid display="flex" alignItems="center" gap="8px">
-            {showWorkingCheckbox ? (
+            {showCheckbox ? (
               <StyledCheckbox
                 checked={checked}
                 disabled={disabled}
-                onChange={handleItemOnCheck}
+                onChange={() => handleCheck(item)}
                 inputProps={{ 'aria-label': 'controlled' }}
               />
             ) : (
@@ -385,25 +392,40 @@ const PayoutItem = (props) => {
 const PayoutTable = (props) => {
   const {
     paid,
+    processing,
     view,
     paidList,
     unpaidList,
+    processingList,
     org,
     podId,
-    chain,
+    selectAllFromChainSelected,
     canViewPaymentLink = false,
     user,
-    chainSelected,
     setChainSelected,
     paymentSelected,
     setPaymentsSelected,
   } = props;
 
   const [chainsSelected, setChainsSelected] = useState([]);
+  const [selectedItems, setSelectedItems] = useState({});
+
   const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
 
   const [showPayModal, setShowPayModal] = useState(false);
   const [showBatchPayModal, setShowBatchPayModal] = useState(false);
+
+  const paymentslist = paid ? paidList : processing ? processingList : unpaidList;
+
+  useEffect(() => {
+    if (selectAllFromChainSelected === 'all') {
+      const newSelectedItems = {};
+      paymentslist.forEach((item) => {
+        newSelectedItems[item?.submissionId] = item;
+      });
+      setSelectedItems((_) => newSelectedItems);
+    }
+  }, [selectAllFromChainSelected]);
 
   useEffect(() => {
     if (payeeDetails?.submissionId) {
@@ -413,12 +435,34 @@ const PayoutTable = (props) => {
     }
   }, [payeeDetails?.submissionId]);
 
-  const paymentslist = paid ? paidList : unpaidList;
-  // console.log({ paymentslist });
+  const handleItemOnCheck = (item) => {
+    const isItemAlreadyChecked = selectedItems[item?.submissionId];
+
+    if (isItemAlreadyChecked) {
+      const newSelectedItems = { ...selectedItems };
+      delete newSelectedItems[item?.submissionId];
+      setSelectedItems((_) => newSelectedItems);
+    } else {
+      setSelectedItems((_) => ({ ...selectedItems, [item?.submissionId]: item }));
+    }
+
+    // if (checked) {
+    //   const newObj = { ...paymentSelected };
+    //   delete newObj[item.submissionId];
+    //   setPaymentsSelected(newObj);
+    // } else if (!checked) {
+    //   const newObj = {
+    //     ...paymentSelected,
+    //     [item.submissionId]: item,
+    //   };
+    //   setPaymentsSelected(newObj);
+    // }
+    // setChecked(!checked);
+    // setChainSelected(item.chain);
+  };
 
   const handlePayIndividualPayee = (payee: PayeeDetails) => {
     setPayeeDetails(payee);
-    // setShowBatchPayModal(true);
   };
 
   const handlePaymentCompletion = () => {
@@ -496,12 +540,12 @@ const PayoutTable = (props) => {
               <PayoutItem
                 key={item.id || item.task?.id}
                 item={item}
-                // checked={false}
+                checked={selectedItems[item?.submissionId]}
                 org={org}
                 podId={podId}
-                chain={chain}
                 canViewPaymentLink={canViewPaymentLink}
                 handlePay={handlePayIndividualPayee}
+                handleCheck={handleItemOnCheck}
               />
             ))}
           </StyledTableBody>
