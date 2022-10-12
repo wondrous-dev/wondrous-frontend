@@ -192,7 +192,7 @@ const selectSubmissionStatus = (submission) => {
 export const SubmissionItemStatus = (props) => {
   const { submission } = props;
   const submissionStatus = selectSubmissionStatus(submission);
-  return <SubmissionStatus status={submissionStatus} />;
+  return <SubmissionStatus status={submissionStatus} variation="rounded" />;
 };
 
 function SubmissionItemUserImage({ creatorProfilePicture }) {
