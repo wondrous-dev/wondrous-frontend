@@ -1,37 +1,48 @@
 import { Typography } from '@mui/material';
-import ChangesRequestedIcon from 'components/Icons/changesRequestedIcon.svg';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
+import VARIATIONS from './constants';
 
-export const SubmissionItemStatusWrapper = styled.div`
-  background: #2f2f2f;
+const statusWrapperVariations = {
+  [VARIATIONS.default]: css`
+    background: ${palette.grey99};
+    border-radius: 4px;
+    padding: 4px 8px;
+  `,
+  [VARIATIONS.rounded]: css`
+    background: ${palette.background.default};
+    padding: 7px 11px 7px 0;
+    border-radius: 50px;
+  `,
+};
+
+export const StatusWrapper = styled.div`
+  ${({ variation }) => statusWrapperVariations[variation]}
   display: flex;
   align-items: center;
   gap: 5px;
-  border-radius: 50px;
   height: 28px;
-  padding: 2px 12px 2px 3px;
   svg {
     width: 24px;
     height: 24px;
   }
 `;
 
-export const SubmissionItemStatusChangesRequestedIcon = styled((props) => (
-  <div {...props}>
-    <ChangesRequestedIcon />
-  </div>
-))`
+export const IconWrapper = styled.div`
   background: ${palette.background.default};
   width: 24px;
   height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 24px;
+  border-radius: 500px;
+  svg {
+    width: 24px;
+    height: 24px;
+  }
 `;
 
-const SubmissionItemStatusText = styled(Typography)`
+const Text = styled(Typography)`
   && {
     font-size: 14px;
     ${({ theme }) => `
@@ -39,22 +50,23 @@ const SubmissionItemStatusText = styled(Typography)`
       font-weight: ${theme.typography.fontWeightMedium};
     `}
     -webkit-background-clip: text;
+    background-clip: text;
     -webkit-text-fill-color: transparent;
   }
 `;
 
-export const SubmissionItemStatusTextAwaitingReview = styled(SubmissionItemStatusText)`
+export const TextAwaitingReview = styled(Text)`
   background: -webkit-linear-gradient(${palette.white}, ${palette.highlightBlue});
 `;
 
-export const SubmissionItemStatusTextChangesRequested = styled(SubmissionItemStatusText)`
+export const TextChangesRequested = styled(Text)`
   background: -webkit-linear-gradient(${palette.white}, ${palette.yellow800});
 `;
 
-export const SubmissionItemStatusTextChangesRejected = styled(SubmissionItemStatusText)`
+export const TextChangesRejected = styled(Text)`
   background: -webkit-linear-gradient(${palette.white}, ${palette.red400});
 `;
 
-export const SubmissionItemStatusTextCompleted = styled(SubmissionItemStatusText)`
+export const TextCompleted = styled(Text)`
   background: -webkit-linear-gradient(${palette.white}, ${palette.green30});
 `;
