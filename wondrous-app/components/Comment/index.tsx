@@ -360,7 +360,6 @@ export function CommentList(props) {
         orgId={task?.orgId || submission?.orgId}
         existingContent=""
         taskType={taskType}
-        task={task}
         previousCommenterIds={Array.from(set)}
         submission={submission}
       />
