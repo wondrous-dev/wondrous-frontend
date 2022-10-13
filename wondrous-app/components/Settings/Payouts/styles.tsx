@@ -284,13 +284,9 @@ export const StyledCheckbox = styled(Checkbox)`
   && {
     width: 20px;
     height: 20px;
-    background: ${(props) => (props.checked ? palette.white : 'transparent')};
-    color: ${(props) => (props.disabled ? palette.grey800 : palette.highlightPurple)};
+    background: ${(props) => (props.checked ? palette.white : 'transparent')} !important;
+    color: ${(props) => (props.disabled ? palette.grey800 : palette.highlightPurple)} !important;
     opacity: ${(props) => (props.disabled ? 0.5 : 1)};
-    /* border: ${(props) =>
-      props.isDisabled
-        ? `1px solid ${palette.grey800}`
-        : `1px solid ${palette.white}`}; */ // could be useful for disabled state, need to check with design
   }
 `;
 

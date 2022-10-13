@@ -24,6 +24,7 @@ export const PaymentCardFragment = gql`
     payeeId
     payeeUsername
     payeeProfilePicture
+    payeeActiveEthAddress
     chain
     safeAddress
     txHash
