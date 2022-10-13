@@ -93,7 +93,7 @@ export const GET_PROCESSING_PAYMENTS_FOR_ORG = gql`
 
 export const GET_PROCESSING_PAYMENTS_FOR_POD = gql`
   query getProcessingPaymentsForPod($input: PodPaymentQueryInput) {
-    getUnpaidSubmissionsForPod(input: $input) {
+    getProcessingPaymentsForPod(input: $input) {
       ...ProcessingPaymentFragment
     }
   }
