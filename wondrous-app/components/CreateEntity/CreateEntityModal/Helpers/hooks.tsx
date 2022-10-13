@@ -464,6 +464,7 @@ export const useUpdateTask = () => {
   return { handleMutation, loading };
 };
 
+
 export const useUpdateMilestone = () => {
   const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
   const handleMutation = ({ input, board, handleClose, existingTask }) => {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormControl } from '@mui/material';
 
 import { SafeImage } from 'components/Common/Image';
@@ -45,6 +45,7 @@ interface DropdownSelectProps {
   innerStyle?: any;
   hideLabel?: any;
   labelStyle?: any;
+  onOpen?: (value) => void;
 }
 
 function DropdownSelect({
@@ -65,6 +66,7 @@ function DropdownSelect({
   innerStyle,
   hideLabel,
   labelStyle,
+  onOpen
 }: DropdownSelectProps) {
   const [open, setOpen] = useState(false);
 
@@ -73,6 +75,12 @@ function DropdownSelect({
 
     onChange && onChange();
   };
+
+  useEffect(() => {
+    if(onOpen) {
+      onOpen(open)
+    }
+  }, [onOpen, open])
 
   return (
     <CreateFormSelectBlock style={formSelectStyle} className={className}>
