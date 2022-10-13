@@ -931,7 +931,7 @@ function Payouts(props) {
         />
       </PaymentModalContext.Provider> */}
 
-      {/* <LoadMore style={{ height: '2px' }} ref={ref} hasMore={hasMore} /> */}
+      <LoadMore ref={ref} hasMore={hasMore} />
     </SettingsWrapper>
   );
 }

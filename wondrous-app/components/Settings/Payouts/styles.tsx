@@ -520,4 +520,5 @@ export const BottomActionBarMultipleChainSelectedErrorText = styled(Typography)`
 
 export const LoadMore = styled.div`
   display: ${(props) => (props.hasMore ? 'block' : 'none')};
+  height: 2px;
 `;
