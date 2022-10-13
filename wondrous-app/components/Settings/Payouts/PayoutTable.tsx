@@ -511,6 +511,7 @@ const PayoutTable = (props) => {
   };
 
   const handleClearSelections = () => {
+    handleClearSelectItemsBasedOnChain();
     setSelectedItems({});
   };
 
