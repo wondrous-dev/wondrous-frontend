@@ -11,12 +11,11 @@ interface IToggleViewButtonProps {
     disabled?: boolean;
   }[];
   style?: React.CSSProperties;
-  showNewDesign?: boolean; // remove this from the prop and styles when the new design is to be used at all the places
 }
 
 // Toggler between views (i.e. grid vs list)
 function ToggleViewButton(props: IToggleViewButtonProps) {
-  const { options, showNewDesign = false } = props;
+  const { options } = props;
 
   return (
     <ToggleViewWrapper {...props}>
@@ -26,7 +25,6 @@ function ToggleViewButton(props: IToggleViewButtonProps) {
         return (
           <Tooltip key={`toggle-option-${opt.name}`} title={`${opt.name} view`} placement="top">
             <ToggleViewOption
-              showNewDesign={showNewDesign}
               key={`toggle-option-${opt.name}`}
               className={className}
               onClick={() => {
