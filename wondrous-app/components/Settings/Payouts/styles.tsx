@@ -11,9 +11,10 @@ import TableHead from '@mui/material/TableHead';
 import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { Button as StyledButton } from 'components/Common/button';
+import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { Button as StyledButton } from 'components/Common/button';
 
 export const LedgerActionButtonsContainer = styled.div`
   display: flex;
@@ -237,7 +238,8 @@ export const RewardChainHalfBox = styled.div`
   align-items: center;
   gap: 4px;
   padding: 6px 8px 6px 10px;
-  background: ${(props) => (props.isRewardBox ? palette.grey85 : palette.grey900)};
+  background: ${(props) =>
+    props.hasNoReward ? palette.background.default : props.isRewardBox ? palette.grey85 : palette.grey900};
   border: 1px solid ${palette.grey79};
   border-right-width: ${(props) => (props.isRewardBox ? '0px' : '2px')};
   border-left-width: ${(props) => (props.isRewardBox ? '2px' : '0px')};
@@ -245,7 +247,7 @@ export const RewardChainHalfBox = styled.div`
   border-bottom-left-radius: ${(props) => (props.isRewardBox ? '1000px' : '0px')};
   border-top-right-radius: ${(props) => (props.isRewardBox ? '0px' : '1000px')};
   border-bottom-right-radius: ${(props) => (props.isRewardBox ? '0px' : '1000px')};
-  margin-right: ${(props) => (props.isRewardBox ? '-14px' : '0px')};
+  margin-right: ${(props) => (props.isRewardBox && props.hasNoReward ? '-28px' : props.isRewardBox ? '-14px' : '0px')};
   margin-left: ${(props) => (props.isRewardBox ? 'auto' : '-14px')};
 
   svg {
@@ -256,7 +258,7 @@ export const RewardChainHalfBox = styled.div`
 
 export const RewardChainHalfBoxText = styled(Typography)`
   && {
-    color: ${palette.white};
+    color: ${(props) => (props.hasNoReward ? palette.grey57 : palette.white)};
     font-family: ${typography.fontFamily};
     font-size: 13px;
     font-weight: 500;
@@ -298,21 +300,27 @@ export const PayeeProfileLink = styled.a`
 
 export const PayeePayButton = styled(StyledButton)`
   && {
-    background: linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%),
-      linear-gradient(0deg, ${palette.background.default}, ${palette.background.default});
+    background: ${(props) =>
+      props.disabled
+        ? palette.grey85
+        : `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%),
+      linear-gradient(0deg, ${palette.background.default}, ${palette.background.default})`};
+    cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
     button {
       font-family: ${typography.fontFamily};
       font-size: 14px;
       font-weight: 500;
-      color: ${palette.white};
+      color: ${(props) => (props.disabled ? palette.grey58 : palette.white)};
       padding: 7px 16px;
       border-radius: 1000px;
       background: ${palette.background.default};
       transition: background 0.2s ease-in-out;
+      pointer-events: ${(props) => (props.disabled ? 'none' : 'auto')};
+      cursor: ${(props) => (props.disabled ? 'not-allowed' : 'pointer')};
 
       &:hover {
-        background: transparent;
+        background: ${(props) => (props.disabled ? palette.background.default : 'transparent')};
       }
     }
   }
@@ -413,6 +421,104 @@ export const PayoutTaskCompletionDateText = styled(Typography)`
     font-size: 13px;
     color: ${palette.white};
     width: max-content;
+  }
+`;
+
+export const BottomActionBar = styled.div`
+  opacity: ${(props) => (props.isVisible ? 1 : 0)};
+  position: fixed;
+  bottom: ${(props) => (props.isVisible ? '60px' : '-100%')};
+  z-index: 100000;
+  left: 60%;
+  transform: translateX(-55%);
+  min-width: 800px;
+  width: 100%;
+  max-width: 960px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 14px;
+  background: ${palette.black101};
+  border-radius: 6px;
+  transition: all 0.3s ease-in-out;
+`;
+
+export const BottomActionBarText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 13px;
+    color: ${palette.grey250};
+  }
+`;
+
+export const BottomActionBarPayButton = styled(PayeePayButton)`
+  && {
+    button {
+      font-size: 15px;
+      padding: 8px 24px;
+      border-radius: 1000px;
+      background: ${palette.background.default};
+      transition: background 0.2s ease-in-out;
+
+      &:hover {
+        background: transparent;
+      }
+    }
+  }
+`;
+
+export const BottomActionBarButton = styled(Button)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 15px;
+    font-weight: 500;
+    background: ${palette.grey78};
+    color: ${palette.white};
+    padding: 8px 24px;
+    border-radius: 1000px;
+
+    &:hover {
+      background: ${palette.grey85};
+    }
+  }
+`;
+
+export const BottomActionBarMultipleChainSelectedError = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 6px;
+  background: ${palette.grey85};
+  border-radius: 6px;
+
+  svg {
+    width: 20px;
+    height: 20px;
+  }
+`;
+
+export const BottomActionBarMultipleChainSelectedErrorText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 11px;
+    color: ${palette.white};
+    max-width: 250px;
+
+    span {
+      font-weight: 700;
+    }
+
+    button {
+      font-family: ${typography.fontFamily};
+      font-size: 11px;
+      font-weight: 700;
+      color: ${palette.highlightBlue};
+      background: transparent;
+      padding: 0;
+      border: 0;
+      outline: 0;
+      cursor: pointer;
+    }
   }
 `;
 

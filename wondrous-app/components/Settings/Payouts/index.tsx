@@ -21,7 +21,6 @@ import {
   LoadMore,
   LedgerActionButtonsContainer,
   LedgerDownloadButton,
-  LedgerClearSelectionButton,
   PayoutSelectionSelect,
   PayoutSelectionSelectValueDisplay,
   PayoutSelectionSelectValueDisplayText,
@@ -305,12 +304,16 @@ function Payouts(props) {
 
   const [selectAllFromChainSelected, setSelectAllFromChainSelected] = useState('');
 
-  const [chainSelected, setChainSelected] = useState(null);
+  // const [chainSelected, setChainSelected] = useState(null);
 
-  const [paymentSelected, setPaymentsSelected] = useState(null);
-  const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
+  const [submissionsToExport, setSubmissionsToExport] = useState({});
+
+  const [selectedItems, setSelectedItems] = useState({});
+
+  // const [paymentSelected, setPaymentsSelected] = useState(null);
+  // const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const [openExportModal, setOpenExportModal] = useState(false);
-  const [noPaymentSelectedError, setNoPaymentSelectedError] = useState(null);
+  // const [noPaymentSelectedError, setNoPaymentSelectedError] = useState(null);
 
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
@@ -474,18 +477,6 @@ function Payouts(props) {
     }
   }, [paidList, unpaidList, processingList, hasMore]);
 
-  const handleBatchPayButtonClick = () => {
-    setOpenBatchPayModal(true);
-  };
-
-  const handleExportButtonClick = () => {
-    // if (!paymentSelected || isEmpty(paymentSelected)) {
-    //   setNoPaymentSelectedError(true);
-    //   return;
-    // }
-    // setOpenExportModal(true);
-  };
-
   useEffect(() => {
     setView(ViewType.Unpaid);
   }, []);
@@ -603,6 +594,98 @@ function Payouts(props) {
     }
   }, [inView, hasMore, handleLoadMore]);
 
+  const handleSetSubmissionsToExport = (submissions) => {
+    const submissionsToExport = {};
+    submissions.forEach((payment) => {
+      submissionsToExport[payment?.submissionId] = payment;
+    });
+    setSubmissionsToExport(submissionsToExport);
+  };
+
+  useEffect(() => {
+    if (Object.keys(selectedItems)?.length) setSubmissionsToExport(selectedItems);
+    else if (orgId) {
+      if (view === ViewType.Unpaid) {
+        getUnpaidSubmissionsForOrg({
+          variables: {
+            input: {
+              orgId,
+              orgOnly: false,
+              limit: Number.POSITIVE_INFINITY,
+            },
+          },
+        }).then((result) => {
+          const submissions = result?.data?.getUnpaidSubmissionsForOrg;
+          handleSetSubmissionsToExport(submissions);
+        });
+      } else if (view === ViewType.Processing) {
+        getProcessingPaymentsForOrg({
+          variables: {
+            input: {
+              orgId,
+              orgOnly: false,
+              limit: Number.POSITIVE_INFINITY,
+            },
+          },
+        }).then((result) => {
+          const submissions = result?.data?.getProcessingPaymentsForOrg;
+          handleSetSubmissionsToExport(submissions);
+        });
+      } else if (view === ViewType.Paid) {
+        getPaymentsForOrg({
+          variables: {
+            input: {
+              orgId,
+              orgOnly: false,
+              limit: Number.POSITIVE_INFINITY,
+            },
+          },
+        }).then((result) => {
+          const submissions = result?.data?.getPaymentsForOrg;
+          handleSetSubmissionsToExport(submissions);
+        });
+      }
+    } else if (podId) {
+      if (view === ViewType.Unpaid) {
+        getUnpaidSubmissionsForPod({
+          variables: {
+            input: {
+              podId,
+              limit: Number.POSITIVE_INFINITY,
+            },
+          },
+        }).then((result) => {
+          const submissions = result?.data?.getUnpaidSubmissionsForPod;
+          handleSetSubmissionsToExport(submissions);
+        });
+      } else if (view === ViewType.Processing) {
+        getProcessingPaymentsForPod({
+          variables: {
+            input: {
+              podId,
+              limit: Number.POSITIVE_INFINITY,
+            },
+          },
+        }).then((result) => {
+          const submissions = result?.data?.getProcessingPaymentsForPod;
+          handleSetSubmissionsToExport(submissions);
+        });
+      } else if (view === ViewType.Paid) {
+        getPaymentsForPod({
+          variables: {
+            input: {
+              podId,
+              limit: Number.POSITIVE_INFINITY,
+            },
+          },
+        }).then((result) => {
+          const submissions = result?.data?.getPaymentsForPod;
+          handleSetSubmissionsToExport(submissions);
+        });
+      }
+    }
+  }, [selectedItems, view]);
+
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
     ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
     : null;
@@ -661,6 +744,21 @@ function Payouts(props) {
     setSelectAllFromChainSelected((_) => value);
   };
 
+  const handleClearSelectItemsBasedOnChain = () => {
+    if (selectAllFromChainSelected) {
+      setSelectAllFromChainSelected((_) => '');
+    }
+  };
+
+  const handleDownloadToCSV = () => {
+    // if (!paymentSelected || isEmpty(paymentSelected)) {
+    //   setNoPaymentSelectedError(true);
+    //   return;
+    // }
+    setOpenExportModal(true);
+    // console.log({ selectedItems });
+  };
+
   const renderSelectionValue = () => (
     <PayoutSelectionSelectValueDisplay>
       <PayoutSelectionSelectValueDisplayText isActive>Select all</PayoutSelectionSelectValueDisplayText>
@@ -676,15 +774,15 @@ function Payouts(props) {
           description="Where you manage all your projects payouts"
         />
       </GeneralSettingsContainer>
-      {/* <SubmissionPaymentCSVModal
-        chain={chainSelected}
+
+      <SubmissionPaymentCSVModal
         podId={podId}
         orgId={orgId}
         open={openExportModal}
         handleClose={() => setOpenExportModal(false)}
         exportPaymentCSV={exportSubmissionPaymentCsv}
-        unpaidSubmissions={paymentSelected}
-      /> */}
+        unpaidSubmissions={submissionsToExport}
+      />
 
       <LedgerActionButtonsContainer>
         <Grid display="flex" alignItems="center" gap="18px">
@@ -703,14 +801,8 @@ function Payouts(props) {
               </PayoutSelectionSelectMenuItem>
             ))}
           </PayoutSelectionSelect>
-          <LedgerClearSelectionButton>Clear selection</LedgerClearSelectionButton>
+          <LedgerDownloadButton onClick={handleDownloadToCSV}>Download to CSV</LedgerDownloadButton>
         </Grid>
-
-        {!paid && <LedgerDownloadButton onClick={handleExportButtonClick}>Download to CSV</LedgerDownloadButton>}
-        {/* <div>
-          <LedgerDownloadButton onClick={handleExportButtonClick}>Download to CSV</LedgerDownloadButton>
-          {noPaymentSelectedError && <ErrorText>No payments selected</ErrorText>}
-        </div> */}
 
         <Toggle items={toggleItems} />
       </LedgerActionButtonsContainer>
@@ -730,7 +822,12 @@ function Payouts(props) {
         unpaidList={unpaidList}
         processingList={processingList}
         selectAllFromChainSelected={selectAllFromChainSelected}
+        handleClearSelectItemsBasedOnChain={handleClearSelectItemsBasedOnChain}
+        handleDownloadToCSV={handleDownloadToCSV}
         canViewPaymentLink={canViewPaymentLink}
+        viewingUser={user}
+        selectedItems={selectedItems}
+        setSelectedItems={setSelectedItems}
       />
 
       {/* <StyledTableContainer>
