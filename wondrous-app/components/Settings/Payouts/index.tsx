@@ -69,13 +69,6 @@ enum ViewType {
   Unpaid = 'unpaid',
 }
 
-const imageStyle = {
-  width: '32px',
-  height: '32px',
-  borderRadius: '16px',
-  marginRight: '8px',
-};
-
 const LIMIT = 10;
 
 function PaymentItem(props) {
@@ -684,7 +677,7 @@ function Payouts(props) {
         });
       }
     }
-  }, [selectedItems, view]);
+  }, [orgId, podId, selectedItems, view]);
 
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
     ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
