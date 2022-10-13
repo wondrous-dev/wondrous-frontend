@@ -179,7 +179,7 @@ const useRejectTaskSubmission = ({ submission, handleBountyTypeCompletion }) => 
 const selectSubmissionStatus = (submission) => {
   if (!submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt)
     return SUBMISSION_STATUS.AWAITING_REVIEW;
-  if (submission?.changeRequestedAt) return SUBMISSION_STATUS.CHANGES_REQUESTED;
+  if (submission?.changeRequestedAt) return SUBMISSION_STATUS.CHANGE_REQUESTED;
   if (submission?.rejectedAt) return SUBMISSION_STATUS.REJECTED;
   if (submission?.approvedAt && submission?.paymentStatus === PAYMENT_STATUS.PAID)
     return SUBMISSION_STATUS.APPROVED_AND_PAID;
@@ -436,7 +436,7 @@ export function SubmissionItem({
             getTaskSubmissionsForTask={getTaskSubmissionsForTask}
           />
         </SubmissionItemFooter>
-        {showComments && <CommentList submission={submission} />}
+        {showComments && <CommentList submission={submission} task={fetchedTask} />}
       </SubmissionItemWrapper>
     </>
   );
