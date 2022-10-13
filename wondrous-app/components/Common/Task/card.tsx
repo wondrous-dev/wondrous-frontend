@@ -359,7 +359,7 @@ export function TaskCard({
             </a>
           </TaskTitle>
 
-          {task?.priority && (
+          {/* {task?.priority && (
             <Box
               sx={{
                 margin: '14px 0',
@@ -368,7 +368,7 @@ export function TaskCard({
               <TaskPriority value={task?.priority} />
             </Box>
           )}
-
+ */}
           {isBounty && (
             <TaskBountyOverview
               totalSubmissionsCount={task?.totalSubmissionsCount}
@@ -479,6 +479,21 @@ export function TaskCard({
                     >
                       Edit {type}
                     </DropdownItem>
+                    {!isMilestone && (
+                      <DropdownItem
+                        key={`task-menu-duplicate-${id}`}
+                        onClick={() => {
+                          duplicateTask({
+                            variables: {
+                              taskId: id,
+                            },
+                          });
+                        }}
+                        color={palette.white}
+                      >
+                        Duplicate {type}
+                      </DropdownItem>
+                    )}
                     <DropdownItem
                       key={`task-menu-edit-archive${id}`}
                       onClick={() => {
@@ -498,21 +513,6 @@ export function TaskCard({
                         color={palette.red800}
                       >
                         Delete {type}
-                      </DropdownItem>
-                    )}
-                    {!isMilestone && (
-                      <DropdownItem
-                        key={`task-menu-duplicate-${id}`}
-                        onClick={() => {
-                          duplicateTask({
-                            variables: {
-                              taskId: id,
-                            },
-                          });
-                        }}
-                        color={palette.white}
-                      >
-                        Duplicate {type}
                       </DropdownItem>
                     )}
                   </Dropdown>
