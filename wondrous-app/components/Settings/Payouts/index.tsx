@@ -1,23 +1,12 @@
+import { useRouter } from 'next/router';
+import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import Checkbox from '@mui/material/Checkbox';
 import { useInView } from 'react-intersection-observer';
 import { useMe } from 'components/Auth/withAuth';
-import { ErrorText } from 'components/Common';
-import { CompensationAmount, CompensationPill, IconContainer } from 'components/Common/Compensation/styles';
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
-import ToggleViewButton from 'components/Common/ToggleViewButton';
-import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
 import { HeaderBlock } from 'components/Settings/headerBlock';
-import { SeeMoreText } from 'components/Settings/Members/styles';
-import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
 import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
-import { PayModal } from 'components/Settings/Payouts/modal';
 import {
-  BatchPayoutButton,
-  TableCellText,
   LoadMore,
   LedgerActionButtonsContainer,
   LedgerDownloadButton,
@@ -26,18 +15,10 @@ import {
   PayoutSelectionSelectValueDisplayText,
   PayoutSelectionSelectMenuItem,
   PayoutCount,
-  StyledTableContainer,
-  StyledTable,
-  StyledTableHead,
-  StyledTableBody,
-  StyledTableRow,
-  StyledTableCell,
 } from 'components/Settings/Payouts/styles';
 import SubmissionPaymentCSVModal from 'components/Settings/Payouts/SubmissionPaymentCSVModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { GeneralSettingsContainer } from 'components/Settings/styles';
-import Tooltip from 'components/Tooltip';
-import { format } from 'date-fns';
 import { GET_ORG_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import {
   GET_PAYMENTS_FOR_ORG,
@@ -47,20 +28,14 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import isEmpty from 'lodash/isEmpty';
-import Link from 'next/link';
-import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useState } from 'react';
-import palette from 'theme/palette';
 import { delQuery } from 'utils';
 import { PERMISSIONS } from 'utils/constants';
-import { PaymentModalContext } from 'utils/contexts';
-import { cutString, parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext } from 'utils/helpers';
 import Toggle from 'components/Common/Toggle';
 import { Grid } from '@mui/material';
 import { capitalize } from 'utils/common';
-import { INITIAL_SELECTION_OPTIONS } from './constants';
 import PayoutTable from './PayoutTable';
+import { INITIAL_SELECTION_OPTIONS } from './constants';
 import { useGetPaymentMethodsForOrg } from './hooks';
 
 enum ViewType {
@@ -70,218 +45,6 @@ enum ViewType {
 }
 
 const LIMIT = 10;
-
-function PaymentItem(props) {
-  const {
-    item,
-    org,
-    podId,
-    chain,
-    setChainSelected,
-    paymentSelected,
-    setPaymentsSelected,
-    canViewPaymentLink,
-    viewingUser,
-  } = props;
-  const [openModal, setOpenModal] = useState(false);
-  const [checked, setChecked] = useState(false);
-  // useEffect(() => {
-  //   setChecked(chain === item?.chain);
-  // }, [chain, item?.chain]);
-  const imageStyle = {
-    width: '32px',
-    height: '32px',
-    borderRadius: '16px',
-    marginRight: '8px',
-  };
-  const taskHref = org
-    ? `/organization/${org?.username}/boards?task=${item.taskId}`
-    : `/pod/${podId}/boards?task=${item.taskId}`;
-  let link;
-  let linkText = null;
-  if (item?.additionalData?.manualExplorerLink) {
-    link = item?.additionalData?.manualExplorerLink;
-    linkText = item?.additionalData?.manualExplorerLink;
-  } else if (item?.additionalData?.utopiaLink) {
-    link = item?.additionalData?.utopiaLink;
-    linkText = item?.additionalData?.utopiaLink;
-  } else if ((item.chain, item.safeAddress, item.safeTxHash)) {
-    link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
-    linkText = item.safeTxHash;
-  }
-
-  const disabled =
-    (chain && item?.chain !== chain) || item?.paymentStatus === 'processing' || item?.paymentStatus === 'paid';
-
-  return (
-    <>
-      <PaymentModalContext.Provider
-        value={{
-          onPaymentComplete: () => {},
-        }}
-      >
-        {openModal && (
-          <PayModal
-            podId={podId}
-            orgId={org?.id}
-            open={openModal}
-            handleClose={() => setOpenModal(false)}
-            assigneeId={item.payeeId}
-            assigneeUsername={item.payeeUsername}
-            taskTitle={item.taskTitle}
-            submissionId={item.submissionId}
-          />
-        )}
-      </PaymentModalContext.Provider>
-      <StyledTableRow
-        style={{
-          width: '150%',
-        }}
-      >
-        {item.paymentStatus !== 'paid' && (
-          <StyledTableCell>
-            {item.payeeActiveEthAddress ? (
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
-                <TableCellText>
-                  <Checkbox
-                    style={{
-                      border: disabled ? `1px solid ${palette.grey800}` : `none`,
-                      width: 24,
-                      height: 24,
-                      color: disabled ? palette.grey800 : palette.white,
-                    }}
-                    checked={checked}
-                    disabled={disabled}
-                    onChange={() => {
-                      if (checked) {
-                        const newObj = { ...paymentSelected };
-                        delete newObj[item.submissionId];
-                        setPaymentsSelected(newObj);
-                      } else if (!checked) {
-                        const newObj = {
-                          ...paymentSelected,
-                          [item.submissionId]: item,
-                        };
-                        setPaymentsSelected(newObj);
-                      }
-                      setChecked(!checked);
-                      setChainSelected(item.chain);
-                    }}
-                    inputProps={{ 'aria-label': 'controlled' }}
-                  />
-                </TableCellText>
-                {item.paymentStatus !== 'paid' && (
-                  <>
-                    {item.paymentStatus !== 'processing' && (
-                      <BatchPayoutButton onClick={() => setOpenModal(true)}> Pay </BatchPayoutButton>
-                    )}
-                  </>
-                )}
-              </div>
-            ) : (
-              <ErrorText>User has no web3 address</ErrorText>
-            )}
-          </StyledTableCell>
-        )}
-        <StyledTableCell>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginLeft: '8px',
-            }}
-          >
-            {item?.payeeProfilePicture ? (
-              <SafeImage useNextImage={false} src={item?.payeeProfilePicture} style={imageStyle} />
-            ) : (
-              <DefaultUserImage style={imageStyle} />
-            )}
-            <TableCellText>{item?.payeeUsername}</TableCellText>
-          </div>
-        </StyledTableCell>
-        <StyledTableCell
-          style={{
-            minWidth: '120px',
-          }}
-        >
-          {item?.amount ? (
-            <CompensationPill
-              style={{
-                backGround: 'none',
-              }}
-            >
-              <IconContainer>
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <SafeImage
-                  useNextImage={false}
-                  src={item?.icon}
-                  style={{
-                    width: '24px',
-                    height: '24px',
-                  }}
-                />
-              </IconContainer>
-              <CompensationAmount>
-                {item?.amount} {item?.symbol}
-              </CompensationAmount>
-            </CompensationPill>
-          ) : (
-            <ErrorText>Reward removed from task</ErrorText>
-          )}
-        </StyledTableCell>
-        <StyledTableCell>
-          <Link href={taskHref}>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                color: palette.white,
-              }}
-            >
-              {cutString(item?.taskTitle, 30)}
-            </a>
-          </Link>
-        </StyledTableCell>
-        <StyledTableCell>
-          {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
-            <a
-              style={{
-                color: palette.white,
-              }}
-              target="_blank"
-              rel="noreferrer"
-              href={link}
-            >
-              {cutString(linkText, 15)}
-            </a>
-          )}
-        </StyledTableCell>
-        {item.chain ? (
-          <StyledTableCell>
-            <TableCellText>{item.chain}</TableCellText>
-          </StyledTableCell>
-        ) : (
-          <StyledTableCell />
-        )}
-        {item.submissionApprovedAt && (
-          <StyledTableCell>
-            <TableCellText>{format(new Date(item.submissionApprovedAt), 'MM/dd/yyyy')}</TableCellText>
-          </StyledTableCell>
-        )}
-        {item.payedAt && (
-          <StyledTableCell>
-            <TableCellText>{format(new Date(item.payedAt), 'MM/dd/yyyy')}</TableCellText>
-          </StyledTableCell>
-        )}
-      </StyledTableRow>
-    </>
-  );
-}
 
 function Payouts(props) {
   const { orgId, podId } = props;
@@ -297,28 +60,15 @@ function Payouts(props) {
 
   const [selectAllFromChainSelected, setSelectAllFromChainSelected] = useState('');
 
-  // const [chainSelected, setChainSelected] = useState(null);
-
   const [submissionsToExport, setSubmissionsToExport] = useState({});
 
   const [selectedItems, setSelectedItems] = useState({});
 
-  // const [paymentSelected, setPaymentsSelected] = useState(null);
-  // const [openBatchPayModal, setOpenBatchPayModal] = useState(false);
   const [openExportModal, setOpenExportModal] = useState(false);
-  // const [noPaymentSelectedError, setNoPaymentSelectedError] = useState(null);
 
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [processingList, setProcessingList] = useState([]);
-
-  // no payments selected error while downloading
-  // useEffect(() => {
-  //   setNoPaymentSelectedError(false);
-  //   if (!paymentSelected || Object.keys(paymentSelected).length === 0) {
-  //     setChainSelected(null);
-  //   }
-  // }, [paymentSelected]);
 
   const [getPaymentsForOrg, { fetchMore: fetchMoreOrgPayments }] = useLazyQuery(GET_PAYMENTS_FOR_ORG, {
     fetchPolicy: 'network-only',
@@ -717,8 +467,6 @@ function Payouts(props) {
     },
   ];
 
-  // const paymentSelectedAmount = paymentSelected && Object.keys(paymentSelected).length;
-
   const paymentMethods = useGetPaymentMethodsForOrg(orgId)?.map((method) => method.chain);
   const supportedPaymentChains = Array.from(new Set(paymentMethods));
 
@@ -744,12 +492,7 @@ function Payouts(props) {
   };
 
   const handleDownloadToCSV = () => {
-    // if (!paymentSelected || isEmpty(paymentSelected)) {
-    //   setNoPaymentSelectedError(true);
-    //   return;
-    // }
     setOpenExportModal(true);
-    // console.log({ selectedItems });
   };
 
   const renderSelectionValue = () => (
@@ -822,107 +565,6 @@ function Payouts(props) {
         selectedItems={selectedItems}
         setSelectedItems={setSelectedItems}
       />
-
-      {/* <StyledTableContainer>
-        <StyledTable>
-          <StyledTableHead>
-            <StyledTableRow>
-              {!paid && (
-                <StyledTableCell width={paid ? '20%' : '16%'}>
-                  {!!paymentSelectedAmount && paymentSelectedAmount > 1 && (
-                    <CreateFormPreviewButton
-                      style={{
-                        width: '120px',
-                        marginLeft: '0',
-                      }}
-                      onClick={handleBatchPayButtonClick}
-                    >
-                      Batch pay
-                    </CreateFormPreviewButton>
-                  )}
-                </StyledTableCell>
-              )}
-              <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
-                <Tooltip title="Person assigned to task" placement="top">
-                  <div>Assignee</div>
-                </Tooltip>
-              </StyledTableCell>
-              <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
-                <Tooltip title={paid ? 'Amount paid' : 'Amount owed'} placement="top">
-                  <div>Payout</div>
-                </Tooltip>
-              </StyledTableCell>
-              <StyledTableCell align="center" width="20%">
-                Deliverable
-              </StyledTableCell>
-              <StyledTableCell align="center" width={paid ? '20%' : '16%'}>
-                <Tooltip title="Proof of payment" placement="top">
-                  <div>Link</div>
-                </Tooltip>
-              </StyledTableCell>
-              <StyledTableCell>
-                <Tooltip title="Payment network" placement="top">
-                  <div>Chain</div>
-                </Tooltip>
-              </StyledTableCell>
-              <StyledTableCell align="center" width="25%">
-                {view === ViewType.Paid ? 'Paid at' : 'Approved at'}
-              </StyledTableCell>
-            </StyledTableRow>
-          </StyledTableHead>
-          <StyledTableBody>
-            {view === ViewType.Paid ? (
-              <>
-                {paidList?.map((item) => (
-                  <PaymentItem
-                    key={item?.id}
-                    item={{
-                      ...item,
-                      paymentStatus: 'paid',
-                    }}
-                    org={org}
-                    podId={podId}
-                    canViewPaymentLink={canViewPaymentLink}
-                    viewingUser={user}
-                  />
-                ))}
-              </>
-            ) : (
-              <>
-                {unpaidList?.map((item) => (
-                  <PaymentItem
-                    chain={chainSelected}
-                    setChainSelected={setChainSelected}
-                    key={item?.id}
-                    item={item}
-                    org={org}
-                    podId={podId}
-                    paymentSelected={paymentSelected}
-                    setPaymentsSelected={setPaymentsSelected}
-                    canViewPaymentLink={canViewPaymentLink}
-                    viewingUser={user}
-                  />
-                ))}
-              </>
-            )}
-          </StyledTableBody>
-        </StyledTable>
-      </StyledTableContainer> */}
-
-      {/* <PaymentModalContext.Provider
-        value={{
-          onPaymentComplete: () => {},
-        }}
-      >
-        <BatchPayModal
-          chain={chainSelected}
-          podId={podId}
-          orgId={orgId}
-          open={openBatchPayModal}
-          handleClose={() => setOpenBatchPayModal(false)}
-          unpaidSubmissions={paymentSelected}
-        />
-      </PaymentModalContext.Provider> */}
 
       <LoadMore ref={ref} hasMore={hasMore} />
     </SettingsWrapper>

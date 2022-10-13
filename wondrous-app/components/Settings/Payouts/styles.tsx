@@ -12,7 +12,6 @@ import TableRow from '@mui/material/TableRow';
 import Typography from '@mui/material/Typography';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { Button as StyledButton } from 'components/Common/button';
-import QuestionMarkIcon from 'components/Icons/questionMark.svg';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 

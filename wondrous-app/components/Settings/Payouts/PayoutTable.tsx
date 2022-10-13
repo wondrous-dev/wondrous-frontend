@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
 import Link from 'next/link';
 import format from 'date-fns/format';
 import { Grid } from '@mui/material';
@@ -16,6 +16,7 @@ import { LinkIcon } from 'components/Icons/taskModalIcons';
 import { capitalize } from 'utils/common';
 import { PaymentModalContext } from 'utils/contexts';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
+import { User } from 'types/User';
 
 import palette from 'theme/palette';
 import { PayModal } from './modal';
@@ -31,7 +32,6 @@ import {
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-  TableCellText,
   RewardChainHalfBox,
   PayoutItemLinkContainer,
   PayoutTaskTitleContainer,
@@ -41,7 +41,6 @@ import {
   PayeePayButton,
   BottomActionBar,
   BottomActionBarText,
-  LedgerDownloadButton,
   BottomActionBarPayButton,
   BottomActionBarMultipleChainSelectedErrorText,
   BottomActionBarButton,
@@ -73,7 +72,8 @@ interface PayoutTableItem {
   payeeUsername: string;
   payeeProfilePicture?: string;
   payeeActiveEthAddress?: string;
-  submissionApprovedAt: string;
+  submissionApprovedAt?: string;
+  payedAt?: string;
   paymentStatus: string;
   chain: string;
   amount: number;
@@ -85,24 +85,50 @@ interface PayoutTableItem {
   safeAddress?: string;
   txHash?: string;
   safeTxHash?: string;
+  additionalData?: {
+    manualExplorerLink?: string;
+    utopiaLink?: string;
+  };
 }
 
-const PayoutItem = (props) => {
-  const {
-    item,
-    checked = false,
-    org,
-    podId,
-    selectedItemsLength,
-    // chain,
-    // setChainSelected,
-    // paymentSelected,
-    // setPaymentsSelected,
-    canViewPaymentLink,
-    handlePay,
-    handleCheck,
-    // viewingUser,
-  } = props;
+interface PayoutItemProps {
+  item: PayoutTableItem;
+  checked?: boolean;
+  org?: {
+    id: string;
+    username: string;
+  };
+  podId?: string;
+  selectedItemsLength?: number;
+  canViewPaymentLink?: boolean;
+  handlePay?: (payeeDetails: PayeeDetails) => void;
+  handleCheck?: (item: PayoutTableItem) => void;
+}
+
+interface PayoutTableProps {
+  paid?: boolean;
+  processing?: boolean;
+  paidList?: PayoutTableItem[];
+  processingList?: PayoutTableItem[];
+  unpaidList?: PayoutTableItem[];
+  org?: {
+    id: string;
+    username: string;
+  };
+  podId?: string;
+  selectAllFromChainSelected: string;
+  handleClearSelectItemsBasedOnChain: () => void;
+  handleDownloadToCSV: () => void;
+  canViewPaymentLink?: boolean;
+  viewingUser?: User;
+  selectedItems?: {
+    [key: string]: PayoutTableItem;
+  };
+  setSelectedItems?: Dispatch<SetStateAction<{}>>;
+}
+
+const PayoutItem = (props: PayoutItemProps) => {
+  const { item, checked = false, org, podId, selectedItemsLength, canViewPaymentLink, handlePay, handleCheck } = props;
   const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
 
   let link;
@@ -111,7 +137,7 @@ const PayoutItem = (props) => {
     link = item?.additionalData?.manualExplorerLink;
   } else if (item?.additionalData?.utopiaLink) {
     link = item?.additionalData?.utopiaLink;
-  } else if ((item.chain, item.safeAddress, item.safeTxHash)) {
+  } else if (item.chain && item.safeAddress && item.safeTxHash) {
     link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
   }
 
@@ -125,21 +151,6 @@ const PayoutItem = (props) => {
       !item?.payeeActiveEthAddress,
     [selectedItemsLength, item?.amount, item?.paymentStatus, item?.payeeActiveEthAddress]
   );
-
-  // console.log({ item, isPayButtonDisabled, selectedItemsLength });
-
-  // const disabled = item.paymentStatus === PAYMENT_TYPES.UNPAID && !item.payeeActiveEthAddress;
-  // const disabled =
-  //   (chain && item?.chain !== chain) ||
-  //   item?.paymentStatus === 'processing' ||
-  //   item?.paymentStatus === 'paid' ||
-  //   !item.payeeActiveEthAddress;
-
-  // const showCheckbox = item.paymentStatus !== 'paid' && item.payeeActiveEthAddress;
-  // const showCheckbox =
-  //   item.paymentStatus === PAYMENT_TYPES.PAID ||
-  //   item.paymentStatus === PAYMENT_TYPES.PROCESSING ||
-  //   item.payeeActiveEthAddress;
 
   const address = item?.payeeActiveEthAddress;
   const addressTag = useMemo(() => {
@@ -178,7 +189,6 @@ const PayoutItem = (props) => {
           <Grid display="flex" alignItems="center" gap="8px">
             <StyledCheckbox
               checked={checked}
-              // disabled={disabled}
               onChange={() => handleCheck(item)}
               inputProps={{ 'aria-label': 'controlled' }}
             />
@@ -263,152 +273,11 @@ const PayoutItem = (props) => {
           </PayoutTaskCompletionDate>
         )}
       </StyledTableCell>
-
-      {/* <StyledTableCell> */}
-      {/* <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-            }}
-          >
-            <TableCellText>
-              {showCheckbox && (
-                <Checkbox
-                  style={{
-                    border: disabled ? `1px solid ${palette.grey800}` : `none`,
-                    width: 24,
-                    height: 24,
-                    color: disabled ? palette.grey800 : palette.white,
-                  }}
-                  checked={checked}
-                  disabled={disabled}
-                  onChange={handleItemOnCheck}
-                  inputProps={{ 'aria-label': 'controlled' }}
-                />
-              )}
-            </TableCellText>
-          </div> */}
-      {/* {item.paymentStatus !== 'paid' && (
-                  <>
-                    {item.paymentStatus !== 'processing' && (
-                      <BatchPayoutButton onClick={() => setOpenModal(true)}> Pay </BatchPayoutButton>
-                    )}
-                  </>
-                )} */}
-
-      {/* : (
-               <ErrorText>User has no web3 address</ErrorText>
-             )} */}
-      {/* <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginLeft: '8px',
-            }}
-          >
-            {item?.payeeProfilePicture ? (
-              <SafeImage useNextImage={false} src={item?.payeeProfilePicture} style={imageStyle} />
-            ) : (
-              <DefaultUserImage style={imageStyle} />
-            )}
-            <TableCellText>{item?.payeeUsername}</TableCellText>
-          </div> */}
-      {/* </StyledTableCell> */}
-
-      {/* <StyledTableCell>
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              marginLeft: '8px',
-            }}
-          >
-            {item?.payeeProfilePicture ? (
-              <SafeImage useNextImage={false} src={item?.payeeProfilePicture} style={imageStyle} />
-            ) : (
-              <DefaultUserImage style={imageStyle} />
-            )}
-            <TableCellText>{item?.payeeUsername}</TableCellText>
-          </div>
-        </StyledTableCell> */}
-      {/* <StyledTableCell
-          style={{
-            minWidth: '120px',
-          }}
-        >
-          {item?.amount ? (
-            <CompensationPill
-              style={{
-                backGround: 'none',
-              }}
-            >
-              <IconContainer>
-                <SafeImage
-                  useNextImage={false}
-                  src={item?.icon}
-                  style={{
-                    width: '24px',
-                    height: '24px',
-                  }}
-                />
-              </IconContainer>
-              <CompensationAmount>
-                {item?.amount} {item?.symbol}
-              </CompensationAmount>
-            </CompensationPill>
-          ) : (
-            <ErrorText>Reward removed from task</ErrorText>
-          )}
-        </StyledTableCell> */}
-      {/* <StyledTableCell>
-          <Link href={taskHref}>
-            <a
-              target="_blank"
-              rel="noreferrer"
-              style={{
-                color: palette.white,
-              }}
-            >
-              {cutString(item?.taskTitle, 30)}
-            </a>
-          </Link>
-        </StyledTableCell> */}
-      {/* <StyledTableCell>
-          {(canViewPaymentLink || viewingUser?.id === item?.payeeId) && (
-            <a
-              style={{
-                color: palette.white,
-              }}
-              target="_blank"
-              rel="noreferrer"
-              href={link}
-            >
-              {cutString(linkText, 15)}
-            </a>
-          )}
-        </StyledTableCell> */}
-      {/* {item.chain ? (
-          <StyledTableCell>
-            <TableCellText>{item.chain}</TableCellText>
-          </StyledTableCell>
-        ) : (
-          <StyledTableCell />
-        )}
-        {item.submissionApprovedAt && (
-          <StyledTableCell>
-            <TableCellText>{format(new Date(item.submissionApprovedAt), 'MM/dd/yyyy')}</TableCellText>
-          </StyledTableCell>
-        )}
-        {item.payedAt && (
-          <StyledTableCell>
-            <TableCellText>{format(new Date(item.payedAt), 'MM/dd/yyyy')}</TableCellText>
-          </StyledTableCell>
-        )} */}
     </StyledTableRow>
   );
 };
 
-const PayoutTable = (props) => {
+const PayoutTable = (props: PayoutTableProps) => {
   const {
     paid,
     processing,
@@ -427,7 +296,7 @@ const PayoutTable = (props) => {
     setSelectedItems,
     // user,
     // setChainSelected,
-    paymentSelected,
+    // paymentSelected,
     // setPaymentsSelected,
   } = props;
 
@@ -457,7 +326,7 @@ const PayoutTable = (props) => {
     );
 
   useEffect(() => {
-    const newSelectedItems = {};
+    const newSelectedItems = {} as { [key: string]: PayoutTableItem };
     if (selectAllFromChainSelected === 'all') {
       paymentslist.forEach((item) => {
         newSelectedItems[item?.submissionId] = item;
@@ -494,20 +363,6 @@ const PayoutTable = (props) => {
     } else {
       setSelectedItems((_) => ({ ...selectedItems, [item?.submissionId]: item }));
     }
-
-    // if (checked) {
-    //   const newObj = { ...paymentSelected };
-    //   delete newObj[item.submissionId];
-    //   setPaymentsSelected(newObj);
-    // } else if (!checked) {
-    //   const newObj = {
-    //     ...paymentSelected,
-    //     [item.submissionId]: item,
-    //   };
-    //   setPaymentsSelected(newObj);
-    // }
-    // setChecked(!checked);
-    // setChainSelected(item.chain);
   };
 
   const handleClearSelections = () => {
@@ -616,7 +471,7 @@ const PayoutTable = (props) => {
           <StyledTableBody>
             {paymentslist.map((item) => (
               <PayoutItem
-                key={item.id || item.task?.id}
+                key={item.submissionId}
                 item={item}
                 checked={!!selectedItems[item?.submissionId]}
                 org={org}
