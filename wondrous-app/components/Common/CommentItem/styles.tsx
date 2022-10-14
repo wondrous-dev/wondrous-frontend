@@ -35,13 +35,15 @@ export const RoleStatusWrapper = styled.div`
 `;
 
 export const Role = styled(Typography)`
-  background: ${palette.grey99};
-  color: #ccbbff;
-  padding: 4px 8px;
-  height: 26px;
-  font-weight: 500;
-  font-size: 14px;
-  border-radius: 4px;
+  && {
+    background: ${palette.grey99};
+    color: ${palette.blue20};
+    padding: 4px 8px;
+    height: 26px;
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 4px;
+  }
 `;
 
 export const ProfileCommentContainer = styled.div`
