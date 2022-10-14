@@ -1,7 +1,8 @@
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import { useCSVReader, formatFileSize } from 'react-papaparse';
 import DocumentIcon from 'components/Icons/DocumentIcon';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { DropZone, DropZoneFileContainer, DropZoneFileName, DropZoneFileRemoveButton, DropZoneIcon } from './styles';
 
 interface Props {
@@ -50,9 +51,17 @@ const CSVFileDropzone = (props: Props) => {
             >
               <DocumentIcon width="36px" height="36px" />
               <Grid display="flex" alignItems="center">
-                <DropZoneFileName>
+                <Typography
+                  fontFamily={typography.fontFamily}
+                  fontWeight={500}
+                  fontSize="12px"
+                  color={palette.white}
+                  bgcolor={palette.grey850}
+                  padding="2px 8px"
+                  borderRadius="60px"
+                >
                   {acceptedFile.name} ( {formatFileSize(acceptedFile.size)} )
-                </DropZoneFileName>
+                </Typography>
                 <Grid
                   display="flex"
                   alignItems="center"

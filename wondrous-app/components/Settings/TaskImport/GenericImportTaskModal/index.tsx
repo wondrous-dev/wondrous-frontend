@@ -2,6 +2,7 @@ import { useCallback, useContext, useEffect, useState } from 'react';
 import { useMutation } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import Modal from 'components/Modal';
 import useAlerts from 'hooks/useAlerts';
 import CSVFileDropzone from 'components/Common/CSVFileDropZone';
 import { IMPORT_TASKS } from 'graphql/mutations';
@@ -97,8 +98,9 @@ function GenericImportTaskModal(props: Props) {
     (ev) => {
       const selectedImportFormat = IMPORT_FORMAT_OPTIONS.find((format) => format.value === ev.target.value);
       setImportFormat(selectedImportFormat);
+      setTasksData(DEFAULT_TASKS_DATA);
     },
-    [IMPORT_FORMAT_OPTIONS]
+    [IMPORT_FORMAT_OPTIONS, DEFAULT_TASKS_DATA]
   );
 
   const handleFileUpload = useCallback(
@@ -149,89 +151,84 @@ function GenericImportTaskModal(props: Props) {
   );
 
   return (
-    <GenericImportTaskModalWrapper open={isOpen} onClose={handleClose} closeAfterTransition>
-      <GenericImportTaskModalCard>
-        <GenericImportTaskModalHeader>
-          <GenericImportTaskModalHeaderText>Import Tasks</GenericImportTaskModalHeaderText>
-          <GenericImportTaskModalHeaderCloseModalIcon onClick={handleClose} />
-        </GenericImportTaskModalHeader>
-        <Grid display="flex" flexDirection="column" gap="26px" padding="24px" bgcolor={palette.grey900}>
-          <GenericImportTaskModalInputWrapper>
-            <GenericImportTaskModalLabel htmlFor="import-format">Import format</GenericImportTaskModalLabel>
-            <GenericImportTaskModalSelect
-              id="import-format"
-              value={importFormat}
-              renderValue={renderImportFromValue}
-              onChange={handleImportFormatChange}
-            >
-              {IMPORT_FORMAT_OPTIONS.map((format) => (
-                <GenericImportTaskModalSelectMenuItem key={format.value} value={format.value}>
-                  {format.icon}
-                  {format.label}
-                </GenericImportTaskModalSelectMenuItem>
-              ))}
-            </GenericImportTaskModalSelect>
-          </GenericImportTaskModalInputWrapper>
-          <GenericImportTaskModalBodyExpandedViewWrapper
-            expanded={isExpandedViewVisible}
-            TransitionProps={{ unmountOnExit: true }}
-          >
-            <GenericImportTaskModalBodyExpandedViewInvisibleState />
-            {importFormat?.value && (
-              <>
-                <GenericImportTaskModalInputWrapper>
-                  <GenericImportTaskModalLabel htmlFor="upload-zone">
-                    Upload file {importFormat?.value === IMPORT_FORMATS.GENERAL && ' | CSV File should follow this'}
-                    {importFormat?.value === IMPORT_FORMATS.GENERAL && (
-                      <GenericImportTaskModalLabelHelperLink
-                        href="https://docs.google.com/spreadsheets/d/1byibx7lPAhQRj2FgNevYco0e66KwXpd6PHUoBK3cyFY/edit?usp=sharing"
-                        target="_blank"
-                        noreferrer
-                        noopener
-                      >
-                        format
-                      </GenericImportTaskModalLabelHelperLink>
-                    )}
-                  </GenericImportTaskModalLabel>
-                  <CSVFileDropzone
-                    handleFileUpload={handleFileUpload}
-                    handleFileRemove={handleFileRemove}
-                    key={importFormat?.value}
-                    isDisabled={isImportInProgress}
-                  />
-                </GenericImportTaskModalInputWrapper>
-                {error && (
-                  <Typography
-                    fontFamily={typography.fontFamily}
-                    fontWeight={500}
-                    fontSize="12px"
-                    lineHeight="14px"
-                    color={palette.red400}
-                    paddingLeft="4px"
-                  >
-                    {error}
-                  </Typography>
-                )}
-              </>
-            )}
-          </GenericImportTaskModalBodyExpandedViewWrapper>
-        </Grid>
-        <Grid
-          display="flex"
-          alignItems="center"
-          justifyContent="flex-end"
-          gap="18px"
-          padding="24px"
-          bgcolor={palette.black97}
-        >
+    <Modal
+      open={isOpen}
+      onClose={handleClose}
+      title="Import Tasks"
+      maxWidth={560}
+      alignCenter
+      footerRight={
+        <Grid display="flex" alignItems="center" justifyContent="flex-end" gap="18px" bgcolor={palette.black97}>
           <GenericImportTaskModalFooterButton onClick={handleClose}>Cancel</GenericImportTaskModalFooterButton>
           <GenericImportTaskModalFooterButton isPrimary disabled={isImportButtonDisabled} onClick={handleImportTasks}>
             {isImportInProgress ? 'Importing tasks' : 'Start importing'}{' '}
             {isImportInProgress && <GenericImportTaskModalProgressSpinner size={16} />}
           </GenericImportTaskModalFooterButton>
         </Grid>
-      </GenericImportTaskModalCard>
-    </GenericImportTaskModalWrapper>
+      }
+    >
+      <Grid display="flex" flexDirection="column" gap="26px" bgcolor={palette.grey900}>
+        <GenericImportTaskModalInputWrapper>
+          <GenericImportTaskModalLabel htmlFor="import-format">Import format</GenericImportTaskModalLabel>
+          <GenericImportTaskModalSelect
+            id="import-format"
+            value={importFormat}
+            renderValue={renderImportFromValue}
+            onChange={handleImportFormatChange}
+          >
+            {IMPORT_FORMAT_OPTIONS.map((format) => (
+              <GenericImportTaskModalSelectMenuItem key={format.value} value={format.value}>
+                {format.icon}
+                {format.label}
+              </GenericImportTaskModalSelectMenuItem>
+            ))}
+          </GenericImportTaskModalSelect>
+        </GenericImportTaskModalInputWrapper>
+        <GenericImportTaskModalBodyExpandedViewWrapper
+          expanded={isExpandedViewVisible}
+          TransitionProps={{ unmountOnExit: true }}
+        >
+          <GenericImportTaskModalBodyExpandedViewInvisibleState />
+          {importFormat?.value && (
+            <>
+              <GenericImportTaskModalInputWrapper>
+                <GenericImportTaskModalLabel htmlFor="upload-zone">
+                  Upload file {importFormat?.value === IMPORT_FORMATS.GENERAL && ' | CSV File should follow this'}
+                  {importFormat?.value === IMPORT_FORMATS.GENERAL && (
+                    <GenericImportTaskModalLabelHelperLink
+                      href="https://docs.google.com/spreadsheets/d/1byibx7lPAhQRj2FgNevYco0e66KwXpd6PHUoBK3cyFY/edit?usp=sharing"
+                      target="_blank"
+                      noreferrer
+                      noopener
+                    >
+                      format
+                    </GenericImportTaskModalLabelHelperLink>
+                  )}
+                </GenericImportTaskModalLabel>
+                <CSVFileDropzone
+                  handleFileUpload={handleFileUpload}
+                  handleFileRemove={handleFileRemove}
+                  key={importFormat?.value}
+                  isDisabled={isImportInProgress}
+                />
+              </GenericImportTaskModalInputWrapper>
+              {error && (
+                <Typography
+                  fontFamily={typography.fontFamily}
+                  fontWeight={500}
+                  fontSize="12px"
+                  lineHeight="14px"
+                  color={palette.red400}
+                  paddingLeft="4px"
+                >
+                  {error}
+                </Typography>
+              )}
+            </>
+          )}
+        </GenericImportTaskModalBodyExpandedViewWrapper>
+      </Grid>
+    </Modal>
   );
 }
 
