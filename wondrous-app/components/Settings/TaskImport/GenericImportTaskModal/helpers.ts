@@ -42,27 +42,27 @@ const getFormattedDescription = (description: string) => {
 
     const formattedParagraph = { type: 'paragraph', children: [] };
 
-    const content = paragraph.split(regexToMatch)?.filter((c) => !!c);
+    const content = paragraph.split(regexToMatch)?.filter((splitContentPart) => !!splitContentPart);
 
-    content?.forEach((c) => {
-      if (URL_REGEX.test(c)) {
+    content?.forEach((splitContent) => {
+      if (URL_REGEX.test(splitContent)) {
         formattedParagraph.children.push({
           type: 'link',
-          href: c,
+          href: splitContent,
           children: [{ text: 'link' }],
         });
-      } else if (BOLD_REGEX.test(c)) {
+      } else if (BOLD_REGEX.test(splitContent)) {
         formattedParagraph.children.push({
           bold: true,
-          text: c.replace(/\*/g, ''),
+          text: splitContent.replace(/\*/g, ''),
         });
-      } else if (ITALIC_REGEX.test(c)) {
+      } else if (ITALIC_REGEX.test(splitContent)) {
         formattedParagraph.children.push({
           italic: true,
-          text: c.replace(/\*/g, ''),
+          text: splitContent.replace(/\*/g, ''),
         });
       } else {
-        formattedParagraph.children.push({ text: c });
+        formattedParagraph.children.push({ text: splitContent });
       }
     });
 

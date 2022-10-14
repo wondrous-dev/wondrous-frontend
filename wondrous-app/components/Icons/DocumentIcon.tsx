@@ -1,5 +1,13 @@
-const DocumentIcon = ({ fill = 'none', stroke = 'currentColor', className = '' }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" fill={fill} stroke={stroke} className={className} viewBox="0 0 24 24">
+const DocumentIcon = ({ fill = 'none', stroke = 'currentColor', className = '', height, width }) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    fill={fill}
+    stroke={stroke}
+    className={className}
+    height={height}
+    width={width}
+    viewBox="0 0 24 24"
+  >
     <path
       strokeLinecap="round"
       strokeLinejoin="round"

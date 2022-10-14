@@ -1,16 +1,17 @@
 import { Grid } from '@mui/material';
 import { useCSVReader, formatFileSize } from 'react-papaparse';
+import DocumentIcon from 'components/Icons/DocumentIcon';
 import palette from 'theme/palette';
 import { DropZone, DropZoneFileContainer, DropZoneFileName, DropZoneFileRemoveButton, DropZoneIcon } from './styles';
 
-interface ICSVFileDropzoneProps {
+interface Props {
   handleFileUpload: (results) => void;
   handleFileRemove?: () => void;
   dropText?: string;
   isDisabled?: boolean;
 }
 
-const CSVFileDropzone = (props: ICSVFileDropzoneProps) => {
+const CSVFileDropzone = (props: Props) => {
   const {
     handleFileUpload,
     handleFileRemove,
@@ -28,7 +29,7 @@ const CSVFileDropzone = (props: ICSVFileDropzoneProps) => {
       noClick={isDisabled}
       skipEmptyLines
     >
-      {({ getRootProps, acceptedFile, getRemoveFileProps, Remove }: any) => (
+      {({ getRootProps, acceptedFile, getRemoveFileProps, Remove }) => (
         <DropZone
           {...getRootProps()}
           onDragOver={(event: DragEvent) => {
@@ -39,13 +40,24 @@ const CSVFileDropzone = (props: ICSVFileDropzoneProps) => {
           }}
         >
           {acceptedFile ? (
-            <DropZoneFileContainer>
-              <DropZoneIcon />
+            <Grid
+              display="flex"
+              flexDirection="column"
+              alignItems="center"
+              justifyContent="center"
+              gap="12px"
+              position="relative"
+            >
+              <DocumentIcon width="36px" height="36px" />
               <Grid display="flex" alignItems="center">
                 <DropZoneFileName>
                   {acceptedFile.name} ( {formatFileSize(acceptedFile.size)} )
                 </DropZoneFileName>
-                <DropZoneFileRemoveButton
+                <Grid
+                  display="flex"
+                  alignItems="center"
+                  justifyContent="center"
+                  marginLeft="6px"
                   {...getRemoveFileProps()}
                   onMouseOver={(event: Event) => {
                     event.preventDefault();
@@ -59,9 +71,9 @@ const CSVFileDropzone = (props: ICSVFileDropzoneProps) => {
                   }}
                 >
                   <Remove color={palette.red200} />
-                </DropZoneFileRemoveButton>
+                </Grid>
               </Grid>
-            </DropZoneFileContainer>
+            </Grid>
           ) : (
             dropText
           )}

@@ -1,14 +1,11 @@
-import {
-  Accordion,
-  AccordionDetails,
-  AccordionSummary,
-  CircularProgress,
-  MenuItem,
-  Modal,
-  Select,
-  Typography,
-} from '@mui/material';
 import styled from 'styled-components';
+import Accordion from '@mui/material/Accordion';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import CircularProgress from '@mui/material/CircularProgress';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from '@mui/material/Modal';
+import Select from '@mui/material/Select';
+import Typography from '@mui/material/Typography';
 import CloseModalIcon from 'components/Icons/closeModal';
 import AttachFileSvg from 'components/Icons/attachFile.svg';
 import { Button } from 'components/Common/button';
