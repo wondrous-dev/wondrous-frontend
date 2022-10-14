@@ -167,7 +167,7 @@ export const Rewards = ({ fetchedTask, user, withLabel = true }) => {
                 <TaskSectionInfoPaymentAmount>
                   {rewardAmount} {symbol}
                 </TaskSectionInfoPaymentAmount>
-                <TaskSectionInfoPaymentMethodChain>paid on {chain}</TaskSectionInfoPaymentMethodChain>
+                <TaskSectionInfoPaymentMethodChain> On {chain}</TaskSectionInfoPaymentMethodChain>
                 {user ? <ConnectToWallet user={user} /> : null}
               </TaskSectionInfoPaymentWrapper>
             )}
