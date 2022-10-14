@@ -21,7 +21,8 @@ export const StatusWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 5px;
-  height: 28px;
+  height: 26px;
+  width: fit-content;
   svg {
     width: 24px;
     height: 24px;

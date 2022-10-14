@@ -1,12 +1,12 @@
 import { Typography } from '@mui/material';
-import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
-import styled from 'styled-components';
-import palette from 'theme/palette';
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
+import styled from 'styled-components';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const CommentListWrapper = styled.div``;
 
@@ -105,6 +105,7 @@ export const AddCommentContainer = styled.div`
   display: flex;
   flex-direction: column;
   text-align: left;
+  margin-top: 12px;
 `;
 const editorPadding = 12;
 const editorMinHeight = 100;
@@ -118,10 +119,36 @@ export const EditorContainer = styled.div`
 export const EditorPlaceholder = styled.div`
   min-height: ${editorMinHeight - editorPadding * 2}px;
 `;
-export const AddCommentButton = styled(CreateFormPreviewButton)`
+export const AddCommentButton = styled(Button)`
   && {
+    background: linear-gradient(
+      270deg,
+      ${palette.blue20} -5.62%,
+      ${palette.highlightPurple} 45.92%,
+      ${palette.highlightBlue} 103.12%
+    );
     margin-top: 16px;
     align-self: flex-end;
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-weight: 500;
+    height: 40px;
+    min-height: fit-content;
+    width: fit-content;
+    z-index: 1;
+    > button {
+      background: ${palette.background.default};
+      height: 38px;
+      font-size: 14px;
+      line-height: 0;
+      font-family: ${typography.fontFamily};
+      font-weight: 500;
+      padding: 0 18px;
+      :hover {
+        background: transparent;
+        color: ${palette.background.default};
+      }
+    }
   }
 `;
 
