@@ -638,12 +638,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
                         <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
                         <TaskModalTaskStatusMoreInfo>
-                          {/* {!isTaskProposal && !isMilestone && canEdit && (
-                            <DiscordThreadButton >
-                              <DiscordIcon />
-                              <TaskModalSnapshotText>Open Discussion</TaskModalSnapshotText>
-                            </DiscordThreadButton>
-                          )} */}
                           {fetchedTask?.snapshotId && (
                             <TaskModalSnapshot onClick={handleSnapshot}>
                               <TaskModalSnapshotLogo />
