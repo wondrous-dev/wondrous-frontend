@@ -260,15 +260,26 @@ function SubmissionEditButton({ isCreator, approvedAt, onClick }) {
   return null;
 }
 
-function SubmissionRejectButton({ submission, rejectTaskSubmission }) {
+function SubmissionRejectButton({ submission, rejectTaskSubmission, commentType }) {
   const { rejectedAt, paymentStatus } = submission;
   const hasBeenPaidOrIsBeingProcessed =
     paymentStatus === PAYMENT_STATUS.PAID || paymentStatus === PAYMENT_STATUS.PROCESSING;
   if (rejectedAt || hasBeenPaidOrIsBeingProcessed) return null;
-  return <SubmissionButtonReject onClick={rejectTaskSubmission}>Reject</SubmissionButtonReject>;
+  return (
+    <SubmissionButtonReject onClick={rejectTaskSubmission} selected={!commentType}>
+      Reject
+    </SubmissionButtonReject>
+  );
 }
 
-function SubmissionRequestChangeButton({ submission, setShowComments, setShowCommentBox, setCommentType }) {
+function SubmissionRequestChangeButton({
+  submission,
+  setShowComments,
+  setShowCommentBox,
+  setCommentType,
+  commentType,
+}) {
+  const selected = commentType ? commentType === SUBMISSION_STATUS.CHANGE_REQUESTED : true;
   const { changeRequestedAt, approvedAt, rejectedAt } = submission;
   if (changeRequestedAt || approvedAt || rejectedAt) return null;
   const handleOnClick = () => {
@@ -276,7 +287,11 @@ function SubmissionRequestChangeButton({ submission, setShowComments, setShowCom
     setShowComments(false);
     setShowCommentBox(true);
   };
-  return <SubmissionButtonRequestChange onClick={handleOnClick}>Request changes</SubmissionButtonRequestChange>;
+  return (
+    <SubmissionButtonRequestChange onClick={handleOnClick} selected={selected}>
+      Request changes
+    </SubmissionButtonRequestChange>
+  );
 }
 
 function SubmissionApproveTaskButton({
@@ -286,7 +301,9 @@ function SubmissionApproveTaskButton({
   setShowComments,
   setShowCommentBox,
   approveSubmission,
+  commentType,
 }) {
+  const selected = commentType ? commentType === SUBMISSION_STATUS.APPROVED : true;
   const handleOnClick = () => {
     setCommentType(SUBMISSION_STATUS.APPROVED);
     approveSubmission();
@@ -295,7 +312,7 @@ function SubmissionApproveTaskButton({
   };
   if (!submission.approvedAt && fetchedTaskType === TASK_TYPE)
     return (
-      <SubmissionButtonApprove data-cy="button-approve" onClick={handleOnClick}>
+      <SubmissionButtonApprove data-cy="button-approve" onClick={handleOnClick} selected={selected}>
         Approve
       </SubmissionButtonApprove>
     );
@@ -447,12 +464,17 @@ export function SubmissionItem({
         />
         <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
         <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
-          <SubmissionRejectButton submission={submission} rejectTaskSubmission={rejectTaskSubmission} />
+          <SubmissionRejectButton
+            submission={submission}
+            rejectTaskSubmission={rejectTaskSubmission}
+            commentType={commentType}
+          />
           <SubmissionRequestChangeButton
             submission={submission}
             setShowComments={setShowComments}
             setShowCommentBox={setShowCommentBox}
             setCommentType={setCommentType}
+            commentType={commentType}
           />
           <SubmissionApproveTaskButton
             submission={submission}
@@ -461,6 +483,7 @@ export function SubmissionItem({
             setShowComments={setShowComments}
             setShowCommentBox={setShowCommentBox}
             approveSubmission={approveSubmission}
+            commentType={commentType}
           />
           <SubmissionApproveBountyButton
             submission={submission}

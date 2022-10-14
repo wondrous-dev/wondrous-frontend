@@ -107,49 +107,67 @@ export const SubmissionButtonEdit = styled(ButtonBase)`
   }
 `;
 
-const ButtonStyle = css`
-  && {
-    border-radius: 100px;
-    color: ${palette.white};
+const ButtonStyleSelected = css`
+  ${({ selected }) =>
+    selected &&
+    `
+  > button {
+    background: ${palette.background.default};
+    :hover {
+      background: ${palette.background.default};
+    }
+  }
+ `}
+`;
+
+const ButtonStyleBase = css`
+  background: ${palette.grey78};
+  border-radius: 100px;
+  color: ${palette.white};
+  font-family: ${typography.fontFamily};
+  font-weight: 500;
+  height: 30px;
+  min-height: fit-content;
+  width: fit-content;
+  z-index: 1;
+  > button {
+    background: ${palette.grey900};
+    height: 28px;
+    font-size: 14px;
+    line-height: 0;
     font-family: ${typography.fontFamily};
     font-weight: 500;
-    height: 30px;
-    min-height: fit-content;
-    width: fit-content;
-    z-index: 1;
-    > button {
-      background: ${palette.background.default};
-      height: 28px;
-      font-size: 14px;
-      line-height: 0;
-      font-family: ${typography.fontFamily};
-      font-weight: 500;
-      padding: 0 16px;
-      :hover {
-        background: ${palette.background.default};
-      }
+    padding: 0 16px;
+    :hover {
+      background: ${palette.grey900};
     }
   }
 `;
 
 export const SubmissionButtonRequestChange = styled(Button)`
   && {
-    ${ButtonStyle}
-    background: linear-gradient(270deg, #ffd653 -5.62%, #7427ff 103.12%);
+    ${ButtonStyleBase}
+    ${ButtonStyleSelected}
+    background: ${({ selected }) =>
+      selected && `linear-gradient(270deg, ${palette.yellow800} -5.62%, ${palette.highlightPurple} 103.12%)`};
   }
 `;
 
 export const SubmissionButtonReject = styled(Button)`
   && {
-    ${ButtonStyle}
-    background: linear-gradient(270deg, #f93701 -5.62%, #7427ff 103.12%);
+    ${ButtonStyleBase}
+    ${ButtonStyleSelected}
+    background: ${({ selected }) =>
+      selected && `linear-gradient(270deg, ${palette.red300} -5.62%, ${palette.highlightPurple} 103.12%)`};
   }
 `;
 
 export const SubmissionButtonApprove = styled(Button)`
   && {
-    ${ButtonStyle}
-    background: linear-gradient(270deg, #06ffa5 -5.62%, #7427ff 103.12%);
+    ${ButtonStyleBase}
+    ${ButtonStyleSelected}
+    background: ${({ selected }) =>
+      selected && `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%)`}
   }
 `;
 
