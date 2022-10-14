@@ -145,8 +145,7 @@ export const AddCommentButton = styled(Button)`
       font-weight: 500;
       padding: 0 18px;
       :hover {
-        background: transparent;
-        color: ${palette.background.default};
+        background: ${palette.background.default};
       }
     }
   }
