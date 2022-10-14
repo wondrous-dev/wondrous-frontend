@@ -5,8 +5,9 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import useAlerts from 'hooks/useAlerts';
 import CSVFileDropzone from 'components/Common/CSVFileDropZone';
 import { IMPORT_TASKS } from 'graphql/mutations';
-import { Grid } from '@mui/material';
+import { Grid, Typography } from '@mui/material';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { DEFAULT_IMPORT_FORMAT, IMPORT_FORMAT_OPTIONS, IMPORT_FORMATS, DEFAULT_TASKS_DATA } from './constants';
 import {
   GenericImportTaskModalBody,
@@ -118,7 +119,7 @@ function GenericImportTaskModal(props: Props) {
           formattedData = getTasksFromGenericData(data, isOrg, orgOrdPodId);
         }
 
-        const formattedDataIdentifier = new Date().getTime();
+        const formattedDataIdentifier = Date.now();
 
         setTasksData((_) => ({ tasks: formattedData, key: formattedDataIdentifier }));
       } catch (error) {
@@ -128,6 +129,10 @@ function GenericImportTaskModal(props: Props) {
     },
     [importFormat?.value]
   );
+
+  const handleFileRemove = useCallback(() => {
+    setTasksData(DEFAULT_TASKS_DATA);
+  }, [DEFAULT_TASKS_DATA]);
 
   const handleImportTasks = useCallback(() => {
     setIsImportInProgress(true);
@@ -190,11 +195,23 @@ function GenericImportTaskModal(props: Props) {
                   </GenericImportTaskModalLabel>
                   <CSVFileDropzone
                     handleFileUpload={handleFileUpload}
+                    handleFileRemove={handleFileRemove}
                     key={importFormat?.value}
                     isDisabled={isImportInProgress}
                   />
                 </GenericImportTaskModalInputWrapper>
-                {error && <GenericImportTaskModalError>{error}</GenericImportTaskModalError>}
+                {error && (
+                  <Typography
+                    fontFamily={typography.fontFamily}
+                    fontWeight={500}
+                    fontSize="12px"
+                    lineHeight="14px"
+                    color={palette.red400}
+                    paddingLeft="4px"
+                  >
+                    {error}
+                  </Typography>
+                )}
               </>
             )}
           </GenericImportTaskModalBodyExpandedViewWrapper>
