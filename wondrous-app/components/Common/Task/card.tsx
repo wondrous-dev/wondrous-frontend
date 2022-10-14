@@ -515,21 +515,6 @@ export function TaskCard({
                         Delete {type}
                       </DropdownItem>
                     )}
-                    {!isMilestone && (
-                      <DropdownItem
-                        key={`task-menu-duplicate-${id}`}
-                        onClick={() => {
-                          duplicateTask({
-                            variables: {
-                              taskId: id,
-                            },
-                          });
-                        }}
-                        color={palette.white}
-                      >
-                        Duplicate {type}
-                      </DropdownItem>
-                    )}
                   </Dropdown>
                 </span>
               </Tooltip>
