@@ -794,8 +794,8 @@ export const SubmissionDescription = styled.div`
 
 export const GiveKudosButton = styled(ButtonBase)`
   && {
-    background: #313131;
-    color: #ccbbff;
+    background: ${palette.grey87};
+    color: ${palette.blue20};
     height: 40px;
     width: fit-content;
     font-family: ${typography.fontFamily};
@@ -809,7 +809,7 @@ export const GiveKudosButton = styled(ButtonBase)`
     gap: 8px;
     svg {
       path {
-        fill: #00baff;
+        fill: ${palette.highlightBlue};
       }
     }
   }
