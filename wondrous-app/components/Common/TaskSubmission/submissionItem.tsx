@@ -319,9 +319,14 @@ function SubmissionApproveTaskButton({
   return null;
 }
 
-function SubmissionApproveBountyButton({ submission, fetchedTaskType, onClick }) {
+function SubmissionApproveBountyButton({ submission, fetchedTaskType, onClick, commentType }) {
+  const selected = commentType ? commentType === SUBMISSION_STATUS.APPROVED : true;
   if (!submission.approvedAt && fetchedTaskType === BOUNTY_TYPE)
-    return <SubmissionButtonApprove onClick={onClick}>Approve</SubmissionButtonApprove>;
+    return (
+      <SubmissionButtonApprove onClick={onClick} selected={selected}>
+        Approve
+      </SubmissionButtonApprove>
+    );
   return null;
 }
 
@@ -489,6 +494,7 @@ export function SubmissionItem({
             submission={submission}
             fetchedTaskType={fetchedTask?.type}
             onClick={approveBountySubmission}
+            commentType={commentType}
           />
         </SubmissionReviewButtons>
         <SubmissionBountyPaymentButton
