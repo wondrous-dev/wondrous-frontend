@@ -126,8 +126,7 @@ const ButtonStyle = css`
       font-weight: 500;
       padding: 0 16px;
       :hover {
-        background: transparent;
-        color: ${palette.background.default};
+        background: ${palette.background.default};
       }
     }
   }
@@ -152,6 +151,12 @@ export const SubmissionButtonApprove = styled(Button)`
     ${ButtonStyle}
     background: linear-gradient(270deg, #06ffa5 -5.62%, #7427ff 103.12%);
   }
+`;
+
+export const SubmissionFilterCreateWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 `;
 
 export const SubmissionFilterSelectButton = styled(ButtonBase)`

@@ -28,6 +28,7 @@ import {
   TaskSubmissionsFormInactiveWrapper,
   HideSubmissionsCheckBoxDiv,
   HideSubmissionsHelperText,
+  SubmissionFilterCreateWrapper,
 } from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
@@ -101,8 +102,8 @@ function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveP
 }
 
 function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission }) {
-  if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
-    if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
+  if (canSubmit && (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW)) {
+    return <SubmissionButtonCreate onClick={setMakeSubmission}>Make a submission</SubmissionButtonCreate>;
   }
   return null;
 }
@@ -253,10 +254,17 @@ export function TaskSubmissions(props) {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
-        <TaskSubmissionsFilter
-          fetchedTaskSubmissions={fetchedTaskSubmissions}
-          setFilteredSubmissions={setFilteredSubmissions}
-        />
+        <SubmissionFilterCreateWrapper>
+          <TaskSubmissionsFilter
+            fetchedTaskSubmissions={fetchedTaskSubmissions}
+            setFilteredSubmissions={setFilteredSubmissions}
+          />
+          <TaskSubmissionsTaskInProgress
+            canSubmit={canSubmit}
+            setMakeSubmission={setMakeSubmission}
+            taskStatus={taskStatus}
+          />
+        </SubmissionFilterCreateWrapper>
         {isBounty &&
           fetchedTask?.status !== TASK_STATUS_DONE &&
           fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
@@ -269,11 +277,7 @@ export function TaskSubmissions(props) {
               handleTaskProgressStatus={handleTaskProgressStatus}
               taskStatus={taskStatus}
             />
-            <TaskSubmissionsTaskInProgress
-              canSubmit={canSubmit}
-              setMakeSubmission={setMakeSubmission}
-              taskStatus={taskStatus}
-            />
+
             <TaskSubmissionMakePayment
               fetchedTask={fetchedTask}
               fetchedTaskSubmissions={fetchedTaskSubmissions}
