@@ -1,4 +1,5 @@
-import { ButtonBase, InputAdornment, InputBase, Menu, MenuItem, Popper, Typography } from '@mui/material';
+import { ButtonBase, InputAdornment, InputBase, Menu, MenuItem, Typography } from '@mui/material';
+import Button from 'components/Button';
 import { Button as ButtonGradient } from 'components/Common/button';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
@@ -13,8 +14,9 @@ import { EmptyStateSubmissionsIcon } from 'components/Icons/emptyStates';
 import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import LinkIcon from 'components/Icons/linkSubmissionIcon.svg';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const TaskSubmissionEmptyStateContainer = styled.div`
   width: 100%;
@@ -105,49 +107,50 @@ export const SubmissionButtonEdit = styled(ButtonBase)`
   }
 `;
 
-export const SubmissionButtonRequestChange = styled(ButtonBase)`
+const ButtonStyle = css`
   && {
-    border: 1px solid #474747;
-    width: max-content;
-    height: 28px;
     border-radius: 100px;
-    font-family: 'Space Grotesk';
-    padding: 7px 16px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
-    font-weight: ${theme.typography.fontWeightMedium};
-  `}
+    color: ${palette.white};
+    font-family: ${typography.fontFamily};
+    font-weight: 500;
+    height: 30px;
+    min-height: fit-content;
+    width: fit-content;
+    z-index: 1;
+    > button {
+      background: ${palette.background.default};
+      height: 28px;
+      font-size: 14px;
+      line-height: 0;
+      font-family: ${typography.fontFamily};
+      font-weight: 500;
+      padding: 0 16px;
+      :hover {
+        background: transparent;
+        color: ${palette.background.default};
+      }
+    }
   }
 `;
 
-export const SubmissionButtonReject = styled(ButtonBase)`
+export const SubmissionButtonRequestChange = styled(Button)`
   && {
-    border: 1px solid #474747;
-    width: max-content;
-    height: 28px;
-    border-radius: 100px;
-    border-color: ${palette.red400};
-    font-family: 'Space Grotesk';
-    padding: 7px 16px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
-    font-weight: ${theme.typography.fontWeightMedium};
-  `}
+    ${ButtonStyle}
+    background: linear-gradient(270deg, #ffd653 -5.62%, #7427ff 103.12%);
   }
 `;
 
-export const SubmissionButtonApprove = styled(ButtonBase)`
+export const SubmissionButtonReject = styled(Button)`
   && {
-    background: #474747;
-    width: max-content;
-    height: 28px;
-    border-radius: 100px;
-    font-family: 'Space Grotesk';
-    padding: 7px 16px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
-    font-weight: ${theme.typography.fontWeightMedium};
-  `}
+    ${ButtonStyle}
+    background: linear-gradient(270deg, #f93701 -5.62%, #7427ff 103.12%);
+  }
+`;
+
+export const SubmissionButtonApprove = styled(Button)`
+  && {
+    ${ButtonStyle}
+    background: linear-gradient(270deg, #06ffa5 -5.62%, #7427ff 103.12%);
   }
 `;
 
@@ -763,5 +766,28 @@ export const SubmissionDescription = styled.div`
         font-weight: ${theme.typography.fontWeightRegular};
         color: ${theme.palette.white};
     `}
+  }
+`;
+
+export const GiveKudosButton = styled(ButtonBase)`
+  && {
+    background: #313131;
+    color: #ccbbff;
+    height: 40px;
+    width: fit-content;
+    font-family: ${typography.fontFamily};
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 10px;
+    border-radius: 6px;
+    margin-top: 12px;
+    gap: 8px;
+    svg {
+      path {
+        fill: #00baff;
+      }
+    }
   }
 `;

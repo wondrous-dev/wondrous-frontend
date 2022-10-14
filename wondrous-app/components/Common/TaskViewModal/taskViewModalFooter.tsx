@@ -6,7 +6,7 @@ import TaskSubmission from 'components/Common/TaskSubmission';
 import { usePodBoard } from 'utils/hooks';
 import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import MilestoneTasks from 'components/Common/MilestoneTask';
-import { CommentList } from 'components/Comment';
+import CommentList from 'components/Comment';
 import { useLazyQuery } from '@apollo/client';
 import { GET_SUBTASK_COUNT_FOR_TASK } from 'graphql/queries';
 import {

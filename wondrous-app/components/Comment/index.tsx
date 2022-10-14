@@ -2,6 +2,7 @@ import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import CommentItem from 'components/Common/CommentItem';
+import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
@@ -16,7 +17,7 @@ import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { updateTask } from 'utils/board';
 import { renderMentionString } from 'utils/common';
-import { COMMENTER_ROLE, GRAPHQL_ERRORS, PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { COMMENTER_ROLE, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
@@ -34,17 +35,31 @@ import {
   TextInputDiv,
 } from './styles';
 
-export function CommentBox(props) {
+const AddComment = ({ onClick, type }) => {
+  const text = {
+    [SUBMISSION_STATUS.CHANGE_REQUESTED]: 'Send request',
+    [SUBMISSION_STATUS.APPROVED]: 'Send Kudos',
+  };
+  const selectedText = text[type] || 'Add comment';
+  return <AddCommentButton onClick={onClick}>{selectedText}</AddCommentButton>;
+};
+
+function CommentBox(props) {
   const user = useMe();
-  const { orgId, existingContent, taskType, task, previousCommenterIds, submission } = props;
-  const orgBoard = useOrgBoard();
-  const userBoard = useUserBoard();
-  const podBoard = usePodBoard();
-  const board = orgBoard || userBoard || podBoard;
+  const {
+    orgId,
+    existingContent,
+    taskType,
+    task,
+    previousCommenterIds,
+    submission,
+    type,
+    onCommentCallback = () => null,
+  } = props;
   const boardColumns = useColumns();
   const [comment, setComment] = useState(existingContent || '');
   const [emptyCommentError, setEmptyCommentError] = useState(null);
-  const [searchOrgUsers, { data: searchOrgUserResults }] = useLazyQuery(SEARCH_ORG_USERS);
+  const [searchOrgUsers] = useLazyQuery(SEARCH_ORG_USERS);
 
   const [createTaskComment, { data: taskCommentData }] = useMutation(CREATE_TASK_COMMENT, {
     refetchQueries: ['getTaskComments'],
@@ -59,21 +74,18 @@ export function CommentBox(props) {
   });
 
   const addComment = () => {
-    if (!comment || comment.trim().length === 0) {
+    const emptyComment = !comment || comment.trim().length === 0;
+    if (type && emptyComment) {
+      onCommentCallback();
+      return;
+    }
+    if (emptyComment) {
       setEmptyCommentError(true);
       return;
     }
     const mentionedUsers = getMentionArray(comment);
-    const createArgs = {
-      ...(taskType === TASK_STATUS_REQUESTED && {
-        proposalId: task?.id,
-      }),
-      ...(taskType !== TASK_STATUS_REQUESTED && {
-        taskId: task?.id,
-      }),
-      ...(submission && {
-        submissionId: submission?.id,
-      }),
+    const commentArgs = {
+      type,
       content: comment.trim(),
       userMentions: mentionedUsers,
       previousCommenterIds,
@@ -81,19 +93,19 @@ export function CommentBox(props) {
     if (taskType === TASK_STATUS_REQUESTED) {
       createTaskProposalComment({
         variables: {
-          input: createArgs,
+          input: { ...commentArgs, proposalId: task?.id },
         },
       });
     } else if (submission) {
       createSubmissionComment({
         variables: {
-          input: createArgs,
+          input: { ...commentArgs, submissionId: submission?.id, type },
         },
-      });
+      }).then(() => onCommentCallback());
     } else {
       createTaskComment({
         variables: {
-          input: createArgs,
+          input: { ...commentArgs, taskId: task?.id },
         },
       });
     }
@@ -137,7 +149,7 @@ export function CommentBox(props) {
         </TextInputContext.Provider>
       </TextInputDiv>
       {emptyCommentError && <ErrorText>Empty Comment</ErrorText>}
-      <AddCommentButton onClick={addComment}>Add comment</AddCommentButton>
+      <AddComment onClick={addComment} type={type} />
     </AddCommentContainer>
   );
 }
@@ -264,8 +276,16 @@ function CommentListEmptyState() {
   );
 }
 
-export function CommentList(props) {
-  const { taskType, task, submission } = props;
+export default function CommentList(props) {
+  const {
+    taskType,
+    task,
+    submission,
+    type,
+    onCommentCallback = () => null,
+    showComments = true,
+    showCommentBox = true,
+  } = props;
   const router = useRouter();
   const [comments, setComments] = useState([]);
   const [getTaskComments] = useLazyQuery(GET_COMMENTS_FOR_TASK, {
@@ -353,28 +373,38 @@ export function CommentList(props) {
         </DiscordDiscussionButtonWrapper>
       )}
 
-      <CommentBox
-        orgId={task?.orgId || submission?.orgId}
-        existingContent=""
-        taskType={taskType}
-        previousCommenterIds={Array.from(set)}
-        submission={submission}
-      />
-      <CommentListContainer>
-        {comments?.length > 0 ? (
-          comments.map((comment) => (
-            <CommentItemWrapper
-              key={comment?.id}
-              comment={comment}
-              taskType={taskType}
-              task={task}
-              submission={submission}
-            />
-          ))
-        ) : (
-          <CommentListEmptyState />
-        )}
-      </CommentListContainer>
+      {showCommentBox && (
+        <>
+          {type && <SubmissionStatus status={type} />}
+          <CommentBox
+            orgId={task?.orgId || submission?.orgId}
+            existingContent=""
+            taskType={taskType}
+            previousCommenterIds={Array.from(set)}
+            submission={submission}
+            type={type}
+            onCommentCallback={onCommentCallback}
+            task={task}
+          />
+        </>
+      )}
+      {showComments && (
+        <CommentListContainer>
+          {comments?.length > 0 ? (
+            comments.map((comment) => (
+              <CommentItemWrapper
+                key={comment?.id}
+                comment={comment}
+                taskType={taskType}
+                task={task}
+                submission={submission}
+              />
+            ))
+          ) : (
+            <CommentListEmptyState />
+          )}
+        </CommentListContainer>
+      )}
     </CommentListWrapper>
   );
 }
