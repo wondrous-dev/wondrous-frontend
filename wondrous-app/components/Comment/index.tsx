@@ -17,7 +17,7 @@ import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { updateTask } from 'utils/board';
 import { renderMentionString } from 'utils/common';
-import { COMMENTER_ROLE, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { ENTITIES_TYPES, COMMENTER_ROLE, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
@@ -49,7 +49,7 @@ function CommentBox(props) {
   const {
     orgId,
     existingContent,
-    taskType,
+    entityType,
     task,
     previousCommenterIds,
     submission,
@@ -90,7 +90,7 @@ function CommentBox(props) {
       userMentions: mentionedUsers,
       previousCommenterIds,
     };
-    if (taskType === TASK_STATUS_REQUESTED) {
+    if (entityType === ENTITIES_TYPES.PROPOSAL) {
       createTaskProposalComment({
         variables: {
           input: { ...commentArgs, proposalId: task?.id },
@@ -167,7 +167,7 @@ const useSelectCommenterRole = ({ task, comment }) => {
 };
 
 function CommentItemWrapper(props) {
-  const { comment, task, taskType, list, setList, submission } = props;
+  const { comment, task, entityType, submission } = props;
   const loggedInUser = useMe();
   const router = useRouter();
   const orgBoard = useOrgBoard();
@@ -235,7 +235,7 @@ function CommentItemWrapper(props) {
       handleOnDelete={() => {
         const text = 'Are you sure you want to delete?';
         if (confirm(text)) {
-          if (taskType === TASK_STATUS_REQUESTED) {
+          if (entityType === ENTITIES_TYPES.PROPOSAL) {
             deleteTaskProposalComment({
               variables: {
                 proposalCommentId: id,
@@ -278,7 +278,7 @@ function CommentListEmptyState() {
 
 export default function CommentList(props) {
   const {
-    taskType,
+    entityType,
     task,
     submission,
     type,
@@ -312,7 +312,7 @@ export default function CommentList(props) {
   });
 
   useEffect(() => {
-    if (task && taskType === TASK_STATUS_REQUESTED) {
+    if (task && entityType === ENTITIES_TYPES.PROPOSAL) {
       getTaskProposalComments({
         variables: {
           proposalId: task?.id,
@@ -332,7 +332,7 @@ export default function CommentList(props) {
       });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [task, taskType, submission]);
+  }, [task, entityType, submission]);
 
   const set = new Set();
   comments?.forEach((comment) => {
@@ -365,7 +365,7 @@ export default function CommentList(props) {
 
   return (
     <CommentListWrapper>
-      {!task?.org?.shared && (
+      {!task?.org?.shared && entityType === ENTITIES_TYPES.TASK && (
         <DiscordDiscussionButtonWrapper>
           <DiscordThreadCreateButton onClick={handleDiscordButtonClick}>
             <DiscordIcon style={{ marginRight: 10 }} />
@@ -380,7 +380,7 @@ export default function CommentList(props) {
           <CommentBox
             orgId={task?.orgId || submission?.orgId}
             existingContent=""
-            taskType={taskType}
+            entityType={entityType}
             previousCommenterIds={Array.from(set)}
             submission={submission}
             type={type}
@@ -396,7 +396,7 @@ export default function CommentList(props) {
               <CommentItemWrapper
                 key={comment?.id}
                 comment={comment}
-                taskType={taskType}
+                entityType={entityType}
                 task={task}
                 submission={submission}
               />
