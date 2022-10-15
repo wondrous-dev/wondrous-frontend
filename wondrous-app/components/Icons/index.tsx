@@ -41,7 +41,7 @@ export function Requested(props) {
 
 export function ToDo(props) {
   return (
-    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <circle cx="12.8652" cy="12.6401" r="11.5" fill="#0F0F0F" stroke="#474747" />
       <ellipse cx="12.8675" cy="12.6399" rx="2.52761" ry="2.52761" fill="url(#paint0_linear_9081_244359)" />
       <circle
@@ -127,7 +127,7 @@ export function TodoWithBorder(props) {
 
 export function InProgress(props) {
   return (
-    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <path
         d="M23.6152 12.709C23.6152 19.0603 18.4665 24.209 12.1152 24.209C5.76396 24.209 0.615234 19.0603 0.615234 12.709C0.615234 6.35771 5.76396 1.20898 12.1152 1.20898C18.4665 1.20898 23.6152 6.35771 23.6152 12.709Z"
         fill="#0F0F0F"
@@ -482,7 +482,7 @@ export function InReview(props) {
 
 export function Done(props) {
   return (
-    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="25" height="25" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
       <circle cx="12.6152" cy="12.7095" r="11.5" fill="#0F0F0F" stroke="#474747" />
       <ellipse cx="12.8094" cy="12.7089" rx="6.85632" ry="6.85632" fill="url(#paint0_linear_9081_244391)" />
       <path

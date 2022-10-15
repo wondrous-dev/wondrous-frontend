@@ -1,3 +1,6 @@
+import Grid from '@mui/material/Grid';
+import ArrowLeft from 'components/Icons/ArrowLeft';
+import ArrowRight from 'components/Icons/ArrowRight';
 import React from 'react';
 import styled from 'styled-components';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
@@ -116,12 +119,21 @@ const FullWidthTemplate: ComponentStory<typeof Button> = (props) => (
 );
 export const FullWidth = FullWidthTemplate.bind({});
 
-const ButtonWithIconTemplate: ComponentStory<typeof Button> = (props) => (
+const WithIconTemplate: ComponentStory<typeof Button> = () => (
   <Container>
     <Button color="primary" height={32} buttonTheme={{ paddingX: 10 }}>
       <Claim />
       <Typography marginLeft="10px">Claim</Typography>
     </Button>
+
+    <Grid display="flex">
+      <Button color="grey" borderRadius={6} width={30} height={30} buttonTheme={{ paddingX: 0 }}>
+        <ArrowLeft />
+      </Button>
+      <Button color="grey" borderRadius={6} width={30} height={30} buttonTheme={{ paddingX: 0 }}>
+        <ArrowRight />
+      </Button>
+    </Grid>
   </Container>
 );
-export const ButtonWithIcon = ButtonWithIconTemplate.bind({});
+export const WithIcon = WithIconTemplate.bind({});

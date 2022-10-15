@@ -1,19 +1,8 @@
 import React, { useState } from 'react';
 import { ComponentMeta, ComponentStory } from '@storybook/react';
-import styled from 'styled-components';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
-
-const chainOptions = [
-  {
-    label: 'Ethereum',
-    value: 'ethereum',
-  },
-  {
-    label: 'Polygon',
-    value: 'polygon',
-  },
-];
+import palette from '../../theme/palette';
 
 export default {
   title: 'Surfaces/Dropdown Select',
@@ -99,50 +88,44 @@ export default {
   },
 } as ComponentMeta<typeof DropdownSelect>;
 
-const Template: ComponentStory<typeof DropdownSelect> = (props) => {
-  const [value, setValue] = useState(null);
-
-  const GreyDropdownSelect = styled(DropdownSelect)`
-  .MuiInputBase-formControl {
-    background: #1e1e1e;
-    
-    &.Mui-focused .MuiOutlinedInput-notchedOutline {
-      border: none;
-    },
-  }
-`;
-
-  const MenuProps = {
-    disableScrollLock: true,
-    PaperProps: {
-      style: {
-        borderRadius: '6px',
-        border: '1px solid #6A6A6A',
-        maxHeight: '250px',
-        background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
-        padding: '0 7px',
-      },
-    },
-  };
+const Template: ComponentStory<typeof DropdownSelect> = () => {
+  const views = [
+    { label: 'Month View', value: 'month' },
+    { label: 'Week View', value: 'week' },
+  ];
+  const [view, setView] = useState(views[0].value);
 
   return (
-    <GreyDropdownSelect
-      {...props}
+    <DropdownSelect
+      options={views}
+      innerStyle={{
+        background: palette.grey87,
+        maxWidth: '150px',
+        padding: 0,
+        margin: 0,
+        fontSize: '15px',
+        color: palette.white,
+      }}
+      value={view}
+      setValue={setView}
       formSelectStyle={{
         height: 'auto',
       }}
-      value={value}
-      setValue={setValue}
-      displayEmpty
-      inputProps={{ 'aria-label': 'Without label' }}
-      MenuProps={MenuProps}
+      MenuProps={{
+        PaperProps: {
+          sx: {
+            maxHeight: '250px',
+            width: '100%',
+            maxWidth: 150,
+            background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
+            padding: '15px',
+            '*::-webkit-scrollbar': {
+              width: 100,
+            },
+          },
+        },
+      }}
     />
   );
 };
 export const Dropdown = Template.bind({});
-
-Dropdown.args = {
-  labelText: 'Choose Role',
-  options: chainOptions,
-  onChange: (e) => {},
-};
