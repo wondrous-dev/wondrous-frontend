@@ -1,44 +1,22 @@
-import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react';
-import Link from 'next/link';
-import format from 'date-fns/format';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 
-import { SafeImage } from 'components/Common/Image';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import Tooltip from 'components/Tooltip';
 import QuestionMarkIcon from 'components/Icons/QuestionMarkIcon';
 import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
-import CalendarIcon from 'components/Icons/calendar';
-import CopyIcon from 'components/Icons/copy';
-import Ethereum from 'components/Icons/ethereumV2';
-import { LinkIcon } from 'components/Icons/taskModalIcons';
 
-import { capitalize } from 'utils/common';
 import { PaymentModalContext } from 'utils/contexts';
-import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
 import { User } from 'types/User';
 
-import palette from 'theme/palette';
 import { PayModal } from './modal';
+import PayoutItem from './PayoutItem';
 import {
-  PayeeAddressTag,
-  PayeeAddressTagContainer,
-  PayeeProfileLink,
-  PayeeUsername,
-  StyledCheckbox,
   StyledTable,
   StyledTableBody,
   StyledTableCell,
   StyledTableContainer,
   StyledTableHead,
   StyledTableRow,
-  RewardChainHalfBox,
-  PayoutItemLinkContainer,
-  PayoutTaskTitleContainer,
-  RewardChainHalfBoxText,
-  PayoutTaskCompletionDate,
-  PayoutTaskCompletionDateText,
-  PayeePayButton,
   BottomActionBar,
   BottomActionBarText,
   BottomActionBarPayButton,
@@ -46,16 +24,8 @@ import {
   BottomActionBarButton,
   BottomActionBarMultipleChainSelectedError,
 } from './styles';
-import { PAYMENT_TYPES } from './constants';
 
-const imageStyle = {
-  width: '32px',
-  height: '32px',
-  borderRadius: '16px',
-  marginRight: '8px',
-};
-
-interface PayeeDetails {
+export interface PayeeDetails {
   podId?: string;
   orgId?: string;
   assigneeId: string;
@@ -64,7 +34,7 @@ interface PayeeDetails {
   submissionId: string;
 }
 
-interface PayoutTableItem {
+export interface PayoutTableItem {
   taskTitle: string;
   taskId: string;
   submissionId: string;
@@ -91,20 +61,6 @@ interface PayoutTableItem {
   };
 }
 
-interface PayoutItemProps {
-  item: PayoutTableItem;
-  checked?: boolean;
-  org?: {
-    id: string;
-    username: string;
-  };
-  podId?: string;
-  selectedItemsLength?: number;
-  canViewPaymentLink?: boolean;
-  handlePay?: (payeeDetails: PayeeDetails) => void;
-  handleCheck?: (item: PayoutTableItem) => void;
-}
-
 interface PayoutTableProps {
   paid?: boolean;
   processing?: boolean;
@@ -127,161 +83,10 @@ interface PayoutTableProps {
   setSelectedItems?: Dispatch<SetStateAction<{}>>;
 }
 
-const PayoutItem = (props: PayoutItemProps) => {
-  const { item, checked = false, org, podId, selectedItemsLength, canViewPaymentLink, handlePay, handleCheck } = props;
-  const [hasAddressBeenCopied, setHasAddressBeenCopied] = useState(false);
-
-  let link;
-
-  if (item?.additionalData?.manualExplorerLink) {
-    link = item?.additionalData?.manualExplorerLink;
-  } else if (item?.additionalData?.utopiaLink) {
-    link = item?.additionalData?.utopiaLink;
-  } else if (item.chain && item.safeAddress && item.safeTxHash) {
-    link = constructGnosisRedirectUrl(item.chain, item.safeAddress, item.safeTxHash);
-  }
-
-  const completionDate = item?.submissionApprovedAt || item?.payedAt;
-
-  const isPayButtonDisabled = useMemo(
-    () =>
-      selectedItemsLength ||
-      !item?.amount ||
-      item.paymentStatus !== PAYMENT_TYPES.UNPAID ||
-      !item?.payeeActiveEthAddress,
-    [selectedItemsLength, item?.amount, item?.paymentStatus, item?.payeeActiveEthAddress]
-  );
-
-  const address = item?.payeeActiveEthAddress;
-  const addressTag = useMemo(() => {
-    if (!address) {
-      return '';
-    }
-    return `${address.slice(0, 6)}...${address.slice(address.length - 4, address.length)}`;
-  }, [address]);
-
-  const handleAddressCopy = () => {
-    navigator.clipboard.writeText(address);
-    setHasAddressBeenCopied(true);
-
-    setTimeout(() => {
-      setHasAddressBeenCopied(false);
-    }, 1500);
-  };
-
-  const handlePayeePayButton = () => {
-    if (isPayButtonDisabled) return;
-
-    handlePay({
-      podId,
-      orgId: org?.username,
-      assigneeId: item?.payeeId,
-      assigneeUsername: item?.payeeUsername,
-      taskTitle: item?.taskTitle,
-      submissionId: item?.submissionId,
-    });
-  };
-
-  return (
-    <StyledTableRow>
-      <StyledTableCell>
-        <Grid display="flex" alignItems="center" gap="12px">
-          <Grid display="flex" alignItems="center" gap="8px">
-            <StyledCheckbox
-              checked={checked}
-              onChange={() => handleCheck(item)}
-              inputProps={{ 'aria-label': 'controlled' }}
-            />
-
-            {item.paymentStatus === PAYMENT_TYPES.UNPAID && (
-              <PayeePayButton disabled={isPayButtonDisabled} onClick={handlePayeePayButton}>
-                Pay
-              </PayeePayButton>
-            )}
-
-            <Link href={`/profile/${item?.payeeUsername}/about`} passHref>
-              <PayeeProfileLink>
-                <Grid display="flex" alignItems="center" gap="6px">
-                  <SafeImage
-                    useNextImage={false}
-                    src={item?.payeeProfilePicture}
-                    style={imageStyle}
-                    placeholderComp={<DefaultUserImage style={imageStyle} />}
-                  />
-                  <PayeeUsername>{item?.payeeUsername}</PayeeUsername>
-                </Grid>
-              </PayeeProfileLink>
-            </Link>
-          </Grid>
-          {!!addressTag && (
-            <PayeeAddressTagContainer onClick={handleAddressCopy}>
-              <PayeeAddressTag hasAddressBeenCopied={hasAddressBeenCopied}>
-                {hasAddressBeenCopied ? 'Address copied!' : addressTag}
-              </PayeeAddressTag>
-              <CopyIcon color={hasAddressBeenCopied ? palette.green30 : palette.blue20} />
-            </PayeeAddressTagContainer>
-          )}
-        </Grid>
-      </StyledTableCell>
-
-      <StyledTableCell>
-        {item?.amount ? (
-          <RewardChainHalfBox isRewardBox>
-            <Ethereum />
-            <RewardChainHalfBoxText>
-              {item?.amount} {item?.symbol}
-            </RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        ) : (
-          <RewardChainHalfBox isRewardBox hasNoReward>
-            <RewardChainHalfBoxText hasNoReward>reward</RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        )}
-      </StyledTableCell>
-
-      <StyledTableCell>
-        {item?.amount ? (
-          <RewardChainHalfBox>
-            <RewardChainHalfBoxText>{capitalize(item?.chain)}</RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        ) : (
-          <RewardChainHalfBox hasNoReward>
-            <RewardChainHalfBoxText hasNoReward>removed</RewardChainHalfBoxText>
-          </RewardChainHalfBox>
-        )}
-      </StyledTableCell>
-
-      {canViewPaymentLink && (
-        <StyledTableCell>
-          {!!link && (
-            <PayoutItemLinkContainer href={link} target="_blank" rel="noreferrer noopener">
-              <LinkIcon />
-            </PayoutItemLinkContainer>
-          )}
-        </StyledTableCell>
-      )}
-
-      <StyledTableCell>
-        <PayoutTaskTitleContainer>{item?.taskTitle}</PayoutTaskTitleContainer>
-      </StyledTableCell>
-
-      <StyledTableCell>
-        {!!completionDate && (
-          <PayoutTaskCompletionDate>
-            <CalendarIcon />
-            <PayoutTaskCompletionDateText>{format(new Date(completionDate), 'MM-dd-yy')}</PayoutTaskCompletionDateText>
-          </PayoutTaskCompletionDate>
-        )}
-      </StyledTableCell>
-    </StyledTableRow>
-  );
-};
-
 const PayoutTable = (props: PayoutTableProps) => {
   const {
     paid,
     processing,
-    // view,
     paidList,
     unpaidList,
     processingList,
@@ -294,14 +99,7 @@ const PayoutTable = (props: PayoutTableProps) => {
     viewingUser,
     selectedItems,
     setSelectedItems,
-    // user,
-    // setChainSelected,
-    // paymentSelected,
-    // setPaymentsSelected,
   } = props;
-
-  // const [chainSelected, setChainSelected] = useState([]);
-  // const [selectedItems, setSelectedItems] = useState({});
 
   const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
 
@@ -311,10 +109,6 @@ const PayoutTable = (props: PayoutTableProps) => {
   const paymentslist = paid ? paidList : processing ? processingList : unpaidList;
   const unpaid = !paid && !processing;
   const chainSelected = selectedItems[Object.keys(selectedItems)[0]]?.chain;
-
-  // const showBatchPayButton =
-  //   unpaid &&
-  //   paymentslist.every((item) => item?.amount && item?.payeeWeb3Address && item?.chain === paymentslist[0]?.chain);
 
   const showBatchPayButton =
     unpaid &&
@@ -483,42 +277,6 @@ const PayoutTable = (props: PayoutTableProps) => {
               />
             ))}
           </StyledTableBody>
-          {/* <StyledTableBody>
-          {view === ViewType.Paid ? (
-            <>
-              {paidList?.map((item) => (
-                <PaymentItem
-                  key={item?.id}
-                  item={{
-                    ...item,
-                    paymentStatus: 'paid',
-                  }}
-                  org={org}
-                  podId={podId}
-                  canViewPaymentLink={canViewPaymentLink}
-                  viewingUser={user}
-                />
-              ))}
-            </>
-          ) : (
-            <>
-              {unpaidList?.map((item) => (
-                <PaymentItem
-                  chain={chainSelected}
-                  setChainSelected={setChainSelected}
-                  key={item?.id}
-                  item={item}
-                  org={org}
-                  podId={podId}
-                  paymentSelected={paymentSelected}
-                  setPaymentsSelected={setPaymentsSelected}
-                  canViewPaymentLink={canViewPaymentLink}
-                  viewingUser={user}
-                />
-              ))}
-            </>
-          )}
-        </StyledTableBody> */}
         </StyledTable>
       </StyledTableContainer>
 
