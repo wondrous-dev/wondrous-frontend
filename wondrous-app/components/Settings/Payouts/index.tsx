@@ -341,10 +341,12 @@ function Payouts(props) {
   }, [inView, hasMore, handleLoadMore]);
 
   const handleSetSubmissionsToExport = (submissions) => {
-    const submissionsToExport = {};
-    submissions?.forEach((payment) => {
-      submissionsToExport[payment?.submissionId] = payment;
-    });
+    const submissionsToExport = submissions?.reduce((acc, submission) => {
+      acc[submission?.submissionId] = submission;
+
+      return acc;
+    }, {});
+
     setSubmissionsToExport(submissionsToExport);
   };
 
@@ -457,19 +459,19 @@ function Payouts(props) {
       label: 'Unpaid',
       isActive: view === ViewType.Unpaid || view === null,
       onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
-      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
+      gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Processing',
       isActive: view === ViewType.Processing,
       onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
-      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
+      gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Paid',
       isActive: view === ViewType.Paid,
       onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
-      gradient: 'linear-gradient(266.31deg, #7427FF 1.4%, #00BAFF 119.61%)',
+      gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
   ];
 

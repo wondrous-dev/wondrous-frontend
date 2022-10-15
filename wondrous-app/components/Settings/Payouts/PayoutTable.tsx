@@ -7,6 +7,7 @@ import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
 
 import { PaymentModalContext } from 'utils/contexts';
 import { User } from 'types/User';
+import { SELECTION } from './constants';
 
 import { PayModal } from './modal';
 import PayoutItem from './PayoutItem';
@@ -120,22 +121,20 @@ const PayoutTable = (props: PayoutTableProps) => {
     );
 
   useEffect(() => {
-    const newSelectedItems = {} as { [key: string]: PayoutTableItem };
-    if (selectAllFromChainSelected === 'all') {
-      paymentslist.forEach((item) => {
-        newSelectedItems[item?.submissionId] = item;
-      });
-      setSelectedItems((_) => newSelectedItems);
-    } else if (selectAllFromChainSelected) {
+    if (selectAllFromChainSelected) {
       const chain = selectAllFromChainSelected?.toLowerCase();
-      paymentslist.forEach((item) => {
-        if (item?.chain?.toLowerCase() === chain) {
-          newSelectedItems[item?.submissionId] = item;
+
+      const newSelectedItems = paymentslist.reduce((acc, item) => {
+        if (chain === SELECTION.All || item?.chain?.toLowerCase() === chain) {
+          acc[item?.submissionId] = item;
         }
-      });
-      setSelectedItems((_) => newSelectedItems);
+
+        return acc;
+      }, {});
+
+      setSelectedItems(newSelectedItems);
     }
-  }, [selectAllFromChainSelected]);
+  }, [selectAllFromChainSelected, paymentslist]);
 
   useEffect(() => {
     if (payeeDetails?.submissionId) {
