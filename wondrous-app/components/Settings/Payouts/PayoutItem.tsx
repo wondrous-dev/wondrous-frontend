@@ -6,6 +6,7 @@ import Typography from '@mui/material/Typography';
 
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import Button from 'components/Button';
 import CalendarIcon from 'components/Icons/calendar';
 import CopyIcon from 'components/Icons/copy';
 import Ethereum from 'components/Icons/ethereumV2';
@@ -37,6 +38,8 @@ import { PAYMENT_TYPES } from './constants';
 const imageStyle = {
   width: '32px',
   height: '32px',
+  minWidth: '32px',
+  minHeight: '32px',
   borderRadius: '16px',
   marginRight: '8px',
 };
@@ -72,7 +75,10 @@ const PayoutItem = (props: PayoutItemProps) => {
   const completionDate = item?.submissionApprovedAt || item?.payedAt;
 
   const isPayButtonDisabled =
-    selectedItemsLength || !item?.amount || item.paymentStatus !== PAYMENT_TYPES.UNPAID || !item?.payeeActiveEthAddress;
+    selectedItemsLength > 0 ||
+    !item?.amount ||
+    item.paymentStatus !== PAYMENT_TYPES.UNPAID ||
+    !item?.payeeActiveEthAddress;
 
   const address = item?.payeeActiveEthAddress;
   const addressTag = useMemo(() => {
@@ -116,16 +122,32 @@ const PayoutItem = (props: PayoutItemProps) => {
             />
 
             {item.paymentStatus === PAYMENT_TYPES.UNPAID && (
-              <PayeePayButton disabled={isPayButtonDisabled} onClick={handlePayeePayButton}>
+              <Button
+                buttonTheme={{
+                  paddingX: 16,
+                  paddingY: 7,
+                  background: palette.background.default,
+                  borderColor: isPayButtonDisabled
+                    ? palette.grey85
+                    : `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%), linear-gradient(0deg, ${palette.background.default}, ${palette.background.default})`,
+                  fontWeight: 500,
+                  hover: {
+                    background: isPayButtonDisabled ? palette.background.default : 'transparent',
+                  },
+                }}
+                minWidth="auto"
+                disabled={isPayButtonDisabled}
+                onClick={handlePayeePayButton}
+              >
                 Pay
-              </PayeePayButton>
+              </Button>
             )}
 
             <Link href={`/profile/${item?.payeeUsername}/about`} passHref>
               <PayeeProfileLink>
                 <Grid display="flex" alignItems="center" gap="6px">
                   <SafeImage
-                    useNextImage
+                    useNextImage={false}
                     width="32px"
                     height="32px"
                     src={item?.payeeProfilePicture}
