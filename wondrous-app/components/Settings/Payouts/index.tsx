@@ -47,7 +47,7 @@ enum ViewType {
   Unpaid = 'unpaid',
 }
 
-const LIMIT = 10;
+const LIMIT = 30;
 
 function Payouts(props) {
   const { orgId, podId } = props;
@@ -320,7 +320,7 @@ function Payouts(props) {
         setHasMore(payments?.length >= LIMIT);
       });
     }
-  }, [orgId, podId, view]);
+  }, [orgId, podId, view, LIMIT]);
 
   useEffect(() => {
     if (payView) {
@@ -342,96 +342,98 @@ function Payouts(props) {
 
   const handleSetSubmissionsToExport = (submissions) => {
     const submissionsToExport = {};
-    submissions.forEach((payment) => {
+    submissions?.forEach((payment) => {
       submissionsToExport[payment?.submissionId] = payment;
     });
     setSubmissionsToExport(submissionsToExport);
   };
 
   useEffect(() => {
-    if (Object.keys(selectedItems)?.length) {
-      setSubmissionsToExport(selectedItems);
-    } else if (orgId) {
-      if (view === ViewType.Unpaid) {
-        getUnpaidSubmissionsForOrg({
-          variables: {
-            input: {
-              orgId,
-              orgOnly: false,
-              limit: Number.POSITIVE_INFINITY,
+    if (openExportModal) {
+      if (Object.keys(selectedItems)?.length) {
+        setSubmissionsToExport(selectedItems);
+      } else if (orgId) {
+        if (view === ViewType.Unpaid) {
+          getUnpaidSubmissionsForOrg({
+            variables: {
+              input: {
+                orgId,
+                orgOnly: false,
+                limit: Number.POSITIVE_INFINITY,
+              },
             },
-          },
-        }).then((result) => {
-          const submissions = result?.data?.getUnpaidSubmissionsForOrg;
-          handleSetSubmissionsToExport(submissions);
-        });
-      } else if (view === ViewType.Processing) {
-        getProcessingPaymentsForOrg({
-          variables: {
-            input: {
-              orgId,
-              orgOnly: false,
-              limit: Number.POSITIVE_INFINITY,
+          }).then((result) => {
+            const submissions = result?.data?.getUnpaidSubmissionsForOrg;
+            handleSetSubmissionsToExport(submissions);
+          });
+        } else if (view === ViewType.Processing) {
+          getProcessingPaymentsForOrg({
+            variables: {
+              input: {
+                orgId,
+                orgOnly: false,
+                limit: Number.POSITIVE_INFINITY,
+              },
             },
-          },
-        }).then((result) => {
-          const submissions = result?.data?.getProcessingPaymentsForOrg;
-          handleSetSubmissionsToExport(submissions);
-        });
-      } else if (view === ViewType.Paid) {
-        getPaymentsForOrg({
-          variables: {
-            input: {
-              orgId,
-              orgOnly: false,
-              limit: Number.POSITIVE_INFINITY,
+          }).then((result) => {
+            const submissions = result?.data?.getProcessingPaymentsForOrg;
+            handleSetSubmissionsToExport(submissions);
+          });
+        } else if (view === ViewType.Paid) {
+          getPaymentsForOrg({
+            variables: {
+              input: {
+                orgId,
+                orgOnly: false,
+                limit: Number.POSITIVE_INFINITY,
+              },
             },
-          },
-        }).then((result) => {
-          const submissions = result?.data?.getPaymentsForOrg;
-          handleSetSubmissionsToExport(submissions);
-        });
-      }
-    } else if (podId) {
-      if (view === ViewType.Unpaid) {
-        getUnpaidSubmissionsForPod({
-          variables: {
-            input: {
-              podId,
-              limit: Number.POSITIVE_INFINITY,
+          }).then((result) => {
+            const submissions = result?.data?.getPaymentsForOrg;
+            handleSetSubmissionsToExport(submissions);
+          });
+        }
+      } else if (podId) {
+        if (view === ViewType.Unpaid) {
+          getUnpaidSubmissionsForPod({
+            variables: {
+              input: {
+                podId,
+                limit: Number.POSITIVE_INFINITY,
+              },
             },
-          },
-        }).then((result) => {
-          const submissions = result?.data?.getUnpaidSubmissionsForPod;
-          handleSetSubmissionsToExport(submissions);
-        });
-      } else if (view === ViewType.Processing) {
-        getProcessingPaymentsForPod({
-          variables: {
-            input: {
-              podId,
-              limit: Number.POSITIVE_INFINITY,
+          }).then((result) => {
+            const submissions = result?.data?.getUnpaidSubmissionsForPod;
+            handleSetSubmissionsToExport(submissions);
+          });
+        } else if (view === ViewType.Processing) {
+          getProcessingPaymentsForPod({
+            variables: {
+              input: {
+                podId,
+                limit: Number.POSITIVE_INFINITY,
+              },
             },
-          },
-        }).then((result) => {
-          const submissions = result?.data?.getProcessingPaymentsForPod;
-          handleSetSubmissionsToExport(submissions);
-        });
-      } else if (view === ViewType.Paid) {
-        getPaymentsForPod({
-          variables: {
-            input: {
-              podId,
-              limit: Number.POSITIVE_INFINITY,
+          }).then((result) => {
+            const submissions = result?.data?.getProcessingPaymentsForPod;
+            handleSetSubmissionsToExport(submissions);
+          });
+        } else if (view === ViewType.Paid) {
+          getPaymentsForPod({
+            variables: {
+              input: {
+                podId,
+                limit: Number.POSITIVE_INFINITY,
+              },
             },
-          },
-        }).then((result) => {
-          const submissions = result?.data?.getPaymentsForPod;
-          handleSetSubmissionsToExport(submissions);
-        });
+          }).then((result) => {
+            const submissions = result?.data?.getPaymentsForPod;
+            handleSetSubmissionsToExport(submissions);
+          });
+        }
       }
     }
-  }, [orgId, podId, selectedItems, view]);
+  }, [orgId, podId, selectedItems, openExportModal, view]);
 
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
     ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
