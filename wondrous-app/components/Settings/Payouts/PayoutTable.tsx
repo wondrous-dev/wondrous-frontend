@@ -2,8 +2,11 @@ import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
 
 import Tooltip from 'components/Tooltip';
+import Button from 'components/Button';
 import QuestionMarkIcon from 'components/Icons/QuestionMarkIcon';
 import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
+
+import palette from 'theme/palette';
 
 import { PaymentModalContext } from 'utils/contexts';
 import { User } from 'types/User';
@@ -179,7 +182,22 @@ const PayoutTable = (props: PayoutTableProps) => {
 
   const renderBatchPayButton = () =>
     showBatchPayButton ? (
-      <BottomActionBarPayButton onClick={handleBatchPay}>Continue to payment method</BottomActionBarPayButton>
+      <Button
+        buttonTheme={{
+          paddingX: 24,
+          paddingY: 8,
+          background: palette.background.default,
+          borderColor: `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%), linear-gradient(0deg, ${palette.background.default}, ${palette.background.default})`,
+          fontWeight: 500,
+          hover: {
+            background: 'transparent',
+          },
+        }}
+        minWidth="auto"
+        onClick={handleBatchPay}
+      >
+        Continue to payment method
+      </Button>
     ) : (
       <BottomActionBarMultipleChainSelectedError>
         <QuestionMarkIcon />
@@ -283,7 +301,22 @@ const PayoutTable = (props: PayoutTableProps) => {
         <BottomActionBarText>{Object.keys(selectedItems)?.length} selected</BottomActionBarText>
 
         <Grid display="flex" alignItems="center" gap="12px">
-          <BottomActionBarButton onClick={handleClearSelections}>Clear Selection</BottomActionBarButton>
+          <Button
+            buttonTheme={{
+              paddingX: 24,
+              paddingY: 8,
+              background: palette.grey78,
+              borderColor: palette.grey78,
+              fontWeight: 500,
+              hover: {
+                background: palette.grey85,
+              },
+            }}
+            minWidth="auto"
+            onClick={handleClearSelections}
+          >
+            Clear Selection
+          </Button>
           {unpaid && renderBatchPayButton()}
           {!unpaid && <BottomActionBarButton onClick={handleDownloadToCSV}>Download to CSV</BottomActionBarButton>}
         </Grid>
