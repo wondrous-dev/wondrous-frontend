@@ -1,7 +1,11 @@
-export const INITIAL_SELECTION_OPTIONS = [{ label: 'Select all payments', value: 'all' }];
+export enum Selection {
+  All = 'all',
+}
 
-export const PAYMENT_TYPES = {
-  PAID: 'paid',
-  PROCESSING: 'processing',
-  UNPAID: 'unpaid',
-};
+export const INITIAL_SELECTION_OPTIONS = [{ label: 'Select all payments', value: Selection.All }];
+
+export enum PAYMENT_TYPES {
+  PAID = 'paid',
+  PROCESSING = 'processing',
+  UNPAID = 'unpaid',
+}

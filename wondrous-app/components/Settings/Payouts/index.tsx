@@ -32,8 +32,11 @@ import { delQuery } from 'utils';
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import Toggle from 'components/Common/Toggle';
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { capitalize } from 'utils/common';
+import typography from 'theme/typography';
+import palette from 'theme/palette';
 import PayoutTable from './PayoutTable';
 import { INITIAL_SELECTION_OPTIONS } from './constants';
 import { useGetPaymentMethodsForOrg } from './hooks';
@@ -346,8 +349,9 @@ function Payouts(props) {
   };
 
   useEffect(() => {
-    if (Object.keys(selectedItems)?.length) setSubmissionsToExport(selectedItems);
-    else if (orgId) {
+    if (Object.keys(selectedItems)?.length) {
+      setSubmissionsToExport(selectedItems);
+    } else if (orgId) {
       if (view === ViewType.Unpaid) {
         getUnpaidSubmissionsForOrg({
           variables: {
@@ -496,9 +500,17 @@ function Payouts(props) {
   };
 
   const renderSelectionValue = () => (
-    <PayoutSelectionSelectValueDisplay>
-      <PayoutSelectionSelectValueDisplayText isActive>Select all</PayoutSelectionSelectValueDisplayText>
-    </PayoutSelectionSelectValueDisplay>
+    <Grid display="flex" alignItems="center" gap="8px">
+      <Typography
+        fontFamily={typography.fontFamily}
+        fontWeight={400}
+        fontSize="15px"
+        lineHeight="19.14px"
+        color={palette.white}
+      >
+        Select all
+      </Typography>
+    </Grid>
   );
 
   return (
@@ -544,9 +556,9 @@ function Payouts(props) {
       </LedgerActionButtonsContainer>
 
       {!!paymentCount && (
-        <PayoutCount>
+        <Typography fontFamily={typography.fontFamily} fontSize="14px" fontWeight={500} color={palette.blue20}>
           {paymentCount} {capitalize(view)} transactions
-        </PayoutCount>
+        </Typography>
       )}
 
       <PayoutTable

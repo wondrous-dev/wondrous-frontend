@@ -177,8 +177,8 @@ export const StyledTable = styled(Table)`
 `;
 
 export const StyledTableHead = styled(TableHead)`
-  & .MuiTableCell-head {
-    color: #ccbbff;
+  .MuiTableCell-head {
+    color: ${palette.blue20};
     background: ${palette.black97};
     border: none;
     font-family: 'Space Grotesk';
@@ -190,12 +190,12 @@ export const StyledTableHead = styled(TableHead)`
     padding: 10px !important;
   }
 
-  & .MuiTableCell-head:first-of-type {
+  .MuiTableCell-head:first-of-type {
     border-top-left-radius: 6px;
     border-bottom-left-radius: 6px;
   }
 
-  & .MuiTableCell-head:last-of-type {
+  .MuiTableCell-head:last-of-type {
     border-top-right-radius: 6px;
     border-bottom-right-radius: 6px;
   }
