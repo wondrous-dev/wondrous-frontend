@@ -3,81 +3,12 @@ import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import CircularProgress from '@mui/material/CircularProgress';
 import MenuItem from '@mui/material/MenuItem';
-import Modal from '@mui/material/Modal';
 import Select from '@mui/material/Select';
 import Typography from '@mui/material/Typography';
-import CloseModalIcon from 'components/Icons/closeModal';
 import AttachFileSvg from 'components/Icons/attachFile.svg';
 import { Button } from 'components/Common/button';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
-
-export const GenericImportTaskModalWrapper = styled(Modal)`
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
-
-export const GenericImportTaskModalCard = styled.div`
-  width: 100%;
-  max-width: 560px;
-  background: ${palette.grey900};
-  border: 1px solid ${palette.grey79};
-  border-radius: 6px;
-  overflow: hidden;
-`;
-
-export const GenericImportTaskModalHeader = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  background: ${palette.grey920};
-  padding: 12px 24px;
-`;
-
-export const GenericImportTaskModalHeaderText = styled(Typography)`
-  && {
-    font-family: ${typography.fontFamily};
-    font-weight: 700;
-    font-size: 18px;
-    line-height: 20px;
-    color: ${palette.white};
-  }
-`;
-
-export const GenericImportTaskModalHeaderCloseModalIcon = styled((props) => (
-  <div {...props}>
-    <CloseModalIcon />
-  </div>
-))`
-  width: 32px;
-  height: 32px;
-  background: ${palette.grey100};
-  border-radius: 6px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  svg {
-    transform: scale(88%);
-  }
-  box-shadow: none;
-  transition: box-shadow 0.2s ease-out;
-
-  :hover {
-    box-shadow: 0px 6px 7px ${palette.black}73;
-  }
-`;
-
-export const GenericImportTaskModalBody = styled.div`
-  padding: 24px;
-  background: ${palette.grey900};
-  display: flex;
-  flex-direction: column;
-  gap: 26px;
-`;
 
 export const GenericImportTaskModalInputWrapper = styled.div`
   display: flex;
@@ -97,17 +28,6 @@ export const GenericImportTaskModalLabel = styled.label`
 export const GenericImportTaskModalLabelHelperLink = styled.a`
   color: ${palette.highlightBlue};
   margin-left: 6px;
-`;
-
-export const GenericImportTaskModalError = styled(Typography)`
-  && {
-    font-family: ${typography.fontFamily};
-    font-weight: 500;
-    font-size: 12px;
-    line-height: 14px;
-    color: ${palette.red400};
-    padding-left: 4px;
-  }
 `;
 
 const StyledSelect = styled(Select)`
@@ -178,12 +98,6 @@ export const GenericImportTaskModalSelectMenuItem = styled(MenuItem)`
   }
 `;
 
-export const GenericImportTaskModalSelectValueDisplay = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 8px;
-`;
-
 export const GenericImportTaskModalSelectValueDisplayText = styled(Typography)`
   && {
     font-family: ${typography.fontFamily};
@@ -220,15 +134,6 @@ export const GenericImportTaskModalBodyExpandedViewInvisibleState = styled(Accor
   && {
     display: none;
   }
-`;
-
-export const GenericImportTaskModalFooter = styled.div`
-  background: ${palette.black97};
-  padding: 24px;
-  display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  gap: 18px;
 `;
 
 export const GenericImportTaskModalFooterButton = styled(Button)`

@@ -11,24 +11,15 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { DEFAULT_IMPORT_FORMAT, IMPORT_FORMAT_OPTIONS, IMPORT_FORMATS, DEFAULT_TASKS_DATA } from './constants';
 import {
-  GenericImportTaskModalBody,
   GenericImportTaskModalBodyExpandedViewInvisibleState,
   GenericImportTaskModalBodyExpandedViewWrapper,
-  GenericImportTaskModalCard,
-  GenericImportTaskModalFooter,
   GenericImportTaskModalFooterButton,
-  GenericImportTaskModalHeader,
-  GenericImportTaskModalHeaderCloseModalIcon,
-  GenericImportTaskModalHeaderText,
   GenericImportTaskModalSelect,
   GenericImportTaskModalInputWrapper,
   GenericImportTaskModalLabel,
   GenericImportTaskModalLabelHelperLink,
-  GenericImportTaskModalWrapper,
   GenericImportTaskModalSelectMenuItem,
-  GenericImportTaskModalSelectValueDisplay,
   GenericImportTaskModalSelectValueDisplayText,
-  GenericImportTaskModalError,
   GenericImportTaskModalProgressSpinner,
 } from './styles';
 import { getTasksFromAsanaData, getTasksFromGenericData, getTasksFromTrelloData } from './helpers';

@@ -3,7 +3,7 @@ import { useCSVReader, formatFileSize } from 'react-papaparse';
 import DocumentIcon from 'components/Icons/DocumentIcon';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { DropZone, DropZoneFileContainer, DropZoneFileName, DropZoneFileRemoveButton, DropZoneIcon } from './styles';
+import { DropZone } from './styles';
 
 interface Props {
   handleFileUpload: (results) => void;
