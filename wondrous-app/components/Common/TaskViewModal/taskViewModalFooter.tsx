@@ -4,7 +4,7 @@ import TaskSubtasks from 'components/Common/TaskSubtask';
 import { TaskApplicationList } from 'components/Common/TaskApplication';
 import TaskSubmission from 'components/Common/TaskSubmission';
 import { usePodBoard } from 'utils/hooks';
-import { PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
+import { ENTITIES_TYPES, PERMISSIONS, TASK_STATUS_REQUESTED } from 'utils/constants';
 import MilestoneTasks from 'components/Common/MilestoneTask';
 import CommentList from 'components/Comment';
 import { useLazyQuery } from '@apollo/client';
@@ -164,7 +164,7 @@ const TaskViewModalFooter = forwardRef<HTMLDivElement, Props>((props, ref) => {
         )}
         {activeTab === tabs.subTasks && <TaskSubtasks taskId={fetchedTask?.id} canCreate={canCreate} />}
         {activeTab === tabs.discussion && (
-          <CommentList task={fetchedTask} taskType={isTaskProposal ? TASK_STATUS_REQUESTED : 'task'} />
+          <CommentList task={fetchedTask} entityType={isTaskProposal ? ENTITIES_TYPES.PROPOSAL : ENTITIES_TYPES.TASK} />
         )}
         {activeTab === tabs.tasks && !!fetchedTask && <MilestoneTasks canCreate={canCreate} milestone={fetchedTask} />}
       </TaskSectionContent>
