@@ -171,12 +171,6 @@ export const SubmissionButtonApprove = styled(Button)`
   }
 `;
 
-export const SubmissionFilterCreateWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-`;
-
 export const SubmissionFilterSelectButton = styled(ButtonBase)`
   && {
     align-items: center;
