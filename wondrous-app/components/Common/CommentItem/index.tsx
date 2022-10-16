@@ -1,15 +1,7 @@
 import { Grid } from '@mui/material';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
-import {
-  CommentProfilePicture,
-  CommentText,
-  Container,
-  Creator,
-  DefaultCommentProfilePicture,
-  DeleteText,
-  Role,
-  TimeText,
-} from './styles';
+import { SafeImage } from 'components/Common/Image';
+import { CommentText, Container, Creator, DefaultCommentProfilePicture, DeleteText, Role, TimeText } from './styles';
 
 const CommentItem = (props) => {
   const {
@@ -31,7 +23,20 @@ const CommentItem = (props) => {
         {type && <SubmissionStatus status={type} />}
       </Grid>
       <Grid container>
-        {actorProfilePicture ? <CommentProfilePicture src={actorProfilePicture} /> : <DefaultCommentProfilePicture />}
+        {actorProfilePicture ? (
+          <SafeImage
+            src={actorProfilePicture}
+            useNextImage={false}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '16px',
+              marginRight: '12px',
+            }}
+          />
+        ) : (
+          <DefaultCommentProfilePicture />
+        )}
         <div>
           <Grid container justifyContent="flex-start" alignItems="center">
             <Creator>{actorUsername}</Creator>
