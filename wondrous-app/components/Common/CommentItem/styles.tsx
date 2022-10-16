@@ -28,12 +28,6 @@ export const Container = styled.div`
   `}
 `;
 
-export const RoleStatusWrapper = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 4px;
-`;
-
 export const Role = styled(Typography)`
   && {
     background: ${palette.grey99};
@@ -44,10 +38,6 @@ export const Role = styled(Typography)`
     font-size: 14px;
     border-radius: 4px;
   }
-`;
-
-export const ProfileCommentContainer = styled.div`
-  display: flex;
 `;
 
 export function CommentProfilePicture(props) {
@@ -77,11 +67,6 @@ export function DefaultCommentProfilePicture() {
     />
   );
 }
-
-export const CommentTopFlexDiv = styled.div`
-  display: flex;
-  align-items: center;
-`;
 
 export const CommentText = styled(Typography)`
   && {

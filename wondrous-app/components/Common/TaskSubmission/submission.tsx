@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
@@ -28,7 +28,6 @@ import {
   TaskSubmissionsFormInactiveWrapper,
   HideSubmissionsCheckBoxDiv,
   HideSubmissionsHelperText,
-  SubmissionFilterCreateWrapper,
 } from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsFilter } from './submissionFilter';
 import { TaskSubmissionForm } from './submissionForm';
@@ -254,7 +253,7 @@ export function TaskSubmissions(props) {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
-        <SubmissionFilterCreateWrapper>
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
           <TaskSubmissionsFilter
             fetchedTaskSubmissions={fetchedTaskSubmissions}
             setFilteredSubmissions={setFilteredSubmissions}
@@ -264,7 +263,7 @@ export function TaskSubmissions(props) {
             setMakeSubmission={setMakeSubmission}
             taskStatus={taskStatus}
           />
-        </SubmissionFilterCreateWrapper>
+        </Grid>
         {isBounty &&
           fetchedTask?.status !== TASK_STATUS_DONE &&
           fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
