@@ -40,21 +40,6 @@ export const Role = styled(Typography)`
   }
 `;
 
-export function CommentProfilePicture(props) {
-  return (
-    <SafeImage
-      src={props?.src}
-      useNextImage={false}
-      style={{
-        width: '32px',
-        height: '32px',
-        borderRadius: '16px',
-        marginRight: '12px',
-      }}
-    />
-  );
-}
-
 export function DefaultCommentProfilePicture() {
   return (
     <DefaultUserImage
