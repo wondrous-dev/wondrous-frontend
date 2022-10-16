@@ -783,24 +783,29 @@ export const SubmissionDescription = styled.div`
   }
 `;
 
-export const GiveKudosButton = styled(ButtonBase)`
+export const GiveKudosButton = styled(Button)`
   && {
     background: ${palette.grey87};
     color: ${palette.blue20};
     height: 40px;
-    width: fit-content;
     font-family: ${typography.fontFamily};
     font-weight: 500;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 10px;
     border-radius: 6px;
     margin-top: 12px;
     gap: 8px;
+    width: fit-content;
+    font-size: 14px;
     svg {
       path {
         fill: ${palette.highlightBlue};
+      }
+    }
+    > button {
+      height: 40px;
+      padding: 12px 10px;
+      margin: 0;
+      :hover {
+        background: ${palette.grey87};
       }
     }
   }
