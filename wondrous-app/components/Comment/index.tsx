@@ -1,7 +1,7 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
-import Button from 'components/Button';
 import { ErrorText } from 'components/Common';
+import { Button } from 'components/Common/button';
 import CommentItem from 'components/Common/CommentItem';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { DiscordIcon } from 'components/Icons/discord';
@@ -18,7 +18,7 @@ import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { updateTask } from 'utils/board';
 import { renderMentionString } from 'utils/common';
-import { ENTITIES_TYPES, COMMENTER_ROLE, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS } from 'utils/constants';
+import { COMMENTER_ROLE, ENTITIES_TYPES, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
