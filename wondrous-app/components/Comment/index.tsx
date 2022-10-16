@@ -1,5 +1,6 @@
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
+import Button from 'components/Button';
 import { ErrorText } from 'components/Common';
 import CommentItem from 'components/Common/CommentItem';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
@@ -31,7 +32,6 @@ import {
   CommentListEmptyStateText,
   CommentListWrapper,
   DiscordDiscussionButtonWrapper,
-  DiscordThreadCreateButton,
   TextInputDiv,
 } from './styles';
 
@@ -367,10 +367,10 @@ export default function CommentList(props) {
     <CommentListWrapper>
       {!task?.org?.shared && entityType === ENTITIES_TYPES.TASK && (
         <DiscordDiscussionButtonWrapper>
-          <DiscordThreadCreateButton onClick={handleDiscordButtonClick}>
+          <Button onClick={handleDiscordButtonClick}>
             <DiscordIcon style={{ marginRight: 10 }} />
             Open Discussion
-          </DiscordThreadCreateButton>
+          </Button>
         </DiscordDiscussionButtonWrapper>
       )}
 

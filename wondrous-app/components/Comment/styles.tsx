@@ -1,5 +1,5 @@
 import { Typography } from '@mui/material';
-import { Button } from 'components/Common/button';
+import Button from 'components/Button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
@@ -121,17 +121,12 @@ export const EditorPlaceholder = styled.div`
 `;
 export const AddCommentButton = styled(Button)`
   && {
-    background: linear-gradient(
-      270deg,
-      ${palette.blue20} -5.62%,
-      ${palette.highlightPurple} 45.92%,
-      ${palette.highlightBlue} 103.12%
-    );
     margin-top: 16px;
     align-self: flex-end;
     color: ${palette.white};
     font-family: ${typography.fontFamily};
     font-weight: 500;
+    font-size: 14px;
     height: 40px;
     min-height: fit-content;
     width: fit-content;
@@ -139,10 +134,6 @@ export const AddCommentButton = styled(Button)`
     > button {
       background: ${palette.background.default};
       height: 38px;
-      font-size: 14px;
-      line-height: 0;
-      font-family: ${typography.fontFamily};
-      font-weight: 500;
       padding: 0 18px;
       :hover {
         background: ${palette.background.default};
@@ -178,18 +169,4 @@ export const DiscordDiscussionButtonWrapper = styled.div`
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
-`;
-
-export const DiscordThreadCreateButton = styled(Button)`
-  && {
-    ${GradientHighlightHorizontal}
-    height: 10px;
-    width: fit-content;
-    > button {
-      font-family: 'Space Grotesk';
-      ${({ theme }) => `
-        font-weight: ${theme.typography.fontWeightMedium};
-  `}
-    }
-  }
 `;
