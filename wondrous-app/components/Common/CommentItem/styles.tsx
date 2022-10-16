@@ -1,8 +1,17 @@
 import { Typography } from '@mui/material';
-import { SafeImage } from 'components/Common/Image';
+import { keyframes } from '@mui/system';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+
+const highlightComment = keyframes`
+  from {
+      background: ${palette.grey250};
+   }
+    to {
+      background: transparent;
+    }
+`;
 
 export const Container = styled.div`
   display: flex;
@@ -13,15 +22,7 @@ export const Container = styled.div`
   ${({ highlight }) =>
     highlight &&
     `
-    @keyframes highlightComment {
-    from {
-      background: ${palette.grey250};
-   }
-    to {
-      background: transparent;
-    }
-  }
-    animation-name: highlightComment;
+    animation-name: ${highlightComment};
     animation-duration: 2s;
     padding: 2px;
     border-radius: 4px
