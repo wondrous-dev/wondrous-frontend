@@ -1,7 +1,8 @@
 import { Grid } from '@mui/material';
-import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { SafeImage } from 'components/Common/Image';
-import { CommentText, Container, Creator, DefaultCommentProfilePicture, DeleteText, Role, TimeText } from './styles';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import SubmissionStatus from 'components/Common/SubmissionStatus';
+import { CommentText, Container, Creator, DeleteText, Role, TimeText } from './styles';
 
 const CommentItem = (props) => {
   const {
@@ -35,7 +36,14 @@ const CommentItem = (props) => {
             }}
           />
         ) : (
-          <DefaultCommentProfilePicture />
+          <DefaultUserImage
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '16px',
+              marginRight: '12px',
+            }}
+          />
         )}
         <div>
           <Grid container justifyContent="flex-start" alignItems="center">
