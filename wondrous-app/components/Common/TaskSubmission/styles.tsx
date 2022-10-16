@@ -129,14 +129,11 @@ const ButtonStyleBase = css`
   height: 30px;
   min-height: fit-content;
   width: fit-content;
+  font-size: 14px;
   z-index: 1;
   > button {
     background: ${palette.grey900};
     height: 28px;
-    font-size: 14px;
-    line-height: 0;
-    font-family: ${typography.fontFamily};
-    font-weight: 500;
     padding: 0 16px;
     :hover {
       background: ${palette.grey900};
