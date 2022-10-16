@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
 import { keyframes } from '@mui/system';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -40,19 +39,6 @@ export const Role = styled(Typography)`
     border-radius: 4px;
   }
 `;
-
-export function DefaultCommentProfilePicture() {
-  return (
-    <DefaultUserImage
-      style={{
-        width: '32px',
-        height: '32px',
-        borderRadius: '16px',
-        marginRight: '12px',
-      }}
-    />
-  );
-}
 
 export const CommentText = styled(Typography)`
   && {
