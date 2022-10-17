@@ -28,7 +28,7 @@ const Calendar = () => {
     { label: 'Month View', value: View.Month },
     { label: 'Week View', value: View.Week },
   ];
-  const [view, setView] = useState<View>(View.Week);
+  const [view, setView] = useState<View>(View.Month);
   const [viewDate, setViewDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
   const handlePrevClick = () => {
     setViewDate((prevDate) => {
