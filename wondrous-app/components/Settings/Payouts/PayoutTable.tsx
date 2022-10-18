@@ -317,8 +317,11 @@ const PayoutTable = (props: PayoutTableProps) => {
           >
             Clear Selection
           </Button>
-          {unpaid && renderBatchPayButton()}
-          {!unpaid && <BottomActionBarButton onClick={handleDownloadToCSV}>Download to CSV</BottomActionBarButton>}
+          {unpaid ? (
+            renderBatchPayButton()
+          ) : (
+            <BottomActionBarButton onClick={handleDownloadToCSV}>Download to CSV</BottomActionBarButton>
+          )}
         </Grid>
       </BottomActionBar>
     </>
