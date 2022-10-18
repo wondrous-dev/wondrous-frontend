@@ -238,10 +238,9 @@ export const SettingsHeaderTitle = styled.div`
 export const SettingsHeaderText = styled(Typography)`
   && {
     width: 100%;
-    font-size: 15px;
-    line-height: 23px;
+    font-size: 14px;
     letter-spacing: 0.01em;
-    color: ${palette.grey57};
+    color: ${palette.grey250};
     display: flex;
     justify-content: space-between;
   }

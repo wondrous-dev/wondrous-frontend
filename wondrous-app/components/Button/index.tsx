@@ -32,7 +32,10 @@ const ButtonInner = styled.button`
   font-weight: ${(props) => props.fontWeight || 400};
   font-family: ${typography.fontFamily};
   justify-content: center;
-  padding: 0 ${(props) => props.paddingX || 30}px;
+  padding-left: ${(props) => props.paddingX || 30}px;
+  padding-right: ${(props) => props.paddingX || 30}px;
+  padding-top: ${(props) => props.paddingY || 0}px;
+  padding-bottom: ${(props) => props.paddingY || 0}px;
 
   &:hover:not(:disabled) {
     background: ${(props) => props?.hover?.background || props.background};
@@ -71,7 +74,7 @@ const theme = {
     borderRadius: 6,
     hover: {
       background: palette.grey920,
-    }
+    },
   },
   red: {
     borderColor: palette.red200,
@@ -79,7 +82,7 @@ const theme = {
     borderRadius: 6,
     hover: {
       background: palette.grey920,
-    }
+    },
   },
 };
 
@@ -90,7 +93,7 @@ type Props = SpaceProps & {
    */
   color?: 'primary' | 'grey' | 'purple' | 'blue' | 'red';
   children: ReactNode | undefined | string;
-  minWidth?: number;
+  minWidth?: number | string; // for values such as auto, fit-content, etc.
   height?: number;
   /**
    * Button can have custom shapes defined via borderRadius prop
@@ -124,6 +127,7 @@ type Props = SpaceProps & {
    */
   buttonTheme?: {
     paddingX?: number;
+    paddingY?: number;
     background?: string;
     borderColor?: string;
     fontSize?: number | string;
