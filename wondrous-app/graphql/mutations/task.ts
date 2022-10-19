@@ -255,8 +255,9 @@ export const TURN_TASK_TO_BOUNTY = gql`
 export const CREATE_TASK_DISCORD_THREAD = gql`
   mutation createTaskDiscordThread($taskId: ID!) {
     createTaskDiscordThread(taskId: $taskId) {
-      guildId
-      threadId
+      guildIds
+      
+      threadIds
     }
   }
 `;
