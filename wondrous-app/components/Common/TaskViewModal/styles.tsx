@@ -712,6 +712,7 @@ export const TaskSectionInfoCreatorDaysAgo = styled.span`
 export const TaskSectionInfoDiv = styled.div`
   display: flex;
   align-items: center;
+  width: 100%;
 `;
 
 export const TaskModalFooter = styled.div`

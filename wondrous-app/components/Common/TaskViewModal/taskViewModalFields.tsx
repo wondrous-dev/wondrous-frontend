@@ -1,3 +1,4 @@
+import { useContext, useState } from 'react';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { useRouter } from 'next/router';
 import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
@@ -13,8 +14,10 @@ import { format } from 'date-fns';
 import Tooltip from 'components/Tooltip';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import { useState } from 'react';
 import TaskPriority from 'components/Common/TaskPriority';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import TaskViewModalAutocomplete from 'components/Common/TaskViewModalAutocomplete';
 import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
 import {
   TaskSectionDisplayDiv,
@@ -96,9 +99,39 @@ export function AssigneeField({
   userId,
 }) {
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const handleUpdateTaskAssignee = (assigneeId) => {
+    updateTaskAssignee({
+      variables: {
+        taskId: fetchedTask?.id,
+        assigneeId,
+      },
+      onCompleted: (data) => {
+        const task = data?.updateTaskAssignee;
+        const transformedTask = transformTaskToTaskCard(task, {});
+        setFetchedTask(transformedTask);
+        if (boardColumns?.setColumns && onCorrectPage) {
+          let columns = [...boardColumns?.columns];
+          if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+            columns = updateInReviewItem(transformedTask, columns);
+          } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+            columns = updateInProgressTask(transformedTask, columns);
+          } else if (transformedTask.status === TASK_STATUS_TODO) {
+            columns = updateTaskItem(transformedTask, columns);
+          } else if (transformedTask.status === TASK_STATUS_DONE) {
+            columns = updateCompletedItem(transformedTask, columns);
+          }
+          boardColumns.setColumns(columns);
+        }
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Assignee updated successfully.');
+      },
+    });
+  };
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
   const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
-
+  const { data: orgUsersData } = useGetOrgUsers(fetchedTask?.orgId);
+  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).filter(({ value }) => value !== user?.id);
   const router = useRouter();
   if (!shouldDisplay) return null;
 
@@ -156,9 +189,22 @@ export function AssigneeField({
               shallow: true,
             });
           }}
-          DefaultContent={() => (
-            <>
-              {canClaim ? (
+          DefaultContent={() => {
+            if (canEdit)
+              return (
+                <TaskViewModalAutocomplete
+                  options={filteredOrgUsersData}
+                  onChange={(_, value, reason) => {
+                    if (reason === 'selectOption') {
+                      handleUpdateTaskAssignee(value?.value);
+                    }
+                  }}
+                  user={user}
+                  handleAssignToSelf={() => handleUpdateTaskAssignee(user?.id)}
+                />
+              );
+            if (canClaim)
+              return (
                 <TaskSectionInfoTakeTask
                   onClick={() => {
                     if (!user) {
@@ -182,54 +228,17 @@ export function AssigneeField({
                         },
                       });
                     } else {
-                      updateTaskAssignee({
-                        variables: {
-                          taskId: fetchedTask?.id,
-                          assigneeId: user?.id,
-                        },
-                        onCompleted: (data) => {
-                          const task = data?.updateTaskAssignee;
-                          const transformedTask = transformTaskToTaskCard(task, {});
-                          setFetchedTask(transformedTask);
-                          if (boardColumns?.setColumns && onCorrectPage) {
-                            let columns = [...boardColumns?.columns];
-                            if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                              columns = updateInReviewItem(transformedTask, columns);
-                            } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                              columns = updateInProgressTask(transformedTask, columns);
-                            } else if (transformedTask.status === TASK_STATUS_TODO) {
-                              columns = updateTaskItem(transformedTask, columns);
-                            } else if (transformedTask.status === TASK_STATUS_DONE) {
-                              columns = updateCompletedItem(transformedTask, columns);
-                            }
-                            boardColumns.setColumns(columns);
-                          }
-                        },
-                      });
+                      handleUpdateTaskAssignee(user?.id);
                     }
                   }}
                 >
                   <Claim />
                   <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
                 </TaskSectionInfoTakeTask>
-              ) : (
-                <>
-                  {canApply ? (
-                    <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />
-                  ) : (
-                    <TaskSectionInfoText
-                      style={{
-                        marginLeft: '4px',
-                        marginTop: '8px',
-                      }}
-                    >
-                      None
-                    </TaskSectionInfoText>
-                  )}
-                </>
-              )}
-            </>
-          )}
+              );
+            if (canApply) return <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />;
+            return null;
+          }}
         />
       </TaskSectionInfoDiv>
     </TaskSectionDisplayDiv>
