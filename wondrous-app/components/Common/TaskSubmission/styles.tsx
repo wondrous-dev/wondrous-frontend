@@ -113,7 +113,7 @@ const ButtonStyleSelected = css`
     `
   > button {
     background: ${palette.background.default};
-    :hover {
+    &:hover {
       background: ${palette.background.default};
     }
   }
@@ -804,7 +804,7 @@ export const GiveKudosButton = styled(Button)`
       height: 40px;
       padding: 12px 10px;
       margin: 0;
-      :hover {
+      &:hover {
         background: ${palette.grey87};
       }
     }

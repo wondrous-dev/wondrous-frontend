@@ -1,6 +1,5 @@
 import { Typography } from '@mui/material';
 import Button from 'components/Button';
-import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
@@ -135,7 +134,7 @@ export const AddCommentButton = styled(Button)`
       background: ${palette.background.default};
       height: 38px;
       padding: 0 18px;
-      :hover {
+      &:hover {
         background: ${palette.background.default};
       }
     }
