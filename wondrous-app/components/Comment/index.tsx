@@ -342,7 +342,7 @@ export default function CommentList(props) {
     try {
       const {
         data: {
-          createTaskDiscordThread: { guildId, threadId },
+          createTaskDiscordThread: { guildIds, threadIds },
         },
       } = await apollo.mutate({
         mutation: CREATE_TASK_DISCORD_THREAD,
@@ -350,7 +350,8 @@ export default function CommentList(props) {
           taskId: task?.id,
         },
       });
-      window.open(`discord://.com/channels/${guildId}/${threadId}`);
+
+      guildIds.forEach((guild, idx) => window.open(`discord://.com/channels/${guild}/${threadIds[idx]}`));
     } catch (err) {
       if (err?.graphQLErrors && err?.graphQLErrors[0]?.extensions.errorCode === GRAPHQL_ERRORS.DISCORD_NOT_CONFIGURED) {
         if (task?.podId) {
