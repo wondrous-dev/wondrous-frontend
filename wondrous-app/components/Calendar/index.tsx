@@ -1,5 +1,7 @@
+import startOfMonth from 'date-fns/startOfMonth';
 import React, { useState, Suspense } from 'react';
 import dynamic from 'next/dynamic';
+import { useRouter } from 'next/router';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -7,6 +9,9 @@ import Alert from '@mui/material/Alert';
 import startOfWeek from 'date-fns/startOfWeek';
 import subWeeks from 'date-fns/subWeeks';
 import addWeeks from 'date-fns/addWeeks';
+import subMonths from 'date-fns/subMonths';
+import addMonths from 'date-fns/addMonths';
+import format from 'date-fns/format';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
 import CalendarWeekView from 'components/Calendar/CalendarWeekView';
@@ -16,28 +21,50 @@ import WonderButton from 'components/Button';
 import ArrowLeft from 'components/Icons/ArrowLeft';
 import ArrowRight from 'components/Icons/ArrowRight';
 import palette from 'theme/palette';
+import { TaskFragment } from 'types/task';
+import { useLocation } from 'utils/useLocation';
+import { ViewType } from 'types/common';
+import { delQuery } from 'utils/index';
+import styles from './styles';
+import testData from 'components/Calendar/testData';
+import { TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
 
 enum View {
   Month = 'month',
   Week = 'week',
 }
 
-const Calendar = () => {
+type Props = {
+  tasksMap: {
+    [key: string]: TaskFragment[];
+  };
+};
+
+const Calendar = ({ tasksMap }: Props) => {
   const weekStartsOn = 0; // the index of the first day of the week (0 - Sunday
   const views = [
     { label: 'Month View', value: View.Month },
     { label: 'Week View', value: View.Week },
   ];
   const [view, setView] = useState<View>(View.Month);
-  const [viewDate, setViewDate] = useState<Date>(startOfWeek(new Date(), { weekStartsOn }));
+  const [viewDate, setViewDate] = useState<Date>(startOfMonth(new Date()));
+  // const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'MMMM yyyy'));
   const handlePrevClick = () => {
     setViewDate((prevDate) => {
-      // if (view === View.Month) {
-      //   return new Date(prevDate.getFullYear(), prevDate.getMonth() - 1, 1);
-      // }
+      if (view === View.Month) {
+        return subMonths(prevDate, 1);
+      }
 
       return subWeeks(prevDate, 1);
     });
+
+    // if (view === View.Month) {
+    //   return setSelectedMonth(format(subMonths(viewDate, 1), 'MMMM yyyy'));
+    // }
+    //
+    // if (view === View.Week) {
+    //   return setSelectedMonth(format(subWeeks(viewDate, 1), 'MMMM yyyy'));
+    // }
   };
 
   const handleNextClick = () => {
@@ -46,12 +73,37 @@ const Calendar = () => {
       //   return new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
       // }
 
+      if (view === View.Month) {
+        return addMonths(prevDate, 1);
+      }
+
       return addWeeks(prevDate, 1);
     });
+    //
+    // if (view === View.Month) {
+    //   return setSelectedMonth(format(addMonths(viewDate, 1), 'MMMM yyyy'));
+    // }
+    //
+    // if (view === View.Week) {
+    //   return setSelectedMonth(format(addWeeks(viewDate, 1), 'MMMM yyyy'));
+    // }
   };
 
   const handleTodayClick = () => {
     setViewDate(startOfWeek(new Date(), { weekStartsOn }));
+
+    setViewDate((prevDate) => {
+      // if (view === View.Month) {
+      //   return new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
+      // }
+
+      if (view === View.Month) {
+        return startOfMonth(new Date());
+      }
+
+      return startOfWeek(new Date(), { weekStartsOn });
+    });
+    // setSelectedMonth(format(new Date(), 'MMMM yyyy'));
   };
 
   return (
@@ -63,75 +115,41 @@ const Calendar = () => {
               Today
             </WonderButton>
           </Grid>
-          <Grid item>
-            <Typography
-              marginLeft="32px"
-              marginRight="24px"
-              color="white"
-              fontWeight={500}
-              fontSize="14px"
-              fontFamily={typography.fontFamily}
-            >
-              August 2022
-            </Typography>
-          </Grid>
-          <Grid item>
-            <Grid display="flex">
-              <WonderButton
-                color="grey"
-                borderRadius={6}
-                width={30}
-                height={30}
-                buttonTheme={{ paddingX: 0 }}
-                onClick={handlePrevClick}
-              >
-                <ArrowLeft />
-              </WonderButton>
-              <Box padding="2px" />
-              <WonderButton
-                color="grey"
-                borderRadius={6}
-                width={30}
-                height={30}
-                buttonTheme={{ paddingX: 0 }}
-                onClick={handleNextClick}
-              >
-                <ArrowRight />
-              </WonderButton>
+          <Grid container item display="flex" alignItems="center" sx={{ margin: '0 32px' }}>
+            <Grid item sx={{ minWidth: '112px', marginRight: '24px' }}>
+              <Typography color="white" fontWeight={500} fontSize="14px" textAlign="center">
+                {format(viewDate, 'MMMM yyyy')}
+              </Typography>
+            </Grid>
+
+            <Grid item>
+              <Grid display="flex">
+                <WonderButton
+                  color="grey"
+                  borderRadius={6}
+                  width={30}
+                  height={30}
+                  buttonTheme={{ paddingX: 0 }}
+                  onClick={handlePrevClick}
+                >
+                  <ArrowLeft />
+                </WonderButton>
+                <Box padding="2px" />
+                <WonderButton
+                  color="grey"
+                  borderRadius={6}
+                  width={30}
+                  height={30}
+                  buttonTheme={{ paddingX: 0 }}
+                  onClick={handleNextClick}
+                >
+                  <ArrowRight />
+                </WonderButton>
+              </Grid>
             </Grid>
           </Grid>
           <Grid item>
-            <DropdownSelect
-              options={views}
-              innerStyle={{
-                background: palette.grey87,
-                maxWidth: '150px',
-                padding: 0,
-                margin: 0,
-                fontSize: '15px',
-                color: palette.white,
-              }}
-              formSelectStyle={{
-                height: 'auto',
-                margin: '0 32px',
-              }}
-              value={view}
-              setValue={setView}
-              MenuProps={{
-                PaperProps: {
-                  sx: {
-                    maxHeight: '250px',
-                    width: '100%',
-                    maxWidth: 150,
-                    background: 'linear-gradient(180deg, #1E1E1E 0%, #141414 109.19%)',
-                    padding: '15px',
-                    '*::-webkit-scrollbar': {
-                      width: 100,
-                    },
-                  },
-                },
-              }}
-            />
+            <DropdownSelect {...styles.viewDropdown} options={views} value={view} setValue={setView} />
           </Grid>
         </Grid>
 
@@ -143,22 +161,7 @@ const Calendar = () => {
                 &times;
               </WonderButton>
             }
-            sx={{
-              background: '#250069',
-              alignItems: 'center',
-              border: '1px solid #4F00DE',
-              borderRadius: '6px',
-              height: '36px',
-              padding: '0 7px',
-              color: '#FFFFFF',
-              '.MuiAlert-icon svg': {
-                color: '#CCBBFF',
-              },
-              '.MuiAlert-action': {
-                margin: '0 0 0 70px',
-                padding: 0,
-              },
-            }}
+            sx={styles.infoAlert}
             severity="info"
           >
             Only tasks with due dates are displayed
@@ -166,7 +169,11 @@ const Calendar = () => {
         </Grid>
       </Grid>
 
-      {view === View.Week ? <CalendarWeekView viewDate={viewDate} /> : <CalendarMonthView viewDate={viewDate} weekStartsOn={weekStartsOn} />}
+      {view === View.Month ? (
+        <CalendarMonthView tasksMap={tasksMap} viewDate={viewDate} />
+      ) : (
+        <CalendarWeekView tasks={testData.data.getOrgTaskBoardTasks} viewDate={viewDate} />
+      )}
     </div>
   );
 };

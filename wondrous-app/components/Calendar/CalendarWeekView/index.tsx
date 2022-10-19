@@ -9,6 +9,8 @@ import Typography from '@mui/material/Typography';
 import palette from 'theme/palette';
 import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import styles from 'components/Calendar/CalendarWeekView/styles';
+import { taskList } from 'components/Calendar/testData';
+import SmartLink from 'components/Common/SmartLink';
 
 type Props = {
   /**
@@ -21,9 +23,11 @@ type Props = {
    * The first day of the week will always be the viewDate
    */
   daysInWeek?: number;
+  location: any;
+  viewUrl: string;
 };
 
-const CalendarWeekView = ({ viewDate, daysInWeek = 7 }: Props) => {
+const CalendarWeekView = ({ viewDate, daysInWeek = 7, location, viewUrl }: Props) => {
   // const week = [];
   //
   // for (let i = 0; i <= 6; i++) {
@@ -36,9 +40,6 @@ const CalendarWeekView = ({ viewDate, daysInWeek = 7 }: Props) => {
     in_review: <InReview width="16" height="16" />,
     completed: <Done width="16" height="16" />,
   };
-
-  const status = 'completed';
-  const title = 'Below is an interactive demo that lets you explore the visual results of the different settings';
 
   return (
     <Grid container wrap="nowrap" sx={styles.wrapper}>
@@ -53,23 +54,8 @@ const CalendarWeekView = ({ viewDate, daysInWeek = 7 }: Props) => {
             item
             className={dateIsToday ? 'ColumnToday' : ''}
             sx={{
-              cursor: 'pointer',
-              width: '100%',
               borderRight: dayIndex === daysInWeek - 1 ? 'none' : `1px solid ${palette.grey101}`,
-              '&.ColumnToday .ColumnHeader, &:hover .ColumnHeader': {
-                backgroundColor: palette.grey85,
-                transition: 'all 0.3s ease-in-out',
-              },
-              '&.ColumnToday .ColumnHeaderText, &:hover .ColumnHeaderText': {
-                backgroundColor: palette.highlightPurple,
-                borderRadius: '4px',
-                padding: '0 4px',
-                transition: 'all 0.3s ease-in-out',
-              },
-              '&.ColumnToday .ColumnBody, &:hover .ColumnBody': {
-                backgroundColor: palette.black87,
-                transition: 'all 0.3s ease-in-out',
-              },
+              ...styles.column,
             }}
           >
             <Grid
@@ -84,10 +70,19 @@ const CalendarWeekView = ({ viewDate, daysInWeek = 7 }: Props) => {
               <Box className="ColumnHeaderText">{format(date, 'ccc d')}</Box>
             </Grid>
             <Grid container item className="ColumnBody" rowSpacing="20px" sx={styles.columnBody}>
-              <Grid item display="flex" wrap="nowrap">
-                <Box>{taskStatusIcon[status]}</Box>
-                <Typography sx={styles.taskTitle}>{title}</Typography>
-              </Grid>
+              {taskList.map((task) => (
+                <SmartLink
+                  key={task.title}
+                  href={viewUrl}
+                  preventLinkNavigation
+                  onNavigate={() => location.replace(viewUrl)}
+                >
+                  <Grid item display="flex" wrap="nowrap">
+                    <Box>{taskStatusIcon[task.status]}</Box>
+                    <Typography sx={styles.taskTitle}>{task.title}</Typography>
+                  </Grid>
+                </SmartLink>
+              ))}
             </Grid>
           </Grid>
         );

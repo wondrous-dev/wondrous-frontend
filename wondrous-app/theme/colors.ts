@@ -21,6 +21,7 @@ export const greyColors = {
   grey57: '#7A7A7A',
   grey58: '#707070',
   grey60: '#6F6F6F',
+  grey61: '#606060',
   grey65: '#5E5E5E',
   grey70: '#525252',
   grey74: '#464646',

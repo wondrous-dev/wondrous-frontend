@@ -8,6 +8,24 @@ const styles = {
     marginTop: '14px',
     overflow: 'hidden',
   },
+  column: {
+    cursor: 'default',
+    width: '100%',
+    '&.ColumnToday .ColumnHeader, &:hover .ColumnHeader': {
+      backgroundColor: palette.grey85,
+      transition: 'all 0.3s ease-in-out',
+    },
+    '&.ColumnToday .ColumnHeaderText, &:hover .ColumnHeaderText': {
+      backgroundColor: palette.highlightPurple,
+      borderRadius: '4px',
+      padding: '0 4px',
+      transition: 'all 0.3s ease-in-out',
+    },
+    '&.ColumnToday .ColumnBody, &:hover': {
+      backgroundColor: palette.black87,
+      transition: 'all 0.3s ease-in-out',
+    },
+  },
   columnHeader: {
     height: '34px',
     backgroundColor: palette.grey100,
@@ -24,6 +42,15 @@ const styles = {
     marginLeft: '6px',
     fontSize: '12px',
     fontWeight: 500,
+    display: '-webkit-box',
+    overflow: 'hidden',
+    textOverflow: 'ellipsis',
+    '-webkit-line-clamp': '3',
+    '-webkit-box-orient': 'vertical',
+    '&:hover': {
+      cursor: 'pointer',
+      textDecoration: 'underline',
+    },
   },
 };
 

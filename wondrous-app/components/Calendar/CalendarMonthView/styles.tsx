@@ -8,22 +8,92 @@ const styles = {
     marginTop: '14px',
     overflow: 'hidden',
   },
+  column: {
+    cursor: 'default',
+    '&.ColumnToday .ColumnHeader, &:hover .ColumnHeader': {
+      backgroundColor: palette.grey85,
+      transition: 'all 0.3s ease-in-out',
+    },
+    '&.ColumnToday .ColumnHeaderText, &:hover .ColumnHeaderText': {
+      backgroundColor: palette.highlightPurple,
+      color: palette.white,
+      borderRadius: '4px',
+      padding: '0 4px',
+      transition: 'all 0.3s ease-in-out',
+    },
+    '&.ColumnToday .ColumnBody, &:hover .ColumnBody': {
+      backgroundColor: palette.black87,
+      transition: 'all 0.3s ease-in-out',
+    },
+  },
   columnHeader: {
-    height: '34px',
-    backgroundColor: palette.grey100,
+    display: 'inline-flex',
+    height: '30px',
+    backgroundColor: palette.black92,
     color: palette.white,
     fontWeight: 500,
-    borderBottom: `1px solid ${palette.grey101}`,
-    zIndex: 1,
+    borderTop: `1px solid ${palette.grey101}`,
   },
   columnBody: {
     padding: '10px 8px',
+    height: '110px',
   },
   taskTitle: {
     color: palette.white,
     marginLeft: '6px',
     fontSize: '12px',
     fontWeight: 500,
+
+    '&:hover': {
+      cursor: 'pointer',
+      textDecoration: 'underline',
+    },
+  },
+  moreButton: {
+    justifyContent: 'unset',
+    padding: 0,
+    color: palette.highlightBlue,
+    fontSize: '12px',
+    lineHeight: '14px',
+    '&:hover': { textDecoration: 'underline' },
+  },
+  // modalContentWrapper: {
+  //   overflowY: 'auto',
+  //   height: '200px',
+  //   '&::-webkit-scrollbar': {
+  //     width: '4px',
+  //   },
+  //   '&::-webkit-scrollbar-track': {
+  //     background: palette.grey61,
+  //     borderRadius: '210px',
+  //   },
+  //   '&::-webkit-scrollbar-thumb': {
+  //     background: palette.grey250,
+  //     borderRadius: '210px',
+  //   },
+  // },
+  modalTask: {
+    padding: '0 4px 6px 4px',
+    transition: 'all 0.3s ease-in-out',
+
+    '&:hover': {
+      backgroundColor: palette.grey85,
+      borderRadius: '6px',
+      cursor: 'pointer',
+    },
+  },
+  modalTaskTitle: {
+    color: palette.white,
+    marginLeft: '6px',
+    fontSize: '12px',
+    fontWeight: 500,
+  },
+  weekDay: {
+    color: palette.white,
+    fontWeight: 500,
+    height: '34px',
+    backgroundColor: palette.grey100,
+    cursor: 'default',
   },
 };
 
