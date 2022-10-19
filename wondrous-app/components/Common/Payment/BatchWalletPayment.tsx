@@ -105,16 +105,23 @@ function BatchWalletPayment(props) {
   useEffect(() => {
     setIncompatibleWalletError(null);
     const corrctChainWallets = [];
+    let metamaskWalletFound = false;
     wallets.map((wallet) => {
-      if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
+      if (wallet.chain === chain) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
       }
-      if (corrctChainWallets.length === 0 && wallets.length > 0) {
-        setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
+      if (wallet.type === WALLET_TYPE.METAMASK) {
+        metamaskWalletFound = true;
       }
     });
+    if (corrctChainWallets.length === 0 && wallets.length > 0) {
+      setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
+    }
+    if (corrctChainWallets.length === 0 && wallets.length > 0 && metamaskWalletFound) {
+      setIncompatibleWalletError(`Existing wallets are not on ${chain}, metamask wallet cannot be used for batch pay`);
+    }
     setWalletOptions(corrctChainWallets);
   }, [chain, wallets]);
 
