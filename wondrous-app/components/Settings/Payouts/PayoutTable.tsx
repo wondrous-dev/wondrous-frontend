@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { Grid } from '@mui/material';
+import { useRouter } from 'next/router';
 
 import Tooltip from 'components/Tooltip';
 import Button from 'components/Button';
@@ -104,7 +105,9 @@ const PayoutTable = (props: PayoutTableProps) => {
     selectedItems,
     setSelectedItems,
   } = props;
+  const router = useRouter();
 
+  const [paymentMade, setPaymentMade] = useState(false);
   const [payeeDetails, setPayeeDetails] = useState<PayeeDetails | null>(null);
 
   const [showPayModal, setShowPayModal] = useState(false);
@@ -209,7 +212,9 @@ const PayoutTable = (props: PayoutTableProps) => {
     <>
       <PaymentModalContext.Provider
         value={{
-          onPaymentComplete: () => {},
+          onPaymentComplete: () => {
+            setPaymentMade(true);
+          },
         }}
       >
         {showPayModal && (
@@ -217,7 +222,12 @@ const PayoutTable = (props: PayoutTableProps) => {
             podId={podId}
             orgId={org?.id}
             open={showPayModal}
-            handleClose={() => setShowPayModal(false)}
+            handleClose={() => {
+              setShowPayModal(false);
+              if (paymentMade) {
+                router.reload();
+              }
+            }}
             assigneeId={payeeDetails?.assigneeId}
             assigneeUsername={payeeDetails?.assigneeUsername}
             taskTitle={payeeDetails?.taskTitle}
@@ -230,7 +240,12 @@ const PayoutTable = (props: PayoutTableProps) => {
             podId={podId}
             orgId={org?.id}
             open={showBatchPayModal}
-            handleClose={() => setShowBatchPayModal(false)}
+            handleClose={() => {
+              setShowBatchPayModal(false);
+              if (paymentMade) {
+                router.reload();
+              }
+            }}
             unpaidSubmissions={selectedItems}
           />
         )}
