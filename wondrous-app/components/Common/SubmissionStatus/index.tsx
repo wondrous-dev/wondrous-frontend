@@ -45,8 +45,8 @@ const statusComponents = {
 };
 
 interface SubmissionStatusProps {
-  status?: typeof SUBMISSION_STATUS[keyof typeof SUBMISSION_STATUS];
-  variation?: typeof VARIATIONS[keyof typeof VARIATIONS];
+  status?: SUBMISSION_STATUS;
+  variation?: VARIATIONS;
   text?: String;
 }
 

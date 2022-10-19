@@ -1,6 +1,6 @@
-export const VARIATIONS = {
-  default: 'default',
-  rounded: 'rounded',
-};
+enum VARIATIONS {
+  default = 'default',
+  rounded = 'rounded',
+}
 
 export default VARIATIONS;

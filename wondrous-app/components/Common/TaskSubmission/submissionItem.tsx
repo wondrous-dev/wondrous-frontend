@@ -22,6 +22,7 @@ import { useLocation } from 'utils/useLocation';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import VARIATIONS from 'components/Common/SubmissionStatus/constants';
 import { PaymentButton } from 'components/Common/Task/paymentButton';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
@@ -190,7 +191,7 @@ const selectSubmissionStatus = (submission) => {
 export const SubmissionItemStatus = (props) => {
   const { submission } = props;
   const submissionStatus = selectSubmissionStatus(submission);
-  return <SubmissionStatus status={submissionStatus} variation="rounded" />;
+  return <SubmissionStatus status={submissionStatus} variation={VARIATIONS.rounded} />;
 };
 
 function SubmissionItemUserImage({ creatorProfilePicture }) {
