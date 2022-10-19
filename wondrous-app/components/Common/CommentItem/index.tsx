@@ -1,8 +1,9 @@
-import { Grid } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
-import { CommentText, Container, Creator, DeleteText, Role, TimeText } from './styles';
+import palette from 'theme/palette';
+import { Container } from './styles';
 
 const CommentItem = (props) => {
   const {
@@ -19,8 +20,22 @@ const CommentItem = (props) => {
   } = props;
   return (
     <Container ref={commentRef} highlight={isOpenedFromNotification}>
-      <Grid container justifyContent="flex-start" alignItems="center" spacing={{ gap: '4px' }}>
-        {role && <Role>{role}</Role>}
+      <Grid container justifyContent="flex-start" alignItems="center" sx={{ gap: '4px' }}>
+        {role && (
+          <Box
+            sx={{
+              background: palette.grey99,
+              color: palette.blue20,
+              padding: '4px 8px',
+              height: '26px',
+              fontWeight: 500,
+              fontSize: '14px',
+              borderRadius: '4px',
+            }}
+          >
+            {role}
+          </Box>
+        )}
         {type && <SubmissionStatus status={type} />}
       </Grid>
       <Grid container>
@@ -47,11 +62,52 @@ const CommentItem = (props) => {
         )}
         <div>
           <Grid container justifyContent="flex-start" alignItems="center">
-            <Creator>{actorUsername}</Creator>
-            <TimeText>{timeText}</TimeText>
+            <Box
+              sx={{
+                color: palette.white,
+                fontSize: '13px',
+                lineHeight: '20px',
+                fontWeight: 'bold',
+                marginRight: '8px',
+              }}
+            >
+              {actorUsername}
+            </Box>
+            <Box
+              sx={{
+                color: palette.grey51,
+                fontSize: '13px',
+                lineHeight: '20px',
+              }}
+            >
+              {timeText}
+            </Box>
           </Grid>
-          <CommentText>{commentText}</CommentText>
-          {canEdit && <DeleteText onClick={handleOnDelete}>Delete</DeleteText>}
+          <Box
+            sx={{
+              fontSize: '13px',
+              lineHeight: '20px',
+              color: palette.white,
+              textAlign: 'left',
+              whiteSpace: 'pre-line',
+            }}
+          >
+            {commentText}
+          </Box>
+          {canEdit && (
+            <Box
+              onClick={handleOnDelete}
+              sx={{
+                color: 'white',
+                textDecoration: 'underline',
+                fontSize: '13px',
+                textAlign: 'left',
+                cursor: 'pointer',
+              }}
+            >
+              Delete
+            </Box>
+          )}
         </div>
       </Grid>
     </Container>
