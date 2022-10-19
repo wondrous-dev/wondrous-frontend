@@ -1,5 +1,5 @@
 import { AbstractConnector } from '@web3-react/abstract-connector';
-import { ethers } from 'ethers';
+import { ethers, BigNumber } from 'ethers';
 
 export interface WonderWeb3Asset {
   balance: string;
@@ -10,6 +10,15 @@ export interface WonderWeb3AssetMap {
   [symbol: string]: WonderWeb3Asset;
 }
 
+export interface TransactionData {
+  gasPrice: string;
+  gasLimit: string;
+  to: string;
+  from: string;
+  value: string;
+  data: string;
+  chainId?: number;
+}
 export interface WonderWeb3 {
   /**
    * If true, we are either connecting to a web3 provider or waiting for a user signature
@@ -146,4 +155,14 @@ export interface WonderWeb3 {
    * Resolves eth address from provided ENS Name
    */
   getAddressFromENS: (address: string) => Promise<string | null>;
+
+  /**
+   * get gas price from provider
+   */
+  getGasPrice: () => Promise<BigNumber | null>;
+
+  /**
+   * sign and send transaction
+   */
+  sendTransaction: (txData: TransactionData) => Promise<any | null>;
 }
