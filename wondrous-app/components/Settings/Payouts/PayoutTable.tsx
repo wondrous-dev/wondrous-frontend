@@ -174,12 +174,6 @@ const PayoutTable = (props: PayoutTableProps) => {
     setShowBatchPayModal(true);
   };
 
-  const handlePaymentCompletion = () => {
-    setPayeeDetails(null);
-    setShowPayModal(false);
-    setShowBatchPayModal(false);
-  };
-
   const renderBatchPayButton = () =>
     showBatchPayButton ? (
       <Button
@@ -215,7 +209,7 @@ const PayoutTable = (props: PayoutTableProps) => {
     <>
       <PaymentModalContext.Provider
         value={{
-          onPaymentComplete: handlePaymentCompletion,
+          onPaymentComplete: () => {},
         }}
       >
         {showPayModal && (
@@ -223,7 +217,7 @@ const PayoutTable = (props: PayoutTableProps) => {
             podId={podId}
             orgId={org?.id}
             open={showPayModal}
-            handleClose={handlePaymentCompletion}
+            handleClose={() => setShowPayModal(false)}
             assigneeId={payeeDetails?.assigneeId}
             assigneeUsername={payeeDetails?.assigneeUsername}
             taskTitle={payeeDetails?.taskTitle}

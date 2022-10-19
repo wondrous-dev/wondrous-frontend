@@ -3,7 +3,7 @@ export enum SupportedChainType {
 }
 export const CHAIN_ID_TO_CHAIN_NAME = {
   1: 'ethereum',
-  4: 'rinkeby',
+  5: 'goerli',
   137: 'polygon',
   1666600000: 'harmony',
   42161: 'arbitrum',
@@ -15,7 +15,7 @@ export const CHAIN_ID_TO_CHAIN_NAME = {
 
 export const CHAIN_TO_GNOSIS_URL_ABBR = {
   ethereum: 'eth',
-  rinkeby: 'rin',
+  goerli: 'gor',
   polygon: 'matic',
   bsc: 'bnb',
   arbitrum: 'arb1',
