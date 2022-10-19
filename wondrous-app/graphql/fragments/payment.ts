@@ -24,6 +24,7 @@ export const PaymentCardFragment = gql`
     payeeId
     payeeUsername
     payeeProfilePicture
+    payeeActiveEthAddress
     chain
     safeAddress
     txHash
@@ -44,6 +45,30 @@ export const PaymentCardFragment = gql`
 
 export const UnpaidSubmissionFragment = gql`
   fragment UnpaidSubmissionFragment on UnpaidSubmission {
+    taskTitle
+    taskId
+    submissionId
+    payeeId
+    payeeUsername
+    payeeProfilePicture
+    payeeActiveEthAddress
+    submissionApprovedAt
+    paymentStatus
+    chain
+    amount
+    symbol
+    icon
+    tokenName
+    decimal
+    tokenAddress
+    safeAddress
+    txHash
+    safeTxHash
+  }
+`;
+
+export const ProcessingPaymentFragment = gql`
+  fragment ProcessingPaymentFragment on ProcessingPayment {
     taskTitle
     taskId
     submissionId
