@@ -94,7 +94,7 @@ function TokenGatingSettings({ orgId }: Props) {
             </Typography>
 
             <Typography fontSize="14px" color={palette.grey250}>
-              Define token gates by specifying acess criteria for different levels of the org. Go to the roles settings
+              Define token gates by specifying access criteria for different levels of the org. Go to the roles settings
               page to apply them to a role.
             </Typography>
 

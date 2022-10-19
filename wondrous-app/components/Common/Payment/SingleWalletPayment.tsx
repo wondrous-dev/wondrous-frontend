@@ -223,18 +223,18 @@ export function SingleWalletPayment(props) {
       operation: 0,
     };
     let safeTxGas;
-    try {
-      const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
-        selectedWallet?.address,
-        estimateGasPayload
-      );
-      safeTxGas = estimateTx?.safeTxGas;
-    } catch (e) {
-      console.log(e);
-    }
-    t2 = performance.now();
-    console.log(`estimate gas took ${t2 - t1} milliseconds`);
-    t1 = performance.now();
+    // try {
+    //   const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
+    //     selectedWallet?.address,
+    //     estimateGasPayload
+    //   );
+    //   safeTxGas = estimateTx?.safeTxGas;
+    // } catch (e) {
+    //   console.log(e);
+    // }
+    // t2 = performance.now();
+    // console.log(`estimate gas took ${t2 - t1} milliseconds`);
+    // t1 = performance.now();
 
     const transaction: SafeTransactionDataPartial = {
       to: wonderWeb3.toChecksumAddress(transactionData.to),
@@ -274,7 +274,7 @@ export function SingleWalletPayment(props) {
 
     const txData = {
       ...safeTransaction.data,
-      contractTransactionHash: safeTxHash,
+      contractTransactionHash: computedSafeTxHash,
       sender,
       signature,
     };

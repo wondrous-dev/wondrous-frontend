@@ -32,8 +32,8 @@ export const WALLET_NETWORKS = [
 
 if (!isInProduction) {
   WALLET_NETWORKS.push({
-    label: 'Ethereum Rinkeby',
-    value: 'rinkeby',
+    label: 'Ethereum Goerli',
+    value: 'goerli',
     icon: <EthereumIcon />,
   });
 }

@@ -16,7 +16,7 @@ const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   // todo refactor this to have one consistent naming probably
   ETH: 'ethereum',
   MATIC: 'polygon',
-  RINKEBY: 'rinkeby',
+  GOERLI: 'goerli',
   ARBITRUM: 'arbitrum',
   BOBA: 'boba',
 };
@@ -34,6 +34,7 @@ const useGnosisSdk = () => {
     if (currentChain && currentChain !== chain) {
       throw new Error('Not on the right chain');
     }
+    console.log('wonderWeb3.web3Provider', wonderWeb3.web3Provider);
     const ethProvider = new ethers.providers.Web3Provider(wonderWeb3.web3Provider);
     const safeOwner = ethProvider.getSigner(0);
     const ethAdapterOwner1 = new EthersAdapter({

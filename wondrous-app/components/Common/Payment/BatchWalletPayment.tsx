@@ -194,16 +194,16 @@ function BatchWalletPayment(props) {
     };
     let safeTxGas;
 
-    try {
-      const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
-        selectedWallet?.address,
-        estimateGasPayload
-      );
-      safeTxGas = estimateTx?.safeTxGas;
-    } catch (e) {
-      setGnosisTransactionLoading(false);
-      console.log(e);
-    }
+    // try {
+    //   const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
+    //     selectedWallet?.address,
+    //     estimateGasPayload
+    //   );
+    //   safeTxGas = estimateTx?.safeTxGas;
+    // } catch (e) {
+    //   setGnosisTransactionLoading(false);
+    //   console.log(e);
+    // }
     const options: SafeTransactionOptionalProps = {
       safeTxGas: safeTxGas || 0,
       // baseGas, // Optional
@@ -213,8 +213,8 @@ function BatchWalletPayment(props) {
       nonce: nextNonce,
     };
     safeTransaction = await gnosisSdk.createTransaction(transactions, options);
-    const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
-    setSafeTxHash(safeTxHash);
+    const computedSafeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    setSafeTxHash(computedSafeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
@@ -238,7 +238,7 @@ function BatchWalletPayment(props) {
     // txData is the payload to send to gnosis tx service. but we send to backend to validate and send
     const txData = {
       ...safeTransaction.data,
-      contractTransactionHash: safeTxHash,
+      contractTransactionHash: computedSafeTxHash,
       sender,
       signature,
     };

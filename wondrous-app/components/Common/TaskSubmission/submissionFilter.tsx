@@ -61,7 +61,6 @@ export function TaskSubmissionsFilter({ fetchedTaskSubmissions, setFilteredSubmi
     setFilteredSubmissions(fetchedTaskSubmissions.filter(handleFilterStatus));
     handleClose();
   };
-  if (isEmpty(fetchedTaskSubmissions)) return null;
   return (
     <>
       <SubmissionFilterSelectButton onClick={handleClick} open={open}>

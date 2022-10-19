@@ -6,7 +6,6 @@ import palette from 'theme/palette';
 import { Button } from 'components/Common/button';
 import typography from 'theme/typography';
 import PlusIcon from 'components/Icons/plus';
-import { ButtonUnstyled } from '@mui/base';
 
 export const ConnectDiscordButton = styled(Button)`
   && {
@@ -59,7 +58,7 @@ export const UserDiscordNotificationSettingsDiv = styled.div`
   && .MuiSwitch-root {
     padding: 8px;
     width: 62px;
-  },
+  }
 `;
 
 export const UserDiscordNotificationSettingsText = styled(Typography)`

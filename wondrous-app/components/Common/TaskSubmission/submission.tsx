@@ -1,6 +1,6 @@
 import { useMemo, useState, useEffect } from 'react';
 import { useMutation } from '@apollo/client';
-import { CircularProgress } from '@mui/material';
+import { CircularProgress, Grid } from '@mui/material';
 import { useMe } from 'components/Auth/withAuth';
 import { UPDATE_TASK_SHOW_SUBMISSIONS, UPDATE_TASK_STATUS } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
@@ -101,8 +101,8 @@ function TaskSubmissionsTaskToDo({ handleTaskProgressStatus, canSubmit, canMoveP
 }
 
 function TaskSubmissionsTaskInProgress({ canSubmit, taskStatus, setMakeSubmission }) {
-  if (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW) {
-    if (canSubmit) return <SubmissionButtonWrapper onClick={setMakeSubmission} buttonText="Make a submission" />;
+  if (canSubmit && (taskStatus === TASK_STATUS_IN_PROGRESS || taskStatus === TASK_STATUS_IN_REVIEW)) {
+    return <SubmissionButtonCreate onClick={setMakeSubmission}>Make a submission</SubmissionButtonCreate>;
   }
   return null;
 }
@@ -253,10 +253,17 @@ export function TaskSubmissions(props) {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
-        <TaskSubmissionsFilter
-          fetchedTaskSubmissions={fetchedTaskSubmissions}
-          setFilteredSubmissions={setFilteredSubmissions}
-        />
+        <Grid container direction="row" justifyContent="space-between" alignItems="center">
+          <TaskSubmissionsFilter
+            fetchedTaskSubmissions={fetchedTaskSubmissions}
+            setFilteredSubmissions={setFilteredSubmissions}
+          />
+          <TaskSubmissionsTaskInProgress
+            canSubmit={canSubmit}
+            setMakeSubmission={setMakeSubmission}
+            taskStatus={taskStatus}
+          />
+        </Grid>
         {isBounty &&
           fetchedTask?.status !== TASK_STATUS_DONE &&
           fetchedTask?.status !== TASK_STATUS_ARCHIVED &&
@@ -269,11 +276,7 @@ export function TaskSubmissions(props) {
               handleTaskProgressStatus={handleTaskProgressStatus}
               taskStatus={taskStatus}
             />
-            <TaskSubmissionsTaskInProgress
-              canSubmit={canSubmit}
-              setMakeSubmission={setMakeSubmission}
-              taskStatus={taskStatus}
-            />
+
             <TaskSubmissionMakePayment
               fetchedTask={fetchedTask}
               fetchedTaskSubmissions={fetchedTaskSubmissions}
