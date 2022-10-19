@@ -40,7 +40,7 @@ const StyledSelect = styled(Select)`
     border: 1px solid transparent;
     transition: border 0.2s ease-out;
 
-    :hover {
+    &:hover {
       border: 1px solid ${palette.grey79};
     }
 
@@ -92,7 +92,7 @@ export const GenericImportTaskModalSelectMenuItem = styled(MenuItem)`
     padding: 10px;
     transition: background 0.2s ease-out;
 
-    :hover {
+    &:hover {
       background: ${palette.black92};
     }
   }
@@ -130,12 +130,6 @@ export const GenericImportTaskModalBodyExpandedViewWrapper = styled(Accordion)`
   }
 `;
 
-export const GenericImportTaskModalBodyExpandedViewInvisibleState = styled(AccordionSummary)`
-  && {
-    display: none;
-  }
-`;
-
 export const GenericImportTaskModalFooterButton = styled(Button)`
   && {
     background: ${(props) =>
@@ -164,22 +158,16 @@ export const GenericImportTaskModalFooterButton = styled(Button)`
       background: ${(props) => (props.isPrimary ? palette.background.default : palette.grey78)};
       transition: background 0.2s ease-out;
 
-      :hover {
+      &:hover {
         background: transparent;
       }
 
-      :disabled {
+      &:disabled {
         background: transparent;
         color: ${palette.grey78};
         cursor: not-allowed;
       }
     }
-  }
-`;
-
-export const GenericImportTaskModalProgressSpinner = styled(CircularProgress)`
-  && {
-    margin-left: 12px;
   }
 `;
 

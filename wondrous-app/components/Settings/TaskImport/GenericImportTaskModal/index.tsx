@@ -6,12 +6,14 @@ import Modal from 'components/Modal';
 import useAlerts from 'hooks/useAlerts';
 import CSVFileDropzone from 'components/Common/CSVFileDropZone';
 import { IMPORT_TASKS } from 'graphql/mutations';
-import { Grid, Typography } from '@mui/material';
+import AccordionSummary from '@mui/material/AccordionSummary';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
+import CircularProgress from '@mui/material/CircularProgress';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { DEFAULT_IMPORT_FORMAT, IMPORT_FORMAT_OPTIONS, IMPORT_FORMATS, DEFAULT_TASKS_DATA } from './constants';
 import {
-  GenericImportTaskModalBodyExpandedViewInvisibleState,
   GenericImportTaskModalBodyExpandedViewWrapper,
   GenericImportTaskModalFooterButton,
   GenericImportTaskModalSelect,
@@ -20,7 +22,6 @@ import {
   GenericImportTaskModalLabelHelperLink,
   GenericImportTaskModalSelectMenuItem,
   GenericImportTaskModalSelectValueDisplayText,
-  GenericImportTaskModalProgressSpinner,
 } from './styles';
 import { getTasksFromAsanaData, getTasksFromGenericData, getTasksFromTrelloData } from './helpers';
 
@@ -153,7 +154,7 @@ function GenericImportTaskModal(props: Props) {
           <GenericImportTaskModalFooterButton onClick={handleClose}>Cancel</GenericImportTaskModalFooterButton>
           <GenericImportTaskModalFooterButton isPrimary disabled={isImportButtonDisabled} onClick={handleImportTasks}>
             {isImportInProgress ? 'Importing tasks' : 'Start importing'}{' '}
-            {isImportInProgress && <GenericImportTaskModalProgressSpinner size={16} />}
+            {isImportInProgress && <CircularProgress sx={{ marginLeft: '12px' }} size={16} />}
           </GenericImportTaskModalFooterButton>
         </Grid>
       }
@@ -179,7 +180,7 @@ function GenericImportTaskModal(props: Props) {
           expanded={isExpandedViewVisible}
           TransitionProps={{ unmountOnExit: true }}
         >
-          <GenericImportTaskModalBodyExpandedViewInvisibleState />
+          <AccordionSummary sx={{ display: 'none' }} />
           {importFormat?.value && (
             <>
               <GenericImportTaskModalInputWrapper>

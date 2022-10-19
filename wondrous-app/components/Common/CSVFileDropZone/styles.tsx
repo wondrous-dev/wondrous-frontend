@@ -15,7 +15,7 @@ export const DropZone = styled.div`
   font-weight: 500;
   transition: all 0.2s ease-out;
 
-  :hover {
+  &:hover {
     border: 2px dashed ${palette.grey850};
     color: ${palette.grey850};
   }
