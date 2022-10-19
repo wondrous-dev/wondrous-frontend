@@ -26,14 +26,14 @@ const CreateEntityDiscardTask = ({ open, onClose, onCloseFormModal, entityType }
 
   return (
     <WonderModal
-      title={`Discard ${entityType} data?`}
+      title={`Discard changes to ${entityType}?`}
       onClose={() => onClose(false)}
       footerRight={footerRight}
       maxWidth={560}
       open={open}
     >
       <Typography sx={{ color: 'white', textAlign: 'center' }}>
-        Are you sure you want to discard your current {entityType}?
+        Are you sure you want to discard the changes to your current {entityType}?
       </Typography>
     </WonderModal>
   );
