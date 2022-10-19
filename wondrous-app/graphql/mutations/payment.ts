@@ -81,3 +81,11 @@ export const LINK_BATCH_OFF_PLATFORM_PAYMENT = gql`
     }
   }
 `;
+
+export const LINK_METAMASK_PAYMENT = gql`
+  mutation linkMetamaskPayment($input: MetamaskPaymentInput) {
+    linkMetamaskPayment(input: $input) {
+      success
+    }
+  }
+`;

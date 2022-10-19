@@ -186,6 +186,8 @@ export const NOTION_CONNECT_TYPES = {
   TASK_IMPORT: 'taskImport',
 };
 
+export const DEFAULT_ERC20_GAS_LIMIT = '0x3D090'; // TODO hackey == 250000
+
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId, 10));
 
 export const CHAIN_IDS = {

@@ -23,3 +23,15 @@ export const CHAIN_TO_GNOSIS_URL_ABBR = {
 };
 
 export const LIT_PROTOCOL_MESSAGE = 'signature verification to token gating';
+
+export const CHAIN_TO_EXPLORER_URL = {
+  ethereum: 'https://etherscan.io',
+  goerli: 'https://goerli.etherscan.io',
+  polygon: 'https://polygonscan.com',
+  harmony: 'https://explorer.harmony.one',
+  arbitrum: 'https://arbiscan.io',
+  bsc: 'https://www.bscscan.com',
+  boba: 'https://bobascan.com',
+  optimism: 'https://optimistic.etherscan.io',
+  klaytn: 'https://scope.klaytn.com',
+};
