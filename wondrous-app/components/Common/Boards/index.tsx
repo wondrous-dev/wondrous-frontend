@@ -7,6 +7,7 @@ import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
 import ListView from 'components/ListView';
 import Table from 'components/Table';
+import Calendar from 'components/Calendar';
 import KanbanBoard from '../KanbanBoard/kanbanBoard';
 import { Chevron } from '../../Icons/sections';
 import {
@@ -56,16 +57,31 @@ function Boards(props: Props) {
   function renderBoard() {
     const ListViewComponent = LIST_VIEW_MAP[entityType] || Table;
 
-    return view ? (
-      <>
-        {/* TEMPORARY until we come up with a list view for proposals */}
-        {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
-          <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
-        ) : (
-          <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
-        )}
-      </>
-    ) : null;
+    // TODO: This is temporary solution
+    const tasksMap = columns.reduce((acc, col) => {
+      col.tasks.forEach((task) => {
+        if (task.dueDate) {
+          const key = task.dueDate.replace(/T.*/g, '');
+
+          acc[key] = acc[key] || [];
+          acc[key].push(task);
+        }
+      });
+
+      return acc;
+    }, {});
+
+    return view ? <Calendar tasksMap={tasksMap} /> : null;
+    // return view ? (
+    //   <>
+    //     {/* TEMPORARY until we come up with a list view for proposals */}
+    //     {view === ViewType.Grid || entityType === ENTITIES_TYPES.PROPOSAL ? (
+    //       <KanbanBoard columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} setColumns={setColumns} />
+    //     ) : (
+    //       <ListViewComponent entityType={entityType} columns={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+    //     )}
+    //   </>
+    // ) : null;
   }
 
   function renderSearchResults() {

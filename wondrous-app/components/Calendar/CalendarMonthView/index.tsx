@@ -1,14 +1,10 @@
-import endOfMonth from 'date-fns/endOfMonth';
 import setDate from 'date-fns/setDate';
 import startOfMonth from 'date-fns/startOfMonth';
 import React, { useState } from 'react';
 import format from 'date-fns/format';
-import addDays from 'date-fns/addDays';
 import isToday from 'date-fns/isToday';
 import getWeeksInMonth from 'date-fns/getWeeksInMonth';
 import isFirstDayOfMonth from 'date-fns/isFirstDayOfMonth';
-import startOfWeek from 'date-fns/startOfWeek';
-import endOfWeek from 'date-fns/endOfWeek';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -17,10 +13,10 @@ import Button from '@mui/material/Button';
 import palette from 'theme/palette';
 import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import styles from 'components/Calendar/CalendarMonthView/styles';
-// import { taskList } from 'components/Calendar/testData';
 import SmartLink from 'components/Common/SmartLink';
-import Modal from 'components/Modal';
 import { TaskFragment } from 'types/task';
+import ViewTasksModal from './ViewTasksModal';
+import { CALENDAR_CONFIG } from 'utils/constants';
 
 type Props = {
   /**
@@ -34,14 +30,12 @@ type Props = {
 };
 
 const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
+  const { weekStartsOn, weekDays, maxTasksForMonthView } = CALENDAR_CONFIG;
   const [selectedDate, setSelectedDate] = useState<Date>(null);
-  // TODO: Move to the config
-  const maximumNumberTasks = 3;
+  const [selectedDateTasks, setSelectedDateTasks] = useState<TaskFragment[]>([]);
   const weeks = getWeeksInMonth(viewDate);
-  const weekDays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-
   const startDayOfWeek = startOfMonth(viewDate).getDay();
-  // const endDayOfMonth = endOfMonth(viewDate).getDate();
+  const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
 
   const taskStatusIcon = {
     created: <ToDo width="16" height="16" />,
@@ -64,10 +58,11 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
         {new Array(weeks).fill(weeks).map((week, weekIndex) =>
           weekDays.map((weekDay, weekDayIndex) => {
             const day = weekIndex * 7 + weekDayIndex + 1 - startDayOfWeek;
-            const key = `${day - weekIndex * 7 + weekDayIndex}`;
+            const key = `day-${day - weekIndex * 7 + weekDayIndex}`;
             const date = setDate(viewDate, day);
             const dateIsToday = isToday(date);
             const dateFormat = isFirstDayOfMonth(date) ? 'LLL d' : 'd';
+            const tasks = tasksMap[format(date, 'yyyy-MM-dd')] ?? [];
 
             return (
               <Grid
@@ -76,7 +71,7 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
                 xs={1}
                 className={dateIsToday ? 'ColumnToday' : ''}
                 sx={{
-                  borderRight: weekDayIndex === 6 ? 'none' : `1px solid ${palette.grey101}`,
+                  borderRight: weekDayIndex === lastWeekDayIndex ? 'none' : `1px solid ${palette.grey101}`,
                   ...styles.column,
                 }}
               >
@@ -95,12 +90,12 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
 
                 {/* Contains tasks and more button */}
                 <Grid container item className="ColumnBody" sx={styles.columnBody}>
-                  {tasks.slice(0, 3).map((task) => (
+                  {tasks.slice(0, maxTasksForMonthView).map((task) => (
                     <SmartLink
                       key={task.title}
-                      href={viewUrl}
+                      href="/"
                       preventLinkNavigation
-                      onNavigate={() => location.replace(viewUrl)}
+                      // onNavigate={() => location.replace(viewUrl)}
                     >
                       <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
                         <Box>{taskStatusIcon[task.status]}</Box>
@@ -110,16 +105,16 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
                       </Grid>
                     </SmartLink>
                   ))}
-                  {tasks.length > maximumNumberTasks ? (
+                  {tasks.length > maxTasksForMonthView ? (
                     <Button
                       variant="text"
                       onClick={() => {
                         setSelectedDate(date);
-                        // setSelectedDay(format(date, 'LLL d'));
+                        setSelectedDateTasks(tasks);
                       }}
                       sx={styles.moreButton}
                     >
-                      {tasks.length - maximumNumberTasks} more
+                      {tasks.length - maxTasksForMonthView} more
                     </Button>
                   ) : null}
                 </Grid>
@@ -129,35 +124,7 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
         )}
       </Grid>
 
-      <Modal
-        open={!!selectedDate}
-        onClose={() => setSelectedDate(null)}
-        maxWidth={529}
-        title={format(selectedDate || new Date(), 'LLL d')}
-      >
-        <Grid container rowSpacing="6px">
-          {tasks.map((task) => (
-            <SmartLink
-              key={task.title}
-              href={viewUrl}
-              preventLinkNavigation
-              onNavigate={() => location.replace(viewUrl)}
-              onClick={() => setSelectedDate(null)}
-            >
-              <Grid item display="flex" wrap="nowrap" alignItems="center" sx={styles.modalTask}>
-                <Grid display="flex" alignItems="center">
-                  {taskStatusIcon[task.status]}
-                </Grid>
-                <Grid display="flex" alignItems="center" sx={{ width: '31rem' }}>
-                  <Typography noWrap sx={styles.modalTaskTitle}>
-                    {task.title}
-                  </Typography>
-                </Grid>
-              </Grid>
-            </SmartLink>
-          ))}
-        </Grid>
-      </Modal>
+      {/*<ViewTasksModal selectedDate={selectedDate} tasks={selectedDateTasks} show={!!selectedDate} />*/}
     </>
   );
 };

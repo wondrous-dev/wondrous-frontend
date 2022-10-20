@@ -1,7 +1,5 @@
 import startOfMonth from 'date-fns/startOfMonth';
-import React, { useState, Suspense } from 'react';
-import dynamic from 'next/dynamic';
-import { useRouter } from 'next/router';
+import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
@@ -16,23 +14,13 @@ import format from 'date-fns/format';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import CalendarWeekView from 'components/Calendar/CalendarWeekView';
 import CalendarMonthView from 'components/Calendar/CalendarMonthView';
-import typography from 'theme/typography';
 import WonderButton from 'components/Button';
 import ArrowLeft from 'components/Icons/ArrowLeft';
 import ArrowRight from 'components/Icons/ArrowRight';
-import palette from 'theme/palette';
 import { TaskFragment } from 'types/task';
-import { useLocation } from 'utils/useLocation';
-import { ViewType } from 'types/common';
-import { delQuery } from 'utils/index';
-import styles from './styles';
 import testData from 'components/Calendar/testData';
-import { TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
-
-enum View {
-  Month = 'month',
-  Week = 'week',
-}
+import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
+import styles from './styles';
 
 type Props = {
   tasksMap: {
@@ -41,69 +29,39 @@ type Props = {
 };
 
 const Calendar = ({ tasksMap }: Props) => {
-  const weekStartsOn = 0; // the index of the first day of the week (0 - Sunday
-  const views = [
-    { label: 'Month View', value: View.Month },
-    { label: 'Week View', value: View.Week },
-  ];
-  const [view, setView] = useState<View>(View.Month);
+  const [view, setView] = useState<CALENDAR_DAY_GRID_VIEW>(CALENDAR_CONFIG.defaultView);
   const [viewDate, setViewDate] = useState<Date>(startOfMonth(new Date()));
-  // const [selectedMonth, setSelectedMonth] = useState(format(new Date(), 'MMMM yyyy'));
+
+  // Select previous week or month
   const handlePrevClick = () => {
     setViewDate((prevDate) => {
-      if (view === View.Month) {
+      if (view === CALENDAR_DAY_GRID_VIEW.Month) {
         return subMonths(prevDate, 1);
       }
 
       return subWeeks(prevDate, 1);
     });
-
-    // if (view === View.Month) {
-    //   return setSelectedMonth(format(subMonths(viewDate, 1), 'MMMM yyyy'));
-    // }
-    //
-    // if (view === View.Week) {
-    //   return setSelectedMonth(format(subWeeks(viewDate, 1), 'MMMM yyyy'));
-    // }
   };
 
+  // Select next week or month
   const handleNextClick = () => {
     setViewDate((prevDate) => {
-      // if (view === View.Month) {
-      //   return new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
-      // }
-
-      if (view === View.Month) {
+      if (view === CALENDAR_DAY_GRID_VIEW.Month) {
         return addMonths(prevDate, 1);
       }
 
       return addWeeks(prevDate, 1);
     });
-    //
-    // if (view === View.Month) {
-    //   return setSelectedMonth(format(addMonths(viewDate, 1), 'MMMM yyyy'));
-    // }
-    //
-    // if (view === View.Week) {
-    //   return setSelectedMonth(format(addWeeks(viewDate, 1), 'MMMM yyyy'));
-    // }
   };
 
   const handleTodayClick = () => {
-    setViewDate(startOfWeek(new Date(), { weekStartsOn }));
-
-    setViewDate((prevDate) => {
-      // if (view === View.Month) {
-      //   return new Date(prevDate.getFullYear(), prevDate.getMonth() + 1, 1);
-      // }
-
-      if (view === View.Month) {
+    setViewDate(() => {
+      if (view === CALENDAR_DAY_GRID_VIEW.Month) {
         return startOfMonth(new Date());
       }
 
-      return startOfWeek(new Date(), { weekStartsOn });
+      return startOfWeek(new Date(), { weekStartsOn: CALENDAR_CONFIG.weekStartsOn });
     });
-    // setSelectedMonth(format(new Date(), 'MMMM yyyy'));
   };
 
   return (
@@ -149,7 +107,12 @@ const Calendar = ({ tasksMap }: Props) => {
             </Grid>
           </Grid>
           <Grid item>
-            <DropdownSelect {...styles.viewDropdown} options={views} value={view} setValue={setView} />
+            <DropdownSelect
+              {...styles.viewDropdown}
+              options={CALENDAR_CONFIG.dayGridViews}
+              value={view}
+              setValue={setView}
+            />
           </Grid>
         </Grid>
 
@@ -169,7 +132,7 @@ const Calendar = ({ tasksMap }: Props) => {
         </Grid>
       </Grid>
 
-      {view === View.Month ? (
+      {view === CALENDAR_DAY_GRID_VIEW.Month ? (
         <CalendarMonthView tasksMap={tasksMap} viewDate={viewDate} />
       ) : (
         <CalendarWeekView tasks={testData.data.getOrgTaskBoardTasks} viewDate={viewDate} />
