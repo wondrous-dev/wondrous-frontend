@@ -39,3 +39,7 @@ export const StyledTab = styled(Tab)`
     color: ${({ isActive }) => (isActive ? palette.white : palette.grey51)};
   }
 `;
+
+export const PodItemWrapper = styled.a`
+  text-decoration: none;
+`;

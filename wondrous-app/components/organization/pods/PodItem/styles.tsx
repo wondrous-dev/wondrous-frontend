@@ -1,0 +1,16 @@
+import styled from 'styled-components';
+import palette from 'theme/palette';
+
+export const PodItemContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 65px;
+  background: ${palette.background.default};
+  transition: background 0.2s ease-in-out;
+  border-radius: 6px;
+  padding: 20px;
+
+  &:hover {
+    background: ${palette.grey95};
+  }
+`;

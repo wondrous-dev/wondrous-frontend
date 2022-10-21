@@ -1,12 +1,19 @@
-import { SyntheticEvent, useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useLazyQuery } from '@apollo/client';
 import { Grid, Typography } from '@mui/material';
 
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 
-import { capitalize } from 'utils/common';
+import { useMe } from 'components/Auth/withAuth';
 
-import { StyledTab, StyledTabs } from './styles';
+import { capitalize } from 'utils/common';
+import { GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
+
+import Link from 'next/link';
+import { PodItemWrapper, StyledTab, StyledTabs } from './styles';
+import { PodView } from './constants';
+import PodItem from './PodItem';
 
 const TabLabel = ({ label, count, isActive }) => (
   <Grid sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -41,20 +48,50 @@ const TabLabel = ({ label, count, isActive }) => (
 const Pods = (props) => {
   const { orgData } = props;
 
-  const [value, setValue] = useState(0);
+  const [activePodView, setActivePodView] = useState(PodView.ALL);
+  const [activePodsList, setActivePodsList] = useState([]);
 
-  const handleChange = (event: SyntheticEvent, newValue: number) => {
-    setValue(newValue);
-  };
+  const user = useMe();
+  const [getOrgPods, { data: orgPodsData }] = useLazyQuery(GET_ORG_PODS, {
+    fetchPolicy: 'cache-and-network',
+  });
+  const [getUserPods, { data: userPodsData }] = useLazyQuery(GET_USER_PODS, {
+    fetchPolicy: 'network-only',
+  });
 
   const orgName = orgData?.name || orgData?.username;
+  const orgPods = orgPodsData?.getOrgPods;
+  const userPods = userPodsData?.getUserPods;
+  const orgPodsUserIsIn = userPods?.filter((pod) => pod.org?.id === orgData?.id);
+  const orgPodsUserIsNotIn = orgPods?.filter(
+    (pod) => !orgPodsUserIsIn?.find((podUserIsIn) => podUserIsIn.id === pod.id)
+  );
 
-  function a11yProps(index: number) {
-    return {
-      id: `simple-tab-${index}`,
-      'aria-controls': `simple-tabpanel-${index}`,
-    };
-  }
+  useEffect(() => {
+    if (orgData?.id) {
+      getOrgPods({ variables: { orgId: orgData?.id } });
+    }
+  }, [orgData?.id]);
+
+  useEffect(() => {
+    if (user?.id) {
+      getUserPods({ variables: { userId: user?.id } });
+    }
+  }, [user?.id]);
+
+  useEffect(() => {
+    if (activePodView === PodView.ALL) {
+      setActivePodsList(orgPods);
+    } else if (activePodView === PodView.USER_IS_MEMBER_OF) {
+      setActivePodsList(orgPodsUserIsIn);
+    } else {
+      setActivePodsList(orgPodsUserIsNotIn);
+    }
+  }, [activePodView, orgPods, orgPodsUserIsIn, orgPodsUserIsNotIn]);
+
+  const handleChange = (_, newValue: number) => {
+    setActivePodView(newValue);
+  };
 
   return (
     <Grid sx={{ padding: '120px 0', margin: '0 auto', maxWidth: '720px' }}>
@@ -62,11 +99,40 @@ const Pods = (props) => {
         Pods in {capitalize(orgName)}
       </Typography>
 
-      <StyledTabs value={value} onChange={handleChange} sx={{}}>
-        <StyledTab label={<TabLabel label="Show all" count={33} isActive={value === 0} />} {...a11yProps(0)} />
-        <StyledTab label={<TabLabel label="Pods I’m in" count={6} isActive={value === 1} />} {...a11yProps(1)} />
-        <StyledTab label={<TabLabel label="Pods I’m not in" count={27} isActive={value === 2} />} {...a11yProps(2)} />
+      <StyledTabs value={activePodView} onChange={handleChange}>
+        <StyledTab
+          label={<TabLabel label="Show all" count={orgPods?.length} isActive={activePodView === PodView.ALL} />}
+        />
+        <StyledTab
+          label={
+            <TabLabel
+              label="Pods I’m in"
+              count={orgPodsUserIsIn?.length}
+              isActive={activePodView === PodView.USER_IS_MEMBER_OF}
+            />
+          }
+        />
+        <StyledTab
+          label={
+            <TabLabel
+              label="Pods I’m not in"
+              count={orgPodsUserIsNotIn?.length}
+              isActive={activePodView === PodView.USER_IS_NOT_MEMBER_OF}
+            />
+          }
+        />
       </StyledTabs>
+
+      <Grid sx={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+        {activePodsList?.length &&
+          activePodsList?.map((podData) => (
+            <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
+              <PodItemWrapper>
+                <PodItem podData={podData} />
+              </PodItemWrapper>
+            </Link>
+          ))}
+      </Grid>
     </Grid>
   );
 };
