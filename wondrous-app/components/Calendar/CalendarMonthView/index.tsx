@@ -1,5 +1,6 @@
 import setDate from 'date-fns/setDate';
 import startOfMonth from 'date-fns/startOfMonth';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import format from 'date-fns/format';
 import isToday from 'date-fns/isToday';
@@ -11,19 +12,19 @@ import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 
 import palette from 'theme/palette';
+import { ViewType } from 'types/common';
+import { CALENDAR_CONFIG } from 'utils/constants';
 import { Done, InProgress, InReview, ToDo } from 'components/Icons';
 import styles from 'components/Calendar/CalendarMonthView/styles';
 import SmartLink from 'components/Common/SmartLink';
 import { TaskFragment } from 'types/task';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 import ViewTasksModal from './ViewTasksModal';
-import { CALENDAR_CONFIG } from 'utils/constants';
 
 type Props = {
-  /**
-   * The current view date
-   */
   viewDate: Date;
-
+  // openTask: (task: TaskFragment) => void;
   tasksMap: {
     [key: string]: TaskFragment[];
   };
@@ -36,7 +37,14 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
   const weeks = getWeeksInMonth(viewDate);
   const startDayOfWeek = startOfMonth(viewDate).getDay();
   const lastWeekDayIndex = weekStartsOn === 0 ? 6 : 7;
+  const location = useLocation();
+  const router = useRouter();
+  const closeViewTasksModal = () => {
+    setSelectedDate(null);
+    setSelectedDateTasks([]);
+  };
 
+  // FIXME
   const taskStatusIcon = {
     created: <ToDo width="16" height="16" />,
     in_progress: <InProgress width="16" height="16" />,
@@ -89,22 +97,21 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
                 </Grid>
 
                 {/* Contains tasks and more button */}
-                <Grid container item className="ColumnBody" sx={styles.columnBody}>
-                  {tasks.slice(0, maxTasksForMonthView).map((task) => (
-                    <SmartLink
-                      key={task.title}
-                      href="/"
-                      preventLinkNavigation
-                      // onNavigate={() => location.replace(viewUrl)}
-                    >
-                      <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
-                        <Box>{taskStatusIcon[task.status]}</Box>
-                        <Typography noWrap sx={styles.taskTitle}>
-                          {task.title}
-                        </Typography>
-                      </Grid>
-                    </SmartLink>
-                  ))}
+                <Grid container wrap="nowrap" direction="column" className="ColumnBody" sx={styles.columnBody}>
+                  {tasks.slice(0, maxTasksForMonthView).map((task) => {
+                    const viewUrl = `${delQuery(router.asPath)}?task=${task?.id}&view=${ViewType.Calendar}`;
+
+                    return (
+                      <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => location.replace(viewUrl)}>
+                        <Grid key={task.title} wrap="nowrap" mb="10px" container height="16px">
+                          <Box>{taskStatusIcon[task.status]}</Box>
+                          <Typography noWrap sx={styles.taskTitle}>
+                            {task.title}
+                          </Typography>
+                        </Grid>
+                      </SmartLink>
+                    );
+                  })}
                   {tasks.length > maxTasksForMonthView ? (
                     <Button
                       variant="text"
@@ -124,7 +131,12 @@ const CalendarMonthView = ({ viewDate, tasksMap }: Props) => {
         )}
       </Grid>
 
-      {/*<ViewTasksModal selectedDate={selectedDate} tasks={selectedDateTasks} show={!!selectedDate} />*/}
+      <ViewTasksModal
+        selectedDate={selectedDate}
+        tasks={selectedDateTasks}
+        open={!!selectedDate}
+        onClose={closeViewTasksModal}
+      />
     </>
   );
 };

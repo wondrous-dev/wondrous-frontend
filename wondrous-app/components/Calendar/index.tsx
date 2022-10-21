@@ -1,4 +1,6 @@
+import TaskViewModal from 'components/Common/TaskViewModal';
 import startOfMonth from 'date-fns/startOfMonth';
+import { useRouter } from 'next/router';
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
@@ -17,6 +19,7 @@ import CalendarMonthView from 'components/Calendar/CalendarMonthView';
 import WonderButton from 'components/Button';
 import ArrowLeft from 'components/Icons/ArrowLeft';
 import ArrowRight from 'components/Icons/ArrowRight';
+import { ViewType } from 'types/common';
 import { TaskFragment } from 'types/task';
 import testData from 'components/Calendar/testData';
 import { CALENDAR_CONFIG, CALENDAR_DAY_GRID_VIEW } from 'utils/constants';
@@ -31,6 +34,8 @@ type Props = {
 const Calendar = ({ tasksMap }: Props) => {
   const [view, setView] = useState<CALENDAR_DAY_GRID_VIEW>(CALENDAR_CONFIG.defaultView);
   const [viewDate, setViewDate] = useState<Date>(startOfMonth(new Date()));
+  const [openTask, setOpenTask] = useState<TaskFragment>(null);
+  const router = useRouter();
 
   // Select previous week or month
   const handlePrevClick = () => {
@@ -64,8 +69,30 @@ const Calendar = ({ tasksMap }: Props) => {
     });
   };
 
+  // const openTask = (task: TaskFragment) => {
+  //   // const pathQuery = router?.query?.username ? { username: router.query.username } : { podId: router.query.podId };
+  //   router.replace(
+  //     {
+  //       pathname: router.pathname,
+  //       query: {
+  //         taskdId: task.id,
+  //         view: ViewType.Calendar,
+  //         // boardType: boardType in PRIVACY_LEVEL ? boardType : 'all',
+  //       },
+  //     },
+  //     undefined,
+  //     { shallow: true }
+  //   );
+  // };
+
   return (
     <div>
+      {/*<TaskViewModal*/}
+      {/*  open={!!openTask}*/}
+      {/*  handleClose={() => setOpenTask(false)}*/}
+      {/*  isTaskProposal={false}*/}
+      {/*  taskId={(location.params.taskProposal ?? location.params.task)?.toString()}*/}
+      {/*/>*/}
       <Grid container alignItems="center" justifyContent="space-between">
         <Grid item display="flex" alignItems="center">
           <Grid item>

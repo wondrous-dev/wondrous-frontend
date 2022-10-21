@@ -155,7 +155,6 @@ export default function BoardsActivity(props) {
       icon: (
         <CalendarViewIcon
           color={view === ViewType.Calendar ? palette.blue20 : 'white'}
-          // style={{ width: '19px', height: '19px' }}
         />
       ),
       active: view === ViewType.Calendar,
