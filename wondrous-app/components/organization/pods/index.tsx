@@ -12,8 +12,9 @@ import { GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
 
 import Link from 'next/link';
 import { PodItemWrapper, StyledTab, StyledTabs } from './styles';
-import { PodView } from './constants';
+
 import PodItem from './PodItem';
+import { PodView } from './constants';
 
 const TabLabel = ({ label, count, isActive }) => (
   <Grid sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
@@ -87,7 +88,7 @@ const Pods = (props) => {
     } else {
       setActivePodsList(orgPodsUserIsNotIn);
     }
-  }, [activePodView, orgPods, orgPodsUserIsIn, orgPodsUserIsNotIn]);
+  }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]);
 
   const handleChange = (_, newValue: number) => {
     setActivePodView(newValue);
@@ -123,7 +124,7 @@ const Pods = (props) => {
         />
       </StyledTabs>
 
-      <Grid sx={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '24px' }}>
+      <Grid sx={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {activePodsList?.length &&
           activePodsList?.map((podData) => (
             <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
