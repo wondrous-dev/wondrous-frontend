@@ -19,13 +19,15 @@ export const StyledAutocomplete = styled(Autocomplete)`
 `;
 
 export const StyledTextField = styled(TextField)`
-  .MuiInputBase-root {
-    background: ${palette.grey52};
-    width: 100%;
-    border-radius: 300px;
-    padding-left: 10px;
-    color: ${palette.white};
-    font-size: 14px;
+  && {
+    .MuiInputBase-root {
+      background: ${palette.grey52};
+      width: 100%;
+      border-radius: 300px;
+      padding-left: 10px;
+      color: ${palette.white};
+      font-size: 14px;
+    }
   }
 `;
 
@@ -41,7 +43,7 @@ export const PaperComponent = styled(Paper)`
 `;
 
 export const Option = styled.li`
-  && {
+  &&& {
     align-items: center;
     background: ${palette.grey95};
     cursor: pointer;

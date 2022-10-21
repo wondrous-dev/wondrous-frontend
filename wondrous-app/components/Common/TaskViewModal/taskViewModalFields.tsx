@@ -1,78 +1,149 @@
-import { useContext, useState } from 'react';
-import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { useRouter } from 'next/router';
-import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
-import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
-import { Claim } from 'components/Icons/claimTask';
-import TaskApplicationButton from 'components/Common/TaskApplication/TaskApplicationButton';
-import Image from 'next/image';
 import { useMutation } from '@apollo/client';
-import { UPDATE_TASK_ASSIGNEE, REMOVE_TASK_ASSIGNEE, UPDATE_TASK_PROPOSAL_ASSIGNEE } from 'graphql/mutations';
+import { Grid } from '@mui/material';
 import Box from '@mui/material/Box';
-import isEmpty from 'lodash/isEmpty';
-import { format } from 'date-fns';
-import Tooltip from 'components/Tooltip';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import TaskPriority from 'components/Common/TaskPriority';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { filterOrgUsers, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import TaskApplicationButton from 'components/Common/TaskApplication/TaskApplicationButton';
+import TaskPriority from 'components/Common/TaskPriority';
 import TaskViewModalAutocomplete from 'components/Common/TaskViewModalAutocomplete';
-import { TaskSectionLabel, TaskSectionImageContent } from './helpers';
+import TaskViewModalUserChip from 'components/Common/TaskViewModalUserChip';
 import {
-  TaskSectionDisplayDiv,
-  TaskSectionDisplayContentWrapper,
-  TaskSectionInfoTextUnderlined,
-  TaskSectionInfoText,
-  TaskSectionInfoDiv,
-  TaskSectionInfoClose,
-  TaskSectionInfoTakeTask,
-  TaskSectionInfoTakeTaskText,
+  filterOrgUsers,
+  useGetEligibleReviewers,
+  useGetOrgUsers,
+} from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { Claim } from 'components/Icons/claimTask';
+import PlusIcon from 'components/Icons/plus';
+import Tooltip from 'components/Tooltip';
+import { format } from 'date-fns';
+import {
+  REMOVE_TASK_ASSIGNEE,
+  UPDATE_TASK_ASSIGNEE,
+  UPDATE_TASK_PROPOSAL_ASSIGNEE,
+  UPDATE_TASK_REVIEWERS,
+} from 'graphql/mutations';
+import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
+import { useContext, useState } from 'react';
+import palette from 'theme/palette';
+import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
+import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
+import RecurringIcon from '../../../public/images/icons/recurring.svg';
+import { TaskSectionImageContent, TaskSectionLabel } from './helpers';
+import {
   ActionButton,
-  TaskSectionInfoRecurringIcon,
-  TaskSectionInfoCalendar,
+  AddReviewerButton,
   InfoPoint,
-  TaskSectionInfoPoints,
-  TaskSectionInfoPointsIcon,
-  TaskSectionInfoTextMilestone,
-  TaskSectionInfoMilestoneIcon,
-  TaskSectionTagWrapper,
+  ReviewerWrapper,
   Tag,
   TaskIntiativesContainer,
+  TaskSectionDisplayContentWrapper,
+  TaskSectionDisplayDiv,
+  TaskSectionInfoCalendar,
+  TaskSectionInfoDiv,
+  TaskSectionInfoMilestoneIcon,
+  TaskSectionInfoPoints,
+  TaskSectionInfoPointsIcon,
+  TaskSectionInfoRecurringIcon,
+  TaskSectionInfoTakeTask,
+  TaskSectionInfoTakeTaskText,
+  TaskSectionInfoText,
+  TaskSectionInfoTextMilestone,
+  TaskSectionTagWrapper,
 } from './styles';
-import RecurringIcon from '../../../public/images/icons/recurring.svg';
 
-export function ReviewerField({ reviewerData, handleClose, shouldDisplay }) {
+export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdit = false, fetchedTask, user }) {
   const router = useRouter();
+  const eligibleReviewers = useGetEligibleReviewers(fetchedTask?.orgId, fetchedTask?.podId);
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const [showAutocomplete, setShowAutocomplete] = useState(false);
+  const [updateTask] = useMutation(UPDATE_TASK_REVIEWERS);
+  const handleUpdateReviewers = (reviewerIds) => {
+    setShowAutocomplete(false);
+    updateTask({
+      variables: { taskId: fetchedTask?.id, reviewerIds },
+      refetchQueries: ['getTaskReviewers'],
+      onCompleted: () => {
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage('Reviewer updated successfully.');
+      },
+    });
+  };
+  const { getTaskReviewers: taskReviewers } = reviewerData || {};
+  const withTaskReviewers = Boolean(taskReviewers?.length);
+  const taskReviewerIds = taskReviewers?.map(({ id }) => id);
+  const filteredEligibleReviewers = eligibleReviewers
+    .filter(({ id }) => !taskReviewerIds?.includes(id))
+    .map((i) => {
+      if (user.id === i.id) return { ...i, hide: true };
+      return i;
+    });
+  const showAutocompleteField = canEdit && (showAutocomplete || !withTaskReviewers);
+  const showNone = !canEdit && !withTaskReviewers;
+  const showAddButton =
+    canEdit &&
+    withTaskReviewers &&
+    withTaskReviewers < eligibleReviewers?.length &&
+    !isEmpty(filteredEligibleReviewers);
+  const selfReviewer = !taskReviewerIds?.includes(user.id) && user;
 
   if (!shouldDisplay) {
     return null;
   }
   return (
-    <TaskSectionDisplayDiv>
+    <TaskSectionDisplayDiv style={{ alignItems: 'start' }}>
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
       <TaskSectionDisplayContentWrapper>
-        {reviewerData?.getTaskReviewers?.length > 0 ? (
-          (reviewerData?.getTaskReviewers).map((taskReviewer) => (
-            <TaskSectionImageContent
-              key={taskReviewer.id}
-              hasContent={taskReviewer.id}
-              imgSrc={taskReviewer?.profilePicture}
-              DefaultImageComponent={() => <DefaultUserImage />}
-              ContentComponent={() => (
-                <TaskSectionInfoTextUnderlined>{taskReviewer?.username}</TaskSectionInfoTextUnderlined>
-              )}
-              onClick={() => {
-                handleClose();
-                router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
-                  shallow: true,
-                });
-              }}
-            />
-          ))
-        ) : (
-          <TaskSectionInfoText>None</TaskSectionInfoText>
-        )}
+        <ReviewerWrapper showAddButton={showAddButton}>
+          {withTaskReviewers &&
+            taskReviewers.map((taskReviewer) => (
+              <Grid key={taskReviewer.id} item container sx={{ width: '100%' }}>
+                <TaskSectionImageContent
+                  hasContent={taskReviewer.id}
+                  ContentComponent={() => (
+                    <TaskViewModalUserChip
+                      user={taskReviewer}
+                      handleRemove={(e) => {
+                        e.stopPropagation();
+                        handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id));
+                      }}
+                      canEdit={canEdit}
+                    />
+                  )}
+                  onClick={() => {
+                    handleClose();
+                    router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
+                      shallow: true,
+                    });
+                  }}
+                />
+              </Grid>
+            ))}
+          {showAutocompleteField && (
+            <Grid item sx={{ width: '100%' }}>
+              <TaskViewModalAutocomplete
+                options={filteredEligibleReviewers}
+                onChange={(_, value, reason) => {
+                  if (reason === 'selectOption') {
+                    handleUpdateReviewers([...taskReviewerIds, value?.id]);
+                  }
+                }}
+                user={selfReviewer}
+                handleAssignToSelf={() => handleUpdateReviewers([...taskReviewerIds, user?.id])}
+              />
+            </Grid>
+          )}
+          {showNone && <TaskSectionInfoText>None</TaskSectionInfoText>}
+          {showAddButton && (
+            <Grid item container sx={{ width: 'max-content' }}>
+              <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
+                <PlusIcon fill={palette.white} />
+              </AddReviewerButton>
+            </Grid>
+          )}
+        </ReviewerWrapper>
       </TaskSectionDisplayContentWrapper>
     </TaskSectionDisplayDiv>
   );
@@ -143,45 +214,40 @@ export function AssigneeField({
       <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
         <TaskSectionImageContent
           hasContent={fetchedTask?.assigneeUsername}
-          imgSrc={fetchedTask?.assigneeProfilePicture}
-          DefaultImageComponent={() => <DefaultUserImage />}
           ContentComponent={() => (
-            <>
-              <TaskSectionInfoTextUnderlined>{fetchedTask?.assigneeUsername}</TaskSectionInfoTextUnderlined>
-              {canEdit && (
-                <TaskSectionInfoClose
-                  onClick={(e) => {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    removeTaskAssignee({
-                      variables: {
-                        taskId: fetchedTask?.id,
-                      },
-                      onCompleted: (data) => {
-                        const task = data?.removeTaskAssignee;
-                        const transformedTask = transformTaskToTaskCard(task, {});
-                        setFetchedTask(transformedTask);
-                        if (boardColumns?.setColumns && onCorrectPage) {
-                          let columns = [...boardColumns?.columns];
-                          if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                            columns = updateInReviewItem(transformedTask, columns);
-                          } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                            columns = updateInProgressTask(transformedTask, columns);
-                          } else if (transformedTask.status === TASK_STATUS_TODO) {
-                            columns = updateTaskItem(transformedTask, columns);
-                          } else if (transformedTask.status === TASK_STATUS_DONE) {
-                            columns = updateCompletedItem(transformedTask, columns);
-                          }
-                          boardColumns.setColumns(columns);
-                        }
-                      },
-                    });
-                  }}
-                >
-                  <Image src="/images/icons/close.svg" alt="close icon" width={8} height={8} />
-                </TaskSectionInfoClose>
-              )}
-            </>
+            <TaskViewModalUserChip
+              user={fetchedTask?.assignee}
+              handleRemove={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                removeTaskAssignee({
+                  variables: {
+                    taskId: fetchedTask?.id,
+                  },
+                  onCompleted: (data) => {
+                    const task = data?.removeTaskAssignee;
+                    const transformedTask = transformTaskToTaskCard(task, {});
+                    setFetchedTask(transformedTask);
+                    if (boardColumns?.setColumns && onCorrectPage) {
+                      let columns = [...boardColumns?.columns];
+                      if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
+                        columns = updateInReviewItem(transformedTask, columns);
+                      } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
+                        columns = updateInProgressTask(transformedTask, columns);
+                      } else if (transformedTask.status === TASK_STATUS_TODO) {
+                        columns = updateTaskItem(transformedTask, columns);
+                      } else if (transformedTask.status === TASK_STATUS_DONE) {
+                        columns = updateCompletedItem(transformedTask, columns);
+                      }
+                      boardColumns.setColumns(columns);
+                    }
+                    setSnackbarAlertOpen(true);
+                    setSnackbarAlertMessage('Assignee updated successfully.');
+                  },
+                });
+              }}
+              canEdit={canEdit}
+            />
           )}
           onClick={() => {
             handleClose();

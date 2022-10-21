@@ -9,13 +9,14 @@ import { ArrowWrapper, Option, PaperComponent, StyledAutocomplete, StyledTextFie
 
 const ProfilePicture = ({ profilePicture }) =>
   profilePicture ? (
-    <SafeImage useNextImage={false} src={profilePicture} />
+    <SafeImage useNextImage={false} src={profilePicture} width={24} height={24} style={{ borderRadius: '24px' }} />
   ) : (
     <DefaultUserImage width={24} height={24} />
   );
 
 const RenderOption = (props, option) => {
-  const { profilePicture, label } = option || {};
+  const { profilePicture, label, hide } = option || {};
+  if (hide) return null;
   return (
     <Option {...props}>
       <ProfilePicture profilePicture={profilePicture} />
@@ -25,6 +26,7 @@ const RenderOption = (props, option) => {
 };
 
 const assignToSelf = ({ user, onClick }) => {
+  if (!user) return null;
   const AssignToSelf = () => {
     const { profilePicture } = user || {};
     return (
@@ -36,12 +38,12 @@ const assignToSelf = ({ user, onClick }) => {
             direction="row"
             justifyContent="flex-start"
             alignItems="center"
-            sx={{ gap: '10px', width: '50%' }}
+            sx={{ gap: '10px', width: '80%' }}
           >
             <ProfilePicture profilePicture={profilePicture} />
             <Box sx={{ color: palette.blue20 }}>+ Assign to Self</Box>
           </Grid>
-          <Grid item container justifyContent="flex-end" sx={{ width: '50%' }}>
+          <Grid item container justifyContent="flex-end" sx={{ width: '20%' }}>
             <ArrowWrapper>
               <Arrow />
             </ArrowWrapper>
@@ -53,12 +55,15 @@ const assignToSelf = ({ user, onClick }) => {
   return AssignToSelf;
 };
 
-const ListboxComponent = ({ AssignToSelf, searchValue, children, ...props }) => (
-  <ul {...props}>
-    <AssignToSelf />
-    {searchValue && children}
-  </ul>
-);
+const ListboxComponent = ({ AssignToSelf, searchValue, children, ...props }) => {
+  if (!(AssignToSelf || searchValue)) return null;
+  return (
+    <ul {...props}>
+      {AssignToSelf && <AssignToSelf />}
+      {searchValue && children}
+    </ul>
+  );
+};
 
 const TaskViewModalAutocomplete = ({ user, handleAssignToSelf, ...props }) => {
   const [searchValue, setSearchValue] = useState('');
@@ -66,7 +71,6 @@ const TaskViewModalAutocomplete = ({ user, handleAssignToSelf, ...props }) => {
     <StyledAutocomplete
       disablePortal
       fullWidth
-      openOnFocus={false}
       PaperComponent={PaperComponent}
       ListboxComponent={ListboxComponent}
       ListboxProps={{
@@ -75,7 +79,7 @@ const TaskViewModalAutocomplete = ({ user, handleAssignToSelf, ...props }) => {
       }}
       popupIcon={
         <Grid sx={{ width: '24px', height: '24px' }}>
-          <SearchIcon />
+          <SearchIcon width="13" height="13" />
         </Grid>
       }
       renderInput={(params) => {
