@@ -657,6 +657,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             shouldDisplay={!isTaskProposal && !isMilestone}
                             reviewerData={reviewerData}
                             handleClose={handleClose}
+                            canEdit={canEdit}
+                            fetchedTask={fetchedTask}
+                            user={user}
                           />
                           <AssigneeField
                             shouldDisplay={showAssignee}

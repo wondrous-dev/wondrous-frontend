@@ -1,6 +1,7 @@
 import { ButtonUnstyled } from '@mui/base';
 import { Button, Menu, MenuItem, Modal, Typography } from '@mui/material';
 import { Button as GradientButton } from 'components/Common/button';
+import { Button as ComponentButton } from 'components/Button';
 import { SafeImage } from 'components/Common/Image';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import Share from 'components/Common/Share';
@@ -428,6 +429,7 @@ export const TaskSectionDisplayContentWrapper = styled.div`
   row-gap: 12px;
   column-gap: 36px;
   flex-flow: row wrap;
+  width: 100%;
 `;
 
 export const TaskSectionTagWrapper = styled.div`
@@ -457,6 +459,7 @@ export const TaskSectionImageContentWrapper = styled.div`
   display: flex;
   align-items: center;
   gap: 12px;
+  width: 100%;
 `;
 
 export const TaskSectionImageContentSafeImage = styled(SafeImage).attrs({ useNextImage: false })``;
@@ -887,4 +890,35 @@ export const LockedTask = styled.div`
 export const TaskIntiativesContainer = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const AddReviewerButton = styled(ComponentButton)`
+  && {
+    width: 26px;
+    min-height: 0;
+    height: 26px;
+    background: ${palette.grey920};
+    border-radius: 4px;
+    padding: 0;
+    & > button {
+      background: ${palette.grey920};
+      width: 26px;
+      height: 26px;
+      &:hover {
+        background: ${palette.grey920};
+      }
+    }
+  }
+`;
+
+export const ReviewerWrapper = styled.div`
+  width: 100%;
+  flex-wrap: wrap;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  > div:nth-last-child(2) {
+    max-width: ${({ showAddButton }) => showAddButton && `calc(100% - 40px)`};
+  }
 `;
