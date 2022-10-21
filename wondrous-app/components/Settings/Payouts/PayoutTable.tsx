@@ -306,7 +306,7 @@ const PayoutTable = (props: PayoutTableProps) => {
         </StyledTable>
       </StyledTableContainer>
 
-      <BottomActionBar isVisible={Object.keys(selectedItems)?.length}>
+      <BottomActionBar isVisible={Object.keys(selectedItems)?.length && !showBatchPayModal}>
         <BottomActionBarText>{Object.keys(selectedItems)?.length} selected</BottomActionBarText>
 
         <Grid display="flex" alignItems="center" gap="12px">
