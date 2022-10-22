@@ -49,7 +49,7 @@ const useSidebarData = () => {
     };
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
-  return {
+  const sidebarData = {
     handleOnClick,
     data: [
       {
@@ -94,12 +94,6 @@ const useSidebarData = () => {
               },
             },
           },
-          {
-            text: 'Pods',
-            Icon: PodIcon,
-            link: `${link}/pods`,
-            count: board?.orgData?.podCount,
-          },
         ],
       },
       {
@@ -141,6 +135,15 @@ const useSidebarData = () => {
       },
     ],
   };
+  if (orgBoard) {
+    sidebarData.data[0].items.push({
+      text: 'Pods',
+      Icon: PodIcon,
+      link: `${link}/pods`,
+      count: board?.orgData?.podCount,
+    } as any);
+  }
+  return sidebarData;
 };
 
 const location = () => {
