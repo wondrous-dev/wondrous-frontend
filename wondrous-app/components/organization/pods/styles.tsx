@@ -1,9 +1,14 @@
+import styled from 'styled-components';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
-import styled from 'styled-components';
+import Button from '@mui/material/Button';
+import Input from '@mui/material/Input';
+import InputAdornment from '@mui/material/InputAdornment';
+
+import SearchIcon from 'components/Icons/search';
+
 import typography from 'theme/typography';
 import palette from 'theme/palette';
-import { Button } from '@mui/material';
 
 export const StyledTabs = styled(Tabs)`
   && {
@@ -36,6 +41,29 @@ export const StyledTab = styled(Tab)`
     font-weight: 500;
     padding: 7px 4px;
     color: ${({ isActive }) => (isActive ? palette.white : palette.grey51)};
+  }
+`;
+
+export const SearchPods = styled(({ ...props }) => (
+  <Input
+    {...props}
+    disableUnderline
+    startAdornment={
+      <InputAdornment position="start">
+        <SearchIcon color={palette.blue20} />
+      </InputAdornment>
+    }
+  />
+))`
+  && {
+    height: 40px;
+    background: ${palette.black101};
+    color: ${palette.grey250};
+    width: 100%;
+    padding: 0 10px;
+    margin: 10px 0 31px 0;
+    border-radius: 6px;
+    font-size: 14px;
   }
 `;
 

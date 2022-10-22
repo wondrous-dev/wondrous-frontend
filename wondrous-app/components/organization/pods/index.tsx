@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { Grid, Typography } from '@mui/material';
 
@@ -16,7 +16,14 @@ import typography from 'theme/typography';
 
 import PlusIcon from 'components/Icons/plus';
 import { CreateEntity } from 'components/CreateEntity';
-import { CreateNewPodButton, CreateNewPodIconWrapper, PodItemWrapper, StyledTab, StyledTabs } from './styles';
+import {
+  CreateNewPodButton,
+  CreateNewPodIconWrapper,
+  PodItemWrapper,
+  SearchPods,
+  StyledTab,
+  StyledTabs,
+} from './styles';
 
 import PodItem from './PodItem';
 import { PodView } from './constants';
@@ -93,19 +100,47 @@ const Pods = (props) => {
     }
   }, [user?.id]);
 
-  useEffect(() => {
+  const getActivePodsList = useCallback(() => {
     if (activePodView === PodView.ALL) {
-      setActivePodsList(orgPods);
-    } else if (activePodView === PodView.USER_IS_MEMBER_OF) {
-      setActivePodsList(orgPodsUserIsIn);
-    } else {
-      setActivePodsList(orgPodsUserIsNotIn);
+      return orgPods;
     }
+    if (activePodView === PodView.USER_IS_MEMBER_OF) {
+      return orgPodsUserIsIn;
+    }
+    if (activePodView === PodView.USER_IS_NOT_MEMBER_OF) {
+      return orgPodsUserIsNotIn;
+    }
+    return [];
+  }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]);
+
+  useEffect(() => {
+    const activePodsList = getActivePodsList();
+    setActivePodsList(activePodsList);
   }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]);
 
   const handleActiveTabChange = (_, newValue: number) => {
     setActivePodView(newValue);
   };
+
+  const handleSearchPods = useCallback(
+    (ev) => {
+      const searchValue = ev.target.value?.toLowerCase();
+      const activePodsList = getActivePodsList();
+
+      if (searchValue) {
+        const filteredPods = activePodsList.filter(
+          (pod) =>
+            pod.name?.toLowerCase().includes(searchValue) ||
+            pod.description?.toLowerCase()?.includes(searchValue) ||
+            pod.id?.includes(searchValue)
+        );
+        setActivePodsList(filteredPods);
+      } else {
+        setActivePodsList(activePodsList);
+      }
+    },
+    [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]
+  );
 
   const handleOpenCreatePodModal = () => {
     setShowCreatePodModal(true);
@@ -144,6 +179,8 @@ const Pods = (props) => {
           }
         />
       </StyledTabs>
+
+      <SearchPods placeholder="Search pods..." onChange={handleSearchPods} />
 
       {canUserCreatePods && (
         <Grid
