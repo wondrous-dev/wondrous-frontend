@@ -45,6 +45,8 @@ import {
 import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
+import MintTaskComponent from 'components/Common/MintTask';
+
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { useMe } from 'components/Auth/withAuth';
@@ -657,6 +659,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       </TaskModalTitleDescriptionMedia>
                       <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                         <TaskSectionDisplayData>
+                          <MintTaskComponent />
                           <ReviewerField
                             shouldDisplay={!isTaskProposal && !isMilestone}
                             reviewerData={reviewerData}

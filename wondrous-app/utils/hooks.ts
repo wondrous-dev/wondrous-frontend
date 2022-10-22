@@ -308,7 +308,14 @@ export const useNotifications = () => {
 
 export const useSteps = (defaultStep = 0) => {
   const [step, setStep] = useState(defaultStep);
-  return { step, setStep };
+
+  const nextStep = () => setStep((prevState) => prevState + 1);
+
+  const prevStep = () => setStep((prevState) => prevState - 1);
+
+  useEffect(() => () => setStep(defaultStep), []);
+
+  return { step, setStep, nextStep, prevStep };
 };
 
 export const usePermissions = (entity, isTaskProposal = false) => {

@@ -838,7 +838,7 @@ export const ORG_POD_COLUMNS = generateColumns(false, COLUMNS_CONFIGURATION.ORG)
 
 export const ORG_POD_PROPOSAL_COLUMNS = [PROPOSAL_OPEN, PROPOSAL_APPROVED, PROPOSAL_REJECTED];
 
-export const LIMIT = 10;
+export const LIMIT = 1;
 
 export const populateTaskColumns = (tasks, columns) => {
   if (!columns) {
