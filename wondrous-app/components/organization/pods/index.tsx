@@ -1,17 +1,22 @@
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { Grid, Typography } from '@mui/material';
 
+import { useMe } from 'components/Auth/withAuth';
+
+import { useOrgBoard } from 'utils/hooks';
+import { capitalize } from 'utils/common';
+import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
+import { GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
+import { parseUserPermissionContext } from 'utils/helpers';
+
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 
-import { useMe } from 'components/Auth/withAuth';
-
-import { capitalize } from 'utils/common';
-import { GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
-
-import Link from 'next/link';
-import { PodItemWrapper, StyledTab, StyledTabs } from './styles';
+import PlusIcon from 'components/Icons/plus';
+import { CreateEntity } from 'components/CreateEntity';
+import { CreateNewPodButton, CreateNewPodIconWrapper, PodItemWrapper, StyledTab, StyledTabs } from './styles';
 
 import PodItem from './PodItem';
 import { PodView } from './constants';
@@ -51,8 +56,14 @@ const Pods = (props) => {
 
   const [activePodView, setActivePodView] = useState(PodView.ALL);
   const [activePodsList, setActivePodsList] = useState([]);
+  const [showCreatePodModal, setShowCreatePodModal] = useState(false);
 
   const user = useMe();
+  const { userPermissionsContext } = useOrgBoard() || {};
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: orgData?.id,
+  });
   const [getOrgPods, { data: orgPodsData }] = useLazyQuery(GET_ORG_PODS, {
     fetchPolicy: 'cache-and-network',
   });
@@ -67,6 +78,8 @@ const Pods = (props) => {
   const orgPodsUserIsNotIn = orgPods?.filter(
     (pod) => !orgPodsUserIsIn?.find((podUserIsIn) => podUserIsIn.id === pod.id)
   );
+  const canUserCreatePods =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_POD);
 
   useEffect(() => {
     if (orgData?.id) {
@@ -90,8 +103,16 @@ const Pods = (props) => {
     }
   }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]);
 
-  const handleChange = (_, newValue: number) => {
+  const handleActiveTabChange = (_, newValue: number) => {
     setActivePodView(newValue);
+  };
+
+  const handleOpenCreatePodModal = () => {
+    setShowCreatePodModal(true);
+  };
+
+  const handleCloseCreatePodModal = () => {
+    setShowCreatePodModal(false);
   };
 
   return (
@@ -100,7 +121,7 @@ const Pods = (props) => {
         Pods in {capitalize(orgName)}
       </Typography>
 
-      <StyledTabs value={activePodView} onChange={handleChange}>
+      <StyledTabs value={activePodView} onChange={handleActiveTabChange}>
         <StyledTab
           label={<TabLabel label="Show all" count={orgPods?.length} isActive={activePodView === PodView.ALL} />}
         />
@@ -124,6 +145,26 @@ const Pods = (props) => {
         />
       </StyledTabs>
 
+      {canUserCreatePods && (
+        <Grid
+          sx={{
+            padding: '14px 0',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            background: palette.black92,
+            borderRadius: '6px',
+          }}
+        >
+          <CreateNewPodButton onClick={handleOpenCreatePodModal}>
+            <CreateNewPodIconWrapper>
+              <PlusIcon />
+            </CreateNewPodIconWrapper>
+            <Typography sx={{ fontSize: '14px', fontWeight: 500, color: palette.white }}>Create new pod</Typography>
+          </CreateNewPodButton>
+        </Grid>
+      )}
+
       <Grid sx={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {activePodsList?.length &&
           activePodsList?.map((podData) => (
@@ -134,6 +175,14 @@ const Pods = (props) => {
             </Link>
           ))}
       </Grid>
+
+      <CreateEntity
+        open={showCreatePodModal}
+        entityType={ENTITIES_TYPES.POD}
+        handleCloseModal={handleCloseCreatePodModal}
+        handleClose={handleCloseCreatePodModal}
+        cancel={handleCloseCreatePodModal}
+      />
     </Grid>
   );
 };
