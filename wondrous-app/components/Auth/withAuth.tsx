@@ -24,6 +24,7 @@ const EXCLUDED_PATHS = [
   '/explore',
   '/404',
   '/invite/collab/[token]',
+  '/invite/collab/members/[token]',
 ];
 
 export const useMe = () => useContext(MyContext);

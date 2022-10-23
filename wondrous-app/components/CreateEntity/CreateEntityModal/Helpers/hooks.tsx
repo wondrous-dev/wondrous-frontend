@@ -264,7 +264,7 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
     if (orgId)
       searchOrgUsers({
         variables: {
-          orgId,
+          orgsIds: [orgId],
           searchString,
           limit: LIMIT,
         },

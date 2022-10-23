@@ -1,5 +1,10 @@
 import { gql } from '@apollo/client';
-import { PaymentCardFragment, PaymentMethodFragment, UnpaidSubmissionFragment } from '../fragments/payment';
+import {
+  PaymentCardFragment,
+  PaymentMethodFragment,
+  ProcessingPaymentFragment,
+  UnpaidSubmissionFragment,
+} from '../fragments/payment';
 
 export const GET_PAYMENT_METHODS_FOR_ORG = gql`
   query getPaymentMethodsForOrg($orgId: ID!, $includeDeactivated: Boolean) {
@@ -75,4 +80,22 @@ export const GET_UNPAID_SUBMISSIONS_FOR_POD = gql`
     }
   }
   ${UnpaidSubmissionFragment}
+`;
+
+export const GET_PROCESSING_PAYMENTS_FOR_ORG = gql`
+  query getProcessingPaymentsForOrg($input: OrgPaymentQueryInput) {
+    getProcessingPaymentsForOrg(input: $input) {
+      ...ProcessingPaymentFragment
+    }
+  }
+  ${ProcessingPaymentFragment}
+`;
+
+export const GET_PROCESSING_PAYMENTS_FOR_POD = gql`
+  query getProcessingPaymentsForPod($input: PodPaymentQueryInput) {
+    getProcessingPaymentsForPod(input: $input) {
+      ...ProcessingPaymentFragment
+    }
+  }
+  ${ProcessingPaymentFragment}
 `;

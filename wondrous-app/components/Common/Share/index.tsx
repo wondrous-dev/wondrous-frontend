@@ -13,9 +13,10 @@ interface IShareProps {
     id: string;
     type?: string;
   };
+  className?: Object;
 }
 
-const Share = ({ fetchedTask }: IShareProps) => {
+const Share = ({ fetchedTask, className }: IShareProps) => {
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const { id, parentTaskId, orgUsername, type } = fetchedTask;
   const entityType = type || ENTITIES_TYPES.PROPOSAL;
@@ -32,7 +33,7 @@ const Share = ({ fetchedTask }: IShareProps) => {
   };
   return (
     <Tooltip title={`Share ${capitalize(entityType)}`} placement="top">
-      <StyledShare onClick={handleOnClick}>
+      <StyledShare onClick={handleOnClick} className={className}>
         <TaskShareIcon />
       </StyledShare>
     </Tooltip>

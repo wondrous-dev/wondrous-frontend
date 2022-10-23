@@ -42,8 +42,8 @@ const SUPPORTED_PAYMENT_CHAINS = [
 ];
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
   SUPPORTED_PAYMENT_CHAINS.push({
-    label: 'Ethereum Rinkeby',
-    value: 'rinkeby',
+    label: 'Ethereum Goerli',
+    value: 'goerli',
   });
 }
 

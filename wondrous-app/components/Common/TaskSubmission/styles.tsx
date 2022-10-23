@@ -1,4 +1,5 @@
-import { ButtonBase, InputAdornment, InputBase, Menu, MenuItem, Popper, Typography } from '@mui/material';
+import { ButtonBase, InputAdornment, InputBase, Menu, MenuItem, Typography } from '@mui/material';
+import Button from 'components/Button';
 import { Button as ButtonGradient } from 'components/Common/button';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
@@ -13,8 +14,9 @@ import { EmptyStateSubmissionsIcon } from 'components/Icons/emptyStates';
 import FilterStatusIcon from 'components/Icons/filterStatusIcon.svg';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import LinkIcon from 'components/Icons/linkSubmissionIcon.svg';
-import styled from 'styled-components';
+import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const TaskSubmissionEmptyStateContainer = styled.div`
   width: 100%;
@@ -105,49 +107,64 @@ export const SubmissionButtonEdit = styled(ButtonBase)`
   }
 `;
 
-export const SubmissionButtonRequestChange = styled(ButtonBase)`
-  && {
-    border: 1px solid #474747;
-    width: max-content;
+const ButtonStyleSelected = css`
+  ${({ selected }) =>
+    selected &&
+    `
+  > button {
+    background: ${palette.background.default};
+    &:hover {
+      background: ${palette.background.default};
+    }
+  }
+ `}
+`;
+
+const ButtonStyleBase = css`
+  background: ${palette.grey78};
+  border-radius: 100px;
+  color: ${palette.white};
+  font-family: ${typography.fontFamily};
+  font-weight: 500;
+  height: 30px;
+  min-height: fit-content;
+  width: fit-content;
+  font-size: 14px;
+  z-index: 1;
+  > button {
+    background: ${palette.grey900};
     height: 28px;
-    border-radius: 100px;
-    font-family: 'Space Grotesk';
-    padding: 7px 16px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
-    font-weight: ${theme.typography.fontWeightMedium};
-  `}
+    padding: 0 16px;
+    :hover {
+      background: ${palette.grey900};
+    }
   }
 `;
 
-export const SubmissionButtonReject = styled(ButtonBase)`
+export const SubmissionButtonRequestChange = styled(Button)`
   && {
-    border: 1px solid #474747;
-    width: max-content;
-    height: 28px;
-    border-radius: 100px;
-    border-color: ${palette.red400};
-    font-family: 'Space Grotesk';
-    padding: 7px 16px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
-    font-weight: ${theme.typography.fontWeightMedium};
-  `}
+    ${ButtonStyleBase}
+    ${ButtonStyleSelected}
+    background: ${({ selected }) =>
+      selected && `linear-gradient(270deg, ${palette.yellow800} -5.62%, ${palette.highlightPurple} 103.12%)`};
   }
 `;
 
-export const SubmissionButtonApprove = styled(ButtonBase)`
+export const SubmissionButtonReject = styled(Button)`
   && {
-    background: #474747;
-    width: max-content;
-    height: 28px;
-    border-radius: 100px;
-    font-family: 'Space Grotesk';
-    padding: 7px 16px;
-    ${({ theme }) => `
-    color: ${theme.palette.white};
-    font-weight: ${theme.typography.fontWeightMedium};
-  `}
+    ${ButtonStyleBase}
+    ${ButtonStyleSelected}
+    background: ${({ selected }) =>
+      selected && `linear-gradient(270deg, ${palette.red300} -5.62%, ${palette.highlightPurple} 103.12%)`};
+  }
+`;
+
+export const SubmissionButtonApprove = styled(Button)`
+  && {
+    ${ButtonStyleBase}
+    ${ButtonStyleSelected}
+    background: ${({ selected }) =>
+      selected && `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%)`}
   }
 `;
 
@@ -685,20 +702,6 @@ export const SubmissionItemSafeImage = styled(SafeImage).attrs({ useNextImage: f
   border-radius: 50px;
 `;
 
-export const SubmissionItemStatusWrapper = styled.div`
-  background: #2f2f2f;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  border-radius: 50px;
-  height: 28px;
-  padding: 2px 12px 2px 3px;
-  svg {
-    width: 24px;
-    height: 24px;
-  }
-`;
-
 const SubmissionItemStatusText = styled(Typography)`
   && {
     font-size: 14px;
@@ -709,18 +712,6 @@ const SubmissionItemStatusText = styled(Typography)`
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
   }
-`;
-
-export const SubmissionItemStatusTextAwaitingReview = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, #00baff);
-`;
-
-export const SubmissionItemStatusTextChangesRequested = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, #ffd653);
-`;
-
-export const SubmissionItemStatusTextChangesRejected = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, ${palette.red400});
 `;
 
 export const SubmissionItemStatusChangesRequestedIcon = styled((props) => (
@@ -735,10 +726,6 @@ export const SubmissionItemStatusChangesRequestedIcon = styled((props) => (
   align-items: center;
   justify-content: center;
   border-radius: 24px;
-`;
-
-export const SubmissionItemStatusTextCompleted = styled(SubmissionItemStatusText)`
-  background: -webkit-linear-gradient(#ffffff, #06ffa5);
 `;
 
 export const SubmissionItemsMedia = styled(TaskMedia)`
@@ -793,5 +780,33 @@ export const SubmissionDescription = styled.div`
         font-weight: ${theme.typography.fontWeightRegular};
         color: ${theme.palette.white};
     `}
+  }
+`;
+
+export const GiveKudosButton = styled(Button)`
+  && {
+    background: ${palette.grey87};
+    color: ${palette.blue20};
+    height: 40px;
+    font-family: ${typography.fontFamily};
+    font-weight: 500;
+    border-radius: 6px;
+    margin-top: 12px;
+    gap: 8px;
+    width: fit-content;
+    font-size: 14px;
+    svg {
+      path {
+        fill: ${palette.highlightBlue};
+      }
+    }
+    > button {
+      height: 40px;
+      padding: 12px 10px;
+      margin: 0;
+      &:hover {
+        background: ${palette.grey87};
+      }
+    }
   }
 `;

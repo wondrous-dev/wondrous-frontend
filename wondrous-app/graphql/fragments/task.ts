@@ -54,6 +54,7 @@ export const TaskFragment = gql`
       name
       username
       privacyLevel
+      shared
     }
     pod {
       name

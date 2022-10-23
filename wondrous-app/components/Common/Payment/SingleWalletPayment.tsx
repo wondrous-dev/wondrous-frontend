@@ -3,9 +3,9 @@ import { useRouter } from 'next/router';
 import { ethers } from 'ethers';
 import { BigNumber } from 'bignumber.js';
 import { useMutation } from '@apollo/client';
-import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION } from 'graphql/mutations/payment';
+import { PROPOSE_GNOSIS_TX_FOR_SUBMISSION, LINK_METAMASK_PAYMENT } from 'graphql/mutations/payment';
 import { SafeTransactionDataPartial } from '@gnosis.pm/safe-core-sdk-types';
-import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
+import { TransactionData } from 'services/web3/hooks/types';
 
 import { CircularProgress } from '@mui/material';
 
@@ -19,7 +19,8 @@ import useGnosisSdk from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
-import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME, CHAIN_TO_EXPLORER_URL } from 'utils/web3Constants';
+import { DEFAULT_ERC20_GAS_LIMIT } from 'utils/constants';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
@@ -42,6 +43,8 @@ export const constructGnosisRedirectUrl = (chain, safeAddress, safeTxHash) => {
   }
   return `https://gnosis-safe.io/app/${CHAIN_TO_GNOSIS_URL_ABBR[chain]}:${safeAddress}/transactions/${safeTxHash}`;
 };
+
+export const constructExplorerRedirectUrl = (chain, txHash) => `${CHAIN_TO_EXPLORER_URL[chain]}/tx/${txHash}`;
 
 interface SubmissionPaymentInfo {
   submissionId: string;
@@ -71,7 +74,6 @@ export function SingleWalletPayment(props) {
   } = props;
   const [currentChainId, setCurrentChainId] = useState(null); // chain id current user is on
   const [walletOptions, setWalletOptions] = useState([]); // chain associated with submission
-  const [onRightChain, setOnRighChain] = useState(true);
   const [selectedWalletId, setSelectedWalletId] = useState(null);
   const [selectedWallet, setSelectedWallet] = useState(null);
   const [wrongChainError, setWrongChainError] = useState(null);
@@ -82,7 +84,9 @@ export function SingleWalletPayment(props) {
   const [incompatibleWalletError, setIncompatibleWalletError] = useState(null);
   const [paymentPending, setPaymentPending] = useState(null);
   const [gnosisSafeTxRedirectLink, setGnosisSafeTxRedirectLink] = useState(null);
+  const [exploreRedirectUrl, setExploreRedirectUrl] = useState(null);
   const [safeTxHash, setSafeTxHash] = useState(null);
+  const [transactionHash, setTransactionHash] = useState(null);
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const paymentModal = usePaymentModal();
@@ -122,17 +126,18 @@ export function SingleWalletPayment(props) {
   useEffect(() => {
     setIncompatibleWalletError(null);
     const corrctChainWallets = [];
+    const chain = submissionPaymentInfo?.paymentData[0].chain;
     wallets.map((wallet) => {
-      const chain = submissionPaymentInfo?.paymentData[0].chain;
       if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
       }
-      if (corrctChainWallets.length === 0 && wallets.length > 0) {
-        setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
-      }
     });
+    if (corrctChainWallets.length === 0 && wallets.length > 0) {
+      setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
+    }
+
     setWalletOptions(corrctChainWallets);
   }, [submissionPaymentInfo, wallets]);
 
@@ -162,10 +167,36 @@ export function SingleWalletPayment(props) {
       GET_PAYMENTS_FOR_ORG,
     ],
   });
+
+  const [linkMetamaskPayment] = useMutation(LINK_METAMASK_PAYMENT, {
+    onCompleted: (data) => {
+      if (paymentModal?.onPaymentComplete) {
+        paymentModal?.onPaymentComplete();
+      }
+    },
+    onError: (e) => {
+      console.error(e);
+    },
+    refetchQueries: [
+      GET_UNPAID_SUBMISSIONS_FOR_POD,
+      GET_UNPAID_SUBMISSIONS_FOR_ORG,
+      GET_PAYMENTS_FOR_POD,
+      GET_PAYMENTS_FOR_ORG,
+    ],
+  });
+
   useEffect(() => {
     const url = constructGnosisRedirectUrl(selectedWallet?.chain, selectedWallet?.address, safeTxHash);
     setGnosisSafeTxRedirectLink(url);
   }, [safeTxHash, selectedWallet]);
+
+  useEffect(() => {
+    if (transactionHash) {
+      const url = constructExplorerRedirectUrl(CHAIN_ID_TO_CHAIN_NAME[currentChainId], transactionHash);
+      console.log(url);
+      setExploreRedirectUrl(url);
+    }
+  }, [transactionHash, currentChainId]);
 
   const reward = props?.fetchedTask?.rewards && props?.fetchedTask?.rewards[0];
 
@@ -223,18 +254,18 @@ export function SingleWalletPayment(props) {
       operation: 0,
     };
     let safeTxGas;
-    try {
-      const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
-        selectedWallet?.address,
-        estimateGasPayload
-      );
-      safeTxGas = estimateTx?.safeTxGas;
-    } catch (e) {
-      console.log(e);
-    }
-    t2 = performance.now();
-    console.log(`estimate gas took ${t2 - t1} milliseconds`);
-    t1 = performance.now();
+    // try {
+    //   const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
+    //     selectedWallet?.address,
+    //     estimateGasPayload
+    //   );
+    //   safeTxGas = estimateTx?.safeTxGas;
+    // } catch (e) {
+    //   console.log(e);
+    // }
+    // t2 = performance.now();
+    // console.log(`estimate gas took ${t2 - t1} milliseconds`);
+    // t1 = performance.now();
 
     const transaction: SafeTransactionDataPartial = {
       to: wonderWeb3.toChecksumAddress(transactionData.to),
@@ -274,7 +305,7 @@ export function SingleWalletPayment(props) {
 
     const txData = {
       ...safeTransaction.data,
-      contractTransactionHash: safeTxHash,
+      contractTransactionHash: computedSafeTxHash,
       sender,
       signature,
     };
@@ -298,7 +329,65 @@ export function SingleWalletPayment(props) {
     console.log(`proposeGnosisTxForSubmission took ${t2 - t1} milliseconds`);
     setGnosisTransactionLoading(false);
   };
-  const sendTransactionFromMetamask = async () => {};
+
+  const sendTransactionFromMetamask = async () => {
+    const iface = new ethers.utils.Interface(ERC20abi);
+    const paymentData = submissionPaymentInfo?.paymentData[0];
+    const chain = paymentData?.chain;
+    if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+      setWrongChainError(`Please switch to ${chain} chain`);
+      return;
+    }
+    if (selectedWallet?.address?.toLowerCase() !== wonderWeb3.address?.toLowerCase()) {
+      setNotOwnerError(`Must be connected to the selecte walleted ${selectedWallet?.address}`);
+      return;
+    }
+    let transactionData: TransactionData;
+    let finalAmount = paymentData.amount;
+    if (changedRewardAmount) {
+      const decimal = Number(paymentData?.decimal);
+      const bigChangedAmount = new BigNumber(changedRewardAmount);
+      const newDecimal = new BigNumber(10 ** decimal);
+      finalAmount = bigChangedAmount.times(newDecimal);
+      finalAmount = finalAmount.toString();
+    }
+    const gasPrice = await wonderWeb3.getGasPrice();
+
+    if (paymentData?.isEthTransfer) {
+      transactionData = {
+        from: selectedWallet?.address,
+        to: paymentData.recepientAddress,
+        data: '0x00',
+        value: finalAmount,
+        gasLimit: DEFAULT_ERC20_GAS_LIMIT,
+        gasPrice: gasPrice.toHexString(),
+      };
+    } else {
+      const callData = iface.encodeFunctionData('transfer', [paymentData.recepientAddress, finalAmount]);
+      transactionData = {
+        from: selectedWallet?.address,
+        to: paymentData.tokenAddress,
+        data: callData,
+        value: '0',
+        gasLimit: DEFAULT_ERC20_GAS_LIMIT,
+        gasPrice: gasPrice.toHexString(),
+      };
+    }
+    const transactionObj = await wonderWeb3.sendTransaction(transactionData);
+    const txHash = transactionObj?.hash;
+    setTransactionHash(txHash);
+    linkMetamaskPayment({
+      variables: {
+        input: {
+          submissionId: approvedSubmission.id,
+          walletId: selectedWalletId,
+          chain,
+          txHash,
+        },
+      },
+    });
+  };
+
   const handleCreateNewWalletClick = () => {
     if (podId) {
       const newUrl = `/pod/settings/${podId}/wallet`;
@@ -313,10 +402,10 @@ export function SingleWalletPayment(props) {
     if (!selectedWallet) {
       console.log('wallet not yet selected');
     }
-    if (!wonderGnosis.isConnected()) {
-      console.log('gnosis wallet not yet connected');
-    }
     if (selectedWallet.type !== WALLET_TYPE.METAMASK) {
+      if (!wonderGnosis.isConnected()) {
+        console.log('gnosis wallet not yet connected');
+      }
       // we use !== metamask because we didn't backfill wallet data, and only other type right now is gnosis
       constructAndSignTransactionData();
     } else if (selectedWallet.type === WALLET_TYPE.METAMASK) {
@@ -343,14 +432,18 @@ export function SingleWalletPayment(props) {
             {gnosisTransactionLoading ? (
               <CircularProgress />
             ) : (
-              <CreateFormPreviewButton
-                onClick={handlePaymentClick}
-                style={{
-                  marginLeft: 0,
-                }}
-              >
-                Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
-              </CreateFormPreviewButton>
+              <>
+                {!exploreRedirectUrl && !paymentPending && (
+                  <CreateFormPreviewButton
+                    onClick={handlePaymentClick}
+                    style={{
+                      marginLeft: 0,
+                    }}
+                  >
+                    Pay {changedRewardAmount || reward?.rewardAmount} {reward?.symbol}
+                  </CreateFormPreviewButton>
+                )}
+              </>
             )}
           </>
         )}
@@ -378,6 +471,22 @@ export function SingleWalletPayment(props) {
               your Gnosis safe
             </a>{' '}
             to approve the payment.
+          </PaymentPendingTypography>
+        )}
+        {exploreRedirectUrl && (
+          <PaymentPendingTypography>
+            transaction processing! Go to{' '}
+            <a
+              style={{
+                color: '#00BAFF',
+              }}
+              href={exploreRedirectUrl}
+              target="_blank"
+              rel="noreferrer"
+            >
+              block explorer
+            </a>{' '}
+            to check the transaction.
           </PaymentPendingTypography>
         )}
       </>

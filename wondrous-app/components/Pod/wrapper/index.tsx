@@ -440,6 +440,7 @@ function Wrapper(props) {
                   </>
                 ))}
                 <HeaderContributors
+                  isInPodPage
                   onClick={() => {
                     setOpen(true);
                     setShowUsers(true);

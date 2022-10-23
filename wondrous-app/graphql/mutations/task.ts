@@ -137,6 +137,14 @@ export const DELETE_TASK_COMMENT = gql`
   }
 `;
 
+export const IMPORT_TASKS = gql`
+  mutation importTasks($input: [TaskInput]) {
+    importTasks(input: $input) {
+      success
+    }
+  }
+`;
+
 export const CREATE_MILESTONE = gql`
   mutation createMilestone($input: TaskInput) {
     createMilestone(input: $input) {
@@ -255,8 +263,9 @@ export const TURN_TASK_TO_BOUNTY = gql`
 export const CREATE_TASK_DISCORD_THREAD = gql`
   mutation createTaskDiscordThread($taskId: ID!) {
     createTaskDiscordThread(taskId: $taskId) {
-      guildId
-      threadId
+      guildIds
+      
+      threadIds
     }
   }
 `;
@@ -264,6 +273,14 @@ export const CREATE_TASK_DISCORD_THREAD = gql`
 export const UPDATE_TASK_OBSERVERS = gql`
   mutation updateTaskObservers($taskId: ID!, $observerIds: [String]!) {
     updateTaskObservers(taskId: $taskId, observerIds: $observerIds) {
+      title # maybe this should be returning simple response instead?
+    }
+  }
+`;
+
+export const DUPLICATE_TASK = gql`
+  mutation duplicateTask($taskId: ID!) {
+    duplicateTask(taskId: $taskId) {
       title # maybe this should be returning simple response instead?
     }
   }

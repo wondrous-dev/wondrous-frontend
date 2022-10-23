@@ -440,7 +440,7 @@ function Analytics(props) {
     if (orgId) {
       searchOrgUsers({
         variables: {
-          orgId,
+          orgsIds: [orgId],
           searchString: '',
         },
       });
@@ -482,7 +482,7 @@ function Analytics(props) {
     searchOrgUsers({
       variables: {
         searchString: newInputValue,
-        orgId,
+        orgsIds: [orgId],
       },
     });
   };

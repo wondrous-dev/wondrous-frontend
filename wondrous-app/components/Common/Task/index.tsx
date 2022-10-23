@@ -223,6 +223,7 @@ export function Task(props) {
   });
 
   const canArchive =
+    permissions.includes(Constants.PERMISSIONS.EDIT_TASK) ||
     permissions.includes(Constants.PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(Constants.PERMISSIONS.FULL_ACCESS) ||
     task?.createdBy === user?.id;
