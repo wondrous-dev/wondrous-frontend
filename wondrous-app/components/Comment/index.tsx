@@ -126,7 +126,7 @@ function CommentBox(props) {
   const handleUserMentionChange = (query) =>
     searchOrgUsers({
       variables: {
-        orgId,
+        orgsIds: [orgId],
         searchString: query,
       },
     }).then(({ data }) => data?.searchOrgUsers?.map((user) => ({ ...user, display: user.username, id: user.id })));

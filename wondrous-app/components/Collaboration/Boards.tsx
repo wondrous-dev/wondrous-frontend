@@ -62,7 +62,14 @@ function CollabBoard(props: Props) {
         orgData?.id !== org
     );
 
-  const parentOrg = orgData?.parentOrgs?.find((org) => userOrgsWithFullAccess?.includes(org?.id));
+  const parentOrgsWithAccess = useMemo(
+    () =>
+      orgData?.parentOrgs?.reduce(
+        (acc, org) => (userOrgsWithFullAccess?.includes(org?.id) ? acc.concat(org.id) : acc),
+        []
+      ),
+    [orgData?.parentOrgs, userOrgsWithFullAccess]
+  );
 
   const deleteMember = (userId) => {
     setUsers((prevState) => ({
@@ -86,9 +93,9 @@ function CollabBoard(props: Props) {
   };
 
   const STEPS = [
-    ({ selectedUsers, parentOrg, orgData }) => (
+    ({ selectedUsers, parentOrgsWithAccess, orgData }) => (
       <AddTeamMembers
-        org={parentOrg}
+        parentOrgIds={parentOrgsWithAccess}
         collabData={orgData}
         footerRef={footerRef}
         footerLeftRef={footerLeftRef}
@@ -138,7 +145,9 @@ function CollabBoard(props: Props) {
           open={openInviteModal}
           onClose={handleModal}
         >
-          {!!orgData && <Component selectedUsers={users} parentOrg={parentOrg} orgData={orgData} />}
+          {!!orgData && (
+            <Component parentOrgsWithAccess={parentOrgsWithAccess} selectedUsers={users} orgData={orgData} />
+          )}
         </ModalComponent>
       )}
       <ColumnsContext.Provider value={{ columns, setColumns }}>
