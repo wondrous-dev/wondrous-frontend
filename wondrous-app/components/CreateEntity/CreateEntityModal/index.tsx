@@ -61,6 +61,7 @@ import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtask
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
+import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -127,7 +128,6 @@ import {
   CreateEntityOptionLabel,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
-  CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
   CreateEntityPrivacySelect,
@@ -649,7 +649,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {form.values.orgId !== null && (
             <>
               <CreateEntityHeaderArrowIcon />
-              <CreateEntityPodSearch
+              <PodSearch
                 options={filterOptionsWithPermission(
                   entityType,
                   pods,
