@@ -157,9 +157,21 @@ export const getUserSigningMessage = async (
   }
 };
 
-export const getAuthHeader = () => localStorage.getItem('wonderToken') || null;
+export const getAuthHeader = () => {
+  try {
+    return localStorage.getItem('wonderToken') || null;
+  } catch (error) {
+    return null;
+  }
+};
 
-export const getWaitlistAuthHeader = () => localStorage.getItem('waitlistToken') || null;
+export const getWaitlistAuthHeader = () => {
+  try {
+    return localStorage.getItem('waitlistToken') || null;
+  } catch (error) {
+    return null;
+  }
+};
 
 export const linkWallet = async (web3Address: string, signedMessage: string, blockchain: string) => {
   try {

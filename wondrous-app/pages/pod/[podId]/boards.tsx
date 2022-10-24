@@ -1,8 +1,9 @@
+import MetaTags from 'components/MetaTags';
 import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
+import { bindSectionToColumns, sectionOpeningReducer, getServerSideProps } from 'utils/board';
 import { useRouterQuery, useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
@@ -296,7 +297,15 @@ const useGetPodTaskBoard = ({
   return { fetchMore, fetchPerStatus };
 };
 
-function BoardsPage() {
+type Props = {
+  meta: {
+    title: string;
+    img: string;
+    description: string;
+  };
+};
+
+function BoardsPage({ meta }: Props) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
@@ -645,6 +654,7 @@ function BoardsPage() {
     >
       <EntitySidebar>
         {isMobile ? <MobileComingSoonModal /> : null}
+        <MetaTags meta={meta} />
         <Boards
           columns={columns}
           onLoadMore={fetchMore}
@@ -666,3 +676,5 @@ function BoardsPage() {
 }
 
 export default withAuth(BoardsPage);
+
+export { getServerSideProps };
