@@ -5,7 +5,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
-import { usePodBoard, useTokenGating } from 'utils/hooks';
+import { usePodBoard } from 'utils/hooks';
 import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
@@ -24,7 +24,7 @@ import {
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { MoreInfoModal } from '../../profile/modals';
 import {
   Content,
@@ -160,7 +160,6 @@ function Wrapper(props) {
   const userJoinRequest = getUserJoinRequestData?.getUserJoinPodRequest;
   const podBoard = usePodBoard();
   const boardFilters = podBoard?.filters || {};
-  const [tokenGatingConditions, isTokenGatingInfoLoading] = useTokenGating(podBoard?.orgId);
   const [getOrg, { loading: isOrgLoading, data: orgData }] = useLazyQuery(GET_ORG_BY_ID, {
     fetchPolicy: 'cache-and-network',
   });
@@ -303,75 +302,73 @@ function Wrapper(props) {
           <ContentContainer>
             <TokenHeader>
               <HeaderMainBlock>
-                {!isTokenGatingInfoLoading && (
-                  <LogoWrapper>
-                    <OrgLogoWrapper
-                      onClick={() => {
-                        router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                <LogoWrapper>
+                  <OrgLogoWrapper
+                    onClick={() => {
+                      router.push(`/organization/${orgData?.getOrgById?.username}/boards`);
+                    }}
+                  >
+                    <div
+                      style={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                        ...(isGr15Sponsor && {
+                          marginRight: '20px',
+                        }),
                       }}
                     >
-                      <div
+                      <SafeImage
+                        src={orgData?.getOrgById?.profilePicture}
+                        placeholderComp={
+                          <TokenEmptyLogo>
+                            <DAOEmptyIcon />
+                          </TokenEmptyLogo>
+                        }
+                        width={60}
+                        height={60}
+                        layout="fixed"
+                        useNextImage
                         style={{
-                          position: 'relative',
-                          cursor: 'pointer',
-                          ...(isGr15Sponsor && {
-                            marginRight: '20px',
-                          }),
-                        }}
-                      >
-                        <SafeImage
-                          src={orgData?.getOrgById?.profilePicture}
-                          placeholderComp={
-                            <TokenEmptyLogo>
-                              <DAOEmptyIcon />
-                            </TokenEmptyLogo>
-                          }
-                          width={60}
-                          height={60}
-                          layout="fixed"
-                          useNextImage
-                          style={{
-                            borderRadius: '6px',
-                          }}
-                        />
-                        {isGr15Sponsor && (
-                          <>
-                            <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                            <GR15DEILogo
-                              width="42"
-                              height="42"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                setOpenGR15Modal(true);
-                              }}
-                              style={{
-                                top: '0',
-                                right: '-20px',
-                                position: 'absolute',
-                                zIndex: '20',
-                              }}
-                            />
-                          </>
-                        )}
-                      </div>
-                    </OrgLogoWrapper>
-
-                    <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
-                    {podProfile?.profilePicture ? (
-                      <PodProfileImage src={podProfile?.profilePicture} />
-                    ) : (
-                      <PodIcon
-                        color={podProfile?.color}
-                        style={{
-                          width: 60,
-                          height: 60,
-                          borderRadius: 50,
+                          borderRadius: '6px',
                         }}
                       />
-                    )}
-                  </LogoWrapper>
-                )}
+                      {isGr15Sponsor && (
+                        <>
+                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                          <GR15DEILogo
+                            width="42"
+                            height="42"
+                            onClick={(e) => {
+                              e.preventDefault();
+                              e.stopPropagation();
+                              setOpenGR15Modal(true);
+                            }}
+                            style={{
+                              top: '0',
+                              right: '-20px',
+                              position: 'absolute',
+                              zIndex: '20',
+                            }}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </OrgLogoWrapper>
+
+                  <ArrowForwardIosIcon style={{ color: palette.grey58, marginLeft: 5 }} />
+                  {podProfile?.profilePicture ? (
+                    <PodProfileImage src={podProfile?.profilePicture} />
+                  ) : (
+                    <PodIcon
+                      color={podProfile?.color}
+                      style={{
+                        width: 60,
+                        height: 60,
+                        borderRadius: 50,
+                      }}
+                    />
+                  )}
+                </LogoWrapper>
 
                 <HeaderTitleIcon>
                   <HeaderTitle>{podProfile?.name}</HeaderTitle>
@@ -389,12 +386,6 @@ function Wrapper(props) {
                     </RoleButtonWrapper>
                   )}
 
-                  {!isTokenGatingInfoLoading && (
-                    <TokenGatedBoard
-                      isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                      tooltipTitle="Token gating"
-                    />
-                  )}
                   <ToggleBoardPrivacyIcon
                     isPrivate={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public}
                     tooltipTitle={podBoard?.pod?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
