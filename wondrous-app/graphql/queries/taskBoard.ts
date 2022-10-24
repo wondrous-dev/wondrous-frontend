@@ -336,8 +336,8 @@ export const GET_USER_TASK_BOARD_TASKS = gql`
   ${TaskCardFragment}
 `;
 
-export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
-  query getUserTaskBoardSubmissions(
+export const GET_USER_BOUNTY_SUBMISSIONS = gql`
+  query getUserBountySubmissions(
     $userId: ID
     $statuses: [String]
     $orgId: String
@@ -345,7 +345,7 @@ export const GET_USER_TASK_BOARD_SUBMISSIONS = gql`
     $limit: Int
     $offset: Int
   ) {
-    getUserTaskBoardSubmissions(
+    getUserBountySubmissions(
       input: { userId: $userId, statuses: $statuses, orgId: $orgId, podIds: $podIds, limit: $limit, offset: $offset }
     ) {
       ...TaskSubmissionCardFragment

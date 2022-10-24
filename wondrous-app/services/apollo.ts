@@ -88,7 +88,7 @@ const cache = new InMemoryCache({
             return merged;
           },
         },
-        getUserTaskBoardSubmissions: {
+        getUserBountySubmissions: {
           keyArgs: ['input', ['status']],
           merge: offsetLimitPaginationInput,
         },
