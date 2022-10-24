@@ -11,7 +11,12 @@ import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mu
 import { CREATE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
-import { GET_COMMENTS_FOR_TASK, GET_TASK_REVIEWERS, GET_TASK_SUBMISSION_COMMENTS } from 'graphql/queries/task';
+import {
+  GET_COMMENTS_FOR_TASK,
+  GET_TASK_REVIEWERS,
+  GET_TASK_SUBMISSIONS_FOR_TASK,
+  GET_TASK_SUBMISSION_COMMENTS,
+} from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -70,7 +75,7 @@ function CommentBox(props) {
   });
 
   const [createSubmissionComment] = useMutation(CREATE_SUBMISSION_COMMENT, {
-    refetchQueries: ['getTaskSubmissionComments'],
+    refetchQueries: ['getTaskSubmissionComments', GET_TASK_SUBMISSIONS_FOR_TASK],
   });
 
   const addComment = () => {
