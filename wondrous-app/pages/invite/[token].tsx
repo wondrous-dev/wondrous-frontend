@@ -89,7 +89,12 @@ function ContributorOnboardingPage({ meta }: Props) {
 
 export default withAuth(ContributorOnboardingPage);
 
-export const getServerSideProps = async (context) => {
+enum Type {
+  ORG = 'org',
+  Pod = 'pod',
+}
+
+export const getServerSideProps = async ({ query }) => {
   const meta = {
     title: '',
     description: 'Wonder is where DAOs manage world changing projects',
@@ -97,24 +102,39 @@ export const getServerSideProps = async (context) => {
   };
 
   try {
-    if (context.query.token) {
-      const orgData = await apollo.query({
-        query: GET_ORG_INVITE_ORG_INFO,
-        variables: { token: context.query.token },
-      });
+    if (query.token) {
+      let podInfo;
+      let profilePicture;
 
-      const orgInfo = orgData?.data?.getInvitedOrgInfo;
+      if (query.type === Type.Pod) {
+        const { data } = await apollo.query({
+          query: GET_POD_INVITE_ORG_INFO,
+          variables: {
+            token: query.token,
+          },
+        });
+        podInfo = data?.getInvitedPodInfo;
+        profilePicture = podInfo?.org?.profilePicture;
+        meta.title = `The ${podInfo?.name} pod from ${podInfo?.org?.name} is requesting your help`;
+      } else {
+        const orgData = await apollo.query({
+          query: GET_ORG_INVITE_ORG_INFO,
+          variables: { token: query.token },
+        });
 
-      if (!orgInfo) {
-        return { props: { meta } };
+        const orgInfo = orgData?.data?.getInvitedOrgInfo;
+        profilePicture = orgInfo?.profilePicture;
+        meta.title = `${orgInfo?.name} is requesting your help.`;
       }
 
-      meta.title = `${orgInfo?.name} is requesting your help`;
+      if (!meta.title) {
+        return { props: {} };
+      }
 
-      if (orgInfo?.profilePicture) {
+      if (profilePicture) {
         const previewFileData = await apollo.query({
           query: GET_PREVIEW_FILE,
-          variables: { path: orgInfo?.profilePicture },
+          variables: { path: profilePicture },
         });
 
         meta.img = previewFileData.data.getPreviewFile.url;
