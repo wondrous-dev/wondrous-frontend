@@ -5,7 +5,7 @@ import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RichTextViewer } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
-import { formatDistance } from 'date-fns';
+import { format, formatDistance, differenceInDays } from 'date-fns';
 import {
   APPROVE_BOUNTY_SUBMISSION,
   APPROVE_SUBMISSION,
@@ -250,9 +250,13 @@ function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isG
 
 function SubmissionItemCreatedAt({ createdAt }) {
   if (!createdAt) return null;
-  const formattedDistance = formatDistance(new Date(createdAt), new Date(), {
-    addSuffix: true,
-  });
+  const taskCreatedBefore = differenceInDays(new Date(), new Date(createdAt));
+  const formattedDistance =
+    taskCreatedBefore >= 7
+      ? format(new Date(createdAt), 'MM/dd/yyyy')
+      : formatDistance(new Date(createdAt), new Date(), {
+          addSuffix: true,
+        });
   return <SubmissionItemTimeText>{formattedDistance}</SubmissionItemTimeText>;
 }
 
