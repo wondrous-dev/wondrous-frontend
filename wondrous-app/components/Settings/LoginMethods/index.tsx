@@ -198,7 +198,7 @@ function LogInMethods(props) {
                   'Link Wallet to Account'
                 ) : (
                   <>
-                    Connect to Wallet <CancelSpan>x</CancelSpan>
+                    Disconnect Wallet <CancelSpan>x</CancelSpan>
                   </>
                 )}
               </ConnectToWalletButton>
