@@ -30,10 +30,15 @@ import { HeaderBlock } from '../headerBlock';
 import { DiscordIcon } from 'components/Icons/discord';
 import LoadIcon from 'components/Icons/LoadIcon';
 import IndicateIcon from 'components/Icons/IndicateIcon';
-import { REQUEST_PASSWORD_RESET, USER_DISCORD_DISCONNECT, USER_WALLET_DISCONNECT } from 'graphql/mutations';
+import {
+  REQUEST_PASSWORD_RESET,
+  UPDATE_USER,
+  USER_DISCORD_DISCONNECT,
+  USER_WALLET_DISCONNECT,
+} from 'graphql/mutations';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { useMutation } from '@apollo/client';
-import { DISCORD_CONNECT_TYPES } from 'utils/constants';
+import { DISCORD_CONNECT_TYPES, validateEmail } from 'utils/constants';
 import { getDiscordUrl } from 'utils/index';
 import ErrorDisplay from './ErrorDisplay';
 import { ErrorText } from '../../Common';
@@ -63,6 +68,10 @@ function LogInMethods(props) {
   const [formloading, setFormLoading] = useState(false);
   const [replaceLoading, setReplaceLoading] = useState(false);
   const [isWalletConnect, setIsWalletConnect] = useState(false);
+  const [updateUser] = useMutation(UPDATE_USER, {
+    onCompleted: () => openSnackBar('Email Added'),
+    refetchQueries: [GET_LOGGED_IN_USER],
+  });
   const [disconnectWallet] = useMutation(USER_WALLET_DISCONNECT, {
     onCompleted: () => {
       openSnackBar('Success!  wallet disconnected');
@@ -103,6 +112,22 @@ function LogInMethods(props) {
   const onSubmit = async (e) => {
     e.preventDefault();
     setFormLoading(true);
+
+    if (!loggedInUser?.userInfo?.email) {
+      if (validateEmail(formData.email)) {
+        updateUser({
+          variables: {
+            input: {
+              email: formData.email,
+            },
+          },
+        });
+      } else {
+        setFormLoading(true);
+        openSnackBar('Please enter a valid email');
+      }
+    }
+
     await apollo
       .mutate({
         mutation: REQUEST_PASSWORD_RESET,
@@ -216,7 +241,7 @@ function LogInMethods(props) {
                       style={{ borderRadius: '50%', width: '20px', height: '20px', marginRight: '10px' }}
                     />
                   )}
-                  Reset Password
+                  {loggedInUser?.userInfo?.email ? 'Reset Password' : 'Add Email'}
                 </ChangePasswordButton>
               </InputFlexSection>
             </LogInMethodForm>
