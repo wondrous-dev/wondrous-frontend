@@ -137,6 +137,14 @@ export const DELETE_TASK_COMMENT = gql`
   }
 `;
 
+export const IMPORT_TASKS = gql`
+  mutation importTasks($input: [TaskInput]) {
+    importTasks(input: $input) {
+      success
+    }
+  }
+`;
+
 export const CREATE_MILESTONE = gql`
   mutation createMilestone($input: TaskInput) {
     createMilestone(input: $input) {

@@ -55,6 +55,7 @@ function PodSearch(props) {
                 ref={params.InputProps.ref}
                 disableUnderline
                 fullWidth
+                autoFocus
                 InputProps={{
                   ...params.InputProps,
                   endAdornment: (
