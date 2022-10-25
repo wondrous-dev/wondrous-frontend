@@ -87,7 +87,7 @@ const useSidebarData = () => {
             text: 'Collaborations',
             Icon: SmallDao2DaoIcon,
             link: {
-              pathname: router.pathname?.replace('/pods', '/boards'),
+              pathname: router.pathname,
               query: {
                 ...router.query,
                 collabs: true,
