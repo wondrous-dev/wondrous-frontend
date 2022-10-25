@@ -62,8 +62,8 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     Icon: LoginIcon,
     label: 'Log in Methods',
     value: 'log-in-methods',
-    href: orgId ? `/${mainPath}/settings/${orgId}/log-in-methods` : `/pod/settings/${podId}/log-in-methods`,
-    page: [SettingsPage.Org],
+    href: `/profile/login-methods`,
+    page: [SettingsPage.Profile],
   },
   {
     Icon: WrenchIcon,
