@@ -4,7 +4,6 @@ import { Autocomplete, Input, InputAdornment, TextField, Typography } from '@mui
 import { Button } from 'components/Common/button';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import AttachFileIcon from 'components/Icons/attachFile.svg';
 import CloseModalIcon from 'components/Icons/closeModal';
 import { DAOIcon } from 'components/Icons/dao';
@@ -57,8 +56,6 @@ export const CreateEntityHeader = styled.div`
   padding: 12px 24px;
   justify-content: space-between;
 `;
-
-export const CreateEntityPodSearch = styled(PodSearch)``;
 
 export const CreateEntityMilestoneSearch = styled(MilestoneSearch)``;
 
