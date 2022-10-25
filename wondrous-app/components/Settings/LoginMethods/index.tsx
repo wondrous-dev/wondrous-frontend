@@ -111,8 +111,10 @@ function LogInMethods(props) {
         <ContentContainer>
           <SectionContainer>
             <LoginTitleContainer>
-              <p>Log in through password and username</p>
-              <StatusContainer status={'active'}>Active</StatusContainer>
+              <p>Log in through password and email</p>
+              <StatusContainer status={loggedInUser?.userInfo?.discordUsername ? 'active' : 'inactive'}>
+                {loggedInUser?.userInfo?.discordUsername ? 'Active' : 'Inactive'}
+              </StatusContainer>
             </LoginTitleContainer>
             <LogInMethodForm
               onSubmit={(e) => {
