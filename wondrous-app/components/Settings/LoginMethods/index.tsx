@@ -102,6 +102,13 @@ function LogInMethods(props) {
     console.log(formData);
   };
 
+  const replaceWallet = () => {
+    disconnectWallet().then((result) => {
+      setWalletModalOpen(true);
+      setIsWalletConnect(true);
+    });
+  };
+
   useEffect(() => {
     if (wonderWeb3?.onConnect) {
       wonderWeb3.onConnect();
@@ -253,9 +260,15 @@ function LogInMethods(props) {
                   </>
                 )}
               </ConnectToWalletButton>
-              <ReplaceWalletButton>
-                <LoadIcon /> Replace wallet address
-              </ReplaceWalletButton>
+              {loggedInUser?.activeEthAddress && (
+                <ReplaceWalletButton
+                  onClick={() => {
+                    replaceWallet();
+                  }}
+                >
+                  <LoadIcon /> Replace wallet address
+                </ReplaceWalletButton>
+              )}
               <StatusContainer status={loggedInUser?.activeEthAddress ? 'active' : 'inactive'}>
                 {loggedInUser?.activeEthAddress ? 'Active' : 'Inactive'}
               </StatusContainer>
