@@ -7,6 +7,7 @@ import IconButton from '@mui/material/IconButton';
 
 import CloseModalIcon from 'components/Icons/closeModal';
 import styles, { DeleteButton, CancelButton, SubmitButton, SubmitButtonWrap } from './styled';
+import { CircularProgress } from '@mui/material';
 
 export enum SubmitButtonStyle {
   Default = 'default',
@@ -26,6 +27,7 @@ interface DocModalProps {
   onClose: () => unknown;
   rejectAction?: () => unknown;
   reverseButtons?: boolean;
+  isLoading?: boolean;
 }
 
 function ConfirmModal({
@@ -41,6 +43,7 @@ function ConfirmModal({
   cancelLabel = 'Cancel',
   rejectAction,
   reverseButtons = false,
+  isLoading,
 }: DocModalProps) {
   const cancelButtonAction = rejectAction || onClose;
   return (
@@ -72,6 +75,9 @@ function ConfirmModal({
         {submitButtonStyle === SubmitButtonStyle.Default ? (
           <SubmitButtonWrap>
             <SubmitButton type="submit" onClick={onSubmit}>
+              {isLoading && (
+                <CircularProgress style={{ borderRadius: '50%', width: '20px', height: '20px', marginRight: '10px' }} />
+              )}{' '}
               {submitLabel}
             </SubmitButton>
           </SubmitButtonWrap>

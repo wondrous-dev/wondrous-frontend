@@ -140,6 +140,7 @@ function Callback() {
 
       if (
         parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding ||
+        parsedState.callbackType === DISCORD_CONNECT_TYPES.loginMethod ||
         parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboardingDao ||
         parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings
       ) {
@@ -152,6 +153,8 @@ function Callback() {
             if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectSettings) {
               // Only place to change this is in settings
               window.location.href = `/profile/settings`;
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.loginMethod) {
+              window.location.href = `/profile/login-methods`;
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
               router.push(
                 `/onboarding/discord?success${
@@ -191,6 +194,13 @@ function Callback() {
                 window.location.href = `/profile/settings?discordUserExists=true`;
               } else {
                 window.location.href = `/profile/settings?discordError=true`;
+              }
+            } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.loginMethod) {
+              // Only place to change this is in settings
+              if (alreadyExists) {
+                window.location.href = `/profile/login-methods?discordUserExists=true`;
+              } else {
+                window.location.href = `/profile/login-methods?discordError=true`;
               }
             } else if (parsedState.callbackType === DISCORD_CONNECT_TYPES.connectOnboarding) {
               router.push(
