@@ -1,3 +1,4 @@
+import { differenceInDays, format, formatDistance } from 'date-fns';
 import cloneDeep from 'lodash/cloneDeep';
 import map from 'lodash/map';
 import { COLUMNS } from 'services/board';
@@ -258,4 +259,20 @@ export const sectionOpeningReducer = (currentCard, { section, isOpen }) => {
     (taskType) => taskType === section?.filter?.taskType
   );
   if (taskToSection && taskToSection !== currentCard && isOpen) return taskToSection;
+};
+
+export const getDateDistanceString = (date, addTimePreposition = false) => {
+  if (!date) return '';
+
+  const taskCreatedBefore = differenceInDays(new Date(), new Date(date));
+  const formattedDistance =
+    taskCreatedBefore >= 7
+      ? format(new Date(date), 'MM/dd/yyyy')
+      : formatDistance(new Date(date), new Date(), {
+          addSuffix: true,
+        });
+
+  const formattedDistanceWithTimePreposition = taskCreatedBefore >= 7 ? `on ${formattedDistance}` : formattedDistance;
+
+  return addTimePreposition ? formattedDistanceWithTimePreposition : formattedDistance;
 };
