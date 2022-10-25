@@ -192,24 +192,24 @@ function SettingsWrapper(props) {
     podId,
   });
 
-  // if (
-  //   permissions &&
-  //   !(
-  //     permissions.includes(PERMISSIONS.MANAGE_MEMBER) ||
-  //     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-  //     permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
-  //   )
-  // ) {
-  //   if (podId && pod) {
-  //     router.push(`/pod/${podId}/boards`, undefined, {
-  //       shallow: true,
-  //     });
-  //   } else if (org) {
-  //     router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
-  //       shallow: true,
-  //     });
-  //   }
-  // }
+  if (
+    permissions &&
+    !(
+      permissions.includes(PERMISSIONS.MANAGE_MEMBER) ||
+      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+      permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
+    )
+  ) {
+    if (podId && pod) {
+      router.push(`/pod/${podId}/boards`, undefined, {
+        shallow: true,
+      });
+    } else if (org) {
+      router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
+        shallow: true,
+      });
+    }
+  }
 
   const settingsPageConfig = {
     [String(orgId)]: {
