@@ -1,4 +1,6 @@
-import { Autocomplete, Paper, TextField } from '@mui/material';
+import Autocomplete from '@mui/material/Autocomplete';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
