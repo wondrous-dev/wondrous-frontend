@@ -412,7 +412,7 @@ export const TaskSectionDisplayData = styled.div`
 
 export const TaskSectionDisplayDiv = styled.div`
   display: flex;
-  align-items: center;
+  align-items: ${({ alignItems }) => alignItems || 'center'};
 `;
 
 export const TaskSectionDisplayLabel = styled.div`
