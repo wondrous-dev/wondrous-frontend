@@ -10,6 +10,13 @@ import { MainWrapper } from 'components/Onboarding/styles';
 import { REDEEM_ORG_INVITE_LINK, REDEEM_POD_INVITE_LINK } from 'graphql/mutations';
 import { withAuth, useMe } from 'components/Auth/withAuth';
 import { GET_POD_INVITE_ORG_INFO, GET_PREVIEW_FILE } from 'graphql/queries';
+import { Org } from 'types/Org';
+import { OrgPod } from 'types/pod';
+
+enum Type {
+  ORG = 'org',
+  Pod = 'pod',
+}
 
 type Props = {
   meta: {
@@ -17,9 +24,13 @@ type Props = {
     img: string;
     description: string;
   };
+  preloadedState: {
+    orgInfo?: Org;
+    podInfo?: OrgPod;
+  };
 };
 
-function ContributorOnboardingPage({ meta }: Props) {
+function ContributorOnboardingPage({ meta, preloadedState }: Props) {
   const router = useRouter();
 
   const { token, type } = router.query;
@@ -30,12 +41,17 @@ function ContributorOnboardingPage({ meta }: Props) {
   const user = useMe();
   const [redeemOrgInviteLink] = useMutation(REDEEM_ORG_INVITE_LINK);
   const [redeemPodInviteLInk] = useMutation(REDEEM_POD_INVITE_LINK);
-  const orgInfo = orgData?.getInvitedOrgInfo;
-  const podInfo = podData?.getInvitedPodInfo;
+  const orgInfo = preloadedState?.orgInfo || orgData?.getInvitedOrgInfo;
+  const podInfo = preloadedState?.podInfo || podData?.getInvitedPodInfo;
   useEffect(() => {
     if (token) {
-      getOrgInviteOrgInfo({ variables: { token } });
-      getPodInvitePodInfo({ variables: { token } });
+      if (!orgInfo && !type) {
+        getOrgInviteOrgInfo({ variables: { token } });
+      }
+
+      if (!podInfo && type === Type.Pod) {
+        getPodInvitePodInfo({ variables: { token } });
+      }
     }
 
     if (user && token) {
@@ -73,7 +89,7 @@ function ContributorOnboardingPage({ meta }: Props) {
         });
       }
     }
-  }, [user, orgInfo, token, router, type, podInfo]);
+  }, [user, orgInfo, token, router, type, podInfo, preloadedState]);
   return (
     <MainWrapper>
       <MetaTags meta={meta} />
@@ -89,16 +105,17 @@ function ContributorOnboardingPage({ meta }: Props) {
 
 export default withAuth(ContributorOnboardingPage);
 
-enum Type {
-  ORG = 'org',
-  Pod = 'pod',
-}
-
 export const getServerSideProps = async ({ query }) => {
-  const meta = {
-    title: '',
-    description: 'Wonder is where DAOs manage world changing projects',
-    img: '',
+  const props = {
+    meta: {
+      title: '',
+      description: 'Wonder is where DAOs manage world changing projects',
+      img: '',
+    },
+    preloadedState: {
+      podInfo: null,
+      orgInfo: null,
+    },
   };
 
   try {
@@ -114,8 +131,9 @@ export const getServerSideProps = async ({ query }) => {
           },
         });
         podInfo = data?.getInvitedPodInfo;
+        props.preloadedState.podInfo = data.getInvitedPodInfo;
         profilePicture = podInfo?.org?.profilePicture;
-        meta.title = `The ${podInfo?.name} pod from ${podInfo?.org?.name} is requesting your help`;
+        props.meta.title = `The ${podInfo?.name} pod from ${podInfo?.org?.name} is requesting your help`;
       } else {
         const orgData = await apollo.query({
           query: GET_ORG_INVITE_ORG_INFO,
@@ -123,12 +141,9 @@ export const getServerSideProps = async ({ query }) => {
         });
 
         const orgInfo = orgData?.data?.getInvitedOrgInfo;
+        props.preloadedState.orgInfo = orgInfo;
         profilePicture = orgInfo?.profilePicture;
-        meta.title = `${orgInfo?.name} is requesting your help.`;
-      }
-
-      if (!meta.title) {
-        return { props: {} };
+        props.meta.title = `${orgInfo?.name} is requesting your help.`;
       }
 
       if (profilePicture) {
@@ -137,12 +152,12 @@ export const getServerSideProps = async ({ query }) => {
           variables: { path: profilePicture },
         });
 
-        meta.img = previewFileData.data.getPreviewFile.url;
+        props.meta.img = previewFileData.data.getPreviewFile.url;
       }
     }
   } catch (error) {
     console.error(error);
   }
 
-  return { props: { meta } };
+  return { props };
 };
