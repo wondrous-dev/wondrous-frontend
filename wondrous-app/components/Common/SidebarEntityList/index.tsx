@@ -94,6 +94,12 @@ const useSidebarData = () => {
               },
             },
           },
+          !!orgBoard && {
+            text: 'Pods',
+            Icon: PodIcon,
+            link: `${link}/pods`,
+            count: board?.orgData?.podCount,
+          },
         ],
       },
       {
@@ -135,14 +141,6 @@ const useSidebarData = () => {
       },
     ],
   };
-  if (orgBoard) {
-    sidebarData.data[0].items.push({
-      text: 'Pods',
-      Icon: PodIcon,
-      link: `${link}/pods`,
-      count: board?.orgData?.podCount,
-    } as any);
-  }
   return sidebarData;
 };
 
