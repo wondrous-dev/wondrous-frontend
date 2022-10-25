@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 
 import { useMe } from 'components/Auth/withAuth';
 
@@ -52,11 +52,17 @@ const Pods = (props) => {
     userPermissionsContext,
     orgId: orgData?.id,
   });
-  const [getOrgPods, { data: orgPodsData }] = useLazyQuery(GET_ORG_PODS, {
-    fetchPolicy: 'cache-and-network',
-  });
-  const [getUserPods, { data: userPodsData }] = useLazyQuery(GET_USER_PODS, {
+  const { data: orgPodsData } = useQuery(GET_ORG_PODS, {
     fetchPolicy: 'network-only',
+    variables: {
+      orgId: orgData?.id,
+    },
+  });
+  const { data: userPodsData } = useQuery(GET_USER_PODS, {
+    fetchPolicy: 'network-only',
+    variables: {
+      userId: user?.id,
+    },
   });
 
   const orgName = orgData?.name || orgData?.username;
@@ -68,18 +74,6 @@ const Pods = (props) => {
   );
   const canUserCreatePods =
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_POD);
-
-  useEffect(() => {
-    if (orgData?.id) {
-      getOrgPods({ variables: { orgId: orgData?.id } });
-    }
-  }, [orgData?.id]);
-
-  useEffect(() => {
-    if (user?.id) {
-      getUserPods({ variables: { userId: user?.id } });
-    }
-  }, [user?.id]);
 
   const getActivePodsList = useCallback(() => {
     if (activePodView === PodView.ALL_PODS) {
