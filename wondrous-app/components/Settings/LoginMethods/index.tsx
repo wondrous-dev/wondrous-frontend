@@ -92,7 +92,14 @@ function LogInMethods(props) {
   const disconnectWalletFunction = () => {
     disconnectWallet();
   };
-
+  useEffect(() => {
+    if (loggedInUser && loggedInUser.userInfo.email) {
+      setFormData({
+        ...formData,
+        email: loggedInUser.userInfo.email,
+      });
+    }
+  }, [loggedInUser]);
   return (
     <SettingsWrapper>
       <LogInMethodContainer>
