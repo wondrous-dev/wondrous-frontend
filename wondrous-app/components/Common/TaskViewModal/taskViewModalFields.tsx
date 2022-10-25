@@ -168,8 +168,26 @@ export function AssigneeField({
   podId,
   userId,
 }) {
+  const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
   const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const updateBoard = ({ task, setFetchedTask, boardColumns }) => {
+    const transformedTask = transformTaskToTaskCard(task, {});
+    setFetchedTask(transformedTask);
+    if (boardColumns?.setColumns && onCorrectPage) {
+      const columns = [...boardColumns?.columns];
+      const updateColumnFn = {
+        [TASK_STATUS_IN_REVIEW]: updateInReviewItem,
+        [TASK_STATUS_IN_PROGRESS]: updateInProgressTask,
+        [TASK_STATUS_TODO]: updateTaskItem,
+        [TASK_STATUS_DONE]: updateCompletedItem,
+      };
+      const updatedColumns = updateColumnFn?.[transformedTask?.status](transformedTask, columns);
+      boardColumns.setColumns(updatedColumns);
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Assignee updated successfully.');
+    }
+  };
   const handleUpdateTaskAssignee = (assigneeId) => {
     updateTaskAssignee({
       variables: {
@@ -178,23 +196,7 @@ export function AssigneeField({
       },
       onCompleted: (data) => {
         const task = data?.updateTaskAssignee;
-        const transformedTask = transformTaskToTaskCard(task, {});
-        setFetchedTask(transformedTask);
-        if (boardColumns?.setColumns && onCorrectPage) {
-          let columns = [...boardColumns?.columns];
-          if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-            columns = updateInReviewItem(transformedTask, columns);
-          } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-            columns = updateInProgressTask(transformedTask, columns);
-          } else if (transformedTask.status === TASK_STATUS_TODO) {
-            columns = updateTaskItem(transformedTask, columns);
-          } else if (transformedTask.status === TASK_STATUS_DONE) {
-            columns = updateCompletedItem(transformedTask, columns);
-          }
-          boardColumns.setColumns(columns);
-        }
-        setSnackbarAlertOpen(true);
-        setSnackbarAlertMessage('Assignee updated successfully.');
+        updateBoard({ task, setFetchedTask, boardColumns });
       },
     });
   };
@@ -204,8 +206,6 @@ export function AssigneeField({
   const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).filter(({ value }) => value !== user?.id);
   const router = useRouter();
   if (!shouldDisplay) return null;
-
-  const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
 
   return (
     <TaskSectionDisplayDiv>
@@ -225,23 +225,7 @@ export function AssigneeField({
                   },
                   onCompleted: (data) => {
                     const task = data?.removeTaskAssignee;
-                    const transformedTask = transformTaskToTaskCard(task, {});
-                    setFetchedTask(transformedTask);
-                    if (boardColumns?.setColumns && onCorrectPage) {
-                      let columns = [...boardColumns?.columns];
-                      if (transformedTask.status === TASK_STATUS_IN_REVIEW) {
-                        columns = updateInReviewItem(transformedTask, columns);
-                      } else if (transformedTask.status === TASK_STATUS_IN_PROGRESS) {
-                        columns = updateInProgressTask(transformedTask, columns);
-                      } else if (transformedTask.status === TASK_STATUS_TODO) {
-                        columns = updateTaskItem(transformedTask, columns);
-                      } else if (transformedTask.status === TASK_STATUS_DONE) {
-                        columns = updateCompletedItem(transformedTask, columns);
-                      }
-                      boardColumns.setColumns(columns);
-                    }
-                    setSnackbarAlertOpen(true);
-                    setSnackbarAlertMessage('Assignee updated successfully.');
+                    updateBoard({ task, setFetchedTask, boardColumns });
                   },
                 });
               }}
