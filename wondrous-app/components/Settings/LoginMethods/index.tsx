@@ -112,8 +112,8 @@ function LogInMethods(props) {
           <SectionContainer>
             <LoginTitleContainer>
               <p>Log in through password and email</p>
-              <StatusContainer status={loggedInUser?.userInfo?.discordUsername ? 'active' : 'inactive'}>
-                {loggedInUser?.userInfo?.discordUsername ? 'Active' : 'Inactive'}
+              <StatusContainer status={loggedInUser?.userInfo?.email ? 'active' : 'inactive'}>
+                {loggedInUser?.userInfo?.email ? 'Active' : 'Inactive'}
               </StatusContainer>
             </LoginTitleContainer>
             <LogInMethodForm
@@ -152,7 +152,7 @@ function LogInMethods(props) {
                     });
                     window.location.href = `${discordUrl}&state=${state}`;
                   }
-                  if (loggedInUser?.activeEthAddress) {
+                  if (loggedInUser?.activeEthAddress || loggedInUser?.userInfo?.email) {
                     disconnectDiscord();
                   } else {
                     setMethodCheck('discord');
@@ -186,7 +186,7 @@ function LogInMethods(props) {
                   if (!loggedInUser?.activeEthAddress) {
                     setWalletModalOpen(true);
                   }
-                  if (loggedInUser?.userInfo?.discordUsername) {
+                  if (loggedInUser?.userInfo?.discordUsername || loggedInUser?.userInfo?.email) {
                     disconnectWalletFunction();
                   } else {
                     setMethodCheck('wallet');
