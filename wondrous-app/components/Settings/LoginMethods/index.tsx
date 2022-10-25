@@ -1,6 +1,8 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWonderWeb3 } from 'services/web3';
+import apollo from 'services/apollo';
+
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import {
   ButtonContainer,
@@ -28,7 +30,7 @@ import { HeaderBlock } from '../headerBlock';
 import { DiscordIcon } from 'components/Icons/discord';
 import LoadIcon from 'components/Icons/LoadIcon';
 import IndicateIcon from 'components/Icons/IndicateIcon';
-import { USER_DISCORD_DISCONNECT, USER_WALLET_DISCONNECT } from 'graphql/mutations';
+import { REQUEST_PASSWORD_RESET, USER_DISCORD_DISCONNECT, USER_WALLET_DISCONNECT } from 'graphql/mutations';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { useMutation } from '@apollo/client';
 import { DISCORD_CONNECT_TYPES } from 'utils/constants';
@@ -58,6 +60,8 @@ function LogInMethods(props) {
   const [openConfirmModal, setOpenConfirmModal] = useState(false);
   const [disconnectType, setDisconnectType] = useState('');
   const [loading, setLoading] = useState(false);
+  const [formloading, setFormLoading] = useState(false);
+  const [replaceLoading, setReplaceLoading] = useState(false);
   const [isWalletConnect, setIsWalletConnect] = useState(false);
   const [disconnectWallet] = useMutation(USER_WALLET_DISCONNECT, {
     onCompleted: () => {
@@ -87,9 +91,8 @@ function LogInMethods(props) {
     refetchQueries: [GET_LOGGED_IN_USER],
   });
 
-  const [formData, setFormData] = useState<{ email: string; password: string }>({
+  const [formData, setFormData] = useState<{ email: string }>({
     email: '',
-    password: '',
   });
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -97,12 +100,30 @@ function LogInMethods(props) {
     setFormData({ ...formData, [name]: value });
   };
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setFormLoading(true);
+    await apollo
+      .mutate({
+        mutation: REQUEST_PASSWORD_RESET,
+        variables: {
+          email: formData.email,
+        },
+      })
+      .then(() => {
+        openSnackBar('Reset password mail sent');
+        setFormLoading(false);
+      })
+      .catch((e) => {
+        console.error(e);
+        setFormLoading(false);
+
+        openSnackBar('Error sending reset email, please try again');
+      });
   };
 
   const replaceWallet = () => {
+    setReplaceLoading(true);
     disconnectWallet().then((result) => {
       setWalletModalOpen(true);
       setIsWalletConnect(true);
@@ -143,6 +164,7 @@ function LogInMethods(props) {
   useEffect(() => {
     if (loggedInUser?.activeEthAddress && isWalletConnect) {
       openSnackBar('Wallet connected successfully');
+      setReplaceLoading(false);
       setTimeout(() => {
         setIsWalletConnect(false);
       }, 3000);
@@ -167,7 +189,7 @@ function LogInMethods(props) {
         <ContentContainer>
           <SectionContainer>
             <LoginTitleContainer>
-              <p>Log in through password and email</p>
+              <p>Log in through email</p>
               <StatusContainer status={loggedInUser?.userInfo?.email ? 'active' : 'inactive'}>
                 {loggedInUser?.userInfo?.email ? 'Active' : 'Inactive'}
               </StatusContainer>
@@ -188,11 +210,14 @@ function LogInMethods(props) {
                 />
               </InputSection>
               <InputFlexSection>
-                <InputSection>
-                  <label htmlFor="password">Password</label>
-                  <input onChange={(e) => handleInputs(e)} name="password" value={formData.password} type="password" />
-                </InputSection>
-                <ChangePasswordButton highlighted={true}>Change Password</ChangePasswordButton>
+                <ChangePasswordButton highlighted={true}>
+                  {formloading && (
+                    <CircularProgress
+                      style={{ borderRadius: '50%', width: '20px', height: '20px', marginRight: '10px' }}
+                    />
+                  )}
+                  Reset Password
+                </ChangePasswordButton>
               </InputFlexSection>
             </LogInMethodForm>
           </SectionContainer>
@@ -266,7 +291,8 @@ function LogInMethods(props) {
                     replaceWallet();
                   }}
                 >
-                  <LoadIcon /> Replace wallet address
+                  <LoadIcon />
+                  {replaceLoading ? 'Loading ...' : 'Replace wallet address'}
                 </ReplaceWalletButton>
               )}
               <StatusContainer status={loggedInUser?.activeEthAddress ? 'active' : 'inactive'}>
@@ -276,11 +302,6 @@ function LogInMethods(props) {
             {methodCheck === 'wallet' && <ErrorDisplay method={'Wallet'} />}
             {!connected && <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />}
           </SectionContainer>
-
-          <ButtonContainer>
-            <ResetButton>Reset changes</ResetButton>
-            <SaveChangesButton highlighted>Save changes </SaveChangesButton>
-          </ButtonContainer>
         </ContentContainer>
       </LogInMethodContainer>
       <ConfirmModal
