@@ -1,6 +1,6 @@
 import { Button } from 'components/Common/button';
 import styled from 'styled-components';
-import { Button as MuiButton } from '@mui/material';
+import { Button as MuiButton, Typography } from '@mui/material';
 import palette from 'theme/palette';
 export const LogInMethodContainer = styled.div`
   width: 800px;
@@ -201,6 +201,26 @@ export const SaveChangesButton = styled(Button)`
     button {
       background: #0f0f0f;
     }
+  }
+`;
+
+export const HeadingText = styled.p`
+  font-weight: 500;
+  font-size: 28px;
+  line-height: 36px;
+  display: flex;
+  align-items: center;
+  color: #ffffff;
+`;
+export const HeadingDescription = styled(Typography)`
+  && {
+    width: 100%;
+    font-size: 15px;
+    line-height: 23px;
+    letter-spacing: 0.01em;
+    color: ${palette.white};
+    display: flex;
+    justify-content: space-between;
   }
 `;
 

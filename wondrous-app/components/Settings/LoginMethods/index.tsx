@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useContext, useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useWonderWeb3 } from 'services/web3';
 import SettingsWrapper from 'components/Common/SidebarSettings';
@@ -10,6 +10,8 @@ import {
   ConnectToWalletButton,
   ContentContainer,
   ErrorContainer,
+  HeadingDescription,
+  HeadingText,
   IndicatorContainer,
   InputFlexSection,
   InputSection,
@@ -26,48 +28,45 @@ import { HeaderBlock } from '../headerBlock';
 import { DiscordIcon } from 'components/Icons/discord';
 import LoadIcon from 'components/Icons/LoadIcon';
 import IndicateIcon from 'components/Icons/IndicateIcon';
-import { WarningIcon } from 'components/Icons/WarningIcon';
+import { USER_DISCORD_DISCONNECT, USER_WALLET_DISCONNECT } from 'graphql/mutations';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
+import { useMutation } from '@apollo/client';
+import { DISCORD_CONNECT_TYPES } from 'utils/constants';
+import { getDiscordUrl } from 'utils/index';
+import ErrorDisplay from './ErrorDisplay';
+import { ErrorText } from '../../Common';
+import WalletModal from 'components/Common/Wallet/WalletModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 
-const SUPPORTED_PAYMENT_CHAINS = [
-  {
-    label: 'Ethereum Mainnet',
-    value: 'ethereum',
-  },
-  {
-    label: 'Polygon Mainnet',
-    value: 'polygon',
-  },
-  {
-    label: 'Harmony Mainnet',
-    value: 'harmony',
-  },
-  {
-    label: 'Boba Mainnet',
-    value: 'boba',
-  },
-  {
-    label: 'Arbitrum Mainnet',
-    value: 'arbitrum',
-  },
-];
-if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-  SUPPORTED_PAYMENT_CHAINS.push({
-    label: 'Ethereum Rinkeby',
-    value: 'rinkeby',
-  });
-}
+const discordUrl = getDiscordUrl();
 
 function LogInMethods(props) {
   const router = useRouter();
+  const { discordUserExists, discordError } = router.query;
   const wonderWeb3 = useWonderWeb3();
+  const [methodCheck, setMethodCheck] = useState<string>('');
+  const { loggedInUser } = props;
+  const [walletModalOpen, setWalletModalOpen] = useState(false);
+  const [firstConnect, setFirstConnect] = useState(true);
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const [disconnectWallet] = useMutation(USER_WALLET_DISCONNECT, {
+    onCompleted: () => {
+      setSnackbarAlertMessage('Success!  wallet disconnected');
+      setSnackbarAlertOpen(true);
+    },
+    onError: (e) => {
+      console.error(e);
+      setSnackbarAlertMessage('Opps! Something went wrong');
+      setSnackbarAlertOpen(true);
+    },
+    refetchQueries: [GET_LOGGED_IN_USER],
+  });
 
-  const { orgId } = router.query as { orgId: string; podId: string };
-  console.log(orgId, 'orgid, podid');
-  useEffect(() => {
-    if (wonderWeb3?.onConnect) {
-      wonderWeb3.onConnect();
-    }
-  }, []);
+  console.log(loggedInUser, 'loggedinuser');
+
+  const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
+    refetchQueries: [GET_LOGGED_IN_USER],
+  });
 
   const [formData, setFormData] = useState<{ email: string; password: string }>({
     email: '',
@@ -84,19 +83,31 @@ function LogInMethods(props) {
     console.log(formData);
   };
 
+  useEffect(() => {
+    if (wonderWeb3?.onConnect) {
+      wonderWeb3.onConnect();
+    }
+  }, []);
+
+  const disconnectWalletFunction = () => {
+    disconnectWallet();
+  };
+
   return (
     <SettingsWrapper>
       <LogInMethodContainer>
-        <HeaderBlock
-          title="Log in methods"
-          description="Add/edit your log in methods. You can choose as many you require."
-        />
-        <SectionContainer>
-          <IndicatorContainer>
-            <IndicateIcon />
-            <p>You currently have only one active log in method. Please add one alternative before removing.</p>
-          </IndicatorContainer>
-        </SectionContainer>
+        <div>
+          <HeadingText>Log in methods</HeadingText>
+          <HeadingDescription>Add/edit your log in methods. You can choose as many you require.</HeadingDescription>
+        </div>
+        {methodCheck && (
+          <SectionContainer>
+            <IndicatorContainer>
+              <IndicateIcon />
+              <p>You currently have only one active log in method. Please add one alternative before removing.</p>
+            </IndicatorContainer>
+          </SectionContainer>
+        )}
         <ContentContainer>
           <SectionContainer>
             <LoginTitleContainer>
@@ -131,31 +142,73 @@ function LogInMethods(props) {
               <p>Log in through Discord</p>
             </LoginTitleContainer>
             <ButtonContainer>
-              <ConnectToDiscordButton>
+              <ConnectToDiscordButton
+                onClick={() => {
+                  if (!loggedInUser?.userInfo?.discordUsername) {
+                    const state = JSON.stringify({
+                      callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+                    });
+                    window.location.href = `${discordUrl}&state=${state}`;
+                  }
+                  if (loggedInUser?.activeEthAddress) {
+                    disconnectDiscord();
+                  } else {
+                    setMethodCheck('discord');
+                  }
+                }}
+              >
                 <DiscordIcon />
-                Connect to Discord
-                {true && <CancelSpan>x</CancelSpan>}
+                {loggedInUser?.userInfo?.discordUsername ? (
+                  <>
+                    Connected to ${loggedInUser?.userInfo?.discordUsername} <CancelSpan>x</CancelSpan>{' '}
+                  </>
+                ) : (
+                  'Connect to discord'
+                )}
               </ConnectToDiscordButton>
-              <StatusContainer status={'inactive'}>Inactive</StatusContainer>
+              <StatusContainer status={loggedInUser?.userInfo?.discordUsername ? 'active' : 'inactive'}>
+                {loggedInUser?.userInfo?.discordUsername ? 'active' : 'Inactive'}
+              </StatusContainer>
             </ButtonContainer>
-            <ErrorContainer>
-              <WarningIcon />
-              <p>Cannot remove Discord. You need at least one login method. Please add another.</p>
-            </ErrorContainer>
+            {methodCheck === 'discord' && <ErrorDisplay method={'Discord'} />}
+            {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
+            {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
           </SectionContainer>
           <SectionContainer>
             <LoginTitleContainer>
               <p>Log in through your wallet</p>
             </LoginTitleContainer>
             <ButtonContainer>
-              <ConnectToWalletButton highlighted={true}>
-                Connect to Wallet {true && <CancelSpan>x</CancelSpan>}
+              <ConnectToWalletButton
+                onClick={() => {
+                  if (!loggedInUser?.activeEthAddress) {
+                    setWalletModalOpen(true);
+                  }
+                  if (loggedInUser?.userInfo?.discordUsername) {
+                    disconnectWalletFunction();
+                  } else {
+                    setMethodCheck('wallet');
+                  }
+                }}
+                highlighted={true}
+              >
+                {!loggedInUser?.activeEthAddress ? (
+                  'Link Wallet to Account'
+                ) : (
+                  <>
+                    Connect to Wallet <CancelSpan>x</CancelSpan>
+                  </>
+                )}
               </ConnectToWalletButton>
               <ReplaceWalletButton>
                 <LoadIcon /> Replace wallet address
               </ReplaceWalletButton>
-              <StatusContainer status={'active'}>Active</StatusContainer>
+              <StatusContainer status={loggedInUser?.activeEthAddress ? 'active' : 'inactive'}>
+                {loggedInUser?.activeEthAddress ? 'Active' : 'Inactive'}
+              </StatusContainer>
             </ButtonContainer>
+            {methodCheck === 'wallet' && <ErrorDisplay method={'Wallet'} />}
+            <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
           </SectionContainer>
 
           <ButtonContainer>
