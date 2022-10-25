@@ -90,7 +90,7 @@ function MemberRequests(props) {
   const approveRequest = (requestId) => {
     approveJoinPodRequest({
       variables: {
-        joinOrgRequestId: requestId,
+        joinPodRequestId: requestId,
       },
       refetchQueries,
     });
@@ -99,7 +99,7 @@ function MemberRequests(props) {
   const declineRequest = (requestId) => {
     rejectJoinPodRequest({
       variables: {
-        joinOrgRequestId: requestId,
+        joinPodRequestId: requestId,
       },
       refetchQueries,
     });

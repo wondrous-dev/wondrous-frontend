@@ -127,7 +127,7 @@ function CreatePodModal(props) {
   const handleUserMentionChange = (query) =>
     searchOrgUsers({
       variables: {
-        orgId: org,
+        orgsIds: [org],
         searchString: query,
       },
     }).then(({ data }) => data?.searchOrgUsers?.map((user) => ({ ...user, display: user.username, id: user.id })));

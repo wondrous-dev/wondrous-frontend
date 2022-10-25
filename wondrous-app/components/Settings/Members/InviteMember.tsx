@@ -159,7 +159,7 @@ function InviteMember(props) {
             if (!touched) {
               searchOrgUsers({
                 variables: {
-                  orgId,
+                  orsIds: [orgId],
                   searchString: '',
                 },
               });
@@ -168,7 +168,7 @@ function InviteMember(props) {
           onInputChange={(event, newInputValue) => {
             searchOrgUsers({
               variables: {
-                orgId,
+                orgsIds: [orgId],
                 searchString: newInputValue,
               },
             });

@@ -264,7 +264,7 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
     if (orgId)
       searchOrgUsers({
         variables: {
-          orgId,
+          orgsIds: [orgId],
           searchString,
           limit: LIMIT,
         },
@@ -463,7 +463,6 @@ export const useUpdateTask = () => {
   };
   return { handleMutation, loading };
 };
-
 
 export const useUpdateMilestone = () => {
   const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
