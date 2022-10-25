@@ -115,7 +115,6 @@ export const InputFlexSection = styled(InputSection)`
 
 export const ChangePasswordButton = styled(Button)`
   min-width: 165px;
-  margin-left: 22px;
   box-sizing: content-box;
   font-size: 16px;
   button {
