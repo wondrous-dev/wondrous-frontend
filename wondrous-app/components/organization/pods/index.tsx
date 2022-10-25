@@ -1,7 +1,6 @@
 import Link from 'next/link';
 import { useCallback, useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
-import { Grid, Typography } from '@mui/material';
 
 import { useMe } from 'components/Auth/withAuth';
 
@@ -11,57 +10,39 @@ import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 
-import palette from 'theme/palette';
-import typography from 'theme/typography';
-
 import PlusIcon from 'components/Icons/plus';
 import { CreateEntity } from 'components/CreateEntity';
 import {
   CreateNewPodButton,
+  CreateNewPodButtonText,
+  CreateNewPodButtonWrapper,
   CreateNewPodIconWrapper,
+  PodHeadline,
   PodItemWrapper,
+  PodsContainer,
+  PodsList,
   SearchPods,
   StyledTab,
   StyledTabs,
+  TabLabelContainer,
+  TabLabelCount,
+  TabLabelText,
 } from './styles';
 
 import PodItem from './PodItem';
 import { PodView } from './constants';
 
 const TabLabel = ({ label, count, isActive }) => (
-  <Grid sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-    <Typography
-      sx={{
-        color: isActive ? palette.white : palette.grey51,
-        fontWeight: 500,
-        fontFamily: typography.fontFamily,
-        fontSize: '14px',
-      }}
-    >
-      {label}
-    </Typography>
-    {!!count && (
-      <Typography
-        sx={{
-          color: isActive ? palette.white : palette.grey51,
-          background: isActive ? palette.grey87 : palette.grey87,
-          padding: '2px',
-          borderRadius: '4px',
-          fontWeight: 500,
-          fontFamily: typography.fontFamily,
-          fontSize: '14px',
-        }}
-      >
-        {count}
-      </Typography>
-    )}
-  </Grid>
+  <TabLabelContainer>
+    <TabLabelText isActive={isActive}>{label}</TabLabelText>
+    {!!count && <TabLabelCount isActive={isActive}>{count}</TabLabelCount>}
+  </TabLabelContainer>
 );
 
 const Pods = (props) => {
   const { orgData } = props;
 
-  const [activePodView, setActivePodView] = useState(PodView.ALL);
+  const [activePodView, setActivePodView] = useState(PodView.ALL_PODS);
   const [activePodsList, setActivePodsList] = useState([]);
   const [showCreatePodModal, setShowCreatePodModal] = useState(false);
 
@@ -101,13 +82,13 @@ const Pods = (props) => {
   }, [user?.id]);
 
   const getActivePodsList = useCallback(() => {
-    if (activePodView === PodView.ALL) {
+    if (activePodView === PodView.ALL_PODS) {
       return orgPods;
     }
-    if (activePodView === PodView.USER_IS_MEMBER_OF) {
+    if (activePodView === PodView.PODS_USER_IS_MEMBER_OF) {
       return orgPodsUserIsIn;
     }
-    if (activePodView === PodView.USER_IS_NOT_MEMBER_OF) {
+    if (activePodView === PodView.PODS_USER_IS_NOT_MEMBER_OF) {
       return orgPodsUserIsNotIn;
     }
     return [];
@@ -151,21 +132,19 @@ const Pods = (props) => {
   };
 
   return (
-    <Grid sx={{ padding: '120px 0', margin: '0 auto', maxWidth: '720px' }}>
-      <Typography sx={{ color: palette.white, fontWeight: 700, fontFamily: typography.fontFamily, fontSize: '24px' }}>
-        Pods in {capitalize(orgName)}
-      </Typography>
+    <PodsContainer>
+      <PodHeadline>Pods in {capitalize(orgName)}</PodHeadline>
 
       <StyledTabs value={activePodView} onChange={handleActiveTabChange}>
         <StyledTab
-          label={<TabLabel label="Show all" count={orgPods?.length} isActive={activePodView === PodView.ALL} />}
+          label={<TabLabel label="Show all" count={orgPods?.length} isActive={activePodView === PodView.ALL_PODS} />}
         />
         <StyledTab
           label={
             <TabLabel
               label="Pods I’m in"
               count={orgPodsUserIsIn?.length}
-              isActive={activePodView === PodView.USER_IS_MEMBER_OF}
+              isActive={activePodView === PodView.PODS_USER_IS_MEMBER_OF}
             />
           }
         />
@@ -174,7 +153,7 @@ const Pods = (props) => {
             <TabLabel
               label="Pods I’m not in"
               count={orgPodsUserIsNotIn?.length}
-              isActive={activePodView === PodView.USER_IS_NOT_MEMBER_OF}
+              isActive={activePodView === PodView.PODS_USER_IS_NOT_MEMBER_OF}
             />
           }
         />
@@ -183,26 +162,17 @@ const Pods = (props) => {
       <SearchPods placeholder="Search pods..." onChange={handleSearchPods} />
 
       {canUserCreatePods && (
-        <Grid
-          sx={{
-            padding: '14px 0',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            background: palette.black92,
-            borderRadius: '6px',
-          }}
-        >
+        <CreateNewPodButtonWrapper>
           <CreateNewPodButton onClick={handleOpenCreatePodModal}>
             <CreateNewPodIconWrapper>
               <PlusIcon />
             </CreateNewPodIconWrapper>
-            <Typography sx={{ fontSize: '14px', fontWeight: 500, color: palette.white }}>Create new pod</Typography>
+            <CreateNewPodButtonText>Create new pod</CreateNewPodButtonText>
           </CreateNewPodButton>
-        </Grid>
+        </CreateNewPodButtonWrapper>
       )}
 
-      <Grid sx={{ marginTop: '24px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      <PodsList>
         {activePodsList?.length &&
           activePodsList?.map((podData) => (
             <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
@@ -211,7 +181,7 @@ const Pods = (props) => {
               </PodItemWrapper>
             </Link>
           ))}
-      </Grid>
+      </PodsList>
 
       <CreateEntity
         open={showCreatePodModal}
@@ -220,7 +190,7 @@ const Pods = (props) => {
         handleClose={handleCloseCreatePodModal}
         cancel={handleCloseCreatePodModal}
       />
-    </Grid>
+    </PodsContainer>
   );
 };
 

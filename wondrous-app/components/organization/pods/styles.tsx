@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import Typography from '@mui/material/Typography';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Button from '@mui/material/Button';
@@ -9,6 +10,21 @@ import SearchIcon from 'components/Icons/search';
 
 import typography from 'theme/typography';
 import palette from 'theme/palette';
+
+export const PodsContainer = styled.div`
+  padding: 120px 0;
+  margin: 0 auto;
+  max-width: 720px;
+`;
+
+export const PodHeadline = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-weight: 700;
+    font-family: ${typography.fontFamily};
+    font-size: 24px;
+  }
+`;
 
 export const StyledTabs = styled(Tabs)`
   && {
@@ -44,6 +60,29 @@ export const StyledTab = styled(Tab)`
   }
 `;
 
+export const TabLabelContainer = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 10px;
+`;
+
+export const TabLabelText = styled(Typography)`
+  && {
+    color: ${({ isActive }) => (isActive ? palette.white : palette.grey51)};
+    font-weight: 500;
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+  }
+`;
+
+export const TabLabelCount = styled(TabLabelText)`
+  && {
+    background: ${({ isActive }) => (isActive ? palette.grey87 : palette.grey87)};
+    padding: 2px;
+    border-radius: 4px;
+  }
+`;
+
 export const SearchPods = styled(({ ...props }) => (
   <Input
     {...props}
@@ -67,8 +106,13 @@ export const SearchPods = styled(({ ...props }) => (
   }
 `;
 
-export const PodItemWrapper = styled.a`
-  text-decoration: none;
+export const CreateNewPodButtonWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 0;
+  background: ${palette.black92};
+  border-radius: 6px;
 `;
 
 export const CreateNewPodButton = styled(Button)`
@@ -121,4 +165,24 @@ export const CreateNewPodIconWrapper = styled.div`
     padding: 2px;
     border-radius: 1000px;
   }
+`;
+
+export const CreateNewPodButtonText = styled(Typography)`
+  && {
+    font-family: ${typography.fontFamily};
+    font-size: 14px;
+    font-weight: 500;
+    color: ${palette.white};
+  }
+`;
+
+export const PodsList = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 24px;
+`;
+
+export const PodItemWrapper = styled.a`
+  text-decoration: none;
 `;
