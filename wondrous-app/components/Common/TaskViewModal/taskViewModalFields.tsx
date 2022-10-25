@@ -97,7 +97,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
     return null;
   }
   return (
-    <TaskSectionDisplayDiv style={{ alignItems: 'start' }}>
+    <TaskSectionDisplayDiv alignItems="start">
       <TaskSectionLabel>Reviewer</TaskSectionLabel>
       <TaskSectionDisplayContentWrapper>
         <ReviewerWrapper showAddButton={showAddButton}>
