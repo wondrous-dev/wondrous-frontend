@@ -99,7 +99,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
         <ReviewerWrapper showAddButton={showAddButton}>
           {withTaskReviewers &&
             taskReviewers.map((taskReviewer) => (
-              <Grid key={taskReviewer.id} item container sx={{ width: '100%' }}>
+              <Grid key={taskReviewer.id} item container width="100%">
                 <TaskSectionImageContent
                   hasContent={taskReviewer.id}
                   ContentComponent={() => (
@@ -122,7 +122,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
               </Grid>
             ))}
           {showAutocompleteField && (
-            <Grid item sx={{ width: '100%' }}>
+            <Grid item width="100%">
               <TaskViewModalAutocomplete
                 options={filteredEligibleReviewers}
                 onChange={(_, value, reason) => {
@@ -137,7 +137,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
           )}
           {showNone && <TaskSectionInfoText>None</TaskSectionInfoText>}
           {showAddButton && (
-            <Grid item container sx={{ width: 'max-content' }}>
+            <Grid item container width="max-content">
               <AddReviewerButton onClick={() => setShowAutocomplete(!showAutocomplete)}>
                 <PlusIcon fill={palette.white} />
               </AddReviewerButton>
