@@ -7,12 +7,24 @@ import { useState } from 'react';
 import palette from 'theme/palette';
 import { ArrowWrapper, Option, PaperComponent, StyledAutocomplete, StyledTextField } from './styles';
 
-const ProfilePicture = ({ profilePicture }) =>
-  profilePicture ? (
-    <SafeImage useNextImage={false} src={profilePicture} width={24} height={24} style={{ borderRadius: '24px' }} />
-  ) : (
-    <DefaultUserImage width={24} height={24} />
-  );
+const profilePictureStyle = {
+  display: 'flex',
+  width: '24px',
+  height: '24px',
+  borderRadius: '50%',
+};
+
+const ProfilePicture = ({ profilePicture }) => (
+  <SafeImage
+    src={profilePicture}
+    placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
+    width="24px"
+    height="24px"
+    objectFit="cover"
+    useNextImage
+    style={profilePictureStyle}
+  />
+);
 
 const RenderOption = (props, option) => {
   const { profilePicture, label, hide } = option || {};
