@@ -26,6 +26,7 @@ import RolesIcon from 'components/Icons/roles';
 import FileDownloadIcon from 'components/Icons/Sidebar/fileDownload.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import HexagonIcon from 'components/Icons/Sidebar/hexagon.svg';
+import LoginIcon from 'components/Icons/Sidebar/loginIcon.svg';
 import NotificationsIcon from 'components/Icons/Sidebar/notifications.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import ReceiptIcon from 'components/Icons/Sidebar/receipt.svg';
@@ -56,6 +57,13 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     value: 'general',
     href: orgId ? `/${mainPath}/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: LoginIcon,
+    label: 'Log in Methods',
+    value: 'log-in-methods',
+    href: orgId ? `/${mainPath}/settings/${orgId}/log-in-methods` : `/pod/settings/${podId}/log-in-methods`,
+    page: [SettingsPage.Org],
   },
   {
     Icon: WrenchIcon,
@@ -184,24 +192,24 @@ function SettingsWrapper(props) {
     podId,
   });
 
-  if (
-    permissions &&
-    !(
-      permissions.includes(PERMISSIONS.MANAGE_MEMBER) ||
-      permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-      permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
-    )
-  ) {
-    if (podId && pod) {
-      router.push(`/pod/${podId}/boards`, undefined, {
-        shallow: true,
-      });
-    } else if (org) {
-      router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
-        shallow: true,
-      });
-    }
-  }
+  // if (
+  //   permissions &&
+  //   !(
+  //     permissions.includes(PERMISSIONS.MANAGE_MEMBER) ||
+  //     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+  //     permissions.includes(PERMISSIONS.APPROVE_PAYMENT)
+  //   )
+  // ) {
+  //   if (podId && pod) {
+  //     router.push(`/pod/${podId}/boards`, undefined, {
+  //       shallow: true,
+  //     });
+  //   } else if (org) {
+  //     router.push(`/${mainPath}/${org?.username}/boards`, undefined, {
+  //       shallow: true,
+  //     });
+  //   }
+  // }
 
   const settingsPageConfig = {
     [String(orgId)]: {
