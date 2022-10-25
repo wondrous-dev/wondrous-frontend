@@ -31,19 +31,12 @@ const assignToSelf = ({ user, onClick }) => {
     const { profilePicture } = user || {};
     return (
       <Option onClick={onClick}>
-        <Grid container direction="row" alignItems="center" sx={{ width: '100%' }}>
-          <Grid
-            item
-            container
-            direction="row"
-            justifyContent="flex-start"
-            alignItems="center"
-            sx={{ gap: '10px', width: '80%' }}
-          >
+        <Grid container direction="row" alignItems="center" width="100%">
+          <Grid item container direction="row" justifyContent="flex-start" alignItems="center" width="80%" gap="10px">
             <ProfilePicture profilePicture={profilePicture} />
             <Box sx={{ color: palette.blue20 }}>+ Assign to Self</Box>
           </Grid>
-          <Grid item container justifyContent="flex-end" sx={{ width: '20%' }}>
+          <Grid item container justifyContent="flex-end" width="20%">
             <ArrowWrapper>
               <Arrow />
             </ArrowWrapper>
@@ -78,7 +71,7 @@ const TaskViewModalAutocomplete = ({ user, handleAssignToSelf, ...props }) => {
         searchValue,
       }}
       popupIcon={
-        <Grid sx={{ width: '24px', height: '24px' }}>
+        <Grid width="24px" height="24px">
           <SearchIcon width="13" height="13" />
         </Grid>
       }
