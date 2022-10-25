@@ -177,6 +177,7 @@ export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC
 export const DISCORD_CONNECT_TYPES = {
   signup: 'signup',
   login: 'login',
+  loginMethod: 'login-method',
   connectSettings: 'connectSettings',
   connectOnboarding: 'connectOnboarding',
   connectOnboardingDao: 'connectOnboardingDao',

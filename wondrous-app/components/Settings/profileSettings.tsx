@@ -148,7 +148,6 @@ function SettingsLinks({ links, setLinks }) {
 function ProfileSettings(props) {
   const { loggedInUser } = props;
   const router = useRouter();
-  console.log(router.query, 'router.query');
   const { discordUserExists, discordError } = router.query;
   const [username, setUsername] = useState(loggedInUser?.username);
   const [email, setEmail] = useState(loggedInUser?.userInfo?.email);
