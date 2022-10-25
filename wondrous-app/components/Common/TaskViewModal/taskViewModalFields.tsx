@@ -88,6 +88,10 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
     withTaskReviewers < eligibleReviewers?.length &&
     !isEmpty(filteredEligibleReviewers);
   const selfReviewer = !taskReviewerIds?.includes(user.id) && user;
+  const handleOnClick = (username) => () => {
+    handleClose();
+    router.push(`/profile/${username}/about`);
+  };
 
   if (!shouldDisplay) {
     return null;
@@ -112,12 +116,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
                       canEdit={canEdit}
                     />
                   )}
-                  onClick={() => {
-                    handleClose();
-                    router.push(`/profile/${taskReviewer?.username}/about`, undefined, {
-                      shallow: true,
-                    });
-                  }}
+                  onClick={handleOnClick(taskReviewer?.username)}
                 />
               </Grid>
             ))}
