@@ -37,34 +37,53 @@ import ErrorDisplay from './ErrorDisplay';
 import { ErrorText } from '../../Common';
 import WalletModal from 'components/Common/Wallet/WalletModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import ConfirmModal from 'components/Common/ConfirmModal';
+import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
+import { CircularProgress } from '@mui/material';
 
 const discordUrl = getDiscordUrl();
 
 function LogInMethods(props) {
+  const wonderWeb3 = useWonderWeb3();
+
+  const { provider } = useContext(WonderWeb3Context);
   const router = useRouter();
   const { discordUserExists, discordError } = router.query;
-  const wonderWeb3 = useWonderWeb3();
   const [methodCheck, setMethodCheck] = useState<string>('');
+  const [connected, setConnected] = useState(false);
   const { loggedInUser } = props;
   const [walletModalOpen, setWalletModalOpen] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+  const [openConfirmModal, setOpenConfirmModal] = useState(false);
+  const [disconnectType, setDisconnectType] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [isWalletConnect, setIsWalletConnect] = useState(false);
   const [disconnectWallet] = useMutation(USER_WALLET_DISCONNECT, {
     onCompleted: () => {
-      setSnackbarAlertMessage('Success!  wallet disconnected');
-      setSnackbarAlertOpen(true);
+      openSnackBar('Success!  wallet disconnected');
+      setLoading(false);
     },
     onError: (e) => {
       console.error(e);
-      setSnackbarAlertMessage('Opps! Something went wrong');
-      setSnackbarAlertOpen(true);
+      openSnackBar('Opps! Something went wrong');
+      setLoading(false);
     },
     refetchQueries: [GET_LOGGED_IN_USER],
   });
 
-  console.log(loggedInUser, 'loggedinuser');
+  console.log(loggedInUser, isWalletConnect, 'loggedinuser');
+
+  const openSnackBar = (message: string) => {
+    setSnackbarAlertMessage(message);
+    setSnackbarAlertOpen(true);
+  };
 
   const [disconnectDiscord] = useMutation(USER_DISCORD_DISCONNECT, {
+    onCompleted: () => {
+      openSnackBar('Success! discord disconnected');
+      setLoading(false);
+    },
     refetchQueries: [GET_LOGGED_IN_USER],
   });
 
@@ -89,9 +108,6 @@ function LogInMethods(props) {
     }
   }, []);
 
-  const disconnectWalletFunction = () => {
-    disconnectWallet();
-  };
   useEffect(() => {
     if (loggedInUser && loggedInUser.userInfo.email) {
       setFormData({
@@ -100,6 +116,32 @@ function LogInMethods(props) {
       });
     }
   }, [loggedInUser]);
+
+  useEffect(() => {
+    // Don't listen to anything before the connection to the
+    // wallet is done.
+    if (!wonderWeb3.connecting) {
+      // Enable the wallet.
+      if (wonderWeb3.address) {
+        // Change the UI now.
+        setConnected(true);
+        // Wallet disabled.
+      } else if (!firstConnect) {
+        setConnected(false);
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [wonderWeb3.address, provider]);
+
+  useEffect(() => {
+    if (loggedInUser?.activeEthAddress && isWalletConnect) {
+      openSnackBar('Wallet connected successfully');
+      setTimeout(() => {
+        setIsWalletConnect(false);
+      }, 3000);
+    }
+  }, [loggedInUser]);
+
   return (
     <SettingsWrapper>
       <LogInMethodContainer>
@@ -132,6 +174,7 @@ function LogInMethods(props) {
                 <label htmlFor="email">Email</label>
                 <input
                   onChange={(e) => handleInputs(e)}
+                  value={formData.email}
                   type="email"
                   name="email"
                   placeholder="eth.reverise@gmail.com"
@@ -140,7 +183,7 @@ function LogInMethods(props) {
               <InputFlexSection>
                 <InputSection>
                   <label htmlFor="password">Password</label>
-                  <input onChange={(e) => handleInputs(e)} name="password" type="password" />
+                  <input onChange={(e) => handleInputs(e)} name="password" value={formData.password} type="password" />
                 </InputSection>
                 <ChangePasswordButton highlighted={true}>Change Password</ChangePasswordButton>
               </InputFlexSection>
@@ -155,12 +198,12 @@ function LogInMethods(props) {
                 onClick={() => {
                   if (!loggedInUser?.userInfo?.discordUsername) {
                     const state = JSON.stringify({
-                      callbackType: DISCORD_CONNECT_TYPES.connectSettings,
+                      callbackType: DISCORD_CONNECT_TYPES.loginMethod,
                     });
                     window.location.href = `${discordUrl}&state=${state}`;
-                  }
-                  if (loggedInUser?.activeEthAddress || loggedInUser?.userInfo?.email) {
-                    disconnectDiscord();
+                  } else if (loggedInUser?.activeEthAddress || loggedInUser?.userInfo?.email) {
+                    setDisconnectType('discord');
+                    setOpenConfirmModal(true);
                   } else {
                     setMethodCheck('discord');
                   }
@@ -169,7 +212,7 @@ function LogInMethods(props) {
                 <DiscordIcon />
                 {loggedInUser?.userInfo?.discordUsername ? (
                   <>
-                    Connected to ${loggedInUser?.userInfo?.discordUsername} <CancelSpan>x</CancelSpan>{' '}
+                    Connected to ${loggedInUser?.userInfo?.discordUsername} <CancelSpan>x</CancelSpan>
                   </>
                 ) : (
                   'Connect to discord'
@@ -192,9 +235,10 @@ function LogInMethods(props) {
                 onClick={() => {
                   if (!loggedInUser?.activeEthAddress) {
                     setWalletModalOpen(true);
-                  }
-                  if (loggedInUser?.userInfo?.discordUsername || loggedInUser?.userInfo?.email) {
-                    disconnectWalletFunction();
+                    setIsWalletConnect(true);
+                  } else if (loggedInUser?.userInfo?.discordUsername || loggedInUser?.userInfo?.email) {
+                    setDisconnectType('wallet');
+                    setOpenConfirmModal(true);
                   } else {
                     setMethodCheck('wallet');
                   }
@@ -217,7 +261,7 @@ function LogInMethods(props) {
               </StatusContainer>
             </ButtonContainer>
             {methodCheck === 'wallet' && <ErrorDisplay method={'Wallet'} />}
-            <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />
+            {!connected && <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />}
           </SectionContainer>
 
           <ButtonContainer>
@@ -226,6 +270,31 @@ function LogInMethods(props) {
           </ButtonContainer>
         </ContentContainer>
       </LogInMethodContainer>
+      <ConfirmModal
+        open={openConfirmModal}
+        onClose={() => {
+          setOpenConfirmModal(false);
+        }}
+        onSubmit={() => {
+          setLoading(true);
+          if (disconnectType === 'discord') {
+            disconnectDiscord();
+          }
+          if (disconnectType === 'wallet') {
+            disconnectWallet();
+          }
+        }}
+        title={'Are you sure'}
+        submitLabel="Disconnect"
+        cancelLabel="cancel"
+        isLoading={loading}
+        rejectAction={() => {
+          setOpenConfirmModal(false);
+        }}
+        reverseButtons
+      >
+        {null}
+      </ConfirmModal>
     </SettingsWrapper>
   );
 }
