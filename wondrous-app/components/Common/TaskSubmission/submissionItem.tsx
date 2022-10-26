@@ -27,7 +27,7 @@ import {
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
-import { getDateDistanceString } from 'utils/board';
+import { formatDateDisplay } from 'utils/board';
 
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
@@ -250,7 +250,7 @@ function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isG
 
 function SubmissionItemCreatedAt({ createdAt }) {
   if (!createdAt) return null;
-  const formattedDistance = getDateDistanceString(createdAt);
+  const formattedDistance = formatDateDisplay(createdAt);
   return <SubmissionItemTimeText>{formattedDistance}</SubmissionItemTimeText>;
 }
 

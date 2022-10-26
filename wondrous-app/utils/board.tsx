@@ -261,7 +261,7 @@ export const sectionOpeningReducer = (currentCard, { section, isOpen }) => {
   if (taskToSection && taskToSection !== currentCard && isOpen) return taskToSection;
 };
 
-export const getDateDistanceString = (date, addTimePreposition = false) => {
+export const formatDateDisplay = (date, addTimePreposition = false) => {
   if (!date) return '';
 
   const taskCreatedBefore = differenceInDays(new Date(), new Date(date));

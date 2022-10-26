@@ -15,7 +15,7 @@ import { useRouter } from 'next/router';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
-  getDateDistanceString,
+  formatDateDisplay,
   getProposalStatus,
   updateCompletedItem,
   updateInProgressTask,
@@ -778,7 +778,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   </TaskSectionInfoCreatorTask>
                                   {fetchedTask?.createdAt && (
                                     <TaskSectionInfoCreatorDaysAgo>
-                                      {getDateDistanceString(fetchedTask?.createdAt, true)}
+                                      {formatDateDisplay(fetchedTask?.createdAt, true)}
                                       {/* {taskCreatedBefore >= 7 ? (
                                         <>on {format(new Date(fetchedTask?.createdAt), 'MM/dd/yyyy')}</>
                                       ) : (
