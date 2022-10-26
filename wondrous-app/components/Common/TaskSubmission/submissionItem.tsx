@@ -543,7 +543,7 @@ export function SubmissionItem({
           showComments={showComments}
           setCommentType={setCommentType}
         />
-        <Grid container justifyContent="flex-end" sx={{ gap: '4px' }}>
+        <Grid container justifyContent="flex-end" gap="12px">
           <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
           <ResubmitTaskSubmissionButton
             submission={submission}
