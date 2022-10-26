@@ -9,7 +9,9 @@ interface RolePillType {
 }
 
 const RolePill: React.FC<RolePillType> = ({ roleName, onClick }) => (
-  <MemberRolePill onClick={onClick} roleName={roleName}>{`${getRoleEmoji(roleName)}  ${roleName}`}</MemberRolePill>
+  <MemberRolePill onClick={onClick} roleName={roleName}>{`${getRoleEmoji(roleName)}  ${
+    roleName || 'no role'
+  }`}</MemberRolePill>
 );
 
 export default RolePill;
