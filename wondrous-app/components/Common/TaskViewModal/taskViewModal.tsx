@@ -35,7 +35,7 @@ import {
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
 } from 'utils/constants';
-import { ApprovedSubmissionContext } from 'utils/contexts';
+import { ApprovedSubmissionContext, TaskContext } from 'utils/contexts';
 import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
@@ -69,6 +69,7 @@ import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
 import ActionModals from './actionModals';
+import { useLocation } from 'utils/useLocation';
 import { tabs } from './constants';
 import {
   GithubButtons,
@@ -130,6 +131,7 @@ import {
 import WatchersField from './taskViewModalFields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
+import TaskViewNft from '../TaskViewNft';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -196,8 +198,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const sectionRef = useRef(null);
   const user = useMe();
+  const location = useLocation();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
-  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
+  const [getTaskById, {refetch}] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
@@ -383,11 +386,15 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     );
   }
 
+  const isViewNFTMode = !!location?.params?.viewNft;
+
   const canEdit =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    fetchedTask?.createdBy === user?.id ||
-    (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id);
+    !isViewNFTMode &&
+    (permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+      permissions.includes(PERMISSIONS.EDIT_TASK) ||
+      fetchedTask?.createdBy === user?.id ||
+      (fetchedTask?.assigneeId && fetchedTask?.assigneeId === user?.id));
+
   const canViewApplications =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
@@ -395,9 +402,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const canArchive =
-    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+    (!isViewNFTMode && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
+
   const canDelete =
     canArchive &&
     (fetchedTask?.type === ENTITIES_TYPES.TASK || fetchedTask?.type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
@@ -479,6 +487,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   };
   const canClaim =
     fetchedTask?.taskApplicationPermissions?.canClaim &&
+    !isViewNFTMode &&
     ((fetchedTask?.orgId &&
       userPermissionsContext?.orgPermissions &&
       fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
@@ -513,7 +522,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       }}
     >
       <>
-        <ActionModals
+       {!isViewNFTMode &&  <ActionModals
           completeModal={completeModal}
           setCompleteModal={setCompleteModal}
           taskType={taskType}
@@ -526,7 +535,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
           handleClose={handleClose}
           setSnackbarAlertOpen={setSnackbarAlertOpen}
           setSnackbarAlertMessage={setSnackbarAlertMessage}
-        />
+        />}
+        <TaskContext.Provider value={{ fetchedTask, refetch }}>
         <TaskModal open={open} onClose={handleModalClose}>
           <TaskModalCard fullScreen={fullScreen}>
             {!!fetchedTask && canViewTask !== null && (
@@ -659,7 +669,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       </TaskModalTitleDescriptionMedia>
                       <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                         <TaskSectionDisplayData>
-                          <MintTaskComponent />
                           <ReviewerField
                             shouldDisplay={!isTaskProposal && !isMilestone}
                             reviewerData={reviewerData}
@@ -843,6 +852,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
             )}
           </TaskModalCard>
         </TaskModal>
+        </TaskContext.Provider>
       </>
     </ApprovedSubmissionContext.Provider>
   );

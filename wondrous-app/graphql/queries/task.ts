@@ -282,3 +282,21 @@ export const RENDER_RICH_TEXT = gql`
     renderRichText(jsonText: $jsonText)
   }
 `;
+
+export const GET_MINT_OPERATION = gql`
+  query getMintTaskOperation($operationId: String!) {
+    getMintTaskOperation(operationId: $operationId) {
+      status
+      txHash
+      resourceId
+    }
+  }
+`;
+export const GET_MINT_TASK_TOKEN_DATA = gql`
+  query getMintTaskTokenData($taskId: ID!) {
+    getMintTaskTokenData(taskId: $taskId) {
+      tokenId
+      imageUrl
+    }
+  }
+`;

@@ -100,7 +100,7 @@ export const ModalBody = styled.div`
 export const ModalFooter = styled.div`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: ${({ alignCenter }) => (alignCenter ? 'center' : 'flex-end')};
   padding: 24px;
   background: ${palette.black97};
   border-radius: 0 0 6px 6px;

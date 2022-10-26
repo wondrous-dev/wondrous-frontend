@@ -30,6 +30,7 @@ import {
   TokenGatingContext,
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
+  TaskContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -347,3 +348,4 @@ export const usePermissions = (entity, isTaskProposal = false) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
   return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal };
 };
+export const useTaskContext = () => useContext(TaskContext);

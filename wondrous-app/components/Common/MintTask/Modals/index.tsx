@@ -1,29 +1,68 @@
-import { useRef } from 'react';
+import { useState } from 'react';
 import { useSteps } from 'utils/hooks';
 import Modal from 'components/Modal';
-import { StartMint } from 'components/Common/MintTask/Steps';
+import { StartMint, MintInProgress, SuccessMint } from 'components/Common/MintTask/Steps';
+import { Actions } from 'components/CreateCollaborationModal/ViewCollab';
+import { MODAL_TYPE } from 'components/CreateCollaborationModal/ViewCollab/CollabDetails';
+import OpenseaButton from '../OpenseaButton';
 
 const ModalsComponent = ({ isOpen, onClose }) => {
-  const { step, nextStep, prevStep } = useSteps();
-  const footerRef = useRef();
-  const footerLeftRef = useRef();
+  const [tokenData, setTokenData] = useState(null);
+  const { nextStep, step, setStep } = useSteps();
 
-  console.log(footerRef, footerLeftRef);
   const STEPS_TITLE_MAP = ['Mint task', 'In-progress...', 'Minting task'];
 
   const title = STEPS_TITLE_MAP[step];
 
-  const STEPS = [() => <StartMint nextStep={nextStep} onCancel={onClose} footerRef={footerRef} />];
+  const handleTokenData = (tokenData) => {
+    nextStep();
+    setTokenData(tokenData);
+  };
+
+  const handleClose = () => {
+    onClose();
+    setTokenData(null);
+    setStep(0);
+  };
+
+  const STEPS = [
+    () => <StartMint />,
+    () => <MintInProgress setTokenData={handleTokenData} />,
+    () => <SuccessMint tokenData={tokenData} />,
+  ];
+
+  const FOOTER_ACTIONS = [
+    {
+      left: null,
+      right: (
+        <Actions
+          declineLabel="Not yet"
+          acceptLabel="Mint task"
+          type={MODAL_TYPE.ACTION}
+          onClose={handleClose}
+          onSubmit={nextStep}
+        />
+      ),
+    },
+    null,
+    {
+      left: null,
+      right: <OpenseaButton tokenId={tokenData?.tokenId} />,
+      footerCenter: true,
+    },
+  ];
 
   const Component = STEPS[step];
+
   return (
     <Modal
       maxWidth={560}
       title={title}
-      footerRight={<div ref={footerRef} />}
-      footerLeft={<div ref={footerLeftRef} />}
+      footerRight={FOOTER_ACTIONS[step]?.right || null}
+      footerLeft={FOOTER_ACTIONS[step]?.left || null}
+      footerCenter={FOOTER_ACTIONS[step]?.footerCenter || false}
       open={isOpen}
-      onClose={onClose}
+      onClose={handleClose}
     >
       <Component />
     </Modal>
