@@ -5,7 +5,6 @@ import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RichTextViewer } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
-import { formatDistance } from 'date-fns';
 import {
   APPROVE_BOUNTY_SUBMISSION,
   APPROVE_SUBMISSION,
@@ -28,6 +27,7 @@ import {
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
+import { formatDateDisplay } from 'utils/board';
 
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
@@ -250,9 +250,7 @@ function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isG
 
 function SubmissionItemCreatedAt({ createdAt }) {
   if (!createdAt) return null;
-  const formattedDistance = formatDistance(new Date(createdAt), new Date(), {
-    addSuffix: true,
-  });
+  const formattedDistance = formatDateDisplay(createdAt);
   return <SubmissionItemTimeText>{formattedDistance}</SubmissionItemTimeText>;
 }
 
