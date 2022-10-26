@@ -10,10 +10,7 @@ import {
   HARMONY_SAFE_MASTER_COPY,
   HARMONY_SAFE_MASTER_COPY2,
 } from 'utils/constants';
-<<<<<<< HEAD
 import { useWonderWeb3 } from './web3';
-=======
->>>>>>> 71fd07ca (Add priorities to tasks (#1099))
 
 const CHAIN_NAME_TO_DB_CHAIN_NAME = {
   // todo refactor this to have one consistent naming probably

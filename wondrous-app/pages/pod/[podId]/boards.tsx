@@ -151,7 +151,6 @@ const useGetPodTaskBoardTasks = ({
       });
       setPodTaskHasMore(true);
     }
-<<<<<<< HEAD
   }, [
     getPodTaskBoardTasks,
     podId,
@@ -164,9 +163,6 @@ const useGetPodTaskBoardTasks = ({
     privacyLevel,
     category,
   ]);
-=======
-  }, [getPodTaskBoardTasks, podId, statuses, priorities, setPodTaskHasMore, entityType, labelId, date, privacyLevel, category]);
->>>>>>> 71fd07ca (Add priorities to tasks (#1099))
   return { fetchMore: getPodTaskBoardTasksFetchMore, fetchPerStatus };
 };
 
