@@ -26,7 +26,8 @@ import {
 } from 'graphql/mutations';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import { useInView } from 'react-intersection-observer';
 import palette from 'theme/palette';
 import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
 import { transformTaskProposalToTaskProposalCard, transformTaskToTaskCard } from 'utils/helpers';
@@ -106,16 +107,15 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
               <Grid key={taskReviewer.id} item container width="100%">
                 <TaskSectionImageContent
                   hasContent={taskReviewer.id}
-                  ContentComponent={() => (
-                    <TaskViewModalUserChip
-                      user={taskReviewer}
-                      handleRemove={(e) => {
-                        e.stopPropagation();
-                        handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id));
-                      }}
-                      canEdit={canEdit}
-                    />
-                  )}
+                  ContentComponent={TaskViewModalUserChip}
+                  ContentComponentProps={{
+                    user: taskReviewer,
+                    handleRemove: (e) => {
+                      e.stopPropagation();
+                      handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id));
+                    },
+                    canEdit,
+                  }}
                   onClick={handleOnClick(taskReviewer?.username)}
                 />
               </Grid>
@@ -129,8 +129,12 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
                     handleUpdateReviewers([...taskReviewerIds, value?.id]);
                   }
                 }}
-                user={selfReviewer}
-                handleAssignToSelf={() => handleUpdateReviewers([...taskReviewerIds, user?.id])}
+                ListboxProps={{
+                  AssignToSelfProps: {
+                    user: selfReviewer,
+                    onClick: () => handleUpdateReviewers([...taskReviewerIds, user?.id]),
+                  },
+                }}
               />
             </Grid>
           )}
@@ -147,6 +151,95 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
     </TaskSectionDisplayDiv>
   );
 }
+
+const AssigneeDefaultContent = ({
+  boardColumns,
+  canApply,
+  canClaim,
+  canEdit,
+  fetchedTask,
+  isTaskProposal,
+  onCorrectPage,
+  router,
+  updateProposalItem,
+  user,
+  updateBoard,
+  setFetchedTask,
+}) => {
+  const [ref, inView] = useInView({});
+  const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
+  const { data: orgUsersData, search, fetchMoreOrgUsers } = useGetOrgUsers(fetchedTask?.orgId);
+  useEffect(() => {
+    if (inView) fetchMoreOrgUsers();
+  }, [fetchMoreOrgUsers, inView]);
+  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).filter(({ value }) => value !== user?.id);
+  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
+  const handleUpdateTaskAssignee = (assigneeId) => {
+    updateTaskAssignee({
+      variables: {
+        taskId: fetchedTask?.id,
+        assigneeId,
+      },
+      onCompleted: (data) => {
+        const task = data?.updateTaskAssignee;
+        updateBoard({ task, setFetchedTask, boardColumns });
+      },
+    });
+  };
+  if (canClaim && canEdit)
+    return (
+      <TaskViewModalAutocomplete
+        options={filteredOrgUsersData}
+        onChange={(_, value, reason) => {
+          if (reason === 'selectOption') {
+            handleUpdateTaskAssignee(value?.value);
+          }
+        }}
+        renderInputProps={{
+          onChange: (e) => search(e.target.value),
+        }}
+        ListboxProps={{
+          AssignToSelfProps: { user, onClick: () => handleUpdateTaskAssignee(user?.id) },
+          innerRef: ref,
+        }}
+      />
+    );
+  if (canClaim)
+    return (
+      <TaskSectionInfoTakeTask
+        onClick={() => {
+          if (!user) {
+            router.push('/signup', undefined, {
+              shallow: true,
+            });
+          } else if (isTaskProposal) {
+            updateTaskProposalAssignee({
+              variables: {
+                proposalId: fetchedTask?.id,
+                assigneeId: user?.id,
+              },
+              onCompleted: (data) => {
+                const taskProposal = data?.updateTaskProposalAssignee;
+                if (boardColumns?.setColumns && onCorrectPage) {
+                  const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
+                  let columns = [...boardColumns?.columns];
+                  columns = updateProposalItem(transformedTaskProposal, columns);
+                  boardColumns?.setColumns(columns);
+                }
+              },
+            });
+          } else {
+            handleUpdateTaskAssignee(user?.id);
+          }
+        }}
+      >
+        <Claim />
+        <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
+      </TaskSectionInfoTakeTask>
+    );
+  if (canApply) return <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />;
+  return null;
+};
 
 export function AssigneeField({
   fetchedTask,
@@ -169,7 +262,6 @@ export function AssigneeField({
   userId,
 }) {
   const onCorrectPage = fetchedTask?.orgId === orgId || fetchedTask?.podId === podId || fetchedTask?.userId === userId;
-  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
   const updateBoard = ({ task, setFetchedTask, boardColumns }) => {
     const transformedTask = transformTaskToTaskCard(task, {});
@@ -188,105 +280,53 @@ export function AssigneeField({
       setSnackbarAlertMessage('Assignee updated successfully.');
     }
   };
-  const handleUpdateTaskAssignee = (assigneeId) => {
-    updateTaskAssignee({
-      variables: {
-        taskId: fetchedTask?.id,
-        assigneeId,
-      },
-      onCompleted: (data) => {
-        const task = data?.updateTaskAssignee;
-        updateBoard({ task, setFetchedTask, boardColumns });
-      },
-    });
-  };
   const [removeTaskAssignee] = useMutation(REMOVE_TASK_ASSIGNEE);
-  const [updateTaskProposalAssignee] = useMutation(UPDATE_TASK_PROPOSAL_ASSIGNEE);
-  const { data: orgUsersData } = useGetOrgUsers(fetchedTask?.orgId);
-  const filteredOrgUsersData = filterOrgUsers({ orgUsersData }).filter(({ value }) => value !== user?.id);
   const router = useRouter();
   if (!shouldDisplay) return null;
-
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Assignee</TaskSectionLabel>
       <TaskSectionInfoDiv key={fetchedTask?.assigneeUsername}>
         <TaskSectionImageContent
           hasContent={fetchedTask?.assigneeUsername}
-          ContentComponent={() => (
-            <TaskViewModalUserChip
-              user={fetchedTask?.assignee}
-              handleRemove={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                removeTaskAssignee({
-                  variables: {
-                    taskId: fetchedTask?.id,
-                  },
-                  onCompleted: (data) => {
-                    const task = data?.removeTaskAssignee;
-                    updateBoard({ task, setFetchedTask, boardColumns });
-                  },
-                });
-              }}
-              canEdit={canEdit}
-            />
-          )}
+          ContentComponent={TaskViewModalUserChip}
+          ContentComponentProps={{
+            user: fetchedTask?.assignee,
+            handleRemove: (e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              removeTaskAssignee({
+                variables: {
+                  taskId: fetchedTask?.id,
+                },
+                onCompleted: (data) => {
+                  const task = data?.removeTaskAssignee;
+                  updateBoard({ task, setFetchedTask, boardColumns });
+                },
+              });
+            },
+            canEdit,
+          }}
           onClick={() => {
             handleClose();
             router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
               shallow: true,
             });
           }}
-          DefaultContent={() => {
-            if (canEdit)
-              return (
-                <TaskViewModalAutocomplete
-                  options={filteredOrgUsersData}
-                  onChange={(_, value, reason) => {
-                    if (reason === 'selectOption') {
-                      handleUpdateTaskAssignee(value?.value);
-                    }
-                  }}
-                  user={user}
-                  handleAssignToSelf={() => handleUpdateTaskAssignee(user?.id)}
-                />
-              );
-            if (canClaim)
-              return (
-                <TaskSectionInfoTakeTask
-                  onClick={() => {
-                    if (!user) {
-                      router.push('/signup', undefined, {
-                        shallow: true,
-                      });
-                    } else if (isTaskProposal) {
-                      updateTaskProposalAssignee({
-                        variables: {
-                          proposalId: fetchedTask?.id,
-                          assigneeId: user?.id,
-                        },
-                        onCompleted: (data) => {
-                          const taskProposal = data?.updateTaskProposalAssignee;
-                          if (boardColumns?.setColumns && onCorrectPage) {
-                            const transformedTaskProposal = transformTaskProposalToTaskProposalCard(taskProposal, {});
-                            let columns = [...boardColumns?.columns];
-                            columns = updateProposalItem(transformedTaskProposal, columns);
-                            boardColumns?.setColumns(columns);
-                          }
-                        },
-                      });
-                    } else {
-                      handleUpdateTaskAssignee(user?.id);
-                    }
-                  }}
-                >
-                  <Claim />
-                  <TaskSectionInfoTakeTaskText>Claim this task</TaskSectionInfoTakeTaskText>
-                </TaskSectionInfoTakeTask>
-              );
-            if (canApply) return <TaskApplicationButton task={fetchedTask} canApply={canApply} title="Apply to task" />;
-            return null;
+          DefaultContent={AssigneeDefaultContent}
+          DefaultContentProps={{
+            boardColumns,
+            canApply,
+            canClaim,
+            canEdit,
+            fetchedTask,
+            isTaskProposal,
+            onCorrectPage,
+            router,
+            updateProposalItem,
+            user,
+            updateBoard,
+            setFetchedTask,
           }}
         />
       </TaskSectionInfoDiv>
@@ -310,6 +350,8 @@ export function ApplicationField({ shouldDisplay, taskApplicationCount, handleRe
   );
 }
 
+const InfoText = ({ content = null }) => <TaskSectionInfoText>{content || 'None'}</TaskSectionInfoText>;
+
 export function ProposerField({ shouldDisplay, creatorUsername, creatorProfilePicture, handleClose }) {
   const router = useRouter();
   if (!shouldDisplay) return null;
@@ -324,10 +366,13 @@ export function ProposerField({ shouldDisplay, creatorUsername, creatorProfilePi
             shallow: true,
           });
         }}
-        ContentComponent={() => <TaskSectionInfoText>{creatorUsername}</TaskSectionInfoText>}
+        ContentComponent={InfoText}
+        ContentComponentProps={{
+          content: creatorUsername,
+        }}
         imgSrc={creatorProfilePicture}
         DefaultImageComponent={() => <DefaultUserImage />}
-        DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
+        DefaultContent={InfoText}
       />
     </TaskSectionDisplayDiv>
   );
@@ -339,12 +384,27 @@ export function VotesField({ shouldDisplay, totalVotes, hasContent }) {
       <TaskSectionLabel>Voted</TaskSectionLabel>
       <TaskSectionImageContent
         hasContent={hasContent}
-        ContentComponent={() => <TaskSectionInfoText>{totalVotes} votes</TaskSectionInfoText>}
-        DefaultContent={() => null}
+        ContentComponent={InfoText}
+        ContentComponentProps={{
+          content: `${totalVotes} votes`,
+        }}
       />
     </TaskSectionDisplayDiv>
   );
 }
+
+const DueDateFieldContent = ({ recurringSchema, dueDate }) => (
+  <TaskSectionInfoText>
+    {!isEmpty(recurringSchema) && (
+      <Tooltip title="Recurring" placement="right">
+        <TaskSectionInfoRecurringIcon>
+          <RecurringIcon />
+        </TaskSectionInfoRecurringIcon>
+      </Tooltip>
+    )}
+    {format(new Date(dueDate), 'MM/dd/yyyy')}
+  </TaskSectionInfoText>
+);
 
 export function DueDateField({ shouldDisplay, dueDate, recurringSchema, shouldUnclaimOnDueDateExpiry }) {
   if (!shouldDisplay) return null;
@@ -354,19 +414,8 @@ export function DueDateField({ shouldDisplay, dueDate, recurringSchema, shouldUn
         <TaskSectionLabel>Due Date</TaskSectionLabel>
         <TaskSectionImageContent
           hasContent={dueDate}
-          ContentComponent={() => (
-            <TaskSectionInfoText>
-              {!isEmpty(recurringSchema) && (
-                <Tooltip title="Recurring" placement="right">
-                  <TaskSectionInfoRecurringIcon>
-                    <RecurringIcon />
-                  </TaskSectionInfoRecurringIcon>
-                </Tooltip>
-              )}
-              {format(new Date(dueDate), 'MM/dd/yyyy')}
-            </TaskSectionInfoText>
-          )}
-          DefaultContent={() => null}
+          ContentComponent={DueDateFieldContent}
+          ContentComponentProps={{ recurringSchema, dueDate }}
           DefaultImageComponent={() => <TaskSectionInfoCalendar />}
         />
       </TaskSectionDisplayDiv>
@@ -382,39 +431,46 @@ export function PointsField({ shouldDisplay, points }) {
       <TaskSectionLabel>Points</TaskSectionLabel>
       <TaskSectionImageContent
         hasContent={points}
-        ContentComponent={() => <TaskSectionInfoPoints>{points}</TaskSectionInfoPoints>}
+        ContentComponent={InfoText}
+        ContentComponentProps={{
+          content: points,
+        }}
         DefaultImageComponent={() => <TaskSectionInfoPointsIcon />}
       />
     </TaskSectionDisplayDiv>
   );
 }
 
-export function MilestoneField({ shouldDisplay, milestoneId, getTaskById, milestoneTitle }) {
+const MilestoneFieldContent = ({ milestoneId, getTaskById, milestoneTitle }) => {
   const router = useRouter();
+  return (
+    <TaskSectionInfoTextMilestone
+      onClick={() => {
+        if (milestoneId) {
+          router.query.task = milestoneId;
+          router.push(router);
+          getTaskById({
+            variables: {
+              taskId: milestoneId,
+            },
+          });
+        }
+      }}
+    >
+      {milestoneTitle}
+    </TaskSectionInfoTextMilestone>
+  );
+};
 
+export function MilestoneField({ shouldDisplay, milestoneId, getTaskById, milestoneTitle }) {
   if (!shouldDisplay) return null;
   return (
     <TaskSectionDisplayDiv>
       <TaskSectionLabel>Milestone</TaskSectionLabel>
       <TaskSectionImageContent
         hasContent={milestoneId}
-        ContentComponent={() => (
-          <TaskSectionInfoTextMilestone
-            onClick={() => {
-              if (milestoneId) {
-                router.query.task = milestoneId;
-                router.push(router);
-                getTaskById({
-                  variables: {
-                    taskId: milestoneId,
-                  },
-                });
-              }
-            }}
-          >
-            {milestoneTitle}
-          </TaskSectionInfoTextMilestone>
-        )}
+        ContentComponent={MilestoneFieldContent}
+        ContentComponentProps={{ milestoneId, getTaskById, milestoneTitle }}
         DefaultImageComponent={() => <TaskSectionInfoMilestoneIcon />}
       />
     </TaskSectionDisplayDiv>
@@ -436,6 +492,8 @@ export function PriorityField({ priority }) {
   );
 }
 
+const TagsFieldContent = ({ label }) => <Tag color={label.color}>{label.name}</Tag>;
+
 export function TagsField({ shouldDisplay, labels }) {
   if (!shouldDisplay) return null;
   return (
@@ -448,8 +506,9 @@ export function TagsField({ shouldDisplay, labels }) {
               <TaskSectionImageContent
                 key={label.id}
                 hasContent={label}
-                ContentComponent={() => <Tag color={label.color}>{label.name}</Tag>}
-                DefaultContent={() => <TaskSectionInfoText>None</TaskSectionInfoText>}
+                ContentComponent={TagsFieldContent}
+                ContentComponentProps={{ label }}
+                DefaultContent={InfoText}
               />
             )
         )}
@@ -458,6 +517,19 @@ export function TagsField({ shouldDisplay, labels }) {
   );
 }
 
+const InitativesFieldContent = ({ setOpenModal }) => (
+  <TaskIntiativesContainer>
+    <GR15DEILogo
+      width="26"
+      height="26"
+      style={{
+        marginRight: '8px',
+      }}
+      onClick={() => setOpenModal(true)}
+    />
+    <TaskSectionInfoText>Gitcoin Grants R15 - DEI</TaskSectionInfoText>
+  </TaskIntiativesContainer>
+);
 export const InitativesField = ({ shouldDisplay }) => {
   const [openModal, setOpenModal] = useState(false);
   if (!shouldDisplay) return null;
@@ -468,19 +540,8 @@ export const InitativesField = ({ shouldDisplay }) => {
         <TaskSectionLabel>Initiative</TaskSectionLabel>
         <TaskSectionImageContent
           hasContent={shouldDisplay}
-          ContentComponent={() => (
-            <TaskIntiativesContainer>
-              <GR15DEILogo
-                width="26"
-                height="26"
-                style={{
-                  marginRight: '8px',
-                }}
-                onClick={() => setOpenModal(true)}
-              />
-              <TaskSectionInfoText>Gitcoin Grants R15 - DEI</TaskSectionInfoText>
-            </TaskIntiativesContainer>
-          )}
+          ContentComponent={InitativesFieldContent}
+          ContentComponentProps={{ setOpenModal }}
         />
       </TaskSectionDisplayDiv>
     </>
