@@ -9,6 +9,7 @@ import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from 'graphql/mutat
 import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
 import { withAuth } from 'components/Auth/withAuth';
+import { result } from 'lodash';
 
 function RolesPage() {
   const [roles, setRoles] = useState([]);
@@ -68,7 +69,11 @@ function RolesPage() {
   // Get organization roles when organization is defined
   useEffect(() => {
     if (orgId) {
-      getOrgRolesWithTokenGate();
+      getOrgRolesWithTokenGate().then((result) => {
+        if (result?.data?.getOrgRoles) {
+          setRoles(JSON.parse(JSON.stringify(result?.data?.getOrgRoles)) || []);
+        }
+      });
       getOrgDiscordNotificationConfig();
     }
   }, [orgId, getOrgRolesWithTokenGate, getOrgDiscordNotificationConfig]);
