@@ -68,11 +68,7 @@ function RolesPage() {
   // Get organization roles when organization is defined
   useEffect(() => {
     if (orgId) {
-      getOrgRolesWithTokenGate().then((result) => {
-        if (result?.data?.getOrgRoles) {
-          setRoles(JSON.parse(JSON.stringify(result?.data?.getOrgRoles)) || []);
-        }
-      });
+      getOrgRolesWithTokenGate();
       getOrgDiscordNotificationConfig();
     }
   }, [orgId, getOrgRolesWithTokenGate, getOrgDiscordNotificationConfig]);
