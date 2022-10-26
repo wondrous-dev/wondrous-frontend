@@ -3,7 +3,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { Button } from 'components/Common/button';
 import CommentItem from 'components/Common/CommentItem';
-import SubmissionStatus from 'components/Common/SubmissionStatus';
+import SubmissionCommentType from 'components/Common/SubmissionCommentType';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
@@ -23,7 +23,7 @@ import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { updateTask } from 'utils/board';
 import { renderMentionString } from 'utils/common';
-import { COMMENTER_ROLE, ENTITIES_TYPES, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS } from 'utils/constants';
+import { COMMENTER_ROLE, ENTITIES_TYPES, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_COMMENT_TYPE } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
@@ -42,8 +42,8 @@ import {
 
 const AddComment = ({ onClick, type }) => {
   const text = {
-    [SUBMISSION_STATUS.CHANGE_REQUESTED]: 'Send request',
-    [SUBMISSION_STATUS.APPROVED]: 'Send Kudos',
+    [SUBMISSION_COMMENT_TYPE.CHANGE_REQUESTED]: 'Send request',
+    [SUBMISSION_COMMENT_TYPE.APPROVED]: 'Send Kudos',
   };
   const selectedText = text[type] || 'Add comment';
   return <AddCommentButton onClick={onClick}>{selectedText}</AddCommentButton>;
@@ -381,7 +381,7 @@ export default function CommentList(props) {
 
       {showCommentBox && (
         <>
-          {type && <SubmissionStatus status={type} />}
+          {type && <SubmissionCommentType status={type} />}
           <CommentBox
             orgId={task?.orgId || submission?.orgId}
             existingContent=""
