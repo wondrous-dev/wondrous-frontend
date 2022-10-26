@@ -938,3 +938,10 @@ export const COMMENTER_ROLE = {
   Assignee: 'Assignee',
   Reviewer: 'Reviewer',
 };
+
+export enum SUBMISSION_COMMENT_TYPE {
+  APPROVED = 'approved',
+  CHANGE_REQUESTED = 'change_requested',
+  RESUBMIT = 'resubmit',
+  REOPEN = 'reopen',
+}
