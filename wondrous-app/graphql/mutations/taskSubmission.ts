@@ -73,6 +73,24 @@ export const REJECT_SUBMISSION = gql`
   }
 `;
 
+export const RESUBMIT_SUBMISSION = gql`
+  mutation resubmitTaskSubmission($submissionId: ID!) {
+    resubmitTaskSubmission(submissionId: $submissionId) {
+      ...TaskSubmissionFragment
+    }
+  }
+  ${TaskSubmissionFragment}
+`;
+
+export const REOPEN_SUBMISSION = gql`
+  mutation reopenTaskSubmission($submissionId: ID!) {
+    reopenTaskSubmission(submissionId: $submissionId) {
+      ...TaskSubmissionFragment
+    }
+  }
+  ${TaskSubmissionFragment}
+`;
+
 export const ARCHIVE_SUBMISSION = gql`
   mutation archiveTaskSubmission($submissionId: ID!) {
     archiveTaskSubmission(submissionId: $submissionId) {

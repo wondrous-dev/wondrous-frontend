@@ -3,7 +3,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { ErrorText } from 'components/Common';
 import { Button } from 'components/Common/button';
 import CommentItem from 'components/Common/CommentItem';
-import SubmissionStatus from 'components/Common/SubmissionStatus';
+import SubmissionCommentType from 'components/Common/SubmissionCommentType';
 import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
@@ -11,14 +11,19 @@ import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mu
 import { CREATE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
-import { GET_COMMENTS_FOR_TASK, GET_TASK_REVIEWERS, GET_TASK_SUBMISSION_COMMENTS } from 'graphql/queries/task';
+import {
+  GET_COMMENTS_FOR_TASK,
+  GET_TASK_REVIEWERS,
+  GET_TASK_SUBMISSIONS_FOR_TASK,
+  GET_TASK_SUBMISSION_COMMENTS,
+} from 'graphql/queries/task';
 import { GET_COMMENTS_FOR_TASK_PROPOSAL } from 'graphql/queries/taskProposal';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { updateTask } from 'utils/board';
 import { renderMentionString } from 'utils/common';
-import { COMMENTER_ROLE, ENTITIES_TYPES, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_STATUS } from 'utils/constants';
+import { COMMENTER_ROLE, ENTITIES_TYPES, GRAPHQL_ERRORS, PERMISSIONS, SUBMISSION_COMMENT_TYPE } from 'utils/constants';
 import { TextInputContext } from 'utils/contexts';
 import { getMentionArray, parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import { useColumns, useOrgBoard, usePodBoard, useScrollIntoView, useUserBoard } from 'utils/hooks';
@@ -37,8 +42,8 @@ import {
 
 const AddComment = ({ onClick, type }) => {
   const text = {
-    [SUBMISSION_STATUS.CHANGE_REQUESTED]: 'Send request',
-    [SUBMISSION_STATUS.APPROVED]: 'Send Kudos',
+    [SUBMISSION_COMMENT_TYPE.CHANGE_REQUESTED]: 'Send request',
+    [SUBMISSION_COMMENT_TYPE.APPROVED]: 'Send Kudos',
   };
   const selectedText = text[type] || 'Add comment';
   return <AddCommentButton onClick={onClick}>{selectedText}</AddCommentButton>;
@@ -70,7 +75,7 @@ function CommentBox(props) {
   });
 
   const [createSubmissionComment] = useMutation(CREATE_SUBMISSION_COMMENT, {
-    refetchQueries: ['getTaskSubmissionComments'],
+    refetchQueries: ['getTaskSubmissionComments', GET_TASK_SUBMISSIONS_FOR_TASK],
   });
 
   const addComment = () => {
@@ -376,7 +381,7 @@ export default function CommentList(props) {
 
       {showCommentBox && (
         <>
-          {type && <SubmissionStatus status={type} />}
+          {type && <SubmissionCommentType status={type} />}
           <CommentBox
             orgId={task?.orgId || submission?.orgId}
             existingContent=""
