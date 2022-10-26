@@ -66,7 +66,7 @@ function DropdownSelect({
   innerStyle,
   hideLabel,
   labelStyle,
-  onOpen
+  onOpen,
 }: DropdownSelectProps) {
   const [open, setOpen] = useState(false);
 
@@ -77,10 +77,10 @@ function DropdownSelect({
   };
 
   useEffect(() => {
-    if(onOpen) {
-      onOpen(open)
+    if (onOpen) {
+      onOpen(open);
     }
-  }, [onOpen, open])
+  }, [onOpen, open]);
 
   return (
     <CreateFormSelectBlock style={formSelectStyle} className={className}>
