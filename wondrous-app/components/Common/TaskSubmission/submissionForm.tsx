@@ -335,7 +335,6 @@ export function TaskSubmissionForm(props) {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getUserTaskBoardTasks',
-      'getUserTaskBoardSubmissions',
       'getTaskById',
     ],
   };
