@@ -555,7 +555,7 @@ function BoardsPage() {
       apollo.query({
         query: SEARCH_ORG_USERS,
         variables: {
-          orgsIds: [id],
+          orgIds: [id],
           limit: LIMIT,
           offset: 0,
           searchString,
