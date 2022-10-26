@@ -9,7 +9,6 @@ import { CREATE_ORG_ROLE, DELETE_ORG_ROLE, UPDATE_ORG_ROLE } from 'graphql/mutat
 import { Role } from 'types/common';
 import permissons from 'utils/orgPermissions';
 import { withAuth } from 'components/Auth/withAuth';
-import { result } from 'lodash';
 
 function RolesPage() {
   const [roles, setRoles] = useState([]);

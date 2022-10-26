@@ -264,7 +264,6 @@ export const CREATE_TASK_DISCORD_THREAD = gql`
   mutation createTaskDiscordThread($taskId: ID!) {
     createTaskDiscordThread(taskId: $taskId) {
       guildIds
-
       threadIds
     }
   }
