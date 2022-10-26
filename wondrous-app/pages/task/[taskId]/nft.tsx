@@ -16,7 +16,6 @@ Org board task view modal with the NFT view mode
 function TaskViewNFT({ tokenData, taskId }) {
   const router = useRouter();
 
-  console.log(tokenData, 'tokenData');
   const { data } = useQuery(GET_TASK_BY_ID, {
     variables: {
       taskId,
@@ -59,7 +58,7 @@ export async function getServerSideProps(context) {
       taskId,
     },
   });
-  console.log(data);
+
   return {
     props: {
       tokenData: data?.getTaskMintTokenData,
