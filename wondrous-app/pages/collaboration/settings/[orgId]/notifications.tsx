@@ -8,7 +8,7 @@ function NotificationsPage() {
 
   const { orgId } = router.query;
 
-  return <Notifications orgId={orgId} />;
+  return <Notifications orgId={orgId} isCollab />;
 }
 
 export default withAuth(NotificationsPage);

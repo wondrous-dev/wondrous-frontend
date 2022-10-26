@@ -5,8 +5,9 @@ import {
   GET_DISCORD_GUILD_FROM_INVITE_CODE,
   CHECK_DISCORD_BOT_ADDED,
   GET_CHANNELS_FROM_DISCORD,
+  GET_POD_DISCORD_NOTIFICATION_CONFIGS,
 } from 'graphql/queries';
-import { MANUAL_DISCORD_ORG_SETUP } from 'graphql/mutations';
+import { MANUAL_DISCORD_COLLAB_SETUP, MANUAL_DISCORD_ORG_SETUP, MANUAL_DISCORD_POD_SETUP } from 'graphql/mutations';
 
 import { BOT_URL } from 'components/DiscordNotificationSetup';
 import palette from 'theme/palette';
@@ -15,16 +16,33 @@ import DropdownSelect from 'components/Common/DropdownSelect';
 import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
 import { ErrorText } from 'components/Common';
 import { AddGuildButton, DiscordText } from 'components/Settings/styles';
+import Box from '@mui/material/Box';
 import { NotificationType } from 'components/Settings/Notifications/constants';
 import { DiscordCard, DiscordCardElement, DiscordCardElementDiv } from './styles';
 
 let timeout;
 
-function AddWonderBotToDiscordConfig({ orgId }) {
+function AddWonderBotToDiscordConfig({
+  orgId,
+  onSave = null,
+  type = NotificationType.TasksNotifications,
+  podId = null,
+  isCollab = false,
+}) {
+  const onCompletedCallback = () => onSave && onSave();
+
   const [discordInviteLink, setDiscordInviteLink] = useState('');
   const [discordInviteLinkError, setDiscordInviteLinkError] = useState('');
   const [getDiscordGuildFromInviteCode] = useLazyQuery(GET_DISCORD_GUILD_FROM_INVITE_CODE);
-  const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP);
+  const [manualDiscordOrgSetup, { error: saveDiscordOrgError }] = useMutation(MANUAL_DISCORD_ORG_SETUP, {
+    onCompleted: onCompletedCallback,
+  });
+  const [manualDiscordCollabSetup, { error: saveDiscordCollabError }] = useMutation(MANUAL_DISCORD_COLLAB_SETUP, {
+    onCompleted: onCompletedCallback,
+  });
+  const [manualDiscordPodSetup, { error: saveDiscordPodError }] = useMutation(MANUAL_DISCORD_POD_SETUP, {
+    onCompleted: onCompletedCallback,
+  });
   const [getChannelsFromDiscord, { data: discordChannelData }] = useLazyQuery(GET_CHANNELS_FROM_DISCORD);
   const [guildId, setGuildId] = useState(null);
   const [selectedChannel, setSelectedChannel] = useState(null);
@@ -60,6 +78,48 @@ function AddWonderBotToDiscordConfig({ orgId }) {
     }
   }, [discordBotAdded]);
 
+  const orgRefetchQueries = [GET_ORG_DISCORD_NOTIFICATION_CONFIGS];
+  const podRefetchQueries = [GET_POD_DISCORD_NOTIFICATION_CONFIGS];
+
+  const discordSetupMethods = {
+    pods: () =>
+      manualDiscordPodSetup({
+        variables: {
+          guildId,
+          podId,
+          channelId: selectedChannel,
+          type,
+        },
+        refetchQueries: podRefetchQueries,
+      }),
+    org: () =>
+      manualDiscordOrgSetup({
+        variables: {
+          guildId,
+          orgId,
+          channelId: selectedChannel,
+          type,
+        },
+        refetchQueries: orgRefetchQueries,
+      }),
+    collab: () =>
+      manualDiscordCollabSetup({
+        variables: {
+          guildId,
+          orgId,
+          channelId: selectedChannel,
+          type,
+        },
+        refetchQueries: orgRefetchQueries,
+      }),
+  };
+
+  const handleManualSetup = () => {
+    if (podId) return discordSetupMethods.pods();
+    if (isCollab) return discordSetupMethods.collab();
+    return discordSetupMethods.org();
+  };
+
   useEffect(() => {
     clearTimeout(timeout);
     timeout = setTimeout(async () => {
@@ -88,6 +148,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
       }
     }, 1000);
   }, [discordInviteLink]);
+
   const discordChannels = discordChannelData?.getAvailableChannelsForDiscordGuild || [];
   const filteredDiscordChannels = discordChannels.map((channel) => ({
     value: channel.id,
@@ -96,13 +157,13 @@ function AddWonderBotToDiscordConfig({ orgId }) {
 
   return (
     <>
-      <DiscordCard container spacing={2}>
+      <DiscordCard container>
         <DiscordCardElement sm={4}>
           <DiscordCardElementDiv>
-            <DiscordText>1. Paste invite link</DiscordText>
+            <DiscordText>Paste invite link</DiscordText>
             <InputForm
               style={{
-                background: palette.grey1000,
+                background: palette.black97,
               }}
               value={discordInviteLink}
               onChange={(e) => setDiscordInviteLink(e.target.value)}
@@ -112,7 +173,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
         </DiscordCardElement>
         <DiscordCardElement sm={4}>
           <DiscordCardElementDiv>
-            <DiscordText>2. Add bot</DiscordText>
+            <DiscordText>Add bot</DiscordText>
             {guildId && !discordBotAdded?.checkDiscordBotAdded?.botAdded ? (
               <AddGuildButton
                 style={{
@@ -149,7 +210,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
         </DiscordCardElement>
         <DiscordCardElement sm={4}>
           <DiscordCardElementDiv>
-            <DiscordText>3. Set channel</DiscordText>
+            <DiscordText>Set channel</DiscordText>
             <DropdownSelect
               value={selectedChannel}
               setValue={setSelectedChannel}
@@ -158,7 +219,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
               }}
               innerStyle={{
                 marginTop: '0',
-                background: palette.grey1000,
+                background: palette.black97,
               }}
               options={filteredDiscordChannels}
             />
@@ -166,23 +227,12 @@ function AddWonderBotToDiscordConfig({ orgId }) {
         </DiscordCardElement>
       </DiscordCard>
       {selectedChannel && (
-        <>
+        <Box sx={{ padding: '12px', display: 'flex', justifyContent: 'flex-end' }}>
           <CreateFormPreviewButton
             style={{
-              float: 'right',
-              marginTop: '24px',
+              margin: '0',
             }}
-            onClick={() => {
-              manualDiscordOrgSetup({
-                variables: {
-                  guildId,
-                  orgId,
-                  channelId: selectedChannel,
-                  type: NotificationType.TasksNotifications,
-                },
-                refetchQueries: [GET_ORG_DISCORD_NOTIFICATION_CONFIGS],
-              });
-            }}
+            onClick={handleManualSetup}
           >
             Save changes
           </CreateFormPreviewButton>
@@ -191,7 +241,7 @@ function AddWonderBotToDiscordConfig({ orgId }) {
               Failed to set up Discord for organization: {saveDiscordOrgError?.message || saveDiscordOrgError}
             </ErrorText>
           )}
-        </>
+        </Box>
       )}
     </>
   );

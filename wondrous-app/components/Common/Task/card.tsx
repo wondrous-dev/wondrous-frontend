@@ -23,8 +23,9 @@ import DropdownItem from 'components/Common/DropdownItem';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
-import { useLazyQuery, useQuery } from '@apollo/client';
+import { useLazyQuery, useQuery, useMutation } from '@apollo/client';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { DUPLICATE_TASK } from 'graphql/mutations/task';
 import SmartLink from 'components/Common/SmartLink';
 import { useLocation } from 'utils/useLocation';
 import Tooltip from 'components/Tooltip';
@@ -128,6 +129,20 @@ export function TaskCard({
   const router = useRouter();
   const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'cache-and-network',
+  });
+
+  const [duplicateTask, { loading }] = useMutation(DUPLICATE_TASK, {
+    refetchQueries: () => [
+      'getUserTaskBoardTasks',
+      'getPerStatusTaskCountForUserBoard',
+      'getSubtaskCountForTask',
+      'getPerTypeTaskCountForOrgBoard',
+      'getPerTypeTaskCountForPodBoard',
+      'getPerStatusTaskCountForOrgBoard',
+      'getPerStatusTaskCountForPodBoard',
+      'getOrgTaskBoardTasks',
+      'getPodTaskBoardTasks',
+    ],
   });
 
   const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
@@ -344,7 +359,7 @@ export function TaskCard({
             </a>
           </TaskTitle>
 
-          {task?.priority && (
+          {/* {task?.priority && (
             <Box
               sx={{
                 margin: '14px 0',
@@ -353,7 +368,7 @@ export function TaskCard({
               <TaskPriority value={task?.priority} />
             </Box>
           )}
-
+ */}
           {isBounty && (
             <TaskBountyOverview
               totalSubmissionsCount={task?.totalSubmissionsCount}
@@ -464,6 +479,21 @@ export function TaskCard({
                     >
                       Edit {type}
                     </DropdownItem>
+                    {!isMilestone && (
+                      <DropdownItem
+                        key={`task-menu-duplicate-${id}`}
+                        onClick={() => {
+                          duplicateTask({
+                            variables: {
+                              taskId: id,
+                            },
+                          });
+                        }}
+                        color={palette.white}
+                      >
+                        Duplicate {type}
+                      </DropdownItem>
+                    )}
                     <DropdownItem
                       key={`task-menu-edit-archive${id}`}
                       onClick={() => {

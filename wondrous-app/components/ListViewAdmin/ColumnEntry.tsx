@@ -224,9 +224,9 @@ function ColumnEntry(props: Props) {
     };
     if (podId) {
       config.accept = () =>
-        approveJoinPodRequest({ variables: { joinOrgRequestId: id } }).then(() => positiveCallback());
+        approveJoinPodRequest({ variables: { joinPodRequestId: id } }).then(() => positiveCallback());
       config.decline = () =>
-        rejectJoinPodRequest({ variables: { joinOrgRequestId: id } }).then(() => negativeCallback());
+        rejectJoinPodRequest({ variables: { joinPodRequestId: id } }).then(() => negativeCallback());
     }
     return config;
   };

@@ -10,7 +10,6 @@ import {
   GET_POD_TASK_BOARD_SUBMISSIONS,
   GET_POD_TASK_BOARD_TASKS,
   GET_USER_TASK_BOARD_PROPOSALS,
-  GET_USER_TASK_BOARD_SUBMISSIONS,
   GET_USER_TASK_BOARD_TASKS,
 } from 'graphql/queries/taskBoard';
 import { useCallback, useEffect, useState } from 'react';
@@ -99,17 +98,6 @@ export function TaskListViewModal(props) {
     {
       onCompleted: (data) => {
         const tasks = data?.getUserTaskBoardProposals;
-        setFetchedList(tasks);
-        setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
-      },
-    }
-  );
-
-  const [getUserTaskBoardSubmissions, { fetchMore: fetchMoreUserTaskSubmissions }] = useLazyQuery(
-    GET_USER_TASK_BOARD_SUBMISSIONS,
-    {
-      onCompleted: (data) => {
-        const tasks = data?.getUserTaskBoardSubmissions;
         setFetchedList(tasks);
         setHasMore(data?.hasMore || tasks?.length >= TASK_LIST_VIEW_LIMIT);
       },
@@ -248,30 +236,6 @@ export function TaskListViewModal(props) {
               };
             },
           });
-        } else if (entityType === ENTITIES_TYPES.USER) {
-          fetchMoreUserTaskSubmissions({
-            variables: {
-              offset: fetchedList.length,
-              limit: TASK_LIST_VIEW_LIMIT,
-              statuses: [STATUS_OPEN],
-            },
-            updateQuery: (prev, { fetchMoreResult }) => {
-              const hasMore = fetchMoreResult.getUserTaskBoardSubmissions.length >= TASK_LIST_VIEW_LIMIT;
-              if (!fetchMoreResult) {
-                return prev;
-              }
-              if (!hasMore) {
-                setHasMore(false);
-              }
-
-              return {
-                hasMore,
-                getUserTaskBoardSubmissions: prev.getUserTaskBoardSubmissions.concat(
-                  fetchMoreResult.getUserTaskBoardSubmissions
-                ),
-              };
-            },
-          });
         }
       } else if (taskType === TASK_STATUS_ARCHIVED) {
         if (entityType === ENTITIES_TYPES.ORG) {
@@ -393,13 +357,6 @@ export function TaskListViewModal(props) {
                   podId,
                   statuses: [STATUS_OPEN],
                 },
-              },
-            });
-          } else if (entityType === ENTITIES_TYPES.USER) {
-            getUserTaskBoardSubmissions({
-              variables: {
-                userId: loggedInUserId,
-                statuses: [STATUS_OPEN],
               },
             });
           }

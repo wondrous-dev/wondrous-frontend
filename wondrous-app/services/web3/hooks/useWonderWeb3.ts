@@ -2,15 +2,16 @@ import { BigNumber, ethers } from 'ethers';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { CHAIN_IDS, SUPPORTED_CHAINS, SUPPORTED_CURRENCIES, NATIVE_TOKEN_SYMBOL } from 'utils/constants';
+import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES, NATIVE_TOKEN_SYMBOL } from 'utils/constants';
 
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
+import { WonderWeb3, WonderWeb3AssetMap, TransactionData } from 'services/web3/hooks/types';
 import connectors, { ConnectorName } from '../connectors';
 import useStoredConnector from './useStoredConnector';
 import useWeb3 from './useWeb3';
-import { WonderWeb3, WonderWeb3AssetMap } from './types';
 import { WonderWeb3Context } from '../context/WonderWeb3Context';
+
 /**
  * High level hook for Web3. Uses our react-web3 hook wrapper and adds some additional business functionality.
  */
@@ -210,6 +211,15 @@ export default function useWonderWeb3(): WonderWeb3 {
     }
   };
 
+  const getGasPrice = async () => {
+    try {
+      const prov = new ethers.providers.Web3Provider(provider);
+      return await prov.getGasPrice();
+    } catch (err) {
+      return null;
+    }
+  };
+
   const disconnect = () => {
     deactivate();
     setConnecting(false);
@@ -241,6 +251,14 @@ export default function useWonderWeb3(): WonderWeb3 {
     });
   };
 
+  const sendTransaction = async (txData: TransactionData) => {
+    const prov = new ethers.providers.Web3Provider(provider);
+    const { chainId } = await prov.getNetwork(); // TODO add validation here that chainId equals current chain id
+    const signer = await prov.getSigner();
+    const transactionObj = await signer.sendTransaction(txData);
+    return transactionObj;
+  };
+
   return {
     connecting,
     wallet,
@@ -267,5 +285,7 @@ export default function useWonderWeb3(): WonderWeb3 {
     activateAndStore,
     getENSNameFromEthAddress,
     getAddressFromENS,
+    getGasPrice,
+    sendTransaction,
   };
 }

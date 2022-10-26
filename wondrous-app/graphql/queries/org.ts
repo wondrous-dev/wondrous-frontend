@@ -45,6 +45,7 @@ export const GET_USER_ORGS = gql`
       profilePicture
       thumbnailPicture
       privacyLevel
+      shared
     }
   }
 `;
@@ -194,8 +195,8 @@ export const GET_ORG_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgId: ID!, $searchString: String!, $limit: Int, $offset: Int) {
-    searchOrgUsers(orgId: $orgId, searchString: $searchString, limit: $limit, offset: $offset) {
+  query searchOrgUsers($orgsIds: [ID], $searchString: String!, $limit: Int, $offset: Int) {
+    searchOrgUsers(orgsIds: $orgsIds, searchString: $searchString, limit: $limit, offset: $offset) {
       id
       username
       profilePicture

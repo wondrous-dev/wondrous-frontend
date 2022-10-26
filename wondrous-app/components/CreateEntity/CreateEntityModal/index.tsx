@@ -61,6 +61,7 @@ import { useGetSubtasksForTask } from 'components/Common/TaskSubtask/TaskSubtask
 import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Listbox';
 import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
+import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
@@ -127,7 +128,6 @@ import {
   CreateEntityOptionLabel,
   CreateEntityPaymentMethodOption,
   CreateEntityPaymentMethodSelect,
-  CreateEntityPodSearch,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
   CreateEntityPrivacySelect,
@@ -217,15 +217,15 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   });
 
   const [createTaskTemplate] = useMutation(CREATE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
   const [updateTaskTemplate] = useMutation(UPDATE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
   const [deleteTaskTemplate] = useMutation(DELETE_TASK_TEMPLATE, {
-    refetchQueries: () => ['getTaskTemplatesByUserId'],
+    refetchQueries: () => ['getTaskTemplatesByUserId', 'getOrgTaskTemplates'],
   });
 
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
@@ -649,7 +649,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {form.values.orgId !== null && (
             <>
               <CreateEntityHeaderArrowIcon />
-              <CreateEntityPodSearch
+              <PodSearch
                 options={filterOptionsWithPermission(
                   entityType,
                   pods,
@@ -1673,7 +1673,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         >
           <TaskTemplatePicker
             options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
-            value={form.values.podId}
+            value={form.values.orgId}
             onChange={handleOnchangePodId}
             disabled={formValues !== undefined}
             handleSubmitTemplate={handleSubmitTemplate}

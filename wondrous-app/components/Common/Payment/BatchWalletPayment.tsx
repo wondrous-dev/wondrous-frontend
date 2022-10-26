@@ -105,16 +105,23 @@ function BatchWalletPayment(props) {
   useEffect(() => {
     setIncompatibleWalletError(null);
     const corrctChainWallets = [];
+    let metamaskWalletFound = false;
     wallets.map((wallet) => {
-      if (wallet.chain === chain || wallet.type === WALLET_TYPE.METAMASK) {
+      if (wallet.chain === chain) {
         const address = generateReadablePreviewForAddress(wallet.address);
         const label = `${wallet.name}:  ${address}`;
         corrctChainWallets.push({ value: wallet.id, label });
       }
-      if (corrctChainWallets.length === 0 && wallets.length > 0) {
-        setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
+      if (wallet.type === WALLET_TYPE.METAMASK) {
+        metamaskWalletFound = true;
       }
     });
+    if (corrctChainWallets.length === 0 && wallets.length > 0) {
+      setIncompatibleWalletError(`Existing wallets are not on ${chain}`);
+    }
+    if (corrctChainWallets.length === 0 && wallets.length > 0 && metamaskWalletFound) {
+      setIncompatibleWalletError(`Existing wallets are not on ${chain}, metamask wallet cannot be used for batch pay`);
+    }
     setWalletOptions(corrctChainWallets);
   }, [chain, wallets]);
 
@@ -194,16 +201,16 @@ function BatchWalletPayment(props) {
     };
     let safeTxGas;
 
-    try {
-      const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
-        selectedWallet?.address,
-        estimateGasPayload
-      );
-      safeTxGas = estimateTx?.safeTxGas;
-    } catch (e) {
-      setGnosisTransactionLoading(false);
-      console.log(e);
-    }
+    // try {
+    //   const estimateTx: SafeMultisigTransactionEstimateResponse = await gnosisClient.estimateSafeTransaction(
+    //     selectedWallet?.address,
+    //     estimateGasPayload
+    //   );
+    //   safeTxGas = estimateTx?.safeTxGas;
+    // } catch (e) {
+    //   setGnosisTransactionLoading(false);
+    //   console.log(e);
+    // }
     const options: SafeTransactionOptionalProps = {
       safeTxGas: safeTxGas || 0,
       // baseGas, // Optional
@@ -213,8 +220,8 @@ function BatchWalletPayment(props) {
       nonce: nextNonce,
     };
     safeTransaction = await gnosisSdk.createTransaction(transactions, options);
-    const safeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
-    setSafeTxHash(safeTxHash);
+    const computedSafeTxHash = await gnosisSdk.getTransactionHash(safeTransaction);
+    setSafeTxHash(computedSafeTxHash);
     try {
       await gnosisSdk.signTransaction(safeTransaction);
     } catch (e) {
@@ -238,7 +245,7 @@ function BatchWalletPayment(props) {
     // txData is the payload to send to gnosis tx service. but we send to backend to validate and send
     const txData = {
       ...safeTransaction.data,
-      contractTransactionHash: safeTxHash,
+      contractTransactionHash: computedSafeTxHash,
       sender,
       signature,
     };

@@ -156,7 +156,7 @@ const handleSubmit = ({
 function SubmissionFormDescriptionField({ formik, orgId }) {
   const { data: orgUsersData, refetch } = useQuery(SEARCH_ORG_USERS, {
     variables: {
-      orgId,
+      orgsIds: [orgId],
       searchString: '',
     },
   });
@@ -335,7 +335,6 @@ export function TaskSubmissionForm(props) {
       'getOrgTaskBoardTasks',
       'getPodTaskBoardTasks',
       'getUserTaskBoardTasks',
-      'getUserTaskBoardSubmissions',
       'getTaskById',
     ],
   };

@@ -9,7 +9,7 @@ import { putDefaultRoleOnTop } from 'components/Common/InviteLinkModal/OrgInvite
 
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK } from 'utils/constants';
+import { LINK, ONE_TIME_USE_INVITE_LINK, PUBLIC_INVITE_LINK, ORG_TYPES } from 'utils/constants';
 
 import { CREATE_POD_INVITE_LINK } from 'graphql/mutations/pod';
 import { GET_POD_ROLES } from 'graphql/queries';
@@ -30,21 +30,20 @@ import {
   InviteThruLinkButtonLabel,
   InviteThruLinkInputWrapper,
   StyledDivider,
-  InviteThruEmailLabel,
-  InviteThruEmailTextFieldButtonWrapper,
-  InviteThruEmailTextField,
   InviteThruLinkSelect,
   InviteThruLinkMenuItem,
   InviteThruLinkFormControlSelect,
-  InviteThruEmailTextFieldSelectWrapper,
-  InviteThruEmailButtonLabel,
   InviteThruLinkButtonSuccessLabel,
   LinkSwitch,
   TextSubheading,
 } from './styles';
 
+const ORG_TYPES_PATHS = {
+  [ORG_TYPES.ORG]: 'invite',
+  [ORG_TYPES.COLLAB]: 'invite/collab/members',
+};
 export function NewInviteLinkModal(props) {
-  const { orgOrPodName, orgId, podId, open, onClose } = props;
+  const { orgOrPodName, orgId, podId, open, onClose, orgType = ORG_TYPES.ORG } = props;
   const [copy, setCopy] = useState(false);
   const [role, setRole] = useState('');
   const [inviteLink, setInviteLink] = useState('');
@@ -62,7 +61,7 @@ export function NewInviteLinkModal(props) {
 
   const [createOrgInviteLink] = useMutation(CREATE_ORG_INVITE_LINK, {
     onCompleted: (data) => {
-      setInviteLink(`${LINK}/invite/org/${data?.createOrgInviteLink.token}`);
+      setInviteLink(`${LINK}/${ORG_TYPES_PATHS[orgType]}/${data?.createOrgInviteLink.token}`);
     },
     onError: (e) => {
       console.error(e);

@@ -144,12 +144,12 @@ export const NATIVE_TOKEN_SYMBOL = {
 };
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-  SUPPORTED_CHAINS[4] = 'RINKEBY';
+  SUPPORTED_CHAINS[5] = 'GOERLI';
 }
 
 export const RPC_URLS: { [chainId: number]: string } = {
   1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
-  4: process.env.NEXT_PUBLIC_RPC_URL_RINKEBY,
+  5: process.env.NEXT_PUBLIC_RPC_URL_GOERLI,
   137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
   1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
   42161: process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM,
@@ -160,7 +160,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   ethereum: 'https://safe-transaction.mainnet.gnosis.io',
-  rinkeby: 'https://safe-transaction.rinkeby.gnosis.io',
+  goerli: 'https://safe-transaction.goerli.gnosis.io',
   polygon: 'https://safe-transaction.polygon.gnosis.io',
   harmony: 'https://multisig.t.hmny.io',
   arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
@@ -186,12 +186,14 @@ export const NOTION_CONNECT_TYPES = {
   TASK_IMPORT: 'taskImport',
 };
 
+export const DEFAULT_ERC20_GAS_LIMIT = '0x3D090'; // TODO hackey == 250000
+
 export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId, 10));
 
 export const CHAIN_IDS = {
   ETH: 1,
   MATIC: 137,
-  RINKEBY: 4,
+  GOERLI: 5,
   HARMONY: 1666600000,
   ARBITRUM: 42161,
   BSC: 56,
@@ -202,7 +204,7 @@ export const CHAIN_IDS = {
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   ethereum: 'Ethereum Mainnet',
-  rinkeby: 'Rinkeby Testnet',
+  goerli: 'Goerli Testnet',
   polygon: 'Polygon Mainnet',
   harmony: 'Harmony Mainnet',
   arbitrum: 'Arbitrum One',
@@ -652,6 +654,7 @@ export const PAGES_WITH_NO_SIDEBAR = [
   '/new-task',
   '/apps/install/coordinape',
   '/invite/collab/[token]',
+  '/invite/collab/members/[token]',
 ];
 
 export const TWITTER_CHALLENGE_CODE = '0ioze5m20493ny2'; // not that important but should fetch from server'
@@ -910,4 +913,23 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.GOVERNANCE]: '🪐 Governance',
   [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
   [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
+};
+
+export const enum ORG_TYPES {
+  ORG = 'org',
+  COLLAB = 'collab',
+}
+
+export const enum SUBMISSION_STATUS {
+  AWAITING_REVIEW = 'awaiting_review',
+  REJECTED = 'rejected',
+  CHANGE_REQUESTED = 'change_requested',
+  APPROVED = 'approved',
+  APPROVED_AND_PROCESSING_PAYMENT = 'approved_and_processing_payment',
+  APPROVED_AND_PAID = 'approved_and_paid',
+}
+
+export const COMMENTER_ROLE = {
+  Assignee: 'Assignee',
+  Reviewer: 'Reviewer',
 };
