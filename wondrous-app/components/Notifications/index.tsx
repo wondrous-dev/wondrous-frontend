@@ -82,9 +82,11 @@ function NotificationsBoard({ onlyBoard = false }) {
         notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
       }`;
     }
-    notification?.additionalData?.viewNft && (notificationLink += `&viewNft=${true}`);
+    notification?.additionalData?.viewNft && (notificationLink += `/nft`);
+
     return notificationLink;
   };
+
   // Construct Text of Notification
   const getNotificationText = (notification) => {
     const userName = notification.actorUsername;

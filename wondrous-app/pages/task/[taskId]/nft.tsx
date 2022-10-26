@@ -16,6 +16,7 @@ Org board task view modal with the NFT view mode
 function TaskViewNFT({ tokenData, taskId }) {
   const router = useRouter();
 
+  console.log(tokenData, 'tokenData');
   const { data } = useQuery(GET_TASK_BY_ID, {
     variables: {
       taskId,
@@ -23,7 +24,11 @@ function TaskViewNFT({ tokenData, taskId }) {
   });
 
   if (data?.getTaskById?.org?.username) {
-    router.push(`/organization/${data?.getTaskById?.org?.username}/boards?task=${taskId}&viewNft=${true}`, undefined, {
+    const url = `/organization/${data?.getTaskById?.org?.username}/boards?task=${taskId}${
+      tokenData?.tokenId ? `&viewNft=${true}` : ''
+    }`;
+
+    router.push(url, undefined, {
       shallow: true,
     });
   }
@@ -49,10 +54,12 @@ export async function getServerSideProps(context) {
 
   const { data } = await apollo.query({
     query: GET_MINT_TASK_TOKEN_DATA,
+    fetchPolicy: 'network-only',
     variables: {
       taskId,
     },
   });
+  console.log(data);
   return {
     props: {
       tokenData: data?.getTaskMintTokenData,
