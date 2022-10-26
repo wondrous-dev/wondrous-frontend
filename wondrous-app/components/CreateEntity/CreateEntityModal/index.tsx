@@ -250,7 +250,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories.map((category) => category.id || category);
+      const categories = values?.categories?.map((category) => category.id || category);
       const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
         values;
       const input = {
@@ -1409,17 +1409,29 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityLabel>Category</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            <DropdownSearch
-              label="Select Category"
-              searchPlaceholder="Search categories"
-              options={categoriesData}
-              value={filterCategoryValues(form.values.categories)}
-              onChange={(categories) => {
-                form.setFieldValue('categories', [...categories]);
-              }}
-              disabled={formValues?.categories}
-              onClose={() => {}}
-            />
+            {form.values.categories !== null && (
+              <DropdownSearch
+                label="Select Category"
+                searchPlaceholder="Search categories"
+                options={categoriesData}
+                value={filterCategoryValues(form.values.categories)}
+                onChange={(categories) => {
+                  form.setFieldValue('categories', [...categories]);
+                }}
+                disabled={formValues?.categories}
+                onClose={() => {}}
+              />
+            )}
+            {form.values.categories == null && (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('categories', []);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 

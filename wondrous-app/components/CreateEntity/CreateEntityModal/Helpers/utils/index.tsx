@@ -267,7 +267,7 @@ export const entityTypeData = {
       chooseGithubIssue: false,
       parentTaskId: null,
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -285,7 +285,7 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -315,7 +315,7 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -333,7 +333,7 @@ export const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
-      categories: [],
+      categories: null,
     },
   },
 };
@@ -348,7 +348,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
-      categories: transformCategoryFormat(existingTask?.categories),
+      categories: isEmpty(existingTask?.categories) ? null : transformCategoryFormat(existingTask?.categories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
       labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
