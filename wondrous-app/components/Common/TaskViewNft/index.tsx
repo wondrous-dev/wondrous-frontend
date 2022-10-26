@@ -19,7 +19,7 @@ const TaskViewNft = ({ taskId }) => {
 
   if (!data) return null;
 
-  const { imageUrl } = data?.getMintTaskTokenData;
+  const { imageUrl } = data?.getTaskMintTokenData;
   return (
     <Grid display="flex" justifyContent="center" alignItems="center">
       <Image layout="fixed" width={422} height={422} src={imageUrl} priority />;

@@ -82,6 +82,7 @@ function NotificationsBoard({ onlyBoard = false }) {
         notification.additionalData?.addMember && !notification.viewedAt ? `&addMembers=${true}` : ''
       }`;
     }
+    notification?.additionalData?.viewNft && (notificationLink += `&viewNft=${true}`);
     return notificationLink;
   };
   // Construct Text of Notification

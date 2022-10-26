@@ -35,13 +35,12 @@ const MintStepDetails = ({ step }) => (
 
 const MintInProgress = ({ setTokenData }) => {
   const { step, nextStep } = useSteps();
-  const [mintTask] = useMutation(MINT_TASK, {
+  const [taskMint] = useMutation(MINT_TASK, {
     onCompleted: () => nextStep(),
   });
-  const [getMintTaskOperation, { startPolling, stopPolling }] = useLazyQuery(GET_MINT_OPERATION, {
-    onCompleted: ({ getMintTaskOperation }) => {
-      console.log(getMintTaskOperation);
-      if (getMintTaskOperation?.resourceId) {
+  const [getTaskMintOperation, { startPolling, stopPolling }] = useLazyQuery(GET_MINT_OPERATION, {
+    onCompleted: ({ getTaskMintOperation }) => {
+      if (getTaskMintOperation?.resourceId) {
         nextStep();
         stopPolling();
         getTaskTokenData({
@@ -55,13 +54,15 @@ const MintInProgress = ({ setTokenData }) => {
   });
 
   const [getTaskTokenData] = useLazyQuery(GET_MINT_TASK_TOKEN_DATA, {
-    onCompleted: ({ getMintTaskTokenData }) => setTokenData(getMintTaskTokenData),
+    onCompleted: ({ getTaskMintTokenData }) => {
+      setTokenData(getTaskMintTokenData);
+    },
   });
+
   const { fetchedTask } = useTaskContext();
 
-  console.log(fetchedTask, 'fetched task12345');
-  const mintTaskProcess = async () => {
-    const { data: mintTaskData } = await mintTask({
+  const taskMintProcess = async () => {
+    const { data: taskMintData } = await taskMint({
       variables: {
         taskId: fetchedTask?.id,
         title: fetchedTask?.title,
@@ -69,16 +70,16 @@ const MintInProgress = ({ setTokenData }) => {
         links: fetchedTask?.links?.map((link) => JSON.stringify(link)) || null,
       },
     });
-    await getMintTaskOperation({
+    await getTaskMintOperation({
       variables: {
-        operationId: mintTaskData?.mintTask,
+        operationId: taskMintData?.taskMint,
       },
     });
     startPolling(1000);
   };
 
   useEffect(() => {
-    mintTaskProcess();
+    taskMintProcess();
   }, []);
 
   return (

@@ -284,8 +284,8 @@ export const RENDER_RICH_TEXT = gql`
 `;
 
 export const GET_MINT_OPERATION = gql`
-  query getMintTaskOperation($operationId: String!) {
-    getMintTaskOperation(operationId: $operationId) {
+  query getTaskMintOperation($operationId: String!) {
+    getTaskMintOperation(operationId: $operationId) {
       status
       txHash
       resourceId
@@ -293,8 +293,8 @@ export const GET_MINT_OPERATION = gql`
   }
 `;
 export const GET_MINT_TASK_TOKEN_DATA = gql`
-  query getMintTaskTokenData($taskId: ID!) {
-    getMintTaskTokenData(taskId: $taskId) {
+  query getTaskMintTokenData($taskId: ID!) {
+    getTaskMintTokenData(taskId: $taskId) {
       tokenId
       imageUrl
     }

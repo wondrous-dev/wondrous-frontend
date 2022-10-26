@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 
-export const MintTaskWrapper = styled.div`
+export const TaskMintWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-basis: 100%;
@@ -14,13 +14,13 @@ export const MintTaskWrapper = styled.div`
   align-items: center;
 `;
 
-export const MintTaskDetails = styled.div`
+export const TaskMintDetails = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
 `;
 
-export const MintTaskDetailsTitle = styled(Typography)`
+export const TaskMintDetailsTitle = styled(Typography)`
   && {
     background: linear-gradient(265.8deg, #7427ff -78%, #f2c678 108.49%);
     -webkit-background-clip: text;
@@ -33,7 +33,7 @@ export const MintTaskDetailsTitle = styled(Typography)`
   }
 `;
 
-export const MintTaskDetailsChain = styled.div`
+export const TaskMintDetailsChain = styled.div`
   display: flex;
   gap: 8px;
   font-family: ${typography.fontFamily};
@@ -49,7 +49,7 @@ export const MintTaskDetailsChain = styled.div`
   }
 `;
 
-export const MintTaskButtonWrapper = styled.button`
+export const TaskMintButtonWrapper = styled.button`
   border: 0;
   background: ${palette.grey1020};
   color: ${palette.white};

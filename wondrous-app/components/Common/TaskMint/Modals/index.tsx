@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useSteps } from 'utils/hooks';
 import Modal from 'components/Modal';
-import { StartMint, MintInProgress, SuccessMint } from 'components/Common/MintTask/Steps';
+import { useTaskContext, useSteps } from 'utils/hooks';
+import { StartMint, MintInProgress, SuccessMint } from 'components/Common/TaskMint/Steps';
 import { Actions } from 'components/CreateCollaborationModal/ViewCollab';
 import { MODAL_TYPE } from 'components/CreateCollaborationModal/ViewCollab/CollabDetails';
 import OpenseaButton from '../OpenseaButton';
@@ -9,7 +9,7 @@ import OpenseaButton from '../OpenseaButton';
 const ModalsComponent = ({ isOpen, onClose }) => {
   const [tokenData, setTokenData] = useState(null);
   const { nextStep, step, setStep } = useSteps();
-
+  const { refetch } = useTaskContext();
   const STEPS_TITLE_MAP = ['Mint task', 'In-progress...', 'Minting task'];
 
   const title = STEPS_TITLE_MAP[step];
@@ -23,6 +23,9 @@ const ModalsComponent = ({ isOpen, onClose }) => {
     onClose();
     setTokenData(null);
     setStep(0);
+    if (step > 0) {
+      refetch();
+    }
   };
 
   const STEPS = [

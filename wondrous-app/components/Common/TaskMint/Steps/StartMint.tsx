@@ -1,7 +1,7 @@
 import palette from 'theme/palette';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { Polygon } from 'components/Icons/chains';
-import { MintTaskDetailsChain } from '../MintTaskButton/styles';
+import { TaskMintDetailsChain } from '../TaskMintButton/styles';
 import MintStepContent from './MintStepContent';
 
 const StartMint = () => (
@@ -15,12 +15,12 @@ const StartMint = () => (
       </>
     }
   >
-    <MintTaskDetailsChain>
+    <TaskMintDetailsChain>
       <ItemButtonIcon bgColor={palette.highlightPurple}>
         <Polygon />
       </ItemButtonIcon>
       Minted on Polygon via Mint Kudos - (Zero gas fees)
-    </MintTaskDetailsChain>
+    </TaskMintDetailsChain>
   </MintStepContent>
 );
 

@@ -23,10 +23,10 @@ import {
   updateProposalItem,
   updateTaskItem,
 } from 'utils/board';
+import { useLocation } from 'utils/useLocation';
 import {
   BOUNTY_TYPE,
   ENTITIES_TYPES,
-  LINK,
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
@@ -45,7 +45,7 @@ import {
 import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
-import MintTaskComponent from 'components/Common/MintTask';
+import TaskMintComponent from 'components/Common/TaskMint';
 
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
@@ -69,7 +69,6 @@ import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
 import ActionModals from './actionModals';
-import { useLocation } from 'utils/useLocation';
 import { tabs } from './constants';
 import {
   GithubButtons,
@@ -182,6 +181,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const location = useLocation();
+
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
     orgId: fetchedTask?.orgId,
@@ -198,9 +199,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const sectionRef = useRef(null);
   const user = useMe();
-  const location = useLocation();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
-  const [getTaskById, {refetch}] = useLazyQuery(GET_TASK_BY_ID, {
+  const [getTaskById, { refetch }] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
@@ -516,13 +516,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   };
 
   return (
-    <ApprovedSubmissionContext.Provider
+<ApprovedSubmissionContext.Provider
       value={{
         setApprovedSubmission,
       }}
     >
       <>
-       {!isViewNFTMode &&  <ActionModals
+        <ActionModals
           completeModal={completeModal}
           setCompleteModal={setCompleteModal}
           taskType={taskType}
@@ -535,8 +535,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
           handleClose={handleClose}
           setSnackbarAlertOpen={setSnackbarAlertOpen}
           setSnackbarAlertMessage={setSnackbarAlertMessage}
-        />}
+        />
         <TaskContext.Provider value={{ fetchedTask, refetch }}>
+
         <TaskModal open={open} onClose={handleModalClose}>
           <TaskModalCard fullScreen={fullScreen}>
             {!!fetchedTask && canViewTask !== null && (
@@ -669,6 +670,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                       </TaskModalTitleDescriptionMedia>
                       <TaskSectionDisplayDivWrapper fullScreen={fullScreen}>
                         <TaskSectionDisplayData>
+                          
                           <ReviewerField
                             shouldDisplay={!isTaskProposal && !isMilestone}
                             reviewerData={reviewerData}
@@ -853,6 +855,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
           </TaskModalCard>
         </TaskModal>
         </TaskContext.Provider>
+
       </>
     </ApprovedSubmissionContext.Provider>
   );

@@ -13,7 +13,7 @@ import { TaskShareIcon } from 'components/Icons/taskShare';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { useTaskContext } from 'utils/hooks';
 import { CommunityShareWrapper, ShareButton } from './styles';
-import { MintTaskDetailsChain } from '../MintTaskButton/styles';
+import { TaskMintDetailsChain } from '../TaskMintButton/styles';
 
 const CommunityShare = ({ handleShareClick }) => (
   <CommunityShareWrapper>
@@ -51,12 +51,12 @@ const SuccessMint = ({ tokenData }) => {
         >
           Successfully Minted Task!
         </GradientHeading>
-        <MintTaskDetailsChain>
+        <TaskMintDetailsChain>
           <ItemButtonIcon>
             <Polygon />
           </ItemButtonIcon>
           Minted on Polygon via Mint Kudos
-        </MintTaskDetailsChain>
+        </TaskMintDetailsChain>
         <Image layout="fixed" width={258} height={257} src={tokenData?.imageUrl} />
         <CommunityShare handleShareClick={handleShareClick} />
       </Grid>

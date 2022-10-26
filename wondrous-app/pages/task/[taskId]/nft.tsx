@@ -55,7 +55,7 @@ export async function getServerSideProps(context) {
   });
   return {
     props: {
-      tokenData: data?.getMintTaskTokenData,
+      tokenData: data?.getTaskMintTokenData,
       taskId,
     },
   };
