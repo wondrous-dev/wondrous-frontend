@@ -66,11 +66,7 @@ function RolesPage() {
 
   useEffect(() => {
     if (podId) {
-      getPodRolesWithTokenGate().then((result) => {
-        if (result?.data?.getPodRoles) {
-          setRoles(JSON.parse(JSON.stringify(result?.data?.getPodRoles)) || []);
-        }
-      });
+      getPodRolesWithTokenGate();
     }
   }, [podId, getPodRolesWithTokenGate]);
 
