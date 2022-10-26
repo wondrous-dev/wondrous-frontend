@@ -168,7 +168,7 @@ function InviteMember(props) {
           onInputChange={(event, newInputValue) => {
             searchOrgUsers({
               variables: {
-                orgsIds: [orgId],
+                orgIds: [orgId],
                 searchString: newInputValue,
               },
             });
