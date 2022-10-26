@@ -10,6 +10,7 @@ import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
 import ShowChartIcon from 'components/Icons/Sidebar/showChart.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
+import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import { GET_TASKS_PER_TYPE, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -48,7 +49,7 @@ const useSidebarData = () => {
     };
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
-  return {
+  const sidebarData = {
     handleOnClick,
     data: [
       {
@@ -93,12 +94,12 @@ const useSidebarData = () => {
               },
             },
           },
-
-          // {
-          //   text: 'Pods',
-          //   Icon: PodIcon,
-          //   link: null, // link: not sure yet
-          // },
+          !!orgBoard && {
+            text: 'Pods',
+            Icon: PodIcon,
+            link: `${link}/pods`,
+            count: board?.orgData?.podCount,
+          },
         ],
       },
       {
@@ -140,6 +141,7 @@ const useSidebarData = () => {
       },
     ],
   };
+  return sidebarData;
 };
 
 const location = () => {

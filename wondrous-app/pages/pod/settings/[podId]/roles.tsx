@@ -22,7 +22,7 @@ function RolesPage() {
         podId,
       },
       onCompleted: (data) => {
-        setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
+        setRoles(JSON.parse(JSON.stringify(data?.getPodRoles)) || []);
       },
     }
   );
