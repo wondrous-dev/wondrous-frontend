@@ -62,7 +62,7 @@ const socialsData = [
     type: 'twitter',
   },
   {
-    icon: <DiscordIcon />,
+    icon: <DiscordIcon fill="#ccbbff" />,
     link: 'https://discord.gg/',
     type: 'discord',
   },
