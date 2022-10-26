@@ -217,8 +217,8 @@ export const GET_ORG_ARCHIVED_PODS = gql`
 `;
 
 export const SEARCH_ORG_USERS = gql`
-  query searchOrgUsers($orgsIds: [ID], $searchString: String!, $limit: Int, $offset: Int) {
-    searchOrgUsers(orgsIds: $orgsIds, searchString: $searchString, limit: $limit, offset: $offset) {
+  query searchOrgUsers($orgIds: [ID], $searchString: String!, $limit: Int, $offset: Int) {
+    searchOrgUsers(orgIds: $orgIds, searchString: $searchString, limit: $limit, offset: $offset) {
       id
       username
       profilePicture
