@@ -1,6 +1,7 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import Paper from '@mui/material/Paper';
 import TextField from '@mui/material/TextField';
+import ScrollBarStyles from 'components/Common/ScrollbarStyles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -34,10 +35,17 @@ export const StyledTextField = styled(TextField)`
 `;
 
 export const PaperComponent = styled(Paper)`
+  max-height: 200px;
   border-radius: 6px;
   margin-top: 8px;
+  border: 1px solid ${palette.grey57};
+  ${ScrollBarStyles}
+  &::-webkit-scrollbar {
+    background: ${palette.grey95};
+  }
   .MuiAutocomplete-listbox {
     background: ${palette.grey95};
+    border: none;
   }
   .MuiAutocomplete-noOptions {
     background: ${palette.grey95};
