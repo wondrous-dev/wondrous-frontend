@@ -206,7 +206,7 @@ function CreatePodModal(props) {
     if (canCreatePod) {
       const podInput = {
         name: title,
-        username: title?.toLowerCase().split(' ').join('_'),
+        username: title?.toLowerCase().split(' ').join(''),
         description: podDescriptionText,
         orgId: org,
         privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
