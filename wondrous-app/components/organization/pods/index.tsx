@@ -7,7 +7,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { useOrgBoard } from 'utils/hooks';
 import { capitalize } from 'utils/common';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-import { GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
+import { GET_ORG_ARCHIVED_PODS, GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
 import { parseUserPermissionContext } from 'utils/helpers';
 
 import PlusIcon from 'components/Icons/plus';
@@ -64,6 +64,12 @@ const Pods = (props) => {
       userId: user?.id,
     },
   });
+  const { data: archivedPodsData } = useQuery(GET_ORG_ARCHIVED_PODS, {
+    fetchPolicy: 'network-only',
+    variables: {
+      orgId: orgData?.id,
+    },
+  });
 
   const orgName = orgData?.name || orgData?.username;
   const orgPods = orgPodsData?.getOrgPods;
@@ -72,8 +78,32 @@ const Pods = (props) => {
   const orgPodsUserIsNotIn = orgPods?.filter(
     (pod) => !orgPodsUserIsIn?.find((podUserIsIn) => podUserIsIn.id === pod.id)
   );
-  const canUserCreatePods =
+  const archivedPods = archivedPodsData?.getOrgArchivedPods;
+  const canUserCreateOrUnarchivePods =
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.MANAGE_POD);
+
+  const tabs = [
+    {
+      label: 'Show all',
+      count: orgPods?.length,
+      view: PodView.ALL_PODS,
+    },
+    {
+      label: 'Pods I’m in',
+      count: orgPodsUserIsIn?.length,
+      view: PodView.PODS_USER_IS_MEMBER_OF,
+    },
+    {
+      label: 'Pods I’m not in',
+      count: orgPodsUserIsNotIn?.length,
+      view: PodView.PODS_USER_IS_NOT_MEMBER_OF,
+    },
+    !!canUserCreateOrUnarchivePods && {
+      label: 'Archived Pods',
+      count: archivedPods?.length,
+      view: PodView.ARCHIVED_PODS,
+    },
+  ];
 
   const getActivePodsList = useCallback(() => {
     if (activePodView === PodView.ALL_PODS) {
@@ -85,13 +115,16 @@ const Pods = (props) => {
     if (activePodView === PodView.PODS_USER_IS_NOT_MEMBER_OF) {
       return orgPodsUserIsNotIn;
     }
+    if (activePodView === PodView.ARCHIVED_PODS) {
+      return archivedPods;
+    }
     return [];
-  }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]);
+  }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length, archivedPods?.length]);
 
   useEffect(() => {
     const activePodsList = getActivePodsList();
     setActivePodsList(activePodsList);
-  }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]);
+  }, [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length, archivedPods?.length]);
 
   const handleActiveTabChange = (_, newValue: number) => {
     setActivePodView(newValue);
@@ -114,7 +147,7 @@ const Pods = (props) => {
         setActivePodsList(activePodsList);
       }
     },
-    [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length]
+    [activePodView, orgPods?.length, orgPodsUserIsIn?.length, orgPodsUserIsNotIn?.length, archivedPods?.length]
   );
 
   const handleOpenCreatePodModal = () => {
@@ -125,37 +158,27 @@ const Pods = (props) => {
     setShowCreatePodModal(false);
   };
 
+  const setActivePodViewToAllPods = () => {
+    setActivePodView(PodView.ALL_PODS);
+  };
+
   return (
     <PodsContainer>
       <PodHeadline>Pods in {capitalize(orgName)}</PodHeadline>
 
       <StyledTabs value={activePodView} onChange={handleActiveTabChange}>
-        <StyledTab
-          label={<TabLabel label="Show all" count={orgPods?.length} isActive={activePodView === PodView.ALL_PODS} />}
-        />
-        <StyledTab
-          label={
-            <TabLabel
-              label="Pods I’m in"
-              count={orgPodsUserIsIn?.length}
-              isActive={activePodView === PodView.PODS_USER_IS_MEMBER_OF}
-            />
-          }
-        />
-        <StyledTab
-          label={
-            <TabLabel
-              label="Pods I’m not in"
-              count={orgPodsUserIsNotIn?.length}
-              isActive={activePodView === PodView.PODS_USER_IS_NOT_MEMBER_OF}
-            />
-          }
-        />
+        {tabs?.map((tab) => (
+          <StyledTab
+            label={
+              <TabLabel label={tab.label} count={tab.count} isActive={activePodView === tab.view} key={tab.view} />
+            }
+          />
+        ))}
       </StyledTabs>
 
       <SearchPods placeholder="Search pods..." onChange={handleSearchPods} />
 
-      {canUserCreatePods && (
+      {canUserCreateOrUnarchivePods && (
         <CreateNewPodButtonWrapper>
           <CreateNewPodButton onClick={handleOpenCreatePodModal}>
             <CreateNewPodIconWrapper>
@@ -171,7 +194,11 @@ const Pods = (props) => {
           activePodsList?.map((podData) => (
             <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
               <PodItemWrapper>
-                <PodItem podData={podData} />
+                <PodItem
+                  podData={podData}
+                  showUnarchivePod={activePodView === PodView.ARCHIVED_PODS}
+                  setActivePodViewToAllPods={setActivePodViewToAllPods}
+                />
               </PodItemWrapper>
             </Link>
           ))}
