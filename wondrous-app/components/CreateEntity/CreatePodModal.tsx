@@ -127,7 +127,7 @@ function CreatePodModal(props) {
   const handleUserMentionChange = (query) =>
     searchOrgUsers({
       variables: {
-        orgsIds: [org],
+        orgIds: [org],
         searchString: query,
       },
     }).then(({ data }) => data?.searchOrgUsers?.map((user) => ({ ...user, display: user.username, id: user.id })));
@@ -210,12 +210,6 @@ function CreatePodModal(props) {
         description: podDescriptionText,
         orgId: org,
         privacyLevel: isPublicEntity ? PRIVACY_LEVEL.public : PRIVACY_LEVEL.private,
-        links: [
-          {
-            url: link,
-            displayName: link,
-          },
-        ],
       };
       if (!title) {
         const newErrors = { ...errors };
@@ -247,7 +241,7 @@ function CreatePodModal(props) {
         general: 'You need the right permissions to create a pod',
       });
     }
-  }, [podDescriptionText, title, org, canCreatePod, errors, link, createPod, isPublicEntity]);
+  }, [podDescriptionText, title, org, canCreatePod, errors, createPod, isPublicEntity]);
 
   const creating = createPodLoading && !createPodError;
   return (
@@ -328,22 +322,6 @@ function CreatePodModal(props) {
         <CreateFormAddDetailsAppearBlock>
           {(showLinkAttachmentSection || showVisibility) && (
             <CreateFormAddDetailsAppearBlockContainer>
-              {showLinkAttachmentSection && (
-                <CreateFormLinkAttachmentBlock
-                  style={{
-                    borderBottom: 'none',
-                  }}
-                >
-                  <CreateFormLinkAttachmentLabel>Link</CreateFormLinkAttachmentLabel>
-                  <InputForm
-                    value={link}
-                    onChange={(e) => setLink(e.target.value)}
-                    margin
-                    placeholder="Enter link URL"
-                    search={false}
-                  />
-                </CreateFormLinkAttachmentBlock>
-              )}
               {showVisibility && (
                 <CreateFormAddDetailsTab>
                   <CreateFormAddDetailsInputLabel>Who can see this pod?</CreateFormAddDetailsInputLabel>
