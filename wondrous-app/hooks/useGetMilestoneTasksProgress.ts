@@ -1,6 +1,6 @@
-import { useLazyQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE } from 'graphql/queries';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 
 const calculateProgress = (completed, total) => {
   if (!completed || completed === 0) return 0;
@@ -8,36 +8,37 @@ const calculateProgress = (completed, total) => {
 };
 
 const useGetMilestoneTasksProgress = ({ milestoneId }) => {
-  const [tasksTotal, setTaskTotal] = useState(null);
-  const [tasksCompleted, setTaskCompleted] = useState(null);
-  const progress = calculateProgress(tasksCompleted, tasksTotal);
-  const [getPerStatusTaskCountForMilestone, { data }] = useLazyQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE);
-  useEffect(() => {
-    if (milestoneId) {
-      getPerStatusTaskCountForMilestone({
-        variables: {
-          milestoneId,
-        },
-      });
+  const { data } = useQuery(GET_PER_STATUS_TASK_COUNT_FOR_MILESTONE, {
+    skip: !milestoneId,
+    variables: {
+      milestoneId,
+    },
+  });
 
-      if (data?.getPerStatusTaskCountForMilestone) {
-        const { getPerStatusTaskCountForMilestone: getPerStatusTaskCountForMilestoneData } = data;
-        setTaskTotal(
-          Object.values(getPerStatusTaskCountForMilestoneData)
+  const tasksTotal = useMemo(
+    () =>
+      data?.getPerStatusTaskCountForMilestone
+        ? Object.values(data?.getPerStatusTaskCountForMilestone)
             ?.filter((i) => typeof i === 'number')
             ?.reduce((a: number, b: number) => a + b, 0) ?? 0
-        );
-        setTaskCompleted(
-          getPerStatusTaskCountForMilestoneData?.completed + getPerStatusTaskCountForMilestoneData?.archived
-        );
-      }
+        : 0,
+    [data?.getPerStatusTaskCountForMilestone]
+  );
 
-      if (!data?.getPerStatusTaskCountForMilestone) {
-        setTaskTotal(0);
-        setTaskCompleted(0);
-      }
-    }
-  }, [getPerStatusTaskCountForMilestone, milestoneId, data]);
+  const tasksCompleted = useMemo(
+    () =>
+      data?.getPerStatusTaskCountForMilestone
+        ? data?.getPerStatusTaskCountForMilestone?.completed + data?.getPerStatusTaskCountForMilestone?.archived
+        : 0,
+    [data?.getPerStatusTaskCountForMilestone]
+  );
+
+  const progress = useMemo(
+    () => calculateProgress(tasksCompleted, tasksTotal),
+    [tasksCompleted, tasksTotal, calculateProgress]
+  );
+
+  console.log(tasksTotal, tasksCompleted, progress);
   return { tasksTotal, tasksCompleted, progress };
 };
 
