@@ -115,8 +115,8 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
                       handleUpdateReviewers(taskReviewerIds.filter((id) => id !== taskReviewer.id));
                     },
                     canEdit,
+                    onClick: handleOnClick(taskReviewer?.username),
                   }}
-                  onClick={handleOnClick(taskReviewer?.username)}
                 />
               </Grid>
             ))}
@@ -306,12 +306,12 @@ export function AssigneeField({
               });
             },
             canEdit,
-          }}
-          onClick={() => {
-            handleClose();
-            router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
-              shallow: true,
-            });
+            onClick: () => {
+              handleClose();
+              router.push(`/profile/${fetchedTask?.assigneeUsername}/about`, undefined, {
+                shallow: true,
+              });
+            },
           }}
           DefaultContent={AssigneeDefaultContent}
           DefaultContentProps={{

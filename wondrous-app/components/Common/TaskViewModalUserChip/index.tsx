@@ -4,7 +4,7 @@ import palette from 'theme/palette';
 import { SafeImage } from '../Image';
 import DefaultUserImage from '../Image/DefaultUserImage';
 
-const TaskViewModalUserChip = ({ user, handleRemove, canEdit = false }) => {
+const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false }) => {
   const { username, profilePicture } = user;
   const image = profilePicture ? (
     <SafeImage src={profilePicture} width={24} height={24} style={{ borderRadius: '24px' }} />
@@ -30,7 +30,16 @@ const TaskViewModalUserChip = ({ user, handleRemove, canEdit = false }) => {
         }),
       }}
     >
-      <Grid item container gap="6px" width="40%">
+      <Grid
+        item
+        container
+        gap="6px"
+        width="40%"
+        onClick={onClick}
+        sx={{
+          cursor: 'pointer',
+        }}
+      >
         <Box width="24px" height="24px">
           {image}
         </Box>
