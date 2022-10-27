@@ -588,7 +588,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
 
   useEffect(() => {
-    setFormDirty(formDirty(form));
+    if (setFormDirty) {
+      setFormDirty(formDirty(form));
+    }
   }, [form, setFormDirty]);
 
   return (
