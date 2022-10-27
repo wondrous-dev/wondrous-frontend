@@ -176,3 +176,8 @@ export const deleteTaskFromCache = (cache, id, keys = []) => {
 };
 
 export const transformCategoryFormat = (categories) => categories && categories.map((item) => item?.name);
+
+export const removeUrlStart = (url) => {
+  if (!url) return '';
+  return url.replace(/http(s)?(:)?(\/\/)?|(\/\/)?(www\.)?/g, '');
+};
