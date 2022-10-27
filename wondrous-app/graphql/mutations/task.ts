@@ -285,3 +285,11 @@ export const DUPLICATE_TASK = gql`
     }
   }
 `;
+
+export const UPDATE_TASK_REVIEWERS = gql`
+  mutation updateTaskReviewers($taskId: ID!, $reviewerIds: [String]!) {
+    updateTaskReviewers(taskId: $taskId, reviewerIds: $reviewerIds) {
+      success
+    }
+  }
+`;
