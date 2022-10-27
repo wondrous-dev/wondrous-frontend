@@ -31,6 +31,7 @@ const CreateEntityDiscardTask = ({ open, onClose, onCloseFormModal, entityType }
       footerRight={footerRight}
       maxWidth={560}
       open={open}
+      alignCenter
     >
       <Typography sx={{ color: 'white', textAlign: 'center' }}>
         Are you sure you want to discard the changes to your current {entityType}?

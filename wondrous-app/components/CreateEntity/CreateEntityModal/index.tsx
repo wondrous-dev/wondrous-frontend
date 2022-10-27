@@ -94,6 +94,7 @@ import {
   CreateEntityPaymentMethodItem,
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
+  formDirty,
 } from './Helpers';
 import {
   CreateEntityAddButtonIcon,
@@ -160,7 +161,7 @@ import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
@@ -250,7 +251,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories.map((category) => category.id || category);
+      const categories = values?.categories?.map((category) => category.id || category);
       const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
         values;
       const input = {
@@ -585,6 +586,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
   const hasSubTasks = subTasks?.data?.length > 0;
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
+
+  useEffect(() => {
+    setFormDirty(formDirty(form));
+  }, [form, setFormDirty]);
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen} data-cy="modal-create-entity">
@@ -1409,17 +1414,29 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             <CreateEntityLabel>Category</CreateEntityLabel>
           </CreateEntityLabelWrapper>
           <CreateEntitySelectWrapper>
-            <DropdownSearch
-              label="Select Category"
-              searchPlaceholder="Search categories"
-              options={categoriesData}
-              value={filterCategoryValues(form.values.categories)}
-              onChange={(categories) => {
-                form.setFieldValue('categories', [...categories]);
-              }}
-              disabled={formValues?.categories}
-              onClose={() => {}}
-            />
+            {form.values.categories !== null && (
+              <DropdownSearch
+                label="Select Category"
+                searchPlaceholder="Search categories"
+                options={categoriesData}
+                value={filterCategoryValues(form.values.categories)}
+                onChange={(categories) => {
+                  form.setFieldValue('categories', [...categories]);
+                }}
+                disabled={formValues?.categories}
+                onClose={() => {}}
+              />
+            )}
+            {form.values.categories == null && (
+              <CreateEntityLabelAddButton
+                onClick={() => {
+                  form.setFieldValue('categories', []);
+                }}
+              >
+                <CreateEntityAddButtonIcon />
+                <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
+              </CreateEntityLabelAddButton>
+            )}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
