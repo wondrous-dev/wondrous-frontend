@@ -94,6 +94,7 @@ import {
   CreateEntityPaymentMethodItem,
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
+  formDirty,
 } from './Helpers';
 import {
   CreateEntityAddButtonIcon,
@@ -160,7 +161,7 @@ import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
-  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status } = props;
+  const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const isSubtask =
     parentTaskId !== undefined || (existingTask?.parentTaskId !== undefined && existingTask?.parentTaskId !== null);
@@ -585,6 +586,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const subTasks = useGetSubtasksForTask({ taskId: existingTask?.id, status: TASK_STATUS_TODO });
   const hasSubTasks = subTasks?.data?.length > 0;
   const canTurnIntoBounty = !hasSubTasks && !isSubtask && existingTask?.type === ENTITIES_TYPES.TASK;
+
+  useEffect(() => {
+    setFormDirty(formDirty(form));
+  }, [form, setFormDirty]);
 
   return (
     <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen} data-cy="modal-create-entity">

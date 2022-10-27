@@ -41,23 +41,10 @@ interface ICreateEntity {
 export function CreateEntity(props: ICreateEntity) {
   const { open, entityType, handleCloseModal, isTaskProposal } = props;
   const [discard, setDiscard] = useState(false);
-  const handleCloseForm = () => setDiscard(true);
+  const [formDirty, setFormDirty] = useState(false);
+  const handleCloseForm = () => (formDirty ? setDiscard(true) : handleCloseModal());
   const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
-  if (isTaskProposal) {
-    return (
-      <>
-        <CreateEntityDiscardTask
-          open={discard}
-          onClose={setDiscard}
-          onCloseFormModal={handleCloseModal}
-          entityType={entityType}
-        />
-        <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
-          <CreateEntityModal {...props} />
-        </CreateFormModalOverlay>
-      </>
-    );
-  }
+  const showNewModal = forNewModal || isTaskProposal;
   return (
     <>
       <CreateEntityDiscardTask
@@ -67,7 +54,7 @@ export function CreateEntity(props: ICreateEntity) {
         entityType={entityType}
       />
       <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
-        {forNewModal ? <CreateEntityModal {...props} /> : <CreatePodModal {...props} />}
+        {showNewModal ? <CreateEntityModal {...props} setFormDirty={setFormDirty} /> : <CreatePodModal {...props} />}
       </CreateFormModalOverlay>
     </>
   );
