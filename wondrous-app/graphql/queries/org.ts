@@ -194,6 +194,28 @@ export const GET_ORG_PODS = gql`
   }
 `;
 
+export const GET_ORG_ARCHIVED_PODS = gql`
+  query getOrgArchivedPods($orgId: String) {
+    getOrgArchivedPods(orgId: $orgId) {
+      id
+      name
+      username
+      description
+      privacyLevel
+      headerPicture
+      profilePicture
+      thumbnailPicture
+      createdBy
+      createdAt
+      orgId
+      tags
+      contributorCount
+      tasksCompletedCount
+      color
+    }
+  }
+`;
+
 export const SEARCH_ORG_USERS = gql`
   query searchOrgUsers($orgIds: [ID], $searchString: String!, $limit: Int, $offset: Int) {
     searchOrgUsers(orgIds: $orgIds, searchString: $searchString, limit: $limit, offset: $offset) {
