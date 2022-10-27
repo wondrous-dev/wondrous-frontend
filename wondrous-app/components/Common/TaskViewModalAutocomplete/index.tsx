@@ -80,7 +80,7 @@ const TaskViewModalAutocomplete = ({ renderInputProps = null, ListboxProps = nul
     clearIcon={null}
     renderInput={(params) => <StyledTextField placeholder="Assign user" {...params} {...renderInputProps} />}
     renderOption={RenderOption}
-    noOptionsText="Cannot find user"
+    noOptionsText="No user found"
     {...props}
   />
 );

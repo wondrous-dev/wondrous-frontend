@@ -19,7 +19,7 @@ const CreateEntityDiscardTask = ({ open, onClose, onCloseFormModal, entityType }
           background: '#0f0f0f',
         }}
       >
-        Discard {entityType}
+        Discard changes
       </WonderButton>
     </>
   );
