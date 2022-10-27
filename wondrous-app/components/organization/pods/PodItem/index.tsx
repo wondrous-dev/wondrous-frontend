@@ -3,7 +3,7 @@ import RolePill from 'components/Common/RolePill';
 import PodIcon from 'components/Icons/podIcon';
 import MemberIcon from 'components/Icons/Sidebar/people.svg';
 import { UNARCHIVE_POD } from 'graphql/mutations';
-import { GET_ORG_ARCHIVED_PODS, GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
+import { GET_ORG_ARCHIVED_PODS, GET_ORG_FROM_USERNAME, GET_ORG_PODS, GET_USER_PODS } from 'graphql/queries';
 import { useOrgBoard } from 'utils/hooks';
 import {
   PodDescriptionText,
@@ -23,7 +23,7 @@ const PodItem = (props) => {
 
   const { userPermissionsContext } = useOrgBoard() || {};
   const [unarchivePod] = useMutation(UNARCHIVE_POD, {
-    refetchQueries: [GET_ORG_PODS, GET_USER_PODS, GET_ORG_ARCHIVED_PODS],
+    refetchQueries: [GET_ORG_PODS, GET_USER_PODS, GET_ORG_ARCHIVED_PODS, GET_ORG_FROM_USERNAME],
   });
 
   const podId = podData?.id;
