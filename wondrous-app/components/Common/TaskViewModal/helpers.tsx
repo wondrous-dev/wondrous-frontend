@@ -38,12 +38,14 @@ import {
 export const TaskSectionImageContent = ({
   hasContent,
   DefaultContent = null,
+  DefaultContentProps = null,
   imgSrc = '',
   DefaultImageComponent = null,
   ContentComponent,
+  ContentComponentProps = null,
   onClick = () => {},
 }) => {
-  if (!hasContent) return <DefaultContent />;
+  if (!hasContent) return <DefaultContent {...DefaultContentProps} />;
 
   const defaultImage = DefaultImageComponent && (
     <TaskSectionImageContentImage>
@@ -62,7 +64,7 @@ export const TaskSectionImageContent = ({
   return (
     <TaskSectionImageContentWrapper onClick={onClick}>
       {image}
-      <ContentComponent />
+      <ContentComponent {...ContentComponentProps} />
     </TaskSectionImageContentWrapper>
   );
 };
