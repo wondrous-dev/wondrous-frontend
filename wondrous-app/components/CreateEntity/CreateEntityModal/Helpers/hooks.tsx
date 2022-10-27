@@ -122,7 +122,9 @@ export const useGetPodGithubIntegrations = (pod) => {
 };
 
 export const useGetPodPullRequests = (pod) => {
-  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS);
+  const [getPodGithubPullRequests, { data: podGithubPullRequestsData }] = useLazyQuery(GET_POD_GITHUB_PULL_REQUESTS, {
+    fetchPolicy: 'cache-and-network',
+  });
   useEffect(() => {
     if (pod) {
       getPodGithubPullRequests({
@@ -264,7 +266,7 @@ export const useGetOrgUsers = (orgId, searchString = '') => {
     if (orgId)
       searchOrgUsers({
         variables: {
-          orgsIds: [orgId],
+          orgIds: [orgId],
           searchString,
           limit: LIMIT,
         },

@@ -156,7 +156,7 @@ const handleSubmit = ({
 function SubmissionFormDescriptionField({ formik, orgId }) {
   const { data: orgUsersData, refetch } = useQuery(SEARCH_ORG_USERS, {
     variables: {
-      orgsIds: [orgId],
+      orgIds: [orgId],
       searchString: '',
     },
   });
