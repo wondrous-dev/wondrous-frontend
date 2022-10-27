@@ -1,32 +1,43 @@
 import { useMutation } from '@apollo/client';
+import { Grid } from '@mui/material';
 import CommentList from 'components/Comment';
 import SubmissionStatus from 'components/Common/SubmissionStatus';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RichTextViewer } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
-import { formatDistance } from 'date-fns';
 import {
   APPROVE_BOUNTY_SUBMISSION,
   APPROVE_SUBMISSION,
   REJECT_SUBMISSION,
+  REOPEN_SUBMISSION,
   REQUEST_CHANGE_SUBMISSION,
+  RESUBMIT_SUBMISSION,
 } from 'graphql/mutations/taskSubmission';
 import isEmpty from 'lodash/isEmpty';
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
-import { BOUNTY_TYPE, PAYMENT_STATUS, SUBMISSION_STATUS, TASK_STATUS_DONE, TASK_TYPE } from 'utils/constants';
+import {
+  BOUNTY_TYPE,
+  PAYMENT_STATUS,
+  SUBMISSION_COMMENT_TYPE,
+  SUBMISSION_STATUS,
+  TASK_STATUS_DONE,
+  TASK_TYPE,
+} from 'utils/constants';
 import { transformTaskToTaskCard } from 'utils/helpers';
 import { useBoards, useColumns, useScrollIntoView } from 'utils/hooks';
 import { useLocation } from 'utils/useLocation';
+import { formatDateDisplay } from 'utils/board';
 
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import VARIATIONS from 'components/Common/SubmissionStatus/constants';
+import SubmissionCommentType from 'components/Common/SubmissionCommentType';
 import { PaymentButton } from 'components/Common/Task/paymentButton';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import PlusIcon from 'components/Icons/plus';
+import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
 import {
   GiveKudosButton,
   SubmissionButtonApprove,
@@ -175,6 +186,26 @@ const useRejectTaskSubmission = ({ submission, handleBountyTypeCompletion }) => 
   return rejectTaskSubmission;
 };
 
+const useResubmitTaskSubmission = ({ submission }) => {
+  const [resubmitSubmission] = useMutation(RESUBMIT_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    refetchQueries: ['getTaskSubmissionsForTask'],
+  });
+  return resubmitSubmission;
+};
+
+const useReopenTaskSubmission = ({ submission }) => {
+  const [resubmitSubmission] = useMutation(REOPEN_SUBMISSION, {
+    variables: {
+      submissionId: submission?.id,
+    },
+    refetchQueries: ['getTaskSubmissionsForTask', GET_ORG_TASK_BOARD_TASKS],
+  });
+  return resubmitSubmission;
+};
+
 const selectSubmissionStatus = (submission) => {
   if (!submission?.approvedAt && !submission?.changeRequestedAt && !submission.rejectedAt)
     return SUBMISSION_STATUS.AWAITING_REVIEW;
@@ -191,7 +222,7 @@ const selectSubmissionStatus = (submission) => {
 export const SubmissionItemStatus = (props) => {
   const { submission } = props;
   const submissionStatus = selectSubmissionStatus(submission);
-  return <SubmissionStatus status={submissionStatus} variation={VARIATIONS.rounded} />;
+  return <SubmissionStatus status={submissionStatus} />;
 };
 
 function SubmissionItemUserImage({ creatorProfilePicture }) {
@@ -219,9 +250,7 @@ function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isG
 
 function SubmissionItemCreatedAt({ createdAt }) {
   if (!createdAt) return null;
-  const formattedDistance = formatDistance(new Date(createdAt), new Date(), {
-    addSuffix: true,
-  });
+  const formattedDistance = formatDateDisplay(createdAt);
   return <SubmissionItemTimeText>{formattedDistance}</SubmissionItemTimeText>;
 }
 
@@ -262,10 +291,10 @@ function SubmissionEditButton({ isCreator, approvedAt, onClick }) {
 }
 
 function SubmissionRejectButton({ submission, rejectTaskSubmission, commentType }) {
-  const { rejectedAt, paymentStatus } = submission;
+  const { approvedAt, rejectedAt, paymentStatus } = submission;
   const hasBeenPaidOrIsBeingProcessed =
     paymentStatus === PAYMENT_STATUS.PAID || paymentStatus === PAYMENT_STATUS.PROCESSING;
-  if (rejectedAt || hasBeenPaidOrIsBeingProcessed) return null;
+  if (approvedAt || rejectedAt || hasBeenPaidOrIsBeingProcessed) return null;
   return (
     <SubmissionButtonReject onClick={rejectTaskSubmission} selected={!commentType}>
       Reject
@@ -280,17 +309,57 @@ function SubmissionRequestChangeButton({
   setCommentType,
   commentType,
 }) {
-  const selected = commentType ? commentType === SUBMISSION_STATUS.CHANGE_REQUESTED : true;
+  const selected = commentType ? commentType === SUBMISSION_COMMENT_TYPE.CHANGE_REQUESTED : true;
   const { changeRequestedAt, approvedAt, rejectedAt } = submission;
   if (changeRequestedAt || approvedAt || rejectedAt) return null;
   const handleOnClick = () => {
-    setCommentType(SUBMISSION_STATUS.CHANGE_REQUESTED);
+    setCommentType(SUBMISSION_COMMENT_TYPE.CHANGE_REQUESTED);
     setShowComments(false);
     setShowCommentBox(true);
   };
   return (
     <SubmissionButtonRequestChange onClick={handleOnClick} selected={selected}>
       Request changes
+    </SubmissionButtonRequestChange>
+  );
+}
+
+function ResubmitTaskSubmissionButton({
+  submission,
+  setShowComments,
+  setShowCommentBox,
+  setCommentType,
+  commentType,
+  isCreator,
+  onClick,
+}) {
+  const selected = commentType ? commentType === SUBMISSION_COMMENT_TYPE.RESUBMIT : true;
+  const { changeRequestedAt, approvedAt, rejectedAt } = submission;
+  if (!isCreator || !changeRequestedAt || approvedAt || rejectedAt) return null;
+  const handleOnClick = () => {
+    setCommentType(null);
+    setShowComments(true);
+    setShowCommentBox(true);
+    onClick();
+  };
+  return (
+    <SubmissionButtonRequestChange onClick={handleOnClick} selected={selected}>
+      Resubmit Task Submission
+    </SubmissionButtonRequestChange>
+  );
+}
+
+function ReopenTaskSubmission({ submission, setCommentType, onClick }) {
+  const { approvedAt, rejectedAt } = submission;
+  if (!(approvedAt || rejectedAt)) return null;
+  const text = approvedAt ? 'Undo approval' : 'Undo rejection';
+  const handleOnClick = () => {
+    setCommentType(null);
+    onClick();
+  };
+  return (
+    <SubmissionButtonRequestChange onClick={handleOnClick} selected>
+      {text}
     </SubmissionButtonRequestChange>
   );
 }
@@ -304,14 +373,15 @@ function SubmissionApproveTaskButton({
   approveSubmission,
   commentType,
 }) {
-  const selected = commentType ? commentType === SUBMISSION_STATUS.APPROVED : true;
+  const selected = commentType ? commentType === SUBMISSION_COMMENT_TYPE.APPROVED : true;
+  const { approvedAt, rejectedAt } = submission;
   const handleOnClick = () => {
-    setCommentType(SUBMISSION_STATUS.APPROVED);
+    setCommentType(SUBMISSION_COMMENT_TYPE.APPROVED);
     approveSubmission();
     setShowComments(false);
     setShowCommentBox(false);
   };
-  if (!submission.approvedAt && fetchedTaskType === TASK_TYPE)
+  if (!(approvedAt || rejectedAt) && fetchedTaskType === TASK_TYPE)
     return (
       <SubmissionButtonApprove data-cy="button-approve" onClick={handleOnClick} selected={selected}>
         Approve
@@ -321,7 +391,7 @@ function SubmissionApproveTaskButton({
 }
 
 function SubmissionApproveBountyButton({ submission, fetchedTaskType, onClick, commentType }) {
-  const selected = commentType ? commentType === SUBMISSION_STATUS.APPROVED : true;
+  const selected = commentType ? commentType === SUBMISSION_COMMENT_TYPE.APPROVED : true;
   if (!submission.approvedAt && fetchedTaskType === BOUNTY_TYPE)
     return (
       <SubmissionButtonApprove onClick={onClick} selected={selected}>
@@ -416,19 +486,27 @@ export function SubmissionItem({
     handleBountyTypeCompletion,
   });
 
+  const resubmitTaskSubmission = useResubmitTaskSubmission({
+    submission,
+  });
+
+  const reopenTask = useReopenTaskSubmission({
+    submission,
+  });
+
   const commentCallback = {
-    [SUBMISSION_STATUS.CHANGE_REQUESTED]: () => {
+    [SUBMISSION_COMMENT_TYPE.CHANGE_REQUESTED]: () => {
       requestChangeTaskSubmission();
       setShowComments(true);
       setCommentType(null);
     },
-    [SUBMISSION_STATUS.APPROVED]: () => {
+    [SUBMISSION_COMMENT_TYPE.APPROVED]: () => {
       setShowComments(true);
       setCommentType(null);
     },
   };
 
-  const showKudosOption = !showComments && !showCommentBox && commentType === SUBMISSION_STATUS.APPROVED;
+  const showKudosOption = !showComments && !showCommentBox && commentType === SUBMISSION_COMMENT_TYPE.APPROVED;
 
   return (
     <SubmissionItemWrapper ref={submissionRef} highlight={isFocused}>
@@ -463,55 +541,62 @@ export function SubmissionItem({
           showComments={showComments}
           setCommentType={setCommentType}
         />
-        <div
-          style={{
-            flex: 1,
-          }}
-        />
-        <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
-        <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
-          <SubmissionRejectButton
-            submission={submission}
-            rejectTaskSubmission={rejectTaskSubmission}
-            commentType={commentType}
-          />
-          <SubmissionRequestChangeButton
+        <Grid container justifyContent="flex-end" gap="12px">
+          <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
+          <ResubmitTaskSubmissionButton
             submission={submission}
             setShowComments={setShowComments}
             setShowCommentBox={setShowCommentBox}
             setCommentType={setCommentType}
             commentType={commentType}
+            isCreator={isCreator}
+            onClick={resubmitTaskSubmission}
           />
-          <SubmissionApproveTaskButton
+          <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
+            <SubmissionRejectButton
+              submission={submission}
+              rejectTaskSubmission={rejectTaskSubmission}
+              commentType={commentType}
+            />
+            <SubmissionRequestChangeButton
+              submission={submission}
+              setShowComments={setShowComments}
+              setShowCommentBox={setShowCommentBox}
+              setCommentType={setCommentType}
+              commentType={commentType}
+            />
+            <SubmissionApproveTaskButton
+              submission={submission}
+              fetchedTaskType={fetchedTask?.type}
+              setCommentType={setCommentType}
+              setShowComments={setShowComments}
+              setShowCommentBox={setShowCommentBox}
+              approveSubmission={approveSubmission}
+              commentType={commentType}
+            />
+            <SubmissionApproveBountyButton
+              submission={submission}
+              fetchedTaskType={fetchedTask?.type}
+              onClick={approveBountySubmission}
+              commentType={commentType}
+            />
+          </SubmissionReviewButtons>
+          <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
+          <SubmissionBountyPaymentButton
+            fetchedTask={fetchedTask}
             submission={submission}
-            fetchedTaskType={fetchedTask?.type}
-            setCommentType={setCommentType}
-            setShowComments={setShowComments}
-            setShowCommentBox={setShowCommentBox}
-            approveSubmission={approveSubmission}
-            commentType={commentType}
+            fetchedTaskSubmissions={fetchedTaskSubmissions}
+            handleClose={handleClose}
+            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
           />
-          <SubmissionApproveBountyButton
-            submission={submission}
-            fetchedTaskType={fetchedTask?.type}
-            onClick={approveBountySubmission}
-            commentType={commentType}
-          />
-        </SubmissionReviewButtons>
-        <SubmissionBountyPaymentButton
-          fetchedTask={fetchedTask}
-          submission={submission}
-          fetchedTaskSubmissions={fetchedTaskSubmissions}
-          handleClose={handleClose}
-          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-        />
+        </Grid>
       </SubmissionItemFooter>
       {showKudosOption && (
         <div>
-          <SubmissionStatus status={commentType} text="Submission Approved!" />
+          <SubmissionCommentType status={commentType} text="Submission Approved!" />
           <GiveKudosButton
             onClick={() => {
-              setCommentType(SUBMISSION_STATUS.APPROVED);
+              setCommentType(SUBMISSION_COMMENT_TYPE.APPROVED);
               setShowCommentBox(true);
             }}
           >

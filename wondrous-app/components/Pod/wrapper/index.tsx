@@ -4,7 +4,7 @@ import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
 import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
-import { parseUserPermissionContext, toggleHtmlOverflow } from 'utils/helpers';
+import { parseUserPermissionContext, removeUrlStart, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard } from 'utils/hooks';
 import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
@@ -419,49 +419,51 @@ function Wrapper(props) {
               <HeaderText>
                 <RichTextViewer text={podProfile?.description} />
               </HeaderText>
-              <HeaderActivity>
-                {links?.map((link) => (
-                  <>
-                    {link?.url ? (
-                      <HeaderActivityLink href={link?.url} key={link}>
-                        {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
-                        {link?.name || link?.url}
-                      </HeaderActivityLink>
-                    ) : null}
-                  </>
-                ))}
-                <HeaderContributors
-                  isInPodPage
-                  onClick={() => {
-                    setOpen(true);
-                    setShowUsers(true);
-                  }}
-                >
-                  <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
-                  <HeaderContributorsText>
-                    {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
-                  </HeaderContributorsText>
-                </HeaderContributors>
-                {podIsGr15Sponsor && (
-                  <HeaderGr15Sponsor>
-                    <ExplorePodGr15
-                      onTaskPage={onTaskPage}
-                      onBountyPage={onBountyPage}
-                      hasGr15Bounties={podHasGr15Bounties}
-                      hasGr15Tasks={podHasGr15Tasks}
-                      onFilterChange={onFilterChange}
-                      podProfile={podProfile}
-                      filters={boardFilters}
-                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                    />
-                  </HeaderGr15Sponsor>
-                )}
-                {/* <HeaderPods>
+              <div>
+                <HeaderActivity>
+                  {links?.map((link) => (
+                    <>
+                      {link?.url ? (
+                        <HeaderActivityLink href={link?.url} key={link}>
+                          {(link?.name || link?.url) && <HeaderActivityLinkIcon />}
+                          {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
+                        </HeaderActivityLink>
+                      ) : null}
+                    </>
+                  ))}
+                  <HeaderContributors
+                    isInPodPage
+                    onClick={() => {
+                      setOpen(true);
+                      setShowUsers(true);
+                    }}
+                  >
+                    <HeaderContributorsAmount>{podProfile?.contributorCount}</HeaderContributorsAmount>
+                    <HeaderContributorsText>
+                      {podProfile?.contributorCount === 1 ? 'Contributor' : 'Contributors'}
+                    </HeaderContributorsText>
+                  </HeaderContributors>
+                  {podIsGr15Sponsor && (
+                    <HeaderGr15Sponsor>
+                      <ExplorePodGr15
+                        onTaskPage={onTaskPage}
+                        onBountyPage={onBountyPage}
+                        hasGr15Bounties={podHasGr15Bounties}
+                        hasGr15Tasks={podHasGr15Tasks}
+                        onFilterChange={onFilterChange}
+                        podProfile={podProfile}
+                        filters={boardFilters}
+                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                      />
+                    </HeaderGr15Sponsor>
+                  )}
+                  {/* <HeaderPods>
                     <HeaderPodsAmount>{podProfile?.podCount}</HeaderPodsAmount>
                     <HeaderPodsText>Pods</HeaderPodsText>
                   </HeaderPods> */}
-              </HeaderActivity>
+                </HeaderActivity>
+              </div>
             </TokenHeader>
 
             <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>

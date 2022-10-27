@@ -12,7 +12,7 @@ import {
 } from 'utils/constants';
 import { Box } from '@mui/system';
 import TypeSelector from 'components/TypeSelector';
-import { parseUserPermissionContext } from 'utils/helpers';
+import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
 
@@ -100,6 +100,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           router.push(`/organization/${orgProfile?.username}/boards?entity=${BOUNTY_TYPE}`, undefined, {
@@ -116,6 +117,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           router.push(
@@ -136,6 +138,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
@@ -154,6 +157,7 @@ const ExploreOrgGr15 = ({
       <ExploreButton
         style={{
           marginTop: 0,
+          marginRight: '8px',
         }}
         onClick={() => {
           setExploreGr15TasksAndBounties(!exploreGr15TasksAndBounties);
@@ -482,56 +486,52 @@ function Wrapper(props) {
             <HeaderText>
               <RichTextViewer text={orgProfile?.description} />
             </HeaderText>
-            <HeaderActivity>
-              <HeaderContributors
-                onClick={() => {
-                  setOpen(true);
-                  setShowUsers(true);
-                }}
-              >
-                <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                <HeaderContributorsText>Contributors</HeaderContributorsText>
-              </HeaderContributors>
-              <HeaderPods
-                onClick={() => {
-                  setOpen(true);
-                  setShowPods(true);
-                }}
-              >
-                <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                <HeaderPodsText>Pods</HeaderPodsText>
-              </HeaderPods>
-              {isGr15Sponsor && (
-                <HeaderGr15Sponsor>
-                  <ExploreOrgGr15
-                    onTaskPage={onTaskPage}
-                    onBountyPage={onBountyPage}
-                    hasGr15Bounties={hasGr15Bounties}
-                    hasGr15Tasks={hasGr15Tasks}
-                    onFilterChange={onFilterChange}
-                    orgProfile={orgProfile}
-                    filters={boardFilters}
-                    exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                    setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                  />
-                </HeaderGr15Sponsor>
-              )}
-              {links?.map((link, index) => {
-                if (link.type === 'link') {
-                  return (
-                    <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                      <HeaderActivityLinkIcon />
-                      {link?.name || link?.url}
-                    </HeaderActivityLink>
-                  );
-                }
-              })}
-              <div
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                }}
-              >
+            <div>
+              <HeaderActivity>
+                <HeaderContributors
+                  onClick={() => {
+                    setOpen(true);
+                    setShowUsers(true);
+                  }}
+                >
+                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                  <HeaderContributorsText>Contributors</HeaderContributorsText>
+                </HeaderContributors>
+                <HeaderPods
+                  onClick={() => {
+                    setOpen(true);
+                    setShowPods(true);
+                  }}
+                >
+                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                  <HeaderPodsText>Pods</HeaderPodsText>
+                </HeaderPods>
+                {isGr15Sponsor && (
+                  <HeaderGr15Sponsor>
+                    <ExploreOrgGr15
+                      onTaskPage={onTaskPage}
+                      onBountyPage={onBountyPage}
+                      hasGr15Bounties={hasGr15Bounties}
+                      hasGr15Tasks={hasGr15Tasks}
+                      onFilterChange={onFilterChange}
+                      orgProfile={orgProfile}
+                      filters={boardFilters}
+                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                    />
+                  </HeaderGr15Sponsor>
+                )}
+                {links?.map((link, index) => {
+                  if (link.type === 'link') {
+                    return (
+                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                        <HeaderActivityLinkIcon />
+                        {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
+                      </HeaderActivityLink>
+                    );
+                  }
+                })}
+
                 {links?.map((link, index) => {
                   if (link.type !== 'link') {
                     let SocialIcon = null;
@@ -557,6 +557,7 @@ function Wrapper(props) {
                               width: '20px',
                               height: '20px',
                             }}
+                            fill="#ccbbff"
                           />
                         </HeaderActivityLink>
                       );
@@ -564,8 +565,8 @@ function Wrapper(props) {
                     return null;
                   }
                 })}
-              </div>
-            </HeaderActivity>
+              </HeaderActivity>
+            </div>
           </TokenHeader>
           <Container>
             <BoardsSubheaderWrapper>

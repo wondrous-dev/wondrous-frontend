@@ -1,5 +1,6 @@
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
+import MetaTags from 'components/MetaTags';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import Boards from 'components/organization/boards/boards';
 import EntitySidebar from 'components/Common/SidebarEntity';
@@ -28,7 +29,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam, removeUrlParam } from 'utils';
-import { sectionOpeningReducer } from 'utils/board';
+import { sectionOpeningReducer, getServerSideProps } from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -353,7 +354,15 @@ const useGetOrgTaskBoard = ({
   return { fetchMore, fetchPerStatus };
 };
 
-function BoardsPage() {
+type Props = {
+  meta: {
+    title: string;
+    img: string;
+    description: string;
+  };
+};
+
+function BoardsPage({ meta }: Props) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { username, orgId, search, view = ViewType.Grid, userId, entity } = router.query;
@@ -564,7 +573,7 @@ function BoardsPage() {
       apollo.query({
         query: SEARCH_ORG_USERS,
         variables: {
-          orgsIds: [id],
+          orgIds: [id],
           limit: LIMIT,
           offset: 0,
           searchString,
@@ -681,6 +690,8 @@ function BoardsPage() {
         hasActiveFilters,
       }}
     >
+      <MetaTags meta={meta} />
+
       {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
         <Boards
@@ -705,3 +716,5 @@ function BoardsPage() {
 }
 
 export default withAuth(BoardsPage);
+
+export { getServerSideProps };

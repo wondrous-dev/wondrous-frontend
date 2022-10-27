@@ -11,7 +11,7 @@ import {
   BoardsCardBodyDescription,
   BoardsCardMedia,
 } from 'components/Common/Boards/styles';
-import { PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
+import { BOUNTY_TYPE, PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
 import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
@@ -140,7 +140,9 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     />
                   </BoardsCardMedia>
                 ) : null}
-                <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
+                {bounty?.type === BOUNTY_TYPE && (
+                  <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
+                )}
               </BoardsCardBody>
               <BoardsCardFooter>
                 {bounty?.podName && !displayOrg && (

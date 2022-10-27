@@ -264,7 +264,7 @@ export const CREATE_TASK_DISCORD_THREAD = gql`
   mutation createTaskDiscordThread($taskId: ID!) {
     createTaskDiscordThread(taskId: $taskId) {
       guildIds
-      
+
       threadIds
     }
   }
@@ -282,6 +282,14 @@ export const DUPLICATE_TASK = gql`
   mutation duplicateTask($taskId: ID!) {
     duplicateTask(taskId: $taskId) {
       title # maybe this should be returning simple response instead?
+    }
+  }
+`;
+
+export const UPDATE_TASK_REVIEWERS = gql`
+  mutation updateTaskReviewers($taskId: ID!, $reviewerIds: [String]!) {
+    updateTaskReviewers(taskId: $taskId, reviewerIds: $reviewerIds) {
+      success
     }
   }
 `;

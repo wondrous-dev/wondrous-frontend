@@ -15,6 +15,7 @@ import { useRouter } from 'next/router';
 import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
+  formatDateDisplay,
   getProposalStatus,
   updateCompletedItem,
   updateInProgressTask,
@@ -657,6 +658,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             shouldDisplay={!isTaskProposal && !isMilestone}
                             reviewerData={reviewerData}
                             handleClose={handleClose}
+                            canEdit={canEdit}
+                            fetchedTask={fetchedTask}
+                            user={user}
                           />
                           <AssigneeField
                             shouldDisplay={showAssignee}
@@ -777,13 +781,14 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   </TaskSectionInfoCreatorTask>
                                   {fetchedTask?.createdAt && (
                                     <TaskSectionInfoCreatorDaysAgo>
-                                      {taskCreatedBefore >= 7 ? (
+                                      {formatDateDisplay(fetchedTask?.createdAt, true)}
+                                      {/* {taskCreatedBefore >= 7 ? (
                                         <>on {format(new Date(fetchedTask?.createdAt), 'MM/dd/yyyy')}</>
                                       ) : (
                                         formatDistance(new Date(fetchedTask?.createdAt), new Date(), {
                                           addSuffix: true,
                                         })
-                                      )}
+                                      )} */}
                                     </TaskSectionInfoCreatorDaysAgo>
                                   )}
                                 </TaskSectionInfoTextCreator>

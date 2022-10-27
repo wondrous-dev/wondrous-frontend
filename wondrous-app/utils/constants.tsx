@@ -706,6 +706,7 @@ export const ROLES = {
   OWNER: 'owner',
   CORE_TEAM: 'core team',
   CONTRIBUTOR: 'contributor',
+  NO_ROLE: 'no role',
   DEFAULT: 'default', // this is for any role other than the above
 };
 
@@ -721,6 +722,10 @@ export const ROLE_COLORS_AND_EMOJIS = {
   [ROLES.CONTRIBUTOR]: {
     color: palette.highlightOrange,
     emoji: '✨',
+  },
+  [ROLES.NO_ROLE]: {
+    color: palette.grey87,
+    emoji: '',
   },
   [ROLES.DEFAULT]: {
     color: palette.highlightBlue,
@@ -934,3 +939,10 @@ export const COMMENTER_ROLE = {
   Assignee: 'Assignee',
   Reviewer: 'Reviewer',
 };
+
+export enum SUBMISSION_COMMENT_TYPE {
+  APPROVED = 'approved',
+  CHANGE_REQUESTED = 'change_requested',
+  RESUBMIT = 'resubmit',
+  REOPEN = 'reopen',
+}

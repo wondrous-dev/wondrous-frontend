@@ -22,7 +22,7 @@ function RolesPage() {
         podId,
       },
       onCompleted: (data) => {
-        setRoles(JSON.parse(JSON.stringify(getPodRolesData?.getPodRoles)) || []);
+        setRoles(JSON.parse(JSON.stringify(data?.getPodRoles)) || []);
       },
     }
   );
@@ -66,7 +66,11 @@ function RolesPage() {
 
   useEffect(() => {
     if (podId) {
-      getPodRolesWithTokenGate();
+      getPodRolesWithTokenGate().then((result) => {
+        if (result?.data?.getPodRoles) {
+          setRoles(JSON.parse(JSON.stringify(result?.data?.getPodRoles)) || []);
+        }
+      });
     }
   }, [podId, getPodRolesWithTokenGate]);
 

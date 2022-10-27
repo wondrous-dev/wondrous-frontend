@@ -1,20 +1,33 @@
-import { assignIn, assignWith, cloneDeep, isEmpty, isNull, isUndefined, pick, sortBy, uniqBy } from 'lodash';
-import { PRIVACY_LEVEL, CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, CATEGORY_LABELS } from 'utils/constants';
-import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
-import * as Yup from 'yup';
+import { SafeImage } from 'components/Common/Image';
 import PrivacyMembersIcon from 'components/Icons/privacyMembers.svg';
 import PrivacyPublicIcon from 'components/Icons/privacyPublic.svg';
-import { SafeImage } from 'components/Common/Image';
-import { plainTextToRichText, deserializeRichText } from 'components/RichText';
+import { deserializeRichText, plainTextToRichText } from 'components/RichText';
 import { FormikValues } from 'formik';
+import assignIn from 'lodash/assignIn';
+import assignWith from 'lodash/assignWith';
+import cloneDeep from 'lodash/cloneDeep';
+import isDate from 'lodash/isDate';
+import isEmpty from 'lodash/isEmpty';
+import isEqual from 'lodash/isEqual';
+import isNull from 'lodash/isNull';
+import isObject from 'lodash/isObject';
+import isUndefined from 'lodash/isUndefined';
+import pick from 'lodash/pick';
+import pickBy from 'lodash/pickBy';
+import sortBy from 'lodash/sortBy';
+import uniqBy from 'lodash/uniqBy';
+import { Dispatch, SetStateAction } from 'react';
+import { CATEGORY_LABELS, CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, PRIVACY_LEVEL } from 'utils/constants';
+import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
+import * as Yup from 'yup';
 import {
-  useCreateTask,
-  useUpdateTask,
-  useCreateMilestone,
-  useUpdateMilestone,
   useCreateBounty,
-  useUpdateBounty,
+  useCreateMilestone,
+  useCreateTask,
   useCreateTaskProposal,
+  useUpdateBounty,
+  useUpdateMilestone,
+  useUpdateTask,
   useUpdateTaskProposal,
 } from '../hooks';
 
@@ -267,7 +280,7 @@ export const entityTypeData = {
       chooseGithubIssue: false,
       parentTaskId: null,
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -285,7 +298,7 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.BOUNTY]: {
@@ -315,7 +328,7 @@ export const entityTypeData = {
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
       priority: null,
-      categories: [],
+      categories: null,
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -333,7 +346,7 @@ export const entityTypeData = {
       labelIds: null,
       privacyLevel: privacyOptions.public.value,
       mediaUploads: [],
-      categories: [],
+      categories: null,
     },
   },
 };
@@ -348,7 +361,7 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
-      categories: transformCategoryFormat(existingTask?.categories),
+      categories: isEmpty(existingTask?.categories) ? null : transformCategoryFormat(existingTask?.categories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
       labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
@@ -410,4 +423,15 @@ export interface ICreateEntityModal {
   setEntityType?: Function;
   formValues?: FormikValues;
   status?: string;
+  setFormDirty?: Dispatch<SetStateAction<boolean>>;
 }
+
+export const formDirty = (form: FormikValues): boolean => {
+  const { initialValues, values } = form;
+  const excludedFields = ['orgId'];
+  const pickByValKey = (val, key) =>
+    !excludedFields.includes(key) && val && (isObject(val) && !isDate(val) ? !isEmpty(val) : val);
+  const updatedInitialValues = pickBy(initialValues, pickByValKey);
+  const updatedValues = pickBy(values, pickByValKey);
+  return !isEqual(updatedInitialValues, updatedValues);
+};
