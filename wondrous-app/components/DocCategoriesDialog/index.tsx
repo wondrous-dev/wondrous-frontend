@@ -21,6 +21,7 @@ import { DOCS_PERMISSIONS } from 'utils/constants';
 import DocPermissionSelect from 'components/DocPermissionSelect';
 import DocModal from 'components/DocModal';
 
+import { GET_POD_DOCS_CATEGORIES } from 'graphql/queries/documents';
 import { labelStyles, inputStyles } from './DocCategoriesDialogStyles';
 
 const LabelTypography = styled(Typography)(labelStyles);
@@ -44,15 +45,15 @@ function DocCategoriesDialog({ open, onClose, orgName, orgId, podId, category })
   });
 
   const [createPodDocumentCategory] = useMutation(CREATE_POD_DOCUMENT_CATEGORY, {
-    refetchQueries: ['getPodDocumentCategories'],
+    refetchQueries: [GET_POD_DOCS_CATEGORIES],
   });
 
   const [deleteDocumentCategory] = useMutation(DELETE_DOCUMENT_CATEGORY, {
-    refetchQueries: ['getOrgDocumentCategories', 'getPodDocumentCategories'],
+    refetchQueries: ['getOrgDocumentCategories', GET_POD_DOCS_CATEGORIES],
   });
 
   const [updateDocumentCategory] = useMutation(UPDATE_DOCUMENT_CATEGORY, {
-    refetchQueries: ['getOrgDocumentCategories', 'getPodDocumentCategories'],
+    refetchQueries: ['getOrgDocumentCategories', GET_POD_DOCS_CATEGORIES],
   });
 
   const handleDelete = () => {

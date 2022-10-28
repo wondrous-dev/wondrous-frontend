@@ -55,6 +55,7 @@ const useGetPodDocs = (podId) => {
       getPodDocsCategories();
     }
   }, [loadingCategories, podId, getPodDocsCategories, categoriesData]);
+
   return {
     docData: docData?.getPodDocuments,
     categoriesData: categoriesData?.getPodDocumentCategories,
@@ -167,12 +168,12 @@ function Docs(props) {
           <Box sx={styles.topButtonsContainer}>
             <Button disableRipple sx={styles.addCategoryButton} onClick={handleCreateNewCategory}>
               <AddIconWrapper style={styles.addIcon} />
-              Add new doc
+              Add new category
             </Button>
           </Box>
         )}
 
-        {isEmpty(docData) && (
+        {isEmpty(docData) && isEmpty(categoriesData) && (
           <EmptyStateGeneric
             content={`Welcome to the Documents page for ${podData?.name}. This is your knowledge hub - link high-signal documents to give context to your team members and community.`}
           />
