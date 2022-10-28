@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useMemo, useReducer, useState } from 're
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
-import { bindSectionToColumns, sectionOpeningReducer, getServerSideProps } from 'utils/board';
+import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
 import { useRouterQuery, useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
@@ -676,5 +676,3 @@ function BoardsPage({ meta }: Props) {
 }
 
 export default withAuth(BoardsPage);
-
-export { getServerSideProps };
