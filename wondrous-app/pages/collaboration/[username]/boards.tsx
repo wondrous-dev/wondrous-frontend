@@ -28,7 +28,7 @@ import {
 import { ViewType } from 'types/common';
 import { TaskFilter } from 'types/task';
 import { dedupeColumns, insertUrlParam } from 'utils';
-import { sectionOpeningReducer, getServerSideProps } from 'utils/board';
+import { sectionOpeningReducer } from 'utils/board';
 import {
   ENTITIES_TYPES,
   PRIVACY_LEVEL,
@@ -694,5 +694,3 @@ function BoardsPage({ meta }: Props) {
 }
 
 export default withAuth(BoardsPage);
-
-export { getServerSideProps };
