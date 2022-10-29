@@ -18,8 +18,8 @@ interface Props {
   count: number;
   children: unknown[];
   headerAddons?: any;
-  hasMore: boolean;
-  onShowMore: () => any;
+  hasMore?: boolean;
+  onShowMore?: () => any;
   showMoreTitle?: string;
   loading?: boolean;
   enableInfiniteLoading?: boolean;
@@ -44,6 +44,7 @@ const Accordion = ({
   const [ref, inView] = useInView({});
 
   useEffect(() => {
+    console.log(onShowMore);
     if (inView && hasMore && enableInfiniteLoading) {
       onShowMore();
     }
