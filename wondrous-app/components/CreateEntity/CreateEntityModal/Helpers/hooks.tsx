@@ -26,7 +26,7 @@ import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_CREATED_TASK,
 } from 'graphql/queries';
 import { debounce } from 'lodash';
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useState, useCallback, useContext } from 'react';
 import { LIMIT } from 'services/board';
 import {
   updateInReviewItem,
@@ -40,6 +40,7 @@ import {
   removeCompletedItem,
   removeTaskItemOnEntityType,
 } from 'utils/board';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   CATEGORY_LABELS,
   ENTITIES_TYPES,
@@ -56,6 +57,8 @@ import {
   getPodObject,
   onCorrectPage,
 } from 'components/CreateEntity/CreateEntityModal/Helpers/utils';
+import { Typography } from '@mui/material';
+import { palette } from '@mui/system';
 
 const HANDLE_TASKS = {
   REMOVE: {
@@ -427,6 +430,9 @@ export const useCreateBounty = () => {
 };
 
 export const useUpdateTask = () => {
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [updateTask, { loading }] = useMutation(UPDATE_TASK, {
     refetchQueries: () => [
       'getPerStatusTaskCountForMilestone',
@@ -435,6 +441,7 @@ export const useUpdateTask = () => {
       SEARCH_USER_CREATED_TASKS,
     ],
   });
+
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
     updateTask({
       variables: {
@@ -460,6 +467,8 @@ export const useUpdateTask = () => {
         }
         board.setColumns(columns);
       }
+      setSnackbarAlertMessage('Success! Task updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
@@ -468,6 +477,9 @@ export const useUpdateTask = () => {
 
 export const useUpdateMilestone = () => {
   const [updateMilestone, { loading }] = useMutation(UPDATE_MILESTONE);
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const handleMutation = ({ input, board, handleClose, existingTask }) => {
     updateMilestone({
       variables: {
@@ -495,6 +507,8 @@ export const useUpdateMilestone = () => {
         }
         board.setColumns(columns);
       }
+      setSnackbarAlertMessage('Success! Milestone updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
@@ -502,6 +516,9 @@ export const useUpdateMilestone = () => {
 };
 
 export const useUpdateBounty = () => {
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [updateBounty, { loading }] = useMutation(UPDATE_BOUNTY, {
     refetchQueries: () => [
       'getOrgTaskBoardTasks',
@@ -518,6 +535,8 @@ export const useUpdateBounty = () => {
         input,
       },
     }).then(() => {
+      setSnackbarAlertMessage('Success! Bounty updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
@@ -568,6 +587,9 @@ export const useCreateTaskProposal = () => {
 };
 
 export const useUpdateTaskProposal = () => {
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [updateTaskProposal, { loading }] = useMutation(UPDATE_TASK_PROPOSAL, {
     refetchQueries: () => [
       'GetUserTaskBoardProposals',
@@ -602,6 +624,8 @@ export const useUpdateTaskProposal = () => {
         },
       },
     }).then(() => {
+      setSnackbarAlertMessage('Success! Proposal updated :)');
+      setSnackbarAlertOpen(true);
       handleClose();
     });
   };
