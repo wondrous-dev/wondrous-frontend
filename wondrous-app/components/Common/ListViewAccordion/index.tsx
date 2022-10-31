@@ -44,7 +44,6 @@ const Accordion = ({
   const [ref, inView] = useInView({});
 
   useEffect(() => {
-    console.log(onShowMore);
     if (inView && hasMore && enableInfiniteLoading) {
       onShowMore();
     }
