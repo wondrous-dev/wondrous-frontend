@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {ReactFragment} from 'react';
 import ProgressBar from 'components/Onboarding/OnboardingLayout/ProgressBar';
 import { Layout, OnboardingDescription, OnboardingTitle } from './styles';
 
@@ -18,7 +18,7 @@ type Props = {
   withLoginButton?: boolean;
   loading?: unknown;
   displayFooter?: boolean;
-  footer?: React.ReactNode;
+  footer?: React.ReactNode | React.FC | null;
 };
 
 function OnboardingLayout({

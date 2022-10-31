@@ -5,7 +5,7 @@ import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import React from 'react';
 import { useIsMobile } from 'utils/hooks';
 import Board from 'components/Dashboard/proposals';
-import { getServerSideProps } from 'utils/board';
+import { getServerSideProps } from 'utils/board/dataFetching';
 
 type Props = {
   meta: {

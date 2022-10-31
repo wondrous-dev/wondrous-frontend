@@ -6,7 +6,7 @@ import { useIsMobile } from 'utils/hooks';
 import { ViewType } from 'types/common';
 import { useRouter } from 'next/router';
 import Board from 'components/Dashboard/bounties';
-import { getServerSideProps } from 'utils/board';
+import { getServerSideProps } from 'utils/board/dataFetching';
 
 type Props = {
   meta: {

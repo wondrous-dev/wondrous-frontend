@@ -21,7 +21,7 @@ import WalletIcon from '../../../public/images/onboarding/union.svg';
 function SetupWallet() {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const {collabInvite} = router.query
+  const { collabInvite } = router.query;
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
 

@@ -20,8 +20,8 @@ interface DocModalProps {
   cancelLabel?: string;
   submitLabel?: string;
   submitButtonStyle?: SubmitButtonStyle | string;
-  children: unknown;
-  titleIcon?: unknown;
+  children: any;
+  titleIcon?: any;
   onSubmit: () => unknown;
   onClose: () => unknown;
   rejectAction?: () => unknown;

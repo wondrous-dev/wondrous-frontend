@@ -6,7 +6,7 @@ import { blackColors, blueColors, greyColors, highlightBlue, highlightPurple, vi
 import CloseModalIcon from 'components/Icons/closeModal';
 import CheckMarkIcon from 'components/Icons/checkMark';
 import CloseModalIconRed from 'components/Icons/closeModalRed';
-import { ChevronLeft } from '@mui/icons-material';
+import ChevronLeft from '@mui/icons-material/ChevronLeft';
 import SuccessRole from 'components/Icons/successRole';
 import { LockedIconOutline, LockIconOutline } from 'components/Icons/userpass';
 import { Button } from 'components/Common/Wallet/styles';
