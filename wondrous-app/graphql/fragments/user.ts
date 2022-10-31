@@ -12,6 +12,7 @@ export const LoggedinUserFragment = gql`
     userInfo {
       email
       discordUsername
+      discordDiscriminator
       twitterUsername
       promotionTweet
     }
@@ -53,6 +54,11 @@ export const ProfileUserFragment = gql`
       url
       displayName
       type
+    }
+    userInfo {
+      discordUsername
+      discordDiscriminator
+      twitterUsername
     }
     additionalInfo {
       orgCount

@@ -18,6 +18,7 @@ import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import ChooseEntityToCreate from 'components/CreateEntity';
+import { removeUrlStart } from 'utils/helpers';
 import styles, {
   ProfileInfoWrapper,
   ProfileInfoContainer,
@@ -44,6 +45,30 @@ const SOCIAL_ICONS = {
   [SOCIAL_OPENSEA]: OpenSeaIcon,
 };
 
+const parseUserProfileInfo = (socials, userProfile) => {
+  let hasDiscordSocial = false;
+
+  const newSocials = socials.map(({ url, type }) => {
+    if (type === SOCIAL_MEDIA_DISCORD) {
+      hasDiscordSocial = true;
+    } else if (type === SOCIAL_MEDIA_TWITTER) {
+      if (userProfile?.userInfo?.twitterUsername) {
+        return {
+          url: `https://twitter.com/${userProfile?.userInfo?.twitterUsername}`,
+          type: SOCIAL_MEDIA_TWITTER,
+        };
+      }
+    }
+  });
+  if (!hasDiscordSocial && userProfile?.userInfo?.discordUsername) {
+    newSocials.push({
+      url: null,
+      type: SOCIAL_MEDIA_DISCORD,
+    });
+  }
+  return newSocials;
+};
+
 function ProfileInfo({ userProfile }) {
   const user = useMe();
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
@@ -57,6 +82,7 @@ function ProfileInfo({ userProfile }) {
     ? user?.checkIsGr15Contributor?.isGr15Contributor
     : userProfile?.checkIsGr15Contributor?.isGr15Contributor;
 
+  const newSocials = parseUserProfileInfo(social, userProfile);
   return (
     <ProfileInfoWrapper>
       <ChooseEntityToCreate />
@@ -133,17 +159,40 @@ function ProfileInfo({ userProfile }) {
               <ProfileInfoIcon>
                 <ProfileInfoLinkIcon />
               </ProfileInfoIcon>
-              <ProfileInfoIcon>{formatLinkDisplay(mainLink)}</ProfileInfoIcon>
+              <ProfileInfoIcon>{removeUrlStart(mainLink?.url)}</ProfileInfoIcon>
             </ProfileInfoMainLink>
           </ProfileInfoLink>
         )}
-        {social.map(({ url, type }) => {
-          if (!url) return null;
+        {}
+        {newSocials.map(({ url, type }) => {
           const SocialIcon = SOCIAL_ICONS[type];
+          if (type === SOCIAL_MEDIA_DISCORD && userProfile?.userInfo?.discordUsername) {
+            return (
+              <ProfileInfoLink
+                key={url}
+                href={url}
+                target="_blank"
+                style={{
+                  textDecoration: 'none',
+                }}
+              >
+                <ProfileInfoIcon
+                  style={{
+                    marginRight: '8px',
+                  }}
+                >
+                  <SocialIcon fill="#ccbbff" />
+                </ProfileInfoIcon>
+                <ProfileInfoIcon>{`${userProfile?.userInfo?.discordUsername}#${userProfile?.userInfo?.discordDiscriminator}`}</ProfileInfoIcon>
+              </ProfileInfoLink>
+            );
+          }
+          if (!url) return null;
+
           return (
             <ProfileInfoLink key={url} href={url} target="_blank">
               <ProfileInfoIcon>
-                <SocialIcon />
+                <SocialIcon fill="#ccbbff" />
               </ProfileInfoIcon>
             </ProfileInfoLink>
           );
