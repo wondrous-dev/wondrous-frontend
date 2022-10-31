@@ -1,8 +1,10 @@
+import React, { Suspense, useCallback, useEffect, useMemo, useReducer, useState } from 'react';
+import dynamic from 'next/dynamic';
+
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { withAuth } from 'components/Auth/withAuth';
 import MetaTags from 'components/MetaTags';
 import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import Boards from 'components/organization/boards/boards';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GET_ORG_BY_ID, GET_ORG_FROM_USERNAME, SEARCH_ORG_USERS } from 'graphql/queries/org';
@@ -16,7 +18,6 @@ import {
 } from 'graphql/queries/taskBoard';
 import { GET_USER } from 'graphql/queries/user';
 import { useRouter } from 'next/router';
-import React, { useCallback, useEffect, useMemo, useReducer, useState } from 'react';
 import apollo from 'services/apollo';
 import {
   LIMIT,
@@ -43,6 +44,12 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
+import { getServerSideProps } from 'utils/board/dataFetching';
+// import Boards from 'components/organization/boards/boards';
+
+const DynamicBoards = dynamic(() => import('components/organization/boards/boards'), {
+  suspense: true,
+});
 
 const useGetOrgTaskBoardTasks = ({
   columns,
@@ -694,25 +701,28 @@ function BoardsPage({ meta }: Props) {
 
       {isMobile ? <MobileComingSoonModal /> : null}
       <EntitySidebar>
-        <Boards
-          columns={columns}
-          searchString={searchString}
-          onLoadMore={fetchMore}
-          onSearch={handleSearch}
-          onFilterChange={handleFilterChange}
-          hasMore={orgTaskHasMore}
-          orgData={orgData}
-          statuses={filters?.statuses}
-          podIds={filters?.podIds}
-          setColumns={setColumns}
-          loading={isLoading}
-          entityType={entityType}
-          userId={userId?.toString()}
-          activeView={activeView}
-        />
+        <Suspense fallback="Loading...">
+          <DynamicBoards
+            columns={columns}
+            searchString={searchString}
+            onLoadMore={fetchMore}
+            onSearch={handleSearch}
+            onFilterChange={handleFilterChange}
+            hasMore={orgTaskHasMore}
+            orgData={orgData}
+            statuses={filters?.statuses}
+            podIds={filters?.podIds}
+            setColumns={setColumns}
+            loading={isLoading}
+            entityType={entityType}
+            userId={userId?.toString()}
+            activeView={activeView}
+          />
+        </Suspense>
       </EntitySidebar>
     </OrgBoardContext.Provider>
   );
 }
 
 export default withAuth(BoardsPage);
+export { getServerSideProps };
