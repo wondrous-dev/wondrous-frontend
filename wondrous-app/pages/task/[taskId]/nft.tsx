@@ -1,10 +1,11 @@
 import Head from 'next/head';
+import { useEffect } from 'react';
 import apollo from 'services/apollo';
 import { GET_MINT_TASK_TOKEN_DATA, GET_TASK_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import AppLayout from 'components/Common/Layout/App';
 import { CircularProgress, Grid } from '@mui/material';
-import { useQuery } from '@apollo/client';
+import { useLazyQuery } from '@apollo/client';
 
 /*
 
@@ -16,21 +17,27 @@ Org board task view modal with the NFT view mode
 function TaskViewNFT({ tokenData, taskId }) {
   const router = useRouter();
 
-  const { data } = useQuery(GET_TASK_BY_ID, {
-    variables: {
-      taskId,
+  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID, {
+    onCompleted: (data) => {
+      if (data?.getTaskById?.org?.username) {
+        const url = `/organization/${data?.getTaskById?.org?.username}/boards?task=${taskId}${
+          tokenData?.tokenId ? `&viewNft=${true}` : ''
+        }`;
+
+        router.push(url, undefined, {
+          shallow: true,
+        });
+      }
     },
   });
 
-  if (data?.getTaskById?.org?.username) {
-    const url = `/organization/${data?.getTaskById?.org?.username}/boards?task=${taskId}${
-      tokenData?.tokenId ? `&viewNft=${true}` : ''
-    }`;
-
-    router.push(url, undefined, {
-      shallow: true,
+  useEffect(() => {
+    getTaskById({
+      variables: {
+        taskId,
+      },
     });
-  }
+  }, []);
 
   return (
     <Grid display="flex" justifyContent="center" alignItems="center">
@@ -40,6 +47,8 @@ function TaskViewNFT({ tokenData, taskId }) {
         <meta property="og:title" content={`Wonderverse - ${tokenData?.title}`} />
         <meta property="og:description" content="Completed task in Wonderverse" />
         <meta property="og:image" content={tokenData?.imageUrl} />
+        <meta property="og:url" content={router.asPath} />
+        <meta property="og:type" content="website" />
       </Head>
       <AppLayout banner={null}>
         <CircularProgress />

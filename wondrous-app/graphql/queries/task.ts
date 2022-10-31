@@ -297,6 +297,7 @@ export const GET_MINT_TASK_TOKEN_DATA = gql`
     getTaskMintTokenData(taskId: $taskId) {
       tokenId
       imageUrl
+      title
     }
   }
 `;
