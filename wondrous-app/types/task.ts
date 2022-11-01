@@ -77,4 +77,5 @@ export interface TaskInterface {
   status: string;
   title: string;
   type: string;
+  tokenId?: string;
 }
