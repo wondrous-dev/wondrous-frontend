@@ -34,7 +34,7 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
         item
         container
         gap="6px"
-        width="40%"
+        maxWidth="85%"
         onClick={onClick}
         sx={{
           cursor: 'pointer',
@@ -43,12 +43,24 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
         <Box width="24px" height="24px">
           {image}
         </Box>
-        <Box color={palette.white} fontWeight="500" fontSize="13px">
+        <Box
+          color={palette.white}
+          fontWeight="500"
+          fontSize="13px"
+          maxWidth="85%"
+          width="fit-content"
+          textOverflow="ellipsis"
+          sx={{
+            cursor: 'pointer',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+          }}
+        >
           {username}
         </Box>
       </Grid>
       {canEdit && (
-        <Grid container item justifyContent="flex-end" width="40%">
+        <Grid container item justifyContent="flex-end" width="24px">
           <Grid
             item
             container
