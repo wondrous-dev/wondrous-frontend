@@ -284,7 +284,7 @@ export const SettingsHeaderActionText = styled(ButtonBase)`
 // general settings styles
 export const GeneralSettingsContainer = styled.div`
   height: 100%;
-  width: 555px;
+  width: 780px;
 `;
 
 export const GeneralSettingsInputsBlock = styled.div`
@@ -300,6 +300,7 @@ export const GeneralSettingsDAONameBlock = styled.div`
   justify-content: space-between;
   margin-bottom: 28px;
 `;
+
 export const LabelBlock = styled(Typography)`
   && {
     font-weight: 500;
@@ -315,7 +316,7 @@ export const GeneralSettingsDAONameInput = styled(InputBase)`
   && {
     width: 100%;
     height: 40px;
-    border: 1px solid #4b4b4b;
+    background: ${palette.black101};
     border-radius: 6px;
 
     font-size: 14px;
@@ -345,6 +346,8 @@ export const GeneralSettingsDAODescriptionInput = styled(GeneralSettingsDAONameI
     color: ${palette.white};
     padding: 10px 15px;
     border: none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
   }
 `;
 
@@ -355,6 +358,9 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
     width: 100%;
     text-align: right;
     padding: 8px;
+    background: ${palette.black101};
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
   }
 `;
 
@@ -386,6 +392,15 @@ export const GeneralSettingsSocialsBlockRowLabel = styled.div`
   margin-right: 10px;
 `;
 
+export const GeneralSettingsSocialsInput = styled(GeneralSettingsDAONameInput)`
+  && {
+    color: ${palette.highlightBlue};
+    font-weight: 500;
+  }
+`;
+
+export const GeneralSettingsLinksInput = styled(GeneralSettingsSocialsInput)``;
+
 // integrations block
 export const GeneralSettingsIntegrationsBlock = styled.div`
   width: 100%;
@@ -415,6 +430,12 @@ export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   && {
     max-width: 206px;
   }
+`;
+
+export const GeneralSettingsVisibilityWrapper = styled.div`
+  width: 100%;
+  max-width: 380px;
+  margin-top: 32px;
 `;
 
 // buttons block

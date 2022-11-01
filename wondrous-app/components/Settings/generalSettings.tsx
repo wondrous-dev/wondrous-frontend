@@ -1,23 +1,28 @@
+import React, { useEffect, useState } from 'react';
+import apollo from 'services/apollo';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import apollo from 'services/apollo';
 import { Box } from '@mui/system';
-import React, { useEffect, useState } from 'react';
+
+import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
+import { getFilenameAndType, uploadMedia } from 'utils/media';
+
+import { UPDATE_ORG } from 'graphql/mutations/org';
+import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from 'graphql/mutations/pod';
+import { GET_ORG_BY_ID } from 'graphql/queries/org';
+import { GET_POD_BY_ID } from 'graphql/queries/pod';
+
 import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
-import { UPDATE_ORG } from '../../graphql/mutations/org';
-import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
-import { GET_ORG_BY_ID } from '../../graphql/queries/org';
-import { GET_POD_BY_ID } from '../../graphql/queries/pod';
-import { getFilenameAndType, uploadMedia } from '../../utils/media';
-import { TabsVisibility } from '../Common/TabsVisibility';
-import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from '../CreateEntity/styles';
-import { DiscordIcon } from '../Icons/discord';
-import LinkBigIcon from '../Icons/link';
-import OpenSeaIcon from '../Icons/openSea';
-import TwitterPurpleIcon from '../Icons/twitterPurple';
+import { TabsVisibility } from 'components/Common/TabsVisibility';
+import { DiscordIcon } from 'components/Icons/discord';
+import LinkBigIcon from 'components/Icons/link';
+import OpenSeaIcon from 'components/Icons/openSea';
+import TwitterPurpleIcon from 'components/Icons/twitterPurple';
+import LinkedInIcon from 'components/Icons/linkedIn';
+import { CreateFormAddDetailsInputLabel, CreateFormAddDetailsTab } from 'components/CreateEntity/styles';
+
 import ColorSettings from './ColorDropdown';
 import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
@@ -37,9 +42,12 @@ import {
   GeneralSettingsSocialsBlock,
   GeneralSettingsSocialsBlockRow,
   GeneralSettingsSocialsBlockWrapper,
+  GeneralSettingsSocialsInput,
   LabelBlock,
   Snackbar,
   SettingsHeaderText,
+  GeneralSettingsLinksInput,
+  GeneralSettingsVisibilityWrapper,
 } from './styles';
 
 const LIMIT = 200;
@@ -58,19 +66,16 @@ const SOCIALS_DATA = [
     type: 'discord',
   },
   {
+    icon: <LinkedInIcon />,
+    title: 'LinkedIn',
+    link: 'https://linkedin.com/',
+    type: 'linkedin',
+  },
+  {
     icon: <OpenSeaIcon />,
     title: 'OpenSea',
     link: 'https://opensea.io/',
     type: 'opensea',
-  },
-];
-
-const LINKS_DATA = [
-  {
-    icon: <LinkBigIcon />,
-    label: 'Pitch Deck',
-    link: 'link',
-    type: 'pitchDeck',
   },
 ];
 
@@ -146,9 +151,10 @@ function GeneralSettingsComponent(props) {
           description="Update profile page settings."
           icon={orgProfile?.profilePicture}
         />
+
         <GeneralSettingsInputsBlock>
           <GeneralSettingsDAONameBlock>
-            <LabelBlock>{typeText} Name</LabelBlock>
+            <LabelBlock>Enter {typeText} Name</LabelBlock>
             <GeneralSettingsDAONameInput
               value={newProfile?.name}
               onChange={(e) => setProfile({ ...newProfile, name: e.target.value })}
@@ -172,7 +178,14 @@ function GeneralSettingsComponent(props) {
           <>
             {newProfile?.profilePicture && !logoImage ? (
               <Box sx={{ marginTop: '30px' }}>
-                <SafeImage width={52} height={52} src={newProfile?.profilePicture} objectFit="cover" useNextImage />
+                <SafeImage
+                  width={52}
+                  height={52}
+                  src={newProfile?.profilePicture}
+                  objectFit="cover"
+                  useNextImage
+                  style={{ borderRadius: '6px' }}
+                />
               </Box>
             ) : null}
 
@@ -224,7 +237,7 @@ function GeneralSettingsComponent(props) {
               return (
                 <GeneralSettingsSocialsBlockRow key={item.type}>
                   <LinkSquareIcon icon={item.icon} title={item.title} />
-                  <InputField value={value} onChange={(e) => handleLinkChange(e, item)} />
+                  <GeneralSettingsSocialsInput value={value} onChange={(e) => handleLinkChange(e, item)} />
                 </GeneralSettingsSocialsBlockRow>
               );
             })}
@@ -237,7 +250,7 @@ function GeneralSettingsComponent(props) {
               linkTypelinks.map((link) => (
                 <GeneralSettingsSocialsBlockRow key={link.type}>
                   <LinkSquareIcon title={link.title} icon={<LinkBigIcon />} />
-                  <InputField value={link.url} onChange={(e) => handleLinkChange(e, link)} />
+                  <GeneralSettingsLinksInput value={link.url} onChange={(e) => handleLinkChange(e, link)} />
                 </GeneralSettingsSocialsBlockRow>
               ))
             ) : (
@@ -249,11 +262,7 @@ function GeneralSettingsComponent(props) {
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
 
-        <div
-          style={{
-            marginTop: '32px',
-          }}
-        >
+        <GeneralSettingsVisibilityWrapper>
           <CreateFormAddDetailsTab>
             <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
             <TabsVisibility
@@ -262,10 +271,10 @@ function GeneralSettingsComponent(props) {
               onChange={tabsVisibilityHandleOnChange}
             />
           </CreateFormAddDetailsTab>
-        </div>
+        </GeneralSettingsVisibilityWrapper>
 
         <GeneralSettingsButtonsBlock>
-          <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>
+          <GeneralSettingsResetButton onClick={resetChanges}>Reset changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton
             buttonInnerStyle={{
               fontFamily: 'Space Grotesk',
