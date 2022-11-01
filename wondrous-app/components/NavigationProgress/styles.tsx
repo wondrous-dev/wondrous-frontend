@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const ProgressBarWrapper = styled.div`
   width: 100%;
@@ -13,7 +14,12 @@ export const ProgressBarInner = styled.div`
   height: 100%;
   border-top-right-radius: 30px;
   border-bottom-right-radius: 30px;
-  background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+  background: linear-gradient(
+    270deg,
+    ${palette.blue20} -5.62%,
+    ${palette.highlightPurple} 45.92%,
+    ${palette.highlightBlue} 103.12%
+  );
   ${({ isVisible }) =>
     isVisible
       ? `@keyframes grow {
