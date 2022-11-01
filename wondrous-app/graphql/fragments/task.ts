@@ -176,7 +176,10 @@ export const FullTaskFragment = gql`
     categories {
       name
     }
-    tokenId
+    taskMint {
+      tokenId
+      status
+    }
   }
 
   ${MediaFragment}

@@ -60,6 +60,9 @@ export const TaskMintButtonWrapper = styled.button`
   border-radius: 4px;
   gap: 10px;
   align-items: center;
+  &:disabled {
+    pointer-events: none;
+  }
   &:hover {
     background: ${palette.grey1000};
   }

@@ -15,15 +15,21 @@ const httpLink = new HttpLink({
 });
 
 const getAuth = () => {
-  if (typeof window === 'undefined') return null;
-  const token = getAuthHeader();
-  return token ? `Bearer ${token}` : '';
+  try {
+    const token = getAuthHeader();
+    return token ? `Bearer ${token}` : '';
+  } catch (error) {
+    return null;
+  }
 };
 
 const getWaitlistAuth = () => {
-  if (typeof window === 'undefined') return null;
-  const token = getWaitlistAuthHeader();
-  return token ? `Bearer ${token}` : '';
+  try {
+    const token = getWaitlistAuthHeader();
+    return token ? `Bearer ${token}` : '';
+  } catch (error) {
+    return null;
+  }
 };
 
 const authLink = setContext((_, { headers }) => {
@@ -32,7 +38,7 @@ const authLink = setContext((_, { headers }) => {
   return {
     headers: {
       ...headers,
-      ...(!!auth && { Authorization: auth }),
+      Authorization: auth,
     },
   };
 });

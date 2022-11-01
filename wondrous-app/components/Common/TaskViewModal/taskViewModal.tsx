@@ -32,6 +32,7 @@ import {
   PRIVACY_LEVEL,
   ProposalVoteType,
   STATUS_APPROVED,
+  TaskMintStatus,
   TASK_STATUS_ARCHIVED,
   TASK_TYPE,
 } from 'utils/constants';
@@ -200,12 +201,19 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
-  const [getTaskById, { refetch }] = useLazyQuery(GET_TASK_BY_ID, {
+  const [getTaskById, { refetch, startPolling, stopPolling }] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
     onCompleted: (data) => {
       const taskData = data?.getTaskById;
       if (taskData) {
+        const taskMintStatus = taskData?.taskMint?.status;
+        if (taskMintStatus === TaskMintStatus.IN_PROGRESS) {
+          startPolling(2000);
+        }
+        if (taskMintStatus === TaskMintStatus.COMPLETED) {
+          stopPolling();
+        }
         setFetchedTask(
           transformTaskToTaskCard(taskData, {
             orgProfilePicture: taskData?.org?.profilePicture,
@@ -216,6 +224,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       }
     },
     onError: () => {
+      stopPolling();
       console.error('Error fetching task');
     },
   });
@@ -516,7 +525,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   };
 
   return (
-<ApprovedSubmissionContext.Provider
+    <ApprovedSubmissionContext.Provider
       value={{
         setApprovedSubmission,
       }}
@@ -537,53 +546,35 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
           setSnackbarAlertMessage={setSnackbarAlertMessage}
         />
         <TaskContext.Provider value={{ fetchedTask, refetch }}>
-
-        <TaskModal open={open} onClose={handleModalClose}>
-          <TaskModalCard fullScreen={fullScreen}>
-            {!!fetchedTask && canViewTask !== null && (
-              <>
-                {canViewTask ? (
-                  <>
-                    <TaskModalHeader>
-                      <TaskModalHeaderWrapper>
-                        <TaskModalHeaderIconWrapper
-                          onClick={() => {
-                            handleClose();
-                            router.push(`/organization/${fetchedTask?.orgUsername}/boards`, undefined, {
-                              shallow: true,
-                            });
-                          }}
-                        >
-                          {fetchedTask?.orgProfilePicture ? (
-                            <TaskCardOrgPhoto src={fetchedTask?.orgProfilePicture} />
-                          ) : (
-                            <TaskCardOrgNoLogo>
-                              <DAOIcon />
-                            </TaskCardOrgNoLogo>
-                          )}
-                          <TaskModalHeaderTypography>{fetchedTask?.org.name}</TaskModalHeaderTypography>
-                        </TaskModalHeaderIconWrapper>
-                        {fetchedTask?.podName && (
-                          <>
-                            <TaskModalHeaderArrow />
-                            <TaskModalHeaderIconWrapper
-                              onClick={() => {
-                                handleClose();
-                                router.push(`/pod/${fetchedTask?.podId}/boards`, undefined, {
-                                  shallow: true,
-                                });
-                              }}
-                            >
-                              <TaskCardPodIcon color={fetchedTask?.podColor} />
-                              <TaskModalHeaderTypography>{fetchedTask?.podName}</TaskModalHeaderTypography>
-                            </TaskModalHeaderIconWrapper>
-                          </>
-                        )}
-                        {isSubtask && fetchedTask?.type === TASK_TYPE && (
-                          <>
-                            <TaskModalHeaderArrow />
-                            <Tooltip title="Parent Task" placement="top">
-                              <SubtaskTitleWrapper
+          <TaskModal open={open} onClose={handleModalClose}>
+            <TaskModalCard fullScreen={fullScreen}>
+              {!!fetchedTask && canViewTask !== null && (
+                <>
+                  {canViewTask ? (
+                    <>
+                      <TaskModalHeader>
+                        <TaskModalHeaderWrapper>
+                          <TaskModalHeaderIconWrapper
+                            onClick={() => {
+                              handleClose();
+                              router.push(`/organization/${fetchedTask?.orgUsername}/boards`, undefined, {
+                                shallow: true,
+                              });
+                            }}
+                          >
+                            {fetchedTask?.orgProfilePicture ? (
+                              <TaskCardOrgPhoto src={fetchedTask?.orgProfilePicture} />
+                            ) : (
+                              <TaskCardOrgNoLogo>
+                                <DAOIcon />
+                              </TaskCardOrgNoLogo>
+                            )}
+                            <TaskModalHeaderTypography>{fetchedTask?.org.name}</TaskModalHeaderTypography>
+                          </TaskModalHeaderIconWrapper>
+                          {fetchedTask?.podName && (
+                            <>
+                              <TaskModalHeaderArrow />
+                              <TaskModalHeaderIconWrapper
                                 onClick={() => {
                                   const newUrl = `${delQuery(router.asPath)}?view=${
                                     router?.query?.view || 'grid'
@@ -593,71 +584,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                   location.push(newUrl);
                                 }}
                               >
-                                <TaskModalHeaderIconWrapper>
-                                  <CheckedBoxIcon />
-                                </TaskModalHeaderIconWrapper>
-                                <TaskModalHeaderTypography>
-                                  {cutString(fetchedTask?.parentTask?.title, 20)}
-                                </TaskModalHeaderTypography>
-                              </SubtaskTitleWrapper>
-                            </Tooltip>
-                          </>
-                        )}
-
-                        {isSubtask && fetchedTask?.type === TASK_TYPE && (
-                          <>
-                            <TaskModalHeaderArrow />
-                            <SubtaskIconWrapper>
-                              <SubtaskDarkIcon />
-                            </SubtaskIconWrapper>
-                          </>
-                        )}
-                        {fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public && (
-                          <>
-                            <TaskModalHeaderArrow />
-                            <TaskModalHeaderPrivacyIcon
-                              isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
-                              tooltipTitle={
-                                fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'
-                              }
-                            />
-                          </>
-                        )}
-                      </TaskModalHeaderWrapper>
-                      <TaskModalHeaderWrapperRight>
-                        {back && (
-                          <TaskModalHeaderBackToList onClick={handleClose}>Back to list</TaskModalHeaderBackToList>
-                        )}
-                        <TaskModalHeaderShare fetchedTask={fetchedTask} />
-                        <TaskModalHeaderOpenInFullIcon
-                          isFullScreen={fullScreen}
-                          onClick={() => setFullScreen(!fullScreen)}
-                        />
-                        <Menu
-                          canArchive={canArchive}
-                          canDelete={canDelete}
-                          canEdit={canEdit}
-                          isBounty={isBounty}
-                          isMilestone={isMilestone}
-                          isTaskProposal={isTaskProposal}
-                          setArchiveTask={setArchiveTask}
-                          setCompleteModal={setCompleteModal}
-                          setDeleteTask={setDeleteTask}
-                          setEditTask={setEditTask}
-                          taskType={taskType}
-                        />
-                        <TaskModalHeaderCloseModal onClick={() => handleClose()} />
-                      </TaskModalHeaderWrapperRight>
-                    </TaskModalHeader>
-                    <TaskModalTaskData fullScreen={fullScreen}>
-                      <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
-                        <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
-                        <TaskModalTaskStatusMoreInfo>
-                          {fetchedTask?.snapshotId && (
-                            <TaskModalSnapshot onClick={handleSnapshot}>
-                              <TaskModalSnapshotLogo />
-                              <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
-                            </TaskModalSnapshot>
+                                <TaskCardPodIcon color={fetchedTask?.podColor} />
+                                <TaskModalHeaderTypography>{fetchedTask?.podName}</TaskModalHeaderTypography>
+                              </TaskModalHeaderIconWrapper>
+                            </>
                           )}
                           {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
                           {isMilestone && (
@@ -737,49 +667,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                           {isTaskProposal && (
                             <>
-                              <VoteResults
-                                totalVotes={totalVotes}
-                                fullScreen={fullScreen}
-                                votes={fetchedTask?.votes}
-                                proposalStatus={getProposalStatus(fetchedTask)}
-                                taskId={fetchedTask?.id}
+                              <TaskModalHeaderArrow />
+                              <TaskModalHeaderPrivacyIcon
+                                isPrivate={fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public}
+                                tooltipTitle={
+                                  fetchedTask?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'
+                                }
                               />
-                              <CreateFormFooterButtons>
-                                {fetchedTask?.changeRequestedAt && (
-                                  <>
-                                    <div style={flexDivStyle}>
-                                      <RejectIcon style={rejectIconStyle} />
-                                      <TaskStatusHeaderText>Rejected</TaskStatusHeaderText>
-                                    </div>
-                                    <div
-                                      style={{
-                                        flex: 1,
-                                      }}
-                                    />
-                                  </>
-                                )}
-                                {fetchedTask?.approvedAt && (
-                                  <>
-                                    <div style={flexDivStyle}>
-                                      <CompletedIcon style={rejectIconStyle} />
-                                      <TaskStatusHeaderText>Approved</TaskStatusHeaderText>
-                                    </div>
-                                    <div
-                                      style={{
-                                        flex: 1,
-                                      }}
-                                    />
-                                  </>
-                                )}
-                                {canApproveProposal && !fetchedTask?.approvedAt && (
-                                  <CreateFormButtonsBlock>
-                                    {!fetchedTask?.changeRequestedAt && (
-                                      <CreateFormCancelButton onClick={closeProposal}>Reject</CreateFormCancelButton>
-                                    )}
-                                    <CreateFormPreviewButton onClick={approveProposal}>Approve</CreateFormPreviewButton>
-                                  </CreateFormButtonsBlock>
-                                )}
-                              </CreateFormFooterButtons>
                             </>
                           )}
                           <GithubButtons fetchedTask={fetchedTask} />
@@ -806,56 +700,55 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                           addSuffix: true,
                                         })
                                       )} */}
-                                    </TaskSectionInfoCreatorDaysAgo>
-                                  )}
-                                </TaskSectionInfoTextCreator>
-                              )}
-                              onClick={() => {
-                                handleClose();
-                                router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
-                                  shallow: true,
-                                });
-                              }}
-                            />
-                          )}
-                        </TaskSectionDisplayCreator>
-                      </TaskSectionDisplayDivWrapper>
-                      <TaskViewModalFooter
-                        fullScreen={fullScreen}
-                        canApply={canApply}
-                        canClaim={canClaim}
-                        ref={sectionRef}
-                        board={board}
-                        permissions={permissions}
-                        taskApplicationCount={taskApplicationCount?.getTaskApplicationsCount?.total}
-                        isTaskProposal={isTaskProposal}
-                        isBounty={isBounty}
-                        isMilestone={isMilestone}
-                        isSubtask={isSubtask}
-                        activeTab={activeTab}
-                        setActiveTab={setActiveTab}
-                        fetchedTask={fetchedTask}
-                        user={user}
-                        canViewApplications={canViewApplications}
-                        boardColumns={boardColumns}
-                        taskSubmissionsForTask={taskSubmissionsForTask}
-                        getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-                        handleClose={handleClose}
-                        setFetchedTask={setFetchedTask}
-                        setShowPaymentModal={setShowPaymentModal}
-                        taskSubmissionsForTaskLoading={taskSubmissionsForTaskLoading}
-                      />
-                    </TaskModalTaskData>
-                  </>
-                ) : (
-                  <LockedTaskMessage handleClose={handleModalClose} />
-                )}
-              </>
-            )}
-          </TaskModalCard>
-        </TaskModal>
+                                      </TaskSectionInfoCreatorDaysAgo>
+                                    )}
+                                  </TaskSectionInfoTextCreator>
+                                )}
+                                onClick={() => {
+                                  handleClose();
+                                  router.push(`/profile/${fetchedTask?.creatorUsername}/about`, undefined, {
+                                    shallow: true,
+                                  });
+                                }}
+                              />
+                            )}
+                          </TaskSectionDisplayCreator>
+                        </TaskSectionDisplayDivWrapper>
+                        <TaskViewModalFooter
+                          fullScreen={fullScreen}
+                          canApply={canApply}
+                          canClaim={canClaim}
+                          ref={sectionRef}
+                          board={board}
+                          permissions={permissions}
+                          taskApplicationCount={taskApplicationCount?.getTaskApplicationsCount?.total}
+                          isTaskProposal={isTaskProposal}
+                          isBounty={isBounty}
+                          isMilestone={isMilestone}
+                          isSubtask={isSubtask}
+                          activeTab={activeTab}
+                          setActiveTab={setActiveTab}
+                          fetchedTask={fetchedTask}
+                          user={user}
+                          canViewApplications={canViewApplications}
+                          boardColumns={boardColumns}
+                          taskSubmissionsForTask={taskSubmissionsForTask}
+                          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                          handleClose={handleClose}
+                          setFetchedTask={setFetchedTask}
+                          setShowPaymentModal={setShowPaymentModal}
+                          taskSubmissionsForTaskLoading={taskSubmissionsForTaskLoading}
+                        />
+                      </TaskModalTaskData>
+                    </>
+                  ) : (
+                    <LockedTaskMessage handleClose={handleModalClose} />
+                  )}
+                </>
+              )}
+            </TaskModalCard>
+          </TaskModal>
         </TaskContext.Provider>
-
       </>
     </ApprovedSubmissionContext.Provider>
   );

@@ -821,3 +821,9 @@ export enum SUBMISSION_COMMENT_TYPE {
   RESUBMIT = 'resubmit',
   REOPEN = 'reopen',
 }
+
+export const TaskMintStatus = {
+  NOT_STARTED: 'not_started',
+  IN_PROGRESS: 'in_progress',
+  COMPLETED: 'completed',
+};
