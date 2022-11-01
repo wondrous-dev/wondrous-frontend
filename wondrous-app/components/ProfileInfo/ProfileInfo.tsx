@@ -164,7 +164,9 @@ function ProfileInfo({ userProfile }) {
           </ProfileInfoLink>
         )}
         {}
-        {newSocials.map(({ url, type }) => {
+        {newSocials.map((newSocial) => {
+          if (!newSocial) return;
+          const { url, type } = newSocial;
           const SocialIcon = SOCIAL_ICONS[type];
           if (type === SOCIAL_MEDIA_DISCORD && userProfile?.userInfo?.discordUsername) {
             return (
