@@ -10,7 +10,7 @@ import { ViewType } from 'types/common';
 import { useMe } from 'components/Auth/withAuth';
 import { ENTITIES_TYPES, TASKS_DEFAULT_STATUSES, STATUS_OPEN, STATUS_CHANGE_REQUESTED } from 'utils/constants';
 import apollo from 'services/apollo';
-import { Spinner } from './styles';
+import { PageDescription, Spinner } from './styles';
 
 const DEFAULT_SUBMISSION_STATUSES = [STATUS_OPEN, STATUS_CHANGE_REQUESTED];
 
@@ -87,6 +87,7 @@ const BountiesDashboard = ({ isAdmin }) => {
         searchLabel: 'Search bounties...',
         enableViewSwitcher: false,
         displaySingleViewFilter: true,
+        filters: { statuses: DEFAULT_SUBMISSION_STATUSES },
       }}
     >
       <BoardWrapper
@@ -97,6 +98,8 @@ const BountiesDashboard = ({ isAdmin }) => {
         statuses={[]}
         podIds={[]}
       >
+        <PageDescription>Showing bounties you've submitted to</PageDescription>
+
         {loading ? (
           <Spinner />
         ) : (

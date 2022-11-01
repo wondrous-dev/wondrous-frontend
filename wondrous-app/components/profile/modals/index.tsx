@@ -103,7 +103,9 @@ export function MoreInfoModal(props) {
   const podsOverflowBoxRef = useRef(null);
   const podListItemRef = useRef(null);
   const [activeTab, setActiveTab] = useState(MODAL_TABS_MAP.CONTRIBUTORS);
-  const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS);
+  const [getOrgPods, { data: orgPodData }] = useLazyQuery(GET_ORG_PODS, {
+    fetchPolicy: 'cache-and-network',
+  });
   const [userVirtualPaginationCount, setUserVirtualPaginationCount] = useState(5);
   const [podVirtualPaginationCount, setPodVirtualPaginationCount] = useState(5);
   const shouldMonitorUsersListRef = useRef(true);

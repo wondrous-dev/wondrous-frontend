@@ -12,7 +12,6 @@ import {
   STATUS_APPROVED,
   STATUS_CLOSED,
   TASK_STATUS_DONE,
-  TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';

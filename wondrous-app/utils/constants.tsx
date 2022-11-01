@@ -905,6 +905,7 @@ export const CATEGORY_TYPES = {
   GOVERNANCE: 'governance',
   DEFI: 'defi',
   ENGINEERING: 'engineering',
+  OPERATION: 'operation',
 };
 
 export const CATEGORY_LABELS = {
@@ -918,6 +919,7 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.GOVERNANCE]: '🪐 Governance',
   [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
   [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
+  [CATEGORY_TYPES.OPERATION]: '🛠️ Operation',
 };
 
 export const enum ORG_TYPES {

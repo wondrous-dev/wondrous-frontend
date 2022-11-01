@@ -2,7 +2,7 @@ import FilterIcon from 'components/Icons/filter';
 import FilterItem from 'components/Common/Filter';
 import React, { useEffect, useState } from 'react';
 import omit from 'lodash/omit';
-import { useExploreGr15TasksAndBounties, useOrgBoard, usePodBoard } from 'utils/hooks';
+import { useExploreGr15TasksAndBounties, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import {
   BoardFiltersWrapper,
   BoardFiltersContainer,
@@ -37,7 +37,8 @@ const generateDefaultFiltersState = (filters, filterSchema) => {
 export default function BoardFilters({ filterSchema, onChange, showAppliedFilters = false }) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
-  const board = orgBoard || podBoard;
+  const userBoard = useUserBoard();
+  const board = orgBoard || podBoard || userBoard;
   const boardFilters = board?.filters || {};
   const [appliedFilters, setAppliedFilters] = useState<any>(generateDefaultFiltersState(boardFilters, filterSchema));
 
