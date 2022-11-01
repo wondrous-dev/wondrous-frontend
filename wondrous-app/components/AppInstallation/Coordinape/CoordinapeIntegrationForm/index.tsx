@@ -164,7 +164,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
   useEffect(() => {
     setErrorText(null);
     if (userFullAccessOrganizationData?.length === 0) {
-      setErrorText('You must have full to an org to configure coordinape');
+      setErrorText('You must have full access to an org to configure coordinape');
     }
   }, [userFullAccessOrganizationData]);
   return (

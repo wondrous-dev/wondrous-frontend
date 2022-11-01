@@ -45,30 +45,6 @@ const SOCIAL_ICONS = {
   [SOCIAL_OPENSEA]: OpenSeaIcon,
 };
 
-const parseUserProfileInfo = (socials, userProfile) => {
-  let hasDiscordSocial = false;
-
-  const newSocials = socials.map(({ url, type }) => {
-    if (type === SOCIAL_MEDIA_DISCORD) {
-      hasDiscordSocial = true;
-    } else if (type === SOCIAL_MEDIA_TWITTER) {
-      if (userProfile?.userInfo?.twitterUsername) {
-        return {
-          url: `https://twitter.com/${userProfile?.userInfo?.twitterUsername}`,
-          type: SOCIAL_MEDIA_TWITTER,
-        };
-      }
-    }
-  });
-  if (!hasDiscordSocial && userProfile?.userInfo?.discordUsername) {
-    newSocials.push({
-      url: null,
-      type: SOCIAL_MEDIA_DISCORD,
-    });
-  }
-  return newSocials;
-};
-
 function ProfileInfo({ userProfile }) {
   const user = useMe();
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
@@ -82,7 +58,7 @@ function ProfileInfo({ userProfile }) {
     ? user?.checkIsGr15Contributor?.isGr15Contributor
     : userProfile?.checkIsGr15Contributor?.isGr15Contributor;
 
-  const newSocials = parseUserProfileInfo(social, userProfile);
+  const twitterUrl = `https://twitter.com/${userProfile?.userInfo?.twitterUsername}`;
   return (
     <ProfileInfoWrapper>
       <ChooseEntityToCreate />
@@ -163,31 +139,41 @@ function ProfileInfo({ userProfile }) {
             </ProfileInfoMainLink>
           </ProfileInfoLink>
         )}
-        {}
-        {newSocials.map(({ url, type }) => {
-          const SocialIcon = SOCIAL_ICONS[type];
-          if (type === SOCIAL_MEDIA_DISCORD && userProfile?.userInfo?.discordUsername) {
-            return (
-              <ProfileInfoLink
-                key={url}
-                href={url}
-                target="_blank"
-                style={{
-                  textDecoration: 'none',
-                }}
-              >
-                <ProfileInfoIcon
-                  style={{
-                    marginRight: '8px',
-                  }}
-                >
-                  <SocialIcon fill="#ccbbff" />
-                </ProfileInfoIcon>
-                <ProfileInfoIcon>{`${userProfile?.userInfo?.discordUsername}#${userProfile?.userInfo?.discordDiscriminator}`}</ProfileInfoIcon>
-              </ProfileInfoLink>
-            );
-          }
+        {userProfile?.userInfo?.discordUsername && (
+          <ProfileInfoLink
+            target="_blank"
+            style={{
+              textDecoration: 'none',
+            }}
+          >
+            <ProfileInfoIcon
+              style={{
+                marginRight: '8px',
+              }}
+            >
+              <DiscordIcon fill="#ccbbff" />
+            </ProfileInfoIcon>
+            <ProfileInfoIcon>{`${userProfile?.userInfo?.discordUsername}#${userProfile?.userInfo?.discordDiscriminator}`}</ProfileInfoIcon>
+          </ProfileInfoLink>
+        )}
+        {userProfile?.userInfo?.twitterUsername && (
+          <ProfileInfoLink key={twitterUrl} href={twitterUrl} target="_blank">
+            <ProfileInfoIcon>
+              <TwitterPurpleIcon fill="#ccbbff" />
+            </ProfileInfoIcon>
+          </ProfileInfoLink>
+        )}
+        {social.map(({ url, type }) => {
           if (!url) return null;
+          if (type === SOCIAL_MEDIA_DISCORD) {
+            // legacy discord url
+            return;
+          }
+          if (type === SOCIAL_MEDIA_TWITTER) {
+            // legacy twitter url
+            return;
+          }
+          const SocialIcon = SOCIAL_ICONS[type];
 
           return (
             <ProfileInfoLink key={url} href={url} target="_blank">
