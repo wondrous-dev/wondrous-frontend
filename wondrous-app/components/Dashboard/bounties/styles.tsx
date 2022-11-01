@@ -1,5 +1,8 @@
 import styled from 'styled-components';
 import CircularProgress from '@mui/material/CircularProgress';
+import { Typography } from '@mui/material';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const SpinnerWrapper = styled.div`
   width: 100%;
@@ -15,3 +18,12 @@ export const Spinner = () => (
     <CircularProgress />
   </SpinnerWrapper>
 );
+
+export const PageDescription = styled(Typography)`
+  && {
+    font-size: 15px;
+    font-family: ${typography.fontFamily};
+    padding-top: 10px;
+    color: ${palette.grey79};
+  }
+`;

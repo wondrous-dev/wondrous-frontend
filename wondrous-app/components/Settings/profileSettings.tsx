@@ -57,16 +57,6 @@ const discordUrl = getDiscordUrl();
 
 const socialsData = [
   {
-    icon: <TwitterPurpleIcon />,
-    link: 'https://twitter.com/',
-    type: 'twitter',
-  },
-  {
-    icon: <DiscordIcon fill="#ccbbff" />,
-    link: 'https://discord.gg/',
-    type: 'discord',
-  },
-  {
     icon: <OpenSeaIcon />,
     link: 'https://opensea.io/',
     type: 'opensea',
@@ -116,7 +106,11 @@ function SettingsLinks({ links, setLinks }) {
   };
   return (
     <>
-      <GeneralSettingsSocialsBlock>
+      <GeneralSettingsSocialsBlock
+        style={{
+          paddingTop: '0',
+        }}
+      >
         <LabelBlock>Socials</LabelBlock>
         <GeneralSettingsSocialsBlockWrapper>
           {socialsData.map((item) => {
