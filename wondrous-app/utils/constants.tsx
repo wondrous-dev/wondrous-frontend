@@ -759,14 +759,14 @@ export const FEATURED_LIST = [
     imageUrl: 'thumbnail/XwUv2LYsgjNeYQ.png',
     headerUrl: 'org/header/65027352575344779/A5twi91TXWxkQw.jpeg',
     name: 'Krause House',
-    description: 'Community of hoops fanatics that are crazy enough to purchase & operate an NBA team as a DAO',
+    bio: 'Community of hoops fanatics that are crazy enough to purchase & operate an NBA team as a DAO',
   },
   {
     username: 'guildxyz',
     imageUrl: 'thumbnail/HdF7Ss_VUfvrLg.jpg',
     headerUrl: 'org/header/55783761101455400/yvQH5IATqpGKGA.png',
     name: 'Guild',
-    description: 'platformless memberships and quests',
+    bio: 'platformless memberships and quests',
   },
   {
     username: 'unlock',
