@@ -188,7 +188,7 @@ export const RoleAccordion = styled(Accordion)`
     padding: 1px;
     opacity: ${({ disabled }) => (disabled ? 0.5 : 1)};
     transition: opacity 0.3s ease;
-    margin-bottom: 0;
+    margin-bottom: ${({ hasMarginBottom }) => (hasMarginBottom ? '28px' : '0')};
 
     p {
       color: ${palette.white};

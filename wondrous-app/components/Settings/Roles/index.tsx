@@ -228,6 +228,7 @@ function Roles({
           disabled={!newRoleName}
           expanded={newRolePermissionsExpanded}
           onChange={(e, expanded) => setNewRolePermissionsExpanded(expanded)}
+          hasMarginBottom={!!podId}
         >
           <Permissions>
             <RolePermissionsList>
