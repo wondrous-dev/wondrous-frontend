@@ -178,11 +178,10 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     }}
                   >
                     <PodIcon
-                      color={bounty?.podColor}
+                      color={bounty?.podColor || palette.grey900}
                       style={{
                         width: '26px',
                         height: '26px',
-                        marginRight: '8px',
                       }}
                     />
                     <PodName>{bounty?.podName}</PodName>
