@@ -4,7 +4,6 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import SmartLink from 'components/Common/SmartLink';
 import { TASK_ICONS_LABELS } from 'components/Common/TaskSubtask/TaskSubtasks';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { Claim } from 'components/Icons/claimTask';
 import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
 import { GET_SUBTASKS_FOR_TASK } from 'graphql/queries';
@@ -175,20 +174,19 @@ function TaskSubtaskEmptyState() {
 }
 
 export const TaskSubtaskItem = (props) => {
-  const { assignee, privacyLevel, rewards, status, title, id, type, media, taskApplicationPermissions, userId } = props;
-  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
+  const { query } = router;
+  const { assignee, privacyLevel, rewards, status, title, id, media, taskApplicationPermissions, userId } = props;
+
   return (
     <div>
-      <TaskViewModal
-        disableEnforceFocus
-        open={openModal}
-        shouldFocusAfterRender={false}
-        handleClose={() => setOpenModal(false)}
-        taskId={id}
-        isTaskProposal={type === ENTITIES_TYPES.PROPOSAL}
-        key={id}
-      />
-      <TaskSubtaskItemWrapper onClick={() => setOpenModal(true)}>
+      <TaskSubtaskItemWrapper
+        onClick={() => {
+          router.push({ pathname: router.pathname, query: { ...query, task: id } }, undefined, {
+            shallow: true,
+          });
+        }}
+      >
         <TaskSubtaskItemHeader>
           <TaskSubtaskItemContent>
             <TaskSubtaskClaimButton
