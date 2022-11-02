@@ -82,6 +82,7 @@ export function SubmissionsCount({ total, approved }) {
     </Grid>
   );
 }
+
 export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container = Fragment }) {
   const router = useRouter();
   const goToPod = (podId) => {
@@ -147,18 +148,24 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={bounty.description} />
                 </BoardsCardBodyDescription>
+                {bounty?.type === BOUNTY_TYPE && (
+                  <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
+                )}
                 {bounty?.media?.[0] && bounty?.media?.[0]?.type === 'image' ? (
                   <BoardsCardMedia>
                     <SafeImage
                       useNextImage={false}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        objectFit: 'cover',
+                        objectPosition: 'center',
+                        borderRadius: '6px',
+                      }}
                       src={bounty?.media[0].slug}
                     />
                   </BoardsCardMedia>
                 ) : null}
-                {bounty?.type === BOUNTY_TYPE && (
-                  <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
-                )}
               </BoardsCardBody>
               <BoardsCardFooter>
                 {bounty?.podName && !displayOrg && (
