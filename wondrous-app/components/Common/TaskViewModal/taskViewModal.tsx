@@ -167,6 +167,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
+  const { query } = router;
   const [editTask, setEditTask] = useState(false);
   const [fullScreen, setFullScreen] = useState(true);
   const [activeTab, setActiveTab] = useState(null);
@@ -575,17 +576,20 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           </>
                         )}
                         {isSubtask && fetchedTask?.type === TASK_TYPE && (
-                          <Link // this is wrong because there's still user board? how do we decouple this. also the subtask navigation is problematic
-                            href={
-                              board?.orgId
-                                ? `/organization/${fetchedTask?.orgUsername}/boards?task=${fetchedTask?.parentTaskId}`
-                                : `/pod/${fetchedTask?.podId}/boards?task=${fetchedTask?.parentTaskId}`
-                            }
-                            passHref
-                          >
+                          <>
                             <TaskModalHeaderArrow />
                             <Tooltip title="Parent Task" placement="top">
-                              <SubtaskTitleWrapper>
+                              <SubtaskTitleWrapper
+                                onClick={() => {
+                                  router.push(
+                                    { pathname: router.pathname, query: { ...query, task: fetchedTask?.parentTaskId } },
+                                    undefined,
+                                    {
+                                      shallow: true,
+                                    }
+                                  );
+                                }}
+                              >
                                 <TaskModalHeaderIconWrapper>
                                   <CheckedBoxIcon />
                                 </TaskModalHeaderIconWrapper>
@@ -594,7 +598,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 </TaskModalHeaderTypography>
                               </SubtaskTitleWrapper>
                             </Tooltip>
-                          </Link>
+                          </>
                         )}
 
                         {isSubtask && fetchedTask?.type === TASK_TYPE && (
