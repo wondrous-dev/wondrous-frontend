@@ -77,30 +77,31 @@ export const BountyContainer = styled.div`
 `;
 
 export const BountyCardWrapper = styled.div`
+  align-items: flex-start;
+  background: linear-gradient(54.27deg, #424242 20.18%, #06ffa5 130.2%);
+  border-radius: 6px;
+  border: 0px solid transparent;
+  color: ${palette.white};
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  color: ${palette.white};
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   gap: 14px;
-  border: 0px solid transparent;
-  border-radius: 6px;
-  position: relative;
   height: fit-content;
-  align-items: flex-start;
+  padding: 10px;
+  position: relative;
+  z-index: 1;
+  max-width: 360px;
   &::before {
+    background: #1d1d1d;
+    border-radius: 4px;
     content: '';
+    height: calc(100% - 2px);
+    left: 0;
     position: absolute;
-    inset: 0;
-    border-radius: 5px;
-    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
-    pointer-events: none;
+    top: 0;
+    transform: translate(1px, 1px);
+    width: calc(100% - 2px);
+    z-index: -1;
   }
 `;
 
