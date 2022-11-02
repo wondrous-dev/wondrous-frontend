@@ -1,69 +1,85 @@
-import { Fragment, useState } from 'react';
+import { Grid, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
 import {
-  BoardsCardSubheader,
-  BoardsCardHeader,
   BoardsCardBody,
-  BoardsRewardLabel,
-  BoardsPrivacyLabel,
-  BoardsCardFooter,
-  BoardsCardBodyTitle,
   BoardsCardBodyDescription,
+  BoardsCardBodyTitle,
+  BoardsCardFooter,
+  BoardsCardHeader,
   BoardsCardMedia,
+  BoardsCardSubheader,
+  BoardsRewardLabel,
 } from 'components/Common/Boards/styles';
-import { BOUNTY_TYPE, PRIVACY_LEVEL, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
-import CommentsIcon from 'components/Icons/comments';
 import { SafeImage } from 'components/Common/Image';
-import { SubtaskDarkIcon } from 'components/Icons/subtask';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
-import PodIcon from 'components/Icons/podIcon';
-import { useRouter } from 'next/router';
-import TASK_ICONS from 'components/Common/Task/constants';
-import { CompletedIcon } from 'components/Icons/statusIcons';
-import { RichTextViewer } from 'components/RichText';
-import { DAOIcon } from 'components/Icons/dao';
-import EmptyStateBoards from 'components/EmptyStateBoards';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import TASK_ICONS from 'components/Common/Task/constants';
+import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskPriority from 'components/Common/TaskPriority';
+import CommentsIcon from 'components/Icons/comments';
+import { DAOIcon } from 'components/Icons/dao';
+import PodIcon from 'components/Icons/podIcon';
+import { CompletedIcon } from 'components/Icons/statusIcons';
+import { SubtaskDarkIcon } from 'components/Icons/subtask';
+import { RichTextViewer } from 'components/RichText';
+import { useRouter } from 'next/router';
+import { Fragment, useState } from 'react';
+import palette from 'theme/palette';
+import { BOUNTY_TYPE, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
 import { Compensation } from '../Compensation';
-import {
-  BountyCardWrapper,
-  BountyIcon,
-  BountyCardType,
-  BountyCardSubmissionsCountWrapper,
-  BountyCardSubmissionsCount,
-  SubmissionCount,
-  SubtasksWrapper,
-  BountyCommentsIcon,
-  BountyBoardEmpty,
-} from './styles';
-import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
 import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
+import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
+import {
+  BountyBoardEmpty,
+  BountyCardType,
+  BountyCardWrapper,
+  BountyCommentsIcon,
+  BountyIcon,
+  SubtasksWrapper,
+} from './styles';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
     {
-      label: 'submissions',
+      label: 'Submissions',
       count: total,
-      gradient: 'blue',
+      color: palette.highlightBlue,
     },
     {
-      label: 'approved',
+      label: 'Approved',
       count: approved,
-      gradient: 'green',
+      color: palette.green30,
     },
   ];
 
   return (
-    <BountyCardSubmissionsCountWrapper>
-      {config.map((item, idx) => (
-        <BountyCardSubmissionsCount key={idx}>
-          <SubmissionCount gradient={item.gradient}>{item.count || 0}</SubmissionCount>
-          {item.label}
-        </BountyCardSubmissionsCount>
+    <Grid container justifyContent="space-between" alignItems="center" gap="14px">
+      {config.map(({ label, count, color }) => (
+        <Grid
+          item
+          container
+          maxWidth="calc(50% - 7px)"
+          borderRadius="6px"
+          fontFamily="Space Grotesk"
+          gap="10px"
+          key={label}
+          alignItems="center"
+          height="32px"
+          padding="7px 10px"
+          lineHeight="0"
+          sx={{
+            background: palette.background.default,
+          }}
+        >
+          <Typography color={color} fontWeight="700" fontSize="18px" lineHeight="0">
+            {count || 0}
+          </Typography>
+          <Typography color={palette.white} fontWeight="500" fontSize="12px" lineHeight="0">
+            {label}
+          </Typography>
+        </Grid>
       ))}
-    </BountyCardSubmissionsCountWrapper>
+    </Grid>
   );
 }
 export default function Board({ tasks, handleCardClick = (bounty) => {}, displayOrg = false, Container = Fragment }) {

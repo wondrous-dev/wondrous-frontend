@@ -115,46 +115,6 @@ export const BountyCardType = styled.div`
   text-transform: capitalize;
 `;
 
-export const BountyCardSubmissionsCount = styled.div`
-  background: ${palette.background.default};
-  color: ${palette.white};
-  width: 45%;
-  border-radius: 6px;
-  padding: 8px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
-`;
-
-export const BountyCardSubmissionsCountWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-`;
-
-export const SubmissionCount = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 20px;
-    background: ${({ gradient = 'blue' }) => SUB_BACKGROUND_MAP[gradient]};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-  }
-`;
-
 export const SubtasksWrapper = styled.div`
   display: flex;
   justify-content: center;
