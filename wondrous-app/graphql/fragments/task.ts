@@ -64,6 +64,9 @@ export const TaskFragment = gql`
     milestone {
       title
     }
+    parentTask {
+      title
+    }
     orgOrder
     podOrder
     assigneeOrder

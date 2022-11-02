@@ -40,29 +40,30 @@ import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
+  cutString,
 } from 'utils/helpers';
 import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { useMe } from '../../Auth/withAuth';
+import { useMe } from 'components/Auth/withAuth';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
   CreateFormPreviewButton,
-} from '../../CreateEntity/styles';
-import { CheckedBoxIcon } from '../../Icons/checkedBox';
-import { DAOIcon } from '../../Icons/dao';
-import { CompletedIcon } from '../../Icons/statusIcons';
-import { SubtaskDarkIcon } from '../../Icons/subtask';
-import { RejectIcon } from '../../Icons/taskModalIcons';
-import DefaultUserImage from '../Image/DefaultUserImage';
-import { MilestoneProgressViewModal } from '../MilestoneProgress';
-import { MakePaymentModal } from '../Payment/PaymentModal';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+} from 'components/CreateEntity/styles';
+import { CheckedBoxIcon } from 'components/Icons/checkedBox';
+import { DAOIcon } from 'components/Icons/dao';
+import { CompletedIcon } from 'components/Icons/statusIcons';
+import { SubtaskDarkIcon } from 'components/Icons/subtask';
+import { RejectIcon } from 'components/Icons/taskModalIcons';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
+import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -75,6 +76,7 @@ import {
 } from './helpers';
 import {
   SubtaskIconWrapper,
+  SubtaskTitleWrapper,
   TaskBorder,
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
@@ -150,6 +152,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
+
   const {
     loading: taskApplicationCountLoading,
     error: taskApplicationCountError,
@@ -571,25 +574,29 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             </TaskModalHeaderIconWrapper>
                           </>
                         )}
-                        {false && fetchedTask?.type === TASK_TYPE && (
-                          <>
+                        {isSubtask && fetchedTask?.type === TASK_TYPE && (
+                          <Link // this is wrong because there's still user board? how do we decouple this. also the subtask navigation is problematic
+                            href={
+                              board?.orgId
+                                ? `/organization/${fetchedTask?.orgUsername}/boards?task=${fetchedTask?.parentTaskId}`
+                                : `/pod/${fetchedTask?.podId}/boards?task=${fetchedTask?.parentTaskId}`
+                            }
+                            passHref
+                          >
                             <TaskModalHeaderArrow />
-                            <Link
-                              href={`/organization/${fetchedTask?.orgUsername}/boards?task=${
-                                isSubtask ? fetchedTask?.parentTaskId : taskId
-                              }`}
-                              passHref
-                            >
-                              <Tooltip title="Task" placement="top">
-                                <span>
-                                  <TaskModalHeaderIconWrapper>
-                                    <CheckedBoxIcon />
-                                  </TaskModalHeaderIconWrapper>
-                                </span>
-                              </Tooltip>
-                            </Link>
-                          </>
+                            <Tooltip title="Parent Task" placement="top">
+                              <SubtaskTitleWrapper>
+                                <TaskModalHeaderIconWrapper>
+                                  <CheckedBoxIcon />
+                                </TaskModalHeaderIconWrapper>
+                                <TaskModalHeaderTypography>
+                                  {cutString(fetchedTask?.parentTask?.title, 20)}
+                                </TaskModalHeaderTypography>
+                              </SubtaskTitleWrapper>
+                            </Tooltip>
+                          </Link>
                         )}
+
                         {isSubtask && fetchedTask?.type === TASK_TYPE && (
                           <>
                             <TaskModalHeaderArrow />
