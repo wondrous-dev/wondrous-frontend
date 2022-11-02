@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
+import GrantIcon from 'components/Icons/GrantIcon';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -83,6 +84,21 @@ const useSidebarData = () => {
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
+          !!orgBoard && {
+            text: 'Pods',
+            Icon: PodIcon,
+            link: `${link}/pods`,
+            count: board?.orgData?.podCount,
+          },
+          {
+            text: 'Grants',
+            Icon: GrantIcon,
+            link: `${link}/grants`,
+
+            // TODO fix me
+
+            count: 4,
+          },
           !board?.orgData?.shared && {
             text: 'Collaborations',
             Icon: SmallDao2DaoIcon,
@@ -93,12 +109,6 @@ const useSidebarData = () => {
                 collabs: true,
               },
             },
-          },
-          !!orgBoard && {
-            text: 'Pods',
-            Icon: PodIcon,
-            link: `${link}/pods`,
-            count: board?.orgData?.podCount,
           },
         ],
       },
