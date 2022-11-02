@@ -67,6 +67,7 @@ export const redColors = {
   red700: '#DF251D',
   red750: '#FB6E47',
   red800: '#FF5C00',
+  red850: '#37170E',
 };
 
 export const blueColors = {
