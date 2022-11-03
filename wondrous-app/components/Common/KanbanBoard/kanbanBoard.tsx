@@ -92,9 +92,7 @@ function KanbanBoard(props) {
       currentBoard = 'assignee';
     }
     try {
-      const {
-        data: { updateTask: task },
-      } = await apollo.mutate({
+      await apollo.mutate({
         mutation: UPDATE_TASK_STATUS,
         variables: {
           taskId: taskToBeUpdated.id,
