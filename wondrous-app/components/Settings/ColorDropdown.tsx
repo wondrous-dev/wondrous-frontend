@@ -1,11 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import {
   CreateFormInputLabel,
   CreateFormMenuItem,
-  CreateFormMenuItemIcon,
   CreateFormSelect,
-  CreateFormSelectArrowIcon,
   CreateFormSelectBlock,
   CreateFormSelectBlockTitle,
 } from 'components/Common/DropdownSelect/styles';
