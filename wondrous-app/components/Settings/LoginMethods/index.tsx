@@ -4,6 +4,26 @@ import { useWonderWeb3 } from 'services/web3';
 import apollo from 'services/apollo';
 
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import { DiscordIcon } from 'components/Icons/discord';
+import LoadIcon from 'components/Icons/LoadIcon';
+import IndicateIcon from 'components/Icons/IndicateIcon';
+import {
+  REQUEST_PASSWORD_RESET,
+  UPDATE_USER,
+  USER_DISCORD_DISCONNECT,
+  USER_WALLET_DISCONNECT,
+} from 'graphql/mutations';
+import { GET_LOGGED_IN_USER } from 'graphql/queries';
+import { useMutation } from '@apollo/client';
+import { DISCORD_CONNECT_TYPES, validateEmail } from 'utils/constants';
+import { getDiscordUrl } from 'utils/index';
+import WalletModal from 'components/Common/Wallet/WalletModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import ConfirmModal from 'components/Common/ConfirmModal';
+import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
+import { CircularProgress } from '@mui/material';
+import ErrorDisplay from './ErrorDisplay';
+import { ErrorText } from '../../Common';
 import {
   ButtonContainer,
   CancelSpan,
@@ -26,27 +46,6 @@ import {
   SectionContainer,
   StatusContainer,
 } from './styles';
-import { HeaderBlock } from '../headerBlock';
-import { DiscordIcon } from 'components/Icons/discord';
-import LoadIcon from 'components/Icons/LoadIcon';
-import IndicateIcon from 'components/Icons/IndicateIcon';
-import {
-  REQUEST_PASSWORD_RESET,
-  UPDATE_USER,
-  USER_DISCORD_DISCONNECT,
-  USER_WALLET_DISCONNECT,
-} from 'graphql/mutations';
-import { GET_LOGGED_IN_USER } from 'graphql/queries';
-import { useMutation } from '@apollo/client';
-import { DISCORD_CONNECT_TYPES, validateEmail } from 'utils/constants';
-import { getDiscordUrl } from 'utils/index';
-import ErrorDisplay from './ErrorDisplay';
-import { ErrorText } from '../../Common';
-import WalletModal from 'components/Common/Wallet/WalletModal';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import ConfirmModal from 'components/Common/ConfirmModal';
-import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
-import { CircularProgress } from '@mui/material';
 
 const discordUrl = getDiscordUrl();
 
@@ -102,7 +101,7 @@ function LogInMethods(props) {
   });
 
   const handleInputs = (e: React.ChangeEvent<HTMLInputElement>) => {
-    let { name, value } = e.target;
+    const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
   };
 
@@ -220,6 +219,7 @@ function LogInMethods(props) {
               }}
             >
               <InputSection>
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
                 <label htmlFor="email">Email</label>
                 <input
                   onChange={(e) => handleInputs(e)}
@@ -230,7 +230,7 @@ function LogInMethods(props) {
                 />
               </InputSection>
               <InputFlexSection>
-                <ChangePasswordButton highlighted={true}>
+                <ChangePasswordButton highlighted>
                   {formloading && (
                     <CircularProgress
                       style={{ borderRadius: '50%', width: '20px', height: '20px', marginRight: '10px' }}
@@ -274,7 +274,7 @@ function LogInMethods(props) {
                 {loggedInUser?.userInfo?.discordUsername ? 'active' : 'Inactive'}
               </StatusContainer>
             </ButtonContainer>
-            {loginMethodToDisconnect === 'discord' && <ErrorDisplay method={'Discord'} />}
+            {loginMethodToDisconnect === 'discord' && <ErrorDisplay method="Discord" />}
             {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
             {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
           </SectionContainer>
@@ -295,7 +295,7 @@ function LogInMethods(props) {
                     setLoginMethodToDissconnect('wallet');
                   }
                 }}
-                highlighted={true}
+                highlighted
               >
                 {!loggedInUser?.activeEthAddress ? (
                   'Link Wallet to Account'
@@ -319,7 +319,7 @@ function LogInMethods(props) {
                 {loggedInUser?.activeEthAddress ? 'Active' : 'Inactive'}
               </StatusContainer>
             </ButtonContainer>
-            {loginMethodToDisconnect === 'wallet' && <ErrorDisplay method={'Wallet'} />}
+            {loginMethodToDisconnect === 'wallet' && <ErrorDisplay method="Wallet" />}
             {!connectedToWallet && <WalletModal open={walletModalOpen} onClose={() => setWalletModalOpen(false)} />}
           </SectionContainer>
         </ContentContainer>
@@ -338,7 +338,7 @@ function LogInMethods(props) {
             disconnectWallet();
           }
         }}
-        title={'Are you sure'}
+        title="Are you sure"
         submitLabel="Disconnect"
         cancelLabel="cancel"
         isLoading={disconnectLoading}

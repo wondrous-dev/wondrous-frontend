@@ -2,6 +2,7 @@ import { Button } from 'components/Common/button';
 import styled from 'styled-components';
 import { Button as MuiButton, Typography } from '@mui/material';
 import palette from 'theme/palette';
+
 export const LogInMethodContainer = styled.div`
   width: 800px;
 
