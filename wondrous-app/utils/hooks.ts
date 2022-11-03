@@ -349,3 +349,11 @@ export const usePermissions = (entity, isTaskProposal = false) => {
   return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal };
 };
 export const useTaskContext = () => useContext(TaskContext);
+
+export const useFullScreen = () => {
+  const [isFullScreen, setIsFullScreen] = useState(false);
+  const toggleFullScreen = () => {
+    setIsFullScreen(!isFullScreen);
+  };
+  return { isFullScreen, toggleFullScreen };
+};

@@ -148,6 +148,7 @@ export const ENTITIES_TYPES = {
   BOUNTY: 'bounty',
   PROPOSAL: 'proposal',
   SUBMISSION: 'submission',
+  GRANT: 'grant',
 };
 
 export const MODAL_TABS_MAP = {

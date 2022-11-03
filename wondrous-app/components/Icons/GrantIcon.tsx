@@ -1,5 +1,5 @@
-const GrantIcon = () => (
-  <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg">
+const GrantIcon = (props) => (
+  <svg width="16" height="18" viewBox="0 0 16 18" fill="none" xmlns="http://www.w3.org/2000/svg" {...props}>
     <path
       d="M8.07984 16.6047V11.1558C8.07984 9.40859 6.66344 7.99219 4.91621 7.99219H0.720703V9.52606C0.720703 11.2733 2.13711 12.6897 3.88433 12.6897H5.73753"
       stroke="white"

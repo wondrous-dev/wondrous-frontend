@@ -1,4 +1,5 @@
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
+import CreateGrant from 'components/CreateGrant';
 import { FormikValues } from 'formik';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -43,8 +44,17 @@ export function CreateEntity(props: ICreateEntity) {
   const [discard, setDiscard] = useState(false);
   const [formDirty, setFormDirty] = useState(false);
   const handleCloseForm = () => (formDirty ? setDiscard(true) : handleCloseModal());
-  const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
-  const showNewModal = forNewModal || isTaskProposal;
+  const isTaskOrProposal = [
+    ENTITIES_TYPES.TASK,
+    ENTITIES_TYPES.MILESTONE,
+    ENTITIES_TYPES.BOUNTY,
+    ENTITIES_TYPES.PROPOSAL,
+  ].includes(entityType);
+
+  const isGrantEntity = entityType === ENTITIES_TYPES.GRANT;
+
+  const isPodEntity = entityType === ENTITIES_TYPES.POD;
+
   return (
     <>
       <CreateEntityDiscardTask
@@ -54,7 +64,11 @@ export function CreateEntity(props: ICreateEntity) {
         entityType={entityType}
       />
       <CreateFormModalOverlay open={open} onClose={handleCloseForm}>
-        {showNewModal ? <CreateEntityModal {...props} setFormDirty={setFormDirty} /> : <CreatePodModal {...props} />}
+        <>
+          {isTaskOrProposal && <CreateEntityModal {...props} setFormDirty={setFormDirty} />}
+          {isPodEntity && <CreatePodModal {...props} />}
+          {isGrantEntity && <CreateGrant {...props} />}
+        </>
       </CreateFormModalOverlay>
     </>
   );
