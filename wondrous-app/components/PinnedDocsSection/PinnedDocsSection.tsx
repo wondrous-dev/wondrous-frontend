@@ -1,5 +1,5 @@
 import Box from '@mui/material/Box';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import GridLayout from 'components/GridLayout';
 import DocumentGridItem from 'components/DocumentGridItem';
 import PermissionTag from 'components/PermissionTag';

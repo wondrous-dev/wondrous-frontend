@@ -86,17 +86,21 @@ export default function MembershipRequestTable(props) {
                         marginRight: '4px',
                       }}
                     />
-                    <Link passHref href={`/organization/${request?.orgUsername}/boards`}>
-                      <a target="_blank" rel="noopener noreferrer">
-                        <TaskDescription
-                          style={{
-                            textDecoration: 'underline',
-                            cursor: 'pointer',
-                          }}
-                        >
-                          {request?.orgUsername}
-                        </TaskDescription>
-                      </a>
+                    <Link
+                      passHref
+                      href={`/organization/${request?.orgUsername}/boards`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      legacyBehavior
+                    >
+                      <TaskDescription
+                        style={{
+                          textDecoration: 'underline',
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {request?.orgUsername}
+                      </TaskDescription>
                     </Link>
                   </div>
                 )}
@@ -104,17 +108,21 @@ export default function MembershipRequestTable(props) {
               <StyledTableCell align="center">
                 {request?.podName ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <Link passHref href={`/pod/${request?.podId}/boards`}>
-                    <a target="_blank" rel="noopener noreferrer">
-                      <TaskDescription
-                        style={{
-                          textDecoration: 'underline',
-                          cursor: 'pointer',
-                        }}
-                      >
-                        {request?.podName}
-                      </TaskDescription>
-                    </a>
+                  <Link
+                    passHref
+                    href={`/pod/${request?.podId}/boards`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    legacyBehavior
+                  >
+                    <TaskDescription
+                      style={{
+                        textDecoration: 'underline',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      {request?.podName}
+                    </TaskDescription>
                   </Link>
                 ) : null}
               </StyledTableCell>

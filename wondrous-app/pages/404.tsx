@@ -1,7 +1,7 @@
 import { Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import Wrapper from 'components/Wrapper';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Link from 'next/link';
 import styled from 'styled-components';
 import palette from 'theme/palette';
@@ -86,7 +86,7 @@ export default function Custom404() {
       <Custom404Wrapper>
         <Custom404Heading>Hey Wonderer!</Custom404Heading>
         <Custom404SubHeading>Looks like there is no such planet in the Wonderverse.</Custom404SubHeading>
-        <Link href="/dashboard" passHref>
+        <Link href="/dashboard" passHref legacyBehavior>
           <Custom404Button>Back to the homepage</Custom404Button>
         </Link>
       </Custom404Wrapper>

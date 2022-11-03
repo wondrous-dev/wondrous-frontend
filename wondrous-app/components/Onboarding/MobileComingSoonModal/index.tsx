@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import Modal from '@mui/material/Modal';
 
 import { Layout, OnboardingDescription, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';

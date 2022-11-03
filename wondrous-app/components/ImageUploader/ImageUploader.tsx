@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useMemo } from 'react';
 import head from 'lodash/head';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { styled } from '@mui/material/styles';
 
 import Box from '@mui/material/Box';

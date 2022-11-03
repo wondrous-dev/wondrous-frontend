@@ -245,16 +245,16 @@ export function BatchPayModal(props) {
                         </CompensationPill>
                       </StyledTableCell>
                       <StyledTableCell>
-                        <Link href={taskHref}>
-                          <a
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{
-                              color: palette.white,
-                            }}
-                          >
-                            {cutString(submission?.taskTitle, 30)}
-                          </a>
+                        <Link
+                          href={taskHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            color: palette.white,
+                          }}
+                          legacyBehavior
+                        >
+                          {cutString(submission?.taskTitle, 30)}
                         </Link>
                       </StyledTableCell>
                     </StyledTableRow>

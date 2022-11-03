@@ -17,8 +17,8 @@ const ProfilePicture = ({ profilePicture }) => (
   <SafeImage
     src={profilePicture}
     placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-    width="24px"
-    height="24px"
+    width={24}
+    height={24}
     objectFit="cover"
     useNextImage
     style={profilePictureStyle}

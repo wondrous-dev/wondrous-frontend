@@ -89,7 +89,9 @@ function NotificationsBoard({ onlyBoard = false }) {
     const userName = notification.actorUsername;
     const actor = (
       <NotificationsLink>
-        <Link href={`/profile/${userName}/about`}>{userName}</Link>
+        <Link href={`/profile/${userName}/about`} legacyBehavior>
+          {userName}
+        </Link>
       </NotificationsLink>
     );
 
@@ -100,7 +102,9 @@ function NotificationsBoard({ onlyBoard = false }) {
     const object = (
       <span>
         <NotificationsLink styled={{ display: 'block' }}>
-          <Link href={link}>{objectType}</Link>
+          <Link href={link} legacyBehavior>
+            {objectType}
+          </Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>

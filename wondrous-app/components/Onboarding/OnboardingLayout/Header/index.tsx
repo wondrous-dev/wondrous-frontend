@@ -43,6 +43,7 @@ function OnboardingHeader({ children, withLoginButton = false, withSignupButton 
             pathname: withSignupButton ? '/signup' : `/login`,
             query: router.query,
           }}
+          legacyBehavior
         >
           <div>
             <Button>{withSignupButton ? 'Sign up' : 'Login'}</Button>

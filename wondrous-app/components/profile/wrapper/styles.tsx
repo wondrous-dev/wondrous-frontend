@@ -1,5 +1,5 @@
 import { Button, IconButton, Typography } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { Button as ButtonComponent } from '../../Common/button';

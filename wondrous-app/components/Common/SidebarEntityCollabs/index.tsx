@@ -81,7 +81,7 @@ const CollabsSidebar = () => {
           <ListWrapper>
             <Label>Collabs</Label>
             {data?.getOrgCollabsForOrg?.map((collab, idx) => (
-              <Link href={`/collaboration/${collab.username}/boards`}>
+              <Link href={`/collaboration/${collab.username}/boards`} legacyBehavior>
                 <CollabsWrapper key={idx}>
                   <CollabRequestTitle>{collab.name}</CollabRequestTitle>
                   <CollabRequestLogoWrapper>

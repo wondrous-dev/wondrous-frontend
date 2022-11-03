@@ -120,17 +120,17 @@ export function PayModal(props) {
           <PaymentTitleTextDiv>
             <PaymentTitleText>
               Payout to{' '}
-              <Link href={`/profile/${assigneeId}/about`}>
-                <a
-                  style={{
-                    color: '#ffffff',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                  target="_blank"
-                >
-                  {assigneeUsername}
-                </a>
+              <Link
+                href={`/profile/${assigneeId}/about`}
+                style={{
+                  color: '#ffffff',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+                target="_blank"
+                legacyBehavior
+              >
+                {assigneeUsername}
               </Link>{' '}
             </PaymentTitleText>
             <PaymentDescriptionText>Task: {taskTitle}</PaymentDescriptionText>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import isEmpty from 'lodash/isEmpty';
 import { useLazyQuery, useQuery } from '@apollo/client';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useRouter } from 'next/router';
 
 import Box from '@mui/material/Box';

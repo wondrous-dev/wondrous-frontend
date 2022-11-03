@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 import { UserProfileContext } from 'utils/contexts';
 import useGetUserProfile from 'hooks/useGetUserProfile';

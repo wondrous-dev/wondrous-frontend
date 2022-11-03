@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
-import Image, { ImageProps } from 'next/image';
+import Image, { ImageProps } from 'next/legacy/image';
 
 type SafeImageArgs = ImageProps & {
   alt?: string;

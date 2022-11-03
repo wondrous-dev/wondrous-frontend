@@ -358,7 +358,6 @@ function Wrapper(props) {
         {orgProfile ? (
           <SafeImage
             src={orgProfile?.headerPicture || DefaultBg}
-            width="100%"
             height={100}
             layout="fill"
             objectFit="cover"
@@ -388,8 +387,8 @@ function Wrapper(props) {
                           <DAOEmptyIcon />
                         </TokenEmptyLogo>
                       }
-                      width="60px"
-                      height="60px"
+                      width={60}
+                      height={60}
                       useNextImage
                       style={{
                         borderRadius: '6px',

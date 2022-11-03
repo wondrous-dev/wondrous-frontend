@@ -50,7 +50,7 @@ const KudosWidget = () => {
         )}
         {data?.getUserFeed?.map((kudos, idx) => (
           <TaskContainer key={idx}>
-            <Link href={`/profile/${kudos?.actor?.username}/about`}>
+            <Link href={`/profile/${kudos?.actor?.username}/about`} legacyBehavior>
               <div>
                 <UserProfilePicture avatar={kudos?.actor?.profilePicture} />
               </div>

@@ -247,7 +247,7 @@ function SettingsWrapper(props) {
                   const endHref = hrefSplit[hrefSplit.length - 1];
                   const active = endHref === endPathName;
                   return (
-                    <Link key={href} href={href} passHref>
+                    <Link key={href} href={href} passHref legacyBehavior>
                       <Item key={label} Icon={Icon} isActive={active}>
                         {label}
                       </Item>

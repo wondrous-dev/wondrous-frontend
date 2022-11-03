@@ -386,7 +386,6 @@ export function TaskCard({
                 width={270}
                 objectFit="cover"
                 objectPosition="center"
-                height="100%"
                 layout="responsive"
                 src={coverMedia.slug}
                 useNextImage

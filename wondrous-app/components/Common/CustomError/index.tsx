@@ -7,7 +7,7 @@ function CustomErrorComponent() {
     <ErrorWrapper>
       <ErrorHeader>Houston, we have a problem...</ErrorHeader>
       <SectionSubheader>Something went wrong.</SectionSubheader>
-      <Link href="/explore">
+      <Link href="/explore" legacyBehavior>
         <Button>Escape to Explore</Button>
       </Link>
       <ErrorImage src="/images/500.webp" />

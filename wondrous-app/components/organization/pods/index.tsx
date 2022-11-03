@@ -192,7 +192,7 @@ const Pods = (props) => {
       <PodsList>
         {activePodsList?.length &&
           activePodsList?.map((podData) => (
-            <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
+            <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref legacyBehavior>
               <PodItemWrapper>
                 <PodItem
                   podData={podData}

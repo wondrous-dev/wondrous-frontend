@@ -123,7 +123,9 @@ export function PostHeader(props) {
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">
-              <Link href={`/profile/${actor?.username}/about`}>{actor?.username}</Link>
+              <Link href={`/profile/${actor?.username}/about`} legacyBehavior>
+                {actor?.username}
+              </Link>
             </PostHeaderUsername>{' '}
             {headerText}
           </PostHeaderText>

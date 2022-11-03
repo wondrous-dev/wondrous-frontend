@@ -237,7 +237,7 @@ const CurrentRoleModal = (props) => {
               {rolesWithDiscordAccess?.length !== 0 && !user?.userInfo?.discordUsername && (
                 <ClaimRoleWarningWrapper>
                   <LitWarningMessage>To join via discord, connect your discord to Wonder</LitWarningMessage>
-                  <Link href="/profile/settings">
+                  <Link href="/profile/settings" legacyBehavior>
                     <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
                   </Link>
                 </ClaimRoleWarningWrapper>

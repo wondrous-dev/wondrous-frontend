@@ -153,7 +153,7 @@ export default function TableBody({
                       ]}
                     />
                   )}
-                  <Link passHref href={`/profile/${username}/about`}>
+                  <Link passHref href={`/profile/${username}/about`} legacyBehavior>
                     <Initials>{username}</Initials>
                   </Link>
                 </div>

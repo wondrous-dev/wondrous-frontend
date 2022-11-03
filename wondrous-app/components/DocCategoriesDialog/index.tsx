@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import head from 'lodash/head';
 import { useMutation } from '@apollo/client';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useForm } from 'react-hook-form';
 import isEmpty from 'lodash/isEmpty';
 import { styled } from '@mui/material/styles';

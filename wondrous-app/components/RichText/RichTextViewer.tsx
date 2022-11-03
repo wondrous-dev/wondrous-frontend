@@ -31,16 +31,14 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'mention':
         return (
-          <Link key={i} href={`/profile/${node.mentionable}/about`} passHref>
-            <a>@{node.mentionable}</a>
+          <Link key={i} href={`/profile/${node.mentionable}/about`} passHref legacyBehavior>
+            @{node.mentionable}
           </Link>
         );
       case 'link':
         return (
-          <Link key={i} href={node.href} passHref>
-            <a target="_blank" rel="noopener noreferrer">
-              {node.children[0]?.text}
-            </a>
+          <Link key={i} href={node.href} passHref target="_blank" rel="noopener noreferrer" legacyBehavior>
+            {node.children[0]?.text}
           </Link>
         );
       case 'bulleted-list':

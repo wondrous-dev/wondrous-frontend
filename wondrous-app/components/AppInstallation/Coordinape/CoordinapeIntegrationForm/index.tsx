@@ -175,8 +175,8 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
             <SafeImage
               useNextImage
               src={coordinapeImageUrl}
-              width="80px"
-              height="80px"
+              width={80}
+              height={80}
               style={{
                 borderRadius: '50%',
               }}
@@ -185,8 +185,8 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
             <SafeImage
               src={userProfilePicture}
               placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-              width="80px"
-              height="80px"
+              width={80}
+              height={80}
               objectFit="cover"
               useNextImage
               style={profilePictureStyle}

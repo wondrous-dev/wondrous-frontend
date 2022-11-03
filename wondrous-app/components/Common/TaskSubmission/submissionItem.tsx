@@ -233,7 +233,7 @@ function SubmissionItemUserImage({ creatorProfilePicture }) {
 function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor }) {
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   return (
-    <Link href={`/profile/${creatorUsername}/about`} passHref>
+    <Link href={`/profile/${creatorUsername}/about`} passHref legacyBehavior>
       <SubmissionItemUserLink>
         <SubmissionItemUserImage creatorProfilePicture={creatorProfilePicture} />
         {isGr15Contributor && (

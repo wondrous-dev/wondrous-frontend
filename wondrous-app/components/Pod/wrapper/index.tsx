@@ -290,7 +290,6 @@ function Wrapper(props) {
           {podProfile ? (
             <SafeImage
               src={podProfile?.headerPicture || DefaultBg}
-              width="100%"
               height={100}
               layout="fill"
               objectFit="cover"

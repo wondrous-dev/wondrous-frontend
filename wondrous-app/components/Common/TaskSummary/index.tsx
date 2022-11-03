@@ -230,7 +230,9 @@ export function TaskSummary({ task, setTask, action, taskType }) {
 
         <TaskContent>
           <TaskTitle>
-            <Link href={viewUrl}>{title}</Link>
+            <Link href={viewUrl} legacyBehavior>
+              {title}
+            </Link>
           </TaskTitle>
           <RichTextViewer text={task?.description} />
           {task?.podName && (

@@ -28,8 +28,8 @@ function DiscordNotificationSetup(props) {
           <BoldParagraph>Task creation</BoldParagraph>
         </ListItem>
         {/* <ListItem>
-          <BoldParagraph>Task submission creation</BoldParagraph>
-        </ListItem> */}
+        <BoldParagraph>Task submission creation</BoldParagraph>
+      </ListItem> */}
         <ListItem>
           <BoldParagraph>Task completion</BoldParagraph>
         </ListItem>
@@ -69,16 +69,15 @@ function DiscordNotificationSetup(props) {
       <DiscordParagraph>
         To ensure only users with the correct permission can set up notification, please connect your discord account to
         Wonder through
-        <Link href="/profile/settings">
-          <a
-            target="_blank"
-            style={{
-              color: palette.highlightBlue,
-              marginLeft: '4px',
-            }}
-          >
-            your profile setting page
-          </a>
+        <Link
+          href="/profile/settings"
+          target="_blank"
+          style={{
+            color: palette.highlightBlue,
+            marginLeft: '4px',
+          }}
+        >
+          your profile setting page
         </Link>
       </DiscordParagraph>
       <DiscordTitle

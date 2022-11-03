@@ -10,7 +10,7 @@ const SharedOrgHeader = ({ parentOrgs }) => (
   <Grid container direction="row" wrap="nowrap" gap="18px" sx={{ width: 'auto' }}>
     {parentOrgs?.map((org, idx) => (
       <>
-        <Link href={`/organization/${org?.username}/boards`}>
+        <Link href={`/organization/${org?.username}/boards`} legacyBehavior>
           <Box sx={{ minWidth: '60px', cursor: 'pointer' }} key={idx}>
             <SafeImage
               src={org?.profilePicture}
@@ -19,8 +19,8 @@ const SharedOrgHeader = ({ parentOrgs }) => (
                   <DAOEmptyIcon />
                 </TokenEmptyLogo>
               }
-              width="60px"
-              height="60px"
+              width={60}
+              height={60}
               useNextImage
               style={{
                 borderRadius: '6px',

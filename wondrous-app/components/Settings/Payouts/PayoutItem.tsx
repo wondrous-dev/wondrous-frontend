@@ -143,13 +143,13 @@ const PayoutItem = (props: PayoutItemProps) => {
               </Button>
             )}
 
-            <Link href={`/profile/${item?.payeeUsername}/about`} passHref>
+            <Link href={`/profile/${item?.payeeUsername}/about`} passHref legacyBehavior>
               <PayeeProfileLink>
                 <Grid display="flex" alignItems="center" gap="6px">
                   <SafeImage
                     useNextImage={false}
-                    width="32px"
-                    height="32px"
+                    width={32}
+                    height={32}
                     src={item?.payeeProfilePicture}
                     style={imageStyle}
                     placeholderComp={<DefaultUserImage style={imageStyle} />}

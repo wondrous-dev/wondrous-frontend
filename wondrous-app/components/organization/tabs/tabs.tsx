@@ -113,6 +113,7 @@ const Tabs = (props) => {
             href={tab.href}
             passHref
             shallow
+            legacyBehavior
           >
             <StyledTab isActive={tab.href.includes(asPath)} label={tab.label} />
           </Link>

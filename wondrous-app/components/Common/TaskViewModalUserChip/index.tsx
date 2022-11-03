@@ -1,5 +1,5 @@
 import { Box, Grid } from '@mui/material';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import palette from 'theme/palette';
 import { SafeImage } from '../Image';
 import DefaultUserImage from '../Image/DefaultUserImage';

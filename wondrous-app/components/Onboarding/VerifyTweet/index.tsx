@@ -12,7 +12,7 @@ import {
   SecretCodeContainer,
 } from 'components/Onboarding/OnboardingLayout/Footer/styles';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { useWonderWeb3 } from 'services/web3';
 import useEagerConnectConditional from 'services/web3/hooks/useEagerConnectConditional';
 import TwitterLogo from '../../../public/images/twitter.svg';

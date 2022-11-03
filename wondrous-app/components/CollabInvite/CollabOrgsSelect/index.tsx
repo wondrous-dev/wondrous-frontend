@@ -14,7 +14,7 @@ export const LoggedOutUser = ({ user, token }) => (
   <Wrapper>
     <WrapperHeader>My DAO is on Wonder</WrapperHeader>
     <WrapperSubheader>Log-in and accept the invitation</WrapperSubheader>
-    <Link href={`/login?collabInvite=${token}`}>
+    <Link href={`/login?collabInvite=${token}`} legacyBehavior>
       <ActionButton>Log in and accept</ActionButton>
     </Link>
   </Wrapper>
@@ -26,7 +26,7 @@ export const MissingUserActions = ({ user, token }) => {
     <Wrapper>
       <WrapperHeader>My DAO is not on Wonder</WrapperHeader>
       <WrapperSubheader>Easy, just create a DAO and accept!</WrapperSubheader>
-      <Link href={href}>
+      <Link href={href} legacyBehavior>
         <ActionButton>Create org and accept</ActionButton>
       </Link>
     </Wrapper>

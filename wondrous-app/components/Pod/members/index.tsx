@@ -143,7 +143,7 @@ function MemberRequests(props) {
             <MemberRequestsList>
               {podUserMembershipRequests?.map((request) => (
                 <MemberRequestCard key={request.id}>
-                  <Link href={`/profile/${request.userUsername}/about`} passHref>
+                  <Link href={`/profile/${request.userUsername}/about`} passHref legacyBehavior>
                     <MemberProfileLink>
                       {request.userProfilePicture ? (
                         <SafeImage

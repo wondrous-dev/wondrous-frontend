@@ -29,7 +29,7 @@ function PodListCard(props) {
   const { pod, handleClose } = props;
   const router = useRouter();
   return (
-    <Link href={`/pod/${pod?.id}/boards`} passHref>
+    <Link href={`/pod/${pod?.id}/boards`} passHref legacyBehavior>
       <TaskListCardWrapper
         onClick={() => {
           if (handleClose) {

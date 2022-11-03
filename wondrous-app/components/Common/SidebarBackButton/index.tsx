@@ -3,7 +3,7 @@ import { Wrapper, Button, LeftArrowIconWrapper } from 'components/Common/Sidebar
 
 const BackButton = ({ href }) => (
   <Wrapper>
-    <Link href={href} passHref>
+    <Link href={href} passHref legacyBehavior>
       <Button disableRipple>
         <LeftArrowIconWrapper />
         Back

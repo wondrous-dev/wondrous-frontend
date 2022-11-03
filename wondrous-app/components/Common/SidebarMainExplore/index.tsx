@@ -17,7 +17,7 @@ const ExploreIconButton = ({ isActive = false }) => {
   });
   return (
     <SidebarTooltip title="Explore">
-      <Link href="/explore" passHref>
+      <Link href="/explore" passHref legacyBehavior>
         <ExploreButton id="tour-sidebar-explore-top" isActive={isActive}>
           <Badge badgeContent={HOTKEYS.OPEN_EXPLORE} color="primary" invisible={!showBadge} style={{ zIndex: 999 }}>
             <ExploreIconWrapper isActive={isActive}>

@@ -23,7 +23,7 @@ const InvalidToken = () => {
       <Typography sx={{ fontSize: '14px' }} color={palette.grey250}>
         This invite is invalid or has expired. Please contact the person who sent you the invite.
       </Typography>
-      <Link href={href}>
+      <Link href={href} legacyBehavior>
         <ActionButton>{buttonTitle}</ActionButton>
       </Link>
     </Grid>

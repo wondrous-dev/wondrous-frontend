@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { useLazyQuery } from '@apollo/client';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';

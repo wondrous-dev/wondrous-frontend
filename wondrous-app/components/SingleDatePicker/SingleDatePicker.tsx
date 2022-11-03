@@ -2,7 +2,7 @@ import { useMemo, useState, useEffect, useRef } from 'react';
 import { DayPickerSingleDateController } from 'react-dates';
 import moment from 'moment';
 import isEmpty from 'lodash/isEmpty';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 import 'react-dates/initialize';
 import 'react-dates/lib/css/_datepicker.css';

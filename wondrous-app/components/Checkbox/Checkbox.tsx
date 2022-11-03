@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 
 import Box from '@mui/material/Box';
 import MuiCheckbox, { CheckboxProps } from '@mui/material/Checkbox';
@@ -7,7 +7,7 @@ import styles from './CheckboxStyles';
 
 const CheckMarkIcon = (
   <Box sx={styles.icon}>
-    <Image src="/images/icons/checkmark.svg" alt="checkmark" width="10px" height="10px" />
+    <Image src="/images/icons/checkmark.svg" alt="checkmark" width={10} height={10} />
   </Box>
 );
 

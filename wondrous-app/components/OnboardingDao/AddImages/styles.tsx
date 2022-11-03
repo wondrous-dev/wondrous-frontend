@@ -1,6 +1,6 @@
 import { Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import styled from 'styled-components';
 
 export const LogoUpload = styled.label`

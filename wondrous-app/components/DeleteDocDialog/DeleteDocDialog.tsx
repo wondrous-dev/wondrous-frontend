@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client';
-import Image from 'next/image';
+import Image from 'next/legacy/image';
 import { styled } from '@mui/material/styles';
 
 import Typography from '@mui/material/Typography';

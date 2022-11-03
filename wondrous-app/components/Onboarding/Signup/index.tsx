@@ -263,7 +263,7 @@ function Signup() {
             />
           </Button> */}
         </Connectors>
-        <Link href="/signup" passHref>
+        <Link href="/signup" passHref legacyBehavior>
           <StyledNextLink> Back to options</StyledNextLink>
         </Link>
       </div>
