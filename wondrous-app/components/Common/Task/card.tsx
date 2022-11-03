@@ -383,7 +383,11 @@ export function TaskCard({
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
-                width={270}
+                width={100}
+                height={100}
+                style={{
+                  maxHeight: '270px',
+                }}
                 objectFit="cover"
                 objectPosition="center"
                 layout="responsive"
