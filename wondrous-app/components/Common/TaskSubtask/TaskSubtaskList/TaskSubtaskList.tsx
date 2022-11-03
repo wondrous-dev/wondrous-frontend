@@ -122,11 +122,6 @@ function TaskSubtaskCoverImage({ media }) {
   );
 }
 
-function TaskSubtaskSmartLink({ router, type, id, children }) {
-  const viewUrl = `${delQuery(router.asPath)}?${type}=${id}&view=${router.query.view || 'grid'}`;
-  return <SmartLink href={viewUrl}>{children}</SmartLink>;
-}
-
 function TaskSubTaskHasMore({ hasMore, loading, innerRef }) {
   if (hasMore && !loading) return <div ref={innerRef} />;
   return null;
@@ -177,36 +172,33 @@ export const TaskSubtaskItem = (props) => {
   const router = useRouter();
   const { query } = router;
   const { assignee, privacyLevel, rewards, status, title, id, media, taskApplicationPermissions, userId } = props;
+  const subtaskUrl = `${delQuery(router.asPath)}?task=${id}&view=${query.view || 'grid'}&entity=task`;
 
   return (
     <div>
-      <TaskSubtaskItemWrapper
-        onClick={() => {
-          router.push({ pathname: router.pathname, query: { ...query, task: id } }, undefined, {
-            shallow: true,
-          });
-        }}
-      >
-        <TaskSubtaskItemHeader>
-          <TaskSubtaskItemContent>
-            <TaskSubtaskClaimButton
-              id={id}
-              userId={userId}
-              assignee={assignee}
-              taskApplicationPermissions={taskApplicationPermissions}
-              status={status}
-            />
-            <TaskSubtaskUserImage assignee={assignee} />
-            <TaskSubTaskPrivacyIconWrapper privacyLevel={privacyLevel} />
-          </TaskSubtaskItemContent>
-          <TaskSubtaskItemContent>
-            <TaskSubtaskReward rewards={rewards} />
-            <TaskSubtaskStatusIcon status={status} />
-          </TaskSubtaskItemContent>
-        </TaskSubtaskItemHeader>
-        <TaskSubtaskTitle>{title}</TaskSubtaskTitle>
-        <TaskSubtaskCoverImage media={media} />
-      </TaskSubtaskItemWrapper>
+      <SmartLink href={subtaskUrl} asLink>
+        <TaskSubtaskItemWrapper>
+          <TaskSubtaskItemHeader>
+            <TaskSubtaskItemContent>
+              <TaskSubtaskClaimButton
+                id={id}
+                userId={userId}
+                assignee={assignee}
+                taskApplicationPermissions={taskApplicationPermissions}
+                status={status}
+              />
+              <TaskSubtaskUserImage assignee={assignee} />
+              <TaskSubTaskPrivacyIconWrapper privacyLevel={privacyLevel} />
+            </TaskSubtaskItemContent>
+            <TaskSubtaskItemContent>
+              <TaskSubtaskReward rewards={rewards} />
+              <TaskSubtaskStatusIcon status={status} />
+            </TaskSubtaskItemContent>
+          </TaskSubtaskItemHeader>
+          <TaskSubtaskTitle>{title}</TaskSubtaskTitle>
+          <TaskSubtaskCoverImage media={media} />
+        </TaskSubtaskItemWrapper>
+      </SmartLink>
     </div>
   );
 };
