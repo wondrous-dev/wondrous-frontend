@@ -825,5 +825,10 @@ export enum SUBMISSION_COMMENT_TYPE {
 export const TaskMintStatus = {
   NOT_STARTED: 'not_started',
   IN_PROGRESS: 'in_progress',
+}
+
+export const GRANTS_STATUSES = {
+  ACTIVE: 'active',
+  NOT_STARTED: 'notStarted',
   COMPLETED: 'completed',
 };

@@ -46,7 +46,6 @@ import palette from 'theme/palette';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
 import PriorityIcon from 'components/Icons/PriorityIcon';
-import { GrantStatusActiveIcon, GrantStatusCompleted, GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
 
 const generateTodoColumn = (withSection: boolean = true) => {
   let config = { status: TASK_STATUS_TODO, tasks: [] };
@@ -959,21 +958,3 @@ export const splitColsByType = (columns) => {
 
   return { splitCols, totalCount };
 };
-
-export const GRANTS_FILTERS = [
-  {
-    label: 'Active',
-    value: 'active',
-    icon: GrantStatusActiveIcon,
-  },
-  {
-    label: 'Not Started',
-    value: 'notStarted',
-    icon: GrantStatusNotStarted,
-  },
-  {
-    label: 'Completed',
-    value: 'completed',
-    icon: GrantStatusCompleted,
-  },
-];

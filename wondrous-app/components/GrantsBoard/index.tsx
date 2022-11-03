@@ -1,10 +1,28 @@
 import { useState } from 'react';
-import GrantsFilters from 'components/GrantsFilters';
-import { GRANTS_FILTERS } from 'services/board';
-import { CardsContainer } from 'components/Common/Boards/styles';
+import GrantsFilters, { GRANTS_ICONS_LABELS_MAP } from 'components/GrantsFilters';
+import { GRANTS_STATUSES } from 'utils/constants';
+import {
+  BoardsCardBody,
+  BoardsCardBodyDescription,
+  BoardsCardBodyTitle,
+  BoardsCardFooter,
+  BoardsCardMedia,
+  CardsContainer,
+} from 'components/Common/Boards/styles';
 import Grid from '@mui/material/Grid';
+import { formatDateDisplay } from 'utils/board';
 import { CompensationPill } from 'components/Common/Compensation/styles';
-import { BoardWrapper } from './styles';
+import { IconWrapper } from 'components/GrantsFilters/styles';
+import Typography from '@mui/material/Typography';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
+import { RichTextViewer } from 'components/RichText';
+import { SafeImage } from 'components/Common/Image';
+import bounty from 'components/Icons/TaskTypes/bounty';
+import { BountyCommentsIcon } from 'components/Common/BountyBoard/styles';
+import CommentsIcon from 'components/Icons/comments';
+import { DueDateIcon } from 'components/Icons/taskModalIcons';
+import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
 
 const GrantsBoard = () => {
   const MOCK_DATA = [
@@ -22,7 +40,7 @@ const GrantsBoard = () => {
           icon: '',
         },
       ],
-      img: 'https://storage.googleapis.com/wondrous-media-prod/task/71724136798355504/zopjq2n9QtCkuA.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=gcs-admin%40wondrous-1587456307075.iam.gserviceaccount.com%2F20221102%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20221102T232735Z&X-Goog-Expires=7200&X-Goog-SignedHeaders=host&X-Goog-Signature=138ba57ce353404f8c20528fbd0f9ae2bcc26f42506eb8cc649f557e8d636cefdf52a958e095b8beba1901288ecdd9043bab22e8480bfdb9e1814eb5aeed19752e1a8d91e4644d7ded7b3e717bb94a0d81acf6f030d1339eaaab438b20043d7666050a44387f5566ef3b222c5d36e222b93bfc8c846a5d7894a8c2e020f2367cd9dceba10b8e16a5e6e892d793d7ab7817025f68dd48c018fa5d11aee12d23878fcacc5f1d7faf4d79e04cd1105769ebe1ae24c228863c5c0bec2c1fb5f89b7872e9bc92269f342f624a46a269e4d73ccb991306106760686ee790d37f14bbe224f76593319e55e97c3e54f0c672df9f2e12d12b16e7ea7eb0918ed5bda5a52e',
+      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
@@ -75,7 +93,7 @@ const GrantsBoard = () => {
           icon: '',
         },
       ],
-      img: 'https://storage.googleapis.com/wondrous-media-prod/task/71724136798355504/zopjq2n9QtCkuA.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=gcs-admin%40wondrous-1587456307075.iam.gserviceaccount.com%2F20221102%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20221102T232735Z&X-Goog-Expires=7200&X-Goog-SignedHeaders=host&X-Goog-Signature=138ba57ce353404f8c20528fbd0f9ae2bcc26f42506eb8cc649f557e8d636cefdf52a958e095b8beba1901288ecdd9043bab22e8480bfdb9e1814eb5aeed19752e1a8d91e4644d7ded7b3e717bb94a0d81acf6f030d1339eaaab438b20043d7666050a44387f5566ef3b222c5d36e222b93bfc8c846a5d7894a8c2e020f2367cd9dceba10b8e16a5e6e892d793d7ab7817025f68dd48c018fa5d11aee12d23878fcacc5f1d7faf4d79e04cd1105769ebe1ae24c228863c5c0bec2c1fb5f89b7872e9bc92269f342f624a46a269e4d73ccb991306106760686ee790d37f14bbe224f76593319e55e97c3e54f0c672df9f2e12d12b16e7ea7eb0918ed5bda5a52e',
+      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
@@ -94,7 +112,7 @@ const GrantsBoard = () => {
           icon: '',
         },
       ],
-      img: 'https://storage.googleapis.com/wondrous-media-prod/task/71724136798355504/zopjq2n9QtCkuA.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=gcs-admin%40wondrous-1587456307075.iam.gserviceaccount.com%2F20221102%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20221102T232735Z&X-Goog-Expires=7200&X-Goog-SignedHeaders=host&X-Goog-Signature=138ba57ce353404f8c20528fbd0f9ae2bcc26f42506eb8cc649f557e8d636cefdf52a958e095b8beba1901288ecdd9043bab22e8480bfdb9e1814eb5aeed19752e1a8d91e4644d7ded7b3e717bb94a0d81acf6f030d1339eaaab438b20043d7666050a44387f5566ef3b222c5d36e222b93bfc8c846a5d7894a8c2e020f2367cd9dceba10b8e16a5e6e892d793d7ab7817025f68dd48c018fa5d11aee12d23878fcacc5f1d7faf4d79e04cd1105769ebe1ae24c228863c5c0bec2c1fb5f89b7872e9bc92269f342f624a46a269e4d73ccb991306106760686ee790d37f14bbe224f76593319e55e97c3e54f0c672df9f2e12d12b16e7ea7eb0918ed5bda5a52e',
+      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
@@ -131,29 +149,72 @@ const GrantsBoard = () => {
           icon: '',
         },
       ],
-      img: 'https://storage.googleapis.com/wondrous-media-prod/task/71724136798355504/zopjq2n9QtCkuA.png?X-Goog-Algorithm=GOOG4-RSA-SHA256&X-Goog-Credential=gcs-admin%40wondrous-1587456307075.iam.gserviceaccount.com%2F20221102%2Fauto%2Fstorage%2Fgoog4_request&X-Goog-Date=20221102T232735Z&X-Goog-Expires=7200&X-Goog-SignedHeaders=host&X-Goog-Signature=138ba57ce353404f8c20528fbd0f9ae2bcc26f42506eb8cc649f557e8d636cefdf52a958e095b8beba1901288ecdd9043bab22e8480bfdb9e1814eb5aeed19752e1a8d91e4644d7ded7b3e717bb94a0d81acf6f030d1339eaaab438b20043d7666050a44387f5566ef3b222c5d36e222b93bfc8c846a5d7894a8c2e020f2367cd9dceba10b8e16a5e6e892d793d7ab7817025f68dd48c018fa5d11aee12d23878fcacc5f1d7faf4d79e04cd1105769ebe1ae24c228863c5c0bec2c1fb5f89b7872e9bc92269f342f624a46a269e4d73ccb991306106760686ee790d37f14bbe224f76593319e55e97c3e54f0c672df9f2e12d12b16e7ea7eb0918ed5bda5a52e',
+      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
   ];
 
-  const [activeFilter, setActiveFilter] = useState(GRANTS_FILTERS[0].value);
+  const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.ACTIVE);
   return (
     <>
       <GrantsFilters onFilterChange={setActiveFilter} activeFilter={activeFilter} />
-      <CardsContainer numberOfColumns={3} isFullWidth={false}>
-        {MOCK_DATA.map((grant) => (
-          <BoardWrapper>
-            <Grid justifyContent="space-between" alignItems="center" container>
-              <Grid>5 ETH</Grid>
-              <Grid display="flex" gap="14px">
-                {/* {grant.applicationsNum} */}
-                <CompensationPill>{grant.applicationsNum}</CompensationPill>
-                <CompensationPill>{grant.status}</CompensationPill>
+      <CardsContainer numberOfColumns={2} isFullWidth={false}>
+        {MOCK_DATA.map((grant, idx) => {
+          const { label, icon: Icon } = GRANTS_ICONS_LABELS_MAP[grant.status];
+          return (
+            <BoardWrapper key={idx}>
+              <Grid justifyContent="space-between" alignItems="center" container>
+                <Grid>
+                  <CompensationPill>{20}</CompensationPill>
+                </Grid>
+                <Grid display="flex" gap="14px">
+                  <ItemPill key={idx} as="div">
+                    <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                      {grant.applicationsNum} Applications
+                    </Typography>
+                  </ItemPill>
+
+                  <ItemPill key={idx} as="div">
+                    <IconWrapper>
+                      <Icon />
+                    </IconWrapper>
+                    <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                      {label}
+                    </Typography>
+                  </ItemPill>
+                </Grid>
               </Grid>
-            </Grid>
-          </BoardWrapper>
-        ))}
+              <BoardsCardBody>
+                <BoardsCardBodyTitle>{grant.title}</BoardsCardBodyTitle>
+                <BoardsCardBodyDescription>
+                  <RichTextViewer text={grant.description} />
+                </BoardsCardBodyDescription>
+                {grant.img ? (
+                  <BoardsCardMedia>
+                    <SafeImage
+                      useNextImage={false}
+                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
+                      src={grant.img}
+                    />
+                  </BoardsCardMedia>
+                ) : null}
+              </BoardsCardBody>
+              <BoardsCardFooter>
+                <EndingSoonPill>
+                  <DueDateIcon />
+                  <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                    Ending {formatDateDisplay(grant.endDate)}
+                  </Typography>
+                </EndingSoonPill>
+                <BountyCommentsIcon>
+                  <CommentsIcon />
+                  {grant.comments || 0}
+                </BountyCommentsIcon>
+              </BoardsCardFooter>
+            </BoardWrapper>
+          );
+        })}
       </CardsContainer>
     </>
   );

@@ -1,30 +1,40 @@
 import Typography from '@mui/material/Typography';
-import { GRANTS_FILTERS } from 'services/board';
+import { GRANTS_STATUSES } from 'utils/constants';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { GrantStatusActiveIcon, GrantStatusCompleted, GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
 import { Wrapper, IconWrapper, ItemWrapper } from './styles';
 
-const GrantsFilters = ({ onFilterChange, activeFilter }) => {
-  console.log(activeFilter, 'active filter');
-  return (
-    <Wrapper>
-      {GRANTS_FILTERS.map((filter, idx) => (
-        <ItemWrapper
-          key={idx}
-          onClick={() => onFilterChange(filter.value)}
-          type="button"
-          isActive={activeFilter === filter.value}
-        >
+export const GRANTS_ICONS_LABELS_MAP = {
+  [GRANTS_STATUSES.ACTIVE]: {
+    label: 'Active',
+    icon: GrantStatusActiveIcon,
+  },
+  [GRANTS_STATUSES.NOT_STARTED]: {
+    label: 'Not Started',
+    icon: GrantStatusNotStarted,
+  },
+  [GRANTS_STATUSES.COMPLETED]: {
+    label: 'Completed',
+    icon: GrantStatusCompleted,
+  },
+};
+const GrantsFilters = ({ onFilterChange, activeFilter }) => (
+  <Wrapper>
+    {Object.keys(GRANTS_ICONS_LABELS_MAP).map((filter, idx) => {
+      const { label, icon: Icon } = GRANTS_ICONS_LABELS_MAP[filter];
+      return (
+        <ItemWrapper key={idx} onClick={() => onFilterChange(filter)} type="button" isActive={activeFilter === filter}>
           <IconWrapper>
-            <filter.icon />
+            <Icon />
           </IconWrapper>
           <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-            {filter.label}
+            {label}
           </Typography>
         </ItemWrapper>
-      ))}
-    </Wrapper>
-  );
-};
+      );
+    })}
+  </Wrapper>
+);
 
 export default GrantsFilters;
