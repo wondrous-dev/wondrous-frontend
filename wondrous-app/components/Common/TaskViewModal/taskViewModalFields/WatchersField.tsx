@@ -14,10 +14,10 @@ import Tooltip from 'components/Tooltip';
 import { UPDATE_TASK_OBSERVERS } from 'graphql/mutations';
 import useAlerts from 'hooks/useAlerts';
 import palette from 'theme/palette';
-import { TaskFragment } from 'types/task';
+import { TaskInterface } from 'types/task';
 
 type WatchersFieldProps = {
-  fetchedTask: TaskFragment;
+  fetchedTask: TaskInterface;
 };
 
 function WatchersField({ fetchedTask }: WatchersFieldProps) {

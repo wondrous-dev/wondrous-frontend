@@ -1,5 +1,5 @@
 import { differenceInDays, format, formatDistance } from 'date-fns';
-import { GET_PREVIEW_FILE, GET_TASK_BY_ID } from 'graphql/queries';
+import { GET_PREVIEW_FILE, GET_MINIMAL_TASK_BY_ID } from 'graphql/queries';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import cloneDeep from 'lodash/cloneDeep';
 import map from 'lodash/map';
@@ -300,7 +300,7 @@ export const getServerSideProps = async (context) =>
   //       task = data.getTaskProposalById;
   //     } else {
   //       const { data } = await apollo.query({
-  //         query: GET_TASK_BY_ID,
+  //         query: GET_MINIMAL_TASK_BY_ID,
   //         variables: { taskId: context.query.task },
   //       });
 
