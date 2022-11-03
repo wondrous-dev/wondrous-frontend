@@ -309,15 +309,13 @@ export function HeaderSettingsLockedButton(props) {
   );
 }
 
-export const HeaderText = styled(Typography)`
-  && {
-    font-size: 15px;
-    line-height: 22px;
-    letter-spacing: 0.01em;
-    color: #ffffff;
-    margin-bottom: 8px;
-    margin-top: 24px;
-  }
+export const HeaderText = styled.div`
+  font-size: 15px;
+  line-height: 22px;
+  letter-spacing: 0.01em;
+  color: #ffffff;
+  margin-bottom: 8px;
+  margin-top: 24px;
 `;
 
 export const HeaderActivity = styled.div`
