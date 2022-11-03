@@ -3,11 +3,11 @@ import Dialog from '@mui/material/Dialog';
 import DialogTitle from '@mui/material/DialogTitle';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
-import IconButton from '@mui/material/IconButton';
+import { CircularProgress } from '@mui/material';
 
+import IconButton from '@mui/material/IconButton';
 import CloseModalIcon from 'components/Icons/closeModal';
 import styles, { DeleteButton, CancelButton, SubmitButton, SubmitButtonWrap } from './styled';
-import { CircularProgress } from '@mui/material';
 
 export enum SubmitButtonStyle {
   Default = 'default',
