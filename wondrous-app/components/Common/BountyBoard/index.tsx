@@ -20,11 +20,13 @@ import TASK_ICONS from 'components/Common/Task/constants';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskPriority from 'components/Common/TaskPriority';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
+import CalendarIcon from 'components/Icons/calendar';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RichTextViewer } from 'components/RichText';
+import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import palette from 'theme/palette';
@@ -139,6 +141,24 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     />
                   )}
                 </BoardsCardSubheader>
+                {bounty?.dueDate && (
+                  <Grid
+                    container
+                    bgcolor={palette.grey99}
+                    maxWidth="fit-content"
+                    borderRadius="4px"
+                    fontSize="13px"
+                    fontWeight="500"
+                    alignItems="center"
+                    gap="4px"
+                    padding="6px"
+                    maxHeight="28px"
+                    lineHeight="0"
+                  >
+                    <CalendarIcon width="10px" height="11px" />
+                    {format(new Date(bounty?.dueDate), 'MMM d')}
+                  </Grid>
+                )}
                 {bounty?.rewards && bounty?.rewards?.length > 0 && (
                   <BoardsRewardLabel>
                     <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
