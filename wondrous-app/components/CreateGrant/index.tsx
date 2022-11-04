@@ -17,6 +17,9 @@ import {
   CreateEntityHeader,
   CreateEntityHeaderArrowIcon,
   CreateEntityHeaderWrapper,
+  CreateEntityLabel,
+  CreateEntityLabelSelectWrapper,
+  CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntityTitle,
@@ -45,6 +48,7 @@ import {
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
+import { GrantAmount } from './Fields';
 import { descriptionTemplate } from './utils';
 import { Form } from './style';
 
@@ -255,7 +259,23 @@ const CreateGrant = (props) => {
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </TaskModalTitleDescriptionMedia>
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <div>body</div>
+            <CreateEntityLabelSelectWrapper show>
+              <CreateEntityLabelWrapper>
+                <CreateEntityLabel>Grant amount</CreateEntityLabel>
+              </CreateEntityLabelWrapper>
+
+              <GrantAmount
+                value={form.values?.rewards?.[0]?.paymentMethodId}
+                onChange={() => {}}
+                rewardAmount={undefined}
+                handleRewardOnChange={undefined}
+                orgId={form.values.orgId}
+                paymentMethodId={undefined}
+                onReset={undefined}
+                onFocus={undefined}
+                error={undefined}
+              />
+            </CreateEntityLabelSelectWrapper>
           </TaskSectionDisplayDivWrapper>
         </TaskModalTaskData>
       </TaskModalCard>
