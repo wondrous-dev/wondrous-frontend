@@ -87,7 +87,7 @@ export const BountyCardWrapper = styled.div`
   flex-direction: column;
   gap: 14px;
   height: fit-content;
-  padding: 10px;
+  padding: 14px;
   position: relative;
   z-index: 1;
   max-width: 360px;
