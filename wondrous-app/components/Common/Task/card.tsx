@@ -35,6 +35,7 @@ import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import TaskPriority from 'components/Common/TaskPriority';
+import Compensation from 'components/Common/Compensation';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -71,7 +72,6 @@ import { AvatarList } from '../AvatarList';
 import { SafeImage } from '../Image';
 import { TaskBountyOverview } from '../TaskBountyOverview';
 import { Claim } from '../../Icons/claimTask';
-import { Compensation } from '../Compensation';
 import { SubtaskLightIcon } from '../../Icons/subtask';
 import PodIcon from '../../Icons/podIcon';
 import { MilestoneProgress } from '../MilestoneProgress';
@@ -342,7 +342,6 @@ export function TaskCard({
                 alignSelf: 'center',
               }}
               rewards={rewards}
-              taskIcon={<TaskIcon />}
             />
           )}
         </TaskHeader>
