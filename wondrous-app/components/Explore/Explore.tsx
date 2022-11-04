@@ -9,7 +9,7 @@ import { useQuery } from '@apollo/client';
 import { FILTER_BOUNTIES_TO_EXPLORE } from 'graphql/queries/task';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
-import { GR15DEICategoryName, TABS_LABELS } from 'utils/constants';
+import { GR15DEICategoryName, LINK, TABS_LABELS } from 'utils/constants';
 import { gridMobileStyles } from 'utils/styles';
 
 import BountySection from 'components/BountySection';
@@ -239,7 +239,7 @@ function ExploreComponent() {
                 textDecoration: 'none',
                 color: palette.white,
               }}
-              href="https://ffc0pc28hgd.typeform.com/to/txrIA5p1"
+              href={`${LINK}/onboarding-dao`}
               target="_blank"
               rel="noreferrer"
             >

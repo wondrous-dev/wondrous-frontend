@@ -11,21 +11,21 @@ import * as Yup from 'yup';
 
 export const FIELD_SETS = [
   {
-    title: 'Create DAO',
+    title: 'Create Workspace',
     subtitle: 'Use the power of web3 to launch and scale your project.',
     Component: CreateDao,
     hideLater: true,
     fields: {
-      name: { name: 'name', label: 'Enter DAO name', placeholder: "What is the org's title?" },
+      name: { name: 'name', label: 'Enter Org name', placeholder: "What is the org's title?" },
       username: {
         name: 'username',
-        label: 'Enter DAO username',
+        label: 'Enter Org username',
         placeholder: `What is the org's username?`,
       },
       description: {
         name: 'description',
-        label: 'Enter DAO description',
-        placeholder: 'What is your DAOs aims?',
+        label: 'Enter description',
+        placeholder: 'What is your organization about?',
         multiline: true,
         maxLength: 200,
       },
@@ -41,12 +41,12 @@ export const FIELD_SETS = [
     },
   },
   {
-    title: 'DAO category',
-    subtitle: 'How would you categorize what your DAO does?',
+    title: 'Org category',
+    subtitle: 'How would you categorize what your organization does?',
     Component: DaoCategory,
     hideLater: true,
     fields: {
-      category: { name: 'category', label: 'Enter custom goal', placeholder: "What is your DAO's goal?" },
+      category: { name: 'category', label: 'Enter custom goal', placeholder: "What is your Org's goal?" },
     },
   },
   // NOTE: not in used yet
@@ -71,12 +71,12 @@ export const FIELD_SETS = [
   },
   {
     title: 'Review',
-    subtitle: `Review your DAO details and then let's launch!`,
+    subtitle: `Review your org details and then let's launch!`,
     Component: Review,
     hoverContinue: true,
     fields: {
-      name: { name: 'name', label: 'DAO name' },
-      username: { name: 'username', label: 'DAO username' },
+      name: { name: 'name', label: 'Org name' },
+      username: { name: 'username', label: 'Org username' },
       description: {
         name: 'description',
         label: 'Description',
@@ -151,16 +151,16 @@ const useSchema = () => {
   const handleIsOrgUsernameTaken = useIsOrgUsernameTaken();
   const usernameRegex = /^(?=[a-z0-9._]{5,15}$)(?!.*[_.]{2})[^_.].*[^_.]$/; // https://stackoverflow.com/questions/12018245/regular-expression-to-validate-username
   const schema = Yup.object().shape({
-    name: Yup.string().required('DA0 name is required'),
+    name: Yup.string().required('Name is required'),
     username: Yup.string()
-      .required('DA0 username is required')
+      .required('Username is required')
       .matches(
         usernameRegex,
         'Usernames should be between 5 and 15 characters long and contain only lowercase letters, numbers, and underscores.'
       )
       .test('is-taken', 'This username is taken', handleIsOrgUsernameTaken), // https://github.com/jquense/yup#schematestname-string-message-string--function--any-test-function-schema=
-    description: Yup.string().required('DA0 description is required'),
-    category: Yup.string().required('DA0 category is required'),
+    description: Yup.string().required('Description is required'),
+    category: Yup.string().required('Category is required'),
     guildId: Yup.string().optional(),
     addBot: Yup.boolean().optional(),
     channelId: Yup.string().when('guildId', {
