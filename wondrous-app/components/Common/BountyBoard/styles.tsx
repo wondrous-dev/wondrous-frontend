@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import StarIcon from 'components/Icons/starIcon';
 import palette from 'theme/palette';
 
-import { Typography } from '@mui/material';
-
 import EmptyStateArt from 'components/EmptyStateGeneric/EmptyStateArt';
 
 export const IconWrapper = styled.div`
@@ -127,4 +125,13 @@ export const BountyCommentsIcon = styled.div`
   align-items: center;
   gap: 10px;
   margin-right: 18px;
+`;
+
+export const StatusIconWrapper = styled.div`
+  height: 24px;
+  width: 24px;
+  svg {
+    width: 24px !important;
+    height: 24px !important;
+  }
 `;

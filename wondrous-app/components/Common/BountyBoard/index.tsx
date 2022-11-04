@@ -32,7 +32,7 @@ import { Fragment, useState } from 'react';
 import palette from 'theme/palette';
 import { getFilterSchema } from 'utils/board';
 import { BOUNTY_TYPE, PRIVACY_LEVEL } from 'utils/constants';
-import { BountyBoardEmpty, BountyCardWrapper, BountyCommentsIcon, SubtasksWrapper } from './styles';
+import { BountyBoardEmpty, BountyCardWrapper, BountyCommentsIcon, StatusIconWrapper, SubtasksWrapper } from './styles';
 
 const getStatus = ({ entityType, orgId, bountyStatus }) => {
   const entityTypeFilters = getFilterSchema(entityType, orgId);
@@ -97,7 +97,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
     <Container>
       {tasks?.length ? (
         tasks.map((bounty) => {
-          const BountyStatusIcon = TASK_ICONS[bounty?.status];
           const hasGR15 = hasGR15DEIIntiative(bounty?.categories);
           const status = getStatus({ entityType: bounty?.type, orgId: bounty?.orgId, bountyStatus: bounty?.status });
           return (
@@ -112,8 +111,9 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     fontSize="14px"
                     fontWeight="500"
                     gap="6px"
+                    height="28px"
                   >
-                    {status?.icon}
+                    <StatusIconWrapper>{status?.icon}</StatusIconWrapper>
                     {status?.label}
                   </Grid>
                   {hasGR15 && (
@@ -141,25 +141,27 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     />
                   )}
                 </BoardsCardSubheader>
-                {bounty?.dueDate && (
-                  <Grid
-                    container
-                    bgcolor={palette.grey99}
-                    maxWidth="fit-content"
-                    borderRadius="4px"
-                    fontSize="13px"
-                    fontWeight="500"
-                    alignItems="center"
-                    gap="4px"
-                    padding="6px"
-                    maxHeight="28px"
-                    lineHeight="0"
-                  >
-                    <CalendarIcon width="10px" height="11px" />
-                    {format(new Date(bounty?.dueDate), 'MMM d')}
-                  </Grid>
-                )}
-                {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} />}
+                <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
+                  {bounty?.dueDate && (
+                    <Grid
+                      container
+                      bgcolor={palette.grey99}
+                      maxWidth="fit-content"
+                      borderRadius="4px"
+                      fontSize="13px"
+                      fontWeight="500"
+                      alignItems="center"
+                      gap="4px"
+                      padding="6px"
+                      height="28px"
+                      lineHeight="0"
+                    >
+                      <CalendarIcon width="10px" height="11px" />
+                      {format(new Date(bounty?.dueDate), 'MMM d')}
+                    </Grid>
+                  )}
+                  {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} />}
+                </Grid>
               </BoardsCardHeader>
               <BoardsCardBody>
                 <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
