@@ -1,3 +1,4 @@
+import Typography from '@mui/material/Typography';
 import { Descendant } from 'slate';
 import { DefaultElement, RenderElementProps, Slate } from 'slate-react';
 
@@ -45,6 +46,16 @@ const renderElement = (props: RenderElementProps) => {
       return <BulletedList {...props} />;
     case 'numbered-list':
       return <NumberedList {...props} />;
+    case 'headingOne':
+      return (
+        <Typography {...props} variant="h1">
+          {props.children}
+        </Typography>
+      );
+    case 'headingTwo':
+      return <Typography variant="h2">{props.children}</Typography>;
+    case 'headingThree':
+      return <Typography variant="h3">{props.children}</Typography>;
     case 'list-item':
       return <li {...props.attributes}>{props.children}</li>;
     default:
