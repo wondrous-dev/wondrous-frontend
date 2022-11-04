@@ -11,6 +11,7 @@ import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils';
 import { MEDIA_TYPES, PRIVACY_LEVEL, TASK_STATUS_DONE, ENTITIES_TYPES } from 'utils/constants';
 import {
@@ -168,15 +169,20 @@ function TaskSubtaskEmptyState() {
   );
 }
 
+
 export const TaskSubtaskItem = (props) => {
   const router = useRouter();
+  const location = useLocation();
   const { query } = router;
   const { assignee, privacyLevel, rewards, status, title, id, media, taskApplicationPermissions, userId } = props;
   const subtaskUrl = `${delQuery(router.asPath)}?task=${id}&view=${query.view || 'grid'}&entity=task`;
+  const onNavigate = (e) => {
+    location.push(subtaskUrl);
+  };
 
   return (
     <div>
-      <SmartLink href={subtaskUrl} asLink>
+      <SmartLink href={subtaskUrl} preventLinkNavigation onNavigate={onNavigate}>
         <TaskSubtaskItemWrapper>
           <TaskSubtaskItemHeader>
             <TaskSubtaskItemContent>
