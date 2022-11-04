@@ -42,7 +42,7 @@ export const FIELD_SETS = [
   },
   {
     title: 'Org category',
-    subtitle: 'How would you categorize what your orginization does?',
+    subtitle: 'How would you categorize what your organization does?',
     Component: DaoCategory,
     hideLater: true,
     fields: {
