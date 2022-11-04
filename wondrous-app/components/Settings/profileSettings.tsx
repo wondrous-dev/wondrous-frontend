@@ -442,12 +442,12 @@ function ProfileSettings(props) {
               }
             }}
           >
-            <Tooltip title="Connect your twitter account" placement="top">
+            <Tooltip title="Connect your Twitter account" placement="top">
               <div>
                 <GeneralSettingsTwitterIcon />
                 {loggedInUser?.userInfo?.twitterUsername
                   ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
-                  : 'Connect twitter'}
+                  : 'Connect Twitter'}
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>
