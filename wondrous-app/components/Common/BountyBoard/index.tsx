@@ -9,14 +9,12 @@ import {
   BoardsCardHeader,
   BoardsCardMedia,
   BoardsCardSubheader,
-  BoardsRewardLabel,
 } from 'components/Common/Boards/styles';
 import Compensation from 'components/Common/Compensation';
 import { SafeImage } from 'components/Common/Image';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
-import TASK_ICONS from 'components/Common/Task/constants';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskPriority from 'components/Common/TaskPriority';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
@@ -112,6 +110,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     fontWeight="500"
                     gap="6px"
                     height="28px"
+                    width="fit-content"
                   >
                     <StatusIconWrapper>{status?.icon}</StatusIconWrapper>
                     {status?.label}
@@ -119,21 +118,14 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                   {hasGR15 && (
                     <>
                       <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                      <GR15DEILogo
-                        style={{
-                          marginLeft: '-8px',
-                        }}
-                        width="28"
-                        height="28"
-                        onClick={() => setOpenGR15Modal(true)}
-                      />
+                      <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
                     </>
                   )}
                   {bounty?.privacyLevel !== PRIVACY_LEVEL.public && (
                     <ToggleBoardPrivacyIcon
                       style={{
-                        width: '29px',
-                        height: '29px',
+                        width: '28px',
+                        height: '28px',
                         marginRight: '0',
                       }}
                       isPrivate={bounty?.privacyLevel !== PRIVACY_LEVEL.public}
