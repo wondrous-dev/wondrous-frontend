@@ -130,7 +130,7 @@ export const BoardsCardSubheader = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 `;
 
 export const BoardsCardHeader = styled.div`
