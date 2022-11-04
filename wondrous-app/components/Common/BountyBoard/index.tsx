@@ -11,7 +11,7 @@ import {
   BoardsCardSubheader,
   BoardsRewardLabel,
 } from 'components/Common/Boards/styles';
-import { Compensation } from 'components/Common/Compensation';
+import Compensation from 'components/Common/Compensation';
 import { SafeImage } from 'components/Common/Image';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
@@ -159,11 +159,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     {format(new Date(bounty?.dueDate), 'MMM d')}
                   </Grid>
                 )}
-                {bounty?.rewards && bounty?.rewards?.length > 0 && (
-                  <BoardsRewardLabel>
-                    <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />
-                  </BoardsRewardLabel>
-                )}
+                {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} />}
               </BoardsCardHeader>
               <BoardsCardBody>
                 <BoardsCardBodyTitle>{bounty.title}</BoardsCardBodyTitle>
