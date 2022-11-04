@@ -1,7 +1,7 @@
 import React, { useRef, useState, useMemo } from 'react';
 import { ColumnsContext } from 'utils/contexts';
 import Wrapper from 'components/organization/wrapper/wrapper';
-import { BOARDS_MAP, Props, getFilterSchema } from 'components/organization/boards/boards';
+import { BOARDS_MAP, Props } from 'components/organization/boards/boards';
 import AddTeamMembers from 'components/CreateCollaborationModal/Steps/AddTeamMembers';
 import { Modal as ModalComponent } from 'components/Modal';
 import { useGlobalContext, useSteps } from 'utils/hooks';
@@ -10,6 +10,7 @@ import { useMutation } from '@apollo/client';
 import { BATCH_ADD_MEMBERS } from 'graphql/mutations';
 import AddMembersConfirmation from 'components/CreateCollaborationModal/Steps/Confirmation';
 import { useRouter } from 'next/router';
+import { getFilterSchema } from 'utils/board';
 import { insertUrlParam } from 'utils/index';
 import SharedOrgHeader from './SharedOrgHeader';
 
