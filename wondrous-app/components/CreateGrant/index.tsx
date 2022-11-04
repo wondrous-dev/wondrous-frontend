@@ -37,47 +37,44 @@ import Tooltip from 'components/Tooltip';
 import Box from '@mui/material/Box';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { extractMentions, RichTextEditor, useEditor } from 'components/RichText';
+import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { ErrorText } from 'components/Common';
+import {
+  TaskModalCard,
+  TaskModalTaskData,
+  TaskModalTitleDescriptionMedia,
+  TaskSectionDisplayDivWrapper,
+} from 'components/Common/TaskViewModal/styles';
+import { descriptionTemplate } from './utils';
+import { Form } from './style';
+
+// 1. grant amount - CHAIN - VALUE - AMOUNT
+// 2. Start date - end date
+// 3. Eligibility - Anyone / Members only
+// 4. Reviewers
+// 5. Category
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
+  grantAmount: Yup.object({
+    paymentMethodId: Yup.string().required(),
+    rewardAmount: Yup.number()
+      .typeError('Reward amount must be a number')
+      .moreThan(0, 'Reward amount must be greater than 0'),
+    amount: Yup.number().moreThan(0, 'Amount must be greater than 0'),
+  }),
+  startDate: Yup.string().optional().nullable(),
+  endDate: Yup.string().optional().nullable(),
+  applyPolicy: Yup.string().nullable(),
   podId: Yup.string().optional().nullable(),
+  categories: Yup.array().of(Yup.string()).optional().nullable(),
   title: Yup.string().required('Title is required'),
   reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
-  assigneeId: Yup.string().nullable(),
-  claimPolicy: Yup.string().nullable(),
-  claimPolicyRoles: Yup.array().of(Yup.string()).optional().nullable(),
-  shouldUnclaimOnDueDateExpiry: Yup.boolean().nullable(),
-  points: Yup.number()
-    .typeError('Points must be a number')
-    .integer('Points must be whole number')
-    .moreThan(0, 'Points must be greater than 0')
-    .optional()
-    .nullable(),
-  rewards: Yup.array()
-    .of(
-      Yup.object({
-        paymentMethodId: Yup.string().required(),
-        rewardAmount: Yup.number()
-          .typeError('Reward amount must be a number')
-          .moreThan(0, 'Reward amount must be greater than 0'),
-      })
-    )
-    .optional()
-    .nullable(),
-  milestoneId: Yup.string()
-    .nullable()
-    .test(
-      'emptyCheck',
-      'Please enter a valid Milestone',
-      (milestoneId) => milestoneId !== '' && milestoneId !== undefined
-    ),
 });
 
 const CreateGrant = (props) => {
   const router = useRouter();
-  const { toggleFullScreen, isFullScreen } = useFullScreen();
+  const { toggleFullScreen, isFullScreen } = useFullScreen(true);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
@@ -108,7 +105,7 @@ const CreateGrant = (props) => {
       startDate: null,
       endDate: null,
       title: '',
-      description: '',
+      description: deserializeRichText(descriptionTemplate),
       reviewerIds: null,
       mediaUploads: null,
       orgId: null,
@@ -143,8 +140,6 @@ const CreateGrant = (props) => {
     () => form.setFieldValue('orgId', board?.orgId)
   );
 
-  console.log(form.values, filteredDaoOptions[0]?.value);
-
   const handleEntityDropdownChange = (orgId) => {
     form.setValues({
       ...form.initialValues,
@@ -169,94 +164,102 @@ const CreateGrant = (props) => {
   };
 
   return (
-    <CreateEntityForm onSubmit={() => {}} fullScreen={isFullScreen} data-cy="modal-create-grant">
-      <CreateEntityHeader>
-        <CreateEntityHeaderWrapper>
-          <CreateEntitySelectErrorWrapper>
-            <CreateEntityDropdown
-              name="orgId"
-              options={filteredDaoOptions}
-              onChange={handleEntityDropdownChange}
-              value={form.values.orgId}
-              DefaultImageComponent={CreateEntityDefaultDaoImage}
-              error={form.errors.orgId}
-              onFocus={() => form.setFieldError('orgId', undefined)}
-            />
-            {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
-          </CreateEntitySelectErrorWrapper>
-          {form.values.orgId !== null && (
-            <>
-              <CreateEntityHeaderArrowIcon />
-              <PodSearch
-                options={filterOptionsWithPermission(
-                  ENTITIES_TYPES.GRANT,
-                  pods,
-                  fetchedUserPermissionsContext,
-                  form.values.orgId
-                )}
-                value={form.values.podId}
-                onChange={handleOnchangePodId}
+    <Form onSubmit={(val) => console.log(val)}>
+      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+        <CreateEntityHeader>
+          <CreateEntityHeaderWrapper>
+            <CreateEntitySelectErrorWrapper>
+              <CreateEntityDropdown
+                name="orgId"
+                options={filteredDaoOptions}
+                onChange={handleEntityDropdownChange}
+                value={form.values.orgId}
+                DefaultImageComponent={CreateEntityDefaultDaoImage}
+                error={form.errors.orgId}
+                onFocus={() => form.setFieldError('orgId', undefined)}
               />
-            </>
-          )}
-        </CreateEntityHeaderWrapper>
-        <CreateEntityHeaderWrapper>
-          <Tooltip title="Full screen" placement="top">
-            <Box>
-              <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
-            </Box>
-          </Tooltip>
-        </CreateEntityHeaderWrapper>
-      </CreateEntityHeader>
-      <CreateEntityBody>
-        <CreateEntityTitle
-          type="text"
-          onChange={form.handleChange('title')}
-          value={form.values.title}
-          name="title"
-          placeholder="Enter a title"
-          minRows={1}
-          maxRows={3}
-          error={form.errors?.title}
-          onFocus={() => form.setFieldError('title', undefined)}
-          data-cy="create-entity-input-title"
-          autoFocus
-        />
-        <CreateEntityError>{form.errors?.title}</CreateEntityError>
+              {form.errors.orgId && <CreateEntityError>{form.errors.orgId}</CreateEntityError>}
+            </CreateEntitySelectErrorWrapper>
+            {form.values.orgId !== null && (
+              <>
+                <CreateEntityHeaderArrowIcon />
+                <PodSearch
+                  options={filterOptionsWithPermission(
+                    ENTITIES_TYPES.GRANT,
+                    pods,
+                    fetchedUserPermissionsContext,
+                    form.values.orgId
+                  )}
+                  value={form.values.podId}
+                  onChange={handleOnchangePodId}
+                />
+              </>
+            )}
+          </CreateEntityHeaderWrapper>
+          <CreateEntityHeaderWrapper>
+            <Tooltip title="Full screen" placement="top">
+              <Box>
+                <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
+              </Box>
+            </Tooltip>
+          </CreateEntityHeaderWrapper>
+        </CreateEntityHeader>
+        <TaskModalTaskData fullScreen={isFullScreen}>
+          <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
+            <CreateEntityTitle
+              type="text"
+              onChange={form.handleChange('title')}
+              value={form.values.title}
+              name="title"
+              placeholder="Enter a title"
+              minRows={1}
+              maxRows={3}
+              error={form.errors?.title}
+              onFocus={() => form.setFieldError('title', undefined)}
+              data-cy="create-entity-input-title"
+              autoFocus
+            />
+            <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
-        <EditorToolbar ref={setEditorToolbarNode} />
-        <EditorContainer
-          onClick={() => {
-            // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-            // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-            ReactEditor.focus(editor);
-            // also we need to move cursor to the last position in the editor
-            Transforms.select(editor, {
-              anchor: Editor.end(editor, []),
-              focus: Editor.end(editor, []),
-            });
-          }}
-        >
-          <RichTextEditor
-            editor={editor}
-            onMentionChange={search}
-            mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-            placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-            toolbarNode={editorToolbarNode}
-            onChange={(value) => {
-              form.setFieldValue('description', value);
-            }}
-            editorContainerNode={document.querySelector('#modal-scrolling-container')}
-            onClick={(e) => {
-              // we need to stop click event propagation,
-              // since EditorContainer moves cursor to the last position in the editor on click
-              e.stopPropagation();
-            }}
-          />
-        </EditorContainer>
-        {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
-      </CreateEntityBody>
-    </CreateEntityForm>
+            <EditorToolbar ref={setEditorToolbarNode} />
+            <EditorContainer
+              onClick={() => {
+                // since editor will collapse to 1 row on input, we need to emulate min-height somehow
+                // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
+                ReactEditor.focus(editor);
+                // also we need to move cursor to the last position in the editor
+                Transforms.select(editor, {
+                  anchor: Editor.end(editor, []),
+                  focus: Editor.end(editor, []),
+                });
+              }}
+            >
+              <RichTextEditor
+                editor={editor}
+                onMentionChange={search}
+                initialValue={form.values.description}
+                mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+                placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
+                toolbarNode={editorToolbarNode}
+                onChange={(value) => {
+                  form.setFieldValue('description', value);
+                }}
+                editorContainerNode={document.querySelector('#modal-scrolling-container')}
+                onClick={(e) => {
+                  // we need to stop click event propagation,
+                  // since EditorContainer moves cursor to the last position in the editor on click
+                  e.stopPropagation();
+                }}
+              />
+            </EditorContainer>
+            {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
+          </TaskModalTitleDescriptionMedia>
+          <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
+            <div>body</div>
+          </TaskSectionDisplayDivWrapper>
+        </TaskModalTaskData>
+      </TaskModalCard>
+    </Form>
   );
 };
 

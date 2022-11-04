@@ -350,8 +350,8 @@ export const usePermissions = (entity, isTaskProposal = false) => {
 };
 export const useTaskContext = () => useContext(TaskContext);
 
-export const useFullScreen = () => {
-  const [isFullScreen, setIsFullScreen] = useState(false);
+export const useFullScreen = (defaultValue = false) => {
+  const [isFullScreen, setIsFullScreen] = useState(defaultValue);
   const toggleFullScreen = () => {
     setIsFullScreen(!isFullScreen);
   };
