@@ -1,5 +1,6 @@
-import { Grid, Typography } from '@mui/material';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import {
   BoardsCardBody,
   BoardsCardBodyDescription,
@@ -10,33 +11,33 @@ import {
   BoardsCardSubheader,
   BoardsRewardLabel,
 } from 'components/Common/Boards/styles';
+import { Compensation } from 'components/Common/Compensation';
 import { SafeImage } from 'components/Common/Image';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import TASK_ICONS from 'components/Common/Task/constants';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskPriority from 'components/Common/TaskPriority';
+import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
-import { CompletedIcon } from 'components/Icons/statusIcons';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
 import { RichTextViewer } from 'components/RichText';
 import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import palette from 'theme/palette';
-import { BOUNTY_TYPE, PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
-import { Compensation } from '../Compensation';
-import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
-import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
-import {
-  BountyBoardEmpty,
-  BountyCardType,
-  BountyCardWrapper,
-  BountyCommentsIcon,
-  BountyIcon,
-  SubtasksWrapper,
-} from './styles';
+import { getFilterSchema } from 'utils/board';
+import { BOUNTY_TYPE, PRIVACY_LEVEL } from 'utils/constants';
+import { BountyBoardEmpty, BountyCardWrapper, BountyCommentsIcon, SubtasksWrapper } from './styles';
+
+const getStatus = ({ entityType, orgId, bountyStatus }) => {
+  const entityTypeFilters = getFilterSchema(entityType, orgId);
+  const statuses = entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
+  const status = statuses?.find(({ id }) => id === bountyStatus);
+  return status;
+};
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
@@ -67,9 +68,7 @@ export function SubmissionsCount({ total, approved }) {
           height="32px"
           padding="7px 10px"
           lineHeight="0"
-          sx={{
-            background: palette.background.default,
-          }}
+          bgcolor={palette.background.default}
         >
           <Typography color={color} fontWeight="700" fontSize="18px" lineHeight="0">
             {count || 0}
@@ -92,19 +91,29 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
   };
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
-
   return (
     <Container>
       {tasks?.length ? (
         tasks.map((bounty) => {
           const BountyStatusIcon = TASK_ICONS[bounty?.status];
-
           const hasGR15 = hasGR15DEIIntiative(bounty?.categories);
+          const status = getStatus({ entityType: bounty?.type, orgId: bounty?.orgId, bountyStatus: bounty?.status });
           return (
             <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
               <BoardsCardHeader>
                 <BoardsCardSubheader>
-                  <BountyIcon />
+                  <Grid
+                    container
+                    bgcolor={palette.grey99}
+                    padding="2px 10px 2px 2px"
+                    borderRadius="300px"
+                    fontSize="14px"
+                    fontWeight="500"
+                    gap="6px"
+                  >
+                    {status?.icon}
+                    {status?.label}
+                  </Grid>
                   {hasGR15 && (
                     <>
                       <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
@@ -118,7 +127,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                       />
                     </>
                   )}
-                  <BountyCardType>{bounty?.type || ''}</BountyCardType>
                   {bounty?.privacyLevel !== PRIVACY_LEVEL.public && (
                     <ToggleBoardPrivacyIcon
                       style={{
@@ -131,7 +139,6 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     />
                   )}
                 </BoardsCardSubheader>
-                {bounty?.status === TASK_STATUS_DONE && !bounty?.rewards && <CompletedIcon />}
                 {bounty?.rewards && bounty?.rewards?.length > 0 && (
                   <BoardsRewardLabel>
                     <Compensation rewards={bounty?.rewards} taskIcon={<BountyStatusIcon />} />

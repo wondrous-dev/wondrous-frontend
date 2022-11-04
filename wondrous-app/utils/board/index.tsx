@@ -1,7 +1,8 @@
 import { differenceInDays, format, formatDistance } from 'date-fns';
 import cloneDeep from 'lodash/cloneDeep';
 import map from 'lodash/map';
-import { COLUMNS } from 'services/board';
+import apollo from 'services/apollo';
+import { COLUMNS, ENTITIES_TYPES_FILTER_STATUSES, FILTER_STATUSES } from 'services/board';
 import {
   TASK_STATUS_ARCHIVED,
   TASK_STATUS_IN_REVIEW,
@@ -275,4 +276,10 @@ export const formatDateDisplay = (date, addTimePreposition = false) => {
   const formattedDistanceWithTimePreposition = taskCreatedBefore >= 7 ? `on ${formattedDistance}` : formattedDistance;
 
   return addTimePreposition ? formattedDistanceWithTimePreposition : formattedDistance;
+};
+
+export const getFilterSchema = (entityType, orgId): { [key: string]: any } => {
+  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId, enablePodFilter: true });
+  const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
+  return entityTypeFilters;
 };
