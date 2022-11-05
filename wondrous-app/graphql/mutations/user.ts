@@ -116,13 +116,6 @@ export const USER_WALLET_DISCONNECT = gql`
     }
   }
 `;
-// export const USER_WALLET_DISCONNECT = gql`
-//   mutation disconnectUserWallet($userId: ID!) {
-//     disconnectUserWallet(userId: $userId) {
-//       success
-//     }
-//   }
-// `;
 
 export const REQUEST_PASSWORD_RESET = gql`
   mutation requestPasswordReset($email: String!) {

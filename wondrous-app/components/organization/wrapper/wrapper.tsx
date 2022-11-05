@@ -468,7 +468,6 @@ function Wrapper(props) {
                     )}
                   </>
                 )}
-                {/* permissions === ORG_PERMISSIONS.MANAGE_SETTINGS */}
                 {permissions === ORG_PERMISSIONS.MANAGE_SETTINGS && (
                   <>
                     <SettingsButton
