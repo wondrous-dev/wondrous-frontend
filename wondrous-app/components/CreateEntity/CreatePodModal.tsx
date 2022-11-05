@@ -262,10 +262,10 @@ function CreatePodModal(props) {
       <CreateFormMainSection>
         <CreateFormMainSelects>
           <DropdownSelect
-            title="DAO"
+            title="Org"
             value={org}
             setValue={setOrg}
-            labelText="Choose DAO"
+            labelText="Choose Org"
             labelIcon={<CreateDaoIcon />}
             options={filterDAOptions(userOrgs?.getUserOrgs) || []}
             name="dao"

@@ -31,7 +31,7 @@ const MissionControlWorkspaceCard: React.FC<{
     <MissionControlWorkspaceCardWrapper hoverImg={hoverImg} gradient={gradient}>
       <Badge badgeContent={HOTKEYS.OPEN_DASHBOARD} color="primary" invisible={!showBadge}>
         <WorkspaceCardContainer>
-          <Link href={url}>
+          <Link href={url} shallow>
             <WorkspaceCardBannerContainer>
               <WorkspaceCardBannerImage src={img}>
                 <img src={img} />
@@ -43,7 +43,7 @@ const MissionControlWorkspaceCard: React.FC<{
           </Link>
           <WorkspaceCardStatsContainer>
             {stats.map((stat, idx) => (
-              <Link href={stat.url} key={idx}>
+              <Link href={stat.url} key={idx} shallow>
                 <WorkspaceCardStat>
                   <stat.icon />
                   <WorkspaceCardStatCount gradient={stat.countGradient}>{stat.count}</WorkspaceCardStatCount>

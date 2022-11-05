@@ -19,7 +19,7 @@ export function TabsVisibilityCreateEntity(props: ITabsVisibilityCreateEntity) {
       tooltip: `Public means anyone can see this ${type}`,
     },
     [PRIVACY_LEVEL.private]: {
-      title: isPod ? 'Pod Members Only' : 'DAO Members Only',
+      title: isPod ? 'Pod Members Only' : 'Org Members Only',
       tooltip: `Private means only those with the proper permissions can see this ${type}`,
     },
   };

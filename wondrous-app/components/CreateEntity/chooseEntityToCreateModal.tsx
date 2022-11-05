@@ -41,7 +41,7 @@ export const ENTITIES_UI_ELEMENTS = {
   },
   [ENTITIES_TYPES.ORG]: {
     icon: CreateLayoutDaoIcon,
-    label: 'DAO',
+    label: 'Organization',
   },
   [ENTITIES_TYPES.BOUNTY]: {
     icon: CreateLayoutBountyIcon,
