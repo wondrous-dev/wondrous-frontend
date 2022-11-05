@@ -10,7 +10,11 @@ const AddDaoButton = () => {
   return (
     <>
       <AddDaoModal open={openCreateDaoModal} handleClose={handleCreateDaoModal(false)} />
+<<<<<<< HEAD
       <SidebarTooltip title="Create Workspace">
+=======
+      <SidebarTooltip title="Create Org">
+>>>>>>> c0c970a0 (fix: more changes)
         <ButtonIcon onClick={handleCreateDaoModal(true)} isActive={openCreateDaoModal}>
           <AddIconWrapper isActive={openCreateDaoModal}>
             <AddIcon />
