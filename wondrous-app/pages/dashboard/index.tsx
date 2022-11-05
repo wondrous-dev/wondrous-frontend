@@ -1,35 +1,13 @@
-import MetaTags from 'components/MetaTags';
-import { useRouter } from 'next/router';
 import React from 'react';
-import { withAuth } from 'components/Auth/withAuth';
-import Boards from 'components/Dashboard/boards';
-import Wrapper from 'components/Dashboard/wrapper';
-import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
-import { useIsMobile } from 'utils/hooks';
+
+import boardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
 import { getServerSideProps } from 'utils/board/dataFetching';
+import lazy from 'utils/enhancements/lazy';
 
-type Props = {
-  meta: {
-    title: string;
-    img: string;
-    description: string;
-  };
-};
+const DashboardLazy = lazy(() => import('./index.lazy'));
 
-const Dashboard = ({ meta }: Props) => {
-  const router = useRouter();
-  const isAdmin = router.asPath.includes('/dashboard/admin');
-  const isMobile = useIsMobile();
-  return (
-    <Wrapper isAdmin={isAdmin}>
-      <MetaTags meta={meta} />
-      {isMobile ? <MobileComingSoonModal /> : null}
+const Dashboard = (props) => <DashboardLazy fallback={boardSkeleton} {...props} />;
 
-      <Boards isAdmin={isAdmin} />
-    </Wrapper>
-  );
-};
-
-export default withAuth(Dashboard);
+export default Dashboard;
 
 export { getServerSideProps };

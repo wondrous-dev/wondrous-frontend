@@ -1,6 +1,7 @@
-import {GET_PREVIEW_FILE, GET_TASK_BY_ID} from "graphql/queries";
-import {GET_TASK_PROPOSAL_BY_ID} from "graphql/queries/taskProposal";
-import apollo from "services/apollo";
+import apollo from 'services/apollo';
+import { GET_TASK_BY_ID } from 'graphql/queries/task';
+import { GET_PREVIEW_FILE } from 'graphql/queries/media';
+import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 
 // eslint-disable-next-line import/prefer-default-export
 export const getServerSideProps = async (context) => {
