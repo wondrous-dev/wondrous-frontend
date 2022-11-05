@@ -1,10 +1,9 @@
 import React from 'react';
-import { useMe, withAuth } from 'components/Auth/withAuth';
+import { withAuth } from 'components/Auth/withAuth';
 import LogInMethods from 'components/Settings/LoginMethods';
 
 function LoginMethodsPage() {
-  const loggedInUser = useMe();
-  return <LogInMethods loggedInUser={loggedInUser} />;
+  return <LogInMethods />;
 }
 
 export default withAuth(LoginMethodsPage);

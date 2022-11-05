@@ -3,40 +3,62 @@ import styled from 'styled-components';
 import { Button as MuiButton, Typography } from '@mui/material';
 import palette from 'theme/palette';
 
-export const LogInMethodContainer = styled.div`
-  width: 800px;
-
-  @media (max-width: 1200px) {
-    width: 600px;
-  }
-  @media (max-width: 950px) {
-    width: 100%;
-  }
-`;
-
 export const ContentContainer = styled.div`
   margin-top: 46px;
   width: 100%;
   padding-bottom: 70px;
 `;
 
+export const IndicatorText = styled(Typography)`
+  && {
+    font-family: Space Grotesk;
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    letter-spacing: 0.01em;
+    color: ${palette.white};
+    margin-left: 10px;
+    margin-bottom: 5px;
+  }
+`;
+
+// same as ClaimRoleWarningWrapper
 export const IndicatorContainer = styled.div`
-  background: #250069;
-  border: 1px solid #4f00de;
-  border-radius: 6px;
-  padding: 14px;
-  width: 95%;
+  background: ${palette.violet950};
+  padding: 10px;
   display: flex;
-  align-items: center;
-  margin-top: 46px;
-  p {
-    font-weight: 600;
-    font-size: 15px;
-    line-height: 23px;
-    margin: 0;
-    margin-left: 12px;
-    letter-spacing: 0.0025em;
-    color: #ccbbff;
+  gap: 14px;
+  flex-direction: column;
+  align-items: flex-start;
+  border-radius: 6px;
+  border: 1px solid ${palette.violet100};
+  margin-bottom: 10px;
+  ${Button} {
+    background: ${palette.background.default};
+    position: relative;
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
+      mask: linear-gradient(${palette.white} 0 0) content-box, linear-gradient(${palette.white} 0 0);
+      mask-composite: xor;
+      padding: 1.8px;
+      border-radius: 1000px;
+    }
+    &:hover {
+      background: linear-gradient(
+        270deg,
+        ${palette.blue20} -5.62%,
+        ${palette.highlightPurple} 45.92%,
+        ${palette.highlightBlue} 103.12%
+      );
+    }
   }
 `;
 
@@ -44,7 +66,7 @@ export const SectionContainer = styled.div`
   padding-bottom: 32px;
   width: 100%;
   border-bottom: 1px solid #232323;
-  margin-bottom: 32px;
+  margin-bottom: 12px;
 `;
 
 export const StatusContainer = styled.span`
@@ -68,10 +90,6 @@ export const LoginTitleContainer = styled.div`
     color: #00baff;
     margin-right: 18px;
   }
-`;
-
-export const LogInMethodForm = styled.form`
-  width: 100%;
 `;
 
 export const InputSection = styled.div`
@@ -134,10 +152,8 @@ export const ConnectToWalletButton = styled(Button)`
   }
 `;
 export const CancelSpan = styled.span`
-  display: block;
-  margin-left: 30px;
+  margin-left: 10px;
   font-size: 14px;
-  cursor: pointer;
 `;
 
 export const ConnectToDiscordButton = styled(Button)`
@@ -173,54 +189,6 @@ export const ReplaceWalletButton = styled(Button)`
     background: #313131;
     border-radius: 6px;
     display: flex;
-  }
-`;
-
-export const ResetButton = styled(MuiButton)`
-  && {
-    width: 191px;
-    height: 40px;
-    background: #232323;
-    border-radius: 234px;
-    font-weight: 500;
-    font-size: 16px;
-    line-height: 150%;
-    color: #ffffff;
-    text-transform: none;
-    font-family: Space Grotesk;
-  }
-`;
-
-export const SaveChangesButton = styled(Button)`
-  && {
-    width: 191px;
-    margin-left: 22px;
-    height: 40px;
-    font-family: Space Grotesk;
-    min-height: 40px;
-    button {
-      background: #0f0f0f;
-    }
-  }
-`;
-
-export const HeadingText = styled.p`
-  font-weight: 500;
-  font-size: 28px;
-  line-height: 36px;
-  display: flex;
-  align-items: center;
-  color: #ffffff;
-`;
-export const HeadingDescription = styled(Typography)`
-  && {
-    width: 100%;
-    font-size: 15px;
-    line-height: 23px;
-    letter-spacing: 0.01em;
-    color: ${palette.white};
-    display: flex;
-    justify-content: space-between;
   }
 `;
 
