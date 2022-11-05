@@ -478,7 +478,10 @@ function BoardsPage({ meta }: Props) {
           setSearchString(search as string);
         }
       } else if (userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
-        const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
+        const taskBoardStatuses =
+          filters?.statuses?.length > 0
+            ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
         getTasksRelatedToUser({
           variables: {
@@ -486,7 +489,7 @@ function BoardsPage({ meta }: Props) {
             userId,
             limit: 1000,
             offset: 0,
-            statuses: taskStatuses,
+            statuses: taskBoardStatuses,
             labelId,
             types: [entityType],
             date,
