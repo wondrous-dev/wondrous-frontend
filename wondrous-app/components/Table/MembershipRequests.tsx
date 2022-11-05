@@ -44,7 +44,7 @@ export default function MembershipRequestTable(props) {
         <StyledTableHead>
           <StyledTableRow>
             <StyledTableCell align="center" width="20%">
-              DAO
+              Org
             </StyledTableCell>
             <StyledTableCell align="center" width="20%">
               Pod

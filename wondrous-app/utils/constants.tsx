@@ -570,11 +570,11 @@ export const APPLICATION_POLICY = {
     value: 'all_members',
   },
   ONLY_ORG_MEMBERS_CAN_CLAIM: {
-    title: 'Everyone needs to apply except DAO members',
+    title: 'Everyone needs to apply except org members',
     value: 'only_org_members_can_claim',
   },
   ONLY_ORG_MEMBERS_CAN_APPLY: {
-    title: 'Only DAO members can apply',
+    title: 'Only org members can apply',
     value: 'only_org_members_can_apply',
   },
   ROLES_CAN_CAN_CLAIM: {
@@ -736,7 +736,7 @@ export const FEATURED_LIST = [
   {
     username: 'wonderverse',
     imageUrl: 'org/profile/45956686890926082/1ULEYJva6jT3pw.jpg',
-    bio: 'Helping DAOs succeed with web3 native collaboration tools.',
+    bio: 'Helping organizations succeed with web3 native collaboration tools.',
     headerUrl: 'org/header/45956686890926082/WX7Up9R2q3xumQ.png',
     name: 'Wonderverse',
   },
@@ -896,7 +896,7 @@ export const gridMobileStyles = {
 };
 
 export const TABS_LABELS = {
-  DAOS: 'daos',
+  DAOS: 'orgs',
   BOUNTY: 'bounty',
   GR15_DEI: 'gr15_dei',
 };
