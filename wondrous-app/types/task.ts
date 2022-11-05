@@ -44,7 +44,7 @@ export interface ITask {
   users?: Array<IUser>;
 }
 
-export interface TaskFragment {
+export interface TaskInterface {
   __typename: string;
   assigneeId: string;
   assigneeOrder: string;

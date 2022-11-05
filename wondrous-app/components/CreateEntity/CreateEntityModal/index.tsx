@@ -23,7 +23,7 @@ import {
 } from 'graphql/mutations/task';
 import { ATTACH_MEDIA_TO_TASK_PROPOSAL, REMOVE_MEDIA_FROM_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import { GET_TASK_BY_ID } from 'graphql/queries/task';
+import { GET_MINIMAL_TASK_BY_ID } from 'graphql/queries/task';
 
 import isEmpty from 'lodash/isEmpty';
 import isNull from 'lodash/isNull';
@@ -193,7 +193,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
     fetchPolicy: 'network-only',
   });
   const inputRef: any = useRef();
-  const [getTaskById] = useLazyQuery(GET_TASK_BY_ID);
+  const [getTaskById] = useLazyQuery(GET_MINIMAL_TASK_BY_ID);
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;

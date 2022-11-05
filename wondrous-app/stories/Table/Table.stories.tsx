@@ -29,7 +29,7 @@ BasicExample.parameters = {
     <StyledTableHead>
       <StyledTableRow>
         <StyledTableCell align="center" width="56px">
-          DAO
+          Organization
         </StyledTableCell>
         <StyledTableCell align="center">Created by :</StyledTableCell>
         <StyledTableCell align="center">Status</StyledTableCell>

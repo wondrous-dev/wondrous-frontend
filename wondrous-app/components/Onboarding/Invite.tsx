@@ -204,7 +204,7 @@ export function Invite({
         ) : null}
 
         <InviteWelcomeBoxTitle>{titleSentence}</InviteWelcomeBoxTitle>
-        <InviteWelcomeBoxParagraph>Wonder is where DAOs manage world changing projects</InviteWelcomeBoxParagraph>
+        <InviteWelcomeBoxParagraph>Wonder is where web3 teams manage world changing projects</InviteWelcomeBoxParagraph>
 
         {children}
 
