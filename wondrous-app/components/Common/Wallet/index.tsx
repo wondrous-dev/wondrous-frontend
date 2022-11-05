@@ -16,6 +16,7 @@ import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 import useEagerConnect from 'services/web3/hooks/useEagerConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
 import { SupportedChainType } from 'utils/web3Constants';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   BalanceMenu,
   Button,
@@ -125,6 +126,8 @@ function Wallet() {
   const wonderWeb3 = useWonderWeb3();
 
   const { provider } = useContext(WonderWeb3Context);
+  const { setSnackbarAlertMessage, setSnackbarAlertOpen } = useContext(SnackbarAlertContext);
+
   useEagerConnect();
   const [connected, setConnected] = useState(false);
   const [firstConnect, setFirstConnect] = useState(true);
@@ -148,7 +151,11 @@ function Wallet() {
       if (messageToSign) {
         const signedMessage = await wonderWeb3.signMessage(messageToSign);
         if (signedMessageIsString(signedMessage)) {
-          await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+          const result = await linkWallet(wonderWeb3.address, signedMessage, SupportedChainType.ETH);
+          if (result === 'web3_address_already_exist') {
+            setSnackbarAlertMessage('Wallet already connected to another account');
+            setSnackbarAlertOpen(true);
+          }
         }
       }
     }
@@ -198,7 +205,7 @@ function Wallet() {
           // TODO should show a small message indicating that
           setDifferentAccountError(true);
         }
-        if (user && !user.activeEthAddress && provider) {
+        if (user && !user.activeEthAddress && provider && wonderWeb3.isActivating && wonderWeb3.active) {
           // Link the wallet to the user.
           linkUserWithWallet();
         }
@@ -216,8 +223,9 @@ function Wallet() {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [wonderWeb3.address, provider]);
+  }, [wonderWeb3.address, provider, wonderWeb3.isActivating]);
 
+  // potentially add || !user?.activeEthAddress
   if (!connected) {
     return (
       <WalletWrapper>
