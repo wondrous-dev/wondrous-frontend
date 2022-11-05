@@ -24,7 +24,7 @@ export const MissingUserActions = ({ user, token }) => {
   const href = user ? `/onboarding-dao?collabInvite=${token}` : `/login?collabInvite=${token}`;
   return (
     <Wrapper>
-      <WrapperHeader>My Org is not on Wonder</WrapperHeader>
+      <WrapperHeader>My org is not on Wonder</WrapperHeader>
       <WrapperSubheader>Easy, just create a workspace and accept!</WrapperSubheader>
       <Link href={href}>
         <ActionButton>Create org and accept</ActionButton>
