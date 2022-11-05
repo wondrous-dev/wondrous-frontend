@@ -130,7 +130,7 @@ const BountySection = ({ isMobile, bounties = [], fetchMore = () => {}, hasMore,
       ) : (
         <>
           <BountySectionHeader>Explore work</BountySectionHeader>
-          <SectionSubheader>Make crypto while contributing to your favorite DAOs</SectionSubheader>
+          <SectionSubheader>Make crypto while contributing to your favorite web3 teams</SectionSubheader>
         </>
       )}
 

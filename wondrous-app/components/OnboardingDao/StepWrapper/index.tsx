@@ -96,7 +96,7 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, f
   if (step === fieldSetsLength) {
     return (
       <MainButton hoverContinue={hoverContinue} type="submit">
-        🚀 Launch DAO
+        🚀 Launch workspace
       </MainButton>
     );
   }

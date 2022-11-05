@@ -21,7 +21,7 @@ import WalletIcon from '../../../public/images/onboarding/union.svg';
 function SetupWallet() {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const {collabInvite} = router.query
+  const { collabInvite } = router.query;
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -70,7 +70,7 @@ function SetupWallet() {
 
   const description = (
     <div>
-      Get paid in USDC, ETH, $WONDER, and your DAOs native social token. <br />
+      Get paid in USDC, ETH and native tokens. <br />
       Don’t have a digital wallet?{' '}
       <a href="https://metamask.io/download/" target="blank">
         <span

@@ -242,7 +242,7 @@ function Table(props) {
           <StyledTableHead>
             <StyledTableRow>
               <StyledTableCell align="center" width="56px">
-                DAO
+                Org
               </StyledTableCell>
               {entityType === ENTITIES_TYPES.TASK || isAdmin ? (
                 <StyledTableCell align="center" width="105px">

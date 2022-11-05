@@ -105,7 +105,7 @@ function Wrapper(props: IWrapperProps) {
               </HeaderOrgPodCount>
               <HeaderOrgPodCount>
                 <HeaderOrgCount>{orgCount}</HeaderOrgCount>
-                <HeaderOrgCountText>DAOs</HeaderOrgCountText>
+                <HeaderOrgCountText>Organizations</HeaderOrgCountText>
               </HeaderOrgPodCount>
               {mainLink?.url && (
                 <HeaderActivityLink href={mainLink.url} target="_blank">

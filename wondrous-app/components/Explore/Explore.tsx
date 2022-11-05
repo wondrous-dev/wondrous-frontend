@@ -107,7 +107,7 @@ function ExploreComponent() {
   };
   const tabs = [
     {
-      title: 'Explore DAOs',
+      title: 'Explore Orgs',
       action: () => handleTabClick(TABS_LABELS.DAOS),
       color: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
       hoverColor: 'linear-gradient(46.92deg, #B820FF 8.72%, #FFFFFF 115.55%)',
