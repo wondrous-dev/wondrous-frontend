@@ -169,18 +169,15 @@ function ProfileSettings(props) {
     const { value } = e.target;
     setUsername(value);
   };
-
   const handleEmailChange = (e) => {
     const { value } = e.target;
     setEmail(value);
   };
-
   const handleProfileBioChange = (e) => {
     const { value } = e.target;
     if (value.length <= 200) setErrors({ ...errors, description: null });
     setProfileBio(value);
   };
-
   useEffect(() => {
     if (loggedInUser?.username) {
       setUsername(loggedInUser?.username);
@@ -420,6 +417,7 @@ function ProfileSettings(props) {
           </GeneralSettingsIntegrationsBlockButton>
           {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
           {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
+
           <GeneralSettingsIntegrationsBlockButton
             style={{
               marginTop: '30px',
