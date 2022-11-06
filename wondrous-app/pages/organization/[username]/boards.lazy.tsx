@@ -43,8 +43,6 @@ import {
 } from 'utils/constants';
 import { OrgBoardContext } from 'utils/contexts';
 import { useIsMobile } from 'utils/hooks';
-import { getServerSideProps } from 'utils/board/dataFetching';
-// import Boards from 'components/organization/boards/boards';
 
 const DynamicBoards = dynamic(() => import('components/organization/boards/boards'), {
   suspense: true,
@@ -714,4 +712,3 @@ function BoardsPage() {
 }
 
 export default withAuth(BoardsPage);
-export { getServerSideProps };
