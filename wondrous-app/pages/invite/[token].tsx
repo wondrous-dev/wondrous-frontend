@@ -10,11 +10,10 @@ enum Type {
   Pod = 'pod',
 }
 
-const TokenLazyPage = lazy(() => import('./tokenLazy'));
+const TokenLazyPage = lazy(() => import('./token.lazy'));
 
 const TokenPage = (props) => (
   <>
-    {' '}
     <MetaTags meta={props.meta} />
     <TokenLazyPage {...props} />
   </>

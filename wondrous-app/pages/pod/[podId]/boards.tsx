@@ -5,7 +5,7 @@ import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
 import { getServerSideProps } from 'utils/board/dataFetching';
 import lazy from 'utils/enhancements/lazy';
 
-const BoardsLazyPage = lazy(() => import('./boardsLazy'), BoardSkeleton);
+const BoardsLazyPage = lazy(() => import('./boards.lazy'), BoardSkeleton);
 
 const BoardsPage = (props) => (
   <>
