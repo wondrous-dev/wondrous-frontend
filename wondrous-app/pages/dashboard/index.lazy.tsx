@@ -1,7 +1,6 @@
 import React from 'react';
 import { useRouter } from 'next/router';
 
-import MetaTags from 'components/MetaTags';
 import { withAuth } from 'components/Auth/withAuth';
 import Boards from 'components/Dashboard/boards';
 import Wrapper from 'components/Dashboard/wrapper';
@@ -23,7 +22,6 @@ const DashboardLazy = ({ meta }: Props) => {
 
   return (
     <Wrapper isAdmin={isAdmin}>
-      <MetaTags meta={meta} />
       {isMobile ? <MobileComingSoonModal /> : null}
 
       <Boards isAdmin={isAdmin} />

@@ -1,19 +1,19 @@
 import React from 'react';
 
 import MetaTags from 'components/MetaTags';
-import boardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
+import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
 import { getServerSideProps } from 'utils/board/dataFetching';
 import lazy from 'utils/enhancements/lazy';
 
-const DashboardLazy = lazy(() => import('./index.lazy'));
+const Dashboard = lazy(() => import('./index.lazy'), BoardSkeleton);
 
-const Dashboard = (props) => (
+const DashboardPage = (props) => (
   <>
     <MetaTags meta={props.meta} />
-    <DashboardLazy fallback={boardSkeleton} {...props} />
+    <Dashboard {...props} />
   </>
 );
 
-export default Dashboard;
+export default DashboardPage;
 
 export { getServerSideProps };
