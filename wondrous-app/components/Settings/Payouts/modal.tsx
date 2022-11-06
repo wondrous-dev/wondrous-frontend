@@ -10,6 +10,7 @@ import { PERMISSIONS } from 'utils/constants';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils';
 import { DAOIcon } from '../../Icons/dao';
 import { OrganisationsCardNoLogo } from '../../profile/about/styles';
@@ -37,6 +38,7 @@ enum ViewType {
 export function PayModal(props) {
   const { podId, orgId, open, handleClose, assigneeId, assigneeUsername, taskTitle, submissionId } = props;
   const router = useRouter();
+  const location = useLocation();
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
@@ -153,7 +155,7 @@ export function PayModal(props) {
                   id: submissionId,
                 }}
                 handleClose={() => {
-                  router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
+                  location.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
                   handleClose();
                 }}
               />
