@@ -1,4 +1,5 @@
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 import CommentsIcon from 'components/Icons/comments';
 import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
@@ -16,10 +17,10 @@ import {
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import PodIcon from 'components/Icons/podIcon';
 import { useRouter } from 'next/router';
-import { CompletedIcon } from 'components/Icons/statusIcons';
 import { RichTextViewer } from 'components/RichText';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import TaskPriority from 'components/Common/TaskPriority';
+import TaskCardDate from 'components/Common/TaskCardDate';
 import { SafeImage } from '../Image';
 import { MilestoneCard, MilestoneCardTitle, MilestoneIcon, MilestoneProgressWrapper } from './styles';
 
@@ -46,8 +47,10 @@ export default function Board({ tasks, handleCardClick }) {
                   <BoardsPrivacyLabel>
                     {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                   </BoardsPrivacyLabel>
-                  {milestone?.status === TASK_STATUS_DONE && <CompletedIcon />}
                 </BoardsCardSubheader>
+                <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end">
+                  <TaskCardDate date={milestone?.dueDate} />
+                </Grid>
               </BoardsCardHeader>
               <BoardsCardBody>
                 <BoardsCardBodyTitle>{milestone.title}</BoardsCardBodyTitle>
