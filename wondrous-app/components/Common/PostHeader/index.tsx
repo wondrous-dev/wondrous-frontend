@@ -8,6 +8,7 @@ import * as Constants from 'utils/constants';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import SmartLink from 'components/Common/SmartLink';
 import KudosForm from 'components/Common/KudosForm';
+import { useLocation } from 'utils/useLocation';
 import { useMe } from '../../Auth/withAuth';
 import {
   PostHeaderDefaultUserImage,
@@ -31,6 +32,7 @@ const objectTypeText = {
 export function PostHeader(props) {
   const { post } = props;
   const router = useRouter();
+  const location = useLocation();
   const { id, postId, verb, taskStatus, objectType, content, referencedObject, objectId, actor = {} } = post;
   const postObjectType = objectType ?? referencedObject?.objectType;
   const [menu, setMenu] = useState(null);
@@ -61,11 +63,7 @@ export function PostHeader(props) {
           <>
             awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
             <PostHeaderLink as="span">
-              <SmartLink
-                href={taskViewUrl}
-                preventLinkNavigation
-                onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
-              >
+              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => location.replace(taskViewUrl)}>
                 <a href={taskViewUrl}>{objectTypeHeaderText}</a>
               </SmartLink>
             </PostHeaderLink>
