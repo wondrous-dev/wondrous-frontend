@@ -119,14 +119,6 @@ export const SubtasksWrapper = styled.div`
   align-items: center;
 `;
 
-export const BountyCommentsIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-right: 18px;
-`;
-
 export const StatusIconWrapper = styled.div`
   height: 24px;
   width: 24px;

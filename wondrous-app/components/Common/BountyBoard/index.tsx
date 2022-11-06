@@ -23,14 +23,15 @@ import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
 import { SubtaskDarkIcon } from 'components/Icons/subtask';
+import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { RichTextViewer } from 'components/RichText';
 import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import palette from 'theme/palette';
 import { getFilterSchema } from 'utils/board';
-import { BOUNTY_TYPE, PRIVACY_LEVEL } from 'utils/constants';
-import { BountyBoardEmpty, BountyCardWrapper, BountyCommentsIcon, StatusIconWrapper, SubtasksWrapper } from './styles';
+import { PRIVACY_LEVEL } from 'utils/constants';
+import { BountyBoardEmpty, BountyCardWrapper, StatusIconWrapper, SubtasksWrapper } from './styles';
 
 const getStatus = ({ entityType, orgId, bountyStatus }) => {
   const entityTypeFilters = getFilterSchema(entityType, orgId);
@@ -165,9 +166,7 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={bounty.description} />
                 </BoardsCardBodyDescription>
-                {bounty?.type === BOUNTY_TYPE && (
-                  <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
-                )}
+                <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
                 {bounty?.media?.[0] && bounty?.media?.[0]?.type === 'image' ? (
                   <BoardsCardMedia>
                     <SafeImage
@@ -235,17 +234,12 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     flex: 1,
                   }}
                 />
-
-                {Number.isInteger(bounty.totalSubtaskCount) && (
-                  <SubtasksWrapper>
-                    <SubtaskDarkIcon height="30" width="30" fill="transparent" />
-                    {bounty.totalSubtaskCount}
-                  </SubtasksWrapper>
-                )}
-                <BountyCommentsIcon>
-                  <CommentsIcon />
-                  {bounty.commentCount || 0}
-                </BountyCommentsIcon>
+                <Grid item container width="fit-content" gap="12px">
+                  <Grid item container gap="10px" width="fit-content" lineHeight="0" alignItems="center">
+                    <CommentsIcon />
+                    {bounty.commentCount || 0}
+                  </Grid>
+                </Grid>
               </BoardsCardFooter>
             </BountyCardWrapper>
           );
