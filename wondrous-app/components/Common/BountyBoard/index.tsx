@@ -18,20 +18,17 @@ import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskPriority from 'components/Common/TaskPriority';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
-import CalendarIcon from 'components/Icons/calendar';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
 import PodIcon from 'components/Icons/podIcon';
-import { SubtaskDarkIcon } from 'components/Icons/subtask';
-import { TaskMenuIcon } from 'components/Icons/taskMenu';
 import { RichTextViewer } from 'components/RichText';
-import { format } from 'date-fns';
 import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import palette from 'theme/palette';
 import { getFilterSchema } from 'utils/board';
 import { PRIVACY_LEVEL } from 'utils/constants';
-import { BountyBoardEmpty, BountyCardWrapper, StatusIconWrapper, SubtasksWrapper } from './styles';
+import TaskCardDate from 'components/Common/TaskCardDate';
+import { BountyBoardEmpty, BountyCardWrapper, StatusIconWrapper } from './styles';
 
 const getStatus = ({ entityType, orgId, bountyStatus }) => {
   const entityTypeFilters = getFilterSchema(entityType, orgId);
@@ -134,25 +131,9 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
                     />
                   )}
                 </BoardsCardSubheader>
+
                 <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
-                  {bounty?.dueDate && (
-                    <Grid
-                      container
-                      bgcolor={palette.grey99}
-                      maxWidth="fit-content"
-                      borderRadius="4px"
-                      fontSize="13px"
-                      fontWeight="500"
-                      alignItems="center"
-                      gap="4px"
-                      padding="6px"
-                      height="28px"
-                      lineHeight="0"
-                    >
-                      <CalendarIcon width="10px" height="11px" />
-                      {format(new Date(bounty?.dueDate), 'MMM d')}
-                    </Grid>
-                  )}
+                  <TaskCardDate date={bounty?.dueDate} />
                   {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} />}
                 </Grid>
               </BoardsCardHeader>
