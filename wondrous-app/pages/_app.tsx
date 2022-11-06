@@ -7,7 +7,7 @@ import { CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { SnackbarAlertProvider } from 'components/Common/SnackbarAlert';
 import { Web3Provider } from '@ethersproject/providers';
-
+import NavigationProgress from 'components/NavigationProgress';
 import '../styles/body.css';
 import '../styles/globals.css';
 
@@ -92,6 +92,7 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
                 <Web3ReactProvider getLibrary={getLibrary}>
                   <WonderWeb3Provider>
                     <HotkeyContext.Provider value={showHotkeys}>
+                      <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
                           <Component

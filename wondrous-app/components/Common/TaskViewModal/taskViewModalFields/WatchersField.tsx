@@ -14,10 +14,10 @@ import Tooltip from 'components/Tooltip';
 import { UPDATE_TASK_OBSERVERS } from 'graphql/mutations';
 import useAlerts from 'hooks/useAlerts';
 import palette from 'theme/palette';
-import { TaskFragment } from 'types/task';
+import { TaskInterface } from 'types/task';
 
 type WatchersFieldProps = {
-  fetchedTask: TaskFragment;
+  fetchedTask: TaskInterface;
 };
 
 function WatchersField({ fetchedTask }: WatchersFieldProps) {
@@ -28,13 +28,13 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
   const [updateTaskObservers] = useMutation(UPDATE_TASK_OBSERVERS);
 
   const isObserving = useMemo(
-    () => observers.some((observer) => observer.id === currentUser?.id),
+    () => observers.some((observer) => observer?.id === currentUser?.id),
     [observers, currentUser?.id]
   );
 
   const handleWatch = () => {
     const newObservers = [...observers, currentUser];
-    const observerIds = newObservers.map((observer) => observer.id);
+    const observerIds = newObservers.map((observer) => observer?.id);
     setObservers(newObservers);
 
     updateTaskObservers({
@@ -81,7 +81,7 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
         <Grid container alignItems="center" width="auto">
           {observers.slice(0, 6).map((user, index) => {
             // To show current user at the end of the list
-            if (user.id === currentUser?.id || index > (isObserving ? 4 : 5)) {
+            if (user?.id === currentUser?.id || index > (isObserving ? 4 : 5)) {
               return null;
             }
 
@@ -107,8 +107,8 @@ function WatchersField({ fetchedTask }: WatchersFieldProps) {
               <SmallAvatar
                 imageWidth={22}
                 imageHeight={22}
-                initials={currentUser.username.substring(0, 2).toUpperCase()}
-                avatar={{ url: currentUser.profilePicture }}
+                initials={currentUser?.username.substring(0, 2).toUpperCase()}
+                avatar={{ url: currentUser?.profilePicture }}
                 style={{ borderRadius: '50%', border: `2px solid ${palette.grey99}`, cursor: 'default' }}
                 border="none"
               />

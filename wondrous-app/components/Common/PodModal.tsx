@@ -17,7 +17,7 @@ import {
   PodModalFooterInfoWrapper,
   PodModalFooterInfoWrapperText,
 } from 'components/Common/SidebarMainPods/styles';
-import { GET_USER_PODS } from 'graphql/queries';
+import { GET_USER_PODS_WITH_COUNT } from 'graphql/queries';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
@@ -94,13 +94,6 @@ function PodListCard(props) {
               </PodModalFooterInfoWrapperText>
             </PodModalFooterInfoWrapper>
           )}
-          {!!pod?.milestoneCount && (
-            <PodModalFooterInfoWrapper>
-              <PodModalFooterInfoWrapperText>
-                {pod?.milestoneCount} {pod?.milestoneCount === 1 ? 'milestone' : 'milestones'}
-              </PodModalFooterInfoWrapperText>
-            </PodModalFooterInfoWrapper>
-          )}
         </PodModalFooter>
       </TaskListCardWrapper>
     </Link>
@@ -108,7 +101,7 @@ function PodListCard(props) {
 }
 export function PodModal(props) {
   const { open, handleClose } = props;
-  const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS, {
+  const [getUserPods, { data: podData, fetchMore: fetchMorePods }] = useLazyQuery(GET_USER_PODS_WITH_COUNT, {
     fetchPolicy: 'network-only',
   });
   const [pods, setPods] = useState([]);

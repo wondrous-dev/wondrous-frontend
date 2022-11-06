@@ -8,12 +8,20 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import Table from 'components/Table';
 import { ViewType } from 'types/common';
 import { ENTITIES_TYPES } from 'utils/constants';
+import ListView from 'components/ListView';
 import { CardsContainer } from './styles';
 
 let windowOffset = 0;
 
 export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
-  return function Wrapper({ columns = [], onLoadMore = () => {}, hasMore, activeView, ...rest }) {
+  return function Wrapper({
+    columns = [],
+    onLoadMore = () => {},
+    hasMore,
+    activeView,
+    entityType = ENTITIES_TYPES.TASK,
+    ...rest
+  }) {
     const router = useRouter();
     const [ref, inView] = useInView({});
     const location = useLocation();
@@ -31,10 +39,10 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       document.body.setAttribute('style', `position: fixed; top: -${windowOffset}px; left:0; right:0`);
     };
     useEffect(() => {
-      if (inView && hasMore) {
+      if (inView && hasMore && activeView !== ViewType.List) {
         onLoadMore();
       }
-    }, [inView, hasMore, onLoadMore]);
+    }, [inView, hasMore, onLoadMore, activeView]);
 
     useEffect(() => {
       const { params } = location;
@@ -56,6 +64,7 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
       location.push(newUrl);
       setOpenModal(false);
     };
+
     return (
       <>
         <CardsContainer numberOfColumns={numberOfColumns} isFullWidth={activeView === ViewType.List}>
@@ -70,7 +79,14 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
           {activeView === ViewType.Grid ? (
             <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
           ) : (
-            <Table tasks={columns} onLoadMore={onLoadMore} hasMore={hasMore} />
+            <ListView
+              enableInfiniteLoading
+              entityType={entityType}
+              singleColumnData
+              columns={columns}
+              onLoadMore={onLoadMore}
+              hasMore={hasMore}
+            />
           )}
         </CardsContainer>
         <LoadMore ref={ref} hasMore={hasMore} />

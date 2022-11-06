@@ -82,9 +82,9 @@ export const guideConfig = {
         content: () => (
           <div>
             <StepTitle gradient="linear-gradient(180deg, #FFFFFF 0%, #00BAFF 100%)">
-              Your DAOs will appear here.
+              Your Orgs will appear here.
             </StepTitle>
-            <StepBody>Join new DAOs through invite links or apply to one through the explore.</StepBody>
+            <StepBody>Join new organizations through invite links or apply to one through the explore.</StepBody>
           </div>
         ),
         nextButtonTitle: 'Great to know',

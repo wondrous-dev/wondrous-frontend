@@ -3,7 +3,7 @@ import { Org } from 'types/Org';
 import * as Yup from 'yup';
 
 import Divider from 'components/Divider';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import { Form, Formik } from 'formik';
 
@@ -17,6 +17,8 @@ import palette from 'theme/palette';
 import OrgSearch from 'components/OrgSearch';
 import { useGlobalContext } from 'utils/hooks';
 import { PERMISSIONS } from 'utils/constants';
+import { useGetUserOrgs } from 'components/AppInstallation/Coordinape/CoordinapeIntegrationForm/hooks';
+import { useMe } from 'components/Auth/withAuth';
 
 type Props = {
   onCancel: () => void;
@@ -26,10 +28,17 @@ type Props = {
 };
 
 const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props) => {
-  const { userOrgs, userPermissionsContext } = useGlobalContext();
-
-  const [selectedOrg1, setSelectedOrg1] = useState(userOrgs?.getUserOrgs?.find((org) => org.id === defaultOrgId));
+  const { userPermissionsContext } = useGlobalContext();
+  const user = useMe();
+  const userOrgs = useGetUserOrgs(user?.id);
+  const [selectedOrg1, setSelectedOrg1] = useState(null);
   const [selectedOrg2, setSelectedOrg2] = useState(null);
+
+  useEffect(() => {
+    if (defaultOrgId) {
+      setSelectedOrg1(userOrgs?.find((org) => org.id === defaultOrgId));
+    }
+  }, [defaultOrgId, userOrgs]);
 
   const DROPDOWN_PACEHOLDER = {
     DAO1: 'Select your project',
@@ -58,7 +67,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props)
   const orgsSchema = {
     name: 'org',
     label: 'Select your project',
-    items: userOrgs?.getUserOrgs.map((org) => ({
+    items: userOrgs?.map((org) => ({
       ...org,
       icon: <OrgProfilePicture profilePicture={org?.profilePicture} />,
       pillIcon: () => <OrgProfilePicture profilePicture={org?.profilePicture} />,
@@ -90,7 +99,7 @@ const Step1SelectDaos = ({ onSubmit, onCancel, footerRef, defaultOrgId }: Props)
   // Unselect org from org1
   const org2Schema = useMemo(() => {
     const items = orgsSchema.items?.filter((org) => org.id !== selectedOrg1?.id);
-    items.unshift({ name: 'Project not in wonder', id: null, skipProfilePicture: true });
+    items?.unshift({ name: 'Project not in wonder', id: null, skipProfilePicture: true });
     return {
       ...orgsSchema,
       items,

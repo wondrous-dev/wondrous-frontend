@@ -78,6 +78,7 @@ const useGetTaskById = (editTask, task) => {
 };
 
 export function Task(props) {
+  // WHAT IS THIS COMPONENT? IS IT TASK CARD? POORLY NAMED
   const { task, className } = props;
   const {
     description = '',

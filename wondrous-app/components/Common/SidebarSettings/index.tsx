@@ -26,6 +26,7 @@ import RolesIcon from 'components/Icons/roles';
 import FileDownloadIcon from 'components/Icons/Sidebar/fileDownload.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import HexagonIcon from 'components/Icons/Sidebar/hexagon.svg';
+import LoginIcon from 'components/Icons/Sidebar/loginIcon.svg';
 import NotificationsIcon from 'components/Icons/Sidebar/notifications.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
 import ReceiptIcon from 'components/Icons/Sidebar/receipt.svg';
@@ -56,6 +57,13 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     value: 'general',
     href: orgId ? `/${mainPath}/settings/${orgId}/general` : `/pod/settings/${podId}/general`,
     page: [SettingsPage.Org, SettingsPage.Pod],
+  },
+  {
+    Icon: LoginIcon,
+    label: 'Log in Methods',
+    value: 'log-in-methods',
+    href: `/profile/login-methods`,
+    page: [SettingsPage.Profile],
   },
   {
     Icon: WrenchIcon,

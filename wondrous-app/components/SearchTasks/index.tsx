@@ -7,7 +7,7 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
-import { TaskFragment } from 'types/task';
+import { TaskInterface } from 'types/task';
 import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
@@ -26,7 +26,9 @@ const TaskTypeIcons = {
 };
 
 type Props = {
-  onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
+  onSearch: (
+    searchString: string
+  ) => Promise<{ users: Array<any>; tasks: TaskInterface[]; proposals: TaskInterface[] }>;
   isExpandable?: boolean;
   autocompleteComponent?: React.Component;
 };

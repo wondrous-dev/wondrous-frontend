@@ -384,7 +384,7 @@ export default function ListViewItem({ task, entityType }) {
                         fontWeight="normal"
                         textAlign="left"
                       >
-                        Edit task
+                        Edit {entityType || 'task'}
                       </DropdownItem>
                       <DropdownItem
                         onClick={() => {
@@ -395,7 +395,7 @@ export default function ListViewItem({ task, entityType }) {
                         fontWeight="normal"
                         textAlign="left"
                       >
-                        Archive task
+                        Archive {entityType || 'task'}
                       </DropdownItem>
                       {canDelete && (
                         <DropdownItem
@@ -408,7 +408,7 @@ export default function ListViewItem({ task, entityType }) {
                           fontWeight="normal"
                           textAlign="left"
                         >
-                          Delete task
+                          Delete {entityType || 'task'}
                         </DropdownItem>
                       )}
                     </Dropdown>

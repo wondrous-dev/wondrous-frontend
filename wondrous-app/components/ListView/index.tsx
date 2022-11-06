@@ -33,6 +33,8 @@ interface Props {
   onLoadMore: any;
   hasMore: boolean;
   entityType?: string;
+  singleColumnData?: boolean;
+  enableInfiniteLoading?: boolean;
 }
 
 const STATUS_MAP = {
@@ -42,7 +44,14 @@ const STATUS_MAP = {
   [TASK_STATUS_DONE]: 'completed',
 };
 
-export default function ListView({ columns, onLoadMore, hasMore, ...props }: Props) {
+export default function ListView({
+  columns,
+  onLoadMore,
+  hasMore,
+  singleColumnData = false,
+  enableInfiniteLoading = false,
+  ...props
+}: Props) {
   const [isModalOpen, setOpenModal] = useState(false);
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
@@ -156,9 +165,7 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
       currentBoard = 'assignee';
     }
     try {
-      const {
-        data: { updateTask: task },
-      } = await apollo.mutate({
+      await apollo.mutate({
         mutation: UPDATE_TASK_STATUS,
         variables: {
           taskId: taskToBeUpdated.id,
@@ -270,27 +277,39 @@ export default function ListView({ columns, onLoadMore, hasMore, ...props }: Pro
         isTaskProposal={!!location.params.taskProposal}
         taskId={(location.params.taskProposal ?? location.params.task)?.toString()}
       />
-      <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
-        {columns.map((column) => {
-          if (!column) return null;
-          const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || column.count || 0;
-          return (
-            <Droppable droppableId={column?.status}>
-              {(provided) => (
-                <div ref={provided.innerRef} {...provided.droppableProps}>
-                  <ItemsContainer
-                    entityType={entityType}
-                    data={column}
-                    taskCount={count}
-                    fetchPerStatus={fetchPerStatus}
-                    handleShowAll={handleShowAll}
-                  />
-                </div>
-              )}
-            </Droppable>
-          );
-        })}
-      </DragDropContext>
+      {singleColumnData ? (
+        <ItemsContainer
+          entityType={entityType}
+          data={{ tasks: columns }}
+          hasMore={hasMore}
+          onLoadMore={onLoadMore}
+          disableDnd
+          enableInfiniteLoading={enableInfiniteLoading}
+        />
+      ) : (
+        <DragDropContext onDragEnd={onDragEnd} handleClose={() => setDndErrorModal(false)}>
+          {columns.map((column) => {
+            if (!column) return null;
+            const count = (taskCount && taskCount[STATUS_MAP[column?.status]]) || column.count || 0;
+            return (
+              <Droppable droppableId={column?.status}>
+                {(provided) => (
+                  <div ref={provided.innerRef} {...provided.droppableProps}>
+                    <ItemsContainer
+                      entityType={entityType}
+                      data={column}
+                      hasMore={hasMore}
+                      taskCount={count}
+                      handleShowAll={handleShowAll}
+                      enableInfiniteLoading={enableInfiniteLoading}
+                    />
+                  </div>
+                )}
+              </Droppable>
+            );
+          })}
+        </DragDropContext>
+      )}
     </>
   );
 }

@@ -1,15 +1,15 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
 import { MediaFragment } from 'graphql/fragments/media';
-import { BountyFragment, MilestoneFragment, TaskFragment, TaskTemplateFragment } from 'graphql/fragments/task';
+import { BountyFragment, MilestoneFragment, FullTaskFragment, TaskTemplateFragment } from 'graphql/fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
     createTask(input: $input) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const CREATE_TASK_TEMPLATE = gql`
@@ -41,28 +41,18 @@ export const DELETE_TASK_TEMPLATE = gql`
 export const UPDATE_TASK = gql`
   mutation updateTask($taskId: ID!, $input: TaskInput) {
     updateTask(taskId: $taskId, input: $input) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const UPDATE_TASK_SHOW_SUBMISSIONS = gql`
   mutation updateTaskHideSubmissions($taskId: ID!, $hideSubmissions: Boolean!) {
     updateTaskHideSubmissions(taskId: $taskId, hideSubmissions: $hideSubmissions) {
-      ...TaskFragment
+      id
     }
   }
-  ${TaskFragment}
-`;
-
-export const COMPLETE_TASK = gql`
-  mutation completeTask($taskId: ID!) {
-    completeTask(taskId: $taskId) {
-      ...TaskFragment
-    }
-  }
-  ${TaskFragment}
 `;
 
 export const DELETE_TASK = gql`
@@ -96,28 +86,27 @@ export const REMOVE_MEDIA_FROM_TASK = gql`
 export const UPDATE_TASK_STATUS = gql`
   mutation updateTaskStatus($taskId: ID!, $input: updateStatusInput!) {
     updateTaskStatus(taskId: $taskId, input: $input) {
-      ...TaskFragment
+      status
     }
   }
-  ${TaskFragment}
 `;
 
 export const ARCHIVE_TASK = gql`
   mutation archiveTask($taskId: ID!) {
     archiveTask(taskId: $taskId) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const UNARCHIVE_TASK = gql`
   mutation unarchiveTask($taskId: ID!) {
     unarchiveTask(taskId: $taskId) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const CREATE_TASK_COMMENT = gql`
@@ -165,19 +154,19 @@ export const DELETE_MILESTONE = gql`
 export const UPDATE_TASK_ASSIGNEE = gql`
   mutation updateTaskAssignee($taskId: ID!, $assigneeId: ID!) {
     updateTaskAssignee(taskId: $taskId, assigneeId: $assigneeId) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const REMOVE_TASK_ASSIGNEE = gql`
   mutation removeTaskAssignee($taskId: ID!) {
     removeTaskAssignee(taskId: $taskId) {
-      ...TaskFragment
+      ...FullTaskFragment
     }
   }
-  ${TaskFragment}
+  ${FullTaskFragment}
 `;
 
 export const UPDATE_MILESTONE = gql`

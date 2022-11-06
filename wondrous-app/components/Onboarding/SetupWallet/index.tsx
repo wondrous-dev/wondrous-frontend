@@ -70,7 +70,7 @@ function SetupWallet() {
 
   const description = (
     <div>
-      Get paid in USDC, ETH, $WONDER, and your DAOs native social token. <br />
+      Get paid in USDC, ETH and native tokens. <br />
       Don’t have a digital wallet?{' '}
       <a href="https://metamask.io/download/" target="blank">
         <span

@@ -45,21 +45,21 @@ import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 
 const useGetPodTaskBoardTasks = ({
-  columns,
-  setColumns,
-  setPodTaskHasMore,
-  podId,
-  statuses,
-  priorities,
-  entityType,
-  setIsLoading,
-  search,
-  labelId,
-  date,
-  privacyLevel,
-  userId,
-  category,
-}) => {
+                                   columns,
+                                   setColumns,
+                                   setPodTaskHasMore,
+                                   podId,
+                                   statuses,
+                                   priorities,
+                                   entityType,
+                                   setIsLoading,
+                                   search,
+                                   labelId,
+                                   date,
+                                   privacyLevel,
+                                   userId,
+                                   category,
+                                 }) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -128,7 +128,7 @@ const useGetPodTaskBoardTasks = ({
         statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
           : // double check in case we add new stuff and have no valid entityType.
-            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+          STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
       const taskBoardStatusesIsNotEmpty = taskBoardStatuses?.length > 0;
       getPodTaskBoardTasks({
@@ -167,21 +167,21 @@ const useGetPodTaskBoardTasks = ({
 };
 
 const useGetPodTaskProposals = ({
-  listView,
-  section,
-  setColumns,
-  columns,
-  podId,
-  statuses,
-  priorities,
-  entityType,
-  setIsLoading,
-  setPodTaskHasMore,
-  search,
-  labelId,
-  date,
-  privacyLevel,
-}) => {
+                                  listView,
+                                  section,
+                                  setColumns,
+                                  columns,
+                                  podId,
+                                  statuses,
+                                  priorities,
+                                  entityType,
+                                  setIsLoading,
+                                  setPodTaskHasMore,
+                                  search,
+                                  labelId,
+                                  date,
+                                  privacyLevel,
+                                }) => {
   const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -240,23 +240,23 @@ const useGetPodTaskProposals = ({
 };
 
 const useGetPodTaskBoard = ({
-  view,
-  section,
-  columns,
-  setColumns,
-  setPodTaskHasMore,
-  podId,
-  entityType,
-  setIsLoading,
-  search,
-  statuses,
-  priorities,
-  labelId,
-  date,
-  privacyLevel,
-  userId,
-  category,
-}) => {
+                              view,
+                              section,
+                              columns,
+                              setColumns,
+                              setPodTaskHasMore,
+                              podId,
+                              entityType,
+                              setIsLoading,
+                              search,
+                              statuses,
+                              priorities,
+                              labelId,
+                              date,
+                              privacyLevel,
+                              userId,
+                              category,
+                            }) => {
   const listView = view === ViewType.List;
   const board = {
     tasks: useGetPodTaskBoardTasks({
@@ -296,7 +296,15 @@ const useGetPodTaskBoard = ({
   return { fetchMore, fetchPerStatus };
 };
 
-function BoardsPage() {
+type Props = {
+  meta: {
+    title: string;
+    img: string;
+    description: string;
+  };
+};
+
+function BoardsPage({ meta }: Props) {
   const router = useRouter();
   const isMobile = useIsMobile();
   const { podId, search, userId, view = ViewType.Grid, entity } = router.query;
@@ -469,7 +477,10 @@ function BoardsPage() {
           setSearchString(search as string);
         }
       } else if (userId && entityType !== ENTITIES_TYPES.PROPOSAL) {
-        const taskStatuses = statuses?.filter((status) => TASK_STATUSES.includes(status));
+        const taskBoardStatuses =
+          filters?.statuses?.length > 0
+            ? filters?.statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES.DEFAULT.includes(status))
+            : STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
         getTasksRelatedToUser({
           variables: {
@@ -477,7 +488,7 @@ function BoardsPage() {
             userId,
             limit: 1000,
             offset: 0,
-            statuses: taskStatuses,
+            statuses: taskBoardStatuses,
             labelId,
             types: [entityType],
             date,
