@@ -586,7 +586,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 onClick={() => {
                                   const newUrl = `${delQuery(router.asPath)}?view=${
                                     router?.query?.view || 'grid'
-                                  }&task=${fetchedTask?.parentTaskId}`;
+                                  }&task=${fetchedTask?.parentTaskId}&entity=${
+                                    location?.params?.entity || ENTITIES_TYPES.TASK
+                                  }`;
                                   location.push(newUrl);
                                 }}
                               >
