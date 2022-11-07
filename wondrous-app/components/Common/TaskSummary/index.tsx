@@ -91,7 +91,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
   };
 
   const openModal = (viewUrl) => {
-    location.replace(viewUrl);
+    location.push(viewUrl);
     // document.body.style.overflow = 'hidden'
     // document.body.scroll = false
     windowOffset = window.scrollY;

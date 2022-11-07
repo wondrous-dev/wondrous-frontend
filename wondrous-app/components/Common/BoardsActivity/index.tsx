@@ -23,6 +23,7 @@ import palette from 'theme/palette';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import { useLocation } from 'utils/useLocation';
 import { BoardsActivityInlineViewWrapper } from './styles';
 
 export function BoardsActivityInlineView({
@@ -96,6 +97,7 @@ export default function BoardsActivity(props) {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const userBoard = useUserBoard();
+  const location = useLocation();
   const board = orgBoard || podBoard || userBoard;
   const router = useRouter();
   const view = board?.activeView || String(router.query.view ?? ViewType.Grid);
@@ -126,9 +128,7 @@ export default function BoardsActivity(props) {
           setActiveView(ViewType.List);
           insertUrlParam('view', ViewType.List);
         } else {
-          router.replace(
-            `${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`
-          );
+          location.push(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
         }
       },
     },
@@ -143,9 +143,7 @@ export default function BoardsActivity(props) {
           setActiveView(ViewType.Grid);
           insertUrlParam('view', ViewType.Grid);
         } else {
-          router.replace(
-            `${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`
-          );
+          location.push(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
         }
       },
     },
@@ -158,7 +156,7 @@ export default function BoardsActivity(props) {
         setActiveView(ViewType.List);
         insertUrlParam('view', ViewType.List);
       } else {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+        location.push(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
       }
     },
     [view]
@@ -171,7 +169,7 @@ export default function BoardsActivity(props) {
         setActiveView(ViewType.Grid);
         insertUrlParam('view', ViewType.Grid);
       } else {
-        router.replace(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
+        location.push(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
       }
     },
     [view]

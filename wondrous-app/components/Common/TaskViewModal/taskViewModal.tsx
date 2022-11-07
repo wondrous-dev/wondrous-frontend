@@ -64,6 +64,8 @@ import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress'
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -161,6 +163,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
+  const location = useLocation();
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -581,13 +584,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             <Tooltip title="Parent Task" placement="top">
                               <SubtaskTitleWrapper
                                 onClick={() => {
-                                  router.push(
-                                    { pathname: router.pathname, query: { ...query, task: fetchedTask?.parentTaskId } },
-                                    undefined,
-                                    {
-                                      shallow: true,
-                                    }
-                                  );
+                                  const newUrl = `${delQuery(router.asPath)}?view=${
+                                    router?.query?.view || 'grid'
+                                  }&task=${fetchedTask?.parentTaskId}&entity=${
+                                    location?.params?.entity || ENTITIES_TYPES.TASK
+                                  }`;
+                                  location.push(newUrl);
                                 }}
                               >
                                 <TaskModalHeaderIconWrapper>

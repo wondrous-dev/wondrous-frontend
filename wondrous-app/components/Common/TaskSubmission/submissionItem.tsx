@@ -462,7 +462,7 @@ export function SubmissionItem({
         const { taskSubmissionId, ...rest } = location?.params;
         const params = new URLSearchParams(rest);
         const newUrl = `${location.pathname}&${params.toString()}`;
-        location.replace(newUrl);
+        location.push(newUrl);
       }
     },
     []
