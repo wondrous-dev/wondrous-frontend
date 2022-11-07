@@ -378,6 +378,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
     }
   }, [accessConditionType, chain]);
 
+  // @ts-ignore
   return (
     <>
       <CustomField label="Chain">
@@ -433,7 +434,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
               ListboxComponent={TokenListboxVirtualized}
               PopperComponent={TokenGatingAutocompletePopper}
               renderOption={(props, option) => [props, option]}
-              renderGroup={(params) => params}
+              renderGroup={(params) => params as any}
             />
           </CustomField>
         </Grid>
