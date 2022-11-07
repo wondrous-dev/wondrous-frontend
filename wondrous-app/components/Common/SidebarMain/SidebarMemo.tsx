@@ -86,7 +86,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
 
   return (
     <DrawerComponent variant="permanent" anchor="left">
-      <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />
+      {openHelpModal && <HelpModal open={openHelpModal} handleClose={() => setOpenHelpModal(false)} />}
       <DrawerContainer>
         <DrawerBlockWrapper>
           <SidebarMainLogo key={router.asPath} onClick={onLogoClick} isActive={isPageActive(PAGE_PATHNAME.explore)} />
