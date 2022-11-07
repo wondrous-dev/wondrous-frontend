@@ -70,10 +70,10 @@ const PodCurrentRoleModal = (props) => {
     }
   );
   useEffect(() => {
-    if (linkedWallet) {
+    if (linkedWallet && open) {
       litSignatureExist();
     }
-  }, [linkedWallet]);
+  }, [linkedWallet, open, litSignatureExist]);
 
   const saveLitSignature = async () => {
     if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
