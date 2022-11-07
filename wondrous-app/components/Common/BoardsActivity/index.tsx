@@ -128,9 +128,7 @@ export default function BoardsActivity(props) {
           setActiveView(ViewType.List);
           insertUrlParam('view', ViewType.List);
         } else {
-          location.replace(
-            `${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`
-          );
+          location.push(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
         }
       },
     },
@@ -145,9 +143,7 @@ export default function BoardsActivity(props) {
           setActiveView(ViewType.Grid);
           insertUrlParam('view', ViewType.Grid);
         } else {
-          location.replace(
-            `${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`
-          );
+          location.push(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
         }
       },
     },
@@ -160,9 +156,7 @@ export default function BoardsActivity(props) {
         setActiveView(ViewType.List);
         insertUrlParam('view', ViewType.List);
       } else {
-        location.replace(
-          `${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`
-        );
+        location.push(`${delQuery(router.asPath)}?view=${ViewType.List}${statusesQuery}${podIdsQuery}${userIdQuery}`);
       }
     },
     [view]
@@ -175,9 +169,7 @@ export default function BoardsActivity(props) {
         setActiveView(ViewType.Grid);
         insertUrlParam('view', ViewType.Grid);
       } else {
-        location.replace(
-          `${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`
-        );
+        location.push(`${delQuery(router.asPath)}?view=${ViewType.Grid}${statusesQuery}${podIdsQuery}${userIdQuery}`);
       }
     },
     [view]

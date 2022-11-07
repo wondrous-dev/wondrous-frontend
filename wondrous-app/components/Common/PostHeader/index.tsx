@@ -63,7 +63,7 @@ export function PostHeader(props) {
           <>
             awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
             <PostHeaderLink as="span">
-              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => location.replace(taskViewUrl)}>
+              <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => location.push(taskViewUrl)}>
                 <a href={taskViewUrl}>{objectTypeHeaderText}</a>
               </SmartLink>
             </PostHeaderLink>

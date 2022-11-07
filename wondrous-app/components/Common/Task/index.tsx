@@ -368,7 +368,7 @@ export function TaskListCard(props) {
           const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}&entity=${
             location?.params?.entity || Constants.ENTITIES_TYPES.TASK
           }`;
-          location.replace(newUrl);
+          location.push(newUrl);
         }}
         taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}
