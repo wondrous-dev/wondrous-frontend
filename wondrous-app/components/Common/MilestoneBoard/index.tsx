@@ -1,3 +1,4 @@
+import { Fragment } from 'react';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 
@@ -21,10 +22,11 @@ import { RichTextViewer } from 'components/RichText';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import TaskPriority from 'components/Common/TaskPriority';
 import TaskCardDate from 'components/Common/TaskCardDate';
+import TaskCardStatus from 'components/Common/TaskCardStatuts';
 import { SafeImage } from '../Image';
-import { MilestoneCard, MilestoneCardTitle, MilestoneIcon, MilestoneProgressWrapper } from './styles';
+import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 
-export default function Board({ tasks, handleCardClick }) {
+export default function Board({ tasks, handleCardClick, Container = Fragment }) {
   const router = useRouter();
 
   const goToPod = (podId) => {
@@ -34,7 +36,7 @@ export default function Board({ tasks, handleCardClick }) {
   };
 
   return (
-    <>
+    <Container>
       {tasks?.length ? (
         tasks.map((milestone) => {
           const coverMedia = milestone?.media?.find((media) => media.type === 'image');
@@ -42,8 +44,7 @@ export default function Board({ tasks, handleCardClick }) {
             <MilestoneCard onClick={() => handleCardClick(milestone)} key={milestone.id}>
               <BoardsCardHeader>
                 <BoardsCardSubheader>
-                  <MilestoneIcon />
-                  <MilestoneCardTitle>Milestone</MilestoneCardTitle>
+                  <TaskCardStatus type={milestone?.type} orgId={milestone?.orgId} status={milestone?.status} />
                   <BoardsPrivacyLabel>
                     {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
                   </BoardsPrivacyLabel>
@@ -104,6 +105,6 @@ export default function Board({ tasks, handleCardClick }) {
       ) : (
         <EmptyStateBoards hidePlaceholder status="created" fullWidth />
       )}
-    </>
+    </Container>
   );
 }

@@ -25,17 +25,10 @@ import { RichTextViewer } from 'components/RichText';
 import { useRouter } from 'next/router';
 import { Fragment, useState } from 'react';
 import palette from 'theme/palette';
-import { getFilterSchema } from 'utils/board';
 import { PRIVACY_LEVEL } from 'utils/constants';
 import TaskCardDate from 'components/Common/TaskCardDate';
-import { BountyBoardEmpty, BountyCardWrapper, StatusIconWrapper } from './styles';
-
-const getStatus = ({ entityType, orgId, bountyStatus }) => {
-  const entityTypeFilters = getFilterSchema(entityType, orgId);
-  const statuses = entityTypeFilters?.find(({ name }) => name === 'statuses')?.items;
-  const status = statuses?.find(({ id }) => id === bountyStatus);
-  return status;
-};
+import TaskCardStatus from 'components/Common/TaskCardStatuts';
+import { BountyBoardEmpty, BountyCardWrapper } from './styles';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
@@ -94,25 +87,11 @@ export default function Board({ tasks, handleCardClick = (bounty) => {}, display
       {tasks?.length ? (
         tasks.map((bounty) => {
           const hasGR15 = hasGR15DEIIntiative(bounty?.categories);
-          const status = getStatus({ entityType: bounty?.type, orgId: bounty?.orgId, bountyStatus: bounty?.status });
           return (
             <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
               <BoardsCardHeader>
                 <BoardsCardSubheader>
-                  <Grid
-                    container
-                    bgcolor={palette.grey99}
-                    padding="2px 10px 2px 2px"
-                    borderRadius="300px"
-                    fontSize="14px"
-                    fontWeight="500"
-                    gap="6px"
-                    height="28px"
-                    width="fit-content"
-                  >
-                    <StatusIconWrapper>{status?.icon}</StatusIconWrapper>
-                    {status?.label}
-                  </Grid>
+                  <TaskCardStatus type={bounty?.type} orgId={bounty?.orgId} status={bounty?.status} />
                   {hasGR15 && (
                     <>
                       <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
