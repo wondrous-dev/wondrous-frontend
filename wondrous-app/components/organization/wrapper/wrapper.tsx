@@ -16,7 +16,7 @@ import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
 import DefaultBg from 'public/images/overview/background.png';
 
-import usePrevious, { useOrgBoard, useTokenGating } from 'utils/hooks';
+import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
 import { GET_USER_JOIN_ORG_REQUEST, GET_TASKS_PER_TYPE } from 'graphql/queries/org';
 import { useRouter } from 'next/router';
@@ -209,7 +209,6 @@ function Wrapper(props) {
   const [claimedOrRequestedRole, setClaimedOrRequestedRole] = useState(null);
 
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_ORG_REQUEST);
-  const [tokenGatingConditions, isLoading] = useTokenGating(orgBoard?.orgId);
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const [exploreGr15TasksAndBounties, setExploreGr15TasksAndBounties] = useState(false);
   const orgProfile = orgData;
@@ -440,13 +439,6 @@ function Wrapper(props) {
                       🔑 {orgRoleName}
                     </RolePill>
                   </RoleButtonWrapper>
-                )}
-                {/* </Tooltip> */}
-                {!isLoading && (
-                  <TokenGatedBoard
-                    isPrivate={tokenGatingConditions?.getTokenGatingConditionsForOrg?.length > 0}
-                    tooltipTitle="Token gating"
-                  />
                 )}
                 <ToggleBoardPrivacyIcon
                   isPrivate={orgData?.privacyLevel !== PRIVACY_LEVEL.public}

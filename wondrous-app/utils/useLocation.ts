@@ -53,7 +53,7 @@ export function useLocation() {
    * @param {string} url
    */
   function push(url) {
-    window.history.pushState(null, null, url);
+    window.history.pushState({}, '', url);
     notify();
   }
 

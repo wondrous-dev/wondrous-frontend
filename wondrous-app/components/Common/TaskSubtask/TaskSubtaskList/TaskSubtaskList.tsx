@@ -169,7 +169,6 @@ function TaskSubtaskEmptyState() {
   );
 }
 
-
 export const TaskSubtaskItem = (props) => {
   const router = useRouter();
   const location = useLocation();

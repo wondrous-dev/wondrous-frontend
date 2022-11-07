@@ -37,6 +37,7 @@ import Typography from '@mui/material/Typography';
 import { capitalize } from 'utils/common';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
+import { useLocation } from 'utils/useLocation';
 import PayoutTable from './PayoutTable';
 import { INITIAL_SELECTION_OPTIONS } from './constants';
 import { useGetPaymentMethodsForOrg } from './hooks';
@@ -68,7 +69,7 @@ function Payouts(props) {
   const [selectedItems, setSelectedItems] = useState({});
 
   const [openExportModal, setOpenExportModal] = useState(false);
-
+  const location = useLocation();
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [processingList, setProcessingList] = useState([]);
@@ -458,19 +459,19 @@ function Payouts(props) {
     {
       label: 'Unpaid',
       isActive: view === ViewType.Unpaid || view === null,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
+      onChange: () => location.push(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Processing',
       isActive: view === ViewType.Processing,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
+      onChange: () => location.push(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Paid',
       isActive: view === ViewType.Paid,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
+      onChange: () => location.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
   ];

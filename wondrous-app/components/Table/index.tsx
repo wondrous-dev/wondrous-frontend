@@ -196,7 +196,7 @@ function Table(props) {
       <TaskViewModal
         open={isPreviewModalOpen}
         handleClose={() => {
-          location.replace(`${delQuery(router.asPath)}?view=${location.params.view ?? ViewType.Grid}`);
+          location.push(`${delQuery(router.asPath)}?view=${location.params.view ?? ViewType.Grid}`);
         }}
         isTaskProposal={!!location.params.taskProposal}
         taskId={(location.params.taskProposal ?? location.params.task)?.toString()}

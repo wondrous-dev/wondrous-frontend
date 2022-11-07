@@ -7,7 +7,7 @@ import Tooltip from 'components/Tooltip';
 import { format, formatDistance, differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_ORG_LABELS, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
@@ -64,6 +64,8 @@ import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress'
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -161,6 +163,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
+  const location = useLocation();
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
@@ -188,9 +191,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
-  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
-    fetchPolicy: 'cache-and-network',
-  });
+
   const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
@@ -227,16 +228,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       console.error('Error fetching task proposal');
     },
   });
-
-  useEffect(() => {
-    if (fetchedTask) {
-      getOrgLabels({
-        variables: {
-          orgId: fetchedTask.orgId,
-        },
-      });
-    }
-  }, [fetchedTask]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -581,13 +572,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             <Tooltip title="Parent Task" placement="top">
                               <SubtaskTitleWrapper
                                 onClick={() => {
-                                  router.push(
-                                    { pathname: router.pathname, query: { ...query, task: fetchedTask?.parentTaskId } },
-                                    undefined,
-                                    {
-                                      shallow: true,
-                                    }
-                                  );
+                                  const newUrl = `${delQuery(router.asPath)}?view=${
+                                    router?.query?.view || 'grid'
+                                  }&task=${fetchedTask?.parentTaskId}&entity=${
+                                    location?.params?.entity || ENTITIES_TYPES.TASK
+                                  }`;
+                                  location.push(newUrl);
                                 }}
                               >
                                 <TaskModalHeaderIconWrapper>
@@ -657,7 +647,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             </TaskModalSnapshot>
                           )}
                           {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
-                          <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                          {isMilestone && (
+                            <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                          )}
                         </TaskModalTaskStatusMoreInfo>
                         <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
                         <TaskMediaWrapper media={fetchedTask?.media} />

@@ -38,7 +38,7 @@ const useGetMilestoneTasksProgress = ({ milestoneId }) => {
     [tasksCompleted, tasksTotal, calculateProgress]
   );
 
-  console.log(tasksTotal, tasksCompleted, progress);
+  // console.log(tasksTotal, tasksCompleted, progress);
   return { tasksTotal, tasksCompleted, progress };
 };
 

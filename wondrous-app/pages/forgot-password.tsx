@@ -22,7 +22,6 @@ function ForgotPassword() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(email);
     setErrorMessage(null);
     await apollo
       .mutate({

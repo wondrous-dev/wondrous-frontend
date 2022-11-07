@@ -10,6 +10,7 @@ interface IPrivateBoardIconProps {
 }
 
 export function TokenGatedBoard(props: IPrivateBoardIconProps) {
+  // this is the little locked icon indicating wether something is tokengated, deprecate for now, seems useless
   const { isPrivate, tooltipTitle } = props;
   return (
     <Tooltip title={tooltipTitle} placement="top">

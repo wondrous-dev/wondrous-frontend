@@ -204,7 +204,7 @@ export default function TableBody({
             <StyledTableCell align="center">
               <TaskStatus status={status} />
             </StyledTableCell>
-            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => location.replace(viewUrl)}>
+            <SmartLink href={viewUrl} preventLinkNavigation onNavigate={() => location.push(viewUrl)}>
               <StyledTableCell className="clickable">
                 <TaskTitle>
                   <a href={viewUrl}>{task.title}</a>
