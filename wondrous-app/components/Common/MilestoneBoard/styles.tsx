@@ -49,7 +49,7 @@ export const MilestoneCard = styled.div`
   width: 360px;
   &::before {
     background: #1d1d1d;
-    border-radius: 4px;
+    border-radius: 6px;
     content: '';
     height: calc(100% - 2px);
     left: 0;
