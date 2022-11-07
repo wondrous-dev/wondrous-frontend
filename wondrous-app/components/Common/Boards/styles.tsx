@@ -168,7 +168,7 @@ export const BoardsPrivacyLabel = styled.div`
   line-height: 12px;
   display: flex;
   align-items: center;
-  background: #363636;
+  background: ${palette.grey99};
   border-radius: 4px;
   color: ${palette.white};
 `;
