@@ -58,7 +58,7 @@ const RichTextViewer: React.FC<{ text?: string }> = ({ text }) => {
   const router = useRouter();
 
   if (!text) {
-    return <div />;
+    return null;
   }
 
   return isRichText(text) ? (
