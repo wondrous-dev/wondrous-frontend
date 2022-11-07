@@ -118,12 +118,3 @@ export const SubtasksWrapper = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-export const StatusIconWrapper = styled.div`
-  height: 24px;
-  width: 24px;
-  svg {
-    width: 24px !important;
-    height: 24px !important;
-  }
-`;
