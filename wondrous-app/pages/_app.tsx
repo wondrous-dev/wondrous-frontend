@@ -57,7 +57,6 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
   );
 
   useEffect(() => {
-    initHotjar();
     const handleRouteChange = (url) => {
       window.gtag('config', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
         page_path: url,
@@ -68,6 +67,10 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
       router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, [router.events]);
+
+  useEffect(() => {
+    initHotjar();
+  }, []);
 
   function getLibrary(provider): Web3Provider {
     const library = new Web3Provider(provider);
