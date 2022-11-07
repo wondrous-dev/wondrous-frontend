@@ -75,8 +75,11 @@ export default function Board({ tasks, handleCardClick, Container = Fragment }) 
                     />
                   </BoardsCardMedia>
                 ) : null}
+              </BoardsCardBody>
+              <BoardsCardFooter>
                 {milestone?.podName && (
                   <PodWrapper
+                    style={{ marginTop: 0 }}
                     onClick={(e) => {
                       e.preventDefault();
                       e.stopPropagation();
@@ -94,10 +97,17 @@ export default function Board({ tasks, handleCardClick, Container = Fragment }) 
                     <PodName>{milestone?.podName}</PodName>
                   </PodWrapper>
                 )}
-              </BoardsCardBody>
-              <BoardsCardFooter>
-                <CommentsIcon />
-                {milestone.commentCount || 0}
+                <div
+                  style={{
+                    flex: 1,
+                  }}
+                />
+                <Grid item container width="fit-content" gap="12px">
+                  <Grid item container gap="10px" width="fit-content" lineHeight="0" alignItems="center">
+                    <CommentsIcon />
+                    {milestone.commentCount || 0}
+                  </Grid>
+                </Grid>
               </BoardsCardFooter>
             </MilestoneCard>
           );
