@@ -10,16 +10,11 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import {
-  CreateEntityBody,
   CreateEntityDefaultDaoImage,
   CreateEntityError,
-  CreateEntityForm,
   CreateEntityHeader,
   CreateEntityHeaderArrowIcon,
   CreateEntityHeaderWrapper,
-  CreateEntityLabel,
-  CreateEntityLabelSelectWrapper,
-  CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntityTitle,
@@ -29,7 +24,6 @@ import {
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { useFormik } from 'formik';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
-import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -40,7 +34,7 @@ import Tooltip from 'components/Tooltip';
 import Box from '@mui/material/Box';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
-import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
+import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import { ErrorText } from 'components/Common';
 import {
   TaskModalCard,
@@ -105,7 +99,11 @@ const CreateGrant = (props) => {
 
   const form = useFormik({
     initialValues: {
-      rewards: null,
+      grantAmount: {
+        paymentMethodId: '',
+        rewardAmount: 0,
+        amount: 0,
+      },
       startDate: null,
       endDate: null,
       title: '',
@@ -259,23 +257,16 @@ const CreateGrant = (props) => {
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </TaskModalTitleDescriptionMedia>
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <CreateEntityLabelSelectWrapper show>
-              <CreateEntityLabelWrapper>
-                <CreateEntityLabel>Grant amount</CreateEntityLabel>
-              </CreateEntityLabelWrapper>
-
-              <GrantAmount
-                value={form.values?.rewards?.[0]?.paymentMethodId}
-                onChange={() => {}}
-                rewardAmount={undefined}
-                handleRewardOnChange={undefined}
-                orgId={form.values.orgId}
-                paymentMethodId={undefined}
-                onReset={undefined}
-                onFocus={undefined}
-                error={undefined}
-              />
-            </CreateEntityLabelSelectWrapper>
+            <GrantAmount
+              value={form.values.grantAmount}
+              onChange={({ key, value }) =>
+                form.setFieldValue('grantAmount', { ...form.values.grantAmount, [key]: value })
+              }
+              orgId={form.values.orgId}
+              onReset={() => form.setFieldValue('grantAmount', { amount: '', currency: '', rewardAmount: 0 })}
+              onFocus={() => form.setFieldError('grantAmount', undefined)}
+              error={form.errors.grantAmount}
+            />
           </TaskSectionDisplayDivWrapper>
         </TaskModalTaskData>
       </TaskModalCard>
