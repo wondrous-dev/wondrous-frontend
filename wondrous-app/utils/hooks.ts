@@ -170,23 +170,6 @@ export const useRouterQuery = ({
   return [state, setState];
 };
 
-export const useTokenGating = (orgId) => {
-  const [getTokenGatingConditionsForOrg, { data, loading }] = useLazyQuery(GET_TOKEN_GATING_CONDITIONS_FOR_ORG, {
-    fetchPolicy: 'network-only',
-  });
-  useEffect(() => {
-    if (orgId) {
-      getTokenGatingConditionsForOrg({
-        variables: {
-          orgId,
-        },
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [orgId]);
-  return [data, loading];
-};
-
 export const useFilterQuery = (query, variables = {}, shouldFetch = true) => {
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState(null);
