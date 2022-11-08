@@ -76,7 +76,7 @@ const ButtonPrimaryInner = styled.div`
 `;
 
 export const ButtonPrimary = ({ children, startIcon, ...props }: ButtonProps): JSX.Element => (
-  <ButtonBasePrimary startIcon={startIcon} {...props}>
+  <ButtonBasePrimary {...props}>
     <ButtonPrimaryInner withIcon={startIcon}>
       {startIcon}
       {children}
