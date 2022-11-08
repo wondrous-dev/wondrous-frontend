@@ -129,6 +129,7 @@ const SUPPORTED_CHAINS = {
   288: 'BOBA',
   10: 'OPTIMISM',
   8217: 'KLAYTN',
+  43114: 'AVALANCHE',
 };
 
 export const NATIVE_TOKEN_SYMBOL = {
@@ -141,6 +142,7 @@ export const NATIVE_TOKEN_SYMBOL = {
   288: 'ETH',
   10: 'OP',
   8217: 'KLAY',
+  43114: 'AVAX',
 };
 
 if (!process.env.NEXT_PUBLIC_PRODUCTION) {
@@ -156,6 +158,7 @@ export const RPC_URLS: { [chainId: number]: string } = {
   56: process.env.NEXT_PUBLIC_RPC_URL_BSC,
   288: process.env.NEXT_PUBLIC_RPC_URL_BOBA,
   10: process.env.NEXT_PUBLIC_RPC_URL_OPTIMISM,
+  43114: process.env.NEXT_PUBLIC_RPC_URL_AVALANCHE,
 };
 
 export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
@@ -167,6 +170,7 @@ export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
   bsc: 'https://safe-transaction.bsc.gnosis.io',
   boba: 'https://safe-transaction.mainnet.boba.network',
   optimism: 'https://safe-transaction.optimism.gnosis.io',
+  avalanche: 'https://safe-transaction.avalanche.gnosis.io',
 };
 
 export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
@@ -201,6 +205,7 @@ export const CHAIN_IDS = {
   BOBA: 288,
   OPTIMISM: 10,
   KLAYTN: 8217,
+  AVALANCHE: 43114,
 };
 
 export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
@@ -213,6 +218,7 @@ export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
   boba: 'Boba Mainnet',
   optimism: 'Optimism Mainnet',
   klaytn: 'Klaytn Mainnet',
+  avalanche: 'Avalanche',
 };
 
 export const SUPPORTED_CURRENCIES = [
