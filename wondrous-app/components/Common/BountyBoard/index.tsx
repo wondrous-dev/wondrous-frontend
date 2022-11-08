@@ -16,10 +16,13 @@ import { SafeImage } from 'components/Common/Image';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { ToggleBoardPrivacyIcon } from 'components/Common/PrivateBoardIcon';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskCardDate from 'components/Common/TaskCardDate';
+import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardStatus from 'components/Common/TaskCardStatuts';
 import TaskPriority from 'components/Common/TaskPriority';
+import ActionModals from 'components/Common/TaskViewModal/actionModals';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import { CreateEntity } from 'components/CreateEntity';
 import CommentsIcon from 'components/Icons/comments';
@@ -33,10 +36,7 @@ import { Fragment, useContext, useState } from 'react';
 import palette from 'theme/palette';
 import { PRIVACY_LEVEL } from 'utils/constants';
 import { usePermissions } from 'utils/hooks';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import ActionModals from '../TaskViewModal/actionModals';
-import { Menu } from '../TaskViewModal/helpers';
-import { BountyBoardEmpty, BountyCardWrapper, MenuWrapper } from './styles';
+import { BountyBoardEmpty, BountyCardWrapper } from './styles';
 
 export function SubmissionsCount({ total, approved }) {
   const config = [
@@ -94,7 +94,8 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   const goToOrg = (orgUsername) => router.push(`/organization/${orgUsername}/boards`, undefined, { shallow: true });
 
-  const [anchorEl, setAnchorEl] = useState();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
   const [editTask, setEditTask] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [completeModal, setCompleteModal] = useState(false);
@@ -155,7 +156,15 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
         setSnackbarAlertOpen={setSnackbarAlertOpen}
         setSnackbarAlertMessage={setSnackbarAlertMessage}
       />
-      <BountyCardWrapper onClick={() => handleCardClick(bounty)} key={bounty.id}>
+      <BountyCardWrapper
+        onClick={() => handleCardClick(bounty)}
+        key={bounty.id}
+        onMouseEnter={() => setShowMenu(true)}
+        onMouseLeave={() => {
+          setShowMenu(false);
+          setAnchorEl(null);
+        }}
+      >
         <BoardsCardHeader>
           <BoardsCardSubheader>
             <TaskCardStatus type={bounty?.type} orgId={bounty?.orgId} status={bounty?.status} />
@@ -266,20 +275,17 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
               <CommentsIcon />
               {bounty.commentCount || 0}
             </Grid>
-            <MenuWrapper open={Boolean(anchorEl)}>
-              <Menu
-                canArchive={canArchive}
-                canEdit={canEdit}
-                isBounty
-                setArchiveTask={setArchiveTask}
-                setCompleteModal={setCompleteModal}
-                setEditTask={setEditTask}
-                taskType={bounty?.type}
-                style={{ height: '28px' }}
-                setAnchorElParent={setAnchorEl}
-                anchorElParent={anchorEl}
-              />
-            </MenuWrapper>
+            <TaskCardMenu
+              canArchive={canArchive}
+              canEdit={canEdit}
+              setArchiveTask={setArchiveTask}
+              setCompleteModal={setCompleteModal}
+              setEditTask={setEditTask}
+              taskType={bounty?.type}
+              setAnchorElParent={setAnchorEl}
+              anchorElParent={anchorEl}
+              open={showMenu}
+            />
           </Grid>
         </BoardsCardFooter>
       </BountyCardWrapper>
