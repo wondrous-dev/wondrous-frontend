@@ -2,7 +2,7 @@ import React from 'react';
 import { useRouter } from 'next/router';
 import NotionTaskImportSection from 'components/Settings/TaskImport/NotionTaskImport';
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import { HeaderBlock } from 'components/Settings/headerBlock';
+import HeaderBlock from 'components/Settings/headerBlock';
 import ImportTaskFromCSV from './ImportTaskFromCSV';
 import { TaskImportContainer } from './styles';
 

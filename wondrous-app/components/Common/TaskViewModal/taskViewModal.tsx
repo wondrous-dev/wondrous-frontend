@@ -4,7 +4,7 @@ import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
-import { format, formatDistance, differenceInDays } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';

@@ -33,7 +33,7 @@ import { ErrorText } from 'components/Common';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import RolePill from 'components/Common/RolePill';
 import AndroidSwitch from 'components/Common/AndroidSwitch';
-import { HeaderBlock } from 'components/Settings/headerBlock';
+import HeaderBlock from 'components/Settings/headerBlock';
 import CloseModalIcon from 'components/Icons/closeModal';
 import UserCheckIcon from 'components/Icons/userCheckIcon';
 import RoleLockIcon from 'components/Icons/rolesLock.svg';
