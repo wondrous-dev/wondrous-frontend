@@ -1,13 +1,4 @@
-import {
-  Box,
-  Button as MuiButton,
-  ButtonBase,
-  InputBase,
-  List,
-  ListItem,
-  ListItemIcon,
-  Typography,
-} from '@mui/material';
+import { Box, Button as MuiButton, ButtonBase, InputBase, List, ListItem, Typography } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
 import styled from 'styled-components';
@@ -259,16 +250,6 @@ export const SettingsHeaderInviteButton = styled.button`
   border: none;
   border-radius: 6px;
   cursor: pointer;
-`;
-
-export const SettingsHeaderInviteButtonIcon = styled.div`
-  height: 25px;
-  width: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #3d3d3d;
-  border-radius: 1000px;
 `;
 
 export const SettingsHeaderActionText = styled(ButtonBase)`

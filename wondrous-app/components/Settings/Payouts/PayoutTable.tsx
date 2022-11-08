@@ -6,6 +6,7 @@ import Tooltip from 'components/Tooltip';
 import Button from 'components/Button';
 import QuestionMarkIcon from 'components/Icons/QuestionMarkIcon';
 import { BatchPayModal } from 'components/Settings/Payouts/BatchPayModal';
+import PayModal from 'components/Settings/Payouts/modal';
 
 import palette from 'theme/palette';
 
@@ -13,7 +14,6 @@ import { PaymentModalContext } from 'utils/contexts';
 import { User } from 'types/User';
 import { SELECTION } from './constants';
 
-import { PayModal } from './modal';
 import PayoutItem from './PayoutItem';
 import {
   StyledTable,
@@ -24,7 +24,6 @@ import {
   StyledTableRow,
   BottomActionBar,
   BottomActionBarText,
-  BottomActionBarPayButton,
   BottomActionBarMultipleChainSelectedErrorText,
   BottomActionBarButton,
   BottomActionBarMultipleChainSelectedError,
