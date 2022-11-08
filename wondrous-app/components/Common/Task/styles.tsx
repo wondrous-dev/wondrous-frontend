@@ -522,12 +522,12 @@ export const LoadMore = styled.div`
 export const TaskActionMenu = styled.div`
   display: flex;
   justify-content: center;
-  height: 24px;
+  height: 28px;
   width: max-content;
   z-index: 100;
   align-items: center;
-  visibility: hidden;
+  display: none;
   ${ProposalCardWrapper}:hover & {
-    visibility: visible;
+    display: block;
   }
 `;
