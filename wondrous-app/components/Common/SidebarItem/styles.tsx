@@ -50,7 +50,6 @@ export const ItemButtonText = styled(Typography)`
     align-items: center;
     gap: 8px;
     color: ${({ theme }) => theme.palette.white};
-    line-height: 0;
   }
 `;
 

@@ -780,7 +780,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 <TaskSectionInfoTextCreator>
                                   {fetchedTask?.creatorUsername}{' '}
                                   <TaskSectionInfoCreatorTask>
-                                    created this task{isTaskProposal && ' proposal'}{' '}
+                                    created this {fetchedTask?.type}{' '}
                                   </TaskSectionInfoCreatorTask>
                                   {fetchedTask?.createdAt && (
                                     <TaskSectionInfoCreatorDaysAgo>
