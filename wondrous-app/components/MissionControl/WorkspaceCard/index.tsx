@@ -1,6 +1,6 @@
 import Link from 'next/link';
+import { RequestApproveButton } from 'components/organization/members/styles';
 import { useHotkey } from 'utils/hooks';
-import Image from 'next/image';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import {
@@ -31,10 +31,10 @@ const MissionControlWorkspaceCard: React.FC<{
     <MissionControlWorkspaceCardWrapper hoverImg={hoverImg} gradient={gradient}>
       <Badge badgeContent={HOTKEYS.OPEN_DASHBOARD} color="primary" invisible={!showBadge}>
         <WorkspaceCardContainer>
-          <Link href={url} shallow passHref>
+          <Link href={url} shallow>
             <WorkspaceCardBannerContainer>
               <WorkspaceCardBannerImage src={img}>
-                <Image src={img} alt="dashboard" />
+                <img src={img} />
               </WorkspaceCardBannerImage>
               <WorkspaceCardLabelWrapper>
                 <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
@@ -43,7 +43,7 @@ const MissionControlWorkspaceCard: React.FC<{
           </Link>
           <WorkspaceCardStatsContainer>
             {stats.map((stat, idx) => (
-              <Link href={stat.url} key={idx} shallow passHref>
+              <Link href={stat.url} key={idx} shallow>
                 <WorkspaceCardStat>
                   <stat.icon />
                   <WorkspaceCardStatCount gradient={stat.countGradient}>{stat.count}</WorkspaceCardStatCount>
