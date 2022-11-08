@@ -18,8 +18,6 @@ import {
   BoardsCardMedia,
   BoardsCardFooter,
 } from 'components/Common/Boards/styles';
-import Dropdown from 'components/Common/Dropdown';
-import DropdownItem from 'components/Common/DropdownItem';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -83,6 +81,7 @@ import { TaskCommentIcon } from '../../Icons/taskComment';
 import { ButtonPrimary } from '../button';
 import TASK_ICONS from './constants';
 import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
+import TaskCardMenu from '../TaskCardMenu';
 
 let windowOffset = 0;
 
@@ -123,6 +122,7 @@ export function TaskCard({
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
   const coverMedia = task?.media?.find((media) => media.type === 'image');
   const userProfile = useUserProfile();
 
@@ -215,7 +215,14 @@ export function TaskCard({
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
-    <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)} data-cy={`task-card-item-${title}`}>
+    <ProposalCardWrapper
+      onMouseEnter={() => setShowMenu(true)}
+      onMouseLeave={() => {
+        setShowMenu(false);
+        setAnchorEl(null);
+      }}
+      data-cy={`task-card-item-${title}`}
+    >
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
@@ -460,61 +467,25 @@ export function TaskCard({
               </SubtaskCountWrapper>
             </Tooltip>
           )}
-          {canArchive && (
-            <TaskActionMenu>
-              <Tooltip title="More actions" placement="top">
-                <span>
-                  <Dropdown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
-                    <DropdownItem
-                      key={`task-menu-edit-edit-${id}`}
-                      onClick={() => {
-                        setEditTask(true);
-                      }}
-                      color={palette.white}
-                    >
-                      Edit {type}
-                    </DropdownItem>
-                    {!isMilestone && (
-                      <DropdownItem
-                        key={`task-menu-duplicate-${id}`}
-                        onClick={() => {
-                          duplicateTask({
-                            variables: {
-                              taskId: id,
-                            },
-                          });
-                        }}
-                        color={palette.white}
-                      >
-                        Duplicate {type}
-                      </DropdownItem>
-                    )}
-                    <DropdownItem
-                      key={`task-menu-edit-archive${id}`}
-                      onClick={() => {
-                        setArchiveTask(true);
-                      }}
-                      color={palette.white}
-                    >
-                      Archive {type}
-                    </DropdownItem>
-
-                    {canDelete && (
-                      <DropdownItem
-                        key={`task-menu-delete-${id}`}
-                        onClick={() => {
-                          setDeleteTask(true);
-                        }}
-                        color={palette.red800}
-                      >
-                        Delete {type}
-                      </DropdownItem>
-                    )}
-                  </Dropdown>
-                </span>
-              </Tooltip>
-            </TaskActionMenu>
-          )}
+          <TaskCardMenu
+            anchorElParent={anchorEl}
+            canArchive={canArchive}
+            canEdit={canArchive}
+            canDelete={canDelete}
+            setAnchorElParent={setAnchorEl}
+            setArchiveTask={setArchiveTask}
+            setDeleteTask={setDeleteTask}
+            setEditTask={setEditTask}
+            setDuplicate={() => {
+              duplicateTask({
+                variables: {
+                  taskId: id,
+                },
+              });
+            }}
+            taskType={task?.type}
+            open={showMenu}
+          />
         </BoardsCardFooter>
       </SmartLink>
     </ProposalCardWrapper>
