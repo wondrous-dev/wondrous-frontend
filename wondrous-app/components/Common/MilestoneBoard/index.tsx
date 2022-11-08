@@ -29,16 +29,17 @@ import { useMutation } from '@apollo/client';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { ARCHIVE_TASK } from 'graphql/mutations';
 import { SafeImage } from '../Image';
-import { MenuWrapper, MilestoneCard, MilestoneProgressWrapper } from './styles';
-import { Menu } from '../TaskViewModal/helpers';
+import { MilestoneCard, MilestoneProgressWrapper } from './styles';
 import ActionModals from '../TaskViewModal/actionModals';
 import { SnackbarAlertContext } from '../SnackbarAlert';
+import TaskCardMenu from '../TaskCardMenu';
 
 const MilestoneItem = ({ milestone, handleCardClick }) => {
   const router = useRouter();
   const { canEdit, canArchive, canDelete } = usePermissions(milestone);
   const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
   const [completeModal, setCompleteModal] = useState(false);
   const [editTask, setEditTask] = useState(false);
@@ -107,7 +108,15 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
         setSnackbarAlertOpen={setSnackbarAlertOpen}
         taskType={milestone?.type}
       />
-      <MilestoneCard onClick={() => handleCardClick(milestone)} key={milestone.id}>
+      <MilestoneCard
+        onClick={() => handleCardClick(milestone)}
+        key={milestone.id}
+        onMouseEnter={() => setShowMenu(true)}
+        onMouseLeave={() => {
+          setShowMenu(false);
+          setAnchorEl(null);
+        }}
+      >
         <BoardsCardHeader>
           <BoardsCardSubheader>
             <TaskCardStatus type={milestone?.type} orgId={milestone?.orgId} status={milestone?.status} />
@@ -173,22 +182,19 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
               <CommentsIcon />
               {milestone.commentCount || 0}
             </Grid>
-            <MenuWrapper open={Boolean(anchorEl)}>
-              <Menu
-                anchorElParent={anchorEl}
-                canArchive={canArchive}
-                canEdit={canEdit}
-                canDelete={canDelete}
-                isBounty
-                setAnchorElParent={setAnchorEl}
-                setArchiveTask={setArchiveTask}
-                setCompleteModal={setCompleteModal}
-                setDeleteTask={setDeleteTask}
-                setEditTask={setEditTask}
-                style={{ height: '28px' }}
-                taskType={milestone?.type}
-              />
-            </MenuWrapper>
+            <TaskCardMenu
+              anchorElParent={anchorEl}
+              canArchive={canArchive}
+              canEdit={canEdit}
+              canDelete={canDelete}
+              setAnchorElParent={setAnchorEl}
+              setArchiveTask={setArchiveTask}
+              setCompleteModal={setCompleteModal}
+              setDeleteTask={setDeleteTask}
+              setEditTask={setEditTask}
+              taskType={milestone?.type}
+              open={showMenu}
+            />
           </Grid>
         </BoardsCardFooter>
       </MilestoneCard>
