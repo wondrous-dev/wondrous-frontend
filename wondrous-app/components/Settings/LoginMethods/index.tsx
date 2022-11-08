@@ -12,7 +12,7 @@ import {
   USER_DISCORD_DISCONNECT,
   USER_WALLET_DISCONNECT,
 } from 'graphql/mutations';
-import { HeaderBlock } from 'components/Settings/headerBlock';
+import HeaderBlock from 'components/Settings/headerBlock';
 
 import { useMe } from 'components/Auth/withAuth';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';

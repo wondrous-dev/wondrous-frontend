@@ -84,7 +84,6 @@ export const FullTaskFragment = gql`
     podId
     type
     priority
-    blockerTaskIds
     dueDate
     status
     paymentStatus

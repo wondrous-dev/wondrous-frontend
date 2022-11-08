@@ -27,21 +27,17 @@ import {
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { RichTextViewer } from 'components/RichText';
-import { useHotkeys } from 'react-hotkeys-hook';
-import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import BoardLock from 'components/BoardLock';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
 import CurrentRoleModal from 'components/RoleModal/CurrentRoleModal';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
-import { TokenGatedBoard, ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
+import MoreInfoModal from 'components/profile/modals';
+import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { MoreInfoModal } from '../../profile/modals';
 import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { SafeImage } from '../../Common/Image';
 import {
@@ -192,7 +188,7 @@ function Wrapper(props) {
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
   const loggedInUser = useMe();
-  const [open, setOpen] = useState(false);
+  const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
   const orgBoard = useOrgBoard();
@@ -202,7 +198,6 @@ function Wrapper(props) {
   const userPermissionsContext = orgBoard?.userPermissionsContext;
   const [orgRoleName, setOrgRoleName] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
-  const [isCreateTaskModalOpen, setCreateTaskModalOpen] = useState(false);
   const [openInvite, setOpenInvite] = useState(false);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
   const [openCurrentRoleModal, setOpenCurrentRoleModal] = useState(false);
@@ -299,59 +294,46 @@ function Wrapper(props) {
     }
   }, [orgBoard?.orgId]);
 
-  useHotkeys('tab+t', () => {
-    setCreateTaskModalOpen((prevState) => !prevState);
-  });
-
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
       <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
-      <MembershipRequestModal
-        orgId={orgBoard?.orgId}
-        open={openJoinRequestModal}
-        onClose={() => setOpenJoinRequestModal(false)}
-        setOpenCurrentRoleModal={setOpenCurrentRoleModal}
-        requestingRole={claimedOrRequestedRole}
-      />
-      <CurrentRoleModal
-        orgId={orgBoard?.orgId}
-        open={openCurrentRoleModal}
-        onClose={() => setOpenCurrentRoleModal(false)}
-        linkedWallet={loggedInUser?.activeEthAddress}
-        currentRoleName={orgRoleName}
-        setOpenJoinRequestModal={setOpenJoinRequestModal}
-        setClaimedOrRequestedRole={setClaimedOrRequestedRole}
-      />
-      <ChooseEntityToCreate />
-      <MoreInfoModal
-        open={open && (showUsers || showPods)}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          setShowPods(false);
-          setShowUsers(false);
-          setOpen(false);
-        }}
-        showUsers={showUsers}
-        showPods={showPods}
-        name={orgProfile?.name}
-        orgId={orgBoard?.orgId}
-      />
-      <CreateModalOverlay
-        style={{
-          height: '95vh',
-        }}
-        open={isCreateTaskModalOpen}
-        onClose={() => setCreateTaskModalOpen(false)}
-      >
-        <CreateEntityModal
-          entityType={ENTITIES_TYPES.TASK}
-          handleClose={() => setCreateTaskModalOpen(false)}
-          resetEntityType={() => {}}
-          setEntityType={() => {}}
-          cancel={() => setCreateTaskModalOpen(false)}
+      {openJoinRequestModal && (
+        <MembershipRequestModal
+          orgId={orgBoard?.orgId}
+          open={openJoinRequestModal}
+          onClose={() => setOpenJoinRequestModal(false)}
+          setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+          requestingRole={claimedOrRequestedRole}
         />
-      </CreateModalOverlay>
+      )}
+      {openCurrentRoleModal && (
+        <CurrentRoleModal
+          orgId={orgBoard?.orgId}
+          open={openCurrentRoleModal}
+          onClose={() => setOpenCurrentRoleModal(false)}
+          linkedWallet={loggedInUser?.activeEthAddress}
+          currentRoleName={orgRoleName}
+          setOpenJoinRequestModal={setOpenJoinRequestModal}
+          setClaimedOrRequestedRole={setClaimedOrRequestedRole}
+        />
+      )}
+      <ChooseEntityToCreate />
+      {moreInfoModalOpen && (
+        <MoreInfoModal
+          open={moreInfoModalOpen && (showUsers || showPods)}
+          handleClose={() => {
+            document.body.setAttribute('style', '');
+            setShowPods(false);
+            setShowUsers(false);
+            setMoreInfoModalOpen(false);
+          }}
+          showUsers={showUsers}
+          showPods={showPods}
+          name={orgProfile?.name}
+          orgId={orgBoard?.orgId}
+        />
+      )}
 
       <HeaderImageWrapper>
         {orgProfile ? (
@@ -481,7 +463,7 @@ function Wrapper(props) {
               <HeaderActivity>
                 <HeaderContributors
                   onClick={() => {
-                    setOpen(true);
+                    setMoreInfoModalOpen(true);
                     setShowUsers(true);
                   }}
                 >
@@ -490,7 +472,7 @@ function Wrapper(props) {
                 </HeaderContributors>
                 <HeaderPods
                   onClick={() => {
-                    setOpen(true);
+                    setMoreInfoModalOpen(true);
                     setShowPods(true);
                   }}
                 >

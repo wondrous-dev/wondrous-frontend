@@ -4,8 +4,8 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { useInView } from 'react-intersection-observer';
 import { useMe } from 'components/Auth/withAuth';
 import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
-import { HeaderBlock } from 'components/Settings/headerBlock';
-import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
+import HeaderBlock from 'components/Settings/headerBlock';
+import exportSubmissionPaymentCsv from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
 import {
   LoadMore,
   LedgerActionButtonsContainer,

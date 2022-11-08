@@ -88,7 +88,7 @@ const UserItem = forwardRef((props: any, ref) => {
   );
 });
 
-export function MoreInfoModal(props) {
+function MoreInfoModal(props) {
   const { orgId, podId, showUsers, showPods, open, handleClose, name } = props;
   const [displayUsers, setDisplayUsers] = useState(showUsers);
   const [displayPods, setDisplayPods] = useState(showPods);
@@ -394,3 +394,5 @@ export function MoreInfoModal(props) {
     </Modal>
   );
 }
+
+export default MoreInfoModal;

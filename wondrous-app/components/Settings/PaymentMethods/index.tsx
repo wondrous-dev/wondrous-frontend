@@ -5,7 +5,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_ORG_BY_ID } from 'graphql/queries';
 
 import SettingsWrapper from 'components/Common/SidebarSettings';
-import { HeaderBlock } from 'components/Settings/headerBlock';
+import HeaderBlock from 'components/Settings/headerBlock';
 import CreateBtnIcon from 'components/Icons/createBtn';
 import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
 import PaymentMethodList from './PaymentMethodList';

@@ -17,7 +17,7 @@ import { ErrorText } from 'components/Onboarding/styles';
 import { SafeImage } from '../Image';
 import { useMe } from '../../Auth/withAuth';
 import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
+import OrganisationsCardNoLogo from '../../profile/about/styles';
 import { OfflinePayment } from './OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from './SingleWalletPayment';
 import { CreateFormPreviewButton, CreateFormRewardCurrency } from '../../CreateEntity/styles';

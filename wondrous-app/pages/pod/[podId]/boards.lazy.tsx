@@ -2,8 +2,8 @@ import React, { useCallback, useEffect, useMemo, useReducer, useState } from 're
 import { useLazyQuery, useQuery } from '@apollo/client';
 import { ViewType } from 'types/common';
 import Boards from 'components/Pod/boards';
-import { bindSectionToColumns, sectionOpeningReducer } from 'utils/board';
-import { useRouterQuery, useIsMobile } from 'utils/hooks';
+import { sectionOpeningReducer } from 'utils/board';
+import { useIsMobile } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_USER_PERMISSION_CONTEXT, SEARCH_POD_USERS } from 'graphql/queries';
@@ -45,21 +45,21 @@ import MobileComingSoonModal from 'components/Onboarding/MobileComingSoonModal';
 import EntitySidebar from 'components/Common/SidebarEntity';
 
 const useGetPodTaskBoardTasks = ({
-                                   columns,
-                                   setColumns,
-                                   setPodTaskHasMore,
-                                   podId,
-                                   statuses,
-                                   priorities,
-                                   entityType,
-                                   setIsLoading,
-                                   search,
-                                   labelId,
-                                   date,
-                                   privacyLevel,
-                                   userId,
-                                   category,
-                                 }) => {
+  columns,
+  setColumns,
+  setPodTaskHasMore,
+  podId,
+  statuses,
+  priorities,
+  entityType,
+  setIsLoading,
+  search,
+  labelId,
+  date,
+  privacyLevel,
+  userId,
+  category,
+}) => {
   const [getPodTaskBoardTasks, { variables, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_TASKS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -128,7 +128,7 @@ const useGetPodTaskBoardTasks = ({
         statuses?.length > 0
           ? statuses?.filter((status) => STATUSES_ON_ENTITY_TYPES[entityType].includes(status))
           : // double check in case we add new stuff and have no valid entityType.
-          STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
+            STATUSES_ON_ENTITY_TYPES[entityType] || STATUSES_ON_ENTITY_TYPES.DEFAULT;
 
       const taskBoardStatusesIsNotEmpty = taskBoardStatuses?.length > 0;
       getPodTaskBoardTasks({
@@ -167,21 +167,21 @@ const useGetPodTaskBoardTasks = ({
 };
 
 const useGetPodTaskProposals = ({
-                                  listView,
-                                  section,
-                                  setColumns,
-                                  columns,
-                                  podId,
-                                  statuses,
-                                  priorities,
-                                  entityType,
-                                  setIsLoading,
-                                  setPodTaskHasMore,
-                                  search,
-                                  labelId,
-                                  date,
-                                  privacyLevel,
-                                }) => {
+  listView,
+  section,
+  setColumns,
+  columns,
+  podId,
+  statuses,
+  priorities,
+  entityType,
+  setIsLoading,
+  setPodTaskHasMore,
+  search,
+  labelId,
+  date,
+  privacyLevel,
+}) => {
   const [getPodTaskProposals, { data, fetchMore }] = useLazyQuery(GET_POD_TASK_BOARD_PROPOSALS, {
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
@@ -240,23 +240,23 @@ const useGetPodTaskProposals = ({
 };
 
 const useGetPodTaskBoard = ({
-                              view,
-                              section,
-                              columns,
-                              setColumns,
-                              setPodTaskHasMore,
-                              podId,
-                              entityType,
-                              setIsLoading,
-                              search,
-                              statuses,
-                              priorities,
-                              labelId,
-                              date,
-                              privacyLevel,
-                              userId,
-                              category,
-                            }) => {
+  view,
+  section,
+  columns,
+  setColumns,
+  setPodTaskHasMore,
+  podId,
+  entityType,
+  setIsLoading,
+  search,
+  statuses,
+  priorities,
+  labelId,
+  date,
+  privacyLevel,
+  userId,
+  category,
+}) => {
   const listView = view === ViewType.List;
   const board = {
     tasks: useGetPodTaskBoardTasks({
