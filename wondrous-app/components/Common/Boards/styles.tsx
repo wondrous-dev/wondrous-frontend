@@ -179,6 +179,7 @@ export const BoardsCardFooter = styled.div`
   align-items: center;
   gap: 10px;
   width: 100%;
+  max-height: 28px;
 `;
 
 export const BoardsCardBodyTitle = styled(Typography)`

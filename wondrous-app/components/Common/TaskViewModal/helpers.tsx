@@ -180,16 +180,22 @@ export const Rewards = ({ fetchedTask, user, withLabel = true }) => {
   );
 };
 
-const TaskHeaderMenu = ({ canEdit, children }) => {
+const TaskHeaderMenu = ({ canEdit, style, setAnchorElParent = undefined, anchorElParent = undefined, children }) => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const anchorElSelected = anchorElParent ?? anchorEl;
+  const setAnchorElSelected = setAnchorElParent ?? setAnchorEl;
+  const open = Boolean(anchorElSelected);
 
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+  const handleClick = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAnchorElSelected(e.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleClose = (e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAnchorElSelected(null);
   };
 
   if (!canEdit) return null;
@@ -197,12 +203,12 @@ const TaskHeaderMenu = ({ canEdit, children }) => {
   return (
     <>
       <Tooltip title="More actions" placement="top">
-        <TaskModalHeaderMenuButton onClick={handleClick} open={open} data-cy="button-more-actions">
+        <TaskModalHeaderMenuButton onClick={handleClick} open={open} data-cy="button-more-actions" style={style}>
           <MoreIcon />
         </TaskModalHeaderMenuButton>
       </Tooltip>
       <TaskModalHeaderMenu
-        anchorEl={anchorEl}
+        anchorEl={anchorElSelected}
         open={open}
         onClose={handleClose}
         anchorOrigin={{
@@ -221,17 +227,20 @@ const TaskHeaderMenu = ({ canEdit, children }) => {
 };
 
 export const Menu = ({
-  canArchive,
-  canDelete,
-  canEdit,
-  isBounty,
-  isMilestone,
-  isTaskProposal,
+  canArchive = false,
+  canDelete = false,
+  canEdit = false,
+  isBounty = false,
+  isMilestone = false,
+  isTaskProposal = false,
   setArchiveTask,
   setCompleteModal,
-  setDeleteTask,
+  setDeleteTask = null,
   setEditTask,
   taskType,
+  style = null,
+  setAnchorElParent = null,
+  anchorElParent = null,
 }) => {
   const menuItems = {
     Complete: {
@@ -253,14 +262,24 @@ export const Menu = ({
     },
   };
   return (
-    <TaskHeaderMenu canEdit={canEdit}>
+    <TaskHeaderMenu
+      canEdit={canEdit}
+      style={style}
+      setAnchorElParent={setAnchorElParent}
+      anchorElParent={anchorElParent}
+    >
       {keys(menuItems).map((item) => {
         const { condition, onClick, ...props } = menuItems[item];
 
         return condition ? (
           <TaskModalHeaderMenuItem
             key={item}
-            onClick={() => onClick(true)}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              onClick(true);
+              setAnchorElParent?.(null);
+            }}
             data-cy={`task-header-option-${item}`}
             {...props}
           >
