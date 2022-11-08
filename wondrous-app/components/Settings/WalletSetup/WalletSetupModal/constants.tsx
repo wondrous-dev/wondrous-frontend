@@ -1,6 +1,8 @@
 import EthereumIcon from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import ArbitrumIcon from 'components/Icons/arbitrum';
+import Avalanche from 'components/Icons/Avalanche';
+import Binance from 'components/Icons/binace';
 import HarmonyIcon from 'components/Icons/harmony';
 import BobaIcon from 'components/Icons/Boba';
 import { Metamask } from 'components/Icons/metamask';
@@ -28,6 +30,8 @@ export const WALLET_NETWORKS = [
   { label: 'Harmony', value: 'harmony', icon: <HarmonyIcon /> },
   { label: 'Boba', value: 'boba', icon: <BobaIcon /> },
   { label: 'Arbitrum', value: 'arbitrum', icon: <ArbitrumIcon /> },
+  { label: 'BNB', value: 'bsc', icon: <Binance /> },
+  { label: 'Avalanche', value: 'avalanche', icon: <Avalanche /> },
 ];
 
 if (!isInProduction) {

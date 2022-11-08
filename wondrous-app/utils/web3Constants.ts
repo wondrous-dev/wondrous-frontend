@@ -11,6 +11,7 @@ export const CHAIN_ID_TO_CHAIN_NAME = {
   288: 'boba',
   10: 'optimism',
   8217: 'klaytn',
+  43114: 'avalanche',
 };
 
 export const CHAIN_TO_GNOSIS_URL_ABBR = {
@@ -20,6 +21,7 @@ export const CHAIN_TO_GNOSIS_URL_ABBR = {
   bsc: 'bnb',
   arbitrum: 'arb1',
   optimism: 'opt',
+  avalanche: 'avax', // TODO check thisis right
 };
 
 export const LIT_PROTOCOL_MESSAGE = 'signature verification to token gating';
@@ -34,4 +36,5 @@ export const CHAIN_TO_EXPLORER_URL = {
   boba: 'https://bobascan.com',
   optimism: 'https://optimistic.etherscan.io',
   klaytn: 'https://scope.klaytn.com',
+  avalanche: 'https://snowtrace.io',
 };

@@ -1,8 +1,6 @@
 import { useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
-import { useRouter } from 'next/router';
 
-import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
@@ -25,6 +23,7 @@ import {
   TokenLogoDisplay,
 } from './styles';
 import { USDCoin } from '../../Icons/USDCoin';
+import Avalanche from '../../Icons/Avalanche';
 import DaiIcon from '../../Icons/dai';
 import Arbitrum from '../../Icons/arbitrum';
 import Harmony from '../../Icons/harmony';
@@ -69,6 +68,11 @@ const chainOptions = [
     label: 'BSC',
     icon: <Binance />,
     value: 'bsc',
+  },
+  {
+    label: 'Avalanche',
+    icon: <Avalanche />,
+    value: 'avalanche',
   },
 ];
 
@@ -193,6 +197,7 @@ const PresetTokenPerChain = {
   harmony: HarmonyPresetTokens,
   bsc: BscPresetTokens,
   optimism: OptimismPresetTokens,
+  avalanche: PresetTokens,
 };
 const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -202,6 +207,7 @@ const CHAIN_TO_USDC_ADDR = {
   bsc: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   boba: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
   optimism: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+  avalanche: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
 };
 
 const CHAIN_TO_DAI_ADDR = {
@@ -212,10 +218,10 @@ const CHAIN_TO_DAI_ADDR = {
   bsc: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
   boba: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35',
   optimism: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+  avalanche: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
 };
 
 function ConfigPaymentMethodModal(props) {
-  const router = useRouter();
   const { orgId, org, open, setShowConfigModal } = props;
   const [chain, setChain] = useState(chainOptions[0].value);
   const [selectedToken, setSelectedToken] = useState(PresetTokens[0].value);
