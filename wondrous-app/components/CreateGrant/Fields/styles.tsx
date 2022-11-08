@@ -53,3 +53,38 @@ export const GrantTextField = styled(CreateEntityTextfield)`
     flex: 1;
   }
 `;
+
+export const ApplyPolicyWrapper = styled.div`
+  display: flex;
+  width: 100%;
+  height: 32px;
+  align-items: center;
+  border-radius: 4px;
+  background: ${palette.grey99};
+  padding: 4px;
+`;
+
+export const ApplyPolicyItemButton = styled.button`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  background: transparent;
+  height: 100%;
+  font-family: ${typography.fontFamily};
+  font-style: normal;
+  font-weight: 500;
+  font-size: 13px;
+  cursor: pointer;
+  line-height: 14px;
+  border: none;
+  color: ${palette.grey57};
+  ${({ isActive }) =>
+    isActive &&
+    `
+    background: ${palette.black92};
+    border: 1px solid ${palette.highlightBlue};
+    color: ${palette.highlightBlue};
+    border-radius: 4px;
+  `};
+`;

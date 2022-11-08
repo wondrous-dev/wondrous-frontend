@@ -1,22 +1,31 @@
 import { useQuery } from '@apollo/client';
 import {
   CreateEntityDropdown,
+  filterCategoryValues,
   filterOptionsWithPermission,
   filterOrgUsersForAutocomplete,
   getPrivacyLevel,
   useContextValue,
   useGetAvailableUserPods,
+  useGetCategories,
   useGetOrgUsers,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import {
+  CreateEntityAddButtonIcon,
+  CreateEntityAddButtonLabel,
   CreateEntityDefaultDaoImage,
+  CreateEntityDueDate,
   CreateEntityError,
   CreateEntityHeader,
   CreateEntityHeaderArrowIcon,
   CreateEntityHeaderWrapper,
+  CreateEntityLabel,
+  CreateEntityLabelAddButton,
+  CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntitySelectErrorWrapper,
+  CreateEntitySelectWrapper,
   CreateEntityTitle,
   EditorContainer,
   EditorPlaceholder,
@@ -42,15 +51,12 @@ import {
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
-import { GrantAmount } from './Fields';
+import Grid from '@mui/material/Grid';
+import DropdownSearch from 'components/DropdownSearch';
+import { GrantAmount, ApplyPolicy, Reviewers, Dates, Categories } from './Fields';
 import { descriptionTemplate } from './utils';
-import { Form } from './style';
-
-// 1. grant amount - CHAIN - VALUE - AMOUNT
-// 2. Start date - end date
-// 3. Eligibility - Anyone / Members only
-// 4. Reviewers
-// 5. Category
+import { Form } from './styles';
+import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -114,6 +120,7 @@ const CreateGrant = (props) => {
       categories: null,
       podId: board?.podId || null,
       privacyLevel: null,
+      applyPolicy: APPLY_POLICY_FIELDS[0].value,
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -145,7 +152,6 @@ const CreateGrant = (props) => {
   const handleEntityDropdownChange = (orgId) => {
     form.setValues({
       ...form.initialValues,
-      rewards: form.values.rewards,
       startDate: form.values.startDate,
       endDate: form.values.endDate,
       title: form.values.title,
@@ -259,13 +265,32 @@ const CreateGrant = (props) => {
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
             <GrantAmount
               value={form.values.grantAmount}
-              onChange={({ key, value }) =>
-                form.setFieldValue('grantAmount', { ...form.values.grantAmount, [key]: value })
-              }
+              onChange={(key, value) => form.setFieldValue('grantAmount', { ...form.values.grantAmount, [key]: value })}
               orgId={form.values.orgId}
               onReset={() => form.setFieldValue('grantAmount', { amount: '', currency: '', rewardAmount: 0 })}
               onFocus={() => form.setFieldError('grantAmount', undefined)}
               error={form.errors.grantAmount}
+            />
+            <Dates
+              startDate={form.values.startDate}
+              endDate={form.values.endDate}
+              onChange={(key, value) => form.setFieldValue(key, value)}
+            />
+            <ApplyPolicy
+              onChange={(value) => form.setFieldValue('applyPolicy', value)}
+              value={form.values.applyPolicy}
+            />
+            <Reviewers
+              orgId={form.values.orgId}
+              podId={form.values.podId}
+              reviewerIds={form.values.reviewerIds}
+              reviewerIdsErrors={form.errors?.reviewerIds}
+              onChange={(reviewerIds) => form.setFieldValue('reviewerIds', reviewerIds)}
+              onFocus={() => form.setFieldError('reviewerIds', undefined)}
+            />
+            <Categories
+              categories={form.values.categories}
+              onChange={(value) => form.setFieldValue('categories', value)}
             />
           </TaskSectionDisplayDivWrapper>
         </TaskModalTaskData>
