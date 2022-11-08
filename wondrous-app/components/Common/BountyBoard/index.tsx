@@ -2,7 +2,6 @@ import { useMutation } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
-import { useMe } from 'components/Auth/withAuth';
 import {
   BoardsCardBody,
   BoardsCardBodyDescription,
@@ -30,11 +29,10 @@ import { RichTextViewer } from 'components/RichText';
 import { ARCHIVE_TASK } from 'graphql/mutations';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { Fragment, useCallback, useContext, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import palette from 'theme/palette';
-import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useGlobalContext } from 'utils/hooks';
+import { PRIVACY_LEVEL } from 'utils/constants';
+import { usePermissions } from 'utils/hooks';
 import { SnackbarAlertContext } from '../SnackbarAlert';
 import ActionModals from '../TaskViewModal/actionModals';
 import { Menu } from '../TaskViewModal/helpers';
@@ -82,28 +80,6 @@ export function SubmissionsCount({ total, approved }) {
     </Grid>
   );
 }
-
-const usePermissions = (entity) => {
-  const globalContext = useGlobalContext();
-  const user = useMe();
-  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
-  const userPermissionsContext = getUserPermissionContext();
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId: entity?.orgId,
-    podId: entity?.podId,
-  });
-  const canEdit =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    entity?.createdBy === user?.id ||
-    (entity?.assigneeId && entity?.assigneeId === user?.id);
-  const canArchive =
-    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    entity?.createdBy === user?.id;
-  return { canEdit, canArchive };
-};
 
 const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
   const router = useRouter();
@@ -164,7 +140,6 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
           existingTask={
             bounty?.id && {
               ...bounty,
-              // reviewers: reviewerData?.getTaskReviewers || [],
             }
           }
         />
