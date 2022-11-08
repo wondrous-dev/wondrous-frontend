@@ -65,7 +65,9 @@ const GrantAmount = ({ value, onChange, orgId, onReset, onFocus, error }) => {
               autoComplete="off"
               autoFocus={!value.rewardAmount}
               name="rewardAmount"
-              onChange={(value) => onChange('rewardAmount', value)}
+              onChange={(e) => {
+                onChange('rewardAmount', e.target.value);
+              }}
               placeholder="Enter value"
               value={value.rewardAmount}
               fullWidth
@@ -84,7 +86,7 @@ const GrantAmount = ({ value, onChange, orgId, onReset, onFocus, error }) => {
               autoComplete="off"
               autoFocus={!value.amount}
               name="amount"
-              onChange={(value) => onChange('amount', value)}
+              onChange={(e) => onChange('amount', e.target.value)}
               placeholder="x amount"
               value={value.amount}
               fullWidth

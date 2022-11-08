@@ -35,7 +35,7 @@ const ApplyPolicy = ({ onChange, value }) => (
           key={field.value}
           isActive={value === field.value}
           label={field.name}
-          onChange={() => onChange(value)}
+          onChange={() => onChange(field.value)}
         />
       ))}
     </ApplyPolicyWrapper>

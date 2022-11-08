@@ -5,6 +5,8 @@ import {
   filterOptionsWithPermission,
   filterOrgUsersForAutocomplete,
   getPrivacyLevel,
+  ICreateEntityModal,
+  privacyOptions,
   useContextValue,
   useGetAvailableUserPods,
   useGetCategories,
@@ -14,6 +16,8 @@ import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
+  CreateEntityCancelButton,
+  CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
   CreateEntityDueDate,
   CreateEntityError,
@@ -24,6 +28,13 @@ import {
   CreateEntityLabelAddButton,
   CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
+  CreateEntityPrivacyIconWrapper,
+  CreateEntityPrivacyLabel,
+  CreateEntityPrivacySelect,
+  CreateEntityPrivacySelectOption,
+  CreateEntityPrivacySelectRender,
+  CreateEntityPrivacySelectRenderLabel,
+  CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
   CreateEntitySelectWrapper,
   CreateEntityTitle,
@@ -34,7 +45,7 @@ import {
 import { useFormik } from 'formik';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
@@ -53,10 +64,13 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import Grid from '@mui/material/Grid';
 import DropdownSearch from 'components/DropdownSearch';
+import { CircularProgress } from '@mui/material';
+import { isEmpty } from 'lodash';
 import { GrantAmount, ApplyPolicy, Reviewers, Dates, Categories } from './Fields';
 import { descriptionTemplate } from './utils';
 import { Form } from './styles';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
+import CreateGrantModalFooter from './Footer';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -76,7 +90,14 @@ const validationSchema = Yup.object().shape({
   reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
 });
 
-const CreateGrant = (props) => {
+const CreateGrant = ({
+  entityType,
+  handleClose,
+  cancel,
+  existingTask,
+  parentTaskId,
+  formValues,
+}: ICreateEntityModal) => {
   const router = useRouter();
   const { toggleFullScreen, isFullScreen } = useFullScreen(true);
   const orgBoard = useOrgBoard();
@@ -170,6 +191,28 @@ const CreateGrant = (props) => {
     });
     form.setErrors({});
   };
+
+  const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
+
+  useEffect(() => {
+    if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
+      form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    } else if (podBoard) {
+      if (isInPrivatePod) {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      } else if (podBoard?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      }
+    } else if (orgBoard) {
+      if (orgBoard?.orgData?.privacyLevel === privacyOptions.public.value) {
+        form.setFieldValue('privacyLevel', privacyOptions.public.value);
+      } else {
+        form.setFieldValue('privacyLevel', privacyOptions.private.value);
+      }
+    } else {
+      form.setFieldValue('privacyLevel', privacyOptions.public.value);
+    }
+  }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
 
   return (
     <Form onSubmit={(val) => console.log(val)}>
@@ -294,6 +337,50 @@ const CreateGrant = (props) => {
             />
           </TaskSectionDisplayDivWrapper>
         </TaskModalTaskData>
+        <CreateEntityHeader>
+          <CreateEntityHeaderWrapper>
+            <CreateEntityPrivacySelect
+              name="privacyLevel"
+              value={form.values.privacyLevel}
+              onChange={(value) => {
+                form.setFieldValue('privacyLevel', value);
+              }}
+              renderValue={(value) => (
+                <Tooltip placement="top">
+                  <CreateEntityPrivacySelectRender>
+                    <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
+                    <CreateEntitySelectArrowIcon />
+                  </CreateEntityPrivacySelectRender>
+                </Tooltip>
+              )}
+            >
+              {Object.keys(privacyOptions).map((i) => {
+                const { label, value, Icon } = privacyOptions[i];
+                return (
+                  <CreateEntityPrivacySelectOption key={value} value={value}>
+                    <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
+                    <CreateEntityPrivacyLabel>{label}</CreateEntityPrivacyLabel>
+                  </CreateEntityPrivacySelectOption>
+                );
+              })}
+            </CreateEntityPrivacySelect>
+          </CreateEntityHeaderWrapper>
+          <CreateEntityHeaderWrapper>
+            {false ? (
+              <CircularProgress size={20} />
+            ) : (
+              <>
+                <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
+                <CreateEntitySelectErrorWrapper>
+                  <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
+                    {false ? 'Save changes' : `Create grant`}
+                  </CreateEntityCreateTaskButton>
+                  {!isEmpty(form.errors) && <CreateEntityError>Please check your input fields</CreateEntityError>}
+                </CreateEntitySelectErrorWrapper>
+              </>
+            )}
+          </CreateEntityHeaderWrapper>
+        </CreateEntityHeader>
       </TaskModalCard>
     </Form>
   );
