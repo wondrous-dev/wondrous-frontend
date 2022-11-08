@@ -142,6 +142,7 @@ const BoardsPage = (props) => {
   const router = useRouter();
   const loggedInUser = useMe();
   const { search, view } = router.query;
+  const [activeView, setActiveView] = useState(view as string);
   const [hasMoreTasks, setHasMoreTasks] = useState(true);
   const [contributorColumns, setContributorColumns] = useState([]);
 
@@ -353,6 +354,8 @@ const BoardsPage = (props) => {
         userPermissionsContext: userPermissionsContext?.getUserPermissionContext
           ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
           : null,
+        activeView,
+        setActiveView,
         loggedInUserId: loggedInUser?.id,
         setSection,
         fetchPerStatus,
@@ -369,6 +372,7 @@ const BoardsPage = (props) => {
         podIds={filters?.podIds}
       >
         <Boards
+          activeView={activeView}
           columns={contributorColumns}
           onLoadMore={handleLoadMore}
           hasMore={hasMoreTasks}
