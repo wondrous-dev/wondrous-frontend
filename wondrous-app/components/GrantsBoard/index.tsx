@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import GrantsFilters, { GRANTS_ICONS_LABELS_MAP } from 'components/GrantsFilters';
 import { GRANTS_STATUSES } from 'utils/constants';
 import {
@@ -22,6 +22,10 @@ import bounty from 'components/Icons/TaskTypes/bounty';
 import { BountyCommentsIcon } from 'components/Common/BountyBoard/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
+import ViewGrant from 'components/ViewGrant';
+import { useLocation } from 'utils/useLocation';
+import { useRouter } from 'next/router';
+import { delQuery } from 'utils/index';
 import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
 
 const GrantsBoard = () => {
@@ -32,6 +36,7 @@ const GrantsBoard = () => {
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
       status: 'active',
+      id: 1,
       rewards: [
         {
           rewardAmount: 20,
@@ -46,6 +51,7 @@ const GrantsBoard = () => {
     },
     {
       title: 'This is the name of the grant',
+      id: 2,
       description:
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
@@ -64,6 +70,7 @@ const GrantsBoard = () => {
 
     {
       title: 'This is the name of the grant',
+      id: 3,
       description: 'Aliquet varius scelerisque tempor sodales aliquet nisl',
       applicationsNum: 15,
       status: 'active',
@@ -81,6 +88,7 @@ const GrantsBoard = () => {
 
     {
       title: 'This is the name of the grant',
+      id: 4,
       description:
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
@@ -100,6 +108,7 @@ const GrantsBoard = () => {
 
     {
       title: 'This is the name of the grant',
+      id: 5,
       description:
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
@@ -119,6 +128,7 @@ const GrantsBoard = () => {
 
     {
       title: 'This is the name of the grant',
+      id: 6,
       description:
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
@@ -137,6 +147,7 @@ const GrantsBoard = () => {
 
     {
       title: 'This is the name of the grant',
+      id: 7,
       description:
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
@@ -156,14 +167,48 @@ const GrantsBoard = () => {
   ];
 
   const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.ACTIVE);
+
+  const location = useLocation();
+  const [openModal, setOpenModal] = useState(false);
+  const router = useRouter();
+
+  const handleCardClick = (grant, query = '') => {
+    let newUrl = `${delQuery(router.asPath)}?grant=${grant?.id}`;
+    if (query) {
+      newUrl += query;
+    }
+    location.push(newUrl);
+    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+  };
+
+  useEffect(() => {
+    const { params } = location;
+    if (params.grant) {
+      setOpenModal(true);
+    }
+  }, [location]);
+
+  const handleModalClose = () => {
+    const style = document.body.getAttribute('style');
+    const top = style.match(/(top: -)(.*?)(?=px)/);
+    document.body.setAttribute('style', '');
+    if (top?.length > 0) {
+      window?.scrollTo(0, Number(top[2]));
+    }
+    const newUrl = `${delQuery(router.asPath)}`;
+    location.push(newUrl);
+    setOpenModal(false);
+  };
+
   return (
     <>
+      <ViewGrant open={openModal} handleClose={handleModalClose} grantId={location?.params?.grant} />
       <GrantsFilters onFilterChange={setActiveFilter} activeFilter={activeFilter} />
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
         {MOCK_DATA.map((grant, idx) => {
           const { label, icon: Icon } = GRANTS_ICONS_LABELS_MAP[grant.status];
           return (
-            <BoardWrapper key={idx}>
+            <BoardWrapper key={idx} onClick={() => handleCardClick(grant)}>
               <Grid justifyContent="space-between" alignItems="center" container>
                 <Grid>
                   <CompensationPill>{20}</CompensationPill>
