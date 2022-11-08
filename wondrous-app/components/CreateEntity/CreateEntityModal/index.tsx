@@ -1418,6 +1418,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <CreateEntitySelectWrapper>
             {form.values.categories !== null && (
               <DropdownSearch
+                autoFocus
                 label="Select Category"
                 searchPlaceholder="Search categories"
                 options={categoriesData}
