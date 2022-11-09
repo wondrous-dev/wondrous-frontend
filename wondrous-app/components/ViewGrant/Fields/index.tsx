@@ -1,12 +1,12 @@
 import { Grid, Typography } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import { TaskSectionInfoCalendar } from 'components/Common/TaskViewModal/styles';
+import { TaskSectionInfoCalendar, TaskSectionInfoPaymentMethodIcon } from 'components/Common/TaskViewModal/styles';
 import { getInterestDisplay } from 'components/Common/UserInterestModal';
 import format from 'date-fns/format';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
-import { DataDisplayWrapper } from './styles';
+import { AmountWrapper, DataDisplayWrapper, GrantAmountWrapper } from './styles';
 
 const MultipleDataDisplay = ({ children }) => (
   <Grid container display="flex" gap="12px">
@@ -33,7 +33,18 @@ export const Reviewers = ({ reviewers }) => (
   </MultipleDataDisplay>
 );
 
-export const GrantAmount = ({ amount }) => null;
+export const GrantAmount = ({ grantAmount: { icon, rewardAmount, symbol, amount } }) => (
+  <GrantAmountWrapper>
+    <TaskSectionInfoPaymentMethodIcon src={icon} />
+
+    <span>
+      {rewardAmount} {symbol}
+    </span>
+    <AmountWrapper>
+      <span>x{amount}</span>
+    </AmountWrapper>
+  </GrantAmountWrapper>
+);
 
 export const Dates = ({ startDate, endDate }) => (
   <MultipleDataDisplay>

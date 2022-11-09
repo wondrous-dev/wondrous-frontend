@@ -232,7 +232,7 @@ export const Menu = ({
   setDeleteTask,
   setEditTask,
   taskType,
-}) => {
+}: any) => {
   const menuItems = {
     Complete: {
       condition: canEdit && (isMilestone || isBounty),

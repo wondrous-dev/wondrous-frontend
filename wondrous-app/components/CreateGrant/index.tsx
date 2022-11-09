@@ -5,7 +5,7 @@ import {
   filterOptionsWithPermission,
   filterOrgUsersForAutocomplete,
   getPrivacyLevel,
-  ICreateEntityModal,
+  GrantCreateModalProps,
   privacyOptions,
   useContextValue,
   useGetAvailableUserPods,
@@ -94,10 +94,10 @@ const CreateGrant = ({
   entityType,
   handleClose,
   cancel,
-  existingTask,
+  existingGrant,
   parentTaskId,
   formValues,
-}: ICreateEntityModal) => {
+}: GrantCreateModalProps) => {
   const router = useRouter();
   const { toggleFullScreen, isFullScreen } = useFullScreen(true);
   const orgBoard = useOrgBoard();
@@ -127,21 +127,22 @@ const CreateGrant = ({
   const form = useFormik({
     initialValues: {
       grantAmount: {
-        paymentMethodId: '',
-        rewardAmount: 0,
-        amount: 0,
+        paymentMethodId: existingGrant?.grantAmount?.paymentMethodId || '',
+        rewardAmount: existingGrant?.grantAmount?.rewardAmount || '0',
+        amount: existingGrant?.grantAmount?.amount || '0',
       },
-      startDate: null,
-      endDate: null,
-      title: '',
-      description: deserializeRichText(descriptionTemplate),
-      reviewerIds: null,
-      mediaUploads: null,
-      orgId: null,
-      categories: null,
+      startDate: existingGrant?.startDate || null,
+      endDate: existingGrant?.endDate || null,
+      title: existingGrant?.title || '',
+      description: existingGrant
+        ? deserializeRichText(existingGrant.description)
+        : deserializeRichText(descriptionTemplate),
+      reviewerIds: existingGrant?.reviewerIds || [],
+      orgId: existingGrant?.orgId || null,
+      categories: existingGrant?.categories || null,
       podId: board?.podId || null,
-      privacyLevel: null,
-      applyPolicy: APPLY_POLICY_FIELDS[0].value,
+      privacyLevel: existingGrant?.privacyLevel || null,
+      applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
     },
     validateOnChange: false,
     validateOnBlur: false,
@@ -177,7 +178,6 @@ const CreateGrant = ({
       endDate: form.values.endDate,
       title: form.values.title,
       description: form.values.description,
-      mediaUploads: form.values.mediaUploads,
       orgId,
     });
     form.setErrors({});
@@ -195,8 +195,8 @@ const CreateGrant = ({
   const isInPrivatePod = getPrivacyLevel(form.values.podId, pods) === privacyOptions.private.value;
 
   useEffect(() => {
-    if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
-      form.setFieldValue('privacyLevel', existingTask?.privacyLevel);
+    if (existingGrant?.privacyLevel !== null && existingGrant?.privacyLevel !== undefined) {
+      form.setFieldValue('privacyLevel', existingGrant?.privacyLevel);
     } else if (podBoard) {
       if (isInPrivatePod) {
         form.setFieldValue('privacyLevel', privacyOptions.private.value);
@@ -212,7 +212,7 @@ const CreateGrant = ({
     } else {
       form.setFieldValue('privacyLevel', privacyOptions.public.value);
     }
-  }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
+  }, [isInPrivatePod, existingGrant?.privacyLevel, orgBoard, podBoard]);
 
   return (
     <Form onSubmit={(val) => console.log(val)}>
