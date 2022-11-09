@@ -55,7 +55,7 @@ function Payouts(props) {
 
   const router = useRouter();
 
-  const [view, setView] = useState(null);
+  const [view, setView] = useState(ViewType.Unpaid);
 
   const { view: payView } = router.query;
 
@@ -223,10 +223,6 @@ function Payouts(props) {
       }
     }
   }, [paidList, unpaidList, processingList, hasMore]);
-
-  useEffect(() => {
-    setView(ViewType.Unpaid);
-  }, []);
 
   useEffect(() => {
     if (orgId) {
@@ -459,19 +455,19 @@ function Payouts(props) {
     {
       label: 'Unpaid',
       isActive: view === ViewType.Unpaid || view === null,
-      onChange: () => location.push(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
+      onChange: () => router.push(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Processing',
       isActive: view === ViewType.Processing,
-      onChange: () => location.push(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
+      onChange: () => router.push(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Paid',
       isActive: view === ViewType.Paid,
-      onChange: () => location.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
+      onChange: () => router.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
   ];
