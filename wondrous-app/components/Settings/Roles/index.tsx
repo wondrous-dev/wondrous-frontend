@@ -76,6 +76,7 @@ import {
   PermissionTitleLabel,
   RolePermissionsList,
 } from './styles';
+import DeleteRoleConfirmationModal from './DeleteRoleConfirmationModal';
 
 type Props = {
   orgId: any;
@@ -88,7 +89,7 @@ type Props = {
   }>;
   toast: { show: boolean; message: string };
   onCreateNewRole: (name: string, permissions: string[]) => any;
-  onDeleteRole: (role: Role) => any;
+  onDeleteRole: (role: Role, callback?: () => void) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
   onToastClose: () => any;
   getOrgDiscordRoles?: () => any;
@@ -115,11 +116,22 @@ function Roles({
   const [newRoleName, setNewRoleName] = useState('');
   const [newRolePermissionsExpanded, setNewRolePermissionsExpanded] = useState(false);
   const [newRolePermissions, setNewRolePermissions] = useState([]);
+
   const [tokenGatedRoleModalOpen, setTokenGatedRoleModalOpen] = useState(false);
   const [discordRoleModalOpen, setDiscordRoleModalOpen] = useState(false);
   const [discordRoleImportModalOpen, setDiscordRoleImportModalOpen] = useState(false);
+  const [roleDeleteConfirmationModalOpen, setRoleDeleteConfirmationModalOpen] = useState(false);
+
   const [selectedRoleForTokenGate, setSelectedRoleForTokenGate] = useState(null);
   const [selectedRoleForDiscord, setSelectedRoleForDiscord] = useState(null);
+  const [selectedRoleForDeletion, setSelectedRoleForDeletion] = useState(null);
+
+  useEffect(() => {
+    if (!roleDeleteConfirmationModalOpen) {
+      setSelectedRoleForDeletion(null);
+    }
+  }, [roleDeleteConfirmationModalOpen]);
+
   // Creates new role
   function handleCreateNewRoleClick() {
     onCreateNewRole(newRoleName, newRolePermissions);
@@ -160,10 +172,22 @@ function Roles({
     }
   };
 
+  const handleDeleteRoleButtonClick = (role: Role) => {
+    setSelectedRoleForDeletion(role);
+    setRoleDeleteConfirmationModalOpen(true);
+  };
+
+  const handleRoleDeletion = () => {
+    onDeleteRole(selectedRoleForDeletion, () => {
+      setRoleDeleteConfirmationModalOpen(false);
+    });
+  };
+
   const handleCloseModal = () => {
     setTokenGatedRoleModalOpen(false);
     setDiscordRoleModalOpen(false);
     setDiscordRoleImportModalOpen(false);
+    setRoleDeleteConfirmationModalOpen(false);
   };
 
   return (
@@ -181,6 +205,12 @@ function Roles({
         orgId={orgId}
         podId={podId}
         selectedRoleForTokenGate={selectedRoleForTokenGate}
+      />
+      <DeleteRoleConfirmationModal
+        isOpen={roleDeleteConfirmationModalOpen}
+        handleClose={handleCloseModal}
+        handleDeleteRole={handleRoleDeletion}
+        roleToDelete={selectedRoleForDeletion}
       />
 
       {!podId && (
@@ -337,7 +367,7 @@ function Roles({
                     </RolePermissionsList>
                   </Permissions>
                   <PermissionFooter>
-                    <DeleteButton onClick={() => onDeleteRole(orgRole)}>Delete role</DeleteButton>
+                    <DeleteButton onClick={() => handleDeleteRoleButtonClick(orgRole)}>Delete role</DeleteButton>
                   </PermissionFooter>
                 </RoleAccordion>
               </Box>
