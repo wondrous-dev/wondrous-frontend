@@ -8,6 +8,7 @@ import { TaskModal, TaskModalHeaderWrapperRight } from 'components/Common/Task/s
 import {
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
+  TaskCardPodIcon,
   TaskModalCard,
   TaskModalHeader,
   TaskModalHeaderArrow,
@@ -20,13 +21,21 @@ import {
   TaskModalHeaderTypography,
   TaskModalHeaderWrapper,
   TaskModalTaskData,
+  TaskModalTitle,
   TaskModalTitleDescriptionMedia,
+  TaskSectionDisplayData,
+  TaskSectionDisplayDiv,
+  TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
-import { LockedTaskMessage } from 'components/Common/TaskViewModal/helpers';
+import {
+  LockedTaskMessage,
+  TaskDescriptionTextWrapper,
+  TaskSectionLabel,
+} from 'components/Common/TaskViewModal/helpers';
 import { DAOIcon } from 'components/Icons/dao';
 import { useRouter } from 'next/router';
 import { canViewGrant } from './utils';
-import { Description, PodField, Title } from './Fields';
+import { Categories, DataDisplay, Dates, GrantAmount, Reviewers } from './Fields';
 
 const grant = {
   orgId: '46110468539940865',
@@ -45,6 +54,38 @@ const grant = {
     privacyLevel: 'private',
     __typename: 'Pod',
   },
+  grantAmount: {
+    chain: 'eth',
+    amount: 6,
+    reward: 20,
+  },
+  startDate: '2022-10-04T08:04:48.168815+00:00',
+  endDate: '2022-10-06T08:04:48.168815+00:00',
+  applyPolicy: 'anyone',
+  visibility: 'members only',
+  categories: [
+    { name: 'memes', __typename: 'TaskCategory' },
+    { name: 'memes', __typename: 'TaskCategory' },
+    { name: 'memes', __typename: 'TaskCategory' },
+  ],
+  reviewers: [
+    {
+      id: '58937239456972909',
+      profilePicture: null,
+      firstName: null,
+      lastName: null,
+      username: 'adrian2',
+      __typename: 'User',
+    },
+    {
+      id: '58937239456972909',
+      profilePicture: null,
+      firstName: null,
+      lastName: null,
+      username: 'adrian2',
+      __typename: 'User',
+    },
+  ],
   org: {
     profilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
     name: 'wonderverse staging',
@@ -54,6 +95,40 @@ const grant = {
     __typename: 'Org',
   },
 };
+
+// 1. reviewers
+// 2. grant amount
+// 3. dates
+// 4. applications
+// 5. visibility
+// 6. category
+
+const FIELDS_CONFIG = [
+  {
+    label: 'Reviewers',
+    component: ({ grant: { reviewers } }) => <Reviewers reviewers={reviewers} />,
+  },
+  {
+    label: 'Grant amount',
+    component: ({ grant: { grantAmount } }) => <GrantAmount amount={grantAmount} />,
+  },
+  {
+    label: 'Dates',
+    component: ({ grant: { startDate, endDate } }) => <Dates startDate={startDate} endDate={endDate} />,
+  },
+  {
+    label: 'Eligibility',
+    component: ({ grant: { applyPolicy } }) => <DataDisplay label={applyPolicy} />,
+  },
+  {
+    label: 'Visibility',
+    component: ({ grant: { privacyLevel } }) => <DataDisplay label={privacyLevel} />,
+  },
+  {
+    label: 'Categories',
+    component: ({ grant: { categories } }) => <Categories categories={categories} />,
+  },
+];
 
 const ViewGrant = ({ open, handleClose, grantId }) => {
   const board = useBoards();
@@ -122,13 +197,10 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
                   )}
                   <TaskModalHeaderTypography>{grant?.org.name}</TaskModalHeaderTypography>
                 </TaskModalHeaderIconWrapper>
-                <PodField
-                  podName={grant?.pod?.name}
-                  podId={grant?.podId}
-                  podColor={grant?.pod?.color}
-                  handleClose={handleClose}
-                  orgId={grant?.orgId}
-                />
+                <TaskModalHeaderIconWrapper>
+                  <TaskCardPodIcon color={grant?.pod?.color} />
+                  <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
+                </TaskModalHeaderIconWrapper>
                 {grant?.privacyLevel !== PRIVACY_LEVEL.public && (
                   <>
                     <TaskModalHeaderArrow />
@@ -147,9 +219,20 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
             </TaskModalHeader>
             <TaskModalTaskData fullScreen={isFullScreen}>
               <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
-                <Title title={grant.title} />
-                <Description orgId={grant?.orgId} description={grant?.description} onChange={() => {}} />
+                <TaskModalTitle>{grant?.title}</TaskModalTitle>
+
+                <TaskDescriptionTextWrapper text={grant.description} />
               </TaskModalTitleDescriptionMedia>
+              <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
+                <TaskSectionDisplayData>
+                  {FIELDS_CONFIG.map((field, idx) => (
+                    <TaskSectionDisplayDiv key={idx}>
+                      <TaskSectionLabel>{field.label}</TaskSectionLabel>
+                      <field.component grant={grant} />
+                    </TaskSectionDisplayDiv>
+                  ))}
+                </TaskSectionDisplayData>
+              </TaskSectionDisplayDivWrapper>
             </TaskModalTaskData>
           </>
         ) : (
