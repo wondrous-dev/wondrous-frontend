@@ -2,20 +2,12 @@ import ButtonUnstyled from '@mui/base/ButtonUnstyled';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 import styled from 'styled-components';
-
-export const Wrapper = styled.div`
-  z-index: 1000;
-  display: none;
-  .open {
-    display: block;
-  }
-  display: ${({ open }) => (open ? 'block' : 'none')};
-`;
+import palette from 'theme/palette';
 
 export const Button = styled(ButtonUnstyled)`
   && {
     align-items: center;
-    background: #171717;
+    background: ${palette.grey910};
     border-radius: 6px;
     border: none;
     display: flex;
@@ -26,14 +18,14 @@ export const Button = styled(ButtonUnstyled)`
     :hover,
     :active {
       cursor: pointer;
-      background: #171717;
+      background: ${palette.grey910};
     }
     svg {
       circle {
         display: none;
       }
       path {
-        stroke: #ffffff;
+        stroke: ${palette.white};
       }
     }
   }
@@ -43,12 +35,12 @@ export const StyledMenu = styled(Menu)`
   && {
     .MuiMenu-paper {
       background: transparent;
-      outline: 1px solid #424242;
+      outline: 1px solid ${palette.grey79};
     }
     .MuiMenu-list {
       min-width: fit-content;
       width: 150px;
-      background: #1d1d1d;
+      background: ${palette.grey900};
       display: flex;
       padding: 0;
       flex-direction: column;

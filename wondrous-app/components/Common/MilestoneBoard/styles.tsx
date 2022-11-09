@@ -34,7 +34,7 @@ export const MilestonesContainer = styled.div`
 
 export const MilestoneCard = styled.div`
   align-items: flex-start;
-  background: linear-gradient(54.27deg, #424242 20.18%, #00baff 130.2%);
+  background: linear-gradient(54.27deg, ${palette.grey79} 20.18%, ${palette.highlightBlue} 130.2%);
   border-radius: 6px;
   border: 0px solid transparent;
   color: ${palette.white};
@@ -47,7 +47,7 @@ export const MilestoneCard = styled.div`
   position: relative;
   z-index: 1;
   &::before {
-    background: #1d1d1d;
+    background: ${palette.grey900};
     border-radius: 6px;
     content: '';
     height: calc(100% - 2px);
