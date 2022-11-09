@@ -53,6 +53,9 @@ export default function Dropdown(props) {
           placement={placement}
           onClick={handleDefault}
           disablePortal={disablePortal}
+          sx={{
+            zIndex: '1000',
+          }}
         >
           <Grid
             container
@@ -69,7 +72,6 @@ export default function Dropdown(props) {
             minWidth="185px"
             padding="0"
             width="fit-content"
-            zIndex="1000"
             style={{ ...dropDownStyle }}
           >
             {children}
