@@ -2,7 +2,7 @@ import { BigNumber, ethers } from 'ethers';
 
 import { useContext, useEffect, useMemo, useState } from 'react';
 
-import { SUPPORTED_CHAINS, SUPPORTED_CURRENCIES, NATIVE_TOKEN_SYMBOL } from 'utils/constants';
+import { NATIVE_TOKEN_SYMBOL, SUPPORTED_CURRENCIES, SUPPORTED_CHAINS } from 'utils/web3Constants';
 
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { formatEther } from 'ethers/lib/utils';
@@ -174,10 +174,6 @@ export default function useWonderWeb3(): WonderWeb3 {
   // If the wallet has an ENS Name, represent it
   // instead of the address.
   const getENSName = async () => {
-    // const ens = new ENS({
-    //   provider,
-    //   ensAddress: getEnsAddress(CHAIN_IDS.ETH),
-    // });
     // If chain supports ENS...
     try {
       const prov = new ethers.providers.Web3Provider(provider);
