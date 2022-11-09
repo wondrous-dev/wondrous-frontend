@@ -34,6 +34,7 @@ import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import TaskPriority from 'components/Common/TaskPriority';
 import Compensation from 'components/Common/Compensation';
+import TaskCardMenu from 'components/Common/TaskCardMenu';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -81,7 +82,6 @@ import { TaskCommentIcon } from '../../Icons/taskComment';
 import { ButtonPrimary } from '../button';
 import TASK_ICONS from './constants';
 import { hasGR15DEIIntiative } from '../TaskViewModal/utils';
-import TaskCardMenu from '../TaskCardMenu';
 
 let windowOffset = 0;
 

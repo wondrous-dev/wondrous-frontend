@@ -118,11 +118,3 @@ export const SubtasksWrapper = styled.div`
   justify-content: center;
   align-items: center;
 `;
-
-export const MenuWrapper = styled.div`
-  z-index: 1000;
-  display: ${({ open }) => (open ? 'block' : 'none')};
-  ${BountyCardWrapper}:hover & {
-    display: block;
-  }
-`;
