@@ -23,6 +23,7 @@ import EmptyStateBoards from 'components/EmptyStateBoards';
 import TaskPriority from 'components/Common/TaskPriority';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import TaskCardStatus from 'components/Common/TaskCardStatuts';
+import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { usePermissions } from 'utils/hooks';
 import { CreateEntity } from 'components/CreateEntity';
 import { useMutation } from '@apollo/client';
@@ -120,9 +121,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
         <BoardsCardHeader>
           <BoardsCardSubheader>
             <TaskCardStatus type={milestone?.type} orgId={milestone?.orgId} status={milestone?.status} />
-            <BoardsPrivacyLabel>
-              {milestone?.privacyLevel === PRIVACY_LEVEL.public ? 'Public' : 'Members'}
-            </BoardsPrivacyLabel>
+            <TaskCardPrivacy privacyLevel={milestone?.privacyLevel} />
           </BoardsCardSubheader>
           <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end">
             <TaskCardDate date={milestone?.dueDate} />
