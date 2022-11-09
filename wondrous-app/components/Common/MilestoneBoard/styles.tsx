@@ -79,11 +79,3 @@ export const MilestoneCardTitle = styled(Typography)`
 export const MilestoneProgressWrapper = styled.div`
   margin-top: 10px;
 `;
-
-export const MenuWrapper = styled.div`
-  z-index: 1000;
-  display: ${({ open }) => (open ? 'block' : 'none')};
-  ${MilestoneCard}:hover & {
-    display: block;
-  }
-`;

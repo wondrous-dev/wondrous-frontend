@@ -16,7 +16,7 @@ export default function ActionModals({
   handleOnCloseArchiveTaskModal,
   deleteTask = false,
   setDeleteTask = null,
-  handleClose = () => null,
+  handleClose = null,
   setSnackbarAlertOpen,
   setSnackbarAlertMessage,
   archiveTaskMutation,
