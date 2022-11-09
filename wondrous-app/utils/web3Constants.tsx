@@ -195,6 +195,7 @@ export const CURRENCY_SYMBOL = {
   AETH: <Arbitrum />,
   BNB: <Binance />,
   OP: <Optimism />,
+  AVAX: <Avalanche />,
 };
 
 const CHAIN_SELECT_OPTIONS = [
