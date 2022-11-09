@@ -1,39 +1,36 @@
-import { Fragment, useContext, useState } from 'react';
+import { useMutation } from '@apollo/client';
 import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-
-import CommentsIcon from 'components/Icons/comments';
-import { PRIVACY_LEVEL, TASK_STATUS_DONE } from 'utils/constants';
-import { MilestoneProgress } from 'components/Common/MilestoneProgress';
 import {
-  BoardsCardSubheader,
   BoardsCardBody,
-  BoardsPrivacyLabel,
-  BoardsCardFooter,
-  BoardsCardHeader,
   BoardsCardBodyDescription,
   BoardsCardBodyTitle,
+  BoardsCardFooter,
+  BoardsCardHeader,
   BoardsCardMedia,
+  BoardsCardSubheader,
 } from 'components/Common/Boards/styles';
+import { SafeImage } from 'components/Common/Image';
+import { MilestoneProgress } from 'components/Common/MilestoneProgress';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { PodName, PodWrapper } from 'components/Common/Task/styles';
-import PodIcon from 'components/Icons/podIcon';
-import { useRouter } from 'next/router';
-import { RichTextViewer } from 'components/RichText';
-import EmptyStateBoards from 'components/EmptyStateBoards';
-import TaskPriority from 'components/Common/TaskPriority';
 import TaskCardDate from 'components/Common/TaskCardDate';
-import TaskCardStatus from 'components/Common/TaskCardStatuts';
+import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
-import { usePermissions } from 'utils/hooks';
+import TaskCardStatus from 'components/Common/TaskCardStatuts';
+import TaskPriority from 'components/Common/TaskPriority';
+import ActionModals from 'components/Common/TaskViewModal/actionModals';
 import { CreateEntity } from 'components/CreateEntity';
-import { useMutation } from '@apollo/client';
-import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import EmptyStateBoards from 'components/EmptyStateBoards';
+import CommentsIcon from 'components/Icons/comments';
+import PodIcon from 'components/Icons/podIcon';
+import { RichTextViewer } from 'components/RichText';
 import { ARCHIVE_TASK } from 'graphql/mutations';
-import { SafeImage } from '../Image';
+import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import { useRouter } from 'next/router';
+import { Fragment, useContext, useState } from 'react';
+import { usePermissions } from 'utils/hooks';
 import { MilestoneCard, MilestoneProgressWrapper } from './styles';
-import ActionModals from '../TaskViewModal/actionModals';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import TaskCardMenu from '../TaskCardMenu';
 
 const MilestoneItem = ({ milestone, handleCardClick }) => {
   const router = useRouter();
