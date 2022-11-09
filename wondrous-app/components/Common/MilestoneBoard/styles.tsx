@@ -46,7 +46,6 @@ export const MilestoneCard = styled.div`
   padding: 14px;
   position: relative;
   z-index: 1;
-  width: 360px;
   &::before {
     background: #1d1d1d;
     border-radius: 6px;

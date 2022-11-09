@@ -136,9 +136,10 @@ export const BoardsCardSubheader = styled.div`
 export const BoardsCardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: top;
   flex-direction: row;
   width: 100%;
+  height: 28px;
 `;
 
 export const BoardsCardBody = styled.div`
