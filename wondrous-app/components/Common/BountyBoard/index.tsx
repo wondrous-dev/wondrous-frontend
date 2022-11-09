@@ -24,6 +24,7 @@ import TaskCardStatus from 'components/Common/TaskCardStatuts';
 import TaskPriority from 'components/Common/TaskPriority';
 import ActionModals from 'components/Common/TaskViewModal/actionModals';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
+import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { CreateEntity } from 'components/CreateEntity';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
@@ -174,17 +175,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
                 <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
               </>
             )}
-            {bounty?.privacyLevel !== PRIVACY_LEVEL.public && (
-              <ToggleBoardPrivacyIcon
-                style={{
-                  width: '28px',
-                  height: '28px',
-                  marginRight: '0',
-                }}
-                isPrivate={bounty?.privacyLevel !== PRIVACY_LEVEL.public}
-                tooltipTitle={bounty?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-              />
-            )}
+            <TaskCardPrivacy privacyLevel={bounty?.privacyLevel} />
           </BoardsCardSubheader>
 
           <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
