@@ -26,6 +26,7 @@ import ViewGrant from 'components/ViewGrant';
 import { useLocation } from 'utils/useLocation';
 import { useRouter } from 'next/router';
 import { delQuery } from 'utils/index';
+import { GrantAmount } from 'components/ViewGrant/Fields';
 import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
 
 const GrantsBoard = () => {
@@ -37,14 +38,16 @@ const GrantsBoard = () => {
       applicationsNum: 20,
       status: 'active',
       id: 1,
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
@@ -56,14 +59,16 @@ const GrantsBoard = () => {
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
       status: 'active',
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
@@ -74,14 +79,16 @@ const GrantsBoard = () => {
       description: 'Aliquet varius scelerisque tempor sodales aliquet nisl',
       applicationsNum: 15,
       status: 'active',
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
@@ -93,14 +100,16 @@ const GrantsBoard = () => {
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
       status: 'active',
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
@@ -113,14 +122,16 @@ const GrantsBoard = () => {
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
       status: 'active',
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
@@ -133,14 +144,16 @@ const GrantsBoard = () => {
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
       status: 'active',
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
     },
@@ -152,14 +165,16 @@ const GrantsBoard = () => {
         'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
       applicationsNum: 20,
       status: 'active',
-      rewards: [
-        {
-          rewardAmount: 20,
-          symbol: 'ETH',
-          chain: 'Ethereum',
-          icon: '',
-        },
-      ],
+      grantAmount: {
+        paymentMethodId: '56545357864108041',
+        rewardAmount: '20',
+        amount: '6',
+        chain: 'ethereum',
+        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+        tokenName: 'eth',
+        symbol: 'eth',
+      },
+
       img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
       comments: 2,
       endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
@@ -211,7 +226,7 @@ const GrantsBoard = () => {
             <BoardWrapper key={idx} onClick={() => handleCardClick(grant)}>
               <Grid justifyContent="space-between" alignItems="center" container>
                 <Grid>
-                  <CompensationPill>{20}</CompensationPill>
+                  <GrantAmount grantAmount={grant.grantAmount} />
                 </Grid>
                 <Grid display="flex" gap="14px">
                   <ItemPill key={idx} as="div">

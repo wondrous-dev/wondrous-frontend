@@ -40,6 +40,7 @@ import CreateGrant from 'components/CreateGrant';
 import { Categories, DataDisplay, Dates, GrantAmount, Reviewers } from './Fields';
 import { canViewGrant } from './utils';
 import { DescriptionWrapper } from './styles';
+import ViewGrantFooter from './Footer';
 
 const grant = {
   orgId: '46110468539940865',
@@ -254,6 +255,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
                     })}
                   </TaskSectionDisplayData>
                 </TaskSectionDisplayDivWrapper>
+                <ViewGrantFooter isFullScreen={isFullScreen} />
               </TaskModalTaskData>
             </>
           ) : (

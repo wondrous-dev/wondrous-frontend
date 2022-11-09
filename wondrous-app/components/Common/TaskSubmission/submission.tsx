@@ -75,11 +75,11 @@ function TaskSubmissionsLoading({ loading }) {
   return <CircularProgress />;
 }
 
-function TaskSubmissionsEmptyState() {
+export function TaskSubmissionsEmptyState({ label = 'No submissions yet' }) {
   return (
     <TaskSubmissionEmptyStateContainer>
       <TaskSubmissionEmptyStateIcon />
-      <TaskSubmissionEmptyStateText>No submissions yet</TaskSubmissionEmptyStateText>
+      <TaskSubmissionEmptyStateText>{label}</TaskSubmissionEmptyStateText>
     </TaskSubmissionEmptyStateContainer>
   );
 }
