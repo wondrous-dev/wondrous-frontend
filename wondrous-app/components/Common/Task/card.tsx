@@ -250,50 +250,46 @@ export function TaskCard({
                 <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
               </>
             )}
-            {canClaim ? (
-              <>
-                {claimed ? (
-                  <ActionButton
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                    }}
-                  >
-                    Claimed
-                  </ActionButton>
-                ) : (
-                  <ButtonPrimary
-                    startIcon={<Claim />}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      e.stopPropagation();
-                      updateTaskAssignee({
-                        variables: {
-                          taskId: id,
-                          assigneeId: user?.id,
-                        },
-                        onCompleted: (data) => {
-                          setClaimed(true);
-                          const task = data?.updateTaskAssignee;
-                          const transformedTask = transformTaskToTaskCard(task, {});
-                          if (boardColumns?.setColumns) {
-                            let columns = [...boardColumns?.columns];
-                            if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
-                              columns = updateInProgressTask(transformedTask, columns);
-                            } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
-                              columns = updateTaskItem(transformedTask, columns);
-                            }
-                            boardColumns.setColumns(columns);
-                          }
-                        },
-                      });
-                    }}
-                    data-cy={`task-card-item-${title}`}
-                  >
-                    Claim
-                  </ButtonPrimary>
-                )}
-              </>
+            {claimed ? (
+              <ActionButton
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                Claimed
+              </ActionButton>
+            ) : canClaim ? (
+              <ButtonPrimary
+                startIcon={<Claim />}
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  updateTaskAssignee({
+                    variables: {
+                      taskId: id,
+                      assigneeId: user?.id,
+                    },
+                    onCompleted: (data) => {
+                      setClaimed(true);
+                      const task = data?.updateTaskAssignee;
+                      const transformedTask = transformTaskToTaskCard(task, {});
+                      if (boardColumns?.setColumns) {
+                        let columns = [...boardColumns?.columns];
+                        if (transformedTask.status === Constants.TASK_STATUS_IN_PROGRESS) {
+                          columns = updateInProgressTask(transformedTask, columns);
+                        } else if (transformedTask.status === Constants.TASK_STATUS_TODO) {
+                          columns = updateTaskItem(transformedTask, columns);
+                        }
+                        boardColumns.setColumns(columns);
+                      }
+                    },
+                  });
+                }}
+                data-cy={`task-card-item-${title}`}
+              >
+                Claim
+              </ButtonPrimary>
             ) : (
               <>
                 {canApply && (
@@ -317,7 +313,7 @@ export function TaskCard({
               </ActionButton>
             )}
             {isMilestone && <MilestoneIcon />}
-            {!userProfile && <AvatarList users={userList} id={`task-${task?.id}`} />}
+            {!userProfile && !claimed && <AvatarList users={userList} id={`task-${task?.id}`} />}
           </TaskHeaderIconWrapper>
           {task?.privacyLevel !== PRIVACY_LEVEL.public && (
             <ToggleBoardPrivacyIcon
