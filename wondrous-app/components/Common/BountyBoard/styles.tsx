@@ -76,7 +76,7 @@ export const BountyContainer = styled.div`
 
 export const BountyCardWrapper = styled.div`
   align-items: flex-start;
-  background: linear-gradient(54.27deg, #424242 20.18%, #06ffa5 130.2%);
+  background: linear-gradient(54.27deg, ${palette.grey79} 20.18%, ${palette.green30} 130.2%);
   border-radius: 6px;
   border: 0px solid transparent;
   color: ${palette.white};
@@ -89,7 +89,7 @@ export const BountyCardWrapper = styled.div`
   position: relative;
   z-index: 1;
   &::before {
-    background: #1d1d1d;
+    background: ${palette.grey900};
     border-radius: 6px;
     content: '';
     height: calc(100% - 2px);
