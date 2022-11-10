@@ -1,53 +1,41 @@
-import Grid from '@mui/material/Grid';
-import Typography from '@mui/material/Typography';
-import { SafeImage } from 'components/Common/Image';
-import palette from 'theme/palette';
+import { shrinkNumber } from 'utils/helpers';
+import { ToDo } from '../../Icons';
+import { WonderCoin } from '../../Icons/wonderCoin';
+import { SafeImage } from '../Image';
+import { CompensationWrapper, IconContainer, CompensationPill, CompensationAmount } from './styles';
+import Ethereum from '../../Icons/ethereum';
+import { Matic } from '../../Icons/matic';
+import { USDCoin } from '../../Icons/USDCoin';
 
-export default function Compensation(props) {
-  const { rewards, style, pillStyle = {}, id } = props;
+export function Compensation(props) {
+  const { rewards, taskIcon, style, pillStyle = {} } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
-  if (!rewardAmount) return null;
+
   return (
-    <Grid container width="fit-content" key={id} style={style}>
-      <Grid
-        container
-        bgcolor={palette.grey99}
-        borderRadius="25px"
-        gap="4px"
-        alignItems="center"
-        paddingRight="8px"
-        paddingLeft={icon ? '1px' : '8px'}
-        height="28px"
-        minWidth="45px"
-        justifyContent="space-between"
-        lineHeight="0"
-        style={pillStyle}
-        width="fit-content"
-      >
-        {icon && (
-          <Grid container item height="100%" width="max-content" alignItems="center">
-            <SafeImage
-              useNextImage={false}
-              src={icon}
-              style={{
-                width: '24px',
-                height: '24px',
-              }}
-            />
-          </Grid>
+    <CompensationWrapper key={props.id} style={style}>
+      <CompensationPill style={pillStyle}>
+        {rewardAmount && (
+          <>
+            {icon && (
+              <IconContainer>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <SafeImage
+                  useNextImage={false}
+                  src={icon}
+                  style={{
+                    width: '24px',
+                    height: '24px',
+                  }}
+                />
+              </IconContainer>
+            )}
+            <CompensationAmount>
+              {rewardAmount} {icon ? null : symbol}
+            </CompensationAmount>
+          </>
         )}
-        <Typography
-          color={palette.white}
-          fontWeight="600"
-          fontSize="13px"
-          alignItems="center"
-          gap="3px"
-          width="fit-content"
-          lineHeight="0"
-        >
-          {rewardAmount} {!icon && symbol}
-        </Typography>
-      </Grid>
-    </Grid>
+        {taskIcon || null}
+      </CompensationPill>
+    </CompensationWrapper>
   );
 }

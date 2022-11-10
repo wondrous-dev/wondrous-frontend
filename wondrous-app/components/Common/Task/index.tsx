@@ -5,7 +5,7 @@ import { cloneDeep } from 'lodash';
 import { useMe } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import { AvatarList } from 'components/Common/AvatarList';
-import Compensation from 'components/Common/Compensation';
+import { Compensation } from 'components/Common/Compensation';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { SafeImage } from 'components/Common/Image';
@@ -407,7 +407,7 @@ export function TaskListCard(props) {
             ]}
             id={`task-${task?.id}`}
           />
-          {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} />}
+          {task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} taskIcon={<TaskIcon />} />}
         </TaskHeader>
         <TaskContent>
           <TaskTitle>{task?.title}</TaskTitle>
