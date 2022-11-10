@@ -251,7 +251,6 @@ export const TaskModalHeaderMenu = styled(Menu)`
 
 export const TaskModalHeaderMenuItem = styled(MenuItem)`
   && {
-    z-index: 1000;
     display: flex;
     justify-content: flex-start;
     color: ${({ theme, warning }) => (warning ? theme.palette.red800 : theme.palette.white)};

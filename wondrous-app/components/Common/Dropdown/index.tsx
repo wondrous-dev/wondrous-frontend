@@ -1,6 +1,6 @@
-import { ButtonBase, ClickAwayListener, Grid, Popper } from '@mui/material';
+import { ClickAwayListener, Popper } from '@mui/material';
+import { DropdownButton, DropdownWrapper } from 'components/Common/Dropdown/styles';
 import React, { useState } from 'react';
-import palette from 'theme/palette';
 
 export default function Dropdown(props) {
   const {
@@ -34,18 +34,9 @@ export default function Dropdown(props) {
 
   return (
     <>
-      <ButtonBase
-        onClick={handleOnClick}
-        style={divStyle}
-        disableRipple
-        sx={{
-          width: 'fit-content',
-          height: 'fit-content',
-          'background-color': 'transparent',
-        }}
-      >
+      <DropdownButton onClick={handleOnClick} style={divStyle} disableRipple>
         <DropdownHandler {...props} />
-      </ButtonBase>
+      </DropdownButton>
       <ClickAwayListener onClickAway={handleClickAway}>
         <Popper
           open={Boolean(selectedAnchorEl)}
@@ -53,29 +44,8 @@ export default function Dropdown(props) {
           placement={placement}
           onClick={handleDefault}
           disablePortal={disablePortal}
-          sx={{
-            zIndex: '1000',
-          }}
         >
-          <Grid
-            container
-            maxWidth="fit-content"
-            bgcolor={palette.grey900}
-            borderRadius="6px"
-            border={`1px solid ${palette.grey75}`}
-            display="flex"
-            flexDirection="column"
-            gap="6px"
-            justifyContent="center"
-            marginTop="4px"
-            minHeight="30px"
-            minWidth="185px"
-            padding="0"
-            width="fit-content"
-            style={{ ...dropDownStyle }}
-          >
-            {children}
-          </Grid>
+          <DropdownWrapper style={{ ...dropDownStyle }}>{children}</DropdownWrapper>
         </Popper>
       </ClickAwayListener>
     </>
