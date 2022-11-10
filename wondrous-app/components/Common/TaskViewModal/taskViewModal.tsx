@@ -4,10 +4,10 @@ import { useTaskApplicationCount } from 'components/Common/TaskApplication';
 import TaskMenuStatus from 'components/Common/TaskMenuStatus';
 import { CreateEntity } from 'components/CreateEntity';
 import Tooltip from 'components/Tooltip';
-import { format, formatDistance, differenceInDays } from 'date-fns';
+import { differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { GET_ORG_LABELS, SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
@@ -40,29 +40,32 @@ import {
   parseUserPermissionContext,
   transformTaskProposalToTaskProposalCard,
   transformTaskToTaskCard,
+  cutString,
 } from 'utils/helpers';
 import { useCanViewTask, useColumns, useOrgBoard, usePodBoard, useUserBoard, useGlobalContext } from 'utils/hooks';
 
 import VoteResults from 'components/Common/Votes';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
-import { useMe } from '../../Auth/withAuth';
+import { useMe } from 'components/Auth/withAuth';
 import {
   CreateFormButtonsBlock,
   CreateFormCancelButton,
   CreateFormFooterButtons,
   CreateFormPreviewButton,
-} from '../../CreateEntity/styles';
-import { CheckedBoxIcon } from '../../Icons/checkedBox';
-import { DAOIcon } from '../../Icons/dao';
-import { CompletedIcon } from '../../Icons/statusIcons';
-import { SubtaskDarkIcon } from '../../Icons/subtask';
-import { RejectIcon } from '../../Icons/taskModalIcons';
-import DefaultUserImage from '../Image/DefaultUserImage';
-import { MilestoneProgressViewModal } from '../MilestoneProgress';
-import { MakePaymentModal } from '../Payment/PaymentModal';
-import { SnackbarAlertContext } from '../SnackbarAlert';
-import { flexDivStyle, rejectIconStyle } from '../TaskSummary';
+} from 'components/CreateEntity/styles';
+import { CheckedBoxIcon } from 'components/Icons/checkedBox';
+import { DAOIcon } from 'components/Icons/dao';
+import { CompletedIcon } from 'components/Icons/statusIcons';
+import { SubtaskDarkIcon } from 'components/Icons/subtask';
+import { RejectIcon } from 'components/Icons/taskModalIcons';
+import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
+import { MilestoneProgressViewModal } from 'components/Common/MilestoneProgress';
+import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 import ActionModals from './actionModals';
 import { tabs } from './constants';
 import {
@@ -75,6 +78,7 @@ import {
 } from './helpers';
 import {
   SubtaskIconWrapper,
+  SubtaskTitleWrapper,
   TaskBorder,
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
@@ -150,6 +154,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
+
   const {
     loading: taskApplicationCountLoading,
     error: taskApplicationCountError,
@@ -158,12 +163,14 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
+  const location = useLocation();
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
     useLazyQuery(GET_TASK_SUBMISSIONS_FOR_TASK);
   const [approveTaskProposal] = useMutation(APPROVE_TASK_PROPOSAL);
   const [closeTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
   const [completeModal, setCompleteModal] = useState(false);
   const router = useRouter();
+  const { query } = router;
   const [editTask, setEditTask] = useState(false);
   const [fullScreen, setFullScreen] = useState(true);
   const [activeTab, setActiveTab] = useState(null);
@@ -184,9 +191,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     fetchPolicy: 'cache-and-network',
     nextFetchPolicy: 'cache-first',
   });
-  const [getOrgLabels, { data: orgLabelsData }] = useLazyQuery(GET_ORG_LABELS, {
-    fetchPolicy: 'cache-and-network',
-  });
+
   const sectionRef = useRef(null);
   const user = useMe();
   const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
@@ -223,16 +228,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       console.error('Error fetching task proposal');
     },
   });
-
-  useEffect(() => {
-    if (fetchedTask) {
-      getOrgLabels({
-        variables: {
-          orgId: fetchedTask.orgId,
-        },
-      });
-    }
-  }, [fetchedTask]);
 
   const [archiveTaskMutation, { data: archiveTaskData }] = useMutation(ARCHIVE_TASK, {
     refetchQueries: [
@@ -571,25 +566,31 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             </TaskModalHeaderIconWrapper>
                           </>
                         )}
-                        {false && fetchedTask?.type === TASK_TYPE && (
+                        {isSubtask && fetchedTask?.type === TASK_TYPE && (
                           <>
                             <TaskModalHeaderArrow />
-                            <Link
-                              href={`/organization/${fetchedTask?.orgUsername}/boards?task=${
-                                isSubtask ? fetchedTask?.parentTaskId : taskId
-                              }`}
-                              passHref
-                            >
-                              <Tooltip title="Task" placement="top">
-                                <span>
-                                  <TaskModalHeaderIconWrapper>
-                                    <CheckedBoxIcon />
-                                  </TaskModalHeaderIconWrapper>
-                                </span>
-                              </Tooltip>
-                            </Link>
+                            <Tooltip title="Parent Task" placement="top">
+                              <SubtaskTitleWrapper
+                                onClick={() => {
+                                  const newUrl = `${delQuery(router.asPath)}?view=${
+                                    router?.query?.view || 'grid'
+                                  }&task=${fetchedTask?.parentTaskId}&entity=${
+                                    location?.params?.entity || ENTITIES_TYPES.TASK
+                                  }`;
+                                  location.push(newUrl);
+                                }}
+                              >
+                                <TaskModalHeaderIconWrapper>
+                                  <CheckedBoxIcon />
+                                </TaskModalHeaderIconWrapper>
+                                <TaskModalHeaderTypography>
+                                  {cutString(fetchedTask?.parentTask?.title, 20)}
+                                </TaskModalHeaderTypography>
+                              </SubtaskTitleWrapper>
+                            </Tooltip>
                           </>
                         )}
+
                         {isSubtask && fetchedTask?.type === TASK_TYPE && (
                           <>
                             <TaskModalHeaderArrow />
@@ -646,7 +647,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             </TaskModalSnapshot>
                           )}
                           {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
-                          <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                          {isMilestone && (
+                            <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                          )}
                         </TaskModalTaskStatusMoreInfo>
                         <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
                         <TaskMediaWrapper media={fetchedTask?.media} />
@@ -777,7 +780,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 <TaskSectionInfoTextCreator>
                                   {fetchedTask?.creatorUsername}{' '}
                                   <TaskSectionInfoCreatorTask>
-                                    created this task{isTaskProposal && ' proposal'}{' '}
+                                    created this {fetchedTask?.type}{' '}
                                   </TaskSectionInfoCreatorTask>
                                   {fetchedTask?.createdAt && (
                                     <TaskSectionInfoCreatorDaysAgo>

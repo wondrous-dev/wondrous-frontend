@@ -78,7 +78,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
   const filteredEligibleReviewers = eligibleReviewers
     .filter(({ id }) => !taskReviewerIds?.includes(id))
     .map((i) => {
-      if (user.id === i.id) return { ...i, hide: true };
+      if (user?.id === i?.id) return { ...i, hide: true };
       return i;
     });
   const showAutocompleteField = canEdit && (showAutocomplete || !withTaskReviewers);
@@ -88,7 +88,7 @@ export function ReviewerField({ reviewerData, handleClose, shouldDisplay, canEdi
     withTaskReviewers &&
     withTaskReviewers < eligibleReviewers?.length &&
     !isEmpty(filteredEligibleReviewers);
-  const selfReviewer = !taskReviewerIds?.includes(user.id) && user;
+  const selfReviewer = !taskReviewerIds?.includes(user?.id) && user;
   const handleOnClick = (username) => () => {
     handleClose();
     router.push(`/profile/${username}/about`);

@@ -70,10 +70,10 @@ const PodCurrentRoleModal = (props) => {
     }
   );
   useEffect(() => {
-    if (linkedWallet) {
+    if (linkedWallet && open) {
       litSignatureExist();
     }
-  }, [linkedWallet]);
+  }, [linkedWallet, open, litSignatureExist]);
 
   const saveLitSignature = async () => {
     if (wonderWeb3.address?.toLowerCase() !== linkedWallet.toLowerCase()) {
@@ -234,7 +234,7 @@ const PodCurrentRoleModal = (props) => {
 
               {rolesWithDiscordAccess?.length !== 0 && !user?.userInfo?.discordUsername && (
                 <ClaimRoleWarningWrapper>
-                  <LitWarningMessage>To join via discord, connect your discord to Wonder</LitWarningMessage>
+                  <LitWarningMessage>To join via Discord, connect your discord to Wonder</LitWarningMessage>
                   <Link href="/profile/settings">
                     <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
                   </Link>

@@ -8,7 +8,7 @@ import { CssBaseline, useMediaQuery } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
 import { SnackbarAlertProvider } from 'components/Common/SnackbarAlert';
 import { Web3Provider } from '@ethersproject/providers';
-
+import NavigationProgress from 'components/NavigationProgress';
 import '../styles/body.css';
 import '../styles/globals.css';
 
@@ -58,7 +58,6 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
   );
 
   useEffect(() => {
-    initHotjar();
     const handleRouteChange = (url) => {
       window.gtag('config', process.env.NEXT_PUBLIC_GOOGLE_ANALYTICS, {
         page_path: url,
@@ -69,6 +68,10 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
       router.events.off('routeChangeComplete', handleRouteChange);
     };
   }, [router.events]);
+
+  useEffect(() => {
+    initHotjar();
+  }, []);
 
   function getLibrary(provider): Web3Provider {
     const library = new Web3Provider(provider);
@@ -93,6 +96,7 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
                 <Web3ReactProvider getLibrary={getLibrary}>
                   <WonderWeb3Provider>
                     <HotkeyContext.Provider value={showHotkeys}>
+                      <NavigationProgress />
                       <SidebarLayout>
                         <OnboardingTour>
                           <Component

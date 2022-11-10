@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS, GET_CHANNELS_FROM_DISCORD, GET_ORG_BY_ID } from 'graphql/queries';
+import { GET_ORG_DISCORD_NOTIFICATION_CONFIGS } from 'graphql/queries';
 import { useQuery, useLazyQuery, useMutation } from '@apollo/client';
 
 import DiscordIntegrationCard from 'components/Settings/Notifications/DiscordIntegrationCard';
-import { MANUAL_DISCORD_ORG_SETUP, DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
+import { DISCONNECT_ORG_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
 import Typography from '@mui/material/Typography';
 import Divider from '@mui/material/Divider';
 import Grid from '@mui/material/Grid';
@@ -11,7 +11,7 @@ import Grid from '@mui/material/Grid';
 import palette from 'theme/palette';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { NotificationOutlineSettings } from 'components/Icons/notifications';
-import { HeaderBlock } from 'components/Settings/headerBlock';
+import HeaderBlock from 'components/Settings/headerBlock';
 
 import { GeneralSettingsIntegrationsBlock } from 'components/Settings/styles';
 import { NotificationType } from 'components/Settings/Notifications/constants';

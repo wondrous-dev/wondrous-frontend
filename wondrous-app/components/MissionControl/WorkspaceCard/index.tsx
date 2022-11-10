@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { RequestApproveButton } from 'components/organization/members/styles';
 import { useHotkey } from 'utils/hooks';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
@@ -31,7 +30,7 @@ const MissionControlWorkspaceCard: React.FC<{
     <MissionControlWorkspaceCardWrapper hoverImg={hoverImg} gradient={gradient}>
       <Badge badgeContent={HOTKEYS.OPEN_DASHBOARD} color="primary" invisible={!showBadge}>
         <WorkspaceCardContainer>
-          <Link href={url}>
+          <Link href={url} shallow passHref>
             <WorkspaceCardBannerContainer>
               <WorkspaceCardBannerImage src={img}>
                 <img src={img} />
@@ -43,7 +42,7 @@ const MissionControlWorkspaceCard: React.FC<{
           </Link>
           <WorkspaceCardStatsContainer>
             {stats.map((stat, idx) => (
-              <Link href={stat.url} key={idx}>
+              <Link href={stat.url} key={idx} shallow passHref>
                 <WorkspaceCardStat>
                   <stat.icon />
                   <WorkspaceCardStatCount gradient={stat.countGradient}>{stat.count}</WorkspaceCardStatCount>

@@ -23,10 +23,12 @@ import { useRouter } from 'next/router';
 import { buildTwitterAuthUrl } from 'components/Twitter/utils';
 import CloseModalIcon from 'components/Icons/closeModal';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import HeaderBlock from 'components/Settings/headerBlock';
 import { GET_LOGGED_IN_USER } from 'graphql/queries';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { ErrorText } from '../Common';
-import { HeaderBlock } from './headerBlock';
+import { SafeImage } from '../Common/Image';
+import { ProfilePictureDiv } from '../Onboarding/styles';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
@@ -54,16 +56,6 @@ import {
 const discordUrl = getDiscordUrl();
 
 const socialsData = [
-  {
-    icon: <TwitterPurpleIcon />,
-    link: 'https://twitter.com/',
-    type: 'twitter',
-  },
-  {
-    icon: <DiscordIcon fill="#ccbbff" />,
-    link: 'https://discord.gg/',
-    type: 'discord',
-  },
   {
     icon: <OpenSeaIcon />,
     link: 'https://opensea.io/',
@@ -114,7 +106,11 @@ function SettingsLinks({ links, setLinks }) {
   };
   return (
     <>
-      <GeneralSettingsSocialsBlock>
+      <GeneralSettingsSocialsBlock
+        style={{
+          paddingTop: '0',
+        }}
+      >
         <LabelBlock>Socials</LabelBlock>
         <GeneralSettingsSocialsBlockWrapper>
           {socialsData.map((item) => {
@@ -173,18 +169,15 @@ function ProfileSettings(props) {
     const { value } = e.target;
     setUsername(value);
   };
-
   const handleEmailChange = (e) => {
     const { value } = e.target;
     setEmail(value);
   };
-
   const handleProfileBioChange = (e) => {
     const { value } = e.target;
     if (value.length <= 200) setErrors({ ...errors, description: null });
     setProfileBio(value);
   };
-
   useEffect(() => {
     if (loggedInUser?.username) {
       setUsername(loggedInUser?.username);
@@ -407,6 +400,7 @@ function ProfileSettings(props) {
           </GeneralSettingsIntegrationsBlockButton>
           {discordUserExists && <ErrorText>Discord user already connected to another account</ErrorText>}
           {discordError && <ErrorText>Error connecting to Discord. Please try again or contact support.</ErrorText>}
+
           <GeneralSettingsIntegrationsBlockButton
             style={{
               marginTop: '30px',
@@ -429,12 +423,12 @@ function ProfileSettings(props) {
               }
             }}
           >
-            <Tooltip title="Connect your twitter account" placement="top">
+            <Tooltip title="Connect your Twitter account" placement="top">
               <div>
                 <GeneralSettingsTwitterIcon />
                 {loggedInUser?.userInfo?.twitterUsername
                   ? `Connected to ${loggedInUser?.userInfo?.twitterUsername}`
-                  : 'Connect twitter'}
+                  : 'Connect Twitter'}
               </div>
             </Tooltip>
           </GeneralSettingsIntegrationsBlockButton>

@@ -1,22 +1,17 @@
-import React, { useCallback, useEffect, useRef, useState, useContext } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Modal from '@mui/material/Modal';
-import { Typography, Tab } from '@mui/material';
-import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
+import { Tab } from '@mui/material';
+import { useLazyQuery, useQuery } from '@apollo/client';
 import { GET_ORG_WALLET, GET_POD_WALLET } from 'graphql/queries/wallet';
 import { GET_SUBMISSION_PAYMENT_INFO } from 'graphql/queries/payment';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { PERMISSIONS } from 'utils/constants';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 import { GET_POD_BY_ID, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { useLocation } from 'utils/useLocation';
 import { delQuery } from 'utils';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
 import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { SingleWalletPayment } from '../../Common/Payment/SingleWalletPayment';
 import {
-  PodNameTypography,
   PaymentModal,
   PaymentModalHeader,
   PaymentTitleDiv,
@@ -34,9 +29,10 @@ enum ViewType {
   Unpaid = 'unpaid',
 }
 
-export function PayModal(props) {
+function PayModal(props) {
   const { podId, orgId, open, handleClose, assigneeId, assigneeUsername, taskTitle, submissionId } = props;
   const router = useRouter();
+  const location = useLocation();
   const [selectedTab, setSelectedTab] = useState('wallet');
   const [wallets, setWallets] = useState([]);
   const [submissionPaymentInfo, setSubmissionPaymentInfo] = useState(null);
@@ -153,7 +149,7 @@ export function PayModal(props) {
                   id: submissionId,
                 }}
                 handleClose={() => {
-                  router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
+                  location.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`);
                   handleClose();
                 }}
               />
@@ -179,3 +175,5 @@ export function PayModal(props) {
     </Modal>
   );
 }
+
+export default PayModal;

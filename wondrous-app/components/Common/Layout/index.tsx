@@ -28,7 +28,9 @@ export default function SidebarLayout({ children }) {
   const router = useRouter();
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {
     // should this be here?
-    router.push(`/dashboard`);
+    router.push(`/dashboard`, undefined, {
+      shallow: true,
+    });
   });
 
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {

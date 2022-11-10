@@ -17,7 +17,7 @@ type AuthData = {
 
 const AuthContext = createContext<AuthContextData>({} as AuthContextData);
 
-export const AuthProvider: React.FC = ({ children }) => {
+export const AuthProvider: React.FC = ({ children }: { children: any }) => {
   const [authData, setAuthData] = useState<AuthData>();
   const [loading, setLoading] = useState(true);
 

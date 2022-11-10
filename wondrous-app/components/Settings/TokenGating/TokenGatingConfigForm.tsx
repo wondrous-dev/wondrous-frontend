@@ -9,6 +9,8 @@ import { FixedSizeList, ListChildComponentProps } from 'react-window';
 import Ethereum from 'components/Icons/ethereum';
 import Harmony from 'components/Icons/harmony';
 import Optimism from 'components/Icons/Optimism';
+import Avalanche from 'components/Icons/Avalanche';
+import Binance from 'components/Icons/binace';
 import Button from 'components/Button';
 import CustomField from 'components/FormField/CustomField';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
@@ -16,7 +18,7 @@ import { GET_TOKEN_GATING_CONDITIONS_FOR_ORG, GET_TOKEN_INFO, GET_NFT_INFO } fro
 import { CREATE_TOKEN_GATING_CONDITION_FOR_ORG, UPDATE_TOKEN_GATING_CONDITION } from 'graphql/mutations/tokenGating';
 import { AccessCondition, TokenGatingCondition } from 'types/TokenGating';
 import { useTokenGatingCondition } from 'utils/hooks';
-import { NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
+import { ETH_NFT_LIST, HARMONY_TOKEN_LIST } from 'utils/tokenList';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   TokenGatingAutocompleteList,
@@ -52,6 +54,16 @@ const chainOptions = [
     label: 'Optimism',
     icon: <Optimism />,
     value: 'optimism',
+  },
+  {
+    label: 'Avalanche',
+    icon: <Avalanche />,
+    value: 'avalanche',
+  },
+  {
+    label: 'BNB',
+    icon: <Binance />,
+    value: 'bsc',
   },
 ];
 
@@ -332,6 +344,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
     });
   };
   const getTokenList = async () => {
+    setTokenList([]);
     if (chain === 'harmony') {
       const formatted = HARMONY_TOKEN_LIST.map((token) => ({
         label: token.name,
@@ -341,28 +354,31 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
       setTokenList(formatted);
       return formatted;
     }
-    const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
-    const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
-    const [erc20s] = await Promise.all([erc20Promise]);
-    const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
-    const formatted = sorted.map((token) => ({
-      label: token.name,
-      value: token.address,
-      icon: token.logoURI,
-    }));
-    setTokenList(formatted);
-    return formatted;
+    if (chain === 'ethereum') {
+      const erc20Url = 'https://tokens.coingecko.com/uniswap/all.json';
+      const erc20Promise = fetch(erc20Url).then((r2) => r2.json());
+      const [erc20s] = await Promise.all([erc20Promise]);
+      const sorted = [...erc20s.tokens].sort((a, b) => (a.name > b.name ? 1 : -1));
+      const formatted = sorted.map((token) => ({
+        label: token.name,
+        value: token.address,
+        icon: token.logoURI,
+      }));
+      setTokenList(formatted);
+    }
   };
 
   async function getNFTList() {
-    const sorted = NFT_LIST.sort((a, b) => (a.name > b.name ? 1 : -1));
-    const formatted = sorted.map((token) => ({
-      label: token.name,
-      value: token.address,
-      icon: token.logoURI,
-    }));
-    setNftList(formatted);
-    return formatted;
+    setNftList([]);
+    if (chain === 'ethereum') {
+      const sorted = ETH_NFT_LIST.sort((a, b) => (a.name > b.name ? 1 : -1));
+      const formatted = sorted.map((token) => ({
+        label: token.name,
+        value: token.address,
+        icon: token.logoURI,
+      }));
+      setNftList(formatted);
+    }
   }
 
   useEffect(() => {
@@ -378,6 +394,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
     }
   }, [accessConditionType, chain]);
 
+  // @ts-ignore
   return (
     <>
       <CustomField label="Chain">
@@ -433,7 +450,7 @@ function TokenGatingConfigForm({ orgId, footerRef }: Props) {
               ListboxComponent={TokenListboxVirtualized}
               PopperComponent={TokenGatingAutocompletePopper}
               renderOption={(props, option) => [props, option]}
-              renderGroup={(params) => params}
+              renderGroup={(params) => params as any}
             />
           </CustomField>
         </Grid>

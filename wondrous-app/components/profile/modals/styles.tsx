@@ -94,10 +94,11 @@ export const Tab2 = styled.div`
   }
 `;
 export function UserProfilePicture(props) {
-  return <SafeImage src={props?.src} style={ProfilePictureStyles} useNextImage={false} />;
+  const { src } = props;
+  return <SafeImage src={src} style={ProfilePictureStyles} useNextImage={false} />;
 }
 
-export function DefaultProfilePicture(props) {
+export function DefaultProfilePicture() {
   return <DefaultUserImage style={ProfilePictureStyles} />;
 }
 

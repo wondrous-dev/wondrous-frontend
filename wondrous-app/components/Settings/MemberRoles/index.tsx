@@ -36,7 +36,7 @@ function MemberRoles({ roleList = [], users = [], isDAO, selectedRoleIds = [], h
             {roleList.length}
           </Typography>
           <Typography color={palette.grey60} fontSize={14} fontWeight={500} minWidth="max-content">
-            {pluralize('role', roleList.length)} in {isDAO ? 'DAO' : 'POD'}
+            {pluralize('role', roleList.length)} in {isDAO ? 'Org' : 'POD'}
           </Typography>
         </Grid>
         <Grid display="flex" alignItems="center" gap="10px" flexWrap="wrap">

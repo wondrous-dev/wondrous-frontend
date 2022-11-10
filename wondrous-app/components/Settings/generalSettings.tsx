@@ -6,6 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { DeleteButton } from 'components/Settings/Roles/styles';
 import { SafeImage } from 'components/Common/Image';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import HeaderBlock from 'components/Settings/headerBlock';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
@@ -20,7 +21,6 @@ import LinkBigIcon from '../Icons/link';
 import OpenSeaIcon from '../Icons/openSea';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import ColorSettings from './ColorDropdown';
-import { HeaderBlock } from './headerBlock';
 import { ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
@@ -156,7 +156,7 @@ function GeneralSettingsComponent(props) {
             />
           </GeneralSettingsDAONameBlock>
           <GeneralSettingsDAODescriptionBlock>
-            <LabelBlock>{isPod ? 'Pod' : 'DAO'} description</LabelBlock>
+            <LabelBlock>{isPod ? 'Pod' : 'Org'} description</LabelBlock>
             <GeneralSettingsDAODescriptionInput
               multiline
               rows={3}
@@ -553,7 +553,7 @@ function GeneralSettings() {
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
       setOrganization(org);
-      setToast({ ...toast, message: `DAO updated successfully.`, show: true });
+      setToast({ ...toast, message: `Org updated successfully.`, show: true });
     },
   });
 
@@ -643,7 +643,7 @@ function GeneralSettings() {
       isPrivate={isPrivate}
       setIsPrivate={setIsPrivate}
       saveChanges={saveChanges}
-      typeText="DAO"
+      typeText="Organization"
       setProfile={setOrgProfile}
       headerImage={headerImage}
       handleImageChange={handleImageChange}

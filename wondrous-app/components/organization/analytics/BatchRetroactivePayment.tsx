@@ -18,7 +18,7 @@ import { SafeTransactionOptionalProps } from '@gnosis.pm/safe-core-sdk';
 import { SafeMultisigTransactionEstimateResponse } from '@gnosis.pm/safe-service-client';
 import { useWonderWeb3 } from 'services/web3';
 import { usePaymentModal } from 'utils/hooks';
-import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, SUPPORTED_CHAINS } from 'utils/web3Constants';
 import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWalletPayment';
 import { ErrorText } from '../../Common';
 import { CreateFormPreviewButton } from '../../CreateEntity/styles';
@@ -95,7 +95,7 @@ export function BatchRetroactivePayment(props: Props) {
   useEffect(() => {
     setWrongChainError(null);
     if (chain && currentChainId) {
-      if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+      if (chain !== SUPPORTED_CHAINS[currentChainId]) {
         setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }

@@ -48,6 +48,7 @@ const CollabsSidebar = () => {
       orgId: board.orgId,
     },
     skip: !board?.orgId,
+    fetchPolicy: 'cache-and-network',
   });
 
   const { data: pendingInvites, loading: pendingInvitesLoading } = useQuery(GET_ORG_COLLAB_REQUESTS_FOR_RECIPIENT, {

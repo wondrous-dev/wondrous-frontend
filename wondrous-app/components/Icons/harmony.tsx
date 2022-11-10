@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Harmony() {
+export default function Harmony(props) {
   return (
     <svg
       width="14"
@@ -10,6 +10,7 @@ export default function Harmony() {
       xmlns="http://www.w3.org/2000/svg"
       xmlnsXlink="http://www.w3.org/1999/xlink"
       viewBox="0 0 180 179.51"
+      {...props}
     >
       <defs>
         <linearGradient

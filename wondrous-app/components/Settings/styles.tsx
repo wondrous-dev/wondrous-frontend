@@ -253,16 +253,6 @@ export const SettingsHeaderInviteButton = styled.button`
   cursor: pointer;
 `;
 
-export const SettingsHeaderInviteButtonIcon = styled.div`
-  height: 25px;
-  width: 25px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background: #3d3d3d;
-  border-radius: 1000px;
-`;
-
 export const SettingsHeaderActionText = styled(ButtonBase)`
   && {
     font-family: ${typography.fontFamily};

@@ -16,12 +16,12 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import ConfirmModal, { SubmitButtonStyle } from 'components/Common/ConfirmModal';
 import { NewInviteLinkModal } from 'components/Common/NewInviteLinkModal/InviteLink';
 import SettingsWrapper from 'components/Common/SidebarSettings';
+import HeaderBlock from 'components/Settings/headerBlock';
 import { useWonderWeb3 } from 'services/web3';
 import MemberRoles from '../MemberRoles';
 import InviteMember from './InviteMember';
 import { SearchMembers, SeeMoreText, SeeMoreTextWrapper } from './styles';
 import { RolesContainer } from '../Roles/styles';
-import { HeaderBlock } from '../headerBlock';
 import MemberTableRow from './MembersTableRow';
 import { exportMembersDataToCSV } from './helpers';
 

@@ -4,8 +4,8 @@ import { useLazyQuery, useQuery } from '@apollo/client';
 import { useInView } from 'react-intersection-observer';
 import { useMe } from 'components/Auth/withAuth';
 import { PayoutSettingsHeaderIcon } from 'components/Icons/PayoutSettingsHeaderIcon';
-import { HeaderBlock } from 'components/Settings/headerBlock';
-import { exportSubmissionPaymentCsv } from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
+import HeaderBlock from 'components/Settings/headerBlock';
+import exportSubmissionPaymentCsv from 'components/Settings/Payouts/exportSubmissionPaymentCsv';
 import {
   LoadMore,
   LedgerActionButtonsContainer,
@@ -37,6 +37,7 @@ import Typography from '@mui/material/Typography';
 import { capitalize } from 'utils/common';
 import typography from 'theme/typography';
 import palette from 'theme/palette';
+import { useLocation } from 'utils/useLocation';
 import PayoutTable from './PayoutTable';
 import { INITIAL_SELECTION_OPTIONS } from './constants';
 import { useGetPaymentMethodsForOrg } from './hooks';
@@ -54,7 +55,7 @@ function Payouts(props) {
 
   const router = useRouter();
 
-  const [view, setView] = useState(null);
+  const [view, setView] = useState(ViewType.Unpaid);
 
   const { view: payView } = router.query;
 
@@ -68,7 +69,7 @@ function Payouts(props) {
   const [selectedItems, setSelectedItems] = useState({});
 
   const [openExportModal, setOpenExportModal] = useState(false);
-
+  const location = useLocation();
   const [paidList, setPaidList] = useState([]);
   const [unpaidList, setUnpaidList] = useState([]);
   const [processingList, setProcessingList] = useState([]);
@@ -222,10 +223,6 @@ function Payouts(props) {
       }
     }
   }, [paidList, unpaidList, processingList, hasMore]);
-
-  useEffect(() => {
-    setView(ViewType.Unpaid);
-  }, []);
 
   useEffect(() => {
     if (orgId) {
@@ -458,19 +455,19 @@ function Payouts(props) {
     {
       label: 'Unpaid',
       isActive: view === ViewType.Unpaid || view === null,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
+      onChange: () => router.push(`${delQuery(router.asPath)}?view=${ViewType.Unpaid}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Processing',
       isActive: view === ViewType.Processing,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
+      onChange: () => router.push(`${delQuery(router.asPath)}?view=${ViewType.Processing}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
     {
       label: 'Paid',
       isActive: view === ViewType.Paid,
-      onChange: () => router.replace(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
+      onChange: () => router.push(`${delQuery(router.asPath)}?view=${ViewType.Paid}`),
       gradient: `linear-gradient(266.31deg, ${palette.highlightPurple} 1.4%, ${palette.highlightBlue} 119.61%)`,
     },
   ];

@@ -15,17 +15,16 @@ import BoardsActivity from 'components/Common/BoardsActivity';
 import { RichTextViewer } from 'components/RichText';
 import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
-import BoardLock from 'components/BoardLock';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import {
   ExploreProjectsButton,
   ExploreProjectsButtonFilled,
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
+import MoreInfoModal from 'components/profile/modals';
 import { LogoWrapper, OrgLogoWrapper, PodProfileImage } from './styles';
 import { DAOEmptyIcon } from '../../Icons/dao';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
-import { MoreInfoModal } from '../../profile/modals';
 import {
   Content,
   ContentContainer,
@@ -151,7 +150,7 @@ function Wrapper(props) {
   const [showUsers, setShowUsers] = useState(false);
   const [podRoleName, setPodRoleName] = useState(null);
   const [showPods, setShowPods] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
   const [getExistingJoinRequest, { data: getUserJoinRequestData }] = useLazyQuery(GET_USER_JOIN_POD_REQUEST);
   const [getPerTypeTaskCountForPodBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE_FOR_POD);
   const [openJoinRequestModal, setOpenJoinRequestModal] = useState(false);
@@ -253,37 +252,43 @@ function Wrapper(props) {
   }, [podBoard?.podId]);
 
   const showFilters = router?.pathname === '/pod/[podId]/boards';
-  console.log('setOpenCurrentRoleModal', setOpenCurrentRoleModal);
+
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
-      <MembershipRequestModal
-        podId={podBoard?.podId}
-        open={openJoinRequestModal}
-        onClose={() => setOpenJoinRequestModal(false)}
-        setOpenCurrentRoleModal={setOpenCurrentRoleModal}
-        requestingRole={claimedOrRequestedRole}
-      />
-      <PodCurrentRoleModal
-        podId={podBoard?.podId}
-        open={openCurrentRoleModal}
-        onClose={() => setOpenCurrentRoleModal(false)}
-        linkedWallet={loggedInUser?.activeEthAddress}
-        currentRoleName={podRoleName}
-        setOpenJoinRequestModal={setOpenJoinRequestModal}
-        setClaimedOrRequestedRole={setClaimedOrRequestedRole}
-      />
-      <MoreInfoModal
-        open={open && (showUsers || showPods)}
-        handleClose={() => {
-          document.body.setAttribute('style', '');
-          setOpen(false);
-        }}
-        showUsers={showUsers}
-        showPods={showPods}
-        name={podProfile?.name}
-        podId={podProfile?.id}
-      />
+      {openJoinRequestModal && (
+        <MembershipRequestModal
+          podId={podBoard?.podId}
+          open={openJoinRequestModal}
+          onClose={() => setOpenJoinRequestModal(false)}
+          setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+          requestingRole={claimedOrRequestedRole}
+        />
+      )}
+      {openCurrentRoleModal && (
+        <PodCurrentRoleModal
+          podId={podBoard?.podId}
+          open={openCurrentRoleModal}
+          onClose={() => setOpenCurrentRoleModal(false)}
+          linkedWallet={loggedInUser?.activeEthAddress}
+          currentRoleName={podRoleName}
+          setOpenJoinRequestModal={setOpenJoinRequestModal}
+          setClaimedOrRequestedRole={setClaimedOrRequestedRole}
+        />
+      )}
+      {moreInfoModalOpen && (
+        <MoreInfoModal
+          open={moreInfoModalOpen && (showUsers || showPods)}
+          handleClose={() => {
+            document.body.setAttribute('style', '');
+            setMoreInfoModalOpen(false);
+          }}
+          showUsers={showUsers}
+          showPods={showPods}
+          name={podProfile?.name}
+          podId={podProfile?.id}
+        />
+      )}
       <ChooseEntityToCreate />
       <OverviewComponent>
         <HeaderImageWrapper>
@@ -434,7 +439,7 @@ function Wrapper(props) {
                   <HeaderContributors
                     isInPodPage
                     onClick={() => {
-                      setOpen(true);
+                      setMoreInfoModalOpen(true);
                       setShowUsers(true);
                     }}
                   >

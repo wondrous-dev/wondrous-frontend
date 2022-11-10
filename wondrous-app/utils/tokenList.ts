@@ -1,4 +1,4 @@
-export const NFT_LIST = [
+export const ETH_NFT_LIST = [
   {
     address: '0x5180db8f5c931aae63c74266b211f580155ecac8',
     chainId: 1,

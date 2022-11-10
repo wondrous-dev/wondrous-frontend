@@ -14,8 +14,6 @@ import {
 
 import CloseModalIcon from 'components/Icons/closeModal';
 import RightArrowIcon from 'components/Icons/rightArrow';
-import UtopiaIcon from 'components/Icons/utopiaIcon';
-import ParcelIcon from 'components/Icons/parcelIcon';
 import { EXPORT_PAYMENT_CSV_TYPE } from 'utils/constants';
 import { PAYMENT_PROVIDER_UI_ELEMENTS } from 'components/organization/analytics/CSVModal';
 

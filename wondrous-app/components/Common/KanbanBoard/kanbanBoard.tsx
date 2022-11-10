@@ -12,7 +12,6 @@ import {
   STATUS_APPROVED,
   STATUS_CLOSED,
   TASK_STATUS_DONE,
-  TASK_STATUS_IN_REVIEW,
 } from 'utils/constants';
 // Task update (column changes)
 import apollo from 'services/apollo';
@@ -93,9 +92,7 @@ function KanbanBoard(props) {
       currentBoard = 'assignee';
     }
     try {
-      const {
-        data: { updateTask: task },
-      } = await apollo.mutate({
+      await apollo.mutate({
         mutation: UPDATE_TASK_STATUS,
         variables: {
           taskId: taskToBeUpdated.id,

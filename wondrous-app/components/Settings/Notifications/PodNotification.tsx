@@ -16,7 +16,7 @@ import {
 import { MANUAL_DISCORD_POD_SETUP, DISCONNECT_POD_DISCORD_NOTIFICATION_CONFIG } from 'graphql/mutations';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import { NotificationType } from 'components/Settings/Notifications/constants';
-import { HeaderBlock } from 'components/Settings/headerBlock';
+import HeaderBlock from 'components/Settings/headerBlock';
 import { NotificationOutlineSettings } from 'components/Icons/notifications';
 import styles from './styles';
 import { GeneralSettingsIntegrationsBlock } from '../styles';

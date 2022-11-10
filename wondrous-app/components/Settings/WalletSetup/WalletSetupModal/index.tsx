@@ -6,13 +6,12 @@ import { useWonderWeb3 } from 'services/web3';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import useAlerts from 'hooks/useAlerts';
 import { CREATE_ORG_WALLET, CREATE_POD_WALLET } from 'graphql/mutations';
-import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL } from 'utils/constants';
+import { CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL, CHAIN_SELECT_OPTIONS } from 'utils/web3Constants';
 import {
   DEFAULT_WALLET_NETWORK,
   DEFAULT_WALLET_TYPE,
   EMPTY_ERROR,
   WALLET_ALREADY_EXISTS_ERROR_MESSAGE,
-  WALLET_NETWORKS,
   WALLET_TYPE_OPTIONS,
   WALLET_TYPE,
 } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
@@ -49,6 +48,7 @@ interface IWalletSetupModalProps {
 function WalletSetupModal(props: IWalletSetupModalProps) {
   const { isOpen = false, handleClose = () => {}, userMetamaskAddress, orgId, podId } = props;
 
+  const [addWalletLoading, setAddWalletLoading] = useState(false);
   const [walletName, setWalletName] = useState('');
   const [walletType, setWalletType] = useState(DEFAULT_WALLET_TYPE);
   const [walletNetwork, setWalletNetwork] = useState(DEFAULT_WALLET_NETWORK);
@@ -138,10 +138,12 @@ function WalletSetupModal(props: IWalletSetupModalProps) {
 
   const handleWalletNetworkChange = useCallback(
     (ev) => {
-      const selectedWalletNetwork = WALLET_NETWORKS.find((walletNetwork) => walletNetwork.value === ev.target.value);
+      const selectedWalletNetwork = CHAIN_SELECT_OPTIONS.find(
+        (walletNetwork) => walletNetwork.value === ev.target.value
+      );
       setWalletNetwork(selectedWalletNetwork);
     },
-    [WALLET_NETWORKS]
+    [CHAIN_SELECT_OPTIONS]
   );
 
   const handleAddOrgWallet = useCallback(
@@ -191,6 +193,7 @@ function WalletSetupModal(props: IWalletSetupModalProps) {
   }, [walletAddress, walletNetwork, walletType]);
 
   const handleAddWallet = useCallback(async () => {
+    setAddWalletLoading(true);
     const hasError = await handleAddWalletError();
     if (hasError) return;
 
@@ -208,6 +211,7 @@ function WalletSetupModal(props: IWalletSetupModalProps) {
     } else {
       handleAddPodWallet(payload);
     }
+    setAddWalletLoading(false);
   }, [walletName, walletType?.value, walletNetwork?.value, walletAddress, isOrgWalletSetupPage]);
 
   const renderWalletTypeValue = () => (
@@ -276,7 +280,7 @@ function WalletSetupModal(props: IWalletSetupModalProps) {
                   renderValue={renderWalletNetworkValue}
                   onChange={handleWalletNetworkChange}
                 >
-                  {WALLET_NETWORKS.map((walletNetwork) => (
+                  {CHAIN_SELECT_OPTIONS.map((walletNetwork) => (
                     <WalletSetupModalSelectMenuItem key={walletNetwork.value} value={walletNetwork.value}>
                       {walletNetwork.icon}
                       {walletNetwork.label}

@@ -30,19 +30,7 @@ import {
   NotificationSettingsButtonsBlock,
 } from './styles';
 import Switch from '../../Common/Switch';
-import { ErrorText } from '../../Common';
-import { SafeImage } from '../../Common/Image';
-import { ProfilePictureDiv } from '../../Onboarding/styles';
-import {
-  GeneralSettingsButtonsBlock,
-  GeneralSettingsContainer,
-  GeneralSettingsResetButton,
-  GeneralSettingsSaveChangesButton,
-  LabelBlock,
-  DiscordText,
-} from '../styles';
-import { ImageUpload } from '../imageUpload';
-import { HeaderBlock } from '../headerBlock';
+import { GeneralSettingsContainer, GeneralSettingsResetButton, GeneralSettingsSaveChangesButton } from '../styles';
 
 const discordUrlWithoutState = getDiscordUrl();
 const state = JSON.stringify({

@@ -30,5 +30,6 @@ export const ErrorText = styled(Typography)`
   && {
     color: ${palette.red400};
     font-size: 13px;
+    margin-top: 5px;
   }
 `;

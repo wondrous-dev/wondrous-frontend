@@ -52,7 +52,7 @@ const AddDaoModal = ({ open, handleClose }) => {
       <ModalWrapper onClick={handleClose}>
         <DialogWrapper>
           <Header>
-            <HeaderText>Add DAO</HeaderText>
+            <HeaderText>Add Org</HeaderText>
             <HeaderIcon />
           </Header>
           <ButtonsWrapper>
@@ -62,7 +62,7 @@ const AddDaoModal = ({ open, handleClose }) => {
               onMouseEnter={handleSetShowEllipse(true)}
               onMouseLeave={handleSetShowEllipse(false)}
             >
-              Create new DAO
+              Create new org workspace
             </ButtonOption>
             <ButtonOption
               Icon={ExplorePageIcon}
@@ -70,7 +70,7 @@ const AddDaoModal = ({ open, handleClose }) => {
               onMouseEnter={handleSetShowEllipse(true)}
               onMouseLeave={handleSetShowEllipse(false)}
             >
-              Explore existing DAOs
+              Explore existing organizations
             </ButtonOption>
           </ButtonsWrapper>
         </DialogWrapper>

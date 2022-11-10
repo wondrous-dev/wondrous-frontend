@@ -26,6 +26,7 @@ import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/muta
 import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
 import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 
+import { useLocation } from 'utils/useLocation';
 import Card from './card';
 import TASK_ICONS from './constants';
 import {
@@ -78,6 +79,7 @@ const useGetTaskById = (editTask, task) => {
 };
 
 export function Task(props) {
+  // WHAT IS THIS COMPONENT? IS IT TASK CARD? POORLY NAMED
   const { task, className } = props;
   const {
     description = '',
@@ -344,6 +346,7 @@ export function Task(props) {
 
 export function TaskListCard(props) {
   const { taskType, task } = props;
+  const location = useLocation();
   const router = useRouter();
   const [viewDetails, setViewDetails] = useState(false);
   const TaskIcon = () => {
@@ -362,8 +365,10 @@ export function TaskListCard(props) {
         open={viewDetails}
         handleClose={() => {
           setViewDetails(false);
-          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}`;
-          window.history.replaceState({ ...window.history.state, as: newUrl, url: newUrl }, '', newUrl);
+          const newUrl = `${delQuery(router.asPath)}?view=${router?.query?.view || 'grid'}&entity=${
+            location?.params?.entity || Constants.ENTITIES_TYPES.TASK
+          }`;
+          location.push(newUrl);
         }}
         taskId={taskType === Constants.TASK_STATUS_IN_REVIEW ? task?.taskId : task?.id}
         isTaskProposal={taskType === Constants.TASK_STATUS_REQUESTED}

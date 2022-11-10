@@ -32,9 +32,6 @@ import {
 import { SafeImage } from '../../Common/Image';
 import DefaultUserImage from '../../Common/Image/DefaultUserImage';
 import { TableCellText } from './styles';
-import { DAOIcon } from '../../Icons/dao';
-import { OrganisationsCardNoLogo } from '../../profile/about/styles';
-import { OfflinePayment } from '../../Common/Payment/OfflinePayment/OfflinePayment';
 import { BatchRetroactivePayment } from './BatchRetroactivePayment';
 
 enum ViewType {

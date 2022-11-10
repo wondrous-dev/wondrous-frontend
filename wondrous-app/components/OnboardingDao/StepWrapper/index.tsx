@@ -96,7 +96,7 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, f
   if (step === fieldSetsLength) {
     return (
       <MainButton hoverContinue={hoverContinue} type="submit">
-        🚀 Launch DAO
+        🚀 Launch workspace
       </MainButton>
     );
   }
@@ -106,7 +106,7 @@ const ContinueButtonWrapper = ({ step, hoverContinue, handleStep, fields = {}, f
 const CreateDaoTextWrapper = ({ left }) => {
   const createDaoElements = Array.from({ length: 14 }, () => (
     <CreateDaoTextLogoWrapper>
-      <CreateDaoText>Create DAO</CreateDaoText>
+      <CreateDaoText>Create Workspace</CreateDaoText>
       <WonderLogo />
     </CreateDaoTextLogoWrapper>
   ));

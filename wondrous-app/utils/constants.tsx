@@ -119,64 +119,10 @@ export const COLUMNS_CONFIGURATION = {
   ASSIGNEE: 'assignee',
 };
 
-// Supported Chains (ETHEREUM, POLYGON)
-const SUPPORTED_CHAINS = {
-  1: 'ETH',
-  137: 'MATIC',
-  1666600000: 'HARMONY',
-  42161: 'ARBITRUM',
-  56: 'BSC',
-  288: 'BOBA',
-  10: 'OPTIMISM',
-  8217: 'KLAYTN',
-};
-
-export const NATIVE_TOKEN_SYMBOL = {
-  1: 'ETH',
-  4: 'ETH',
-  137: 'MATIC',
-  1666600000: 'ONE',
-  42161: 'AETH',
-  56: 'BNB',
-  288: 'ETH',
-  10: 'OP',
-  8217: 'KLAY',
-};
-
-if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-  SUPPORTED_CHAINS[5] = 'GOERLI';
-}
-
-export const RPC_URLS: { [chainId: number]: string } = {
-  1: process.env.NEXT_PUBLIC_RPC_URL_ETH,
-  5: process.env.NEXT_PUBLIC_RPC_URL_GOERLI,
-  137: process.env.NEXT_PUBLIC_RPC_URL_MATIC,
-  1666600000: process.env.NEXT_PUBLIC_RPC_URL_HARMONY,
-  42161: process.env.NEXT_PUBLIC_RPC_URL_ARBITRUM,
-  56: process.env.NEXT_PUBLIC_RPC_URL_BSC,
-  288: process.env.NEXT_PUBLIC_RPC_URL_BOBA,
-  10: process.env.NEXT_PUBLIC_RPC_URL_OPTIMISM,
-};
-
-export const CHAIN_VALUE_TO_GNOSIS_TX_SERVICE_URL = {
-  ethereum: 'https://safe-transaction.mainnet.gnosis.io',
-  goerli: 'https://safe-transaction.goerli.gnosis.io',
-  polygon: 'https://safe-transaction.polygon.gnosis.io',
-  harmony: 'https://multisig.t.hmny.io',
-  arbitrum: 'https://safe-transaction.arbitrum.gnosis.io',
-  bsc: 'https://safe-transaction.bsc.gnosis.io',
-  boba: 'https://safe-transaction.mainnet.boba.network',
-  optimism: 'https://safe-transaction.optimism.gnosis.io',
-};
-
-export const HARMONY_MULTI_SEND_ADDR = '0x998739BFdAAdde7C933B942a68053933098f9EDa';
-export const HARMONY_SAFE_MASTER_COPY = '0x69f4D1788e39c87893C980c06EdF4b7f686e2938';
-export const HARMONY_SAFE_MASTER_COPY2 = '0xfb1bffC9d739B8D520DaF37dF666da4C687191EA';
-export const HARMONY_PROXY_FACTORY = '0xC22834581EbC8527d974F8a1c97E1bEA4EF910BC';
-
 export const DISCORD_CONNECT_TYPES = {
   signup: 'signup',
   login: 'login',
+  loginMethod: 'login-method',
   connectSettings: 'connectSettings',
   connectOnboarding: 'connectOnboarding',
   connectOnboardingDao: 'connectOnboardingDao',
@@ -185,92 +131,6 @@ export const DISCORD_CONNECT_TYPES = {
 export const NOTION_CONNECT_TYPES = {
   TASK_IMPORT: 'taskImport',
 };
-
-export const DEFAULT_ERC20_GAS_LIMIT = '0x3D090'; // TODO hackey == 250000
-
-export const SUPPORTED_CHAIN_IDS = Object.keys(SUPPORTED_CHAINS).map((chainId) => parseInt(chainId, 10));
-
-export const CHAIN_IDS = {
-  ETH: 1,
-  MATIC: 137,
-  GOERLI: 5,
-  HARMONY: 1666600000,
-  ARBITRUM: 42161,
-  BSC: 56,
-  BOBA: 288,
-  OPTIMISM: 10,
-  KLAYTN: 8217,
-};
-
-export const CHAIN_TO_CHAIN_DIPLAY_NAME = {
-  ethereum: 'Ethereum Mainnet',
-  goerli: 'Goerli Testnet',
-  polygon: 'Polygon Mainnet',
-  harmony: 'Harmony Mainnet',
-  arbitrum: 'Arbitrum One',
-  bsc: 'BNB smart chain',
-  boba: 'Boba Mainnet',
-  optimism: 'Optimism Mainnet',
-  klaytn: 'Klaytn Mainnet',
-};
-
-export const SUPPORTED_CURRENCIES = [
-  {
-    symbol: 'ETH',
-    chains: [1, 4, 288],
-  },
-  {
-    symbol: 'MATIC',
-    chains: [137],
-  },
-  {
-    symbol: 'ONE',
-    chains: [1666600000],
-  },
-  {
-    symbol: 'AETH',
-    chains: [42161],
-  },
-  {
-    symbol: 'BNB',
-    chains: [56],
-  },
-  {
-    symbol: 'OP',
-    chains: [10],
-  },
-  {
-    symbol: 'KLAY',
-    chains: [8217],
-  },
-  {
-    symbol: 'WONDER',
-    chains: [1, 137, 1666600000, 42161, 56, 288, 10, 8127],
-    contracts: {
-      1: '',
-      137: '',
-      1666600000: '',
-      42161: '',
-      56: '',
-      288: '',
-      10: '',
-      8127: '',
-    },
-  },
-  {
-    symbol: 'USDC',
-    chains: [1, 137, 1666600000, 42161, 288, 10],
-    contracts: {
-      1: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
-      137: '0x2791bca1f2de4661ed88a30c99a7a9449aa84174',
-      1666600000: '0x44cED87b9F1492Bf2DCf5c16004832569f7f6cBa',
-      42161: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
-      56: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-      288: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
-      10: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
-    },
-  },
-];
 
 export const SIDEBAR_WIDTH = '84px';
 export const SIDEBAR_WIDTH_WITH_DAO = '344px';
@@ -465,7 +325,6 @@ export const filteredColorOptions = Object.keys(POD_COLOR).map((key) => ({
   label: POD_COLOR[key],
   value: key,
 }));
-export { SUPPORTED_CHAINS };
 export const EMAIL_REGEX =
   /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 export const URL_REGEX =
@@ -570,11 +429,11 @@ export const APPLICATION_POLICY = {
     value: 'all_members',
   },
   ONLY_ORG_MEMBERS_CAN_CLAIM: {
-    title: 'Everyone needs to apply except DAO members',
+    title: 'Everyone needs to apply except org members',
     value: 'only_org_members_can_claim',
   },
   ONLY_ORG_MEMBERS_CAN_APPLY: {
-    title: 'Only DAO members can apply',
+    title: 'Only org members can apply',
     value: 'only_org_members_can_apply',
   },
   ROLES_CAN_CAN_CLAIM: {
@@ -735,143 +594,157 @@ export const ROLE_COLORS_AND_EMOJIS = {
 export const FEATURED_LIST = [
   {
     username: 'wonderverse',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1457839097637060612/0t2GiVRC_400x400.png',
-    bio: 'Helping DAOs succeed with web3 native collaboration tools.',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1331901484686929920/1643214697/1500x500',
+    imageUrl: 'org/profile/45956686890926082/1ULEYJva6jT3pw.jpg',
+    bio: 'Helping organizations succeed with web3 native collaboration tools.',
+    headerUrl: 'org/header/45956686890926082/WX7Up9R2q3xumQ.png',
     name: 'Wonderverse',
   },
   {
-    username: 'BanklessDAOlationships',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1389400052448247816/qsOU0pih_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1380589844838055937/1634756837/1500x500',
-    bio: 'Manage and build relationships across the universe of DAOs as part of BanklessDAO',
-    name: 'Bankless DAOlationships',
+    username: 'Bankless Africa',
+    imageUrl: 'thumbnail/lPag9ulTcokV1w.jpg',
+    headerUrl: 'org/header/59396866214723655/BXdS6EENCC6Ifw.jpeg',
+    bio: 'Educating, onboarding and informing everyday Africans about bitcoin,Defi,DAOs,web3 etc',
+    name: 'Bankless Africa',
   },
   {
     username: 'Radicle',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1372563232850870274/aREQff_C_400x400.jpg',
+    imageUrl: 'thumbnail/6l_gQZS35SPfhg.jpg',
     bio: 'A peer-to-peer stack for building software together 🌞',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1054235330516320257/1606739593/1500x500',
+    headerUrl: 'org/header/50273256794488843/goDoVovapvFl6Q.jpeg',
     name: 'Radicle',
   },
   {
+    username: 'krausehouse',
+    imageUrl: 'thumbnail/XwUv2LYsgjNeYQ.png',
+    headerUrl: 'org/header/65027352575344779/A5twi91TXWxkQw.jpeg',
+    name: 'Krause House',
+    bio: 'Community of hoops fanatics that are crazy enough to purchase & operate an NBA team as a DAO',
+  },
+  {
+    username: 'guildxyz',
+    imageUrl: 'thumbnail/HdF7Ss_VUfvrLg.jpg',
+    headerUrl: 'org/header/55783761101455400/yvQH5IATqpGKGA.png',
+    name: 'Guild',
+    bio: 'platformless memberships and quests',
+  },
+  {
+    username: 'unlock',
+    imageUrl: 'thumbnail/-qgTydr4tP1wTg.png',
+    headerUrl: 'org/header/67845186849341630/_XcbBTe71pLPXw.png',
+    bio: 'Unlock is a decentralized protocol for memberships.',
+    name: 'Unlock Protocol',
+  },
+  {
     username: 'dYdX',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1422398038904123409/1t8muDVp_400x400.jpg',
+    imageUrl: 'thumbnail/Z0KaIqaPnq4_FA.jpg',
     bio: 'Empowering traders with powerful & decentralized infrastructure. Trade & stake to earn rewards, and vote on the future of dydx',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/909929047626354688/1614178652/1500x500',
+    headerUrl: 'org/header/51083244349685777/kPkZMCDciq1kPg.jpeg',
     name: 'dYdX',
   },
   {
     username: 'Gitcoin',
-    imageUrl: 'https://d1fdloi71mui9q.cloudfront.net/KHC7f0e5SvS0GinfdwZE_6XUob6JgGP8uW86i',
+    imageUrl: 'thumbnail/r1vqCxBUe5Vf_g.jpg',
     bio: "Gitcoin is where the world's leading web3 projects are born, validated & funded.",
-    headerUrl: 'https://pbs.twimg.com/profile_banners/856446453157376003/1661964290/1500x500',
+    headerUrl: 'org/header/50979198683054094/k2fvmfTmEWmsxg.jpeg',
     name: 'Gitcoin',
   },
   {
     username: 'PrimeDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1399376178453090305/RJD82RrV_400x400.jpg',
+    imageUrl: 'thumbnail/eC1saeeUz33wOw.jpg',
     bio: 'Building tools that turn DeFi into a cooperative ecosystem. #DAO2DAO products and services.',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1280797106886901761/1622472257/1500x500',
+    headerUrl: 'org/header/57310312183889975/9EfJtN66uStK0A.jpeg',
     name: 'Prime DAO',
   },
   {
+    username: 'Layer2DAO',
+    imageUrl: 'thumbnail/7ym4a22gWHMa6Q.jpg',
+    headerUrl: 'org/header/56980676447043635/n5WWpDaLTX7DUQ.jpeg',
+    bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
+    name: 'Layer2 DAO',
+  },
+  {
+    username: 'LandX',
+    imageUrl: 'thumbnail/IlNy6Yfaj_0kAQ.jpg',
+    bio: 'The Perpetual Commodity Vaults Protocol ',
+    headerUrl: 'org/header/65478934565748886/7M94073pyzLAVg.png',
+    name: 'LandX',
+  },
+  {
     username: 'talentDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1565047080489553921/EQSISitd_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1468727203219193859/1651863023/1500x500',
+    imageUrl: 'thumbnail/--_8OBKmOoYBSg.jpg',
+    headerUrl: 'org/header/50274039728439308/EYVXWPWOZp8tYw.jpeg',
     bio: 'Unlock talent | Decentralize knowledge | #DeSci DAO Building the Journal of Decentralized Work',
     name: 'Talent DAO',
   },
   {
     username: 'MetricsDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1453392380250443782/UC8erEKz_400x400.png',
+    imageUrl: 'thumbnail/aEctNGvj9d3MeQ.png',
     bio: 'Uniting the best analytical minds in the space to build the future of crypto analytics.',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1451248797582077954/1643664064/1500x500',
+    headerUrl: 'org/header/54002035516768285/YtjvJAXsI2KhmQ.jpeg',
     name: 'MetricsDAO',
   },
   {
     username: 'colorsxdao',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1532037515074383873/9rufaHjb_400x400.jpg',
+    imageUrl: 'thumbnail/g1CnmWylfW90gw.jpg',
     bio: 'A global community of creatives supporting each other across disciplines.',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1485243400379158532/1654101182/1500x500',
+    headerUrl: 'org/header/53653210809761819/TWZLIRcWtuTkDQ.jpg',
     name: 'Colors DAO',
   },
   {
     username: 'yup',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1489008618712096770/T2FtCQJL_400x400.jpg',
+    imageUrl: 'thumbnail/pHu07-T3OVr2BQ.png',
     bio: '✺ curate ✺ NFTs, Tweets, Videos, Tokens, Articles, Songs... you get the idea',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1678435962/1633377828/1500x500',
+    headerUrl: 'org/header/51007906165817360/8B1kRfVzQ9SmXA.jpeg',
     name: 'Yup',
   },
   {
     username: 'ReadyPlayerDAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1499459429304979470/8XBS173g_400x400.png',
+    imageUrl: 'thumbnail/8O1Pf0coMMfoZA.jpg',
     bio: 'The future of gaming is decentralized and permissionless, and this time, the players are in charge.',
     name: 'Ready Player DAO',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1420405430400991236/1638824655/1500x500',
+    headerUrl: 'org/header/62453427148423257/RoFj7IHwMf1gVg.jpeg',
   },
   {
     username: 'Stems',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1516504445726588933/YHGzp2MT_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1449068116663754760/1651273720/1500x500',
+    imageUrl: 'thumbnail/jihSHZagJ5Gdog.png',
+    headerUrl: 'org/header/48189639775748102/_b9SyvjC0hWSTw.jpeg',
     bio: 'make music with your favorite artist',
     name: 'StemsDAO',
   },
   {
     username: 'blu3dao',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1488749682251628553/c7l6JtMr_400x400.png',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1488735321319612418/1663944361/1500x500',
+    imageUrl: 'thumbnail/Kb6juRRh9ifRVA.png',
+    headerUrl: 'org/header/56518149820907568/LBxQZMtLkiPTig.jpeg',
     bio: '🦋 making the impossible, possible. ✨ a DAO focused on empowering women & non-binary people to earn, learn & play in web3 via mentorship, community & funding',
     name: 'Blu3 DAO',
   },
   {
-    username: 'harmony',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1526408675186790400/Tc9iFPMC_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1006055524666826754/1652811355/1500x500',
-    bio: 'Harmony is an open and fast layer-1 blockchain: Our mainnet runs Ethereum applications with 2-second transaction finality and 100 times lower fees.',
-    name: 'Harmony',
-  },
-  {
-    username: 'bobanetwork',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1536795904706895872/PVQ769qJ_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/831847934534746114/1663777233/1500x500',
-    bio: 'Lower gas, faster, secured in Ethereum, supercharged with Hybrid Compute: bridge at http://gateway.boba.network',
-    name: 'Boba Network',
-  },
-  {
-    username: 'Layer2DAO',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1566191261987512321/CNtKHXGT_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1480302068602576897/1642437751/1500x500',
-    bio: 'Layer2DAO invests in promising L2 ecosystem projects.',
-    name: 'Layer2 DAO',
-  },
-  {
     username: 'RVRSProtocol',
     name: 'Reverse Protocol',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1518631802360971264/U5sZ3gRA_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1452749248831819781/1650908414/1500x500',
+    imageUrl: 'thumbnail/-Q-HabZ7gJkrKw.png',
+    headerUrl: 'org/header/56156210349473838/MtLalTJmk1BL8g.png',
     bio: '#DeFi 2.0 protocol generating passive income for $RVRS stakers through a community governed treasury ',
   },
   {
     username: 'atlantis0x',
     name: 'Atlantis World',
     bio: 'Web3 social, gaming and education in one lightweight metaverse 🎮',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1533910925077467137/szDWfd81_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1396594850598957061/1650731101/1500x500',
+    imageUrl: 'thumbnail/LMtWEfrwC0xciA.jpg',
+    headerUrl: 'org/header/57232528252076086/ZKu56UoDcII3VA.jpeg',
   },
   {
     username: 'jokedao',
     name: 'jokedao',
     bio: 'bottom-up, on-chain governance. for user-generated roadmaps, grants, endorsements, bounties, curation, and community-driven decisions',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1488257098018430979/pon20B_g_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1483660647858638851/1642618802/1500x500',
+    imageUrl: 'thumbnail/MSO7Y_fM363jAQ.jpg',
+    headerUrl: 'org/header/57703800857690169/Nt_ukZ50W-X4JQ.jpeg',
   },
   {
     username: 'Lobby3',
     name: 'Lobby3',
     bio: 'Join our fight to advance economic opportunity and Web3 technology in D.C. 👾',
-    imageUrl: 'https://pbs.twimg.com/profile_images/1542579303615021056/yG2LqO3M_400x400.jpg',
-    headerUrl: 'https://pbs.twimg.com/profile_banners/1483865970724589568/1645050021/1500x500',
+    imageUrl: 'thumbnail/vtNOT3HZxQluaw.png',
+    headerUrl: 'org/header/52285666880389143/5rJ29hbei-D78w.jpeg',
   },
 ];
 
@@ -882,7 +755,7 @@ export const gridMobileStyles = {
 };
 
 export const TABS_LABELS = {
-  DAOS: 'daos',
+  DAOS: 'orgs',
   BOUNTY: 'bounty',
   GR15_DEI: 'gr15_dei',
 };
@@ -905,6 +778,7 @@ export const CATEGORY_TYPES = {
   GOVERNANCE: 'governance',
   DEFI: 'defi',
   ENGINEERING: 'engineering',
+  OPERATION: 'operation',
 };
 
 export const CATEGORY_LABELS = {
@@ -918,6 +792,7 @@ export const CATEGORY_LABELS = {
   [CATEGORY_TYPES.GOVERNANCE]: '🪐 Governance',
   [CATEGORY_TYPES.DEFI]: '🫂 DEFI',
   [CATEGORY_TYPES.ENGINEERING]: '⚙ Engineering',
+  [CATEGORY_TYPES.OPERATION]: '🛠️ Operation',
 };
 
 export const enum ORG_TYPES {

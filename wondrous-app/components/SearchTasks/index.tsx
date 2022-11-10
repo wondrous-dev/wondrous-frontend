@@ -7,11 +7,12 @@ import TaskViewModal from 'components/Common/TaskViewModal';
 import { useRouter } from 'next/router';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { ViewType } from 'types/common';
-import { TaskFragment } from 'types/task';
+import { TaskInterface } from 'types/task';
 import { delQuery } from 'utils';
 import { BOUNTY_TYPE, MILESTONE_TYPE, TASK_TYPE } from 'utils/constants';
 import { useExploreGr15TasksAndBounties, useHotkey, useUserBoard } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import { useLocation } from 'utils/useLocation';
 import { SafeImage } from '../Common/Image';
 import { UserIconSmall } from '../Icons/Search/types';
 import BountyIcon from '../Icons/TaskTypes/bounty';
@@ -26,7 +27,9 @@ const TaskTypeIcons = {
 };
 
 type Props = {
-  onSearch: (searchString: string) => Promise<{ users: Array<any>; tasks: TaskFragment[]; proposals: TaskFragment[] }>;
+  onSearch: (
+    searchString: string
+  ) => Promise<{ users: Array<any>; tasks: TaskInterface[]; proposals: TaskInterface[] }>;
   isExpandable?: boolean;
   autocompleteComponent?: React.Component;
 };
@@ -37,6 +40,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const location = useLocation();
   const [selectedTask, setSelectedTask] = useState(null);
   const [inputValue, setInputValue] = useState(router.query.search);
   const [options, setOptions] = useState([]);
@@ -93,7 +97,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
   function handleTaskClick(task) {
     const urlParams: any = new URLSearchParams(window.location.search);
     urlParams.append(task.__typename === 'TaskProposalCard' ? 'taskProposal' : 'task', task?.id);
-    router.replace(`${delQuery(router.asPath)}?${urlParams.toString()}`);
+    location.push(`${delQuery(router.asPath)}?${urlParams.toString()}`);
 
     setSelectedTask(task);
   }
@@ -122,7 +126,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
         open={!!selectedTask}
         handleClose={() => {
           setSelectedTask(null);
-          router.replace(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`);
+          location.push(`${delQuery(router.asPath)}?view=${router.query.view ?? ViewType.Grid}`);
         }}
         isTaskProposal={selectedTask?.__typename === 'TaskProposalCard'}
         taskId={selectedTask?.id}

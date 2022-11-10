@@ -13,7 +13,7 @@ import { LaterButton, BackButton } from 'components/Onboarding/OnboardingLayout/
 import { Connectors } from 'components/Onboarding/styles';
 import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
-import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import WalletIcon from '../../../public/images/onboarding/union.svg';
@@ -21,7 +21,7 @@ import WalletIcon from '../../../public/images/onboarding/union.svg';
 function SetupWallet() {
   const router = useRouter();
   const isMobile = useIsMobile();
-  const {collabInvite} = router.query
+  const { collabInvite } = router.query;
   const wonderWeb3 = useWonderWeb3();
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -70,7 +70,7 @@ function SetupWallet() {
 
   const description = (
     <div>
-      Get paid in USDC, ETH, $WONDER, and your DAOs native social token. <br />
+      Get paid in USDC, ETH and native tokens. <br />
       Don’t have a digital wallet?{' '}
       <a href="https://metamask.io/download/" target="blank">
         <span
