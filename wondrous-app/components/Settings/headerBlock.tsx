@@ -1,5 +1,4 @@
 import React from 'react';
-import PlusIcon from 'components/Icons/plus';
 import { Grid } from '@mui/material';
 import {
   SettingsHeaderBlock,
@@ -7,12 +6,11 @@ import {
   SettingsHeaderText,
   SettingsHeaderTitle,
   SettingsHeaderInviteButton,
-  SettingsHeaderInviteButtonIcon,
   SettingsHeaderActionText,
 } from './styles';
 
-export function HeaderBlock(props) {
-  const { title, description, icon, onInvite, handleDownloadToCSV } = props;
+function HeaderBlock(props) {
+  const { title, description, onInvite, handleDownloadToCSV } = props;
 
   return (
     <SettingsHeaderBlock>
@@ -29,3 +27,5 @@ export function HeaderBlock(props) {
     </SettingsHeaderBlock>
   );
 }
+
+export default HeaderBlock;

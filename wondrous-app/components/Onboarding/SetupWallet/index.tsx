@@ -13,7 +13,7 @@ import { LaterButton, BackButton } from 'components/Onboarding/OnboardingLayout/
 import { Connectors } from 'components/Onboarding/styles';
 import { Wallet } from 'components/Onboarding/SetupWallet/styles';
 import { useWonderWeb3 } from 'services/web3';
-import { GRAPHQL_ERRORS, SUPPORTED_CHAINS } from 'utils/constants';
+import { GRAPHQL_ERRORS } from 'utils/constants';
 import LeftArrowIcon from 'components/Icons/leftArrow';
 import { getUserSigningMessage, linkWallet, logout, useMe } from '../../Auth/withAuth';
 import WalletIcon from '../../../public/images/onboarding/union.svg';

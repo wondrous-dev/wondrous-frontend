@@ -19,8 +19,12 @@ import useGnosisSdk from 'services/payment';
 import { useWonderWeb3 } from 'services/web3';
 import { ERC20abi } from 'services/contracts/erc20.abi';
 import { usePaymentModal } from 'utils/hooks';
-import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME, CHAIN_TO_EXPLORER_URL } from 'utils/web3Constants';
-import { DEFAULT_ERC20_GAS_LIMIT } from 'utils/constants';
+import {
+  CHAIN_TO_GNOSIS_URL_ABBR,
+  SUPPORTED_CHAINS,
+  CHAIN_TO_EXPLORER_URL,
+  DEFAULT_ERC20_GAS_LIMIT,
+} from 'utils/web3Constants';
 
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
@@ -117,7 +121,7 @@ export function SingleWalletPayment(props) {
     setWrongChainError(null);
     const chain = submissionPaymentInfo?.paymentData[0].chain;
     if (chain && currentChainId) {
-      if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+      if (chain !== SUPPORTED_CHAINS[currentChainId]) {
         setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }
@@ -192,7 +196,7 @@ export function SingleWalletPayment(props) {
 
   useEffect(() => {
     if (transactionHash) {
-      const url = constructExplorerRedirectUrl(CHAIN_ID_TO_CHAIN_NAME[currentChainId], transactionHash);
+      const url = constructExplorerRedirectUrl(SUPPORTED_CHAINS[currentChainId], transactionHash);
       console.log(url);
       setExploreRedirectUrl(url);
     }
@@ -334,7 +338,7 @@ export function SingleWalletPayment(props) {
     const iface = new ethers.utils.Interface(ERC20abi);
     const paymentData = submissionPaymentInfo?.paymentData[0];
     const chain = paymentData?.chain;
-    if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+    if (chain !== SUPPORTED_CHAINS[currentChainId]) {
       setWrongChainError(`Please switch to ${chain} chain`);
       return;
     }

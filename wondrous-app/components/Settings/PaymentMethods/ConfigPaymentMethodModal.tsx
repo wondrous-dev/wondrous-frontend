@@ -1,8 +1,6 @@
 import { useMutation, useLazyQuery } from '@apollo/client';
 import apollo from 'services/apollo';
-import { useRouter } from 'next/router';
 
-import ErrorFieldIcon from 'components/Icons/errorField.svg';
 import Ethereum from 'components/Icons/ethereum';
 import PolygonIcon from 'components/Icons/polygonMaticLogo.svg';
 import React, { useEffect, useState } from 'react';
@@ -11,6 +9,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
 import { CREATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
 import { GRAPHQL_ERRORS } from 'utils/constants';
+import { CHAIN_SELECT_OPTIONS } from 'utils/web3Constants';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   PaymentConfigModal,
@@ -25,6 +24,7 @@ import {
   TokenLogoDisplay,
 } from './styles';
 import { USDCoin } from '../../Icons/USDCoin';
+import Avalanche from '../../Icons/Avalanche';
 import DaiIcon from '../../Icons/dai';
 import Arbitrum from '../../Icons/arbitrum';
 import Harmony from '../../Icons/harmony';
@@ -33,44 +33,6 @@ import Boba from '../../Icons/Boba';
 import Optimism from '../../Icons/Optimism';
 import PlusIcon from '../../Icons/plus';
 import { ErrorText } from '../../Common';
-
-const chainOptions = [
-  {
-    label: 'Ethereum',
-    icon: <Ethereum />,
-    value: 'ethereum',
-  },
-  {
-    label: 'Polygon',
-    icon: <PolygonIcon />,
-    value: 'polygon',
-  },
-  {
-    label: 'Optimism',
-    icon: <Optimism />,
-    value: 'optimism',
-  },
-  {
-    label: 'Harmony',
-    icon: <Harmony />,
-    value: 'harmony',
-  },
-  {
-    label: 'Boba',
-    icon: <Boba />,
-    value: 'boba',
-  },
-  {
-    label: 'Arbitrum One',
-    icon: <Arbitrum />,
-    value: 'arbitrum',
-  },
-  {
-    label: 'BSC',
-    icon: <Binance />,
-    value: 'bsc',
-  },
-];
 
 const PresetTokens = [
   {
@@ -193,6 +155,7 @@ const PresetTokenPerChain = {
   harmony: HarmonyPresetTokens,
   bsc: BscPresetTokens,
   optimism: OptimismPresetTokens,
+  avalanche: PresetTokens,
 };
 const CHAIN_TO_USDC_ADDR = {
   ethereum: '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48',
@@ -202,6 +165,7 @@ const CHAIN_TO_USDC_ADDR = {
   bsc: '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
   boba: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
   optimism: '0x7F5c764cBc14f9669B88837ca1490cCa17c31607',
+  avalanche: '0xb97ef9ef8734c71904d8002f8b6bc66dd9c48a6e',
 };
 
 const CHAIN_TO_DAI_ADDR = {
@@ -212,12 +176,12 @@ const CHAIN_TO_DAI_ADDR = {
   bsc: '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
   boba: '0xf74195Bb8a5cf652411867c5C2C5b8C2a402be35',
   optimism: '0xda10009cbd5d07dd0cecc66161fc93d7c9000da1',
+  avalanche: '0xd586E7F844cEa2F87f50152665BCbc2C279D8d70',
 };
 
 function ConfigPaymentMethodModal(props) {
-  const router = useRouter();
   const { orgId, org, open, setShowConfigModal } = props;
-  const [chain, setChain] = useState(chainOptions[0].value);
+  const [chain, setChain] = useState(CHAIN_SELECT_OPTIONS[0].value);
   const [selectedToken, setSelectedToken] = useState(PresetTokens[0].value);
   const [customTokenAddress, setCustomTokenAddress] = useState('');
   const [customToken, setCustomToken] = useState(null);
@@ -352,11 +316,11 @@ function ConfigPaymentMethodModal(props) {
             formSelectStyle={{
               height: 'auto',
             }}
-            options={chainOptions}
+            options={CHAIN_SELECT_OPTIONS}
             name="chain"
           />
           <PaymentMethodDescription>
-            for BNB and Boba chain please contact support@wonderverse.xyz
+            for BNB and Avalanche chain please contact support@wonderverse.xyz
           </PaymentMethodDescription>
           <PaymentMethodSubHeader>Token </PaymentMethodSubHeader>
           <DropdownSelect
