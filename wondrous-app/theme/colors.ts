@@ -64,9 +64,11 @@ export const redColors = {
   red200: '#FB7A75',
   red300: '#F93701',
   red400: '#EE4852',
+  red650: '#CB3340',
   red700: '#DF251D',
   red750: '#FB6E47',
   red800: '#FF5C00',
+  red820: '#512428',
   red850: '#37170E',
 };
 
