@@ -18,8 +18,6 @@ import {
   BoardsCardMedia,
   BoardsCardFooter,
 } from 'components/Common/Boards/styles';
-import Dropdown from 'components/Common/Dropdown';
-import DropdownItem from 'components/Common/DropdownItem';
 import { PRIVACY_LEVEL, PERMISSIONS } from 'utils/constants';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
@@ -35,6 +33,8 @@ import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import TaskPriority from 'components/Common/TaskPriority';
+import Compensation from 'components/Common/Compensation';
+import TaskCardMenu from 'components/Common/TaskCardMenu';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -71,7 +71,6 @@ import { AvatarList } from '../AvatarList';
 import { SafeImage } from '../Image';
 import { TaskBountyOverview } from '../TaskBountyOverview';
 import { Claim } from '../../Icons/claimTask';
-import { Compensation } from '../Compensation';
 import { SubtaskLightIcon } from '../../Icons/subtask';
 import PodIcon from '../../Icons/podIcon';
 import { MilestoneProgress } from '../MilestoneProgress';
@@ -123,6 +122,7 @@ export function TaskCard({
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [isTaskSubmissionLoading, setTaskSubmissionLoading] = useState(false);
   const [approvedSubmission, setApprovedSubmission] = useState(null);
+  const [showMenu, setShowMenu] = useState(false);
   const coverMedia = task?.media?.find((media) => media.type === 'image');
   const userProfile = useUserProfile();
 
@@ -215,7 +215,14 @@ export function TaskCard({
   const [anchorEl, setAnchorEl] = useState(null);
 
   return (
-    <ProposalCardWrapper onMouseLeave={() => setAnchorEl(null)} data-cy={`task-card-item-${title}`}>
+    <ProposalCardWrapper
+      onMouseEnter={() => setShowMenu(true)}
+      onMouseLeave={() => {
+        setShowMenu(false);
+        setAnchorEl(null);
+      }}
+      data-cy={`task-card-item-${title}`}
+    >
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
@@ -346,7 +353,6 @@ export function TaskCard({
                 alignSelf: 'center',
               }}
               rewards={rewards}
-              taskIcon={<TaskIcon />}
             />
           )}
         </TaskHeader>
@@ -465,61 +471,25 @@ export function TaskCard({
               </SubtaskCountWrapper>
             </Tooltip>
           )}
-          {canArchive && (
-            <TaskActionMenu>
-              <Tooltip title="More actions" placement="top">
-                <span>
-                  <Dropdown DropdownHandler={TaskMenuIcon} disablePortal setAnchorEl={setAnchorEl} anchorEl={anchorEl}>
-                    <DropdownItem
-                      key={`task-menu-edit-edit-${id}`}
-                      onClick={() => {
-                        setEditTask(true);
-                      }}
-                      color={palette.white}
-                    >
-                      Edit {type}
-                    </DropdownItem>
-                    {!isMilestone && (
-                      <DropdownItem
-                        key={`task-menu-duplicate-${id}`}
-                        onClick={() => {
-                          duplicateTask({
-                            variables: {
-                              taskId: id,
-                            },
-                          });
-                        }}
-                        color={palette.white}
-                      >
-                        Duplicate {type}
-                      </DropdownItem>
-                    )}
-                    <DropdownItem
-                      key={`task-menu-edit-archive${id}`}
-                      onClick={() => {
-                        setArchiveTask(true);
-                      }}
-                      color={palette.white}
-                    >
-                      Archive {type}
-                    </DropdownItem>
-
-                    {canDelete && (
-                      <DropdownItem
-                        key={`task-menu-delete-${id}`}
-                        onClick={() => {
-                          setDeleteTask(true);
-                        }}
-                        color={palette.red800}
-                      >
-                        Delete {type}
-                      </DropdownItem>
-                    )}
-                  </Dropdown>
-                </span>
-              </Tooltip>
-            </TaskActionMenu>
-          )}
+          <TaskCardMenu
+            anchorElParent={anchorEl}
+            canArchive={canArchive}
+            canEdit={canArchive}
+            canDelete={canDelete}
+            setAnchorElParent={setAnchorEl}
+            setArchiveTask={setArchiveTask}
+            setDeleteTask={setDeleteTask}
+            setEditTask={setEditTask}
+            setDuplicate={() => {
+              duplicateTask({
+                variables: {
+                  taskId: id,
+                },
+              });
+            }}
+            taskType={task?.type}
+            open={showMenu}
+          />
         </BoardsCardFooter>
       </SmartLink>
     </ProposalCardWrapper>

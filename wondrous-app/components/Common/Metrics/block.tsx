@@ -1,6 +1,6 @@
 import React from 'react';
 import { Logo } from '../../Icons/logo';
-import { ProgressBar } from '../ProgressBar';
+import ProgressBar from '../ProgressBar';
 
 import { MetricsBlock, MetricSubtitle, MetricTitle } from './styles';
 

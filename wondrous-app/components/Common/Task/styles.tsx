@@ -149,6 +149,12 @@ export const PodWrapper = styled.div`
   align-items: center;
   margin-right: 6px;
   margin-top: 12px;
+  background: ${palette.grey99};
+  border-radius: 64px;
+  padding: 2px 8px 2px 2px;
+  max-width: fit-content;
+  gap: 4px;
+  height: max-content;
 `;
 
 export const BountySignifier = styled.div`
@@ -164,11 +170,10 @@ export const BountySignifier = styled.div`
 
 export const PodName = styled(Typography)`
   && {
-    background: #363636;
     font-size: 13px;
     color: ${({ theme }) => theme.palette.white};
-    padding: 1px 8px;
     border-radius: 190px;
+    font-weight: 500;
   }
 `;
 
@@ -517,12 +522,12 @@ export const LoadMore = styled.div`
 export const TaskActionMenu = styled.div`
   display: flex;
   justify-content: center;
-  height: 24px;
+  height: 28px;
   width: max-content;
   z-index: 100;
   align-items: center;
-  visibility: hidden;
+  display: none;
   ${ProposalCardWrapper}:hover & {
-    visibility: visible;
+    display: block;
   }
 `;
