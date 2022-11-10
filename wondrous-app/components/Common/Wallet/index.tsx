@@ -4,6 +4,7 @@ import Arbitrum from 'components/Icons/arbitrum';
 import Binance from 'components/Icons/binace';
 import Boba from 'components/Icons/Boba';
 import Ethereum from 'components/Icons/ethereum';
+import Avalanche from 'components/Icons/Avalanche';
 import Harmony from 'components/Icons/harmony';
 import { Matic } from 'components/Icons/matic';
 import { ChevronFilled } from 'components/Icons/sections';
@@ -15,7 +16,7 @@ import { useWonderWeb3 } from 'services/web3';
 import { WonderWeb3Context } from 'services/web3/context/WonderWeb3Context';
 import useEagerConnect from 'services/web3/hooks/useEagerConnect';
 import signedMessageIsString from 'services/web3/utils/signedMessageIsString';
-import { SupportedChainType } from 'utils/web3Constants';
+import { SupportedChainType, CHAIN_TO_CHAIN_DIPLAY_NAME, CHAIN_LOGO, CURRENCY_SYMBOL } from 'utils/web3Constants';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   BalanceMenu,
@@ -31,49 +32,9 @@ import {
 } from './styles';
 import WalletModal from './WalletModal';
 
-const CHAIN_LOGO = {
-  '1': <Ethereum />,
-  '4': <Ethereum />,
-  '137': <Matic />,
-  '1666600000': <Harmony />,
-  '42161': <Arbitrum />,
-  '56': <Binance />,
-  '288': <Boba />,
-};
-
-export const CHAIN_TOOLTIP = {
-  '1': 'Ethereum',
-  '4': 'Ethereum',
-  '137': 'Matic',
-  '1666600000': 'Harmony',
-  '42161': 'Arbitrum',
-  '56': 'Binance',
-  '288': 'Boba',
-};
-
-const CURRENCY_SYMBOL = {
-  ETH: <Ethereum />,
-  WONDER: <WonderCoin />,
-  MATIC: <Matic />,
-  USDC: <USDCoin />,
-  ONE: <Harmony />,
-  AETH: <Arbitrum />,
-  BNB: <Binance />,
-};
-
-const CURRENCY_UI_ELEMENTS = {
-  ETH: { icon: <Ethereum />, label: 'ETH' },
-  WONDER: { icon: <WonderCoin />, label: 'WONDER' },
-  MATIC: { icon: <Matic />, label: 'MATIC' },
-  USDC: { icon: <USDCoin />, label: 'USDC' },
-  ONE: { icon: <Harmony />, label: 'ONE' },
-  AETH: { icon: <Arbitrum />, label: 'AETH' },
-  BNB: { icon: <Binance />, label: 'BNB' },
-};
-
 const CurrencyDropdownItem = ({ currency, selected, displayCurrency }) => {
-  if (currency in CURRENCY_UI_ELEMENTS) {
-    const { icon: currencyIcon, label: currencyLabel } = CURRENCY_UI_ELEMENTS[currency];
+  if (currency in CURRENCY_SYMBOL) {
+    const currencyIcon = CURRENCY_SYMBOL[currency];
     return (
       <CurrencySelectorItem
         selected={selected}
@@ -82,7 +43,7 @@ const CurrencyDropdownItem = ({ currency, selected, displayCurrency }) => {
       >
         <CurrencyWrapper>
           <CurrencySymbol>{currencyIcon}</CurrencySymbol>
-          <CurrencyName>{currencyLabel}</CurrencyName>
+          <CurrencyName>{currency}</CurrencyName>
         </CurrencyWrapper>
         <FilterCheckbox checked={selected} />
       </CurrencySelectorItem>
@@ -239,10 +200,11 @@ function Wallet() {
   if (wonderWeb3.notSupportedChain) {
     return <Button disabled>Chain Not Supported</Button>;
   }
+
   return (
     <WalletWrapper>
-      <Tooltip title={CHAIN_TOOLTIP[wonderWeb3.wallet.chain]}>
-        <ChainWrapper>{CHAIN_LOGO[wonderWeb3.wallet.chain]}</ChainWrapper>
+      <Tooltip title={CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]}>
+        <ChainWrapper>{CHAIN_LOGO[wonderWeb3.chain]}</ChainWrapper>
       </Tooltip>
       <Balance currency={currency}>
         <CurrencyDropdownItem

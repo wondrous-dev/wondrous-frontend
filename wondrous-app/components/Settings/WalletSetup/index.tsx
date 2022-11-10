@@ -18,36 +18,7 @@ import {
 } from 'components/Table/styles';
 import { TableValueText, WalletsContainer } from './styles';
 
-const SUPPORTED_PAYMENT_CHAINS = [
-  {
-    label: 'Ethereum Mainnet',
-    value: 'ethereum',
-  },
-  {
-    label: 'Polygon Mainnet',
-    value: 'polygon',
-  },
-  {
-    label: 'Harmony Mainnet',
-    value: 'harmony',
-  },
-  {
-    label: 'Boba Mainnet',
-    value: 'boba',
-  },
-  {
-    label: 'Arbitrum Mainnet',
-    value: 'arbitrum',
-  },
-];
-if (!process.env.NEXT_PUBLIC_PRODUCTION) {
-  SUPPORTED_PAYMENT_CHAINS.push({
-    label: 'Ethereum Goerli',
-    value: 'goerli',
-  });
-}
-
-function Wallets(props) {
+function Wallets() {
   const router = useRouter();
   const wonderWeb3 = useWonderWeb3();
   const { orgId, podId } = router.query as { orgId: string; podId: string };
@@ -132,13 +103,16 @@ function Wallets(props) {
                 </StyledTableCell>
               </StyledTableRow>
             </StyledTableHead>
-            <div
-              style={{
-                textAlign: 'center',
-              }}
-            >
-              {loading && <CircularProgress />}
-            </div>
+            {loading && (
+              <div
+                style={{
+                  textAlign: 'center',
+                }}
+              >
+                <CircularProgress />
+              </div>
+            )}
+
             <StyledTableBody>
               {wallets &&
                 wallets.map((wallet) => (

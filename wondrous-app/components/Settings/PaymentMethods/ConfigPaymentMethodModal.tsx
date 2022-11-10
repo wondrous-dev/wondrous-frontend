@@ -9,6 +9,7 @@ import { GET_PAYMENT_METHODS_FOR_ORG } from 'graphql/queries/payment';
 import { GET_TOKEN_INFO } from 'graphql/queries/tokenGating';
 import { CREATE_PAYMENT_METHOD } from 'graphql/mutations/payment';
 import { GRAPHQL_ERRORS } from 'utils/constants';
+import { CHAIN_SELECT_OPTIONS } from 'utils/web3Constants';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import {
   PaymentConfigModal,
@@ -32,49 +33,6 @@ import Boba from '../../Icons/Boba';
 import Optimism from '../../Icons/Optimism';
 import PlusIcon from '../../Icons/plus';
 import { ErrorText } from '../../Common';
-
-const chainOptions = [
-  {
-    label: 'Ethereum',
-    icon: <Ethereum />,
-    value: 'ethereum',
-  },
-  {
-    label: 'Polygon',
-    icon: <PolygonIcon />,
-    value: 'polygon',
-  },
-  {
-    label: 'Optimism',
-    icon: <Optimism />,
-    value: 'optimism',
-  },
-  {
-    label: 'Harmony',
-    icon: <Harmony />,
-    value: 'harmony',
-  },
-  {
-    label: 'Boba',
-    icon: <Boba />,
-    value: 'boba',
-  },
-  {
-    label: 'Arbitrum One',
-    icon: <Arbitrum />,
-    value: 'arbitrum',
-  },
-  {
-    label: 'BSC',
-    icon: <Binance />,
-    value: 'bsc',
-  },
-  {
-    label: 'Avalanche',
-    icon: <Avalanche />,
-    value: 'avalanche',
-  },
-];
 
 const PresetTokens = [
   {
@@ -223,7 +181,7 @@ const CHAIN_TO_DAI_ADDR = {
 
 function ConfigPaymentMethodModal(props) {
   const { orgId, org, open, setShowConfigModal } = props;
-  const [chain, setChain] = useState(chainOptions[0].value);
+  const [chain, setChain] = useState(CHAIN_SELECT_OPTIONS[0].value);
   const [selectedToken, setSelectedToken] = useState(PresetTokens[0].value);
   const [customTokenAddress, setCustomTokenAddress] = useState('');
   const [customToken, setCustomToken] = useState(null);
@@ -358,11 +316,11 @@ function ConfigPaymentMethodModal(props) {
             formSelectStyle={{
               height: 'auto',
             }}
-            options={chainOptions}
+            options={CHAIN_SELECT_OPTIONS}
             name="chain"
           />
           <PaymentMethodDescription>
-            for BNB and Boba chain please contact support@wonderverse.xyz
+            for BNB and Avalanche chain please contact support@wonderverse.xyz
           </PaymentMethodDescription>
           <PaymentMethodSubHeader>Token </PaymentMethodSubHeader>
           <DropdownSelect

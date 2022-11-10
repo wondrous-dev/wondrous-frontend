@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import Wallet, { CHAIN_TOOLTIP } from 'components/Common/Wallet';
+import Wallet from 'components/Common/Wallet';
+import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import InfoIcon from 'components/Icons/infoIcon';
 import { useWonderWeb3 } from 'services/web3';
 import CloseModalIcon from 'components/Icons/closeModal';
@@ -35,7 +36,9 @@ const ConnectWallet = () => {
       <ConnectWalletHeader>
         <InfoIcon />
         <ConnectWalletHeaderLabel>
-          {wonderWeb3.address ? `Connected to ${CHAIN_TOOLTIP[wonderWeb3.chain]} chain` : 'No wallet connected'}
+          {wonderWeb3.address
+            ? `Connected to ${CHAIN_TO_CHAIN_DIPLAY_NAME[wonderWeb3.chain]} chain`
+            : 'No wallet connected'}
         </ConnectWalletHeaderLabel>
         <DismissButtonWrapper>
           <DismissButton type="button" onClick={dismissWidget}>

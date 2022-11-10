@@ -9,17 +9,8 @@ import {
   HARMONY_PROXY_FACTORY,
   HARMONY_SAFE_MASTER_COPY,
   HARMONY_SAFE_MASTER_COPY2,
-} from 'utils/constants';
+} from 'utils/web3Constants';
 import { useWonderWeb3 } from './web3';
-
-const CHAIN_NAME_TO_DB_CHAIN_NAME = {
-  // todo refactor this to have one consistent naming probably
-  ETH: 'ethereum',
-  MATIC: 'polygon',
-  GOERLI: 'goerli',
-  ARBITRUM: 'arbitrum',
-  BOBA: 'boba',
-};
 
 const useGnosisSdk = () => {
   const wonderWeb3 = useWonderWeb3();
@@ -30,7 +21,7 @@ const useGnosisSdk = () => {
   const connectSafeSdk = async ({ safeAddress, chain }) => {
     setConnected(false);
     await wonderWeb3.onConnect();
-    const currentChain = CHAIN_NAME_TO_DB_CHAIN_NAME[wonderWeb3.chainName];
+    const currentChain = wonderWeb3.chainName;
     if (currentChain && currentChain !== chain) {
       throw new Error('Not on the right chain');
     }

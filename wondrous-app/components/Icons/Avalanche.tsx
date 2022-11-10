@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function Avalanche() {
   return (
-    <svg width="1503" height="1504" viewBox="0 0 1503 1504" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <svg width="14" height="22" viewBox="0 0 1503 1504" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="287" y="258" width="928" height="844" fill="white" />
       <path
         fillRule="evenodd"
