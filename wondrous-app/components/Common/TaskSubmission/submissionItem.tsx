@@ -230,7 +230,7 @@ function SubmissionItemUserImage({ creatorProfilePicture }) {
   return <DefaultUserImage />;
 }
 
-function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor }) {
+export function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor = false }) {
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   return (
     <Link href={`/profile/${creatorUsername}/about`} passHref>

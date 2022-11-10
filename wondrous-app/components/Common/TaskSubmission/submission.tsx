@@ -34,7 +34,7 @@ import { TaskSubmissionForm } from './submissionForm';
 import { SubmissionItem } from './submissionItem';
 import { SubmissionPayment } from './submissionPayment';
 
-function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '', dataCy = 'submission' }) {
+export function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText = '', dataCy = 'submission' }) {
   return (
     <SubmissionButtonWrapperGradient>
       <SubmissionButtonWrapperBackground>
@@ -70,7 +70,7 @@ const inProgressMoveCompleted = ({ boardColumns, board }, data) => {
   }
 };
 
-function TaskSubmissionsLoading({ loading }) {
+export function TaskSubmissionsLoading({ loading }) {
   if (!loading) return null;
   return <CircularProgress />;
 }

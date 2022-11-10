@@ -255,7 +255,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
                     })}
                   </TaskSectionDisplayData>
                 </TaskSectionDisplayDivWrapper>
-                <ViewGrantFooter isFullScreen={isFullScreen} />
+                <ViewGrantFooter isFullScreen={isFullScreen} grantId={grant.id} />
               </TaskModalTaskData>
             </>
           ) : (
