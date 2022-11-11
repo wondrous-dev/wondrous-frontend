@@ -11,7 +11,6 @@ const GradientHeading = styled(Typography)`
     background-clip: text;
     text-fill-color: transparent;
     width: fit-content;
-  }
 `;
 
 export default GradientHeading;

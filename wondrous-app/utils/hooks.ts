@@ -30,6 +30,7 @@ import {
   TokenGatingContext,
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
+  TaskContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -308,7 +309,14 @@ export const useNotifications = () => {
 
 export const useSteps = (defaultStep = 0) => {
   const [step, setStep] = useState(defaultStep);
-  return { step, setStep };
+
+  const nextStep = () => setStep((prevState) => prevState + 1);
+
+  const prevStep = () => setStep((prevState) => prevState - 1);
+
+  useEffect(() => () => setStep(defaultStep), []);
+
+  return { step, setStep, nextStep, prevStep };
 };
 
 export const usePermissions = (entity, isTaskProposal = false) => {
@@ -340,3 +348,4 @@ export const usePermissions = (entity, isTaskProposal = false) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
   return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal };
 };
+export const useTaskContext = () => useContext(TaskContext);

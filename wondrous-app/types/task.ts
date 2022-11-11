@@ -44,6 +44,10 @@ export interface ITask {
   users?: Array<IUser>;
 }
 
+export interface TaskMint {
+  tokenId?: string;
+  status: string;
+}
 export interface TaskInterface {
   __typename: string;
   assigneeId: string;
@@ -77,4 +81,5 @@ export interface TaskInterface {
   status: string;
   title: string;
   type: string;
+  taskMint?: TaskMint;
 }
