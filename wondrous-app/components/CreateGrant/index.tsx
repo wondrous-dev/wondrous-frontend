@@ -42,7 +42,7 @@ import {
   EditorPlaceholder,
   EditorToolbar,
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { useFormik } from 'formik';
+import { Formik, useFormik } from 'formik';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
@@ -215,7 +215,7 @@ const CreateGrant = ({
   }, [isInPrivatePod, existingGrant?.privacyLevel, orgBoard, podBoard]);
 
   return (
-    <Form onSubmit={(val) => console.log(val)}>
+    <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>

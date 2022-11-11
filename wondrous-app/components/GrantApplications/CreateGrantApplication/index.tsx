@@ -1,10 +1,21 @@
+import { TaskModalCard, TaskModalHeaderBackToList } from 'components/Common/TaskViewModal/styles';
+import {
+  CreateEntityHeader,
+  CreateEntityHeaderWrapper,
+  CreateEntityOpenInFullIcon,
+  CreateEntitySelectErrorWrapper,
+} from 'components/CreateEntity/CreateEntityModal/styles';
 import { deserializeRichText } from 'components/RichText';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { descriptionTemplate } from './utils';
+import { useFullScreen } from 'utils/hooks';
+import { useMe } from 'components/Auth/withAuth';
+import { Tooltip, Box } from '@mui/material';
+import {Form} from 'components/CreateGrant/styles';
 
 const validationSchema = yup.object({
-  title: yup.string().required('Name is required'),
+  title: yup.string().required('Title is required'),
   description: yup.string().required('Description is required'),
   grantAmount: yup.object({
     amount: yup.number().required('Amount is required'),
@@ -13,25 +24,48 @@ const validationSchema = yup.object({
   mediaUploads: yup.array(),
 });
 
-const CreateGrantApplication = () => {
+const CreateGrantApplication = ({handleClose, grantId}) => {
+  const user = useMe();
+  const { isFullScreen, toggleFullScreen } = useFullScreen();
   const initialValues = {
-    title: '',
+    title: null,
     description: deserializeRichText(descriptionTemplate),
     grantAmount: {
       amount: 0,
-      walletAddress: '',
     },
+    walletAddress: user?.activeEthAddress || null,
     mediaUploads: [],
   };
 
-  const formik = useFormik({
+  const form = useFormik({
     initialValues,
     validationSchema,
     onSubmit: (values) => {
       console.log(values);
     },
   });
-  return null;
+  console.log('imhere bro')
+  return (
+    <Form onSubmit={form.handleSubmit}>
+      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+        <CreateEntityHeader>
+          <CreateEntityHeaderWrapper>
+            <CreateEntitySelectErrorWrapper>
+                <TaskModalHeaderBackToList onClick={handleClose}>Back to grant</TaskModalHeaderBackToList>
+            </CreateEntitySelectErrorWrapper>
+            <CreateEntityHeaderWrapper>
+            <Tooltip title="Full screen" placement="top">
+              <Box>
+                <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
+              </Box>
+            </Tooltip>
+          </CreateEntityHeaderWrapper>
+
+          </CreateEntityHeaderWrapper>
+        </CreateEntityHeader>
+      </TaskModalCard>
+    </Form>
+  );
 };
 
 export default CreateGrantApplication;

@@ -3,6 +3,8 @@ import { TaskSubmissionItemsWrapper } from 'components/Common/TaskSubmission/sty
 import { TaskSubmissionsLoading } from 'components/Common/TaskSubmission/submission';
 import Filters from 'components/GrantApplications/Filters';
 import { RequestApproveButton } from 'components/organization/members/styles';
+import { useState } from 'react';
+import CreateGrantApplication from '../CreateGrantApplication';
 import ListItem from '../ListItem';
 
 const Items = [
@@ -94,13 +96,15 @@ interface Application {
 }
 
 const List = ({ grantId }) => {
-  const handleCreateApplication = () => {};
+
+  // const task = useTaskContext()
   return (
     <>
       <TaskSubmissionsLoading loading={false} />
+      
       <Grid container justifyContent="space-between" alignItems="center">
         <Filters />
-        <RequestApproveButton onClick={handleCreateApplication} data-cy="application-button">
+        <RequestApproveButton onClick={() => {}} data-cy="application-button">
           Create Application
         </RequestApproveButton>
       </Grid>

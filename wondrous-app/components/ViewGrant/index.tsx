@@ -41,6 +41,7 @@ import { Categories, DataDisplay, Dates, GrantAmount, Reviewers } from './Fields
 import { canViewGrant } from './utils';
 import { DescriptionWrapper } from './styles';
 import ViewGrantFooter from './Footer';
+import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 
 const grant = {
   orgId: '46110468539940865',
@@ -148,6 +149,10 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const userPermissionsContext = getUserPermissionContext();
 
+  const [isCreateApplicationModalVisible, setCreateApplicationModalVisible] = useState(false);
+
+  const toggleCreateApplicationModal = () => setCreateApplicationModalVisible(prevState => !prevState);
+
   const [activeTab, setActiveTab] = useState(null);
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -162,6 +167,12 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   const sectionRef = useRef(null);
 
   const user = useMe();
+
+  if(isCreateApplicationModalVisible && grantId) {
+    return (
+      <CreateGrantApplication grantId={grantId} handleClose={toggleCreateApplicationModal}/>
+    )
+  }
 
   const canView = useMemo(
     () => canViewGrant(grant, userPermissionsContext, permissions),
@@ -178,6 +189,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     grant?.createdBy === user?.id;
+
 
   return (
     <TaskModal open={open} onClose={handleClose}>
