@@ -49,28 +49,26 @@ function SubmissionButtonWrapper({ onClick = null, buttonText = null, helperText
   );
 }
 
-const inProgressMoveCompleted =
-  ({ boardColumns, board }) =>
-  (data) => {
-    const task = data?.updateTaskStatus;
-    if (boardColumns?.setColumns) {
-      const transformedTask = transformTaskToTaskCard(task, {});
-      if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
-        const newColumns = boardColumns?.columns.map((col) => (col.id === transformedTask.id ? transformedTask : col));
-        boardColumns?.setColumns(newColumns);
-        return;
-      }
-      const columns = [...boardColumns?.columns];
-      columns[0].tasks = columns[0].tasks.filter((existingTask) => {
-        if (transformedTask?.id !== existingTask?.id) {
-          return true;
-        }
-        return false;
-      });
-      columns[1].tasks = [transformedTask, ...columns[1].tasks];
-      boardColumns?.setColumns(columns);
+const inProgressMoveCompleted = ({ boardColumns, board }, data) => {
+  const task = data?.updateTaskStatus;
+  if (boardColumns?.setColumns) {
+    const transformedTask = transformTaskToTaskCard(task, {});
+    if (board?.entityType && board?.entityType === ENTITIES_TYPES.BOUNTY) {
+      const newColumns = boardColumns?.columns.map((col) => (col.id === transformedTask.id ? transformedTask : col));
+      boardColumns?.setColumns(newColumns);
+      return;
     }
-  };
+    const columns = [...boardColumns?.columns];
+    columns[0].tasks = columns[0].tasks.filter((existingTask) => {
+      if (transformedTask?.id !== existingTask?.id) {
+        return true;
+      }
+      return false;
+    });
+    columns[1].tasks = [transformedTask, ...columns[1].tasks];
+    boardColumns?.setColumns(columns);
+  }
+};
 
 function TaskSubmissionsLoading({ loading }) {
   if (!loading) return null;
@@ -208,7 +206,7 @@ export function TaskSubmissions(props) {
   } = props;
   const router = useRouter();
   const [updateTaskStatus] = useMutation(UPDATE_TASK_STATUS, {
-    onCompleted: inProgressMoveCompleted({ boardColumns, board }),
+    onCompleted: (data) => inProgressMoveCompleted({ boardColumns, board }, data),
   });
   const [updateTaskHideSubmissions] = useMutation(UPDATE_TASK_SHOW_SUBMISSIONS, {
     refetchQueries: ['getTaskById'],

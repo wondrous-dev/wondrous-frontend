@@ -1,12 +1,12 @@
-import React from 'react';
-import { FILTER_STATUSES, ENTITIES_TYPES_FILTER_STATUSES } from 'services/board';
-import { ENTITIES_TYPES } from 'utils/constants';
-import MilestoneBoard from 'components/Common/MilestoneBoard';
-import BountyBoard from 'components/Common/BountyBoard';
+import Boards from 'components/Common/Boards';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
+import BountyBoard from 'components/Common/BountyBoard';
+import MilestoneBoard from 'components/Common/MilestoneBoard';
+import Wrapper from 'components/organization/wrapper/wrapper';
+import React from 'react';
+import { getFilterSchema } from 'utils/board';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
-import Boards from '../../Common/Boards';
-import Wrapper from '../wrapper/wrapper';
 
 export const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -30,12 +30,6 @@ export type Props = {
   entityType: string;
   loading: boolean;
   activeView: string | string[];
-};
-
-export const getFilterSchema = (entityType, orgId) => {
-  const filters = ENTITIES_TYPES_FILTER_STATUSES({ orgId, enablePodFilter: true });
-  const entityTypeFilters = filters[entityType]?.filters || FILTER_STATUSES;
-  return entityTypeFilters;
 };
 
 function OrgBoards(props: Props) {

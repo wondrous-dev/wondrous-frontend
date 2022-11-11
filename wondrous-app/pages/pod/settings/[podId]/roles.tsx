@@ -62,6 +62,7 @@ function RolesPage() {
     onCompleted: () => {
       setToast({ ...toast, message: 'Role deleted successfully.', show: true });
     },
+    refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
   });
 
   useEffect(() => {
@@ -89,7 +90,7 @@ function RolesPage() {
     });
   }
 
-  function deleteRole(role: Role) {
+  function deleteRole(role: Role, callback?: () => void) {
     const index = roles.indexOf(role);
 
     if (index > -1) {
@@ -99,7 +100,9 @@ function RolesPage() {
       setRoles(newOrganizationRoles);
     }
 
-    deletePodRole({ variables: { id: role.id } });
+    deletePodRole({ variables: { id: role.id } }).then(() => {
+      callback && callback();
+    });
   }
 
   return (
