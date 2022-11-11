@@ -461,7 +461,7 @@ export const ImageUploadRecommendText = styled(Typography)`
 export const ImageUploadBlockActivitySection = styled.div`
   display: flex;
   justify-content: left;
-  flex-direction: column;
+  align-items: center;
 `;
 
 export const ImageUploadBlockInputWrapper = styled.div<{ isIcon: boolean }>`
@@ -470,12 +470,17 @@ export const ImageUploadBlockInputWrapper = styled.div<{ isIcon: boolean }>`
   height: ${({ isIcon }) => (isIcon ? '80px' : 'auto')}; ;
 `;
 
-export const ImageUploadButton = styled.div`
+export const ImageUploadButtonWrapper = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
   z-index: 99;
+  display: flex;
+  align-items: center;
+`;
+
+export const ImageUploadButton = styled.div<{ marginLeft: string }>`
   text-align: center;
   width: 48px;
   height: 48px;
@@ -485,6 +490,7 @@ export const ImageUploadButton = styled.div`
   justify-content: center;
   border-radius: 50%;
   cursor: pointer;
+  margin-left: ${({ marginLeft }) => marginLeft || 0};
 `;
 
 export const ImageUploadBlockInput = styled.input`
@@ -512,6 +518,12 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
     text-decoration: underline;
   }
 `;
+
+export const ImageUploadBlockActionIcons = styled.div`
+  display: flex;
+  margin-left: 18px;
+`;
+
 export const CloseButton = styled.button`
   position: absolute;
   right: -8px;
@@ -525,6 +537,26 @@ export const CloseButton = styled.button`
 
   &:hover {
     background: #363636;
+  }
+`;
+
+export const ToolButton = styled(Button)`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  width: 36px;
+  height: 36px;
+  background: #313131;
+  border-radius: 6px;
+  fill: #313131;
+  margin-right: 12px;
+
+  button {
+    background: #313131;
+    border-radius: 6px;
   }
 `;
 
