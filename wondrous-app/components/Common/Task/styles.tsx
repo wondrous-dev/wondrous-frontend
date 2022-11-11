@@ -44,7 +44,7 @@ export const TaskHeader = styled.div`
   display: flex;
   width: 100%;
   text-align: left;
-  justify-content: flex-start;
+  justify-content: space-between;
   align-items: center;
 `;
 
@@ -52,12 +52,7 @@ export const TaskHeaderIconWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  & > * {
-    margin-right: 4px;
-  }
-  & > *:last-child {
-    margin-right: 0;
-  }
+  gap: 4px;
 `;
 
 export const TaskContent = styled.div`

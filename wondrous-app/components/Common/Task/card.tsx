@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { format } from 'date-fns';
 import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
 
 import { transformTaskToTaskCard, parseUserPermissionContext } from 'utils/helpers';
 import palette from 'theme/palette';
@@ -36,6 +36,7 @@ import TaskPriority from 'components/Common/TaskPriority';
 import Compensation from 'components/Common/Compensation';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
+import TaskCardDate from 'components/Common/TaskCardDate';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -75,9 +76,7 @@ import { SubtaskLightIcon } from '../../Icons/subtask';
 import PodIcon from '../../Icons/podIcon';
 import { MilestoneProgress } from '../MilestoneProgress';
 import { TaskCreatedBy } from '../TaskCreatedBy';
-import { ToggleBoardPrivacyIcon } from '../PrivateBoardIcon';
 import MilestoneIcon from '../../Icons/milestone';
-import { TaskMenuIcon } from '../../Icons/taskMenu';
 import { TaskCommentIcon } from '../../Icons/taskComment';
 import { ButtonPrimary } from '../button';
 import TASK_ICONS from './constants';
@@ -251,12 +250,6 @@ export function TaskCard({
               ) : (
                 <DAOIcon />
               ))}
-            {hasGR15 && (
-              <>
-                <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
-              </>
-            )}
             {canClaim ? (
               <>
                 {claimed ? (
@@ -325,24 +318,18 @@ export function TaskCard({
             )}
             {isMilestone && <MilestoneIcon />}
             {!userProfile && <AvatarList users={userList} id={`task-${task?.id}`} />}
+            {hasGR15 && (
+              <>
+                <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                <GR15DEILogo width="28" height="28" onClick={() => setOpenGR15Modal(true)} />
+              </>
+            )}
+            <TaskCardPrivacy privacyLevel={task?.privacyLevel} />
           </TaskHeaderIconWrapper>
-          <TaskCardPrivacy privacyLevel={task?.privacyLevel} />
-          <div
-            style={{
-              flex: 1,
-            }}
-          />
-          {task?.dueDate && <DueDateText>{format(new Date(task?.dueDate), 'MMM d')}</DueDateText>}
-          {rewards && rewards?.length > 0 && (
-            <Compensation
-              style={{
-                flexGrow: '0',
-                marginLeft: '8px',
-                alignSelf: 'center',
-              }}
-              rewards={rewards}
-            />
-          )}
+          <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
+            <TaskCardDate date={task?.dueDate} />
+            {task?.rewards && task?.rewards?.length > 0 && <Compensation rewards={task?.rewards} />}
+          </Grid>
         </TaskHeader>
         <TaskCreatedBy type={type} router={router} createdBy={createdBy} />
 
