@@ -9,8 +9,10 @@ import {
   TaskTabText,
 } from 'components/Common/TaskViewModal/styles';
 import { List } from 'components/GrantApplications';
+import { useTaskContext } from 'utils/hooks';
 
-const ViewGrantFooter = ({ isFullScreen, commentCount = 0, applicationsCount = 1, grantId }) => {
+const ViewGrantFooter = ({ commentCount = 0, applicationsCount = 1 }) => {
+  const { isFullScreen } = useTaskContext();
   const [activeTab, setActiveTab] = useState(tabs.applications);
   const ref = useRef();
   return (
@@ -28,7 +30,7 @@ const ViewGrantFooter = ({ isFullScreen, commentCount = 0, applicationsCount = 1
           );
         })}
       </TaskSectionFooterTitleDiv>
-      <TaskSectionContent ref={ref}>{activeTab === tabs.applications && <List grantId={grantId} />}</TaskSectionContent>
+      <TaskSectionContent ref={ref}>{activeTab === tabs.applications && <List />}</TaskSectionContent>
     </TaskModalFooter>
   );
 };

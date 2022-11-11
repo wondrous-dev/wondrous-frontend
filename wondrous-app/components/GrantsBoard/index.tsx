@@ -19,7 +19,6 @@ import typography from 'theme/typography';
 import { RichTextViewer } from 'components/RichText';
 import { SafeImage } from 'components/Common/Image';
 import bounty from 'components/Icons/TaskTypes/bounty';
-import { BountyCommentsIcon } from 'components/Common/BountyBoard/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
 import ViewGrant from 'components/ViewGrant';
@@ -267,10 +266,11 @@ const GrantsBoard = () => {
                     Ending {formatDateDisplay(grant.endDate)}
                   </Typography>
                 </EndingSoonPill>
-                <BountyCommentsIcon>
+                <Grid item container gap="10px" width="fit-content" lineHeight="0" alignItems="center">
+                  {' '}
                   <CommentsIcon />
                   {grant.comments || 0}
-                </BountyCommentsIcon>
+                </Grid>
               </BoardsCardFooter>
             </BoardWrapper>
           );

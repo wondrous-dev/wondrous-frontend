@@ -4,7 +4,7 @@ import { TaskSubmissionsLoading } from 'components/Common/TaskSubmission/submiss
 import Filters from 'components/GrantApplications/Filters';
 import { RequestApproveButton } from 'components/organization/members/styles';
 import { useState } from 'react';
-import CreateGrantApplication from '../CreateGrantApplication';
+import { useTaskContext } from 'utils/hooks';
 import ListItem from '../ListItem';
 
 const Items = [
@@ -95,16 +95,15 @@ interface Application {
   additionalData?: any;
 }
 
-const List = ({ grantId }) => {
-
-  // const task = useTaskContext()
+const List = () => {
+  const { toggleCreateApplicationModal } = useTaskContext();
   return (
     <>
       <TaskSubmissionsLoading loading={false} />
-      
+
       <Grid container justifyContent="space-between" alignItems="center">
         <Filters />
-        <RequestApproveButton onClick={() => {}} data-cy="application-button">
+        <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
           Create Application
         </RequestApproveButton>
       </Grid>

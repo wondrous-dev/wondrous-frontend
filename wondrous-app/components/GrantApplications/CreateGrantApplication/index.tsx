@@ -8,11 +8,11 @@ import {
 import { deserializeRichText } from 'components/RichText';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
-import { descriptionTemplate } from './utils';
-import { useFullScreen } from 'utils/hooks';
+import { useTaskContext } from 'utils/hooks';
 import { useMe } from 'components/Auth/withAuth';
 import { Tooltip, Box } from '@mui/material';
-import {Form} from 'components/CreateGrant/styles';
+import { Form } from 'components/CreateGrant/styles';
+import { descriptionTemplate } from './utils';
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
@@ -24,9 +24,9 @@ const validationSchema = yup.object({
   mediaUploads: yup.array(),
 });
 
-const CreateGrantApplication = ({handleClose, grantId}) => {
+const CreateGrantApplication = () => {
   const user = useMe();
-  const { isFullScreen, toggleFullScreen } = useFullScreen();
+  const { isFullScreen, grantId, toggleCreateApplicationModal, toggleFullScreen } = useTaskContext();
   const initialValues = {
     title: null,
     description: deserializeRichText(descriptionTemplate),
@@ -44,23 +44,24 @@ const CreateGrantApplication = ({handleClose, grantId}) => {
       console.log(values);
     },
   });
-  console.log('imhere bro')
+
   return (
     <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <CreateEntitySelectErrorWrapper>
-                <TaskModalHeaderBackToList onClick={handleClose}>Back to grant</TaskModalHeaderBackToList>
+              <TaskModalHeaderBackToList onClick={toggleCreateApplicationModal}>
+                Back to grant
+              </TaskModalHeaderBackToList>
             </CreateEntitySelectErrorWrapper>
             <CreateEntityHeaderWrapper>
-            <Tooltip title="Full screen" placement="top">
-              <Box>
-                <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
-              </Box>
-            </Tooltip>
-          </CreateEntityHeaderWrapper>
-
+              <Tooltip title="Full screen" placement="top">
+                <Box>
+                  <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
+                </Box>
+              </Tooltip>
+            </CreateEntityHeaderWrapper>
           </CreateEntityHeaderWrapper>
         </CreateEntityHeader>
       </TaskModalCard>

@@ -37,11 +37,12 @@ import { DAOIcon } from 'components/Icons/dao';
 import { useRouter } from 'next/router';
 import { RichTextViewer } from 'components/RichText';
 import CreateGrant from 'components/CreateGrant';
+import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
+import { TaskContext } from 'utils/contexts';
 import { Categories, DataDisplay, Dates, GrantAmount, Reviewers } from './Fields';
 import { canViewGrant } from './utils';
 import { DescriptionWrapper } from './styles';
 import ViewGrantFooter from './Footer';
-import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 
 const grant = {
   orgId: '46110468539940865',
@@ -151,7 +152,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
 
   const [isCreateApplicationModalVisible, setCreateApplicationModalVisible] = useState(false);
 
-  const toggleCreateApplicationModal = () => setCreateApplicationModalVisible(prevState => !prevState);
+  const toggleCreateApplicationModal = () => setCreateApplicationModalVisible((prevState) => !prevState);
 
   const [activeTab, setActiveTab] = useState(null);
   const permissions = parseUserPermissionContext({
@@ -168,11 +169,11 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
 
   const user = useMe();
 
-  if(isCreateApplicationModalVisible && grantId) {
-    return (
-      <CreateGrantApplication grantId={grantId} handleClose={toggleCreateApplicationModal}/>
-    )
-  }
+  const onClose = () => {
+    toggleCreateApplicationModal();
+    setEditMode(false);
+    handleClose();
+  };
 
   const canView = useMemo(
     () => canViewGrant(grant, userPermissionsContext, permissions),
@@ -190,92 +191,111 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     grant?.createdBy === user?.id;
 
+  console.log(isCreateApplicationModalVisible);
+  const GrantApplication = () => isCreateApplicationModalVisible && grantId && <CreateGrantApplication />;
 
-  return (
-    <TaskModal open={open} onClose={handleClose}>
-      {isEditMode ? (
-        <CreateGrant
-          existingGrant={grant}
-          entityType={ENTITIES_TYPES.GRANT}
-          handleClose={handleClose}
-          cancel={() => setEditMode(false)}
-        />
-      ) : (
-        <TaskModalCard fullScreen={isFullScreen}>
-          {canView ? (
-            <>
-              <TaskModalHeader>
-                <TaskModalHeaderWrapper>
-                  <TaskModalHeaderIconWrapper
-                    onClick={() => {
-                      handleClose();
-                      router.push(`/organization/${grant?.orgUsername}/boards`, undefined, {
-                        shallow: true,
-                      });
-                    }}
-                  >
-                    {grant?.orgProfilePicture ? (
-                      <TaskCardOrgPhoto src={grant?.orgProfilePicture} />
-                    ) : (
-                      <TaskCardOrgNoLogo>
-                        <DAOIcon />
-                      </TaskCardOrgNoLogo>
-                    )}
-                    <TaskModalHeaderTypography>{grant?.org.name}</TaskModalHeaderTypography>
-                  </TaskModalHeaderIconWrapper>
-                  <TaskModalHeaderIconWrapper>
-                    <TaskCardPodIcon color={grant?.pod?.color} />
-                    <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
-                  </TaskModalHeaderIconWrapper>
-                  {grant?.privacyLevel !== PRIVACY_LEVEL.public && (
-                    <>
-                      <TaskModalHeaderArrow />
-                      <TaskModalHeaderPrivacyIcon
-                        isPrivate={grant?.privacyLevel !== PRIVACY_LEVEL.public}
-                        tooltipTitle={grant?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'}
-                      />
-                    </>
+  const Grant = () => {
+    if (isCreateApplicationModalVisible) return null;
+    return isEditMode ? (
+      <CreateGrant
+        existingGrant={grant}
+        entityType={ENTITIES_TYPES.GRANT}
+        handleClose={onClose}
+        cancel={() => setEditMode(false)}
+      />
+    ) : (
+      <TaskModalCard fullScreen={isFullScreen}>
+        {canView ? (
+          <>
+            <TaskModalHeader>
+              <TaskModalHeaderWrapper>
+                <TaskModalHeaderIconWrapper
+                  onClick={() => {
+                    onClose();
+                    router.push(`/organization/${grant?.orgUsername}/boards`, undefined, {
+                      shallow: true,
+                    });
+                  }}
+                >
+                  {grant?.orgProfilePicture ? (
+                    <TaskCardOrgPhoto src={grant?.orgProfilePicture} />
+                  ) : (
+                    <TaskCardOrgNoLogo>
+                      <DAOIcon />
+                    </TaskCardOrgNoLogo>
                   )}
-                </TaskModalHeaderWrapper>
-                <TaskModalHeaderWrapperRight>
-                  <TaskModalHeaderShare fetchedTask={grant} />
-                  <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
-                  <Menu canArchive={canArchive} canEdit={canEdit} setEditTask={setEditMode} />
+                  <TaskModalHeaderTypography>{grant?.org.name}</TaskModalHeaderTypography>
+                </TaskModalHeaderIconWrapper>
+                <TaskModalHeaderIconWrapper>
+                  <TaskCardPodIcon color={grant?.pod?.color} />
+                  <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
+                </TaskModalHeaderIconWrapper>
+                {grant?.privacyLevel !== PRIVACY_LEVEL.public && (
+                  <>
+                    <TaskModalHeaderArrow />
+                    <TaskModalHeaderPrivacyIcon
+                      isPrivate={grant?.privacyLevel !== PRIVACY_LEVEL.public}
+                      tooltipTitle={grant?.privacyLevel !== PRIVACY_LEVEL.public ? 'Members only' : 'Public'}
+                    />
+                  </>
+                )}
+              </TaskModalHeaderWrapper>
+              <TaskModalHeaderWrapperRight>
+                <TaskModalHeaderShare fetchedTask={grant} />
+                <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
+                <Menu canArchive={canArchive} canEdit={canEdit} setEditTask={setEditMode} />
 
-                  <TaskModalHeaderCloseModal onClick={() => handleClose()} />
-                </TaskModalHeaderWrapperRight>
-              </TaskModalHeader>
-              <TaskModalTaskData fullScreen={isFullScreen}>
-                <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
-                  <TaskModalTitle>{grant?.title}</TaskModalTitle>
-                  <DescriptionWrapper>
-                    <RichTextViewer text={grant.description} />
-                  </DescriptionWrapper>
-                </TaskModalTitleDescriptionMedia>
-                <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
-                  <TaskSectionDisplayData>
-                    {FIELDS_CONFIG.map((field, idx) => {
-                      if (field?.shouldDisplay && !field?.shouldDisplay({ grant })) {
-                        return null;
-                      }
-                      return (
-                        <TaskSectionDisplayDiv key={idx}>
-                          <TaskSectionLabel>{field.label}</TaskSectionLabel>
-                          <field.component grant={grant} />
-                        </TaskSectionDisplayDiv>
-                      );
-                    })}
-                  </TaskSectionDisplayData>
-                </TaskSectionDisplayDivWrapper>
-                <ViewGrantFooter isFullScreen={isFullScreen} grantId={grant.id} />
-              </TaskModalTaskData>
-            </>
-          ) : (
-            <LockedTaskMessage handleClose={handleClose} />
-          )}
-        </TaskModalCard>
-      )}
-    </TaskModal>
+                <TaskModalHeaderCloseModal onClick={onClose} />
+              </TaskModalHeaderWrapperRight>
+            </TaskModalHeader>
+            <TaskModalTaskData fullScreen={isFullScreen}>
+              <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
+                <TaskModalTitle>{grant?.title}</TaskModalTitle>
+                <DescriptionWrapper>
+                  <RichTextViewer text={grant.description} />
+                </DescriptionWrapper>
+              </TaskModalTitleDescriptionMedia>
+              <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
+                <TaskSectionDisplayData>
+                  {FIELDS_CONFIG.map((field, idx) => {
+                    if (field?.shouldDisplay && !field?.shouldDisplay({ grant })) {
+                      return null;
+                    }
+                    return (
+                      <TaskSectionDisplayDiv key={idx}>
+                        <TaskSectionLabel>{field.label}</TaskSectionLabel>
+                        <field.component grant={grant} />
+                      </TaskSectionDisplayDiv>
+                    );
+                  })}
+                </TaskSectionDisplayData>
+              </TaskSectionDisplayDivWrapper>
+              <ViewGrantFooter />
+            </TaskModalTaskData>
+          </>
+        ) : (
+          <LockedTaskMessage handleClose={onClose} />
+        )}
+      </TaskModalCard>
+    );
+  };
+  return (
+    <TaskContext.Provider
+      value={{
+        grantId,
+        isCreateApplicationModalVisible,
+        toggleCreateApplicationModal,
+        toggleFullScreen,
+        isFullScreen,
+      }}
+    >
+      <TaskModal open={open} onClose={onClose}>
+        <>
+          <GrantApplication />
+          <Grant />
+        </>
+      </TaskModal>
+    </TaskContext.Provider>
   );
 };
 
