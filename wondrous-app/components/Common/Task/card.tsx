@@ -35,6 +35,7 @@ import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15
 import TaskPriority from 'components/Common/TaskPriority';
 import Compensation from 'components/Common/Compensation';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
+import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -45,7 +46,6 @@ import {
   TaskTitle,
   TaskAction,
   TaskActionAmount,
-  TaskActionMenu,
   PodWrapper,
   PodName,
   MilestoneProgressWrapper,
@@ -326,19 +326,7 @@ export function TaskCard({
             {isMilestone && <MilestoneIcon />}
             {!userProfile && <AvatarList users={userList} id={`task-${task?.id}`} />}
           </TaskHeaderIconWrapper>
-          {task?.privacyLevel !== PRIVACY_LEVEL.public && (
-            <ToggleBoardPrivacyIcon
-              style={{
-                width: '29px',
-                height: '29px',
-                marginRight: '0',
-                marginLeft: '8px',
-              }}
-              isPrivate={task?.privacyLevel !== PRIVACY_LEVEL.public}
-              tooltipTitle={task?.privacyLevel !== PRIVACY_LEVEL.public ? 'Private' : 'Public'}
-            />
-          )}
-
+          <TaskCardPrivacy privacyLevel={task?.privacyLevel} />
           <div
             style={{
               flex: 1,
