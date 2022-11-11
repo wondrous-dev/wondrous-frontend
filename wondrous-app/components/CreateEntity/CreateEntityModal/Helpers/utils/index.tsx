@@ -17,7 +17,8 @@ import pickBy from 'lodash/pickBy';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 import { Dispatch, SetStateAction } from 'react';
-import { CATEGORY_LABELS, CHAIN_TO_CHAIN_DIPLAY_NAME, ENTITIES_TYPES, PRIVACY_LEVEL } from 'utils/constants';
+import { CATEGORY_LABELS, ENTITIES_TYPES, PRIVACY_LEVEL } from 'utils/constants';
+import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
 import {

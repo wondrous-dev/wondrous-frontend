@@ -23,7 +23,7 @@ import {
   GET_UNPAID_SUBMISSIONS_FOR_ORG,
   GET_UNPAID_SUBMISSIONS_FOR_POD,
 } from 'graphql/queries/payment';
-import { CHAIN_TO_GNOSIS_URL_ABBR, CHAIN_ID_TO_CHAIN_NAME } from 'utils/web3Constants';
+import { CHAIN_TO_GNOSIS_URL_ABBR, SUPPORTED_CHAINS } from 'utils/web3Constants';
 import { WALLET_TYPE } from 'components/Settings/WalletSetup/WalletSetupModal/constants';
 import DropdownSelect from 'components/Common/DropdownSelect';
 import { ErrorText } from '..';
@@ -96,7 +96,7 @@ function BatchWalletPayment(props) {
   useEffect(() => {
     setWrongChainError(null);
     if (chain && currentChainId) {
-      if (chain !== CHAIN_ID_TO_CHAIN_NAME[currentChainId]) {
+      if (chain !== SUPPORTED_CHAINS[currentChainId]) {
         setWrongChainError(`currently connected to the wrong network should be on ${chain}`);
       }
     }
