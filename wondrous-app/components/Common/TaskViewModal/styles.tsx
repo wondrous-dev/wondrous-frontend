@@ -292,6 +292,7 @@ export const TaskModalTitleDescriptionMedia = styled.div`
 export const TaskModalTitle = styled(Typography)`
   && {
     font-size: 24px;
+    word-break: break-all;
     ${({ theme }) => `
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightBold};
