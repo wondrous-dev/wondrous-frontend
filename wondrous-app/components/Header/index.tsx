@@ -1,15 +1,19 @@
 import { useRouter } from 'next/router';
-import { useMutation } from '@apollo/client';
 
-import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations/notification';
 import { useIsMobile, useGlobalContext } from 'utils/hooks';
-import { useMe, withAuth } from '../Auth/withAuth';
-import HeaderMemo from './HeaderMemo';
+import { useMe, withAuth } from 'components/Auth/withAuth';
+import HeaderMemo from 'components/Header/HeaderMemo';
+import { useContext, useEffect } from 'react';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { ConnectDiscordLink } from './styles';
+
+const DISCORD_SNACKBAR_DURATION = 1000 * 60 * 10;
 
 const HeaderComponent = () => {
   const user = useMe();
   const isMobile = useIsMobile();
-
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage, setSnackbarAlertAutoHideDuration } =
+    useContext(SnackbarAlertContext);
   const globalContext = useGlobalContext();
   const { toggleCreateFormModal: openCreateFormModal } = globalContext;
   const router = useRouter();
@@ -25,6 +29,21 @@ const HeaderComponent = () => {
     '/mission-control',
   ];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
+
+  useEffect(() => {
+    if (user && !user?.userInfo?.discordUsername && router.pathname !== '/profile/settings') {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertAutoHideDuration(DISCORD_SNACKBAR_DURATION);
+      setSnackbarAlertMessage(
+        <>
+          <ConnectDiscordLink href="/profile/settings" target="_blank" rel="noreferrer">
+            Connect your Discord
+          </ConnectDiscordLink>{' '}
+          <span>for notifications for upcoming tasks, comments and more!</span>
+        </>
+      );
+    }
+  }, [user]);
 
   return (
     <HeaderMemo
