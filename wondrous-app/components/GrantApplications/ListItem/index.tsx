@@ -16,10 +16,22 @@ import typography from 'theme/typography';
 import { TaskActionAmount } from 'components/Common/Task/styles';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RequestApproveButton } from 'components/organization/members/styles';
+import { useRouter } from 'next/router';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 import { ApplicationItemContainer, ApplicationItemWrapper, Footer } from './styles';
 
 const ListItem = ({ item }) => {
-  console.log(item?.commentCount, 'item comment count');
+  const router = useRouter();
+  const location = useLocation();
+  const { query } = router;
+
+  const handleClick = (applicationId) => {
+    const newUrl = `${delQuery(router.asPath)}?grant=${query.grant}&grantApplicationId=${applicationId}`;
+    location.push(newUrl);
+    document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
+  };
+
   return (
     <ApplicationItemWrapper>
       <ApplicationItemContainer>
@@ -60,13 +72,7 @@ const ListItem = ({ item }) => {
       <Footer>
         <TaskCommentIcon />
         <TaskActionAmount>{item?.commentCount}</TaskActionAmount>
-        <RequestApproveButton
-          onClick={() => {
-            console.log('approve');
-          }}
-        >
-          View application
-        </RequestApproveButton>
+        <RequestApproveButton onClick={() => handleClick(item?.id)}>View application</RequestApproveButton>
       </Footer>
     </ApplicationItemWrapper>
   );

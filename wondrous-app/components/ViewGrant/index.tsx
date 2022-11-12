@@ -39,6 +39,8 @@ import { RichTextViewer } from 'components/RichText';
 import CreateGrant from 'components/CreateGrant';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { TaskContext } from 'utils/contexts';
+import { useLocation } from 'utils/useLocation';
+import ViewGrantApplication from 'components/ViewGrantApplication';
 import { Categories, DataDisplay, Dates, GrantAmount, Reviewers } from './Fields';
 import { canViewGrant } from './utils';
 import { DescriptionWrapper } from './styles';
@@ -145,6 +147,11 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   const board = useBoards();
   const { isFullScreen, toggleFullScreen } = useFullScreen(true);
   const [completeModal, setCompleteModal] = useState(false);
+  const location = useLocation();
+
+  // TODO: skip fetching grant when in view application mode
+
+  const isViewApplication = !!location.params.grantApplicationId;
   const router = useRouter();
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
@@ -170,8 +177,9 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   const user = useMe();
 
   const onClose = () => {
-    toggleCreateApplicationModal();
-    setEditMode(false);
+    if (isCreateApplicationModalVisible) setCreateApplicationModalVisible(false);
+
+    if (isEditMode) setEditMode(false);
     handleClose();
   };
 
@@ -191,10 +199,12 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     grant?.createdBy === user?.id;
 
-  console.log(isCreateApplicationModalVisible);
   const GrantApplication = () => isCreateApplicationModalVisible && grantId && <CreateGrantApplication />;
 
   const Grant = () => {
+    if (isViewApplication) {
+      return <ViewGrantApplication onClose={onClose} />;
+    }
     if (isCreateApplicationModalVisible) return null;
     return isEditMode ? (
       <CreateGrant
@@ -287,6 +297,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
         toggleFullScreen,
         isFullScreen,
         grant,
+        setEditMode,
       }}
     >
       <TaskModal open={open} onClose={onClose}>
