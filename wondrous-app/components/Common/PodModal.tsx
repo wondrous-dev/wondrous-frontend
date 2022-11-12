@@ -3,6 +3,7 @@ import { useMe } from 'components/Auth/withAuth';
 import { SafeImage } from 'components/Common/Image';
 import {
   LoadMore,
+  PodWrapper,
   TaskContent,
   TaskHeader,
   TaskListCardWrapper,
@@ -24,6 +25,7 @@ import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
+import palette from 'theme/palette';
 
 function PodListCard(props) {
   const { pod, handleClose } = props;
@@ -45,15 +47,16 @@ function PodListCard(props) {
             marginBottom: '0',
           }}
         >
-          <PodIcon
-            color={pod?.color}
-            style={{
-              width: '26px',
-              height: '26px',
-              marginRight: '8px',
-            }}
-          />
-          <TaskTitle>{pod?.name}</TaskTitle>
+          <PodWrapper style={{ marginTop: '0' }}>
+            <PodIcon
+              color={pod?.color || palette.grey900}
+              style={{
+                width: '26px',
+                height: '26px',
+              }}
+            />
+            <TaskTitle>{pod?.name}</TaskTitle>
+          </PodWrapper>
         </TaskHeader>
         <TaskContent
           style={{
