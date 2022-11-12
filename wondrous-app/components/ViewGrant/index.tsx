@@ -282,11 +282,11 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   return (
     <TaskContext.Provider
       value={{
-        grantId,
         isCreateApplicationModalVisible,
         toggleCreateApplicationModal,
         toggleFullScreen,
         isFullScreen,
+        grant,
       }}
     >
       <TaskModal open={open} onClose={onClose}>

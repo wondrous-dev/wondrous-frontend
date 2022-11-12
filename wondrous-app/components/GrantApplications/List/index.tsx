@@ -104,7 +104,7 @@ const List = () => {
       <Grid container justifyContent="space-between" alignItems="center">
         <Filters />
         <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
-          Create Application
+          Apply for grant
         </RequestApproveButton>
       </Grid>
       <TaskSubmissionItemsWrapper data-cy="item-submission">

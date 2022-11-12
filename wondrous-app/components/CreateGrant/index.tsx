@@ -373,7 +373,7 @@ const CreateGrant = ({
                 <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
                 <CreateEntitySelectErrorWrapper>
                   <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
-                    {false ? 'Save changes' : `Create grant`}
+                    Create grant
                   </CreateEntityCreateTaskButton>
                   {!isEmpty(form.errors) && <CreateEntityError>Please check your input fields</CreateEntityError>}
                 </CreateEntitySelectErrorWrapper>

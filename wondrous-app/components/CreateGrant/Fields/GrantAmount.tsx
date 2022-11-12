@@ -18,10 +18,20 @@ import {
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
 
-const GrantAmount = ({ value, onChange, orgId, onReset, onFocus, error }) => {
+const GrantAmount = ({
+  value,
+  onChange,
+  orgId,
+  onReset,
+  onFocus,
+  error,
+  disablePaymentSelect = false,
+  disableAmountOfRewards = false,
+}) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
 
+  console.log(activePaymentMethods, value?.paymentMethodId);
   useEffect(() => {
     if (activePaymentMethods?.length && !value?.paymentMethodId) {
       onChange('paymentMethodId', activePaymentMethods[0].id);
@@ -40,6 +50,7 @@ const GrantAmount = ({ value, onChange, orgId, onReset, onFocus, error }) => {
             <GrantChainSelect
               name="rewards-payment-method"
               value={value.paymentMethodId}
+              disabled={disablePaymentSelect}
               onChange={(value) => onChange('paymentMethodId', value)}
               renderValue={(selectedItem) => {
                 if (!selectedItem?.label?.props) return null;
@@ -82,31 +93,33 @@ const GrantAmount = ({ value, onChange, orgId, onReset, onFocus, error }) => {
               error={error?.rewardAmount}
               onFocus={onFocus}
             />
-            <GrantTextField
-              autoComplete="off"
-              autoFocus={!value.amount}
-              name="amount"
-              onChange={(e) => onChange('amount', e.target.value)}
-              placeholder="x amount"
-              value={value.amount}
-              fullWidth
-              InputProps={{
-                inputComponent: GrantTextFieldInput,
-                endAdornment: (
-                  <CreateEntityAutocompletePopperRenderInputAdornment
-                    position="end"
-                    onClick={
-                      () => onReset()
-                      // form.setFieldValue('rewards', []);
-                    }
-                  >
-                    <CreateEntityAutocompletePopperRenderInputIcon />
-                  </CreateEntityAutocompletePopperRenderInputAdornment>
-                ),
-              }}
-              error={error?.amount}
-              onFocus={onFocus}
-            />
+            {!disableAmountOfRewards && (
+              <GrantTextField
+                autoComplete="off"
+                autoFocus={!value.amount}
+                name="amount"
+                onChange={(e) => onChange('amount', e.target.value)}
+                placeholder="x amount"
+                value={value.amount}
+                fullWidth
+                InputProps={{
+                  inputComponent: GrantTextFieldInput,
+                  endAdornment: (
+                    <CreateEntityAutocompletePopperRenderInputAdornment
+                      position="end"
+                      onClick={
+                        () => onReset()
+                        // form.setFieldValue('rewards', []);
+                      }
+                    >
+                      <CreateEntityAutocompletePopperRenderInputIcon />
+                    </CreateEntityAutocompletePopperRenderInputAdornment>
+                  ),
+                }}
+                error={error?.amount}
+                onFocus={onFocus}
+              />
+            )}
           </CreateEntityWrapper>
         </CreateEntityLabelSelectWrapper>
       )}

@@ -740,7 +740,7 @@ export const CreateEntityWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 6px;
+  gap: 14px;
   align-items: flex-start;
 `;
 
