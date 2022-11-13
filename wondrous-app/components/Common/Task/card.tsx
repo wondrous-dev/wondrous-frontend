@@ -37,6 +37,7 @@ import Compensation from 'components/Common/Compensation';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import TaskCardDate from 'components/Common/TaskCardDate';
+import PodIconName from 'components/Common/PodIconName';
 import {
   ProposalCardWrapper,
   ProposalCardType,
@@ -47,7 +48,6 @@ import {
   TaskTitle,
   TaskAction,
   TaskActionAmount,
-  PodWrapper,
   PodName,
   MilestoneProgressWrapper,
   TaskHeaderIconWrapper,
@@ -377,35 +377,15 @@ export function TaskCard({
         </TaskContent>
         <BoardsCardFooter style={{ paddingBottom: '0' }}>
           {task?.podName && !isPod && (
-            <PodWrapper
+            <PodIconName
+              color={task?.podColor}
+              name={task?.podName}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 goToPod(task?.podId);
               }}
-              style={{
-                marginTop: '0',
-              }}
-            >
-              <PodIcon
-                color={task?.podColor}
-                style={{
-                  width: '26px',
-                  height: '26px',
-                  marginRight: '8px',
-                }}
-              />
-              <PodName
-                style={{
-                  whiteSpace: 'nowrap',
-                  maxWidth: '155px',
-                  textOverflow: 'ellipsis',
-                  overflow: 'hidden',
-                }}
-              >
-                {task?.podName}
-              </PodName>
-            </PodWrapper>
+            />
           )}
           {isSubtask && (
             <Tooltip title="Subtask" placement="top">
@@ -555,23 +535,15 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
             </BoardsCardMedia>
           ) : null}
           {task?.podName && (
-            <PodWrapper
+            <PodIconName
+              name={task?.podName}
+              color={task?.podColor}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 goToPod(task?.podId);
               }}
-            >
-              <PodIcon
-                color={task?.podColor}
-                style={{
-                  width: '26px',
-                  height: '26px',
-                  marginRight: '8px',
-                }}
-              />
-              <PodName style={{}}>{task?.podName}</PodName>
-            </PodWrapper>
+            />
           )}
         </BoardsCardBody>
         <BoardsCardFooter style={{ paddingBottom: '7px' }}>

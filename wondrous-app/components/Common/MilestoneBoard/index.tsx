@@ -11,9 +11,9 @@ import {
   BoardsCardSubheader,
 } from 'components/Common/Boards/styles';
 import { SafeImage } from 'components/Common/Image';
+import PodIconName from 'components/Common/PodIconName';
 import { MilestoneProgress } from 'components/Common/MilestoneProgress';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
@@ -149,24 +149,15 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
         </BoardsCardBody>
         <BoardsCardFooter>
           {milestone?.podName && (
-            <PodWrapper
-              style={{ marginTop: 0 }}
+            <PodIconName
+              color={milestone?.podColor}
+              name={milestone?.podName}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 goToPod(milestone?.podId);
               }}
-            >
-              <PodIcon
-                color={milestone?.podColor}
-                style={{
-                  width: '26px',
-                  height: '26px',
-                  marginRight: '8px',
-                }}
-              />
-              <PodName>{milestone?.podName}</PodName>
-            </PodWrapper>
+            />
           )}
           <div
             style={{

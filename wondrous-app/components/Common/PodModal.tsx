@@ -1,18 +1,16 @@
 import { useLazyQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { SafeImage } from 'components/Common/Image';
+import PodIconName from 'components/Common/PodIconName';
 import {
   LoadMore,
-  PodWrapper,
   TaskContent,
   TaskHeader,
   TaskListCardWrapper,
   TaskListModalHeader,
   TaskModalBaseCard,
-  TaskTitle,
 } from 'components/Common/Task/styles';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import PodIcon from 'components/Icons/podIcon';
 import {
   PodModalFooter,
   PodModalFooterInfoWrapper,
@@ -25,7 +23,6 @@ import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
-import palette from 'theme/palette';
 
 function PodListCard(props) {
   const { pod, handleClose } = props;
@@ -47,16 +44,7 @@ function PodListCard(props) {
             marginBottom: '0',
           }}
         >
-          <PodWrapper style={{ marginTop: '0' }}>
-            <PodIcon
-              color={pod?.color || palette.grey900}
-              style={{
-                width: '26px',
-                height: '26px',
-              }}
-            />
-            <TaskTitle>{pod?.name}</TaskTitle>
-          </PodWrapper>
+          <PodIconName color={pod?.color} name={pod?.name} />
         </TaskHeader>
         <TaskContent
           style={{
