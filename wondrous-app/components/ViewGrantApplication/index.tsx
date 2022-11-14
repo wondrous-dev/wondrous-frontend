@@ -14,6 +14,13 @@ import {
   TaskModalHeaderTypography,
   TaskModalHeaderWrapper,
   TaskModalHeaderWrapperRight,
+  TaskModalTaskData,
+  TaskModalTitle,
+  TaskModalTitleDescriptionMedia,
+  TaskSectionDisplayData,
+  TaskSectionDisplayDiv,
+  TaskSectionDisplayDivWrapper,
+  TaskSectionDisplayLabelText,
 } from 'components/Common/TaskViewModal/styles';
 import { DAOIcon } from 'components/Icons/dao';
 import { useRouter } from 'next/router';
@@ -21,13 +28,18 @@ import { useCallback } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
-import { Menu } from 'components/Common/TaskViewModal/helpers';
+import { Menu, TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplication/styles';
 import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
 import { GrantStatusNotStarted } from 'components/Icons/GrantStatusIcons';
+import { RichTextViewer } from 'components/RichText';
+import { DescriptionWrapper } from 'components/ViewGrant/styles';
+import { GrantAmount } from 'components/ViewGrant/Fields';
+import { GrantApplicationStatusManager, WalletAddressViewer } from './Fields';
+import { GrantAmountContainer, GrantSectionDisplayLabel } from './styles';
 
 const grantApplication = {
   id: '1',
@@ -99,8 +111,34 @@ const grantApplication = {
       __typename: 'Org',
     },
   },
+  grantAmount: {
+    chain: 'ethereum',
+    icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+    tokenName: 'eth',
+    symbol: 'eth',
+    rewardAmount: '20',
+  },
   walletAddress: '0x6155f139cD692496F24BB127F54eAc3b38CB06EE',
 };
+
+const FIELDS_CONFIG = [
+  {
+    component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
+    shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
+  },
+  {
+    label: 'Grant Request',
+    component: ({ grantApplication }) => (
+      <GrantAmountContainer>
+        <GrantAmount grantAmount={grantApplication.grantAmount} />
+      </GrantAmountContainer>
+    ),
+  },
+  {
+    label: 'Wallet Address',
+    component: ({ grantApplication: { walletAddress } }) => <WalletAddressViewer walletAddress={walletAddress} />,
+  },
+];
 
 const ViewGrantApplication = ({ onClose }) => {
   const router = useRouter();
@@ -119,6 +157,10 @@ const ViewGrantApplication = ({ onClose }) => {
     podId: grant?.podId,
   });
 
+  const canManage =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.CREATE_TASK) ||
+    grant?.createdBy === user?.id;
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
@@ -202,6 +244,33 @@ const ViewGrantApplication = ({ onClose }) => {
           <TaskModalHeaderCloseModal onClick={onClose} />
         </TaskModalHeaderWrapperRight>
       </TaskModalHeader>
+      <TaskModalTaskData fullScreen={isFullScreen}>
+        <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
+          <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
+          <DescriptionWrapper>
+            <RichTextViewer text={grantApplication?.description} />
+          </DescriptionWrapper>
+        </TaskModalTitleDescriptionMedia>
+        <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
+          <TaskSectionDisplayData>
+            {FIELDS_CONFIG.map((field, idx) => {
+              if (field?.shouldDisplay && !field?.shouldDisplay({ hasManageRights: canManage })) {
+                return null;
+              }
+              return (
+                <TaskSectionDisplayDiv key={idx} alignItems="start">
+                  {!!field.label && (
+                    <GrantSectionDisplayLabel>
+                      <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
+                    </GrantSectionDisplayLabel>
+                  )}
+                  <field.component grantApplication={grantApplication} />
+                </TaskSectionDisplayDiv>
+              );
+            })}
+          </TaskSectionDisplayData>
+        </TaskSectionDisplayDivWrapper>
+      </TaskModalTaskData>
     </TaskModalCard>
   );
 };

@@ -40,9 +40,11 @@ export const GrantAmount = ({ grantAmount: { icon, rewardAmount, symbol, amount 
     <span>
       {rewardAmount} {symbol}
     </span>
-    <AmountWrapper>
-      <span>x{amount}</span>
-    </AmountWrapper>
+    {!!amount && (
+      <AmountWrapper>
+        <span>x{amount}</span>
+      </AmountWrapper>
+    )}
   </GrantAmountWrapper>
 );
 

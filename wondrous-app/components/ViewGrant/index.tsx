@@ -12,7 +12,6 @@ import {
   TaskModalCard,
   TaskModalHeader,
   TaskModalHeaderArrow,
-  TaskModalHeaderBackToList,
   TaskModalHeaderCloseModal,
   TaskModalHeaderIconWrapper,
   TaskModalHeaderOpenInFullIcon,
@@ -27,12 +26,7 @@ import {
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
-import {
-  LockedTaskMessage,
-  Menu,
-  TaskDescriptionTextWrapper,
-  TaskSectionLabel,
-} from 'components/Common/TaskViewModal/helpers';
+import { LockedTaskMessage, Menu, TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import { DAOIcon } from 'components/Icons/dao';
 import { useRouter } from 'next/router';
 import { RichTextViewer } from 'components/RichText';
