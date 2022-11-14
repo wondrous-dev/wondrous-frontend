@@ -399,6 +399,7 @@ export const GET_ORG_GRANTS = gql`
       title
       description
       status
+      numOfGrant
       reward {
         paymentMethodId
         rewardAmount

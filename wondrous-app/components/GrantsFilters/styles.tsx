@@ -30,7 +30,7 @@ export const ItemWrapper = styled.button`
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 2px 11px 2px 11px;
+  padding: 2px 11px 2px 5px;
   border: none;
   cursor: pointer;
   background: none;

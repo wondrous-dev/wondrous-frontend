@@ -13,7 +13,7 @@ export const APPLY_POLICY_FIELDS = [
   },
   {
     name: 'Members',
-    value: 'onlyOrgMembersCanApply',
+    value: 'only_org_members_can_apply',
   },
 ];
 

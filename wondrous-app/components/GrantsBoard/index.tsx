@@ -33,165 +33,12 @@ import { useBoards, useOrgBoard, usePodBoard } from 'utils/hooks';
 import { LIMIT } from 'services/board';
 
 const GrantsBoard = () => {
-  const MOCK_DATA = [
-    {
-      title: 'This is the name of the grant',
-      description:
-        'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
-      applicationsNum: 20,
-      status: 'active',
-      id: 1,
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-    {
-      title: 'This is the name of the grant',
-      id: 2,
-      description:
-        'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
-      applicationsNum: 20,
-      status: 'active',
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-
-    {
-      title: 'This is the name of the grant',
-      id: 3,
-      description: 'Aliquet varius scelerisque tempor sodales aliquet nisl',
-      applicationsNum: 15,
-      status: 'active',
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-
-    {
-      title: 'This is the name of the grant',
-      id: 4,
-      description:
-        'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
-      applicationsNum: 20,
-      status: 'active',
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-
-    {
-      title: 'This is the name of the grant',
-      id: 5,
-      description:
-        'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
-      applicationsNum: 20,
-      status: 'active',
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-
-    {
-      title: 'This is the name of the grant',
-      id: 6,
-      description:
-        'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
-      applicationsNum: 20,
-      status: 'active',
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-
-    {
-      title: 'This is the name of the grant',
-      id: 7,
-      description:
-        'Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar. Aliquet varius scelerisque tempor sodales aliquet nisl, ut auctor bibendum. Vitae in lectus tortor lacus blandit sem. Justo, conse quat faucibus hendrerit nisl, at erat iaculis nisl sagittis. Pulv inar',
-      applicationsNum: 20,
-      status: 'active',
-      grantAmount: {
-        paymentMethodId: '56545357864108041',
-        rewardAmount: '20',
-        amount: '6',
-        chain: 'ethereum',
-        icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-        tokenName: 'eth',
-        symbol: 'eth',
-      },
-
-      img: 'https://images.unsplash.com/photo-1661961110372-8a7682543120?ixlib=rb-4.0.3&ixid=MnwxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1740&q=80',
-      comments: 2,
-      endDate: new Date(new Date().setDate(new Date().getDate() + 2)),
-    },
-  ];
-
-  const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.ACTIVE);
+  const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.OPEN);
 
   const orgBoard = useOrgBoard()
-  const podBoard = usePodBoard()
 
-  const grants = useQuery(GET_ORG_GRANTS, {
+  const {data} = useQuery(GET_ORG_GRANTS, {
     variables: { 
-
       orgId: orgBoard?.orgId,
       limit: LIMIT,
       offset: 0
@@ -199,7 +46,6 @@ const GrantsBoard = () => {
     skip: !orgBoard?.orgId
   })
 
-  console.log(grants)
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();
@@ -237,13 +83,14 @@ const GrantsBoard = () => {
       <ViewGrant open={openModal} handleClose={handleModalClose} grantId={location?.params?.grant} />
       <GrantsFilters onFilterChange={setActiveFilter} activeFilter={activeFilter} />
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
-        {MOCK_DATA.map((grant, idx) => {
+        {data?.getGrantOrgBoard?.map((grant, idx) => {
           const { label, icon: Icon } = GRANTS_ICONS_LABELS_MAP[grant.status];
+  const coverMedia = grant?.media?.find((media) => media.type === 'image');
           return (
             <BoardWrapper key={idx} onClick={() => handleCardClick(grant)}>
               <Grid justifyContent="space-between" alignItems="center" container>
                 <Grid>
-                  <GrantAmount grantAmount={grant.grantAmount} />
+                  <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant}/>
                 </Grid>
                 <Grid display="flex" gap="14px">
                   <ItemPill key={idx} as="div">
@@ -267,15 +114,19 @@ const GrantsBoard = () => {
                 <BoardsCardBodyDescription>
                   <RichTextViewer text={grant.description} />
                 </BoardsCardBodyDescription>
-                {grant.img ? (
-                  <BoardsCardMedia>
-                    <SafeImage
-                      useNextImage={false}
-                      style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
-                      src={grant.img}
-                    />
-                  </BoardsCardMedia>
-                ) : null}
+                {coverMedia ? (
+            <BoardsCardMedia>
+            <SafeImage
+              width={270}
+              objectFit="cover"
+              objectPosition="center"
+              height="100%"
+              layout="responsive"
+              src={coverMedia.slug}
+              useNextImage
+            />
+          </BoardsCardMedia>
+              ) : null}
               </BoardsCardBody>
               <BoardsCardFooter>
                 <EndingSoonPill>

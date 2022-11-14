@@ -6,7 +6,7 @@ import { GrantStatusActiveIcon, GrantStatusCompleted, GrantStatusNotStarted } fr
 import { Wrapper, IconWrapper, ItemWrapper } from './styles';
 
 export const GRANTS_ICONS_LABELS_MAP = {
-  [GRANTS_STATUSES.ACTIVE]: {
+  [GRANTS_STATUSES.OPEN]: {
     label: 'Active',
     icon: GrantStatusActiveIcon,
   },
@@ -14,7 +14,7 @@ export const GRANTS_ICONS_LABELS_MAP = {
     label: 'Not Started',
     icon: GrantStatusNotStarted,
   },
-  [GRANTS_STATUSES.COMPLETED]: {
+  [GRANTS_STATUSES.CLOSED]: {
     label: 'Completed',
     icon: GrantStatusCompleted,
   },

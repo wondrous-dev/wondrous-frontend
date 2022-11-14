@@ -40,70 +40,70 @@ import { canViewGrant } from './utils';
 import { DescriptionWrapper } from './styles';
 import ViewGrantFooter from './Footer';
 
-const grant = {
-  orgId: '46110468539940865',
-  id: '46110468539940865GRANTID',
-  podId: '63107746167259171',
-  privacyLevel: PRIVACY_LEVEL.private,
-  createdBy: '58937239456972909',
-  description:
-    '[{"children":[{"text":"Purpose","headingOne":true}],"type":"paragraph"},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Grant description "}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Requirements"}]}]',
-  title: 'This is the grant title',
-  assigneeId: '58937239456972909',
-  orgUsername: 'wonderverse',
-  orgProfilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
-  pod: {
-    name: 'adrian2 private pod',
-    color: '#158FAD',
-    privacyLevel: 'private',
-    __typename: 'Pod',
-  },
-  grantAmount: {
-    paymentMethodId: '56545357864108041',
-    rewardAmount: '20',
-    amount: '6',
-    chain: 'ethereum',
-    icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-    tokenName: 'eth',
-    symbol: 'eth',
-  },
-  startDate: '2022-10-04T08:04:48.168815+00:00',
-  endDate: '2022-10-06T08:04:48.168815+00:00',
-  applyPolicy: 'anyone',
-  visibility: 'members only',
-  categories: [
-    { name: 'memes', __typename: 'TaskCategory' },
-    { name: 'memes', __typename: 'TaskCategory' },
-    { name: 'memes', __typename: 'TaskCategory' },
-  ],
-  reviewerIds: ['58937239456972909', '58937239456972909'],
-  reviewers: [
-    {
-      id: '58937239456972909',
-      profilePicture: null,
-      firstName: null,
-      lastName: null,
-      username: 'adrian2',
-      __typename: 'User',
-    },
-    {
-      id: '58937239456972909',
-      profilePicture: null,
-      firstName: null,
-      lastName: null,
-      username: 'adrian2',
-      __typename: 'User',
-    },
-  ],
-  org: {
-    profilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
-    name: 'wonderverse staging',
-    username: 'wonderverse',
-    privacyLevel: 'public',
-    shared: null,
-    __typename: 'Org',
-  },
-};
+// const grant = {
+//   orgId: '46110468539940865',
+//   id: '46110468539940865GRANTID',
+//   podId: '63107746167259171',
+//   privacyLevel: PRIVACY_LEVEL.private,
+//   createdBy: '58937239456972909',
+//   description:
+//     '[{"children":[{"text":"Purpose","headingOne":true}],"type":"paragraph"},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Grant description "}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Requirements"}]}]',
+//   title: 'This is the grant title',
+//   assigneeId: '58937239456972909',
+//   orgUsername: 'wonderverse',
+//   orgProfilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
+//   pod: {
+//     name: 'adrian2 private pod',
+//     color: '#158FAD',
+//     privacyLevel: 'private',
+//     __typename: 'Pod',
+//   },
+//   grantAmount: {
+//     paymentMethodId: '56545357864108041',
+//     rewardAmount: '20',
+//     amount: '6',
+//     chain: 'ethereum',
+//     icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
+//     tokenName: 'eth',
+//     symbol: 'eth',
+//   },
+//   startDate: '2022-10-04T08:04:48.168815+00:00',
+//   endDate: '2022-10-06T08:04:48.168815+00:00',
+//   applyPolicy: 'anyone',
+//   visibility: 'members only',
+//   categories: [
+//     { name: 'memes', __typename: 'TaskCategory' },
+//     { name: 'memes', __typename: 'TaskCategory' },
+//     { name: 'memes', __typename: 'TaskCategory' },
+//   ],
+//   reviewerIds: ['58937239456972909', '58937239456972909'],
+//   reviewers: [
+//     {
+//       id: '58937239456972909',
+//       profilePicture: null,
+//       firstName: null,
+//       lastName: null,
+//       username: 'adrian2',
+//       __typename: 'User',
+//     },
+//     {
+//       id: '58937239456972909',
+//       profilePicture: null,
+//       firstName: null,
+//       lastName: null,
+//       username: 'adrian2',
+//       __typename: 'User',
+//     },
+//   ],
+//   org: {
+//     profilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
+//     name: 'wonderverse staging',
+//     username: 'wonderverse',
+//     privacyLevel: 'public',
+//     shared: null,
+//     __typename: 'Org',
+//   },
+// };
 
 const FIELDS_CONFIG = [
   {
@@ -114,6 +114,7 @@ const FIELDS_CONFIG = [
   {
     label: 'Grant amount',
     component: ({ grant: { grantAmount } }) => <GrantAmount grantAmount={grantAmount} />,
+
     shouldDisplay: ({ grant: { grantAmount } }): boolean => !!grantAmount?.paymentMethodId,
   },
   {
@@ -142,7 +143,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   const { isFullScreen, toggleFullScreen } = useFullScreen(true);
   const [completeModal, setCompleteModal] = useState(false);
   const location = useLocation();
-
+  const grant = null;
   // TODO: skip fetching grant when in view application mode
 
   const isViewApplication = !!location.params.grantApplicationId;

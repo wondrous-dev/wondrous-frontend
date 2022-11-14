@@ -126,7 +126,9 @@ const CreateGrant = ({
 
   // TODO: move to a separate component the upload
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
-  const [createGrant] = useMutation(CREATE_GRANT);
+  const [createGrant] = useMutation(CREATE_GRANT, {
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
+  });
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
@@ -177,6 +179,7 @@ const CreateGrant = ({
             orgId: values.orgId,
             podId: values.podId,
             startDate: values.startDate,
+            mediaUploads: values.mediaUploads,
             endDate: values.endDate,
             reward: {
               rewardAmount: parseInt(values.grantAmount.rewardAmount, 10),

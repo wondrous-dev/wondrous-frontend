@@ -33,16 +33,16 @@ export const Reviewers = ({ reviewers }) => (
   </MultipleDataDisplay>
 );
 
-export const GrantAmount = ({ grantAmount: { icon, rewardAmount, symbol, amount } }) => (
+export const GrantAmount = ({ grantAmount: { icon, rewardAmount, symbol }, numOfGrant }) => (
   <GrantAmountWrapper>
     <TaskSectionInfoPaymentMethodIcon src={icon} />
 
     <span>
       {rewardAmount} {symbol}
     </span>
-    {!!amount && (
+    {!!numOfGrant && (
       <AmountWrapper>
-        <span>x{amount}</span>
+        <span>x{numOfGrant}</span>
       </AmountWrapper>
     )}
   </GrantAmountWrapper>

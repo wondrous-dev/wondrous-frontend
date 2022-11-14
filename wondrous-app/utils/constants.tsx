@@ -830,7 +830,7 @@ export const TaskMintStatus = {
 };
 
 export const GRANTS_STATUSES = {
-  ACTIVE: 'active',
+  OPEN: 'open',
   NOT_STARTED: 'notStarted',
-  COMPLETED: 'completed',
+  CLOSED: 'closed',
 };
