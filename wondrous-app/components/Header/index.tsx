@@ -7,7 +7,7 @@ import { useContext, useEffect } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { ConnectDiscordLink } from './styles';
 
-const DISCORD_SNACKBAR_DURATION = 1000 * 60 * 10;
+const DISCORD_SNACKBAR_DURATION = 1000 * 60 * 2;
 
 const HeaderComponent = () => {
   const user = useMe();
@@ -30,8 +30,15 @@ const HeaderComponent = () => {
   ];
   const showCreateButton = urlsWithCreateButton.some((url) => router.pathname?.includes(url));
 
+  const urlsWithDiscord = ['/mission-control', '/dashboard'];
   useEffect(() => {
-    if (user && !user?.userInfo?.discordUsername && router.pathname !== '/profile/settings') {
+    const randomNum = Math.random();
+    // either we land on dashboard or mission control, or there's 10% chance of showing the snackbar
+    if (
+      user &&
+      !user?.userInfo?.discordUsername &&
+      (urlsWithDiscord.indexOf(router.pathname) > -1 || (randomNum < 0.1 && router.pathname !== '/profile/settings'))
+    ) {
       setSnackbarAlertOpen(true);
       setSnackbarAlertAutoHideDuration(DISCORD_SNACKBAR_DURATION);
       setSnackbarAlertMessage(
