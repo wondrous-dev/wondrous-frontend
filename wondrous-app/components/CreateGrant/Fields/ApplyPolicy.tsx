@@ -9,11 +9,11 @@ import { ApplyPolicyItemButton, ApplyPolicyWrapper } from './styles';
 export const APPLY_POLICY_FIELDS = [
   {
     name: 'Anyone',
-    value: 'public',
+    value: 'everyone',
   },
   {
     name: 'Members',
-    value: 'members',
+    value: 'onlyOrgMembersCanApply',
   },
 ];
 

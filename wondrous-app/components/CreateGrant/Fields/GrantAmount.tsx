@@ -84,6 +84,7 @@ const GrantAmount = ({
               fullWidth
               InputProps={{
                 inputComponent: GrantTextFieldInput,
+                type: 'number',
                 endAdornment: (
                   <CreateEntityAutocompletePopperRenderInputAdornment position="end" onClick={() => onReset()}>
                     <CreateEntityAutocompletePopperRenderInputIcon />
@@ -104,6 +105,8 @@ const GrantAmount = ({
                 fullWidth
                 InputProps={{
                   inputComponent: GrantTextFieldInput,
+                  type: 'number',
+
                   endAdornment: (
                     <CreateEntityAutocompletePopperRenderInputAdornment
                       position="end"

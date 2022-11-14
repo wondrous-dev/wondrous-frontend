@@ -94,10 +94,7 @@ const useSidebarData = () => {
             text: 'Grants',
             Icon: GrantIcon,
             link: `${link}/grants`,
-
-            // TODO fix me
-
-            count: 4,
+            count: taskCount?.grantCount,
           },
           !board?.orgData?.shared && {
             text: 'Collaborations',

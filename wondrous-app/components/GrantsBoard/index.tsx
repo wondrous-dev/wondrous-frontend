@@ -27,6 +27,10 @@ import { useRouter } from 'next/router';
 import { delQuery } from 'utils/index';
 import { GrantAmount } from 'components/ViewGrant/Fields';
 import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
+import { GET_ORG_GRANTS } from 'graphql/queries';
+import { useQuery } from '@apollo/client';
+import { useBoards, useOrgBoard, usePodBoard } from 'utils/hooks';
+import { LIMIT } from 'services/board';
 
 const GrantsBoard = () => {
   const MOCK_DATA = [
@@ -182,6 +186,20 @@ const GrantsBoard = () => {
 
   const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.ACTIVE);
 
+  const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard()
+
+  const grants = useQuery(GET_ORG_GRANTS, {
+    variables: { 
+
+      orgId: orgBoard?.orgId,
+      limit: LIMIT,
+      offset: 0
+     },
+    skip: !orgBoard?.orgId
+  })
+
+  console.log(grants)
   const location = useLocation();
   const [openModal, setOpenModal] = useState(false);
   const router = useRouter();

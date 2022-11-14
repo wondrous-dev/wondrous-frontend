@@ -28,7 +28,7 @@ import { useCallback } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
-import { Menu, TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
+import { Menu } from 'components/Common/TaskViewModal/helpers';
 import GrantIcon from 'components/Icons/GrantIcon';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplication/styles';
@@ -161,6 +161,7 @@ const ViewGrantApplication = ({ onClose }) => {
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.CREATE_TASK) ||
     grant?.createdBy === user?.id;
+    
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||

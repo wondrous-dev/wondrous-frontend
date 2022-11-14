@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { MediaFragment } from 'graphql/fragments/media';
 import { OrgFragment, OrgInviteFragment } from '../fragments/org';
 
 export const GET_ORG_BY_ID = gql`
@@ -314,6 +315,7 @@ export const GET_TASKS_PER_TYPE = gql`
       taskCount
       proposalCount
       milestoneCount
+      grantCount
     }
   }
 `;
@@ -325,6 +327,7 @@ export const GET_TASKS_PER_TYPE_FOR_POD = gql`
       taskCount
       proposalCount
       milestoneCount
+      grantCount
     }
   }
 `;
@@ -387,4 +390,29 @@ export const GET_GR15_GRANTEES = gql`
     }
   }
   ${OrgFragment}
+`;
+
+export const GET_ORG_GRANTS = gql`
+  query getGrantOrgBoard($orgId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getGrantOrgBoard(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {
+      id
+      title
+      description
+      status
+      reward {
+        paymentMethodId
+        rewardAmount
+        chain
+        icon
+        tokenName
+        symbol
+      }
+      media {
+        ...MediaFragment
+      }
+      commentCount
+      endDate
+    }
+  }
+    ${MediaFragment}
 `;

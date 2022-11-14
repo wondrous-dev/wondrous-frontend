@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import {
   CreateEntityDropdown,
   filterCategoryValues,
@@ -16,6 +16,8 @@ import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
+  CreateEntityAttachment,
+  CreateEntityAttachmentIcon,
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
@@ -26,6 +28,7 @@ import {
   CreateEntityHeaderWrapper,
   CreateEntityLabel,
   CreateEntityLabelAddButton,
+  CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntityPrivacyIconWrapper,
@@ -41,13 +44,14 @@ import {
   EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
+  MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { Formik, useFormik } from 'formik';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-import { hasCreateTaskPermission } from 'utils/helpers';
+import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import * as Yup from 'yup';
 import Tooltip from 'components/Tooltip';
@@ -70,7 +74,10 @@ import { GrantAmount, ApplyPolicy, Reviewers, Dates, Categories } from './Fields
 import { descriptionTemplate } from './utils';
 import { Form } from './styles';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
-import CreateGrantModalFooter from './Footer';
+import { CREATE_GRANT } from 'graphql/mutations/grant';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { MediaItem } from 'components/CreateEntity/MediaItem';
+import { handleAddFile } from 'utils/media';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -85,8 +92,17 @@ const validationSchema = Yup.object().shape({
   endDate: Yup.string().optional().nullable(),
   applyPolicy: Yup.string().nullable(),
   podId: Yup.string().optional().nullable(),
-  categories: Yup.array().of(Yup.string()).optional().nullable(),
+  categories: Yup.array()
+    .of(
+      Yup.object().shape({
+        id: Yup.string(),
+        label: Yup.string(),
+      })
+    )
+    .optional()
+    .nullable(),
   title: Yup.string().required('Title is required'),
+  mediaUploads: Yup.array(),
   reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
 });
 
@@ -108,10 +124,14 @@ const CreateGrant = ({
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
 
+  // TODO: move to a separate component the upload
+  const [fileUploadLoading, setFileUploadLoading] = useState(false);
+  const [createGrant] = useMutation(CREATE_GRANT);
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
   });
 
+  const inputRef: any = useRef();
   const fetchedUserPermissionsContext = userPermissionsContext?.getUserPermissionContext
     ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
     : null;
@@ -131,6 +151,7 @@ const CreateGrant = ({
         rewardAmount: existingGrant?.grantAmount?.rewardAmount || '0',
         amount: existingGrant?.grantAmount?.amount || '0',
       },
+      mediaUploads: [],
       startDate: existingGrant?.startDate || null,
       endDate: existingGrant?.endDate || null,
       title: existingGrant?.title || '',
@@ -147,9 +168,27 @@ const CreateGrant = ({
     validateOnChange: false,
     validateOnBlur: false,
     validationSchema,
-    onSubmit: (values) => {
-      console.log(values);
-    },
+    onSubmit: (values) =>
+      createGrant({
+        variables: {
+          input: {
+            title: values.title,
+            description: JSON.stringify(values.description),
+            orgId: values.orgId,
+            podId: values.podId,
+            startDate: values.startDate,
+            endDate: values.endDate,
+            reward: {
+              rewardAmount: parseInt(values.grantAmount.rewardAmount, 10),
+              paymentMethodId: values.grantAmount.paymentMethodId,
+            },
+            privacyLevel: values.privacyLevel,
+            applyPolicy: values.applyPolicy,
+            categories: values.categories.map((category: any) => category.id),
+            numOfGrant: parseInt(values.grantAmount.amount, 10),
+          },
+        },
+      }).then(() => handleClose()),
   });
 
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(form.values.orgId);
@@ -304,6 +343,48 @@ const CreateGrant = ({
               />
             </EditorContainer>
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
+            <CreateEntityLabelSelectWrapper show>
+              <MediaUploadDiv>
+                {form.values.mediaUploads?.length > 0 &&
+                  form.values.mediaUploads.map((mediaItem) => (
+                    <MediaItem
+                      key={mediaItem?.uploadSlug}
+                      mediaUploads={form.values.mediaUploads}
+                      setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
+                      mediaItem={mediaItem}
+                      removeMediaItem={() => {
+                        // if (existingGrant) {
+                        //   handleMedia().remove({
+                        //     variables: {
+                        //       grantId: existingGrant.id,
+                        //       slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                        //     },
+                        //   });
+                        // }
+                      }}
+                    />
+                  ))}
+                <CreateEntityAttachment onClick={() => inputRef?.current?.click()}>
+                  <CreateEntityAttachmentIcon />
+                  Add Attachment
+                  {fileUploadLoading && <FileLoading />}
+                </CreateEntityAttachment>
+              </MediaUploadDiv>
+              <input
+                type="file"
+                hidden
+                ref={inputRef}
+                onChange={async (event) => {
+                  const fileToAdd = await handleAddFile({
+                    event,
+                    filePrefix: 'tmp/task/new/',
+                    mediaUploads: form.values.mediaUploads,
+                    setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
+                    setFileUploadLoading,
+                  });
+                }}
+              />
+            </CreateEntityLabelSelectWrapper>
           </TaskModalTitleDescriptionMedia>
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
             <GrantAmount
