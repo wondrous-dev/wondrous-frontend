@@ -568,7 +568,8 @@ function GeneralSettings() {
   const { orgId } = router.query;
 
   function setOrganization(organization) {
-    setLogoImage('');
+    setLogoImage(organization?.profilePicture || '');
+    setHeaderImage(organization?.headerPicture || '');
     const links = reduceLinks(organization.links);
 
     setOrgLinks(links);
@@ -677,22 +678,7 @@ function GeneralSettings() {
           profilePicture: imageType === 'profilePicture' ? null : orgProfile.profilePicture,
         },
       },
-      refetchQueries: [GET_ORG_BY_ID],
     });
-
-    if (imageType === 'headerPicture') {
-      setHeaderImage('');
-      setOrgProfile((prevOrgProfile) => ({
-        ...prevOrgProfile,
-        headerPicture: null,
-      }));
-    } else {
-      setLogoImage('');
-      setOrgProfile((prevOrgProfile) => ({
-        ...prevOrgProfile,
-        profilePicture: null,
-      }));
-    }
   }
 
   if (!orgProfile) {

@@ -91,7 +91,8 @@ export function ImageUpload(props) {
     imageInputField.current.files = null;
     setFiles({ file: null });
     setEditedImage(null);
-    onDeleteImage(imageType === 'ICON_IMAGE' ? 'profilePicture' : 'headerPicture');
+    const imageTypeToDelete = imageType === 'ICON_IMAGE' ? 'profilePicture' : 'headerPicture';
+    onDeleteImage(imageTypeToDelete);
   };
 
   const onCancelEditing = () => {
