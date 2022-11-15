@@ -37,10 +37,8 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'link':
         return (
-          <Link key={i} href={node.href} passHref>
-            <a target="_blank" rel="noopener noreferrer">
-              {node.children[0]?.text}
-            </a>
+          <Link key={i} href={node.href} target="_blank" rel="noopener noreferrer">
+            {node.children[0]?.text}
           </Link>
         );
       case 'bulleted-list':

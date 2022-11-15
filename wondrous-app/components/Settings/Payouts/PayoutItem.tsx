@@ -148,8 +148,8 @@ const PayoutItem = (props: PayoutItemProps) => {
                 <Grid display="flex" alignItems="center" gap="6px">
                   <SafeImage
                     useNextImage={false}
-                    width="32px"
-                    height="32px"
+                    width={32}
+                    height={32}
                     src={item?.payeeProfilePicture}
                     style={imageStyle}
                     placeholderComp={<DefaultUserImage style={imageStyle} />}

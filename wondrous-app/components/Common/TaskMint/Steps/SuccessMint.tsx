@@ -57,7 +57,7 @@ const SuccessMint = ({ tokenData }) => {
           </ItemButtonIcon>
           Minted on Polygon via Mint Kudos
         </TaskMintDetailsChain>
-        <Image layout="fixed" width={258} height={257} src={tokenData?.imageUrl} />
+        <Image fill width={258} height={257} src={tokenData?.imageUrl} />
         <CommunityShare handleShareClick={handleShareClick} />
       </Grid>
     )

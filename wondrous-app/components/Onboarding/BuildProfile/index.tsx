@@ -141,10 +141,10 @@ export function OnboardingBuildProfile({ updateUser }) {
               src={image}
               width={52}
               height={52}
-              objectFit="cover"
               useNextImage
               style={{
                 borderRadius: '26px',
+                objectFit: 'cover',
               }}
             />
             <ProfilePictureAdd

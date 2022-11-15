@@ -32,9 +32,9 @@ const ProfilePicture = (props) => {
           <LogoUpload {...props}>
             {withImage &&
               (file ? (
-                <ImageWrapper width="80px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
+                <ImageWrapper width={80} height={80} alt={props.label} src={URL?.createObjectURL(file)} />
               ) : (
-                <SafeImageWrapper width="80px" height="80px" alt={props.label} useNextImage src={field.value} />
+                <SafeImageWrapper width={80} height={80} alt={props.label} useNextImage src={field.value} />
               ))}
             <AddPhotoIconWrapper withImage={withImage}>
               <AddAPhotoIcon />
@@ -62,9 +62,9 @@ function HeaderPicture(props) {
           <HeaderWrapper {...props}>
             {withImage &&
               (file ? (
-                <ImageWrapper width="552px" height="80px" alt={props.label} src={URL?.createObjectURL(file)} />
+                <ImageWrapper width={552} height={80} alt={props.label} src={URL?.createObjectURL(file)} />
               ) : (
-                <SafeImageWrapper width="552px" height="80px" alt={props.label} src={field.value} />
+                <SafeImageWrapper width={552} height={80} alt={props.label} src={field.value} />
               ))}
             <AddPhotoIconWrapper withImage={withImage}>
               <AddAPhotoIcon />

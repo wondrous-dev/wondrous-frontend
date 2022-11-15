@@ -60,8 +60,8 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
             useNextImage
             src={userProfilePicture}
             placeholderComp={<DefaultProfilePicture />}
-            width="40px"
-            height="40px"
+            width={40}
+            height={40}
             style={{
               borderRadius: '50%',
             }}

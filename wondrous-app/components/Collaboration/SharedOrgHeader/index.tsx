@@ -19,8 +19,8 @@ const SharedOrgHeader = ({ parentOrgs }) => (
                   <DAOEmptyIcon />
                 </TokenEmptyLogo>
               }
-              width="60px"
-              height="60px"
+              width={60}
+              height={60}
               useNextImage
               style={{
                 borderRadius: '6px',

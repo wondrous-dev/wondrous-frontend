@@ -11,6 +11,7 @@ const profilePictureStyle = {
   width: '24px',
   height: '24px',
   borderRadius: '50%',
+  objectFit: 'cover',
 };
 
 const ProfilePicture = ({ profilePicture }) => (
@@ -19,7 +20,6 @@ const ProfilePicture = ({ profilePicture }) => (
     placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
     width="24px"
     height="24px"
-    objectFit="cover"
     useNextImage
     style={profilePictureStyle}
   />

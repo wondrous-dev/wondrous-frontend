@@ -295,10 +295,11 @@ function Wrapper(props) {
           {podProfile ? (
             <SafeImage
               src={podProfile?.headerPicture || DefaultBg}
-              width="100%"
               height={100}
-              layout="fill"
-              objectFit="cover"
+              fill
+              style={{
+                objectFit: 'cover',
+              }}
               useNextImage
             />
           ) : null}
@@ -331,7 +332,7 @@ function Wrapper(props) {
                         }
                         width={60}
                         height={60}
-                        layout="fixed"
+                        fill
                         useNextImage
                         style={{
                           borderRadius: '6px',

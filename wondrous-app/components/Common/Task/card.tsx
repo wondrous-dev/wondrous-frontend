@@ -365,10 +365,11 @@ export function TaskCard({
             <BoardsCardMedia>
               <SafeImage
                 width={270}
-                objectFit="cover"
-                objectPosition="center"
-                height="100%"
-                layout="responsive"
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                }}
+                fill
                 src={coverMedia.slug}
                 useNextImage
               />

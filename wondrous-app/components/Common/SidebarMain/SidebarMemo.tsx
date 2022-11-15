@@ -71,6 +71,7 @@ const profilePictureStyle = {
   width: '36px',
   height: '36px',
   borderRadius: '50%',
+  objectFit: 'cover',
 };
 
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
@@ -102,7 +103,6 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                   placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
                   width={36}
                   height={36}
-                  objectFit="cover"
                   useNextImage
                   style={profilePictureStyle}
                 />
@@ -127,9 +127,9 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                             src={thumbnailPicture || profilePicture}
                             width={36}
                             height={36}
-                            objectFit="cover"
                             style={{
                               borderRadius: '50%',
+                              objectFit: 'cover',
                             }}
                           />
                         ) : (
@@ -160,10 +160,8 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
             return (
               <SidebarTooltip key={id} title={tooltipLabel}>
                 <BottomButtonIcon>
-                  <Link href={url} passHref>
-                    <a href={url} {...externalProps}>
-                      <Icon />
-                    </a>
+                  <Link href={url} {...externalProps}>
+                    <Icon />
                   </Link>
                 </BottomButtonIcon>
               </SidebarTooltip>

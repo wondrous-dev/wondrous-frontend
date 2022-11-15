@@ -46,9 +46,9 @@ export function SmallAvatar(props) {
             width={imageWidth}
             height={imageHeight}
             src={avatar.url}
-            objectFit="cover"
             useNextImage
             style={{
+              objectFit: 'cover',
               borderRadius: '29px',
             }}
           />

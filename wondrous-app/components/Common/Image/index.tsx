@@ -36,15 +36,13 @@ type SafeImageArgs = ImageProps & {
 export function SafeImage(safeImageArgs: SafeImageArgs) {
   const {
     src,
-    alt,
     onPreviewLoaded,
     width,
     height,
     placeholderComp,
     placeholderSrc,
+    alt = "",
     useNextImage = false,
-    objectFit = 'cover',
-    objectPosition = 'center',
     ...props
   } = safeImageArgs;
 
@@ -107,8 +105,6 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
   if (safeImageUrl) {
     return useNextImage ? (
       <Image
-        objectFit={objectFit}
-        objectPosition={objectPosition}
         src={safeImageUrl}
         alt={alt}
         width={width}
