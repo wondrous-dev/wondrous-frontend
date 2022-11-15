@@ -26,7 +26,9 @@ import {
 import { useLocation } from 'utils/useLocation';
 import {
   BOUNTY_TYPE,
+  CATEGORY_LABELS,
   ENTITIES_TYPES,
+  GR15DEICategoryName,
   MILESTONE_TYPE,
   PERMISSIONS,
   PRIVACY_LEVEL,
@@ -117,6 +119,7 @@ import {
 import {
   ApplicationField,
   AssigneeField,
+  CategoryField,
   DueDateField,
   InitativesField,
   MilestoneField,
@@ -522,6 +525,15 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     handleClose();
   };
 
+  const remaininTaskCategories = fetchedTask?.categories
+    ?.filter((category) => category?.name !== GR15DEICategoryName)
+    .map((category) => {
+      const newCategory = {
+        ...category,
+        name: CATEGORY_LABELS[category?.name],
+      };
+      return newCategory;
+    });
   return (
     <ApprovedSubmissionContext.Provider
       value={{
@@ -745,6 +757,10 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               milestoneTitle={fetchedTask?.milestone?.title || fetchedTask?.milestoneTitle}
                             />
                             <PriorityField priority={fetchedTask?.priority} />
+                            <CategoryField
+                              shouldDisplay={remaininTaskCategories?.length > 0}
+                              labels={remaininTaskCategories}
+                            />
                             <TagsField shouldDisplay={fetchedTask?.labels?.length > 0} labels={fetchedTask?.labels} />
                             <InitativesField shouldDisplay={hasGR15DEIIntiative(fetchedTask?.categories)} />
                             {isTaskProposal && (
