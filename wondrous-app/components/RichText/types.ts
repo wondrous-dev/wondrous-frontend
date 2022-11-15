@@ -23,6 +23,18 @@ export type ParagraphElement = {
   text?: undefined;
 };
 
+export type H1Element = {
+  type: 'h1';
+  children: (CustomText | CustomMentionElement)[];
+  text?: undefined;
+};
+
+export type H2Element = {
+  type: 'h2';
+  children: (CustomText | CustomMentionElement)[];
+  text?: undefined;
+};
+
 export type LinkElement = {
   type: 'link';
   href: string;
@@ -44,7 +56,7 @@ export type BulletedListElement = {
   text?: undefined;
 };
 
-export type TogglabaleBlock = LinkElement | NumberedListElement | BulletedListElement;
+export type TogglabaleBlock = LinkElement | NumberedListElement | BulletedListElement | H1Element | H2Element;
 export type ListItemElement = { type: 'list-item'; children: Descendant[]; text?: undefined };
 export type CustomMentionElement = MentionElement<CustomText[]>;
 
@@ -54,7 +66,9 @@ export type CustomElement =
   | LinkElement
   | NumberedListElement
   | BulletedListElement
-  | ListItemElement;
+  | ListItemElement
+  | H1Element
+  | H2Element;
 
 export type CustomEditor = BaseEditor & ReactEditor & HistoryEditor;
 

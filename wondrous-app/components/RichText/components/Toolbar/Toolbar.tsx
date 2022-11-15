@@ -14,6 +14,7 @@ import UnderlineIcon from 'components/RichText/icons/UnderlineIcon';
 import StrikethroughIcon from 'components/RichText/icons/StrikethroughIcon';
 import BulletedListIcon from 'components/RichText/icons/BulletedListIcon';
 import NumberedListIcon from 'components/RichText/icons/NumberedListIcon';
+import H1Icon from 'components/RichText/icons/H1Icon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import CodeIcon from 'components/RichText/icons/CodeIcon';
 import { LinkModal, LinkModalInput, LinkModalTitle, ToolbarButton, ToolbarContainer } from './styles';
@@ -190,6 +191,8 @@ function Toolbar() {
 
   return (
     <ToolbarContainer>
+      <BlockButton type="h1" icon={<H1Icon />} />
+      <BlockButton type="h2" icon={<H1Icon />} />
       <MarkButton type="bold" icon={<BoldIcon />} />
       <MarkButton type="italic" icon={<ItalicIcon />} />
       <MarkButton type="underline" icon={<UnderlineIcon />} />

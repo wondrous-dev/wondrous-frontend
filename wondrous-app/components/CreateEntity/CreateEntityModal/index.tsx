@@ -62,7 +62,6 @@ import ListBox from 'components/CreateCollaborationModal/Steps/AddTeamMembers/Li
 import { StyledLink } from 'components/Common/text';
 import TaskPriorityToggleButton from 'components/Common/TaskPriorityToggleButton';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
-import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   privacyOptions,
   filterOptionsWithPermission,
@@ -95,7 +94,8 @@ import {
   CreateEntityTextfieldInputPointsComponent,
   CreateEntityTextfieldInputRewardComponent,
   formDirty,
-} from './Helpers';
+} from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { ConvertTaskToBountyModal } from './ConfirmTurnTaskToBounty';
 import {
   CreateEntityAddButtonIcon,
   CreateEntityAddButtonLabel,
@@ -753,9 +753,10 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
             toolbarNode={editorToolbarNode}
             onChange={(value) => {
+              console.log('value', value)
               form.setFieldValue('description', value);
             }}
-            editorContainerNode={document.querySelector('#modal-scrolling-container')}
+            editorContainerNode={document?.querySelector('#modal-scrolling-container')}
             onClick={(e) => {
               // we need to stop click event propagation,
               // since EditorContainer moves cursor to the last position in the editor on click

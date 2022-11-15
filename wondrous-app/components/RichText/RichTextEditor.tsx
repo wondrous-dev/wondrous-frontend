@@ -36,7 +36,12 @@ interface Props {
 const renderLeaf = (props) => <Leaf {...props} />;
 
 const renderElement = (props: RenderElementProps) => {
+  console.log('props.element.type', props.element.type)
   switch (props.element.type) {
+    case 'h1':
+      return <h1 {...props.attributes}>{props.children}</h1>;
+    case 'h2':
+        return <h2 {...props.attributes}>{props.children}</h2>;
     case 'mention':
       return <MentionElement {...props} />;
     case 'link':
