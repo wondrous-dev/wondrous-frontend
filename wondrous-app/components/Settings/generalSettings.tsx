@@ -21,7 +21,7 @@ import LinkBigIcon from '../Icons/link';
 import OpenSeaIcon from '../Icons/openSea';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import ColorSettings from './ColorDropdown';
-import { ImageUpload } from './imageUpload';
+import { ImageFileTypes, ImageUpload } from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
@@ -102,6 +102,7 @@ function GeneralSettingsComponent(props) {
     isArchivedPod,
     handleArchivePodClick,
     handleUnarchivePodClick,
+    onDeleteImage,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -177,6 +178,7 @@ function GeneralSettingsComponent(props) {
             title="Logo"
             updateFilesCb={(iconImg) => handleImageChange(iconImg, 'profile')}
             avatarEditorTitle="Upload a profile image"
+            onDeleteImage={onDeleteImage}
           />
         ) : null}
 
@@ -186,6 +188,7 @@ function GeneralSettingsComponent(props) {
           imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
           updateFilesCb={(headerImg) => handleImageChange(headerImg, 'header')}
           avatarEditorTitle="Upload a header image"
+          onDeleteImage={onDeleteImage}
         />
 
         {isPod && (
@@ -406,7 +409,6 @@ export function PodGeneralSettings() {
     const imageFile = `tmp/${podId}/${filename}`;
     return { filename: imageFile, fileType, file };
   }
-
   async function handleImageChange(file, imageType) {
     const type = {
       header: {
@@ -425,7 +427,18 @@ export function PodGeneralSettings() {
       ...podProfile,
       [podProfileKey]: file === '' ? getPodByIdData.getPodById[podProfileKey] : imageFile.filename ?? null,
     });
-    imageFile.filename && (await uploadMedia(imageFile));
+    if (imageFile.filename) {
+      await uploadMedia(imageFile);
+      updatePod({
+        variables: {
+          podId,
+          input: {
+            headerPicture: imageType === 'header' ? imageFile.filename : podProfile.headerPicture,
+            profilePicture: imageType === 'profile' ? imageFile.filename : podProfile.profilePicture,
+          },
+        },
+      });
+    }
   }
 
   function handleDescriptionChange(e) {
@@ -459,6 +472,34 @@ export function PodGeneralSettings() {
       },
     });
   }
+
+  function deleteImage(imageType: ImageFileTypes) {
+    updatePod({
+      variables: {
+        podId,
+        input: {
+          headerPicture: imageType === 'headerPicture' ? null : podProfile.headerPicture,
+          profilePicture: imageType === 'profilePicture' ? null : podProfile.profilePicture,
+        },
+      },
+      refetchQueries: [GET_POD_BY_ID],
+    });
+
+    if (imageType === 'headerPicture') {
+      setHeaderImage('');
+      setPodProfile((prevPodProfile) => ({
+        ...prevPodProfile,
+        headerPicture: null,
+      }));
+    } else {
+      setLogoImage('');
+      setPodProfile((prevPodProfile) => ({
+        ...prevPodProfile,
+        profilePicture: null,
+      }));
+    }
+  }
+
   const handleArchivePodClick = async () => {
     const confirmed = confirm('Are you sure you want to archive this pod?');
     if (!confirmed) {
@@ -510,6 +551,7 @@ export function PodGeneralSettings() {
       isArchivedPod={isArchivedPod}
       handleArchivePodClick={handleArchivePodClick}
       handleUnarchivePodClick={handleUnarchivePodClick}
+      onDeleteImage={deleteImage}
     />
   );
 }
@@ -581,7 +623,18 @@ function GeneralSettings() {
       ...orgProfile,
       [orgProfileKey]: file === '' ? getOrgByIdData.getOrgById[orgProfileKey] : imageFile.filename ?? null,
     });
-    imageFile.filename && (await uploadMedia(imageFile));
+    if (imageFile.filename) {
+      await uploadMedia(imageFile);
+      updateOrg({
+        variables: {
+          orgId,
+          input: {
+            headerPicture: imageType === 'header' ? imageFile.filename : orgProfile.headerPicture,
+            profilePicture: imageType === 'profile' ? imageFile.filename : orgProfile.profilePicture,
+          },
+        },
+      });
+    }
   }
 
   function handleDescriptionChange(e) {
@@ -615,6 +668,33 @@ function GeneralSettings() {
     });
   }
 
+  function deleteImage(imageType: ImageFileTypes) {
+    updateOrg({
+      variables: {
+        orgId,
+        input: {
+          headerPicture: imageType === 'headerPicture' ? null : orgProfile.headerPicture,
+          profilePicture: imageType === 'profilePicture' ? null : orgProfile.profilePicture,
+        },
+      },
+      refetchQueries: [GET_ORG_BY_ID],
+    });
+
+    if (imageType === 'headerPicture') {
+      setHeaderImage('');
+      setOrgProfile((prevOrgProfile) => ({
+        ...prevOrgProfile,
+        headerPicture: null,
+      }));
+    } else {
+      setLogoImage('');
+      setOrgProfile((prevOrgProfile) => ({
+        ...prevOrgProfile,
+        profilePicture: null,
+      }));
+    }
+  }
+
   if (!orgProfile) {
     return (
       <SettingsWrapper>
@@ -644,6 +724,7 @@ function GeneralSettings() {
       setProfile={setOrgProfile}
       headerImage={headerImage}
       handleImageChange={handleImageChange}
+      onDeleteImage={deleteImage}
     />
   );
 }

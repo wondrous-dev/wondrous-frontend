@@ -23,6 +23,8 @@ import AddPictureIcon from '../../public/images/icons/addPicture.svg';
 import ReplaceIcon from '../../public/images/icons/replace.svg';
 import RemoveIcon from '../../public/images/icons/remove.svg';
 
+export type ImageFileTypes = 'headerPicture' | 'profilePicture';
+
 export function ImageUpload(props) {
   const {
     image,
@@ -32,7 +34,7 @@ export function ImageUpload(props) {
     imageType,
     avatarEditorTitle,
     LabelComponent,
-    onDelete,
+    onDeleteImage,
     onReplace,
     ...otherProps
   } = props;
@@ -43,6 +45,8 @@ export function ImageUpload(props) {
   const [openAvatarEditor, setOpenAvatarEditor] = useState(false);
   const [imageToEdit, setImageToEdit] = useState(null);
   const [editedImage, setEditedImage] = useState(null);
+
+  console.log('ImageType', imageType);
 
   const imageInputId = `upload-${title?.toLowerCase()}-image`;
 
@@ -89,7 +93,7 @@ export function ImageUpload(props) {
     imageInputField.current.files = null;
     setFiles({ file: null });
     setEditedImage(null);
-    updateFilesCb('');
+    onDeleteImage(imageType === 'ICON_IMAGE' ? 'profilePicture' : 'headerPicture');
   };
 
   const onCancelEditing = () => {
@@ -98,11 +102,6 @@ export function ImageUpload(props) {
     setFiles({ file: null });
     setEditedImage(null);
     setOpenAvatarEditor(false);
-  };
-
-  const handleDeleteImage = () => {
-    onDelete?.(image);
-    handleRemoveFile();
   };
 
   const handleReplaceImage = () => {
@@ -164,7 +163,7 @@ export function ImageUpload(props) {
               </ImageUploadButton>
             ) : null}
             {imageType !== 'ICON_IMAGE' && image ? (
-              <ImageUploadButton marginLeft="14px" onClick={handleDeleteImage}>
+              <ImageUploadButton marginLeft="14px" onClick={handleRemoveFile}>
                 <CloseIcon />
               </ImageUploadButton>
             ) : null}
@@ -183,7 +182,7 @@ export function ImageUpload(props) {
             <ToolButton onClick={handleReplaceImage}>
               <ReplaceIcon />
             </ToolButton>
-            <ToolButton onClick={handleDeleteImage}>
+            <ToolButton onClick={handleRemoveFile}>
               <RemoveIcon />
             </ToolButton>
           </ImageUploadBlockActionIcons>
