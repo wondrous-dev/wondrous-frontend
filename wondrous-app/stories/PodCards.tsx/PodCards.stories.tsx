@@ -1,0 +1,19 @@
+import React from 'react';
+
+import { ComponentMeta } from '@storybook/react';
+
+import PodCards from 'components/Common/PodCards';
+
+import * as PodCardStories from 'stories/PodCard/PodCard.stories';
+
+export default {
+  title: 'PodCards',
+  component: PodCards,
+} as ComponentMeta<typeof PodCards>;
+
+const Template = (args) => <PodCards {...args} />;
+
+export const Primary = Template.bind({});
+Primary.args = {
+  pods: Array(10).fill({ ...PodCardStories.Primary.args }),
+};
