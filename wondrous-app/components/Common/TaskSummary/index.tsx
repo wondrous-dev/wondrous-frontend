@@ -208,7 +208,7 @@ export function TaskSummary({ task, setTask, action, taskType }) {
   return (
     <TaskSummaryWrapper key={id} onClick={skipForCommandKey(() => openModal(viewUrl))}>
       <TaskSummaryInner>
-        <TaskHeader>
+        <TaskHeader style={{ justifyContent: 'start' }}>
           <OrgProfilePicture src={task?.orgProfilePicture} />
           <AvatarList
             id={id}
