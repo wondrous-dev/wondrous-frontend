@@ -101,12 +101,12 @@ export function ImageUpload(props) {
   };
 
   const handleDeleteImage = () => {
-    onDelete?.(imageInputField.current?.value);
+    onDelete?.(image);
     handleRemoveFile();
   };
 
   const handleReplaceImage = () => {
-    onReplace?.(imageInputField.current?.value);
+    onReplace?.(image);
     imageInputField.current.click();
   };
 
@@ -158,12 +158,12 @@ export function ImageUpload(props) {
       <ImageUploadBlockActivitySection>
         <ImageUploadBlockInputWrapper isIcon={imageType === 'ICON_IMAGE'}>
           <ImageUploadButtonWrapper>
-            {imageType !== 'ICON_IMAGE' || (imageType === 'ICON_IMAGE' && !imageInputField.current?.value) ? (
+            {imageType !== 'ICON_IMAGE' || (imageType === 'ICON_IMAGE' && !image) ? (
               <ImageUploadButton onClick={() => imageInputField.current.click()}>
                 <AddPictureIcon />
               </ImageUploadButton>
             ) : null}
-            {imageType !== 'ICON_IMAGE' && imageInputField.current?.value ? (
+            {imageType !== 'ICON_IMAGE' && image ? (
               <ImageUploadButton marginLeft="14px" onClick={handleDeleteImage}>
                 <CloseIcon />
               </ImageUploadButton>
@@ -178,7 +178,7 @@ export function ImageUpload(props) {
             onChange={handleNewFileUpload}
           />
         </ImageUploadBlockInputWrapper>
-        {imageType === 'ICON_IMAGE' && imageInputField.current?.value ? (
+        {imageType === 'ICON_IMAGE' && image ? (
           <ImageUploadBlockActionIcons>
             <ToolButton onClick={handleReplaceImage}>
               <ReplaceIcon />
