@@ -20,7 +20,7 @@ export const ItemPill = styled.div`
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 2px 11px 2px 11px;
+  padding: 2px 11px 2px 5px;
   border: none;
   background: ${palette.grey78};
   border-radius: 300px;

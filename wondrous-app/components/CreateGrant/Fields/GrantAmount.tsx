@@ -27,14 +27,14 @@ const GrantAmount = ({
   error,
   disablePaymentSelect = false,
   disableAmountOfRewards = false,
+  numOfGrant = null
 }) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
 
-  console.log(activePaymentMethods, value?.paymentMethodId);
   useEffect(() => {
     if (activePaymentMethods?.length && !value?.paymentMethodId) {
-      onChange('paymentMethodId', activePaymentMethods[0].id);
+      onChange('reward', {...value, paymentMethodId:activePaymentMethods[0].id});
     }
   }, [activePaymentMethods?.length]);
 
@@ -51,7 +51,10 @@ const GrantAmount = ({
               name="rewards-payment-method"
               value={value.paymentMethodId}
               disabled={disablePaymentSelect}
-              onChange={(value) => onChange('paymentMethodId', value)}
+              onChange={(value) => {
+                onChange('reward', {...value,'paymentMethodId': value});
+
+              }}
               renderValue={(selectedItem) => {
                 if (!selectedItem?.label?.props) return null;
                 return (
@@ -77,7 +80,7 @@ const GrantAmount = ({
               autoFocus={!value.rewardAmount}
               name="rewardAmount"
               onChange={(e) => {
-                onChange('rewardAmount', e.target.value);
+                onChange('reward', {...value, 'rewardAmount': e.target.value});
               }}
               placeholder="Enter value"
               value={value.rewardAmount}
@@ -91,17 +94,17 @@ const GrantAmount = ({
                   </CreateEntityAutocompletePopperRenderInputAdornment>
                 ),
               }}
-              error={error?.rewardAmount}
+              error={error?.reward?.rewardAmount}
               onFocus={onFocus}
             />
             {!disableAmountOfRewards && (
               <GrantTextField
                 autoComplete="off"
-                autoFocus={!value.amount}
+                autoFocus={!numOfGrant}
                 name="amount"
-                onChange={(e) => onChange('amount', e.target.value)}
+                onChange={(e) => onChange('numOfGrant', e.target.value)}
                 placeholder="x amount"
-                value={value.amount}
+                value={numOfGrant}
                 fullWidth
                 InputProps={{
                   inputComponent: GrantTextFieldInput,
@@ -110,16 +113,13 @@ const GrantAmount = ({
                   endAdornment: (
                     <CreateEntityAutocompletePopperRenderInputAdornment
                       position="end"
-                      onClick={
-                        () => onReset()
-                        // form.setFieldValue('rewards', []);
-                      }
+                      onClick={onReset}
                     >
                       <CreateEntityAutocompletePopperRenderInputIcon />
                     </CreateEntityAutocompletePopperRenderInputAdornment>
                   ),
                 }}
-                error={error?.amount}
+                error={error?.numOfGrant}
                 onFocus={onFocus}
               />
             )}

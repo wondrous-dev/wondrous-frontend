@@ -1,4 +1,4 @@
-import { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -35,87 +35,19 @@ import CreateGrantApplication from 'components/GrantApplications/CreateGrantAppl
 import { TaskContext } from 'utils/contexts';
 import { useLocation } from 'utils/useLocation';
 import ViewGrantApplication from 'components/ViewGrantApplication';
-import { Categories, DataDisplay, Dates, GrantAmount, Reviewers } from './Fields';
+import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
 import { canViewGrant } from './utils';
 import { DescriptionWrapper } from './styles';
 import ViewGrantFooter from './Footer';
-
-// const grant = {
-//   orgId: '46110468539940865',
-//   id: '46110468539940865GRANTID',
-//   podId: '63107746167259171',
-//   privacyLevel: PRIVACY_LEVEL.private,
-//   createdBy: '58937239456972909',
-//   description:
-//     '[{"children":[{"text":"Purpose","headingOne":true}],"type":"paragraph"},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Grant description "}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Requirements"}]}]',
-//   title: 'This is the grant title',
-//   assigneeId: '58937239456972909',
-//   orgUsername: 'wonderverse',
-//   orgProfilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
-//   pod: {
-//     name: 'adrian2 private pod',
-//     color: '#158FAD',
-//     privacyLevel: 'private',
-//     __typename: 'Pod',
-//   },
-//   grantAmount: {
-//     paymentMethodId: '56545357864108041',
-//     rewardAmount: '20',
-//     amount: '6',
-//     chain: 'ethereum',
-//     icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-//     tokenName: 'eth',
-//     symbol: 'eth',
-//   },
-//   startDate: '2022-10-04T08:04:48.168815+00:00',
-//   endDate: '2022-10-06T08:04:48.168815+00:00',
-//   applyPolicy: 'anyone',
-//   visibility: 'members only',
-//   categories: [
-//     { name: 'memes', __typename: 'TaskCategory' },
-//     { name: 'memes', __typename: 'TaskCategory' },
-//     { name: 'memes', __typename: 'TaskCategory' },
-//   ],
-//   reviewerIds: ['58937239456972909', '58937239456972909'],
-//   reviewers: [
-//     {
-//       id: '58937239456972909',
-//       profilePicture: null,
-//       firstName: null,
-//       lastName: null,
-//       username: 'adrian2',
-//       __typename: 'User',
-//     },
-//     {
-//       id: '58937239456972909',
-//       profilePicture: null,
-//       firstName: null,
-//       lastName: null,
-//       username: 'adrian2',
-//       __typename: 'User',
-//     },
-//   ],
-//   org: {
-//     profilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
-//     name: 'wonderverse staging',
-//     username: 'wonderverse',
-//     privacyLevel: 'public',
-//     shared: null,
-//     __typename: 'Org',
-//   },
-// };
+import { useQuery } from '@apollo/client';
+import { GET_GRANT_BY_ID } from 'graphql/queries';
 
 const FIELDS_CONFIG = [
   {
-    label: 'Reviewers',
-    component: ({ grant: { reviewers } }) => <Reviewers reviewers={reviewers} />,
-    shouldDisplay: ({ grant: { reviewers } }): boolean => !!reviewers?.length,
-  },
-  {
     label: 'Grant amount',
-    component: ({ grant: { grantAmount } }) => <GrantAmount grantAmount={grantAmount} />,
+    component: ({ grant: { reward, numOfGrant } }) => <GrantAmount grantAmount={reward} numOfGrant={numOfGrant}/>,
 
-    shouldDisplay: ({ grant: { grantAmount } }): boolean => !!grantAmount?.paymentMethodId,
+    shouldDisplay: ({ grant: { reward } }): boolean => !!reward?.paymentMethodId,
   },
   {
     label: 'Dates',
@@ -137,16 +69,22 @@ const FIELDS_CONFIG = [
   },
 ];
 
-const ViewGrant = ({ open, handleClose, grantId }) => {
-  const [isEditMode, setEditMode] = useState(false);
+const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
+  console.log(isEdit, 'isEdit')
+  const [isEditMode, setEditMode] = useState(isEdit);
   const board = useBoards();
   const { isFullScreen, toggleFullScreen } = useFullScreen(true);
   const [completeModal, setCompleteModal] = useState(false);
   const location = useLocation();
-  const grant = null;
-  // TODO: skip fetching grant when in view application mode
 
+  
   const isViewApplication = !!location.params.grantApplicationId;
+
+  const { data, loading } = useQuery(GET_GRANT_BY_ID, {
+    variables: { grantId },
+    skip: !grantId || isViewApplication,
+  });
+
   const router = useRouter();
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
@@ -156,11 +94,17 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
 
   const toggleCreateApplicationModal = () => setCreateApplicationModalVisible((prevState) => !prevState);
 
+  useEffect(() => {
+    if(isEdit !== isEditMode) {
+      setEditMode(isEdit)
+    }
+  }, [isEdit])
+
   const [activeTab, setActiveTab] = useState(null);
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId: grant?.orgId,
-    podId: grant?.podId,
+    orgId: data?.getGrantById?.org?.id,
+    podId: data?.getGrantById?.pod?.id,
   });
 
   const snackbarContext = useContext(SnackbarAlertContext);
@@ -169,6 +113,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
 
   const sectionRef = useRef(null);
 
+  const grant = data?.getGrantById
   const user = useMe();
 
   const onClose = () => {
@@ -186,8 +131,7 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    grant?.createdBy === user?.id ||
-    (grant?.assigneeId && grant?.assigneeId === user?.id);
+    grant?.createdBy === user?.id
 
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
@@ -195,8 +139,9 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
     grant?.createdBy === user?.id;
 
   const GrantApplication = () => isCreateApplicationModalVisible && grantId && <CreateGrantApplication />;
-
+  
   const Grant = () => {
+    if(loading) return null
     if (isViewApplication) {
       return <ViewGrantApplication onClose={onClose} />;
     }
@@ -217,13 +162,13 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
                 <TaskModalHeaderIconWrapper
                   onClick={() => {
                     onClose();
-                    router.push(`/organization/${grant?.orgUsername}/boards`, undefined, {
+                    router.push(`/organization/${grant?.org?.username}/boards`, undefined, {
                       shallow: true,
                     });
                   }}
                 >
-                  {grant?.orgProfilePicture ? (
-                    <TaskCardOrgPhoto src={grant?.orgProfilePicture} />
+                  {grant?.org?.profilePicture ? (
+                    <TaskCardOrgPhoto src={grant?.org?.profilePicture} />
                   ) : (
                     <TaskCardOrgNoLogo>
                       <DAOIcon />
@@ -296,10 +241,11 @@ const ViewGrant = ({ open, handleClose, grantId }) => {
       }}
     >
       <TaskModal open={open} onClose={onClose}>
-        <>
-          <GrantApplication />
+      <>
+      <GrantApplication />
           <Grant />
-        </>
+      </>
+
       </TaskModal>
     </TaskContext.Provider>
   );

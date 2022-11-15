@@ -440,11 +440,11 @@ export interface GrantCreateModalProps extends ICreateEntityModal {
     orgId: string;
     podId?: string;
     privacyLevel?: string;
-    grantAmount?: {
+    reward?: {
       paymentMethodId?: string;
       rewardAmount?: string;
-      amount?: string;
     };
+    numOfGrant?: string;
     startDate?: string;
     endDate?: string;
     applyPolicy?: string;

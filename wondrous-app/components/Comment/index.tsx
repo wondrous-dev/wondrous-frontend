@@ -317,6 +317,13 @@ export default function CommentList(props) {
   });
 
   useEffect(() => {
+    if(entityType === ENTITIES_TYPES.GRANT) {
+      getTaskComments({
+        variables: {
+          taskId: task.id,
+        },
+      });
+    }
     if (task && entityType === ENTITIES_TYPES.PROPOSAL) {
       getTaskProposalComments({
         variables: {

@@ -392,28 +392,3 @@ export const GET_GR15_GRANTEES = gql`
   ${OrgFragment}
 `;
 
-export const GET_ORG_GRANTS = gql`
-  query getGrantOrgBoard($orgId: ID!, $status: String, $limit: Int, $offset: Int) {
-    getGrantOrgBoard(orgId: $orgId, status: $status, limit: $limit, offset: $offset) {
-      id
-      title
-      description
-      status
-      numOfGrant
-      reward {
-        paymentMethodId
-        rewardAmount
-        chain
-        icon
-        tokenName
-        symbol
-      }
-      media {
-        ...MediaFragment
-      }
-      commentCount
-      endDate
-    }
-  }
-    ${MediaFragment}
-`;

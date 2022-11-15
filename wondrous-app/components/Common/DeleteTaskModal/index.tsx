@@ -16,6 +16,8 @@ import {
   StyledDivider,
   StyledHeader,
 } from './styles';
+import { DELETE_GRANT } from 'graphql/mutations/grant';
+import { ENTITIES_TYPES } from 'utils/constants';
 
 interface IArchiveTaskModalProps {
   open: boolean;
@@ -36,6 +38,11 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
     'getPerTypeTaskCountForPodBoard',
     SEARCH_USER_CREATED_TASKS,
   ];
+  const [deleteGrant] = useMutation(DELETE_GRANT, {
+    variables: {grantId: taskId},
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById']
+
+  })
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },
     refetchQueries,
@@ -68,6 +75,9 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
   });
 
   const handleDelete = () => {
+    if(taskType === ENTITIES_TYPES.GRANT) {
+      deleteGrant()
+    }
     if (taskType === 'task') {
       deleteTask();
     }

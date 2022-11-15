@@ -17,6 +17,7 @@ import {
   StyledDivider,
   StyledHeader,
 } from './styles';
+import { ARCHIVE_GRANT } from 'graphql/mutations/grant';
 
 interface IArchiveTaskModalProps {
   open: boolean;
@@ -31,11 +32,22 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
   const board = useOrgBoard();
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
+  const [archiveGrant] = useMutation(ARCHIVE_GRANT, {
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById']
+  })
+
   const isTaskOrMilestoneOrBounty =
     taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
   const isTaskProposal = taskType === 'task proposal';
 
   const handleArchive = () => {
+    if(taskType === Constants.ENTITIES_TYPES.GRANT) {
+      archiveGrant({
+        variables: {
+          grantId: taskId
+        }
+      })
+    }
     if (isTaskOrMilestoneOrBounty) {
       onArchive();
     }

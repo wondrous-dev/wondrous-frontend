@@ -70,7 +70,7 @@ import Grid from '@mui/material/Grid';
 import DropdownSearch from 'components/DropdownSearch';
 import { CircularProgress } from '@mui/material';
 import { isEmpty } from 'lodash';
-import { GrantAmount, ApplyPolicy, Reviewers, Dates, Categories } from './Fields';
+import { GrantAmount, ApplyPolicy, Dates, Categories } from './Fields';
 import { descriptionTemplate } from './utils';
 import { Form } from './styles';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
@@ -81,7 +81,7 @@ import { handleAddFile } from 'utils/media';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
-  grantAmount: Yup.object({
+  reward: Yup.object({
     paymentMethodId: Yup.string().required(),
     rewardAmount: Yup.number()
       .typeError('Reward amount must be a number')
@@ -103,7 +103,6 @@ const validationSchema = Yup.object().shape({
     .nullable(),
   title: Yup.string().required('Title is required'),
   mediaUploads: Yup.array(),
-  reviewerIds: Yup.array().of(Yup.string().nullable()).nullable(),
 });
 
 const CreateGrant = ({
@@ -148,11 +147,11 @@ const CreateGrant = ({
 
   const form = useFormik({
     initialValues: {
-      grantAmount: {
-        paymentMethodId: existingGrant?.grantAmount?.paymentMethodId || '',
-        rewardAmount: existingGrant?.grantAmount?.rewardAmount || '0',
-        amount: existingGrant?.grantAmount?.amount || '0',
+      reward: {
+        paymentMethodId: existingGrant?.reward?.paymentMethodId || '',
+        rewardAmount: existingGrant?.reward?.rewardAmount || '0',
       },
+      numOfGrant: existingGrant?.numOfGrant || '0',
       mediaUploads: [],
       startDate: existingGrant?.startDate || null,
       endDate: existingGrant?.endDate || null,
@@ -160,7 +159,6 @@ const CreateGrant = ({
       description: existingGrant
         ? deserializeRichText(existingGrant.description)
         : deserializeRichText(descriptionTemplate),
-      reviewerIds: existingGrant?.reviewerIds || [],
       orgId: existingGrant?.orgId || null,
       categories: existingGrant?.categories || null,
       podId: board?.podId || null,
@@ -182,13 +180,13 @@ const CreateGrant = ({
             mediaUploads: values.mediaUploads,
             endDate: values.endDate,
             reward: {
-              rewardAmount: parseInt(values.grantAmount.rewardAmount, 10),
-              paymentMethodId: values.grantAmount.paymentMethodId,
+              rewardAmount: parseInt(values.reward.rewardAmount, 10),
+              paymentMethodId: values.reward.paymentMethodId,
             },
             privacyLevel: values.privacyLevel,
             applyPolicy: values.applyPolicy,
             categories: values.categories.map((category: any) => category.id),
-            numOfGrant: parseInt(values.grantAmount.amount, 10),
+            numOfGrant: parseInt(values.numOfGrant, 10),
           },
         },
       }).then(() => handleClose()),
@@ -391,12 +389,22 @@ const CreateGrant = ({
           </TaskModalTitleDescriptionMedia>
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
             <GrantAmount
-              value={form.values.grantAmount}
-              onChange={(key, value) => form.setFieldValue('grantAmount', { ...form.values.grantAmount, [key]: value })}
+              value={form.values.reward}
+              numOfGrant={form.values.numOfGrant}
+              onChange={form.setFieldValue}
               orgId={form.values.orgId}
-              onReset={() => form.setFieldValue('grantAmount', { amount: '', currency: '', rewardAmount: 0 })}
-              onFocus={() => form.setFieldError('grantAmount', undefined)}
-              error={form.errors.grantAmount}
+              onReset={() => {
+                form.setFieldValue('reward', { currency: '', rewardAmount: 0 })
+                form.setFieldValue('numOfGrant', 0)
+              }}
+              onFocus={() => {
+                form.setFieldError('reward', undefined)
+                form.setFieldError('numOfGrant', undefined)
+              }}
+              error={{
+                reward: form.errors.reward,
+                numOfGrant: form.errors.numOfGrant,
+              }}
             />
             <Dates
               startDate={form.values.startDate}
@@ -406,14 +414,6 @@ const CreateGrant = ({
             <ApplyPolicy
               onChange={(value) => form.setFieldValue('applyPolicy', value)}
               value={form.values.applyPolicy}
-            />
-            <Reviewers
-              orgId={form.values.orgId}
-              podId={form.values.podId}
-              reviewerIds={form.values.reviewerIds}
-              reviewerIdsErrors={form.errors?.reviewerIds}
-              onChange={(reviewerIds) => form.setFieldValue('reviewerIds', reviewerIds)}
-              onFocus={() => form.setFieldError('reviewerIds', undefined)}
             />
             <Categories
               categories={form.values.categories}
@@ -427,6 +427,7 @@ const CreateGrant = ({
               name="privacyLevel"
               value={form.values.privacyLevel}
               onChange={(value) => {
+                console.log(value, 'valueprivacy')
                 form.setFieldValue('privacyLevel', value);
               }}
               renderValue={(value) => (

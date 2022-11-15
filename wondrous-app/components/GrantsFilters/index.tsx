@@ -10,10 +10,6 @@ export const GRANTS_ICONS_LABELS_MAP = {
     label: 'Active',
     icon: GrantStatusActiveIcon,
   },
-  [GRANTS_STATUSES.NOT_STARTED]: {
-    label: 'Not Started',
-    icon: GrantStatusNotStarted,
-  },
   [GRANTS_STATUSES.CLOSED]: {
     label: 'Completed',
     icon: GrantStatusCompleted,

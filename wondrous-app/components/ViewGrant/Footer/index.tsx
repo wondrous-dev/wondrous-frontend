@@ -10,9 +10,11 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import { List } from 'components/GrantApplications';
 import { useTaskContext } from 'utils/hooks';
+import { ENTITIES_TYPES } from 'utils/constants';
+import CommentList from 'components/Comment';
 
 const ViewGrantFooter = ({ commentCount = 0, applicationsCount = 1 }) => {
-  const { isFullScreen } = useTaskContext();
+  const { isFullScreen, grant } = useTaskContext();
   const [activeTab, setActiveTab] = useState(tabs.applications);
   const ref = useRef();
   return (
@@ -30,7 +32,14 @@ const ViewGrantFooter = ({ commentCount = 0, applicationsCount = 1 }) => {
           );
         })}
       </TaskSectionFooterTitleDiv>
-      <TaskSectionContent ref={ref}>{activeTab === tabs.applications && <List />}</TaskSectionContent>
+      
+
+      <TaskSectionContent ref={ref}>{activeTab === tabs.applications && <List />}
+      
+      {activeTab === tabs.discussion && (
+          <CommentList task={grant} entityType={ENTITIES_TYPES.GRANT} />
+        )}
+      </TaskSectionContent>
     </TaskModalFooter>
   );
 };
