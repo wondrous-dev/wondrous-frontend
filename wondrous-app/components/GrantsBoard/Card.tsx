@@ -24,8 +24,6 @@ import { parseUserPermissionContext } from 'utils/helpers';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { BoardWrapper, ItemPill, EndingSoonPill } from './styles';
-import { useMutation } from '@apollo/client';
-import { ARCHIVE_GRANT, DELETE_GRANT } from 'graphql/mutations/grant';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';

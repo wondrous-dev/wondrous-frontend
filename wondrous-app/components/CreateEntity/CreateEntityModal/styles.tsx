@@ -1012,7 +1012,6 @@ export const EditorContainer = styled.div`
   min-height: ${editorMinHeight}px;
   overflow: auto;
   cursor: text;
-  max-height: 400px;
   ${scrollBarStyles};
 `;
 export const EditorPlaceholder = styled.div`

@@ -1,9 +1,12 @@
+import { useQuery } from '@apollo/client';
 import { Grid } from '@mui/material';
 import { TaskSubmissionItemsWrapper } from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsLoading } from 'components/Common/TaskSubmission/submission';
 import Filters from 'components/GrantApplications/Filters';
 import { RequestApproveButton } from 'components/organization/members/styles';
+import { GET_GRANT_APPLICATIONS } from 'graphql/queries';
 import { useState } from 'react';
+import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
 import { useTaskContext } from 'utils/hooks';
 import ListItem from '../ListItem';
 
@@ -96,13 +99,21 @@ interface Application {
 }
 
 const List = () => {
-  const { toggleCreateApplicationModal } = useTaskContext();
+  const { toggleCreateApplicationModal, grant } = useTaskContext();
+  const [status, setStatus] = useState(GRANT_APPLICATION_STATUSES.OPEN)
+  const {} = useQuery(GET_GRANT_APPLICATIONS, {
+    variables: {
+      status,
+      grantId: grant?.id
+    },
+    skip: !grant?.id
+  })
   return (
     <>
       <TaskSubmissionsLoading loading={false} />
 
       <Grid container justifyContent="space-between" alignItems="center">
-        <Filters />
+        <Filters setStatus={setStatus} status={status}/>
         <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
           Apply for grant
         </RequestApproveButton>

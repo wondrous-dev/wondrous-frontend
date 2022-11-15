@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+import { CommentFragment } from 'graphql/fragments/comments';
 import { MediaFragment } from 'graphql/fragments/media';
 import { OrgFragment } from 'graphql/fragments/org';
 
@@ -72,4 +73,40 @@ export const GET_GRANT_BY_ID = gql`
   }
   ${MediaFragment}
   ${OrgFragment}
+`;
+
+export const GET_GRANT_COMMENTS = gql`
+  query getGrantComments($grantId: ID!) {
+    getGrantComments(grantId: $grantId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;
+
+export const GET_GRANT_APPLICATIONS = gql`
+  query getGrantApplicationsForGrant($grantId: ID!, $status: String) {
+    getGrantApplicationsForGrant(grantId: $grantId, status: $status) {
+      id
+      createdAt
+      createdBy
+      grantId
+      title
+      description
+      orgId
+      podId
+      userMentions
+      approvedAt
+      changeRequestedAt
+      rejectedAt
+      lastReviewedBy
+      paymentStatus
+      paymentAddress
+      creator {
+        username
+        profilePicture
+      }
+      commentCount
+    }
+  }
 `;

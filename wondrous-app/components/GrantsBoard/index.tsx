@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import GrantsFilters from 'components/GrantsFilters';
 import { GRANTS_STATUSES } from 'utils/constants';
 import {
@@ -86,9 +86,15 @@ const GrantsBoard = () => {
     setOpenModal(false);
   };
 
+  const existingGrant = useMemo(() => {
+    if(openModal && location?.params?.grant) {
+      return data?.getGrantOrgBoard?.find((grant) => grant?.id === location?.params?.grant);
+    }
+  }, [openModal, location?.params?.grant, data?.getGrantOrgBoard])
+
   return (
     <>
-      <ViewGrant open={openModal} handleClose={handleModalClose} grantId={location?.params?.grant} isEdit={!!location?.params?.edit}/>
+      <ViewGrant existingGrant={existingGrant} open={openModal} handleClose={handleModalClose} grantId={location?.params?.grant} isEdit={!!location?.params?.edit}/>
       <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
         {data?.getGrantOrgBoard?.map((grant, idx) => (

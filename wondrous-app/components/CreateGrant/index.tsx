@@ -72,9 +72,9 @@ import { CircularProgress } from '@mui/material';
 import { isEmpty } from 'lodash';
 import { GrantAmount, ApplyPolicy, Dates, Categories } from './Fields';
 import { descriptionTemplate } from './utils';
-import { Form } from './styles';
+import { Form, RichTextContainer } from './styles';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
-import { CREATE_GRANT } from 'graphql/mutations/grant';
+import { CREATE_GRANT, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { handleAddFile } from 'utils/media';
@@ -112,6 +112,7 @@ const CreateGrant = ({
   existingGrant,
   parentTaskId,
   formValues,
+  isEdit = false
 }: GrantCreateModalProps) => {
   const router = useRouter();
   const { toggleFullScreen, isFullScreen } = useFullScreen(true);
@@ -122,8 +123,11 @@ const CreateGrant = ({
   const board = orgBoard || podBoard || userBoard;
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
+  const [updateGrant] = useMutation(UPDATE_GRANT, {
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById']
+  })
 
-  // TODO: move to a separate component the upload
+  // TODO: move the upload to a separate component 
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
@@ -144,6 +148,14 @@ const CreateGrant = ({
     undefined,
     board?.podId
   );
+
+
+  const grantAction = isEdit ? ({variables: {input}}) => updateGrant({
+    variables: {
+      grantId: existingGrant.id,
+      input
+    }
+  }) : createGrant;
 
   const form = useFormik({
     initialValues: {
@@ -169,7 +181,7 @@ const CreateGrant = ({
     validateOnBlur: false,
     validationSchema,
     onSubmit: (values) =>
-      createGrant({
+      grantAction({
         variables: {
           input: {
             title: values.title,
@@ -185,7 +197,7 @@ const CreateGrant = ({
             },
             privacyLevel: values.privacyLevel,
             applyPolicy: values.applyPolicy,
-            categories: values.categories.map((category: any) => category.id),
+            categories: values.categories?.map((category: any) => category.id),
             numOfGrant: parseInt(values.numOfGrant, 10),
           },
         },
@@ -313,7 +325,7 @@ const CreateGrant = ({
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
-            <EditorContainer
+            <RichTextContainer
               onClick={() => {
                 // since editor will collapse to 1 row on input, we need to emulate min-height somehow
                 // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
@@ -342,7 +354,7 @@ const CreateGrant = ({
                   e.stopPropagation();
                 }}
               />
-            </EditorContainer>
+            </RichTextContainer>
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
             <CreateEntityLabelSelectWrapper show>
               <MediaUploadDiv>
@@ -458,7 +470,7 @@ const CreateGrant = ({
                 <CreateEntityCancelButton onClick={cancel}>Cancel</CreateEntityCancelButton>
                 <CreateEntitySelectErrorWrapper>
                   <CreateEntityCreateTaskButton type="submit" data-cy="create-entity-button-submit">
-                    Create grant
+                    {isEdit ? 'Update' : 'Create'} grant
                   </CreateEntityCreateTaskButton>
                   {!isEmpty(form.errors) && <CreateEntityError>Please check your input fields</CreateEntityError>}
                 </CreateEntitySelectErrorWrapper>

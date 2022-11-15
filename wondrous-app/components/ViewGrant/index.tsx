@@ -1,9 +1,9 @@
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LABELS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
-import { useMe } from 'components/Auth/withAuth';
+import { useMe, withAuth } from 'components/Auth/withAuth';
 import { TaskModal, TaskModalHeaderWrapperRight } from 'components/Common/Task/styles';
 import {
   TaskCardOrgNoLogo,
@@ -41,11 +41,15 @@ import { DescriptionWrapper } from './styles';
 import ViewGrantFooter from './Footer';
 import { useQuery } from '@apollo/client';
 import { GET_GRANT_BY_ID } from 'graphql/queries';
+import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
+import GrantMenuStatus from './GrantMenuStatus';
 
 const FIELDS_CONFIG = [
   {
     label: 'Grant amount',
-    component: ({ grant: { reward, numOfGrant } }) => <GrantAmount grantAmount={reward} numOfGrant={numOfGrant}/>,
+    component: ({ grant: { reward, numOfGrant } }) => <GrantAmount grantAmount={reward} numOfGrant={numOfGrant} />,
 
     shouldDisplay: ({ grant: { reward } }): boolean => !!reward?.paymentMethodId,
   },
@@ -56,11 +60,13 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Eligibility',
-    component: ({ grant: { applyPolicy } }) => <DataDisplay label={applyPolicy} />,
+    component: ({ grant: { applyPolicy } }) => (
+      <DataDisplay label={APPLY_POLICY_FIELDS.find((policy) => policy.value === applyPolicy)?.name} />
+    ),
   },
   {
     label: 'Visibility',
-    component: ({ grant: { privacyLevel } }) => <DataDisplay label={privacyLevel} />,
+    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel]} />,
   },
   {
     label: 'Categories',
@@ -69,15 +75,15 @@ const FIELDS_CONFIG = [
   },
 ];
 
-const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
-  console.log(isEdit, 'isEdit')
+const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant = null }) => {
   const [isEditMode, setEditMode] = useState(isEdit);
   const board = useBoards();
   const { isFullScreen, toggleFullScreen } = useFullScreen(true);
   const [completeModal, setCompleteModal] = useState(false);
   const location = useLocation();
+  const [deleteTask, setDeleteTask] = useState(false);
+  const [archiveTask, setArchiveTask] = useState(false);
 
-  
   const isViewApplication = !!location.params.grantApplicationId;
 
   const { data, loading } = useQuery(GET_GRANT_BY_ID, {
@@ -95,10 +101,10 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
   const toggleCreateApplicationModal = () => setCreateApplicationModalVisible((prevState) => !prevState);
 
   useEffect(() => {
-    if(isEdit !== isEditMode) {
-      setEditMode(isEdit)
+    if (isEdit !== isEditMode) {
+      setEditMode(isEdit);
     }
-  }, [isEdit])
+  }, [isEdit]);
 
   const [activeTab, setActiveTab] = useState(null);
   const permissions = parseUserPermissionContext({
@@ -113,7 +119,8 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
 
   const sectionRef = useRef(null);
 
-  const grant = data?.getGrantById
+  const grant = useMemo(() => data?.getGrantById || existingGrant, [data?.getGrantById, existingGrant]);
+
   const user = useMe();
 
   const onClose = () => {
@@ -131,7 +138,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
   const canEdit =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    grant?.createdBy === user?.id
+    grant?.createdBy === user?.id;
 
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
@@ -139,18 +146,18 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
     grant?.createdBy === user?.id;
 
   const GrantApplication = () => isCreateApplicationModalVisible && grantId && <CreateGrantApplication />;
-  
+
   const Grant = () => {
-    if(loading) return null
+    if ((loading && !grant) || isCreateApplicationModalVisible) return null;
     if (isViewApplication) {
       return <ViewGrantApplication onClose={onClose} />;
     }
-    if (isCreateApplicationModalVisible) return null;
     return isEditMode ? (
       <CreateGrant
         existingGrant={grant}
         entityType={ENTITIES_TYPES.GRANT}
-        handleClose={onClose}
+        handleClose={() => setEditMode(false)}
+        isEdit={isEditMode}
         cancel={() => setEditMode(false)}
       />
     ) : (
@@ -174,12 +181,14 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
                       <DAOIcon />
                     </TaskCardOrgNoLogo>
                   )}
-                  <TaskModalHeaderTypography>{grant?.org.name}</TaskModalHeaderTypography>
+                  <TaskModalHeaderTypography>{grant?.org?.name}</TaskModalHeaderTypography>
                 </TaskModalHeaderIconWrapper>
-                <TaskModalHeaderIconWrapper>
-                  <TaskCardPodIcon color={grant?.pod?.color} />
-                  <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
-                </TaskModalHeaderIconWrapper>
+                {grant?.pod ? (
+                  <TaskModalHeaderIconWrapper>
+                    <TaskCardPodIcon color={grant?.pod?.color} />
+                    <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
+                  </TaskModalHeaderIconWrapper>
+                ) : null}
                 {grant?.privacyLevel !== PRIVACY_LEVEL.public && (
                   <>
                     <TaskModalHeaderArrow />
@@ -193,7 +202,14 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
               <TaskModalHeaderWrapperRight>
                 <TaskModalHeaderShare fetchedTask={grant} />
                 <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
-                <Menu canArchive={canArchive} canEdit={canEdit} setEditTask={setEditMode} />
+                <Menu
+                  canArchive={canArchive}
+                  canEdit={canEdit}
+                  setEditTask={setEditMode}
+                  setArchiveTask={setArchiveTask}
+                  setDeleteTask={setDeleteTask}
+                  canDelete={canArchive}
+                />
 
                 <TaskModalHeaderCloseModal onClick={onClose} />
               </TaskModalHeaderWrapperRight>
@@ -201,6 +217,8 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
             <TaskModalTaskData fullScreen={isFullScreen}>
               <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
                 <TaskModalTitle>{grant?.title}</TaskModalTitle>
+                <GrantMenuStatus canEdit={canEdit} currentStatus={grant?.status}/>
+
                 <DescriptionWrapper>
                   <RichTextViewer text={grant.description} />
                 </DescriptionWrapper>
@@ -241,14 +259,36 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false}) => {
       }}
     >
       <TaskModal open={open} onClose={onClose}>
-      <>
-      <GrantApplication />
-          <Grant />
-      </>
+        <>
+          <ArchiveTaskModal
+            open={archiveTask}
+            onArchive={() => {
+              setSnackbarAlertOpen(true);
+              setSnackbarAlertMessage(`Archived successfully!`);
+            }}
+            onClose={() => setArchiveTask(false)}
+            taskType={ENTITIES_TYPES.GRANT}
+            taskId={grant?.id}
+          />
+          <DeleteTaskModal
+            open={deleteTask}
+            onClose={() => {
+              setDeleteTask(false);
+            }}
+            taskType={ENTITIES_TYPES.GRANT}
+            taskId={grant?.id}
+            onDelete={() => {
+              setSnackbarAlertOpen(true);
+              setSnackbarAlertMessage(`Deleted successfully!`);
+            }}
+          />
 
+          <GrantApplication />
+          <Grant />
+        </>
       </TaskModal>
     </TaskContext.Provider>
   );
 };
 
-export default ViewGrant;
+export default withAuth(ViewGrant);

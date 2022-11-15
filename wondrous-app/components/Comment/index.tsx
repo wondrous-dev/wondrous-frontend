@@ -8,8 +8,10 @@ import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
 import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
+import { CREATE_GRANT_COMMENT, DELETE_GRANT_COMMENT } from 'graphql/mutations/grant';
 import { CREATE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
+import { GET_GRANT_COMMENTS } from 'graphql/queries';
 import { SEARCH_ORG_USERS } from 'graphql/queries/org';
 import {
   GET_COMMENTS_FOR_TASK,
@@ -74,6 +76,9 @@ function CommentBox(props) {
     refetchQueries: ['getTaskProposalComments'],
   });
 
+  const [createGrantComment] = useMutation(CREATE_GRANT_COMMENT, {
+    refetchQueries: ['getGrantComments'],
+  })
   const [createSubmissionComment] = useMutation(CREATE_SUBMISSION_COMMENT, {
     refetchQueries: ['getTaskSubmissionComments', GET_TASK_SUBMISSIONS_FOR_TASK],
   });
@@ -95,6 +100,16 @@ function CommentBox(props) {
       userMentions: mentionedUsers,
       previousCommenterIds,
     };
+    if(entityType === ENTITIES_TYPES.GRANT) {
+      return createGrantComment({
+        variables: {
+          input: {
+            grantId: task?.id,
+            ...commentArgs,
+          }
+        }
+      }).then(() => setComment(''))
+    }
     if (entityType === ENTITIES_TYPES.PROPOSAL) {
       createTaskProposalComment({
         variables: {
@@ -186,6 +201,10 @@ function CommentItemWrapper(props) {
     refetchQueries: ['getTaskComments'],
   });
 
+  const [deleteGrantComment] = useMutation(DELETE_GRANT_COMMENT, {
+    refetchQueries: ['getGrantComments'],
+  })
+
   const [deleteTaskProposalComment] = useMutation(DELETE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
   });
@@ -240,6 +259,13 @@ function CommentItemWrapper(props) {
       handleOnDelete={() => {
         const text = 'Are you sure you want to delete?';
         if (confirm(text)) {
+          if(entityType === ENTITIES_TYPES.GRANT) {
+            return deleteGrantComment({
+              variables: {
+                grantCommentId: id,
+              }
+            })
+          }
           if (entityType === ENTITIES_TYPES.PROPOSAL) {
             deleteTaskProposalComment({
               variables: {
@@ -293,6 +319,13 @@ export default function CommentList(props) {
   } = props;
   const router = useRouter();
   const [comments, setComments] = useState([]);
+  const [getGrantComments] = useLazyQuery(GET_GRANT_COMMENTS, {
+    fetchPolicy: 'cache-and-network',
+    onCompleted: (data) => {
+      const commentList = data?.getGrantComments
+      setComments(commentList);
+    }
+  })
   const [getTaskComments] = useLazyQuery(GET_COMMENTS_FOR_TASK, {
     onCompleted: (data) => {
       const commentList = data?.getTaskComments;
@@ -318,11 +351,11 @@ export default function CommentList(props) {
 
   useEffect(() => {
     if(entityType === ENTITIES_TYPES.GRANT) {
-      getTaskComments({
+      getGrantComments({
         variables: {
-          taskId: task.id,
-        },
-      });
+          grantId: task.id,
+        }
+      })
     }
     if (task && entityType === ENTITIES_TYPES.PROPOSAL) {
       getTaskProposalComments({

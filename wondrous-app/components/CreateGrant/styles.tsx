@@ -1,4 +1,5 @@
 import { TaskSectionDisplayContentWrapper } from 'components/Common/TaskViewModal/styles';
+import { EditorContainer } from 'components/CreateEntity/CreateEntityModal/styles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 
@@ -14,5 +15,11 @@ export const DisplayWrapper = styled(TaskSectionDisplayContentWrapper)`
     .MuiOutlinedInput-root {
       background: ${palette.grey99} !important;
     }
+  }
+`;
+
+export const RichTextContainer = styled(EditorContainer)`
+  && {
+    height: 35rem;
   }
 `;

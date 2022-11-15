@@ -679,7 +679,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                               </TaskModalSnapshot>
                             )}
-                            {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
+                            {canEdit && !isViewNFTMode && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
                             {isMilestone && (
                               <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                             )}

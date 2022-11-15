@@ -433,6 +433,7 @@ export interface ICreateEntityModal {
 }
 
 export interface GrantCreateModalProps extends ICreateEntityModal {
+  isEdit?: boolean
   existingGrant?: {
     id: string;
     title: string;

@@ -218,7 +218,7 @@ const useTaskMenuStatusNonProposal = ({ task, entityType }) => {
   return { handleOnChange, filterStatus, currentStatus, disableMenu: false };
 };
 
-function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu, className }) {
+export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableMenu, className = '' }) {
   const [anchorEl, setAnchorEl] = useState(null);
   const open = Boolean(anchorEl);
   const handleClick = (e) => {

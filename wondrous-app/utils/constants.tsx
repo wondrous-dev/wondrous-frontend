@@ -833,3 +833,16 @@ export const GRANTS_STATUSES = {
   OPEN: 'open',
   CLOSED: 'closed',
 };
+
+export const GRANT_APPLICATION_STATUSES = {
+  OPEN:'open',
+  WAITING_FOR_REVIEW: 'waiting_for_review',
+  CHANGE_REQUESTED: 'change_requested',
+  APPROVED: 'approved',
+  REJECTED: 'rejected'
+}
+
+export const PRIVACY_LABELS = {
+  [PRIVACY_LEVEL.public]: 'Public',
+  [PRIVACY_LEVEL.private]: 'Members only',
+}
