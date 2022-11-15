@@ -19,6 +19,7 @@ export const NotificationFragment = gql`
       contentPreview
       orgUsername
       addMember
+      viewNft
     }
   }
 `;

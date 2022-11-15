@@ -25,6 +25,7 @@ const EXCLUDED_PATHS = [
   '/404',
   '/invite/collab/[token]',
   '/invite/collab/members/[token]',
+  '/task/[taskId]/nft',
 ];
 
 export const useMe = () => useContext(MyContext);

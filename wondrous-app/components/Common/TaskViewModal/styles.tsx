@@ -251,6 +251,7 @@ export const TaskModalHeaderMenu = styled(Menu)`
 
 export const TaskModalHeaderMenuItem = styled(MenuItem)`
   && {
+    z-index: 1000;
     display: flex;
     justify-content: flex-start;
     color: ${({ theme, warning }) => (warning ? theme.palette.red800 : theme.palette.white)};
@@ -292,6 +293,7 @@ export const TaskModalTitleDescriptionMedia = styled.div`
 export const TaskModalTitle = styled(Typography)`
   && {
     font-size: 24px;
+    word-break: break-all;
     ${({ theme }) => `
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightBold};

@@ -264,6 +264,7 @@ export const NOTIFICATION_VERBS = {
   collab_invite: 'invited you in a',
   collab_approve: 'approved a',
   collab_decline: 'declined request to join a',
+  task_minted: 'finished minting a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {
@@ -821,4 +822,10 @@ export enum SUBMISSION_COMMENT_TYPE {
   REOPEN = 'reopen',
 }
 
-export const HEADER_ASPECT_RATIO = 7.05
+export const HEADER_ASPECT_RATIO = 7.05;
+
+export const TaskMintStatus = {
+  NOT_STARTED: 'not_started',
+  IN_PROGRESS: 'in_progress',
+  COMPLETED: 'completed',
+};

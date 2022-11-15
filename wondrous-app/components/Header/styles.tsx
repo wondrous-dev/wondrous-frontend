@@ -235,3 +235,8 @@ export const MissionControlIconWrapper = styled(HeaderHomeButton)`
     }
   }
 `;
+
+export const ConnectDiscordLink = styled.a`
+  cursor: pointer;
+  color: ${palette.white};
+`;

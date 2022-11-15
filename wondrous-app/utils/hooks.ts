@@ -1,8 +1,8 @@
 import { NextRouter, useRouter } from 'next/router';
-import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo } from 'react';
+import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo, useCallback } from 'react';
 import apollo from 'services/apollo';
 import { TokenGatingCondition } from 'types/TokenGating';
-import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE } from 'utils/constants';
+import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE, ENTITIES_TYPES } from 'utils/constants';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
@@ -12,6 +12,7 @@ import {
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { MARK_ALL_NOTIFICATIONS_READ, MARK_NOTIFICATIONS_READ } from 'graphql/mutations';
 import { LIMIT } from 'services/board';
+import { useMe } from 'components/Auth/withAuth';
 import {
   ColumnsContext,
   IsMobileContext,
@@ -29,7 +30,9 @@ import {
   TokenGatingContext,
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
+  TaskContext,
 } from './contexts';
+import { parseUserPermissionContext } from './helpers';
 
 export const useHotkey = () => useContext(HotkeyContext);
 
@@ -306,5 +309,43 @@ export const useNotifications = () => {
 
 export const useSteps = (defaultStep = 0) => {
   const [step, setStep] = useState(defaultStep);
-  return { step, setStep };
+
+  const nextStep = () => setStep((prevState) => prevState + 1);
+
+  const prevStep = () => setStep((prevState) => prevState - 1);
+
+  useEffect(() => () => setStep(defaultStep), []);
+
+  return { step, setStep, nextStep, prevStep };
 };
+
+export const usePermissions = (entity, isTaskProposal = false) => {
+  const globalContext = useGlobalContext();
+  const user = useMe();
+  const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
+  const userPermissionsContext = getUserPermissionContext();
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext,
+    orgId: entity?.orgId,
+    podId: entity?.podId,
+  });
+  const canEdit =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.EDIT_TASK) ||
+    entity?.createdBy === user?.id ||
+    (entity?.assigneeId && entity?.assigneeId === user?.id);
+  const canArchive =
+    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    entity?.createdBy === user?.id;
+  const canViewApplications =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions.includes(PERMISSIONS.EDIT_TASK) ||
+    (entity?.createdBy === user?.id && entity?.type === TASK_TYPE);
+  const canDelete =
+    canArchive && (entity?.type === ENTITIES_TYPES.TASK || entity?.type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
+  const canApproveProposal =
+    permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
+  return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal };
+};
+export const useTaskContext = () => useContext(TaskContext);

@@ -11,7 +11,7 @@ import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import { Compensation } from 'components/Common/Compensation';
+import Compensation from 'components/Common/Compensation';
 import { format } from 'date-fns';
 import { DueDateText, ArchivedTaskUndo } from 'components/Common/Task/styles';
 import Tooltip from 'components/Tooltip';

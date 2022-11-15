@@ -41,6 +41,7 @@ import {
   LabelBlock,
   Snackbar,
   SettingsHeaderText,
+  CreateFormAddDetailsTabWrapper,
 } from './styles';
 
 const LIMIT = 200;
@@ -234,11 +235,7 @@ function GeneralSettingsComponent(props) {
           </GeneralSettingsSocialsBlockWrapper>
         </GeneralSettingsSocialsBlock>
 
-        <div
-          style={{
-            marginTop: '32px',
-          }}
-        >
+        <CreateFormAddDetailsTabWrapper>
           <CreateFormAddDetailsTab>
             <CreateFormAddDetailsInputLabel>Visibility</CreateFormAddDetailsInputLabel>
             <TabsVisibility
@@ -247,7 +244,7 @@ function GeneralSettingsComponent(props) {
               onChange={tabsVisibilityHandleOnChange}
             />
           </CreateFormAddDetailsTab>
-        </div>
+        </CreateFormAddDetailsTabWrapper>
 
         <GeneralSettingsButtonsBlock>
           <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>

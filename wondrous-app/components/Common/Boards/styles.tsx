@@ -130,15 +130,16 @@ export const BoardsCardSubheader = styled.div`
   flex-direction: row;
   justify-content: flex-start;
   align-items: center;
-  gap: 10px;
+  gap: 6px;
 `;
 
 export const BoardsCardHeader = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: top;
   flex-direction: row;
   width: 100%;
+  height: 28px;
 `;
 
 export const BoardsCardBody = styled.div`
@@ -168,7 +169,7 @@ export const BoardsPrivacyLabel = styled.div`
   line-height: 12px;
   display: flex;
   align-items: center;
-  background: #363636;
+  background: ${palette.grey99};
   border-radius: 4px;
   color: ${palette.white};
 `;
@@ -179,7 +180,7 @@ export const BoardsCardFooter = styled.div`
   align-items: center;
   gap: 10px;
   width: 100%;
-  padding-bottom: 15px;
+  height: 28px;
 `;
 
 export const BoardsCardBodyTitle = styled(Typography)`

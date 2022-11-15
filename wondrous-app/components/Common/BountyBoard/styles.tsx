@@ -2,8 +2,6 @@ import styled from 'styled-components';
 import StarIcon from 'components/Icons/starIcon';
 import palette from 'theme/palette';
 
-import { Typography } from '@mui/material';
-
 import EmptyStateArt from 'components/EmptyStateGeneric/EmptyStateArt';
 
 export const IconWrapper = styled.div`
@@ -77,30 +75,30 @@ export const BountyContainer = styled.div`
 `;
 
 export const BountyCardWrapper = styled.div`
+  align-items: flex-start;
+  background: linear-gradient(54.27deg, ${palette.grey79} 20.18%, ${palette.green30} 130.2%);
+  border-radius: 6px;
+  border: 0px solid transparent;
+  color: ${palette.white};
+  cursor: pointer;
   display: flex;
   flex-direction: column;
-  color: ${palette.white};
-  padding: 10px;
-  cursor: pointer;
-  border-radius: 3px;
-  background: linear-gradient(180deg, #1e1e1e 0%, #141414 100%);
   gap: 14px;
-  border: 0px solid transparent;
-  border-radius: 6px;
-  position: relative;
   height: fit-content;
-  align-items: flex-start;
+  padding: 14px;
+  position: relative;
+  z-index: 1;
   &::before {
+    background: ${palette.grey900};
+    border-radius: 6px;
     content: '';
+    height: calc(100% - 2px);
+    left: 0;
     position: absolute;
-    inset: 0;
-    border-radius: 5px;
-    background: linear-gradient(169.47deg, rgba(75, 75, 75, 0.6) 7.84%, rgba(35, 35, 35, 0.6) 108.71%);
-    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-    -webkit-mask-composite: xor;
-    mask-composite: exclude;
-    padding: 1px;
-    pointer-events: none;
+    top: 0;
+    transform: translate(1px, 1px);
+    width: calc(100% - 2px);
+    z-index: -1;
   }
 `;
 
@@ -114,56 +112,8 @@ export const BountyCardType = styled.div`
   text-transform: capitalize;
 `;
 
-export const BountyCardSubmissionsCount = styled.div`
-  background: ${palette.background.default};
-  color: ${palette.white};
-  width: 45%;
-  border-radius: 6px;
-  padding: 8px;
-  font-family: 'Space Grotesk';
-  font-style: normal;
-  font-weight: 500;
-  font-size: 12px;
-  line-height: 15px;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: flex-start;
-  gap: 6px;
-`;
-
-export const BountyCardSubmissionsCountWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-direction: row;
-`;
-
-export const SubmissionCount = styled(Typography)`
-  && {
-    font-family: 'Space Grotesk';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16px;
-    line-height: 20px;
-    background: ${({ gradient = 'blue' }) => SUB_BACKGROUND_MAP[gradient]};
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
-    text-fill-color: transparent;
-  }
-`;
-
 export const SubtasksWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-`;
-
-export const BountyCommentsIcon = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 10px;
-  margin-right: 18px;
 `;

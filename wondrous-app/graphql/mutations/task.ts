@@ -1,7 +1,13 @@
 import { gql } from '@apollo/client';
 import { CommentFragment } from 'graphql/fragments/comments';
 import { MediaFragment } from 'graphql/fragments/media';
-import { BountyFragment, MilestoneFragment, FullTaskFragment, TaskTemplateFragment } from 'graphql/fragments/task';
+import {
+  BountyFragment,
+  MilestoneFragment,
+  FullTaskFragment,
+  MinimalTaskFragment,
+  TaskTemplateFragment,
+} from 'graphql/fragments/task';
 
 export const CREATE_TASK = gql`
   mutation createTask($input: TaskInput) {
@@ -86,9 +92,10 @@ export const REMOVE_MEDIA_FROM_TASK = gql`
 export const UPDATE_TASK_STATUS = gql`
   mutation updateTaskStatus($taskId: ID!, $input: updateStatusInput!) {
     updateTaskStatus(taskId: $taskId, input: $input) {
-      status
+      ...MinimalTaskFragment
     }
   }
+  ${MinimalTaskFragment}
 `;
 
 export const ARCHIVE_TASK = gql`
@@ -280,5 +287,11 @@ export const UPDATE_TASK_REVIEWERS = gql`
     updateTaskReviewers(taskId: $taskId, reviewerIds: $reviewerIds) {
       success
     }
+  }
+`;
+
+export const MINT_TASK = gql`
+  mutation taskMint($taskId: ID!, $title: String, $description: String, $links: [String]) {
+    taskMint(taskId: $taskId, title: $title, description: $description, links: $links)
   }
 `;

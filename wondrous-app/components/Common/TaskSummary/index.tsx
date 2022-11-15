@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useColumns, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { useRouter } from 'next/router';
 import TaskViewModal from 'components/Common/TaskViewModal';
+import Compensation from 'components/Common/Compensation';
 import { PERMISSIONS, TASK_STATUS_ARCHIVED, TASK_STATUS_IN_REVIEW, TASK_STATUS_REQUESTED } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
@@ -44,7 +45,6 @@ import {
   TaskSeparator,
   TaskCardDescriptionText,
 } from '../Task/styles';
-import { Compensation } from '../Compensation';
 import { AvatarList } from '../AvatarList';
 import { LogoButton } from '../logo';
 import TASK_ICONS from '../Task/constants';

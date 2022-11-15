@@ -56,6 +56,7 @@ export const greyColors = {
   grey910: '#171717',
   grey920: '#2D2D2D',
   grey1000: '#272729',
+  grey1020: '#2F2F2F',
 };
 
 export const redColors = {
@@ -116,6 +117,7 @@ export const yellowColors = {
 
 export const violetColors = {
   violet50: '#5001DF',
+  violet90: '#7000FF',
   violet100: '#4f00de',
   violet200: '#FB7A75',
   violet210: '#EB96EB',

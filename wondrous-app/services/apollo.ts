@@ -15,13 +15,21 @@ const httpLink = new HttpLink({
 });
 
 const getAuth = () => {
-  const token = getAuthHeader();
-  return token ? `Bearer ${token}` : '';
+  try {
+    const token = getAuthHeader();
+    return token ? `Bearer ${token}` : '';
+  } catch (error) {
+    return null;
+  }
 };
 
 const getWaitlistAuth = () => {
-  const token = getWaitlistAuthHeader();
-  return token ? `Bearer ${token}` : '';
+  try {
+    const token = getWaitlistAuthHeader();
+    return token ? `Bearer ${token}` : '';
+  } catch (error) {
+    return null;
+  }
 };
 
 const authLink = setContext((_, { headers }) => {

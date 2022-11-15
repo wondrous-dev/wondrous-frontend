@@ -10,7 +10,7 @@ import { useRouter } from 'next/router';
 import { useSteps } from 'utils/hooks';
 import { ViewButton } from './styles';
 
-const Actions = ({ type, onClose, onSubmit, declineLabel, acceptLabel }) => (
+export const Actions = ({ type, onClose, onSubmit, declineLabel, acceptLabel }) => (
   <Grid container gap="18px">
     <Button color="grey" onClick={onClose}>
       {declineLabel}
