@@ -46,8 +46,6 @@ export function ImageUpload(props) {
   const [imageToEdit, setImageToEdit] = useState(null);
   const [editedImage, setEditedImage] = useState(null);
 
-  console.log('ImageType', imageType);
-
   const imageInputId = `upload-${title?.toLowerCase()}-image`;
 
   const addNewFiles = (newFiles) => {
