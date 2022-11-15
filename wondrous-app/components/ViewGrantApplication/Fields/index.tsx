@@ -50,7 +50,7 @@ export const WalletAddressViewer = ({ walletAddress }) => {
   return (
     <WalletAddressWrapper>
       <DataDisplayWrapper onClick={handleAddressCopy}>
-        {isCopied ? 'Address copied!' : `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`}
+        {isCopied ? 'Address copied!' : `${walletAddress?.slice(0, 6)}...${walletAddress?.slice(-4)}`}
         {!isCopied && <CopyIcon />}
       </DataDisplayWrapper>
     </WalletAddressWrapper>

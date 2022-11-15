@@ -1,62 +1,132 @@
-import { gql } from "@apollo/client";
-import { CommentFragment } from "graphql/fragments/comments";
+import { gql } from '@apollo/client';
+import { CommentFragment } from 'graphql/fragments/comments';
 
 export const CREATE_GRANT = gql`
-    mutation createGrant($input: GrantInput) {
-        createGrant(input: $input) {
-            id
-        }
+  mutation createGrant($input: GrantInput) {
+    createGrant(input: $input) {
+      id
     }
+  }
 `;
-
 
 export const ARCHIVE_GRANT = gql`
-    mutation archiveGrant($grantId: ID!) {
-        archiveGrant(grantId: $grantId) {
-            success
-        }
+  mutation archiveGrant($grantId: ID!) {
+    archiveGrant(grantId: $grantId) {
+      success
     }
+  }
 `;
-
 
 export const DELETE_GRANT = gql`
-    mutation deleteGrant($grantId: ID!) {
-        deleteGrant(grantId: $grantId) {
-            success
-        }
+  mutation deleteGrant($grantId: ID!) {
+    deleteGrant(grantId: $grantId) {
+      success
     }
+  }
 `;
 
-
 export const CREATE_GRANT_COMMENT = gql`
-    mutation createGrantComment($input: GrantCommentInput) {
-        createGrantComment(input: $input) {
-            ...CommentFragment
-        }
+  mutation createGrantComment($input: GrantCommentInput) {
+    createGrantComment(input: $input) {
+      ...CommentFragment
     }
-    ${CommentFragment}
+  }
+  ${CommentFragment}
 `;
 
 export const DELETE_GRANT_COMMENT = gql`
-    mutation deleteGrantComment($grantCommentId: String!) {
-        deleteGrantComment(grantCommentId: $grantCommentId) {
-            success
-        }
+  mutation deleteGrantComment($grantCommentId: String!) {
+    deleteGrantComment(grantCommentId: $grantCommentId) {
+      success
     }
+  }
 `;
 
 export const UPDATE_GRANT = gql`
-    mutation updateGrant($grantId: ID!, $input: GrantInput) {
-        updateGrant(grantId: $grantId, input: $input) {
-            id
-        }
+  mutation updateGrant($grantId: ID!, $input: GrantInput) {
+    updateGrant(grantId: $grantId, input: $input) {
+      id
     }
+  }
 `;
 
 export const UPDATE_GRANT_STATUS = gql`
-    mutation updateGrantStatus($grantId: ID!, $input: updateStatusInput!) {
-        updateGrantStatus(grantId: $grantId, input: $input) {
-            id
-        }
+  mutation updateGrantStatus($grantId: ID!, $input: updateStatusInput!) {
+    updateGrantStatus(grantId: $grantId, input: $input) {
+      id
     }
+  }
+`;
+
+export const CREATE_GRANT_APPLICATION = gql`
+  mutation createGrantApplication($input: GrantApplicationInput) {
+    createGrantApplication(input: $input) {
+      id
+    }
+  }
+`;
+
+export const UPDATE_GRANT_APPLICATION = gql`
+  mutation updateGrantApplication($grantApplicationId: ID!, $input: GrantApplicationInput) {
+    updateGrantApplication(grantApplicationId: $grantApplicationId, input: $input) {
+      id
+    }
+  }
+`;
+
+export const DELETE_GRANT_APPLICATION = gql`
+  mutation deleteGrantApplication($grantApplicationId: ID!) {
+    deleteGrantApplication(grantApplicationId: $grantApplicationId) {
+      success
+    }
+  }
+`;
+
+export const APPROVE_GRANT_APPLICATION = gql`
+  mutation approveGrantApplication($grantApplicationId: ID!) {
+    approveGrantApplication(grantApplicationId: $grantApplicationId) {
+      id
+    }
+  }
+`;
+
+export const REJECT_GRANT_APPLICATION = gql`
+  mutation rejectGrantApplication($grantApplicationId: ID!) {
+    rejectGrantApplication(grantApplicationId: $grantApplicationId) {
+      id
+    }
+  }
+`;
+
+export const REQUEST_CHANGE_GRANT_APPLICATION = gql`
+  mutation requestChangeGrantApplication($grantApplicationId: ID!) {
+    requestChangeGrantApplication(grantApplicationId: $grantApplicationId) {
+      id
+    }
+  }
+`;
+
+export const REMOVE_GRANT_APPLICATION_MEDIA = gql`
+  mutation removeGrantApplicationMedia($grantApplicationId: ID!, $slug: String!) {
+    removeGrantApplicationMedia(grantApplicationId: $grantApplicationId, slug: $slug) {
+      success
+    }
+  }
+`;
+
+export const CREATE_GRANT_APPLICATION_COMMENT = gql`
+  mutation createGrantApplicationComment($input: GrantApplicationCommentInput) {
+    createGrantApplicationComment(input: $input) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
+`;
+
+export const DELETE_GRANT_APPLICATION_COMMENT = gql`
+  mutation deleteGrantApplicationComment($grantApplicationCommentId: String!) {
+    deleteGrantApplicationComment(grantApplicationCommentId: $grantApplicationCommentId) {
+      success
+    }
+  }
 `;

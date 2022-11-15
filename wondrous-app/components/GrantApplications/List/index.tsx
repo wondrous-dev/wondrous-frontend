@@ -101,7 +101,7 @@ interface Application {
 const List = () => {
   const { toggleCreateApplicationModal, grant } = useTaskContext();
   const [status, setStatus] = useState(GRANT_APPLICATION_STATUSES.OPEN)
-  const {} = useQuery(GET_GRANT_APPLICATIONS, {
+  const {data} = useQuery(GET_GRANT_APPLICATIONS, {
     variables: {
       status,
       grantId: grant?.id
@@ -119,8 +119,8 @@ const List = () => {
         </RequestApproveButton>
       </Grid>
       <TaskSubmissionItemsWrapper data-cy="item-submission">
-        {Items.map((item, idx) => (
-          <ListItem key={item.id + idx} item={item} />
+        {data?.getGrantApplicationsForGrant?.map((item, idx) => (
+          <ListItem key={item.id} item={item} />
         ))}
       </TaskSubmissionItemsWrapper>
     </>

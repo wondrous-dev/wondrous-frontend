@@ -110,3 +110,44 @@ export const GET_GRANT_APPLICATIONS = gql`
     }
   }
 `;
+
+export const GET_GRANT_APPLICATION_BY_ID = gql`
+  query getGrantApplicationById($grantApplicationId: ID!) {
+    getGrantApplicationById(grantApplicationId: $grantApplicationId) {
+      id
+      paymentAddress
+      description
+      grantId
+      media {
+        ...MediaFragment
+      }
+      title
+      grant {
+        privacyLevel
+        orgId
+        podId
+        createdBy
+        title
+        reward {
+          paymentMethodId
+          rewardAmount
+          chain
+          icon
+          tokenName
+          symbol
+        }
+        id
+        org {
+          username
+          profilePicture
+          name
+        }
+        pod {
+          color
+          name
+        }
+      }
+    }
+  }
+  ${MediaFragment}
+`;

@@ -26,7 +26,7 @@ import {
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { handleAddFile } from 'utils/media';
-import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
+import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { useFormik } from 'formik';
 import * as yup from 'yup';
 import { useTaskContext } from 'utils/hooks';
@@ -45,39 +45,52 @@ import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fiel
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { isEmpty } from 'lodash';
-import { HeaderTypography, IconWrapper, ActionButton, FooterButtonsWrapper } from './styles';
+import { HeaderTypography, IconWrapper, ActionButton, FooterButtonsWrapper, RichTextContainer } from './styles';
 import { descriptionTemplate } from './utils';
+import { useMutation } from '@apollo/client';
+import { CREATE_GRANT_APPLICATION, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
+import { transformMediaFormat } from 'utils/helpers';
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
-  grantAmount: yup.object({
-    rewardAmount: yup.number().required('Amount is required'),
-  }),
-  walletAddress: yup.string().required('Wallet address is required'),
+  paymentAddress: yup.string().required('Wallet address is required'),
   mediaUploads: yup.array(),
 });
 
-const CreateGrantApplication = () => {
+const CreateGrantApplication = ({grantApplication = null, isEditMode, handleClose}) => {
   const user = useMe();
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+  const [createGrantApplication] = useMutation(CREATE_GRANT_APPLICATION, {
+    refetchQueries: ['getGrantApplicationsForGrant'],
+  });
+  const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION, {
+    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
+  })
 
-  const { isFullScreen, toggleCreateApplicationModal, toggleFullScreen, grant } = useTaskContext();
-  const { orgId, id } = grant;
+  const taskContext = useTaskContext();
+  const { isFullScreen, toggleCreateApplicationModal, toggleFullScreen } = taskContext;
+
+  const grant = grantApplication?.grant || taskContext?.grant;
+  const orgId = grant?.org?.id
 
   const inputRef: any = useRef();
   const initialValues = {
-    title: '',
-    description: deserializeRichText(descriptionTemplate),
-    grantAmount: {
-      rewardAmount: 0,
-    },
-    walletAddress: user?.activeEthAddress || null,
-    mediaUploads: [],
+    title: grantApplication?.title || '',
+    description: grantApplication ? deserializeRichText(grantApplication.description) : deserializeRichText(descriptionTemplate),
+    paymentAddress: grantApplication?.paymentAddress || user?.activeEthAddress || null,
+    mediaUploads: transformMediaFormat(grantApplication?.media) || []
   };
 
   const handleMedia = () => ({ attach: () => {}, remove: () => {} });
+
+  const handleCloseAction = () => isEditMode ? handleClose() : toggleCreateApplicationModal();
+
+  const handleGrantApplicationSubmit = isEditMode ? ({variables}) => updateGrantApplication({variables: {
+    grantApplicationId: grantApplication.id,
+    input: variables.input
+  }}): createGrantApplication;
 
   const form = useFormik({
     initialValues,
@@ -85,25 +98,38 @@ const CreateGrantApplication = () => {
     validateOnBlur: false,
     validationSchema,
     onSubmit: (values) => {
-      console.log(values);
-    },
+      const userMentions = extractMentions(values.description);
+      handleGrantApplicationSubmit({
+        variables: {
+          input: {
+            grantId: grant.id,
+            title: values.title,
+            mediaUploads: values.mediaUploads,
+            paymentAddress: values.paymentAddress,
+            description: JSON.stringify(values.description),
+            userMentions,
+          }
+        }
+      }).then(() => handleCloseAction())
+    }
   });
+
 
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
 
-  const handleUseConnectedButton = () => form.setFieldValue('walletAddress', user?.activeEthAddress);
+  const handleUseConnectedButton = () => form.setFieldValue('paymentAddress', user?.activeEthAddress);
 
   return (
     <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
-            <HeaderTypography onClick={toggleCreateApplicationModal}>
+            <HeaderTypography onClick={handleCloseAction}>
               <Grid container alignItems="center" gap="6px">
                 <IconWrapper>
                   <ArrowBackIcon />
                 </IconWrapper>
-                Back to grant
+                {isEditMode ? 'Back to application' : 'Back to grant'}
               </Grid>
             </HeaderTypography>
           </CreateEntityHeaderWrapper>
@@ -133,7 +159,7 @@ const CreateGrantApplication = () => {
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
-            <EditorContainer
+            <RichTextContainer
               onClick={() => {
                 // since editor will collapse to 1 row on input, we need to emulate min-height somehow
                 // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
@@ -162,23 +188,11 @@ const CreateGrantApplication = () => {
                   e.stopPropagation();
                 }}
               />
-            </EditorContainer>
+            </RichTextContainer>
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
           </TaskModalTitleDescriptionMedia>
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
-            <GrantAmount
-              value={{
-                ...form.values.grantAmount,
-                paymentMethodId: grant?.grantAmount?.paymentMethodId,
-              }}
-              disablePaymentSelect
-              disableAmountOfRewards
-              onChange={(key, value) => form.setFieldValue('grantAmount', { ...form.values.grantAmount, [key]: value })}
-              orgId={orgId}
-              onReset={() => form.setFieldValue('grantAmount', { amount: '' })}
-              onFocus={() => form.setFieldError('grantAmount', undefined)}
-              error={form.errors.grantAmount}
-            />
+            <GrantAmount value={grant?.reward} disableInput disablePaymentSelect disableAmountOfRewards orgId={orgId} />
             <TaskSectionDisplayDiv alignItems="start">
               <CreateEntityLabelWrapper>
                 <CreateEntityLabel>Wallet address</CreateEntityLabel>
@@ -186,25 +200,25 @@ const CreateGrantApplication = () => {
               <CreateEntityWrapper>
                 <GrantTextField
                   autoComplete="off"
-                  autoFocus={!form.values.walletAddress}
-                  name="walletAddress"
+                  autoFocus={!form.values.paymentAddress}
+                  name="paymentAddress"
                   onChange={form.handleChange}
                   placeholder="Enter address"
-                  value={form.values.walletAddress}
+                  value={form.values.paymentAddress}
                   fullWidth
                   InputProps={{
                     inputComponent: GrantTextFieldInput,
                     endAdornment: (
                       <CreateEntityAutocompletePopperRenderInputAdornment
                         position="end"
-                        onClick={() => form.setFieldValue('walletAddress', '')}
+                        onClick={() => form.setFieldValue('paymentAddress', '')}
                       >
                         <CreateEntityAutocompletePopperRenderInputIcon />
                       </CreateEntityAutocompletePopperRenderInputAdornment>
                     ),
                   }}
-                  error={form.errors?.walletAddress}
-                  onFocus={() => form.setFieldError('walletAddress', undefined)}
+                  error={form.errors?.paymentAddress}
+                  onFocus={() => form.setFieldError('paymentAddress', undefined)}
                 />
                 <ActionButton type="button" onClick={handleUseConnectedButton}>
                   Use connected
@@ -268,7 +282,7 @@ const CreateGrantApplication = () => {
               <CircularProgress size={20} />
             ) : (
               <>
-                <CreateEntityCancelButton onClick={toggleCreateApplicationModal}>Cancel</CreateEntityCancelButton>
+                <CreateEntityCancelButton onClick={handleCloseAction}>Cancel</CreateEntityCancelButton>
                 <CreateEntitySelectErrorWrapper>
                   <ActionButton type="submit" data-cy="create-entity-button-submit">
                     Submit application

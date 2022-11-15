@@ -3,6 +3,7 @@ import {
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
   TaskCardPodIcon,
+  TaskMediaWrapper,
   TaskModalCard,
   TaskModalHeader,
   TaskModalHeaderArrow,
@@ -24,7 +25,7 @@ import {
 } from 'components/Common/TaskViewModal/styles';
 import { DAOIcon } from 'components/Icons/dao';
 import { useRouter } from 'next/router';
-import { useCallback } from 'react';
+import { useCallback, useState } from 'react';
 import { PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
@@ -39,87 +40,10 @@ import { RichTextViewer } from 'components/RichText';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GrantAmount } from 'components/ViewGrant/Fields';
 import { GrantApplicationStatusManager, WalletAddressViewer } from './Fields';
-import { GrantAmountContainer, GrantSectionDisplayLabel } from './styles';
-
-const grantApplication = {
-  id: '1',
-  title: 'This is the application title',
-  description:
-    '[{"children":[{"text":"Overview","headingOne":true}],"type":"paragraph"},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Deliverables "}]}]',
-  status: 'in_review',
-  grant: {
-    orgId: '46110468539940865',
-    id: '46110468539940865GRANTID',
-    podId: '63107746167259171',
-    privacyLevel: PRIVACY_LEVEL.private,
-    createdBy: '58937239456972909',
-    description:
-      '[{"children":[{"text":"Purpose","headingOne":true}],"type":"paragraph"},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Grant description "}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":false,"text":""}]},{"type":"paragraph","children":[{"headingOne":true,"text":"Requirements"}]}]',
-    title: 'This is the grant title',
-    assigneeId: '58937239456972909',
-    orgUsername: 'wonderverse',
-    orgProfilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
-    pod: {
-      name: 'adrian2 private pod',
-      color: '#158FAD',
-      privacyLevel: 'private',
-      __typename: 'Pod',
-    },
-    grantAmount: {
-      paymentMethodId: '56545357864108041',
-      rewardAmount: '20',
-      amount: '6',
-      chain: 'ethereum',
-      icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-      tokenName: 'eth',
-      symbol: 'eth',
-    },
-    startDate: '2022-10-04T08:04:48.168815+00:00',
-    endDate: '2022-10-06T08:04:48.168815+00:00',
-    applyPolicy: 'anyone',
-    visibility: 'members only',
-    categories: [
-      { name: 'memes', __typename: 'TaskCategory' },
-      { name: 'memes', __typename: 'TaskCategory' },
-      { name: 'memes', __typename: 'TaskCategory' },
-    ],
-    reviewerIds: ['58937239456972909', '58937239456972909'],
-    reviewers: [
-      {
-        id: '58937239456972909',
-        profilePicture: null,
-        firstName: null,
-        lastName: null,
-        username: 'adrian2',
-        __typename: 'User',
-      },
-      {
-        id: '58937239456972909',
-        profilePicture: null,
-        firstName: null,
-        lastName: null,
-        username: 'adrian2',
-        __typename: 'User',
-      },
-    ],
-    org: {
-      profilePicture: 'org/profile/46110468539940865/6xP5sZ-WKjEbkA.jpeg',
-      name: 'wonderverse staging',
-      username: 'wonderverse',
-      privacyLevel: 'public',
-      shared: null,
-      __typename: 'Org',
-    },
-  },
-  grantAmount: {
-    chain: 'ethereum',
-    icon: 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=002',
-    tokenName: 'eth',
-    symbol: 'eth',
-    rewardAmount: '20',
-  },
-  walletAddress: '0x6155f139cD692496F24BB127F54eAc3b38CB06EE',
-};
+import { GrantAmountContainer, GrantSectionDisplayLabel, ModalCard } from './styles';
+import { useQuery } from '@apollo/client';
+import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
+import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 
 const FIELDS_CONFIG = [
   {
@@ -127,28 +51,34 @@ const FIELDS_CONFIG = [
     shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
   },
   {
-    label: 'Grant Request',
-    component: ({ grantApplication }) => (
-      <GrantAmountContainer>
-        <GrantAmount grantAmount={grantApplication.grantAmount} />
-      </GrantAmountContainer>
-    ),
+    label: 'Grant amount',
+    component: ({ grantApplication: { grant } }) => <GrantAmount grantAmount={grant?.reward || {}} />,
   },
   {
     label: 'Wallet Address',
-    component: ({ grantApplication: { walletAddress } }) => <WalletAddressViewer walletAddress={walletAddress} />,
+    component: ({ grantApplication: { paymentAddress } }) => <WalletAddressViewer walletAddress={paymentAddress} />,
   },
 ];
 
 const ViewGrantApplication = ({ onClose }) => {
   const router = useRouter();
-  const { isFullScreen, toggleFullScreen, setEditMode } = useTaskContext();
+  const { isFullScreen, toggleFullScreen } = useTaskContext();
+  const [isEditMode, setEditMode] = useState(false);
   const globalContext = useGlobalContext();
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const userPermissionsContext = getUserPermissionContext();
-
   const location = useLocation();
-  const { grant } = grantApplication;
+  const { data } = useQuery(GET_GRANT_APPLICATION_BY_ID, {
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
+    variables: {
+      grantApplicationId: location?.params?.grantApplicationId,
+    },
+    skip: !location?.params?.grantApplicationId,
+  });
+
+  const grantApplication = data?.getGrantApplicationById;
+  const grant = grantApplication?.grant;
 
   const user = useMe();
   const permissions = parseUserPermissionContext({
@@ -156,24 +86,16 @@ const ViewGrantApplication = ({ onClose }) => {
     orgId: grant?.orgId,
     podId: grant?.podId,
   });
-
+  
   const canManage =
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.CREATE_TASK) ||
-    grant?.createdBy === user?.id;
-    
-  const canEdit =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    grant?.createdBy === user?.id ||
-    (grant?.assigneeId && grant?.assigneeId === user?.id);
+    grant?.createdBy === user?.id;
 
   const canArchive =
     permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     grant?.createdBy === user?.id;
-
-  const { grantApplicationId } = router.query;
 
   const displayTitle = grant?.title?.slice(0, 10);
 
@@ -183,8 +105,17 @@ const ViewGrantApplication = ({ onClose }) => {
     document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
   };
 
+  if(isEditMode) {
+    return (
+      <CreateGrantApplication 
+      isEditMode
+      grantApplication={grantApplication}
+      handleClose={() => setEditMode(false)}
+      />
+    )
+  }
   return (
-    <TaskModalCard fullScreen={isFullScreen}>
+    <ModalCard fullScreen={isFullScreen}>
       <TaskModalHeader>
         <TaskModalHeaderWrapper>
           <TaskModalHeaderIconWrapper
@@ -204,10 +135,12 @@ const ViewGrantApplication = ({ onClose }) => {
             )}
             <TaskModalHeaderTypography>{grant?.org.name}</TaskModalHeaderTypography>
           </TaskModalHeaderIconWrapper>
-          <TaskModalHeaderIconWrapper>
-            <TaskCardPodIcon color={grant?.pod?.color} />
-            <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
-          </TaskModalHeaderIconWrapper>
+          {grant?.pod && (
+            <TaskModalHeaderIconWrapper>
+              <TaskCardPodIcon color={grant?.pod?.color} />
+              <TaskModalHeaderTypography>{grant?.pod?.name}</TaskModalHeaderTypography>
+            </TaskModalHeaderIconWrapper>
+          )}
           <TaskModalHeaderIconWrapper onClick={handleGrantClick}>
             <TaskModalHeaderArrow />
 
@@ -215,7 +148,7 @@ const ViewGrantApplication = ({ onClose }) => {
               <GrantIcon />
             </ItemButtonIcon>
             <HeaderTypography>
-              {`${displayTitle}${displayTitle.length < grant?.title?.length ? '...' : ''}`}
+              {`${displayTitle}${displayTitle?.length < grant?.title?.length ? '...' : ''}`}
             </HeaderTypography>
           </TaskModalHeaderIconWrapper>
           <TaskModalHeaderIconWrapper>
@@ -238,9 +171,9 @@ const ViewGrantApplication = ({ onClose }) => {
           )}
         </TaskModalHeaderWrapper>
         <TaskModalHeaderWrapperRight>
-          <TaskModalHeaderShare fetchedTask={grant} />
+          {grantApplication && <TaskModalHeaderShare fetchedTask={grantApplication} />}
           <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
-          <Menu canEdit={canEdit} canArchive={canArchive} setEditTask={setEditMode} />
+          <Menu canEdit={canManage} canArchive={canArchive} setEditTask={setEditMode} />
 
           <TaskModalHeaderCloseModal onClick={onClose} />
         </TaskModalHeaderWrapperRight>
@@ -250,29 +183,31 @@ const ViewGrantApplication = ({ onClose }) => {
           <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
           <DescriptionWrapper>
             <RichTextViewer text={grantApplication?.description} />
+            <TaskMediaWrapper media={grantApplication?.media} />
           </DescriptionWrapper>
         </TaskModalTitleDescriptionMedia>
         <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
           <TaskSectionDisplayData>
-            {FIELDS_CONFIG.map((field, idx) => {
-              if (field?.shouldDisplay && !field?.shouldDisplay({ hasManageRights: canManage })) {
-                return null;
-              }
-              return (
-                <TaskSectionDisplayDiv key={idx} alignItems="start">
-                  {!!field.label && (
-                    <GrantSectionDisplayLabel>
-                      <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
-                    </GrantSectionDisplayLabel>
-                  )}
-                  <field.component grantApplication={grantApplication} />
-                </TaskSectionDisplayDiv>
-              );
-            })}
+            {!!grantApplication &&
+              FIELDS_CONFIG.map((field, idx) => {
+                if (field?.shouldDisplay && !field?.shouldDisplay({ hasManageRights: canManage })) {
+                  return null;
+                }
+                return (
+                  <TaskSectionDisplayDiv key={idx} alignItems="start">
+                    {!!field.label && (
+                      <GrantSectionDisplayLabel>
+                        <TaskSectionDisplayLabelText>{field.label}</TaskSectionDisplayLabelText>
+                      </GrantSectionDisplayLabel>
+                    )}
+                    <field.component grantApplication={grantApplication} />
+                  </TaskSectionDisplayDiv>
+                );
+              })}
           </TaskSectionDisplayData>
         </TaskSectionDisplayDivWrapper>
       </TaskModalTaskData>
-    </TaskModalCard>
+    </ModalCard>
   );
 };
 

@@ -1,5 +1,4 @@
-import { TaskSectionDisplayLabel } from 'components/Common/TaskViewModal/styles';
-import GrantIcon from 'components/Icons/GrantIcon';
+import { TaskModalCard, TaskSectionDisplayLabel } from 'components/Common/TaskViewModal/styles';
 import { GrantAmountWrapper } from 'components/ViewGrant/Fields/styles';
 import styled from 'styled-components';
 
@@ -12,5 +11,12 @@ export const GrantSectionDisplayLabel = styled(TaskSectionDisplayLabel)`
 export const GrantAmountContainer = styled.div`
   ${GrantAmountWrapper} {
     padding: 8px;
+  }
+`;
+
+export const ModalCard = styled(TaskModalCard)`
+  && {
+    height: fit-content;
+    min-height: 70vh;
   }
 `;

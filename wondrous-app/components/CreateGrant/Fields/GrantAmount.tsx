@@ -20,13 +20,14 @@ import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles'
 
 const GrantAmount = ({
   value,
-  onChange,
+  onChange = (key, val) => {},
   orgId,
-  onReset,
-  onFocus,
-  error,
+  onReset = () => {},
+  onFocus = () => {},
+  error = null,
   disablePaymentSelect = false,
   disableAmountOfRewards = false,
+  disableInput = false,
   numOfGrant = null
 }) => {
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(orgId, true));
@@ -77,6 +78,7 @@ const GrantAmount = ({
             </GrantChainSelect>
             <GrantTextField
               autoComplete="off"
+              readOnly={disableInput}
               autoFocus={!value.rewardAmount}
               name="rewardAmount"
               onChange={(e) => {
@@ -88,7 +90,7 @@ const GrantAmount = ({
               InputProps={{
                 inputComponent: GrantTextFieldInput,
                 type: 'number',
-                endAdornment: (
+                endAdornment: !disableInput && (
                   <CreateEntityAutocompletePopperRenderInputAdornment position="end" onClick={() => onReset()}>
                     <CreateEntityAutocompletePopperRenderInputIcon />
                   </CreateEntityAutocompletePopperRenderInputAdornment>

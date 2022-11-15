@@ -20,6 +20,6 @@ export const DisplayWrapper = styled(TaskSectionDisplayContentWrapper)`
 
 export const RichTextContainer = styled(EditorContainer)`
   && {
-    height: 35rem;
+    max-height: 25rem;
   }
 `;
