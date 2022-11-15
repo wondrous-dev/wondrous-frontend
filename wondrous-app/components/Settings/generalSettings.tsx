@@ -382,6 +382,8 @@ export function PodGeneralSettings() {
   const [updatePod] = useMutation(UPDATE_POD, {
     onCompleted: ({ updatePod: pod }) => {
       setPodProfile(pod);
+      setLogoImage(pod?.profilePicture || '');
+      setHeaderImage(pod?.headerPicture || '');
       setToast({ ...toast, message: `Pod updated successfully.`, show: true });
     },
   });
@@ -482,22 +484,7 @@ export function PodGeneralSettings() {
           profilePicture: imageType === 'profilePicture' ? null : podProfile.profilePicture,
         },
       },
-      refetchQueries: [GET_POD_BY_ID],
     });
-
-    if (imageType === 'headerPicture') {
-      setHeaderImage('');
-      setPodProfile((prevPodProfile) => ({
-        ...prevPodProfile,
-        headerPicture: null,
-      }));
-    } else {
-      setLogoImage('');
-      setPodProfile((prevPodProfile) => ({
-        ...prevPodProfile,
-        profilePicture: null,
-      }));
-    }
   }
 
   const handleArchivePodClick = async () => {
