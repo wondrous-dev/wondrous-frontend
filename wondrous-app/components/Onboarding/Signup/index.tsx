@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import Link from 'next/link';
 
+import { useIsMobile } from 'utils/hooks';
 import { PaddedParagraph, StyledNextLink } from 'components/Common/text';
 import OnboardingHeader from 'components/Onboarding/OnboardingLayout/Header';
 import { Layout, OnboardingTitle } from 'components/Onboarding/OnboardingLayout/styles';
@@ -41,6 +42,7 @@ export const checkPasswordStrength = (password) => {
 };
 
 function Signup() {
+  const isMobile = useIsMobile();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -234,7 +236,7 @@ function Signup() {
             justifyContent: 'center',
           }}
         >
-          <MetaMaskConnector text="" style={buttonStyles} />
+          {!isMobile && <MetaMaskConnector text="" style={buttonStyles} />}
           <WalletConnectConnector text="" style={buttonStyles} />
           <CoinbaseConnector text="" style={buttonStyles} />
           <Button style={buttonStyles} onClick={() => (window.location.href = discordUrl)}>
