@@ -32,7 +32,6 @@ export default function Dropdown(props) {
     selectedSetAnchorEl(null);
   };
 
-  console.log('selectedAnchorEl', selectedAnchorEl);
   return (
     <>
       <ButtonBase

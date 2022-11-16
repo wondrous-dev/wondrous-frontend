@@ -2,7 +2,11 @@ import { Grid, Typography } from '@mui/material';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import {
-  BoardsCardBody, BoardsCardBodyDescription, BoardsCardBodyTitle, BoardsCardFooter, BoardsCardMedia
+  BoardsCardBody,
+  BoardsCardBodyDescription,
+  BoardsCardBodyTitle,
+  BoardsCardFooter,
+  BoardsCardMedia
 } from 'components/Common/Boards/styles';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SafeImage } from 'components/Common/Image';
@@ -21,7 +25,7 @@ import typography from 'theme/typography';
 import { formatDateDisplay } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard } from 'utils/hooks';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
 
 const GrantsBoardCard = ({ grant, handleCardClick }) => {
@@ -34,7 +38,10 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
   const [deleteTask, setDeleteTask] = useState(false);
   const { label, icon: Icon } = GRANTS_ICONS_LABELS_MAP[grant.status];
   const coverMedia = grant?.media?.find((media) => media.type === 'image');
-  const { userPermissionsContext } = useOrgBoard();
+  const orgBoard = useOrgBoard()
+  const podBoard = usePodBoard();
+  const board = podBoard || orgBoard;
+  const { userPermissionsContext } = board;
 
   const user = useMe();
 
@@ -57,7 +64,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
     grant?.createdBy === user?.id;
 
   return (
-      <>
+    <>
       <ArchiveTaskModal
         open={archiveTask}
         onArchive={() => {
@@ -80,78 +87,78 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
           setSnackbarAlertMessage(`Deleted successfully!`);
         }}
       />
-    <BoardWrapper onClick={() => handleCardClick(grant)}>
-      <Grid justifyContent="space-between" alignItems="center" container>
-        <Grid display="flex" gap="8px" alignItems="center">
-        <TaskCardPrivacy privacyLevel={grant?.privacyLevel} />
+      <BoardWrapper onClick={() => handleCardClick(grant)}>
+        <Grid justifyContent="space-between" alignItems="center" container>
+          <Grid display="flex" gap="8px" alignItems="center">
+            <TaskCardPrivacy privacyLevel={grant?.privacyLevel} />
 
-          <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant} />
-        </Grid>
-        <Grid display="flex" gap="14px">
-          <ItemPill>
-            <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-              {grant.applicationsNum} Applications
-            </Typography>
-          </ItemPill>
+            <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant} />
+          </Grid>
+          <Grid display="flex" gap="14px">
+            <ItemPill>
+              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                {grant.applicationsNum} Applications
+              </Typography>
+            </ItemPill>
 
-          <ItemPill>
-            <IconWrapper>
-              <Icon />
-            </IconWrapper>
-            <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-              {label}
-            </Typography>
-          </ItemPill>
+            <ItemPill>
+              <IconWrapper>
+                <Icon />
+              </IconWrapper>
+              <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                {label}
+              </Typography>
+            </ItemPill>
+          </Grid>
         </Grid>
-      </Grid>
-      <BoardsCardBody>
-        <BoardsCardBodyTitle>{grant.title}</BoardsCardBodyTitle>
-        <BoardsCardBodyDescription>
-          <RichTextViewer text={grant.description} />
-        </BoardsCardBodyDescription>
-        {coverMedia ? (
-          <BoardsCardMedia>
-            <SafeImage
-              width={270}
-              objectFit="cover"
-              objectPosition="center"
-              height="100%"
-              layout="responsive"
-              src={coverMedia.slug}
-              useNextImage
+        <BoardsCardBody>
+          <BoardsCardBodyTitle>{grant.title}</BoardsCardBodyTitle>
+          <BoardsCardBodyDescription>
+            <RichTextViewer text={grant.description} />
+          </BoardsCardBodyDescription>
+          {coverMedia ? (
+            <BoardsCardMedia>
+              <SafeImage
+                width={270}
+                objectFit="cover"
+                objectPosition="center"
+                height="100%"
+                layout="responsive"
+                src={coverMedia.slug}
+                useNextImage
+              />
+            </BoardsCardMedia>
+          ) : null}
+        </BoardsCardBody>
+        <BoardsCardFooter>
+          <EndingSoonPill>
+            <DueDateIcon />
+            <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+              Ending {formatDateDisplay(grant.endDate)}
+            </Typography>
+          </EndingSoonPill>
+          <Grid item container gap="10px" width="fit-content" lineHeight="0" alignItems="center">
+            {' '}
+            <CommentsIcon />
+            {grant.comments || 0}
+          </Grid>
+          <Grid display="flex" justifyContent="flex-end" flex={1}>
+            <TaskCardMenu
+              anchorElParent={anchorEl}
+              canArchive={canArchive}
+              canDelete={canArchive}
+              setDeleteTask={setDeleteTask}
+              canEdit={canEdit}
+              setAnchorElParent={setAnchorEl}
+              setArchiveTask={setArchiveTask}
+              setEditTask={onEdit}
+              taskType={ENTITIES_TYPES.GRANT}
+              open
             />
-          </BoardsCardMedia>
-        ) : null}
-      </BoardsCardBody>
-      <BoardsCardFooter>
-        <EndingSoonPill>
-          <DueDateIcon />
-          <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-            Ending {formatDateDisplay(grant.endDate)}
-          </Typography>
-        </EndingSoonPill>
-        <Grid item container gap="10px" width="fit-content" lineHeight="0" alignItems="center">
-          {' '}
-          <CommentsIcon />
-          {grant.comments || 0}
-        </Grid>
-        <Grid display="flex" justifyContent="flex-end" flex={1}>
-          <TaskCardMenu
-            anchorElParent={anchorEl}
-            canArchive={canArchive}
-            canDelete={canArchive}
-            setDeleteTask={setDeleteTask}
-            canEdit={canEdit}
-            setAnchorElParent={setAnchorEl}
-            setArchiveTask={setArchiveTask}
-            setEditTask={onEdit}
-            taskType={ENTITIES_TYPES.GRANT}
-            open
-          />
-        </Grid>
-      </BoardsCardFooter>
-    </BoardWrapper>
-      </>
+          </Grid>
+        </BoardsCardFooter>
+      </BoardWrapper>
+    </>
   );
 };
 

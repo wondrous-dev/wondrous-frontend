@@ -1,3 +1,4 @@
+import styled from 'styled-components';
 import { SelectUnstyled } from '@mui/base';
 import { TextField } from '@mui/material';
 import {
@@ -6,7 +7,6 @@ import {
   CreateEntityPaymentMethodPopper,
   CreateEntityTextfield,
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import styled from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 

@@ -48,6 +48,7 @@ const useSidebarData = () => {
       }
       router.push(link);
     };
+
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const sidebarData = {

@@ -43,7 +43,6 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
     [GRANT_APPLICATION_COMMENT_TYPE.REJECTED]: () => rejectGrantApplication({ variables: { grantApplicationId: grantApplication.id } }).then(() => setCommentType(null)),
   };
 
-  console.log(status, 'status')
   const BUTTONS_CONFIG = [
     {
       label: status === GRANT_APPLICATION_STATUSES.APPROVED ? 'Undo Approval' : 'Approve',

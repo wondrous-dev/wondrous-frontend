@@ -8,6 +8,7 @@ import { useOrgBoard } from 'utils/hooks';
 
 import { useMutation } from '@apollo/client';
 
+import { useMemo } from 'react';
 import {
   StyledArchivedLabel,
   StyledArchiveTaskButton,
@@ -18,9 +19,8 @@ import {
   StyledCloseButton,
   StyledDialog,
   StyledDivider,
-  StyledHeader,
+  StyledHeader
 } from './styles';
-import { useMemo } from 'react';
 
 interface IArchiveTaskModalProps {
   open: boolean;
@@ -90,7 +90,7 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
     onClose();
   };
 
-  const taskTitle = useMemo(() => (taskType.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
+  const taskTitle = useMemo(() => (taskType?.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
 
   return (
     <StyledDialog

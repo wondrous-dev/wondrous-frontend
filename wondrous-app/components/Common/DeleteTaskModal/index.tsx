@@ -100,7 +100,7 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
     onDelete();
   };
 
-  const taskTitle = useMemo(() => (taskType.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
+  const taskTitle = useMemo(() => (taskType?.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
 
   return (
     <StyledDialog

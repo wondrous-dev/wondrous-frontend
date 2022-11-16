@@ -1,4 +1,6 @@
 import { useMe, withAuth } from 'components/Auth/withAuth';
+import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { Menu } from 'components/Common/TaskViewModal/helpers';
 import {
@@ -22,7 +24,7 @@ import {
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
-  TaskSectionDisplayLabelText,
+  TaskSectionDisplayLabelText
 } from 'components/Common/TaskViewModal/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplication/styles';
@@ -35,8 +37,6 @@ import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
@@ -46,9 +46,9 @@ import { useLocation } from 'utils/useLocation';
 
 import { useQuery } from '@apollo/client';
 
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { GrantApplicationStatusManager, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel, ModalCard } from './styles';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 
 const FIELDS_CONFIG = [
   {
@@ -105,13 +105,13 @@ const ViewGrantApplication = ({ onClose }) => {
   });
 
   const canManage =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.EDIT_TASK) ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.EDIT_TASK) ||
     grant?.createdBy === user?.id;
 
   const canArchive =
-    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
     grant?.createdBy === user?.id;
 
   const displayTitle = grant?.title?.slice(0, 10);

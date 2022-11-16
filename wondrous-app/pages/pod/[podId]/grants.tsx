@@ -1,29 +1,33 @@
+import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { OrgBoardContext } from 'utils/contexts';
-import { useGetOrgFromUsername, useGlobalContext } from 'utils/hooks';
+import { withAuth } from 'components/Auth/withAuth';
+import { PodBoardContext } from 'utils/contexts';
+import { useGetOrgFromUsername, useGetPodById, useGlobalContext } from 'utils/hooks';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import GrantsBoard from 'components/GrantsBoard';
+import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 
 const GrantsPage = () => {
   const router = useRouter();
-  const { username } = router.query;
-  const org = useGetOrgFromUsername(username);
+  const { podId } = router.query;
+  const getPodById = useGetPodById(podId);
   const { userPermissionsContext } = useGlobalContext();
   return (
-    <OrgBoardContext.Provider
+    <PodBoardContext.Provider
       value={{
-        orgId: org?.id,
-        orgData: org,
+        pod: getPodById,
+        podId,
+        orgId: getPodById?.orgId,
         userPermissionsContext,
       }}
     >
       <EntitySidebar>
-        <Wrapper orgData={org} onSearch={() => {}}>
+        <Wrapper>
           <GrantsBoard />
         </Wrapper>
       </EntitySidebar>
-    </OrgBoardContext.Provider>
+    </PodBoardContext.Provider>
   );
 };
 export default GrantsPage;

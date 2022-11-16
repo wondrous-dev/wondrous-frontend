@@ -135,13 +135,13 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
   );
 
   const canEdit =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.EDIT_TASK) ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.EDIT_TASK) ||
     grant?.createdBy === user?.id;
 
   const canArchive =
-    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
+    permissions?.includes(PERMISSIONS.MANAGE_BOARD) ||
+    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
     grant?.createdBy === user?.id;
 
   const GrantApplication = () => isCreateApplicationModalVisible && grantId && <CreateGrantApplication />;

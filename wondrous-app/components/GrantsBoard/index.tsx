@@ -1,57 +1,102 @@
-import { useEffect, useMemo, useState } from 'react';
-import GrantsFilters from 'components/GrantsFilters';
-import { GRANTS_STATUSES } from 'utils/constants';
-import {
-  CardsContainer,
-} from 'components/Common/Boards/styles';
-import ViewGrant from 'components/ViewGrant';
-import { useLocation } from 'utils/useLocation';
-import { useRouter } from 'next/router';
-import { delQuery } from 'utils/index';
-import { GET_ORG_GRANTS } from 'graphql/queries';
 import { useQuery } from '@apollo/client';
-import { useOrgBoard } from 'utils/hooks';
-import { LIMIT } from 'services/board';
+import { CardsContainer } from 'components/Common/Boards/styles';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import GrantsFilters from 'components/GrantsFilters';
+import ViewGrant from 'components/ViewGrant';
+import { GET_ORG_GRANTS, GET_POD_GRANTS } from 'graphql/queries';
+import { useRouter } from 'next/router';
+import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { LIMIT } from 'services/board';
+import { GRANTS_STATUSES } from 'utils/constants';
+import { useOrgBoard, usePodBoard } from 'utils/hooks';
+import { delQuery } from 'utils/index';
+import { useLocation } from 'utils/useLocation';
 import GrantsBoardCard from './Card';
 
 const GrantsBoard = () => {
   const [activeFilter, setActiveFilter] = useState(GRANTS_STATUSES.OPEN);
   const [hasMore, setHasMore] = useState(false);
   const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
   const [ref, inView] = useInView({});
 
-  const { data, refetch, fetchMore, previousData } = useQuery(GET_ORG_GRANTS, {
+  const {
+    data: orgData,
+    refetch: orgRefetch,
+    fetchMore: orgFetchMore,
+    previousData: orgPreviousData,
+  } = useQuery(GET_ORG_GRANTS, {
     variables: {
       orgId: orgBoard?.orgId,
       status: activeFilter,
       limit: LIMIT,
       offset: 0,
     },
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
+    skip: !orgBoard?.orgId || podBoard,
     onCompleted: (data) => {
       const hasMoreData = data?.getGrantOrgBoard?.length >= LIMIT;
-      if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
+      if (!orgPreviousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
-    skip: !orgBoard?.orgId,
   });
+
+  const {
+    data: podData,
+    refetch: podGrantsRefetch,
+    fetchMore: podGrantsFetchMore,
+    previousData: podPreviousData,
+  } = useQuery(GET_POD_GRANTS, {
+    variables: {
+      orgId: podBoard?.orgId,
+      podId: podBoard?.podId,
+      status: activeFilter,
+      limit: LIMIT,
+      offset: 0,
+    },
+    fetchPolicy: 'cache-and-network',
+    notifyOnNetworkStatusChange: true,
+    skip: !podBoard && !podBoard?.podId && !podBoard?.orgId,
+    onCompleted: (data) => {
+      const hasMoreData = data?.getGrantPodBoard?.length >= LIMIT;
+      if (!podPreviousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
+    },
+  });
+
+  const data = podBoard ? podData?.getGrantPodBoard : orgData?.getGrantOrgBoard;
+
+  const fetchMore = () =>
+    podBoard
+      ? podGrantsFetchMore({
+          variables: {
+            offset: podData?.getGrantPodBoard?.length,
+          },
+        }).then(({ data }) => setHasMore(data?.getGrantPodBoard?.length >= LIMIT))
+      : orgFetchMore({
+          variables: {
+            offset: orgData?.getGrantOrgBoard?.length,
+          },
+        }).then(({ data }) => setHasMore(data?.getGrantOrgBoard?.length >= LIMIT));
+
   useEffect(() => {
     if (inView && hasMore) {
-      fetchMore({
-        variables: {
-          offset: data?.getGrantOrgBoard?.length,
-        },
-      }).then(({ data }) => setHasMore(data?.getGrantOrgBoard?.length >= LIMIT));
+      fetchMore();
     }
   }, [inView, hasMore]);
 
+  const handleRefetch = (variables) =>
+    podBoard
+      ? podGrantsRefetch(variables).then(({ data }) => setHasMore(data?.getGrantPodBoard?.length >= LIMIT))
+      : orgRefetch(variables).then(({ data }) => setHasMore(data?.getGrantOrgBoard?.length >= LIMIT));
+
   const handleFilterChange = (filter) => {
     setActiveFilter(filter);
-    refetch({
+    handleRefetch({
       status: filter,
       limit: LIMIT,
       offset: 0,
-    }).then(({ data }) => setHasMore(data?.getGrantOrgBoard?.length >= LIMIT));
+    });
   };
 
   const location = useLocation();
@@ -87,17 +132,23 @@ const GrantsBoard = () => {
   };
 
   const existingGrant = useMemo(() => {
-    if(openModal && location?.params?.grant) {
-      return data?.getGrantOrgBoard?.find((grant) => grant?.id === location?.params?.grant);
+    if (openModal && location?.params?.grant) {
+      return data?.find((grant) => grant?.id === location?.params?.grant);
     }
-  }, [openModal, location?.params?.grant, data?.getGrantOrgBoard])
+  }, [openModal, location?.params?.grant, data]);
 
   return (
     <>
-      <ViewGrant existingGrant={existingGrant} open={openModal} handleClose={handleModalClose} grantId={location?.params?.grant} isEdit={!!location?.params?.edit}/>
+      <ViewGrant
+        existingGrant={existingGrant}
+        open={openModal}
+        handleClose={handleModalClose}
+        grantId={location?.params?.grant}
+        isEdit={!!location?.params?.edit}
+      />
       <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
-        {data?.getGrantOrgBoard?.map((grant, idx) => (
+        {data?.map((grant, idx) => (
           <GrantsBoardCard grant={grant} handleCardClick={handleCardClick} key={grant.id} />
         ))}
       </CardsContainer>

@@ -33,6 +33,38 @@ export const GET_ORG_GRANTS = gql`
   ${MediaFragment}
 `;
 
+
+export const GET_POD_GRANTS = gql`
+  query getGrantPodBoard($orgId: ID!, $podId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getGrantPodBoard(orgId: $orgId, podId: $podId, status: $status, limit: $limit, offset: $offset) {
+      id
+      title
+      description
+      status
+      orgId
+      podId
+      privacyLevel
+      numOfGrant
+      applicationsCount
+      reward {
+        paymentMethodId
+        rewardAmount
+        chain
+        icon
+        tokenName
+        symbol
+      }
+      media {
+        ...MediaFragment
+      }
+      commentCount
+      endDate
+    }
+  }
+  ${MediaFragment}
+`;
+
+
 export const GET_GRANT_BY_ID = gql`
   query getGrantById($grantId: ID!) {
     getGrantById(grantId: $grantId) {

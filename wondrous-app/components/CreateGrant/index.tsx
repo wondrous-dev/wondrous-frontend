@@ -92,15 +92,6 @@ const validationSchema = Yup.object().shape({
   endDate: Yup.string().optional().nullable(),
   applyPolicy: Yup.string().nullable(),
   podId: Yup.string().optional().nullable(),
-  categories: Yup.array()
-    .of(
-      Yup.object().shape({
-        id: Yup.string(),
-        label: Yup.string(),
-      })
-    )
-    .optional()
-    .nullable(),
   title: Yup.string().required('Title is required'),
   mediaUploads: Yup.array(),
 });
@@ -131,7 +122,7 @@ const CreateGrant = ({
   // TODO: move the upload to a separate component
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
 
-  const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA)
+  const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
   });
@@ -177,7 +168,7 @@ const CreateGrant = ({
         ? deserializeRichText(existingGrant.description)
         : deserializeRichText(descriptionTemplate),
       orgId: existingGrant?.orgId || null,
-      categories: existingGrant?.categories || null,
+      categories: existingGrant?.categories || [],
       podId: board?.podId || null,
       privacyLevel: existingGrant?.privacyLevel || null,
       applyPolicy: existingGrant?.applyPolicy || APPLY_POLICY_FIELDS[0].value,
@@ -202,7 +193,7 @@ const CreateGrant = ({
             },
             privacyLevel: values.privacyLevel,
             applyPolicy: values.applyPolicy,
-            categories: values.categories?.map((category: any) => category.id),
+            categories: values.categories,
             numOfGrant: parseInt(values.numOfGrant, 10),
           },
         },
@@ -294,9 +285,9 @@ const CreateGrant = ({
         },
       });
     }
+  };
 
-  }
-
+  console.log(form);
   return (
     <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
@@ -414,12 +405,7 @@ const CreateGrant = ({
                   {fileUploadLoading && <FileLoading />}
                 </CreateEntityAttachment>
               </MediaUploadDiv>
-              <input
-                type="file"
-                hidden
-                ref={inputRef}
-                onChange={handleExistingMediaAttach}
-              />
+              <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
             </CreateEntityLabelSelectWrapper>
           </TaskModalTitleDescriptionMedia>
           <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
@@ -452,7 +438,9 @@ const CreateGrant = ({
             />
             <Categories
               categories={form.values.categories}
-              onChange={(value) => form.setFieldValue('categories', value)}
+              onChange={(value) => {
+                form.setFieldValue('categories', value?.map((item) => item.id));
+              }}
             />
           </TaskSectionDisplayDivWrapper>
         </TaskModalTaskData>
