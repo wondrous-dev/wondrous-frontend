@@ -39,7 +39,7 @@ export function PostQuote(props) {
                 {referencedObject?.title}
               </SmartLink>
             </ReferenceTitle>
-            <ReferenceDescription>
+            <ReferenceDescription as="div">
               <RichTextViewer text={referencedObject?.content} />
             </ReferenceDescription>
             <ReferenceMediaWrapper>

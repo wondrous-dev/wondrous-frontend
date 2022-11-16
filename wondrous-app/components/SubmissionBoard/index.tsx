@@ -63,7 +63,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                 <SubmissionType>Your bounty submission</SubmissionType>
               </SubmissionCardHeader>
               <SubmissionCardBody>
-                <SubmissionDescription>
+                <SubmissionDescription as="div">
                   <RichTextViewer text={task.description} />
                 </SubmissionDescription>
                 {task?.media?.[0] ? (

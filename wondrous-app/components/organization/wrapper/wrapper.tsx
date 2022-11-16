@@ -456,7 +456,7 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <HeaderText>
+            <HeaderText as="div">
               <RichTextViewer text={orgProfile?.description} />
             </HeaderText>
             <div>

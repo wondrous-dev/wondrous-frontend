@@ -131,7 +131,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
               <TaskPriority value={milestone?.priority} />
             </Box>
           ) : null}
-          <BoardsCardBodyDescription>
+          <BoardsCardBodyDescription as="div">
             <RichTextViewer text={milestone.description} />
           </BoardsCardBodyDescription>
           <MilestoneProgressWrapper>

@@ -188,7 +188,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
               <TaskPriority value={bounty?.priority} />
             </Box>
           ) : null}
-          <BoardsCardBodyDescription>
+          <BoardsCardBodyDescription as="div">
             <RichTextViewer text={bounty.description} />
           </BoardsCardBodyDescription>
           <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />

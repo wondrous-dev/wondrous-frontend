@@ -422,7 +422,7 @@ function Wrapper(props) {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>
+              <HeaderText as="div">
                 <RichTextViewer text={podProfile?.description} />
               </HeaderText>
               <div>

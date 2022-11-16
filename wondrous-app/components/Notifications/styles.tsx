@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import Link from 'next/link';
 
 export const NotificationsBoardWrapper = styled.div`
   position: absolute;
@@ -170,20 +171,20 @@ export const NotificationsOverlay = styled.div`
   background: transparent;
   z-index: 97;
 `;
-export const NotificationsLink = styled.a`
-  color: ${palette.highlightBlue};
-  font-weight: 700;
 
+export const NotificationsLink = styled.div`
   a {
     color: ${palette.highlightBlue};
     font-weight: 700;
     text-decoration: none;
+    display: block;
 
     &:hover {
       text-decoration: underline;
     }
   }
 `;
+
 export const NotificationItemInner = styled.div`
   padding-top: 2px;
   color: ${palette.white};

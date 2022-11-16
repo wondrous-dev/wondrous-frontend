@@ -526,7 +526,7 @@ export function SubmissionItem({
       </SubmissionItemHeader>
       <SubmissionDivider />
       <SubmissionItemSection>
-        <SubmissionDescription>
+        <SubmissionDescription as="div">
           <RichTextViewer text={submission?.description} />
         </SubmissionDescription>
         <SubmissionItemsMedia media={mediaUploads} />
