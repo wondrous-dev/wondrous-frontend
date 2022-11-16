@@ -4,7 +4,7 @@ import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import Image, { ImageProps } from 'next/image';
 
-type SafeImageArgs = ImageProps & {
+type SafeImageArgs = Omit<ImageProps, 'alt' | 'style'> & {
   alt?: string;
   className?: string;
   /**
@@ -24,7 +24,7 @@ type SafeImageArgs = ImageProps & {
   /**
    * Inline styles
    */
-  style?: React.CSSProperties;
+  style?: React.CSSProperties,
   /**
    * Action called when preview file is loaded
    * @param url
@@ -41,7 +41,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
     height,
     placeholderComp,
     placeholderSrc,
-    alt = "",
+    alt = '',
     useNextImage = false,
     ...props
   } = safeImageArgs;
@@ -104,13 +104,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
 
   if (safeImageUrl) {
     return useNextImage ? (
-      <Image
-        src={safeImageUrl}
-        alt={alt}
-        width={width}
-        height={height}
-        {...props}
-      />
+      <Image src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
       <img src={safeImageUrl} alt={alt} width={width} height={height} {...props} />

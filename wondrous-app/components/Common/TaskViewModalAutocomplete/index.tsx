@@ -11,15 +11,15 @@ const profilePictureStyle = {
   width: '24px',
   height: '24px',
   borderRadius: '50%',
-  objectFit: 'cover',
+  objectFit: 'cover' as any,
 };
 
 const ProfilePicture = ({ profilePicture }) => (
   <SafeImage
     src={profilePicture}
     placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-    width="24px"
-    height="24px"
+    width={24}
+    height={24}
     useNextImage
     style={profilePictureStyle}
   />

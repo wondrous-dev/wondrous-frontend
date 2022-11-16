@@ -363,16 +363,17 @@ export function TaskCard({
           )}
           {coverMedia ? (
             <BoardsCardMedia>
-              <SafeImage
-                width={270}
-                style={{
-                  objectFit: 'cover',
-                  objectPosition: 'center',
-                }}
-                fill
-                src={coverMedia.slug}
-                useNextImage
-              />
+              <Box width={270} height={104} position="relative">
+                <SafeImage
+                  style={{
+                    objectFit: 'cover',
+                    objectPosition: 'center',
+                  }}
+                  fill
+                  src={coverMedia.slug}
+                  useNextImage
+                />
+              </Box>
             </BoardsCardMedia>
           ) : null}
         </TaskContent>

@@ -71,7 +71,7 @@ const profilePictureStyle = {
   width: '36px',
   height: '36px',
   borderRadius: '50%',
-  objectFit: 'cover',
+  objectFit: 'cover' as any,
 };
 
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {

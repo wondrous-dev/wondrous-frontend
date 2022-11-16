@@ -1,3 +1,4 @@
+import { Property } from 'csstype';
 import { useCallback, useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { Grid, Typography } from '@mui/material';
@@ -40,7 +41,7 @@ const profilePictureStyle = {
   width: '80px',
   height: '80px',
   borderRadius: '50%',
-  objectFit: 'cover',
+  objectFit: 'cover' as any,
 };
 
 interface ICoordinapeIntegrationFormProps {

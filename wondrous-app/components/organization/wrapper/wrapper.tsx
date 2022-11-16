@@ -339,7 +339,6 @@ function Wrapper(props) {
         {orgProfile ? (
           <SafeImage
             src={orgProfile?.headerPicture || DefaultBg}
-            height={100}
             fill
             style={{
               objectFit: 'cover',
