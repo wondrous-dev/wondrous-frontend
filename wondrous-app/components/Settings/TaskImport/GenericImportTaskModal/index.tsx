@@ -1,5 +1,5 @@
 import { useCallback, useContext, useEffect, useState } from 'react';
-import { useMutation } from '@apollo/client';
+import { useLazyQuery, useMutation } from '@apollo/client';
 import * as Sentry from '@sentry/nextjs';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import Modal from 'components/Modal';
@@ -12,6 +12,7 @@ import Typography from '@mui/material/Typography';
 import CircularProgress from '@mui/material/CircularProgress';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { GET_POD_BY_ID } from 'graphql/queries';
 import { DEFAULT_IMPORT_FORMAT, IMPORT_FORMAT_OPTIONS, IMPORT_FORMATS, DEFAULT_TASKS_DATA } from './constants';
 import {
   GenericImportTaskModalBodyExpandedViewWrapper,
@@ -52,7 +53,19 @@ function GenericImportTaskModal(props: Props) {
   const isExpandedViewVisible = importFormat?.value;
   const isImportButtonDisabled = !importFormat?.value || !tasksData?.tasks?.length || isImportInProgress;
   const isOrg = !!orgId;
-  const orgOrdPodId = isOrg ? orgId : podId;
+  const orgOrPodId = isOrg ? orgId : podId;
+  const [getPodById, { data: podData }] = useLazyQuery(GET_POD_BY_ID);
+  useEffect(() => {
+    if (!isOrg && podId) {
+      getPodById({
+        variables: {
+          podId,
+        },
+      });
+    }
+  }, [isOrg]);
+
+  const pod = podData?.getPodById;
 
   const resetStates = useCallback(() => {
     setImportFormat(DEFAULT_IMPORT_FORMAT);
@@ -102,19 +115,18 @@ function GenericImportTaskModal(props: Props) {
         setTasksData(DEFAULT_TASKS_DATA);
         let formattedData;
         if (importFormat?.value === IMPORT_FORMATS.ASANA) {
-          formattedData = getTasksFromAsanaData(data, isOrg, orgOrdPodId);
+          formattedData = getTasksFromAsanaData({ data, isOrg, orgOrPodId, orgId: pod?.orgId });
         }
 
         if (importFormat?.value === IMPORT_FORMATS.TRELLO) {
-          formattedData = getTasksFromTrelloData(data, isOrg, orgOrdPodId);
+          formattedData = getTasksFromTrelloData({ data, isOrg, orgOrPodId, orgId: pod?.orgId });
         }
 
         if (importFormat?.value === IMPORT_FORMATS.GENERAL) {
-          formattedData = getTasksFromGenericData(data, isOrg, orgOrdPodId);
+          formattedData = getTasksFromGenericData({ data, isOrg, orgOrPodId, orgId: pod?.orgId });
         }
 
         const formattedDataIdentifier = Date.now();
-
         setTasksData((_) => ({ tasks: formattedData, key: formattedDataIdentifier }));
       } catch (error) {
         setError(error.message);
