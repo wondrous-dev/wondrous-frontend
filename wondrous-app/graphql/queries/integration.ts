@@ -19,12 +19,29 @@ export const GET_ORG_SNAPSHOT_INFO = gql`
 `;
 
 export const GET_ORG_DISCORD_ROLES = gql`
+  # get all discord roles associated with the guilds that org is connected to
   query getOrgDiscordRoles($orgId: ID!) {
     getOrgDiscordRoles(orgId: $orgId) {
       guildId
-      channelId
-      channelInfo {
-        channelName
+      guildInfo {
+        guildName
+      }
+      roles {
+        id
+        name
+        color
+        permissions
+      }
+    }
+  }
+`;
+
+export const GET_POD_DISCORD_ROLES = gql`
+  # get all discord roles associated with the guilds that pod is connected to
+  query getPodDiscordRoles($podId: ID!) {
+    getPodDiscordRoles(podId: $podId) {
+      guildId
+      guildInfo {
         guildName
       }
       roles {
@@ -38,6 +55,7 @@ export const GET_ORG_DISCORD_ROLES = gql`
 `;
 
 export const GET_ORG_ROLES_CLAIMABLE_BY_DISCORD = gql`
+  # not used
   query getOrgRolesClaimableByDiscord($orgId: ID!) {
     getOrgRolesClaimableByDiscord(orgId: $orgId) {
       id
