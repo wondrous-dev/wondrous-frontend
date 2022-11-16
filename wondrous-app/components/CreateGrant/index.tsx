@@ -1,4 +1,15 @@
 import { useMutation, useQuery } from '@apollo/client';
+import { CircularProgress } from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import { ErrorText } from 'components/Common';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import {
+  TaskModalCard,
+  TaskModalTaskData,
+  TaskModalTitleDescriptionMedia,
+  TaskSectionDisplayDivWrapper,
+} from 'components/Common/TaskViewModal/styles';
 import {
   CreateEntityDropdown,
   filterCategoryValues,
@@ -46,38 +57,27 @@ import {
   EditorToolbar,
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
+import { MediaItem } from 'components/CreateEntity/MediaItem';
+import DropdownSearch from 'components/DropdownSearch';
+import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
+import Tooltip from 'components/Tooltip';
 import { Formik, useFormik } from 'formik';
+import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
+import { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
 import { useEffect, useRef, useState } from 'react';
+import { Editor, Transforms } from 'slate';
+import { ReactEditor } from 'slate-react';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import * as Yup from 'yup';
-import Tooltip from 'components/Tooltip';
-import Box from '@mui/material/Box';
-import { Editor, Transforms } from 'slate';
-import { ReactEditor } from 'slate-react';
-import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
-import { ErrorText } from 'components/Common';
-import {
-  TaskModalCard,
-  TaskModalTaskData,
-  TaskModalTitleDescriptionMedia,
-  TaskSectionDisplayDivWrapper,
-} from 'components/Common/TaskViewModal/styles';
-import Grid from '@mui/material/Grid';
-import DropdownSearch from 'components/DropdownSearch';
-import { CircularProgress } from '@mui/material';
-import { isEmpty } from 'lodash';
-import { GrantAmount, ApplyPolicy, Dates, Categories } from './Fields';
-import { descriptionTemplate } from './utils';
-import { Form, RichTextContainer } from './styles';
-import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
-import { CREATE_GRANT, UPDATE_GRANT } from 'graphql/mutations/grant';
-import { FileLoading } from 'components/Common/FileUpload/FileUpload';
-import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { handleAddFile } from 'utils/media';
+import * as Yup from 'yup';
+import { ApplyPolicy, Categories, Dates, GrantAmount } from './Fields';
+import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
+import { Form, RichTextContainer } from './styles';
+import { descriptionTemplate } from './utils';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
@@ -112,7 +112,7 @@ const CreateGrant = ({
   existingGrant,
   parentTaskId,
   formValues,
-  isEdit = false
+  isEdit = false,
 }: GrantCreateModalProps) => {
   const router = useRouter();
   const { toggleFullScreen, isFullScreen } = useFullScreen(true);
@@ -123,12 +123,15 @@ const CreateGrant = ({
   const board = orgBoard || podBoard || userBoard;
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
+  const [removeGrantMedia] = useMutation(REMOVE_GRANT_MEDIA);
   const [updateGrant] = useMutation(UPDATE_GRANT, {
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById']
-  })
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+  });
 
-  // TODO: move the upload to a separate component 
+  // TODO: move the upload to a separate component
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
+
+  const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA)
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
   });
@@ -149,13 +152,15 @@ const CreateGrant = ({
     board?.podId
   );
 
-
-  const grantAction = isEdit ? ({variables: {input}}) => updateGrant({
-    variables: {
-      grantId: existingGrant.id,
-      input
-    }
-  }) : createGrant;
+  const grantAction = isEdit
+    ? ({ variables: { input } }) =>
+        updateGrant({
+          variables: {
+            grantId: existingGrant.id,
+            input,
+          },
+        })
+    : createGrant;
 
   const form = useFormik({
     initialValues: {
@@ -266,6 +271,32 @@ const CreateGrant = ({
     }
   }, [isInPrivatePod, existingGrant?.privacyLevel, orgBoard, podBoard]);
 
+  const handleExistingMediaAttach = async (event) => {
+    const fileToAdd = await handleAddFile({
+      event,
+      filePrefix: 'tmp/task/new/',
+      mediaUploads: form.values.mediaUploads,
+      setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
+      setFileUploadLoading,
+    });
+    if (existingGrant) {
+      attachMedia({
+        variables: {
+          grantId: existingGrant.id,
+          input: {
+            mediaUploads: [fileToAdd],
+          },
+        },
+        onCompleted: (data) => {
+          const task = data?.attachTaskMedia || data?.attachTaskProposalMedia;
+          form.setFieldValue('mediaUploads', transformMediaFormat(task?.media));
+          setFileUploadLoading(false);
+        },
+      });
+    }
+
+  }
+
   return (
     <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
@@ -366,14 +397,14 @@ const CreateGrant = ({
                       setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
                       mediaItem={mediaItem}
                       removeMediaItem={() => {
-                        // if (existingGrant) {
-                        //   handleMedia().remove({
-                        //     variables: {
-                        //       grantId: existingGrant.id,
-                        //       slug: mediaItem?.uploadSlug || mediaItem?.slug,
-                        //     },
-                        //   });
-                        // }
+                        if (existingGrant) {
+                          removeGrantMedia({
+                            variables: {
+                              grantId: existingGrant.id,
+                              slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                            },
+                          });
+                        }
                       }}
                     />
                   ))}
@@ -387,15 +418,7 @@ const CreateGrant = ({
                 type="file"
                 hidden
                 ref={inputRef}
-                onChange={async (event) => {
-                  const fileToAdd = await handleAddFile({
-                    event,
-                    filePrefix: 'tmp/task/new/',
-                    mediaUploads: form.values.mediaUploads,
-                    setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
-                    setFileUploadLoading,
-                  });
-                }}
+                onChange={handleExistingMediaAttach}
               />
             </CreateEntityLabelSelectWrapper>
           </TaskModalTitleDescriptionMedia>
@@ -406,12 +429,12 @@ const CreateGrant = ({
               onChange={form.setFieldValue}
               orgId={form.values.orgId}
               onReset={() => {
-                form.setFieldValue('reward', { currency: '', rewardAmount: 0 })
-                form.setFieldValue('numOfGrant', 0)
+                form.setFieldValue('reward', { currency: '', rewardAmount: 0 });
+                form.setFieldValue('numOfGrant', 0);
               }}
               onFocus={() => {
-                form.setFieldError('reward', undefined)
-                form.setFieldError('numOfGrant', undefined)
+                form.setFieldError('reward', undefined);
+                form.setFieldError('numOfGrant', undefined);
               }}
               error={{
                 reward: form.errors.reward,
@@ -439,7 +462,7 @@ const CreateGrant = ({
               name="privacyLevel"
               value={form.values.privacyLevel}
               onChange={(value) => {
-                console.log(value, 'valueprivacy')
+                console.log(value, 'valueprivacy');
                 form.setFieldValue('privacyLevel', value);
               }}
               renderValue={(value) => (

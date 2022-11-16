@@ -41,6 +41,7 @@ export const GET_GRANT_BY_ID = gql`
       description
       status
       numOfGrant
+      commentCount
       createdBy
       applyPolicy
       privacyLevel
@@ -116,6 +117,12 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
     getGrantApplicationById(grantApplicationId: $grantApplicationId) {
       id
       paymentAddress
+      approvedAt
+      changeRequestedAt
+      commentCount
+      rejectedAt
+      lastReviewedBy
+      paymentStatus
       description
       grantId
       media {
@@ -150,4 +157,13 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
     }
   }
   ${MediaFragment}
+`;
+
+export const GET_GRANT_APPLICATION_COMMENTS = gql`
+  query getGrantApplicationComments($grantApplicationId: String!) {
+    getGrantApplicationComments(grantApplicationId: $grantApplicationId) {
+      ...CommentFragment
+    }
+  }
+  ${CommentFragment}
 `;

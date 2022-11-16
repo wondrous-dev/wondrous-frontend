@@ -1,10 +1,6 @@
-import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LABELS, PRIVACY_LEVEL } from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { TaskModal, TaskModalHeaderWrapperRight } from 'components/Common/Task/styles';
+import { LockedTaskMessage, Menu, TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
 import {
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
@@ -24,27 +20,32 @@ import {
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
-  TaskSectionDisplayDivWrapper,
+  TaskSectionDisplayDivWrapper
 } from 'components/Common/TaskViewModal/styles';
-import { LockedTaskMessage, Menu, TaskSectionLabel } from 'components/Common/TaskViewModal/helpers';
-import { DAOIcon } from 'components/Icons/dao';
-import { useRouter } from 'next/router';
-import { RichTextViewer } from 'components/RichText';
-import CreateGrant from 'components/CreateGrant';
-import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
-import { TaskContext } from 'utils/contexts';
-import { useLocation } from 'utils/useLocation';
-import ViewGrantApplication from 'components/ViewGrantApplication';
-import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
-import { canViewGrant } from './utils';
-import { DescriptionWrapper } from './styles';
-import ViewGrantFooter from './Footer';
+import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LABELS, PRIVACY_LEVEL } from 'utils/constants';
+import { useBoards, useFullScreen, useGlobalContext } from 'utils/hooks';
+
 import { useQuery } from '@apollo/client';
-import { GET_GRANT_BY_ID } from 'graphql/queries';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import CreateGrant from 'components/CreateGrant';
 import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
+import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
+import { DAOIcon } from 'components/Icons/dao';
+import { RichTextViewer } from 'components/RichText';
+import ViewGrantApplication from 'components/ViewGrantApplication';
+import { GET_GRANT_BY_ID } from 'graphql/queries';
+import { useRouter } from 'next/router';
+import { TaskContext } from 'utils/contexts';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useLocation } from 'utils/useLocation';
+import ViewGrantFooter from './Footer';
 import GrantMenuStatus from './GrantMenuStatus';
+import { DescriptionWrapper } from './styles';
+import { canViewGrant } from './utils';
+import { Categories, DataDisplay, Dates, GrantAmount } from './Fields';
 
 const FIELDS_CONFIG = [
   {
@@ -77,9 +78,7 @@ const FIELDS_CONFIG = [
 
 const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant = null }) => {
   const [isEditMode, setEditMode] = useState(isEdit);
-  const board = useBoards();
   const { isFullScreen, toggleFullScreen } = useFullScreen(true);
-  const [completeModal, setCompleteModal] = useState(false);
   const location = useLocation();
   const [deleteTask, setDeleteTask] = useState(false);
   const [archiveTask, setArchiveTask] = useState(false);
@@ -238,7 +237,10 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                   })}
                 </TaskSectionDisplayData>
               </TaskSectionDisplayDivWrapper>
-              <ViewGrantFooter />
+              <ViewGrantFooter entity={grant}
+          commentCount={grant?.commentCount}
+          applicationsCount={grant?.applicationsCount}
+              />
             </TaskModalTaskData>
           </>
         ) : (

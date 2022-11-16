@@ -1,10 +1,13 @@
-import { useMutation } from '@apollo/client';
+import CloseModalIcon from 'components/Icons/closeModal';
+import { ArchivedIcon } from 'components/Icons/statusIcons';
 import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations';
+import { ARCHIVE_GRANT, ARCHIVE_GRANT_APPLICATION } from 'graphql/mutations/grant';
 import { removeProposalItem } from 'utils/board';
 import * as Constants from 'utils/constants';
 import { useOrgBoard } from 'utils/hooks';
-import CloseModalIcon from 'components/Icons/closeModal';
-import { ArchivedIcon } from 'components/Icons/statusIcons';
+
+import { useMutation } from '@apollo/client';
+
 import {
   StyledArchivedLabel,
   StyledArchiveTaskButton,
@@ -17,7 +20,7 @@ import {
   StyledDivider,
   StyledHeader,
 } from './styles';
-import { ARCHIVE_GRANT } from 'graphql/mutations/grant';
+import { useMemo } from 'react';
 
 interface IArchiveTaskModalProps {
   open: boolean;
@@ -33,20 +36,26 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
   const [archiveTaskProposal] = useMutation(CLOSE_TASK_PROPOSAL);
 
   const [archiveGrant] = useMutation(ARCHIVE_GRANT, {
-    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById']
-  })
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById', 'getGrantApplications', 'getGrantApplicationById'],
+  });
 
+  const [archiveGrantApplication] = useMutation(ARCHIVE_GRANT_APPLICATION, {
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById', 'getGrantApplications', 'getGrantApplicationById'],
+  })
   const isTaskOrMilestoneOrBounty =
     taskType === Constants.TASK_TYPE || taskType === Constants.MILESTONE_TYPE || taskType === Constants.BOUNTY_TYPE;
   const isTaskProposal = taskType === 'task proposal';
 
   const handleArchive = () => {
-    if(taskType === Constants.ENTITIES_TYPES.GRANT) {
+    if(taskType === Constants.ENTITIES_TYPES.GRANT_APPLICATION) {
+      archiveGrantApplication({ variables: { grantApplicationId: taskId } });
+    }
+    if (taskType === Constants.ENTITIES_TYPES.GRANT) {
       archiveGrant({
         variables: {
-          grantId: taskId
-        }
-      })
+          grantId: taskId,
+        },
+      });
     }
     if (isTaskOrMilestoneOrBounty) {
       onArchive();
@@ -81,6 +90,8 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
     onClose();
   };
 
+  const taskTitle = useMemo(() => (taskType.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
+
   return (
     <StyledDialog
       open={open}
@@ -92,7 +103,7 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
         <StyledCloseButton onClick={onClose}>
           <CloseModalIcon />
         </StyledCloseButton>
-        <StyledHeader>Archive this {taskType}?</StyledHeader>
+        <StyledHeader>Archive this {taskTitle}?</StyledHeader>
         <StyledBody>
           {isTaskProposal ? 'You cannot undo this action.' : 'You can undo this in the archived section in the board.'}
         </StyledBody>
@@ -101,7 +112,7 @@ export function ArchiveTaskModal(props: IArchiveTaskModalProps) {
           <StyledCancelButton onClick={onClose}>Cancel</StyledCancelButton>
           <StyledArchiveTaskButton>
             <ArchivedIcon />
-            <StyledArchivedLabel onClick={handleArchive}>Archive {taskType}</StyledArchivedLabel>
+            <StyledArchivedLabel onClick={handleArchive}>Archive {taskTitle}</StyledArchivedLabel>
           </StyledArchiveTaskButton>
         </StyledButtonsContainer>
       </StyledBox>

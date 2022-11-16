@@ -31,11 +31,15 @@ export const Button = styled(ActionButton)`
   && {
     padding: 8px 10px;
     white-space: nowrap;
+    pointer-events: ${({isActive}) => isActive ? 'none' : 'auto'};
     :hover {
-      background: ${({ gradient }) => gradient};
+      background: ${({ gradient, disabled }) => disabled? 'transparent' : gradient};
     }
     &::before {
       background: ${({ gradient }) => gradient};
+    }
+    &.Mui-disabled {
+      opacity: 0.5;
     }
   }
 `;

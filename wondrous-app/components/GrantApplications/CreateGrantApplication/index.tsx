@@ -1,16 +1,21 @@
+import { useMutation } from '@apollo/client';
+import { Box, CircularProgress, Grid, Tooltip } from '@mui/material';
+import { useMe, withAuth } from 'components/Auth/withAuth';
+import { ErrorText } from 'components/Common';
+import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
   TaskModalCard,
   TaskModalTaskData,
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayDiv,
-  TaskSectionDisplayDivWrapper,
+  TaskSectionDisplayDivWrapper
 } from 'components/Common/TaskViewModal/styles';
+import { useContextValue, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
   CreateEntityAutocompletePopperRenderInputAdornment,
-  CreateEntityAutocompletePopperRenderInputIcon,
-  CreateEntityError,
+  CreateEntityAutocompletePopperRenderInputIcon, CreateEntityCancelButton, CreateEntityError,
   CreateEntityHeader,
   CreateEntityHeaderWrapper,
   CreateEntityLabel,
@@ -20,36 +25,28 @@ import {
   CreateEntityTitle,
   CreateEntityWrapper,
   EditorContainer,
-  EditorPlaceholder,
-  CreateEntityCancelButton,
-  EditorToolbar,
-  MediaUploadDiv,
+  EditorPlaceholder, EditorToolbar,
+  MediaUploadDiv
 } from 'components/CreateEntity/CreateEntityModal/styles';
-import { handleAddFile } from 'utils/media';
-import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
-import { useFormik } from 'formik';
-import * as yup from 'yup';
-import { useTaskContext } from 'utils/hooks';
-import { useMe, withAuth } from 'components/Auth/withAuth';
-import { Tooltip, Box, Grid, CircularProgress } from '@mui/material';
-import { Form } from 'components/CreateGrant/styles';
-import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
-import { ErrorText } from 'components/Common';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
-import { Transforms, Editor } from 'slate';
-import { ReactEditor } from 'slate-react';
-import { useRef, useState } from 'react';
-import { useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
+import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { GrantAmount } from 'components/CreateGrant/Fields';
 import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fields/styles';
-import { FileLoading } from 'components/Common/FileUpload/FileUpload';
-import { MediaItem } from 'components/CreateEntity/MediaItem';
-import { isEmpty } from 'lodash';
-import { HeaderTypography, IconWrapper, ActionButton, FooterButtonsWrapper, RichTextContainer } from './styles';
-import { descriptionTemplate } from './utils';
-import { useMutation } from '@apollo/client';
+import { Form, RichTextContainer } from 'components/CreateGrant/styles';
+import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
+import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
+import { useFormik } from 'formik';
 import { CREATE_GRANT_APPLICATION, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
+import { isEmpty, keys } from 'lodash';
+import { useEffect, useRef, useState } from 'react';
+import { Editor, Transforms } from 'slate';
+import { ReactEditor } from 'slate-react';
 import { transformMediaFormat } from 'utils/helpers';
+import { useTaskContext } from 'utils/hooks';
+import { handleAddFile } from 'utils/media';
+import * as yup from 'yup';
+import { ActionButton, FooterButtonsWrapper, HeaderTypography, IconWrapper } from './styles';
+import { descriptionTemplate } from './utils';
 
 const validationSchema = yup.object({
   title: yup.string().required('Title is required'),
@@ -63,7 +60,7 @@ const CreateGrantApplication = ({grantApplication = null, isEditMode, handleClos
   const editor = useEditor();
   const [fileUploadLoading, setFileUploadLoading] = useState(false);
   const [createGrantApplication] = useMutation(CREATE_GRANT_APPLICATION, {
-    refetchQueries: ['getGrantApplicationsForGrant'],
+    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantById'],
   });
   const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
@@ -114,6 +111,11 @@ const CreateGrantApplication = ({grantApplication = null, isEditMode, handleClos
     }
   });
 
+  useEffect(() => {
+    if(isEditMode && !form.values.title && !form.values.paymentAddress) {
+      keys(initialValues).forEach(key => form.setFieldValue(key, initialValues[key]))
+    }
+  }, [isEditMode])
 
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
 

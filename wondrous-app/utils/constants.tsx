@@ -149,6 +149,7 @@ export const ENTITIES_TYPES = {
   PROPOSAL: 'proposal',
   SUBMISSION: 'submission',
   GRANT: 'grant',
+  GRANT_APPLICATION: 'grant_application'
 };
 
 export const MODAL_TABS_MAP = {
@@ -823,6 +824,14 @@ export enum SUBMISSION_COMMENT_TYPE {
   REOPEN = 'reopen',
 }
 
+export enum GRANT_APPLICATION_COMMENT_TYPE {
+  APPROVED = 'approved',
+  CHANGE_REQUESTED = 'change_requested',
+  RESUBMIT = 'resubmit',
+  REOPEN = 'reopen',
+  REJECTED = 'rejected',
+}
+
 export const TaskMintStatus = {
   NOT_STARTED: 'not_started',
   IN_PROGRESS: 'in_progress',
@@ -834,12 +843,14 @@ export const GRANTS_STATUSES = {
   CLOSED: 'closed',
 };
 
-export const GRANT_APPLICATION_STATUSES = {
-  OPEN:'open',
-  WAITING_FOR_REVIEW: 'waiting_for_review',
-  CHANGE_REQUESTED: 'change_requested',
-  APPROVED: 'approved',
-  REJECTED: 'rejected'
+export enum GRANT_APPLICATION_STATUSES {
+  OPEN = 'open',
+  WAITING_FOR_REVIEW = 'waiting_for_review',
+  CHANGE_REQUESTED = 'change_requested',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  APPROVED_AND_PAID ='approved_and_paid',
+  APPROVED_AND_PROCESSING = 'approved_and_processing',
 }
 
 export const PRIVACY_LABELS = {

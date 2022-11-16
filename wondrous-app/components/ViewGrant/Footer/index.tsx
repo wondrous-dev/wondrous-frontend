@@ -13,32 +13,45 @@ import { useTaskContext } from 'utils/hooks';
 import { ENTITIES_TYPES } from 'utils/constants';
 import CommentList from 'components/Comment';
 
-const ViewGrantFooter = ({ commentCount = 0, applicationsCount = 1 }) => {
-  const { isFullScreen, grant } = useTaskContext();
-  const [activeTab, setActiveTab] = useState(tabs.applications);
+const TYPES = {
+  [ENTITIES_TYPES.GRANT_APPLICATION]: tabsPerType.grantApplicationTabs,
+  [ENTITIES_TYPES.GRANT]: tabsPerType.grantTabs,
+};
+
+const ViewGrantFooter = ({
+  commentCount = 0,
+  applicationsCount = 1,
+  entityType = ENTITIES_TYPES.GRANT,
+  entity,
+  commentListProps = {},
+}) => {
+  const { isFullScreen } = useTaskContext();
+  const [activeTab, setActiveTab] = useState(TYPES[entityType][0]);
   const ref = useRef();
+
   return (
     <TaskModalFooter fullScreen={isFullScreen}>
       <TaskSectionFooterTitleDiv>
-        {tabsPerType.grantTabs.map((tab, index) => {
+        {TYPES[entityType].map((tab, index) => {
           const active = tab === activeTab;
           return (
             <TaskSubmissionTab key={index} isActive={active} onClick={() => setActiveTab(tab)}>
               <TaskTabText isActive={active}>
-                {tab} {tab === tabs.applications && <TabItemCount isActive={active}>{applicationsCount}</TabItemCount>}
+                {tab}{' '}
+                {tab === tabs.applications && entityType === ENTITIES_TYPES.GRANT && (
+                  <TabItemCount isActive={active}>{applicationsCount}</TabItemCount>
+                )}
                 {tab === tabs.discussion && <TabItemCount isActive={active}>{commentCount}</TabItemCount>}
               </TaskTabText>
             </TaskSubmissionTab>
           );
         })}
       </TaskSectionFooterTitleDiv>
-      
 
-      <TaskSectionContent ref={ref}>{activeTab === tabs.applications && <List />}
-      
-      {activeTab === tabs.discussion && (
-          <CommentList task={grant} entityType={ENTITIES_TYPES.GRANT} />
-        )}
+      <TaskSectionContent ref={ref}>
+        {activeTab === tabs.applications && entityType === ENTITIES_TYPES.GRANT && <List />}
+
+        {activeTab === tabs.discussion && <CommentList task={entity} entityType={entityType} {...commentListProps} />}
       </TaskSectionContent>
     </TaskModalFooter>
   );

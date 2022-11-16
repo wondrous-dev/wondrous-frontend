@@ -1,7 +1,7 @@
 import { Box, Grid } from '@mui/material';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
-import SubmissionCommentType from 'components/Common/SubmissionCommentType';
+import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import palette from 'theme/palette';
 import { Container } from './styles';
 
@@ -39,7 +39,7 @@ const CommentItem = (props) => {
             {role}
           </Box>
         )}
-        {type && <SubmissionCommentType status={type} />}
+        {type && <SubmittableCommentType status={type} />}
       </Grid>
       <Grid container>
         {actorProfilePicture ? (

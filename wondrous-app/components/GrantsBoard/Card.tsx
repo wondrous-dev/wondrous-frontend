@@ -1,32 +1,28 @@
-import { useContext, useState } from 'react';
 import { Grid, Typography } from '@mui/material';
+import { useMe, withAuth } from 'components/Auth/withAuth';
+import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import {
-  BoardsCardBody,
-  BoardsCardBodyTitle,
-  BoardsCardBodyDescription,
-  BoardsCardMedia,
-  BoardsCardFooter,
+  BoardsCardBody, BoardsCardBodyDescription, BoardsCardBodyTitle, BoardsCardFooter, BoardsCardMedia
 } from 'components/Common/Boards/styles';
+import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SafeImage } from 'components/Common/Image';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
-import { IconWrapper } from 'components/GrantsFilters/styles';
-import { GrantAmount } from 'components/ViewGrant/Fields';
+import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { GRANTS_ICONS_LABELS_MAP } from 'components/GrantsFilters';
+import { IconWrapper } from 'components/GrantsFilters/styles';
 import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
 import { RichTextViewer } from 'components/RichText';
-import { formatDateDisplay } from 'utils/board';
-import typography from 'theme/typography';
+import { GrantAmount } from 'components/ViewGrant/Fields';
+import { useContext, useState } from 'react';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
+import { formatDateDisplay } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
-import { useOrgBoard } from 'utils/hooks';
 import { parseUserPermissionContext } from 'utils/helpers';
-import { useMe, withAuth } from 'components/Auth/withAuth';
-import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
-import { BoardWrapper, ItemPill, EndingSoonPill } from './styles';
-import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
-import DeleteTaskModal from 'components/Common/DeleteTaskModal';
-import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { useOrgBoard } from 'utils/hooks';
+import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
 
 const GrantsBoardCard = ({ grant, handleCardClick }) => {
   const [anchorEl, setAnchorEl] = useState(null);
