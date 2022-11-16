@@ -517,6 +517,29 @@ export function TagsField({ shouldDisplay, labels }) {
   );
 }
 
+export function CategoryField({ shouldDisplay, labels }) {
+  if (!shouldDisplay) return null;
+  return (
+    <TaskSectionDisplayDiv>
+      <TaskSectionLabel>Category</TaskSectionLabel>
+      <TaskSectionTagWrapper>
+        {labels.map(
+          (label) =>
+            label && (
+              <TaskSectionImageContent
+                key={label.id}
+                hasContent={label}
+                ContentComponent={TagsFieldContent}
+                ContentComponentProps={{ label }}
+                DefaultContent={InfoText}
+              />
+            )
+        )}
+      </TaskSectionTagWrapper>
+    </TaskSectionDisplayDiv>
+  );
+}
+
 const InitativesFieldContent = ({ setOpenModal }) => (
   <TaskIntiativesContainer>
     <GR15DEILogo
