@@ -210,8 +210,8 @@ export function Invite({
 
         <Connectors>
           {!isMobile && <MetaMaskConnector text="Continue with MetaMask" style={buttonStyles} />}
-          <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
           <WalletConnectConnector text="Continue with Wallet Connect" style={buttonStyles} />
+          <CoinbaseConnector text="Continue with Coinbase" style={buttonStyles} />
           <Button
             style={buttonStyles}
             onClick={() => {

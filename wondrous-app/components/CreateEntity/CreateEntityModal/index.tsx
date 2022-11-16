@@ -251,9 +251,23 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         title: values?.githubPullRequest?.label,
         url: values?.githubPullRequest?.url,
       };
-      const categories = values?.categories?.map((category) => category.id || category);
-      const { chooseGithubIssue, chooseGithubPullRequest, githubIssue, githubRepo, recurringSchema, ...finalValues } =
-        values;
+      const {
+        chooseGithubIssue,
+        chooseGithubPullRequest,
+        githubIssue,
+        githubRepo,
+        recurringSchema,
+        GR15DEISelected,
+        ...finalValues
+      } = values;
+      let categories = values?.categories?.map((category) => category.id || category);
+      if (GR15DEISelected) {
+        if (!categories) {
+          categories = [];
+        }
+        categories.push(GR15DEICategoryName);
+      }
+
       const input = {
         ...finalValues,
         reviewerIds,
@@ -277,6 +291,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
       handleMutation({ input, board, pods, form, handleClose, existingTask });
     },
   });
+
   const paymentMethods = filterPaymentMethods(useGetPaymentMethods(form.values.orgId, true));
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(form.values.orgId);
   const activePaymentMethods = paymentMethods?.filter((p) => p.deactivatedAt === null); // payment methods that havent been deactivated
@@ -1418,7 +1433,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <CreateEntitySelectWrapper>
             {form.values.categories !== null && (
               <DropdownSearch
-                autoFocus
+                autoFocus={form?.values?.categories?.length === 0}
                 label="Select Category"
                 searchPlaceholder="Search categories"
                 options={categoriesData}
@@ -1705,15 +1720,9 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           {!isProposal && (
             <GR15DEICreateSelector
               setGR15DEISelected={() => {
-                if (form.values.categories?.includes(GR15DEICategoryName)) {
-                  const newCategoriesArray = form.values.categories.filter((name) => name !== GR15DEICategoryName);
-                  form.setFieldValue('categories', newCategoriesArray);
-                } else {
-                  const newCategoriesArray = [...form.values.categories, GR15DEICategoryName];
-                  form.setFieldValue('categories', newCategoriesArray);
-                }
+                form.setFieldValue('GR15DEISelected', !form?.values?.GR15DEISelected);
               }}
-              GR15DEISelected={form.values.categories?.includes(GR15DEICategoryName)}
+              GR15DEISelected={form?.values?.GR15DEISelected}
             />
           )}
         </div>

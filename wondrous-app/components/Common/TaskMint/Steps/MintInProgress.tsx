@@ -87,7 +87,7 @@ const MintInProgress = ({ setTokenData }) => {
       skipDivider
       title="Minting your task..."
       img="/images/taskmint/inprogressmint.png"
-      body="You can close this modal. The minting will take under 1 minute. We’ll send you a notification when your NFT is ready."
+      body="You can close this modal. The minting will only take a moment. We’ll send you a notification when your NFT is ready."
     >
       <MintStepDetails step={step} />
     </MintStepContent>

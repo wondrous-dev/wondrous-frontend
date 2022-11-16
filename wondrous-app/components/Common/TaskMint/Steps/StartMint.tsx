@@ -11,7 +11,7 @@ const StartMint = () => (
     body="Carry your proof of work wherever you go"
     description={
       <>
-        The minting will take under 1 minute. We’ll send you a <br /> notification when your NFT hits your wallet.
+        The minting will only take a moment. We’ll send you a <br /> notification when your NFT hits your wallet.
       </>
     }
   >

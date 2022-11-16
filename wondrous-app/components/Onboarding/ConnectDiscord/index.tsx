@@ -29,7 +29,7 @@ export function ConnectDiscord({ updateUser }) {
   const isMobile = useIsMobile();
   const collabInviteQueryString = collabInvite ? `?collabInvite=${collabInvite}` : '';
   const goToNextStep = () => {
-    const nextStep = user.activeEthAddress
+    const nextStep = user?.activeEthAddress
       ? `/onboarding/twitter${collabInviteQueryString}`
       : `/onboarding/wallet${collabInviteQueryString}`;
     router.push(nextStep, undefined, { shallow: true });

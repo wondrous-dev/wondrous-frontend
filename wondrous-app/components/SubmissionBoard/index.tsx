@@ -2,13 +2,14 @@ import { BoardsCardMedia } from 'components/Common/Boards/styles';
 import { SafeImage } from 'components/Common/Image';
 import { useRouter } from 'next/router';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
-import { OrgProfilePicture, PodProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import { RichTextViewer } from 'components/RichText';
 import { IconsList, ICON_TYPES } from 'components/ListViewAdmin/ColumnEntry';
 import Tooltip from 'components/Tooltip';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RequestDeclineButton } from 'components/organization/members/styles';
 import { SubmissionItemStatus } from 'components/Common/TaskSubmission/submissionItem';
+import PodIconName from 'components/Common/PodIconName';
 import {
   SubmissionCardWrapper,
   SubmissionCardHeader,
@@ -52,9 +53,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                       }}
                     />
                   </OrgButton>
-                  {task?.podName ? (
-                    <PodProfilePicture goToPod={goToPod} podId={task?.podId} podColor={task?.podColor} />
-                  ) : null}
+                  {task?.podName ? <PodIconName onClick={goToPod} name={task?.podName} color={task?.podColor} /> : null}
                   <SubmissionIcon>
                     <SubmissionItemStatus hideTitle submission={task} />
                   </SubmissionIcon>

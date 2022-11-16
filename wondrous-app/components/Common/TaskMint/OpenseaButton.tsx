@@ -16,7 +16,7 @@ const OpenseaButton = ({ tokenId }) => {
   return (
     <OpenSeaButton type="button" onClick={() => window.open(openseaUrl, '_blank')}>
       <OpenSeaIcon />
-      View on OpenSea
+      View Minted NFT on OpenSea
     </OpenSeaButton>
   );
 };

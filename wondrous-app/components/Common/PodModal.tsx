@@ -1,6 +1,7 @@
 import { useLazyQuery } from '@apollo/client';
 import { useMe } from 'components/Auth/withAuth';
 import { SafeImage } from 'components/Common/Image';
+import PodIconName from 'components/Common/PodIconName';
 import {
   LoadMore,
   TaskContent,
@@ -8,10 +9,8 @@ import {
   TaskListCardWrapper,
   TaskListModalHeader,
   TaskModalBaseCard,
-  TaskTitle,
 } from 'components/Common/Task/styles';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
-import PodIcon from 'components/Icons/podIcon';
 import {
   PodModalFooter,
   PodModalFooterInfoWrapper,
@@ -45,15 +44,7 @@ function PodListCard(props) {
             marginBottom: '0',
           }}
         >
-          <PodIcon
-            color={pod?.color}
-            style={{
-              width: '26px',
-              height: '26px',
-              marginRight: '8px',
-            }}
-          />
-          <TaskTitle>{pod?.name}</TaskTitle>
+          <PodIconName color={pod?.color} name={pod?.name} />
         </TaskHeader>
         <TaskContent
           style={{
