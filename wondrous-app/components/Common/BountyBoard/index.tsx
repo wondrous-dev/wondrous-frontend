@@ -24,6 +24,7 @@ import TaskCardStatus from 'components/Common/TaskCardStatuts';
 import TaskPriority from 'components/Common/TaskPriority';
 import ActionModals from 'components/Common/TaskViewModal/actionModals';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
+import PodIconName from 'components/Common/PodIconName';
 import { CreateEntity } from 'components/CreateEntity';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
@@ -210,23 +211,15 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
         </BoardsCardBody>
         <BoardsCardFooter>
           {bounty?.podName && !displayOrg && (
-            <PodWrapper
-              style={{ marginTop: '0' }}
+            <PodIconName
+              color={bounty?.podColor}
+              name={bounty?.podName}
               onClick={(e) => {
                 e.preventDefault();
                 e.stopPropagation();
                 goToPod(bounty?.podId);
               }}
-            >
-              <PodIcon
-                color={bounty?.podColor || palette.grey900}
-                style={{
-                  width: '26px',
-                  height: '26px',
-                }}
-              />
-              <PodName>{bounty?.podName}</PodName>
-            </PodWrapper>
+            />
           )}
           {displayOrg && (
             <PodWrapper

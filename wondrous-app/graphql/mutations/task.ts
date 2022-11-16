@@ -289,3 +289,9 @@ export const UPDATE_TASK_REVIEWERS = gql`
     }
   }
 `;
+
+export const MINT_TASK = gql`
+  mutation taskMint($taskId: ID!, $title: String, $description: String, $links: [String]) {
+    taskMint(taskId: $taskId, title: $title, description: $description, links: $links)
+  }
+`;

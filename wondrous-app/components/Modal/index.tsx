@@ -47,6 +47,8 @@ type Props = {
   footerRight?: React.ReactNode;
 
   alignCenter?: boolean;
+
+  footerCenter?: React.ReactNode;
 };
 
 export function Modal({
@@ -55,6 +57,7 @@ export function Modal({
   title,
   footerLeft,
   footerRight,
+  footerCenter,
   maxWidth,
   children,
   alignCenter = false,
@@ -71,10 +74,10 @@ export function Modal({
 
             <ModalBody>{children}</ModalBody>
 
-            {footerLeft || footerRight ? (
-              <ModalFooter>
-                <ModalFooterLeft>{footerLeft}</ModalFooterLeft>
-                <ModalFooterRight>{footerRight}</ModalFooterRight>
+            {!!footerLeft || !!footerRight || !!footerCenter ? (
+              <ModalFooter alignCenter={!!footerCenter}>
+                {footerLeft ? <ModalFooterLeft>{footerLeft}</ModalFooterLeft> : null}
+                {footerRight ? <ModalFooterRight>{footerRight}</ModalFooterRight> : null}
               </ModalFooter>
             ) : null}
           </ModalContent>

@@ -264,6 +264,7 @@ export const NOTIFICATION_VERBS = {
   collab_invite: 'invited you in a',
   collab_approve: 'approved a',
   collab_decline: 'declined request to join a',
+  task_minted: 'finished minting a',
 };
 
 export const NOTIFICATION_OBJECT_TYPES = {
@@ -820,3 +821,9 @@ export enum SUBMISSION_COMMENT_TYPE {
   RESUBMIT = 'resubmit',
   REOPEN = 'reopen',
 }
+
+export const TaskMintStatus = {
+  NOT_STARTED: 'not_started',
+  IN_PROGRESS: 'in_progress',
+  COMPLETED: 'completed',
+};
