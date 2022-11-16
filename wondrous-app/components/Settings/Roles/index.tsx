@@ -19,6 +19,9 @@ import {
   DISCONNECT_DISCORD_ROLE_TO_ORG_ROLE,
   CONNECT_DISCORD_ROLE_TO_ORG_ROLE,
   IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
+  DISCONNECT_DISCORD_ROLE_TO_POD_ROLE,
+  CONNECT_DISCORD_ROLE_TO_POD_ROLE,
+  IMPORT_DISCORD_ROLE_AS_POD_ROLE,
 } from 'graphql/mutations/integration';
 
 import Dialog from '@mui/material/Dialog';
@@ -92,8 +95,8 @@ type Props = {
   onDeleteRole: (role: Role, callback?: () => void) => any;
   onPermissionsChange: (role: Role, permissions: string[]) => any;
   onToastClose: () => any;
-  getOrgDiscordRoles?: () => any;
-  orgDiscordConfigData?: any;
+  getDiscordRoles?: () => any;
+  discordConfigData?: any;
   allDiscordRolesData?: any;
 };
 
@@ -107,9 +110,9 @@ function Roles({
   toast,
   onToastClose,
   permissons,
-  orgDiscordConfigData,
+  discordConfigData,
   allDiscordRolesData,
-  getOrgDiscordRoles,
+  getDiscordRoles,
 }: Props) {
   const router = useRouter();
 
@@ -213,24 +216,24 @@ function Roles({
         roleToDelete={selectedRoleForDeletion}
       />
 
-      {!podId && (
+      {discordRoleImportModalOpen && (
         <DiscordRoleSelectModal
           open={discordRoleImportModalOpen}
           allDiscordRolesData={allDiscordRolesData}
           orgId={orgId}
           podId={podId}
           onClose={handleCloseModal}
-          getOrgDiscordRoles={getOrgDiscordRoles}
+          getDiscordRoles={getDiscordRoles}
         />
       )}
-      {!podId && (
+      {discordRoleModalOpen && (
         <DiscordRoleSelectionModal
           open={discordRoleModalOpen}
           handleClose={handleCloseModal}
           orgId={orgId}
           podId={podId}
           selectedRoleForDiscord={selectedRoleForDiscord}
-          getOrgDiscordRoles={getOrgDiscordRoles}
+          getDiscordRoles={getDiscordRoles}
           allDiscordRolesData={allDiscordRolesData}
         />
       )}
@@ -258,7 +261,6 @@ function Roles({
           disabled={!newRoleName}
           expanded={newRolePermissionsExpanded}
           onChange={(e, expanded) => setNewRolePermissionsExpanded(expanded)}
-          hasMarginBottom={!!podId}
         >
           <Permissions>
             <RolePermissionsList>
@@ -285,16 +287,20 @@ function Roles({
             </RolePermissionsList>
           </Permissions>
         </RoleAccordion>
-        {!podId && !orgDiscordConfigData?.length && (
+        {!discordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
-              router.push(`/organization/settings/${orgId}/notifications`);
+              if (podId) {
+                router.push(`/pod/settings/${podId}/notifications`);
+              } else if (orgId) {
+                router.push(`/organization/settings/${orgId}/notifications`);
+              }
             }}
           >
             Connect your Discord server to import roles
           </ImportDiscordRoleButton>
         )}
-        {!podId && !!orgDiscordConfigData?.length && (
+        {!!discordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
               setDiscordRoleImportModalOpen(true);
@@ -332,15 +338,13 @@ function Roles({
                       role={orgRole}
                       setSelectedRoleForTokenGate={setSelectedRoleForTokenGate}
                     />
-                    {!podId && (
-                      <DiscordOnRoleDisplay
-                        discordRolesInfo={orgRole.discordRolesInfo}
-                        setDiscordRoleModalOpen={setDiscordRoleModalOpen}
-                        role={orgRole}
-                        setSelectedRoleForDiscord={setSelectedRoleForDiscord}
-                        orgDiscordConfigData={orgDiscordConfigData}
-                      />
-                    )}
+                    <DiscordOnRoleDisplay
+                      discordRolesInfo={orgRole.discordRolesInfo}
+                      setDiscordRoleModalOpen={setDiscordRoleModalOpen}
+                      role={orgRole}
+                      setSelectedRoleForDiscord={setSelectedRoleForDiscord}
+                      discordConfigData={discordConfigData}
+                    />
                     <RolePermissionsList>
                       {permissons.map((item, idx) => {
                         const arePermissionsLengthEven = permissons.length % 2 === 0;
@@ -409,12 +413,12 @@ function TokenGatingOnRoleDisplay(props) {
 }
 
 function DiscordOnRoleDisplay(props) {
-  const { discordRolesInfo, setDiscordRoleModalOpen, role, setSelectedRoleForDiscord, orgDiscordConfigData } = props;
+  const { discordRolesInfo, setDiscordRoleModalOpen, role, setSelectedRoleForDiscord, discordConfigData } = props;
   const handleEditClick = () => {
     setSelectedRoleForDiscord(role);
     setDiscordRoleModalOpen(true);
   };
-  if (!orgDiscordConfigData?.length) {
+  if (!discordConfigData?.length) {
     return <></>;
   }
   return (
@@ -439,11 +443,12 @@ function DiscordOnRoleDisplay(props) {
 }
 
 function DiscordRoleSelectionModal(props) {
+  // for connecting single discord role to wonder role
   const router = useRouter();
-  const { open, handleClose, orgId, podId, selectedRoleForDiscord, getOrgDiscordRoles, allDiscordRolesData } = props;
+  const { open, handleClose, orgId, podId, selectedRoleForDiscord, getDiscordRoles, allDiscordRolesData } = props;
   useEffect(() => {
     if (open) {
-      getOrgDiscordRoles();
+      getDiscordRoles();
     }
   }, [open]);
 
@@ -462,9 +467,9 @@ function DiscordRoleSelectionModal(props) {
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
         await apollo.mutate({
-          mutation: DISCONNECT_DISCORD_ROLE_TO_ORG_ROLE,
+          mutation: DISCONNECT_DISCORD_ROLE_TO_POD_ROLE,
           variables: {
-            orgRoleId: selectedRoleForDiscord?.id,
+            podRoleId: selectedRoleForDiscord?.id,
             discordRoleId: '',
           },
           refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
@@ -492,13 +497,13 @@ function DiscordRoleSelectionModal(props) {
 
       if (selectedRoleForDiscord?.__typename === 'PodRole') {
         await apollo.mutate({
-          mutation: CONNECT_DISCORD_ROLE_TO_ORG_ROLE,
+          mutation: CONNECT_DISCORD_ROLE_TO_POD_ROLE,
           variables: {
-            orgRoleId: selectedRoleForDiscord?.id,
+            podRoleId: selectedRoleForDiscord?.id,
             discordRoleId,
             guildId,
           },
-          // refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD]
+          refetchQueries: [GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
         });
       }
     } catch (e) {
@@ -527,7 +532,7 @@ function DiscordRoleSelectionModal(props) {
           allDiscordRolesData.map((discordRoleData, idx) => (
             <Grid display="flex" gap="10px" key={idx} direction="column">
               <Typography fontSize="18px" color="white" fontWeight={600}>
-                {discordRoleData?.channelInfo?.guildName}
+                {discordRoleData?.guildInfo?.guildName}
               </Typography>
               <Box>
                 {discordRoleData?.roles?.map((role) => (
@@ -700,13 +705,14 @@ function TokenGateRoleConfigModal(props) {
 }
 
 export function DiscordRoleSelectModal(props) {
-  const { open, onClose, allDiscordRolesData, getOrgDiscordRoles, orgId, podId } = props;
+  // for importing multiple discord roles into pod/org
+  const { open, onClose, allDiscordRolesData, getDiscordRoles, orgId, podId } = props;
   const [selectedDiscordRoles, setSelectedDiscordRoles] = useState({});
   const [importRoleError, setImportRoleError] = useState(null);
 
   useEffect(() => {
     if (open) {
-      getOrgDiscordRoles();
+      getDiscordRoles();
     }
   }, [open]);
 
@@ -731,19 +737,35 @@ export function DiscordRoleSelectModal(props) {
       return;
     }
     try {
-      await apollo.mutate({
-        mutation: IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
-        variables: {
-          input: {
-            orgId,
-            discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
-              roleId: discordRoleId,
-              guildId: selectedDiscordRoles[discordRoleId].guildId,
-            })),
+      if (podId) {
+        await apollo.mutate({
+          mutation: IMPORT_DISCORD_ROLE_AS_POD_ROLE,
+          variables: {
+            input: {
+              podId,
+              discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
+                roleId: discordRoleId,
+                guildId: selectedDiscordRoles[discordRoleId].guildId,
+              })),
+            },
           },
-        },
-        refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
-      });
+          refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
+        });
+      } else if (orgId) {
+        await apollo.mutate({
+          mutation: IMPORT_DISCORD_ROLE_AS_ORG_ROLE,
+          variables: {
+            input: {
+              orgId,
+              discordRoleGuildIds: Object.keys(selectedDiscordRoles).map((discordRoleId) => ({
+                roleId: discordRoleId,
+                guildId: selectedDiscordRoles[discordRoleId].guildId,
+              })),
+            },
+          },
+          refetchQueries: [GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD],
+        });
+      }
     } catch (err) {
       if (err?.graphQLErrors && err?.graphQLErrors.length > 0) {
         if (err?.graphQLErrors[0].extensions?.errorCode === 'role_already_exist') {
@@ -786,7 +808,7 @@ export function DiscordRoleSelectModal(props) {
             allDiscordRolesData.map((discordRole) => (
               <Grid display="flex" gap="10px" direction="column" width="100%">
                 <Typography fontWeight="600" fontSize="18px" color="white">
-                  {discordRole?.channelInfo?.guildName}
+                  {discordRole?.guildInfo?.guildName}
                 </Typography>
                 <CategoryRow>
                   {discordRole?.roles?.map((role) => (
