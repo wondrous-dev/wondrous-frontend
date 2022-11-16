@@ -44,6 +44,7 @@ function NotionTaskImportSection(props) {
   const redirectToNotionAuth = () => {
     const state = JSON.stringify({
       orgId,
+      podId,
       callbackType: NOTION_CONNECT_TYPES.TASK_IMPORT,
     });
     const url = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=code&state=${state}`;
