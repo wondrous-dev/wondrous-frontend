@@ -290,7 +290,6 @@ function Roles({
         {!discordConfigData?.length && (
           <ImportDiscordRoleButton
             onClick={() => {
-              console.log('sdfa', podId);
               if (podId) {
                 router.push(`/pod/settings/${podId}/notifications`);
               } else if (orgId) {
@@ -738,7 +737,6 @@ export function DiscordRoleSelectModal(props) {
       return;
     }
     try {
-      console.log(podId, orgId);
       if (podId) {
         await apollo.mutate({
           mutation: IMPORT_DISCORD_ROLE_AS_POD_ROLE,
