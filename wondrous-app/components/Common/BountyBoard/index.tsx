@@ -20,7 +20,7 @@ import { PodName, PodWrapper } from 'components/Common/Task/styles';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
-import TaskCardStatus from 'components/Common/TaskCardStatuts';
+import TaskCardStatus from 'components/Common/TaskCardStatus';
 import TaskPriority from 'components/Common/TaskPriority';
 import ActionModals from 'components/Common/TaskViewModal/actionModals';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
@@ -28,7 +28,6 @@ import PodIconName from 'components/Common/PodIconName';
 import { CreateEntity } from 'components/CreateEntity';
 import CommentsIcon from 'components/Icons/comments';
 import { DAOIcon } from 'components/Icons/dao';
-import PodIcon from 'components/Icons/podIcon';
 import { RichTextViewer } from 'components/RichText';
 import { ARCHIVE_TASK } from 'graphql/mutations';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
@@ -177,7 +176,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
             <TaskCardPrivacy privacyLevel={bounty?.privacyLevel} />
           </BoardsCardSubheader>
 
-          <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="6px">
+          <Grid container width="fit-content" flexGrow="1" justifyContent="flex-end" gap="4px">
             <TaskCardDate date={bounty?.dueDate} />
             {bounty?.rewards && bounty?.rewards?.length > 0 && <Compensation rewards={bounty?.rewards} />}
           </Grid>

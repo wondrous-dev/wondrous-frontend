@@ -17,7 +17,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
-import TaskCardStatus from 'components/Common/TaskCardStatuts';
+import TaskCardStatus from 'components/Common/TaskCardStatus';
 import TaskPriority from 'components/Common/TaskPriority';
 import ActionModals from 'components/Common/TaskViewModal/actionModals';
 import { CreateEntity } from 'components/CreateEntity';
