@@ -29,7 +29,7 @@ const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId }: Props) => {
   return (
     <>
       <Modals isOpen={isModalOpen} onClose={toggleModal} />
-      <TaskMintButton onClick={toggleModal} status={status} />
+      {!process.env.NEXT_PUBLIC_PRODUCTION && <TaskMintButton onClick={toggleModal} status={status} />}
     </>
   );
 };
