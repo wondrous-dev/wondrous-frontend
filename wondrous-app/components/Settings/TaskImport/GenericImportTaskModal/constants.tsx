@@ -35,8 +35,6 @@ export const ASANA_TASKS_CSV_HEADERS = [
   'Parent Task',
   'Blocked By (Dependencies)',
   'Blocking (Dependencies)',
-  'Priority',
-  'Status',
 ];
 
 export const TRELLO_TASKS_CSV_HEADERS = [
