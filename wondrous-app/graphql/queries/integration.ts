@@ -80,9 +80,30 @@ export const GET_ORG_NOTION_DATABASES = gql`
   }
 `;
 
+export const GET_POD_NOTION_DATABASES = gql`
+  query getPodNotionDatabases($podId: ID!) {
+    getPodNotionDatabases(podId: $podId) {
+      id
+      title
+      createdTime
+      lastEditedTime
+    }
+  }
+`;
+
 export const GET_ORG_NOTION_WORKSPACE = gql`
   query getOrgNotionWorkspace($orgId: ID!) {
     getOrgNotionWorkspace(orgId: $orgId) {
+      id
+      name
+      icon
+    }
+  }
+`;
+
+export const GET_POD_NOTION_WORKSPACE = gql`
+  query getPodNotionWorkspace($podId: ID!) {
+    getPodNotionWorkspace(podId: $podId) {
       id
       name
       icon

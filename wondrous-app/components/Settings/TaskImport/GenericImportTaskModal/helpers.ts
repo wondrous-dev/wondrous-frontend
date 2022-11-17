@@ -72,11 +72,12 @@ const getFormattedDescription = (description: string) => {
   return JSON.stringify(formattedDescription);
 };
 
-const addOrgOrPodIdToTasks = (tasks, isOrg, orgOrPodId) => {
+const addOrgOrPodIdToTasks = (tasks, isOrg, orgOrPodId, orgId) => {
   const newTasks = tasks.map((task) => {
     if (isOrg) {
       task.orgId = orgOrPodId;
     } else {
+      task.orgId = orgId;
       task.podId = orgOrPodId;
     }
 
@@ -86,7 +87,7 @@ const addOrgOrPodIdToTasks = (tasks, isOrg, orgOrPodId) => {
   return newTasks;
 };
 
-export const getTasksFromAsanaData = (data, isOrg, orgOrPodId) => {
+export const getTasksFromAsanaData = ({ data, isOrg, orgOrPodId, orgId }) => {
   if (!isEqual(data[0], ASANA_TASKS_CSV_HEADERS)) {
     throw new Error('CSV format does not match with Asana');
   }
@@ -106,12 +107,12 @@ export const getTasksFromAsanaData = (data, isOrg, orgOrPodId) => {
     return task;
   });
 
-  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId);
+  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId, orgId);
 
   return tasks;
 };
 
-export const getTasksFromTrelloData = (data, isOrg, orgOrPodId) => {
+export const getTasksFromTrelloData = ({ data, isOrg, orgOrPodId, orgId }) => {
   if (!isEqual(data[0], TRELLO_TASKS_CSV_HEADERS)) {
     throw new Error('CSV format does not match with Trello');
   }
@@ -131,12 +132,12 @@ export const getTasksFromTrelloData = (data, isOrg, orgOrPodId) => {
     return task;
   });
 
-  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId);
+  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId, orgId);
 
   return tasks;
 };
 
-export const getTasksFromGenericData = (data, isOrg, orgOrPodId) => {
+export const getTasksFromGenericData = ({ data, isOrg, orgOrPodId, orgId }) => {
   if (!isEqual(data[0], GENERIC_TASKS_CSV_HEADERS)) {
     throw new Error('CSV format does not match with the given format');
   }
@@ -152,7 +153,7 @@ export const getTasksFromGenericData = (data, isOrg, orgOrPodId) => {
     return task;
   });
 
-  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId);
+  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId, orgId);
 
   return tasks;
 };

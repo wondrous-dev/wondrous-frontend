@@ -125,8 +125,8 @@ const createListItems = ({ orgId, podId, mainPath }) => [
     Icon: FileDownloadIcon,
     label: 'Task Import',
     value: 'import',
-    href: `/${mainPath}/settings/${orgId}/task-import`,
-    page: [SettingsPage.Org],
+    href: orgId ? `/${mainPath}/settings/${orgId}/task-import` : `/pod/settings/${podId}/task-import`,
+    page: [SettingsPage.Org, SettingsPage.Pod],
   },
   {
     Icon: NotificationsIcon,
