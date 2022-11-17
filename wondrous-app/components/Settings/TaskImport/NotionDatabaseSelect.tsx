@@ -38,7 +38,6 @@ function NotionDatabaseSelect(props) {
 
   const [getPodNotionDatabases, { data: getPodNotionDatabasesData }] = useLazyQuery(GET_POD_NOTION_DATABASES, {
     onCompleted: (data) => {
-      console.log('data', data?.getPodNotionDatabases);
       if (data?.getPodNotionDatabases) {
         const options = [];
         for (let i = 0; i < data.getPodNotionDatabases.length; i++) {
@@ -70,7 +69,6 @@ function NotionDatabaseSelect(props) {
 
   useEffect(() => {
     if (open && podId && !getPodNotionDatabasesData) {
-      console.log('cslled');
       getPodNotionDatabases({
         variables: {
           podId,
