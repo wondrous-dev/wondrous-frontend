@@ -34,8 +34,8 @@ export const GET_ORG_GRANTS = gql`
 `;
 
 export const GET_POD_GRANTS = gql`
-  query getGrantPodBoard($orgId: ID!, $podId: ID!, $status: String, $limit: Int, $offset: Int) {
-    getGrantPodBoard(orgId: $orgId, podId: $podId, status: $status, limit: $limit, offset: $offset) {
+  query getGrantPodBoard($podId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getGrantPodBoard(podId: $podId, status: $status, limit: $limit, offset: $offset) {
       id
       title
       description
@@ -116,8 +116,8 @@ export const GET_GRANT_COMMENTS = gql`
 `;
 
 export const GET_GRANT_APPLICATIONS = gql`
-  query getGrantApplicationsForGrant($grantId: ID!, $status: String) {
-    getGrantApplicationsForGrant(grantId: $grantId, status: $status) {
+  query getGrantApplicationsForGrant($grantId: ID!, $status: String, $limit: Int, $offset: Int) {
+    getGrantApplicationsForGrant(grantId: $grantId, status: $status, limit: $limit, offset: $offset) {
       id
       createdAt
       createdBy

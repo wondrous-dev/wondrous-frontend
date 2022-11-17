@@ -132,7 +132,7 @@ const cache = new InMemoryCache({
         getOrgUsers: offsetLimitPagination(['orgId', 'searchString', 'roleIds', 'limit']),
         getGrantOrgBoard: offsetLimitPagination(),
         getGrantPodBoard: offsetLimitPagination(),
-        getGrantApplicationsForGrant: offsetLimitPagination(),
+        getGrantApplicationsForGrant: offsetLimitPagination(['grantId', 'status']),
       },
     },
   },

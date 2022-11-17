@@ -5,17 +5,14 @@ import { TaskActionAmount } from 'components/Common/Task/styles';
 import {
   SubmissionDescription,
   SubmissionDivider,
-  SubmissionItemFooter,
   SubmissionItemHeader,
   SubmissionItemHeaderContent,
   SubmissionItemSection,
-  SubmissionItemWrapper,
 } from 'components/Common/TaskSubmission/styles';
 import { SubmissionItemStatus, SubmissionItemUserWrapper } from 'components/Common/TaskSubmission/submissionItem';
 import { TaskDescriptionTextWrapper } from 'components/Common/TaskViewModal/helpers';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
 import { RequestApproveButton } from 'components/organization/members/styles';
-import { RichTextViewer } from 'components/RichText';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
@@ -37,7 +34,7 @@ const ListItem = ({ item }) => {
   const location = useLocation();
   const status = selectApplicationStatus(item);
   const handleClick = (applicationId, query = '') => {
-    let newUrl = `${delQuery(router.asPath)}?grant=${router.query.grant}&grantApplicationId=${applicationId}`;
+    let newUrl = `${delQuery(router.asPath)}?grant=${location?.params?.grant}&grantApplicationId=${applicationId}`;
     newUrl += query;
     location.push(newUrl);
     document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);

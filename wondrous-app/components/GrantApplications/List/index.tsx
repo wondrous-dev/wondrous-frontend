@@ -14,22 +14,27 @@ import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
 import { useTaskContext } from 'utils/hooks';
 import ListItem from '../ListItem';
 
-const List = () => {
+const List = ({ display = false }) => {
   const { toggleCreateApplicationModal, grant } = useTaskContext();
   const [status, setStatus] = useState(GRANT_APPLICATION_STATUSES.OPEN);
   const [hasMore, setHasMore] = useState(false);
   const user = useMe();
   const [ref, inView] = useInView({});
-  const { data, fetchMore, refetch, previousData } = useQuery(GET_GRANT_APPLICATIONS, {
+  const { data, fetchMore, refetch, previousData, loading } = useQuery(GET_GRANT_APPLICATIONS, {
     variables: {
       status,
       grantId: grant?.id,
+      limit: LIMIT,
+      offset: 0,
     },
+    notifyOnNetworkStatusChange: true,
+    fetchPolicy: 'cache-and-network',
+    nextFetchPolicy: 'cache-first',
     onCompleted: (data) => {
       const hasMoreData = data?.getGrantApplicationsForGrant?.length >= LIMIT;
       if (!previousData && hasMoreData !== hasMore) setHasMore(hasMoreData);
     },
-    skip: !grant?.id,
+    skip: !grant?.id || !display,
   });
 
   const canApply = user && user?.id !== grant?.createdBy;
@@ -51,6 +56,8 @@ const List = () => {
       }).then(({ data }) => setHasMore(data?.getGrantApplicationsForGrant?.length >= LIMIT));
     }
   }, [inView, hasMore]);
+
+  if (!display) return null;
 
   return (
     <>

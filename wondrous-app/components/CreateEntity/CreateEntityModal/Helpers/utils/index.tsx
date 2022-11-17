@@ -433,13 +433,14 @@ export interface ICreateEntityModal {
 }
 
 export interface GrantCreateModalProps extends ICreateEntityModal {
-  isEdit?: boolean
+  isEdit?: boolean;
   existingGrant?: {
     id: string;
     title: string;
     description: string;
     orgId: string;
     podId?: string;
+    media?: any;
     privacyLevel?: string;
     reward?: {
       paymentMethodId?: string;

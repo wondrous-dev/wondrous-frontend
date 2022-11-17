@@ -96,15 +96,7 @@ const validationSchema = Yup.object().shape({
   mediaUploads: Yup.array(),
 });
 
-const CreateGrant = ({
-  entityType,
-  handleClose,
-  cancel,
-  existingGrant,
-  parentTaskId,
-  formValues,
-  isEdit = false,
-}: GrantCreateModalProps) => {
+const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false }: GrantCreateModalProps) => {
   const router = useRouter();
   const { toggleFullScreen, isFullScreen } = useFullScreen(true);
   const orgBoard = useOrgBoard();
@@ -160,7 +152,7 @@ const CreateGrant = ({
         rewardAmount: existingGrant?.reward?.rewardAmount || '0',
       },
       numOfGrant: existingGrant?.numOfGrant || '0',
-      mediaUploads: [],
+      mediaUploads: transformMediaFormat(existingGrant?.media) || [],
       startDate: existingGrant?.startDate || null,
       endDate: existingGrant?.endDate || null,
       title: existingGrant?.title || '',
@@ -439,7 +431,10 @@ const CreateGrant = ({
             <Categories
               categories={form.values.categories}
               onChange={(value) => {
-                form.setFieldValue('categories', value?.map((item) => item.id));
+                form.setFieldValue(
+                  'categories',
+                  value?.map((item) => item.id)
+                );
               }}
             />
           </TaskSectionDisplayDivWrapper>

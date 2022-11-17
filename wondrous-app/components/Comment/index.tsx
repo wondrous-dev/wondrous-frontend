@@ -375,7 +375,7 @@ export default function CommentList(props) {
   });
 
   const handleCommentList = () => {
-    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION && task?.id) {
       return getGrantApplicationComments({
         variables: {
           grantApplicationId: task?.id,

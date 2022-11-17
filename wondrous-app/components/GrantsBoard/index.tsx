@@ -49,7 +49,6 @@ const GrantsBoard = () => {
     previousData: podPreviousData,
   } = useQuery(GET_POD_GRANTS, {
     variables: {
-      orgId: podBoard?.orgId,
       podId: podBoard?.podId,
       status: activeFilter,
       limit: LIMIT,
@@ -57,7 +56,7 @@ const GrantsBoard = () => {
     },
     fetchPolicy: 'cache-and-network',
     notifyOnNetworkStatusChange: true,
-    skip: !podBoard && !podBoard?.podId && !podBoard?.orgId,
+    skip: !podBoard && !podBoard?.podId,
     onCompleted: (data) => {
       const hasMoreData = data?.getGrantPodBoard?.length >= LIMIT;
       if (!podPreviousData && hasMoreData !== hasMore) setHasMore(hasMoreData);

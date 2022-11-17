@@ -40,7 +40,13 @@ import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
 import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { useFormik } from 'formik';
-import { CREATE_GRANT_APPLICATION, REOPEN_GRANT_APPLICATION, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
+import {
+  ATTACH_GRANT_APPLICATION_MEDIA,
+  CREATE_GRANT_APPLICATION,
+  REMOVE_GRANT_APPLICATION_MEDIA,
+  REOPEN_GRANT_APPLICATION,
+  UPDATE_GRANT_APPLICATION,
+} from 'graphql/mutations';
 import { isEmpty, keys } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
@@ -90,6 +96,10 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   const grant = grantApplication?.grant || taskContext?.grant;
   const orgId = grant?.org?.id;
 
+  const [attachGrantApplicationMedia] = useMutation(ATTACH_GRANT_APPLICATION_MEDIA);
+
+  const [removeGrantApplicationMedia] = useMutation(REMOVE_GRANT_APPLICATION_MEDIA);
+
   const inputRef: any = useRef();
   const initialValues = {
     title: grantApplication?.title || '',
@@ -99,8 +109,6 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
     paymentAddress: grantApplication?.paymentAddress || user?.activeEthAddress || null,
     mediaUploads: transformMediaFormat(grantApplication?.media) || [],
   };
-
-  const handleMedia = () => ({ attach: () => {}, remove: () => {} });
 
   const handleCloseAction = () => (isEditMode ? handleClose() : toggleCreateApplicationModal());
 
@@ -145,6 +153,37 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
 
   const handleUseConnectedButton = () => form.setFieldValue('paymentAddress', user?.activeEthAddress);
+
+  const attachMedia = async (event) => {
+    const fileToAdd = await handleAddFile({
+      event,
+      filePrefix: 'tmp/task/new/',
+      mediaUploads: form.values.mediaUploads,
+      setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
+      setFileUploadLoading,
+    });
+    if (grantApplication) {
+      attachGrantApplicationMedia({
+        variables: {
+          grantApplicationId: grantApplication?.id,
+          input: {
+            mediaUploads: [fileToAdd],
+          },
+        },
+      });
+    }
+  };
+
+  const removeMediaItem = (mediaItem) => {
+    if (grantApplication) {
+      removeGrantApplicationMedia({
+        variables: {
+          grantApplicationId: grantApplication?.id,
+          slug: mediaItem?.uploadSlug || mediaItem?.slug,
+        },
+      });
+    }
+  };
 
   return (
     <Form onSubmit={form.handleSubmit}>
@@ -265,18 +304,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                         mediaUploads={form.values.mediaUploads}
                         setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
                         mediaItem={mediaItem}
-                        // removeMediaItem={() => {
-                        //   if (existingTask) {
-                        //     handleMedia().remove({
-                        //       variables: {
-                        //         ...(entityType === ENTITIES_TYPES.PROPOSAL
-                        //           ? { proposalId: existingTask?.id }
-                        //           : { taskId: existingTask?.id }),
-                        //         slug: mediaItem?.uploadSlug || mediaItem?.slug,
-                        //       },
-                        //     });
-                        //   }
-                        // }}
+                        removeMediaItem={() => removeMediaItem(mediaItem)}
                       />
                     ))}
                   <CreateEntityAttachment onClick={() => inputRef.current.click()}>
@@ -285,20 +313,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                     {fileUploadLoading && <FileLoading />}
                   </CreateEntityAttachment>
                 </MediaUploadDiv>
-                <input
-                  type="file"
-                  hidden
-                  ref={inputRef}
-                  onChange={async (event) => {
-                    const fileToAdd = await handleAddFile({
-                      event,
-                      filePrefix: 'tmp/task/new/',
-                      mediaUploads: form.values.mediaUploads,
-                      setMediaUploads: (mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads),
-                      setFileUploadLoading,
-                    });
-                  }}
-                />
+                <input type="file" hidden ref={inputRef} onChange={attachMedia} />
               </CreateEntityWrapper>
             </TaskSectionDisplayDiv>
           </TaskSectionDisplayDivWrapper>

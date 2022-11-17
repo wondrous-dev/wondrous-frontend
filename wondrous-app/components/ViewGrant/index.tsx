@@ -5,6 +5,7 @@ import {
   TaskCardOrgNoLogo,
   TaskCardOrgPhoto,
   TaskCardPodIcon,
+  TaskMediaWrapper,
   TaskModalCard,
   TaskModalHeader,
   TaskModalHeaderArrow,
@@ -20,7 +21,7 @@ import {
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
-  TaskSectionDisplayDivWrapper
+  TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
 import { useCallback, useContext, useEffect, useMemo, useRef, useState } from 'react';
 import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LABELS, PRIVACY_LEVEL } from 'utils/constants';
@@ -216,10 +217,11 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
             <TaskModalTaskData fullScreen={isFullScreen}>
               <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
                 <TaskModalTitle>{grant?.title}</TaskModalTitle>
-                <GrantMenuStatus canEdit={canEdit} currentStatus={grant?.status}/>
+                <GrantMenuStatus canEdit={canEdit} currentStatus={grant?.status} />
 
                 <DescriptionWrapper>
                   <RichTextViewer text={grant.description} />
+                  <TaskMediaWrapper media={grant?.media} />
                 </DescriptionWrapper>
               </TaskModalTitleDescriptionMedia>
               <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
@@ -237,9 +239,10 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
                   })}
                 </TaskSectionDisplayData>
               </TaskSectionDisplayDivWrapper>
-              <ViewGrantFooter entity={grant}
-          commentCount={grant?.commentCount}
-          applicationsCount={grant?.applicationsCount}
+              <ViewGrantFooter
+                entity={grant}
+                commentCount={grant?.commentCount}
+                applicationsCount={grant?.applicationsCount}
               />
             </TaskModalTaskData>
           </>

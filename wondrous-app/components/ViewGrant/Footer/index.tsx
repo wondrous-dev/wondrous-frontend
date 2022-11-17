@@ -49,8 +49,7 @@ const ViewGrantFooter = ({
       </TaskSectionFooterTitleDiv>
 
       <TaskSectionContent ref={ref}>
-        {activeTab === tabs.applications && entityType === ENTITIES_TYPES.GRANT && <List />}
-
+        <List display={activeTab === tabs.applications && entityType === ENTITIES_TYPES.GRANT} />
         {activeTab === tabs.discussion && <CommentList task={entity} entityType={entityType} {...commentListProps} />}
       </TaskSectionContent>
     </TaskModalFooter>
