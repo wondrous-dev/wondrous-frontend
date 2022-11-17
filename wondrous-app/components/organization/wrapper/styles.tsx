@@ -95,7 +95,6 @@ export const HeaderTitleIcon = styled.div`
   display: flex;
   align-items: center;
   width: 100%;
-  margin-bottom: 8px;
   & > * {
     margin-left: 10px;
     :first-child {
@@ -112,7 +111,7 @@ export const HeaderTitle = styled(Typography)`
     display: flex;
     align-items: center;
     color: #ffffff;
-    margin-left: 20px;
+    margin-left: 4px;
     text-shadow: 0px 4px 4px rgba(0, 0, 0, 0.25);
   }
 `;
@@ -125,7 +124,7 @@ export const HeaderTag = styled(Typography)`
     font-weight: 400;
     font-size: 18px;
     line-height: 18px;
-    margin-left: 20px;
+    margin-left: 12px;
   }
 `;
 
