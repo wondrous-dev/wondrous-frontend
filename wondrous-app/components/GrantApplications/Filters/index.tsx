@@ -23,25 +23,17 @@ const filterOptions = [
   { label: 'Rejected', Icon: RejectedIcon, value: GRANT_APPLICATION_STATUSES.REJECTED },
 ];
 
-// OPEN = 'open'
-// WAITING_FOR_REVIEW = 'waiting_for_review'
-// CHANGE_REQUESTED = 'change_requested'
-// APPROVED = 'approved'
-// REJECTED = 'rejected'
-
 const Filters = ({ setStatus, status }) => {
-  // const [selected, setSelected] = useState({});
   const [anchorEl, setAnchorEl] = useState(null);
   const handleClick = (event) => setAnchorEl(event.currentTarget);
   const handleClose = () => setAnchorEl(null);
   const open = Boolean(anchorEl);
   const handleOnClick = (value) => {
-    // setSelected({ Icon, label });
     setStatus(value);
     handleClose();
   };
 
-  const selected = useMemo(() => filterOptions.find((option) => option.value === status), [status])
+  const selected = useMemo(() => filterOptions.find((option) => option.value === status), [status]);
 
   return (
     <>

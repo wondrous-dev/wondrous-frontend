@@ -1,6 +1,8 @@
 import { useMutation } from '@apollo/client';
 import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import CommentList from 'components/Comment';
+import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
 import { ActionButton } from 'components/Common/Task/styles';
 import Divider from 'components/Divider';
 import CopyIcon from 'components/Icons/copy';
@@ -13,6 +15,8 @@ import {
   REQUEST_CHANGE_GRANT_APPLICATION,
 } from 'graphql/mutations';
 import { useState } from 'react';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
 import { ENTITIES_TYPES, GRANT_APPLICATION_COMMENT_TYPE, GRANT_APPLICATION_STATUSES } from 'utils/constants';
 import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper } from './styles';
 
@@ -146,9 +150,41 @@ export const WalletAddressViewer = ({ walletAddress }) => {
   return (
     <WalletAddressWrapper>
       <DataDisplayWrapper onClick={handleAddressCopy}>
-        {isCopied ? 'Address copied!' : `${walletAddress?.slice(0, 12)}...${walletAddress?.slice(-4)}`}
+        {isCopied ? 'Address copied!' : `${walletAddress?.slice(0, 8)}...${walletAddress?.slice(-4)}`}
         {!isCopied && <CopyIcon />}
       </DataDisplayWrapper>
     </WalletAddressWrapper>
+  );
+};
+
+export const PaymentHandler = ({ grantApplication }) => {
+  const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
+
+  const togglePayments = () => setIsPaymentModalOpen((prevState) => !prevState);
+
+  if (isPaymentModalOpen) {
+    return (
+      <MakePaymentModal
+        open={isPaymentModalOpen}
+        handleClose={() => {}}
+        setShowPaymentModal={setIsPaymentModalOpen}
+        grant={grantApplication?.grant}
+        grantApplication={grantApplication}
+      />
+    );
+  }
+
+  return (
+    <GrantApplicationStatusWrapper>
+      <Grid display="flex" justifyContent="space-between" alignItems="center" gap="20px">
+        <Button onClick={togglePayments} gradient="linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)">
+          Proceed to payment
+        </Button>
+        <Typography fontFamily={typography.fontFamily} color={palette.grey250} fontWeight={400} fontSize="13px">
+          Sending to
+        </Typography>
+        <WalletAddressViewer walletAddress={grantApplication?.paymentAddress} />
+      </Grid>
+    </GrantApplicationStatusWrapper>
   );
 };

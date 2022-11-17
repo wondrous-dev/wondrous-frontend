@@ -38,7 +38,7 @@ import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
-import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { ENTITIES_TYPES, GRANT_APPLICATION_STATUSES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
 import { delQuery } from 'utils/index';
@@ -49,7 +49,7 @@ import { useQuery } from '@apollo/client';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
-import { GrantApplicationStatusManager, WalletAddressViewer } from './Fields';
+import { GrantApplicationStatusManager, WalletAddressViewer, PaymentHandler } from './Fields';
 import { GrantSectionDisplayLabel, ModalCard } from './styles';
 
 const FIELDS_CONFIG = [
@@ -57,9 +57,14 @@ const FIELDS_CONFIG = [
     component: ({ grantApplication }) => <GrantApplicationStatusManager grantApplication={grantApplication} />,
     shouldDisplay: ({ hasManageRights }): boolean => hasManageRights,
   },
+
   {
     label: 'Grant amount',
     component: ({ grantApplication: { grant } }) => <GrantAmount grantAmount={grant?.reward || {}} />,
+  },
+  {
+    component: ({ grantApplication }) => <PaymentHandler grantApplication={grantApplication} />,
+    shouldDisplay: ({ isApproved }) => isApproved,
   },
   {
     label: 'Wallet Address',
@@ -237,7 +242,13 @@ const ViewGrantApplication = ({ onClose }) => {
             <TaskSectionDisplayData>
               {!!grantApplication &&
                 FIELDS_CONFIG.map((field, idx) => {
-                  if (field?.shouldDisplay && !field?.shouldDisplay({ hasManageRights: canManage })) {
+                  if (
+                    field?.shouldDisplay &&
+                    !field?.shouldDisplay({
+                      hasManageRights: canManage,
+                      isApproved: status === GRANT_APPLICATION_STATUSES.APPROVED,
+                    })
+                  ) {
                     return null;
                   }
                   return (
