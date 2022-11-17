@@ -295,15 +295,13 @@ const SubmissionFormSchema = Yup.object().shape({
 
 export function TaskSubmissionForm(props) {
   const { cancelSubmissionForm, orgId, taskId, submissionToEdit } = props;
-  const refetchQueries = {
-    refetchQueries: [
-      'getTaskSubmissionsForTask',
-      'getOrgTaskBoardTasks',
-      'getPodTaskBoardTasks',
-      'getUserTaskBoardTasks',
-      'getTaskById',
-    ],
-  };
+  const refetchQueries = [
+    'getTaskSubmissionsForTask',
+    'getOrgTaskBoardTasks',
+    'getPodTaskBoardTasks',
+    'getUserTaskBoardTasks',
+    'getTaskById',
+  ];
 
   const snackbarContext = useContext(SnackbarAlertContext);
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
@@ -321,8 +319,6 @@ export function TaskSubmissionForm(props) {
     const filteredLinks = link.filter((i) => i.url);
     const stringifiedDescription = JSON.stringify(descriptionText);
 
-    setSnackbarAlertOpen(true);
-    setSnackbarAlertMessage(`Successfully submitted!`);
     if (submissionToEdit) {
       updateTaskSubmission({
         variables: {
@@ -332,7 +328,7 @@ export function TaskSubmissionForm(props) {
             links: filteredLinks,
           },
         },
-      });
+      }).then();
     } else {
       createTaskSubmission({
         variables: {
@@ -347,8 +343,20 @@ export function TaskSubmissionForm(props) {
     }
   };
 
-  const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, refetchQueries);
-  const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, refetchQueries);
+  const [createTaskSubmission] = useMutation(CREATE_TASK_SUBMISSION, {
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(`Successfully submitted!`);
+    },
+    refetchQueries,
+  });
+  const [updateTaskSubmission] = useMutation(UPDATE_TASK_SUBMISSION, {
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage(`Successfully updated!`);
+    },
+    refetchQueries,
+  });
   const submissionFormSubmitText = submissionToEdit ? 'Submit edits' : 'Submit for approval';
   return (
     <SubmissionFormWrapper>
