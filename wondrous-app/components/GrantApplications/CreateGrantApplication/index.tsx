@@ -8,14 +8,16 @@ import {
   TaskModalTaskData,
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayDiv,
-  TaskSectionDisplayDivWrapper
+  TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
 import { useContextValue, useGetOrgUsers } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import {
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
   CreateEntityAutocompletePopperRenderInputAdornment,
-  CreateEntityAutocompletePopperRenderInputIcon, CreateEntityCancelButton, CreateEntityError,
+  CreateEntityAutocompletePopperRenderInputIcon,
+  CreateEntityCancelButton,
+  CreateEntityError,
   CreateEntityHeader,
   CreateEntityHeaderWrapper,
   CreateEntityLabel,
@@ -25,8 +27,9 @@ import {
   CreateEntityTitle,
   CreateEntityWrapper,
   EditorContainer,
-  EditorPlaceholder, EditorToolbar,
-  MediaUploadDiv
+  EditorPlaceholder,
+  EditorToolbar,
+  MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePodModal';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
@@ -35,12 +38,14 @@ import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fiel
 import { Form, RichTextContainer } from 'components/CreateGrant/styles';
 import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
 import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
+import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { useFormik } from 'formik';
-import { CREATE_GRANT_APPLICATION, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
+import { CREATE_GRANT_APPLICATION, REOPEN_GRANT_APPLICATION, UPDATE_GRANT_APPLICATION } from 'graphql/mutations';
 import { isEmpty, keys } from 'lodash';
 import { useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
+import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
 import { transformMediaFormat } from 'utils/helpers';
 import { useTaskContext } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
@@ -54,7 +59,7 @@ const validationSchema = yup.object({
   mediaUploads: yup.array(),
 });
 
-const CreateGrantApplication = ({grantApplication = null, isEditMode, handleClose}) => {
+const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClose }) => {
   const user = useMe();
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
@@ -62,32 +67,52 @@ const CreateGrantApplication = ({grantApplication = null, isEditMode, handleClos
   const [createGrantApplication] = useMutation(CREATE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantById'],
   });
+  const [reopenGrantApplication] = useMutation(REOPEN_GRANT_APPLICATION, {
+    refetchQueries: ['getGrantApplicationById'],
+  });
   const [updateGrantApplication] = useMutation(UPDATE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
-  })
+    onCompleted: (data) => {
+      const status = selectApplicationStatus(data?.updateGrantApplication);
+      if (status === GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED) {
+        reopenGrantApplication({
+          variables: {
+            grantApplicationId: data?.updateGrantApplication?.id,
+          },
+        });
+      }
+    },
+  });
 
   const taskContext = useTaskContext();
   const { isFullScreen, toggleCreateApplicationModal, toggleFullScreen } = taskContext;
 
   const grant = grantApplication?.grant || taskContext?.grant;
-  const orgId = grant?.org?.id
+  const orgId = grant?.org?.id;
 
   const inputRef: any = useRef();
   const initialValues = {
     title: grantApplication?.title || '',
-    description: grantApplication ? deserializeRichText(grantApplication.description) : deserializeRichText(descriptionTemplate),
+    description: grantApplication
+      ? deserializeRichText(grantApplication.description)
+      : deserializeRichText(descriptionTemplate),
     paymentAddress: grantApplication?.paymentAddress || user?.activeEthAddress || null,
-    mediaUploads: transformMediaFormat(grantApplication?.media) || []
+    mediaUploads: transformMediaFormat(grantApplication?.media) || [],
   };
 
   const handleMedia = () => ({ attach: () => {}, remove: () => {} });
 
-  const handleCloseAction = () => isEditMode ? handleClose() : toggleCreateApplicationModal();
+  const handleCloseAction = () => (isEditMode ? handleClose() : toggleCreateApplicationModal());
 
-  const handleGrantApplicationSubmit = isEditMode ? ({variables}) => updateGrantApplication({variables: {
-    grantApplicationId: grantApplication.id,
-    input: variables.input
-  }}): createGrantApplication;
+  const handleGrantApplicationSubmit = isEditMode
+    ? ({ variables }) =>
+        updateGrantApplication({
+          variables: {
+            grantApplicationId: grantApplication.id,
+            input: variables.input,
+          },
+        })
+    : createGrantApplication;
 
   const form = useFormik({
     initialValues,
@@ -105,17 +130,17 @@ const CreateGrantApplication = ({grantApplication = null, isEditMode, handleClos
             paymentAddress: values.paymentAddress,
             description: JSON.stringify(values.description),
             userMentions,
-          }
-        }
-      }).then(() => handleCloseAction())
-    }
+          },
+        },
+      }).then(() => handleCloseAction());
+    },
   });
 
   useEffect(() => {
-    if(isEditMode && !form.values.title && !form.values.paymentAddress) {
-      keys(initialValues).forEach(key => form.setFieldValue(key, initialValues[key]))
+    if (isEditMode && !form.values.title && !form.values.paymentAddress) {
+      keys(initialValues).forEach((key) => form.setFieldValue(key, initialValues[key]));
     }
-  }, [isEditMode])
+  }, [isEditMode]);
 
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(orgId);
 

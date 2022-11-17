@@ -17,7 +17,7 @@ export const canViewGrant = (grant, userPermissionsContext, permissions) => {
 };
 
 export const selectApplicationStatus = (application) => {
-  if (!application?.approvedAt && !application?.changeRequestedAt && !application.rejectedAt)
+  if (!application?.approvedAt && !application?.changeRequestedAt && !application?.rejectedAt)
     return GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW;
   if (application?.changeRequestedAt) return GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED;
   if (application?.rejectedAt) return GRANT_APPLICATION_STATUSES.REJECTED;

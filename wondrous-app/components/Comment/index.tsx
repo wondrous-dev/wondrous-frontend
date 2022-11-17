@@ -84,7 +84,7 @@ function CommentBox(props) {
   });
 
   const [createGrantApplicationComment] = useMutation(CREATE_GRANT_APPLICATION_COMMENT, {
-    refetchQueries: ['getGrantApplicationComments', 'getGrantApplicationById', 'getGrantApplicationsForGrant'],
+    refetchQueries: ['getGrantApplicationComments', 'getGrantApplicationsForGrant'],
   });
 
   const addComment = () => {

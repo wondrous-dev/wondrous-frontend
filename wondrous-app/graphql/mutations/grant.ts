@@ -69,7 +69,11 @@ export const CREATE_GRANT_APPLICATION = gql`
 export const UPDATE_GRANT_APPLICATION = gql`
   mutation updateGrantApplication($grantApplicationId: ID!, $input: GrantApplicationInput) {
     updateGrantApplication(grantApplicationId: $grantApplicationId, input: $input) {
+      approvedAt
       id
+      rejectedAt
+      changeRequestedAt
+      paymentStatus
     }
   }
 `;

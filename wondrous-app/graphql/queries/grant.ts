@@ -33,7 +33,6 @@ export const GET_ORG_GRANTS = gql`
   ${MediaFragment}
 `;
 
-
 export const GET_POD_GRANTS = gql`
   query getGrantPodBoard($orgId: ID!, $podId: ID!, $status: String, $limit: Int, $offset: Int) {
     getGrantPodBoard(orgId: $orgId, podId: $podId, status: $status, limit: $limit, offset: $offset) {
@@ -63,7 +62,6 @@ export const GET_POD_GRANTS = gql`
   }
   ${MediaFragment}
 `;
-
 
 export const GET_GRANT_BY_ID = gql`
   query getGrantById($grantId: ID!) {
@@ -150,6 +148,7 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
       id
       paymentAddress
       approvedAt
+      createdBy
       changeRequestedAt
       commentCount
       rejectedAt

@@ -24,7 +24,7 @@ import {
   TaskSectionDisplayData,
   TaskSectionDisplayDiv,
   TaskSectionDisplayDivWrapper,
-  TaskSectionDisplayLabelText
+  TaskSectionDisplayLabelText,
 } from 'components/Common/TaskViewModal/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { HeaderTypography } from 'components/GrantApplications/CreateGrantApplication/styles';
@@ -37,7 +37,7 @@ import ViewGrantFooter from 'components/ViewGrant/Footer';
 import { DescriptionWrapper } from 'components/ViewGrant/styles';
 import { GET_GRANT_APPLICATION_BY_ID } from 'graphql/queries';
 import { useRouter } from 'next/router';
-import { useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useState } from 'react';
 import { ENTITIES_TYPES, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useGlobalContext, useTaskContext } from 'utils/hooks';
@@ -47,6 +47,8 @@ import { useLocation } from 'utils/useLocation';
 import { useQuery } from '@apollo/client';
 
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import SubmittableCommentType from 'components/Common/SubmittableCommentType';
+import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import { GrantApplicationStatusManager, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel, ModalCard } from './styles';
 
@@ -104,15 +106,14 @@ const ViewGrantApplication = ({ onClose }) => {
     podId: grant?.podId,
   });
 
-  const canManage =
-    permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions?.includes(PERMISSIONS.EDIT_TASK) ||
-    grant?.createdBy === user?.id;
+  const canManage = permissions?.includes(PERMISSIONS.FULL_ACCESS) || permissions?.includes(PERMISSIONS.EDIT_TASK);
+
+  const canEditAndComment = canManage || grantApplication?.createdBy === user?.id;
 
   const canArchive =
     permissions?.includes(PERMISSIONS.MANAGE_BOARD) ||
     permissions?.includes(PERMISSIONS.FULL_ACCESS) ||
-    grant?.createdBy === user?.id;
+    grantApplication?.createdBy === user?.id;
 
   const displayTitle = grant?.title?.slice(0, 10);
 
@@ -122,11 +123,14 @@ const ViewGrantApplication = ({ onClose }) => {
     document.body.setAttribute('style', `position: fixed; top: -${window.scrollY}px; left:0; right:0`);
   };
 
+  const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
+
   if (isEditMode) {
     return (
       <CreateGrantApplication isEditMode grantApplication={grantApplication} handleClose={() => setEditMode(false)} />
     );
   }
+
   return (
     <>
       <ArchiveTaskModal
@@ -210,7 +214,12 @@ const ViewGrantApplication = ({ onClose }) => {
           <TaskModalHeaderWrapperRight>
             {grantApplication && <TaskModalHeaderShare fetchedTask={grantApplication} />}
             <TaskModalHeaderOpenInFullIcon isFullScreen={isFullScreen} onClick={toggleFullScreen} />
-            <Menu canEdit={canManage} canDelete={canArchive} canArchive={canArchive} setEditTask={setEditMode} />
+            <Menu
+              canEdit={canEditAndComment}
+              canDelete={canArchive}
+              canArchive={canArchive}
+              setEditTask={setEditMode}
+            />
 
             <TaskModalHeaderCloseModal onClick={onClose} />
           </TaskModalHeaderWrapperRight>
@@ -218,6 +227,7 @@ const ViewGrantApplication = ({ onClose }) => {
         <TaskModalTaskData fullScreen={isFullScreen}>
           <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
             <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
+            <SubmittableCommentType status={status} />
             <DescriptionWrapper>
               <RichTextViewer text={grantApplication?.description} />
               <TaskMediaWrapper media={grantApplication?.media} />
@@ -248,7 +258,7 @@ const ViewGrantApplication = ({ onClose }) => {
             entity={grantApplication}
             commentCount={grantApplication?.commentCount}
             commentListProps={{
-              showCommentBox: canManage,
+              showCommentBox: canEditAndComment,
               showComments: true,
             }}
           />

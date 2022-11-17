@@ -16,10 +16,9 @@ import { useState } from 'react';
 import { ENTITIES_TYPES, GRANT_APPLICATION_COMMENT_TYPE, GRANT_APPLICATION_STATUSES } from 'utils/constants';
 import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper } from './styles';
 
-
 export const GrantApplicationStatusManager = ({ grantApplication }) => {
   const [commentType, setCommentType] = useState(null);
-  
+
   const status = selectApplicationStatus(grantApplication);
 
   const [approveGrantApplication] = useMutation(APPROVE_GRANT_APPLICATION, {
@@ -39,8 +38,12 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
   });
 
   const GRANT_APPLICATION_COMMENT_ACTIONS = {
-    [GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED]: () => requestChanges({ variables: { grantApplicationId: grantApplication.id } }).then(() => setCommentType(null)),
-    [GRANT_APPLICATION_COMMENT_TYPE.REJECTED]: () => rejectGrantApplication({ variables: { grantApplicationId: grantApplication.id } }).then(() => setCommentType(null)),
+    [GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED]: () =>
+      requestChanges({ variables: { grantApplicationId: grantApplication.id } }).then(() => setCommentType(null)),
+    [GRANT_APPLICATION_COMMENT_TYPE.REJECTED]: () =>
+      rejectGrantApplication({ variables: { grantApplicationId: grantApplication.id } }).then(() =>
+        setCommentType(null)
+      ),
   };
 
   const BUTTONS_CONFIG = [
@@ -48,33 +51,56 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
       label: status === GRANT_APPLICATION_STATUSES.APPROVED ? 'Undo Approval' : 'Approve',
       gradient: 'linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)',
       commentType: null,
-      disabled: commentType || [GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED, GRANT_APPLICATION_STATUSES.REJECTED].includes(status),
-      isActive: status === GRANT_APPLICATION_STATUSES.APPROVED,
+      disabled:
+        commentType ||
+        [GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED, GRANT_APPLICATION_STATUSES.REJECTED].includes(status),
       action: () =>
-        approveGrantApplication({
-          variables: {
-            grantApplicationId: grantApplication.id,
-          },
-        }),
+        status === GRANT_APPLICATION_STATUSES.APPROVED
+          ? reopenGrantApplication({
+              variables: {
+                grantApplicationId: grantApplication.id,
+              },
+            })
+          : approveGrantApplication({
+              variables: {
+                grantApplicationId: grantApplication.id,
+              },
+            }),
     },
     {
-      label: status === GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED ? 'Changes requested' : 'Request changes',
+      label: status === GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED ? 'Undo request changes' : 'Request changes',
       gradient: 'linear-gradient(259.59deg, #FFD653 0%, #7427FF 93.38%)',
       commentType: GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED,
-      isActive: status === GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED,
-      disabled: (commentType && commentType !== GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED) || [GRANT_APPLICATION_STATUSES.APPROVED, GRANT_APPLICATION_STATUSES.REJECTED].includes(status),
-      action: () => setCommentType(GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED),
+      disabled:
+        (commentType && commentType !== GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED) ||
+        [GRANT_APPLICATION_STATUSES.APPROVED, GRANT_APPLICATION_STATUSES.REJECTED].includes(status),
+      action: () =>
+        status === GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED
+          ? reopenGrantApplication({
+              variables: {
+                grantApplicationId: grantApplication.id,
+              },
+            })
+          : setCommentType(GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED),
     },
     {
-      label: status === GRANT_APPLICATION_STATUSES.REJECTED ? 'Rejected' : 'Reject',
+      label: status === GRANT_APPLICATION_STATUSES.REJECTED ? 'Undo rejection' : 'Reject',
       gradient: 'linear-gradient(259.59deg, #F93701 0%, #7427FF 93.38%)',
       commentType: GRANT_APPLICATION_COMMENT_TYPE.REJECTED,
-      isActive: status === GRANT_APPLICATION_STATUSES.REJECTED,
-      disabled: (commentType && commentType !== GRANT_APPLICATION_COMMENT_TYPE.REJECTED) || [GRANT_APPLICATION_STATUSES.APPROVED, GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED].includes(status),
-      action: () => setCommentType(GRANT_APPLICATION_COMMENT_TYPE.REJECTED),
+      disabled:
+        (commentType && commentType !== GRANT_APPLICATION_COMMENT_TYPE.REJECTED) ||
+        [GRANT_APPLICATION_STATUSES.APPROVED, GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED].includes(status),
+      action: () =>
+        status === GRANT_APPLICATION_STATUSES.REJECTED
+          ? reopenGrantApplication({
+              variables: {
+                grantApplicationId: grantApplication.id,
+              },
+            })
+          : setCommentType(GRANT_APPLICATION_COMMENT_TYPE.REJECTED),
     },
   ];
-  
+
   return (
     <GrantApplicationStatusWrapper>
       <Grid display="flex" justifyContent="space-between" alignItems="center" gap="24px">
@@ -84,7 +110,6 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
             onClick={buttonConfig.action}
             gradient={buttonConfig.gradient}
             disabled={buttonConfig.disabled}
-            isActive={buttonConfig.isActive}
           >
             {buttonConfig.label}
           </Button>
