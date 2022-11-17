@@ -44,7 +44,7 @@ const TaskCardMenu = ({
   };
   return (
     <Grid item container width="fit-content" display={open ? 'block' : 'none'} zIndex="1000">
-      <Dropdown DropdownHandler={() => <MoreIcon />} setAnchorEl={setAnchorElParent} anchorEl={anchorElParent}>
+      <Dropdown DropdownHandler={() => <MoreIcon stroke="white" />} setAnchorEl={setAnchorElParent} anchorEl={anchorElParent}>
         {keys(menuItems).map((item) => {
           const { onClick, ...props } = menuItems[item];
 
