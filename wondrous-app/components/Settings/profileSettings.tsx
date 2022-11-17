@@ -233,19 +233,6 @@ function ProfileSettings(props) {
       input['email'] = email;
     }
 
-    if (profilePicture) {
-      const file = profilePicture;
-      const fileName = profilePicture.name;
-      // get image preview
-      const { fileType, filename } = getFilenameAndType(fileName);
-
-      const imagePrefix = `tmp/${loggedInUser?.id}/`;
-      const imageUrl = imagePrefix + filename;
-
-      await uploadMedia({ filename: imageUrl, fileType, file });
-      input['profilePicture'] = imageUrl;
-    }
-
     // ----> Backend not Ready yet...
     //   if(profileBanner) {
     //     const file = profileBanner;
@@ -262,12 +249,11 @@ function ProfileSettings(props) {
 
     updateUserProfile({
       variables: {
-        input,
+        ...input,
+        profilePicture: loggedInUser?.profilePicture,
       },
       onCompleted: (data) => {
-        if (data?.updateUser?.profilePicture) {
-          setProfilePictureUrl(data?.updateUser?.profilePicture);
-        }
+        setProfilePictureUrl(data?.updateUser?.profilePicture);
         setSnackbarAlertSeverity('success');
         setSnackbarAlertOpen(true);
         setSnackbarAlertMessage(<>User profile updated successfully</>);
@@ -282,6 +268,41 @@ function ProfileSettings(props) {
     const url = buildTwitterAuthUrl(TWITTER_CHALLENGE_CODE, 'profile');
     window.open(url);
   };
+
+  const updateImage = (imageUrl: string | null, successMessage?: string) => {
+    const message = successMessage || 'User profile picture uploaded successfully';
+
+    updateUserProfile({
+      variables: {
+        input: {
+          profilePicture: imageUrl,
+        },
+      },
+      onCompleted: (data) => {
+        setProfilePictureUrl(data?.updateUser?.profilePicture);
+        setSnackbarAlertSeverity('success');
+        setSnackbarAlertOpen(true);
+        setSnackbarAlertMessage(message);
+      },
+    });
+  };
+
+  async function uploadImage(file) {
+    const fileName = file.name;
+    // get image preview
+    const { fileType, filename } = getFilenameAndType(fileName);
+
+    const imagePrefix = `tmp/${loggedInUser?.id}/`;
+    const imageUrl = imagePrefix + filename;
+
+    await uploadMedia({ filename: imageUrl, fileType, file });
+
+    updateImage(imageUrl);
+  }
+
+  function deleteImage() {
+    updateImage(null, 'User profile picture deleted successfully.');
+  }
 
   return (
     <SettingsWrapper>
@@ -324,8 +345,9 @@ function ProfileSettings(props) {
             imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
             image={loggedInUser?.profilePicture}
             title="Profile Pic"
-            updateFilesCb={setProfilePicture}
+            updateFilesCb={uploadImage}
             avatarEditorTitle="Upload a profile image"
+            onDeleteImage={deleteImage}
           />
 
           {/* <ImageUpload

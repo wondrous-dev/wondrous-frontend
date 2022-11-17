@@ -384,7 +384,11 @@ export function PodGeneralSettings() {
       setPodProfile(pod);
       setLogoImage(pod?.profilePicture || '');
       setHeaderImage(pod?.headerPicture || '');
-      setToast({ ...toast, message: `Pod updated successfully.`, show: true });
+      setToast((prevToast) => ({
+        ...prevToast,
+        message: prevToast.message || 'Pod updated successfully.',
+        show: true,
+      }));
     },
   });
 
@@ -431,6 +435,16 @@ export function PodGeneralSettings() {
     });
     if (imageFile.filename) {
       await uploadMedia(imageFile);
+
+      let message = '';
+      if (imageType === 'header') {
+        message = 'Header cover profile updated successfully';
+      }
+      if (imageType === 'profile') {
+        message = 'Logo profile updated successfully';
+      }
+      setToast((prevToast) => ({ ...prevToast, message }));
+
       updatePod({
         variables: {
           podId,
@@ -459,6 +473,8 @@ export function PodGeneralSettings() {
   function saveChanges() {
     const links = Object.values(podLinks);
 
+    setToast((prevToast) => ({ ...prevToast, message: 'Pod updated successfully.' }));
+
     updatePod({
       variables: {
         podId,
@@ -476,6 +492,15 @@ export function PodGeneralSettings() {
   }
 
   function deleteImage(imageType: ImageFileTypes) {
+    let message = '';
+    if (imageType === 'headerPicture') {
+      message = 'Header cover profile deleted successfully';
+    }
+    if (imageType === 'profilePicture') {
+      message = 'Logo profile deleted successfully';
+    }
+    setToast((prevToast) => ({ ...prevToast, message }));
+
     updatePod({
       variables: {
         podId,
@@ -580,7 +605,11 @@ function GeneralSettings() {
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
       setOrganization(org);
-      setToast({ ...toast, message: `Org updated successfully.`, show: true });
+      setToast((prevToast) => ({
+        ...prevToast,
+        message: prevToast.message || 'Organization settings updated successfully.',
+        show: true,
+      }));
     },
   });
 
@@ -613,6 +642,16 @@ function GeneralSettings() {
     });
     if (imageFile.filename) {
       await uploadMedia(imageFile);
+
+      let message = '';
+      if (imageType === 'header') {
+        message = 'Header cover profile updated successfully';
+      }
+      if (imageType === 'profile') {
+        message = 'Logo profile updated successfully';
+      }
+      setToast((prevToast) => ({ ...prevToast, message }));
+
       updateOrg({
         variables: {
           orgId,
@@ -640,7 +679,7 @@ function GeneralSettings() {
 
   function saveChanges() {
     const links = Object.values(orgLinks);
-
+    setToast((prevToast) => ({ ...prevToast, message: 'Organization settings updated successfully.' }));
     updateOrg({
       variables: {
         orgId,
@@ -657,6 +696,15 @@ function GeneralSettings() {
   }
 
   function deleteImage(imageType: ImageFileTypes) {
+    let message = '';
+    if (imageType === 'headerPicture') {
+      message = 'Header cover profile deleted successfully';
+    }
+    if (imageType === 'profilePicture') {
+      message = 'Logo profile deleted successfully';
+    }
+    setToast((prevToast) => ({ ...prevToast, message }));
+
     updateOrg({
       variables: {
         orgId,
