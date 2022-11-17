@@ -69,6 +69,7 @@ function PodListCard(props) {
                 borderRadius: '4px',
                 marginRight: '8px',
               }}
+              alt="Organization Logo"
             />
           )}
           {!!pod?.contributorCount && (

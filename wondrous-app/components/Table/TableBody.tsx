@@ -126,6 +126,7 @@ export default function TableBody({
                     height: '17px',
                     borderRadius: '17px',
                   }}
+                  alt="Organization logo"
                 />
               ) : null}
             </StyledTableCell>
@@ -230,6 +231,7 @@ export default function TableBody({
                         width: '16px',
                         height: '16px',
                       }}
+                      alt="Reward icon"
                     />
                     <RewardAmount>{shrinkNumber(reward?.rewardAmount)}</RewardAmount>
                   </Reward>

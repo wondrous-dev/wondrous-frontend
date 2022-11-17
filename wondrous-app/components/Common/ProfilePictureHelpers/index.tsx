@@ -5,7 +5,7 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 
 export const OrgProfilePicture = ({ profilePicture, style = {} }) => {
   if (profilePicture) {
-    return <SafeImage src={profilePicture} style={{ height: '20px', width: '20px', borderRadius: '4px', ...style }} />;
+    return <SafeImage src={profilePicture} style={{ height: '20px', width: '20px', borderRadius: '4px', ...style }} alt="Profile picture" />;
   }
   return (
     <NoLogoDAO style={{ height: '20px', width: '20px', borderRadius: '4px', ...style }}>
@@ -22,4 +22,4 @@ export const UserProfilePicture = ({
     borderRadius: '13px',
     marginRight: '4px',
   },
-}) => (avatar ? <SafeImage useNextImage={false} style={style} src={avatar} /> : <DefaultUserImage style={style} />);
+}) => (avatar ? <SafeImage useNextImage={false} style={style} src={avatar} alt="Profile picture" /> : <DefaultUserImage style={style} />);

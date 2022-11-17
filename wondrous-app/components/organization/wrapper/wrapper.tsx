@@ -344,6 +344,7 @@ function Wrapper(props) {
               objectFit: 'cover',
             }}
             useNextImage
+            alt="Organization header"
           />
         ) : null}
       </HeaderImageWrapper>
@@ -375,6 +376,7 @@ function Wrapper(props) {
                       style={{
                         borderRadius: '6px',
                       }}
+                      alt="Organization logo"
                     />
                     {isGr15Sponsor && (
                       <>

@@ -69,6 +69,7 @@ const SentRequestSuccess = ({ orgs, footerRef, onClose, token }) => {
                 style={{
                   borderRadius: '6px',
                 }}
+                alt="Organization logo"
               />
             </Box>
             {idx < Object.keys(orgs)?.length - 1 && <LargeDao2DaoIcon />}

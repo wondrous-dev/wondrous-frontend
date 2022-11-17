@@ -44,6 +44,7 @@ const OrgItem = (props) => {
         style={{
           borderRadius: '6px',
         }}
+        alt="Organization logo"
       />
       <OrgItemDescriptionDiv>
         <OrgItemDescriptionTitle>{org?.name}</OrgItemDescriptionTitle>

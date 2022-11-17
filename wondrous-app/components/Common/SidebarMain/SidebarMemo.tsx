@@ -105,6 +105,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                   height={36}
                   useNextImage
                   style={profilePictureStyle}
+                  alt="User profile picture"
                 />
               </ButtonIcon>
             </SidebarTooltip>
@@ -131,6 +132,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
                               borderRadius: '50%',
                               objectFit: 'cover',
                             }}
+                            alt="Organization logo"
                           />
                         ) : (
                           <NoLogoDAO />

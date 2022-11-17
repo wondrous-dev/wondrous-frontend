@@ -20,6 +20,7 @@ const OrgItem = ({ org }) => {
               objectFit: 'cover',
             }}
             src={headerUrl}
+            alt="Header"
           />
         )}
         <div>
@@ -36,6 +37,7 @@ const OrgItem = ({ org }) => {
               objectFit: 'cover',
               background: palette.black,
             }}
+            alt="Image"
           />
         </div>
         <OrgName>{name}</OrgName>

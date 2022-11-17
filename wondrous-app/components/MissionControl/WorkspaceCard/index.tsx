@@ -42,7 +42,7 @@ const MissionControlWorkspaceCard: React.FC<{
           </Link>
           <WorkspaceCardStatsContainer>
             {stats.map((stat, idx) => (
-              <Link href={stat.url} key={idx} shallow passHref>
+              <Link href={stat.url} key={idx} shallow passHref style={{ textDecoration: 'none' }}>
                 <WorkspaceCardStat>
                   <stat.icon />
                   <WorkspaceCardStatCount gradient={stat.countGradient}>{stat.count}</WorkspaceCardStatCount>

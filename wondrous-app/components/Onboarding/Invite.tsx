@@ -196,6 +196,7 @@ export function Invite({
                   marginBottom: '20px',
                 }}
                 src={orgInfo?.profilePicture || podInfo?.org?.profilePicture}
+                alt="Profile picture"
               />
             ) : (
               <NoLogo />

@@ -182,6 +182,7 @@ export function MakePaymentModal(props) {
                 borderRadius: '4px',
                 marginRight: '8px',
               }}
+              alt="Organization logo"
             />
           ) : (
             <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>

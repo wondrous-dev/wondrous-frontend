@@ -182,6 +182,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
               style={{
                 borderRadius: '50%',
               }}
+              alt="Coordinape image"
             />
             <Ellipses strokeColor={palette.grey250} width={6} height={18} />
             <SafeImage
@@ -191,6 +192,7 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
               height={80}
               useNextImage
               style={profilePictureStyle}
+              alt="User profile picture"
             />
           </Grid>
           <Grid marginTop="24px">

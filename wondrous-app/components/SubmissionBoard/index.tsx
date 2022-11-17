@@ -71,6 +71,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                       useNextImage={false}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                       src={task?.media[0].slug}
+                      alt="Task image"
                     />
                   </BoardsCardMedia>
                 ) : null}

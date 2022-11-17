@@ -146,6 +146,7 @@ export function OnboardingBuildProfile({ updateUser }) {
                 borderRadius: '26px',
                 objectFit: 'cover',
               }}
+              alt="Profile picture"
             />
             <ProfilePictureAdd
               onClick={() => {

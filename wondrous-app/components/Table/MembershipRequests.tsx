@@ -85,6 +85,7 @@ export default function MembershipRequestTable(props) {
                         borderRadius: '17px',
                         marginRight: '4px',
                       }}
+                      alt="Organization logo"
                     />
                     <Link
                       passHref
@@ -137,6 +138,7 @@ export default function MembershipRequestTable(props) {
                           marginRight: '8px',
                         }}
                         src={request?.userProfilePicture}
+                        alt="User profile picture"
                       />
                     )}
 

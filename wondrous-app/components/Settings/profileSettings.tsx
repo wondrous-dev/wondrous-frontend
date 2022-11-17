@@ -329,6 +329,7 @@ function ProfileSettings(props) {
                   height: '52px',
                   borderRadius: '26px',
                 }}
+                alt="Profile picture"
               />
               <ProfilePictureAdd
                 onClick={() => {

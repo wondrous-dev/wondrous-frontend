@@ -4,8 +4,7 @@ import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import Image, { ImageProps } from 'next/image';
 
-type SafeImageArgs = Omit<ImageProps, 'alt' | 'style'> & {
-  alt?: string;
+type SafeImageArgs = Omit<ImageProps, 'style'> & {
   className?: string;
   /**
    * Image src to display while the image is not visible or loaded.

@@ -153,6 +153,7 @@ const PayoutItem = (props: PayoutItemProps) => {
                     src={item?.payeeProfilePicture}
                     style={imageStyle}
                     placeholderComp={<DefaultUserImage style={imageStyle} />}
+                    alt="Payee profile picture"
                   />
                   <Typography fontFamily={typography.fontFamily} fontSize="13px" fontWeight={700} color={palette.white}>
                     {item?.payeeUsername}

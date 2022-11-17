@@ -102,7 +102,7 @@ function NotificationsBoard({ onlyBoard = false }) {
     const link = getNotificationLink(notification);
     const object = (
       <span>
-        <NotificationsLink>
+        <NotificationsLink styled={{ display: 'block' }}>
           <Link href={link}>{objectType}</Link>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>

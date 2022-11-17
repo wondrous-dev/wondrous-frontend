@@ -88,6 +88,7 @@ function ProfileInfo({ userProfile }) {
                 objectFit: 'cover',
                 borderRadius: '50%',
               }}
+              alt="Profile picture"
             />
           ) : (
             <DefaultUserImage

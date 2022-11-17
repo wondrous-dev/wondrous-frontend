@@ -143,6 +143,7 @@ const MilestoneItem = ({ milestone, handleCardClick }) => {
                 useNextImage={false}
                 style={{ height: '100%', width: '100%', objectFit: 'cover', objectPosition: 'center' }}
                 src={coverMedia.slug}
+                alt="Milestone image"
               />
             </BoardsCardMedia>
           ) : null}

@@ -302,6 +302,7 @@ function Wrapper(props) {
                 width: '100%'
               }}
               useNextImage
+              alt="Pod header"
             />
           ) : null}
         </HeaderImageWrapper>
@@ -334,6 +335,7 @@ function Wrapper(props) {
                         width={60}
                         height={60}
                         useNextImage
+                        alt="Pod logo"
                         style={{
                           borderRadius: '6px',
                         }}

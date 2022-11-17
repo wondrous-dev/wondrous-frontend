@@ -51,6 +51,7 @@ export function SmallAvatar(props) {
               objectFit: 'cover',
               borderRadius: '29px',
             }}
+            alt="Avatar"
           />
         </Box>
       ) : (

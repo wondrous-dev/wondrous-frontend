@@ -25,6 +25,7 @@ const SharedOrgHeader = ({ parentOrgs }) => (
               style={{
                 borderRadius: '6px',
               }}
+              alt="Organization logo"
             />
           </Box>
         </Link>

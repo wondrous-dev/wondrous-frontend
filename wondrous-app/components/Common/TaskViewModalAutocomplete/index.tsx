@@ -22,6 +22,7 @@ const ProfilePicture = ({ profilePicture }) => (
     height={24}
     useNextImage
     style={profilePictureStyle}
+    alt="Profile picture"
   />
 );
 

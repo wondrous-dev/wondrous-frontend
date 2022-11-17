@@ -211,7 +211,12 @@ export function BatchPayModal(props) {
                           }}
                         >
                           {submission?.payeeProfilePicture ? (
-                            <SafeImage useNextImage={false} src={submission?.payeeProfilePicture} style={imageStyle} />
+                            <SafeImage
+                              useNextImage={false}
+                              src={submission?.payeeProfilePicture}
+                              style={imageStyle}
+                              alt="Payee profile picture"
+                            />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
@@ -237,6 +242,7 @@ export function BatchPayModal(props) {
                                 width: '24px',
                                 height: '24px',
                               }}
+                              alt="Icon"
                             />
                           </IconContainer>
                           <CompensationAmount>

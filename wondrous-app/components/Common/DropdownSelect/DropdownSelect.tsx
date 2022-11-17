@@ -130,6 +130,7 @@ function DropdownSelect({
                     marginRight: '8px',
                   }}
                   src={item?.imageUrl}
+                  alt="Image"
                 />
               ) : (
                 <CreateFormMenuItemIcon>{item.icon || labelIcon}</CreateFormMenuItemIcon>

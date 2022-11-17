@@ -43,6 +43,7 @@ function OrgCard({ item }) {
                 style={{
                   borderRadius: '5px',
                 }}
+                alt="Organization logo"
               />
             </OrgCardImageWrapper>
 

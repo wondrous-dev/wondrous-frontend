@@ -181,6 +181,7 @@ function GeneralSettingsComponent(props) {
                     objectFit: 'cover',
                   }}
                   useNextImage
+                  alt="Profile picture"
                 />
               </Box>
             ) : null}
@@ -205,6 +206,7 @@ function GeneralSettingsComponent(props) {
                 objectFit: 'cover',
               }}
               useNextImage
+              alt="Header picture"
             />
           </Box>
         )}

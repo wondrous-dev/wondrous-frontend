@@ -29,6 +29,7 @@ function AboutOrganizationsCard(props) {
               borderRadius: '4px',
               marginRight: '8px',
             }}
+            alt="User profile picture"
           />
         ) : (
           <UserAboutInfoCardNoLogo>
