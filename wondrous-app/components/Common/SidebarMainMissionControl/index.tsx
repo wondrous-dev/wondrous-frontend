@@ -17,7 +17,7 @@ const MissionControlIconButton = ({ isActive = false }) => {
 
   return (
     <SidebarTooltip title="Mission Control">
-      <Link href="/mission-control">
+      <Link href="/mission-control.lazy">
         <MissionControlButton type="button" isActive={isActive}>
           <Badge
             badgeContent={HOTKEYS.OPEN_MISSION_CONTROL}
