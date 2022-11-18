@@ -18,6 +18,7 @@ import scrollBarStyles from 'components/Common/ScrollbarStyles';
 import Arrow from '../../Icons/arrow.svg';
 import OpenInFullIcon from '../../Icons/openInFull.svg';
 import MilestoneSearch from './MilestoneSearch';
+import { CloseIcon } from '../../Common/BoardFilters/styles';
 
 const fullScreenStyle = css`
   max-height: 100vh;
@@ -32,7 +33,8 @@ const fullScreenStyle = css`
 
 export const CreateEntityForm = styled.form`
   max-height: 95vh;
-  width: 561px;
+  max-width: 561px;
+  width: 100%;
   border-radius: 6px;
   overflow-y: auto;
   background: #1d1d1d;
@@ -46,6 +48,10 @@ export const CreateEntityForm = styled.form`
     }
   }}
   transition: all 0.1s linear;
+
+  ${(props) => props.theme.breakpoints.down('sm')} {
+    width: 95%;
+  }
 `;
 
 export const CreateEntityHeader = styled.div`
@@ -184,9 +190,18 @@ export const CreateEntitySelectRootValueWrapper = styled.div`
   text-overflow: ellipsis;
 `;
 
-export const CreateEntityHeaderWrapper = styled.div`
-  display: flex;
+export const CreateEntityHeaderWrapper = styled.div<{ showOnSmallScreen: boolean; hideOnLargeScreen: boolean }>`
+  display: ${(props) => (props.hideOnLargeScreen ? 'none' : 'inline-flex')};
   gap: 12px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: ${(props) => (props.showOnSmallScreen ? 'inline-flex' : 'none')};
+
+    .select-tooltip {
+      min-width: 32px;
+      height: 32px;
+    }
+  }
 `;
 
 export const CreateEntityOpenInFullIcon = styled((props) => (
@@ -207,7 +222,26 @@ export const CreateEntityOpenInFullIcon = styled((props) => (
   }
 `;
 
+export const CreateEntityCloseIcon = styled((props) => (
+  <div {...props}>
+    <CloseIcon />
+  </div>
+))`
+  width: 32px;
+  height: 32px;
+  background: rgba(49, 49, 49, 0.3);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  :hover {
+    background: rgba(49, 49, 49, 1);
+    cursor: pointer;
+  }
+`;
+
 export const CreateEntitySelectArrowIcon = styled(Arrow)`
+  margin-left: 10px;
   transform: rotate(90deg);
   path {
     fill: #7a7a7a;
@@ -571,6 +605,19 @@ export const CreateEntityApplicationsSelectRender = styled.div`
 export const CreateEntityPrivacySelectRenderLabel = styled.div`
   display: flex;
   align-items: center;
+  color: white;
+  text-transform: capitalize;
+  margin-left: 10px;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
+`;
+
+export const CreateEntityPrivacySelectRenderLabelWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
 `;
 
 export const CreateEntityPrivacyIconWrapper = styled.div`
@@ -624,6 +671,9 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
     cursor: pointer;
     background: #454545;
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 export const CreateEntityTemplateInput = styled.div`
@@ -648,7 +698,7 @@ export const CreateEntityCreateTaskButton = styled(Button)`
   }
 `;
 
-export const CreateEntityAttachment = styled(ButtonUnstyled)`
+export const CreateEntityAttachment = styled(ButtonUnstyled)<{ showOnSmallScreen: boolean }>`
   background: #282828;
   font-family: 'Space Grotesk';
   font-size: 14px;
@@ -658,7 +708,7 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
   border: none;
   border-radius: 4px;
   padding: 8px;
-  display: flex;
+  display: ${(props) => (props.showOnSmallScreen ? 'none' : 'flex')};
   align-items: center;
   justify-content: space-between;
   :hover {
@@ -666,6 +716,10 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
     background: #454545;
     filter: drop-shadow(0 8px 2px #171717);
     transition: all ease-in-out 0.2s;
+  }
+
+  ${(props) => props.theme.breakpoints.down('sm')} {
+    display: ${(props) => (props.showOnSmallScreen ? 'flex' : 'none')};
   }
 `;
 
@@ -709,6 +763,8 @@ export const CreateEntitySaveTemplateButtonDisabled = styled(ButtonUnstyled)`
   align-items: center;
   justify-content: space-between;
 `;
+
+export const CreateEntityAttachmentIconWrapper = styled;
 
 export const CreateEntityAttachmentIcon = styled(AttachFileIcon)`
   && {
