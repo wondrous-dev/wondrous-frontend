@@ -10,7 +10,7 @@ const Dashboard = lazy(() => import('./index.lazy'), BoardSkeleton);
 const DashboardPage = (props) => (
   <>
     <MetaTags meta={props.meta} />
-    <Dashboard {...props} />
+    <BoardSkeleton {...props} />
   </>
 );
 
