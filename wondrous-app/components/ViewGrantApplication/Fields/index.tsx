@@ -194,7 +194,13 @@ export const PaymentHandler = ({ grantApplication }) => {
         <Button onClick={togglePayments} gradient="linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)">
           Proceed to payment
         </Button>
-        <Typography fontFamily={typography.fontFamily} color={palette.grey250} fontWeight={400} fontSize="13px">
+        <Typography
+          whiteSpace="nowrap"
+          fontFamily={typography.fontFamily}
+          color={palette.grey250}
+          fontWeight={400}
+          fontSize="13px"
+        >
           Sending to
         </Typography>
         <WalletAddressViewer walletAddress={grantApplication?.paymentAddress} />

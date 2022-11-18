@@ -1,14 +1,24 @@
 import { useQuery } from '@apollo/client';
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { CardsContainer } from 'components/Common/Boards/styles';
+import { BountyBoardEmpty } from 'components/Common/BountyBoard/styles';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
+import { ActionButton } from 'components/Common/Task/styles';
+import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
+import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
+import CreateGrant from 'components/CreateGrant';
 import GrantsFilters from 'components/GrantsFilters';
+import PlusIcon from 'components/Icons/plus';
 import ViewGrant from 'components/ViewGrant';
 import { GET_ORG_GRANTS, GET_POD_GRANTS } from 'graphql/queries';
 import { useRouter } from 'next/router';
 import { useEffect, useMemo, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
-import { GRANTS_STATUSES } from 'utils/constants';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
+import { ENTITIES_TYPES, GRANTS_STATUSES } from 'utils/constants';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
 import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
@@ -20,12 +30,14 @@ const GrantsBoard = () => {
   const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const [ref, inView] = useInView({});
-
+  const [isDiscardOpen, setIsDiscardOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const {
     data: orgData,
     refetch: orgRefetch,
     fetchMore: orgFetchMore,
     previousData: orgPreviousData,
+    loading: orgLoading,
   } = useQuery(GET_ORG_GRANTS, {
     variables: {
       orgId: orgBoard?.orgId,
@@ -47,6 +59,7 @@ const GrantsBoard = () => {
     refetch: podGrantsRefetch,
     fetchMore: podGrantsFetchMore,
     previousData: podPreviousData,
+    loading: podLoading,
   } = useQuery(GET_POD_GRANTS, {
     variables: {
       podId: podBoard?.podId,
@@ -136,6 +149,11 @@ const GrantsBoard = () => {
     }
   }, [openModal, location?.params?.grant, data]);
 
+  const toggleCreateFormModal = () => setIsCreateModalOpen((prev) => !prev);
+
+  const toggleDisacrdModal = () => setIsDiscardOpen((prev) => !prev);
+
+  const loading = orgLoading || podLoading;
   return (
     <>
       <ViewGrant
@@ -145,11 +163,36 @@ const GrantsBoard = () => {
         grantId={location?.params?.grant}
         isEdit={!!location?.params?.edit}
       />
+      {isCreateModalOpen ? (
+        <>
+          <CreateEntityDiscardTask
+            open={isDiscardOpen}
+            onClose={setIsDiscardOpen}
+            onCloseFormModal={toggleCreateFormModal}
+            entityType={ENTITIES_TYPES.GRANT}
+          />
+
+          <CreateFormModalOverlay open={isCreateModalOpen} onClose={toggleDisacrdModal}>
+            <CreateGrant
+              entityType={ENTITIES_TYPES.GRANT}
+              handleClose={toggleDisacrdModal}
+              cancel={toggleCreateFormModal}
+            />
+          </CreateFormModalOverlay>
+        </>
+      ) : null}
+
       <GrantsFilters onFilterChange={handleFilterChange} activeFilter={activeFilter} />
+      <Grid display="flex" justifyContent="flex-end">
+        <ActionButton onClick={toggleCreateFormModal}>
+          <PlusIcon /> <span>Add grant</span>
+        </ActionButton>
+      </Grid>
       <CardsContainer numberOfColumns={2} isFullWidth={false}>
         {data?.map((grant, idx) => (
           <GrantsBoardCard grant={grant} handleCardClick={handleCardClick} key={grant.id} />
         ))}
+        {!data?.length && !loading ? <BountyBoardEmpty /> : null}
       </CardsContainer>
       <LoadMore ref={ref} hasMore={hasMore} />
     </>
