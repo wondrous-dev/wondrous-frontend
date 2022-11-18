@@ -1,4 +1,6 @@
-import { Grid } from '@mui/material';
+import Box from '@mui/material/Box';
+import Grid from '@mui/material/Grid';
+import useMediaQuery from 'hooks/useMediaQuery';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import { getFilterSchema } from 'utils/board';
@@ -20,12 +22,13 @@ export const IconWrapper = styled.div`
 `;
 
 const TaskCardStatus = ({ type, orgId, status }) => {
+  const { isLaptopScreen } = useMediaQuery();
   const { icon, label } = getStatus({ type, orgId, status });
   return (
     <Grid
       container
       bgcolor={palette.grey99}
-      padding="2px 10px 2px 2px"
+      padding={isLaptopScreen ? `2px` : `2px 10px 2px 2px`}
       borderRadius="300px"
       fontSize="14px"
       fontWeight="500"
@@ -33,8 +36,21 @@ const TaskCardStatus = ({ type, orgId, status }) => {
       height="28px"
       width="fit-content"
     >
-      <IconWrapper>{icon}</IconWrapper>
-      {label}
+      <Box
+        height="24px"
+        width="24px"
+        sx={[
+          {
+            '& svg': {
+              width: `24px !important`,
+              height: `24px !important`,
+            },
+          },
+        ]}
+      >
+        {icon}
+      </Box>
+      {isLaptopScreen ? null : label}
     </Grid>
   );
 };

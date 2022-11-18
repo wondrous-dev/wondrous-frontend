@@ -2,11 +2,13 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { SafeImage } from 'components/Common/Image';
 import palette from 'theme/palette';
+import { shrinkNumber } from 'utils/helpers';
 
 export default function Compensation(props) {
   const { rewards, style, pillStyle = {}, id } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
   if (!rewardAmount) return null;
+  const shrinkAmount = shrinkNumber(rewardAmount);
   return (
     <Grid container width="fit-content" key={id} style={style}>
       <Grid
@@ -45,7 +47,7 @@ export default function Compensation(props) {
           width="fit-content"
           lineHeight="0"
         >
-          {rewardAmount} {!icon && symbol}
+          {shrinkAmount} {!icon && symbol}
         </Typography>
       </Grid>
     </Grid>

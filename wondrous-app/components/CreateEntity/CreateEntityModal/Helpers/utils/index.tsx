@@ -17,7 +17,7 @@ import pickBy from 'lodash/pickBy';
 import sortBy from 'lodash/sortBy';
 import uniqBy from 'lodash/uniqBy';
 import { Dispatch, SetStateAction } from 'react';
-import { CATEGORY_LABELS, ENTITIES_TYPES, PRIVACY_LEVEL } from 'utils/constants';
+import { CATEGORY_LABELS, ENTITIES_TYPES, GR15DEICategoryName, PRIVACY_LEVEL } from 'utils/constants';
 import { CHAIN_TO_CHAIN_DIPLAY_NAME } from 'utils/web3Constants';
 import { hasCreateTaskPermission, transformCategoryFormat, transformMediaFormat } from 'utils/helpers';
 import * as Yup from 'yup';
@@ -53,7 +53,8 @@ export const formValidationSchema = Yup.object().shape({
         paymentMethodId: Yup.string().required(),
         rewardAmount: Yup.number()
           .typeError('Reward amount must be a number')
-          .moreThan(0, 'Reward amount must be greater than 0'),
+          .moreThan(0, 'Reward amount must be greater than 0')
+          .required('Reward amount is required'),
       })
     )
     .optional()
@@ -282,6 +283,7 @@ export const entityTypeData = {
       parentTaskId: null,
       priority: null,
       categories: null,
+      GR15DEISelected: false,
     },
   },
   [ENTITIES_TYPES.MILESTONE]: {
@@ -330,6 +332,7 @@ export const entityTypeData = {
       mediaUploads: [],
       priority: null,
       categories: null,
+      GR15DEISelected: false,
     },
   },
   [ENTITIES_TYPES.PROPOSAL]: {
@@ -357,15 +360,18 @@ export const initialValues = ({ entityType, existingTask = null, initialPodId = 
   if (!existingTask) return defaultValues;
   const defaultValuesKeys = Object.keys(defaultValues);
   const description = deserializeRichText(existingTask.description);
+  const GR15DEISelected = existingTask?.categories?.some((category) => category?.name === GR15DEICategoryName);
+  const remainingCategories = existingTask?.categories?.filter((category) => category?.name !== GR15DEICategoryName);
   const existingTaskValues = pick(
     {
       ...existingTask,
       description,
       mediaUploads: transformMediaFormat(existingTask?.media),
-      categories: isEmpty(existingTask?.categories) ? null : transformCategoryFormat(existingTask?.categories),
+      categories: isEmpty(remainingCategories) ? null : transformCategoryFormat(remainingCategories),
       reviewerIds: isEmpty(existingTask?.reviewers) ? null : existingTask.reviewers.map((i) => i.id),
       rewards: existingTask?.rewards?.map(({ rewardAmount, paymentMethodId }) => ({ rewardAmount, paymentMethodId })),
       labelIds: isEmpty(existingTask?.labels) ? null : existingTask.labels.map((i) => i.id),
+      GR15DEISelected,
     },
     defaultValuesKeys
   );

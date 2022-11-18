@@ -14,7 +14,8 @@ interface Props {
 
 const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { tokenId, status } = taskMintData;
+  const tokenId = taskMintData?.tokenId;
+  const status = taskMintData?.status;
   const user = useMe();
 
   if (status === TaskMintStatus.COMPLETED) {
@@ -29,7 +30,7 @@ const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId }: Props) => {
   return (
     <>
       <Modals isOpen={isModalOpen} onClose={toggleModal} />
-      <TaskMintButton onClick={toggleModal} status={status} />
+      {!process.env.NEXT_PUBLIC_PRODUCTION && <TaskMintButton onClick={toggleModal} status={status} />}
     </>
   );
 };

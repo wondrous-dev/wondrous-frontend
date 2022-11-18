@@ -70,17 +70,37 @@ export const DISCONNECT_DISCORD_ROLE_TO_ORG_ROLE = gql`
   }
 `;
 
-export const CLAIM_ORG_ROLE_BY_DISCORD_ROLE = gql`
-  mutation claimOrgRoleByDiscordRole($orgRoleId: ID!) {
-    claimOrgRoleByDiscordRole(orgRoleId: $orgRoleId) {
-      success
+export const CONNECT_DISCORD_ROLE_TO_POD_ROLE = gql`
+  mutation connectDiscordRoleToPodRole($podRoleId: ID!, $discordRoleId: String, $guildId: String) {
+    connectDiscordRoleToPodRole(podRoleId: $podRoleId, discordRoleId: $discordRoleId, guildId: $guildId) {
+      id
+      name
+      permissions
+    }
+  }
+`;
+
+export const DISCONNECT_DISCORD_ROLE_TO_POD_ROLE = gql`
+  mutation disconnectDiscordRoleToPodRole($podRoleId: ID!, $discordRoleId: String) {
+    disconnectDiscordRoleToPodRole(podRoleId: $podRoleId, discordRoleId: $discordRoleId) {
+      id
+      name
+      permissions
     }
   }
 `;
 
 export const IMPORT_DISCORD_ROLE_AS_ORG_ROLE = gql`
-  mutation importDiscordRoleAsOrgRole($input: ImportDiscordRoleAsOrgRoleInput) {
+  mutation importDiscordRoleAsOrgRole($input: ImportDiscordRoleAsRoleInput) {
     importDiscordRoleAsOrgRole(input: $input) {
+      success
+    }
+  }
+`;
+
+export const IMPORT_DISCORD_ROLE_AS_POD_ROLE = gql`
+  mutation importDiscordRoleAsPodRole($input: ImportDiscordRoleAsRoleInput) {
+    importDiscordRoleAsPodRole(input: $input) {
       success
     }
   }
@@ -94,9 +114,25 @@ export const IMPORT_NOTION_TASK_TO_ORG = gql`
   }
 `;
 
+export const IMPORT_NOTION_TASK_TO_POD = gql`
+  mutation importNotionTaskToPod($podId: ID!, $notionDatabaseId: String!) {
+    importNotionTaskToPod(podId: $podId, notionDatabaseId: $notionDatabaseId) {
+      success
+    }
+  }
+`;
+
 export const DISCONNECT_NOTION_FROM_ORG = gql`
   mutation disconnectNotionFromOrg($orgId: ID!, $notionWorkspaceId: String!) {
     disconnectNotionFromOrg(orgId: $orgId, notionWorkspaceId: $notionWorkspaceId) {
+      success
+    }
+  }
+`;
+
+export const DISCONNECT_NOTION_FROM_POD = gql`
+  mutation disconnectNotionFromPod($podId: ID!, $notionWorkspaceId: String!) {
+    disconnectNotionFromPod(podId: $podId, notionWorkspaceId: $notionWorkspaceId) {
       success
     }
   }

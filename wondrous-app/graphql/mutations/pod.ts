@@ -143,3 +143,11 @@ export const DELETE_POD_GITHUB_REPO_INTEGRATION = gql`
     }
   }
 `;
+
+export const CONNECT_NOTION_TO_POD = gql`
+  mutation connectNotionToPod($podId: ID!, $authorizationCode: String!) {
+    connectNotionToPod(podId: $podId, authorizationCode: $authorizationCode) {
+      success
+    }
+  }
+`;

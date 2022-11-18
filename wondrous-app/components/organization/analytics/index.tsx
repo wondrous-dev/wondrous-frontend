@@ -12,8 +12,8 @@ import BottomArrowCaret from 'components/Icons/BottomArrowCaret';
 import RightArrowCaret from 'components/Icons/RightArrowCaret';
 import TaskViewModal from 'components/Common/TaskViewModal';
 import { Reward, RewardAmount, RewardContainer, TaskTitle } from 'components/Table/styles';
-import { BountySignifier, PodName, PodWrapper } from 'components/Common/Task/styles';
-import PodIcon from 'components/Icons/podIcon';
+import { BountySignifier } from 'components/Common/Task/styles';
+import PodIconName from 'components/Common/PodIconName';
 import { cutString, shrinkNumber } from 'utils/helpers';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { TextField } from '@mui/material';
@@ -316,25 +316,7 @@ function UserRow({ contributorTask }) {
                       {100}
                     </RewardAmount>
                   </Reward> */}
-                  {podName && (
-                    <PodWrapper
-                      style={{
-                        marginTop: '0',
-                        marginRight: '8px',
-                        alignItems: 'center',
-                      }}
-                    >
-                      <PodIcon
-                        color={podColor}
-                        style={{
-                          width: '26px',
-                          height: '26px',
-                          marginRight: '4px',
-                        }}
-                      />
-                      <PodName>{podName}</PodName>
-                    </PodWrapper>
-                  )}
+                  {podName && <PodIconName color={podColor} name={podName} />}
                   {reward && (
                     <Reward>
                       <SafeImage

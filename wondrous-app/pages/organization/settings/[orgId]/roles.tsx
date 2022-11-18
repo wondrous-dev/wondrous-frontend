@@ -114,8 +114,8 @@ function RolesPage() {
       orgId={orgId}
       permissons={permissons}
       allDiscordRolesData={getOrgDiscordRolesData?.getOrgDiscordRoles}
-      orgDiscordConfigData={getOrgDiscordConfigData?.getOrgDiscordNotificationConfig}
-      getOrgDiscordRoles={getOrgDiscordRoles}
+      discordConfigData={getOrgDiscordConfigData?.getOrgDiscordNotificationConfig}
+      getDiscordRoles={getOrgDiscordRoles}
       onCreateNewRole={(name: string, permissions: string[]) => {
         createOrgRole({
           variables: {
