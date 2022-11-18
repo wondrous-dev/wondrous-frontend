@@ -66,12 +66,18 @@ export const SubmissionButtonCreate = styled(ButtonGradient)`
     ${GradientHighlightHorizontal}
     height: 30px;
     width: fit-content;
+    white-space: nowrap;
     > button {
       font-family: 'Space Grotesk';
       ${({ theme }) => `
         font-weight: ${theme.typography.fontWeightMedium};
         background: ${theme.palette.black}
   `}
+    }
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      > button {
+        font-size: 15px;
+      }
     }
   }
 `;
@@ -184,6 +190,16 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
     max-width: fit-content;
     min-width: 245px;
     padding: 8px;
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      min-width: 100%;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    * {
+      font-size: 15px;
+    }
   }
 `;
 

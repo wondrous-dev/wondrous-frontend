@@ -34,7 +34,7 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
         item
         container
         gap="6px"
-        maxWidth="85%"
+        maxWidth="80%"
         onClick={onClick}
         sx={{
           cursor: 'pointer',
