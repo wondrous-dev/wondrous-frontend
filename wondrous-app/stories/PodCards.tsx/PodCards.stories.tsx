@@ -17,3 +17,8 @@ export const Primary = Template.bind({});
 Primary.args = {
   pods: Array(10).fill({ ...PodCardStories.Primary.args }),
 };
+
+export const Empty = Template.bind({});
+Empty.args = {
+  pods: [],
+};

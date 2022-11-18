@@ -1,4 +1,5 @@
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
+import PodIconName from 'components/Common/PodIconName';
 import MembersIcon from 'components/Icons/members';
 import Link from 'next/link';
 import palette from 'theme/palette';
@@ -30,9 +31,7 @@ const PodCard = ({ pod }: PodCardProps) => {
           cursor: 'pointer',
         }}
       >
-        <Grid item height="26px" width="fit-content" bgcolor={color}>
-          {name}
-        </Grid>
+        <PodIconName color={color} name={name} />
         <Grid
           container
           item
