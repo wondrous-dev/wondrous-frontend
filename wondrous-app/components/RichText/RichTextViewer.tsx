@@ -31,8 +31,8 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'mention':
         return (
-          <Link key={i} href={`/profile/${node.mentionable}/about`} passHref legacyBehavior>
-            <a>@{node.mentionable}</a>
+          <Link key={i} href={`/profile/${node.mentionable}/about`}>
+            @{node.mentionable}
           </Link>
         );
       case 'link':
