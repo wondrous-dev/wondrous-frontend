@@ -172,12 +172,12 @@ export const NotificationsOverlay = styled.div`
   z-index: 97;
 `;
 
-export const NotificationsLink = styled.div`
+export const NotificationsLink = styled.span`
   a {
     color: ${palette.highlightBlue};
     font-weight: 700;
     text-decoration: none;
-    display: block;
+    display: inline-block;
 
     &:hover {
       text-decoration: underline;
