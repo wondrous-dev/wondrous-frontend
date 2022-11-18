@@ -9,6 +9,7 @@ import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
+import { ImageKeyEnums, ImageTypes } from 'types/common';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -21,7 +22,7 @@ import LinkBigIcon from '../Icons/link';
 import OpenSeaIcon from '../Icons/openSea';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import ColorSettings from './ColorDropdown';
-import { ImageFileTypes, ImageUpload } from './imageUpload';
+import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
@@ -43,6 +44,40 @@ import {
   SettingsHeaderText,
   CreateFormAddDetailsTabWrapper,
 } from './styles';
+
+interface ToastProps {
+  show: boolean;
+  message: string;
+}
+
+interface GeneralSettingsProps {
+  toast: ToastProps;
+  descriptionText: string;
+  orgProfile?: any;
+  links: any[];
+  headerImage: string;
+  logoImage: string;
+  newProfile: any;
+  discordWebhookLink?: string;
+  isPrivate: boolean;
+  color?: string;
+  isArchivedPod?: boolean;
+  typeText: 'Pod' | 'Organization';
+  resetChanges: () => void;
+  saveChanges: () => void;
+  setToast: React.Dispatch<React.SetStateAction<ToastProps>>;
+  handleDescriptionChange(e: any): void;
+  handleLinkChange: (event: any, item: any) => void;
+  handleLogoChange?: (file: any) => Promise<void>;
+  handleImageChange: (file: any, imageType: any) => Promise<void>;
+  setProfile: React.Dispatch<React.SetStateAction<any>>;
+  setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
+  setColor?: React.Dispatch<React.SetStateAction<string>>;
+  handleArchivePodClick?: () => Promise<void>;
+  handleUnarchivePodClick?: () => Promise<void>;
+  onDeleteImage: (imageType: ImageKeyEnums) => void;
+  setDiscordWebhookLink?: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const LIMIT = 200;
 
@@ -76,7 +111,7 @@ const LINKS_DATA = [
   },
 ];
 
-function GeneralSettingsComponent(props) {
+function GeneralSettingsComponent(props: GeneralSettingsProps) {
   const {
     toast,
     setToast,
@@ -84,7 +119,6 @@ function GeneralSettingsComponent(props) {
     newProfile,
     color,
     setColor,
-    logoImage,
     orgProfile,
     typeText,
     descriptionText,
@@ -95,9 +129,6 @@ function GeneralSettingsComponent(props) {
     saveChanges,
     isPrivate,
     setIsPrivate,
-    discordWebhookLink,
-    setDiscordWebhookLink,
-    headerImage,
     handleImageChange,
     isArchivedPod,
     handleArchivePodClick,
@@ -419,11 +450,11 @@ export function PodGeneralSettings() {
     const type = {
       header: {
         setState: (file) => setHeaderImage(file),
-        podProfileKey: 'headerPicture',
+        podProfileKey: ImageKeyEnums.headerPicture,
       },
       profile: {
         setState: (file) => setLogoImage(file),
-        podProfileKey: 'profilePicture',
+        podProfileKey: ImageKeyEnums.profilePicture,
       },
     };
     const { setState, podProfileKey } = type[imageType];
@@ -437,10 +468,10 @@ export function PodGeneralSettings() {
       await uploadMedia(imageFile);
 
       let message = '';
-      if (imageType === 'header') {
+      if (imageType === ImageTypes.header) {
         message = 'Header cover profile updated successfully';
       }
-      if (imageType === 'profile') {
+      if (imageType === ImageTypes.profile) {
         message = 'Logo profile updated successfully';
       }
       setToast((prevToast) => ({ ...prevToast, message }));
@@ -449,8 +480,8 @@ export function PodGeneralSettings() {
         variables: {
           podId,
           input: {
-            headerPicture: imageType === 'header' ? imageFile.filename : podProfile.headerPicture,
-            profilePicture: imageType === 'profile' ? imageFile.filename : podProfile.profilePicture,
+            headerPicture: imageType === ImageTypes.header ? imageFile.filename : podProfile.headerPicture,
+            profilePicture: imageType === ImageTypes.profile ? imageFile.filename : podProfile.profilePicture,
           },
         },
       });
@@ -491,12 +522,12 @@ export function PodGeneralSettings() {
     });
   }
 
-  function deleteImage(imageType: ImageFileTypes) {
+  function deleteImage(imageType: ImageKeyEnums) {
     let message = '';
-    if (imageType === 'headerPicture') {
+    if (imageType === ImageKeyEnums.headerPicture) {
       message = 'Header cover profile deleted successfully';
     }
-    if (imageType === 'profilePicture') {
+    if (imageType === ImageKeyEnums.profilePicture) {
       message = 'Logo profile deleted successfully';
     }
     setToast((prevToast) => ({ ...prevToast, message }));
@@ -505,8 +536,8 @@ export function PodGeneralSettings() {
       variables: {
         podId,
         input: {
-          headerPicture: imageType === 'headerPicture' ? null : podProfile.headerPicture,
-          profilePicture: imageType === 'profilePicture' ? null : podProfile.profilePicture,
+          headerPicture: imageType === ImageKeyEnums.headerPicture ? null : podProfile.headerPicture,
+          profilePicture: imageType === ImageKeyEnums.profilePicture ? null : podProfile.profilePicture,
         },
       },
     });
@@ -626,11 +657,11 @@ function GeneralSettings() {
     const type = {
       header: {
         setState: (file) => setHeaderImage(file),
-        orgProfileKey: 'headerPicture',
+        orgProfileKey: ImageKeyEnums.headerPicture,
       },
       profile: {
         setState: (file) => setLogoImage(file),
-        orgProfileKey: 'profilePicture',
+        orgProfileKey: ImageKeyEnums.profilePicture,
       },
     };
     const { setState, orgProfileKey } = type[imageType];
@@ -644,10 +675,10 @@ function GeneralSettings() {
       await uploadMedia(imageFile);
 
       let message = '';
-      if (imageType === 'header') {
+      if (imageType === ImageTypes.header) {
         message = 'Header cover profile updated successfully';
       }
-      if (imageType === 'profile') {
+      if (imageType === ImageTypes.profile) {
         message = 'Logo profile updated successfully';
       }
       setToast((prevToast) => ({ ...prevToast, message }));
@@ -656,8 +687,8 @@ function GeneralSettings() {
         variables: {
           orgId,
           input: {
-            headerPicture: imageType === 'header' ? imageFile.filename : orgProfile.headerPicture,
-            profilePicture: imageType === 'profile' ? imageFile.filename : orgProfile.profilePicture,
+            headerPicture: imageType === ImageTypes.header ? imageFile.filename : orgProfile.headerPicture,
+            profilePicture: imageType === ImageTypes.profile ? imageFile.filename : orgProfile.profilePicture,
           },
         },
       });
@@ -695,12 +726,12 @@ function GeneralSettings() {
     });
   }
 
-  function deleteImage(imageType: ImageFileTypes) {
+  function deleteImage(imageType: ImageKeyEnums) {
     let message = '';
-    if (imageType === 'headerPicture') {
+    if (imageType === ImageKeyEnums.headerPicture) {
       message = 'Header cover profile deleted successfully';
     }
-    if (imageType === 'profilePicture') {
+    if (imageType === ImageKeyEnums.profilePicture) {
       message = 'Logo profile deleted successfully';
     }
     setToast((prevToast) => ({ ...prevToast, message }));
@@ -709,8 +740,8 @@ function GeneralSettings() {
       variables: {
         orgId,
         input: {
-          headerPicture: imageType === 'headerPicture' ? null : orgProfile.headerPicture,
-          profilePicture: imageType === 'profilePicture' ? null : orgProfile.profilePicture,
+          headerPicture: imageType === ImageKeyEnums.headerPicture ? null : orgProfile.headerPicture,
+          profilePicture: imageType === ImageKeyEnums.profilePicture ? null : orgProfile.profilePicture,
         },
       },
     });

@@ -1,6 +1,6 @@
 import { makeUniqueId } from '@apollo/client/utilities';
 import { ComponentFieldWrapper, FieldWrapper } from 'components/OnboardingDao/styles';
-import { ImageUpload } from 'components/Settings/imageUpload';
+import ImageUpload from 'components/Settings/imageUpload';
 import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { useField } from 'formik';
 import { handleImageFile, uploadMedia } from 'utils/media';

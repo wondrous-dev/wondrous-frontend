@@ -1,10 +1,12 @@
-/* eslint-disable import/prefer-default-export */
 import React, { useRef, useState } from 'react';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { AspectRatio } from 'react-aspect-ratio';
 import { HEADER_ASPECT_RATIO } from 'utils/constants';
 import { CloseIcon } from 'components/Common/BoardFilters/styles';
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
+import { ImageKeyEnums } from 'types/common';
+import { AvatarEditorTypes } from 'types/assets';
 import {
   ImageUploadBlock,
   ImageUploadBlockActivitySection,
@@ -23,21 +25,21 @@ import AddPictureIcon from '../../public/images/icons/addPicture.svg';
 import ReplaceIcon from '../../public/images/icons/replace.svg';
 import RemoveIcon from '../../public/images/icons/remove.svg';
 
-export type ImageFileTypes = 'headerPicture' | 'profilePicture';
+interface Props {
+  image?: any;
+  profileImage?: any;
+  title: string;
+  updateFilesCb: any;
+  imageType: AvatarEditorTypes;
+  avatarEditorTitle?: string;
+  LabelComponent?: React.ReactNode;
+  onDeleteImage?: (imageType: ImageKeyEnums) => void;
+  onReplace?: (image: any) => void;
+  multiple?: boolean;
+}
 
-export function ImageUpload(props) {
-  const {
-    image,
-    profileImage,
-    title,
-    updateFilesCb,
-    imageType,
-    avatarEditorTitle,
-    LabelComponent,
-    onDeleteImage,
-    onReplace,
-    ...otherProps
-  } = props;
+export default function ImageUpload(props: Props) {
+  const { image, title, updateFilesCb, imageType, avatarEditorTitle, onDeleteImage, onReplace, multiple } = props;
 
   const imageInputField = useRef(null);
   const [files, setFiles] = useState({ file: null });
@@ -52,7 +54,7 @@ export function ImageUpload(props) {
     // eslint-disable-next-line no-restricted-syntax
     for (const file of newFiles) {
       // if (file.size <= maxFileSizeInBytes) {
-      if (!otherProps.multiple) {
+      if (!multiple) {
         return { file };
       }
       files[file.name] = file;
@@ -91,7 +93,8 @@ export function ImageUpload(props) {
     imageInputField.current.files = null;
     setFiles({ file: null });
     setEditedImage(null);
-    const imageTypeToDelete = imageType === 'ICON_IMAGE' ? 'profilePicture' : 'headerPicture';
+    const imageTypeToDelete =
+      imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE ? ImageKeyEnums.profilePicture : ImageKeyEnums.headerPicture;
     onDeleteImage(imageTypeToDelete);
   };
 
@@ -116,7 +119,7 @@ export function ImageUpload(props) {
   };
 
   const renderEditedImage = () => {
-    if (imageType === 'HEADER_IMAGE') {
+    if (imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE) {
       return (
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 75 }}>
           <ImageComponent src={URL.createObjectURL(editedImage)} layout="fill" alt="header-pic" />
@@ -130,7 +133,7 @@ export function ImageUpload(props) {
   };
 
   const renderImage = () => {
-    if (imageType === 'HEADER_IMAGE') {
+    if (imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE) {
       return (
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 75 }}>
           <SafeImage src={image} width="100%" />;
@@ -154,14 +157,15 @@ export function ImageUpload(props) {
       <LabelBlock>{title}</LabelBlock>
 
       <ImageUploadBlockActivitySection>
-        <ImageUploadBlockInputWrapper isIcon={imageType === 'ICON_IMAGE'}>
+        <ImageUploadBlockInputWrapper isIcon={imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE}>
           <ImageUploadButtonWrapper>
-            {imageType !== 'ICON_IMAGE' || (imageType === 'ICON_IMAGE' && !image) ? (
+            {imageType !== AVATAR_EDITOR_TYPES.ICON_IMAGE ||
+            (imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE && !image) ? (
               <ImageUploadButton onClick={() => imageInputField.current.click()}>
                 <AddPictureIcon />
               </ImageUploadButton>
             ) : null}
-            {imageType !== 'ICON_IMAGE' && image ? (
+            {imageType !== AVATAR_EDITOR_TYPES.ICON_IMAGE && image ? (
               <ImageUploadButton marginLeft="14px" onClick={handleRemoveFile}>
                 <CloseIcon />
               </ImageUploadButton>
@@ -176,7 +180,7 @@ export function ImageUpload(props) {
             onChange={handleNewFileUpload}
           />
         </ImageUploadBlockInputWrapper>
-        {imageType === 'ICON_IMAGE' && image ? (
+        {imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE && image ? (
           <ImageUploadBlockActionIcons>
             <ToolButton onClick={handleReplaceImage}>
               <ReplaceIcon />

@@ -29,7 +29,7 @@ import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { ErrorText } from '../Common';
 import { SafeImage } from '../Common/Image';
 import { ProfilePictureDiv } from '../Onboarding/styles';
-import { ImageUpload } from './imageUpload';
+import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
