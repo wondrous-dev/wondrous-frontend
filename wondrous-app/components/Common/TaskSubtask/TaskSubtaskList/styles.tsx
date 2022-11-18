@@ -102,6 +102,14 @@ export const TaskSubtaskTitle = styled(Typography)`
     color: ${({ theme }) => theme.palette.white};
     margin-top: 14px;
   }
+  a {
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const TaskSubtaskEmptyStateContainer = styled.div`

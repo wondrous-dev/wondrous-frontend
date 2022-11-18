@@ -204,7 +204,10 @@ export const TaskSubtaskItem = (props) => {
               <TaskSubtaskStatusIcon status={status} />
             </TaskSubtaskItemContent>
           </TaskSubtaskItemHeader>
-          <TaskSubtaskTitle>{title}</TaskSubtaskTitle>
+          <TaskSubtaskTitle>
+            <a href={subtaskUrl}>{title}</a>
+          </TaskSubtaskTitle>
+
           <TaskSubtaskCoverImage media={media} />
         </TaskSubtaskItemWrapper>
       </SmartLink>
