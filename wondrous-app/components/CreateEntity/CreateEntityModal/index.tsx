@@ -1386,19 +1386,21 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
 
           <CreateEntitySelectWrapper>
             {form.values.milestoneId !== null && (
-              <CreateEntityMilestoneSearch
-                autoFocus={!form.values?.milestoneId}
-                options={filterUserOptions(milestonesData)}
-                value={form.values.milestoneId}
-                onChange={(milestoneId) => {
-                  form.setFieldValue('milestoneId', milestoneId);
-                }}
-                handleClose={() => {
-                  form.setFieldValue('milestoneId', null);
-                }}
-                formValues={form.values}
-                disabled={formValues?.milestoneId}
-              />
+              <CreateEntityWrapper>
+                <CreateEntityMilestoneSearch
+                  autoFocus={!form.values?.milestoneId}
+                  options={filterUserOptions(milestonesData)}
+                  value={form.values.milestoneId}
+                  onChange={(milestoneId) => {
+                    form.setFieldValue('milestoneId', milestoneId);
+                  }}
+                  handleClose={() => {
+                    form.setFieldValue('milestoneId', null);
+                  }}
+                  formValues={form.values}
+                  disabled={formValues?.milestoneId}
+                />
+              </CreateEntityWrapper>
             )}
             {form.values.milestoneId === null && (
               <CreateEntityLabelAddButton
@@ -1410,6 +1412,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                 <CreateEntityAddButtonLabel>Add</CreateEntityAddButtonLabel>
               </CreateEntityLabelAddButton>
             )}
+            {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
@@ -1433,7 +1436,6 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </CreateEntitySelectWrapper>
         </CreateEntityLabelSelectWrapper>
 
-        {form?.errors?.milestoneId && <ErrorText>{form?.errors?.milestoneId}</ErrorText>}
         <CreateEntityLabelSelectWrapper show={entityTypeData[entityType].fields.includes(Fields.tags)}>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Category</CreateEntityLabel>
