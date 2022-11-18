@@ -251,16 +251,20 @@ export function TaskSubmissions(props) {
         submissionToEdit={submissionToEdit}
       />
       <TaskSubmissionsFormInactive submissionToEdit={submissionToEdit} makeSubmission={makeSubmission}>
-        <Grid container direction="row" justifyContent="space-between" alignItems="center">
-          <TaskSubmissionsFilter
-            fetchedTaskSubmissions={fetchedTaskSubmissions}
-            setFilteredSubmissions={setFilteredSubmissions}
-          />
-          <TaskSubmissionsTaskInProgress
-            canSubmit={canSubmit}
-            setMakeSubmission={setMakeSubmission}
-            taskStatus={taskStatus}
-          />
+        <Grid container direction="row" spacing={1} justifyContent="space-between" alignItems="center">
+          <Grid item xl={6} lg={6} md={6} sm={5} xs={5} display="flex" justifyContent="flex-start">
+            <TaskSubmissionsFilter
+              fetchedTaskSubmissions={fetchedTaskSubmissions}
+              setFilteredSubmissions={setFilteredSubmissions}
+            />
+          </Grid>
+          <Grid item xl={6} lg={6} md={6} sm={5} xs={5} display="flex" justifyContent="flex-end">
+            <TaskSubmissionsTaskInProgress
+              canSubmit={canSubmit}
+              setMakeSubmission={setMakeSubmission}
+              taskStatus={taskStatus}
+            />
+          </Grid>
         </Grid>
         {isBounty &&
           fetchedTask?.status !== TASK_STATUS_DONE &&
