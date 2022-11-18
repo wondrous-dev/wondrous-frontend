@@ -152,6 +152,8 @@ import {
   ApplicationInputWrapper,
   ApplicationInputUnassignContainer,
   SnapshotErrorText,
+  CreateEntityPrivacySelectRenderLabelWrapper,
+  CreateEntityCloseIcon,
 } from './styles';
 
 import { MediaItem } from '../MediaItem';
@@ -159,6 +161,7 @@ import Tags from '../../Tags';
 import { SafeImage } from '../../Common/Image';
 import TaskTemplatePicker from './TaskTemplatePicker';
 import GR15DEICreateSelector from '../Initiatives/GR15DEI';
+import { TaskTemplatePickerWrapper } from './TaskTemplatePicker/styles';
 
 export default function CreateEntityModal(props: ICreateEntityModal) {
   const { entityType, handleClose, cancel, existingTask, parentTaskId, formValues, status, setFormDirty } = props;
@@ -642,7 +645,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         }}
       />
       <CreateEntityHeader>
-        <CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen={false}>
           <CreateEntitySelectErrorWrapper>
             <CreateEntityDropdown
               name="orgId"
@@ -689,6 +692,13 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           <Tooltip title="Full screen" placement="top">
             <Box>
               <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+            </Box>
+          </Tooltip>
+        </CreateEntityHeaderWrapper>
+        <CreateEntityHeaderWrapper showOnSmallScreen hideOnLargeScreen>
+          <Tooltip title="Close Modal" placement="top-end">
+            <Box>
+              <CreateEntityCloseIcon onClick={cancel} />
             </Box>
           </Tooltip>
         </CreateEntityHeaderWrapper>
@@ -1125,27 +1135,25 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       }
                       renderValue={() => (
                         <CreateEntityApplicationsSelectRender>
-                          <>
-                            {form.values?.claimPolicyRoles?.map((role) => {
-                              const roleData = getRoleDataById(role);
-                              return (
-                                <StyledChipTag
-                                  key={role}
-                                  style={{ margin: '2px' }}
-                                  deleteIcon={<div>&times;</div>}
-                                  onClick={() =>
-                                    form.setFieldValue(
-                                      'claimPolicyRoles',
-                                      form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
-                                    )
-                                  }
-                                  label={roleData?.name}
-                                  // background={option.color}
-                                  variant="outlined"
-                                />
-                              );
-                            })}
-                          </>
+                          {form.values?.claimPolicyRoles?.map((role) => {
+                            const roleData = getRoleDataById(role);
+                            return (
+                              <StyledChipTag
+                                key={role}
+                                style={{ margin: '2px' }}
+                                deleteIcon={<div>&times;</div>}
+                                onClick={() =>
+                                  form.setFieldValue(
+                                    'claimPolicyRoles',
+                                    form.values?.claimPolicyRoles?.filter((claimRole) => claimRole !== role)
+                                  )
+                                }
+                                label={roleData?.name}
+                                // background={option.color}
+                                variant="outlined"
+                              />
+                            );
+                          })}
                           <CreateEntitySelectArrowIcon />
                         </CreateEntityApplicationsSelectRender>
                       )}
@@ -1700,12 +1708,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </CreateEntityLabelSelectWrapper>
           )}
         <CreateEntityDivider />
-        <div
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
+        <TaskTemplatePickerWrapper>
           <TaskTemplatePicker
             options={filterOptionsWithPermission(entityType, pods, fetchedUserPermissionsContext, form.values.orgId)}
             value={form.values.orgId}
@@ -1725,24 +1728,36 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
               GR15DEISelected={form?.values?.GR15DEISelected}
             />
           )}
-        </div>
+        </TaskTemplatePickerWrapper>
       </CreateEntityBody>
       <CreateEntityHeader>
         <CreateEntityHeaderWrapper>
+          <CreateEntityAttachment showOnSmallScreen onClick={() => inputRef.current.click()}>
+            <CreateEntityAttachmentIcon />
+            {fileUploadLoading && <FileLoading />}
+          </CreateEntityAttachment>
           <CreateEntityPrivacySelect
+            className="select-tooltip"
             name="privacyLevel"
             value={form.values.privacyLevel}
             onChange={(value) => {
               form.setFieldValue('privacyLevel', value);
             }}
-            renderValue={(value) => (
-              <Tooltip placement="top">
-                <CreateEntityPrivacySelectRender>
-                  <CreateEntityPrivacySelectRenderLabel>{value?.label}</CreateEntityPrivacySelectRenderLabel>
-                  <CreateEntitySelectArrowIcon />
-                </CreateEntityPrivacySelectRender>
-              </Tooltip>
-            )}
+            renderValue={(value) => {
+              const Icon = privacyOptions[value?.value]?.Icon;
+
+              return (
+                <Tooltip placement="top">
+                  <CreateEntityPrivacySelectRender>
+                    <CreateEntityPrivacySelectRenderLabelWrapper>
+                      <CreateEntityPrivacyIconWrapper>{Icon && <Icon />}</CreateEntityPrivacyIconWrapper>
+                      <CreateEntityPrivacySelectRenderLabel>{value?.value}</CreateEntityPrivacySelectRenderLabel>
+                    </CreateEntityPrivacySelectRenderLabelWrapper>
+                    <CreateEntitySelectArrowIcon />
+                  </CreateEntityPrivacySelectRender>
+                </Tooltip>
+              );
+            }}
           >
             {Object.keys(privacyOptions).map((i) => {
               const { label, value, Icon } = privacyOptions[i];
