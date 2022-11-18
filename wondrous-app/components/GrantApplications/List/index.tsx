@@ -37,8 +37,6 @@ const List = ({ display = false }) => {
     skip: !grant?.id || !display,
   });
 
-  const canApply = user && user?.id !== grant?.createdBy;
-
   const handleFilter = (status) => {
     setStatus(status);
     refetch({
@@ -65,11 +63,9 @@ const List = ({ display = false }) => {
 
       <Grid container justifyContent="space-between" alignItems="center">
         <Filters setStatus={handleFilter} status={status} />
-        {canApply && (
-          <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
-            Apply for grant
-          </RequestApproveButton>
-        )}
+        <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
+          Apply for grant
+        </RequestApproveButton>
       </Grid>
       <TaskSubmissionItemsWrapper data-cy="item-submission">
         {data?.getGrantApplicationsForGrant?.map((item, idx) => (

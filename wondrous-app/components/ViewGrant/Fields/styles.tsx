@@ -31,7 +31,7 @@ export const GrantAmountWrapper = styled.div`
   align-items: center;
   height: 28px;
   gap: 4px;
-  padding: 2px;
+  padding: 0px 2px 0px 4px;
   img {
     height: 20px !important;
     width: 20px !important;

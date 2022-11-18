@@ -213,6 +213,15 @@ export function TaskCard({
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: task?.id,
+      },
+    });
+  };
+
   return (
     <ProposalCardWrapper
       onMouseEnter={() => setShowMenu(true)}
@@ -225,8 +234,9 @@ export function TaskCard({
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+            handleGoBack={handleGoBackToTask}
             open={showPaymentModal}
+            reward={task?.rewards[0]}
             approvedSubmission={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}

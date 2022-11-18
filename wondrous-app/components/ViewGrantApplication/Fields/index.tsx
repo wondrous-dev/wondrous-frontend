@@ -168,8 +168,10 @@ export const PaymentHandler = ({ grantApplication }) => {
         open={isPaymentModalOpen}
         handleClose={() => {}}
         setShowPaymentModal={setIsPaymentModalOpen}
-        grant={grantApplication?.grant}
-        grantApplication={grantApplication}
+        fetchedTask={grantApplication?.grant}
+        approvedSubmission={grantApplication}
+        reward={grantApplication?.grant?.reward}
+        entityType={ENTITIES_TYPES.GRANT_APPLICATION}
       />
     );
   }

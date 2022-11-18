@@ -103,7 +103,7 @@ export const GET_PROCESSING_PAYMENTS_FOR_POD = gql`
 export const GET_GRANT_APPLICATION_PAYMENT_INFO = gql`
   query getGrantApplicationPaymentInfo($grantApplicationId: ID!) {
     getGrantApplicationPaymentInfo(grantApplicationId: $grantApplicationId) {
-      submissionId
+      applicationId
       paymentData {
         tokenAddress
         isEthTransfer

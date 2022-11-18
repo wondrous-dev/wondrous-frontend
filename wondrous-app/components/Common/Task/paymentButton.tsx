@@ -45,12 +45,23 @@ export function PaymentButton(props) {
 
     setShowPaymentButton(show);
   }, [approvedSubmission, canPay]);
+
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    });
+  };
+
   return (
     <>
       {showPaymentModal && (
         <MakePaymentModal
-          getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+          handleGoBack={handleGoBackToTask}
           open={showPaymentModal}
+          reward={fetchedTask?.rewards[0]}
           handleClose={handleClose}
           approvedSubmission={approvedSubmission}
           setShowPaymentModal={setShowPaymentModal}

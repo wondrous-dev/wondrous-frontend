@@ -383,11 +383,20 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     );
   }
 
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: fetchedTask?.id,
+      },
+    });
+  };
   if (showPaymentModal && approvedSubmission) {
     return (
       <MakePaymentModal
-        getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+        handleGoBack={handleGoBackToTask}
         open={showPaymentModal}
+        reward={fetchedTask?.rewards[0]}
         handleClose={handleClose}
         approvedSubmission={approvedSubmission}
         setShowPaymentModal={setShowPaymentModal}
@@ -679,7 +688,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                               </TaskModalSnapshot>
                             )}
-                            {canEdit && !isViewNFTMode && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
+                            {canEdit && !isViewNFTMode && (
+                              <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
+                            )}
                             {isMilestone && (
                               <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
                             )}

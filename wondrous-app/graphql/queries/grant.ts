@@ -149,12 +149,18 @@ export const GET_GRANT_APPLICATION_BY_ID = gql`
       paymentAddress
       approvedAt
       createdBy
+      creator {
+        username
+        profilePicture
+      }
       changeRequestedAt
       commentCount
       rejectedAt
       lastReviewedBy
       paymentStatus
       description
+      orgId
+      podId
       grantId
       media {
         ...MediaFragment
