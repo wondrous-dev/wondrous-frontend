@@ -71,6 +71,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
 
   useEffect(() => {
     if (!src || hasProtocol || typeof src === 'object') {
+      setImageUrl(null);
       return;
     }
 

@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL, HEADER_ASPECT_RATIO } from 'utils/constants';
 import { parseUserPermissionContext, removeUrlStart, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard } from 'utils/hooks';
+import { AspectRatio } from 'react-aspect-ratio';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
 import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
@@ -55,7 +57,6 @@ import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import { useMe } from '../../Auth/withAuth';
-import DefaultBg from '../../../public/images/overview/background.png';
 
 const ExplorePodGr15 = ({
   onTaskPage,
@@ -292,16 +293,11 @@ function Wrapper(props) {
       <ChooseEntityToCreate />
       <OverviewComponent>
         <HeaderImageWrapper>
-          {podProfile ? (
-            <SafeImage
-              src={podProfile?.headerPicture || DefaultBg}
-              width="100%"
-              height={100}
-              layout="fill"
-              objectFit="cover"
-              useNextImage
-            />
-          ) : null}
+          <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+            {podProfile ? (
+              <SafeImage src={podProfile?.headerPicture || DEFAULT_HEADER} height={100} layout="fill" useNextImage />
+            ) : null}
+          </AspectRatio>
         </HeaderImageWrapper>
         <Content>
           <ContentContainer>

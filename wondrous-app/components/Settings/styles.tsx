@@ -1,7 +1,8 @@
 import { Box, Button as MuiButton, ButtonBase, InputBase, List, ListItem, Typography } from '@mui/material';
 import SnackbarComp from '@mui/material/Snackbar';
 import { SafeImage } from 'components/Common/Image';
-import styled from 'styled-components';
+import Image from 'next/image';
+import styled, { css } from 'styled-components';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { Button } from '../Common/button';
@@ -171,7 +172,7 @@ export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
     }}
     {...props}
   />
-))``;
+));
 
 export const SettingsDaoPodIndicatorText = styled(Typography)`
   && {
@@ -271,6 +272,7 @@ export const GeneralSettingsContainer = styled.div`
 export const GeneralSettingsInputsBlock = styled.div`
   padding: 30px 0;
   border-bottom: 1px solid ${palette.black92};
+  margin-bottom: 30px;
 `;
 
 export const GeneralSettingsDAONameBlock = styled.div`
@@ -347,6 +349,7 @@ export const GeneralSettingsDAODescriptionInputCounter = styled(Typography)`
 export const GeneralSettingsSocialsBlock = styled.div`
   padding: 30px 0 15px;
   border-bottom: 1px solid ${palette.black92};
+  border-top: 1px solid ${palette.black92};
 `;
 
 export const GeneralSettingsSocialsBlockWrapper = styled.div``;
@@ -422,6 +425,15 @@ export const GeneralSettingsIntegrationsBlockButton = styled(Button)`
   }
 `;
 
+export const ImageComponent = styled<{ borderRadius: boolean }>(Image)`
+  width: 100%;
+  ${({ borderRadius }) =>
+    borderRadius &&
+    css`
+      border-radius: 50%;
+    `};
+`;
+
 export const CreateFormAddDetailsTabWrapper = styled.div`
   div {
     width: 100%;
@@ -479,8 +491,7 @@ export const GeneralSettingsSaveChangesButton = styled(Button)`
 // imageUpload.tsx section
 export const ImageUploadBlock = styled.div`
   width: 100%;
-  padding: 30px 0;
-  border-bottom: 1px solid ${palette.black92};
+  padding: 0 0 30px 0;
 `;
 
 export const ImageUploadRecommendText = styled(Typography)`
@@ -495,27 +506,45 @@ export const ImageUploadRecommendText = styled(Typography)`
 export const ImageUploadBlockActivitySection = styled.div`
   display: flex;
   justify-content: left;
-  flex-direction: column;
+  align-items: center;
 `;
 
-export const ImageUploadBlockInputWrapper = styled.div``;
+export const ImageUploadBlockInputWrapper = styled.div<{ isIcon: boolean }>`
+  position: relative;
+  width: ${({ isIcon }) => (isIcon ? '80px' : '100%')};
+  height: ${({ isIcon }) => (isIcon ? '80px' : 'auto')}; ;
+`;
 
-export const ImageUploadBlockInputButton = styled.input`
+export const ImageUploadButtonWrapper = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 99;
+  display: flex;
+  align-items: center;
+`;
+
+export const ImageUploadButton = styled.div<{ marginLeft: string }>`
+  text-align: center;
+  width: 48px;
+  height: 48px;
+  background-color: #1d1d1d99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  cursor: pointer;
+  margin-left: ${({ marginLeft }) => marginLeft || 0};
+`;
+
+export const ImageUploadBlockInput = styled.input`
   position: absolute;
   color: deepskyblue;
   background-color: transparent;
   border-bottom: 1px solid deepskyblue;
   cursor: pointer;
   display: none;
-`;
-
-export const ImageUploadBlockInputLabel = styled.label`
-  font-size: 14px;
-  line-height: 19px;
-  letter-spacing: 0.01em;
-  text-decoration-line: underline;
-  color: #00baff;
-  cursor: pointer;
 `;
 
 export const ImageUploadBlockUploadedImg = styled.img`
@@ -534,6 +563,12 @@ export const ImageUploadBlockRemoveButton = styled(MuiButton)`
     text-decoration: underline;
   }
 `;
+
+export const ImageUploadBlockActionIcons = styled.div`
+  display: flex;
+  margin-left: 18px;
+`;
+
 export const CloseButton = styled.button`
   position: absolute;
   right: -8px;
@@ -547,6 +582,26 @@ export const CloseButton = styled.button`
 
   &:hover {
     background: ${palette.black92};
+  }
+`;
+
+export const ToolButton = styled(Button)`
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+  gap: 10px;
+  width: 36px;
+  height: 36px;
+  background: #313131;
+  border-radius: 6px;
+  fill: #313131;
+  margin-right: 12px;
+
+  button {
+    background: #313131;
+    border-radius: 6px;
   }
 `;
 
