@@ -13,7 +13,7 @@ const BoardSkeleton = () => {
     <Box px="50px" mt="160px">
       <Grid container wrap="nowrap" gap="20px" columns={4} my="20px">
         {Array.from(new Array(4)).map((index) => (
-          <Skeleton sx={styles} variant="rectangular" width={80} height={45} />
+          <Skeleton key={index} sx={styles} variant="rectangular" width={80} height={45} />
         ))}
       </Grid>
 
@@ -24,7 +24,7 @@ const BoardSkeleton = () => {
           <Skeleton sx={styles} variant="rectangular" width="100%" height={45} />
         </Grid>
         {Array.from(new Array(3)).map((index) => (
-          <Grid item sm={2}>
+          <Grid item sm={2} key={index}>
             <Skeleton sx={styles} variant="rectangular" width="100%" height={45} />
           </Grid>
         ))}
