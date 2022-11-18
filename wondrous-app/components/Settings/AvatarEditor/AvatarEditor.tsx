@@ -24,6 +24,7 @@ type Props = {
   clearInput: () => void;
   imageType: AvatarEditorTypes;
   title: string;
+  recommendationText: string;
 };
 
 interface ImageViewerObjectProps {
@@ -41,6 +42,7 @@ const AvatarEditor = ({
   openSelectFile,
   clearInput,
   title,
+  recommendationText,
 }: Props) => {
   const [image, setImage] = useState<string | File>(originalImage); // image can be URL or File.
   const [scale, setScale] = useState(1.0);
@@ -168,8 +170,7 @@ const AvatarEditor = ({
           </Styles.RightButtons>
         </Styles.ToolButtonsContainer>
         <Styles.RecomendationContainer>
-          {/* this shouldn't be hardcoded */}
-          <ImageUploadRecommendText>Recommended: 1200 x 170px</ImageUploadRecommendText>
+          <ImageUploadRecommendText>{recommendationText}</ImageUploadRecommendText>
         </Styles.RecomendationContainer>
       </Styles.Content>
 

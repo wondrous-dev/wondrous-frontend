@@ -47,8 +47,9 @@ export default function ImageUpload(props: Props) {
   const [openAvatarEditor, setOpenAvatarEditor] = useState(false);
   const [imageToEdit, setImageToEdit] = useState(null);
   const [editedImage, setEditedImage] = useState(null);
-
   const imageInputId = `upload-${title?.toLowerCase()}-image`;
+  const recommendationText =
+    imageType === AVATAR_EDITOR_TYPES.ICON_IMAGE ? 'Recommended: 800 x 800px' : 'Recommended: 1600 x 188px';
 
   const addNewFiles = (newFiles) => {
     // eslint-disable-next-line no-restricted-syntax
@@ -201,6 +202,7 @@ export default function ImageUpload(props: Props) {
         openSelectFile={() => imageInputField.current.click()}
         imageType={imageType}
         title={avatarEditorTitle || 'Upload Image'}
+        recommendationText={recommendationText}
       />
     </ImageUploadBlock>
   );
