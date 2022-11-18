@@ -20,7 +20,7 @@ const OrgItem = ({ org }) => {
               objectFit: 'cover',
             }}
             src={headerUrl}
-            alt="Header"
+            alt="DAO logo"
           />
         )}
         <div>
