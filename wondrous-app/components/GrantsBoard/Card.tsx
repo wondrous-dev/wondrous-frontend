@@ -6,7 +6,7 @@ import {
   BoardsCardBodyDescription,
   BoardsCardBodyTitle,
   BoardsCardFooter,
-  BoardsCardMedia
+  BoardsCardMedia,
 } from 'components/Common/Boards/styles';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SafeImage } from 'components/Common/Image';
@@ -26,7 +26,7 @@ import { formatDateDisplay } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { BoardWrapper, EndingSoonPill, ItemPill } from './styles';
+import { BoardWrapper, EndingSoonPill, ItemPill, MenuWrapper } from './styles';
 
 const GrantsBoardCard = ({ grant, handleCardClick }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -38,7 +38,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
   const [deleteTask, setDeleteTask] = useState(false);
   const { label, icon: Icon } = GRANTS_ICONS_LABELS_MAP[grant.status];
   const coverMedia = grant?.media?.find((media) => media.type === 'image');
-  const orgBoard = useOrgBoard()
+  const orgBoard = useOrgBoard();
   const podBoard = usePodBoard();
   const board = podBoard || orgBoard;
   const { userPermissionsContext } = board;
@@ -142,7 +142,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
             <CommentsIcon />
             {grant.comments || 0}
           </Grid>
-          <Grid display="flex" justifyContent="flex-end" flex={1}>
+          <MenuWrapper display="flex" justifyContent="flex-end" flex={1}>
             <TaskCardMenu
               anchorElParent={anchorEl}
               canArchive={canArchive}
@@ -155,7 +155,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
               taskType={ENTITIES_TYPES.GRANT}
               open
             />
-          </Grid>
+          </MenuWrapper>
         </BoardsCardFooter>
       </BoardWrapper>
     </>

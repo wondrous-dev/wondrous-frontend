@@ -16,7 +16,7 @@ import ListItem from '../ListItem';
 
 const List = ({ display = false }) => {
   const { toggleCreateApplicationModal, grant } = useTaskContext();
-  const [status, setStatus] = useState(GRANT_APPLICATION_STATUSES.OPEN);
+  const [status, setStatus] = useState('');
   const [hasMore, setHasMore] = useState(false);
   const user = useMe();
   const [ref, inView] = useInView({});
@@ -46,7 +46,7 @@ const List = ({ display = false }) => {
   };
 
   useEffect(() => {
-    if (inView && hasMore) {
+    if (inView && hasMore && !loading) {
       fetchMore({
         variables: {
           offset: data?.getGrantApplicationsForGrant?.length,

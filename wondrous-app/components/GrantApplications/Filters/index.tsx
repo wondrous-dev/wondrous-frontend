@@ -7,12 +7,13 @@ import {
   SubmissionItemStatusChangesRequestedIcon,
 } from 'components/Common/TaskSubmission/styles';
 import { TaskSubmissionsFilterSelected } from 'components/Common/TaskSubmission/submissionFilter';
-import { InReviewIcon, CompletedIcon, RejectedIcon } from 'components/Icons/statusIcons';
+import { InReviewIcon, CompletedIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { useMemo, useState } from 'react';
 import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
 
 const filterOptions = [
-  { label: 'All applications', Icon: SubmissionFilterStatusIcon, value: GRANT_APPLICATION_STATUSES.OPEN },
+  { label: 'All applications', Icon: SubmissionFilterStatusIcon, value: '' },
+  { label: 'Open', Icon: TodoIcon, value: GRANT_APPLICATION_STATUSES.OPEN },
   { label: 'Awaiting Review', Icon: InReviewIcon, value: GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW },
   {
     label: 'Changes Requested',

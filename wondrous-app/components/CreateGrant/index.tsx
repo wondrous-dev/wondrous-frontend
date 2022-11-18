@@ -15,6 +15,7 @@ import {
   filterCategoryValues,
   filterOptionsWithPermission,
   filterOrgUsersForAutocomplete,
+  formDirty,
   getPrivacyLevel,
   GrantCreateModalProps,
   privacyOptions,
@@ -96,7 +97,7 @@ const validationSchema = Yup.object().shape({
   mediaUploads: Yup.array(),
 });
 
-const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false }: GrantCreateModalProps) => {
+const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFormDirty }: GrantCreateModalProps) => {
   const router = useRouter();
   const { toggleFullScreen, isFullScreen } = useFullScreen(true);
   const orgBoard = useOrgBoard();
@@ -149,9 +150,9 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false }: Gra
     initialValues: {
       reward: {
         paymentMethodId: existingGrant?.reward?.paymentMethodId || '',
-        rewardAmount: existingGrant?.reward?.rewardAmount || '0',
+        rewardAmount: existingGrant?.reward?.rewardAmount || '',
       },
-      numOfGrant: existingGrant?.numOfGrant || '0',
+      numOfGrant: existingGrant?.numOfGrant || '',
       mediaUploads: transformMediaFormat(existingGrant?.media) || [],
       startDate: existingGrant?.startDate || null,
       endDate: existingGrant?.endDate || null,
@@ -191,6 +192,12 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false }: Gra
         },
       }).then(() => handleClose()),
   });
+
+  useEffect(() => {
+    if (setFormDirty) {
+      setFormDirty(formDirty(form));
+    }
+  }, [form, setFormDirty]);
 
   const { data: orgUsersData, search, hasMoreOrgUsers, fetchMoreOrgUsers } = useGetOrgUsers(form.values.orgId);
 
@@ -279,7 +286,6 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false }: Gra
     }
   };
 
-  console.log(form);
   return (
     <Form onSubmit={form.handleSubmit}>
       <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
@@ -405,15 +411,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false }: Gra
               value={form.values.reward}
               numOfGrant={form.values.numOfGrant}
               onChange={form.setFieldValue}
+              setError={form.setFieldError}
               orgId={form.values.orgId}
-              onReset={() => {
-                form.setFieldValue('reward', { currency: '', rewardAmount: 0 });
-                form.setFieldValue('numOfGrant', 0);
-              }}
-              onFocus={() => {
-                form.setFieldError('reward', undefined);
-                form.setFieldError('numOfGrant', undefined);
-              }}
               error={{
                 reward: form.errors.reward,
                 numOfGrant: form.errors.numOfGrant,

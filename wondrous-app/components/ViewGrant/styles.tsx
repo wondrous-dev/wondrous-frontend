@@ -6,5 +6,6 @@ export const DescriptionWrapper = styled.div`
   color: ${palette.white};
   max-height: 300px;
   overflow: auto;
+  min-height: 25rem;
   ${scrollBarStyles};
 `;

@@ -115,3 +115,12 @@ export const GET_GRANT_APPLICATION_PAYMENT_INFO = gql`
     }
   }
 `;
+
+export const GET_PAYMENTS_FOR_GRANT_APPLICATION = gql`
+  query getPaymentsForGrantApplication($grantApplicationId: ID) {
+    getPaymentsForGrantApplication(grantApplicationId: $grantApplicationId) {
+      ...PaymentCardFragment
+    }
+  }
+  ${PaymentCardFragment}
+`;

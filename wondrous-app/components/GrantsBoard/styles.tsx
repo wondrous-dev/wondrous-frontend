@@ -1,13 +1,23 @@
+import { Grid } from '@mui/material';
 import { BountyCardWrapper } from 'components/Common/BountyBoard/styles';
 import { CompensationPill } from 'components/Common/Compensation/styles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+
+export const MenuWrapper = styled(Grid)`
+  display: none;
+`;
 
 export const BoardWrapper = styled(BountyCardWrapper)`
   && {
     background: ${palette.grey900};
     &::before {
       display: none;
+    }
+    &:hover {
+      ${MenuWrapper} {
+        display: flex;
+      }
     }
     ${CompensationPill} {
       padding: 1px;

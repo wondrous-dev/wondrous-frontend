@@ -17,8 +17,11 @@ export default function Dates({ startDate, endDate, onChange }) {
         <CreateEntityDueDate
           autoFocus={false}
           className="create-entity-date"
-          setValue={(date) => onChange('startDate', date)}
+          setValue={(date) => {
+            onChange('startDate', date);
+          }}
           hideRecurring
+          placement="bottom"
           handleClose={() => {
             onChange('startDate', null);
           }}
@@ -30,6 +33,7 @@ export default function Dates({ startDate, endDate, onChange }) {
           autoFocus={false}
           setValue={(date) => onChange('endDate', date)}
           hideRecurring
+          placement="bottom"
           handleClose={() => {
             onChange('endDate', null);
           }}

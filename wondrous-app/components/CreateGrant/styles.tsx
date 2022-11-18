@@ -11,6 +11,7 @@ export const DisplayWrapper = styled(TaskSectionDisplayContentWrapper)`
   gap: 6px;
   flex-wrap: nowrap;
   .create-entity-date {
+    z-index: auto !important;
     max-width: fit-content;
     .MuiOutlinedInput-root {
       background: ${palette.grey99} !important;

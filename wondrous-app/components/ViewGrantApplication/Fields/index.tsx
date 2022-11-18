@@ -1,4 +1,4 @@
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import CommentList from 'components/Comment';
@@ -14,7 +14,7 @@ import {
   REOPEN_GRANT_APPLICATION,
   REQUEST_CHANGE_GRANT_APPLICATION,
 } from 'graphql/mutations';
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { ENTITIES_TYPES, GRANT_APPLICATION_COMMENT_TYPE, GRANT_APPLICATION_STATUSES } from 'utils/constants';
@@ -23,7 +23,7 @@ import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper } from './s
 export const GrantApplicationStatusManager = ({ grantApplication }) => {
   const [commentType, setCommentType] = useState(null);
 
-  const status = selectApplicationStatus(grantApplication);
+  const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
 
   const [approveGrantApplication] = useMutation(APPROVE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
@@ -41,6 +41,10 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
   });
 
+  if (grantApplication?.paymentStatus) {
+    return null;
+  }
+
   const GRANT_APPLICATION_COMMENT_ACTIONS = {
     [GRANT_APPLICATION_COMMENT_TYPE.CHANGE_REQUESTED]: () =>
       requestChanges({ variables: { grantApplicationId: grantApplication.id } }).then(() => setCommentType(null)),
@@ -52,7 +56,13 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
 
   const BUTTONS_CONFIG = [
     {
-      label: status === GRANT_APPLICATION_STATUSES.APPROVED ? 'Undo Approval' : 'Approve',
+      label: [
+        GRANT_APPLICATION_STATUSES.APPROVED,
+        GRANT_APPLICATION_STATUSES.APPROVED_AND_PROCESSING,
+        GRANT_APPLICATION_STATUSES.APPROVED_AND_PAID,
+      ].includes(status)
+        ? 'Undo Approval'
+        : 'Approve',
       gradient: 'linear-gradient(259.59deg, #06FFA5 0%, #7427FF 93.38%)',
       commentType: null,
       disabled:
@@ -108,16 +118,18 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
   return (
     <GrantApplicationStatusWrapper>
       <Grid display="flex" justifyContent="space-between" alignItems="center" gap="24px">
-        {BUTTONS_CONFIG.map((buttonConfig, index) => (
-          <Button
-            key={index}
-            onClick={buttonConfig.action}
-            gradient={buttonConfig.gradient}
-            disabled={buttonConfig.disabled}
-          >
-            {buttonConfig.label}
-          </Button>
-        ))}
+        {!grantApplication?.paymentStatus
+          ? BUTTONS_CONFIG.map((buttonConfig, index) => (
+              <Button
+                key={index}
+                onClick={buttonConfig.action}
+                gradient={buttonConfig.gradient}
+                disabled={buttonConfig.disabled}
+              >
+                {buttonConfig.label}
+              </Button>
+            ))
+          : null}
       </Grid>
       {!!commentType && <Divider />}
       {!!commentType && (

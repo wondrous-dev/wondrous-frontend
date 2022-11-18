@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { tabs, tabsPerType } from 'components/Common/TaskViewModal/constants';
 import {
   TabItemCount,

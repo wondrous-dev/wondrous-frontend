@@ -55,6 +55,7 @@ export function CreateEntity(props: ICreateEntity) {
 
   const isPodEntity = entityType === ENTITIES_TYPES.POD;
 
+  console.log(discard, formDirty, 'discard, formDirty');
   return (
     <>
       <CreateEntityDiscardTask
@@ -67,7 +68,7 @@ export function CreateEntity(props: ICreateEntity) {
         <>
           {isTaskOrProposal && <CreateEntityModal {...props} setFormDirty={setFormDirty} />}
           {isPodEntity && <CreatePodModal {...props} />}
-          {isGrantEntity && <CreateGrant {...props} />}
+          {isGrantEntity && <CreateGrant {...props} setFormDirty={setFormDirty} />}
         </>
       </CreateFormModalOverlay>
     </>
