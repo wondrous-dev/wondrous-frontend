@@ -9,12 +9,15 @@ import {
   SOCIAL_MEDIA_LINKEDIN,
   GR15DEICategoryName,
   BOUNTY_TYPE,
+  HEADER_ASPECT_RATIO,
 } from 'utils/constants';
-import { Box } from '@mui/system';
+import apollo from 'services/apollo';
+import { Box } from '@mui/material';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import DefaultBg from 'public/images/overview/background.png';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
+import { AspectRatio } from 'react-aspect-ratio';
 
 import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
@@ -336,16 +339,11 @@ function Wrapper(props) {
       )}
 
       <HeaderImageWrapper>
-        {orgProfile ? (
-          <SafeImage
-            src={orgProfile?.headerPicture || DefaultBg}
-            width="100%"
-            height={100}
-            layout="fill"
-            objectFit="cover"
-            useNextImage
-          />
-        ) : null}
+        <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+          {orgProfile ? (
+            <SafeImage src={orgProfile?.headerPicture || DEFAULT_HEADER} height={100} layout="fill" useNextImage />
+          ) : null}
+        </AspectRatio>
       </HeaderImageWrapper>
 
       <Content>

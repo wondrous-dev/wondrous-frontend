@@ -822,6 +822,8 @@ export enum SUBMISSION_COMMENT_TYPE {
   REOPEN = 'reopen',
 }
 
+export const HEADER_ASPECT_RATIO = 7.05;
+
 export const TaskMintStatus = {
   NOT_STARTED: 'not_started',
   IN_PROGRESS: 'in_progress',

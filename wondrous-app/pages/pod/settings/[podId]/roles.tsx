@@ -3,7 +3,12 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 
 import Roles from 'components/Settings/Roles';
-import { GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_BY_ID } from 'graphql/queries';
+import {
+  GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
+  GET_POD_BY_ID,
+  GET_POD_DISCORD_NOTIFICATION_CONFIGS,
+  GET_POD_DISCORD_ROLES,
+} from 'graphql/queries';
 import { Role } from 'types/common';
 import { CREATE_POD_ROLE, DELETE_POD_ROLE, UPDATE_POD_ROLE } from 'graphql/mutations/pod';
 import permissons from 'utils/podPermissions';
@@ -15,6 +20,21 @@ function RolesPage() {
   const [pod, setPod] = useState(null);
   const router = useRouter();
   const { podId } = router.query;
+  const [getPodDiscordRoles, { data: getPodDiscordRolesData }] = useLazyQuery(GET_POD_DISCORD_ROLES, {
+    variables: {
+      podId,
+    },
+  });
+
+  const [getPodDiscordNotificationConfig, { data: getPodDiscordConfigData }] = useLazyQuery(
+    GET_POD_DISCORD_NOTIFICATION_CONFIGS,
+    {
+      variables: {
+        podId,
+      },
+    }
+  );
+
   const [getPodRolesWithTokenGate, { data: getPodRolesData }] = useLazyQuery(
     GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD,
     {
@@ -72,8 +92,9 @@ function RolesPage() {
           setRoles(JSON.parse(JSON.stringify(result?.data?.getPodRoles)) || []);
         }
       });
+      getPodDiscordNotificationConfig();
     }
-  }, [podId, getPodRolesWithTokenGate]);
+  }, [podId, getPodRolesWithTokenGate, getPodDiscordNotificationConfig]);
 
   function updateRolePermissions(role: Role, permissions: string[]) {
     role.permissions = permissions;
@@ -111,6 +132,9 @@ function RolesPage() {
       podId={pod?.id}
       roles={roles}
       permissons={permissons}
+      allDiscordRolesData={getPodDiscordRolesData?.getPodDiscordRoles}
+      discordConfigData={getPodDiscordConfigData?.getPodDiscordNotificationConfig}
+      getDiscordRoles={getPodDiscordRoles}
       onCreateNewRole={(name: string, permissions: string[]) => {
         createPodRole({
           variables: {
