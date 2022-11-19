@@ -8,6 +8,7 @@ import { DropDownButtonDecision } from 'components/DropDownDecision/DropDownButt
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 import { SafeImage } from 'components/Common/Image';
 
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   Initials,
   StyledTable,
@@ -87,7 +88,7 @@ export default function MembershipRequestTable(props) {
                       }}
                       alt="Organization logo"
                     />
-                    <Link
+                    <NoUnderlineLink
                       passHref
                       href={`/organization/${request?.orgUsername}/boards`}
                       target="_blank"
@@ -101,14 +102,19 @@ export default function MembershipRequestTable(props) {
                       >
                         {request?.orgUsername}
                       </TaskDescription>
-                    </Link>
+                    </NoUnderlineLink>
                   </div>
                 )}
               </StyledTableCell>
               <StyledTableCell align="center">
                 {request?.podName ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <Link passHref href={`/pod/${request?.podId}/boards`} target="_blank" rel="noopener noreferrer">
+                  <NoUnderlineLink
+                    passHref
+                    href={`/pod/${request?.podId}/boards`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <TaskDescription
                       style={{
                         textDecoration: 'underline',
@@ -117,7 +123,7 @@ export default function MembershipRequestTable(props) {
                     >
                       {request?.podName}
                     </TaskDescription>
-                  </Link>
+                  </NoUnderlineLink>
                 ) : null}
               </StyledTableCell>
               <StyledTableCell align="center">

@@ -25,6 +25,7 @@ import { delQuery } from 'utils/index';
 import { useLocation } from 'utils/useLocation';
 import Tooltip from 'components/Tooltip';
 import { RichTextViewer } from 'components/RichText';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { useMe } from '../Auth/withAuth';
 import { AvatarList } from '../Common/AvatarList';
 import { SafeImage } from '../Common/Image';
@@ -154,9 +155,9 @@ export default function TableBody({
                       ]}
                     />
                   )}
-                  <Link passHref href={`/profile/${username}/about`}>
+                  <NoUnderlineLink passHref href={`/profile/${username}/about`}>
                     <Initials>{username}</Initials>
-                  </Link>
+                  </NoUnderlineLink>
                 </div>
                 {!task?.assigneeId &&
                   (status === TASK_STATUS_TODO || status === TASK_STATUS_IN_PROGRESS) &&

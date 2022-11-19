@@ -2,6 +2,7 @@ import Link from 'next/link';
 import { useHotkey } from 'utils/hooks';
 import { Badge } from '@mui/material';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   MissionControlWorkspaceCardWrapper,
   WorkspaceCardContainer,
@@ -30,7 +31,7 @@ const MissionControlWorkspaceCard: React.FC<{
     <MissionControlWorkspaceCardWrapper hoverImg={hoverImg} gradient={gradient}>
       <Badge badgeContent={HOTKEYS.OPEN_DASHBOARD} color="primary" invisible={!showBadge}>
         <WorkspaceCardContainer>
-          <Link href={url} shallow passHref>
+          <NoUnderlineLink href={url} shallow>
             <WorkspaceCardBannerContainer>
               <WorkspaceCardBannerImage src={img}>
                 <img src={img} />
@@ -39,7 +40,7 @@ const MissionControlWorkspaceCard: React.FC<{
                 <WorkspaceCardBannerLabel gradient={labelGradient}>{label}</WorkspaceCardBannerLabel>
               </WorkspaceCardLabelWrapper>
             </WorkspaceCardBannerContainer>
-          </Link>
+          </NoUnderlineLink>
           <WorkspaceCardStatsContainer>
             {stats.map((stat, idx) => (
               <Link href={stat.url} key={idx} shallow passHref style={{ textDecoration: 'none' }}>

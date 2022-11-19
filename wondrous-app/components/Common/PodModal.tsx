@@ -23,12 +23,13 @@ import React, { useEffect, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { renderMentionString } from 'utils/common';
 import { cutString } from 'utils/helpers';
+import { NoUnderlineLink } from './Link/links';
 
 function PodListCard(props) {
   const { pod, handleClose } = props;
   const router = useRouter();
   return (
-    <Link href={`/pod/${pod?.id}/boards`} passHref>
+    <NoUnderlineLink href={`/pod/${pod?.id}/boards`} passHref>
       <TaskListCardWrapper
         onClick={() => {
           if (handleClose) {
@@ -88,7 +89,7 @@ function PodListCard(props) {
           )}
         </PodModalFooter>
       </TaskListCardWrapper>
-    </Link>
+    </NoUnderlineLink>
   );
 }
 export function PodModal(props) {

@@ -9,6 +9,7 @@ import { SmallAvatar } from 'components/Common/AvatarList';
 import RolePill from 'components/Common/RolePill';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   MemberRequestsList,
   MemberRequestCard,
@@ -143,7 +144,7 @@ function MemberRequests(props) {
             <MemberRequestsList>
               {orgUserMembershipRequests?.map((request) => (
                 <MemberRequestCard key={request.id}>
-                  <Link href={`/profile/${request.userUsername}/about`} passHref>
+                  <NoUnderlineLink href={`/profile/${request.userUsername}/about`} passHref>
                     <MemberProfileLink>
                       {request.userProfilePicture ? (
                         <SafeImage
@@ -177,7 +178,7 @@ function MemberRequests(props) {
                       )}
                       <MemberName>{request.userUsername}</MemberName>
                     </MemberProfileLink>
-                  </Link>
+                  </NoUnderlineLink>
                   <MemberMessage style={{ marginRight: '8px' }}>“{request.message}”</MemberMessage>
                   <RolePill roleName={request.roleName} />
 

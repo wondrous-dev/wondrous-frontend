@@ -5,6 +5,7 @@ import { Descendant, Text } from 'slate';
 
 import { renderMentionString } from 'utils/common';
 
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { FormattedText } from './types';
 import { isRichText } from './utils';
 import { BulletedList, NumberedList, RichTextStyled, Strikethrough } from './styles';
@@ -31,15 +32,15 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'mention':
         return (
-          <Link key={i} href={`/profile/${node.mentionable}/about`}>
+          <NoUnderlineLink key={i} href={`/profile/${node.mentionable}/about`}>
             @{node.mentionable}
-          </Link>
+          </NoUnderlineLink>
         );
       case 'link':
         return (
-          <Link key={i} href={node.href} target="_blank" rel="noopener noreferrer">
+          <NoUnderlineLink key={i} href={node.href} target="_blank" rel="noopener noreferrer">
             {node.children[0]?.text}
-          </Link>
+          </NoUnderlineLink>
         );
       case 'bulleted-list':
         return <BulletedList>{children}</BulletedList>;

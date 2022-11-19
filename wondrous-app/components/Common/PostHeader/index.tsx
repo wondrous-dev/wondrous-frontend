@@ -23,6 +23,7 @@ import {
   PostHeaderUsername,
   PostHeaderWrapper,
 } from './styles';
+import { NoUnderlineLink } from '../Link/links';
 
 const objectTypeText = {
   [ObjectType.TASK_SUBMISSION]: 'task',
@@ -121,7 +122,7 @@ export function PostHeader(props) {
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">
-              <Link href={`/profile/${actor?.username}/about`}>{actor?.username}</Link>
+              <NoUnderlineLink href={`/profile/${actor?.username}/about`}>{actor?.username}</NoUnderlineLink>
             </PostHeaderUsername>{' '}
             {headerText}
           </PostHeaderText>

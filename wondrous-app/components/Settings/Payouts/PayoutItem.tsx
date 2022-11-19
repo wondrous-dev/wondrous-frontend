@@ -17,6 +17,7 @@ import { constructGnosisRedirectUrl } from 'components/Common/Payment/SingleWall
 
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   PayeeAddressTag,
   PayeeAddressTagContainer,
@@ -143,7 +144,7 @@ const PayoutItem = (props: PayoutItemProps) => {
               </Button>
             )}
 
-            <Link href={`/profile/${item?.payeeUsername}/about`} passHref>
+            <NoUnderlineLink href={`/profile/${item?.payeeUsername}/about`} passHref>
               <PayeeProfileLink>
                 <Grid display="flex" alignItems="center" gap="6px">
                   <SafeImage
@@ -160,7 +161,7 @@ const PayoutItem = (props: PayoutItemProps) => {
                   </Typography>
                 </Grid>
               </PayeeProfileLink>
-            </Link>
+            </NoUnderlineLink>
           </Grid>
           {!!addressTag && (
             <PayeeAddressTagContainer onClick={handleAddressCopy}>
