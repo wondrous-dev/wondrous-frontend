@@ -30,6 +30,7 @@ import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   Content,
   ContentContainer,
+  Container,
   HeaderActivity,
   HeaderActivityLink,
   HeaderActivityLinkIcon,
@@ -252,8 +253,6 @@ function Wrapper(props) {
     }
   }, [podBoard?.podId]);
 
-  const showFilters = router?.pathname === '/pod/[podId]/boards';
-
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -467,7 +466,7 @@ function Wrapper(props) {
               </div>
             </TokenHeader>
 
-            <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+            <Container>
               <BoardsSubheaderWrapper>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector
@@ -475,7 +474,7 @@ function Wrapper(props) {
                     setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
                   />
                 )}
-                {showFilters && (
+                {!!filterSchema && (
                   <BoardsActivity
                     onSearch={onSearch}
                     filterSchema={filterSchema}
@@ -485,9 +484,8 @@ function Wrapper(props) {
                   />
                 )}
               </BoardsSubheaderWrapper>
-
               {children}
-            </Tabs>
+            </Container>
           </ContentContainer>
         </Content>
       </OverviewComponent>
