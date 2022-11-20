@@ -4,12 +4,12 @@ import { Banner, Content, ContentContainer, OverviewComponent, DashboardHeader, 
 
 const CONFIG_MAP = {
   ADMIN: {
-    label: 'Operator Workspace',
+    label: 'Your Operator Workspace',
     img: '/images/operator.png',
     gradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
   },
   CONTRIBUTOR: {
-    label: 'Contributor Workspace',
+    label: 'Your Contributor Workspace',
     img: '/images/contrib.png',
     gradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
   },
