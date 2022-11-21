@@ -296,11 +296,11 @@ function Wrapper(props) {
             {podProfile ? (
               <SafeImage
                 src={podProfile?.headerPicture || DEFAULT_HEADER}
-                height={100}
                 style={{
                   objectFit: 'cover',
                   width: '100%',
                 }}
+                fill
                 useNextImage
                 alt="Pod header"
               />
