@@ -97,7 +97,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
           <Grid display="flex" gap="14px">
             <ItemPill>
               <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-                {grant.applicationsNum} Applications
+                {grant.applicationsCount} Applications
               </Typography>
             </ItemPill>
 
