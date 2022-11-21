@@ -5,6 +5,8 @@ import { Descendant, Text } from 'slate';
 
 import { renderMentionString } from 'utils/common';
 
+import Typography from '@mui/material/Typography';
+
 import { NoUnderlineLink } from 'components/Common/Link/links';
 import { FormattedText } from './types';
 import { isRichText } from './utils';
@@ -44,6 +46,12 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'bulleted-list':
         return <BulletedList>{children}</BulletedList>;
+      case 'headingOne':
+        return <Typography variant="h1">{children}</Typography>;
+      case 'headingTwo':
+        return <Typography variant="h2">{children}</Typography>;
+      case 'headingThree':
+        return <Typography variant="h3">{children}</Typography>;
       case 'numbered-list':
         return <NumberedList>{children}</NumberedList>;
       case 'list-item':

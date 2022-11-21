@@ -12,4 +12,6 @@ export const tabsPerType = {
   subtaskTabs: [tabs.submissions, tabs.discussion],
   bountyTabs: [tabs.submissions, tabs.discussion],
   taskTabs: [tabs.applications, tabs.submissions, tabs.subTasks, tabs.discussion],
+  grantTabs: [tabs.applications, tabs.discussion],
+  grantApplicationTabs: [tabs.discussion],
 };

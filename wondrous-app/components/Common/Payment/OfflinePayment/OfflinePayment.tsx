@@ -1,7 +1,12 @@
 import { useMutation } from '@apollo/client';
 import { Typography } from '@mui/material';
 import CopyIcon from 'components/Icons/copy';
-import { LINK_BATCH_OFF_PLATFORM_PAYMENT, LINK_OFF_PLATFORM_PAYMENT } from 'graphql/mutations/payment';
+import {
+  LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION,
+  LINK_BATCH_OFF_PLATFORM_PAYMENT,
+  LINK_OFF_PLATFORM_PAYMENT,
+  LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION,
+} from 'graphql/mutations/payment';
 import {
   GET_PAYMENTS_FOR_ORG,
   GET_PAYMENTS_FOR_POD,
@@ -10,6 +15,7 @@ import {
 } from 'graphql/queries/payment';
 import React, { useContext, useState } from 'react';
 import palette from 'theme/palette';
+import { ENTITIES_TYPES } from 'utils/constants';
 import { ErrorText } from '../..';
 import { CreateFormPreviewButton } from '../../../CreateEntity/styles';
 import { SnackbarAlertContext } from '../../SnackbarAlert';
@@ -35,7 +41,7 @@ const OFFLINE_PAYMENT_OPTIONS = [
 ];
 
 export function OfflinePayment(props) {
-  const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo } = props;
+  const { handleClose, approvedSubmission, fetchedTask, submissionPaymentInfo, entityType = null } = props;
   const recipientAddress = submissionPaymentInfo?.paymentData?.[0]?.recepientAddress;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
@@ -44,6 +50,18 @@ export function OfflinePayment(props) {
   const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [submissionPaid, setSubmissionPaid] = useState(null);
+
+  const [lnkOffPlatformPaymentForGrantApplications] = useMutation(LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION, {
+    onCompleted: (data) => {
+      setSubmissionPaid(true);
+    },
+    refetchQueries: ['getGrantApplicationById', 'getGrantById'],
+    onError: (e) => {
+      console.error(e);
+      setLinkPaymentError(e);
+    },
+  });
+
   const handleLinkPaymentLinkClick = () => {
     setLinkPaymentError(null);
     const offlineLinks = [
@@ -52,20 +70,31 @@ export function OfflinePayment(props) {
         link: offlinePaymentLink,
       },
     ];
-    linkOffPlatformPayment({
-      variables: {
-        input: {
-          submissionId: approvedSubmission.id,
-          offlineLinks,
+    if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+      lnkOffPlatformPaymentForGrantApplications({
+        variables: {
+          input: {
+            grantApplicationId: approvedSubmission.id,
+            offlineLinks,
+          },
         },
-        refetchQueries: [
-          GET_UNPAID_SUBMISSIONS_FOR_POD,
-          GET_UNPAID_SUBMISSIONS_FOR_ORG,
-          GET_PAYMENTS_FOR_POD,
-          GET_PAYMENTS_FOR_ORG,
-        ],
-      },
-    });
+      });
+    } else {
+      linkOffPlatformPayment({
+        variables: {
+          input: {
+            submissionId: approvedSubmission.id,
+            offlineLinks,
+          },
+          refetchQueries: [
+            GET_UNPAID_SUBMISSIONS_FOR_POD,
+            GET_UNPAID_SUBMISSIONS_FOR_ORG,
+            GET_PAYMENTS_FOR_POD,
+            GET_PAYMENTS_FOR_ORG,
+          ],
+        },
+      });
+    }
     if (handleClose) {
       handleClose();
     }
@@ -137,7 +166,7 @@ export function OfflinePayment(props) {
 }
 
 export function BatchOfflinePayment(props) {
-  const { handleClose, approvedSubmission, submissionIds } = props;
+  const { handleClose, approvedSubmission, submissionIds, entityType = null } = props;
   const [selectedOfflineType, setSelectedOfflineType] = useState(null);
   const [offlinePaymentLink, setOfflinePaymentLink] = useState(null);
   const [linkPaymentError, setLinkPaymentError] = useState(null);
@@ -146,6 +175,16 @@ export function BatchOfflinePayment(props) {
   const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
   const [submissionPaid, setSubmissionPaid] = useState(null);
   const [linkBatchOffPlatformPayment] = useMutation(LINK_BATCH_OFF_PLATFORM_PAYMENT, {
+    onCompleted: (data) => {
+      setSubmissionPaid(true);
+    },
+    onError: (e) => {
+      console.error(e);
+      setLinkPaymentError(e);
+    },
+  });
+
+  const [linkBatchOffPlatformPaymentForGrantApplications] = useMutation(LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION, {
     onCompleted: (data) => {
       setSubmissionPaid(true);
     },

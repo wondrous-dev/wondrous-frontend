@@ -99,3 +99,28 @@ export const GET_PROCESSING_PAYMENTS_FOR_POD = gql`
   }
   ${ProcessingPaymentFragment}
 `;
+
+export const GET_GRANT_APPLICATION_PAYMENT_INFO = gql`
+  query getGrantApplicationPaymentInfo($grantApplicationId: ID!) {
+    getGrantApplicationPaymentInfo(grantApplicationId: $grantApplicationId) {
+      grantApplicationId
+      paymentData {
+        tokenAddress
+        isEthTransfer
+        amount
+        recepientAddress
+        chain
+        decimal
+      }
+    }
+  }
+`;
+
+export const GET_PAYMENTS_FOR_GRANT_APPLICATION = gql`
+  query getPaymentsForGrantApplication($grantApplicationId: ID) {
+    getPaymentsForGrantApplication(grantApplicationId: $grantApplicationId) {
+      ...PaymentCardFragment
+    }
+  }
+  ${PaymentCardFragment}
+`;

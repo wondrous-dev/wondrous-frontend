@@ -1,7 +1,7 @@
 import { GR15DEICategoryName } from 'utils/constants';
 import { tabsPerType } from './constants';
 
-export const selectTabsPerType = (isTaskProposal, isMilestone, isSubtask, isBounty) => {
+export const selectTabsPerType = (isTaskProposal = false, isMilestone = false, isSubtask = false, isBounty = false) => {
   if (isTaskProposal) return tabsPerType.proposalTabs;
   if (isMilestone) return tabsPerType.milestoneTabs;
   if (isSubtask) return tabsPerType.subtaskTabs;

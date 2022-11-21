@@ -32,7 +32,7 @@ import { formatDateDisplay } from 'utils/board';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import GR15DEIModal from 'components/Common/IntiativesModal/GR15DEIModal';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
-import SubmissionCommentType from 'components/Common/SubmissionCommentType';
+import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { PaymentButton } from 'components/Common/Task/paymentButton';
 import { TaskAction, TaskActionAmount } from 'components/Common/Task/styles';
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
@@ -231,7 +231,7 @@ function SubmissionItemUserImage({ creatorProfilePicture }) {
   return <DefaultUserImage />;
 }
 
-function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor }) {
+export function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor = false }) {
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   return (
     <NoUnderlineLink href={`/profile/${creatorUsername}/about`} passHref>
@@ -269,9 +269,16 @@ function SubmissionItemLink({ links }: { links: [] }) {
   );
 }
 
-function SubmissionShowComments({ setShowComments, setShowCommentBox, commentCount, showComments, setCommentType }) {
+export function SubmissionShowComments({
+  setShowComments,
+  setShowCommentBox,
+  commentCount,
+  showComments,
+  setCommentType,
+  title = 'Submission comments',
+}) {
   return (
-    <Tooltip title="Submission comments" placement="top">
+    <Tooltip title={title} placement="top">
       <TaskAction
         onClick={() => {
           setShowComments(!showComments);
@@ -594,7 +601,7 @@ export function SubmissionItem({
       </SubmissionItemFooter>
       {showKudosOption && (
         <div>
-          <SubmissionCommentType status={commentType} text="Submission Approved!" />
+          <SubmittableCommentType status={commentType} text="Submission Approved!" />
           <GiveKudosButton
             onClick={() => {
               setCommentType(SUBMISSION_COMMENT_TYPE.APPROVED);

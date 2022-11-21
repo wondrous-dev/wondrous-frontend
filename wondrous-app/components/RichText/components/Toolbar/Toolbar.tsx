@@ -1,5 +1,5 @@
 import isUrl from 'is-url';
-import { Modal } from '@mui/material';
+import { Modal, Typography } from '@mui/material';
 import { Box } from '@mui/system';
 import { useSlate } from 'slate-react';
 import React, { useEffect, useState } from 'react';
@@ -16,6 +16,7 @@ import BulletedListIcon from 'components/RichText/icons/BulletedListIcon';
 import NumberedListIcon from 'components/RichText/icons/NumberedListIcon';
 import LinkIcon from 'components/RichText/icons/LinkIcon';
 import CodeIcon from 'components/RichText/icons/CodeIcon';
+import { HeaderIcon } from 'components/RichText/icons/HeaderIcon';
 import { LinkModal, LinkModalInput, LinkModalTitle, ToolbarButton, ToolbarContainer } from './styles';
 
 const InsertLinkModal: React.FC<{
@@ -190,6 +191,9 @@ function Toolbar() {
 
   return (
     <ToolbarContainer>
+      <MarkButton type="headingOne" icon={<HeaderIcon title="H1" />} />
+      <MarkButton type="headingTwo" icon={<HeaderIcon title="H2" />} />
+      <MarkButton type="headingThree" icon={<HeaderIcon title="H3" />} />
       <MarkButton type="bold" icon={<BoldIcon />} />
       <MarkButton type="italic" icon={<ItalicIcon />} />
       <MarkButton type="underline" icon={<UnderlineIcon />} />

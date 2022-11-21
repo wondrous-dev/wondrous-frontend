@@ -434,6 +434,31 @@ export interface ICreateEntityModal {
   setFormDirty?: Dispatch<SetStateAction<boolean>>;
 }
 
+export interface GrantCreateModalProps extends ICreateEntityModal {
+  isEdit?: boolean;
+  existingGrant?: {
+    id: string;
+    title: string;
+    description: string;
+    orgId: string;
+    podId?: string;
+    media?: any;
+    privacyLevel?: string;
+    reward?: {
+      paymentMethodId?: string;
+      rewardAmount?: string;
+    };
+    numOfGrant?: string;
+    startDate?: string;
+    endDate?: string;
+    applyPolicy?: string;
+    categories?: {
+      name?: string;
+    }[];
+    reviewerIds?: string[];
+  };
+}
+
 export const formDirty = (form: FormikValues): boolean => {
   const { initialValues, values } = form;
   const excludedFields = ['orgId'];

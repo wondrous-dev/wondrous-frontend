@@ -643,6 +643,7 @@ export const SubmissionItemWrapper = styled.div`
   flex-direction: column;
   gap: 14px;
   background: #1d1d1d;
+  border: 1px solid ${palette.grey79};
   ${({ highlight }) =>
     highlight &&
     `
