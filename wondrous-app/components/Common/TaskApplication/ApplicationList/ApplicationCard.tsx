@@ -98,6 +98,7 @@ export default function ApplicationCard({
                   marginRight: '4px',
                 }}
                 src={avatar}
+                alt="User profile picture"
               />
             ) : (
               <DefaultUserImage

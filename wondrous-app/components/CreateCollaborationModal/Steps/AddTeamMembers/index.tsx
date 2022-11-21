@@ -245,6 +245,7 @@ const AddTeamMembers = ({
                             height: '18px',
                             borderRadius: '4px',
                           }}
+                          alt="Profile image"
                         />
                       ) : (
                         <CreateEntityDefaultUserImage />
@@ -296,6 +297,7 @@ const AddTeamMembers = ({
                           height: '18px',
                           borderRadius: '4px',
                         }}
+                        alt="Profile image"
                       />
                     ) : (
                       <CreateEntityDefaultUserImage />

@@ -137,7 +137,7 @@ export default function ImageUpload(props: Props) {
     if (imageType === AVATAR_EDITOR_TYPES.HEADER_IMAGE) {
       return (
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 75 }}>
-          <SafeImage src={image} width="100%" />;
+          <SafeImage src={image} fill alt="header image" />;
         </AspectRatio>
       );
     }
@@ -149,6 +149,7 @@ export default function ImageUpload(props: Props) {
         height={80}
         style={{ borderRadius: '50%' }}
         placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
+        alt="upload image"
       />
     );
   };

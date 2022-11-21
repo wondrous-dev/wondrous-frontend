@@ -76,6 +76,7 @@ const Mentions: React.FC<
                   height: '30px',
                   borderRadius: '15px',
                 }}
+                alt="Profile picture"
               />
               <MentionItemText>{display}</MentionItemText>
             </MentionItem>

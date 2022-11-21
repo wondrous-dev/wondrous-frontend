@@ -23,6 +23,7 @@ import {
   PostHeaderUsername,
   PostHeaderWrapper,
 } from './styles';
+import { NoUnderlineLink } from '../Link/links';
 
 const objectTypeText = {
   [ObjectType.TASK_SUBMISSION]: 'task',
@@ -64,7 +65,7 @@ export function PostHeader(props) {
             awarded a kudos {referencedUser && `to ${referencedUser}`} for a completed{' '}
             <PostHeaderLink as="span">
               <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => location.push(taskViewUrl)}>
-                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+                {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
           </>
@@ -79,7 +80,7 @@ export function PostHeader(props) {
                 preventLinkNavigation
                 onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
               >
-                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+                {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
           </>
@@ -94,7 +95,7 @@ export function PostHeader(props) {
                 preventLinkNavigation
                 onNavigate={() => router.replace(taskViewUrl, undefined, { shallow: true })}
               >
-                <a href={taskViewUrl}>{objectTypeHeaderText}</a>
+                {objectTypeHeaderText}
               </SmartLink>
             </PostHeaderLink>
           </>
@@ -121,7 +122,7 @@ export function PostHeader(props) {
           {actor?.profilePicture ? <PostHeaderImage src={actor?.profilePicture} /> : <PostHeaderDefaultUserImage />}
           <PostHeaderText>
             <PostHeaderUsername as="span">
-              <Link href={`/profile/${actor?.username}/about`}>{actor?.username}</Link>
+              <NoUnderlineLink href={`/profile/${actor?.username}/about`}>{actor?.username}</NoUnderlineLink>
             </PostHeaderUsername>{' '}
             {headerText}
           </PostHeaderText>

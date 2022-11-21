@@ -8,15 +8,16 @@ import { useMutation, useQuery } from '@apollo/client';
 import { GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { REDEEM_COLLAB_TOKEN } from 'graphql/mutations';
 import { PERMISSIONS } from 'utils/constants';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { Wrapper, WrapperHeader, WrapperSubheader } from './styles';
 
 export const LoggedOutUser = ({ user, token }) => (
   <Wrapper>
     <WrapperHeader>My Org is on Wonder</WrapperHeader>
     <WrapperSubheader>Log-in and accept the invitation</WrapperSubheader>
-    <Link href={`/login?collabInvite=${token}`}>
+    <NoUnderlineLink href={`/login?collabInvite=${token}`}>
       <ActionButton>Log in and accept</ActionButton>
-    </Link>
+    </NoUnderlineLink>
   </Wrapper>
 );
 
@@ -26,9 +27,9 @@ export const MissingUserActions = ({ user, token }) => {
     <Wrapper>
       <WrapperHeader>My org is not on Wonder</WrapperHeader>
       <WrapperSubheader>Easy, just create a workspace and accept!</WrapperSubheader>
-      <Link href={href}>
+      <NoUnderlineLink href={href}>
         <ActionButton>Create org and accept</ActionButton>
-      </Link>
+      </NoUnderlineLink>
     </Wrapper>
   );
 };

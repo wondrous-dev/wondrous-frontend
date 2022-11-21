@@ -171,7 +171,7 @@ function GlobalSearch() {
                   options[option].map((item, idx) => (
                     <SearchResultItem key={idx} onClick={() => handleRedirect(option, item)}>
                       {item.profilePicture ? (
-                        <SafeImage width={29} height={29} src={item.profilePicture} />
+                        <SafeImage width={29} height={29} src={item.profilePicture} alt="Profile picture" />
                       ) : (
                         defaultImg()
                       )}

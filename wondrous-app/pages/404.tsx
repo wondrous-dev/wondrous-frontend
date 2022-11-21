@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import Wrapper from 'components/Wrapper';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -86,9 +87,9 @@ export default function Custom404() {
       <Custom404Wrapper>
         <Custom404Heading>Hey Wonderer!</Custom404Heading>
         <Custom404SubHeading>Looks like there is no such planet in the Wonderverse.</Custom404SubHeading>
-        <Link href="/dashboard" passHref>
+        <NoUnderlineLink href="/dashboard" passHref>
           <Custom404Button>Back to the homepage</Custom404Button>
-        </Link>
+        </NoUnderlineLink>
       </Custom404Wrapper>
     </Wrapper>
   );

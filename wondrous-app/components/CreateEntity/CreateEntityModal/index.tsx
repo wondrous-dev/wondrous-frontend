@@ -896,7 +896,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
-                                <SafeImage useNextImage={false} src={reviewer.profilePicture} />
+                                <SafeImage useNextImage={false} src={reviewer.profilePicture} alt="Profile picture" />
                               ) : (
                                 <CreateEntityDefaultUserImage />
                               )}
@@ -921,7 +921,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       return (
                         <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
-                            <SafeImage useNextImage={false} src={option?.profilePicture} />
+                            <SafeImage useNextImage={false} src={option?.profilePicture} alt="Profile picture" />
                           ) : (
                             <CreateEntityDefaultUserImage />
                           )}
@@ -1011,7 +1011,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                         startAdornment={
                           <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                             {assignee?.profilePicture ? (
-                              <SafeImage useNextImage={false} src={assignee.profilePicture} />
+                              <SafeImage useNextImage={false} src={assignee.profilePicture} alt="Profile picture" />
                             ) : (
                               <CreateEntityDefaultUserImage />
                             )}
@@ -1033,7 +1033,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   renderOption={(props, option) => (
                     <CreateEntityAutocompleteOption {...props} data-cy={`assignee-option-${option.label}`}>
                       {option?.profilePicture ? (
-                        <SafeImage useNextImage={false} src={option?.profilePicture} />
+                        <SafeImage useNextImage={false} src={option?.profilePicture} alt="Profile picture" />
                       ) : (
                         <CreateEntityDefaultUserImage />
                       )}

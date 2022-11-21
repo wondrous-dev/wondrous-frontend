@@ -22,6 +22,7 @@ import InfoIcon from 'components/Icons/infoIcon';
 import Tooltip from 'components/Tooltip';
 import palette from 'theme/palette';
 
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   RequestLightBoxContainer,
   RequestMiddleContainer,
@@ -237,9 +238,9 @@ const CurrentRoleModal = (props) => {
               {rolesWithDiscordAccess?.length !== 0 && !user?.userInfo?.discordUsername && (
                 <ClaimRoleWarningWrapper>
                   <LitWarningMessage>To join via Discord, connect your discord to Wonder</LitWarningMessage>
-                  <Link href="/profile/settings">
+                  <NoUnderlineLink href="/profile/settings">
                     <ActionButton style={{ marginLeft: 5 }}>Connect Discord</ActionButton>
-                  </Link>
+                  </NoUnderlineLink>
                 </ClaimRoleWarningWrapper>
               )}
               {rolesWithAccessCondition?.length !== 0 && notLinkedWalletError && (

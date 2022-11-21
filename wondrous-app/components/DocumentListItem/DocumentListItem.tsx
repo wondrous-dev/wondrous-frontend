@@ -41,7 +41,16 @@ function DocumentListItem({ title, description, media, url, icon, permission, on
     >
       <Box sx={styles.listItem}>
         <Box sx={styles.imageContainer}>
-          {imgUrl && <Image src={imgUrl} alt={`media for ${title}`} layout="fill" objectFit="cover" />}
+          {imgUrl && (
+            <Image
+              src={imgUrl}
+              alt={`media for ${title}`}
+              fill
+              style={{
+                objectFit: 'cover',
+              }}
+            />
+          )}
         </Box>
         <Box
           ml={1.75}

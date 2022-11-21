@@ -177,6 +177,7 @@ export default function SearchTasks({ onSearch, isExpandable, autocompleteCompon
                       height: '18px',
                       borderRadius: '4px',
                     }}
+                    alt="Profile picture"
                   />
                 ) : (
                   <UserIconSmall />

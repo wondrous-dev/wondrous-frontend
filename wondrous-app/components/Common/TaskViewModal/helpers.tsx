@@ -116,7 +116,7 @@ export const TaskDescriptionTextWrapper = ({ text }) => {
 
   return (
     <>
-      <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight}>
+      <TaskDescriptionText isExpanded={isExpanded} initialHeight={initialHeight} ref={checkRichTextHeight} as="div">
         <RichTextViewer text={text} />
       </TaskDescriptionText>
       {showButton && (

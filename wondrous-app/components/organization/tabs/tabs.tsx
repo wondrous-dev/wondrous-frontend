@@ -75,7 +75,9 @@ const Tabs = (props) => {
             value={tab.href}
             key={tab.href}
             href={tab.href}
+            as={tab.href}
             passHref
+            legacyBehavior
             shallow
           >
             <StyledTab isActive={tab.href.includes(asPath)} label={tab.label} />
