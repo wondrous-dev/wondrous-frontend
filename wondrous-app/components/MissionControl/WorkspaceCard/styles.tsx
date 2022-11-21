@@ -160,6 +160,6 @@ export const WorkspaceCardStatLabel = styled(Typography)`
 
 export const WorkspaceCardLabelWrapper = styled.div`
   position: absolute;
-  width: min-content;
+  max-width: 400px;
   top: 16%;
 `;

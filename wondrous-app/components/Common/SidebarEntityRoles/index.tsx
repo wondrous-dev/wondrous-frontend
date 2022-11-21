@@ -6,6 +6,7 @@ import { AddIconWrapper, Label, ListWrapper } from 'components/Common/SidebarSty
 import { GET_ORG_ROLES_WITH_TOKEN_GATE_AND_DISCORD, GET_POD_ROLES_WITH_TOKEN_GATE_AND_DISCORD } from 'graphql/queries';
 import useCanManage from 'hooks/useCanManage';
 import { pickBy } from 'lodash';
+import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useBoards } from 'utils/hooks';
 
@@ -48,14 +49,28 @@ const RolesSidebar = () => {
         <ListWrapper>
           <ListWrapper>
             <Label>Your current role</Label>
-            <Item disabled>{userRole}</Item>
+            <div
+              onClick={handleCreateNewRole}
+              style={{
+                cursor: 'pointer',
+              }}
+            >
+              <Item disabled>{userRole}</Item>
+            </div>
           </ListWrapper>
           <ListWrapper>
             <Label>Other roles</Label>
             {otherRoles?.map(({ name, id: roleId }) => (
-              <Item key={roleId} disabled>
-                {name}
-              </Item>
+              <div
+                onClick={handleCreateNewRole}
+                style={{
+                  cursor: 'pointer',
+                }}
+              >
+                <Item key={roleId} disabled>
+                  {name}
+                </Item>
+              </div>
             ))}
             {canManage && (
               <Item roundedBg onClick={handleCreateNewRole}>

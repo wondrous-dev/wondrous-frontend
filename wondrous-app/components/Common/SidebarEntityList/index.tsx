@@ -106,15 +106,15 @@ const useSidebarData = () => {
         label: 'Community',
         items: [
           {
-            text: 'Analytics',
+            text: 'Leaderboard/Analytics',
             Icon: PieChartIcon,
             link: `${link}/analytics`,
           },
-          {
-            text: 'Activity',
-            Icon: ShowChartIcon,
-            link: `${link}/activities`,
-          },
+          // { TODO: Put back when mint kudos is out
+          //   text: 'Activity',
+          //   Icon: ShowChartIcon,
+          //   link: `${link}/activities`,
+          // },
           {
             text: 'Members',
             Icon: GroupIcon,
@@ -133,7 +133,7 @@ const useSidebarData = () => {
           },
 
           {
-            text: 'Resources',
+            text: 'Documentation',
             Icon: FolderIcon,
             link: `${link}/docs`,
           },
