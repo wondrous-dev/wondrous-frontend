@@ -31,11 +31,9 @@ const List = ({ display = false }) => {
     orgId: grant?.orgId,
     podId: grant?.podId,
   });
-
-  const isNotAMember =
-    !userOrgs ||
-    !userOrgs?.getUserOrgs?.some((org) => org.id === grant?.orgId) ||
-    !board?.userPermissionsContext?.podPermissions[grant?.podId];
+  const isMember =
+    userOrgs?.getUserOrgs?.some((org) => org.id === grant?.org?.id) ||
+    board?.userPermissionsContext?.podPermissions[grant?.pod?.id];
 
   const [ref, inView] = useInView({});
   const { data, fetchMore, refetch, previousData, loading } = useQuery(GET_GRANT_APPLICATIONS, {
@@ -75,7 +73,7 @@ const List = ({ display = false }) => {
 
   if (!display) return null;
 
-  const canApply = grant?.applyPolicy === GRANT_APPLY_POLICY.EVERYONE || !isNotAMember;
+  const canApply = grant?.applyPolicy === GRANT_APPLY_POLICY.EVERYONE || isMember;
 
   return (
     <>
