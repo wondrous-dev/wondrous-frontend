@@ -271,7 +271,7 @@ export const TaskModalHeaderMenuItem = styled(MenuItem)`
 
 const TaskModalTaskDataFullScreen = css`
   display: grid;
-  grid-template-columns: 6fr 4fr;
+  grid-template-columns: minmax(0, 6fr) 4fr;
   grid-template-rows: auto 1fr;
   row-gap: 36px;
 
@@ -280,7 +280,7 @@ const TaskModalTaskDataFullScreen = css`
   }
 `;
 
-const TaskModalTaskDataMinimized = css`
+export const TaskModalTaskDataMinimized = css`
   display: flex;
   flex-direction: column;
 `;

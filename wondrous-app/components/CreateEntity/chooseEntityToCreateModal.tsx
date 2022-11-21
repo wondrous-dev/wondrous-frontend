@@ -22,6 +22,7 @@ import {
   CreateLayoutTaskIcon,
   CreateLayoutBountyIcon,
   CreateLayoutProposalIcon,
+  CreateLayoutGrantIcon,
 } from './styles';
 import RightArrowIcon from '../Icons/rightArrow';
 import CloseModalIcon from '../Icons/closeModal';
@@ -50,6 +51,10 @@ export const ENTITIES_UI_ELEMENTS = {
   [ENTITIES_TYPES.PROPOSAL]: {
     icon: CreateLayoutProposalIcon,
     label: 'Proposal',
+  },
+  [ENTITIES_TYPES.GRANT]: {
+    icon: CreateLayoutGrantIcon,
+    label: 'Grant',
   },
 };
 

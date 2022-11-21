@@ -108,7 +108,7 @@ const Review = ({ fields }) => {
       <ItemWithEdit value={username} field={fields.username} EditComponent={EditName} />
       {profilePicture && (
         <Item label="DAO Logo">
-          <Logo alt="Profile" width="26px" height="26px" useNextImage src={profilePicture} />
+          <Logo alt="Profile" width={26} height={26} useNextImage src={profilePicture} />
         </Item>
       )}
       <ItemWithEdit value={description} field={fields.description} EditComponent={EditDescription} />

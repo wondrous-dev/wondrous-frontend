@@ -24,3 +24,13 @@ export enum SettingsPage {
   Org,
   Pod,
 }
+
+export enum ImageKeyEnums {
+  headerPicture = 'headerPicture',
+  profilePicture = 'profilePicture',
+}
+
+export enum ImageTypes {
+  header = 'header',
+  profile = 'profile',
+}

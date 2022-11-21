@@ -148,6 +148,8 @@ export const ENTITIES_TYPES = {
   BOUNTY: 'bounty',
   PROPOSAL: 'proposal',
   SUBMISSION: 'submission',
+  GRANT: 'grant',
+  GRANT_APPLICATION: 'grant_application',
 };
 
 export const MODAL_TABS_MAP = {
@@ -822,8 +824,42 @@ export enum SUBMISSION_COMMENT_TYPE {
   REOPEN = 'reopen',
 }
 
+export enum GRANT_APPLICATION_COMMENT_TYPE {
+  APPROVED = 'approved',
+  CHANGE_REQUESTED = 'change_requested',
+  RESUBMIT = 'resubmit',
+  REOPEN = 'reopen',
+  REJECTED = 'rejected',
+}
+export const HEADER_ASPECT_RATIO = 7.05;
+
 export const TaskMintStatus = {
   NOT_STARTED: 'not_started',
   IN_PROGRESS: 'in_progress',
   COMPLETED: 'completed',
+};
+
+export const GRANTS_STATUSES = {
+  OPEN: 'open',
+  CLOSED: 'closed',
+};
+
+export enum GRANT_APPLICATION_STATUSES {
+  OPEN = 'open',
+  WAITING_FOR_REVIEW = 'waiting_for_review',
+  CHANGE_REQUESTED = 'change_requested',
+  APPROVED = 'approved',
+  REJECTED = 'rejected',
+  APPROVED_AND_PAID = 'approved_and_paid',
+  APPROVED_AND_PROCESSING = 'approved_and_processing',
+}
+
+export const PRIVACY_LABELS = {
+  [PRIVACY_LEVEL.public]: 'Public',
+  [PRIVACY_LEVEL.private]: 'Members only',
+};
+
+export const GRANT_APPLY_POLICY = {
+  EVERYONE: 'everyone',
+  ONLY_ORG_MEMBERS: 'only_org_members',
 };

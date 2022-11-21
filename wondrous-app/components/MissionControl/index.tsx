@@ -39,7 +39,7 @@ import MissionControlWorkspaceCard from './WorkspaceCard';
 const CARDS_CONFIG = {
   workspace: [
     {
-      label: 'Contributor \n Workspace',
+      label: 'Your Contributor \n Workspace',
       url: '/dashboard',
       labelGradient: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
       img: '/images/mission-control/contributor-card.png',
@@ -77,7 +77,7 @@ const CARDS_CONFIG = {
       ],
     },
     {
-      label: 'Operator \n Workspace',
+      label: 'Your Operator \n Workspace',
       labelGradient: 'linear-gradient(180deg, #00BAFF 0%, #F2C678 100%)',
       img: '/images/mission-control/operator-card.png',
       hoverImg: '/images/mission-control/operator-card-hover.png',

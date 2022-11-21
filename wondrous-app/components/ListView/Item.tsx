@@ -234,6 +234,15 @@ export default function ListViewItem({ task, entityType }) {
     });
   };
 
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: task?.id,
+      },
+    });
+  };
+
   if (!data) return null;
   return (
     <>
@@ -283,8 +292,9 @@ export default function ListViewItem({ task, entityType }) {
       >
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+            handleGoBack={handleGoBackToTask}
             open={showPaymentModal}
+            reward={task?.rewards[0]}
             approvedSubmission={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
@@ -304,6 +314,7 @@ export default function ListViewItem({ task, entityType }) {
                   marginRight: '4px',
                 }}
                 src={assigneeProfilePicture}
+                alt="Assignee profile picture"
               />
             ) : (
               <DefaultUserImage

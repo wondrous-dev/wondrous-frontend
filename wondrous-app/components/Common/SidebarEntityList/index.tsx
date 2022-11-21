@@ -16,6 +16,7 @@ import { useRouter } from 'next/router';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
+import GrantIcon from 'components/Icons/GrantIcon';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -47,6 +48,7 @@ const useSidebarData = () => {
       }
       router.push(link);
     };
+
   const link = orgBoard ? `/organization/${board?.orgData?.username}` : `/pod/${board?.podId}`;
   const taskCount = usePerTypeTaskCountForBoard();
   const sidebarData = {
@@ -83,6 +85,18 @@ const useSidebarData = () => {
             count: taskCount.proposalCount,
             entityType: ENTITIES_TYPES.PROPOSAL,
           },
+          !!orgBoard && {
+            text: 'Pods',
+            Icon: PodIcon,
+            link: `${link}/pods`,
+            count: board?.orgData?.podCount,
+          },
+          {
+            text: 'Grants',
+            Icon: GrantIcon,
+            link: `${link}/grants`,
+            count: taskCount?.grantCount,
+          },
           !board?.orgData?.shared && {
             text: 'Collaborations',
             Icon: SmallDao2DaoIcon,
@@ -94,27 +108,21 @@ const useSidebarData = () => {
               },
             },
           },
-          !!orgBoard && {
-            text: 'Pods',
-            Icon: PodIcon,
-            link: `${link}/pods`,
-            count: board?.orgData?.podCount,
-          },
         ],
       },
       {
         label: 'Community',
         items: [
           {
-            text: 'Analytics',
+            text: 'Leaderboard/Analytics',
             Icon: PieChartIcon,
             link: `${link}/analytics`,
           },
-          {
-            text: 'Activity',
-            Icon: ShowChartIcon,
-            link: `${link}/activities`,
-          },
+          // { TODO: Put back when mint kudos is out
+          //   text: 'Activity',
+          //   Icon: ShowChartIcon,
+          //   link: `${link}/activities`,
+          // },
           {
             text: 'Members',
             Icon: GroupIcon,
@@ -133,7 +141,7 @@ const useSidebarData = () => {
           },
 
           {
-            text: 'Resources',
+            text: 'Documentation',
             Icon: FolderIcon,
             link: `${link}/docs`,
           },

@@ -38,12 +38,13 @@ const OrgItem = (props) => {
             <DAOEmptyIcon />
           </TokenEmptyLogo>
         }
-        width="42px"
-        height="42px"
+        width={42}
+        height={42}
         useNextImage
         style={{
           borderRadius: '6px',
         }}
+        alt="Organization logo"
       />
       <OrgItemDescriptionDiv>
         <OrgItemDescriptionTitle>{org?.name}</OrgItemDescriptionTitle>

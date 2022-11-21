@@ -165,6 +165,7 @@ export function RetroactivePayoutModal(props) {
                               useNextImage={false}
                               src={contributor?.assigneeProfilePicture}
                               style={imageStyle}
+                              alt="Assignee profile picture"
                             />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
@@ -202,6 +203,7 @@ export function RetroactivePayoutModal(props) {
                                 width: '24px',
                                 height: '24px',
                               }}
+                              alt="Contributor icon"
                             />
                           </IconContainer>
                           <CompensationAmount>

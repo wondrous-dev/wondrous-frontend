@@ -796,7 +796,7 @@ export const CreateEntityWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   width: 100%;
-  gap: 6px;
+  gap: 14px;
   align-items: flex-start;
 `;
 
@@ -1068,6 +1068,7 @@ export const EditorContainer = styled.div`
   min-height: ${editorMinHeight}px;
   overflow: auto;
   cursor: text;
+  ${scrollBarStyles};
 `;
 export const EditorPlaceholder = styled.div`
   min-height: ${editorMinHeight - editorPadding * 2}px;

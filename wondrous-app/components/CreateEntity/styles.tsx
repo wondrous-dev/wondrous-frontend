@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 import palette from 'theme/palette';
 import DropdownSelect from 'components/Common/DropdownSelect';
+import GrantIcon from 'components/Icons/GrantIcon';
 import { BaseCard } from '../Common/card';
 import { LogoSquare } from '../Common/ci';
 import BountyIcon from '../Icons/createBounty.svg';
@@ -147,6 +148,15 @@ export const CreateLayoutDaoIcon = styled(CreateDaoIcon)`
 `;
 
 export const CreateLayoutProposalIcon = styled(CreateProposalIcon)``;
+
+export const CreateLayoutGrantIcon = styled(GrantIcon)`
+  height: 25px;
+  width: 25px;
+  padding: 4px;
+  path {
+    stroke: ${palette.blue20};
+  }
+`;
 
 export const CreateLayoutDaoMenuItemIcon = styled(LogoSquare)`
   width: 20px;

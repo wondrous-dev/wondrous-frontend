@@ -13,6 +13,7 @@ import calculateTimeLapse from 'utils/calculateTimeLapse';
 import { useHotkey, useNotifications } from 'utils/hooks';
 import { HOTKEYS } from 'utils/hotkeyHelper';
 import { LIMIT } from 'services/board';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { SmallAvatar } from '../Common/AvatarList';
 import { StyledBadge } from '../Header/styles';
 import {
@@ -92,7 +93,7 @@ function NotificationsBoard({ onlyBoard = false }) {
     const userName = notification.actorUsername;
     const actor = (
       <NotificationsLink>
-        <Link href={`/profile/${userName}/about`}>{userName}</Link>
+        <NoUnderlineLink href={`/profile/${userName}/about`}>{userName}</NoUnderlineLink>
       </NotificationsLink>
     );
 
@@ -103,7 +104,7 @@ function NotificationsBoard({ onlyBoard = false }) {
     const object = (
       <span>
         <NotificationsLink styled={{ display: 'block' }}>
-          <Link href={link}>{objectType}</Link>
+          <NoUnderlineLink href={link}>{objectType}</NoUnderlineLink>
         </NotificationsLink>
         <NotificationItemTimeline>{calculateTimeLapse(notification.timestamp)}</NotificationItemTimeline>
       </span>

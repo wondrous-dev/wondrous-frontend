@@ -66,7 +66,7 @@ function Wrapper(props: IWrapperProps) {
   };
 
   const profileImageComponent = profilePicture ? (
-    <SafeImage src={profilePicture} style={style as React.CSSProperties} useNextImage={false} />
+    <SafeImage src={profilePicture} style={style as React.CSSProperties} useNextImage={false} alt="Profile picture" />
   ) : (
     <DefaultUserImage style={style} />
   );

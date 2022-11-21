@@ -43,7 +43,7 @@ import {
 } from 'utils/constants';
 
 import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { useFullScreen, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import { StyledChipTag } from 'components/Tags/styles';
 import { GithubLink } from 'components/Settings/Github/styles';
@@ -330,7 +330,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const filteredEligibleReviewers = eligibleReviewers.filter(
     (reviewer) => !form.values.reviewerIds?.includes(reviewer.id)
   );
-  const [fullScreen, setFullScreen] = useState(false);
+  const { isFullScreen, toggleFullScreen } = useFullScreen();
   const [attachMedia] = useMutation(ATTACH_MEDIA_TO_TASK);
   const [removeMedia] = useMutation(REMOVE_MEDIA_FROM_TASK);
   const [attachTaskProposalMedia] = useMutation(ATTACH_MEDIA_TO_TASK_PROPOSAL);
@@ -612,7 +612,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [form, setFormDirty]);
 
   return (
-    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={fullScreen} data-cy="modal-create-entity">
+    <CreateEntityForm onSubmit={form.handleSubmit} fullScreen={isFullScreen} data-cy="modal-create-entity">
       <ConvertTaskToBountyModal
         open={turnTaskToBountyModal}
         onClose={() => setTurnTaskToBountyModal(false)}
@@ -691,7 +691,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
         <CreateEntityHeaderWrapper>
           <Tooltip title="Full screen" placement="top">
             <Box>
-              <CreateEntityOpenInFullIcon onClick={() => setFullScreen(!fullScreen)} />
+              <CreateEntityOpenInFullIcon onClick={toggleFullScreen} />
             </Box>
           </Tooltip>
         </CreateEntityHeaderWrapper>
@@ -906,7 +906,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                           startAdornment={
                             <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                               {reviewer?.profilePicture ? (
-                                <SafeImage useNextImage={false} src={reviewer.profilePicture} />
+                                <SafeImage useNextImage={false} src={reviewer.profilePicture} alt="Profile picture" />
                               ) : (
                                 <CreateEntityDefaultUserImage />
                               )}
@@ -931,7 +931,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                       return (
                         <CreateEntityAutocompleteOption {...props}>
                           {option?.profilePicture ? (
-                            <SafeImage useNextImage={false} src={option?.profilePicture} />
+                            <SafeImage useNextImage={false} src={option?.profilePicture} alt="Profile picture" />
                           ) : (
                             <CreateEntityDefaultUserImage />
                           )}
@@ -1021,7 +1021,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                         startAdornment={
                           <CreateEntityAutocompletePopperRenderInputAdornment position="start">
                             {assignee?.profilePicture ? (
-                              <SafeImage useNextImage={false} src={assignee.profilePicture} />
+                              <SafeImage useNextImage={false} src={assignee.profilePicture} alt="Profile picture" />
                             ) : (
                               <CreateEntityDefaultUserImage />
                             )}
@@ -1043,7 +1043,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
                   renderOption={(props, option) => (
                     <CreateEntityAutocompleteOption {...props} data-cy={`assignee-option-${option.label}`}>
                       {option?.profilePicture ? (
-                        <SafeImage useNextImage={false} src={option?.profilePicture} />
+                        <SafeImage useNextImage={false} src={option?.profilePicture} alt="Profile picture" />
                       ) : (
                         <CreateEntityDefaultUserImage />
                       )}

@@ -81,8 +81,8 @@ function SetupWallet() {
         >
           {' '}
           Click here
-        </span>{' '}
-      </a>
+        </span>
+      </a>{' '}
       and we’ll help you set one up.
     </div>
   );

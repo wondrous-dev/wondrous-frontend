@@ -2,13 +2,7 @@ import { Grid } from '@mui/material';
 import Dropdown from 'components/Common/Dropdown';
 import MoreIcon from 'components/Icons/more';
 import keys from 'lodash/keys';
-import { Button, Item } from './styles';
-
-const MenuButton = () => (
-  <Button>
-    <MoreIcon />
-  </Button>
-);
+import { Item } from './styles';
 
 const TaskCardMenu = ({
   canArchive = false,
@@ -50,7 +44,11 @@ const TaskCardMenu = ({
   };
   return (
     <Grid item container width="fit-content" display={open ? 'block' : 'none'} zIndex="1000">
-      <Dropdown DropdownHandler={MenuButton} setAnchorEl={setAnchorElParent} anchorEl={anchorElParent}>
+      <Dropdown
+        DropdownHandler={() => <MoreIcon stroke="white" />}
+        setAnchorEl={setAnchorElParent}
+        anchorEl={anchorElParent}
+      >
         {keys(menuItems).map((item) => {
           const { onClick, ...props } = menuItems[item];
 

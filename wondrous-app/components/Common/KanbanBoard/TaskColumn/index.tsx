@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Droppable, Draggable } from 'react-beautiful-dnd';
+import { Draggable } from 'react-beautiful-dnd';
 import CreateBtnIcon from 'components/Icons/createBtn';
 import { useInView } from 'react-intersection-observer';
 
@@ -28,6 +28,7 @@ import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
+import Droppable from 'components/StrictModeDroppable';
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,

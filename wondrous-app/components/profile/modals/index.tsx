@@ -53,7 +53,7 @@ const PodItem = forwardRef((props: any, ref) => {
       }
     >
       <TabContainerText>{pod?.name}</TabContainerText>
-      <PodExplainerText>
+      <PodExplainerText as="div">
         <RichTextViewer text={pod?.description} />
       </PodExplainerText>
     </PodWrapper>

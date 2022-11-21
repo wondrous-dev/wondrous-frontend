@@ -213,6 +213,15 @@ export function TaskCard({
 
   const [anchorEl, setAnchorEl] = useState(null);
 
+  const handleGoBackToTask = () => {
+    setShowPaymentModal(false);
+    getTaskSubmissionsForTask({
+      variables: {
+        taskId: task?.id,
+      },
+    });
+  };
+
   return (
     <ProposalCardWrapper
       onMouseEnter={() => setShowMenu(true)}
@@ -225,8 +234,9 @@ export function TaskCard({
       <SmartLink href={viewUrl} preventLinkNavigation onNavigate={onNavigate}>
         {showPaymentModal && !isTaskSubmissionLoading ? (
           <MakePaymentModal
-            getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+            handleGoBack={handleGoBackToTask}
             open={showPaymentModal}
+            reward={task?.rewards[0]}
             approvedSubmission={approvedSubmission}
             handleClose={() => {}}
             setShowPaymentModal={setShowPaymentModal}
@@ -246,6 +256,7 @@ export function TaskCard({
                     borderRadius: '4px',
                     marginRight: '8px',
                   }}
+                  alt="Organization logo"
                 />
               ) : (
                 <DAOIcon />
@@ -364,13 +375,18 @@ export function TaskCard({
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
+                style={{
+                  objectFit: 'cover',
+                  objectPosition: 'center',
+                  width: '100%',
+                  height: 'auto',
+                  maxHeight: '104px',
+                }}
                 width={270}
-                objectFit="cover"
-                objectPosition="center"
-                height="100%"
-                layout="responsive"
+                height={104}
                 src={coverMedia.slug}
                 useNextImage
+                alt="Task cover"
               />
             </BoardsCardMedia>
           ) : null}
@@ -522,7 +538,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
           <Box>
             <TaskPriority value={task?.priority} />
           </Box>
-          <BoardsCardBodyDescription>
+          <BoardsCardBodyDescription as="div">
             <RichTextViewer text={description} />
           </BoardsCardBodyDescription>
           {coverMedia ? (
@@ -531,6 +547,7 @@ export function ProposalCard({ openModal, title, description, task, goToPod, pro
                 useNextImage={false}
                 style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                 src={coverMedia.slug}
+                alt="Task cover"
               />
             </BoardsCardMedia>
           ) : null}

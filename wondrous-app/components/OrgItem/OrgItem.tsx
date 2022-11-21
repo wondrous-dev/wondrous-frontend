@@ -8,7 +8,7 @@ import { OrgDescription, OrgName, StyledGridItem } from './styles';
 const OrgItem = ({ org }) => {
   const { username, headerUrl, bio, imageUrl, name, headerImage } = org;
   return (
-    <Link href={`/organization/${username}/boards`} passHref>
+    <Link href={`/organization/${username}/boards`} style={{ textDecoration: 'none' }} passHref>
       <StyledGridItem>
         {headerImage && headerImage}
         {headerUrl && (
@@ -20,6 +20,7 @@ const OrgItem = ({ org }) => {
               objectFit: 'cover',
             }}
             src={headerUrl}
+            alt="DAO logo"
           />
         )}
         <div>
@@ -36,6 +37,7 @@ const OrgItem = ({ org }) => {
               objectFit: 'cover',
               background: palette.black,
             }}
+            alt="Image"
           />
         </div>
         <OrgName>{name}</OrgName>

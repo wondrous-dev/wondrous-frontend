@@ -66,7 +66,14 @@ function UserProfileContainer() {
       />
       <UserProfileContainerWrapper>
         <UserProfileHeaderImageWrapper>
-          <Image src="/images/profile/profileBackground.png" layout="fill" objectFit="cover" alt="header-image" />
+          <Image
+            src="/images/profile/profileBackground.png"
+            fill
+            style={{
+              objectFit: 'cover',
+            }}
+            alt="header-image"
+          />
         </UserProfileHeaderImageWrapper>
         <UserProfileContainerContent>
           <ProfileInfo userProfile={userProfileData} />

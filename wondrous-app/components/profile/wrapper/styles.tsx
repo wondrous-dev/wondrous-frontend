@@ -26,7 +26,14 @@ export const HeaderImageWrapper = styled.div`
 `;
 
 export const HeaderImageDefault = styled(() => (
-  <Image src="/images/overview/background.png" layout="fill" objectFit="cover" alt="header-image" />
+  <Image
+    src="/images/overview/background.png"
+    fill
+    style={{
+      objectFit: 'cover',
+    }}
+    alt="header-image"
+  />
 ))``;
 
 export const TokenHeader = styled.div`

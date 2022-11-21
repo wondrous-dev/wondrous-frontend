@@ -1,9 +1,12 @@
 import { useMutation } from '@apollo/client';
-import { DELETE_MILESTONE, DELETE_TASK, DELETE_TASK_PROPOSAL } from 'graphql/mutations';
 import CloseModalIcon from 'components/Icons/closeModal';
-import { deleteTaskFromCache } from 'utils/helpers';
 import { ArchivedIcon } from 'components/Icons/statusIcons';
+import { DELETE_MILESTONE, DELETE_TASK, DELETE_TASK_PROPOSAL } from 'graphql/mutations';
+import { DELETE_GRANT, DELETE_GRANT_APPLICATION } from 'graphql/mutations/grant';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
+import { useMemo } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { deleteTaskFromCache } from 'utils/helpers';
 import {
   StyledBody,
   StyledBox,
@@ -36,6 +39,16 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
     'getPerTypeTaskCountForPodBoard',
     SEARCH_USER_CREATED_TASKS,
   ];
+  const [deleteGrant] = useMutation(DELETE_GRANT, {
+    variables: { grantId: taskId },
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+  });
+
+  const [deleteGrantApplication] = useMutation(DELETE_GRANT_APPLICATION, {
+    variables: { grantApplicationId: taskId },
+    refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+  });
+
   const [deleteTask] = useMutation(DELETE_TASK, {
     variables: { taskId },
     refetchQueries,
@@ -68,6 +81,12 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
   });
 
   const handleDelete = () => {
+    if (taskType === ENTITIES_TYPES.GRANT_APPLICATION) {
+      deleteGrantApplication();
+    }
+    if (taskType === ENTITIES_TYPES.GRANT) {
+      deleteGrant();
+    }
     if (taskType === 'task') {
       deleteTask();
     }
@@ -80,6 +99,8 @@ function DeleteTaskModal(props: IArchiveTaskModalProps) {
     onClose();
     onDelete();
   };
+
+  const taskTitle = useMemo(() => (taskType?.includes('_') ? taskType.split('_').join(' ') : taskType), [taskType]);
 
   return (
     <StyledDialog

@@ -152,6 +152,7 @@ function MemberRequests(props) {
                           style={{ width: '28px', height: '28px', borderRadius: '50%' }}
                           src={request.userProfilePicture}
                           useNextImage
+                          alt="User profile picture"
                         />
                       ) : (
                         <SmallAvatar

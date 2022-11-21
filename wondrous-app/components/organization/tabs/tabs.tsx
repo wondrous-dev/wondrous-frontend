@@ -52,42 +52,6 @@ const Tabs = (props) => {
         label: 'Submissions to review',
       },
     ],
-    organization: [
-      {
-        href: `/${page}/${entityId}/boards`,
-        label: 'Boards',
-      },
-      {
-        href: `/${page}/${entityId}/docs`,
-        label: 'Docs',
-      },
-      {
-        href: `/${page}/${entityId}/activities`,
-        label: 'Activity',
-      },
-      {
-        href: `/${page}/${entityId}/analytics`,
-        label: 'Analytics',
-      },
-    ],
-    pod: [
-      {
-        href: `/${page}/${entityId}/boards`,
-        label: 'Boards',
-      },
-      {
-        href: `/${page}/${entityId}/docs`,
-        label: 'Docs',
-      },
-      {
-        href: `/${page}/${entityId}/activities`,
-        label: 'Activity',
-      },
-      {
-        href: `/${page}/${entityId}/analytics`,
-        label: 'Analytics',
-      },
-    ],
   };
 
   const tabsLinks = TAB_LINKS_MAP[page];
@@ -111,7 +75,9 @@ const Tabs = (props) => {
             value={tab.href}
             key={tab.href}
             href={tab.href}
+            as={tab.href}
             passHref
+            legacyBehavior
             shallow
           >
             <StyledTab isActive={tab.href.includes(asPath)} label={tab.label} />

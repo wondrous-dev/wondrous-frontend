@@ -143,7 +143,7 @@ function TaskTemplatePicker(props) {
                 <TaskTemplateLabelValue style={{ fontWeight: '500', color: '#FFFFFF' }}>
                   {template?.title}
                 </TaskTemplateLabelValue>
-                <TaskTemplateLabelValue style={{ fontWeight: '400', color: '#FFFFFF' }}>
+                <TaskTemplateLabelValue style={{ fontWeight: '400', color: '#FFFFFF' }} as="div">
                   <RichTextViewer text={template?.description} />
                 </TaskTemplateLabelValue>
 

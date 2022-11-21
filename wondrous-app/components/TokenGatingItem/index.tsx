@@ -179,6 +179,7 @@ function TokenGatingItem({ tokenGatingCondition, onEdit, onDelete, onClick }: Pr
                     borderRadius: '4px',
                     marginRight: '5px',
                   }}
+                  alt="Image"
                 />
               ) : null}
               <Typography color="white" fontSize="15px" fontWeight={500} display="inline">

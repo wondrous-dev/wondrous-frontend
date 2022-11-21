@@ -21,11 +21,21 @@ function ForgotPasswordSent() {
           alt="background"
           className="auth-background"
           src="/images/login/background.png"
-          layout="fill"
-          objectFit="cover"
+          fill
+          style={{
+            objectFit: 'cover',
+          }}
           quality={80}
         />
-        <Image alt="background" src="/images/login/background-blur.png" layout="fill" objectFit="cover" quality={80} />
+        <Image
+          alt="background"
+          src="/images/login/background-blur.png"
+          fill
+          style={{
+            objectFit: 'cover',
+          }}
+          quality={80}
+        />
         <TopBubble src="/images/login/top-floater-bubble.png" alt="" />
         <Card>
           <CardBody>

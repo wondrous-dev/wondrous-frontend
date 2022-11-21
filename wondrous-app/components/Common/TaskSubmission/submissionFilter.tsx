@@ -37,7 +37,7 @@ const isSubmissionStatus = ({ submission, label }) => {
   return conditions[label];
 };
 
-function TaskSubmissionsFilterSelected({ value }) {
+export function TaskSubmissionsFilterSelected({ value }) {
   return isEmpty(value) ? (
     <SubmissionFilterSelectRender>
       <SubmissionFilterStatusIcon /> Status
