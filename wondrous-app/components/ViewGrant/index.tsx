@@ -233,7 +233,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
           </TaskModalTaskData>
         </>
       ) : (
-        <LockedTaskMessage handleClose={onClose} />
+        <LockedTaskMessage handleClose={onClose} entityType={ENTITIES_TYPES.GRANT} />
       )}
     </GrantModalCard>
   );
