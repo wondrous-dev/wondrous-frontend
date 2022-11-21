@@ -62,7 +62,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                 <SubmissionType>Your bounty submission</SubmissionType>
               </SubmissionCardHeader>
               <SubmissionCardBody>
-                <SubmissionDescription>
+                <SubmissionDescription as="div">
                   <RichTextViewer text={task.description} />
                 </SubmissionDescription>
                 {task?.media?.[0] ? (
@@ -71,6 +71,7 @@ const SubmissionBoard = ({ tasks, handleCardClick }) => {
                       useNextImage={false}
                       style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center' }}
                       src={task?.media[0].slug}
+                      alt="Task image"
                     />
                   </BoardsCardMedia>
                 ) : null}

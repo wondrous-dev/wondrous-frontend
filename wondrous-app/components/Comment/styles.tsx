@@ -68,6 +68,7 @@ export function CommentProfilePicture(props) {
         borderRadius: '16px',
         marginRight: '12px',
       }}
+      alt="Profile picture"
     />
   );
 }

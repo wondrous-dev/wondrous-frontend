@@ -62,6 +62,7 @@ import {
   TaskSubmissionLinkText,
   TaskSubmissionLinkWrapper,
 } from './styles';
+import { NoUnderlineLink } from '../Link/links';
 
 const isBountyApprovedUnpaid = ({ fetchedTask, submission }) => {
   const { approvedAt, paymentStatus } = submission;
@@ -233,7 +234,7 @@ function SubmissionItemUserImage({ creatorProfilePicture }) {
 function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isGr15Contributor }) {
   const [openGR15Modal, setOpenGR15Modal] = useState(false);
   return (
-    <Link href={`/profile/${creatorUsername}/about`} passHref>
+    <NoUnderlineLink href={`/profile/${creatorUsername}/about`} passHref>
       <SubmissionItemUserLink>
         <SubmissionItemUserImage creatorProfilePicture={creatorProfilePicture} />
         {isGr15Contributor && (
@@ -244,7 +245,7 @@ function SubmissionItemUserWrapper({ creatorUsername, creatorProfilePicture, isG
         )}
         <SubmissionItemCreator>{creatorUsername}</SubmissionItemCreator>
       </SubmissionItemUserLink>
-    </Link>
+    </NoUnderlineLink>
   );
 }
 
@@ -526,7 +527,7 @@ export function SubmissionItem({
       </SubmissionItemHeader>
       <SubmissionDivider />
       <SubmissionItemSection>
-        <SubmissionDescription>
+        <SubmissionDescription as="div">
           <RichTextViewer text={submission?.description} />
         </SubmissionDescription>
         <SubmissionItemsMedia media={mediaUploads} />

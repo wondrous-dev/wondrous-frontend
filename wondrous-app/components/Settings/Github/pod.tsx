@@ -268,6 +268,7 @@ export function GithubIntegration({ orgId, podId }) {
                         height: '30px',
                         borderRadius: '15px',
                       }}
+                      alt="Profile picture"
                     />
                   )}
                   <OptionTypography>{option?.label}</OptionTypography>

@@ -388,6 +388,7 @@ export function TaskListCard(props) {
               height: '28px',
               borderRadius: '4px',
             }}
+            alt="Organization logo"
           />
           <AvatarList
             style={{ marginLeft: '12px' }}

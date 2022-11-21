@@ -53,11 +53,11 @@ const ENTITIES_HEADER_ICONS = {
   ),
   [ENTITIES_TYPES.BOUNTY]: BountyIcon,
 };
-const DndWrapper = ({ disableDnd, task, children }) =>
+const DndWrapper = ({ disableDnd, task, index, children }) =>
   disableDnd ? (
     children
   ) : (
-    <Draggable key={task.id} draggableId={task.id}>
+    <Draggable key={task.id} draggableId={task.id} index={index}>
       {(provided, snapshot) => (
         <div
           style={{
@@ -140,8 +140,8 @@ export default function ItemsContainer({
         enableInfiniteLoading={enableInfiniteLoading}
       >
         {tasks?.length ? (
-          tasks.map((task, idx) => (
-            <DndWrapper task={task} disableDnd={disableDnd} key={idx}>
+          tasks.map((task, index) => (
+            <DndWrapper task={task} disableDnd={disableDnd} index={index}>
               <Item entityType={entityType} task={task} />
             </DndWrapper>
           ))

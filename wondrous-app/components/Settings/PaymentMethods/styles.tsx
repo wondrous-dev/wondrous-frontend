@@ -267,6 +267,7 @@ export function TokenLogoDisplay(props) {
         borderRadius: '4px',
         marginRight: '5px',
       }}
+      alt="Token logo"
     />
   );
 }

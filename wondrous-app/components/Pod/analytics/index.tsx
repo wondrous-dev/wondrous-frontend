@@ -110,6 +110,7 @@ function UserRow({ contributorTask }) {
                   useNextImage={false}
                   src={contributorTask?.assigneeProfilePicture}
                   style={UserRowPictureStyles}
+                  alt="Assignee profile picture"
                 />
               ) : (
                 <DefaultUserImage style={UserRowPictureStyles} />
@@ -221,6 +222,7 @@ function UserRow({ contributorTask }) {
                           width: '16px',
                           height: '16px',
                         }}
+                        alt="USDC logo"
                       />
                       <RewardAmount
                         style={{
@@ -441,6 +443,7 @@ function Analytics(props) {
                     height: '30px',
                     borderRadius: '15px',
                   }}
+                  alt="Profile picture"
                 />
               )}
               <OptionTypography>{option?.label}</OptionTypography>

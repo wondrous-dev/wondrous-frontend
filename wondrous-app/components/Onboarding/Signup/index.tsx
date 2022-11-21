@@ -265,7 +265,7 @@ function Signup() {
             />
           </Button> */}
         </Connectors>
-        <Link href="/signup" passHref>
+        <Link href="/signup" style={{ textDecoration: 'none' }} passHref>
           <StyledNextLink> Back to options</StyledNextLink>
         </Link>
       </div>

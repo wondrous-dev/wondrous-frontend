@@ -86,6 +86,7 @@ export function OrgProfilePicture(props) {
         borderRadius: '4px',
         marginRight: '16px',
       }}
+      alt="Organization logo"
     />
   );
 }

@@ -62,7 +62,7 @@ export function CreateEntityDropdown(props) {
         return (
           <CreateEntityOption key={value} value={i.value}>
             <CreateEntityOptionImageWrapper>
-              {imageUrl ? <SafeImage useNextImage={false} src={imageUrl} /> : <DefaultImageComponent color={color} />}
+              {imageUrl ? <SafeImage useNextImage={false} src={imageUrl} alt="Image" /> : <DefaultImageComponent color={color} />}
             </CreateEntityOptionImageWrapper>
             <CreateEntityOptionLabel>{label}</CreateEntityOptionLabel>
           </CreateEntityOption>

@@ -12,6 +12,7 @@ import { parseUserPermissionContext } from 'utils/helpers';
 
 import PlusIcon from 'components/Icons/plus';
 import { CreateEntity } from 'components/CreateEntity';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import {
   CreateNewPodButton,
   CreateNewPodButtonText,
@@ -195,7 +196,7 @@ const Pods = (props) => {
       <PodsList>
         {activePodsList?.length &&
           activePodsList?.map((podData) => (
-            <Link key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
+            <NoUnderlineLink key={podData?.id} href={`/pod/${podData?.id}/boards`} passHref>
               <PodItemWrapper>
                 <PodItem
                   podData={podData}
@@ -203,7 +204,7 @@ const Pods = (props) => {
                   setActivePodViewToAllPods={setActivePodViewToAllPods}
                 />
               </PodItemWrapper>
-            </Link>
+            </NoUnderlineLink>
           ))}
       </PodsList>
 

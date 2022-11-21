@@ -40,6 +40,7 @@ function AboutPodsCard(props) {
               borderRadius: '4px',
               marginRight: '8px',
             }}
+            alt="Organization Logo"
           />
         ) : (
           <UserAboutInfoCardNoLogo style={{ height: '30px', width: '30px' }}>

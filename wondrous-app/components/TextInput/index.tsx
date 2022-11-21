@@ -90,6 +90,7 @@ export function TextInput(props) {
                 height: '30px',
                 borderRadius: '15px',
               }}
+              alt="Profile picture"
             />
             <UserSuggestionTypography>{suggestion?.username}</UserSuggestionTypography>
           </UserSuggestionWrapper>

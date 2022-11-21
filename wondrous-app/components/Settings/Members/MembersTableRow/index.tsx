@@ -54,17 +54,18 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
 
   return (
     <Grid display="flex" alignItems="center" gap="80px">
-      <Link href={`/profile/${user?.username}/about`} passHref>
+      <Link href={`/profile/${user?.username}/about`} passHref style={{ textDecoration: 'none' }}>
         <UserProfile>
           <SafeImage
             useNextImage
             src={userProfilePicture}
             placeholderComp={<DefaultProfilePicture />}
-            width="40px"
-            height="40px"
+            width={40}
+            height={40}
             style={{
               borderRadius: '50%',
             }}
+            alt="Profile picture"
           />
           <Grid display="flex" flexDirection="column" gap="2px">
             {!!userFullName && (

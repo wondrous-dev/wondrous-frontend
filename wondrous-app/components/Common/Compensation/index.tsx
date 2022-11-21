@@ -35,6 +35,7 @@ export default function Compensation(props) {
                 width: '24px',
                 height: '24px',
               }}
+              alt="Icon"
             />
           </Grid>
         )}
