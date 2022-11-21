@@ -343,10 +343,10 @@ function Wrapper(props) {
           {orgProfile ? (
             <SafeImage
               src={orgProfile?.headerPicture || DEFAULT_HEADER}
-              height={100}
               fill
               style={{
                 objectFit: 'cover',
+                width: '100%',
               }}
               useNextImage
               alt="Organization header"
