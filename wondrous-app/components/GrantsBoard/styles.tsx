@@ -5,7 +5,9 @@ import styled from 'styled-components';
 import palette from 'theme/palette';
 
 export const MenuWrapper = styled(Grid)`
-  display: none;
+  && {
+    display: none;
+  }
 `;
 
 export const BoardWrapper = styled(BountyCardWrapper)`
