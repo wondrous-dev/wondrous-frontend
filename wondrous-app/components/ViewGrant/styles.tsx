@@ -4,8 +4,7 @@ import scrollBarStyles from 'components/Common/ScrollbarStyles';
 
 export const DescriptionWrapper = styled.div`
   color: ${palette.white};
-  max-height: 300px;
+  height: 60vh;
   overflow: auto;
-  min-height: 25rem;
   ${scrollBarStyles};
 `;

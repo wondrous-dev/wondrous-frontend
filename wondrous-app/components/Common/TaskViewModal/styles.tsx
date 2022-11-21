@@ -271,7 +271,7 @@ const TaskModalTaskDataFullScreen = css`
   row-gap: 36px;
 `;
 
-const TaskModalTaskDataMinimized = css`
+export const TaskModalTaskDataMinimized = css`
   display: flex;
   flex-direction: column;
 `;

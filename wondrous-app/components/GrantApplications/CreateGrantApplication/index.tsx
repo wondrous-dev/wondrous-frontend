@@ -35,7 +35,14 @@ import { filterOrgUsersForAutocomplete } from 'components/CreateEntity/CreatePod
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { GrantAmount } from 'components/CreateGrant/Fields';
 import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fields/styles';
-import { Form, RichTextContainer } from 'components/CreateGrant/styles';
+import {
+  Form,
+  GrantDescriptionMedia,
+  GrantModalData,
+  GrantSectionDisplayDivWrapper,
+  RichTextContainer,
+  RichTextWrapper,
+} from 'components/CreateGrant/styles';
 import ArrowBackIcon from 'components/Icons/Sidebar/arrowBack.svg';
 import { deserializeRichText, extractMentions, RichTextEditor, useEditor } from 'components/RichText';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
@@ -207,8 +214,8 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             </Tooltip>
           </CreateEntityHeaderWrapper>
         </CreateEntityHeader>
-        <TaskModalTaskData fullScreen={isFullScreen}>
-          <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
+        <GrantModalData fullScreen={isFullScreen}>
+          <GrantDescriptionMedia fullScreen={isFullScreen}>
             <CreateEntityTitle
               type="text"
               onChange={form.handleChange('title')}
@@ -225,39 +232,41 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
-            <RichTextContainer
-              onClick={() => {
-                // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-                // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-                ReactEditor.focus(editor);
-                // also we need to move cursor to the last position in the editor
-                Transforms.select(editor, {
-                  anchor: Editor.end(editor, []),
-                  focus: Editor.end(editor, []),
-                });
-              }}
-            >
-              <RichTextEditor
-                editor={editor}
-                onMentionChange={search}
-                initialValue={form.values.description}
-                mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-                placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-                toolbarNode={editorToolbarNode}
-                onChange={(value) => {
-                  form.setFieldValue('description', value);
+            <RichTextWrapper>
+              <RichTextContainer
+                onClick={() => {
+                  // since editor will collapse to 1 row on input, we need to emulate min-height somehow
+                  // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
+                  ReactEditor.focus(editor);
+                  // also we need to move cursor to the last position in the editor
+                  Transforms.select(editor, {
+                    anchor: Editor.end(editor, []),
+                    focus: Editor.end(editor, []),
+                  });
                 }}
-                editorContainerNode={document.querySelector('#modal-scrolling-container')}
-                onClick={(e) => {
-                  // we need to stop click event propagation,
-                  // since EditorContainer moves cursor to the last position in the editor on click
-                  e.stopPropagation();
-                }}
-              />
-            </RichTextContainer>
+              >
+                <RichTextEditor
+                  editor={editor}
+                  onMentionChange={search}
+                  initialValue={form.values.description}
+                  mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+                  placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
+                  toolbarNode={editorToolbarNode}
+                  onChange={(value) => {
+                    form.setFieldValue('description', value);
+                  }}
+                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
+                  onClick={(e) => {
+                    // we need to stop click event propagation,
+                    // since EditorContainer moves cursor to the last position in the editor on click
+                    e.stopPropagation();
+                  }}
+                />
+              </RichTextContainer>
+            </RichTextWrapper>
             {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
-          </TaskModalTitleDescriptionMedia>
-          <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
+          </GrantDescriptionMedia>
+          <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
             <GrantAmount value={grant?.reward} disableInput disablePaymentSelect disableAmountOfRewards orgId={orgId} />
             <TaskSectionDisplayDiv alignItems="start">
               <CreateEntityLabelWrapper>
@@ -316,8 +325,8 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
                 <input type="file" hidden ref={inputRef} onChange={attachMedia} />
               </CreateEntityWrapper>
             </TaskSectionDisplayDiv>
-          </TaskSectionDisplayDivWrapper>
-        </TaskModalTaskData>
+          </GrantSectionDisplayDivWrapper>
+        </GrantModalData>
         <FooterButtonsWrapper>
           <CreateEntityHeaderWrapper>
             {false ? (

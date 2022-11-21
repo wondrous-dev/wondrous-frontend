@@ -6,7 +6,6 @@ import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import {
   TaskModalCard,
-  TaskModalTaskData,
   TaskModalTitleDescriptionMedia,
   TaskSectionDisplayDivWrapper,
 } from 'components/Common/TaskViewModal/styles';
@@ -77,7 +76,15 @@ import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
 import { ApplyPolicy, Categories, Dates, GrantAmount } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
-import { Form, RichTextContainer } from './styles';
+import {
+  Form,
+  GrantDescriptionMedia,
+  RichTextContainer,
+  GrantModalData,
+  RichTextWrapper,
+  GrantSectionDisplayDivWrapper,
+  MediaWrapper,
+} from './styles';
 import { descriptionTemplate } from './utils';
 
 const validationSchema = Yup.object().shape({
@@ -327,8 +334,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             </Tooltip>
           </CreateEntityHeaderWrapper>
         </CreateEntityHeader>
-        <TaskModalTaskData fullScreen={isFullScreen}>
-          <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
+        <GrantModalData fullScreen={isFullScreen}>
+          <GrantDescriptionMedia fullScreen={isFullScreen}>
             <CreateEntityTitle
               type="text"
               onChange={form.handleChange('title')}
@@ -345,68 +352,70 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             <CreateEntityError>{form.errors?.title}</CreateEntityError>
 
             <EditorToolbar ref={setEditorToolbarNode} />
-            <RichTextContainer
-              onClick={() => {
-                // since editor will collapse to 1 row on input, we need to emulate min-height somehow
-                // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
-                ReactEditor.focus(editor);
-                // also we need to move cursor to the last position in the editor
-                Transforms.select(editor, {
-                  anchor: Editor.end(editor, []),
-                  focus: Editor.end(editor, []),
-                });
-              }}
-            >
-              <RichTextEditor
-                editor={editor}
-                onMentionChange={search}
-                initialValue={form.values.description}
-                mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
-                placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
-                toolbarNode={editorToolbarNode}
-                onChange={(value) => {
-                  form.setFieldValue('description', value);
+            <RichTextWrapper>
+              <RichTextContainer
+                onClick={() => {
+                  // since editor will collapse to 1 row on input, we need to emulate min-height somehow
+                  // to achive it, we wrap it with EditorContainer and make it switch focus to editor on click
+                  ReactEditor.focus(editor);
+                  // also we need to move cursor to the last position in the editor
+                  Transforms.select(editor, {
+                    anchor: Editor.end(editor, []),
+                    focus: Editor.end(editor, []),
+                  });
                 }}
-                editorContainerNode={document.querySelector('#modal-scrolling-container')}
-                onClick={(e) => {
-                  // we need to stop click event propagation,
-                  // since EditorContainer moves cursor to the last position in the editor on click
-                  e.stopPropagation();
-                }}
-              />
-            </RichTextContainer>
-            {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
-            <CreateEntityLabelSelectWrapper show>
-              <MediaUploadDiv>
-                {form.values.mediaUploads?.length > 0 &&
-                  form.values.mediaUploads.map((mediaItem) => (
-                    <MediaItem
-                      key={mediaItem?.uploadSlug}
-                      mediaUploads={form.values.mediaUploads}
-                      setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
-                      mediaItem={mediaItem}
-                      removeMediaItem={() => {
-                        if (existingGrant) {
-                          removeGrantMedia({
-                            variables: {
-                              grantId: existingGrant.id,
-                              slug: mediaItem?.uploadSlug || mediaItem?.slug,
-                            },
-                          });
-                        }
-                      }}
-                    />
-                  ))}
-                <CreateEntityAttachment onClick={() => inputRef?.current?.click()}>
-                  <CreateEntityAttachmentIcon />
-                  Add Attachment
-                  {fileUploadLoading && <FileLoading />}
-                </CreateEntityAttachment>
-              </MediaUploadDiv>
-              <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
-            </CreateEntityLabelSelectWrapper>
-          </TaskModalTitleDescriptionMedia>
-          <TaskSectionDisplayDivWrapper fullScreen={isFullScreen}>
+              >
+                <RichTextEditor
+                  editor={editor}
+                  onMentionChange={search}
+                  initialValue={form.values.description}
+                  mentionables={filterOrgUsersForAutocomplete(orgUsersData)}
+                  placeholder={<EditorPlaceholder>Enter a description</EditorPlaceholder>}
+                  toolbarNode={editorToolbarNode}
+                  onChange={(value) => {
+                    form.setFieldValue('description', value);
+                  }}
+                  editorContainerNode={document.querySelector('#modal-scrolling-container')}
+                  onClick={(e) => {
+                    // we need to stop click event propagation,
+                    // since EditorContainer moves cursor to the last position in the editor on click
+                    e.stopPropagation();
+                  }}
+                />
+              </RichTextContainer>
+              {form.errors?.description && <ErrorText>{form.errors?.description}</ErrorText>}
+            </RichTextWrapper>
+          </GrantDescriptionMedia>
+          <MediaWrapper show>
+            <MediaUploadDiv>
+              {form.values.mediaUploads?.length > 0 &&
+                form.values.mediaUploads.map((mediaItem) => (
+                  <MediaItem
+                    key={mediaItem?.uploadSlug}
+                    mediaUploads={form.values.mediaUploads}
+                    setMediaUploads={(mediaUploads) => form.setFieldValue('mediaUploads', mediaUploads)}
+                    mediaItem={mediaItem}
+                    removeMediaItem={() => {
+                      if (existingGrant) {
+                        removeGrantMedia({
+                          variables: {
+                            grantId: existingGrant.id,
+                            slug: mediaItem?.uploadSlug || mediaItem?.slug,
+                          },
+                        });
+                      }
+                    }}
+                  />
+                ))}
+              <CreateEntityAttachment onClick={() => inputRef?.current?.click()}>
+                <CreateEntityAttachmentIcon />
+                Add Attachment
+                {fileUploadLoading && <FileLoading />}
+              </CreateEntityAttachment>
+            </MediaUploadDiv>
+            <input type="file" hidden ref={inputRef} onChange={handleExistingMediaAttach} />
+          </MediaWrapper>
+          <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
             <GrantAmount
               value={form.values.reward}
               numOfGrant={form.values.numOfGrant}
@@ -436,8 +445,8 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
                 );
               }}
             />
-          </TaskSectionDisplayDivWrapper>
-        </TaskModalTaskData>
+          </GrantSectionDisplayDivWrapper>
+        </GrantModalData>
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <CreateEntityPrivacySelect

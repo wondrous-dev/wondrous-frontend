@@ -46,11 +46,50 @@ import { useLocation } from 'utils/useLocation';
 
 import { useQuery } from '@apollo/client';
 
+import Grid from '@mui/material/Grid';
+import Typography from '@mui/material/Typography';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { IconWrapper } from 'components/Common/Status/styles';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
+import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
+import { ItemPill } from 'components/GrantsBoard/styles';
+import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
-import { GrantApplicationStatusManager, WalletAddressViewer, PaymentHandler } from './Fields';
+import palette from 'theme/palette';
+import typography from 'theme/typography';
+import { GrantApplicationStatusManager, PaymentHandler, WalletAddressViewer } from './Fields';
 import { GrantSectionDisplayLabel, ModalCard } from './styles';
+
+const GRANT_APPLICATION_STATUS_LABELS = {
+  [GRANT_APPLICATION_STATUSES.APPROVED]: {
+    icon: CompletedIcon,
+    label: 'Approved',
+  },
+  [GRANT_APPLICATION_STATUSES.APPROVED_AND_PAID]: {
+    icon: CompletedIcon,
+    label: 'Approved and paid',
+  },
+  [GRANT_APPLICATION_STATUSES.APPROVED_AND_PROCESSING]: {
+    icon: CompletedIcon,
+    label: 'Approved and processing payment',
+  },
+  [GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED]: {
+    icon: SubmissionItemStatusChangesRequestedIcon,
+    label: 'Request changes',
+  },
+  [GRANT_APPLICATION_STATUSES.REJECTED]: {
+    icon: RejectedIcon,
+    label: 'Reject',
+  },
+  [GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW]: {
+    icon: InReviewIcon,
+    label: 'Waiting for review',
+  },
+  [GRANT_APPLICATION_STATUSES.OPEN]: {
+    icon: TodoIcon,
+    label: 'Open',
+  },
+};
 
 const FIELDS_CONFIG = [
   {
@@ -136,6 +175,8 @@ const ViewGrantApplication = ({ onClose }) => {
     );
   }
 
+  console.log(status, 'status');
+  const statusAndIcon = GRANT_APPLICATION_STATUS_LABELS[status];
   return (
     <>
       <ArchiveTaskModal
@@ -231,8 +272,17 @@ const ViewGrantApplication = ({ onClose }) => {
         </TaskModalHeader>
         <TaskModalTaskData fullScreen={isFullScreen}>
           <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
-            <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
-            <SubmittableCommentType status={status} />
+            <Grid display="flex" justifyContent="space-between" alignItems="center">
+              <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
+              <ItemPill>
+                <IconWrapper>
+                  <statusAndIcon.icon />
+                </IconWrapper>
+                <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                  {statusAndIcon.label}
+                </Typography>
+              </ItemPill>
+            </Grid>
             <DescriptionWrapper>
               <RichTextViewer text={grantApplication?.description} />
               <TaskMediaWrapper media={grantApplication?.media} />

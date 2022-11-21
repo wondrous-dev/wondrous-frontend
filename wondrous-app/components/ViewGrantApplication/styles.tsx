@@ -21,3 +21,5 @@ export const ModalCard = styled(TaskModalCard)`
     max-height: 95vh;
   }
 `;
+
+export const GrantStatus = styled.div``;
