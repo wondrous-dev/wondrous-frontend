@@ -36,10 +36,10 @@ export function PostQuote(props) {
             <PostHeader post={referencedObject} />
             <ReferenceTitle>
               <SmartLink href={taskViewUrl} preventLinkNavigation onNavigate={() => location.push(taskViewUrl)}>
-                <a href={taskViewUrl}>{referencedObject?.title}</a>
+                {referencedObject?.title}
               </SmartLink>
             </ReferenceTitle>
-            <ReferenceDescription>
+            <ReferenceDescription as="div">
               <RichTextViewer text={referencedObject?.content} />
             </ReferenceDescription>
             <ReferenceMediaWrapper>

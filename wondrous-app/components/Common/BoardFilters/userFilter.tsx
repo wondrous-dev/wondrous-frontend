@@ -25,6 +25,7 @@ export default function UserFilterPill() {
             marginRight: '4px',
           }}
           src={profilePicture}
+          alt="Profile picture"
         />
       ) : (
         <DefaultUserImage

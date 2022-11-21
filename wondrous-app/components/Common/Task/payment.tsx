@@ -74,6 +74,7 @@ export function MakePaymentBlock(props) {
                       marginRight: '4px',
                     }}
                     src={fetchedTask?.assigneeProfilePicture}
+                    alt="Assignee profile picture"
                   />
                 ) : (
                   <DefaultUserImage

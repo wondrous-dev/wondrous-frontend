@@ -329,6 +329,7 @@ function ColumnEntry(props: Props) {
                   height: '30px',
                   borderRadius: '6px',
                 }}
+                alt="Organization logo"
               />
             ) : (
               <NoLogoDAO>
@@ -362,6 +363,7 @@ function ColumnEntry(props: Props) {
                   marginRight: '4px',
                 }}
                 src={userAvatar}
+                alt="User avatar"
               />
             ) : (
               <DefaultUserImage

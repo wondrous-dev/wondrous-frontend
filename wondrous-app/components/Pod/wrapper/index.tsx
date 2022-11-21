@@ -294,7 +294,16 @@ function Wrapper(props) {
         <HeaderImageWrapper>
           <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
             {podProfile ? (
-              <SafeImage src={podProfile?.headerPicture || DEFAULT_HEADER} height={100} layout="fill" useNextImage />
+              <SafeImage
+                src={podProfile?.headerPicture || DEFAULT_HEADER}
+                style={{
+                  objectFit: 'cover',
+                  width: '100%',
+                }}
+                fill
+                useNextImage
+                alt="Pod header"
+              />
             ) : null}
           </AspectRatio>
         </HeaderImageWrapper>
@@ -326,8 +335,8 @@ function Wrapper(props) {
                         }
                         width={60}
                         height={60}
-                        layout="fixed"
                         useNextImage
+                        alt="Pod logo"
                         style={{
                           borderRadius: '6px',
                         }}
@@ -416,7 +425,7 @@ function Wrapper(props) {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>
+              <HeaderText as="div">
                 <RichTextViewer text={podProfile?.description} />
               </HeaderText>
               <div>

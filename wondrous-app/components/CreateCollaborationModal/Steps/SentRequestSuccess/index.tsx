@@ -63,12 +63,13 @@ const SentRequestSuccess = ({ orgs, footerRef, onClose, token }) => {
                     <DAOEmptyIcon />
                   </TokenEmptyLogo>
                 }
-                width="60px"
-                height="60px"
+                width={60}
+                height={60}
                 useNextImage
                 style={{
                   borderRadius: '6px',
                 }}
+                alt="Organization logo"
               />
             </Box>
             {idx < Object.keys(orgs)?.length - 1 && <LargeDao2DaoIcon />}

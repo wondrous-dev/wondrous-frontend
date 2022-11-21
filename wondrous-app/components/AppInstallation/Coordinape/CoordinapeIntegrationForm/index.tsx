@@ -1,3 +1,4 @@
+import { Property } from 'csstype';
 import { useCallback, useEffect, useState } from 'react';
 import apollo from 'services/apollo';
 import { Grid, Typography } from '@mui/material';
@@ -40,6 +41,7 @@ const profilePictureStyle = {
   width: '80px',
   height: '80px',
   borderRadius: '50%',
+  objectFit: 'cover' as any,
 };
 
 interface ICoordinapeIntegrationFormProps {
@@ -175,21 +177,22 @@ const CoordinapeIntegrationForm = (props: ICoordinapeIntegrationFormProps) => {
             <SafeImage
               useNextImage
               src={coordinapeImageUrl}
-              width="80px"
-              height="80px"
+              width={80}
+              height={80}
               style={{
                 borderRadius: '50%',
               }}
+              alt="Coordinape image"
             />
             <Ellipses strokeColor={palette.grey250} width={6} height={18} />
             <SafeImage
               src={userProfilePicture}
               placeholderComp={<DefaultUserImage style={profilePictureStyle} />}
-              width="80px"
-              height="80px"
-              objectFit="cover"
+              width={80}
+              height={80}
               useNextImage
               style={profilePictureStyle}
+              alt="User profile picture"
             />
           </Grid>
           <Grid marginTop="24px">

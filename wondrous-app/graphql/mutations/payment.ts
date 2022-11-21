@@ -89,3 +89,43 @@ export const LINK_METAMASK_PAYMENT = gql`
     }
   }
 `;
+
+export const PROPOSE_GNOSIS_TX_FOR_APPLICATION = gql`
+  mutation proposeGnosisTxForGrantApplication($input: GrantApplicationGnosisSinglePaymentInput) {
+    proposeGnosisTxForGrantApplication(input: $input) {
+      success
+    }
+  }
+`;
+
+export const LINK_METAMASK_PAYMENT_FOR_APPLICATION = gql`
+  mutation linkMetamaskPaymentForGrantApplication($input: MetamaskGrantApplicationPaymentInput) {
+    linkMetamaskPaymentForGrantApplication(input: $input) {
+      success
+    }
+  }
+`;
+
+export const LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION = gql`
+  mutation linkOffPlatformGrantApplicationPayment($input: OffPlatformGrantApplicationPaymentInput) {
+    linkOffPlatformGrantApplicationPayment(input: $input) {
+      success
+    }
+  }
+`;
+
+export const LINK_BATCH_OFF_PLATFORM_FOR_APPLICATION = gql`
+  mutation linkBatchOffPlatformGrantApplicationPayment($input: LinkBatchOffPlatformPaymentInput) {
+    linkBatchOffPlatformGrantApplicationPayment(input: $input) {
+      success
+    }
+  }
+`;
+
+export const PROPOSE_GNOSIS_MULTISEND_FOR_APPLICATIONS = gql`
+  mutation proposeGnosisMultisendForGrantApplications($input: GnosisBatchPaymentInput) {
+    proposeGnosisMultisendForGrantApplications(input: $input) {
+      success
+    }
+  }
+`;

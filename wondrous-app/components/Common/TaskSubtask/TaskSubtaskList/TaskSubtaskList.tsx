@@ -74,7 +74,11 @@ function TaskSubtaskUserImage({ assignee }) {
   const profilePicture = assignee?.profilePicture;
   return (
     <TaskSubtaskImageWrapper>
-      {profilePicture ? <SafeImage useNextImage={false} src={profilePicture} /> : <DefaultUserImage />}
+      {profilePicture ? (
+        <SafeImage useNextImage={false} src={profilePicture} alt="Profile picture" />
+      ) : (
+        <DefaultUserImage />
+      )}
     </TaskSubtaskImageWrapper>
   );
 }

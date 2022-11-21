@@ -41,6 +41,7 @@ interface SingleDatePickerProps {
   className?: string;
   handleClose?(): void;
   autoFocus?: boolean;
+  placement?: 'bottom' | 'top';
 }
 
 function SingleDatePicker({
@@ -55,6 +56,7 @@ function SingleDatePicker({
   className,
   handleClose,
   autoFocus,
+  placement = 'top',
 }: SingleDatePickerProps) {
   const [date, setDate] = useState(DEFAULT_SINGLE_DATEPICKER_VALUE);
   const [showOptions, setShowOptions] = useState(false);
@@ -83,6 +85,12 @@ function SingleDatePicker({
       setDate(moment());
     }
   }, [repeatType, date]);
+
+  useEffect(() => {
+    if (!value && date) {
+      setDate(DEFAULT_SINGLE_DATEPICKER_VALUE);
+    }
+  }, [value]);
 
   useEffect(() => {
     value && setDate(moment(value));
@@ -238,7 +246,7 @@ function SingleDatePicker({
         <Popper
           open={isOpen}
           anchorEl={anchorEl.current}
-          placement="top"
+          placement={placement}
           disablePortal
           modifiers={[
             {

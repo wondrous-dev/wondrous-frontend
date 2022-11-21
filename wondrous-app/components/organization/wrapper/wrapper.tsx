@@ -341,7 +341,16 @@ function Wrapper(props) {
       <HeaderImageWrapper>
         <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
           {orgProfile ? (
-            <SafeImage src={orgProfile?.headerPicture || DEFAULT_HEADER} height={100} layout="fill" useNextImage />
+            <SafeImage
+              src={orgProfile?.headerPicture || DEFAULT_HEADER}
+              fill
+              style={{
+                objectFit: 'cover',
+                width: '100%',
+              }}
+              useNextImage
+              alt="Organization header"
+            />
           ) : null}
         </AspectRatio>
       </HeaderImageWrapper>
@@ -367,12 +376,13 @@ function Wrapper(props) {
                           <DAOEmptyIcon />
                         </TokenEmptyLogo>
                       }
-                      width="60px"
-                      height="60px"
+                      width={60}
+                      height={60}
                       useNextImage
                       style={{
                         borderRadius: '6px',
                       }}
+                      alt="Organization logo"
                     />
                     {isGr15Sponsor && (
                       <>
@@ -454,7 +464,7 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <HeaderText>
+            <HeaderText as="div">
               <RichTextViewer text={orgProfile?.description} />
             </HeaderText>
             <div>
