@@ -205,7 +205,6 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
       }).then(() => cancel()),
   });
 
-  console.log(form);
   useEffect(() => {
     if (setFormDirty) {
       setFormDirty(formDirty(form));
@@ -459,7 +458,6 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
               name="privacyLevel"
               value={form.values.privacyLevel}
               onChange={(value) => {
-                console.log(value, 'valueprivacy');
                 form.setFieldValue('privacyLevel', value);
               }}
               renderValue={(value) => (
