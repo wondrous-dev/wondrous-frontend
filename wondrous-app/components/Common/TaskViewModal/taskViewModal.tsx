@@ -12,7 +12,7 @@ import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } fro
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useSnapshot } from 'services/snapshot';
+// import { useSnapshot } from 'services/snapshot';
 import {
   addTaskItem,
   formatDateDisplay,
@@ -201,7 +201,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const sectionRef = useRef(null);
   const user = useMe();
-  const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
+  // const { orgSnapshot, getOrgSnapshotInfo, snapshotConnected, snapshotSpace, isTest } = useSnapshot();
   const [getTaskById, { refetch, startPolling, stopPolling }] = useLazyQuery(GET_TASK_BY_ID, {
     fetchPolicy: 'network-only',
     nextFetchPolicy: 'cache-and-network',
@@ -346,15 +346,15 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     open,
   ]);
 
-  useEffect(() => {
-    if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
-      getOrgSnapshotInfo({
-        variables: {
-          orgId: fetchedTask?.orgId,
-        },
-      });
-    }
-  }, [fetchedTask?.snapshotId]);
+  // useEffect(() => {
+  //   if (fetchedTask?.snapshotId && fetchedTask?.orgId && !orgSnapshot) {
+  //     getOrgSnapshotInfo({
+  //       variables: {
+  //         orgId: fetchedTask?.orgId,
+  //       },
+  //     });
+  //   }
+  // }, [fetchedTask?.snapshotId]);
 
   if (editTask) {
     return (
@@ -527,7 +527,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     Number(fetchedTask?.votes?.counts[ProposalVoteType.APPROVE]) +
     Number(fetchedTask?.votes?.counts[ProposalVoteType.REJECT]);
 
-  const handleSnapshot = () => openSnapshot(orgSnapshot, fetchedTask, isTest);
+  // const handleSnapshot = () => openSnapshot(orgSnapshot, fetchedTask, isTest);
 
   const handleModalClose = () => {
     setFetchedTask(null);
@@ -682,12 +682,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                         <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
                           <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
                           <TaskModalTaskStatusMoreInfo>
-                            {fetchedTask?.snapshotId && (
+                            {/* {fetchedTask?.snapshotId && (
                               <TaskModalSnapshot onClick={handleSnapshot}>
                                 <TaskModalSnapshotLogo />
                                 <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                               </TaskModalSnapshot>
-                            )}
+                            )} */}
                             {canEdit && !isViewNFTMode && (
                               <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
                             )}

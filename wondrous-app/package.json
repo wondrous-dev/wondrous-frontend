@@ -42,7 +42,6 @@
     "@popperjs/core": "2.11.5",
     "@reactour/tour": "2.10.4",
     "@sentry/nextjs": "6.19.7",
-    "@snapshot-labs/snapshot.js": "0.3.56",
     "@svgr/webpack": "6.3.0",
     "@udecode/plate-combobox": "11.2.1",
     "@udecode/plate-core": "11.2.1",

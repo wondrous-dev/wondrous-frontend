@@ -51,7 +51,7 @@ import { ErrorText } from 'components/Common';
 import Checkbox from 'components/Checkbox';
 
 import { LINKE_PROPOSAL_TO_SNAPSHOT, UNLINKE_PROPOSAL_FROM_SNAPSHOT } from 'graphql/mutations/integration';
-import { useSnapshot } from 'services/snapshot';
+// import { useSnapshot } from 'services/snapshot';
 import {
   TaskModalSnapshot,
   TaskModalSnapshotLogo,
@@ -514,24 +514,24 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   const [snapshotId, setSnapshotId] = useState(existingTask?.snapshotId);
 
   // snapshot integration
-  const {
-    getOrgSnapshotInfo,
-    snapshotConnected,
-    snapshotErrorElement,
-    snapshotLoading,
-    exportTaskProposal,
-    cancelProposal,
-  } = useSnapshot();
+  // const {
+  //   getOrgSnapshotInfo,
+  //   snapshotConnected,
+  //   snapshotErrorElement,
+  //   snapshotLoading,
+  //   exportTaskProposal,
+  //   cancelProposal,
+  // } = useSnapshot();
 
-  useEffect(() => {
-    if (existingTask?.orgId && isProposal) {
-      getOrgSnapshotInfo({
-        variables: {
-          orgId: existingTask?.orgId,
-        },
-      });
-    }
-  }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
+  // useEffect(() => {
+  //   if (existingTask?.orgId && isProposal) {
+  //     getOrgSnapshotInfo({
+  //       variables: {
+  //         orgId: existingTask?.orgId,
+  //       },
+  //     });
+  //   }
+  // }, [getOrgSnapshotInfo, existingTask?.orgId, isProposal]);
 
   useEffect(() => {
     if (existingTask?.privacyLevel !== null && existingTask?.privacyLevel !== undefined) {
@@ -552,34 +552,34 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
   }, [isInPrivatePod, existingTask?.privacyLevel, orgBoard, podBoard]);
 
   const exportProposalToSnapshot = async () => {
-    const receipt = await exportTaskProposal(existingTask);
-    if (!receipt) {
-      return;
-    }
-    setSnapshotId(receipt.id);
-    if (receipt && receipt.id) {
-      await apollo.mutate({
-        mutation: LINKE_PROPOSAL_TO_SNAPSHOT,
-        variables: {
-          proposalId: existingTask?.id,
-          snapshotId: receipt.id,
-        },
-      });
-    }
+    // const receipt = await exportTaskProposal(existingTask);
+    // if (!receipt) {
+    //   return;
+    // }
+    // setSnapshotId(receipt.id);
+    // if (receipt && receipt.id) {
+    //   await apollo.mutate({
+    //     mutation: LINKE_PROPOSAL_TO_SNAPSHOT,
+    //     variables: {
+    //       proposalId: existingTask?.id,
+    //       snapshotId: receipt.id,
+    //     },
+    //   });
+    // }
     // update proposal, and if successful, initiate transaction to export to snapshot
   };
 
   // cancel snapshot proposal
   const cancelSnapshotProposal = async () => {
-    await cancelProposal(existingTask.snapshotId).then(() => {
-      setSnapshotId(null);
-    });
-    await apollo.mutate({
-      mutation: UNLINKE_PROPOSAL_FROM_SNAPSHOT,
-      variables: {
-        proposalId: existingTask?.id,
-      },
-    });
+    // await cancelProposal(existingTask.snapshotId).then(() => {
+    //   setSnapshotId(null);
+    // });
+    // await apollo.mutate({
+    //   mutation: UNLINKE_PROPOSAL_FROM_SNAPSHOT,
+    //   variables: {
+    //     proposalId: existingTask?.id,
+    //   },
+    // });
   };
 
   const selectedPaymentMethod = paymentMethods.filter((p) => p.id === form.values?.rewards?.[0]?.paymentMethodId);
@@ -693,7 +693,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
           </Tooltip>
         </CreateEntityHeaderWrapper>
       </CreateEntityHeader>
-      {snapshotConnected && isProposal && (
+      {/* {snapshotConnected && isProposal && (
         <SnapshotButtonBlock>
           {!snapshotId && (
             <TaskModalSnapshot onClick={exportProposalToSnapshot} disabled={snapshotLoading}>
@@ -729,7 +729,7 @@ export default function CreateEntityModal(props: ICreateEntityModal) {
             </SnapshotErrorText>
           )}
         </SnapshotButtonBlock>
-      )}
+      )} */}
 
       <CreateEntityBody>
         <CreateEntityTitle
