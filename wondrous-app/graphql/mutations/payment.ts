@@ -91,7 +91,7 @@ export const LINK_METAMASK_PAYMENT = gql`
 `;
 
 export const PROPOSE_GNOSIS_TX_FOR_APPLICATION = gql`
-  mutation proposeGnosisTxForGrantApplication($input: GnosisSinglePaymentGrantInput) {
+  mutation proposeGnosisTxForGrantApplication($input: GrantApplicationGnosisSinglePaymentInput) {
     proposeGnosisTxForGrantApplication(input: $input) {
       success
     }
@@ -99,15 +99,15 @@ export const PROPOSE_GNOSIS_TX_FOR_APPLICATION = gql`
 `;
 
 export const LINK_METAMASK_PAYMENT_FOR_APPLICATION = gql`
-  mutation linkMetamaskPaymentforGrantApplication($input: MetamaskGrantPaymentInput) {
-    linkMetamaskPaymentforGrantApplication(input: $input) {
+  mutation linkMetamaskPaymentForGrantApplication($input: MetamaskGrantApplicationPaymentInput) {
+    linkMetamaskPaymentForGrantApplication(input: $input) {
       success
     }
   }
 `;
 
 export const LINK_OFF_PLATFORM_PAYMENT_FOR_APPLICATION = gql`
-  mutation linkOffPlatformGrantApplicationPayment($input: OffPlatformApplicationInput) {
+  mutation linkOffPlatformGrantApplicationPayment($input: OffPlatformGrantApplicationPaymentInput) {
     linkOffPlatformGrantApplicationPayment(input: $input) {
       success
     }
