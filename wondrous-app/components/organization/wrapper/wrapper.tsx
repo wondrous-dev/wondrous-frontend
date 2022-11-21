@@ -9,12 +9,15 @@ import {
   SOCIAL_MEDIA_LINKEDIN,
   GR15DEICategoryName,
   BOUNTY_TYPE,
+  HEADER_ASPECT_RATIO,
 } from 'utils/constants';
-import { Box } from '@mui/system';
+import apollo from 'services/apollo';
+import { Box } from '@mui/material';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
-import DefaultBg from 'public/images/overview/background.png';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
+import { AspectRatio } from 'react-aspect-ratio';
 
 import usePrevious, { useOrgBoard } from 'utils/hooks';
 import { useLazyQuery } from '@apollo/client';
@@ -336,16 +339,20 @@ function Wrapper(props) {
       )}
 
       <HeaderImageWrapper>
-        {orgProfile ? (
-          <SafeImage
-            src={orgProfile?.headerPicture || DefaultBg}
-            width="100%"
-            height={100}
-            layout="fill"
-            objectFit="cover"
-            useNextImage
-          />
-        ) : null}
+        <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+          {orgProfile ? (
+            <SafeImage
+              src={orgProfile?.headerPicture || DEFAULT_HEADER}
+              height={100}
+              fill
+              style={{
+                objectFit: 'cover',
+              }}
+              useNextImage
+              alt="Organization header"
+            />
+          ) : null}
+        </AspectRatio>
       </HeaderImageWrapper>
 
       <Content>
@@ -369,12 +376,13 @@ function Wrapper(props) {
                           <DAOEmptyIcon />
                         </TokenEmptyLogo>
                       }
-                      width="60px"
-                      height="60px"
+                      width={60}
+                      height={60}
                       useNextImage
                       style={{
                         borderRadius: '6px',
                       }}
+                      alt="Organization logo"
                     />
                     {isGr15Sponsor && (
                       <>
@@ -456,7 +464,7 @@ function Wrapper(props) {
                 )}
               </HeaderButtons>
             </HeaderMainBlock>
-            <HeaderText>
+            <HeaderText as="div">
               <RichTextViewer text={orgProfile?.description} />
             </HeaderText>
             <div>

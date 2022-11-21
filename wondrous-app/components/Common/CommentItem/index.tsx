@@ -52,6 +52,7 @@ const CommentItem = (props) => {
               borderRadius: '16px',
               marginRight: '12px',
             }}
+            alt="Actor profile picture"
           />
         ) : (
           <DefaultUserImage

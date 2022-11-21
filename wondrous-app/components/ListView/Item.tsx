@@ -314,6 +314,7 @@ export default function ListViewItem({ task, entityType }) {
                   marginRight: '4px',
                 }}
                 src={assigneeProfilePicture}
+                alt="Assignee profile picture"
               />
             ) : (
               <DefaultUserImage

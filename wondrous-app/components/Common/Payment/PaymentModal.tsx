@@ -214,6 +214,7 @@ export function MakePaymentModal(props) {
                 borderRadius: '4px',
                 marginRight: '8px',
               }}
+              alt="Organization logo"
             />
           ) : (
             <OrganisationsCardNoLogo style={{ height: '29px', width: '28px' }}>
@@ -245,17 +246,16 @@ export function MakePaymentModal(props) {
                 {rewardAmount} {tokenName?.toUpperCase()}{' '}
               </span>
               to{' '}
-              <Link href={`/profile/${payee.userId}/about`}>
-                <a
-                  style={{
-                    color: '#ffffff',
-                    textDecoration: 'underline',
-                    cursor: 'pointer',
-                  }}
-                  target="_blank"
-                >
-                  {payee.username}
-                </a>
+              <Link
+                href={`/profile/${payee.userId}/about`}
+                style={{
+                  color: '#ffffff',
+                  textDecoration: 'underline',
+                  cursor: 'pointer',
+                }}
+                target="_blank"
+              >
+                {payee.username}
               </Link>{' '}
             </PaymentTitleText>
             <PaymentDescriptionText>Task: {fetchedTask?.title}</PaymentDescriptionText>

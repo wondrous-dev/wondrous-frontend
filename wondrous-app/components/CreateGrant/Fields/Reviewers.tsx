@@ -29,7 +29,7 @@ const renderOption = (props, option, reviewerIds, reviewerId) => {
   return (
     <CreateEntityAutocompleteOption {...props}>
       {option?.profilePicture ? (
-        <SafeImage useNextImage={false} src={option?.profilePicture} />
+        <SafeImage useNextImage={false} src={option?.profilePicture} alt="User profile picture" />
       ) : (
         <CreateEntityDefaultUserImage />
       )}
@@ -54,7 +54,7 @@ const EndAdornment = ({ reviewerIds, index, onChange }) => (
 const StartAdornment = ({ reviewer }) => (
   <CreateEntityAutocompletePopperRenderInputAdornment position="start">
     {reviewer?.profilePicture ? (
-      <SafeImage useNextImage={false} src={reviewer.profilePicture} />
+      <SafeImage useNextImage={false} src={reviewer.profilePicture} alt="User profile picture" />
     ) : (
       <CreateEntityDefaultUserImage />
     )}

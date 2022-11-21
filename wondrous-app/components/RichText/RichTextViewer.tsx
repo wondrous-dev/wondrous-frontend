@@ -7,6 +7,7 @@ import { renderMentionString } from 'utils/common';
 
 import Typography from '@mui/material/Typography';
 
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { FormattedText } from './types';
 import { isRichText } from './utils';
 import { BulletedList, NumberedList, RichTextStyled, Strikethrough } from './styles';
@@ -33,17 +34,15 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
         );
       case 'mention':
         return (
-          <Link key={i} href={`/profile/${node.mentionable}/about`} passHref>
-            <a>@{node.mentionable}</a>
-          </Link>
+          <NoUnderlineLink key={i} href={`/profile/${node.mentionable}/about`}>
+            @{node.mentionable}
+          </NoUnderlineLink>
         );
       case 'link':
         return (
-          <Link key={i} href={node.href} passHref>
-            <a target="_blank" rel="noopener noreferrer">
-              {node.children[0]?.text}
-            </a>
-          </Link>
+          <NoUnderlineLink key={i} href={node.href} target="_blank" rel="noopener noreferrer">
+            {node.children[0]?.text}
+          </NoUnderlineLink>
         );
       case 'bulleted-list':
         return <BulletedList>{children}</BulletedList>;

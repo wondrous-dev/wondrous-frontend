@@ -123,3 +123,5 @@ export interface IGasPrices {
 export interface IMethodArgument {
   type: string;
 }
+
+export type AvatarEditorTypes = 'HEADER_IMAGE' | 'ICON_IMAGE';

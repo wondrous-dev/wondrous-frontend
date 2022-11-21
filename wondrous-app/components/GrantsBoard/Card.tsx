@@ -122,7 +122,8 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
                 width={270}
                 objectFit="cover"
                 objectPosition="center"
-                height="100%"
+                alt="Grant cover image"
+                height={100}
                 layout="responsive"
                 src={coverMedia.slug}
                 useNextImage

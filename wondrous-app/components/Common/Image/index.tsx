@@ -4,8 +4,7 @@ import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import Image, { ImageProps } from 'next/image';
 
-type SafeImageArgs = ImageProps & {
-  alt?: string;
+type SafeImageArgs = Omit<ImageProps, 'style'> & {
   className?: string;
   /**
    * Image src to display while the image is not visible or loaded.
@@ -36,15 +35,13 @@ type SafeImageArgs = ImageProps & {
 export function SafeImage(safeImageArgs: SafeImageArgs) {
   const {
     src,
-    alt,
     onPreviewLoaded,
     width,
     height,
     placeholderComp,
     placeholderSrc,
+    alt = '',
     useNextImage = false,
-    objectFit = 'cover',
-    objectPosition = 'center',
     ...props
   } = safeImageArgs;
 
@@ -71,6 +68,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
 
   useEffect(() => {
     if (!src || hasProtocol || typeof src === 'object') {
+      setImageUrl(null);
       return;
     }
 
@@ -106,15 +104,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
 
   if (safeImageUrl) {
     return useNextImage ? (
-      <Image
-        objectFit={objectFit}
-        objectPosition={objectPosition}
-        src={safeImageUrl}
-        alt={alt}
-        width={width}
-        height={height}
-        {...props}
-      />
+      <Image src={safeImageUrl} alt={alt} width={width} height={height} {...props} />
     ) : (
       // eslint-disable-next-line @next/next/no-img-element
       <img src={safeImageUrl} alt={alt} width={width} height={height} {...props} />

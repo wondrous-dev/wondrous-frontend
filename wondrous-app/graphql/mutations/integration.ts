@@ -114,9 +114,25 @@ export const IMPORT_NOTION_TASK_TO_ORG = gql`
   }
 `;
 
+export const IMPORT_NOTION_TASK_TO_POD = gql`
+  mutation importNotionTaskToPod($podId: ID!, $notionDatabaseId: String!) {
+    importNotionTaskToPod(podId: $podId, notionDatabaseId: $notionDatabaseId) {
+      success
+    }
+  }
+`;
+
 export const DISCONNECT_NOTION_FROM_ORG = gql`
   mutation disconnectNotionFromOrg($orgId: ID!, $notionWorkspaceId: String!) {
     disconnectNotionFromOrg(orgId: $orgId, notionWorkspaceId: $notionWorkspaceId) {
+      success
+    }
+  }
+`;
+
+export const DISCONNECT_NOTION_FROM_POD = gql`
+  mutation disconnectNotionFromPod($podId: ID!, $notionWorkspaceId: String!) {
+    disconnectNotionFromPod(podId: $podId, notionWorkspaceId: $notionWorkspaceId) {
       success
     }
   }

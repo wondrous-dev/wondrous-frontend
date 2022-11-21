@@ -7,7 +7,7 @@ import DefaultUserImage from '../Image/DefaultUserImage';
 const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false }) => {
   const { username, profilePicture } = user;
   const image = profilePicture ? (
-    <SafeImage src={profilePicture} width={24} height={24} style={{ borderRadius: '24px' }} />
+    <SafeImage src={profilePicture} width={24} height={24} style={{ borderRadius: '24px' }} alt="Profile picture" />
   ) : (
     <DefaultUserImage width={24} height={24} />
   );

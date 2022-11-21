@@ -188,7 +188,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
               <TaskPriority value={bounty?.priority} />
             </Box>
           ) : null}
-          <BoardsCardBodyDescription>
+          <BoardsCardBodyDescription as="div">
             <RichTextViewer text={bounty.description} />
           </BoardsCardBodyDescription>
           <SubmissionsCount total={bounty.totalSubmissionsCount} approved={bounty.approvedSubmissionsCount} />
@@ -203,6 +203,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
                   objectPosition: 'center',
                   borderRadius: '6px',
                 }}
+                alt="Bounty Image"
                 src={bounty?.media[0].slug}
               />
             </BoardsCardMedia>
@@ -238,6 +239,7 @@ const BountyItem = ({ bounty, handleCardClick, displayOrg }) => {
                     borderRadius: '4px',
                     marginRight: '8px',
                   }}
+                  alt="Organization Logo"
                 />
               ) : (
                 <DAOIcon />

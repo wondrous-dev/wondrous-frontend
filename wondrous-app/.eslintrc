@@ -33,6 +33,21 @@
     "import/no-cycle": "warn",
     "import/export": "warn",
     "import/no-named-as-default": "warn",
+    "no-restricted-imports": [
+      "warn",
+      {
+        "paths": [
+          {
+            "name": "@mui/material",
+            "message": "use path imports, e.g. import Grid from '@mui/material/Grid"
+          },
+          {
+            "name": "lodash",
+            "message": "import the function module only, e.g. import isEmpty from 'lodash/isEmpty'"
+          }
+        ]
+      }
+    ],
 
     "no-shadow": "off",
     "consistent-return": "warn",

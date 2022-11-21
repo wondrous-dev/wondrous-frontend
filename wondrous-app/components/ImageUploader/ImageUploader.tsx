@@ -79,9 +79,16 @@ function ImageUploader({ errors, setValue, value }) {
       <Box position="relative" width={214} height={100} sx={styles.imageContainer}>
         {/* {renderImageDisplayer(file)} */}
         {!file && <Box sx={styles.imagePlaceholder}>Upload a image to see the preview</Box>}
-        {file && imgUrl && <Image src={imgUrl} alt="preview" layout="fill" objectFit="cover" />}
+        {file && imgUrl && <Image src={imgUrl} alt="preview" fill objectFit="cover" />}
         {file && typeof file === 'object' && (
-          <Image src={URL.createObjectURL(file)} alt="preview" layout="fill" objectFit="cover" />
+          <Image
+            src={URL.createObjectURL(file)}
+            alt="preview"
+            fill
+            style={{
+              objectFit: 'cover',
+            }}
+          />
         )}
       </Box>
       <Box>

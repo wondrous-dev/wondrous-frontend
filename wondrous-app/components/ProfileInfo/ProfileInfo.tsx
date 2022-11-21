@@ -83,11 +83,12 @@ function ProfileInfo({ userProfile }) {
               src={profilePicture}
               width={62}
               height={62}
-              objectFit="cover"
               useNextImage
               style={{
+                objectFit: 'cover',
                 borderRadius: '50%',
               }}
+              alt="Profile picture"
             />
           ) : (
             <DefaultUserImage

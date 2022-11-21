@@ -3,9 +3,11 @@ import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import palette from 'theme/palette';
-import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL } from 'utils/constants';
+import { ENTITIES_TYPES, GR15DEICategoryName, PERMISSIONS, PRIVACY_LEVEL, HEADER_ASPECT_RATIO } from 'utils/constants';
 import { parseUserPermissionContext, removeUrlStart, toggleHtmlOverflow } from 'utils/helpers';
 import { usePodBoard } from 'utils/hooks';
+import { AspectRatio } from 'react-aspect-ratio';
+import DEFAULT_HEADER from 'public/images/overview/background.png';
 import { GET_USER_JOIN_POD_REQUEST, GET_ORG_BY_ID, GET_TASKS_PER_TYPE_FOR_POD } from 'graphql/queries';
 import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
 import PodCurrentRoleModal from 'components/RoleModal/PodCurrentRoleModal';
@@ -28,6 +30,7 @@ import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import {
   Content,
   ContentContainer,
+  Container,
   HeaderActivity,
   HeaderActivityLink,
   HeaderActivityLinkIcon,
@@ -55,7 +58,6 @@ import Tabs from '../../organization/tabs/tabs';
 import PodIcon from '../../Icons/podIcon';
 import { PodInviteLinkModal } from '../../Common/InviteLinkModal/podInviteLink';
 import { useMe } from '../../Auth/withAuth';
-import DefaultBg from '../../../public/images/overview/background.png';
 
 const ExplorePodGr15 = ({
   onTaskPage,
@@ -251,8 +253,6 @@ function Wrapper(props) {
     }
   }, [podBoard?.podId]);
 
-  const showFilters = router?.pathname === '/pod/[podId]/boards';
-
   return (
     <>
       <PodInviteLinkModal podId={podBoard?.podId} open={openInvite} onClose={() => setOpenInvite(false)} />
@@ -292,16 +292,20 @@ function Wrapper(props) {
       <ChooseEntityToCreate />
       <OverviewComponent>
         <HeaderImageWrapper>
-          {podProfile ? (
-            <SafeImage
-              src={podProfile?.headerPicture || DefaultBg}
-              width="100%"
-              height={100}
-              layout="fill"
-              objectFit="cover"
-              useNextImage
-            />
-          ) : null}
+          <AspectRatio ratio={HEADER_ASPECT_RATIO} style={{ maxHeight: 175 }}>
+            {podProfile ? (
+              <SafeImage
+                src={podProfile?.headerPicture || DEFAULT_HEADER}
+                height={100}
+                style={{
+                  objectFit: 'cover',
+                  width: '100%',
+                }}
+                useNextImage
+                alt="Pod header"
+              />
+            ) : null}
+          </AspectRatio>
         </HeaderImageWrapper>
         <Content>
           <ContentContainer>
@@ -331,8 +335,8 @@ function Wrapper(props) {
                         }
                         width={60}
                         height={60}
-                        layout="fixed"
                         useNextImage
+                        alt="Pod logo"
                         style={{
                           borderRadius: '6px',
                         }}
@@ -421,7 +425,7 @@ function Wrapper(props) {
                   )}
                 </HeaderButtons>
               </HeaderMainBlock>
-              <HeaderText>
+              <HeaderText as="div">
                 <RichTextViewer text={podProfile?.description} />
               </HeaderText>
               <div>
@@ -471,7 +475,7 @@ function Wrapper(props) {
               </div>
             </TokenHeader>
 
-            <Tabs page="pod" showMembers={permissions === ORG_PERMISSIONS.MANAGE_SETTINGS}>
+            <Container>
               <BoardsSubheaderWrapper>
                 {podBoard?.setEntityType && !search && (
                   <TypeSelector
@@ -479,7 +483,7 @@ function Wrapper(props) {
                     setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
                   />
                 )}
-                {showFilters && (
+                {!!filterSchema && (
                   <BoardsActivity
                     onSearch={onSearch}
                     filterSchema={filterSchema}
@@ -489,9 +493,8 @@ function Wrapper(props) {
                   />
                 )}
               </BoardsSubheaderWrapper>
-
               {children}
-            </Tabs>
+            </Container>
           </ContentContainer>
         </Content>
       </OverviewComponent>

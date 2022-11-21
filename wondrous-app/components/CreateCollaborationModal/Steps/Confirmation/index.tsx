@@ -154,6 +154,7 @@ const AddMembersConfirmation = ({
                         height: '18px',
                         borderRadius: '4px',
                       }}
+                      alt="Profile picture"
                     />
                   ) : (
                     <CreateEntityDefaultUserImage />
@@ -189,6 +190,7 @@ const AddMembersConfirmation = ({
                         height: '18px',
                         borderRadius: '4px',
                       }}
+                      alt="Profile picture"
                     />
                   ) : (
                     <CreateEntityDefaultUserImage />

@@ -831,6 +831,7 @@ export enum GRANT_APPLICATION_COMMENT_TYPE {
   REOPEN = 'reopen',
   REJECTED = 'rejected',
 }
+export const HEADER_ASPECT_RATIO = 7.05;
 
 export const TaskMintStatus = {
   NOT_STARTED: 'not_started',

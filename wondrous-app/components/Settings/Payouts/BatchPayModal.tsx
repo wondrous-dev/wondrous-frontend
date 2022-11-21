@@ -29,6 +29,7 @@ import { BatchOfflinePayment } from 'components/Common/Payment/OfflinePayment/Of
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { SafeImage } from 'components/Common/Image';
 import { CompensationAmount, CompensationPill, IconContainer } from 'components/Common/Compensation/styles';
+import { NoUnderlineLink } from 'components/Common/Link/links';
 import { TableCellText } from './styles';
 import {
   StyledTable,
@@ -211,7 +212,12 @@ export function BatchPayModal(props) {
                           }}
                         >
                           {submission?.payeeProfilePicture ? (
-                            <SafeImage useNextImage={false} src={submission?.payeeProfilePicture} style={imageStyle} />
+                            <SafeImage
+                              useNextImage={false}
+                              src={submission?.payeeProfilePicture}
+                              style={imageStyle}
+                              alt="Payee profile picture"
+                            />
                           ) : (
                             <DefaultUserImage style={imageStyle} />
                           )}
@@ -237,6 +243,7 @@ export function BatchPayModal(props) {
                                 width: '24px',
                                 height: '24px',
                               }}
+                              alt="Icon"
                             />
                           </IconContainer>
                           <CompensationAmount>
@@ -245,17 +252,16 @@ export function BatchPayModal(props) {
                         </CompensationPill>
                       </StyledTableCell>
                       <StyledTableCell>
-                        <Link href={taskHref}>
-                          <a
-                            target="_blank"
-                            rel="noreferrer"
-                            style={{
-                              color: palette.white,
-                            }}
-                          >
-                            {cutString(submission?.taskTitle, 30)}
-                          </a>
-                        </Link>
+                        <NoUnderlineLink
+                          href={taskHref}
+                          target="_blank"
+                          rel="noreferrer"
+                          style={{
+                            color: palette.white,
+                          }}
+                        >
+                          {cutString(submission?.taskTitle, 30)}
+                        </NoUnderlineLink>
                       </StyledTableCell>
                     </StyledTableRow>
                   );

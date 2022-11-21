@@ -190,6 +190,7 @@ function InviteMember(props) {
                     height: '18px',
                     borderRadius: '50%',
                   }}
+                  alt="Thumbnail picture"
                 />
               ) : (
                 <DefaultUserImage />

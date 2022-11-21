@@ -53,7 +53,8 @@ export const formValidationSchema = Yup.object().shape({
         paymentMethodId: Yup.string().required(),
         rewardAmount: Yup.number()
           .typeError('Reward amount must be a number')
-          .moreThan(0, 'Reward amount must be greater than 0'),
+          .moreThan(0, 'Reward amount must be greater than 0')
+          .required('Reward amount is required'),
       })
     )
     .optional()
@@ -119,6 +120,7 @@ export const filterPaymentMethods = (paymentMethods) => {
         useNextImage={false}
         src={paymentMethod.icon}
         style={{ width: '30px', height: '30px', borderRadius: '15px' }}
+        alt="Payment method"
       />
     ),
     label: `${paymentMethod.tokenName?.toUpperCase()}: ${CHAIN_TO_CHAIN_DIPLAY_NAME[paymentMethod.chain]}`,

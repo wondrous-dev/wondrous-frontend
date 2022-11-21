@@ -21,7 +21,13 @@ export const Reviewers = ({ reviewers }) => (
     {reviewers?.map((reviewer) => (
       <Grid display="flex" gap="12px" justifyContent="center" alignItems="center">
         {reviewer?.profilePicture ? (
-          <SafeImage src={reviewer.profilePicture} width={24} height={24} style={{ borderRadius: '24px' }} />
+          <SafeImage
+            src={reviewer.profilePicture}
+            alt="Reviewer profile picture"
+            width={24}
+            height={24}
+            style={{ borderRadius: '24px' }}
+          />
         ) : (
           <DefaultUserImage width={24} height={24} />
         )}

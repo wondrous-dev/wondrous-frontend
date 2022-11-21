@@ -10,11 +10,12 @@ import {
   DisconnectFromNotionButtonIcon,
   NotionActionsContainer,
 } from 'components/Settings/TaskImport/styles';
-import { GET_ORG_NOTION_WORKSPACE } from 'graphql/queries';
-import { DISCONNECT_NOTION_FROM_ORG } from 'graphql/mutations';
+import { GET_ORG_NOTION_WORKSPACE, GET_POD_NOTION_WORKSPACE } from 'graphql/queries';
+import { DISCONNECT_NOTION_FROM_ORG, DISCONNECT_NOTION_FROM_POD } from 'graphql/mutations';
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { LINK, NOTION_CONNECT_TYPES } from 'utils/constants';
+import { LabelBlockText } from '../Integrations/styles';
 
 const NOTION_CLIENT_ID = process.env.NEXT_PUBLIC_NOTION_CLIENT_ID;
 const REDIRECT_URL = `${LINK}/notion/callback`;
@@ -25,25 +26,46 @@ function NotionTaskImportSection(props) {
   const { orgId, podId } = props;
   const [toast, setToast] = useState({ show: false, message: '' });
 
-  const [getOrgNotionWorkspace, { data: getOrgNotionWorkspaceData }] = useLazyQuery(GET_ORG_NOTION_WORKSPACE, {});
+  const [getOrgNotionWorkspace, { data: getOrgNotionWorkspaceData, error: getOrgNotionWorkspaceError }] = useLazyQuery(
+    GET_ORG_NOTION_WORKSPACE,
+    {}
+  );
+  const [getPodNotionWorkspace, { data: getPodNotionWorkspaceData, error: getPodNotionWorkspaceError }] =
+    useLazyQuery(GET_POD_NOTION_WORKSPACE);
   const [disconnectNotionFromOrg] = useMutation(DISCONNECT_NOTION_FROM_ORG, {
     refetchQueries: ['getOrgNotionWorkspace'],
   });
 
+  const [disconnectNotionFromPod] = useMutation(DISCONNECT_NOTION_FROM_POD, {
+    refetchQueries: ['getPodNotionWorkspace'],
+  });
+
   const handleDisconnect = () => {
-    disconnectNotionFromOrg({
-      variables: {
-        orgId,
-        notionWorkspaceId: getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id,
-      },
-    }).then(() => {
-      setToast({ ...toast, message: `Disconnected successfully.`, show: true });
-    });
+    if (podId) {
+      disconnectNotionFromPod({
+        variables: {
+          podId,
+          notionWorkspaceId: getPodNotionWorkspaceData?.getPodNotionWorkspace?.id,
+        },
+      }).then(() => {
+        setToast({ ...toast, message: `Disconnected successfully.`, show: true });
+      });
+    } else if (orgId) {
+      disconnectNotionFromOrg({
+        variables: {
+          orgId,
+          notionWorkspaceId: getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id,
+        },
+      }).then(() => {
+        setToast({ ...toast, message: `Disconnected successfully.`, show: true });
+      });
+    }
   };
 
   const redirectToNotionAuth = () => {
     const state = JSON.stringify({
       orgId,
+      podId,
       callbackType: NOTION_CONNECT_TYPES.TASK_IMPORT,
     });
     const url = `https://api.notion.com/v1/oauth/authorize?owner=user&client_id=${NOTION_CLIENT_ID}&redirect_uri=${REDIRECT_URL}&response_type=code&state=${state}`;
@@ -56,6 +78,16 @@ function NotionTaskImportSection(props) {
     }
   }, [orgId, getOrgNotionWorkspaceData, getOrgNotionWorkspace]);
 
+  useEffect(() => {
+    if (podId && !getPodNotionWorkspaceData) {
+      getPodNotionWorkspace({ variables: { podId } });
+    }
+  }, [podId, getPodNotionWorkspaceData, getPodNotionWorkspace]);
+
+  const podWorkspaceNotFoundError =
+    getPodNotionWorkspaceError?.graphQLErrors && getPodNotionWorkspaceError?.graphQLErrors[0]?.message === 'NOT FOUND';
+  const orgWorkspaceNotFoundError =
+    getOrgNotionWorkspaceError?.graphQLErrors && getOrgNotionWorkspaceError?.graphQLErrors[0]?.message === 'NOT FOUND';
   return (
     <TaskImportMethodBlock>
       <Snackbar
@@ -68,24 +100,51 @@ function NotionTaskImportSection(props) {
       <NotionDatabaseSelect
         open={openImportModal}
         orgId={orgId}
+        podId={podId}
         onClose={() => setOpenImportModal(false)}
         toast={toast}
         setToast={setToast}
       />
       <LabelBlock>Import from Notion</LabelBlock>
       <NotionActionsContainer>
-        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && !orgWorkspaceNotFoundError && (
           <ConnectToNotionButton onClick={() => setOpenImportModal(true)}>
             <NotionInButtonIcon /> Import from workspace {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.name}
           </ConnectToNotionButton>
         )}
 
-        {!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
-          <ConnectToNotionButton onClick={redirectToNotionAuth}>
-            <NotionInButtonIcon /> Connect to notion
+        {getPodNotionWorkspaceData?.getPodNotionWorkspace?.id && !podWorkspaceNotFoundError && (
+          <ConnectToNotionButton onClick={() => setOpenImportModal(true)}>
+            <NotionInButtonIcon /> Import from workspace {getPodNotionWorkspaceData?.getPodNotionWorkspace?.name}
           </ConnectToNotionButton>
         )}
-        {getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && (
+
+        {orgId && (!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id || orgWorkspaceNotFoundError) && (
+          <div>
+            <LabelBlockText>Please select the direct page that contains the kanban board/database</LabelBlockText>
+            <ConnectToNotionButton onClick={redirectToNotionAuth}>
+              <NotionInButtonIcon /> Connect to notion
+            </ConnectToNotionButton>
+          </div>
+        )}
+
+        {podId && (!getPodNotionWorkspaceData?.getPodNotionWorkspace?.id || podWorkspaceNotFoundError) && (
+          <div>
+            <LabelBlockText>Please select the direct page that contains the kanban board/database</LabelBlockText>
+            <ConnectToNotionButton onClick={redirectToNotionAuth}>
+              <NotionInButtonIcon /> Connect to notion
+            </ConnectToNotionButton>
+          </div>
+        )}
+
+        {orgId && getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && !orgWorkspaceNotFoundError && (
+          <DisconnectFromNotionButton onClick={handleDisconnect}>
+            <DisconnectFromNotionButtonIcon />
+            &nbsp;Disconnect from notion
+          </DisconnectFromNotionButton>
+        )}
+
+        {podId && getPodNotionWorkspaceData?.getPodNotionWorkspace?.id && !podWorkspaceNotFoundError && (
           <DisconnectFromNotionButton onClick={handleDisconnect}>
             <DisconnectFromNotionButtonIcon />
             &nbsp;Disconnect from notion

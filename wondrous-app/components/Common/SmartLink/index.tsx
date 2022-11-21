@@ -61,15 +61,14 @@ export default function SmartLink({
   });
 
   return asLink ? (
-    <Link href={href} as={destinationUrl} passHref>
-      <a
-        href={destinationUrl}
-        style={{
-          textDecoration: 'none',
-        }}
-      >
-        {children}
-      </a>
+    <Link
+      href={href}
+      as={destinationUrl}
+      style={{
+        textDecoration: 'none',
+      }}
+    >
+      {children}
     </Link>
   ) : (
     <>{childrenWithProps}</>

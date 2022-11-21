@@ -37,12 +37,13 @@ function OrgCard({ item }) {
                     <DAOIcon />
                   </NoLogoDAO>
                 }
-                width="32px"
-                height="32px"
+                width={32}
+                height={32}
                 useNextImage
                 style={{
                   borderRadius: '5px',
                 }}
+                alt="Organization logo"
               />
             </OrgCardImageWrapper>
 

@@ -53,6 +53,7 @@ const MembersModal = ({ open, onClose, members, deleteMember }) => {
                     height: '55px',
                     borderRadius: '4px',
                   }}
+                  alt="Profile picture"
                 />
               ) : (
                 <CreateEntityDefaultUserImage
