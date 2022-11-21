@@ -94,9 +94,13 @@ const validationSchema = Yup.object().shape({
     paymentMethodId: Yup.string().required(),
     rewardAmount: Yup.number()
       .typeError('Reward amount must be a number')
-      .moreThan(0, 'Reward amount must be greater than 0'),
-    amount: Yup.number().moreThan(0, 'Amount must be greater than 0'),
-  }),
+      .moreThan(0, 'Reward amount must be greater than 0')
+      .required(),
+  }).required(),
+  numOfGrant: Yup.number()
+    .typeError('Number of grants must be a number')
+    .moreThan(0, 'Number of grants must be greater than 0')
+    .required(),
   startDate: Yup.string().optional().nullable(),
   endDate: Yup.string().optional().nullable(),
   applyPolicy: Yup.string().nullable(),
@@ -198,7 +202,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             numOfGrant: parseInt(values.numOfGrant, 10),
           },
         },
-      }).then(() => handleClose()),
+      }).then(() => cancel()),
   });
 
   useEffect(() => {
@@ -454,7 +458,6 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
               name="privacyLevel"
               value={form.values.privacyLevel}
               onChange={(value) => {
-                console.log(value, 'valueprivacy');
                 form.setFieldValue('privacyLevel', value);
               }}
               renderValue={(value) => (
