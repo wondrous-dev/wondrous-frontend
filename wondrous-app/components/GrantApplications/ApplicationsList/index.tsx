@@ -10,8 +10,9 @@ import { GET_GRANT_APPLICATIONS } from 'graphql/queries';
 import { useEffect, useRef, useState } from 'react';
 import { useInView } from 'react-intersection-observer';
 import { LIMIT } from 'services/board';
-import { GRANT_APPLICATION_STATUSES } from 'utils/constants';
-import { useTaskContext } from 'utils/hooks';
+import { GRANT_APPLICATION_STATUSES, GRANT_APPLY_POLICY } from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useGlobalContext, useOrgBoard, usePodBoard, useTaskContext } from 'utils/hooks';
 import ListItem from '../ListItem';
 
 const List = ({ display = false }) => {
@@ -19,6 +20,23 @@ const List = ({ display = false }) => {
   const [status, setStatus] = useState('');
   const [hasMore, setHasMore] = useState(false);
   const user = useMe();
+  const { userOrgs } = useGlobalContext();
+  const orgBoard = useOrgBoard();
+  const podBoard = usePodBoard();
+
+  const board = orgBoard || podBoard;
+
+  const permissions = parseUserPermissionContext({
+    userPermissionsContext: board?.userPermissionsContext,
+    orgId: grant?.orgId,
+    podId: grant?.podId,
+  });
+
+  const isNotAMember =
+    !userOrgs ||
+    !userOrgs?.getUserOrgs?.some((org) => org.id === grant?.orgId) ||
+    !board?.userPermissionsContext?.podPermissions[grant?.podId];
+
   const [ref, inView] = useInView({});
   const { data, fetchMore, refetch, previousData, loading } = useQuery(GET_GRANT_APPLICATIONS, {
     variables: {
@@ -57,15 +75,19 @@ const List = ({ display = false }) => {
 
   if (!display) return null;
 
+  const canApply = grant?.applyPolicy === GRANT_APPLY_POLICY.EVERYONE || !isNotAMember;
+
   return (
     <>
       <TaskSubmissionsLoading loading={false} />
 
       <Grid container justifyContent="space-between" alignItems="center">
         <Filters setStatus={handleFilter} status={status} />
-        <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
-          Apply for grant
-        </RequestApproveButton>
+        {canApply ? (
+          <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
+            Apply for grant
+          </RequestApproveButton>
+        ) : null}
       </Grid>
       <TaskSubmissionItemsWrapper data-cy="item-submission">
         {data?.getGrantApplicationsForGrant?.map((item, idx) => (

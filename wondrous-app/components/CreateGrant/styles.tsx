@@ -83,3 +83,25 @@ export const MediaWrapper = styled(CreateEntityLabelSelectWrapper)`
     background: ${palette.grey900};
   }
 `;
+
+export const GrantModalCard = styled.div`
+  width: 682px;
+  margin: 0 auto;
+  height: 95vh;
+  overflow-y: scroll;
+  background: #1d1d1d;
+  outline: 1px solid #424242;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+  ${({ fullScreen }) =>
+    fullScreen &&
+    `
+  width: 100%;
+  gap: 0;
+`}
+`;

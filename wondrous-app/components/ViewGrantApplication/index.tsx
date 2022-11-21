@@ -50,15 +50,15 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { IconWrapper } from 'components/Common/Status/styles';
-import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { SubmissionItemStatusChangesRequestedIcon } from 'components/Common/TaskSubmission/styles';
+import { GrantModalCard } from 'components/CreateGrant/styles';
 import { ItemPill } from 'components/GrantsBoard/styles';
 import { CompletedIcon, InReviewIcon, RejectedIcon, TodoIcon } from 'components/Icons/statusIcons';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { GrantApplicationStatusManager, PaymentHandler, WalletAddressViewer } from './Fields';
-import { GrantSectionDisplayLabel, ModalCard } from './styles';
+import { GrantSectionDisplayLabel } from './styles';
 
 const GRANT_APPLICATION_STATUS_LABELS = {
   [GRANT_APPLICATION_STATUSES.APPROVED]: {
@@ -175,7 +175,6 @@ const ViewGrantApplication = ({ onClose }) => {
     );
   }
 
-  console.log(status, 'status');
   const statusAndIcon = GRANT_APPLICATION_STATUS_LABELS[status];
   return (
     <>
@@ -202,7 +201,7 @@ const ViewGrantApplication = ({ onClose }) => {
         }}
       />
 
-      <ModalCard fullScreen={isFullScreen}>
+      <GrantModalCard fullScreen={isFullScreen}>
         <TaskModalHeader>
           <TaskModalHeaderWrapper>
             <TaskModalHeaderIconWrapper
@@ -324,7 +323,7 @@ const ViewGrantApplication = ({ onClose }) => {
             }}
           />
         </TaskModalTaskData>
-      </ModalCard>
+      </GrantModalCard>
     </>
   );
 };

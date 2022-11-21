@@ -38,6 +38,7 @@ import { GrantTextField, GrantTextFieldInput } from 'components/CreateGrant/Fiel
 import {
   Form,
   GrantDescriptionMedia,
+  GrantModalCard,
   GrantModalData,
   GrantSectionDisplayDivWrapper,
   RichTextContainer,
@@ -194,7 +195,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   return (
     <Form onSubmit={form.handleSubmit}>
-      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+      <GrantModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <HeaderTypography onClick={handleCloseAction}>
@@ -344,7 +345,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             )}
           </CreateEntityHeaderWrapper>
         </FooterButtonsWrapper>
-      </TaskModalCard>
+      </GrantModalCard>
     </Form>
   );
 };

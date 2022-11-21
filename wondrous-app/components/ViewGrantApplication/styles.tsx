@@ -13,13 +13,3 @@ export const GrantAmountContainer = styled.div`
     padding: 8px;
   }
 `;
-
-export const ModalCard = styled(TaskModalCard)`
-  && {
-    height: fit-content;
-    min-height: 70vh;
-    max-height: 95vh;
-  }
-`;
-
-export const GrantStatus = styled.div``;

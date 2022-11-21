@@ -149,7 +149,7 @@ export const ENTITIES_TYPES = {
   PROPOSAL: 'proposal',
   SUBMISSION: 'submission',
   GRANT: 'grant',
-  GRANT_APPLICATION: 'grant_application'
+  GRANT_APPLICATION: 'grant_application',
 };
 
 export const MODAL_TABS_MAP = {
@@ -849,11 +849,16 @@ export enum GRANT_APPLICATION_STATUSES {
   CHANGE_REQUESTED = 'change_requested',
   APPROVED = 'approved',
   REJECTED = 'rejected',
-  APPROVED_AND_PAID ='approved_and_paid',
+  APPROVED_AND_PAID = 'approved_and_paid',
   APPROVED_AND_PROCESSING = 'approved_and_processing',
 }
 
 export const PRIVACY_LABELS = {
   [PRIVACY_LEVEL.public]: 'Public',
   [PRIVACY_LEVEL.private]: 'Members only',
-}
+};
+
+export const GRANT_APPLY_POLICY = {
+  EVERYONE: 'everyone',
+  ONLY_ORG_MEMBERS: 'only_org_members',
+};

@@ -84,6 +84,7 @@ import {
   RichTextWrapper,
   GrantSectionDisplayDivWrapper,
   MediaWrapper,
+  GrantModalCard,
 } from './styles';
 import { descriptionTemplate } from './utils';
 
@@ -295,7 +296,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
 
   return (
     <Form onSubmit={form.handleSubmit}>
-      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+      <GrantModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <CreateEntitySelectErrorWrapper>
@@ -492,7 +493,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             )}
           </CreateEntityHeaderWrapper>
         </CreateEntityHeader>
-      </TaskModalCard>
+      </GrantModalCard>
     </Form>
   );
 };

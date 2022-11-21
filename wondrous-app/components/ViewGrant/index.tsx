@@ -34,6 +34,7 @@ import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import { APPLY_POLICY_FIELDS } from 'components/CreateGrant/Fields/ApplyPolicy';
+import { GrantModalCard } from 'components/CreateGrant/styles';
 import CreateGrantApplication from 'components/GrantApplications/CreateGrantApplication';
 import { DAOIcon } from 'components/Icons/dao';
 import { RichTextViewer } from 'components/RichText';
@@ -146,7 +147,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
     grant?.createdBy === user?.id;
 
   const ViewGrant = () => (
-    <TaskModalCard fullScreen={isFullScreen}>
+    <GrantModalCard fullScreen={isFullScreen}>
       {canView ? (
         <>
           <TaskModalHeader>
@@ -234,7 +235,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
       ) : (
         <LockedTaskMessage handleClose={onClose} />
       )}
-    </TaskModalCard>
+    </GrantModalCard>
   );
 
   const toggleDiscard = () => setIsDiscardOpen((prevState) => !prevState);

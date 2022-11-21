@@ -8,7 +8,7 @@ import {
   TaskSubmissionTab,
   TaskTabText,
 } from 'components/Common/TaskViewModal/styles';
-import { List } from 'components/GrantApplications';
+import { ApplicationsList } from 'components/GrantApplications';
 import { useTaskContext } from 'utils/hooks';
 import { ENTITIES_TYPES } from 'utils/constants';
 import CommentList from 'components/Comment';
@@ -49,7 +49,7 @@ const ViewGrantFooter = ({
       </TaskSectionFooterTitleDiv>
 
       <TaskSectionContent ref={ref}>
-        <List display={activeTab === tabs.applications && entityType === ENTITIES_TYPES.GRANT} />
+        <ApplicationsList display={activeTab === tabs.applications && entityType === ENTITIES_TYPES.GRANT} />
         {activeTab === tabs.discussion && <CommentList task={entity} entityType={entityType} {...commentListProps} />}
       </TaskSectionContent>
     </TaskModalFooter>
