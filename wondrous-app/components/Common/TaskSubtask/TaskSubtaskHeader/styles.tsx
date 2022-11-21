@@ -2,10 +2,11 @@ import { Typography } from '@mui/material';
 import { Button } from 'components/Common/button';
 import PlusIcon from 'components/Icons/plus';
 import styled from 'styled-components';
+import palette from 'theme/palette';
 
 export const TaskSubtaskHeaderWrapper = styled.div`
   align-items: center;
-  background: #171717;
+  background: ${palette.grey900};
   border-radius: 6px;
   display: flex;
   height: 68px;

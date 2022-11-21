@@ -799,7 +799,7 @@ export const TabItemCount = styled.span`
 
 export const TaskSectionContent = styled.div`
   padding: 20px 24px;
-  background-color: #141414;
+  background-color: ${palette.grey125};
   flex-grow: 1;
 `;
 

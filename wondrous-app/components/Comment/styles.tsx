@@ -157,11 +157,11 @@ export const TextInputDiv = styled.div`
 `;
 
 export const DiscordDiscussionButtonWrapper = styled.div`
-  background: ${palette.grey910};
+  background: ${palette.grey900};
   width: 100%;
   border-radius: inherit;
   display: flex;
-  flex-direction: column;
+  justify-content:center;
   align-items: center;
   gap: 12px;
   position: relative;
@@ -169,4 +169,8 @@ export const DiscordDiscussionButtonWrapper = styled.div`
   width: 100%;
   padding: 10px;
   margin-bottom: 15px;
+
+  >div{
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%); */
+  }
 `;
