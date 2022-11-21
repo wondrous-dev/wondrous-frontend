@@ -19,7 +19,7 @@ const styles = {
   label: {
     '&.MuiFormLabel-root': {
       color: 'white',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontWeight: 400,
       fontSize: ' 14px',
       lineHeight: '16px',

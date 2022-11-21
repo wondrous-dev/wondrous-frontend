@@ -67,7 +67,7 @@ export const SubmissionButtonCreate = styled(ButtonGradient)`
     height: 30px;
     width: fit-content;
     > button {
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       ${({ theme }) => `
         font-weight: ${theme.typography.fontWeightMedium};
         background: ${theme.palette.black}
@@ -97,7 +97,7 @@ export const SubmissionButtonEdit = styled(ButtonBase)`
     width: max-content;
     height: 28px;
     border-radius: 100px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     padding: 7px 16px;
     text-decoration: underline;
     ${({ theme }) => `
@@ -176,7 +176,7 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
     border: 1px solid ${({ open }) => (open ? `#424242` : '#1b1b1b')};
     color: white;
     display: flex;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     gap: 8px;
     height: 40px;
@@ -451,7 +451,7 @@ export const SubmissionFormLinkCloseIcon = styled(CloseModalIcon)``;
 
 export const SubmissionFormError = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     ${({ theme }) => `
       color: ${theme.palette.red400};
@@ -489,7 +489,7 @@ export const SubmissionFormUploadFileButton = styled(ButtonBase)`
 export const SubmissionFormUploadFileButtonText = styled(Typography)`
   && {
     font-size: 14px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     ${({ theme }) => `
     color: ${theme.palette.white}
   `};
@@ -523,7 +523,7 @@ export const SubmissionFormCancel = styled(ButtonBase)`
     justify-content: center;
     padding: 8px 30px;
     border-radius: 50px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     ${({ theme }) => `
     background-color: ${theme.palette.black92};
@@ -557,7 +557,7 @@ export const SubmissionFormSubmit = styled(ButtonGradient)`
     min-height: 0;
     font-size: 15px;
     > button {
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 15px;
       padding: 8px 30px;
       ${({ theme }) => `

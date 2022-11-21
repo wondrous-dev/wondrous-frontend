@@ -695,7 +695,7 @@ export const StyledAutocompletePopper = styled(({ className, ...props }) => (
   }
 
   & .MuiAutocomplete-noOptions {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${palette.white};
     font-size: 14px;
   }

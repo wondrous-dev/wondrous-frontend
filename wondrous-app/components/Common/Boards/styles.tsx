@@ -162,7 +162,7 @@ export const BoardsPrivacyLabel = styled.div`
   align-items: center;
   padding: 8px 8px;
   gap: 10px;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 12px;
@@ -186,7 +186,7 @@ export const BoardsCardFooter = styled.div`
 export const BoardsCardBodyTitle = styled(Typography)`
   && {
     color: ${palette.white};
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 700;
     font-size: 16px;
@@ -200,7 +200,7 @@ export const BoardsCardBodyTitle = styled(Typography)`
 
 export const BoardsCardBodyDescription = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

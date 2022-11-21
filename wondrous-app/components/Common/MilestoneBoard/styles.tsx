@@ -63,7 +63,7 @@ export const MilestoneCard = styled.div`
 
 export const MilestoneCardTitle = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 700;
     font-size: 13px;

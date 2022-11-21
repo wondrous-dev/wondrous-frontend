@@ -124,7 +124,7 @@ function InviteMember(props) {
             <TextField
               style={{
                 color: palette.white,
-                fontFamily: 'Space Grotesk',
+                fontFamily: var(--font-space-grotesk),
                 fontSize: '14px',
                 paddingLeft: '10px',
               }}

@@ -127,7 +127,7 @@ export const SettingsSidebarTabsListItemIcon = styled.div`
 
 export const SettingsSidebarTabsListItemText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${palette.white};
     text-decoration: none;
     font-size: 15px;
@@ -176,7 +176,7 @@ export const SettingsDaoPodIndicatorOrgProfile = styled((props) => (
 
 export const SettingsDaoPodIndicatorText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 400;
     color: #ffffff;
@@ -184,7 +184,7 @@ export const SettingsDaoPodIndicatorText = styled(Typography)`
 `;
 export const ArchivedPodIndicatorText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 400;
     color: ${palette.red200};

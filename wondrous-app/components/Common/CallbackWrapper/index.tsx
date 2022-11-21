@@ -25,7 +25,7 @@ export const CallbackWrapper = styled.div`
 
 export const CallbackHeading = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 32px;
     font-weight: 500;
     color: ${palette.white};

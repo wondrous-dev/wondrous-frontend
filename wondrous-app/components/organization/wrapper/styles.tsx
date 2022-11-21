@@ -118,7 +118,7 @@ export const HeaderTitle = styled(Typography)`
 export const HeaderTag = styled(Typography)`
   && {
     color: ${palette.grey250};
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 18px;
@@ -246,7 +246,7 @@ export const HeaderButton = styled.button`
   border: 1px solid ${palette.highlightPurple};
   cursor: pointer;
   color: ${palette.white};
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 600;
   font-size: 15px;
@@ -263,7 +263,7 @@ export const RoleButtonWrapper = styled.div`
 
 export const RoleText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 600;
     font-size: 13px;
@@ -298,7 +298,7 @@ export function HeaderSettingsLockedButton(props) {
       }}
       buttonInnerStyle={{
         color: '#474747',
-        fontFamily: 'Space Grotesk',
+        fontFamily: var(--font-space-grotesk),
         padding: '8px',
       }}
     >

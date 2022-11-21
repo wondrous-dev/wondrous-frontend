@@ -21,7 +21,7 @@ export const TabsVisibilityWrapper = styled.div`
 export const TabsVisibilityButton = styled(Button)`
   && {
     text-transform: capitalize;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     font-style: normal;
     font-weight: ${({ isSelected }) => (isSelected ? 500 : 400)};

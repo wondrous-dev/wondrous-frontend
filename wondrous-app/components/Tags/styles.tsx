@@ -26,7 +26,7 @@ export const TagAutocompletePopper = styled(({ className, ...props }) => (
   }
   .MuiAutocomplete-noOptions {
     background: #1f1f1f !important;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     color: ${palette.white};
     font-weight: 500;
@@ -38,7 +38,7 @@ export const OptionItem = styled.li`
   && {
     height: 36px;
     background: #1f1f1f;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     padding: 12px;
     font-weight: 500;
@@ -67,7 +67,7 @@ export const StyledChipTag = styled(Chip)`
       color: #ffffff;
       font-weight: 500;
       font-size: 13px;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
     }
 
     &:hover {
@@ -97,7 +97,7 @@ export const TagsTextField = styled(TextField)`
     .MuiOutlinedInput-root {
       padding: 6px;
       color: ${palette.white};
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 13px;
       font-weight: 500;
       color: #c4c4c4;

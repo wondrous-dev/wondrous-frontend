@@ -25,7 +25,7 @@ export const OfflinePaymentDropdown = styled(DropdownSelect)``;
 
 export const OfflinePaymentDescriptionText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: #828282;
     font-weight: 500;
     font-size: 15px;
@@ -36,7 +36,7 @@ export const OfflinePaymentDescriptionText = styled(Typography)`
 
 export const OfflinePaymentWarningTypography = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 12px;
     color: ${palette.grey20};
   }
@@ -44,7 +44,7 @@ export const OfflinePaymentWarningTypography = styled(Typography)`
 
 export const OfflinePaymentInputLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 500;
     color: ${palette.white} !important;
@@ -65,7 +65,7 @@ export const OfflinePaymentWallet = styled(InputBase)`
   border-radius: 6px;
 
   .MuiInputBase-input {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 400;
     color: ${palette.grey250};
@@ -90,7 +90,7 @@ export const OfflinePaymentWalletButton = styled(Button)`
 
 export const OfflinePaymentWalletButtonText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 400;
     color: ${palette.grey20};

@@ -41,7 +41,7 @@ export const StyledTableContainer = styled(TableContainer)`
 export const StyledTableHead = styled(TableHead)`
   & .MuiTableCell-head {
     color: #ccbbff;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-style: normal;
     font-weight: 700;

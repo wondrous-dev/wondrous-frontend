@@ -391,7 +391,7 @@ function ProfileSettings(props) {
             <GeneralSettingsResetButton onClick={setInitialSettings}>Reset changes</GeneralSettingsResetButton>
             <GeneralSettingsSaveChangesButton
               buttonInnerStyle={{
-                fontFamily: 'Space Grotesk',
+                fontFamily: var(--font-space-grotesk),
                 fontWeight: 'bold',
               }}
               highlighted

@@ -7,7 +7,7 @@ import typography from 'theme/typography';
 
 export const OrgsSectionHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 700;
     font-size: 28px;
@@ -38,7 +38,7 @@ export const BountySectionHeader = styled(OrgsSectionHeader)`
 
 export const SectionSubheader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
@@ -99,7 +99,7 @@ export const Gr15DEIExplainerTitleText = styled(Typography)`
     -moz-background-clip: text;
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     font-size: 24px;

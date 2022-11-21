@@ -204,7 +204,7 @@ export const PaymentPendingTypography = styled(Typography)`
 
 export const ExplainerText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 400;
     color: ${palette.grey250};

@@ -29,7 +29,7 @@ const styles = {
     },
     '& .DayPicker_weekHeader_li::first-letter': {
       visibility: 'visible',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontWeight: 700,
       fontSize: 12,
       lineHeight: '19px',

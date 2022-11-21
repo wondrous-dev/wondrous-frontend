@@ -103,7 +103,7 @@ export const PostHeaderMenu = styled(Popper)`
 export const PostHeaderMenuItem = styled(MenuItem)`
   &.MuiMenuItem-root {
     color: #fff;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     text-align: center;
 

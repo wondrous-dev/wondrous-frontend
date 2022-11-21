@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 export const WhiteTypographyStyles = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     font-size: 16px;
     color: #ffffff;

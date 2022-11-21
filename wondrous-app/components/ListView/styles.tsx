@@ -26,7 +26,7 @@ export const ListViewItemDataContainer = styled.div`
   flex: 1;
   align-items: center;
   gap: 16px;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 600;
   font-size: 16px;

@@ -9,7 +9,7 @@ export const StyledBox = styled.div`
     border-radius: 6px;
     width: fit-content;
     color: white;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     font-size: 12px;

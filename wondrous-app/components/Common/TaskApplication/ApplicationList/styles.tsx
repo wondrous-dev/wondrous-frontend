@@ -64,7 +64,7 @@ export const CardHeaderInfo = styled.div`
 
 export const CardUsername = styled.div`
   color: white;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 700;
   font-size: 15px;
@@ -73,7 +73,7 @@ export const CardUsername = styled.div`
 
 export const CardTimestamp = styled.div`
   color: rgba(122, 122, 122, 1);
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 15px;
@@ -86,7 +86,7 @@ export const ApplicationStatus = styled.span`
   -webkit-text-fill-color: transparent;
   background-clip: text;
   text-fill-color: transparent;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -96,7 +96,7 @@ export const ApplicationStatus = styled.span`
 
 export const ApplicationMessage = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
@@ -118,7 +118,7 @@ export const LinkContainer = styled.a`
   display: flex;
   gap: 6px;
   width: max-content;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -140,7 +140,7 @@ export const RejectButton = styled.button`
   border: 0px;
   color: white;
   height: auto;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -201,7 +201,7 @@ export const EmptyStateWrapper = styled.div`
 
 export const EmptyStateText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

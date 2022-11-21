@@ -15,7 +15,7 @@ export const PaymentMethodSettingWrapper = styled.div`
 
 export const PaymentMethodSubHeader = styled(InputLabel)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 20px;
     font-weight: 500;
     color: ${palette.blue20};
@@ -27,7 +27,7 @@ export const PaymentMethodSubHeader = styled(InputLabel)`
 export const PaymentMethodNameHeader = styled(Typography)`
   && {
     color: ${palette.white};
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     font-size: 15px;
   }
@@ -35,7 +35,7 @@ export const PaymentMethodNameHeader = styled(Typography)`
 
 export const PaymentMethodDescription = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 400;
     color: ${palette.grey250};
@@ -146,7 +146,7 @@ export const PaymentMethodTokenInfo = styled.div`
 
 export const PaymentMethodTokenInfoLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 12px;
     line-height: 12px;
     color: ${palette.grey250};
@@ -177,7 +177,7 @@ export const PaymentMethodTokenInfoValueText = styled(PaymentMethodTokenInfoLabe
 
 export const PaymentMethodFormHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 18px;
     font-weight: 700;
     color: ${palette.white};
@@ -214,7 +214,7 @@ export const AddPaymetMethodButton = styled(Button)`
     background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
     button {
       background: ${palette.background.default};
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 16px;
       font-weight: 500;
     }

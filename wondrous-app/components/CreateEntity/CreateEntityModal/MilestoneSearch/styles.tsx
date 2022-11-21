@@ -43,7 +43,7 @@ export const MilestoneSearchWrapper = styled.div`
 `;
 
 export const MilestoneSearchButton = styled(ButtonUnstyled)`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   width: 100%;
@@ -96,7 +96,7 @@ export const MilestoneSearchInput = styled(TextField)`
     && .MuiOutlinedInput-input {
       height: 32px;
       padding: 0;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-weight: 400;
       font-size: 14px;
       color: ${palette.white};
@@ -125,7 +125,7 @@ export const MilestoneSearchAutocompletePopper = styled.div`
     position: relative;
   }
   .MuiAutocomplete-noOptions {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${palette.white};
     margin: 0;
     padding: 0;
@@ -169,7 +169,7 @@ export const MilestoneSearchListItem = styled.li`
     padding: 6px 12px;
     display: ${({ hide }) => (hide ? 'none' : 'flex')};
     align-items: center;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -203,7 +203,7 @@ export const MilestoneSearchDefaultImage = styled((props) => (
 
 export const MilestoneSearchLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${({ hasValue }) => (hasValue ? palette.white : `#5e5e5e`)};
@@ -277,7 +277,7 @@ export const MilestoneSearchCreateMilestoneButton = styled(ButtonUnstyled)`
 
 export const MilestoneSearchCreateMilestoneButtonLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 500;
     color: #ffffff;

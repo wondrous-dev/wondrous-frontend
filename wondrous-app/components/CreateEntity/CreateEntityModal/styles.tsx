@@ -60,7 +60,7 @@ export const CreateEntityHeader = styled.div`
 export const CreateEntityMilestoneSearch = styled(MilestoneSearch)``;
 
 export const CreateEntitySelectRoot = styled.button`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   width: 100%;
@@ -77,7 +77,7 @@ export const CreateEntitySelectRoot = styled.button`
 `;
 
 export const CreateEntitySelectListbox = styled.ul`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   color: ${palette.white};
   margin: 0;
   padding: 0;
@@ -156,7 +156,7 @@ export const CreateEntityDefaultPodImage = styled((props) => (
 
 export const CreateEntityOptionLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -234,7 +234,7 @@ export const CreateEntityBody = styled.div`
 export const CreateEntityTitle = styled(TextareaAutosize)`
   height: 42px;
   width: 100%;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 24px;
   color: ${palette.white};
   background: transparent;
@@ -257,7 +257,7 @@ export const CreateEntityLabel = styled.div`
   width: fit-content;
   height: 32px;
   padding: 4px 8px;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   color: #ccbbff;
   font-weight: 500;
   border-radius: 4px;
@@ -305,7 +305,7 @@ export const CreateEntityAddButtonIcon = styled(PlusIcon)`
 export const CreateEntityAddButtonLabel = styled(Typography)`
   && {
     color: #7a7a7a;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     margin-left: 4px;
   }
@@ -365,7 +365,7 @@ export const CreateEntityTextfieldInputPoints = styled(TextField)`
     height: inherit;
     padding: 0;
     width: 75px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: #ffffff;
@@ -386,7 +386,7 @@ export const CreateEntityTextfieldPoints = styled(PointsIcon)``;
 export const CreateEntityTextfieldInputLabel = styled(Typography)`
   && {
     color: #c4c4c4;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     background: -webkit-linear-gradient(#ffffff, #ffd653);
@@ -423,7 +423,7 @@ export const CreateEntityAutocompletePopper = styled(({ className, ...props }) =
 
   .MuiAutocomplete-noOptions {
     background: #1f1f1f !important;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     color: ${palette.white};
     font-weight: 500;
@@ -437,7 +437,7 @@ export const CreateEntityAutocompletePopperRenderInput = styled(Input)`
     outline: none;
     height: 32px;
     color: #c4c4c4;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     > .MuiInputBase-input {
@@ -494,7 +494,7 @@ export const CreateEntityAutocompleteOption = styled.li`
 
 export const CreateEntityAutocompleteOptionTypography = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     color: ${palette.white};
     margin-left: 6px;
@@ -525,7 +525,7 @@ export const CreateEntityPrivacyRoot = styled.button`
 `;
 
 export const CreateEntityPrivacyList = styled.ul`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   color: ${palette.white};
   margin: 0;
   padding: 0;
@@ -581,7 +581,7 @@ export const CreateEntityPrivacyIconWrapper = styled.div`
 
 export const CreateEntityPrivacyLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 400;
     color: ${palette.white};
     font-size: 13px;
@@ -592,7 +592,7 @@ export const CreateEntityPrivacyLabel = styled(Typography)`
 
 export const CreateEntityPrivacySelectOption = styled(OptionUnstyled)`
   list-style: none;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 13px;
   font-weight: 400;
   height: 34px;
@@ -617,7 +617,7 @@ export const CreateEntityCancelButton = styled(ButtonUnstyled)`
   color: ${palette.white};
   border: none;
   border-radius: 50px;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 15px;
   font-weight: 600;
   :hover {
@@ -642,7 +642,7 @@ export const CreateEntityCreateTaskButton = styled(Button)`
       min-height: 0;
       font-size: 15px;
       font-weight: 600;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       background: #0f0f0f;
     }
   }
@@ -650,7 +650,7 @@ export const CreateEntityCreateTaskButton = styled(Button)`
 
 export const CreateEntityAttachment = styled(ButtonUnstyled)`
   background: #282828;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   font-weight: 500;
   text-align: left;
@@ -671,7 +671,7 @@ export const CreateEntityAttachment = styled(ButtonUnstyled)`
 
 export const CreateEntitySaveTemplateButton = styled(ButtonUnstyled)`
   background: ${greyColors.grey90};
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   height: 32px;
   width: 225px;
@@ -694,7 +694,7 @@ export const CreateEntitySaveTemplateButton = styled(ButtonUnstyled)`
 
 export const CreateEntitySaveTemplateButtonDisabled = styled(ButtonUnstyled)`
   background: #282828;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   height: 32px;
   width: 225px;
@@ -763,7 +763,7 @@ export const CreateEntityTextfieldInputReward = styled(TextField)`
   .MuiOutlinedInput-root {
     height: 32px;
     padding: 0;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: #06ffa5;
@@ -783,7 +783,7 @@ export const CreateEntityTextfieldInputTemplate = styled(TextField)`
   .MuiOutlinedInput-root {
     height: 32px;
     padding: 0;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: #ffffff;
@@ -797,7 +797,7 @@ export const CreateEntityTextfieldInputTemplate = styled(TextField)`
 `;
 
 export const CreateEntityPaymentMethodList = styled.ul`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   color: ${palette.white};
   margin: 0;
   padding: 0;
@@ -834,7 +834,7 @@ export const CreateEntityPaymentMethodSelected = styled.div`
 
 export const CreateEntityPaymentMethodOption = styled(OptionUnstyled)`
   list-style: none;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 13px;
   font-weight: 400;
   height: 34px;
@@ -870,7 +870,7 @@ export const CreateEntityPaymentMethodSelectRender = styled.div`
   display: flex;
   gap: 6px;
   align-items: center;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 13px;
   color: white;
   justify-content: space-between;
@@ -881,7 +881,7 @@ export const CreateEntityPaymentMethodLabel = styled(Typography)`
     display: flex;
     align-items: center;
     color: #ffffff;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     gap: 6px;
@@ -899,7 +899,7 @@ export const CreateEntityError = styled(Typography)`
   && {
     color: ${palette.red400};
     font-size: 13px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 400;
     display: flex;
     align-items: center;
@@ -1024,7 +1024,7 @@ export const ApplicationInputUnassignContainer = styled.div`
   padding-bottom: 9px;
   display: flex;
   align-items: center;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 13px;
   font-weight: 500;
   color: ${palette.white};

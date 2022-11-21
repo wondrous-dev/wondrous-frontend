@@ -16,7 +16,7 @@ export const TaskContentBountyCard = styled.div`
 
 export const TaskContentHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-style: normal;
     font-weight: 400;
@@ -49,7 +49,7 @@ export const TaskContentPaidOut = styled(LinearProgress)`
 export const TaskContentPaidOutPercentage = styled(Typography)`
   && {
     position: absolute;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 12px;
     font-style: normal;
     font-weight: 400;

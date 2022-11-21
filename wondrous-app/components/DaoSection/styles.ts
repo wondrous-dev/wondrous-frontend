@@ -3,7 +3,7 @@ import styled from 'styled-components';
 
 export const OrgsSectionHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 700;
     font-size: 28px;
@@ -23,7 +23,7 @@ export const OrgsSectionHeader = styled(Typography)`
 `;
 export const SectionSubheader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

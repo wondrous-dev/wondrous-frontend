@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components';
 import { white } from 'theme/colors';
 
 export const GRDEISelectorContainer = styled.div`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   min-width: 130px;
@@ -20,7 +20,7 @@ export const GRDEISelectorContainer = styled.div`
 
 export const GR15DEISelectorText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     font-size: 13px;

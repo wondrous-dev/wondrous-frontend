@@ -30,7 +30,7 @@ export const TaskApplicationFormTextarea = styled(TextareaAutosize)`
   border-radius: 6px;
   background: #0f0f0f;
   width: 100%;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 16px;
   font-weight: 400;
   border: none;
@@ -51,7 +51,7 @@ export const TaskApplicationFormHeader = styled.div`
 
 export const TaskApplicationFormHeaderText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 20px;
     font-weight: 700;
     color: #fff;
@@ -61,7 +61,7 @@ export const TaskApplicationFormHeaderText = styled(Typography)`
 export const TaskApplicationFormHeaderCloseButton = styled(ModalCloseButton)``;
 
 export const TaskApplicationTextAreaCount = styled.span`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -93,7 +93,7 @@ export const LinkTitleInput = styled(Input)`
     height: 40px;
     background: #0f0f0f;
     border-radius: 4px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;
@@ -109,7 +109,7 @@ export const LinkUrlInput = styled(Input)`
     height: 40px;
     background: #0f0f0f;
     border-radius: 4px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

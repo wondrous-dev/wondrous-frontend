@@ -37,7 +37,7 @@ export const SelectMenuBoardTypeDiv = styled.div`
 
 export const SelectMenuBoardTypeText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;

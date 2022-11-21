@@ -569,7 +569,7 @@ export const TaskSectionInfoTakeTask = styled(GradientButton)`
 
 export const TaskSectionInfoTakeTaskText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 500;
     line-height: 0;
@@ -635,7 +635,7 @@ export const ConnectToWalletButton = styled(GradientButton)`
       padding: 0 14px;
       display: flex;
       align-items: center;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 14px;
       font-weight: 500;
       line-height: 0;

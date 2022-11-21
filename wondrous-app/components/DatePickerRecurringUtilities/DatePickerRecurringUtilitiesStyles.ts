@@ -4,7 +4,7 @@ const styles = {
     borderTop: '0.5px dashed #4B4B4B',
     py: 1.5,
     color: 'white',
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
     fontSize: ' 14px',
     fontWeight: 400,
     letterSpacing: '0.01em',
@@ -17,7 +17,7 @@ const styles = {
       alignItems: 'center',
       background: '#7427FF',
       borderRadius: '6px',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontWeight: 500,
       fontSize: ' 14px',
       lineHeight: '16px',
@@ -40,7 +40,7 @@ const styles = {
       background: '#313131',
 
       borderRadius: '6px',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontWeight: 500,
       fontSize: ' 14px',
       lineHeight: '16px',
@@ -57,7 +57,7 @@ export const menuItemStyles = () => ({
   '&&': {
     display: 'block',
     padding: 8,
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
     fontSize: 16,
     color: 'white',
 

@@ -284,7 +284,7 @@ function GeneralSettingsComponent(props: GeneralSettingsProps) {
           <GeneralSettingsResetButton onClick={resetChanges}>Cancel changes</GeneralSettingsResetButton>
           <GeneralSettingsSaveChangesButton
             buttonInnerStyle={{
-              fontFamily: 'Space Grotesk',
+              fontFamily: var(--font-space-grotesk),
               fontWeight: 'bold',
             }}
             onClick={saveChanges}

@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const StepTitle = styled.h1`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 700;
   font-size: 20px;
@@ -12,7 +12,7 @@ export const StepTitle = styled.h1`
 `;
 
 export const StepBody = styled.span`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 400;
   font-size: 14px;
@@ -26,7 +26,7 @@ export const NextButton = styled.button`
   padding: 10px;
   text-align: center;
   border: 0;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -43,7 +43,7 @@ export const PrevButton = styled.button`
   padding: 10px;
   border: 0;
   text-align: center;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -67,7 +67,7 @@ export const EndGuideButton = styled.button`
   border-radius: 146px;
   text-align: center;
   padding: 10px;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

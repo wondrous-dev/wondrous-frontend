@@ -37,7 +37,7 @@ export const CountStatusWrapper = styled.div`
 
 export const Count = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 18px;
     font-style: normal;
     font-weight: 700;
@@ -50,7 +50,7 @@ export const Count = styled(Typography)`
 
 export const Status = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-style: normal;
     font-weight: 400;

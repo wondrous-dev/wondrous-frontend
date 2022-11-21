@@ -23,7 +23,7 @@ export const PostContentBorder = styled.div`
 
 export const PostContentBackground = styled(Box)`
   height: 100%;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   font-style: normal;
   color: #c4c4c4;
@@ -49,7 +49,7 @@ export const ReferenceTitle = styled(Typography)`
     padding-top: 18px;
 
     a {
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 16px;
       color: #fff;
       font-weight: 700;

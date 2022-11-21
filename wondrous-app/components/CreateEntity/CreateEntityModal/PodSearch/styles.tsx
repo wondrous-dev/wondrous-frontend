@@ -39,7 +39,7 @@ export const scrollBarStyles = css`
 export const PodSearchWrapper = styled.div``;
 
 export const PodSearchButton = styled(ButtonUnstyled)`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   min-width: 130px;
@@ -96,7 +96,7 @@ export const PodSearchInput = styled(TextField)`
     && .MuiOutlinedInput-input {
       height: 32px;
       padding: 0;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-weight: 400;
       font-size: 14px;
       color: ${palette.white};
@@ -125,7 +125,7 @@ export const PodSearchAutocompletePopper = styled.div`
     position: relative;
   }
   .MuiAutocomplete-noOptions {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${palette.white};
     margin: 0;
     padding: 0;
@@ -168,7 +168,7 @@ export const PodSearchListItem = styled.li`
     padding: 6px 12px;
     display: ${({ hide }) => (hide ? 'none' : 'flex')};
     align-items: center;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -204,7 +204,7 @@ export const PodSearchDefaultImage = styled((props) => (
 
 export const PodSearchLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 900;
     color: ${palette.white};

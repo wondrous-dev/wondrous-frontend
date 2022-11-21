@@ -2,7 +2,7 @@ const styles = {
   menuItem: {
     display: 'block',
     padding: '8px',
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
     fontSize: 16,
     color: 'white',
     ':hover': {

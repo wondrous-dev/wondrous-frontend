@@ -153,7 +153,7 @@ export const HeaderEditProfileButton = styled(ButtonComponent)`
 
     button {
       background: #0f0f0f;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 15px;
       font-style: normal;
       font-weight: 600;
@@ -164,7 +164,7 @@ export const HeaderEditProfileButton = styled(ButtonComponent)`
 export const HeaderUserName = styled(Typography)`
   && {
     margin-top: 18px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 18px;
     font-style: normal;
     font-weight: 400;

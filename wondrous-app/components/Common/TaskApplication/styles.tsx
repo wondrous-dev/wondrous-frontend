@@ -3,7 +3,7 @@ import { Typography } from '@mui/material';
 
 export const ConfirmationModalBody = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

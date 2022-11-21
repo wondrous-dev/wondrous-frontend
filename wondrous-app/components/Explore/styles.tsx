@@ -85,7 +85,7 @@ export const BackgroundTextWrapper = styled.div`
 
 export const BackgroundTextHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 600;
     font-size: 48px;
@@ -106,7 +106,7 @@ export const BackgroundTextHeader = styled(Typography)`
 
 export const BackgroundTextSubHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 16px;
@@ -163,7 +163,7 @@ export const Tab = styled.button`
   gap: 24px;
   max-height: 72px;
   span {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 700;
     font-size: 22px;
@@ -274,7 +274,7 @@ export const PartnershipRequest = styled.div`
 
 export const PartnershipRequestHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 600;
     font-size: 24px;
@@ -299,7 +299,7 @@ export const LogoContainer = styled.div`
 
 export const PartnershipRequestSubheader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

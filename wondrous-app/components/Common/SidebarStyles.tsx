@@ -87,7 +87,7 @@ export const AddIconWrapper = styled((props) => (
 `;
 
 export const toolTipStyle = {
-  fontFamily: 'Space Grotesk',
+  fontFamily: var(--font-space-grotesk),
   fontStyle: 'normal',
   fontWeight: 500,
   fontSize: '12px',

@@ -44,7 +44,7 @@ export const TaskSubtaskHeaderButtonIcon = styled(PlusIcon)`
 
 export const TaskSubtaskHeaderButtonLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     font-weight: 600;
     ${({ theme }) => `

@@ -1,82 +1,82 @@
-@font-face {
-  font-family: 'Carmen Sans';
-  font-weight: normal;
-  font-style: normal;
-  src: url('../assets/fonts/CarmenSansBold.otf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: 'Carmen Sans';*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/CarmenSansBold.otf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Carmen Sans SemiBold';
-  font-weight: 600;
-  font-style: normal;
-  src: url('../assets/fonts/CarmenSansSemiBold.otf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: 'Carmen Sans SemiBold';*/
+/*  font-weight: 600;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/CarmenSansSemiBold.otf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Carmen Sans Bold';
-  font-weight: bold;
-  font-style: normal;
-  src: url('../assets/fonts/CarmenSansBold.otf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: 'Carmen Sans Bold';*/
+/*  font-weight: bold;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/CarmenSansBold.otf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Faktum';
-  font-weight: normal;
-  font-style: normal;
-  src: url('../assets/fonts/FaktumRegular.otf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: 'Faktum';*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/FaktumRegular.otf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Faktum Bold';
-  font-weight: bold;
-  font-style: normal;
-  src: url('../assets/fonts/FaktumBold.otf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: 'Faktum Bold';*/
+/*  font-weight: bold;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/FaktumBold.otf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Space Grotesk';
-  font-weight: normal;
-  font-style: normal;
-  src: url('../assets/fonts/SpaceGrotesk-Regular.ttf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: var(--font-space-grotesk);*/
+/*  font-weight: normal;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/SpaceGrotesk-Regular.ttf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Space Grotesk';
-  font-weight: bold;
-  font-style: normal;
-  src: url('../assets/fonts/SpaceGrotesk-Bold.ttf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: var(--font-space-grotesk);*/
+/*  font-weight: bold;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/SpaceGrotesk-Bold.ttf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Space Grotesk';
-  font-weight: lighter;
-  font-style: normal;
-  src: url('../assets/fonts/SpaceGrotesk-Light.ttf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: var(--font-space-grotesk);*/
+/*  font-weight: lighter;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/SpaceGrotesk-Light.ttf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Space Grotesk';
-  font-weight: 500;
-  font-style: normal;
-  src: url('../assets/fonts/SpaceGrotesk-SemiBold.ttf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: var(--font-space-grotesk);*/
+/*  font-weight: 500;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/SpaceGrotesk-SemiBold.ttf');*/
+/*  font-display: swap;*/
+/*}*/
 
-@font-face {
-  font-family: 'Space Grotesk';
-  font-weight: 300;
-  font-style: normal;
-  src: url('../assets/fonts/SpaceGrotesk-Medium.ttf');
-  font-display: swap;
-}
+/*@font-face {*/
+/*  font-family: var(--font-space-grotesk);*/
+/*  font-weight: 300;*/
+/*  font-style: normal;*/
+/*  src: url('../assets/fonts/SpaceGrotesk-Medium.ttf');*/
+/*  font-display: swap;*/
+/*}*/
 
 html,
 html > body {
@@ -109,7 +109,7 @@ input[type='number'] {
 .MuiCalendarPicker-root {
   background: #3d3d3d;
   color: white !important;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
 }
 
 .MuiCalendarPicker-root .MuiTypography-caption {

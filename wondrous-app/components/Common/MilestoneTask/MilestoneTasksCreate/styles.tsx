@@ -54,7 +54,7 @@ export const MilestonesTasksCreateButtonIcon = styled(PlusIcon)`
 
 export const MilestonesTaskCreateButtonLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     font-weight: 600;
     ${({ theme }) => `

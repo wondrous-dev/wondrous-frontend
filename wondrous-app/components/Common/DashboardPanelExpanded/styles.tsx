@@ -24,7 +24,7 @@ export const PanelHeader = styled.div`
 
 export const HeaderTitle = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 22px;
     font-weight: 600;
     color: #fff;
@@ -38,7 +38,7 @@ export const PanelViewButton = styled.div`
 
 export const PanelViewButtonLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 400;
     color: #828282;

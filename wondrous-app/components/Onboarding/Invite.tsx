@@ -235,7 +235,7 @@ export function Invite({
             <DiscordIcon />
             <span
               style={{
-                fontFamily: 'Space Grotesk',
+                fontFamily: var(--font-space-grotesk),
                 fontWeight: '500',
               }}
             >
@@ -265,7 +265,7 @@ export function Invite({
             <EmailIcon />
             <span
               style={{
-                fontFamily: 'Space Grotesk',
+                fontFamily: var(--font-space-grotesk),
                 fontWeight: '500',
               }}
             >

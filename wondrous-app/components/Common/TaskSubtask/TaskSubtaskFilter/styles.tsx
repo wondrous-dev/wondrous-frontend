@@ -10,7 +10,7 @@ export const TaskSubtasksFilterSelectButton = styled(ButtonBase)`
     border: 1px solid ${({ open }) => (open ? `#424242` : 'transparent')};
     color: white;
     display: flex;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     gap: 8px;
     height: 40px;

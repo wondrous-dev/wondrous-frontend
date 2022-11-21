@@ -105,7 +105,7 @@ export const BountyCardWrapper = styled.div`
 
 export const BountyCardType = styled.div`
   color: ${palette.blue20};
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 700;
   font-size: 13px;

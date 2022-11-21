@@ -311,7 +311,7 @@ export const CreateDaoTextLogoWrapper = styled.div`
 export const CreateDaoText = styled(Typography)`
   && {
     display: inline-block;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 400;
     font-size: 26px;
     color: ${({ theme }) => theme.palette.highlightPurple};

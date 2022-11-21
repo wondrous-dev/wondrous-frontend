@@ -12,7 +12,7 @@ export const StatItem = styled.span`
   position: relative;
   border-radius: 180px;
   margin-right: 22px;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 13px;

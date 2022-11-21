@@ -32,7 +32,7 @@ export const RequestModalTokenGatingSubtitle = styled.div`
   && {
     font-size: 14px;
     font-weight: 500;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: white;
   }
 `;
@@ -98,7 +98,7 @@ export const RequestModalNoRolesSubtitle = styled(Typography)`
   && {
     font-size: 14px;
     font-weight: 500;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${greyColors.grey57};
     margin-bottom: 12px;
   }
@@ -186,7 +186,7 @@ export const RequestModalRolesSubtitle = styled(Typography)`
   && {
     font-size: 14px;
     font-weight: 500;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${blueColors.blue20};
     margin-bottom: 12px;
   }
@@ -197,7 +197,7 @@ export const RequestModalTextarea = styled(TextareaAutosize)`
   border-radius: 6px;
   background: ${greyColors.grey910};
   width: 100%;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 14px;
   font-weight: 400;
   border: none;
@@ -255,7 +255,7 @@ export const RequestModalRolesAbilityCloseIcon = styled(CloseModalIconRed)`
 
 export const RequestModalRolesAbilityText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     font-weight: 700;
     color: ${palette.white};
@@ -275,7 +275,7 @@ export const RequestModalButtonsContainer = styled.div`
 
 export const RequestModalTitle = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 24px;
     font-weight: 700;
     color: ${palette.white};

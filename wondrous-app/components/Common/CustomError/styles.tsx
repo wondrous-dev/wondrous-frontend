@@ -24,7 +24,7 @@ export const ErrorImage = styled.img`
 
 export const ErrorHeader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     font-size: 28px;
@@ -44,7 +44,7 @@ export const EscapeButton = styled(Button)`
 `;
 export const SectionSubheader = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 400;
     font-size: 15px;

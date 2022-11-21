@@ -39,7 +39,7 @@ export const scrollBarStyles = css`
 `;
 
 export const DropdownSearchButton = styled(ButtonUnstyled)`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   width: 100%;
@@ -63,7 +63,7 @@ export const DropdownSearchImageLabelWrapper = styled.div`
 
 export const DropdownSearchLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${({ hasValue }) => (hasValue ? palette.white : `#5e5e5e`)};
@@ -106,7 +106,7 @@ export const DropdownSearchInput = styled(TextField)`
     && .MuiOutlinedInput-input {
       height: 32px;
       padding: 0;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-weight: 400;
       font-size: 14px;
       color: ${palette.white};
@@ -195,7 +195,7 @@ export const DropdownSearchListItem = styled.li`
     padding: 6px 12px;
     display: ${({ hide }) => (hide ? 'none' : 'flex')};
     align-items: center;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -216,7 +216,7 @@ export const DropdownSearchAutocompletePopper = styled.div`
     position: relative;
   }
   .MuiAutocomplete-noOptions {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     color: ${palette.white};
     margin: 0;
     padding: 0;

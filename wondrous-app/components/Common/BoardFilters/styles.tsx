@@ -33,7 +33,7 @@ export const AppliedFiltersItem = styled.div`
   border-radius: 66px;
   padding: 7px 10px;
   width: max-content;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
@@ -96,7 +96,7 @@ export const ClearButton = styled.button`
   border: 0;
   min-height: 32px;
   cursor: pointer;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

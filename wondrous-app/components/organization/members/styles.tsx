@@ -22,7 +22,7 @@ export const RequestCountWrapper = styled(Typography)`
   && {
     position: relative;
     padding: 7.5px 10px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     line-height: 13px;
     display: flex;
@@ -47,7 +47,7 @@ export const RequestCountWrapper = styled(Typography)`
 export const RequestCount = styled(Typography)`
   && {
     color: ${palette.red750};
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     line-height: 13px;
   }
@@ -71,7 +71,7 @@ export const MemberRequestCard = styled.div`
   display: flex;
   align-items: center;
   padding: 8px 0;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   width: 100%;
 `;
 
@@ -84,7 +84,7 @@ export const MemberProfileLink = styled.a`
 
 export const MemberName = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 600;
     color: ${palette.white};
@@ -112,7 +112,7 @@ export const RequestActionButtons = styled.div`
 
 export const RequestActionButton = styled(Button)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     font-size: 14px;
     line-height: 14px;

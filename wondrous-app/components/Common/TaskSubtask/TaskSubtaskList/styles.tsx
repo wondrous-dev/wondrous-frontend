@@ -144,7 +144,7 @@ export const TaskSubtaskStatus = styled.div`
 
 export const TaskSubtaskStatusLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     ${({ theme }) => `
       color: ${theme.palette.white};
@@ -183,7 +183,7 @@ export const TaskSubtaskClaimButtonWrapper = styled(Button)`
       background: ${({ theme }) => theme.palette.background};
       color: ${({ theme }) => theme.palette.white};
       display: flex;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 14px;
       font-weight: 500;
       gap: 5px;

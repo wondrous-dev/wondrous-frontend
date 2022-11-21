@@ -8,7 +8,7 @@ export const cancelStyles = () => ({
     backgroundColor: '#232323',
     color: 'white',
     padding: '6px 24px',
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
   },
 });
 
@@ -20,7 +20,7 @@ export const submitStyles = () => ({
     borderRadius: '64px',
     '& .MuiBox-root': {
       background: '#0f0f0f',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontSize: 15,
       fontStyle: 'normal',
       fontWeight: 500,
@@ -47,7 +47,7 @@ export const IntiativeText = styled(Typography)`
     -moz-background-clip: text;
     -webkit-text-fill-color: transparent;
     -moz-text-fill-color: transparent;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
@@ -83,7 +83,7 @@ export const ExploreProjectsButton = styled(Button)`
       min-height: 0;
       font-size: 15px;
       font-weight: 600;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       background: #0f0f0f;
     }
   }
@@ -100,7 +100,7 @@ export const ExploreProjectsButtonFilled = styled(Button)`
       min-height: 0;
       font-size: 15px;
       font-weight: 600;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       background: ${GradientGR15Horizontal};
     }
   }

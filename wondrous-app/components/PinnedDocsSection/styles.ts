@@ -8,7 +8,7 @@ import palette from 'theme/palette';
 export const SectionTitleTypography = styled(Typography)(
   `
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     font-size: 16px;

@@ -46,7 +46,7 @@ const Custom404Wrapper = styled.div`
 
 const Custom404Heading = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 32px;
     font-weight: 500;
     color: ${palette.white};
@@ -55,7 +55,7 @@ const Custom404Heading = styled(Typography)`
 
 const Custom404SubHeading = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 400;
     color: ${palette.white};
@@ -69,7 +69,7 @@ const Custom404Button = styled(Button)`
   margin-top: 40px;
   button {
     background: ${palette.background.default};
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 500;
   }

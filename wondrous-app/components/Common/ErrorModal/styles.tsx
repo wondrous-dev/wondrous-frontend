@@ -35,7 +35,7 @@ export const ModalBody = styled(CreateLayoutsModal)`
 
 // export const KudosFormHeaderText = styled(Typography)`
 //   && {
-//     font-family: 'Space Grotesk';
+//     font-family: var(--font-space-grotesk);
 //     font-size: 20px;
 //     font-weight: 700;
 //     color: #fff;
@@ -62,7 +62,7 @@ export const ModalBody = styled(CreateLayoutsModal)`
 // export const KudosFormSubmitButton = styled(SubmitButton)`
 //   background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
 //   max-width: fit-content;
-//   font-family: 'Space Grotesk';
+//   font-family: var(--font-space-grotesk);
 //   font-size: 16px;
 //   font-style: normal;
 //   font-weight: 500;
@@ -70,7 +70,7 @@ export const ModalBody = styled(CreateLayoutsModal)`
 
 // export const KudosFormSubmitButtonText = styled(Typography)`
 //   && {
-//     font-family: 'Space Grotesk';
+//     font-family: var(--font-space-grotesk);
 //     font-size: 16px;
 //     font-style: normal;
 //     font-weight: 500;

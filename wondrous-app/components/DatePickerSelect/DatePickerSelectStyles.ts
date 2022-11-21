@@ -30,7 +30,7 @@ const styles = {
     '& .MuiMenuItem-root': {
       display: 'block',
       padding: '8px',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontSize: 16,
       color: 'white',
       '&.Mui-selected': {

@@ -2,7 +2,7 @@ const styles = {
   root: {
     px: 0.75,
     display: 'inline-block',
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
     fontWeight: 400,
     fontSize: ' 12px',
     lineHeight: '19px',

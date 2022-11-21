@@ -232,7 +232,7 @@ export function GithubIntegration({ orgId, podId }) {
                     {...params}
                     style={{
                       color: palette.white,
-                      fontFamily: 'Space Grotesk',
+                      fontFamily: var(--font-space-grotesk),
                       fontSize: '1px',
                       paddingLeft: '4px',
                     }}

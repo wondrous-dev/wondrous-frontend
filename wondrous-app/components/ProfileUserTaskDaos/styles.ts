@@ -12,7 +12,7 @@ export const ProfileUserTaskDaosContainer = styled(Box)`
 
 export const ProfileUserTaskDaosTitle = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     font-size: 16px;
     color: #ccbbff;

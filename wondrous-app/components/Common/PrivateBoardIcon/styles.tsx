@@ -48,7 +48,7 @@ export const PrivateBoardIconPopperText = styled(Typography)`
   && {
     color: #c4c4c4;
     font-size: 12px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 500;
     z-index: 1;

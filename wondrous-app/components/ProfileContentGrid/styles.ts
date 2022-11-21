@@ -18,7 +18,7 @@ export const ProfileContentGridButtonContainer = styled(Box)`
 export const ProfileContentGridEndMessage = styled(Typography)`
   && {
     color: #7a7a7a;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
   }
 `;
 
@@ -26,7 +26,7 @@ export const ProfileContentGridButton = styled(Button)`
   display: ${({ disabled }) => (disabled ? 'none' : 'block')};
 
   &.MuiButtonBase-root {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     color: #ffffff;
     background: #7427ff;

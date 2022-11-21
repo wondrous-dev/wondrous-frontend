@@ -27,7 +27,7 @@ export const KudosFormHeader = styled.div`
 
 export const KudosFormHeaderText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 20px;
     font-weight: 700;
     color: #fff;
@@ -49,7 +49,7 @@ export const KudosFormTextarea = styled(TextareaAutosize)`
   border-radius: 6px;
   background: #0f0f0f;
   width: 100%;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 16px;
   font-weight: 400;
   border: none;
@@ -62,7 +62,7 @@ export const KudosFormTextarea = styled(TextareaAutosize)`
 
 export const KudosFormTextareaCharacterCount = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -73,7 +73,7 @@ export const KudosFormTextareaCharacterCount = styled(Typography)`
 
 export const KudosFormError = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-style: normal;
     font-weight: 400;
@@ -100,7 +100,7 @@ export const KudosFormButtonWrapper = styled.div`
 export const KudosFormCancelButton = styled(Button)`
   && {
     background: #232323;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-weight: 500;
     color: #fff;
@@ -111,7 +111,7 @@ export const KudosFormCancelButton = styled(Button)`
 export const KudosFormSubmitButton = styled(SubmitButton)`
   background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
   max-width: fit-content;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-size: 16px;
   font-style: normal;
   font-weight: 500;
@@ -119,7 +119,7 @@ export const KudosFormSubmitButton = styled(SubmitButton)`
 
 export const KudosFormSubmitButtonText = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 16px;
     font-style: normal;
     font-weight: 500;

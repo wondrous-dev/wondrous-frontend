@@ -380,7 +380,7 @@ export const WEEK_DAYS = {
 };
 
 export const WHITE_TYPOGRAPHY_STYLES = {
-  fontFamily: 'Space Grotesk',
+  fontFamily: 'var(--font-space-grotesk)',
   fontWeight: 500,
   fontWize: 16,
   lineHeight: '16px',

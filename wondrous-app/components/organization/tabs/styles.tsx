@@ -25,7 +25,7 @@ export const StyledTabs = styled(Tabs)`
 
 export const StyledTab = styled(Tab)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 500;
     min-width: fit-content;

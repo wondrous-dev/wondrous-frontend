@@ -3,7 +3,7 @@ export const cancelStyles = () => ({
     backgroundColor: '#232323',
     color: 'white',
     padding: '6px 24px',
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
   },
 });
 
@@ -15,7 +15,7 @@ export const submitStyles = () => ({
     borderRadius: '64px',
     '& .MuiBox-root': {
       background: '#0f0f0f',
-      fontFamily: 'Space Grotesk',
+      fontFamily: var(--font-space-grotesk),
       fontSize: 15,
       fontStyle: 'normal',
       fontWeight: 500,

@@ -46,7 +46,7 @@ export const PodSearchWrapper = styled.div``;
 
 export const TaskTemplateTitle = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 24px;
     font-weight: 700;
     color: ${palette.white};
@@ -70,7 +70,7 @@ export const TaskTemplateIcon = styled(CheckedBoxPropsIcon)`
 `;
 
 export const TaskTemplateModal = styled(ButtonUnstyled)`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   min-width: 130px;
@@ -149,7 +149,7 @@ export const TaskTemplateSaveTopContainer = styled.div`
 `;
 
 export const TaskTemplateCancelButton = styled(ButtonUnstyled)`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-weight: 500;
   font-size: 13px;
   color: ${white};
@@ -187,7 +187,7 @@ export const PopperSearchInputList = styled.div`
 
 export const PodSearchLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     font-weight: 500;
     color: ${palette.white};
@@ -204,7 +204,7 @@ export const PodSearchListItem = styled.li`
     list-style: none;
     display: ${({ hide }) => (hide ? 'none' : 'flex')};
     align-items: center;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -225,7 +225,7 @@ export const TaskTemplateListItems = styled.li`
     list-style: none;
     display: ${({ hide }) => (hide ? 'none' : 'inline-grid')};
     align-items: center;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -323,7 +323,7 @@ export const PodSearchDefaultImage = styled((props) => (
 
 export const TaskTemplateLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 500;
     color: ${palette.white};
@@ -343,7 +343,7 @@ export const TaskTemplateRewardContainer = styled.div`
 
 export const TaskTemplateLabelValue = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 100;
     color: ${white};
@@ -355,7 +355,7 @@ export const TaskTemplateLabelValue = styled(Typography)`
 
 export const TaskTemplateRewardValue = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
 
     font-size: 13px;
     font-weight: 500;
@@ -367,7 +367,7 @@ export const TaskTemplateRewardValue = styled(Typography)`
 
 export const TaskTemplatePointsValue = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
 
     font-size: 13px;
     font-weight: 500;
@@ -412,7 +412,7 @@ export const TaskTemplateEthereumIcon = styled(Ethereum)`
 
 export const TaskTemplateOptionsLabel = styled(Button)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 100;
     padding: 4px 8px 4px 8px;
@@ -430,7 +430,7 @@ export const TaskTemplateOptionsLabel = styled(Button)`
 
 export const TaskTemplateOptionsDeleteLabel = styled(Button)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 100;
     width: 100%;
@@ -448,7 +448,7 @@ export const TaskTemplateOptionsDeleteLabel = styled(Button)`
 
 export const TaskTemplateReviewerValue = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 13px;
     font-weight: 100;
     color: ${palette.white};

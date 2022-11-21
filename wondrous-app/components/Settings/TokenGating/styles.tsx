@@ -84,7 +84,7 @@ export const TokenGatingAutocompletePopper = styled(PopperUnstyled)`
     border-radius: 6px;
     border: 1px solid #9b9b9b;
     .MuiAutocomplete-noOptions {
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-size: 14px;
       font-weight: 400;
       background: ${palette.grey100};
@@ -116,7 +116,7 @@ export const TokenGatingAutocompleteListItem = styled(ListItem)`
   && {
     background: ${palette.grey100} !important; // There's a global background with '!important', so we need to override it
     height: 50px;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 14px;
     font-weight: 400;
     color: ${palette.white};

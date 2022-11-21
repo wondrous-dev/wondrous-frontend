@@ -28,7 +28,7 @@ const DisabledButton = styled(ButtonBase)`
     border: 1px solid ${({ theme }) => theme.palette.grey78};
     color: ${({ theme }) => theme.palette.grey57};
     display: flex;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-size: 15px;
     font-weight: 600;
     height: 40px;
@@ -45,7 +45,7 @@ const ButtonWrapper = styled.div`
 `;
 
 const SelectTypography = css`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   color: ${({ theme }) => theme.palette.white};
   font-size: 14px;
   font-weight: 500;

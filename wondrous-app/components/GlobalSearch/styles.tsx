@@ -35,7 +35,7 @@ export const SearchInput = styled(Input)`
       border-bottom-right-radius: 150px;
       border-top-left-radius: 0px;
       border-bottom-left-radius: 0px;
-      font-family: 'Space Grotesk';
+      font-family: var(--font-space-grotesk);
       font-weight: 500;
       font-size: 13px;
       .MuiOutlinedInput-input {

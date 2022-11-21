@@ -391,7 +391,7 @@ function Analytics(props) {
                 {...params}
                 style={{
                   color: palette.white,
-                  fontFamily: 'Space Grotesk',
+                  fontFamily: var(--font-space-grotesk),
                   fontSize: '16px',
                   paddingLeft: '4px',
                   width: '200px',

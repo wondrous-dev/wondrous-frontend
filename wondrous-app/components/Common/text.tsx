@@ -6,7 +6,7 @@ export const PaddedParagraph = styled.p`
     padding: ${(props) => props.padding || 0};
     color: ${(props) => props.color || palette.white};
     margin: 0;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
   }
 `;
 

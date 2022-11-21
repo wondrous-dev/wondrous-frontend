@@ -4,7 +4,7 @@ import styled, { css } from 'styled-components';
 
 const WhiteTypographyStyles = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     font-size: 16px;
     color: #ffffff;
@@ -48,7 +48,7 @@ export const ProfileInfoBioText = styled(WhiteTypographyStyles)`
 
 export const ProfileInterestText = styled(WhiteTypographyStyles)`
   && {
-    fontfamily: 'Space Grotesk';
+    fontfamily: var(--font-space-grotesk);
     font-weight: 500;
     font-size: 16px;
     line-height: 16px;
@@ -73,7 +73,7 @@ export const ProfileInfoLink = styled(Link)`
     justify-content: space-between;
     color: #ccbbff;
     text-decoration: underline;
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     margin: 0;
   }
 `;
@@ -117,7 +117,7 @@ export const ProfileInfoInterestsChipWrapper = styled(Box)`
 
 export const ProfileInfoInterestsChip = styled(Chip)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-weight: 500;
     color: #ffffff;
     background: #232323;

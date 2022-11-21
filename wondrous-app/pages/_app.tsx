@@ -12,6 +12,7 @@ import NavigationProgress from 'components/NavigationProgress';
 import '../styles/body.css';
 import '../styles/globals.css';
 
+// Font files can be colocated inside of `pages`
 import apollo from 'services/apollo';
 import theme from 'theme';
 import { HotkeyContext, IsMobileContext } from 'utils/contexts';
@@ -22,6 +23,7 @@ import OnboardingTour from 'components/Guide';
 import SidebarLayout from 'components/Common/Layout';
 import { useHotkeys } from 'react-hotkeys-hook';
 import { HOTKEYS } from 'utils/hotkeyHelper';
+import * as fonts from './_fonts';
 
 declare global {
   interface Window {
@@ -85,6 +87,13 @@ function MyApp({ Component, context, isAuthenticated, user, pageProps: { session
         <title>Wonder</title>
         <meta name="viewport" content="minimum-scale=1, initial-scale=1, width=device-width" />
         <link rel="shortcut icon" href="/images/favicon.ico" />
+        <style>{`
+          :root {
+            --font-space-grotesk: ${fonts.spaceGrotesk.style.fontFamily};
+            --font-carmen-sans: ${fonts.carmenSans.style.fontFamily};
+            --font-faktum: ${fonts.faktum.style.fontFamily};
+          }
+        `}</style>
       </Head>
 
       <IsMobileContext.Provider value={isMobile}>

@@ -15,7 +15,7 @@ export const VoteResultsWrapper = styled.div`
 
 export const VoteButtonLabel = styled(Typography)`
   && {
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 600;
     font-size: 12px;
@@ -86,7 +86,7 @@ export const VoteCurrentProgress = styled(VoteProgressBar)`
 `;
 
 export const VoteRowResult = styled.span`
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 700;
   font-size: 13px;
@@ -101,7 +101,7 @@ export const VoteRowResult = styled.span`
 export const VotePercentageResult = styled(Typography)`
   && {
     color: ${palette.white};
-    font-family: 'Space Grotesk';
+    font-family: var(--font-space-grotesk);
     font-style: normal;
     font-weight: 700;
     font-size: 13px;
@@ -115,7 +115,7 @@ export const RetractButton = styled.button`
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;

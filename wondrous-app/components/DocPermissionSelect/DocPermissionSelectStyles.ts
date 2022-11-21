@@ -21,7 +21,7 @@ export const menuItemStyles = () => ({
   '&&': {
     display: 'block',
     padding: 8,
-    fontFamily: 'Space Grotesk',
+    fontFamily: var(--font-space-grotesk),
     fontSize: 16,
     color: 'white',
 

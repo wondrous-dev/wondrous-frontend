@@ -59,7 +59,7 @@ export const FilterHandleContainer = styled.div`
   flex-direction: row;
   align-items: center;
   justify-content: flex-start;
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 400;
   font-size: 15px;
@@ -236,7 +236,7 @@ export const FilterItemName = styled.div`
 
   color: ${({ isSelected }) => (isSelected ? palette.white : '#C4C4C4')};
 
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: ${({ isSelected }) => (isSelected ? '500' : '400')};
   font-size: 14px;
@@ -295,7 +295,7 @@ export const FilterButton = styled.button`
   border: 1px solid ${({ bgColor }) => bgColor || palette.highlightPurple};
   cursor: pointer;
   color: ${({ color }) => color || palette.white};
-  font-family: 'Space Grotesk';
+  font-family: var(--font-space-grotesk);
   font-style: normal;
   font-weight: 500;
   font-size: 14px;
