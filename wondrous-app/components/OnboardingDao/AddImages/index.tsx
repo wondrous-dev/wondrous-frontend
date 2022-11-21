@@ -1,10 +1,9 @@
 import { makeUniqueId } from '@apollo/client/utilities';
-import AddAPhotoIcon from 'components/Icons/addAPhoto.svg';
-import { ComponentFieldWrapper, FieldLabel, FieldWrapper } from 'components/OnboardingDao/styles';
-import { ImageUpload } from 'components/Settings/imageUpload';
+import { ComponentFieldWrapper, FieldWrapper } from 'components/OnboardingDao/styles';
+import ImageUpload from 'components/Settings/imageUpload';
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
 import { useField } from 'formik';
 import { handleImageFile, uploadMedia } from 'utils/media';
-import { AddPhotoIconWrapper, HeaderText, HeaderWrapper, ImageWrapper, LogoUpload, SafeImageWrapper } from './styles';
 
 const useHandleImageChange = ({ setValue, tempState, setTempState, name }) => {
   const handleChange = async (file) => {
@@ -22,26 +21,10 @@ const ProfilePicture = (props) => {
   const [field, _, { setValue }] = useField(name);
   const { handleChange } = useHandleImageChange({ setValue, tempState, setTempState, name });
   const withImage = Boolean(file ?? field.value);
+
   return (
     <FieldWrapper>
-      <FieldLabel>Logo</FieldLabel>
-      <ImageUpload
-        updateFilesCb={handleChange}
-        imageName={field.name}
-        LabelComponent={(props) => (
-          <LogoUpload {...props}>
-            {withImage &&
-              (file ? (
-                <ImageWrapper width={80} height={80} alt={props.label} src={URL?.createObjectURL(file)} />
-              ) : (
-                <SafeImageWrapper width={80} height={80} alt={props.label} useNextImage src={field.value} />
-              ))}
-            <AddPhotoIconWrapper withImage={withImage}>
-              <AddAPhotoIcon />
-            </AddPhotoIconWrapper>
-          </LogoUpload>
-        )}
-      />
+      <ImageUpload updateFilesCb={handleChange} title={field.name} imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE} />
     </FieldWrapper>
   );
 };
@@ -54,25 +37,7 @@ function HeaderPicture(props) {
   const withImage = Boolean(file ?? field.value);
   return (
     <FieldWrapper>
-      <FieldLabel>Header</FieldLabel>
-      <ImageUpload
-        updateFilesCb={handleChange}
-        imageName={field.name}
-        LabelComponent={(props) => (
-          <HeaderWrapper {...props}>
-            {withImage &&
-              (file ? (
-                <ImageWrapper width={552} height={80} alt={props.label} src={URL?.createObjectURL(file)} />
-              ) : (
-                <SafeImageWrapper width={552} height={80} alt={props.label} src={field.value} />
-              ))}
-            <AddPhotoIconWrapper withImage={withImage}>
-              <AddAPhotoIcon />
-            </AddPhotoIconWrapper>
-          </HeaderWrapper>
-        )}
-      />
-      <HeaderText>Optimum size: 1358px x 160px</HeaderText>
+      <ImageUpload updateFilesCb={handleChange} title={field.name} imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE} />
     </FieldWrapper>
   );
 }

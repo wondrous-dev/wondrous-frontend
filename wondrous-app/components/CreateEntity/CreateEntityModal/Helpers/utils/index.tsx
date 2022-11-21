@@ -53,7 +53,8 @@ export const formValidationSchema = Yup.object().shape({
         paymentMethodId: Yup.string().required(),
         rewardAmount: Yup.number()
           .typeError('Reward amount must be a number')
-          .moreThan(0, 'Reward amount must be greater than 0'),
+          .moreThan(0, 'Reward amount must be greater than 0')
+          .required('Reward amount is required'),
       })
     )
     .optional()

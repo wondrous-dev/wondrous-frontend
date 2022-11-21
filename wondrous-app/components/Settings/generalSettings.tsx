@@ -8,6 +8,8 @@ import { SafeImage } from 'components/Common/Image';
 import SettingsWrapper from 'components/Common/SidebarSettings';
 import HeaderBlock from 'components/Settings/headerBlock';
 import { filteredColorOptions, PRIVACY_LEVEL } from 'utils/constants';
+import { AVATAR_EDITOR_TYPES } from 'constants/avatarEditor';
+import { ImageKeyEnums, ImageTypes } from 'types/common';
 import { UPDATE_ORG } from '../../graphql/mutations/org';
 import { UPDATE_POD, ARCHIVE_POD, UNARCHIVE_POD } from '../../graphql/mutations/pod';
 import { GET_ORG_BY_ID } from '../../graphql/queries/org';
@@ -20,7 +22,7 @@ import LinkBigIcon from '../Icons/link';
 import OpenSeaIcon from '../Icons/openSea';
 import TwitterPurpleIcon from '../Icons/twitterPurple';
 import ColorSettings from './ColorDropdown';
-import { ImageUpload } from './imageUpload';
+import ImageUpload from './imageUpload';
 import { InputField } from './inputField';
 import { LinkSquareIcon } from './linkSquareIcon';
 import {
@@ -42,6 +44,40 @@ import {
   SettingsHeaderText,
   CreateFormAddDetailsTabWrapper,
 } from './styles';
+
+interface ToastProps {
+  show: boolean;
+  message: string;
+}
+
+interface GeneralSettingsProps {
+  toast: ToastProps;
+  descriptionText: string;
+  orgProfile?: any;
+  links: any[];
+  headerImage: string;
+  logoImage: string;
+  newProfile: any;
+  discordWebhookLink?: string;
+  isPrivate: boolean;
+  color?: string;
+  isArchivedPod?: boolean;
+  typeText: 'Pod' | 'Organization';
+  resetChanges: () => void;
+  saveChanges: () => void;
+  setToast: React.Dispatch<React.SetStateAction<ToastProps>>;
+  handleDescriptionChange(e: any): void;
+  handleLinkChange: (event: any, item: any) => void;
+  handleLogoChange?: (file: any) => Promise<void>;
+  handleImageChange: (file: any, imageType: any) => Promise<void>;
+  setProfile: React.Dispatch<React.SetStateAction<any>>;
+  setIsPrivate: React.Dispatch<React.SetStateAction<boolean>>;
+  setColor?: React.Dispatch<React.SetStateAction<string>>;
+  handleArchivePodClick?: () => Promise<void>;
+  handleUnarchivePodClick?: () => Promise<void>;
+  onDeleteImage: (imageType: ImageKeyEnums) => void;
+  setDiscordWebhookLink?: React.Dispatch<React.SetStateAction<string>>;
+}
 
 const LIMIT = 200;
 
@@ -75,7 +111,7 @@ const LINKS_DATA = [
   },
 ];
 
-function GeneralSettingsComponent(props) {
+function GeneralSettingsComponent(props: GeneralSettingsProps) {
   const {
     toast,
     setToast,
@@ -83,7 +119,6 @@ function GeneralSettingsComponent(props) {
     newProfile,
     color,
     setColor,
-    logoImage,
     orgProfile,
     typeText,
     descriptionText,
@@ -94,13 +129,11 @@ function GeneralSettingsComponent(props) {
     saveChanges,
     isPrivate,
     setIsPrivate,
-    discordWebhookLink,
-    setDiscordWebhookLink,
-    headerImage,
     handleImageChange,
     isArchivedPod,
     handleArchivePodClick,
     handleUnarchivePodClick,
+    onDeleteImage,
   } = props;
 
   const [newLink, setNewLink] = useState({
@@ -170,54 +203,23 @@ function GeneralSettingsComponent(props) {
         </GeneralSettingsInputsBlock>
 
         {!orgProfile?.shared ? (
-          <>
-            {newProfile?.profilePicture && !logoImage ? (
-              <Box sx={{ marginTop: '30px' }}>
-                <SafeImage
-                  width={52}
-                  height={52}
-                  src={newProfile?.profilePicture}
-                  style={{
-                    objectFit: 'cover',
-                  }}
-                  useNextImage
-                  alt="Profile picture"
-                />
-              </Box>
-            ) : null}
-
-            <ImageUpload
-              image={logoImage}
-              imageWidth={52}
-              imageHeight={52}
-              imageName="Logo"
-              updateFilesCb={(file) => handleImageChange(file, 'profile')}
-              profileImage={newProfile?.profilePicture}
-            />
-          </>
+          <ImageUpload
+            image={newProfile?.profilePicture}
+            imageType={AVATAR_EDITOR_TYPES.ICON_IMAGE}
+            title="Logo"
+            updateFilesCb={(iconImg) => handleImageChange(iconImg, 'profile')}
+            avatarEditorTitle="Upload a profile image"
+            onDeleteImage={onDeleteImage}
+          />
         ) : null}
 
-        {newProfile?.headerPicture && !headerImage && (
-          <Box sx={{ width: '100%', height: '100px', position: 'relative', marginTop: '30px' }}>
-            <SafeImage
-              src={newProfile?.headerPicture}
-              fill
-              style={{
-                objectFit: 'cover',
-              }}
-              useNextImage
-              alt="Header picture"
-            />
-          </Box>
-        )}
-
         <ImageUpload
-          image={headerImage}
-          imageWidth="1350"
-          imageHeight="200"
-          imageName="Header"
-          updateFilesCb={(file) => handleImageChange(file, 'header')}
-          profileImage={newProfile?.headerPicture}
+          image={newProfile?.headerPicture}
+          title="Header"
+          imageType={AVATAR_EDITOR_TYPES.HEADER_IMAGE}
+          updateFilesCb={(headerImg) => handleImageChange(headerImg, 'header')}
+          avatarEditorTitle="Upload a header image"
+          onDeleteImage={onDeleteImage}
         />
 
         {isPod && (
@@ -411,7 +413,13 @@ export function PodGeneralSettings() {
   const [updatePod] = useMutation(UPDATE_POD, {
     onCompleted: ({ updatePod: pod }) => {
       setPodProfile(pod);
-      setToast({ ...toast, message: `Pod updated successfully.`, show: true });
+      setLogoImage(pod?.profilePicture || '');
+      setHeaderImage(pod?.headerPicture || '');
+      setToast((prevToast) => ({
+        ...prevToast,
+        message: prevToast.message || 'Pod updated successfully.',
+        show: true,
+      }));
     },
   });
 
@@ -438,16 +446,15 @@ export function PodGeneralSettings() {
     const imageFile = `tmp/${podId}/${filename}`;
     return { filename: imageFile, fileType, file };
   }
-
   async function handleImageChange(file, imageType) {
     const type = {
       header: {
         setState: (file) => setHeaderImage(file),
-        podProfileKey: 'headerPicture',
+        podProfileKey: ImageKeyEnums.headerPicture,
       },
       profile: {
         setState: (file) => setLogoImage(file),
-        podProfileKey: 'profilePicture',
+        podProfileKey: ImageKeyEnums.profilePicture,
       },
     };
     const { setState, podProfileKey } = type[imageType];
@@ -457,7 +464,28 @@ export function PodGeneralSettings() {
       ...podProfile,
       [podProfileKey]: file === '' ? getPodByIdData.getPodById[podProfileKey] : imageFile.filename ?? null,
     });
-    imageFile.filename && (await uploadMedia(imageFile));
+    if (imageFile.filename) {
+      await uploadMedia(imageFile);
+
+      let message = '';
+      if (imageType === ImageTypes.header) {
+        message = 'Header cover profile updated successfully';
+      }
+      if (imageType === ImageTypes.profile) {
+        message = 'Logo profile updated successfully';
+      }
+      setToast((prevToast) => ({ ...prevToast, message }));
+
+      updatePod({
+        variables: {
+          podId,
+          input: {
+            headerPicture: imageType === ImageTypes.header ? imageFile.filename : podProfile.headerPicture,
+            profilePicture: imageType === ImageTypes.profile ? imageFile.filename : podProfile.profilePicture,
+          },
+        },
+      });
+    }
   }
 
   function handleDescriptionChange(e) {
@@ -476,6 +504,8 @@ export function PodGeneralSettings() {
   function saveChanges() {
     const links = Object.values(podLinks);
 
+    setToast((prevToast) => ({ ...prevToast, message: 'Pod updated successfully.' }));
+
     updatePod({
       variables: {
         podId,
@@ -491,6 +521,28 @@ export function PodGeneralSettings() {
       },
     });
   }
+
+  function deleteImage(imageType: ImageKeyEnums) {
+    let message = '';
+    if (imageType === ImageKeyEnums.headerPicture) {
+      message = 'Header cover profile deleted successfully';
+    }
+    if (imageType === ImageKeyEnums.profilePicture) {
+      message = 'Logo profile deleted successfully';
+    }
+    setToast((prevToast) => ({ ...prevToast, message }));
+
+    updatePod({
+      variables: {
+        podId,
+        input: {
+          headerPicture: imageType === ImageKeyEnums.headerPicture ? null : podProfile.headerPicture,
+          profilePicture: imageType === ImageKeyEnums.profilePicture ? null : podProfile.profilePicture,
+        },
+      },
+    });
+  }
+
   const handleArchivePodClick = async () => {
     const confirmed = confirm('Are you sure you want to archive this pod?');
     if (!confirmed) {
@@ -542,6 +594,7 @@ export function PodGeneralSettings() {
       isArchivedPod={isArchivedPod}
       handleArchivePodClick={handleArchivePodClick}
       handleUnarchivePodClick={handleUnarchivePodClick}
+      onDeleteImage={deleteImage}
     />
   );
 }
@@ -558,7 +611,8 @@ function GeneralSettings() {
   const { orgId } = router.query;
 
   function setOrganization(organization) {
-    setLogoImage('');
+    setLogoImage(organization?.profilePicture || '');
+    setHeaderImage(organization?.headerPicture || '');
     const links = reduceLinks(organization.links);
 
     setOrgLinks(links);
@@ -582,7 +636,11 @@ function GeneralSettings() {
   const [updateOrg] = useMutation(UPDATE_ORG, {
     onCompleted: ({ updateOrg: org }) => {
       setOrganization(org);
-      setToast({ ...toast, message: `Org updated successfully.`, show: true });
+      setToast((prevToast) => ({
+        ...prevToast,
+        message: prevToast.message || 'Organization settings updated successfully.',
+        show: true,
+      }));
     },
   });
 
@@ -599,11 +657,11 @@ function GeneralSettings() {
     const type = {
       header: {
         setState: (file) => setHeaderImage(file),
-        orgProfileKey: 'headerPicture',
+        orgProfileKey: ImageKeyEnums.headerPicture,
       },
       profile: {
         setState: (file) => setLogoImage(file),
-        orgProfileKey: 'profilePicture',
+        orgProfileKey: ImageKeyEnums.profilePicture,
       },
     };
     const { setState, orgProfileKey } = type[imageType];
@@ -613,7 +671,28 @@ function GeneralSettings() {
       ...orgProfile,
       [orgProfileKey]: file === '' ? getOrgByIdData.getOrgById[orgProfileKey] : imageFile.filename ?? null,
     });
-    imageFile.filename && (await uploadMedia(imageFile));
+    if (imageFile.filename) {
+      await uploadMedia(imageFile);
+
+      let message = '';
+      if (imageType === ImageTypes.header) {
+        message = 'Header cover profile updated successfully';
+      }
+      if (imageType === ImageTypes.profile) {
+        message = 'Logo profile updated successfully';
+      }
+      setToast((prevToast) => ({ ...prevToast, message }));
+
+      updateOrg({
+        variables: {
+          orgId,
+          input: {
+            headerPicture: imageType === ImageTypes.header ? imageFile.filename : orgProfile.headerPicture,
+            profilePicture: imageType === ImageTypes.profile ? imageFile.filename : orgProfile.profilePicture,
+          },
+        },
+      });
+    }
   }
 
   function handleDescriptionChange(e) {
@@ -631,7 +710,7 @@ function GeneralSettings() {
 
   function saveChanges() {
     const links = Object.values(orgLinks);
-
+    setToast((prevToast) => ({ ...prevToast, message: 'Organization settings updated successfully.' }));
     updateOrg({
       variables: {
         orgId,
@@ -642,6 +721,27 @@ function GeneralSettings() {
           privacyLevel: isPrivate ? PRIVACY_LEVEL.private : PRIVACY_LEVEL.public,
           headerPicture: orgProfile.headerPicture,
           profilePicture: orgProfile.profilePicture,
+        },
+      },
+    });
+  }
+
+  function deleteImage(imageType: ImageKeyEnums) {
+    let message = '';
+    if (imageType === ImageKeyEnums.headerPicture) {
+      message = 'Header cover profile deleted successfully';
+    }
+    if (imageType === ImageKeyEnums.profilePicture) {
+      message = 'Logo profile deleted successfully';
+    }
+    setToast((prevToast) => ({ ...prevToast, message }));
+
+    updateOrg({
+      variables: {
+        orgId,
+        input: {
+          headerPicture: imageType === ImageKeyEnums.headerPicture ? null : orgProfile.headerPicture,
+          profilePicture: imageType === ImageKeyEnums.profilePicture ? null : orgProfile.profilePicture,
         },
       },
     });
@@ -676,6 +776,7 @@ function GeneralSettings() {
       setProfile={setOrgProfile}
       headerImage={headerImage}
       handleImageChange={handleImageChange}
+      onDeleteImage={deleteImage}
     />
   );
 }

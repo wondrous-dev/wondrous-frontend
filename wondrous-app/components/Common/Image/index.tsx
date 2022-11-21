@@ -23,7 +23,7 @@ type SafeImageArgs = Omit<ImageProps, 'style'> & {
   /**
    * Inline styles
    */
-  style?: React.CSSProperties,
+  style?: React.CSSProperties;
   /**
    * Action called when preview file is loaded
    * @param url
@@ -68,6 +68,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
 
   useEffect(() => {
     if (!src || hasProtocol || typeof src === 'object') {
+      setImageUrl(null);
       return;
     }
 

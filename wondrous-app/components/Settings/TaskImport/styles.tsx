@@ -41,7 +41,7 @@ export const ConnectToNotionButton = styled(MuiButton)`
     height: 40px;
     background: ${palette.background};
     border: 1px solid deepskyblue;
-    margin-left: 10px;
+    margin-top: 4px;
     //text
     font-weight: 500;
     font-size: 16px;

@@ -15,6 +15,7 @@ import { DISCONNECT_NOTION_FROM_ORG, DISCONNECT_NOTION_FROM_POD } from 'graphql/
 import { useRouter } from 'next/router';
 import React, { useEffect, useState } from 'react';
 import { LINK, NOTION_CONNECT_TYPES } from 'utils/constants';
+import { LabelBlockText } from '../Integrations/styles';
 
 const NOTION_CLIENT_ID = process.env.NEXT_PUBLIC_NOTION_CLIENT_ID;
 const REDIRECT_URL = `${LINK}/notion/callback`;
@@ -119,15 +120,21 @@ function NotionTaskImportSection(props) {
         )}
 
         {orgId && (!getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id || orgWorkspaceNotFoundError) && (
-          <ConnectToNotionButton onClick={redirectToNotionAuth}>
-            <NotionInButtonIcon /> Connect to notion
-          </ConnectToNotionButton>
+          <div>
+            <LabelBlockText>Please select the direct page that contains the kanban board/database</LabelBlockText>
+            <ConnectToNotionButton onClick={redirectToNotionAuth}>
+              <NotionInButtonIcon /> Connect to notion
+            </ConnectToNotionButton>
+          </div>
         )}
 
         {podId && (!getPodNotionWorkspaceData?.getPodNotionWorkspace?.id || podWorkspaceNotFoundError) && (
-          <ConnectToNotionButton onClick={redirectToNotionAuth}>
-            <NotionInButtonIcon /> Connect to notion
-          </ConnectToNotionButton>
+          <div>
+            <LabelBlockText>Please select the direct page that contains the kanban board/database</LabelBlockText>
+            <ConnectToNotionButton onClick={redirectToNotionAuth}>
+              <NotionInButtonIcon /> Connect to notion
+            </ConnectToNotionButton>
+          </div>
         )}
 
         {orgId && getOrgNotionWorkspaceData?.getOrgNotionWorkspace?.id && !orgWorkspaceNotFoundError && (
