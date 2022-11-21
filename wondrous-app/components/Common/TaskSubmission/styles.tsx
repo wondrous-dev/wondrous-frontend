@@ -96,6 +96,16 @@ export const SubmissionButtonTextHelper = styled(Typography)`
 export const SubmissionButtonReviewWrapper = styled.div`
   display: flex;
   gap: 12px;
+  justify-content: flex-end;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    justify-content: space-between;
+
+    > * {
+      width: 100%;
+      flex-grow: 1;
+    }
+  }
 `;
 
 export const SubmissionButtonEdit = styled(ButtonBase)`
@@ -141,18 +151,28 @@ const ButtonStyleBase = css`
     background: ${palette.grey900};
     height: 28px;
     padding: 0 16px;
+    width: 100%;
     :hover {
       background: ${palette.grey900};
+    }
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 40px;
     }
   }
 `;
 
 export const SubmissionButtonRequestChange = styled(Button)`
   && {
+    white-space: nowrap;
     ${ButtonStyleBase}
     ${ButtonStyleSelected}
     background: ${({ selected }) =>
       selected && `linear-gradient(270deg, ${palette.yellow800} -5.62%, ${palette.highlightPurple} 103.12%)`};
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 42px;
+    }
   }
 `;
 
@@ -162,6 +182,10 @@ export const SubmissionButtonReject = styled(Button)`
     ${ButtonStyleSelected}
     background: ${({ selected }) =>
       selected && `linear-gradient(270deg, ${palette.red300} -5.62%, ${palette.highlightPurple} 103.12%)`};
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 42px;
+    }
   }
 `;
 
@@ -170,7 +194,11 @@ export const SubmissionButtonApprove = styled(Button)`
     ${ButtonStyleBase}
     ${ButtonStyleSelected}
     background: ${({ selected }) =>
-      selected && `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%)`}
+      selected && `linear-gradient(270deg, ${palette.green30} -5.62%, ${palette.highlightPurple} 103.12%)`};
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 42px;
+    }
   }
 `;
 
@@ -253,6 +281,8 @@ export const SubmissionFilterSelectRender = styled.div`
   display: flex;
   align-items: center;
   gap: 8px;
+  white-space: nowrap;
+
   > svg {
     width: 26px;
     height: 26px;
@@ -546,6 +576,9 @@ export const SubmissionFormCancel = styled(ButtonBase)`
     color: ${theme.palette.white};
     font-weight: ${theme.typography.fontWeightMedium};
   `};
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 42px;
+    }
   }
 `;
 
@@ -579,7 +612,10 @@ export const SubmissionFormSubmit = styled(ButtonGradient)`
       ${({ theme }) => `
         font-weight: ${theme.typography.fontWeightMedium};
         background: ${theme.palette.black}
-  `}
+  `};
+    }
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      height: 42px;
     }
   }
 `;
@@ -672,7 +708,10 @@ export const SubmissionItemWrapper = styled.div`
 }
   animation-name: highlightSubmission;
   animation-duration: 2s;
-`}
+`};
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    border: 1px solid #343434;
+  }
 `;
 
 export const SubmissionItemHeader = styled.div`

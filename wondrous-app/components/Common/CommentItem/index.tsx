@@ -63,7 +63,7 @@ const CommentItem = (props) => {
             }}
           />
         )}
-        <div>
+        <Grid flex={1}>
           <Grid container justifyContent="flex-start" alignItems="center">
             <Box
               sx={{
@@ -111,7 +111,7 @@ const CommentItem = (props) => {
               Delete
             </Box>
           )}
-        </div>
+        </Grid>
       </Grid>
     </Container>
   );
