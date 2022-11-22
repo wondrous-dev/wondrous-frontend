@@ -218,9 +218,6 @@ export const PodSearchLabel = styled(Typography)`
     overflow: hidden;
     max-width: 100%;
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 export const PodSearchButtonArrowIcon = styled((props) => (
