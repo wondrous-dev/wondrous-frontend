@@ -168,9 +168,6 @@ export const CreateEntityOptionLabel = styled(Typography)`
     color: ${palette.white};
     margin-left: 6px;
   }
-  ${({ theme }) => theme.breakpoints.down('sm')} {
-    display: none;
-  }
 `;
 
 export const CreateEntitySelectRootValue = styled.div`
