@@ -71,7 +71,6 @@ const EditorHelpers = {
   handleStepOutOfListOnEnter: (editor: CustomEditor, event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Enter' && !event.shiftKey) {
       const [above, location] = Editor.above(editor);
-
       const isListItem = above && (above as CustomElement).type === 'list-item';
       const isEmpty = (above as CustomElement).children[0].text?.length === 0;
 
@@ -85,6 +84,18 @@ const EditorHelpers = {
         Transforms.delete(editor, { at: location, unit: 'line' });
         Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] }, { at: newParagraphLocation });
         Transforms.select(editor, newParagraphLocation);
+      }
+    }
+  },
+
+  handleStepOutOfHeadingOnEnter: (editor: CustomEditor, event: KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      const [above]: any = Editor.above(editor);
+      const isHeading =
+        above?.children[0]?.headingOne || above?.children[0]?.headingTwo || above?.children[0]?.headingThree;
+      if (isHeading) {
+        event.preventDefault();
+        Transforms.insertNodes(editor, { type: 'paragraph', children: [{ text: '' }] });
       }
     }
   },

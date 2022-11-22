@@ -13,6 +13,7 @@ import {
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityLabel,
   CreateEntityLabelWrapper,
+  CreateEntityError,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';

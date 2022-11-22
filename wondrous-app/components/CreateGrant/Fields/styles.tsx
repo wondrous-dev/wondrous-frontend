@@ -54,6 +54,9 @@ export const GrantTextField = styled(CreateEntityTextfield)`
     .Mui-disabled {
       color: ${palette.white} !important;
     }
+    .MuiOutlinedInput-root {
+      width: 100%;
+    }
   }
 `;
 

@@ -107,7 +107,7 @@ const RichTextEditor: React.FC<Props> = ({
           EditorHelpers.handleHotkeys(editor, event);
           EditorHelpers.handleStepOutOfBlock(editor, event);
           EditorHelpers.handleStepOutOfListOnEnter(editor, event);
-
+          EditorHelpers.handleStepOutOfHeadingOnEnter(editor, event);
           mentions.handlers.onKeyDown(event);
         }}
         // we use React.ReactNode placeholder, but types are not compatible, although it works fine
