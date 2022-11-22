@@ -273,7 +273,7 @@ const ViewGrantApplication = ({ onClose }) => {
           <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
             <Grid display="flex" justifyContent="space-between" alignItems="center">
               <TaskModalTitle>{grantApplication?.title}</TaskModalTitle>
-              <ItemPill>
+              <ItemPill withIcon>
                 <IconWrapper>
                   <statusAndIcon.icon />
                 </IconWrapper>

@@ -8,7 +8,12 @@ import { DiscordIcon } from 'components/Icons/discord';
 import { TextInput } from 'components/TextInput';
 import { formatDistance } from 'date-fns';
 import { CREATE_SUBMISSION_COMMENT, DELETE_SUBMISSION_COMMENT } from 'graphql/mutations';
-import { CREATE_GRANT_APPLICATION_COMMENT, CREATE_GRANT_COMMENT, DELETE_GRANT_COMMENT } from 'graphql/mutations/grant';
+import {
+  CREATE_GRANT_APPLICATION_COMMENT,
+  CREATE_GRANT_COMMENT,
+  DELETE_GRANT_APPLICATION_COMMENT,
+  DELETE_GRANT_COMMENT,
+} from 'graphql/mutations/grant';
 import { CREATE_TASK_COMMENT, CREATE_TASK_DISCORD_THREAD, DELETE_TASK_COMMENT } from 'graphql/mutations/task';
 import { CREATE_TASK_PROPOSAL_COMMENT, DELETE_TASK_PROPOSAL_COMMENT } from 'graphql/mutations/taskProposal';
 import { GET_GRANT_APPLICATIONS, GET_GRANT_APPLICATION_COMMENTS, GET_GRANT_COMMENTS } from 'graphql/queries';
@@ -221,6 +226,9 @@ function CommentItemWrapper(props) {
     refetchQueries: ['getGrantComments'],
   });
 
+  const [deleteGrantApplicationComment] = useMutation(DELETE_GRANT_APPLICATION_COMMENT, {
+    refetchQueries: ['getGrantApplicationComments', 'getGrantApplicationsForGrant'],
+  });
   const [deleteTaskProposalComment] = useMutation(DELETE_TASK_PROPOSAL_COMMENT, {
     refetchQueries: ['getTaskProposalComments'],
   });
@@ -282,6 +290,13 @@ function CommentItemWrapper(props) {
               },
             });
           }
+          if (entityType === ENTITIES_TYPES.GRANT_APPLICATION) {
+            return deleteGrantApplicationComment({
+              variables: {
+                grantApplicationCommentId: id,
+              },
+            });
+          }
           if (entityType === ENTITIES_TYPES.PROPOSAL) {
             deleteTaskProposalComment({
               variables: {
@@ -332,6 +347,7 @@ export default function CommentList(props) {
     onCommentCallback = () => null,
     showComments = true,
     showCommentBox = true,
+    renderComment = null,
   } = props;
   const router = useRouter();
   const [comments, setComments] = useState([]);
@@ -474,7 +490,8 @@ export default function CommentList(props) {
           />
         </>
       )}
-      {showComments && (
+      {renderComment ? renderComment(comments) : null}
+      {showComments && !renderComment && (
         <CommentListContainer>
           {comments?.length > 0 ? (
             comments.map((comment) => (

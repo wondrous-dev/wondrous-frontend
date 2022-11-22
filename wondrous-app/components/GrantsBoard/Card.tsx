@@ -26,7 +26,7 @@ import { formatDateDisplay } from 'utils/board';
 import { ENTITIES_TYPES, PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useOrgBoard, usePodBoard } from 'utils/hooks';
-import { BoardWrapper, EndingSoonPill, ItemPill, MenuWrapper } from './styles';
+import { BoardWrapper, EndingSoonPill, GrantsBoardCardDescription, ItemPill, MenuWrapper } from './styles';
 
 const GrantsBoardCard = ({ grant, handleCardClick }) => {
   const [anchorEl, setAnchorEl] = useState(null);
@@ -101,7 +101,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
               </Typography>
             </ItemPill>
 
-            <ItemPill>
+            <ItemPill withIcon>
               <IconWrapper>
                 <Icon />
               </IconWrapper>
@@ -113,9 +113,9 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
         </Grid>
         <BoardsCardBody>
           <BoardsCardBodyTitle>{grant.title}</BoardsCardBodyTitle>
-          <BoardsCardBodyDescription>
-            <RichTextViewer text={grant.description} />
-          </BoardsCardBodyDescription>
+          <GrantsBoardCardDescription>
+            <RichTextViewer text={grant.description} asText />
+          </GrantsBoardCardDescription>
           {coverMedia ? (
             <BoardsCardMedia>
               <SafeImage
