@@ -1,5 +1,11 @@
 import isEqual from 'lodash/isEqual';
-import { ASANA_TASKS_CSV_HEADERS, GENERIC_TASKS_CSV_HEADERS, TRELLO_TASKS_CSV_HEADERS } from './constants';
+import { TASK_STATUS_DONE, TASK_STATUS_IN_PROGRESS, TASK_STATUS_IN_REVIEW, TASK_STATUS_TODO } from 'utils/constants';
+import {
+  ASANA_TASKS_CSV_HEADERS,
+  DEWORK_TASKS_CSV_HEADERS,
+  GENERIC_TASKS_CSV_HEADERS,
+  TRELLO_TASKS_CSV_HEADERS,
+} from './constants';
 
 const URL_REGEX = /(https?:\/\/[^\s]+\w)/g;
 const BOLD_REGEX = /(\*\*\w*\*\*)/g;
@@ -129,7 +135,7 @@ export const getTasksFromTrelloData = ({ data, isOrg, orgOrPodId, orgId }) => {
       task.dueDate = new Date(data['due-date']);
     }
 
-    return task;
+    if (data['story-points']) return task;
   });
 
   tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId, orgId);
@@ -137,6 +143,46 @@ export const getTasksFromTrelloData = ({ data, isOrg, orgOrPodId, orgId }) => {
   return tasks;
 };
 
+export const getTasksFromDeworkData = ({ data, isOrg, orgOrPodId, orgId }) => {
+  if (!isEqual(data[0], DEWORK_TASKS_CSV_HEADERS)) {
+    throw new Error('CSV format does not match with Dework');
+  }
+
+  const formattedData = getFormattedCSVData(data);
+
+  let tasks = formattedData.map((data) => {
+    const task = {
+      title: data.name,
+      description: '',
+    } as any;
+
+    if (data['due-date']) {
+      task.dueDate = new Date(data['due-date']);
+    }
+
+    if (data['story-points']) {
+      task.points = parseInt(data['story-points']);
+    }
+
+    if (data.status) {
+      if (data.status === 'TODO') {
+        task.status = TASK_STATUS_TODO;
+      } else if (data.status === 'IN_PROGRESS') {
+        task.status = TASK_STATUS_IN_PROGRESS;
+      } else if (data.status === 'IN_REVIEW') {
+        task.status = TASK_STATUS_IN_REVIEW;
+      } else if (data.status === 'DONE') {
+        task.status = TASK_STATUS_DONE;
+      }
+    }
+
+    return task;
+  });
+
+  tasks = addOrgOrPodIdToTasks(tasks, isOrg, orgOrPodId, orgId);
+
+  return tasks;
+};
 export const getTasksFromGenericData = ({ data, isOrg, orgOrPodId, orgId }) => {
   if (!isEqual(data[0], GENERIC_TASKS_CSV_HEADERS)) {
     throw new Error('CSV format does not match with the given format');
