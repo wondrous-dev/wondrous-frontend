@@ -60,7 +60,7 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
         </Box>
       </Grid>
       {canEdit && (
-        <Grid container item justifyContent="flex-end" width="24px">
+        <Grid container item justifyContent="flex-end" alignItems="center" width="24px">
           <Grid
             item
             container
@@ -69,6 +69,7 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
             width="24px"
             height="24px"
             paddingRight="12px"
+            alignItems="center"
             sx={{
               cursor: 'pointer',
             }}
