@@ -569,7 +569,7 @@ export function SubmissionItem({
             />
             <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
           </Grid>
-          {!hideTaskSubmissionButtons ? (
+          {!hideTaskSubmissionButtons && (
             <Grid
               item
               sm={8}
@@ -587,8 +587,8 @@ export function SubmissionItem({
                 onClick={resubmitTaskSubmission}
               />
             </Grid>
-          ) : null}
-          {!hideTaskStatusButtons ? (
+          )}
+          {!hideTaskStatusButtons && (
             <Grid
               item
               sm={8}
@@ -626,8 +626,8 @@ export function SubmissionItem({
                 />
               </SubmissionReviewButtons>
             </Grid>
-          ) : null}
-          {isSubmissionStatusUpdated ? (
+          )}
+          {isSubmissionStatusUpdated && (
             <Grid item sm={8} xs={8} display="flex" justifyContent="flex-end">
               <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
               <SubmissionBountyPaymentButton
@@ -638,7 +638,7 @@ export function SubmissionItem({
                 getTaskSubmissionsForTask={getTaskSubmissionsForTask}
               />
             </Grid>
-          ) : null}
+          )}
         </Grid>
       </SubmissionItemFooter>
       {showKudosOption && (
