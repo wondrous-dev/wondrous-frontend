@@ -248,7 +248,7 @@ export const useGetPaymentMethods = (orgId, includeDeactivated = false) => {
 export const useGetOrgUsers = (orgId, searchString = '') => {
   const [hasMore, setHasMore] = useState(false);
 
-  const [searchOrgUsers, { data, refetch, fetchMore, previousData }] = useLazyQuery(SEARCH_ORG_USERS, {
+  const [searchOrgUsers, { data, refetch, fetchMore, previousData, loading }] = useLazyQuery(SEARCH_ORG_USERS, {
     onCompleted: (data) => {
       if (!previousData) {
         setHasMore(data.searchOrgUsers.length === LIMIT);

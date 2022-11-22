@@ -76,7 +76,10 @@ const GrantsBoard = () => {
     },
   });
 
-  const data = podBoard ? podData?.getGrantPodBoard : orgData?.getGrantOrgBoard;
+  const data = useMemo(
+    () => (podBoard ? podData?.getGrantPodBoard : orgData?.getGrantOrgBoard),
+    [podBoard, podData, orgData]
+  );
 
   const fetchMore = () =>
     podBoard
@@ -175,7 +178,7 @@ const GrantsBoard = () => {
           <CreateFormModalOverlay open={isCreateModalOpen} onClose={toggleDisacrdModal}>
             <CreateGrant
               entityType={ENTITIES_TYPES.GRANT}
-              handleClose={toggleDisacrdModal}
+              handleClose={toggleCreateFormModal}
               cancel={toggleCreateFormModal}
             />
           </CreateFormModalOverlay>

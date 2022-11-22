@@ -12,8 +12,8 @@ import {
   CreateEntityAutocompletePopperRenderInputAdornment,
   CreateEntityAutocompletePopperRenderInputIcon,
   CreateEntityLabel,
-  CreateEntityLabelSelectWrapper,
   CreateEntityLabelWrapper,
+  CreateEntityError,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { TaskSectionDisplayDiv } from 'components/Common/TaskViewModal/styles';
 import { GrantChainSelect, GrantTextField, GrantTextFieldInput } from './styles';
@@ -41,7 +41,7 @@ const GrantAmount = ({
   return (
     <TaskSectionDisplayDiv alignItems="start">
       {activePaymentMethods?.length > 0 && (
-        <CreateEntityLabelSelectWrapper show>
+        <>
           <CreateEntityLabelWrapper>
             <CreateEntityLabel>Grant amount</CreateEntityLabel>
           </CreateEntityLabelWrapper>
@@ -88,6 +88,7 @@ const GrantAmount = ({
               InputProps={{
                 inputComponent: GrantTextFieldInput,
                 type: 'number',
+                disabled: disableInput,
                 endAdornment: !disableInput && (
                   <CreateEntityAutocompletePopperRenderInputAdornment
                     position="end"
@@ -127,7 +128,7 @@ const GrantAmount = ({
               />
             )}
           </CreateEntityWrapper>
-        </CreateEntityLabelSelectWrapper>
+        </>
       )}
     </TaskSectionDisplayDiv>
   );

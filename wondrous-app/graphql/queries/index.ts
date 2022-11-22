@@ -4,6 +4,7 @@ export * from './notifications';
 export * from './org';
 export * from './pod';
 export * from './task';
+export * from './taskProposal';
 export * from './taskBoard';
 export * from './user';
 export * from './payment';

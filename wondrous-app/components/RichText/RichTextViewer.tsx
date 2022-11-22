@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { memo } from 'react';
-import { Descendant, Text } from 'slate';
+import { Descendant, Text, Node } from 'slate';
 
 import { renderMentionString } from 'utils/common';
 
@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import { NoUnderlineLink } from 'components/Common/Link/links';
 import { FormattedText } from './types';
 import { isRichText } from './utils';
-import { BulletedList, NumberedList, RichTextStyled, Strikethrough } from './styles';
+import { BulletedList, NumberedList, RichTextStyled } from './styles';
 import { Leaf } from './elements';
 
 const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
@@ -61,11 +61,21 @@ const renderNodes = (nodes: Descendant[] | FormattedText[]) =>
     }
   });
 
-const RichTextViewer: React.FC<{ text?: string }> = ({ text }) => {
+const serialize = (nodes) => nodes.map((n) => Node.string(n)).join('\n');
+
+const RichTextViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, asText = '' }) => {
   const router = useRouter();
 
   if (!text) {
     return null;
+  }
+
+  if (asText) {
+    return (
+      <Typography whiteSpace="break-spaces" fontFamily="inherit" color="inherit" fontSize="inherit">
+        {serialize(JSON.parse(text))}
+      </Typography>
+    );
   }
 
   return isRichText(text) ? (

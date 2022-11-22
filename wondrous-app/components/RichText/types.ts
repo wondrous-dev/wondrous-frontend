@@ -32,6 +32,9 @@ export type ParagraphElement = {
   type: 'paragraph';
   children: (CustomText | CustomMentionElement)[];
   text?: undefined;
+  headingOne?: undefined;
+  headingTwo?: undefined;
+  headingThree?: undefined;
 };
 
 export type LinkElement = {
