@@ -1,8 +1,16 @@
 import apollo from 'services/apollo';
 import { GET_TASK_BY_ID, GET_TASK_PROPOSAL_BY_ID, GET_PREVIEW_FILE } from 'graphql/queries';
 
+const isServerReq = (req) => !req.url.startsWith('/_next');
+
 // eslint-disable-next-line import/prefer-default-export
 export const getServerSideProps = async (context) => {
+  const { req } = context;
+  const isSSR = isServerReq(req);
+  if (!isSSR) {
+    return { props: {} };
+  }
+
   if (context.query?.task || context.query?.taskProposal) {
     try {
       const meta = {
