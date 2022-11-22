@@ -3,9 +3,11 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import CommentList from 'components/Comment';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { ActionButton } from 'components/Common/Task/styles';
 import Divider from 'components/Divider';
 import CopyIcon from 'components/Icons/copy';
+import { PAYMENT_TYPES } from 'components/Settings/Payouts/constants';
 import { DataDisplayWrapper } from 'components/ViewGrant/Fields/styles';
 import { selectApplicationStatus } from 'components/ViewGrant/utils';
 import {
@@ -14,11 +16,44 @@ import {
   REOPEN_GRANT_APPLICATION,
   REQUEST_CHANGE_GRANT_APPLICATION,
 } from 'graphql/mutations';
+import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
+import { renderMentionString } from 'utils/common';
 import { ENTITIES_TYPES, GRANT_APPLICATION_COMMENT_TYPE, GRANT_APPLICATION_STATUSES } from 'utils/constants';
 import { Button, GrantApplicationStatusWrapper, WalletAddressWrapper } from './styles';
+
+const NOTES_LABEL = {
+  [GRANT_APPLICATION_STATUSES.REJECTED]: 'Rejection Notes',
+  [GRANT_APPLICATION_STATUSES.CHANGE_REQUESTED]: 'Requested changes notes',
+};
+
+export const RenderNote = ({ comments, statusToFilter }) => {
+  const router = useRouter();
+
+  const note = useMemo(
+    () => comments?.find((comment) => comment.additionalData.type === statusToFilter),
+    [comments, statusToFilter]
+  );
+  return (
+    <Grid display="flex" gap="8px" flexDirection="column">
+      <SubmittableCommentType status={statusToFilter} text={NOTES_LABEL[statusToFilter]} />
+      <Typography
+        sx={{ maxWidth: 'fit-content' }}
+        fontFamily={typography.fontFamily}
+        color={palette.grey250}
+        fontWeight={500}
+        fontSize="15px"
+      >
+        {renderMentionString({
+          content: note?.content,
+          router,
+        })}
+      </Typography>
+    </Grid>
+  );
+};
 
 export const GrantApplicationStatusManager = ({ grantApplication }) => {
   const [commentType, setCommentType] = useState(null);
@@ -34,14 +69,29 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
   });
 
   const [requestChanges] = useMutation(REQUEST_CHANGE_GRANT_APPLICATION, {
-    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
+    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById', 'getGrantApplicationComments'],
   });
 
   const [rejectGrantApplication] = useMutation(REJECT_GRANT_APPLICATION, {
-    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
+    refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById', 'getGrantApplicationComments'],
   });
 
-  if (grantApplication?.paymentStatus) {
+  const paymentExists = useMemo(
+    () => [PAYMENT_TYPES.PAID, PAYMENT_TYPES.PROCESSING].includes(grantApplication?.paymentStatus),
+    [grantApplication?.paymentStatus]
+  );
+
+  const isStatusWithNoContent = useMemo(
+    () =>
+      [
+        GRANT_APPLICATION_STATUSES.OPEN,
+        GRANT_APPLICATION_STATUSES.WAITING_FOR_REVIEW,
+        GRANT_APPLICATION_STATUSES.APPROVED,
+      ].includes(status),
+    [status]
+  );
+
+  if (paymentExists) {
     return null;
   }
 
@@ -118,7 +168,7 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
   return (
     <GrantApplicationStatusWrapper>
       <Grid display="flex" justifyContent="space-between" alignItems="center" gap="24px">
-        {!grantApplication?.paymentStatus
+        {!paymentExists
           ? BUTTONS_CONFIG.map((buttonConfig, index) => (
               <Button
                 key={index}
@@ -131,8 +181,8 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
             ))
           : null}
       </Grid>
-      {!!commentType && <Divider />}
-      {!!commentType && (
+      {!!commentType || !isStatusWithNoContent ? <Divider /> : null}
+      {!!commentType || !isStatusWithNoContent ? (
         <Grid width="100%">
           <CommentList
             // need to rename comment list submissions & tasks to something more generic
@@ -140,11 +190,11 @@ export const GrantApplicationStatusManager = ({ grantApplication }) => {
             type={commentType}
             entityType={ENTITIES_TYPES.GRANT_APPLICATION}
             onCommentCallback={GRANT_APPLICATION_COMMENT_ACTIONS[commentType]}
-            showCommentBox
-            showComments={false}
+            showCommentBox={commentType}
+            renderComment={(comments) => <RenderNote comments={comments} statusToFilter={status} />}
           />
         </Grid>
-      )}
+      ) : null}
     </GrantApplicationStatusWrapper>
   );
 };

@@ -1,4 +1,5 @@
 import { Grid } from '@mui/material';
+import { BoardsCardBodyDescription } from 'components/Common/Boards/styles';
 import { BountyCardWrapper } from 'components/Common/BountyBoard/styles';
 import { CompensationPill } from 'components/Common/Compensation/styles';
 import styled from 'styled-components';
@@ -43,5 +44,11 @@ export const EndingSoonPill = styled(ItemPill)`
     border-radius: 4px;
     background: ${palette.grey99};
     padding: 1px 5px 1px 6px;
+  }
+`;
+
+export const GrantsBoardCardDescription = styled(BoardsCardBodyDescription)`
+  && {
+    -webkit-line-clamp: 3;
   }
 `;
