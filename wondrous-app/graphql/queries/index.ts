@@ -4,6 +4,7 @@ export * from './notifications';
 export * from './org';
 export * from './pod';
 export * from './task';
+export * from './taskProposal';
 export * from './taskBoard';
 export * from './user';
 export * from './payment';
@@ -13,4 +14,4 @@ export * from './tokenGating';
 export * from './integration';
 export * from './search';
 export * from './orgCollab';
-export * from './grant'
+export * from './grant';
