@@ -20,7 +20,7 @@ const TYPES = {
 
 const ViewGrantFooter = ({
   commentCount = 0,
-  applicationsCount = 1,
+  applicationsCount = 0,
   entityType = ENTITIES_TYPES.GRANT,
   entity,
   commentListProps = {},

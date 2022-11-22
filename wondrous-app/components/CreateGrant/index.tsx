@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   TaskModalCard,
   TaskModalTitleDescriptionMedia,
@@ -66,7 +67,7 @@ import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } fr
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -94,9 +95,15 @@ const validationSchema = Yup.object().shape({
     paymentMethodId: Yup.string().required(),
     rewardAmount: Yup.number()
       .typeError('Reward amount must be a number')
-      .moreThan(0, 'Reward amount must be greater than 0'),
-    amount: Yup.number().moreThan(0, 'Amount must be greater than 0'),
-  }),
+      .moreThan(0, 'Reward amount must be greater than 0')
+      .lessThan(1000000000, 'Reward amount must be less than 1 billion')
+      .required(),
+  }).required(),
+  numOfGrant: Yup.number()
+    .typeError('Number of grants must be a number')
+    .moreThan(0, 'Number of grants must be greater than 0')
+    .lessThan(1000000000, 'Number of grants must be less than 1 billion')
+    .required(),
   startDate: Yup.string().optional().nullable(),
   endDate: Yup.string().optional().nullable(),
   applyPolicy: Yup.string().nullable(),
@@ -116,8 +123,21 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
   const [removeGrantMedia] = useMutation(REMOVE_GRANT_MEDIA);
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+
   const [updateGrant] = useMutation(UPDATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Grant updated successfully!');
+      handleClose();
+    },
+    onError: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Error updating grant');
+    },
   });
 
   // TODO: move the upload to a separate component
@@ -126,6 +146,15 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Grant created successfully!');
+      handleClose();
+    },
+    onError: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Error creating grant');
+    },
   });
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
@@ -198,7 +227,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             numOfGrant: parseInt(values.numOfGrant, 10),
           },
         },
-      }).then(() => handleClose()),
+      }),
   });
 
   useEffect(() => {
@@ -454,7 +483,6 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
               name="privacyLevel"
               value={form.values.privacyLevel}
               onChange={(value) => {
-                console.log(value, 'valueprivacy');
                 form.setFieldValue('privacyLevel', value);
               }}
               renderValue={(value) => (

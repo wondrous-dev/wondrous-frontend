@@ -70,7 +70,7 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Visibility',
-    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel]} />,
+    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />,
   },
   {
     label: 'Categories',
@@ -203,7 +203,18 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
           <TaskModalTaskData fullScreen={isFullScreen}>
             <TaskModalTitleDescriptionMedia fullScreen={isFullScreen}>
               <TaskModalTitle>{grant?.title}</TaskModalTitle>
-              <GrantMenuStatus canEdit={canEdit} currentStatus={grant?.status} />
+              <GrantMenuStatus
+                canEdit={canEdit}
+                currentStatus={grant?.status}
+                onUpdateSuccess={() => {
+                  setSnackbarAlertMessage('Grant status updated successfully');
+                  setSnackbarAlertOpen(true);
+                }}
+                onUpdateError={() => {
+                  setSnackbarAlertMessage('Grant status update failed');
+                  setSnackbarAlertOpen(true);
+                }}
+              />
 
               <DescriptionWrapper>
                 <RichTextViewer text={grant.description} />
@@ -233,7 +244,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
           </TaskModalTaskData>
         </>
       ) : (
-        <LockedTaskMessage handleClose={onClose} />
+        <LockedTaskMessage handleClose={onClose} entityType={ENTITIES_TYPES.GRANT} />
       )}
     </GrantModalCard>
   );
@@ -289,7 +300,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
             <CreateGrant
               existingGrant={grant}
               entityType={ENTITIES_TYPES.GRANT}
-              handleClose={() => setEditMode(false)}
+              handleClose={handleClose}
               isEdit={isEditMode}
               cancel={() => setEditMode(false)}
             />

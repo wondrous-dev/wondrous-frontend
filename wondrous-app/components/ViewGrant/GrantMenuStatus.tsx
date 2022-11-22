@@ -18,11 +18,13 @@ const STATUSES = [
   },
 ];
 
-const GrantMenuStatus = ({ currentStatus, canEdit }) => {
+const GrantMenuStatus = ({ currentStatus, canEdit, onUpdateSuccess, onUpdateError }) => {
   const { grant } = useTaskContext();
   const status = STATUSES.find((s) => s.id === currentStatus);
   const [updateGrantStatus] = useMutation(UPDATE_GRANT_STATUS, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+    onCompleted: () => onUpdateSuccess(),
+    onError: () => onUpdateError(),
   });
 
   const handleOnChange = (status) =>
