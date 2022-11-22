@@ -168,6 +168,9 @@ export const CreateEntityOptionLabel = styled(Typography)`
     color: ${palette.white};
     margin-left: 6px;
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
+  }
 `;
 
 export const CreateEntitySelectRootValue = styled.div`
@@ -352,6 +355,10 @@ export const CreateEntitySelectErrorWrapper = styled.div`
   display: flex;
   flex-direction: column;
   gap: 6px;
+
+  > button {
+    min-width: fit-content;
+  }
 `;
 
 export const CreateEntitySelectWrapper = styled.div`
