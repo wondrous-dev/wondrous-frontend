@@ -101,7 +101,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
               </Typography>
             </ItemPill>
 
-            <ItemPill>
+            <ItemPill withIcon>
               <IconWrapper>
                 <Icon />
               </IconWrapper>
@@ -114,7 +114,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
         <BoardsCardBody>
           <BoardsCardBodyTitle>{grant.title}</BoardsCardBodyTitle>
           <BoardsCardBodyDescription>
-            <RichTextViewer text={grant.description} />
+            <RichTextViewer text={grant.description} asText />
           </BoardsCardBodyDescription>
           {coverMedia ? (
             <BoardsCardMedia>

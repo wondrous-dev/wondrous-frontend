@@ -70,7 +70,7 @@ const FIELDS_CONFIG = [
   },
   {
     label: 'Visibility',
-    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel]} />,
+    component: ({ grant: { privacyLevel } }) => <DataDisplay label={PRIVACY_LABELS[privacyLevel] || 'Private'} />,
   },
   {
     label: 'Categories',
