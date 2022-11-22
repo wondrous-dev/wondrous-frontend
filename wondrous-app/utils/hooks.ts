@@ -2,7 +2,15 @@ import { NextRouter, useRouter } from 'next/router';
 import { useContext, useState, useEffect, useRef, Dispatch, SetStateAction, useMemo, useCallback } from 'react';
 import apollo from 'services/apollo';
 import { TokenGatingCondition } from 'types/TokenGating';
-import { PRIVACY_LEVEL, TASK_TYPE, PERMISSIONS, BOUNTY_TYPE, MILESTONE_TYPE, ENTITIES_TYPES } from 'utils/constants';
+import {
+  PRIVACY_LEVEL,
+  TASK_TYPE,
+  PERMISSIONS,
+  BOUNTY_TYPE,
+  MILESTONE_TYPE,
+  ENTITIES_TYPES,
+  TASK_STATUS_DONE,
+} from 'utils/constants';
 import {
   GET_PER_STATUS_TASK_COUNT_FOR_USER_BOARD,
   GET_TOKEN_GATING_CONDITIONS_FOR_ORG,
@@ -321,33 +329,33 @@ export const useSteps = (defaultStep = 0) => {
 
 export const usePermissions = (entity, isTaskProposal = false) => {
   const globalContext = useGlobalContext();
-  const user = useMe();
+  const { id: userId } = useMe() || {};
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const userPermissionsContext = getUserPermissionContext();
+  const { orgId, podId, createdBy, assigneeId, type, status, taskApplicationPermissions } = entity || {};
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
-    orgId: entity?.orgId,
-    podId: entity?.podId,
+    orgId,
+    podId,
   });
-  const canEdit =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    entity?.createdBy === user?.id ||
-    (entity?.assigneeId && entity?.assigneeId === user?.id);
-  const canArchive =
-    permissions.includes(PERMISSIONS.MANAGE_BOARD) ||
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    entity?.createdBy === user?.id;
-  const canViewApplications =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) ||
-    permissions.includes(PERMISSIONS.EDIT_TASK) ||
-    (entity?.createdBy === user?.id && entity?.type === TASK_TYPE);
-  const canDelete =
-    canArchive && (entity?.type === ENTITIES_TYPES.TASK || entity?.type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
-  const canApproveProposal =
-    permissions.includes(PERMISSIONS.FULL_ACCESS) || permissions.includes(PERMISSIONS.CREATE_TASK);
-  return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal };
+  const hasFullPermission = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const hasEditPermission = permissions.includes(PERMISSIONS.EDIT_TASK);
+  const createdByUser = createdBy === userId;
+  const canEdit = hasFullPermission || hasEditPermission || createdByUser || (assigneeId && assigneeId === userId);
+  const canArchive = permissions.includes(PERMISSIONS.MANAGE_BOARD) || hasFullPermission || createdByUser;
+  const canViewApplications = hasFullPermission || hasEditPermission || (createdByUser && type === TASK_TYPE);
+  const canDelete = canArchive && (type === ENTITIES_TYPES.TASK || type === ENTITIES_TYPES.MILESTONE || isTaskProposal);
+  const canApproveProposal = hasFullPermission || permissions.includes(PERMISSIONS.CREATE_TASK);
+  const canClaim =
+    taskApplicationPermissions?.canClaim &&
+    !assigneeId &&
+    type !== BOUNTY_TYPE &&
+    type !== MILESTONE_TYPE &&
+    status !== TASK_STATUS_DONE;
+  const canApply = !canClaim && taskApplicationPermissions?.canApply;
+  return { canEdit, canArchive, canViewApplications, canDelete, canApproveProposal, canClaim, canApply };
 };
+
 export const useTaskContext = () => useContext(TaskContext);
 
 export const useFullScreen = (defaultValue = false) => {
