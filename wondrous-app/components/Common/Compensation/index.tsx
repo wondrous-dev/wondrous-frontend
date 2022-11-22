@@ -5,9 +5,9 @@ import palette from 'theme/palette';
 import { shrinkNumber } from 'utils/helpers';
 
 export default function Compensation(props) {
+  if (!props?.rewards?.[0].rewardAmount) return null;
   const { rewards, style, pillStyle = {}, id } = props;
   const { icon, rewardAmount, symbol } = rewards[0] || {};
-  if (!rewardAmount) return null;
   const shrinkAmount = shrinkNumber(rewardAmount);
   return (
     <Grid container width="fit-content" key={id} style={style}>
