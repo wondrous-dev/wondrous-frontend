@@ -96,11 +96,13 @@ const validationSchema = Yup.object().shape({
     rewardAmount: Yup.number()
       .typeError('Reward amount must be a number')
       .moreThan(0, 'Reward amount must be greater than 0')
+      .lessThan(1000000000, 'Reward amount must be less than 1 billion')
       .required(),
   }).required(),
   numOfGrant: Yup.number()
     .typeError('Number of grants must be a number')
     .moreThan(0, 'Number of grants must be greater than 0')
+    .lessThan(1000000000, 'Number of grants must be less than 1 billion')
     .required(),
   startDate: Yup.string().optional().nullable(),
   endDate: Yup.string().optional().nullable(),
