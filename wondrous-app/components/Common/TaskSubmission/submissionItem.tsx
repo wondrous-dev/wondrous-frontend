@@ -517,7 +517,7 @@ export function SubmissionItem({
   const showKudosOption = !showComments && !showCommentBox && commentType === SUBMISSION_COMMENT_TYPE.APPROVED;
 
   const isSubmissionStatusUpdated = submission?.approvedAt || submission?.rejectedAt;
-  const hideTaskReviewAndRejectButtons = submission?.changeRequestedAt || isSubmissionStatusUpdated;
+  const hideTaskStatusButtons = submission?.changeRequestedAt || isSubmissionStatusUpdated;
   const hideTaskSubmissionButtons = !isCreator || !submission?.changeRequestedAt || isSubmissionStatusUpdated;
 
   return (
@@ -588,7 +588,7 @@ export function SubmissionItem({
               />
             </Grid>
           ) : null}
-          {!hideTaskReviewAndRejectButtons ? (
+          {!hideTaskStatusButtons ? (
             <Grid
               item
               sm={8}
