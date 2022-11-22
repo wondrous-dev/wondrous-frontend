@@ -51,6 +51,9 @@ export const GrantTextField = styled(CreateEntityTextfield)`
     background: ${palette.grey99};
     min-width: min-content;
     flex: 1;
+    .Mui-disabled {
+      color: ${palette.white} !important;
+    }
   }
 `;
 
