@@ -56,6 +56,10 @@ export const PodSearchButton = styled(ButtonUnstyled)`
   :hover {
     cursor: ${({ disabled }) => (disabled ? 'default' : 'pointer')};
   }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    min-width: fit-content;
+  }
 `;
 
 export const PodSearchImageLabelWrapper = styled.div`
@@ -213,6 +217,9 @@ export const PodSearchLabel = styled(Typography)`
     text-overflow: ellipsis;
     overflow: hidden;
     max-width: 100%;
+  }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    display: none;
   }
 `;
 
