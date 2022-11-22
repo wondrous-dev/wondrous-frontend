@@ -3,6 +3,7 @@ import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
 import CommentList from 'components/Comment';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import SubmittableCommentType from 'components/Common/SubmittableCommentType';
 import { ActionButton } from 'components/Common/Task/styles';
 import Divider from 'components/Divider';
@@ -17,7 +18,7 @@ import {
   REQUEST_CHANGE_GRANT_APPLICATION,
 } from 'graphql/mutations';
 import { useRouter } from 'next/router';
-import { useMemo, useState } from 'react';
+import { useContext, useMemo, useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
 import { renderMentionString } from 'utils/common';
@@ -58,22 +59,44 @@ export const RenderNote = ({ comments, statusToFilter }) => {
 export const GrantApplicationStatusManager = ({ grantApplication }) => {
   const [commentType, setCommentType] = useState(null);
 
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+
   const status = useMemo(() => selectApplicationStatus(grantApplication), [grantApplication]);
+
+  const onUpdateSuccess = (message) => {
+    setSnackbarAlertMessage(message);
+    setSnackbarAlertOpen(true);
+  };
+
+  const onUpdateFail = (message) => {
+    setSnackbarAlertMessage(message);
+    setSnackbarAlertOpen(true);
+  };
 
   const [approveGrantApplication] = useMutation(APPROVE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
+    onCompleted: () => onUpdateSuccess('Grant application approved'),
+    onError: () => onUpdateFail('Failed to approve grant application'),
   });
 
   const [reopenGrantApplication] = useMutation(REOPEN_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById'],
+    onCompleted: () => onUpdateSuccess('Grant application reopened'),
+    onError: () => onUpdateFail('Failed to reopen grant application'),
   });
 
   const [requestChanges] = useMutation(REQUEST_CHANGE_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById', 'getGrantApplicationComments'],
+    onCompleted: () => onUpdateSuccess('Grant application change requested'),
+    onError: () => onUpdateFail('Failed to request changes for grant application'),
   });
 
   const [rejectGrantApplication] = useMutation(REJECT_GRANT_APPLICATION, {
     refetchQueries: ['getGrantApplicationsForGrant', 'getGrantApplicationById', 'getGrantApplicationComments'],
+    onCompleted: () => onUpdateSuccess('Grant application rejected'),
+    onError: () => onUpdateFail('Failed to reject grant application'),
   });
 
   const paymentExists = useMemo(

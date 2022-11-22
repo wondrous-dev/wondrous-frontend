@@ -4,6 +4,7 @@ import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import {
   TaskModalCard,
   TaskModalTitleDescriptionMedia,
@@ -66,7 +67,7 @@ import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } fr
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { isEmpty } from 'lodash';
 import { useRouter } from 'next/router';
-import { useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Editor, Transforms } from 'slate';
 import { ReactEditor } from 'slate-react';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -120,8 +121,21 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [editorToolbarNode, setEditorToolbarNode] = useState<HTMLDivElement>();
   const editor = useEditor();
   const [removeGrantMedia] = useMutation(REMOVE_GRANT_MEDIA);
+  const snackbarContext = useContext(SnackbarAlertContext);
+  const setSnackbarAlertOpen = snackbarContext?.setSnackbarAlertOpen;
+  const setSnackbarAlertMessage = snackbarContext?.setSnackbarAlertMessage;
+
   const [updateGrant] = useMutation(UPDATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard', 'getGrantById'],
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Grant updated successfully!');
+      handleClose();
+    },
+    onError: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Error updating grant');
+    },
   });
 
   // TODO: move the upload to a separate component
@@ -130,6 +144,15 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
   const [attachMedia] = useMutation(ATTACH_GRANT_MEDIA);
   const [createGrant] = useMutation(CREATE_GRANT, {
     refetchQueries: ['getGrantOrgBoard', 'getGrantPodBoard'],
+    onCompleted: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Grant created successfully!');
+      handleClose();
+    },
+    onError: () => {
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Error creating grant');
+    },
   });
   const { data: userPermissionsContext } = useQuery(GET_USER_PERMISSION_CONTEXT, {
     fetchPolicy: 'network-only',
@@ -202,7 +225,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             numOfGrant: parseInt(values.numOfGrant, 10),
           },
         },
-      }).then(() => cancel()),
+      }),
   });
 
   useEffect(() => {
