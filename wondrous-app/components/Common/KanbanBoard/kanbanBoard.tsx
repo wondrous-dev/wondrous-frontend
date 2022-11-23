@@ -126,7 +126,6 @@ function KanbanBoard(props) {
   };
 
   const moveCard = async (id, status, index, source) => {
-    return;
     // TODO get rid of nested loop
     const updatedColumns = columns.map((column) => {
       const task = columns.map(({ tasks }) => tasks.find((task) => task.id === id)).filter((i) => i)[0];
