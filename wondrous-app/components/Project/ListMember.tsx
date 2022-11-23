@@ -1,4 +1,4 @@
-import PodIcon from 'components/Icons/podIcon';
+import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
 
@@ -6,7 +6,7 @@ const ListMember = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Member',
-      IconComponent: PodIcon,
+      IconComponent: GroupIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,

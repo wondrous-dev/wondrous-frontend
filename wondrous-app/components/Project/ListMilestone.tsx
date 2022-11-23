@@ -1,4 +1,4 @@
-import PodIcon from 'components/Icons/podIcon';
+import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
 
@@ -6,7 +6,7 @@ const ListMilestone = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Milestone',
-      IconComponent: PodIcon,
+      IconComponent: FlagIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,

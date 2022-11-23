@@ -1,4 +1,4 @@
-import PodIcon from 'components/Icons/podIcon';
+import StarIcon from 'components/Icons/Sidebar/star.svg';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
 
@@ -6,7 +6,7 @@ const ListBounty = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Bounty',
-      IconComponent: PodIcon,
+      IconComponent: StarIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,
