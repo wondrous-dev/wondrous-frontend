@@ -53,4 +53,12 @@ export const ProfileContentGridContent = styled(Box)`
   > * {
     width: 312px;
   }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    width: 100%;
+
+    > * {
+      width: 100%;
+    }
+  }
 `;
