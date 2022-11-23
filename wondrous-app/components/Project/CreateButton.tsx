@@ -38,7 +38,7 @@ export const ButtonIcon = styled(ButtonBase)`
     font-family: 'Space Grotesk';
     color: ${palette.white};
     gap: 8px;
-    :before {
+    &:before {
       content: '';
       position: absolute;
       top: 0;
@@ -50,6 +50,34 @@ export const ButtonIcon = styled(ButtonBase)`
       outline: ${`2px solid ${palette.grey79}`};
       border-radius: 500px;
       z-index: -1;
+    }
+    &:hover {
+      color: ${palette.blue20};
+      div {
+        svg {
+          path {
+            fill: ${palette.highlightBlue};
+          }
+        }
+      }
+      &:before {
+        outline: none;
+      }
+      &:after {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        height: 40px;
+        width: 100%;
+        filter: blur(10px);
+        opacity: 90%;
+        transform: translate(-2px, -2px);
+        z-index: -2;
+        background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
+      }
     }
   }
 `;
