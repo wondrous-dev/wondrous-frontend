@@ -22,7 +22,7 @@ const GrantQuantity = ({ onChange, value, error, setError }) => (
           autoFocus={!value}
           name="amount"
           onChange={(e) => onChange(e.target.value)}
-          placeholder="Grants quantity"
+          placeholder="How many grants are available?"
           value={value}
           fullWidth
           InputProps={{
