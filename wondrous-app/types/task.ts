@@ -82,4 +82,7 @@ export interface TaskInterface {
   title: string;
   type: string;
   taskMint?: TaskMint;
+  parentTaskId?: string;
+  totalSubtaskCount?: number;
+  isProposal?: boolean;
 }
