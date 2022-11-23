@@ -1,4 +1,4 @@
-import PodIcon from 'components/Icons/podIcon';
+import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
 
@@ -6,7 +6,7 @@ const ListResource = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Resource',
-      IconComponent: PodIcon,
+      IconComponent: FolderIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,

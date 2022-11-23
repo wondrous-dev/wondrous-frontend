@@ -1,4 +1,4 @@
-import PodIcon from 'components/Icons/podIcon';
+import PlantIcon from 'components/Icons/plant.svg';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
 
@@ -6,7 +6,7 @@ const ListGrant = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Grant',
-      IconComponent: PodIcon,
+      IconComponent: PlantIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,

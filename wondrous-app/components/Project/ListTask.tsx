@@ -1,12 +1,12 @@
-import PodIcon from 'components/Icons/podIcon';
-import ListWrapper from './ListWrapper';
+import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ListItemTask from './ListItemTask';
+import ListWrapper from './ListWrapper';
 
 const ListTask = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Task',
-      IconComponent: PodIcon,
+      IconComponent: CheckBoxIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,

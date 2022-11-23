@@ -1,12 +1,14 @@
-import PodIcon from 'components/Icons/podIcon';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
+
+const CollabIcon = () => <SmallDao2DaoIcon stroke="#fff" />;
 
 const ListCollab = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Collab',
-      IconComponent: PodIcon,
+      IconComponent: CollabIcon,
     }}
     CreateButtonProps={{
       onClick: () => null,

@@ -1,4 +1,4 @@
-import PodIcon from 'components/Icons/podIcon';
+import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import ListItemBounty from './ListItemBounty';
 import ListWrapper from './ListWrapper';
 
@@ -6,7 +6,7 @@ const ListProposal = () => (
   <ListWrapper
     HeaderTitleProps={{
       text: 'Proposal',
-      IconComponent: PodIcon,
+      IconComponent: ContentPaste,
     }}
     CreateButtonProps={{
       onClick: () => null,
