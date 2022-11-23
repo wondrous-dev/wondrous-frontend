@@ -1,5 +1,7 @@
 import { useMutation } from '@apollo/client';
 import { TaskMenu } from 'components/Common/TaskMenuStatus';
+import GrantIcon from 'components/Icons/GrantIcon';
+import { GrantStatusActiveIcon, GrantStatusCompleted } from 'components/Icons/GrantStatusIcons';
 import TaskStatus from 'components/Icons/TaskStatus';
 import { UPDATE_GRANT, UPDATE_GRANT_STATUS } from 'graphql/mutations/grant';
 import { GRANTS_STATUSES, TASK_STATUS_DONE, TASK_STATUS_TODO } from 'utils/constants';
@@ -8,13 +10,13 @@ import { useTaskContext } from 'utils/hooks';
 const STATUSES = [
   {
     id: GRANTS_STATUSES.OPEN,
-    label: 'Open',
-    icon: <TaskStatus status={TASK_STATUS_TODO} />,
+    label: 'Active',
+    icon: <GrantStatusActiveIcon />,
   },
   {
     id: GRANTS_STATUSES.CLOSED,
     label: 'Completed',
-    icon: <TaskStatus status={TASK_STATUS_DONE} />,
+    icon: <GrantStatusCompleted />,
   },
 ];
 

@@ -1,18 +1,12 @@
 import { useMutation, useQuery } from '@apollo/client';
 import { CircularProgress } from '@mui/material';
 import Box from '@mui/material/Box';
-import Grid from '@mui/material/Grid';
 import { ErrorText } from 'components/Common';
 import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
-import {
-  TaskModalCard,
-  TaskModalTitleDescriptionMedia,
-  TaskSectionDisplayDivWrapper,
-} from 'components/Common/TaskViewModal/styles';
+import { TaskModalCard } from 'components/Common/TaskViewModal/styles';
 import {
   CreateEntityDropdown,
-  filterCategoryValues,
   filterOptionsWithPermission,
   filterOrgUsersForAutocomplete,
   formDirty,
@@ -21,27 +15,19 @@ import {
   privacyOptions,
   useContextValue,
   useGetAvailableUserPods,
-  useGetCategories,
   useGetOrgUsers,
 } from 'components/CreateEntity/CreateEntityModal/Helpers';
 import PodSearch from 'components/CreateEntity/CreateEntityModal/PodSearch';
 import {
-  CreateEntityAddButtonIcon,
-  CreateEntityAddButtonLabel,
   CreateEntityAttachment,
   CreateEntityAttachmentIcon,
   CreateEntityCancelButton,
   CreateEntityCreateTaskButton,
   CreateEntityDefaultDaoImage,
-  CreateEntityDueDate,
   CreateEntityError,
   CreateEntityHeader,
   CreateEntityHeaderArrowIcon,
   CreateEntityHeaderWrapper,
-  CreateEntityLabel,
-  CreateEntityLabelAddButton,
-  CreateEntityLabelSelectWrapper,
-  CreateEntityLabelWrapper,
   CreateEntityOpenInFullIcon,
   CreateEntityPrivacyIconWrapper,
   CreateEntityPrivacyLabel,
@@ -51,18 +37,15 @@ import {
   CreateEntityPrivacySelectRenderLabel,
   CreateEntitySelectArrowIcon,
   CreateEntitySelectErrorWrapper,
-  CreateEntitySelectWrapper,
   CreateEntityTitle,
-  EditorContainer,
   EditorPlaceholder,
   EditorToolbar,
   MediaUploadDiv,
 } from 'components/CreateEntity/CreateEntityModal/styles';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
-import DropdownSearch from 'components/DropdownSearch';
 import { deserializeRichText, RichTextEditor, useEditor } from 'components/RichText';
 import Tooltip from 'components/Tooltip';
-import { Formik, useFormik } from 'formik';
+import { useFormik } from 'formik';
 import { ATTACH_GRANT_MEDIA, CREATE_GRANT, REMOVE_GRANT_MEDIA, UPDATE_GRANT } from 'graphql/mutations/grant';
 import { GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { isEmpty } from 'lodash';
@@ -75,7 +58,7 @@ import { hasCreateTaskPermission, transformMediaFormat } from 'utils/helpers';
 import { useFullScreen, useGlobalContext, useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
 import { handleAddFile } from 'utils/media';
 import * as Yup from 'yup';
-import { ApplyPolicy, Categories, Dates, GrantAmount } from './Fields';
+import { ApplyPolicy, Categories, Dates, GrantAmount, GrantQuantity } from './Fields';
 import { APPLY_POLICY_FIELDS } from './Fields/ApplyPolicy';
 import {
   Form,
@@ -85,25 +68,24 @@ import {
   RichTextWrapper,
   GrantSectionDisplayDivWrapper,
   MediaWrapper,
-  GrantModalCard,
 } from './styles';
 import { descriptionTemplate } from './utils';
 
 const validationSchema = Yup.object().shape({
   orgId: Yup.string().required('Organization is required').typeError('Organization is required'),
   reward: Yup.object({
-    paymentMethodId: Yup.string().required(),
+    paymentMethodId: Yup.string().required('Payment method is required'),
     rewardAmount: Yup.number()
       .typeError('Reward amount must be a number')
       .moreThan(0, 'Reward amount must be greater than 0')
       .lessThan(1000000000, 'Reward amount must be less than 1 billion')
-      .required(),
+      .required('Reward amount is required'),
   }).required(),
   numOfGrant: Yup.number()
     .typeError('Number of grants must be a number')
     .moreThan(0, 'Number of grants must be greater than 0')
     .lessThan(1000000000, 'Number of grants must be less than 1 billion')
-    .required(),
+    .required('Quantity of grants is required'),
   startDate: Yup.string().optional().nullable(),
   endDate: Yup.string().optional().nullable(),
   applyPolicy: Yup.string().nullable(),
@@ -325,7 +307,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
 
   return (
     <Form onSubmit={form.handleSubmit}>
-      <GrantModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <CreateEntitySelectErrorWrapper>
@@ -448,14 +430,16 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
           <GrantSectionDisplayDivWrapper fullScreen={isFullScreen}>
             <GrantAmount
               value={form.values.reward}
-              numOfGrant={form.values.numOfGrant}
               onChange={form.setFieldValue}
               setError={form.setFieldError}
               orgId={form.values.orgId}
-              error={{
-                reward: form.errors.reward,
-                numOfGrant: form.errors.numOfGrant,
-              }}
+              error={form.errors.reward}
+            />
+            <GrantQuantity
+              value={form.values.numOfGrant}
+              onChange={(value) => form.setFieldValue('numOfGrant', value)}
+              setError={form.setFieldError}
+              error={form.errors.numOfGrant}
             />
             <Dates
               startDate={form.values.startDate}
@@ -521,7 +505,7 @@ const CreateGrant = ({ handleClose, cancel, existingGrant, isEdit = false, setFo
             )}
           </CreateEntityHeaderWrapper>
         </CreateEntityHeader>
-      </GrantModalCard>
+      </TaskModalCard>
     </Form>
   );
 };

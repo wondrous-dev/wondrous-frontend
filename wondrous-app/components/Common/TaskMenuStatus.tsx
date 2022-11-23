@@ -223,14 +223,17 @@ export function TaskMenu({ currentStatus, filterStatus, handleOnChange, disableM
   const open = Boolean(anchorEl);
   const handleClick = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setAnchorEl(e.currentTarget);
   };
   const handleClose = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     setAnchorEl(null);
   };
   const handleItemOnClick = (status) => (e) => {
     e.preventDefault();
+    e.stopPropagation();
     handleClose(e);
     handleOnChange(status.id);
   };
