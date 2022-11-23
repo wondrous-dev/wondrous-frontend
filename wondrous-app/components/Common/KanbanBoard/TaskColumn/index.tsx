@@ -17,7 +17,7 @@ import {
   STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
-import { Task } from 'components/Common/Task';
+import Task from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
 
 import Milestone from 'components/Common/Milestone';
@@ -182,6 +182,7 @@ function TaskColumn(props: ITaskColumn) {
                     <div
                       style={{
                         width: '100%',
+                        background: 'red',
                       }}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
@@ -190,10 +191,10 @@ function TaskColumn(props: ITaskColumn) {
                     >
                       {card.type === ENTITIES_TYPES.MILESTONE && !card.isProposal ? (
                         <Milestone>
-                          <Task task={card} setTask={() => {}} />
+                          <Task task={card} />
                         </Milestone>
                       ) : (
-                        <Task task={card} setTask={() => {}} />
+                        <Task task={card} />
                       )}
                     </div>
                   )}
