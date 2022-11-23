@@ -881,6 +881,10 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       padding: 1px;
       border-radius: 180px;
     }
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      font-size: 15px;
+    }
   }
   &.Mui-disabled {
     &::before {

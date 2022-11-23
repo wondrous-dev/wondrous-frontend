@@ -401,6 +401,15 @@ export const ActionButton = styled(CreateFormPreviewButton)`
       background: transparent;
     }
   }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex: 1;
+    width: 100%;
+
+    && {
+      height: 42px;
+      justify-content: center;
+    }
+  }
 `;
 
 export const ProposalCardWrapper = styled.div`
