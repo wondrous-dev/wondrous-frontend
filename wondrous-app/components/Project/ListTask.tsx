@@ -13,7 +13,7 @@ const ListTask = () => (
       text: 'Task',
     }}
     backgroundImageUrl="/images/project/task-empty-bg.svg"
-    showAllOnClick={() => null}
+    showAllUrl="boards?entity=task"
     ListItemComponent={ListItemTask}
     // data={[
     //   {

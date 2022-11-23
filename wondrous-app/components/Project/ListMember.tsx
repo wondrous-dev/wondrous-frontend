@@ -13,7 +13,7 @@ const ListMember = () => (
       text: 'Member',
     }}
     backgroundImageUrl="/images/project/collab-empty-bg.svg"
-    showAllOnClick={() => null}
+    showAllUrl="members"
     ListItemComponent={ListItemBounty}
     // data={[
     //   {
