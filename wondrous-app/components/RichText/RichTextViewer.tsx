@@ -72,7 +72,7 @@ const RichTextViewer: React.FC<{ text?: string; asText?: boolean }> = ({ text, a
 
   if (asText) {
     return (
-      <Typography whiteSpace="break-spaces" fontFamily="inherit" color="inherit" fontSize="inherit">
+      <Typography fontFamily="inherit" color="inherit" fontSize="inherit">
         {serialize(JSON.parse(text))}
       </Typography>
     );

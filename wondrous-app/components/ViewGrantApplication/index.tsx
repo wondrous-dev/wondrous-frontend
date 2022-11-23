@@ -8,6 +8,7 @@ import {
   TaskCardOrgPhoto,
   TaskCardPodIcon,
   TaskMediaWrapper,
+  TaskModalCard,
   TaskModalHeader,
   TaskModalHeaderArrow,
   TaskModalHeaderCloseModal,
@@ -201,7 +202,7 @@ const ViewGrantApplication = ({ onClose }) => {
         }}
       />
 
-      <GrantModalCard fullScreen={isFullScreen}>
+      <TaskModalCard fullScreen={isFullScreen}>
         <TaskModalHeader>
           <TaskModalHeaderWrapper>
             <TaskModalHeaderIconWrapper
@@ -323,7 +324,7 @@ const ViewGrantApplication = ({ onClose }) => {
             }}
           />
         </TaskModalTaskData>
-      </GrantModalCard>
+      </TaskModalCard>
     </>
   );
 };
