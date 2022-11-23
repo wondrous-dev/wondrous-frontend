@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { parseISO, addSeconds } from 'date-fns';
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
@@ -66,7 +66,7 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
     },
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (!src || hasProtocol || typeof src === 'object') {
       setImageUrl(null);
       return;
