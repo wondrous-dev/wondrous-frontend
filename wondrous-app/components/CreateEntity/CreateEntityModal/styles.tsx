@@ -768,8 +768,6 @@ export const CreateEntitySaveTemplateButtonDisabled = styled(ButtonUnstyled)`
   justify-content: space-between;
 `;
 
-export const CreateEntityAttachmentIconWrapper = styled;
-
 export const CreateEntityAttachmentIcon = styled(AttachFileIcon)`
   && {
     margin-right: 8px;

@@ -1,5 +1,6 @@
 import { Typography } from '@mui/material';
 import Button from 'components/Button';
+import { ButtonWrapper } from 'components/Common/button';
 import { SafeImage } from 'components/Common/Image';
 import DefaultUserImage from 'components/Common/Image/DefaultUserImage';
 import { EmptyStateCommentsIcon } from 'components/Icons/emptyStates';
@@ -161,7 +162,7 @@ export const DiscordDiscussionButtonWrapper = styled.div`
   width: 100%;
   border-radius: inherit;
   display: flex;
-  justify-content:center;
+  justify-content: center;
   align-items: center;
   gap: 12px;
   position: relative;
@@ -170,7 +171,7 @@ export const DiscordDiscussionButtonWrapper = styled.div`
   padding: 10px;
   margin-bottom: 15px;
 
-  >div{
-    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%); */
+  ${ButtonWrapper} {
+    background: linear-gradient(270deg, #ccbbff -5.62%, #7427ff 45.92%, #00baff 103.12%);
   }
 `;

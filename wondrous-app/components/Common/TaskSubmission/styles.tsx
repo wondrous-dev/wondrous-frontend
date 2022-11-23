@@ -5,6 +5,7 @@ import { FileLoading } from 'components/Common/FileUpload/FileUpload';
 import { GradientHighlightHorizontal } from 'components/Common/gradients';
 import { SafeImage } from 'components/Common/Image';
 import TaskMedia from 'components/Common/TaskMedia';
+import { StatusWrapper } from 'components/Common/Status/styles';
 import { MediaItem } from 'components/CreateEntity/MediaItem';
 import { MediaItemWrapper } from 'components/CreateEntity/MediaItem/styles';
 import Arrow from 'components/Icons/arrow.svg';
@@ -101,7 +102,7 @@ export const SubmissionButtonReviewWrapper = styled.div`
   ${({ theme }) => theme.breakpoints.down('sm')} {
     justify-content: space-between;
 
-    > * {
+    > button {
       width: 100%;
       flex-grow: 1;
     }
@@ -225,7 +226,7 @@ export const SubmissionFilterSelectButton = styled(ButtonBase)`
   }
 
   ${({ theme }) => theme.breakpoints.down('sm')} {
-    * {
+    div {
       font-size: 15px;
     }
   }
@@ -719,6 +720,10 @@ export const SubmissionItemHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+
+  ${StatusWrapper} {
+    white-space: nowrap;
+  }
 `;
 
 export const SubmissionItemHeaderContent = styled.div`
