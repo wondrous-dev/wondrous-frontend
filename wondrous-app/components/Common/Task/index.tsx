@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState, memo, FC } from 'react';
+import React, { useCallback, useContext, useEffect, useState, memo, FC, useLayoutEffect } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import cloneDeep from 'lodash/cloneDeep';
@@ -226,7 +226,7 @@ const Task: FC<TaskProps> = (props) => {
     });
   };
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     // One assigned person.
     if (assigneeUsername) {
       // clean
