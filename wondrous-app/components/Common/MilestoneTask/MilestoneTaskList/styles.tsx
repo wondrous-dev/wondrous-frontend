@@ -54,6 +54,13 @@ export const MilestoneTaskTitle = styled(Typography)`
     hyphens: auto;
     color: ${({ theme }) => theme.palette.white};
   }
+  a {
+    color: white;
+    text-decoration: none;
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 `;
 
 export const MilestoneTaskInfo = styled.div`
