@@ -403,12 +403,15 @@ export const ActionButton = styled(CreateFormPreviewButton)`
   }
 `;
 
-export const ProposalCardWrapper = styled.div`
+export const CardWrapper = styled.div`
+  padding-top: 1em;
+`;
+
+export const CardContent = styled.div`
   display: flex;
   flex-direction: column;
   color: ${({ theme }) => theme.palette.white};
   padding: 14px;
-  margin: ${(props) => (props.wrapped ? '0' : '1em 0 0 0')};
   border-radius: 6px;
   background: ${palette.grey900};
   gap: 14px;
@@ -522,7 +525,7 @@ export const TaskActionMenu = styled.div`
   z-index: 100;
   align-items: center;
   display: none;
-  ${ProposalCardWrapper}:hover & {
+  ${CardWrapper}:hover & {
     display: block;
   }
 `;

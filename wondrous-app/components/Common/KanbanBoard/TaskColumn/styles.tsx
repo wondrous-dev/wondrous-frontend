@@ -41,14 +41,20 @@ export const TaskColumnContainer = styled.div`
   align-items: center;
   border-right: 1px solid #1b1b1b;
   padding: 0px 6px 0px 6px;
+  box-sizing: content-box;
+  /* No padding for before first and and after last columns, but all of them need to be same size */
   &:first-child {
-    padding-left: 0px;
+    margin-left: -6px;
   }
   &:last-child {
-    padding-right: 0px;
+    margin-right: -6px;
     border-right: 0;
   }
   ${({ activeEntityType }) => activeEntityType && entityStyling[activeEntityType]?.style}
+
+  >div {
+    box-sizing: border-box;
+  }
 `;
 
 export const TaskColumnContainerHeader = styled.div`
