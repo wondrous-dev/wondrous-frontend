@@ -182,7 +182,6 @@ function TaskColumn(props: ITaskColumn) {
                     <div
                       style={{
                         width: '100%',
-                        background: 'red',
                       }}
                       {...provided.draggableProps}
                       {...provided.dragHandleProps}
