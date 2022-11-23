@@ -33,7 +33,7 @@ export const ItemPill = styled.div`
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 2px 11px 2px ${({ withIcon }) => (withIcon ? '5px' : '11px')};
+  padding: 2px 11px 2px ${({ withIcon }) => (withIcon ? '2px' : '11px')};
   border: none;
   background: ${palette.grey78};
   border-radius: 300px;
@@ -49,6 +49,6 @@ export const EndingSoonPill = styled(ItemPill)`
 
 export const GrantsBoardCardDescription = styled(BoardsCardBodyDescription)`
   && {
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
   }
 `;

@@ -83,7 +83,7 @@ const List = ({ display = false }) => {
         <Filters setStatus={handleFilter} status={status} />
         {canApply ? (
           <RequestApproveButton onClick={toggleCreateApplicationModal} data-cy="application-button">
-            Apply for grant
+            Apply for Grant
           </RequestApproveButton>
         ) : null}
       </Grid>
