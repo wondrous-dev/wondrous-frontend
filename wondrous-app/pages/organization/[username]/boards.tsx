@@ -16,4 +16,8 @@ const BoardsPage = (props) => (
   </>
 );
 
+export const getServerSideProps = async (context) => ({
+  props: {},
+});
+
 export default BoardsPage;
