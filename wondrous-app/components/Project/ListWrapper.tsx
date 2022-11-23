@@ -1,5 +1,6 @@
-import { Button, ButtonBase, Grid } from '@mui/material';
+import { ButtonBase, Grid } from '@mui/material';
 import isEmpty from 'lodash/isEmpty';
+import { useRouter } from 'next/router';
 import palette from 'theme/palette';
 import CreateButton, { ICreateButtonProps } from './CreateButton';
 import HeaderTitle, { IHeaderTitleProps } from './HeaderTitle';
@@ -8,7 +9,7 @@ interface EntityContainerProps {
   backgroundImageUrl: string;
   CreateButtonProps: ICreateButtonProps;
   HeaderTitleProps: IHeaderTitleProps;
-  showAllOnClick: (e) => void;
+  showAllUrl: string;
   data?: object[];
   ListItemComponent: React.ElementType;
 }
@@ -36,10 +37,12 @@ const ListWrapper = ({
   backgroundImageUrl,
   CreateButtonProps,
   HeaderTitleProps,
-  showAllOnClick,
+  showAllUrl,
   data,
   ListItemComponent,
 }: EntityContainerProps) => {
+  const router = useRouter();
+  const handleShowAllOnClick = () => router.push(`/organization/${router.query.username}/${showAllUrl}`);
   const entityContent = isEmpty(data)
     ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
     : data.map((i) => <ListItemComponent {...i} />);
@@ -59,7 +62,7 @@ const ListWrapper = ({
         </Grid>
       </Grid>
       <ButtonBase
-        onClick={showAllOnClick}
+        onClick={handleShowAllOnClick}
         sx={{
           width: '100%',
           height: '40px',
@@ -68,6 +71,9 @@ const ListWrapper = ({
           color: palette.white,
           fontFamily: 'Space Grotesk',
           fontWeight: 500,
+          '&:hover': {
+            background: palette.grey88,
+          },
         }}
       >
         Show all

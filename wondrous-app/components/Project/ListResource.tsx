@@ -13,7 +13,7 @@ const ListResource = () => (
       text: 'Resource',
     }}
     backgroundImageUrl="/images/project/resources-empty-bg.svg"
-    showAllOnClick={() => null}
+    showAllUrl="docs"
     ListItemComponent={ListItemBounty}
     // data={[
     //   {

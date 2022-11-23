@@ -15,7 +15,7 @@ const ListCollab = () => (
       text: 'Collab',
     }}
     backgroundImageUrl="/images/project/collab-empty-bg.svg"
-    showAllOnClick={() => null}
+    showAllUrl="members?collabs=true"
     ListItemComponent={ListItemBounty}
     // data={[
     //   {

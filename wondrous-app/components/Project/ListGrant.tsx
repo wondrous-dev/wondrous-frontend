@@ -13,7 +13,7 @@ const ListGrant = () => (
       text: 'Grant',
     }}
     backgroundImageUrl="/images/project/grant-empty-bg.svg"
-    showAllOnClick={() => null}
+    showAllUrl=""
     ListItemComponent={ListItemBounty}
     // data={[
     //   {

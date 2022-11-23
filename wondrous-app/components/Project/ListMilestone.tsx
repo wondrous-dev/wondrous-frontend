@@ -13,7 +13,7 @@ const ListMilestone = () => (
       text: 'Milestone',
     }}
     backgroundImageUrl="/images/project/milestone-empty-bg.svg"
-    showAllOnClick={() => null}
+    showAllUrl="boards?entity=milestone"
     ListItemComponent={ListItemBounty}
     // data={[
     //   {
