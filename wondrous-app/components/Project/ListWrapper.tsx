@@ -75,6 +75,7 @@ const ListWrapper = ({
             background: palette.grey88,
           },
         }}
+        disableRipple
       >
         Show all
       </ButtonBase>

@@ -38,6 +38,7 @@ export const ButtonIcon = styled(ButtonBase)`
     font-family: 'Space Grotesk';
     color: ${palette.white};
     gap: 8px;
+    text-transform: capitalize;
     &:before {
       content: '';
       position: absolute;
@@ -83,7 +84,7 @@ export const ButtonIcon = styled(ButtonBase)`
 `;
 
 const CreateButton = ({ onClick, text }: ICreateButtonProps) => (
-  <ButtonIcon onClick={onClick}>
+  <ButtonIcon onClick={onClick} disableRipple>
     <Icon />
     {`Create ${text}`}
   </ButtonIcon>
