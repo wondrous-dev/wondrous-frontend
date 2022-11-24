@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
-import { useLocation } from 'utils/useLocation';
 import { useRouter } from 'next/router';
+
+import { useLocation } from 'utils/useLocation';
 import * as Constants from 'utils/constants';
-import TaskViewModal from 'components/Common/TaskViewModal';
 import { delQuery } from 'utils/index';
+import { renderMentionString } from 'utils/common';
+
+import TaskViewModal from 'components/Common/TaskViewModal';
 import { SafeImage } from 'components/Common/Image';
 import { AvatarList } from 'components/Common/AvatarList';
 import Compensation from 'components/Common/Compensation';
-import { renderMentionString } from 'utils/common';
 import { TaskMedia } from 'components/Common/MediaPlayer';
 import { flexDivStyle, rejectIconStyle } from 'components/Common/TaskSummary';
 import { RejectIcon } from 'components/Icons/taskModalIcons';
@@ -15,6 +17,7 @@ import { CompletedIcon } from 'components/Icons/statusIcons';
 import { TaskSummaryAction } from 'components/Common/TaskSummary/styles';
 import { Arrow } from 'components/Icons/sections';
 
+import TASK_ICONS from './constants';
 import {
   PodName,
   PodWrapper,
@@ -27,7 +30,6 @@ import {
   TaskStatusHeaderText,
   TaskTitle,
 } from './styles';
-import TASK_ICONS from './constants';
 
 export default function TaskListCard(props) {
   const { taskType, task } = props;

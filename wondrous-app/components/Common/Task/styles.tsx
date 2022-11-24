@@ -1,11 +1,14 @@
-import { MenuItem, Modal, Typography } from '@mui/material';
-import ProposalIcon from 'components/Icons/proposalIcon';
 import styled from 'styled-components';
+import MenuItem from '@mui/material/MenuItem';
+import Modal from '@mui/material/Modal';
+import Typography from '@mui/material/Typography';
+
 import palette from 'theme/palette';
 
-import { CreateFormPreviewButton } from '../../CreateEntity/styles';
-import { BaseCard } from '../card';
-import { GradientMidnightDiagonal, GradientMidnightVertical } from '../gradients';
+import ProposalIcon from 'components/Icons/proposalIcon';
+import { CreateFormPreviewButton } from 'components/CreateEntity/styles';
+import { BaseCard } from 'components/Common/card';
+import { GradientMidnightDiagonal, GradientMidnightVertical } from 'components/Common/gradients';
 
 export const TaskInner = styled.div`
   display: flex;

@@ -2,21 +2,23 @@ import React, { useCallback, useContext, useEffect, useState, memo, FC, useLayou
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import cloneDeep from 'lodash/cloneDeep';
+
+import { delQuery } from 'utils';
+import * as Constants from 'utils/constants';
+import { parseUserPermissionContext } from 'utils/helpers';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
+import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
+import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
+import type { TaskInterface } from 'types/task';
+
 import { useMe } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import DeleteTaskModal from 'components/Common/DeleteTaskModal';
 import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
 import { CreateEntity } from 'components/CreateEntity';
-import * as Constants from 'utils/constants';
-import { parseUserPermissionContext } from 'utils/helpers';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { delQuery } from 'utils';
-import { UPDATE_TASK_ASSIGNEE, ARCHIVE_TASK, UNARCHIVE_TASK } from 'graphql/mutations/task';
-import { GET_TASK_BY_ID, GET_TASK_REVIEWERS } from 'graphql/queries';
-import { CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
-import { TaskInterface } from 'types/task';
 
-import Card from './card';
+import Card from './Card';
 import { ArchivedTaskUndo } from './styles';
 
 const getBoardType = ({ orgBoard, podBoard, userBoard }) => {

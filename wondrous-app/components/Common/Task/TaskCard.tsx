@@ -2,12 +2,16 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 import { useLazyQuery, useMutation, useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
+
 import { useLocation } from 'utils/useLocation';
 import { useColumns, useUserProfile } from 'utils/hooks';
 import { GET_TASK_SUBMISSIONS_FOR_TASK, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { DUPLICATE_TASK } from 'graphql/mutations';
 import { parseUserPermissionContext, transformTaskToTaskCard } from 'utils/helpers';
 import * as Constants from 'utils/constants';
+import { updateInProgressTask, updateTaskItem } from 'utils/board';
+import palette from 'theme/palette';
+
 import { hasGR15DEIIntiative } from 'components/Common/TaskViewModal/utils';
 import SmartLink from 'components/Common/SmartLink';
 import { MakePaymentModal } from 'components/Common/Payment/PaymentModal';
@@ -15,7 +19,6 @@ import { SafeImage } from 'components/Common/Image';
 import { DAOIcon } from 'components/Icons/dao';
 import { ButtonPrimary } from 'components/Common/button';
 import { Claim } from 'components/Icons/claimTask';
-import { updateInProgressTask, updateTaskItem } from 'utils/board';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
 import MilestoneIcon from 'components/Icons/milestone';
 import { AvatarList } from 'components/Common/AvatarList';
@@ -32,8 +35,8 @@ import PodIconName from 'components/Common/PodIconName';
 import Tooltip from 'components/Tooltip';
 import { SubtaskLightIcon } from 'components/Icons/subtask';
 import { TaskCommentIcon } from 'components/Icons/taskComment';
-import palette from 'theme/palette';
 import TaskCardMenu from 'components/Common/TaskCardMenu';
+
 import TASK_ICONS from './constants';
 import {
   ActionButton,
