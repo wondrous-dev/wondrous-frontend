@@ -1,34 +1,32 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Draggable } from 'react-beautiful-dnd';
-import CreateBtnIcon from 'components/Icons/createBtn';
 import { useInView } from 'react-intersection-observer';
 
 import {
-  PERMISSIONS,
   TASK_STATUS_DONE,
   TASK_STATUS_IN_PROGRESS,
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_REQUESTED,
   TASK_STATUS_TODO,
   ENTITIES_TYPES,
-  BOARD_TYPE,
   STATUS_OPEN,
   STATUS_APPROVED,
   STATUS_CLOSED,
 } from 'utils/constants';
 import { LIMIT } from 'services/board';
+import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
+
 import Task from 'components/Common/Task';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
-
 import Milestone from 'components/Common/Milestone';
-import { useMe } from 'components/Auth/withAuth';
-import { useOrgBoard, usePodBoard, useUserBoard } from 'utils/hooks';
-import { parseUserPermissionContext } from 'utils/helpers';
 import CreateBtnIconDark from 'components/Icons/createBtnIconDark';
 import { CreateModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityModal from 'components/CreateEntity/CreateEntityModal';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import Droppable from 'components/StrictModeDroppable';
+import { ColumnSection } from 'components/Common/ColumnSection';
+import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from 'components/Icons';
+
 import {
   TaskColumnContainer,
   TaskColumnContainerHeader,
@@ -36,8 +34,6 @@ import {
   TaskColumnContainerCount,
   TaskListContainer,
 } from './styles';
-import { ColumnSection } from '../../ColumnSection';
-import { ToDo, InProgress, Done, InReview, Proposal, Approved, Rejected } from '../../../Icons';
 
 interface ITaskColumn {
   cardsList: Array<any>;

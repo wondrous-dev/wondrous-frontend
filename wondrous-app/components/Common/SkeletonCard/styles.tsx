@@ -1,5 +1,7 @@
 import styled, { keyframes } from 'styled-components';
+
 import palette from 'theme/palette';
+
 import { CardWrapper } from 'components/Common/Task/styles';
 
 export const SkeletonCardWrapper = styled(CardWrapper)`

@@ -1,6 +1,8 @@
-import { Box, Button, Dialog, IconButton, Typography } from '@mui/material';
+import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
+import Typography from '@mui/material/Typography';
 import styled from 'styled-components';
-import { LogoSquare } from 'components/Common/ci';
+
 import { ModalCloseButton } from 'components/Common/ModalCloseButton';
 import Task from 'components/Common/Task';
 import { TaskInner, TaskWrapper } from 'components/Common/Task/styles';

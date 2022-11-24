@@ -1,6 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
-import { BoardColumn } from '../Common/BoardColumn';
+
+import BoardColumn from 'components/Common/BoardColumn';
 
 export const BoardWrapper = styled.div`
   display: flex;

@@ -1,6 +1,7 @@
 import React, { useLayoutEffect, useState } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { parseISO, addSeconds } from 'date-fns';
+
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import Image, { ImageProps } from 'next/image';
 
@@ -32,7 +33,7 @@ type SafeImageArgs = Omit<ImageProps, 'style'> & {
 };
 
 // https://nextjs.org/docs/api-reference/next/image
-export function SafeImage(safeImageArgs: SafeImageArgs) {
+export default function SafeImage(safeImageArgs: SafeImageArgs) {
   const {
     src,
     onPreviewLoaded,
