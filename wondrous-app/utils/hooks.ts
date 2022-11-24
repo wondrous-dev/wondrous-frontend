@@ -39,6 +39,7 @@ import {
   HotkeyContext,
   ExploreGr15TasksAndBountiesContext,
   TaskContext,
+  ProjectContext,
 } from './contexts';
 import { parseUserPermissionContext } from './helpers';
 
@@ -106,6 +107,8 @@ export const useUserProfile = () => useContext(UserProfileContext);
 //   console.log('useUserProfile must be used within a UserProfileContext Provider');
 // }
 // return context;
+
+export const useProject = () => useContext(ProjectContext);
 
 export const useSettings = () => useContext(SettingsBoardContext);
 
