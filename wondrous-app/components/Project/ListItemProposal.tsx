@@ -1,11 +1,11 @@
 import Grid from '@mui/material/Grid';
-import Compensation from 'components/Common/Compensation';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
+import TaskCardStatus from 'components/Common/TaskCardStatus';
 import ListItemWrapper from 'components/Project/ListItemWrapper';
 import palette from 'theme/palette';
 
-interface IListItemBounty {
-  bounty;
+interface IListItemProposal {
+  proposal;
 }
 
 const LeftComponent = ({ title, creator }) => (
@@ -15,9 +15,13 @@ const LeftComponent = ({ title, creator }) => (
   </Grid>
 );
 
-const RightComponent = ({ rewards }) => <Compensation rewards={rewards} />;
+const RightComponent = ({ type, orgId, status }) => (
+  <Grid container>
+    <TaskCardStatus type={type} orgId={orgId} status={status} style={{ background: '#343434' }} />
+  </Grid>
+);
 
-const ListItemBounty = (props: IListItemBounty) => (
+const ListItemProposal = (props: IListItemProposal) => (
   <ListItemWrapper
     LeftComponent={LeftComponent}
     LeftComponentProps={props}
@@ -26,4 +30,4 @@ const ListItemBounty = (props: IListItemBounty) => (
   />
 );
 
-export default ListItemBounty;
+export default ListItemProposal;

@@ -6,7 +6,7 @@ import { TASK_STATUS_DONE } from 'utils/constants';
 
 import MilestoneProgress from './MilestoneProgress';
 
-interface IListItemBounty {
+interface IListItemMilestone {
   bounty;
 }
 
@@ -26,7 +26,7 @@ const RightComponent = ({ type, orgId, status, id }) => (
   </Grid>
 );
 
-const ListItemMilestone = (props: IListItemBounty) => (
+const ListItemMilestone = (props: IListItemMilestone) => (
   <ListItemWrapper
     LeftComponent={LeftComponent}
     LeftComponentProps={props}

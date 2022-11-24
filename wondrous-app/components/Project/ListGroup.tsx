@@ -12,6 +12,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useCollaborationButtonProps, useDocCategoriesButtonProps, useEntityCreateButtonProps } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemMilestone from './ListItemMilestone';
+import ListItemProposal from './ListItemProposal';
 import ListItemTask from './ListItemTask';
 import ListWrapper from './ListWrapper';
 
@@ -25,26 +26,26 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/task-empty-bg.svg',
     showAllUrl: 'boards?entity=task',
     ListItemComponent: ListItemTask,
-    // data: [
-    //   {
-    //     title: 'test task',
-    //     date: new Date(),
-    //     type: 'task',
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test task',
-    //     date: new Date(),
-    //     type: 'task',
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test task',
-    //     date: new Date(),
-    //     type: 'task',
-    //     id: 3,
-    //   },
-    // ],
+    data: [
+      {
+        title: 'test task',
+        date: new Date(),
+        type: 'task',
+        id: 1,
+      },
+      {
+        title: 'test task',
+        date: new Date(),
+        type: 'task',
+        id: 2,
+      },
+      {
+        title: 'test task',
+        date: new Date(),
+        type: 'task',
+        id: 3,
+      },
+    ],
   },
   {
     HeaderTitleProps: {
@@ -55,46 +56,46 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/bounty-empty-bg.svg',
     showAllUrl: 'boards?entity=bounty',
     ListItemComponent: ListItemBounty,
-    // data={[
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 100,
-    //         symbol: 'USDC',
-    //       },
-    //     ],
-    //     id: 3,
-    //   },
-    // ]}
+    data: [
+      {
+        title: 'test bounty',
+        date: new Date(),
+        type: 'task',
+        rewards: [
+          {
+            rewardAmount: 1000,
+            symbol: 'USDC',
+            icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
+          },
+        ],
+        id: 1,
+      },
+      {
+        title: 'test bounty',
+        date: new Date(),
+        type: 'task',
+        rewards: [
+          {
+            rewardAmount: 1000,
+            symbol: 'USDC',
+            icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
+          },
+        ],
+        id: 2,
+      },
+      {
+        title: 'test bounty',
+        date: new Date(),
+        type: 'task',
+        rewards: [
+          {
+            rewardAmount: 100,
+            symbol: 'USDC',
+          },
+        ],
+        id: 3,
+      },
+    ],
   },
   {
     HeaderTitleProps: {
@@ -136,47 +137,30 @@ const useListGroup = () => [
     CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL),
     backgroundImageUrl: '/images/project/proposal-empty-bg.svg',
     showAllUrl: 'boards?entity=proposal',
-    ListItemComponent: ListItemBounty,
-    // data={[
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 100,
-    //         symbol: 'USDC',
-    //       },
-    //     ],
-    //     id: 3,
-    //   },
-    // ]}
+    ListItemComponent: ListItemProposal,
+    data: [
+      {
+        title: 'test bounty',
+        type: 'proposal',
+        orgId: '72322419271925761',
+        status: 'open',
+        id: '72401739146330138',
+      },
+      {
+        title: 'test bounty',
+        type: 'proposal',
+        orgId: '72322419271925761',
+        status: 'approved',
+        id: '72401739146330138',
+      },
+      {
+        title: 'test bounty',
+        type: 'proposal',
+        orgId: '72322419271925761',
+        status: 'closed',
+        id: '72401739146330138',
+      },
+    ],
   },
   {
     HeaderTitleProps: {
