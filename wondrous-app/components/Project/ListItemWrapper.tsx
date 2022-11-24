@@ -1,4 +1,5 @@
 import Grid from '@mui/material/Grid';
+import palette from 'theme/palette';
 
 interface IEntityItem {
   LeftComponent: React.ElementType;
@@ -16,6 +17,12 @@ const ListItemWrapper = ({ LeftComponent, LeftComponentProps, RightComponent, Ri
     bgcolor="#212121"
     height="36px"
     borderRadius="4px"
+    sx={{
+      cursor: 'pointer',
+      '&:hover': {
+        background: palette.grey920,
+      },
+    }}
   >
     <Grid container item alignItems="center" width="fit-content">
       <LeftComponent {...LeftComponentProps} />

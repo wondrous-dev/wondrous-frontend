@@ -11,6 +11,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 
 import { useCollaborationButtonProps, useDocCategoriesButtonProps, useEntityCreateButtonProps } from './hooks';
 import ListItemBounty from './ListItemBounty';
+import ListItemMilestone from './ListItemMilestone';
 import ListItemTask from './ListItemTask';
 import ListWrapper from './ListWrapper';
 
@@ -103,47 +104,29 @@ const useListGroup = () => [
     CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.MILESTONE),
     backgroundImageUrl: '/images/project/milestone-empty-bg.svg',
     showAllUrl: 'boards?entity=milestone',
-    ListItemComponent: ListItemBounty,
-    // data={[
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 100,
-    //         symbol: 'USDC',
-    //       },
-    //     ],
-    //     id: 3,
-    //   },
-    // ]}
+    ListItemComponent: ListItemMilestone,
+    data: [
+      {
+        title: 'test milestone',
+        type: 'milestone',
+        orgId: '72322419271925761',
+        status: 'completed',
+        id: '72401739146330138',
+      },
+      {
+        title: 'test milestone',
+        type: 'milestone',
+        orgId: '72322419271925761',
+        id: '72401739146330138',
+      },
+      {
+        title: 'test milestone',
+        type: 'milestone',
+        orgId: '72322419271925761',
+        status: 'completed',
+        id: '72401739146330138',
+      },
+    ],
   },
   {
     HeaderTitleProps: {
