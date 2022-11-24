@@ -75,3 +75,79 @@ export default function DiamondIcon() {
     </svg>
   );
 }
+
+export const GreenDiamondIcon = () => (
+  <svg width="24" height="20" viewBox="0 0 24 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path
+      d="M22.7681 7.60822L13.3552 18.5978C12.6054 19.4733 11.246 19.4733 10.4962 18.5978L1.08327 7.60822C0.618615 7.06612 0.667813 6.25571 1.19397 5.77238L6.26646 1.11534C6.64183 0.771407 7.13336 0.580078 7.64402 0.580078H16.2073C16.7176 0.580078 17.2095 0.771407 17.5845 1.11534L22.6569 5.77238C23.1836 6.25571 23.2323 7.06612 22.7681 7.60822Z"
+      fill="url(#paint0_linear_17781_203207)"
+    />
+    <path
+      d="M17.5812 1.11534C17.2063 0.771407 16.7148 0.580078 16.2041 0.580078H7.64077C7.13056 0.580078 6.63857 0.771407 6.26365 1.11534L1.19071 5.77238C0.849963 6.08533 0.712844 6.5345 0.782087 6.96044L7.59476 7.86879H16.2501L23.0628 6.96044C23.132 6.53496 22.9949 6.08533 22.6541 5.77238L17.5812 1.11534Z"
+      fill="url(#paint1_linear_17781_203207)"
+    />
+    <path d="M16.252 7.86523L11.9244 19.2538L7.59668 7.86523H16.252Z" fill="url(#paint2_linear_17781_203207)" />
+    <path
+      d="M16.1993 0.580078H7.63595C7.30933 0.580078 6.99363 0.666176 6.70801 0.812861L7.58994 7.86879H16.2453L17.1272 0.812861C16.8416 0.666176 16.5264 0.580078 16.1993 0.580078Z"
+      fill="url(#paint3_linear_17781_203207)"
+    />
+    <path d="M16.252 7.86879H7.59668L11.9244 0.580078L16.252 7.86879Z" fill="url(#paint4_linear_17781_203207)" />
+    <defs>
+      <linearGradient
+        id="paint0_linear_17781_203207"
+        x1="11.9256"
+        y1="0.580078"
+        x2="11.9256"
+        y2="19.2544"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#007A4E" />
+        <stop offset="1" stopColor="#06FFA5" />
+      </linearGradient>
+      <linearGradient
+        id="paint1_linear_17781_203207"
+        x1="11.9224"
+        y1="0.580078"
+        x2="11.9224"
+        y2="7.86879"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#007A4E" />
+        <stop offset="1" stopColor="#06FFA5" />
+      </linearGradient>
+      <linearGradient
+        id="paint2_linear_17781_203207"
+        x1="11.9244"
+        y1="7.86523"
+        x2="11.9244"
+        y2="19.2538"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#007A4E" />
+        <stop offset="1" stopColor="#06FFA5" />
+      </linearGradient>
+      <linearGradient
+        id="paint3_linear_17781_203207"
+        x1="11.9176"
+        y1="0.580078"
+        x2="11.9176"
+        y2="7.86879"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#007A4E" />
+        <stop offset="1" stopColor="#06FFA5" />
+      </linearGradient>
+      <linearGradient
+        id="paint4_linear_17781_203207"
+        x1="11.9244"
+        y1="0.580078"
+        x2="11.9244"
+        y2="7.86879"
+        gradientUnits="userSpaceOnUse"
+      >
+        <stop stopColor="#007A4E" />
+        <stop offset="1" stopColor="#06FFA5" />
+      </linearGradient>
+    </defs>
+  </svg>
+);

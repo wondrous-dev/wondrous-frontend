@@ -134,6 +134,7 @@ import WatchersField from './taskViewModalFields/WatchersField';
 import TaskViewModalFooter from './taskViewModalFooter';
 import { hasGR15DEIIntiative, openSnapshot } from './utils';
 import TaskViewNft from '../TaskViewNft';
+import ViewNftFields from '../TaskMint/ViewNftFields';
 
 interface ITaskListModalProps {
   open: boolean;
@@ -184,6 +185,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const [initialStatus, setInitialStatus] = useState('');
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const location = useLocation();
+  const [isViewNft, setIsViewNft] = useState(!!location?.params?.viewNft);
 
   const permissions = parseUserPermissionContext({
     userPermissionsContext,
@@ -356,6 +358,12 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     }
   }, [fetchedTask?.snapshotId]);
 
+  useEffect(() => {
+    if (isViewNft !== !!location?.params?.viewNft) {
+      setIsViewNft(!!location?.params?.viewNft);
+    }
+  }, [location?.params?.viewNft]);
+
   if (editTask) {
     return (
       <CreateEntity
@@ -382,7 +390,6 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       />
     );
   }
-
   const handleGoBackToTask = () => {
     setShowPaymentModal(false);
     getTaskSubmissionsForTask({
@@ -405,10 +412,8 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
     );
   }
 
-  const isViewNFTMode = !!location?.params?.viewNft;
-
   const canEdit =
-    !isViewNFTMode &&
+    !isViewNft &&
     (permissions.includes(PERMISSIONS.FULL_ACCESS) ||
       permissions.includes(PERMISSIONS.EDIT_TASK) ||
       fetchedTask?.createdBy === user?.id ||
@@ -421,7 +426,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
 
   const showAssignee = !isTaskProposal && !isMilestone && !isBounty;
   const canArchive =
-    (!isViewNFTMode && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
+    (!isViewNft && permissions.includes(PERMISSIONS.MANAGE_BOARD)) ||
     permissions.includes(PERMISSIONS.FULL_ACCESS) ||
     fetchedTask?.createdBy === user?.id;
 
@@ -506,7 +511,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   };
   const canClaim =
     fetchedTask?.taskApplicationPermissions?.canClaim &&
-    !isViewNFTMode &&
+    !isViewNft &&
     ((fetchedTask?.orgId &&
       userPermissionsContext?.orgPermissions &&
       fetchedTask?.orgId in userPermissionsContext?.orgPermissions) ||
@@ -550,7 +555,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
       }}
     >
       <>
-        {!isViewNFTMode && (
+        {!isViewNft && (
           <ActionModals
             completeModal={completeModal}
             setCompleteModal={setCompleteModal}
@@ -688,7 +693,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
                               </TaskModalSnapshot>
                             )}
-                            {canEdit && !isViewNFTMode && (
+                            {canEdit && !isViewNft && (
                               <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
                             )}
                             {isMilestone && (
@@ -705,6 +710,9 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               assigneeId={fetchedTask?.assigneeId}
                               taskStatus={fetchedTask?.status}
                               taskMintData={fetchedTask?.taskMint}
+                              isViewNft={isViewNft}
+                              setIsViewNft={setIsViewNft}
+                              taskId={fetchedTask?.id}
                             />
                             <ReviewerField
                               shouldDisplay={!isTaskProposal && !isMilestone}
@@ -734,7 +742,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                               podId={board?.podId}
                               userId={board?.userId}
                             />
-                            {!isViewNFTMode && <WatchersField fetchedTask={fetchedTask} />}
+                            {!isViewNft && <WatchersField fetchedTask={fetchedTask} />}
                             <ApplicationField
                               shouldDisplay={
                                 canViewApplications && taskApplicationCount?.getTaskApplicationsCount?.total > 0
@@ -823,6 +831,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                                 </CreateFormFooterButtons>
                               </>
                             )}
+                            {isViewNft ? (
+                              <ViewNftFields
+                                taskId={fetchedTask?.id}
+                                onClose={() => setIsViewNft(false)}
+                                taskTitle={fetchedTask?.title}
+                              />
+                            ) : null}
                             <GithubButtons fetchedTask={fetchedTask} />
                           </TaskSectionDisplayData>
                           <TaskSectionDisplayCreator>
@@ -861,7 +876,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                             )}
                           </TaskSectionDisplayCreator>
                         </TaskSectionDisplayDivWrapper>
-                        {isViewNFTMode ? (
+                        {isViewNft ? (
                           <TaskViewNft taskId={fetchedTask?.id} />
                         ) : (
                           <TaskViewModalFooter

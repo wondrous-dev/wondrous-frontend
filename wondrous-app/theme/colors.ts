@@ -151,6 +151,7 @@ export const purpleColors = {
   purple620: '#ff418c',
   purple700: '#8C1EFF',
   purple800: '#8237FF',
+  purple900: '#8446E9',
 };
 
 export const blackColors = {

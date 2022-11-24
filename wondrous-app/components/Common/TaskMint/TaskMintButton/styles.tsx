@@ -52,7 +52,7 @@ export const TaskMintDetailsChain = styled.div`
 export const TaskMintButtonWrapper = styled.button`
   border: 0;
   background: ${palette.grey1020};
-  color: ${palette.white};
+  color: ${({ labelColor }) => labelColor || palette.white};
   padding: 10px;
   display: flex;
   font-weight: 600;
