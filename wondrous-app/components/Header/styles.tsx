@@ -1,5 +1,6 @@
 import { AppBar, ButtonBase, IconButton, TextField } from '@mui/material';
 import styled from 'styled-components';
+import { highlightBlue } from 'theme/colors';
 import palette from 'theme/palette';
 import { Button } from '../Common/button';
 import { Logo } from '../Common/ci';
@@ -238,5 +239,6 @@ export const MissionControlIconWrapper = styled(HeaderHomeButton)`
 
 export const ConnectDiscordLink = styled.a`
   cursor: pointer;
-  color: ${palette.white};
+  text-transform: underline;
+  color: ${highlightBlue};
 `;

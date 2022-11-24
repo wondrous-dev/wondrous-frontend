@@ -150,6 +150,10 @@ export const CreateFormMenuItemIcon = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  svg {
+    right: 36px !important;
+  }
 `;
 
 // The styles below will make styles for dropdown
