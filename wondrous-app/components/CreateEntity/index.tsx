@@ -43,8 +43,13 @@ export function CreateEntity(props: ICreateEntity) {
   const [discard, setDiscard] = useState(false);
   const [formDirty, setFormDirty] = useState(false);
   const handleCloseForm = () => (formDirty ? setDiscard(true) : handleCloseModal());
-  const forNewModal = [ENTITIES_TYPES.TASK, ENTITIES_TYPES.MILESTONE, ENTITIES_TYPES.BOUNTY].includes(entityType);
-  const showNewModal = forNewModal || isTaskProposal;
+  const forNewModal: string[] = [
+    ENTITIES_TYPES.TASK,
+    ENTITIES_TYPES.MILESTONE,
+    ENTITIES_TYPES.BOUNTY,
+    ENTITIES_TYPES.PROPOSAL,
+  ];
+  const showNewModal = forNewModal.includes(entityType) || isTaskProposal;
   return (
     <>
       <CreateEntityDiscardTask

@@ -6,6 +6,8 @@ import HeaderTitle from 'components/Project/HeaderTitle';
 import PodCard from 'components/Project/PodCard';
 import isEmpty from 'lodash/isEmpty';
 import styled from 'styled-components';
+import { ENTITIES_TYPES } from 'utils/constants';
+import { useEntityCreateButtonProps } from './hooks';
 
 const EmptyWrapper = styled.div`
   background-image: url(/images/project/pod-empty-bg.svg);
@@ -25,9 +27,9 @@ interface PodCardsProps {
   pods: Array<any>;
 }
 
-const noPods = () => (
+const useNoPods = () => (
   <EmptyWrapper>
-    <CreateButton onClick={() => null} text="Pod" />
+    <CreateButton {...useEntityCreateButtonProps(ENTITIES_TYPES.POD)} />
   </EmptyWrapper>
 );
 
@@ -35,7 +37,8 @@ const podCardContent = (pods: PodCardsProps['pods']) =>
   pods.slice(0, 6).map((pod) => <PodCard key={pod.id} {...pod} />);
 
 const PodCards = ({ pods }: PodCardsProps) => {
-  const podsComponent = isEmpty(pods) ? noPods() : podCardContent(pods);
+  const emptyComponent = useNoPods();
+  const podsComponent = isEmpty(pods) ? emptyComponent : podCardContent(pods);
   return (
     <Grid container bgcolor="#141414" padding="14px" gap="14px">
       <Grid container justifyContent="space-between">
