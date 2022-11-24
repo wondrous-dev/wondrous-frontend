@@ -9,7 +9,7 @@ import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import StarIcon from 'components/Icons/Sidebar/star.svg';
 import { ENTITIES_TYPES } from 'utils/constants';
 
-import { useCollabButtonProps, useEntityCreateButtonProps } from './hooks';
+import { useCollaborationButtonProps, useDocCategoriesButtonProps, useEntityCreateButtonProps } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemTask from './ListItemTask';
 import ListWrapper from './ListWrapper';
@@ -253,7 +253,7 @@ const useListGroup = () => [
       text: 'Collab',
       IconComponent: () => <SmallDao2DaoIcon stroke="#fff" />,
     },
-    CreateButtonProps: useCollabButtonProps(),
+    CreateButtonProps: useCollaborationButtonProps(),
     backgroundImageUrl: '/images/project/collab-empty-bg.svg',
     showAllUrl: 'members?collabs=true',
     ListItemComponent: ListItemBounty,
@@ -356,10 +356,7 @@ const useListGroup = () => [
       text: 'Resource',
       IconComponent: FolderIcon,
     },
-    CreateButtonProps: {
-      onClick: () => null,
-      text: 'Resource',
-    },
+    CreateButtonProps: useDocCategoriesButtonProps(),
     backgroundImageUrl: '/images/project/resources-empty-bg.svg',
     showAllUrl: 'docs',
     ListItemComponent: ListItemBounty,
