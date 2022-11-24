@@ -197,7 +197,7 @@ const ViewGrant = ({ open, handleClose, grantId, isEdit = false, existingGrant =
             <CreateGrant
               existingGrant={grant}
               entityType={ENTITIES_TYPES.GRANT}
-              handleClose={handleClose}
+              handleClose={onClose}
               isEdit={isEditMode}
               cancel={() => setEditMode(false)}
             />
