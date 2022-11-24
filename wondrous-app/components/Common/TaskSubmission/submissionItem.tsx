@@ -351,9 +351,11 @@ function ResubmitTaskSubmissionButton({
     onClick();
   };
   return (
-    <SubmissionButtonRequestChange onClick={handleOnClick} selected={selected}>
-      Resubmit Task Submission
-    </SubmissionButtonRequestChange>
+    <Grid item sm={8} xs={12} paddingY={{ sm: '0px', xs: '10px' }} borderTop={{ sm: 'none', xs: '1px solid #343434' }}>
+      <SubmissionButtonRequestChange onClick={handleOnClick} selected={selected}>
+        Resubmit Task Submission
+      </SubmissionButtonRequestChange>
+    </Grid>
   );
 }
 
@@ -517,8 +519,19 @@ export function SubmissionItem({
   const showKudosOption = !showComments && !showCommentBox && commentType === SUBMISSION_COMMENT_TYPE.APPROVED;
 
   const isSubmissionStatusUpdated = submission?.approvedAt || submission?.rejectedAt;
-  const hideTaskStatusButtons = submission?.changeRequestedAt || isSubmissionStatusUpdated;
-  const hideTaskSubmissionButtons = !isCreator || !submission?.changeRequestedAt || isSubmissionStatusUpdated;
+  const hasBeenPaidOrIsBeingProcessed =
+    submission?.paymentStatus === PAYMENT_STATUS.PAID || submission?.paymentStatus === PAYMENT_STATUS.PROCESSING;
+
+  const showRequestChangeButton = !(submission?.changeRequestedAt || isSubmissionStatusUpdated);
+  const showRejectButton = !(isSubmissionStatusUpdated || hasBeenPaidOrIsBeingProcessed);
+  const showApproveButton = !isSubmissionStatusUpdated && fetchedTask?.type === TASK_TYPE;
+  const showApproveBountyButton = !submission.approvedAt && fetchedTask?.type === BOUNTY_TYPE;
+
+  const showSubmissionReviewButtons =
+    showRequestChangeButton || showRejectButton || showApproveButton || showApproveBountyButton;
+
+  const showReopenTaskAndBountyButtons =
+    isSubmissionStatusUpdated || isBountyApprovedUnpaid({ fetchedTask, submission });
 
   return (
     <SubmissionItemWrapper ref={submissionRef} highlight={isFocused}>
@@ -569,26 +582,16 @@ export function SubmissionItem({
             />
             <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
           </Grid>
-          {!hideTaskSubmissionButtons && (
-            <Grid
-              item
-              sm={8}
-              xs={12}
-              paddingY={{ sm: '0px', xs: '10px' }}
-              borderTop={{ sm: 'none', xs: '1px solid #343434' }}
-            >
-              <ResubmitTaskSubmissionButton
-                submission={submission}
-                setShowComments={setShowComments}
-                setShowCommentBox={setShowCommentBox}
-                setCommentType={setCommentType}
-                commentType={commentType}
-                isCreator={isCreator}
-                onClick={resubmitTaskSubmission}
-              />
-            </Grid>
-          )}
-          {!hideTaskStatusButtons && (
+          <ResubmitTaskSubmissionButton
+            submission={submission}
+            setShowComments={setShowComments}
+            setShowCommentBox={setShowCommentBox}
+            setCommentType={setCommentType}
+            commentType={commentType}
+            isCreator={isCreator}
+            onClick={resubmitTaskSubmission}
+          />
+          {showSubmissionReviewButtons && (
             <Grid
               item
               sm={8}
@@ -627,7 +630,7 @@ export function SubmissionItem({
               </SubmissionReviewButtons>
             </Grid>
           )}
-          {isSubmissionStatusUpdated && (
+          {showReopenTaskAndBountyButtons && (
             <Grid item sm={8} xs={8} display="flex" justifyContent="flex-end">
               <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
               <SubmissionBountyPaymentButton

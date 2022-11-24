@@ -107,6 +107,10 @@ export const SubmissionButtonReviewWrapper = styled.div`
       flex-grow: 1;
     }
   }
+
+  ${({ theme }) => theme.breakpoints.down(410)} {
+    flex-direction: column;
+  }
 `;
 
 export const SubmissionButtonEdit = styled(ButtonBase)`
@@ -186,6 +190,7 @@ export const SubmissionButtonReject = styled(Button)`
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
       height: 42px;
+      flex: 1;
     }
   }
 `;
@@ -199,6 +204,7 @@ export const SubmissionButtonApprove = styled(Button)`
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
       height: 42px;
+      flex: 1;
     }
   }
 `;
@@ -559,6 +565,10 @@ export const SubmissionFormButtonWrapper = styled.div`
   align-items: center;
   gap: 20px;
   align-self: flex-end;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-wrap: wrap;
+  }
 `;
 
 export const SubmissionFormCancel = styled(ButtonBase)`
@@ -617,6 +627,7 @@ export const SubmissionFormSubmit = styled(ButtonGradient)`
     }
     ${({ theme }) => theme.breakpoints.down('sm')} {
       height: 42px;
+      white-space: nowrap;
     }
   }
 `;
@@ -723,6 +734,14 @@ export const SubmissionItemHeader = styled.div`
 
   ${StatusWrapper} {
     white-space: nowrap;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-wrap: wrap;
+
+    ${StatusWrapper} {
+      margin-top: 10px;
+    }
   }
 `;
 
