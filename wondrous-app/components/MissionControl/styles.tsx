@@ -7,6 +7,10 @@ export const MissionControlWrapper = styled.div`
   height: 100%;
   min-height: 100vh;
   overflow: hidden;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    flex-direction: column;
+  }
 `;
 
 export const MissionControlWidgetsWrapper = styled.div`
@@ -21,6 +25,13 @@ export const MissionControlWidgetsWrapper = styled.div`
   justify-content: center;
   padding: 14px;
   align-content: baseline;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    align-items: center;
+    align-content: center;
+    justify-content: center;
+  }
 `;
 
 export const MissionControlSidebarWrapper = styled.div`
@@ -34,6 +45,7 @@ export const MissionControlSidebarWrapper = styled.div`
   gap: 24px;
   position: relative;
   z-index: 1;
+  background-position: bottom;
 `;
 
 export const MissionControlWorkspaceCard = styled.div`
@@ -49,6 +61,22 @@ export const MissionControlWidgetsContainer = styled.div`
   justify-content: flex-start;
   align-items: baseline;
   flex-wrap: wrap;
+  flex: 1;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    align-items: center;
+    max-width: 49%;
+    width: 100%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    max-width: 60%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    max-width: 100%;
+  }
 `;
 
 export const MissionControlSidebarIconWrapper = styled.div`
@@ -92,6 +120,10 @@ export const MissionControlSidebarIconWrapper = styled.div`
     animation-duration: 12000ms;
     animation-iteration-count: infinite;
     animation-timing-function: linear;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    position: static;
   }
 `;
 
