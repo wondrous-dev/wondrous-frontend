@@ -8,19 +8,22 @@ import {
   GET_ORG_COLLAB_REQUESTS_FOR_INITIATOR,
   GET_ORG_COLLAB_REQUESTS_FOR_RECIPIENT,
 } from 'graphql/queries';
-import { PERMISSIONS } from 'utils/constants';
+import { gridMobileStyles, PERMISSIONS } from 'utils/constants';
+import { Masonry } from '@mui/lab';
+import { useIsMobile } from 'utils/hooks';
 
 import Image from 'next/image';
 import CollabWrapper from './wrapper';
 import { CollabsContainer, NewCollabButton, NewCollabButtonText, NewCollabDiv } from './styles';
 import Tabs from './tabs';
 import { TAB_TYPES } from './constants';
+import { ActiveCollaborationItem } from './CollaborationItem';
 
 function Collaborations(props) {
   const { orgData = {}, userPermissionsContext } = props;
   const [activeTab, setActiveTab] = useState(TAB_TYPES.ACTIVE);
   const [openCreateModal, setOpenCreateModal] = useState(false);
-
+  const isMobile = useIsMobile();
   const canManageCollabs = userPermissionsContext?.orgPermissions[orgData?.orgId]?.includes(PERMISSIONS.FULL_ACCESS);
 
   const [getOrgCollabs, { data, loading, error }] = useLazyQuery(GET_ORG_COLLABS_FOR_ORG);
@@ -83,6 +86,13 @@ function Collaborations(props) {
               <NewCollabButtonText>New Collab</NewCollabButtonText>
             </NewCollabButton>
           </NewCollabDiv>
+          {activeTab === TAB_TYPES.ACTIVE && (
+            <Masonry spacing={3} columns={{ xs: 1, sm: 2, md: 2, lg: 2 }} style={isMobile ? gridMobileStyles : {}}>
+              {data?.getOrgCollabsForOrg?.map((collab, idx) => (
+                <ActiveCollaborationItem collab={collab} key={idx} />
+              ))}
+            </Masonry>
+          )}
         </CollabsContainer>
       </CollabWrapper>
     </EntitySidebar>

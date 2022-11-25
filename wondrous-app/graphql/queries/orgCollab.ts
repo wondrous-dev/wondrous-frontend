@@ -4,9 +4,12 @@ export const GET_ORG_COLLABS_FOR_ORG = gql`
   query getOrgCollabsForOrg($orgId: ID!) {
     getOrgCollabsForOrg(orgId: $orgId) {
       childOrgProfilePicture
+      childOrgName
       username
+      description
       name
       parentOrgProfilePicture
+      parentOrgName
     }
   }
 `;

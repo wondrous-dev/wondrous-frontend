@@ -73,3 +73,26 @@ export const NewCollabButtonText = styled(Typography)`
     color: ${palette.white};
   }
 `;
+
+export const CollabCard = styled.div`
+  padding: 14px;
+  background: ${palette.black92};
+  border-radius: 6px;
+  cursor: pointer;
+`;
+
+export const CollabCardHeader = styled.div`
+  display: flex;
+  align-items: center;
+`;
+
+export const CollabDescription = styled(Typography)`
+  && {
+    color: ${palette.grey250};
+    font-size: 15px;
+    font-family: Space Grotesk;
+    line-height: 24px;
+    margin-top: 14px;
+    margin-bottom: 14px;
+  }
+`;
