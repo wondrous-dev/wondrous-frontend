@@ -24,7 +24,12 @@ import {
   GenericImportTaskModalSelectMenuItem,
   GenericImportTaskModalSelectValueDisplayText,
 } from './styles';
-import { getTasksFromAsanaData, getTasksFromGenericData, getTasksFromTrelloData } from './helpers';
+import {
+  getTasksFromAsanaData,
+  getTasksFromGenericData,
+  getTasksFromTrelloData,
+  getTasksFromDeworkData,
+} from './helpers';
 
 interface Props {
   isOpen: boolean;
@@ -120,6 +125,10 @@ function GenericImportTaskModal(props: Props) {
 
         if (importFormat?.value === IMPORT_FORMATS.TRELLO) {
           formattedData = getTasksFromTrelloData({ data, isOrg, orgOrPodId, orgId: pod?.orgId });
+        }
+
+        if (importFormat?.value === IMPORT_FORMATS.DEWORK) {
+          formattedData = getTasksFromDeworkData({ data, isOrg, orgOrPodId, orgId: pod?.orgId });
         }
 
         if (importFormat?.value === IMPORT_FORMATS.GENERAL) {
