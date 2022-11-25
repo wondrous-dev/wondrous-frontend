@@ -4,11 +4,16 @@ import palette from 'theme/palette';
 interface IEntityItem {
   LeftComponent: React.ElementType;
   LeftComponentProps?: object;
-  RightComponent: React.ElementType;
+  RightComponent?: React.ElementType;
   RightComponentProps?: object;
 }
 
-const ListItemWrapper = ({ LeftComponent, LeftComponentProps, RightComponent, RightComponentProps }: IEntityItem) => (
+const ListItemWrapper = ({
+  LeftComponent,
+  LeftComponentProps,
+  RightComponent = () => null,
+  RightComponentProps,
+}: IEntityItem) => (
   <Grid
     container
     justifyContent="space-between"

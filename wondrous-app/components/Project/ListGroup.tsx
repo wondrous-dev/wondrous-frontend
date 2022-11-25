@@ -18,6 +18,7 @@ import {
 import ListItemBounty from './ListItemBounty';
 import ListItemMilestone from './ListItemMilestone';
 import ListItemProposal from './ListItemProposal';
+import ListItemResource from './ListItemResource';
 import ListItemTask from './ListItemTask';
 import ListWrapper from './ListWrapper';
 
@@ -328,47 +329,15 @@ const useListGroup = () => [
     CreateButtonProps: useDocCategoriesButtonProps(),
     backgroundImageUrl: '/images/project/resources-empty-bg.svg',
     showAllUrl: 'docs',
-    ListItemComponent: ListItemBounty,
-    // data={[
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 100,
-    //         symbol: 'USDC',
-    //       },
-    //     ],
-    //     id: 3,
-    //   },
-    // ]}
+    ListItemComponent: ListItemResource,
+    data: [
+      {
+        name: 'folder a',
+      },
+      {
+        name: 'resource b',
+      },
+    ],
   },
 ];
 
