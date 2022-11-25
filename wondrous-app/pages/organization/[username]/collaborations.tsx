@@ -40,7 +40,14 @@ function CollabPage() {
         orgData: org,
       }}
     >
-      <Collaborations orgData={org} />
+      <Collaborations
+        orgData={org}
+        userPermissionsContext={
+          userPermissionsContext?.getUserPermissionContext
+            ? JSON.parse(userPermissionsContext?.getUserPermissionContext)
+            : null
+        }
+      />
     </OrgBoardContext.Provider>
   );
 }

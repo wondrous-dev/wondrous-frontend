@@ -65,3 +65,11 @@ export const NewCollabButton = styled(Button)`
     z-index: 10;
   }
 `;
+
+export const NewCollabButtonText = styled(Typography)`
+  && {
+    font-weight: bold;
+    font-size: 15px;
+    color: ${palette.white};
+  }
+`;
