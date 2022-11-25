@@ -12,7 +12,7 @@ import {
   HEADER_ASPECT_RATIO,
 } from 'utils/constants';
 import apollo from 'services/apollo';
-import { Box } from '@mui/material';
+import { Box, Grid } from '@mui/material';
 import TypeSelector from 'components/TypeSelector';
 import { parseUserPermissionContext, removeUrlStart } from 'utils/helpers';
 import BoardsActivity from 'components/Common/BoardsActivity';
@@ -359,62 +359,64 @@ function Wrapper(props) {
         <ContentContainer>
           <TokenHeader>
             <HeaderMainBlock>
-              {orgData?.shared && renderSharedHeader ? (
-                renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
-              ) : (
-                <Box sx={{ flex: '0 0 60px' }}>
-                  <div
+              <Grid display="flex">
+                {orgData?.shared && renderSharedHeader ? (
+                  renderSharedHeader({ parentOrgs: orgProfile?.parentOrgs })
+                ) : (
+                  <Box sx={{ flex: '0 0 60px' }}>
+                    <div
+                      style={{
+                        position: 'relative',
+                        cursor: 'pointer',
+                      }}
+                    >
+                      <SafeImage
+                        src={orgProfile?.profilePicture}
+                        placeholderComp={
+                          <TokenEmptyLogo>
+                            <DAOEmptyIcon />
+                          </TokenEmptyLogo>
+                        }
+                        width={60}
+                        height={60}
+                        useNextImage
+                        style={{
+                          borderRadius: '6px',
+                        }}
+                        alt="Organization logo"
+                      />
+                      {isGr15Sponsor && (
+                        <>
+                          <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
+                          <GR15DEILogo
+                            width="42"
+                            height="42"
+                            onClick={() => setOpenGR15Modal(true)}
+                            style={{
+                              top: '0',
+                              right: '-20px',
+                              position: 'absolute',
+                              zIndex: '25',
+                            }}
+                          />
+                        </>
+                      )}
+                    </div>
+                  </Box>
+                )}
+                <HeaderTitleIcon>
+                  <HeaderTitle
                     style={{
-                      position: 'relative',
-                      cursor: 'pointer',
+                      ...(isGr15Sponsor && {
+                        marginLeft: '24px',
+                      }),
                     }}
                   >
-                    <SafeImage
-                      src={orgProfile?.profilePicture}
-                      placeholderComp={
-                        <TokenEmptyLogo>
-                          <DAOEmptyIcon />
-                        </TokenEmptyLogo>
-                      }
-                      width={60}
-                      height={60}
-                      useNextImage
-                      style={{
-                        borderRadius: '6px',
-                      }}
-                      alt="Organization logo"
-                    />
-                    {isGr15Sponsor && (
-                      <>
-                        <GR15DEIModal open={openGR15Modal} onClose={() => setOpenGR15Modal(false)} />
-                        <GR15DEILogo
-                          width="42"
-                          height="42"
-                          onClick={() => setOpenGR15Modal(true)}
-                          style={{
-                            top: '0',
-                            right: '-20px',
-                            position: 'absolute',
-                            zIndex: '25',
-                          }}
-                        />
-                      </>
-                    )}
-                  </div>
-                </Box>
-              )}
-              <HeaderTitleIcon>
-                <HeaderTitle
-                  style={{
-                    ...(isGr15Sponsor && {
-                      marginLeft: '24px',
-                    }),
-                  }}
-                >
-                  {orgProfile?.name}
-                </HeaderTitle>
-                {!isCollabWorkspace && <HeaderTag>@{orgProfile?.username}</HeaderTag>}
-              </HeaderTitleIcon>
+                    {orgProfile?.name}
+                  </HeaderTitle>
+                  {!isCollabWorkspace && <HeaderTag>@{orgProfile?.username}</HeaderTag>}
+                </HeaderTitleIcon>
+              </Grid>
               <HeaderButtons>
                 {/* <Tooltip title="your permissions are:" > */}
                 {permissions && orgRoleName && (
@@ -469,83 +471,87 @@ function Wrapper(props) {
             </HeaderText>
             <div>
               <HeaderActivity>
-                <HeaderContributors
-                  onClick={() => {
-                    setMoreInfoModalOpen(true);
-                    setShowUsers(true);
-                  }}
-                >
-                  <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
-                  <HeaderContributorsText>Contributors</HeaderContributorsText>
-                </HeaderContributors>
-                <HeaderPods
-                  onClick={() => {
-                    setMoreInfoModalOpen(true);
-                    setShowPods(true);
-                  }}
-                >
-                  <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
-                  <HeaderPodsText>Pods</HeaderPodsText>
-                </HeaderPods>
-                {isGr15Sponsor && (
-                  <HeaderGr15Sponsor>
-                    <ExploreOrgGr15
-                      onTaskPage={onTaskPage}
-                      onBountyPage={onBountyPage}
-                      hasGr15Bounties={hasGr15Bounties}
-                      hasGr15Tasks={hasGr15Tasks}
-                      onFilterChange={onFilterChange}
-                      orgProfile={orgProfile}
-                      filters={boardFilters}
-                      exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
-                      setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
-                    />
-                  </HeaderGr15Sponsor>
-                )}
-                {links?.map((link, index) => {
-                  if (link.type === 'link') {
-                    return (
-                      <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                        <HeaderActivityLinkIcon />
-                        {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
-                      </HeaderActivityLink>
-                    );
-                  }
-                })}
-
-                {links?.map((link, index) => {
-                  if (link.type !== 'link') {
-                    let SocialIcon = null;
-                    switch (link.type) {
-                      case SOCIAL_MEDIA_DISCORD:
-                        SocialIcon = DiscordIcon;
-                        break;
-                      case SOCIAL_MEDIA_TWITTER:
-                        SocialIcon = TwitterPurpleIcon;
-                        break;
-                      case SOCIAL_MEDIA_LINKEDIN:
-                        SocialIcon = LinkedInIcon;
-                        break;
-                      case SOCIAL_OPENSEA:
-                        SocialIcon = OpenSeaIcon;
-                        break;
-                    }
-                    if (SocialIcon) {
+                <div>
+                  <HeaderContributors
+                    onClick={() => {
+                      setMoreInfoModalOpen(true);
+                      setShowUsers(true);
+                    }}
+                  >
+                    <HeaderContributorsAmount>{orgProfile?.contributorCount}</HeaderContributorsAmount>
+                    <HeaderContributorsText>Contributors</HeaderContributorsText>
+                  </HeaderContributors>
+                  <HeaderPods
+                    onClick={() => {
+                      setMoreInfoModalOpen(true);
+                      setShowPods(true);
+                    }}
+                  >
+                    <HeaderPodsAmount>{orgProfile?.podCount}</HeaderPodsAmount>
+                    <HeaderPodsText>Pods</HeaderPodsText>
+                  </HeaderPods>
+                  {isGr15Sponsor && (
+                    <HeaderGr15Sponsor>
+                      <ExploreOrgGr15
+                        onTaskPage={onTaskPage}
+                        onBountyPage={onBountyPage}
+                        hasGr15Bounties={hasGr15Bounties}
+                        hasGr15Tasks={hasGr15Tasks}
+                        onFilterChange={onFilterChange}
+                        orgProfile={orgProfile}
+                        filters={boardFilters}
+                        exploreGr15TasksAndBounties={exploreGr15TasksAndBounties}
+                        setExploreGr15TasksAndBounties={setExploreGr15TasksAndBounties}
+                      />
+                    </HeaderGr15Sponsor>
+                  )}
+                </div>
+                <div>
+                  {links?.map((link, index) => {
+                    if (link.type === 'link') {
                       return (
                         <HeaderActivityLink href={link?.url} key={index} target="_blank">
-                          <SocialIcon
-                            style={{
-                              width: '20px',
-                              height: '20px',
-                            }}
-                            fill="#ccbbff"
-                          />
+                          <HeaderActivityLinkIcon />
+                          {removeUrlStart(link?.name) || removeUrlStart(link?.url)}
                         </HeaderActivityLink>
                       );
                     }
-                    return null;
-                  }
-                })}
+                  })}
+
+                  {links?.map((link, index) => {
+                    if (link.type !== 'link') {
+                      let SocialIcon = null;
+                      switch (link.type) {
+                        case SOCIAL_MEDIA_DISCORD:
+                          SocialIcon = DiscordIcon;
+                          break;
+                        case SOCIAL_MEDIA_TWITTER:
+                          SocialIcon = TwitterPurpleIcon;
+                          break;
+                        case SOCIAL_MEDIA_LINKEDIN:
+                          SocialIcon = LinkedInIcon;
+                          break;
+                        case SOCIAL_OPENSEA:
+                          SocialIcon = OpenSeaIcon;
+                          break;
+                      }
+                      if (SocialIcon) {
+                        return (
+                          <HeaderActivityLink href={link?.url} key={index} target="_blank">
+                            <SocialIcon
+                              style={{
+                                width: '20px',
+                                height: '20px',
+                              }}
+                              fill="#ccbbff"
+                            />
+                          </HeaderActivityLink>
+                        );
+                      }
+                      return null;
+                    }
+                  })}
+                </div>
               </HeaderActivity>
             </div>
           </TokenHeader>

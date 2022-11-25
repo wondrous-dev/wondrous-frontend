@@ -42,8 +42,6 @@ export const TokenHeader = styled.div`
   position: relative;
   width: 95%;
   padding-top: 30px;
-  display: flex;
-  flex-direction: column;
 `;
 
 export const TokenLogo = styled(LogoCircle)`
@@ -61,9 +59,7 @@ export const TokenEmptyLogo = styled.div`
   flex-direction: column;
   align-items: center;
   justify-content: center;
-
   border-radius: 50px;
-
   background: ${palette.black};
 `;
 
@@ -75,10 +71,8 @@ export const Content = styled.div`
 
 export const ContentContainer = styled.div`
   max-width: 100%;
-  display: flex;
-  align-items: center;
-  flex-direction: column;
   width: 100%;
+  padding: 10px 30px;
 `;
 
 export const HeaderMainBlock = styled.div`
@@ -88,6 +82,13 @@ export const HeaderMainBlock = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
+    height: 100%;
+  }
 `;
 
 export const HeaderTitleIcon = styled.div`
@@ -317,12 +318,32 @@ export const HeaderText = styled.div`
 `;
 
 export const HeaderActivity = styled.div`
-  flex-wrap: wrap;
   width: 100%;
   min-height: 23px;
   display: flex;
   align-items: center;
   margin-top: 8px;
+
+  > div {
+    display: flex;
+    align-items: center;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-direction: column;
+    align-items: flex-start;
+
+    > div:first-child {
+      flex-wrap: wrap;
+    }
+
+    > div:last-child {
+      margin-top: 10px;
+    }
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+  }
 `;
 
 export const HeaderActivityLink = styled.a`
