@@ -18,13 +18,7 @@ const Tabs = (props) => {
   ];
   return (
     <Container>
-      <StyledTabs
-        value={activeTab}
-        variant="fullWidth"
-        style={{
-          marginTop: '16px',
-        }}
-      >
+      <StyledTabs value={activeTab} variant="fullWidth">
         {TABS.map((tab) => (
           <StyledTab
             value={tab.name}

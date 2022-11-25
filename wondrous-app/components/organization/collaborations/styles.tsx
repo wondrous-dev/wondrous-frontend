@@ -19,7 +19,6 @@ export const Container = styled.div`
 export const StyledTabs = styled(Tabs)`
   && {
     color: #fff;
-    ${({ withMargin = true }) => withMargin && 'margin: 30px auto;'};
     width: 100%;
   }
   .MuiTabs-flexContainer {
