@@ -1,8 +1,12 @@
 import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import { CreateEntity } from 'components/CreateEntity';
+import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
+import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
+import CreateGrant from 'components/CreateGrant';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
+import { ENTITIES_TYPES } from 'utils/constants';
 
 import { useBoards, useProject } from 'utils/hooks';
 import { ICreateButtonProps } from './CreateButton';
@@ -56,6 +60,31 @@ export const useDocCategoriesModal = () => {
   return { DocCategoriesModal, handleCreateNewCategory };
 };
 
+export const useCreateGrantModal = () => {
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [isDiscardOpen, setIsDiscardOpen] = useState(false);
+  const handleCreateFormModal = () => setIsCreateModalOpen((prev) => !prev);
+  const toggleDiscardModal = () => setIsDiscardOpen((prev) => !prev);
+  const CreateGrantModal = () => (
+    <>
+      <CreateEntityDiscardTask
+        open={isDiscardOpen}
+        onClose={setIsDiscardOpen}
+        onCloseFormModal={handleCreateFormModal}
+        entityType={ENTITIES_TYPES.GRANT}
+      />
+      <CreateFormModalOverlay open={isCreateModalOpen} onClose={toggleDiscardModal}>
+        <CreateGrant
+          entityType={ENTITIES_TYPES.GRANT}
+          handleClose={handleCreateFormModal}
+          cancel={handleCreateFormModal}
+        />
+      </CreateFormModalOverlay>
+    </>
+  );
+  return { CreateGrantModal, handleCreateFormModal };
+};
+
 export const useEntityCreateButtonProps = (entityType: EntitiesType): ICreateButtonProps => {
   const { setEntityType } = useProject();
   return {
@@ -77,5 +106,13 @@ export const useDocCategoriesButtonProps = (): ICreateButtonProps => {
   return {
     onClick: handleCreateNewCategory,
     text: 'Resource',
+  };
+};
+
+export const useCreateGrantButtonProps = (): ICreateButtonProps => {
+  const { handleCreateFormModal } = useProject();
+  return {
+    onClick: handleCreateFormModal,
+    text: 'Grant',
   };
 };

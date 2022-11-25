@@ -9,7 +9,12 @@ import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import StarIcon from 'components/Icons/Sidebar/star.svg';
 import { ENTITIES_TYPES } from 'utils/constants';
 
-import { useCollaborationButtonProps, useDocCategoriesButtonProps, useEntityCreateButtonProps } from './hooks';
+import {
+  useCollaborationButtonProps,
+  useCreateGrantButtonProps,
+  useDocCategoriesButtonProps,
+  useEntityCreateButtonProps,
+} from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemMilestone from './ListItemMilestone';
 import ListItemProposal from './ListItemProposal';
@@ -140,21 +145,21 @@ const useListGroup = () => [
     ListItemComponent: ListItemProposal,
     data: [
       {
-        title: 'test bounty',
+        title: 'test proposal',
         type: 'proposal',
         orgId: '72322419271925761',
         status: 'open',
         id: '72401739146330138',
       },
       {
-        title: 'test bounty',
+        title: 'test proposal',
         type: 'proposal',
         orgId: '72322419271925761',
         status: 'approved',
         id: '72401739146330138',
       },
       {
-        title: 'test bounty',
+        title: 'test proposal',
         type: 'proposal',
         orgId: '72322419271925761',
         status: 'closed',
@@ -270,12 +275,9 @@ const useListGroup = () => [
       text: 'Grant',
       IconComponent: PlantIcon,
     },
-    CreateButtonProps: {
-      onClick: () => null,
-      text: 'Grant',
-    },
+    CreateButtonProps: useCreateGrantButtonProps(),
     backgroundImageUrl: '/images/project/grant-empty-bg.svg',
-    showAllUrl: '',
+    showAllUrl: 'grants',
     ListItemComponent: ListItemBounty,
     // data={[
     //   {
