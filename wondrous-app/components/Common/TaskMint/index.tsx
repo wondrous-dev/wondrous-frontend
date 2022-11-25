@@ -14,12 +14,14 @@ interface Props {
   setIsViewNft?: (mode: boolean) => void;
   isViewNft?: boolean;
   taskId?: string;
+  tokenData?: any;
 }
 
 const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId, setIsViewNft, isViewNft, taskId }: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tokenId = taskMintData?.tokenId;
   const status = taskMintData?.status;
+  console.log(taskMintData, 'task mint data');
   const user = useMe();
 
   if (taskStatus !== TASK_STATUS_DONE || user?.id !== assigneeId) {

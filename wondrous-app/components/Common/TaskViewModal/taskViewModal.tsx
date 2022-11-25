@@ -8,7 +8,12 @@ import { differenceInDays } from 'date-fns';
 import { ARCHIVE_TASK } from 'graphql/mutations/task';
 import { APPROVE_TASK_PROPOSAL, CLOSE_TASK_PROPOSAL } from 'graphql/mutations/taskProposal';
 import { SEARCH_USER_CREATED_TASKS } from 'graphql/queries';
-import { GET_TASK_BY_ID, GET_TASK_REVIEWERS, GET_TASK_SUBMISSIONS_FOR_TASK } from 'graphql/queries/task';
+import {
+  GET_MINT_TASK_TOKEN_DATA,
+  GET_TASK_BY_ID,
+  GET_TASK_REVIEWERS,
+  GET_TASK_SUBMISSIONS_FOR_TASK,
+} from 'graphql/queries/task';
 import { GET_TASK_PROPOSAL_BY_ID } from 'graphql/queries/taskProposal';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -161,13 +166,13 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
   const getUserPermissionContext = useCallback(() => globalContext?.userPermissionsContext, [globalContext]);
   const getBoard = useCallback(() => orgBoard || podBoard || userBoard, [orgBoard, userBoard, podBoard]);
   const board = getBoard();
-
   const {
     loading: taskApplicationCountLoading,
     error: taskApplicationCountError,
     data: taskApplicationCount,
   } = useTaskApplicationCount(fetchedTask?.id);
 
+  const [getTaskMintTokenData, tokenData] = useLazyQuery(GET_MINT_TASK_TOKEN_DATA);
   const userPermissionsContext = getUserPermissionContext();
   const boardColumns = useColumns();
   const [getTaskSubmissionsForTask, { data: taskSubmissionsForTask, loading: taskSubmissionsForTaskLoading }] =
@@ -571,7 +576,7 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
             setSnackbarAlertMessage={setSnackbarAlertMessage}
           />
         )}
-        <TaskContext.Provider value={{ fetchedTask, refetch }}>
+        <TaskContext.Provider value={{ fetchedTask, refetch, tokenData }}>
           <TaskModal open={open} onClose={handleModalClose}>
             <TaskModalCard fullScreen={fullScreen}>
               {!!fetchedTask && canViewTask !== null && (
@@ -877,7 +882,11 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           </TaskSectionDisplayCreator>
                         </TaskSectionDisplayDivWrapper>
                         {isViewNft ? (
-                          <TaskViewNft taskId={fetchedTask?.id} />
+                          <TaskViewNft
+                            taskId={fetchedTask?.id}
+                            getTaskMintTokenData={getTaskMintTokenData}
+                            tokenData={tokenData}
+                          />
                         ) : (
                           <TaskViewModalFooter
                             fullScreen={fullScreen}

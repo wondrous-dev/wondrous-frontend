@@ -1,23 +1,32 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import Modal from 'components/Modal';
 import { useTaskContext, useSteps } from 'utils/hooks';
 import { StartMint, MintInProgress, SuccessMint } from 'components/Common/TaskMint/Steps';
 import { Actions } from 'components/CreateCollaborationModal/ViewCollab';
 import { MODAL_TYPE } from 'components/CreateCollaborationModal/ViewCollab/CollabDetails';
+import { TaskMintStatus } from 'utils/constants';
 import OpenseaButton from '../OpenseaButton';
+import { useCreateMint } from '../Steps/useCreateMint';
 
 const ModalsComponent = ({ isOpen, onClose }) => {
   const [tokenData, setTokenData] = useState(null);
   const { nextStep, step, setStep } = useSteps();
   const { refetch } = useTaskContext();
   const STEPS_TITLE_MAP = ['Mint task', 'In-progress...', 'Minting task'];
-
   const title = STEPS_TITLE_MAP[step];
 
   const handleTokenData = (tokenData) => {
     nextStep();
     setTokenData(tokenData);
   };
+
+  const { startTaskMintProcess, data, step: inProgressMintStep } = useCreateMint();
+
+  useEffect(() => {
+    if (data?.getTaskMintTokenData) {
+      handleTokenData(data.getTaskMintTokenData);
+    }
+  }, [data?.getTaskMintTokenData]);
 
   const handleClose = () => {
     onClose();
@@ -28,12 +37,18 @@ const ModalsComponent = ({ isOpen, onClose }) => {
     }
   };
 
+  const handleFirstStepSubmit = () => {
+    startTaskMintProcess();
+    nextStep();
+  };
+
   const STEPS = [
     () => <StartMint />,
-    () => <MintInProgress setTokenData={handleTokenData} />,
+    () => <MintInProgress step={inProgressMintStep} />,
     () => <SuccessMint tokenData={tokenData} />,
   ];
 
+  console.log(inProgressMintStep);
   const FOOTER_ACTIONS = [
     {
       left: null,
@@ -43,7 +58,7 @@ const ModalsComponent = ({ isOpen, onClose }) => {
           acceptLabel="Mint task"
           type={MODAL_TYPE.ACTION}
           onClose={handleClose}
-          onSubmit={nextStep}
+          onSubmit={handleFirstStepSubmit}
         />
       ),
     },

@@ -1,26 +1,27 @@
 import Image from 'next/image';
-import { useQuery } from '@apollo/client';
-import { GET_MINT_TASK_TOKEN_DATA } from 'graphql/queries';
 import { CircularProgress, Grid } from '@mui/material';
+import { useEffect } from 'react';
 import { Wrapper } from './styles';
 
-const TaskViewNft = ({ taskId }) => {
-  const { data, loading } = useQuery(GET_MINT_TASK_TOKEN_DATA, {
-    variables: {
-      taskId,
-    },
-  });
+const TaskViewNft = ({ taskId, getTaskMintTokenData, tokenData }) => {
+  useEffect(() => {
+    getTaskMintTokenData({
+      variables: {
+        taskId,
+      },
+    });
+  }, []);
 
-  if (loading)
+  if (tokenData?.loading)
     return (
       <Grid display="flex" justifyContent="center" alignItems="center">
         <CircularProgress />
       </Grid>
     );
 
-  if (!data) return null;
+  if (!tokenData?.data) return null;
 
-  const { imageUrl } = data?.getTaskMintTokenData;
+  const { imageUrl } = tokenData?.data?.getTaskMintTokenData;
   return (
     <Wrapper display="flex" justifyContent="center" alignItems="baseline">
       <Image fill objectFit="contain" src={imageUrl} priority alt="NFT image" />;
