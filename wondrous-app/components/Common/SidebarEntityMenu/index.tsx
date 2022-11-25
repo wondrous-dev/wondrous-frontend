@@ -14,6 +14,13 @@ import { useState } from 'react';
 import palette from 'theme/palette';
 import { useBoards } from 'utils/hooks';
 
+const orgProfilePictureStyles = {
+  borderRadius: '3px',
+  width: '28px',
+  height: '28px',
+  background: palette.grey87,
+};
+
 const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) => {
   const { orgBoard } = useBoards();
   const router = useRouter();
@@ -29,15 +36,7 @@ const EntityMenu = ({ name, id, thumbnailPicture, profilePicture, canManage }) =
         <IconText>
           <ButtonIcon>
             {orgBoard ? (
-              <OrgProfilePicture
-                profilePicture={thumbnailPicture || profilePicture}
-                style={{
-                  borderRadius: '3px',
-                  width: '28px',
-                  height: '28px',
-                  background: palette.grey87,
-                }}
-              />
+              <OrgProfilePicture profilePicture={thumbnailPicture || profilePicture} style={orgProfilePictureStyles} />
             ) : (
               <NoLogoPod />
             )}

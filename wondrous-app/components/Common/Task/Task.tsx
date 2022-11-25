@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect, useState, memo, FC, useLayoutEffect } from 'react';
+import React, { useCallback, useContext, useEffect, useState, memo, FC, useMemo } from 'react';
 import { useLazyQuery, useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 import cloneDeep from 'lodash/cloneDeep';
@@ -90,7 +90,6 @@ const Task: FC<TaskProps> = (props) => {
   const user = useMe();
   const userPermissionsContext =
     orgBoard?.userPermissionsContext || podBoard?.userPermissionsContext || userBoard?.userPermissionsContext;
-  const [userList, setUserList] = useState([]);
   const [archiveTask, setArchiveTask] = useState(false);
   const [deleteTask, setDeleteTask] = useState(false);
   const [initialStatus, setInitialStatus] = useState('');
@@ -228,28 +227,24 @@ const Task: FC<TaskProps> = (props) => {
     });
   };
 
-  useLayoutEffect(() => {
-    // One assigned person.
-    if (assigneeUsername) {
-      // clean
-      setUserList([
-        {
-          id: assigneeId,
-          name: assigneeUsername,
-          initials: assigneeUsername[0].toUpperCase(),
-          avatar: {
-            url: assigneeProfilePicture,
-            isOwnerOfPod: false,
-            color: null,
-          },
-        },
-      ]);
-    } else {
-      // TODO: many users in one task? there is no such thing as 'users' field in task
-      setUserList([]);
+  const userList = useMemo(() => {
+    if (!assigneeUsername) {
+      return [];
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [assigneeUsername]);
+
+    return [
+      {
+        id: assigneeId,
+        name: assigneeUsername,
+        initials: assigneeUsername[0].toUpperCase(),
+        avatar: {
+          url: assigneeProfilePicture,
+          isOwnerOfPod: false,
+          color: null,
+        },
+      },
+    ];
+  }, [assigneeUsername, assigneeId, assigneeProfilePicture]);
 
   return (
     <span className={className}>
