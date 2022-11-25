@@ -10,6 +10,8 @@ import HeaderBlock from 'components/Settings/headerBlock';
 import EntitySidebar from 'components/Common/SidebarEntity';
 import CollabWrapper from './wrapper';
 import { CollabsContainer } from './styles';
+import Tabs from './tabs';
+import { TAB_TYPES } from './constants';
 
 const useGetOrgDocs = (orgId) => {
   const [getOrgDocs, { data: docData, loading: loadingDocs }] = useLazyQuery(GET_ORG_DOCS, {
@@ -50,47 +52,14 @@ const useGetOrgDocs = (orgId) => {
 
 function Collaborations(props) {
   const { orgData = {} } = props;
-  const { id: orgId } = orgData;
-  const router = useRouter();
-
-  const { docData, categoriesData } = useGetOrgDocs(orgId);
-  const [selectedCategory, setSelectedCategory] = useState(null);
-  const [showDocDialog, setDocShowDialog] = useState(false);
-  const [showDeleteDocDialog, setDeleteDocDialog] = useState(false);
-  const [showCategoriesDialog, setShowCategoriesDialog] = useState(false);
-  const [docCategory, setDocCategory] = useState(null);
-  const [selectedDoc, setSelectedDoc] = useState({});
-  const [pinned, setPinned] = useState(false);
-
-  const filteredCategories = selectedCategory
-    ? categoriesData.filter((i) => i.id === selectedCategory)
-    : categoriesData;
-
-  const [menuAnchor, setMenuAnchor] = useState(null);
-  const openMenu = Boolean(menuAnchor);
-
-  const { data: userPermissionsContextData } = useQuery(GET_USER_PERMISSION_CONTEXT, {
-    fetchPolicy: 'cache-and-network',
-  });
-
-  const userPermissionsContext = userPermissionsContextData?.getUserPermissionContext
-    ? JSON.parse(userPermissionsContextData?.getUserPermissionContext)
-    : null;
-  const permissions = parseUserPermissionContext({
-    userPermissionsContext,
-    orgId,
-  });
-  const canEdit = permissions.includes(PERMISSIONS.FULL_ACCESS);
+  const [activeTab, setActiveTab] = useState(TAB_TYPES.ACTIVE);
 
   return (
     <EntitySidebar>
       <CollabWrapper>
         <CollabsContainer>
-          <HeaderBlock
-            // icon={<WrenchIcon circle />}
-            title={`Collabs with ${orgData?.name}`}
-            description="Set up your multisig wallet to pay contributors"
-          />
+          <HeaderBlock title={orgData?.name ? `Collabs with ${orgData?.name}` : 'Collabs'} />
+          <Tabs activeTab={activeTab} setActiveTab={setActiveTab} />
         </CollabsContainer>
       </CollabWrapper>
     </EntitySidebar>
