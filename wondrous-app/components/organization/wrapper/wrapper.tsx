@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import {
   ENTITIES_TYPES,
   PERMISSIONS,
@@ -179,22 +179,32 @@ function Wrapper(props) {
     orgData,
     onSearch,
     filterSchema,
+    routerQuery,
     onFilterChange,
     statuses,
     podIds,
+    activeEthAddress,
+    orgBoard,
     userId,
+    routerPath,
+    onNavigate,
     renderSharedHeader = null,
     isCollabWorkspace = false,
     inviteButtonSettings = null,
   } = props;
 
+  console.log('-----Wrapper:render');
+
+  useEffect(() => {
+    console.log('-----Wrapper:---->mounted');
+    return () => console.log('-----Wrapper:<-----unmounted AAAA');
+  }, []);
+
   const mainPath = isCollabWorkspace ? 'collaboration' : 'organization';
 
-  const loggedInUser = useMe();
   const [moreInfoModalOpen, setMoreInfoModalOpen] = useState(false);
   const [showUsers, setShowUsers] = useState(false);
   const [showPods, setShowPods] = useState(false);
-  const orgBoard = useOrgBoard();
 
   const [getPerTypeTaskCountForOrgBoard, { data: tasksPerTypeData }] = useLazyQuery(GET_TASKS_PER_TYPE);
 
@@ -215,17 +225,15 @@ function Wrapper(props) {
 
   const isGr15Sponsor = hasGr15Tasks || hasGr15Bounties;
   const links = orgProfile?.links;
-  const router = useRouter();
   const userJoinRequest = getUserJoinRequestData?.getUserJoinOrgRequest;
-  const { search, entity, cause } = router.query;
+  const { search, entity, cause } = routerQuery;
   const onTaskPage = entity === ENTITIES_TYPES.TASK || entity === undefined;
   const onBountyPage = entity === ENTITIES_TYPES.BOUNTY;
   const board = orgBoard;
   const boardFilters = board?.filters || {};
-  const { asPath } = router;
   let finalPath = '';
-  if (asPath) {
-    const finalPathArr = asPath.split('/');
+  if (routerPath) {
+    const finalPathArr = routerPath.split('/');
     finalPath = finalPathArr[finalPathArr.length - 1];
   }
 
@@ -236,7 +244,7 @@ function Wrapper(props) {
       const bountyCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.bountyCount;
       const taskCount = tasksPerTypeData?.getPerTypeTaskCountForOrgBoard?.taskCount;
       if (taskCount === 0 && bountyCount > taskCount && finalPath === 'boards') {
-        router.push(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
+        onNavigate(`/${mainPath}/${orgProfile?.username}/boards?entity=bounty`, undefined, {
           shallow: true,
         });
       }
@@ -315,7 +323,7 @@ function Wrapper(props) {
           orgId={orgBoard?.orgId}
           open={openCurrentRoleModal}
           onClose={() => setOpenCurrentRoleModal(false)}
-          linkedWallet={loggedInUser?.activeEthAddress}
+          linkedWallet={activeEthAddress}
           currentRoleName={orgRoleName}
           setOpenJoinRequestModal={setOpenJoinRequestModal}
           setClaimedOrRequestedRole={setClaimedOrRequestedRole}
@@ -578,4 +586,20 @@ function Wrapper(props) {
   );
 }
 
-export default Wrapper;
+const WrapperMemo = memo(Wrapper);
+
+export default () => {
+  const loggedInUser = useMe();
+  const orgBoard = useOrgBoard();
+  const router = useRouter();
+
+  return (
+    <WrapperMemo
+      routerQuery={router.query}
+      routerPath={router.asPath}
+      orgBoard={orgBoard}
+      activeEthAddress={loggedInUser?.activeEthAddress}
+      onNavigate={router.push}
+    />
+  );
+};

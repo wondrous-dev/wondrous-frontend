@@ -1,13 +1,10 @@
 import { useQuery } from '@apollo/client';
-import { Label, ListWrapper } from 'components/Common/SidebarStyles';
-import Item from 'components/Common/SidebarItem';
 import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import FlagIcon from 'components/Icons/Sidebar/flag.svg';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
 import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import PieChartIcon from 'components/Icons/Sidebar/pieChart.svg';
-import ShowChartIcon from 'components/Icons/Sidebar/showChart.svg';
 import StackIcon from 'components/Icons/Sidebar/stack.svg';
 import StartIcon from 'components/Icons/Sidebar/star.svg';
 import PodIcon from 'components/Icons/Sidebar/pods.svg';
@@ -17,6 +14,7 @@ import { ENTITIES_TYPES } from 'utils/constants';
 import { useBoards } from 'utils/hooks';
 import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import GrantIcon from 'components/Icons/GrantIcon';
+import SidebarEntityListMemo from './SidebarEntityListMemo';
 
 const usePerTypeTaskCountForBoard = () => {
   const { board, orgBoard, podBoard } = useBoards();
@@ -152,40 +150,11 @@ const useSidebarData = () => {
   return sidebarData;
 };
 
-const location = () => {
-  if (typeof window !== 'undefined') return window.location.pathname + window.location.search;
-  return '';
-};
-
-const List = () => {
-  const { data, handleOnClick } = useSidebarData();
+const SidebarEntityList = () => {
   const router = useRouter();
-  const isActive = (entityType, link) => (entityType ? location().includes(link) : router.asPath.includes(link));
-  return (
-    <ListWrapper>
-      {data?.map(({ label, items }) => (
-        <ListWrapper key={label}>
-          <Label>{label}</Label>
-          <ListWrapper>
-            {items.map(
-              ({ text, link, Icon, count, entityType = null }) =>
-                !!text && (
-                  <Item
-                    key={text}
-                    onClick={handleOnClick(link, entityType)}
-                    Icon={Icon}
-                    isActive={isActive(entityType, link)}
-                    count={count}
-                  >
-                    {text}
-                  </Item>
-                )
-            )}
-          </ListWrapper>
-        </ListWrapper>
-      ))}
-    </ListWrapper>
-  );
+  const { data, handleOnClick } = useSidebarData();
+
+  return <SidebarEntityListMemo menuItems={data} handleOnClick={handleOnClick} urlPath={router.asPath} />;
 };
 
-export default List;
+export default SidebarEntityList;

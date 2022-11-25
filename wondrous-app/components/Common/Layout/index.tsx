@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { useQuery } from '@apollo/client';
 import { GET_NOTIFICATIONS, GET_USER_ORGS, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { GlobalContext, SideBarContext } from 'utils/contexts';
@@ -24,6 +24,13 @@ const getOrgsList = (userOrgs, router) => {
 };
 
 export default function SidebarLayout({ children }) {
+  console.log('-----SidebarLayout:render');
+
+  useEffect(() => {
+    console.log('-----SidebarLayout:---->mounted');
+    return () => console.log('-----SidebarLayout:<-----unmounted AAAA');
+  }, []);
+
   const isMobile = useIsMobile();
   const router = useRouter();
   useHotkeys(HOTKEYS.OPEN_DASHBOARD, () => {

@@ -1,3 +1,4 @@
+import { useMemo, memo } from 'react';
 import CollapseExpandButton from 'components/Common/SidebarCollapseButton';
 import AboutEntity from 'components/Common/SidebarEntityAbout';
 import List from 'components/Common/SidebarEntityList';
@@ -16,15 +17,21 @@ const EntitySidebar = ({ children }) => {
   const { minimized } = useSideBar();
   const { query } = useRouter();
 
-  let Sidebar = () => (
-    <>
-      <AboutEntity />
-      <List />
-    </>
-  );
+  const Sidebar = useMemo(() => {
+    if (query.roles) {
+      return SIDEBAR_COMPONENTS.roles;
+    }
+    if (query.collabs) {
+      return SIDEBAR_COMPONENTS.collabs;
+    }
 
-  if (query.roles) Sidebar = SIDEBAR_COMPONENTS.roles;
-  if (query.collabs) Sidebar = SIDEBAR_COMPONENTS.collabs;
+    return () => (
+      <>
+        <AboutEntity />
+        <List />
+      </>
+    );
+  }, [query.roles, query.collabs]);
 
   return (
     <Wrapper>
@@ -39,4 +46,4 @@ const EntitySidebar = ({ children }) => {
   );
 };
 
-export default EntitySidebar;
+export default memo(EntitySidebar);
