@@ -1,25 +1,19 @@
-import { useMemo } from 'react';
-
 import { DAOIcon } from 'components/Icons/dao';
 import { NoLogoDAO } from 'components/Common/SidebarMain/styles';
 import { SafeImage, DefaultUserImage } from 'components/Common/Image';
 
 export const OrgProfilePicture = ({ profilePicture, style = {} }) => {
-  const imageStyles = useMemo(
-    () => ({
-      height: '20px',
-      width: '20px',
-      borderRadius: '4px',
-      ...style,
-    }),
-    [style]
-  );
-
   if (profilePicture) {
-    return <SafeImage src={profilePicture} style={imageStyles} alt="Profile picture" />;
+    return (
+      <SafeImage
+        src={profilePicture}
+        style={{ height: '20px', width: '20px', borderRadius: '4px', ...style }}
+        alt="Profile picture"
+      />
+    );
   }
   return (
-    <NoLogoDAO style={imageStyles}>
+    <NoLogoDAO style={{ height: '20px', width: '20px', borderRadius: '4px', ...style }}>
       <DAOIcon />
     </NoLogoDAO>
   );

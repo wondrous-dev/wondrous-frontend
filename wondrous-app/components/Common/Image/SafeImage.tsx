@@ -4,6 +4,7 @@ import { parseISO, addSeconds } from 'date-fns';
 import Image, { ImageProps } from 'next/image';
 
 import { GET_PREVIEW_FILE } from 'graphql/queries/media';
+import { shallowEqual } from 'utils/common';
 
 type SafeImageArgs = Omit<ImageProps, 'style'> & {
   className?: string;
@@ -118,4 +119,17 @@ function SafeImage(safeImageArgs: SafeImageArgs) {
   return null;
 }
 
-export default memo(SafeImage);
+function arePropsEqualWithStyle(prevProps, nextProps) {
+  return !Object.keys(prevProps).some((propName) => {
+    const prevProp = prevProps[propName];
+    const nextProp = nextProps[propName];
+
+    if (propName === 'style') {
+      return !shallowEqual(prevProp, nextProp);
+    }
+
+    return prevProp !== nextProp;
+  });
+}
+
+export default memo(SafeImage, arePropsEqualWithStyle);

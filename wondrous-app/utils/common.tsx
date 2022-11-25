@@ -134,3 +134,11 @@ export const capitalize = (str: string): string => {
   }
   return str.charAt(0).toUpperCase() + str.slice(1);
 };
+
+export function shallowEqual(objA, objB) {
+  if (!objA || !objB) {
+    return objA === objB;
+  }
+
+  return !Object.keys({ ...objA, ...objB }).some((key) => objA[key] !== objB[key]);
+}
