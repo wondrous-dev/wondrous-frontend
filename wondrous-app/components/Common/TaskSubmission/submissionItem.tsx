@@ -351,7 +351,7 @@ function ResubmitTaskSubmissionButton({
     onClick();
   };
   return (
-    <Grid item sm={8} xs={12} paddingY={{ sm: '0px', xs: '10px' }} borderTop={{ sm: 'none', xs: '1px solid #343434' }}>
+    <Grid marginRight="16px">
       <SubmissionButtonRequestChange onClick={handleOnClick} selected={selected}>
         Resubmit Task Submission
       </SubmissionButtonRequestChange>
@@ -560,88 +560,103 @@ export function SubmissionItem({
       <SubmissionDivider />
       <SubmissionItemFooter>
         <Grid
+          flex={1}
+          width="100%"
+          display="flex"
+          justifyContent="space-between"
           container
           alignItems="center"
           paddingBottom={{ sm: '0px', xs: isSubmissionStatusUpdated ? '10px' : '0px' }}
-          borderBottom={{ sm: 'none', xs: isSubmissionStatusUpdated ? '1px solid #343434' : 'none' }}
         >
           <Grid
             item
+            lg={4}
+            md={12}
             sm={4}
-            xs={isSubmissionStatusUpdated ? 4 : 12}
-            display="flex"
-            justifyContent={{ sm: 'flex-start', xs: 'space-between' }}
-            paddingY={{ sm: '0px', xs: '10px' }}
+            xs={12}
+            width="100%"
+            justifyContent={{ lg: 'flex-start', md: 'space-between', sm: 'flex-start', xs: 'space-between' }}
+            paddingY={{ ld: '10px', md: '10px', sm: '0px', xs: '10px' }}
           >
-            <SubmissionShowComments
+            <Grid container>
+              <SubmissionShowComments
+                setShowComments={setShowComments}
+                setShowCommentBox={setShowCommentBox}
+                commentCount={submission?.commentCount}
+                showComments={showComments}
+                setCommentType={setCommentType}
+              />
+              <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
+            </Grid>
+          </Grid>
+          <Grid
+            lg={8}
+            md={12}
+            sm={8}
+            xs={12}
+            flexWrap="wrap"
+            item
+            display="flex"
+            flexDirection={{ sm: 'row', xs: 'column' }}
+            paddingY={{ lg: '0px', md: '10px', sm: '0px', xs: '10px' }}
+            justifyContent={{ lg: 'flex-end', md: 'flex-start', sm: 'flex-end', xs: 'flex-start' }}
+            borderTop={{ lg: 'none', md: '1px solid #343434', sm: 'none', xs: '1px solid #343434' }}
+          >
+            <ResubmitTaskSubmissionButton
+              submission={submission}
               setShowComments={setShowComments}
               setShowCommentBox={setShowCommentBox}
-              commentCount={submission?.commentCount}
-              showComments={showComments}
               setCommentType={setCommentType}
+              commentType={commentType}
+              isCreator={isCreator}
+              onClick={resubmitTaskSubmission}
             />
-            <SubmissionEditButton isCreator={isCreator} approvedAt={submission.approvedAt} onClick={handleEdit} />
+            {showSubmissionReviewButtons && (
+              <Grid marginTop={{ sm: 0, xs: '10px' }}>
+                <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
+                  <SubmissionRejectButton
+                    submission={submission}
+                    rejectTaskSubmission={rejectTaskSubmission}
+                    commentType={commentType}
+                  />
+                  <SubmissionRequestChangeButton
+                    submission={submission}
+                    setShowComments={setShowComments}
+                    setShowCommentBox={setShowCommentBox}
+                    setCommentType={setCommentType}
+                    commentType={commentType}
+                  />
+                  <SubmissionApproveTaskButton
+                    submission={submission}
+                    fetchedTaskType={fetchedTask?.type}
+                    setCommentType={setCommentType}
+                    setShowComments={setShowComments}
+                    setShowCommentBox={setShowCommentBox}
+                    approveSubmission={approveSubmission}
+                    commentType={commentType}
+                  />
+                  <SubmissionApproveBountyButton
+                    submission={submission}
+                    fetchedTaskType={fetchedTask?.type}
+                    onClick={approveBountySubmission}
+                    commentType={commentType}
+                  />
+                </SubmissionReviewButtons>
+              </Grid>
+            )}
+            {showReopenTaskAndBountyButtons && (
+              <Grid display="flex" justifyContent="flex-end">
+                <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
+                <SubmissionBountyPaymentButton
+                  fetchedTask={fetchedTask}
+                  submission={submission}
+                  fetchedTaskSubmissions={fetchedTaskSubmissions}
+                  handleClose={handleClose}
+                  getTaskSubmissionsForTask={getTaskSubmissionsForTask}
+                />
+              </Grid>
+            )}
           </Grid>
-          <ResubmitTaskSubmissionButton
-            submission={submission}
-            setShowComments={setShowComments}
-            setShowCommentBox={setShowCommentBox}
-            setCommentType={setCommentType}
-            commentType={commentType}
-            isCreator={isCreator}
-            onClick={resubmitTaskSubmission}
-          />
-          {showSubmissionReviewButtons && (
-            <Grid
-              item
-              sm={8}
-              xs={12}
-              borderTop={{ sm: 'none', xs: '1px solid #343434' }}
-              paddingY={{ sm: '0px', xs: '10px' }}
-            >
-              <SubmissionReviewButtons canReview={canReview} fetchedTaskStatus={fetchedTask?.status}>
-                <SubmissionRejectButton
-                  submission={submission}
-                  rejectTaskSubmission={rejectTaskSubmission}
-                  commentType={commentType}
-                />
-                <SubmissionRequestChangeButton
-                  submission={submission}
-                  setShowComments={setShowComments}
-                  setShowCommentBox={setShowCommentBox}
-                  setCommentType={setCommentType}
-                  commentType={commentType}
-                />
-                <SubmissionApproveTaskButton
-                  submission={submission}
-                  fetchedTaskType={fetchedTask?.type}
-                  setCommentType={setCommentType}
-                  setShowComments={setShowComments}
-                  setShowCommentBox={setShowCommentBox}
-                  approveSubmission={approveSubmission}
-                  commentType={commentType}
-                />
-                <SubmissionApproveBountyButton
-                  submission={submission}
-                  fetchedTaskType={fetchedTask?.type}
-                  onClick={approveBountySubmission}
-                  commentType={commentType}
-                />
-              </SubmissionReviewButtons>
-            </Grid>
-          )}
-          {showReopenTaskAndBountyButtons && (
-            <Grid item sm={8} xs={8} display="flex" justifyContent="flex-end">
-              <ReopenTaskSubmission submission={submission} setCommentType={setCommentType} onClick={reopenTask} />
-              <SubmissionBountyPaymentButton
-                fetchedTask={fetchedTask}
-                submission={submission}
-                fetchedTaskSubmissions={fetchedTaskSubmissions}
-                handleClose={handleClose}
-                getTaskSubmissionsForTask={getTaskSubmissionsForTask}
-              />
-            </Grid>
-          )}
         </Grid>
       </SubmissionItemFooter>
       {showKudosOption && (

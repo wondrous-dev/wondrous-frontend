@@ -108,7 +108,7 @@ export const SubmissionButtonReviewWrapper = styled.div`
     }
   }
 
-  ${({ theme }) => theme.breakpoints.down(410)} {
+  ${({ theme }) => theme.breakpoints.down(500)} {
     flex-direction: column;
   }
 `;
