@@ -288,6 +288,7 @@ export const TaskModalTaskDataMinimized = css`
 export const TaskModalTaskData = styled.div`
   flex-grow: 1;
   ${({ fullScreen }) => (fullScreen ? TaskModalTaskDataFullScreen : TaskModalTaskDataMinimized)};
+  ${({ hideRowGap }) => (hideRowGap ? 'row-gap: 0 !important' : '')};
 `;
 
 export const TaskModalTitleDescriptionMedia = styled.div`

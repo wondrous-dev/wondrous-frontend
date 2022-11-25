@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { useQuery } from '@apollo/client';
 import { GET_MINT_TASK_TOKEN_DATA } from 'graphql/queries';
 import { CircularProgress, Grid } from '@mui/material';
+import { Wrapper } from './styles';
 
 const TaskViewNft = ({ taskId }) => {
   const { data, loading } = useQuery(GET_MINT_TASK_TOKEN_DATA, {
@@ -21,9 +22,9 @@ const TaskViewNft = ({ taskId }) => {
 
   const { imageUrl } = data?.getTaskMintTokenData;
   return (
-    <Grid display="flex" justifyContent="center" alignItems="center">
-      <Image width={422} height={422} src={imageUrl} priority alt="NFT image" />;
-    </Grid>
+    <Wrapper display="flex" justifyContent="center" alignItems="baseline">
+      <Image fill objectFit="contain" src={imageUrl} priority alt="NFT image" />;
+    </Wrapper>
   );
 };
 

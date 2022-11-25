@@ -683,23 +683,23 @@ export const TaskViewModal = ({ open, handleClose, taskId, isTaskProposal = fals
                           <TaskModalHeaderCloseModal onClick={() => handleClose()} />
                         </TaskModalHeaderWrapperRight>
                       </TaskModalHeader>
-                      <TaskModalTaskData fullScreen={fullScreen}>
+                      <TaskModalTaskData hideRowGap={isViewNft} fullScreen={fullScreen}>
                         <TaskModalTitleDescriptionMedia fullScreen={fullScreen}>
                           <TaskModalTitle>{fetchedTask?.title}</TaskModalTitle>
-                          <TaskModalTaskStatusMoreInfo>
-                            {fetchedTask?.snapshotId && (
-                              <TaskModalSnapshot onClick={handleSnapshot}>
-                                <TaskModalSnapshotLogo />
-                                <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
-                              </TaskModalSnapshot>
-                            )}
-                            {canEdit && !isViewNft && (
-                              <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />
-                            )}
-                            {isMilestone && (
-                              <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
-                            )}
-                          </TaskModalTaskStatusMoreInfo>
+                          {!isViewNft ? (
+                            <TaskModalTaskStatusMoreInfo>
+                              {fetchedTask?.snapshotId && (
+                                <TaskModalSnapshot onClick={handleSnapshot}>
+                                  <TaskModalSnapshotLogo />
+                                  <TaskModalSnapshotText>Snapshot Proposal</TaskModalSnapshotText>
+                                </TaskModalSnapshot>
+                              )}
+                              {canEdit && <TaskMenuStatus task={fetchedTask} isTaskProposal={isTaskProposal} />}
+                              {isMilestone && (
+                                <MilestoneProgressViewModal milestoneId={fetchedTask?.id} isMilestone={isMilestone} />
+                              )}
+                            </TaskModalTaskStatusMoreInfo>
+                          ) : null}
                           <TaskDescriptionTextWrapper text={fetchedTask?.description} key={fetchedTask?.id} />
                           <TaskMediaWrapper media={fetchedTask?.media} />
                           {!fullScreen && <TaskBorder />}
