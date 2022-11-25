@@ -1,12 +1,14 @@
-import { memo, useEffect } from 'react';
-import Boards from 'components/Common/Boards';
+import dynamic from 'next/dynamic';
+import { memo, Suspense, useEffect } from 'react';
 import withCardsLayout from 'components/Common/Boards/withCardsLayout';
-import BountyBoard from 'components/Common/BountyBoard';
-import MilestoneBoard from 'components/Common/MilestoneBoard';
 import Wrapper from 'components/organization/wrapper/wrapper';
 import { getFilterSchema } from 'utils/board';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { ColumnsContext } from 'utils/contexts';
+
+const Boards = dynamic(() => import('components/Common/Boards'), { suspense: true });
+const BountyBoard = dynamic(() => import('components/Common/BountyBoard'), { suspense: true });
+const MilestoneBoard = dynamic(() => import('components/Common/MilestoneBoard'), { suspense: true });
 
 export const BOARDS_MAP = {
   [ENTITIES_TYPES.TASK]: Boards,
@@ -59,6 +61,8 @@ function OrgBoards(props: Props) {
     return () => console.log('-----OrgBoards:<-----unmounted AAAA');
   }, []);
 
+  console.log('-----OrgBoards:render:loading', loading);
+
   return (
     <Wrapper
       orgData={orgData}
@@ -69,18 +73,18 @@ function OrgBoards(props: Props) {
       podIds={podIds}
       userId={userId}
     >
-      {/*<ColumnsContext.Provider value={{ columns, setColumns }}>*/}
-      {/*  {!loading && (*/}
-      {/*    <ActiveBoard*/}
-      {/*      activeView={typeof activeView !== 'string' ? activeView[0] : activeView}*/}
-      {/*      columns={columns}*/}
-      {/*      onLoadMore={onLoadMore}*/}
-      {/*      hasMore={hasMore}*/}
-      {/*      setColumns={setColumns}*/}
-      {/*      entityType={entityType}*/}
-      {/*    />*/}
-      {/*  )}*/}
-      {/*</ColumnsContext.Provider>*/}
+      <ColumnsContext.Provider value={{ columns, setColumns }}>
+        <Suspense>
+          <ActiveBoard
+            activeView={typeof activeView !== 'string' ? activeView[0] : activeView}
+            columns={columns}
+            onLoadMore={onLoadMore}
+            hasMore={hasMore}
+            setColumns={setColumns}
+            entityType={entityType}
+          />
+        </Suspense>
+      </ColumnsContext.Provider>
     </Wrapper>
   );
 }
@@ -96,6 +100,7 @@ export default memo(OrgBoards, (prevProps, nextProps) => {
     prevProps.entityType === nextProps.entityType &&
     prevProps.loading === nextProps.loading &&
     prevProps.activeView === nextProps.activeView;
+
   //
   // console.log('-----OrgBoards:areEqual', prevProps, nextProps);
   // console.log(

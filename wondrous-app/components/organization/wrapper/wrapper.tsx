@@ -1,4 +1,6 @@
-import React, { useEffect, useState, memo } from 'react';
+import React, { useEffect, useState, memo, Suspense } from 'react';
+import dynamic from 'next/dynamic';
+
 import {
   ENTITIES_TYPES,
   PERMISSIONS,
@@ -30,18 +32,13 @@ import {
 } from 'components/Common/IntiativesModal/GR15DEIModal/styles';
 import { GR15DEILogo } from 'components/Common/IntiativesModal/GR15DEIModal/GR15DEILogo';
 import { RichTextViewer } from 'components/RichText';
-import ChooseEntityToCreate from 'components/CreateEntity';
 import RolePill from 'components/Common/RolePill';
 import { ExploreGr15TasksAndBountiesContext } from 'utils/contexts';
-import CurrentRoleModal from 'components/RoleModal/CurrentRoleModal';
-import MembershipRequestModal from 'components/RoleModal/MembershipRequestModal';
-import MoreInfoModal from 'components/profile/modals';
 import { ToggleBoardPrivacyIcon } from '../../Common/PrivateBoardIcon';
 import { DiscordIcon } from '../../Icons/discord';
 import OpenSeaIcon from '../../Icons/openSea';
 import LinkedInIcon from '../../Icons/linkedIn';
 import { DAOEmptyIcon } from '../../Icons/dao';
-import { OrgInviteLinkModal } from '../../Common/InviteLinkModal/OrgInviteLink';
 import { SafeImage } from '../../Common/Image';
 import {
   Content,
@@ -75,6 +72,12 @@ import {
 } from './styles';
 import { useMe } from '../../Auth/withAuth';
 import TwitterPurpleIcon from '../../Icons/twitterPurple';
+
+const OrgInviteLinkModal = dynamic(() => import('../../Common/InviteLinkModal/OrgInviteLink'), { suspense: true });
+const MembershipRequestModal = dynamic(() => import('components/RoleModal/MembershipRequestModal'), { suspense: true });
+const CurrentRoleModal = dynamic(() => import('components/RoleModal/CurrentRoleModal'), { suspense: true });
+const ChooseEntityToCreate = dynamic(() => import('components/CreateEntity'), { suspense: true });
+const MoreInfoModal = dynamic(() => import('components/profile/modals'), { suspense: true });
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
@@ -308,42 +311,52 @@ function Wrapper(props) {
   const handleInviteAction = () => (inviteButtonSettings ? inviteButtonSettings.inviteAction() : setOpenInvite(true));
   return (
     <>
-      <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      <Suspense>
+        <OrgInviteLinkModal orgId={orgBoard?.orgId} open={openInvite} onClose={() => setOpenInvite(false)} />
+      </Suspense>
       {openJoinRequestModal && (
-        <MembershipRequestModal
-          orgId={orgBoard?.orgId}
-          open={openJoinRequestModal}
-          onClose={() => setOpenJoinRequestModal(false)}
-          setOpenCurrentRoleModal={setOpenCurrentRoleModal}
-          requestingRole={claimedOrRequestedRole}
-        />
+        <Suspense>
+          <MembershipRequestModal
+            orgId={orgBoard?.orgId}
+            open={openJoinRequestModal}
+            onClose={() => setOpenJoinRequestModal(false)}
+            setOpenCurrentRoleModal={setOpenCurrentRoleModal}
+            requestingRole={claimedOrRequestedRole}
+          />
+        </Suspense>
       )}
       {openCurrentRoleModal && (
-        <CurrentRoleModal
-          orgId={orgBoard?.orgId}
-          open={openCurrentRoleModal}
-          onClose={() => setOpenCurrentRoleModal(false)}
-          linkedWallet={activeEthAddress}
-          currentRoleName={orgRoleName}
-          setOpenJoinRequestModal={setOpenJoinRequestModal}
-          setClaimedOrRequestedRole={setClaimedOrRequestedRole}
-        />
+        <Suspense>
+          <CurrentRoleModal
+            orgId={orgBoard?.orgId}
+            open={openCurrentRoleModal}
+            onClose={() => setOpenCurrentRoleModal(false)}
+            linkedWallet={activeEthAddress}
+            currentRoleName={orgRoleName}
+            setOpenJoinRequestModal={setOpenJoinRequestModal}
+            setClaimedOrRequestedRole={setClaimedOrRequestedRole}
+          />
+        </Suspense>
       )}
-      <ChooseEntityToCreate />
+      <Suspense>
+        <ChooseEntityToCreate />
+      </Suspense>
       {moreInfoModalOpen && (
-        <MoreInfoModal
-          open={moreInfoModalOpen && (showUsers || showPods)}
-          handleClose={() => {
-            document.body.setAttribute('style', '');
-            setShowPods(false);
-            setShowUsers(false);
-            setMoreInfoModalOpen(false);
-          }}
-          showUsers={showUsers}
-          showPods={showPods}
-          name={orgProfile?.name}
-          orgId={orgBoard?.orgId}
-        />
+        <Suspense>
+          <MoreInfoModal
+            open={moreInfoModalOpen && (showUsers || showPods)}
+            handleClose={() => {
+              document.body.setAttribute('style', '');
+              setShowPods(false);
+              setShowUsers(false);
+              setMoreInfoModalOpen(false);
+            }}
+            showUsers={showUsers}
+            showPods={showPods}
+            name={orgProfile?.name}
+            orgId={orgBoard?.orgId}
+          />
+        </Suspense>
       )}
 
       <HeaderImageWrapper>
@@ -462,7 +475,7 @@ function Wrapper(props) {
                   <>
                     <SettingsButton
                       onClick={() => {
-                        router.push(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
+                        onNavigate(`/${mainPath}/settings/${orgBoard?.orgId}/general`);
                       }}
                     >
                       Settings
@@ -586,15 +599,38 @@ function Wrapper(props) {
   );
 }
 
-const WrapperMemo = memo(Wrapper);
+const WrapperMemo = memo(Wrapper, (prevProps, nextProps) => {
+  if (!nextProps.orgBoard?.orgId) {
+    return true;
+  }
 
-export default () => {
+  const areEqual =
+    prevProps.routerQuery === nextProps.routerQuery &&
+    prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId &&
+    prevProps.routerPath === nextProps.routerPath &&
+    prevProps.activeEthAddress === nextProps.activeEthAddress;
+
+  // console.log(
+  //   '---------',
+  //   prevProps.routerQuery === nextProps.routerQuery,
+  //   prevProps.orgBoard?.orgId === nextProps.orgBoard?.orgId,
+  //   prevProps.routerPath === nextProps.routerPath,
+  //   prevProps.activeEthAddress === nextProps.activeEthAddress
+  // );
+  //
+  // console.log('-------', prevProps, nextProps);
+
+  return areEqual;
+});
+
+export default (props) => {
   const loggedInUser = useMe();
   const orgBoard = useOrgBoard();
   const router = useRouter();
 
   return (
     <WrapperMemo
+      {...props}
       routerQuery={router.query}
       routerPath={router.asPath}
       orgBoard={orgBoard}

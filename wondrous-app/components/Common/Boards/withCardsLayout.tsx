@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter } from 'next/router';
 import { useInView } from 'react-intersection-observer';
 import { LoadMore } from 'components/Common/KanbanBoard/styles';
@@ -77,7 +77,9 @@ export default function withCardsLayout(WrappedBoard, numberOfColumns = 3) {
             isTaskProposal={!!location?.params?.taskProposal}
           />
           {activeView === ViewType.Grid ? (
-            <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
+            <Suspense>
+              <WrappedBoard tasks={columns} handleCardClick={handleCardClick} />
+            </Suspense>
           ) : (
             <ListView
               enableInfiniteLoading
