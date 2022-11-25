@@ -4,7 +4,6 @@ import React, { useEffect } from 'react';
 import { withAuth } from 'components/Auth/withAuth';
 import { GET_ORG_FROM_USERNAME, GET_USER_PERMISSION_CONTEXT } from 'graphql/queries';
 import { OrgBoardContext } from 'utils/contexts';
-import Docs from 'components/organization/docs/docs';
 import Collaborations from 'components/organization/collaborations/collaborations';
 
 const useGetOrgFromUsername = (username) => {

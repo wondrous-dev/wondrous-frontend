@@ -20,6 +20,7 @@ const ButtonInner = styled.button`
   color: white;
   padding: 12px;
   cursor: pointer;
+  font-family: Space Grotesk;
 `;
 
 const ButtonWrapper = styled.div`

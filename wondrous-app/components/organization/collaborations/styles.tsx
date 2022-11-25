@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import palette from 'theme/palette';
-import { Button as MuiButton, InputBase, ListItemIcon, Typography, Tab, Tabs } from '@mui/material';
+import { InputBase, ListItemIcon, Typography, Tab, Tabs } from '@mui/material';
+import { Button } from 'components/Common/button';
 
 export const CollabsContainer = styled.div`
   height: 100vh;
@@ -46,3 +47,21 @@ export const StyledTab = styled(Tab)`
 `;
 
 export const ChildrenWrapper = styled.div``;
+
+export const NewCollabDiv = styled.div`
+  margin-top: 14px;
+  margin-bottom: 14px;
+  min-height: 98px;
+  position: relative;
+  width: 95%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+export const NewCollabButton = styled(Button)`
+  && {
+    position: relative;
+    z-index: 10;
+  }
+`;
