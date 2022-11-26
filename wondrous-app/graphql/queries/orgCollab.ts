@@ -11,6 +11,7 @@ export const GET_ORG_COLLABS_FOR_ORG = gql`
       parentOrgProfilePicture
       parentOrgName
       id
+      privacyLevel
     }
   }
 `;

@@ -1,18 +1,19 @@
 import { SharedOrgHeaderCard } from 'components/Collaboration/SharedOrgHeader';
 import RolePill from 'components/Common/RolePill';
 import SmartLink from 'components/Common/SmartLink';
+import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { RoleButtonWrapper } from '../wrapper/styles';
-import { CollabCard, CollabCardHeader, CollabDescription } from './styles';
+import { CollabBottom, CollabCard, CollabCardHeader, CollabDescription } from './styles';
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
   CONTRIBUTOR: 'contributor',
 };
 
-export const ActiveCollaborationItem = (props) => {
+const ActiveCollaborationItem = (props) => {
   const { collab, userPermissionsContext } = props;
   const [orgRoleName, setOrgRoleName] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
@@ -46,10 +47,19 @@ export const ActiveCollaborationItem = (props) => {
           <SharedOrgHeaderCard collab={collab} />
         </CollabCardHeader>
         <CollabDescription>{collab?.description}</CollabDescription>
-        <RoleButtonWrapper>
-          <RolePill roleName={orgRoleName}>🔑 {orgRoleName}</RolePill>
-        </RoleButtonWrapper>
+        <CollabBottom>
+          <RoleButtonWrapper
+            style={{
+              marginRight: '8px',
+            }}
+          >
+            <RolePill roleName={orgRoleName}>🔑 {orgRoleName}</RolePill>
+          </RoleButtonWrapper>
+          <TaskCardPrivacy privacyLevel={collab?.privacyLevel} />
+        </CollabBottom>
       </CollabCard>
     </SmartLink>
   );
 };
+
+export default ActiveCollaborationItem;

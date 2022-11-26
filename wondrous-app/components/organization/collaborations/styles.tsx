@@ -96,3 +96,8 @@ export const CollabDescription = styled(Typography)`
     margin-bottom: 14px;
   }
 `;
+
+export const CollabBottom = styled.div`
+  display: flex;
+  align-items: center;
+`;

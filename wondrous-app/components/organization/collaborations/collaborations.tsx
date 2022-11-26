@@ -17,7 +17,7 @@ import CollabWrapper from './wrapper';
 import { CollabsContainer, NewCollabButton, NewCollabButtonText, NewCollabDiv } from './styles';
 import Tabs from './tabs';
 import { TAB_TYPES } from './constants';
-import { ActiveCollaborationItem } from './CollaborationItem';
+import ActiveCollaborationItem from './CollaborationItem';
 
 function Collaborations(props) {
   const { orgData = {}, userPermissionsContext } = props;
