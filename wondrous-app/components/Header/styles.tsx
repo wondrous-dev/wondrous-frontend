@@ -17,6 +17,14 @@ export const HeaderBar = styled(AppBar)`
     justify-content: flex-end;
     box-shadow: none;
     padding: 0 30px;
+
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+      position: static;
+      margin-top: 0;
+      padding-top: 42px;
+      padding-bottom: 14px;
+      background-color: #1d1d1d;
+    }
   }
 `;
 
@@ -239,4 +247,20 @@ export const MissionControlIconWrapper = styled(HeaderHomeButton)`
 export const ConnectDiscordLink = styled.a`
   cursor: pointer;
   color: ${palette.highlightBlue}
+`;
+
+export const MenuContainer = styled.div`
+  height: 48px;
+  width: 48px;
+  background: #2d2d2d;
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: absolute;
+  left: 14px;
+
+  svg {
+    font-size: 36px;
+  }
 `;
