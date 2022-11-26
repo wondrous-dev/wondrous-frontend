@@ -10,6 +10,7 @@ export const GET_ORG_COLLABS_FOR_ORG = gql`
       name
       parentOrgProfilePicture
       parentOrgName
+      id
     }
   }
 `;

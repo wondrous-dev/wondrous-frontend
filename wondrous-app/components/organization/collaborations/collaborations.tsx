@@ -89,7 +89,7 @@ function Collaborations(props) {
           {activeTab === TAB_TYPES.ACTIVE && (
             <Masonry spacing={3} columns={{ xs: 1, sm: 2, md: 2, lg: 2 }} style={isMobile ? gridMobileStyles : {}}>
               {data?.getOrgCollabsForOrg?.map((collab, idx) => (
-                <ActiveCollaborationItem collab={collab} key={idx} />
+                <ActiveCollaborationItem collab={collab} key={idx} userPermissionsContext={userPermissionsContext} />
               ))}
             </Masonry>
           )}
