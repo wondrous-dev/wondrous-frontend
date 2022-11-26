@@ -16,6 +16,7 @@ import {
   useEntityCreateButtonProps,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
+import ListItemMember from './ListItemMember';
 import ListItemMilestone from './ListItemMilestone';
 import ListItemProposal from './ListItemProposal';
 import ListItemResource from './ListItemResource';
@@ -179,47 +180,30 @@ const useListGroup = () => [
     },
     backgroundImageUrl: '/images/project/collab-empty-bg.svg',
     showAllUrl: 'members',
-    ListItemComponent: ListItemBounty,
-    // data={[
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 100,
-    //         symbol: 'USDC',
-    //       },
-    //     ],
-    //     id: 3,
-    //   },
-    // ]}}
+    ListItemComponent: ListItemMember,
+    data: [
+      {
+        user: {
+          firstName: 'First',
+          lastName: 'Last',
+        },
+        orgRoleName: 'contributor',
+      },
+      {
+        user: {
+          firstName: 'First',
+          lastName: 'Last',
+        },
+        orgRoleName: 'member',
+      },
+      {
+        user: {
+          firstName: 'First',
+          lastName: 'Last',
+        },
+        orgRoleName: 'core team',
+      },
+    ],
   },
   {
     HeaderTitleProps: {

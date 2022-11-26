@@ -7,10 +7,11 @@ import DocCategoriesDialog from 'components/DocCategoriesDialog';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
-
 import { useBoards, useProject } from 'utils/hooks';
+
 import { ICreateButtonProps } from './CreateButton';
-import { EntitiesType } from './types';
+
+export type EntitiesType = typeof ENTITIES_TYPES[keyof typeof ENTITIES_TYPES] | null;
 
 export const useCreateEntityModal = () => {
   const [entityType, setEntityType] = useState<EntitiesType>(null);
