@@ -42,13 +42,8 @@ const ModalsComponent = ({ isOpen, onClose }) => {
     nextStep();
   };
 
-  const STEPS = [
-    () => <StartMint />,
-    () => <MintInProgress step={inProgressMintStep} />,
-    () => <SuccessMint tokenData={tokenData} />,
-  ];
+  const STEPS = [StartMint, MintInProgress, SuccessMint];
 
-  console.log(inProgressMintStep);
   const FOOTER_ACTIONS = [
     {
       left: null,
@@ -82,7 +77,7 @@ const ModalsComponent = ({ isOpen, onClose }) => {
       open={isOpen}
       onClose={handleClose}
     >
-      <Component />
+      <Component step={inProgressMintStep} tokenData={tokenData} />
     </Modal>
   );
 };

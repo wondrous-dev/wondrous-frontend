@@ -1,26 +1,12 @@
-import { useEffect } from 'react';
-import { useMutation, useLazyQuery } from '@apollo/client';
-import { COMPLETE_TASK_MINT, MINT_TASK } from 'graphql/mutations';
-import { useSteps, useTaskContext } from 'utils/hooks';
+import { useEffect, useMemo, useState } from 'react';
 import { Approved } from 'components/Icons';
 import Grid from '@mui/material/Grid';
 import palette from 'theme/palette';
+import ProgressBar from 'components/Common/ProgressBar';
 
-import { GET_MINT_OPERATION, GET_MINT_TASK_TOKEN_DATA } from 'graphql/queries';
-import { MintStep } from './styles';
+import { MintStep, ProgressBarWrapper } from './styles';
 import MintStepContent from './MintStepContent';
-
-const STEPS = [
-  {
-    title: 'Sending metadata',
-  },
-  {
-    title: 'Putting in block request via Mint Kudos',
-  },
-  {
-    title: 'Minting NFT to your wallet',
-  },
-];
+import { STEPS } from './constants';
 
 const MintStepDetails = ({ step }) => (
   <Grid display="flex" direction="column" gap="18px" justifyContent="flexStart">
@@ -33,70 +19,64 @@ const MintStepDetails = ({ step }) => (
   </Grid>
 );
 
-const MintInProgress = ({ step }) => (
-  // const { step, nextStep } = useSteps();
-  // const [taskMint] = useMutation(MINT_TASK, {
-  //   onCompleted: () => nextStep(),
-  // });
+const MintInProgress = ({ step }) => {
+  const [progress, setProgress] = useState(0);
 
-  // const [getTaskTokenData] = useLazyQuery(GET_MINT_TASK_TOKEN_DATA, {
-  //   onCompleted: ({ getTaskMintTokenData }) => {
-  //     setTokenData(getTaskMintTokenData);
-  //   },
-  // });
+  const thresholds = useMemo(() => STEPS.map((_, idx) => Math.round(((idx + 1) * 98) / STEPS.length)), []);
 
-  // const [completeTaskMint] = useMutation(COMPLETE_TASK_MINT);
+  let interval;
 
-  // const [getTaskMintOperation, { startPolling, stopPolling, variables }] = useLazyQuery(GET_MINT_OPERATION, {
-  //   onCompleted: async ({ getTaskMintOperation }) => {
-  //     if (getTaskMintOperation?.resourceId) {
-  //       nextStep();
-  //       stopPolling();
-  //       await completeTaskMint({
-  //         variables: {
-  //           operationId: variables.operationId,
-  //         },
-  //       });
-  //       await getTaskTokenData({
-  //         variables: {
-  //           taskId: fetchedTask?.id,
-  //         },
-  //       });
-  //     }
-  //   },
-  //   onError: () => stopPolling(),
-  // });
+  useEffect(() => {
+    clearInterval(interval);
+    interval = setInterval(() => {
+      setProgress((prev) => {
+        const newValue = prev + 1;
+        if (newValue >= 100) clearInterval(interval);
 
-  // const { fetchedTask } = useTaskContext();
+        if (newValue <= thresholds[step]) {
+          return prev + 1;
+        }
+        return prev;
+      });
+    }, 50);
+    return () => clearInterval(interval);
+  }, [step]);
 
-  // const taskMintProcess = async () => {
-  //   const { data: taskMintData } = await taskMint({
-  //     variables: {
-  //       taskId: fetchedTask?.id,
-  //       title: fetchedTask?.title,
-  //       description: fetchedTask?.description,
-  //       links: fetchedTask?.links?.map((link) => JSON.stringify(link)) || null,
-  //     },
-  //   });
-  //   await getTaskMintOperation({
-  //     variables: {
-  //       operationId: taskMintData?.taskMint,
-  //     },
-  //   });
-  //   startPolling(1000);
-  // };
-
-  // useEffect(() => {
-  //   taskMintProcess();
-  // }, []);
-
-  <MintStepContent
-    skipDivider
-    title="Minting your task..."
-    img="/images/taskmint/inprogressmint.png"
-    body="The minting will only take a moment, please keep this modal open."
-  >
-    <MintStepDetails step={step} />
-  </MintStepContent>
-);
+  return (
+    <MintStepContent
+      skipDivider
+      title="Minting your task..."
+      img="/images/taskmint/inprogressmint.png"
+      body="The minting will only take a moment, please keep this modal open."
+    >
+      <Grid
+        container
+        flexDirection="column"
+        bgcolor={palette.background.default}
+        borderRadius="6px"
+        padding="12px"
+        gap="12px"
+      >
+        <>
+          <Grid container item justifyContent="space-between" fontSize="13px" fontWeight="500" color={palette.grey58}>
+            <div>Progress</div>
+            <div>{progress}% complete</div>
+          </Grid>
+          <ProgressBarWrapper item step={step}>
+            <ProgressBar
+              value={0}
+              total={100}
+              height="12px"
+              progressBarProps={{
+                className: `mint-task-progress-bar`,
+              }}
+              color={`linear-gradient(269.75deg, ${palette.green30} -19.96%, ${palette.green30} 11.33%, ${palette.violet90} 75.55%)`}
+            />
+          </ProgressBarWrapper>
+        </>
+      </Grid>
+      <MintStepDetails step={step} />
+    </MintStepContent>
+  );
+};
 export default MintInProgress;

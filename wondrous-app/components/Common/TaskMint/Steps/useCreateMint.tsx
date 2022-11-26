@@ -9,18 +9,13 @@ export const useCreateMint = () => {
     onCompleted: () => nextStep(),
   });
 
-  const [getTaskTokenData, { data }] = useLazyQuery(GET_MINT_TASK_TOKEN_DATA, {
-    // onCompleted: ({ getTaskMintTokenData }) => {
-    //   setTokenData(getTaskMintTokenData);
-    // },
-  });
+  const [getTaskTokenData, { data }] = useLazyQuery(GET_MINT_TASK_TOKEN_DATA);
 
   const [completeTaskMint] = useMutation(COMPLETE_TASK_MINT);
 
   const [getTaskMintOperation, { startPolling, stopPolling, variables }] = useLazyQuery(GET_MINT_OPERATION, {
     onCompleted: async ({ getTaskMintOperation }) => {
       if (getTaskMintOperation?.resourceId) {
-        nextStep();
         stopPolling();
         await completeTaskMint({
           variables: {
@@ -52,7 +47,7 @@ export const useCreateMint = () => {
       variables: {
         operationId: taskMintData?.taskMint,
       },
-    });
+    }).then(() => nextStep());
     startPolling(1000);
   };
 
