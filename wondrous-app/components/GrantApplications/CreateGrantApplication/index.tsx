@@ -195,7 +195,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
 
   return (
     <Form onSubmit={form.handleSubmit}>
-      <GrantModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
+      <TaskModalCard fullScreen={isFullScreen} data-cy="modal-create-grant">
         <CreateEntityHeader>
           <CreateEntityHeaderWrapper>
             <HeaderTypography onClick={handleCloseAction}>
@@ -345,7 +345,7 @@ const CreateGrantApplication = ({ grantApplication = null, isEditMode, handleClo
             )}
           </CreateEntityHeaderWrapper>
         </FooterButtonsWrapper>
-      </GrantModalCard>
+      </TaskModalCard>
     </Form>
   );
 };

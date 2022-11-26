@@ -34,6 +34,7 @@ export const GrantAmountWrapper = styled.div`
   padding: 0px ${({ hasNumOfGrants }) => (hasNumOfGrants ? '2px' : '4px')} 0px 4px;
   img {
     height: 20px !important;
+    border-radius: 100%;
     width: 20px !important;
   }
 `;
