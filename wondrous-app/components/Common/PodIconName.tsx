@@ -6,23 +6,10 @@ interface PodIconNameProps {
   color?: string;
   name: string;
   onClick?: (e: any) => void;
-  IconComponent?: () => JSX.Element;
+  IconComponentProps?: object;
 }
 
-const PodIconName = ({
-  color = palette.grey900,
-  name,
-  onClick = null,
-  IconComponent = () => (
-    <PodIcon
-      color={color}
-      style={{
-        width: '26px',
-        height: '26px',
-      }}
-    />
-  ),
-}: PodIconNameProps) => (
+const PodIconName = ({ color = palette.grey900, name, onClick = null, IconComponentProps }: PodIconNameProps) => (
   <Grid
     container
     bgcolor={palette.grey99}
@@ -37,7 +24,14 @@ const PodIconName = ({
       cursor: 'pointer',
     }}
   >
-    <IconComponent />
+    <PodIcon
+      color={color}
+      style={{
+        width: '26px',
+        height: '26px',
+      }}
+      {...IconComponentProps}
+    />
     <Typography fontFamily="Space Grotesk" color={palette.white} fontSize="13px" fontWeight="500">
       {name}
     </Typography>
