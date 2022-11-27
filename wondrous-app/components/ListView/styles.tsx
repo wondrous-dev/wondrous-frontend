@@ -59,3 +59,11 @@ export const Type = styled.div`
   border-radius: 100px;
   color: ${palette.grey500};
 `;
+
+export const ListViewItemWrapper = styled.div`
+  width: 100%;
+  padding-top: 8px;
+  &:last-child {
+    padding-bottom: 0;
+  }
+`;

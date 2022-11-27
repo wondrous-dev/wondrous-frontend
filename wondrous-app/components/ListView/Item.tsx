@@ -1,4 +1,4 @@
-import { useState, useContext, useEffect } from 'react';
+import { useState, useContext, useEffect, memo } from 'react';
 import {
   TASK_STATUS_IN_REVIEW,
   TASK_STATUS_DONE,
@@ -45,7 +45,7 @@ import {
   Type,
 } from './styles';
 
-export default function ListViewItem({ task, entityType }) {
+function ListViewItem({ task, entityType }) {
   let windowOffset = 0;
   const router = useRouter();
   const showTaskType = router.pathname === PAGE_PATHNAME.search_result;
@@ -433,3 +433,5 @@ export default function ListViewItem({ task, entityType }) {
     </>
   );
 }
+
+export default memo(ListViewItem);

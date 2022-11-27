@@ -34,7 +34,7 @@ export const AccordionDetails = styled(MuiAccordionDetails)`
   && {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: ${(props) => (props.noGap ? '0' : '8px')};
     margin-top: 8px;
     padding: 8px 0px 8px;
     border-bottom: 0.5px dashed #2b2b2b;

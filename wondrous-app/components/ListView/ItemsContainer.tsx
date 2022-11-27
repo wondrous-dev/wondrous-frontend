@@ -17,7 +17,7 @@ import CreateEntityModal from 'components/CreateEntity/CreateEntityModal/index';
 import EmptyStateBoards from 'components/EmptyStateBoards';
 import { BountyIcon } from 'components/Common/BountyBoard/styles';
 import FlagIcon from 'components/Icons/flag';
-import { IconWrapper } from './styles';
+import { IconWrapper, ListViewItemWrapper } from './styles';
 import Item from './Item';
 
 const HEADER_ICONS = {
@@ -53,23 +53,21 @@ const ENTITIES_HEADER_ICONS = {
   ),
   [ENTITIES_TYPES.BOUNTY]: BountyIcon,
 };
-const DndWrapper = ({ disableDnd, task, index, children }) =>
+
+const DndWrapper = ({ disableDnd, id, index, children }) =>
   disableDnd ? (
     children
   ) : (
-    <Draggable key={task.id} draggableId={task.id} index={index}>
+    <Draggable draggableId={id} index={index}>
       {(provided, snapshot) => (
-        <div
-          style={{
-            width: '100%',
-          }}
+        <ListViewItemWrapper
           {...provided.draggableProps}
           {...provided.dragHandleProps}
           ref={provided.innerRef}
           isDragging={snapshot.isDragging}
         >
           {children}
-        </div>
+        </ListViewItemWrapper>
       )}
     </Draggable>
   );
@@ -83,6 +81,7 @@ export default function ItemsContainer({
   onLoadMore = null,
   disableDnd = false,
   enableInfiniteLoading = false,
+  dndPlaceholder = null,
   ...props
 }) {
   const { status, tasks } = data;
@@ -138,16 +137,18 @@ export default function ItemsContainer({
         showMoreTitle="Show all"
         key={tasks}
         enableInfiniteLoading={enableInfiniteLoading}
+        noGap
       >
         {tasks?.length ? (
           tasks.map((task, index) => (
-            <DndWrapper task={task} disableDnd={disableDnd} index={index}>
+            <DndWrapper key={task.id} id={task.id} disableDnd={disableDnd} index={index}>
               <Item entityType={entityType} task={task} />
             </DndWrapper>
           ))
         ) : (
           <EmptyStateBoards hidePlaceholder status={status} />
         )}
+        {dndPlaceholder}
       </Accordion>
     </>
   );

@@ -303,6 +303,7 @@ export default function ListView({
                       taskCount={count}
                       handleShowAll={handleShowAll}
                       enableInfiniteLoading={enableInfiniteLoading}
+                      dndPlaceholder={provided.placeholder}
                     />
                   </div>
                 )}
