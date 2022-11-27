@@ -1,9 +1,9 @@
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import TaskCardDate from 'components/Common/TaskCardDate';
 import ListItemWrapper from 'components/Project/ListItemWrapper';
 import palette from 'theme/palette';
-import { usePermissions } from 'utils/hooks';
+import ApplyOrClaimButton from './ApplyOrClaimButton';
 
 interface IListItemTask {
   task;
@@ -16,12 +16,12 @@ const LeftComponent = ({ assigneeProfilePicture, title }) => (
   </Grid>
 );
 
-const RightComponent = ({ date, type }) => {
-  const { canClaim } = usePermissions({ type });
+const RightComponent = (props) => {
+  const { date, type } = props;
   return (
-    <Grid container>
-      {/* {true && <p>claim</p>} */}
+    <Grid container item gap="12px">
       <TaskCardDate date={date} />
+      <ApplyOrClaimButton type={type} task={props} />
     </Grid>
   );
 };
