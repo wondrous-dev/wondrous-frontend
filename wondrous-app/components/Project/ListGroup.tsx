@@ -17,6 +17,7 @@ import {
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
+import ListItemGrant from './ListItemGrant';
 import ListItemMember from './ListItemMember';
 import ListItemMilestone from './ListItemMilestone';
 import ListItemProposal from './ListItemProposal';
@@ -234,47 +235,19 @@ const useListGroup = () => [
     CreateButtonProps: useCreateGrantButtonProps(),
     backgroundImageUrl: '/images/project/grant-empty-bg.svg',
     showAllUrl: 'grants',
-    ListItemComponent: ListItemBounty,
-    // data={[
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 1,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 1000,
-    //         symbol: 'USDC',
-    //         icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-    //       },
-    //     ],
-    //     id: 2,
-    //   },
-    //   {
-    //     title: 'test bounty',
-    //     date: new Date(),
-    //     type: 'task',
-    //     rewards: [
-    //       {
-    //         rewardAmount: 100,
-    //         symbol: 'USDC',
-    //       },
-    //     ],
-    //     id: 3,
-    //   },
-    // ]}
+    ListItemComponent: ListItemGrant,
+    data: [
+      {
+        title: 'grant',
+        reward: {
+          rewardAmount: 100,
+          symbol: 'USDC',
+        },
+        numOfGrant: 6,
+        applicationsCount: 2,
+        endDate: new Date('2022-11-29'),
+      },
+    ],
   },
   {
     HeaderTitleProps: {
