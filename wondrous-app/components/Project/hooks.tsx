@@ -1,3 +1,4 @@
+import { PodModal } from 'components/Common/PodModal';
 import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import { CreateEntity } from 'components/CreateEntity';
 import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
@@ -84,6 +85,13 @@ export const useCreateGrantModal = () => {
     </>
   );
   return { CreateGrantModal, handleCreateFormModal };
+};
+
+export const usePodModal = () => {
+  const [openPodModal, setOpenPodModal] = useState(false);
+  const handleSetOpenPodModal = () => setOpenPodModal((prevState) => !prevState);
+  const Modal = () => <PodModal open={openPodModal} handleClose={() => setOpenPodModal(false)} />;
+  return { PodModal: Modal, handleSetOpenPodModal };
 };
 
 export const useEntityCreateButtonProps = (entityType: EntitiesType): ICreateButtonProps => {

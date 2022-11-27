@@ -9,6 +9,8 @@ import { GET_ORG_PODS } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
+import { useProject } from 'utils/hooks';
+
 import { useEntityCreateButtonProps } from './hooks';
 
 const EmptyWrapper = styled.div`
@@ -40,32 +42,45 @@ const podCardContent = (pods) => {
   return pods?.slice(0, numbersOfPodsToShow).map((pod) => <PodCard key={pod.id} {...pod} />);
 };
 
-const PodCards = ({ orgId }: PodCardsProps) => {
+const ShowAllButton = () => {
+  const { handleSetOpenPodModal } = useProject();
+  return (
+    <Button
+      color="grey"
+      borderRadius={6}
+      buttonTheme={{
+        height: '35px',
+        paddingX: 10,
+        paddingY: 10,
+        fontSize: 13,
+        fontWeight: 500,
+      }}
+      onClick={handleSetOpenPodModal}
+    >
+      Show all
+    </Button>
+  );
+};
+
+const useGetOrgPods = (orgId) => {
   const { data } = useQuery(GET_ORG_PODS, {
     variables: {
       orgId,
     },
   });
   const { getOrgPods: pods } = data || {};
+  return pods;
+};
+
+const PodCards = ({ orgId }: PodCardsProps) => {
+  const pods = useGetOrgPods(orgId);
   const emptyComponent = useNoPods();
   const podsComponent = isEmpty(pods) ? emptyComponent : podCardContent(pods);
   return (
     <Grid container bgcolor="#141414" padding="14px" gap="14px">
       <Grid container justifyContent="space-between">
         <HeaderTitle IconComponent={PodIcon} text="Pods" />
-        <Button
-          color="grey"
-          borderRadius={6}
-          buttonTheme={{
-            height: '35px',
-            paddingX: 10,
-            paddingY: 10,
-            fontSize: 13,
-            fontWeight: 500,
-          }}
-        >
-          Show all
-        </Button>
+        <ShowAllButton />
       </Grid>
       <Grid container item width="100%" height="fit-content" gap="8px" flexWrap="nowrap">
         {podsComponent}

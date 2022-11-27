@@ -2,7 +2,14 @@ import Grid from '@mui/material/Grid';
 import ListGroup from 'components/Project/ListGroup';
 import PodCards from 'components/Project/PodCards';
 import { ProjectContext } from 'utils/contexts';
-import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useDocCategoriesModal } from './hooks';
+
+import {
+  useCollaborationModal,
+  useCreateEntityModal,
+  useCreateGrantModal,
+  useDocCategoriesModal,
+  usePodModal,
+} from './hooks';
 
 const Project = ({ orgData }) => {
   const { id } = orgData;
@@ -10,11 +17,13 @@ const Project = ({ orgData }) => {
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();
   const { CreateGrantModal, handleCreateFormModal } = useCreateGrantModal();
+  const { PodModal, handleSetOpenPodModal } = usePodModal();
   const projectContextValue = {
     setEntityType,
     handleCreateModal,
     handleCreateNewCategory,
     handleCreateFormModal,
+    handleSetOpenPodModal,
   };
   return (
     <ProjectContext.Provider value={projectContextValue}>
@@ -23,6 +32,7 @@ const Project = ({ orgData }) => {
         <CollaborationModal />
         <DocCategoriesModal />
         <CreateGrantModal />
+        <PodModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
           <PodCards orgId={id} />
           <ListGroup />
