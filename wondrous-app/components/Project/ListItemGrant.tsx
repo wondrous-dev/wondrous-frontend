@@ -39,8 +39,11 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
         <CalendarIcon width="10px" height="11px" />
         {days}d
       </Grid>
-      <Grid container item height="100%" width="fit-content">
-        <Compensation rewards={[reward]} pillStyle={{ backgroundColor: '#474747', borderRadius: '100px 0 0 100px' }} />
+      <Grid container item height="100%" width="fit-content" borderRadius="100px" border="1px solid #474747">
+        <Compensation
+          rewards={[reward]}
+          pillStyle={{ backgroundColor: '#474747', borderRadius: '100px 0 0 100px', height: '100%' }}
+        />
         <Grid
           item
           container
