@@ -3,7 +3,7 @@ import Project from 'components/Project';
 
 const OrgProject = ({ orgData = {} }) => (
   <Wrapper orgData={orgData}>
-    <Project />
+    <Project orgData={orgData} />
   </Wrapper>
 );
 

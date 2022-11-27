@@ -1,9 +1,11 @@
+import { useQuery } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Button from 'components/Button';
 import PodIcon from 'components/Icons/podIcon';
 import CreateButton from 'components/Project/CreateButton';
 import HeaderTitle from 'components/Project/HeaderTitle';
 import PodCard from 'components/Project/PodCard';
+import { GET_ORG_PODS } from 'graphql/queries';
 import isEmpty from 'lodash/isEmpty';
 import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -24,7 +26,7 @@ const EmptyWrapper = styled.div`
 `;
 
 interface PodCardsProps {
-  pods: Array<any>;
+  orgId: string;
 }
 
 const useNoPods = () => (
@@ -33,10 +35,18 @@ const useNoPods = () => (
   </EmptyWrapper>
 );
 
-const podCardContent = (pods: PodCardsProps['pods']) =>
-  pods.slice(0, 6).map((pod) => <PodCard key={pod.id} {...pod} />);
+const podCardContent = (pods) => {
+  const numbersOfPodsToShow = 6;
+  return pods?.slice(0, numbersOfPodsToShow).map((pod) => <PodCard key={pod.id} {...pod} />);
+};
 
-const PodCards = ({ pods }: PodCardsProps) => {
+const PodCards = ({ orgId }: PodCardsProps) => {
+  const { data } = useQuery(GET_ORG_PODS, {
+    variables: {
+      orgId,
+    },
+  });
+  const { getOrgPods: pods } = data || {};
   const emptyComponent = useNoPods();
   const podsComponent = isEmpty(pods) ? emptyComponent : podCardContent(pods);
   return (

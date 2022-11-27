@@ -4,7 +4,8 @@ import PodCards from 'components/Project/PodCards';
 import { ProjectContext } from 'utils/contexts';
 import { useCollaborationModal, useCreateEntityModal, useCreateGrantModal, useDocCategoriesModal } from './hooks';
 
-const Project = () => {
+const Project = ({ orgData }) => {
+  const { id } = orgData;
   const { setEntityType, CreateEntityModal } = useCreateEntityModal();
   const { CollaborationModal, handleCreateModal } = useCollaborationModal();
   const { DocCategoriesModal, handleCreateNewCategory } = useDocCategoriesModal();
@@ -23,7 +24,7 @@ const Project = () => {
         <DocCategoriesModal />
         <CreateGrantModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
-          <PodCards pods={[]} />
+          <PodCards orgId={id} />
           <ListGroup />
         </Grid>
       </>
