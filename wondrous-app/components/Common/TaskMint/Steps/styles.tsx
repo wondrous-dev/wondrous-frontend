@@ -13,6 +13,8 @@ export const MintStep = styled.div`
   font-weight: 400;
   gap: 12px;
   align-items: center;
+  border-radius: 6px;
+  ${({ isCurrent }) => isCurrent && `background: ${palette.grey99}`}
 `;
 
 export const CommunityShareWrapper = styled.div`

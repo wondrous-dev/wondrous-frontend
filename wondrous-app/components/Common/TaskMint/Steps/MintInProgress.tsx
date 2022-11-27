@@ -8,10 +8,16 @@ import { MintStep, ProgressBarWrapper } from './styles';
 import MintStepContent from './MintStepContent';
 import { STEPS } from './constants';
 
+const TASK_MINT_IMAGES = [
+  '/images/taskmint/taskmintstep1.png',
+  '/images/taskmint/taskmintstep2.png',
+  '/images/taskmint/taskmintstep3.png',
+];
+
 const MintStepDetails = ({ step }) => (
   <Grid display="flex" direction="column" gap="18px" justifyContent="flexStart">
     {STEPS.map((item, idx) => (
-      <MintStep isActive={idx <= step}>
+      <MintStep isActive={idx <= step} isCurrent={idx === step}>
         <Approved fill={idx > step ? palette.grey57 : null} skipCircle height="35" width="35" />
         <span>{item.title}</span>
       </MintStep>
@@ -46,7 +52,7 @@ const MintInProgress = ({ step }) => {
     <MintStepContent
       skipDivider
       title="Minting your task..."
-      img="/images/taskmint/inprogressmint.png"
+      img={TASK_MINT_IMAGES[step] || TASK_MINT_IMAGES[0]}
       body="The minting will only take a moment, please keep this modal open."
     >
       <Grid

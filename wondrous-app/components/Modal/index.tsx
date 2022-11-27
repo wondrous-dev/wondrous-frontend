@@ -1,6 +1,6 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import ModalComponent from '@mui/material/Modal';
-
+import { useOutsideAlerter } from 'utils/hooks';
 import {
   ModalBody,
   ModalContent,
@@ -62,11 +62,16 @@ export function Modal({
   children,
   alignCenter = false,
 }: Props) {
+  const contentRef = useRef();
+
+  // TODO: Adrian - refactor this to use modals native API
+
+  useOutsideAlerter(contentRef, onClose);
   return (
     <ModalComponent open={open} onClose={onClose}>
       <ModalContainer tabIndex={-1} alignCenter={alignCenter}>
         <ModalDialog maxWidth={maxWidth} alignCenter={alignCenter}>
-          <ModalContent>
+          <ModalContent ref={contentRef}>
             <ModalHeader>
               {!!title && <ModalTitle>{title}</ModalTitle>}
               {onClose && <CloseModalBtn onClick={onClose} />}
