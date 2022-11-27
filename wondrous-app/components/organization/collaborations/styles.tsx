@@ -94,10 +94,41 @@ export const CollabDescription = styled(Typography)`
     line-height: 24px;
     margin-top: 14px;
     margin-bottom: 14px;
+    font-weight: 500;
   }
 `;
 
 export const CollabBottom = styled.div`
   display: flex;
   align-items: center;
+`;
+
+export const CollabInvitationHeader = styled(Typography)`
+  && {
+    color: ${palette.blue20};
+    font-weight: bold;
+    font-size: 14px;
+    line-height: 24px;
+    margin-bottom: 14px;
+  }
+`;
+
+export const StyledBottomHr = styled.hr`
+  height: 1px;
+  border: 1px solid ${palette.black87};
+  width: calc(100% - 28px);
+`;
+
+export const InvitationButton = styled(Button)`
+  && {
+    margin-top: 8px;
+  }
+`;
+
+export const InvitationButtonText = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-size: 14px;
+    font-weight: 500;
+  }
 `;

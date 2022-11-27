@@ -14,10 +14,10 @@ import { useIsMobile } from 'utils/hooks';
 
 import Image from 'next/image';
 import CollabWrapper from './wrapper';
-import { CollabsContainer, NewCollabButton, NewCollabButtonText, NewCollabDiv } from './styles';
+import { CollabInvitationHeader, CollabsContainer, NewCollabButton, NewCollabButtonText, NewCollabDiv } from './styles';
 import Tabs from './tabs';
 import { TAB_TYPES } from './constants';
-import ActiveCollaborationItem from './CollaborationItem';
+import { ActiveCollaborationItem, PendingInviteCollaborationItem } from './CollaborationItem';
 
 function Collaborations(props) {
   const { orgData = {}, userPermissionsContext } = props;
@@ -28,11 +28,11 @@ function Collaborations(props) {
 
   const [getOrgCollabs, { data, loading, error }] = useLazyQuery(GET_ORG_COLLABS_FOR_ORG);
 
-  const [getOrgCollabRequestsAsRecipient, { data: pendingInvites, loading: pendingInvitesLoading }] = useLazyQuery(
+  const [getOrgCollabRequestsAsRecipient, { data: pendingRequests, loading: pendingInvitesLoading }] = useLazyQuery(
     GET_ORG_COLLAB_REQUESTS_FOR_RECIPIENT
   );
 
-  const [getOrgCollabRequestsAsInitiator, { data: pendingRequests }] = useLazyQuery(
+  const [getOrgCollabRequestsAsInitiator, { data: pendingInvites }] = useLazyQuery(
     GET_ORG_COLLAB_REQUESTS_FOR_INITIATOR
   );
 
@@ -63,7 +63,7 @@ function Collaborations(props) {
       }
     }
   }, [activeTab, orgData?.id]);
-
+  console.log('pendinginvites', pendingInvites);
   return (
     <EntitySidebar>
       <CreateCollaborationModal open={openCreateModal} onCancel={handleCreateModal} defaultOrgId={orgData?.id} />
@@ -92,6 +92,20 @@ function Collaborations(props) {
                 <ActiveCollaborationItem collab={collab} key={idx} userPermissionsContext={userPermissionsContext} />
               ))}
             </Masonry>
+          )}
+          {activeTab === TAB_TYPES.INVITATIONS && (
+            <>
+              <CollabInvitationHeader>Collab requests you've sent</CollabInvitationHeader>
+              <Masonry spacing={3} columns={{ xs: 1, sm: 2, md: 2, lg: 2 }} style={isMobile ? gridMobileStyles : {}}>
+                {pendingInvites?.getOrgCollabRequestForInitiator?.map((collab, idx) => (
+                  <PendingInviteCollaborationItem
+                    collab={collab}
+                    key={idx}
+                    userPermissionsContext={userPermissionsContext}
+                  />
+                ))}
+              </Masonry>
+            </>
           )}
         </CollabsContainer>
       </CollabWrapper>

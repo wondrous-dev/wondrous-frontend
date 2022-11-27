@@ -1,19 +1,31 @@
 import { SharedOrgHeaderCard } from 'components/Collaboration/SharedOrgHeader';
 import RolePill from 'components/Common/RolePill';
+import { Modal as ModalComponent } from 'components/Modal';
 import SmartLink from 'components/Common/SmartLink';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
 import { useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
+import { useMutation } from '@apollo/client';
+import { APPROVE_ORG_COLLAB_REQUEST, DECLINE_ORG_COLLAB_REQUEST } from 'graphql/mutations';
+import CollabDetails, { MODAL_TYPE } from 'components/CreateCollaborationModal/ViewCollab/CollabDetails';
+import {
+  CollabBottom,
+  CollabCard,
+  CollabCardHeader,
+  CollabDescription,
+  InvitationButton,
+  InvitationButtonText,
+  StyledBottomHr,
+} from './styles';
 import { RoleButtonWrapper } from '../wrapper/styles';
-import { CollabBottom, CollabCard, CollabCardHeader, CollabDescription } from './styles';
 
 const ORG_PERMISSIONS = {
   MANAGE_SETTINGS: 'manageSettings',
   CONTRIBUTOR: 'contributor',
 };
 
-const ActiveCollaborationItem = (props) => {
+export const ActiveCollaborationItem = (props) => {
   const { collab, userPermissionsContext } = props;
   const [orgRoleName, setOrgRoleName] = useState(null);
   const [permissions, setPermissions] = useState(undefined);
@@ -62,4 +74,48 @@ const ActiveCollaborationItem = (props) => {
   );
 };
 
-export default ActiveCollaborationItem;
+export const PendingInviteCollaborationItem = (props) => {
+  const { collab, userPermissionsContext } = props;
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const handleModal = () => setIsOpen((prevState) => !prevState);
+
+  return (
+    <CollabCard>
+      <ModalComponent maxWidth={560} title="Project collaboration request" open={isOpen} onClose={handleModal}>
+        <CollabDetails type={MODAL_TYPE.VIEW} request={collab} />
+      </ModalComponent>
+      <CollabCardHeader>
+        <SharedOrgHeaderCard
+          collab={{
+            childOrgProfilePicture: collab?.initiatorOrg?.profilePicture,
+            parentOrgProfilePIcture: collab?.recipientOrg?.Profile,
+            childOrgName: collab?.initiatorOrg?.name,
+            parentOrgName: collab?.recipientOrg?.name,
+          }}
+          blurChild
+        />
+      </CollabCardHeader>
+      <CollabDescription>{collab?.title}</CollabDescription>
+      <StyledBottomHr />
+      <CollabBottom
+        style={{
+          justifyContent: 'flex-end',
+        }}
+      >
+        <InvitationButton
+          buttonInnerStyle={{
+            padding: '8px',
+            paddingRight: '12px',
+            paddingLeft: '12px',
+          }}
+          highlighted
+          onClick={handleModal}
+        >
+          <InvitationButtonText>View Request</InvitationButtonText>
+        </InvitationButton>
+      </CollabBottom>
+    </CollabCard>
+  );
+};

@@ -21,6 +21,9 @@ const ButtonInner = styled.button`
   padding: 12px;
   cursor: pointer;
   font-family: Space Grotesk;
+  &:hover {
+    background: linear-gradient(82.03deg, #7427ff 50.7%, #00baff 107.99%);
+  }
 `;
 
 const ButtonWrapper = styled.div`
@@ -33,6 +36,9 @@ const ButtonWrapper = styled.div`
   ${(props) => props.highlighted && GradientHighlightHorizontal}
 
   border-radius: 98px;
+  &:hover {
+    padding: 0;
+  }
 `;
 
 export function Button({ children, disabled = false, ...props }) {
