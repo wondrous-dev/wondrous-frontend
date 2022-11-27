@@ -16,7 +16,7 @@ const PodCard = ({ name, id, color = '#282828', contributorCount = 0 }: PodCardP
     container
     item
     bgcolor="#212121"
-    width="100%"
+    maxWidth="200px"
     flexGrow="1"
     height="76px"
     borderRadius="4px"
