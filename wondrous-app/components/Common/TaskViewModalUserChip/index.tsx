@@ -70,7 +70,6 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
             width="24px"
             height="24px"
             paddingRight="12px"
-            alignItems="center"
             sx={{
               cursor: 'pointer',
             }}
