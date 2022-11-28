@@ -1,3 +1,4 @@
+import { useQuery } from '@apollo/client';
 import { PodModal } from 'components/Common/PodModal';
 import CreateCollaborationModal from 'components/CreateCollaborationModal';
 import { CreateEntity } from 'components/CreateEntity';
@@ -5,6 +6,8 @@ import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
+import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
+import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
 import { ENTITIES_TYPES } from 'utils/constants';
@@ -124,4 +127,25 @@ export const useCreateGrantButtonProps = (): ICreateButtonProps => {
     onClick: handleCreateFormModal,
     text: 'Grant',
   };
+};
+
+const LIMIT = 6;
+
+export const useGetOrgTasks = () => {
+  const { orgData } = useProject();
+  const { data } = useQuery(GET_ORG_TASK_BOARD_TASKS, {
+    nextFetchPolicy: 'cache-first',
+    skip: !orgData?.id,
+    variables: {
+      orgId: orgData?.id,
+      podIds: [],
+      offset: 0,
+      statuses: ['created', 'in_progress', 'in_review', 'completed'],
+      limit: LIMIT,
+      labelId: null,
+      date: null,
+      types: ['task'],
+    },
+  });
+  return sortBy(data?.getOrgTaskBoardTasks, ({ id }) => id);
 };

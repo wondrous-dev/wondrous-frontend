@@ -9,19 +9,19 @@ interface IListItemTask {
   task;
 }
 
-const LeftComponent = ({ assigneeProfilePicture, title }) => (
+const LeftComponent = ({ assigneeProfilePicture, title, assigneeId }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
-    <UserProfilePicture avatar={assigneeProfilePicture} />
+    {assigneeId ? <UserProfilePicture avatar={assigneeProfilePicture} /> : null}
     {title}
   </Grid>
 );
 
 const RightComponent = (props) => {
-  const { date, type } = props;
+  const { dueDate } = props;
   return (
     <Grid container item gap="12px">
-      <TaskCardDate date={date} />
-      <ApplyOrClaimButton type={type} task={props} />
+      <TaskCardDate date={props?.dueDate} />
+      <ApplyOrClaimButton task={props} />
     </Grid>
   );
 };

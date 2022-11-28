@@ -24,6 +24,7 @@ const Project = ({ orgData }) => {
     handleCreateNewCategory,
     handleCreateFormModal,
     handleSetOpenPodModal,
+    orgData,
   };
   return (
     <ProjectContext.Provider value={projectContextValue}>

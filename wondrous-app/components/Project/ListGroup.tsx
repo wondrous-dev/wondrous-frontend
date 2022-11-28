@@ -14,6 +14,7 @@ import {
   useCreateGrantButtonProps,
   useDocCategoriesButtonProps,
   useEntityCreateButtonProps,
+  useGetOrgTasks,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -35,26 +36,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/task-empty-bg.svg',
     showAllUrl: 'boards?entity=task',
     ListItemComponent: ListItemTask,
-    data: [
-      {
-        title: 'test task',
-        date: new Date(),
-        type: 'task',
-        id: 1,
-      },
-      {
-        title: 'test task',
-        date: new Date(),
-        type: 'task',
-        id: 2,
-      },
-      {
-        title: 'test task',
-        date: new Date(),
-        type: 'task',
-        id: 3,
-      },
-    ],
+    data: useGetOrgTasks(),
   },
   {
     HeaderTitleProps: {

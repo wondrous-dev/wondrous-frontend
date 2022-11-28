@@ -1,14 +1,19 @@
+import { useMutation } from '@apollo/client';
 import Grid from '@mui/material/Grid';
 import Typography from '@mui/material/Typography';
+import { useMe } from 'components/Auth/withAuth';
 import { ButtonPrimary } from 'components/Common/button';
 import { TaskApplicationButton } from 'components/Common/TaskApplication';
+import { UPDATE_TASK_ASSIGNEE } from 'graphql/mutations';
+import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
 import { useState } from 'react';
 import { usePermissions } from 'utils/hooks';
 
-const ApplyOrClaimButton = ({ type, task }) => {
-  const { canClaim, canApply } = usePermissions({ type });
-  const [claimed, setClaimed] = useState(false);
+const ApplyOrClaimButton = ({ task }) => {
+  const user = useMe();
+  const { canClaim, canApply } = usePermissions({ type: task?.type });
   const [isApplicationModalOpen, setIsApplicationModalOpen] = useState(false);
+  const [updateTaskAssignee] = useMutation(UPDATE_TASK_ASSIGNEE);
   if (!canClaim && canApply) {
     return (
       <TaskApplicationButton
@@ -22,7 +27,7 @@ const ApplyOrClaimButton = ({ type, task }) => {
       />
     );
   }
-  if (claimed) {
+  if (task?.assigneeId) {
     return (
       <Grid
         container
@@ -44,14 +49,13 @@ const ApplyOrClaimButton = ({ type, task }) => {
       onClick={(e) => {
         e.preventDefault();
         e.stopPropagation();
-        // updateTaskAssignee({
-        //   variables: {
-        //     taskId: id,
-        //     assigneeId: user?.id,
-        //   },
-        //   onCompleted: (data) => null,
-        // });
-        setClaimed(true);
+        updateTaskAssignee({
+          variables: {
+            taskId: task?.id,
+            assigneeId: user?.id,
+          },
+          refetchQueries: [GET_ORG_TASK_BOARD_TASKS],
+        });
       }}
       style={{
         width: '82px',
