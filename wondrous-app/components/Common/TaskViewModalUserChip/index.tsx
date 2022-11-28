@@ -64,6 +64,7 @@ const TaskViewModalUserChip = ({ user, handleRemove, onClick, canEdit = false })
           <Grid
             item
             container
+            alignItems="center"
             justifyContent="flex-end"
             onClick={handleRemove}
             width="24px"

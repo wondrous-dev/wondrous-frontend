@@ -4,8 +4,7 @@ import React from 'react';
 import BoardSkeleton from 'components/Dashboard/boards/BoardSkeleton';
 
 import lazy from 'utils/enhancements/lazy';
-import apollo from 'services/apollo';
-import { GET_TASK_BY_ID, GET_TASK_PROPOSAL_BY_ID, GET_PREVIEW_FILE } from 'graphql/queries';
+import { getServerSideProps } from 'utils/board/dataFetching';
 
 const BoardsLazyPage = lazy(() => import('./boards.lazy'), BoardSkeleton);
 
@@ -16,8 +15,5 @@ const BoardsPage = (props) => (
   </>
 );
 
-export const getServerSideProps = async (context) => ({
-  props: {},
-});
-
 export default BoardsPage;
+export { getServerSideProps };

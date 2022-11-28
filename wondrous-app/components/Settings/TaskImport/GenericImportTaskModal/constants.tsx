@@ -1,5 +1,6 @@
 import AsanaIcon from 'components/Icons/asana.svg';
 import TrelloIcon from 'components/Icons/trello.svg';
+import DeworkIcon from 'components/Icons/dework.svg';
 import CSVIcon from 'components/Icons/csv.svg';
 import { AttachFileIcon } from './styles';
 
@@ -9,12 +10,14 @@ export const DEFAULT_TASKS_DATA = { tasks: [], key: Date.now() };
 export const IMPORT_FORMAT_OPTIONS = [
   { label: 'Asana', value: 'asana', icon: <AsanaIcon /> },
   { label: 'Trello', value: 'trello', icon: <TrelloIcon /> },
+  { label: 'Dework', value: 'dework', icon: <DeworkIcon /> },
   { label: 'General', value: 'general', icon: <CSVIcon /> },
 ];
 
 export const IMPORT_FORMATS = {
   ASANA: 'asana',
   TRELLO: 'trello',
+  DEWORK: 'dework',
   GENERAL: 'general',
 };
 
@@ -59,6 +62,19 @@ export const TRELLO_TASKS_CSV_HEADERS = [
   'Archived',
   'Start Date',
   'Due Complete',
+];
+
+export const DEWORK_TASKS_CSV_HEADERS = [
+  'Name',
+  'Link',
+  'Tags',
+  'Story Points',
+  'Status',
+  'Assignees',
+  'Wallet Address',
+  'Reward',
+  'Due Date',
+  'Activities',
 ];
 
 export const GENERIC_TASKS_CSV_HEADERS = ['Title', 'Description'];

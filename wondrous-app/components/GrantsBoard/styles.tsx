@@ -4,6 +4,7 @@ import { BountyCardWrapper } from 'components/Common/BountyBoard/styles';
 import { CompensationPill } from 'components/Common/Compensation/styles';
 import styled from 'styled-components';
 import palette from 'theme/palette';
+import typography from 'theme/typography';
 
 export const MenuWrapper = styled(Grid)`
   && {
@@ -33,7 +34,7 @@ export const ItemPill = styled.div`
   align-items: center;
   justify-content: center;
   gap: 5px;
-  padding: 2px 11px 2px ${({ withIcon }) => (withIcon ? '5px' : '11px')};
+  padding: 2px 11px 2px ${({ withIcon }) => (withIcon ? '2px' : '11px')};
   border: none;
   background: ${palette.grey78};
   border-radius: 300px;
@@ -49,6 +50,34 @@ export const EndingSoonPill = styled(ItemPill)`
 
 export const GrantsBoardCardDescription = styled(BoardsCardBodyDescription)`
   && {
-    -webkit-line-clamp: 3;
+    -webkit-line-clamp: 2;
+  }
+`;
+
+export const EmptyStateWrapper = styled.div`
+  width: 100% !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  color: ${palette.white};
+  border-radius: 6px;
+  border: 1px solid ${palette.black95};
+  background: transparent;
+  gap: 14px;
+  position: relative;
+  padding: 38px;
+  height: fit-content;
+`;
+
+export const CreateGrantButton = styled.button`
+  border: none;
+  background: transparent;
+  color: ${palette.highlightBlue};
+  font-size: 13px;
+  font-weight: 700;
+  font-family: ${typography.fontFamily};
+  cursor: pointer;
+  &:hover {
+    text-decoration: underline;
   }
 `;

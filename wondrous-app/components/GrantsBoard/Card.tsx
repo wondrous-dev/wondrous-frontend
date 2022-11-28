@@ -1,4 +1,4 @@
-import { Grid, Typography } from '@mui/material';
+import { Grid, Tooltip, Typography } from '@mui/material';
 import { useMe, withAuth } from 'components/Auth/withAuth';
 import { ArchiveTaskModal } from 'components/Common/ArchiveTaskModal';
 import {
@@ -19,6 +19,7 @@ import CommentsIcon from 'components/Icons/comments';
 import { DueDateIcon } from 'components/Icons/taskModalIcons';
 import { RichTextViewer } from 'components/RichText';
 import { GrantAmount } from 'components/ViewGrant/Fields';
+import format from 'date-fns/format';
 import { useContext, useState } from 'react';
 import palette from 'theme/palette';
 import typography from 'theme/typography';
@@ -89,7 +90,7 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
       />
       <BoardWrapper onClick={() => handleCardClick(grant)}>
         <Grid justifyContent="space-between" alignItems="center" container>
-          <Grid display="flex" gap="8px" alignItems="center">
+          <Grid display="flex" gap="14px" alignItems="center">
             <TaskCardPrivacy privacyLevel={grant?.privacyLevel} />
 
             <GrantAmount grantAmount={grant.reward} numOfGrant={grant.numOfGrant} />
@@ -132,12 +133,16 @@ const GrantsBoardCard = ({ grant, handleCardClick }) => {
           ) : null}
         </BoardsCardBody>
         <BoardsCardFooter>
-          <EndingSoonPill>
-            <DueDateIcon />
-            <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
-              Ending {formatDateDisplay(grant.endDate)}
-            </Typography>
-          </EndingSoonPill>
+          {grant?.endDate ? (
+            <Tooltip title={`Grant end date is ${format(new Date(grant.endDate), 'MM/dd/yyyy')}`} placement="top">
+              <EndingSoonPill>
+                <DueDateIcon />
+                <Typography color={palette.white} fontWeight={500} fontSize={14} fontFamily={typography.fontFamily}>
+                  Ending {formatDateDisplay(grant.endDate)}
+                </Typography>
+              </EndingSoonPill>
+            </Tooltip>
+          ) : null}
           <Grid item container gap="10px" width="fit-content" lineHeight="0" alignItems="center">
             {' '}
             <CommentsIcon />
