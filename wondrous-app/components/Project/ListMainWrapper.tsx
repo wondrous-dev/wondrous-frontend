@@ -11,7 +11,7 @@ import useListTaskProps from './ListTask';
 import ListWrapper from './ListWrapper';
 import { ListWrapperProps } from './types';
 
-const ListEntity = () => {
+const ListMainWrapper = () => {
   const listWrapperProps: ListWrapperProps[] = [
     useListTaskProps(),
     useListBountyProps(),
@@ -42,4 +42,4 @@ const ListEntity = () => {
   );
 };
 
-export default ListEntity;
+export default ListMainWrapper;
