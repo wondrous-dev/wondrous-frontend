@@ -58,28 +58,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/milestone-empty-bg.svg',
     showAllUrl: 'boards?entity=milestone',
     ListItemComponent: ListItemMilestone,
-    data: [
-      {
-        title: 'test milestone',
-        type: 'milestone',
-        orgId: '72322419271925761',
-        status: 'completed',
-        id: '72401739146330138',
-      },
-      {
-        title: 'test milestone',
-        type: 'milestone',
-        orgId: '72322419271925761',
-        id: '72401739146330138',
-      },
-      {
-        title: 'test milestone',
-        type: 'milestone',
-        orgId: '72322419271925761',
-        status: 'completed',
-        id: '72401739146330138',
-      },
-    ],
+    data: useGetOrgEntity('milestone'),
   },
   {
     HeaderTitleProps: {
