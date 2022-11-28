@@ -135,7 +135,6 @@ export default function ItemsContainer({
         hasMore={hasMore || (taskCount > LIMIT && tasks.length <= LIMIT)}
         onShowMore={loadMoreAction}
         showMoreTitle="Show all"
-        key={tasks}
         enableInfiniteLoading={enableInfiniteLoading}
         noGap
       >
