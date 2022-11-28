@@ -133,6 +133,10 @@ export const HeaderButtons = styled.div`
   height: 100%;
   display: flex;
   gap: 4px;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-wrap: wrap;
+  }
 `;
 
 export const HeaderFollowButton = styled(Button)`
@@ -380,6 +384,10 @@ export const HeaderContributors = styled.div`
   :hover {
     background: ${palette.grey920};
   }
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    margin-top: 10px;
+  }
 `;
 
 export const HeaderContributorsAmount = styled(Typography)`
@@ -406,7 +414,11 @@ export const HeaderPodsAmount = styled(HeaderContributorsAmount)``;
 
 export const HeaderPodsText = styled(HeaderContributorsText)``;
 
-export const HeaderGr15Sponsor = styled.div``;
+export const HeaderGr15Sponsor = styled.div`
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    margin-top: 10px;
+  }
+`;
 // cardStyles
 export const PostsContainer = styled.div`
   max-width: 680px;
@@ -617,10 +629,14 @@ export const PostActivity = styled.div`
 `;
 
 export const BoardsSubheaderWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-row-gap: 20px;
+  display: flex;
   align-items: center;
+  justify-content: flex-start;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 export const Container = styled.div`

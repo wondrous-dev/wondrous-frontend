@@ -32,6 +32,10 @@ export const RoleNameBlock = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
+
+  ${({ theme }) => theme.breakpoints.down('lg')} {
+    height: 100%;
+  }
 `;
 
 export const CreateRole = styled.div`
