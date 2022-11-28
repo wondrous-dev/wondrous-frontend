@@ -17,18 +17,21 @@ const TASK_MINT_BUTTON_STATUS_CONFIG = {
     label: 'Mint Task',
     disabled: false,
     icon: DiamondIcon,
+    hoverColor: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
   },
   [TaskMintStatus.IN_PROGRESS]: {
     title: 'Minting in progress',
     label: 'Minting...',
     disabled: true,
     icon: DiamondIcon,
+    hoverColor: 'linear-gradient(180deg, #7427FF 0%, #F2C678 100%)',
   },
   [TaskMintStatus.COMPLETED]: {
     title: 'This task is on chain',
     label: 'View NFT',
     disabled: false,
     icon: GreenDiamondIcon,
+    hoverColor: palette.green30,
     labelColor: palette.green30,
   },
 };
@@ -46,7 +49,13 @@ const TaskMintButton = ({ onClick, status }) => {
           Minted on Polygon
         </TaskMintDetailsChain>
       </TaskMintDetails>
-      <TaskMintButtonWrapper type="button" onClick={onClick} disabled={config.disabled} labelColor={config.labelColor}>
+      <TaskMintButtonWrapper
+        hoverColor={config.hoverColor}
+        type="button"
+        onClick={onClick}
+        disabled={config.disabled}
+        labelColor={config.labelColor}
+      >
         <config.icon />
         <span>{config.label}</span>
       </TaskMintButtonWrapper>

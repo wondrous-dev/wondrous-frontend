@@ -63,7 +63,18 @@ export const TaskMintButtonWrapper = styled.button`
   &:disabled {
     pointer-events: none;
   }
+  position: relative;
+  &:before {
+    content: '';
+    width: 20%;
+    height: 65%;
+    position: absolute;
+  }
   &:hover {
     background: ${palette.grey1000};
+    &:before {
+      background: ${({ hoverColor }) => hoverColor || 'transparent'};
+      filter: blur(20px);
+    }
   }
 `;

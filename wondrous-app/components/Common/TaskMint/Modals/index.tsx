@@ -30,8 +30,8 @@ const ModalsComponent = ({ isOpen, onClose }) => {
 
   const handleClose = () => {
     onClose();
-    setTokenData(null);
-    setStep(0);
+    // setTokenData(null);
+    // setStep(0);
     if (step > 0) {
       refetch();
     }

@@ -1,6 +1,7 @@
 import palette from 'theme/palette';
 import { ItemButtonIcon } from 'components/Common/SidebarItem/styles';
 import { Polygon } from 'components/Icons/chains';
+import Divider from 'components/Divider';
 import { TaskMintDetailsChain } from '../TaskMintButton/styles';
 import MintStepContent from './MintStepContent';
 
@@ -15,6 +16,7 @@ const StartMint = () => (
       </>
     }
   >
+    <Divider />
     <TaskMintDetailsChain>
       <ItemButtonIcon bgColor={palette.highlightPurple}>
         <Polygon />

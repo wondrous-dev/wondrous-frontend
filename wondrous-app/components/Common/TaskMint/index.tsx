@@ -4,7 +4,6 @@ import { useMe } from 'components/Auth/withAuth';
 import { TaskMint } from 'types/task';
 import TaskMintButton from './TaskMintButton';
 import Modals from './Modals';
-import OpenseaButton from './OpenseaButton';
 import TaskViewMintActions from './TaskMintViewActions';
 
 interface Props {
@@ -21,7 +20,6 @@ const TaskMintComponent = ({ taskMintData, taskStatus, assigneeId, setIsViewNft,
   const [isModalOpen, setIsModalOpen] = useState(false);
   const tokenId = taskMintData?.tokenId;
   const status = taskMintData?.status;
-  console.log(taskMintData, 'task mint data');
   const user = useMe();
 
   if (taskStatus !== TASK_STATUS_DONE || user?.id !== assigneeId) {
