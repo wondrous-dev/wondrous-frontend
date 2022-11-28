@@ -18,12 +18,9 @@ const LeftComponent = ({ user }) => {
   );
 };
 
-const RightComponent = ({ orgRoleName }) => (
+const RightComponent = ({ role }) => (
   <Grid container>
-    <RolePill
-      onClick={() => null} // {() => setOpenCurrentRoleModal(true)}
-      roleName={orgRoleName}
-    />
+    <RolePill roleName={role.name} />
   </Grid>
 );
 

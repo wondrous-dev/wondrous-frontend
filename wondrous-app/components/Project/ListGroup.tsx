@@ -16,6 +16,7 @@ import {
   useEntityCreateButtonProps,
   useGetOrgEntity,
   useGetOrgProposal,
+  useGetOrgUsers,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -84,29 +85,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/collab-empty-bg.svg',
     showAllUrl: 'members',
     ListItemComponent: ListItemMember,
-    data: [
-      {
-        user: {
-          firstName: 'First',
-          lastName: 'Last',
-        },
-        orgRoleName: 'contributor',
-      },
-      {
-        user: {
-          firstName: 'First',
-          lastName: 'Last',
-        },
-        orgRoleName: 'member',
-      },
-      {
-        user: {
-          firstName: 'First',
-          lastName: 'Last',
-        },
-        orgRoleName: 'core team',
-      },
-    ],
+    data: useGetOrgUsers(),
   },
   {
     HeaderTitleProps: {
