@@ -1,7 +1,6 @@
 import { DAOIcon } from 'components/Icons/dao';
 import { NoLogoDAO } from 'components/Common/SidebarMain/styles';
-import { SafeImage } from '../Image';
-import DefaultUserImage from '../Image/DefaultUserImage';
+import { SafeImage, DefaultUserImage } from 'components/Common/Image';
 
 export const OrgProfilePicture = ({ profilePicture, style = {} }) => {
   if (profilePicture) {
