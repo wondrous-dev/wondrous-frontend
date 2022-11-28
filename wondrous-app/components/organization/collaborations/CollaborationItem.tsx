@@ -3,12 +3,14 @@ import RolePill from 'components/Common/RolePill';
 import { Modal as ModalComponent } from 'components/Modal';
 import SmartLink from 'components/Common/SmartLink';
 import TaskCardPrivacy from 'components/Common/TaskCardPrivacy';
-import { useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { PERMISSIONS } from 'utils/constants';
 import { parseUserPermissionContext } from 'utils/helpers';
 import { useMutation } from '@apollo/client';
 import { APPROVE_ORG_COLLAB_REQUEST, DECLINE_ORG_COLLAB_REQUEST } from 'graphql/mutations';
 import CollabDetails, { MODAL_TYPE } from 'components/CreateCollaborationModal/ViewCollab/CollabDetails';
+import { SnackbarAlertContext } from 'components/Common/SnackbarAlert';
+import { Actions } from 'components/CreateCollaborationModal/ViewCollab';
 import {
   CollabBottom,
   CollabCard,
@@ -74,7 +76,7 @@ export const ActiveCollaborationItem = (props) => {
   );
 };
 
-export const PendingInviteCollaborationItem = (props) => {
+export const PendingRequestCollaborationItem = (props) => {
   const { collab, userPermissionsContext } = props;
 
   const [isOpen, setIsOpen] = useState(false);
@@ -90,7 +92,7 @@ export const PendingInviteCollaborationItem = (props) => {
         <SharedOrgHeaderCard
           collab={{
             childOrgProfilePicture: collab?.initiatorOrg?.profilePicture,
-            parentOrgProfilePIcture: collab?.recipientOrg?.Profile,
+            parentOrgProfilePIcture: collab?.recipientOrg?.profilePicture,
             childOrgName: collab?.initiatorOrg?.name,
             parentOrgName: collab?.recipientOrg?.name,
           }}
@@ -114,6 +116,82 @@ export const PendingInviteCollaborationItem = (props) => {
           onClick={handleModal}
         >
           <InvitationButtonText>View Request</InvitationButtonText>
+        </InvitationButton>
+      </CollabBottom>
+    </CollabCard>
+  );
+};
+
+export const PendingInviteCollaborationItem = (props) => {
+  const { collab, userPermissionsContext } = props;
+
+  const [isOpen, setIsOpen] = useState(false);
+  const { setSnackbarAlertOpen, setSnackbarAlertMessage } = useContext(SnackbarAlertContext);
+  const [declineOrgCollabRequest] = useMutation(DECLINE_ORG_COLLAB_REQUEST, {
+    refetchQueries: ['getOrgCollabRequestForRecipient'],
+  });
+
+  const [approveOrgCollabRequest, { data }] = useMutation(APPROVE_ORG_COLLAB_REQUEST, {
+    refetchQueries: ['getUserPermissionContext', 'getOrgCollabRequestForRecipient'],
+  });
+  const handleModal = () => setIsOpen((prevState) => !prevState);
+
+  const handleDecline = () =>
+    declineOrgCollabRequest({ variables: { orgCollabRequestId: collab.id } }).then(() => handleModal());
+
+  const handleApprove = () =>
+    approveOrgCollabRequest({ variables: { orgCollabRequestId: collab.id } }).then(() => {
+      handleModal();
+      setSnackbarAlertOpen(true);
+      setSnackbarAlertMessage('Collaboration request approved - click the Active tab to see all collabs');
+    });
+
+  return (
+    <CollabCard>
+      <ModalComponent
+        footerRight={
+          <Actions
+            declineLabel="Decline"
+            acceptLabel="Accept"
+            type={MODAL_TYPE.ACTION}
+            onClose={() => handleDecline()}
+            onSubmit={() => handleApprove()}
+          />
+        }
+        maxWidth={560}
+        title="Project collaboration request"
+        open={isOpen}
+        onClose={handleModal}
+      >
+        <CollabDetails type={MODAL_TYPE.ACTION} request={collab} />
+      </ModalComponent>
+      <CollabCardHeader>
+        <SharedOrgHeaderCard
+          collab={{
+            childOrgProfilePicture: collab?.recipientOrg?.profilePicture,
+            parentOrgProfilePIcture: collab?.initiatorOrg?.profilePicture,
+            childOrgName: collab?.recipientOrg?.name,
+            parentOrgName: collab?.initiatorOrg?.name,
+          }}
+        />
+      </CollabCardHeader>
+      <CollabDescription>{collab?.title}</CollabDescription>
+      <StyledBottomHr />
+      <CollabBottom
+        style={{
+          justifyContent: 'flex-end',
+        }}
+      >
+        <InvitationButton
+          buttonInnerStyle={{
+            padding: '8px',
+            paddingRight: '12px',
+            paddingLeft: '12px',
+          }}
+          highlighted
+          onClick={handleModal}
+        >
+          <InvitationButtonText>View Invite</InvitationButtonText>
         </InvitationButton>
       </CollabBottom>
     </CollabCard>

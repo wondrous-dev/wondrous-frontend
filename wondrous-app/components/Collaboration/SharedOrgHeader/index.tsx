@@ -29,7 +29,12 @@ export const SharedOrgHeaderCard = (props) => {
         <SafeImage
           src={collab?.childOrgProfilePicture}
           placeholderComp={
-            <TokenEmptyLogo>
+            <TokenEmptyLogo
+              style={{
+                width: '24px',
+                height: '24px',
+              }}
+            >
               <DAOEmptyIcon />
             </TokenEmptyLogo>
           }

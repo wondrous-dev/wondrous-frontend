@@ -132,3 +132,11 @@ export const InvitationButtonText = styled(Typography)`
     font-weight: 500;
   }
 `;
+
+export const EmptyText = styled(Typography)`
+  && {
+    color: ${palette.white};
+    font-size: 12px;
+    margin-bottom: 20px;
+  }
+`;
