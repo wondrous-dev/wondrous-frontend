@@ -3,6 +3,7 @@ import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import TaskCardStatus from 'components/Common/TaskCardStatus';
 import ListItemWrapper from 'components/Project/ListItemWrapper';
 import palette from 'theme/palette';
+import { getProposalStatus } from 'utils/board';
 
 interface IListItemProposal {
   proposal;
@@ -15,9 +16,14 @@ const LeftComponent = ({ title, creator }) => (
   </Grid>
 );
 
-const RightComponent = ({ type, orgId, status }) => (
+const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
   <Grid container>
-    <TaskCardStatus type={type} orgId={orgId} status={status} style={{ background: '#343434' }} />
+    <TaskCardStatus
+      type="proposal"
+      orgId={orgId}
+      status={getProposalStatus({ rejectedAt, approvedAt, closedAt })}
+      style={{ background: '#343434' }}
+    />
   </Grid>
 );
 

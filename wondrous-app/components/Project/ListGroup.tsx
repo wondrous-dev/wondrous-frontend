@@ -15,6 +15,7 @@ import {
   useDocCategoriesButtonProps,
   useEntityCreateButtonProps,
   useGetOrgEntity,
+  useGetOrgProposal,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -69,29 +70,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/proposal-empty-bg.svg',
     showAllUrl: 'boards?entity=proposal',
     ListItemComponent: ListItemProposal,
-    data: [
-      {
-        title: 'test proposal',
-        type: 'proposal',
-        orgId: '72322419271925761',
-        status: 'open',
-        id: '72401739146330138',
-      },
-      {
-        title: 'test proposal',
-        type: 'proposal',
-        orgId: '72322419271925761',
-        status: 'approved',
-        id: '72401739146330138',
-      },
-      {
-        title: 'test proposal',
-        type: 'proposal',
-        orgId: '72322419271925761',
-        status: 'closed',
-        id: '72401739146330138',
-      },
-    ],
+    data: useGetOrgProposal(),
   },
   {
     HeaderTitleProps: {

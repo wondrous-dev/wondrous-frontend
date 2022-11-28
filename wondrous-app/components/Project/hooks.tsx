@@ -6,7 +6,7 @@ import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
-import { GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
+import { GET_ORG_TASK_BOARD_PROPOSALS, GET_ORG_TASK_BOARD_TASKS } from 'graphql/queries';
 import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
 import { useState } from 'react';
@@ -147,5 +147,19 @@ export const useGetOrgEntity = (type) => {
       types: [type],
     },
   });
-  return sortBy(data?.getOrgTaskBoardTasks, ({ id }) => id);
+  return sortBy(data?.getOrgTaskBoardTasks, ({ id }) => id).slice(0, LIMIT);
+};
+
+export const useGetOrgProposal = () => {
+  const { orgData } = useProject();
+  const { data } = useQuery(GET_ORG_TASK_BOARD_PROPOSALS, {
+    skip: !orgData?.id,
+    variables: {
+      orgId: orgData?.id,
+      limit: LIMIT,
+      offset: 0,
+      statuses: ['open', 'closed', 'approved'],
+    },
+  });
+  return data?.getOrgTaskBoardProposals;
 };
