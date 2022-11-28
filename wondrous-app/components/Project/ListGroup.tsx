@@ -17,6 +17,7 @@ import {
   useGetOrgEntity,
   useGetOrgProposal,
   useGetOrgUsers,
+  useGetOrgDocumentCategories,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -138,14 +139,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/resources-empty-bg.svg',
     showAllUrl: 'docs',
     ListItemComponent: ListItemResource,
-    data: [
-      {
-        name: 'folder a',
-      },
-      {
-        name: 'resource b',
-      },
-    ],
+    data: useGetOrgDocumentCategories(),
   },
 ];
 
