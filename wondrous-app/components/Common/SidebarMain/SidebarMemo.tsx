@@ -43,6 +43,7 @@ type Props = {
   sidebar: {
     minimized: boolean;
     setMinimized: (minimized: boolean) => unknown;
+    setOpenMobileOrgSidebar: React.Dispatch<React.SetStateAction<boolean>>;
   };
   onLogoClick: Function;
 };
@@ -75,9 +76,19 @@ const profilePictureStyle = {
 };
 
 const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, onLogoClick }: Props) => {
-  const { minimized, setMinimized } = sidebar;
+  const { minimized, setMinimized, setOpenMobileOrgSidebar } = sidebar;
   const [openHelpModal, setOpenHelpModal] = useState(false);
   const handleMinimize = () => setMinimized(false);
+  const handleOpenOrgSidebar = () => setOpenMobileOrgSidebar(true);
+
+  const handleDrawerBtnClick = () => {
+    if (isMobile) {
+      handleOpenOrgSidebar();
+    } else {
+      handleMinimize();
+    }
+  };
+
   const router = useRouter();
   const isPageActive = (str) => router.pathname.includes(str);
 
@@ -172,7 +183,7 @@ const SideBarMemo = ({ orgsList, sidebar, isMobile, handleProfileClick, user, on
           })}
           {minimized && (
             <Tooltip style={toolTipStyle} title="Expand Sidebar" placement="right">
-              <DrawerBackButton onClick={handleMinimize}>
+              <DrawerBackButton onClick={handleDrawerBtnClick}>
                 <BackArrowIcon />
               </DrawerBackButton>
             </Tooltip>

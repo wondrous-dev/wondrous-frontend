@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useRouter } from 'next/router';
 
 import useSideBar from 'hooks/useSideBar';
@@ -8,7 +8,14 @@ import AboutEntity from 'components/Common/SidebarEntityAbout';
 import List from 'components/Common/SidebarEntityList';
 import RolesSidebar from 'components/Common/SidebarEntityRoles';
 import CollabsSidebar from 'components/Common/SidebarEntityCollabs';
-import { ChildrenWrapper, SidebarContent, SidebarWrapper, Wrapper } from 'components/Common/SidebarStyles';
+import {
+  ChildrenWrapper,
+  SidebarContent,
+  SidebarDrawerWrapper,
+  SidebarWrapper,
+  Wrapper,
+} from 'components/Common/SidebarStyles';
+import { useIsMobile } from 'utils/hooks';
 
 const SIDEBAR_COMPONENTS = {
   collabs: () => <CollabsSidebar />,
@@ -16,8 +23,9 @@ const SIDEBAR_COMPONENTS = {
 };
 
 const EntitySidebar = ({ children }) => {
-  const { minimized } = useSideBar();
+  const { minimized, openMobileOrgSidebar, setOpenMobileOrgSidebar } = useSideBar();
   const { query } = useRouter();
+  const isMobile = useIsMobile();
 
   const Sidebar = useMemo(() => {
     if (query.roles) {
@@ -35,14 +43,25 @@ const EntitySidebar = ({ children }) => {
     );
   }, [query.roles, query.collabs]);
 
+  const handleCloseSidebar = () => setOpenMobileOrgSidebar(false);
+
   return (
     <Wrapper>
-      <SidebarWrapper minimized={minimized}>
-        <SidebarContent>
-          <Sidebar />
-        </SidebarContent>
-        <CollapseExpandButton />
-      </SidebarWrapper>
+      {isMobile ? (
+        <SidebarDrawerWrapper open={openMobileOrgSidebar} onClose={handleCloseSidebar}>
+          <SidebarContent>
+            <Sidebar />
+          </SidebarContent>
+          <CollapseExpandButton onClick={handleCloseSidebar} />
+        </SidebarDrawerWrapper>
+      ) : (
+        <SidebarWrapper minimized={minimized}>
+          <SidebarContent>
+            <Sidebar />
+          </SidebarContent>
+          <CollapseExpandButton />
+        </SidebarWrapper>
+      )}
       <ChildrenWrapper minimized={minimized}>{children}</ChildrenWrapper>
     </Wrapper>
   );

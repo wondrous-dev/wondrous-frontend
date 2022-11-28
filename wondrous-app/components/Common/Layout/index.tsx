@@ -50,6 +50,7 @@ export default function SidebarLayout({ children }) {
     skip: PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
   });
   const [minimized, setMinimized] = useState(false);
+  const [openMobileOrgSidebar, setOpenMobileOrgSidebar] = useState<boolean>(false);
   const { data: userOrgs } = useQuery(GET_USER_ORGS, {
     skip: isMobile || PAGES_WITH_NO_SIDEBAR.includes(router.pathname),
     variables: {
@@ -69,6 +70,8 @@ export default function SidebarLayout({ children }) {
   const sidebarValue = useMemo(
     () => ({
       minimized,
+      openMobileOrgSidebar,
+      setOpenMobileOrgSidebar,
       setMinimized,
       orgsList,
     }),
