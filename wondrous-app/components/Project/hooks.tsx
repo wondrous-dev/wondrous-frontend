@@ -6,7 +6,7 @@ import { CreateFormModalOverlay } from 'components/CreateEntity/styles';
 import CreateEntityDiscardTask from 'components/CreateEntityDiscardTask';
 import CreateGrant from 'components/CreateGrant';
 import DocCategoriesDialog from 'components/DocCategoriesDialog';
-import { GET_ORG_TASK_BOARD_PROPOSALS, GET_ORG_TASK_BOARD_TASKS, GET_ORG_USERS } from 'graphql/queries';
+import { GET_ORG_GRANTS, GET_ORG_TASK_BOARD_PROPOSALS, GET_ORG_TASK_BOARD_TASKS, GET_ORG_USERS } from 'graphql/queries';
 import { GET_ORG_DOCS_CATEGORIES } from 'graphql/queries/documents';
 import sortBy from 'lodash/sortBy';
 import { useRouter } from 'next/router';
@@ -187,4 +187,18 @@ export const useGetOrgDocumentCategories = () => {
     },
   });
   return data?.getOrgDocumentCategories.slice(0, LIMIT);
+};
+
+export const useGetGrantOrgBoard = () => {
+  const { orgData } = useProject();
+  const { data } = useQuery(GET_ORG_GRANTS, {
+    skip: !orgData?.id,
+    variables: {
+      orgId: orgData?.id,
+      limit: LIMIT,
+      offset: 0,
+      status: 'open',
+    },
+  });
+  return data?.getGrantOrgBoard;
 };

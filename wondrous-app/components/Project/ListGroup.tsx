@@ -18,6 +18,7 @@ import {
   useGetOrgProposal,
   useGetOrgUsers,
   useGetOrgDocumentCategories,
+  useGetGrantOrgBoard,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -117,18 +118,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/grant-empty-bg.svg',
     showAllUrl: 'grants',
     ListItemComponent: ListItemGrant,
-    data: [
-      {
-        title: 'grant',
-        reward: {
-          rewardAmount: 100,
-          symbol: 'USDC',
-        },
-        numOfGrant: 6,
-        applicationsCount: 2,
-        endDate: new Date('2022-11-29'),
-      },
-    ],
+    data: useGetGrantOrgBoard(),
   },
   {
     HeaderTitleProps: {

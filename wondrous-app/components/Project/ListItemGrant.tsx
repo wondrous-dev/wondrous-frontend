@@ -2,8 +2,9 @@ import Grid from '@mui/material/Grid';
 import Compensation from 'components/Common/Compensation';
 import CalendarIcon from 'components/Icons/calendar';
 import ListItemWrapper from 'components/Project/ListItemWrapper';
-import intervalToDuration from 'date-fns/intervalToDuration';
+import { formatDistance } from 'date-fns';
 import palette from 'theme/palette';
+import { formatDateDisplay } from 'utils/board';
 
 interface IListIemGrant {
   task;
@@ -16,10 +17,7 @@ const LeftComponent = ({ title }) => (
 );
 
 const RightComponent = ({ numOfGrant, endDate, reward }) => {
-  const { days } = intervalToDuration({
-    start: new Date(),
-    end: endDate,
-  });
+  const days = formatDateDisplay(new Date(endDate), false, false);
   return (
     <Grid container item alignItems="center" height="28px" gap="12px">
       <Grid
@@ -37,7 +35,7 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
         color="#fff"
       >
         <CalendarIcon width="10px" height="11px" />
-        {days}d
+        {days}
       </Grid>
       <Grid container item height="100%" width="fit-content" borderRadius="100px" sx={{ outline: '1px solid #474747' }}>
         <Compensation
