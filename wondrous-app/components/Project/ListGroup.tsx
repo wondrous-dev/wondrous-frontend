@@ -14,7 +14,7 @@ import {
   useCreateGrantButtonProps,
   useDocCategoriesButtonProps,
   useEntityCreateButtonProps,
-  useGetOrgTasks,
+  useGetOrgEntity,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -36,7 +36,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/task-empty-bg.svg',
     showAllUrl: 'boards?entity=task',
     ListItemComponent: ListItemTask,
-    data: useGetOrgTasks(),
+    data: useGetOrgEntity('task'),
   },
   {
     HeaderTitleProps: {
@@ -47,46 +47,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/bounty-empty-bg.svg',
     showAllUrl: 'boards?entity=bounty',
     ListItemComponent: ListItemBounty,
-    data: [
-      {
-        title: 'test bounty',
-        date: new Date(),
-        type: 'task',
-        rewards: [
-          {
-            rewardAmount: 1000,
-            symbol: 'USDC',
-            icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-          },
-        ],
-        id: 1,
-      },
-      {
-        title: 'test bounty',
-        date: new Date(),
-        type: 'task',
-        rewards: [
-          {
-            rewardAmount: 1000,
-            symbol: 'USDC',
-            icon: 'https://s2.coinmarketcap.com/static/img/coins/64x64/3408.png',
-          },
-        ],
-        id: 2,
-      },
-      {
-        title: 'test bounty',
-        date: new Date(),
-        type: 'task',
-        rewards: [
-          {
-            rewardAmount: 100,
-            symbol: 'USDC',
-          },
-        ],
-        id: 3,
-      },
-    ],
+    data: useGetOrgEntity('bounty'),
   },
   {
     HeaderTitleProps: {

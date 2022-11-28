@@ -131,7 +131,7 @@ export const useCreateGrantButtonProps = (): ICreateButtonProps => {
 
 const LIMIT = 6;
 
-export const useGetOrgTasks = () => {
+export const useGetOrgEntity = (type) => {
   const { orgData } = useProject();
   const { data } = useQuery(GET_ORG_TASK_BOARD_TASKS, {
     nextFetchPolicy: 'cache-first',
@@ -144,7 +144,7 @@ export const useGetOrgTasks = () => {
       limit: LIMIT,
       labelId: null,
       date: null,
-      types: ['task'],
+      types: [type],
     },
   });
   return sortBy(data?.getOrgTaskBoardTasks, ({ id }) => id);
