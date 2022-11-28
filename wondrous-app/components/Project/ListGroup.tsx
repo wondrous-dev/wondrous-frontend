@@ -19,6 +19,7 @@ import {
   useGetOrgUsers,
   useGetOrgDocumentCategories,
   useGetGrantOrgBoard,
+  useGetOrgCollabsForOrg,
 } from './hooks';
 import ListItemBounty from './ListItemBounty';
 import ListItemCollaboration from './ListItemCollaboration';
@@ -98,16 +99,7 @@ const useListGroup = () => [
     backgroundImageUrl: '/images/project/collab-empty-bg.svg',
     showAllUrl: 'members?collabs=true',
     ListItemComponent: ListItemCollaboration,
-    data: [
-      {
-        parentOrg: {
-          username: 'parent',
-        },
-        childOrg: {
-          username: 'child',
-        },
-      },
-    ],
+    data: useGetOrgCollabsForOrg(),
   },
   {
     HeaderTitleProps: {

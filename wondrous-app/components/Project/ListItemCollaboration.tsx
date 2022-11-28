@@ -24,9 +24,9 @@ const OrgWrapper = ({ username, profilePicture }) => (
   </Grid>
 );
 
-const LeftComponent = ({ parentOrg, childOrg }) => (
+const LeftComponent = ({ username, parentOrgProfilePicture, childOrgProfilePicture }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
-    <OrgWrapper {...parentOrg} />
+    <OrgWrapper username={username} profilePicture={parentOrgProfilePicture} />
     <Grid
       container
       item
@@ -49,7 +49,7 @@ const LeftComponent = ({ parentOrg, childOrg }) => (
     >
       <CloseIcon />
     </Grid>
-    <OrgWrapper {...childOrg} />
+    <OrgWrapper username="" profilePicture={childOrgProfilePicture} />
   </Grid>
 );
 
