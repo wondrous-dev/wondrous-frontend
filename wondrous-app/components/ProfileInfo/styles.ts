@@ -104,6 +104,10 @@ export const ProfileInfoEarningsInterestWrapper = styled(Box)`
 export const ProfileInfoInterestsContainer = styled(Box)`
   display: flex;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    align-items: flex-start;
+  }
 `;
 
 export const ProfileInfoInterestsChipWrapper = styled(Box)`
@@ -122,6 +126,9 @@ export const ProfileInfoInterestsChip = styled(Chip)`
     color: #ffffff;
     background: #232323;
     font-size: 12px;
+  }
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    border-radius: 4px;
   }
 `;
 

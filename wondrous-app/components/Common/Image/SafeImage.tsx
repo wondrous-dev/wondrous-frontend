@@ -1,8 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, memo } from 'react';
 import { useLazyQuery } from '@apollo/client';
 import { parseISO, addSeconds } from 'date-fns';
-import { GET_PREVIEW_FILE } from 'graphql/queries/media';
 import Image, { ImageProps } from 'next/image';
+
+import { GET_PREVIEW_FILE } from 'graphql/queries/media';
+import { shallowEqual } from 'utils/common';
 
 type SafeImageArgs = Omit<ImageProps, 'style'> & {
   className?: string;
@@ -32,7 +34,7 @@ type SafeImageArgs = Omit<ImageProps, 'style'> & {
 };
 
 // https://nextjs.org/docs/api-reference/next/image
-export function SafeImage(safeImageArgs: SafeImageArgs) {
+function SafeImage(safeImageArgs: SafeImageArgs) {
   const {
     src,
     onPreviewLoaded,
@@ -116,3 +118,18 @@ export function SafeImage(safeImageArgs: SafeImageArgs) {
 
   return null;
 }
+
+function arePropsEqualWithStyle(prevProps, nextProps) {
+  return !Object.keys(prevProps).some((propName) => {
+    const prevProp = prevProps[propName];
+    const nextProp = nextProps[propName];
+
+    if (propName === 'style') {
+      return !shallowEqual(prevProp, nextProp);
+    }
+
+    return prevProp !== nextProp;
+  });
+}
+
+export default memo(SafeImage, arePropsEqualWithStyle);

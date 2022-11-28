@@ -1,7 +1,8 @@
-import { Task } from 'components/Common/Task';
+import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
+
+import Task from 'components/Common/Task';
 import OrgCard from 'components/OrgCard';
 import ProfileContentGrid from 'components/ProfileContentGrid';
-import useGetUserAboutPage from 'hooks/useGetUserAboutPage';
 
 import { ProfileUserTaskDaosContainer, ProfileUserTaskDaosTitle, ProfileUserTaskDaosWrapper } from './styles';
 
