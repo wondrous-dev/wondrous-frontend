@@ -13,7 +13,8 @@ import palette from 'theme/palette';
 import typography from 'theme/typography';
 
 export const RolesContainer = styled.div`
-  width: 780px;
+  max-width: 780px;
+  width: 100%;
 
   ${newDropdownStyles}
 `;

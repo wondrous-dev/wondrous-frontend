@@ -30,7 +30,12 @@ function MemberRoles({ roleList = [], users = [], isDAO, selectedRoleIds = [], h
 
   return (
     <Container withPodMembers={!isDAO}>
-      <Grid display="flex" alignItems="center" gap="30px">
+      <Grid
+        display="flex"
+        alignItems={{ md: 'center', sm: 'flex-start', xs: 'flex-start' }}
+        gap={{ md: '30px', sm: '8px', xs: '8px' }}
+        flexDirection={{ md: 'row', sm: 'column', xs: 'column' }}
+      >
         <Grid display="flex" alignItems="center" gap="4px">
           <Typography color={palette.white} fontSize={14} fontWeight={500} minWidth="fit-content">
             {roleList.length}

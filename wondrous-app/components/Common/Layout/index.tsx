@@ -99,7 +99,7 @@ export default function SidebarLayout({ children }) {
         }}
       >
         <HeaderComponent />
-        <SectionWrapper style={{ width: `calc(100% - ${width})`, marginLeft: `${width}` }}>{children}</SectionWrapper>
+        <SectionWrapper width={width}>{children}</SectionWrapper>
       </GlobalContext.Provider>
     </SideBarContext.Provider>
   );

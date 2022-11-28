@@ -208,6 +208,12 @@ export const SettingsHeaderBlock = styled.div`
   height: 70px;
   display: flex;
   align-items: center;
+
+  ${({ theme }) => theme.breakpoints.down('md')} {
+    flex-direction: column;
+    align-items: flex-start;
+    height: 100%;
+  }
 `;
 
 export const SettingsHeaderContent = styled.div`

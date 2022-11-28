@@ -9,6 +9,14 @@ export const SettingsChildrenWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   align-items: center;
+
+  > div {
+    width: 100%;
+  }
+
+  ${({ theme }) => theme.breakpoints.down('sm')} {
+    padding: 24.5px 14px 0 14px;
+  }
 `;
 
 export const SettingsDaoPodIndicator = styled(Box)`

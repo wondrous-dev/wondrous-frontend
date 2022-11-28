@@ -12,6 +12,7 @@ import palette from 'theme/palette';
 import MemberRoleSelectionDropdown from './MemberRoleSelectionDropdown';
 import {
   DefaultProfilePicture,
+  MemberRoleSelectionWrapper,
   UserOptions,
   UserProfile,
   UserWalletAddress,
@@ -53,40 +54,58 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
   };
 
   return (
-    <Grid display="flex" alignItems="center" gap="80px">
-      <Link href={`/profile/${user?.username}/about`} passHref style={{ textDecoration: 'none' }}>
-        <UserProfile>
-          <SafeImage
-            useNextImage
-            src={userProfilePicture}
-            placeholderComp={<DefaultProfilePicture />}
-            width={40}
-            height={40}
-            style={{
-              borderRadius: '50%',
-            }}
-            alt="Profile picture"
-          />
-          <Grid display="flex" flexDirection="column" gap="2px">
-            {!!userFullName && (
-              <Typography fontSize={15} fontWeight={700} color={palette.white}>
-                {userFullName}
+    <Grid
+      display="flex"
+      alignItems={{ md: 'center', sm: 'flex-start', xs: 'flex-start' }}
+      gap={{ md: '80px', sm: '20px', xs: '14px' }}
+      flexDirection={{ md: 'row', sm: 'column', xs: 'column' }}
+    >
+      <Grid display="flex" width="100%" justifyContent="space-between">
+        <Link href={`/profile/${user?.username}/about`} passHref style={{ textDecoration: 'none' }}>
+          <UserProfile>
+            <SafeImage
+              useNextImage
+              src={userProfilePicture}
+              placeholderComp={<DefaultProfilePicture />}
+              width={40}
+              height={40}
+              style={{
+                borderRadius: '50%',
+              }}
+              alt="Profile picture"
+            />
+            <Grid display="flex" flexDirection="column" gap="2px">
+              {!!userFullName && (
+                <Typography fontSize={15} fontWeight={700} color={palette.white}>
+                  {userFullName}
+                </Typography>
+              )}
+              <Typography
+                color={palette.grey250}
+                fontSize={12}
+                width="18ch"
+                maxWidth="18ch"
+                textOverflow="ellipsis"
+                overflow="hidden"
+              >
+                {username}
               </Typography>
-            )}
-            <Typography
-              color={palette.grey250}
-              fontSize={12}
-              width="18ch"
-              maxWidth="18ch"
-              textOverflow="ellipsis"
-              overflow="hidden"
-            >
-              {username}
-            </Typography>
-          </Grid>
-        </UserProfile>
-      </Link>
-      <Grid display="flex" alignItems="center" gap="14px" flex={1}>
+            </Grid>
+          </UserProfile>
+        </Link>
+        <MemberRoleSelectionWrapper showOnSmallScreen>
+          <MemberRoleSelectionDropdown
+            userId={userId}
+            orgId={orgId}
+            podId={podId}
+            existingRole={role}
+            roleList={roleList}
+            username={user?.username}
+          />
+        </MemberRoleSelectionWrapper>
+      </Grid>
+
+      <Grid display="flex" alignItems="center" gap="14px" flex={1} width="100%" justifyContent="space-between">
         {userENSNameOrWalletAddress ? (
           <UserWalletAddressContainer hasAddressBeenCopied={hasAddressBeenCopied} onClick={handleAddressCopy}>
             <UserWalletAddress hasAddressBeenCopied={hasAddressBeenCopied}>
@@ -97,14 +116,16 @@ const MemberTableRow = ({ user, role, orgId, podId, roleList, promptRemoveUser }
         ) : (
           <WalletAddressEmptyState>No wallet added</WalletAddressEmptyState>
         )}
-        <MemberRoleSelectionDropdown
-          userId={userId}
-          orgId={orgId}
-          podId={podId}
-          existingRole={role}
-          roleList={roleList}
-          username={user?.username}
-        />
+        <MemberRoleSelectionWrapper>
+          <MemberRoleSelectionDropdown
+            userId={userId}
+            orgId={orgId}
+            podId={podId}
+            existingRole={role}
+            roleList={roleList}
+            username={user?.username}
+          />
+        </MemberRoleSelectionWrapper>
         <UserOptions>
           <Dropdown
             DropdownHandler={() => <TaskMenuIcon fill="transparent" fillOnHover="transparent" stroke={palette.white} />}
