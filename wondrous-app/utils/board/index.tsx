@@ -262,7 +262,7 @@ export const sectionOpeningReducer = (currentCard, { section, isOpen }) => {
   if (taskToSection && taskToSection !== currentCard && isOpen) return taskToSection;
 };
 
-export const formatDateDisplay = (date, addTimePreposition = false) => {
+export const formatDateDisplay = (date, addTimePreposition = false, addSuffix = true) => {
   if (!date) return '';
 
   const taskCreatedBefore = differenceInDays(new Date(), new Date(date));
@@ -270,7 +270,7 @@ export const formatDateDisplay = (date, addTimePreposition = false) => {
     taskCreatedBefore >= 7
       ? format(new Date(date), 'MM/dd/yyyy')
       : formatDistance(new Date(date), new Date(), {
-          addSuffix: true,
+          addSuffix,
         });
 
   const formattedDistanceWithTimePreposition = taskCreatedBefore >= 7 ? `on ${formattedDistance}` : formattedDistance;

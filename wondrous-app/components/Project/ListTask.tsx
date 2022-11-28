@@ -1,13 +1,11 @@
 import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import TaskCardDate from 'components/Common/TaskCardDate';
-import ListItemWrapper from 'components/Project/ListItemWrapper';
+import CheckBoxIcon from 'components/Icons/Sidebar/checkBox.svg';
 import palette from 'theme/palette';
+import { ENTITIES_TYPES } from 'utils/constants';
 import ApplyOrClaimButton from './ApplyOrClaimButton';
-
-interface IListItemTask {
-  task;
-}
+import { useEntityCreateButtonProps, useGetOrgEntity } from './helpers';
 
 const LeftComponent = ({ assigneeProfilePicture, title, assigneeId }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -20,19 +18,22 @@ const RightComponent = (props) => {
   const { dueDate } = props;
   return (
     <Grid container item gap="12px">
-      <TaskCardDate date={props?.dueDate} />
+      <TaskCardDate date={dueDate} />
       <ApplyOrClaimButton task={props} />
     </Grid>
   );
 };
 
-const ListItemTask = (props: IListItemTask) => (
-  <ListItemWrapper
-    LeftComponent={LeftComponent}
-    LeftComponentProps={props}
-    RightComponent={RightComponent}
-    RightComponentProps={props}
-  />
-);
+const useListTaskProps = () => ({
+  HeaderTitleProps: {
+    text: 'Task',
+    IconComponent: CheckBoxIcon,
+  },
+  CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.TASK),
+  backgroundImageUrl: '/images/project/task-empty-bg.svg',
+  showAllUrl: 'boards?entity=task',
+  ListItemComponents: { LeftComponent, RightComponent },
+  data: useGetOrgEntity('task'),
+});
 
-export default ListItemTask;
+export default useListTaskProps;

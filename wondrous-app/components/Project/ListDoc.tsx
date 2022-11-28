@@ -1,12 +1,9 @@
 import Grid from '@mui/material/Grid';
-import ListItemWrapper from 'components/Project/ListItemWrapper';
-import palette from 'theme/palette';
 import FolderIcon from 'components/Icons/Sidebar/folder.svg';
+import palette from 'theme/palette';
 import { randomColors } from 'utils/common';
 
-interface IListItemResource {
-  resource;
-}
+import { useDocCategoriesButtonProps, useGetOrgDocumentCategories } from './helpers';
 
 const LeftComponent = ({ name }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -26,8 +23,16 @@ const LeftComponent = ({ name }) => (
   </Grid>
 );
 
-const ListItemResource = (props: IListItemResource) => (
-  <ListItemWrapper LeftComponent={LeftComponent} LeftComponentProps={props} />
-);
+const useListDoc = () => ({
+  HeaderTitleProps: {
+    text: 'Resource',
+    IconComponent: FolderIcon,
+  },
+  CreateButtonProps: useDocCategoriesButtonProps(),
+  backgroundImageUrl: '/images/project/resources-empty-bg.svg',
+  showAllUrl: 'docs',
+  ListItemComponents: { LeftComponent },
+  data: useGetOrgDocumentCategories(),
+});
 
-export default ListItemResource;
+export default useListDoc;

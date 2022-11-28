@@ -3,17 +3,11 @@ import palette from 'theme/palette';
 
 interface IEntityItem {
   LeftComponent: React.ElementType;
-  LeftComponentProps?: object;
   RightComponent?: React.ElementType;
-  RightComponentProps?: object;
+  data?: object;
 }
 
-const ListItemWrapper = ({
-  LeftComponent,
-  LeftComponentProps,
-  RightComponent = () => null,
-  RightComponentProps,
-}: IEntityItem) => (
+const ListItem = ({ LeftComponent, data, RightComponent = () => null }: IEntityItem) => (
   <Grid
     container
     justifyContent="space-between"
@@ -30,12 +24,12 @@ const ListItemWrapper = ({
     }}
   >
     <Grid container item alignItems="center" width="fit-content">
-      <LeftComponent {...LeftComponentProps} />
+      <LeftComponent {...data} />
     </Grid>
     <Grid container item alignItems="center" width="fit-content">
-      <RightComponent {...RightComponentProps} />
+      <RightComponent {...data} />
     </Grid>
   </Grid>
 );
 
-export default ListItemWrapper;
+export default ListItem;

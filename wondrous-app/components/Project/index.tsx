@@ -1,5 +1,5 @@
 import Grid from '@mui/material/Grid';
-import ListGroup from 'components/Project/ListGroup';
+import ListEntity from 'components/Project/ListEntity';
 import PodCards from 'components/Project/PodCards';
 import { ProjectContext } from 'utils/contexts';
 
@@ -9,7 +9,7 @@ import {
   useCreateGrantModal,
   useDocCategoriesModal,
   usePodModal,
-} from './hooks';
+} from './helpers';
 
 const Project = ({ orgData }) => {
   const { id } = orgData;
@@ -36,7 +36,7 @@ const Project = ({ orgData }) => {
         <PodModal />
         <Grid container flexDirection="column" gap="24px" paddingBottom="24px">
           <PodCards orgId={id} />
-          <ListGroup />
+          <ListEntity />
         </Grid>
       </>
     </ProjectContext.Provider>

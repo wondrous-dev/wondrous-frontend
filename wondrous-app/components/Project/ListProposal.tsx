@@ -1,13 +1,11 @@
 import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import TaskCardStatus from 'components/Common/TaskCardStatus';
-import ListItemWrapper from 'components/Project/ListItemWrapper';
+import ContentPaste from 'components/Icons/Sidebar/contentPaste.svg';
 import palette from 'theme/palette';
 import { getProposalStatus } from 'utils/board';
-
-interface IListItemProposal {
-  proposal;
-}
+import { ENTITIES_TYPES } from 'utils/constants';
+import { useEntityCreateButtonProps, useGetOrgProposal } from './helpers';
 
 const LeftComponent = ({ title, creator }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -27,13 +25,16 @@ const RightComponent = ({ orgId, rejectedAt, approvedAt, closedAt }) => (
   </Grid>
 );
 
-const ListItemProposal = (props: IListItemProposal) => (
-  <ListItemWrapper
-    LeftComponent={LeftComponent}
-    LeftComponentProps={props}
-    RightComponent={RightComponent}
-    RightComponentProps={props}
-  />
-);
+const useListProposal = () => ({
+  HeaderTitleProps: {
+    text: 'Proposal',
+    IconComponent: ContentPaste,
+  },
+  CreateButtonProps: useEntityCreateButtonProps(ENTITIES_TYPES.PROPOSAL),
+  backgroundImageUrl: '/images/project/proposal-empty-bg.svg',
+  showAllUrl: 'boards?entity=proposal',
+  ListItemComponents: { LeftComponent, RightComponent },
+  data: useGetOrgProposal(),
+});
 
-export default ListItemProposal;
+export default useListProposal;

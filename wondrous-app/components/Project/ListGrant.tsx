@@ -1,14 +1,11 @@
 import Grid from '@mui/material/Grid';
 import Compensation from 'components/Common/Compensation';
 import CalendarIcon from 'components/Icons/calendar';
-import ListItemWrapper from 'components/Project/ListItemWrapper';
-import { formatDistance } from 'date-fns';
+import PlantIcon from 'components/Icons/plant.svg';
 import palette from 'theme/palette';
 import { formatDateDisplay } from 'utils/board';
 
-interface IListIemGrant {
-  task;
-}
+import { useCreateGrantButtonProps, useGetGrantOrgBoard } from './helpers';
 
 const LeftComponent = ({ title }) => (
   <Grid container gap="12px" alignItems="center" fontWeight="600" color={palette.white}>
@@ -63,13 +60,18 @@ const RightComponent = ({ numOfGrant, endDate, reward }) => {
   );
 };
 
-const ListItemGrant = (props: IListIemGrant) => (
-  <ListItemWrapper
-    LeftComponent={LeftComponent}
-    LeftComponentProps={props}
-    RightComponent={RightComponent}
-    RightComponentProps={props}
-  />
-);
+const ListItemGrant = { LeftComponent, RightComponent };
 
-export default ListItemGrant;
+const useListGrant = () => ({
+  HeaderTitleProps: {
+    text: 'Grant',
+    IconComponent: PlantIcon,
+  },
+  CreateButtonProps: useCreateGrantButtonProps(),
+  backgroundImageUrl: '/images/project/grant-empty-bg.svg',
+  showAllUrl: 'grants',
+  ListItemComponents: ListItemGrant,
+  data: useGetGrantOrgBoard(),
+});
+
+export default useListGrant;

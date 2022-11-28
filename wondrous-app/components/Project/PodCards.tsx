@@ -11,7 +11,7 @@ import styled from 'styled-components';
 import { ENTITIES_TYPES } from 'utils/constants';
 import { useProject } from 'utils/hooks';
 
-import { useEntityCreateButtonProps } from './hooks';
+import { useEntityCreateButtonProps } from './helpers';
 
 const EmptyWrapper = styled.div`
   background-image: url(/images/project/pod-empty-bg.svg);

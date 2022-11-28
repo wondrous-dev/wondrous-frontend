@@ -1,18 +1,13 @@
-import { ButtonBase, Grid } from '@mui/material';
+import ButtonBase from '@mui/material/ButtonBase';
+import Grid from '@mui/material/Grid';
 import isEmpty from 'lodash/isEmpty';
 import { useRouter } from 'next/router';
 import palette from 'theme/palette';
-import CreateButton, { ICreateButtonProps } from './CreateButton';
-import HeaderTitle, { IHeaderTitleProps } from './HeaderTitle';
 
-interface EntityContainerProps {
-  backgroundImageUrl: string;
-  CreateButtonProps: ICreateButtonProps;
-  HeaderTitleProps: IHeaderTitleProps;
-  showAllUrl: string;
-  data?: object[];
-  ListItemComponent: React.ElementType;
-}
+import CreateButton from './CreateButton';
+import HeaderTitle from './HeaderTitle';
+import ListItem from './ListItem';
+import { ListWrapperProps } from './types';
 
 const emptyComponent = ({ backgroundImageUrl, CreateButtonProps }) => (
   <Grid
@@ -39,13 +34,13 @@ const ListWrapper = ({
   HeaderTitleProps,
   showAllUrl,
   data,
-  ListItemComponent,
-}: EntityContainerProps) => {
+  ListItemComponents: ListWrapperComponents,
+}: ListWrapperProps) => {
   const router = useRouter();
   const handleShowAllOnClick = () => router.push(`/organization/${router.query.username}/${showAllUrl}`);
   const entityContent = isEmpty(data)
     ? emptyComponent({ backgroundImageUrl, CreateButtonProps })
-    : data.map((i) => <ListItemComponent {...i} />);
+    : data.map((i) => <ListItem {...ListWrapperComponents} data={i} />);
   return (
     <Grid
       container

@@ -1,14 +1,11 @@
-import { Grid } from '@mui/material';
+import Grid from '@mui/material/Grid';
 import { OrgProfilePicture } from 'components/Common/ProfilePictureHelpers';
-import SidebarTooltip from 'components/Common/SidebarMainTooltip';
 import CloseIcon from 'components/Icons/close.svg';
-import ListItemWrapper from 'components/Project/ListItemWrapper';
+import { SmallDao2DaoIcon } from 'components/Icons/Dao2Dao';
 import Link from 'next/link';
 import palette from 'theme/palette';
 
-interface IListIemCollaboration {
-  task;
-}
+import { useCollaborationButtonProps, useGetOrgCollabsForOrg } from './helpers';
 
 const OrgWrapper = ({ username, profilePicture }) => (
   <Grid container item width="fit-content" sx={[{ '& a': { textDecoration: 'none' } }]}>
@@ -55,13 +52,16 @@ const LeftComponent = ({ username, parentOrgProfilePicture, childOrgProfilePictu
 
 const RightComponent = ({ date, type }) => null; // TODO: add collaboration role
 
-const ListItemCollaboration = (props: IListIemCollaboration) => (
-  <ListItemWrapper
-    LeftComponent={LeftComponent}
-    LeftComponentProps={props}
-    RightComponent={RightComponent}
-    RightComponentProps={props}
-  />
-);
+const useListCollab = () => ({
+  HeaderTitleProps: {
+    text: 'Collab',
+    IconComponent: () => <SmallDao2DaoIcon stroke="#fff" />,
+  },
+  CreateButtonProps: useCollaborationButtonProps(),
+  backgroundImageUrl: '/images/project/collab-empty-bg.svg',
+  showAllUrl: 'project?collabs=true',
+  ListItemComponents: { LeftComponent, RightComponent },
+  data: useGetOrgCollabsForOrg(),
+});
 
-export default ListItemCollaboration;
+export default useListCollab;

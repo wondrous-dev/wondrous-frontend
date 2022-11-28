@@ -1,12 +1,9 @@
 import Grid from '@mui/material/Grid';
 import { UserProfilePicture } from 'components/Common/ProfilePictureHelpers';
 import RolePill from 'components/Common/RolePill';
-import ListItemWrapper from 'components/Project/ListItemWrapper';
+import GroupIcon from 'components/Icons/Sidebar/group.svg';
 import palette from 'theme/palette';
-
-interface IListItemMember {
-  member;
-}
+import { useGetOrgUsers } from './helpers';
 
 const LeftComponent = ({ user }) => {
   const { profilePicture, firstName, lastName } = user || {};
@@ -24,13 +21,19 @@ const RightComponent = ({ role }) => (
   </Grid>
 );
 
-const ListItemMember = (props: IListItemMember) => (
-  <ListItemWrapper
-    LeftComponent={LeftComponent}
-    LeftComponentProps={props}
-    RightComponent={RightComponent}
-    RightComponentProps={props}
-  />
-);
+const useListMember = () => ({
+  HeaderTitleProps: {
+    text: 'Member',
+    IconComponent: GroupIcon,
+  },
+  CreateButtonProps: {
+    onClick: () => null,
+    text: 'Member',
+  },
+  backgroundImageUrl: '/images/project/collab-empty-bg.svg',
+  showAllUrl: 'members',
+  ListItemComponents: { LeftComponent, RightComponent },
+  data: useGetOrgUsers(),
+});
 
-export default ListItemMember;
+export default useListMember;
